@@ -36,6 +36,7 @@ class PixelLayer {
     this.size = 1,
     this.loop = false,
     this.hitOnly = false,
+    this.fade = false,
   });
 
   /// The strip's file, without `vfx_`.
@@ -55,6 +56,10 @@ class PixelLayer {
   /// A projectile's few frames repeat for as long as it flies.
   final bool loop;
   final bool hitOnly;
+
+  /// The last third of the strip shrinks and fades out in code (the flame
+  /// and the heal: their last frames are not drawn to vanish).
+  final bool fade;
 
   String get asset => 'vfx_$name';
 }
@@ -84,7 +89,7 @@ const Map<VfxStyle, List<PixelLayer>> pixelPlans = {
     PixelLayer('zap', t0: 0.45, span: 0.55),
   ],
   VfxStyle.lightning: [PixelLayer('lightning', anchor: Offset(24, 40))],
-  VfxStyle.flame: [PixelLayer('flame', anchor: Offset(24, 40))],
+  VfxStyle.flame: [PixelLayer('flame', anchor: Offset(24, 40), fade: true)],
   VfxStyle.fireball: [
     PixelLayer('orb',
         motion: PixelMotion.travel,
@@ -115,7 +120,7 @@ const Map<VfxStyle, List<PixelLayer>> pixelPlans = {
   VfxStyle.drain: [PixelLayer('drain', span: 0.8)],
   VfxStyle.shadow: [PixelLayer('shadow', anchor: Offset(24, 40))],
   VfxStyle.radiance: [PixelLayer('radiance')],
-  VfxStyle.heal: [PixelLayer('heal', anchor: Offset(24, 28))],
+  VfxStyle.heal: [PixelLayer('heal', anchor: Offset(24, 28), fade: true)],
   VfxStyle.shield: [PixelLayer('shield', anchor: Offset(24, 26))],
   VfxStyle.stoneShield: [PixelLayer('stone_shield', anchor: Offset(24, 32))],
   VfxStyle.mana: [PixelLayer('mana', anchor: Offset(24, 26))],
@@ -200,15 +205,42 @@ class PixelVfxTints {
     return made;
   }
 
+  /// Which of the four tones each colour of a strip takes: a strip drawn in
+  /// the four tones of [_source] maps them one to one; any other palette
+  /// (Art's skill strips, v1.915: five colours and an ink) is ranked by
+  /// brightness and split into four runs, the brightest to the highlight and
+  /// the darkest (the ink) to the deep tone.
+  static Map<int, int> toneRanks(Uint8List bytes) {
+    final colours = <int>{};
+    for (var i = 0; i < bytes.length; i += 4) {
+      if (bytes[i + 3] == 0) continue;
+      colours.add((bytes[i] << 16) | (bytes[i + 1] << 8) | bytes[i + 2]);
+    }
+    if (colours.every(_source.contains)) {
+      return {for (final c in colours) c: _source.indexOf(c)};
+    }
+    double lum(int c) =>
+        0.299 * ((c >> 16) & 0xFF) +
+        0.587 * ((c >> 8) & 0xFF) +
+        0.114 * (c & 0xFF);
+    final sorted = colours.toList()..sort((a, b) => lum(b).compareTo(lum(a)));
+    final n = sorted.length;
+    return {
+      for (var r = 0; r < n; r++)
+        sorted[r]: n <= 1 ? 1 : (r * 4 ~/ n).clamp(0, 3),
+    };
+  }
+
   static Future<void> _make(String key, ui.Image base, List<int> tones) async {
     try {
       final data = await base.toByteData(format: ui.ImageByteFormat.rawRgba);
       if (data == null) return;
       final bytes = Uint8List.fromList(data.buffer.asUint8List());
+      final ranks = toneRanks(bytes);
       for (var i = 0; i < bytes.length; i += 4) {
         if (bytes[i + 3] == 0) continue;
         final v = (bytes[i] << 16) | (bytes[i + 1] << 8) | bytes[i + 2];
-        final k = _source.indexOf(v);
+        final k = ranks[v] ?? -1;
         if (k < 0) continue;
         bytes[i] = (tones[k] >> 16) & 0xFF;
         bytes[i + 1] = (tones[k] >> 8) & 0xFF;
@@ -240,6 +272,13 @@ class PixelVfxTints {
 /// half pixels from 1 to 4.5.
 double pixelSizeFor(double s, double extent) =>
     (s * extent * 1.05 / 48 * 2).round().clamp(2, 9) / 2;
+
+/// How far a fading strip has gone out at the share [lt] of its time: 0 until
+/// its last third, then 0 to 1 (eased), so it shrinks and thins away.
+double pixelFadeOut(double lt) {
+  final x = ((lt - 2 / 3) * 3).clamp(0.0, 1.0);
+  return x * x;
+}
 
 double _easeInOut(double t) {
   final x = t.clamp(0.0, 1.0);
@@ -356,10 +395,20 @@ bool paintPixelBurst(
     canvas.save();
     canvas.translate(pos.dx.roundToDouble(), pos.dy.roundToDouble());
     if (angle != 0) canvas.rotate(angle);
-    final dst =
-        Rect.fromLTWH(-l.anchor.dx * k, -l.anchor.dy * k, side * k, side * k);
+    // A fading strip (flame, heal): the last third shrinks toward its anchor
+    // and fades, in whole pixels.
+    final out = l.fade ? pixelFadeOut(lt) : 0.0;
+    final kk = k * (1 - 0.3 * out);
+    final dst = Rect.fromLTWH(
+        -l.anchor.dx * kk, -l.anchor.dy * kk, side * kk, side * kk);
+    final drawPaint = out > 0
+        ? (Paint()
+          ..filterQuality = FilterQuality.none
+          ..isAntiAlias = false
+          ..color = Color.fromRGBO(0, 0, 0, 1 - out))
+        : paint;
     canvas.drawImageRect(
-        image, Rect.fromLTWH(i * side, 0, side, side), dst, paint);
+        image, Rect.fromLTWH(i * side, 0, side, side), dst, drawPaint);
     canvas.restore();
   }
 
