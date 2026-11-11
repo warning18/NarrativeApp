@@ -18,6 +18,10 @@ isn't reconstructable from git history alone.
   English) instead of a compass letter; the layers sheet is **Layers** in English.
   Wording only; no key, id or number changed.
 
+## [1.915.0+951]
+
+- Fight: no empty space before the battle, and portraits from the sprites. When the setup page (the foe, the die, Enter Battle) is shorter than the screen, the fighters stand at the bottom of it, the hero and the allies facing the foes, over the ground that now fills the page (QA's empty lower half); a page that already fills the screen is as it was (the room is measured after layout, so it never changes the page). The fight's cards and the setup page show each fighter's head cropped from its standing sprite (the new art) in place of the old head pictures and the generic icons: a creature whole, a walking figure's head and shoulders; a fighter with no sprite keeps its old head. Pictures: `docs/ux-shots/prebattle-heads/`.
+
 ## [1.914.0+950]
 
 - Tower: a floor with the same foe twice (two Harbour Rats on floor 6, two Street Bandits on floor 7, and many later floors) now starts its fight. "Fight" did nothing there and the climb could go no further. Found by QA in a real-fight rerun.
@@ -143,6 +147,7 @@ isn't reconstructable from git history alone.
     gold instead of 4,005.
   - The Tower's bosses (the legate, Morrow, the Sovereign on floor 30) use
     the same floor; the Tower's bands still pass.
+
 ## [1.895.0+931]
 
 ### Added
