@@ -91,7 +91,7 @@ const double dieSolidMinSize = 40;
 /// A frame that takes longer than this, [dieSlowFrames] times in a row during
 /// a roll, marks the phone as too slow for the solids. A die already on
 /// screen never changes its drawing (it looked like two different dice, one
-/// rolling and one at rest, v1.909): the flat drawing starts with the dice
+/// rolling and one at rest, v1.907): the flat drawing starts with the dice
 /// that are mounted after, the next fight.
 const Duration dieFrameBudget = Duration(milliseconds: 34);
 const int dieSlowFrames = 12;
