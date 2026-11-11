@@ -6,11 +6,25 @@
   "orc",
   "voidkin"
  ],
- "professions": [
-  "cleric",
+ "callings_plate": [
+  "warrior",
   "mage",
   "ranger",
   "rogue",
-  "warrior"
+  "cleric"
+ ],
+ "callings_diamond": [
+  "warrior",
+  "mage",
+  "ranger",
+  "rogue",
+  "cleric"
+ ],
+ "callings_glyph": [
+  "warrior",
+  "mage",
+  "ranger",
+  "rogue",
+  "cleric"
  ]
 }
