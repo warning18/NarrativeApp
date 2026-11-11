@@ -272,6 +272,7 @@ TowerFloor towerShortcutFloor(TowerFloor floor) => TowerFloor(
           : floor.enemyIds,
       affixes: floor.affixes,
       elite: !floor.isPack && !floor.elite,
+      events: floor.events,
     );
 
 /// [run] with its shortcut taken ([accept]) or declined: only before the

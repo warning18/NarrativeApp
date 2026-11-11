@@ -131,6 +131,27 @@ void main() {
     });
   });
 
+  test('a run with the events on fights at their own scale and extras', () {
+    final off = towerFloorsFor(7, data.enemies);
+    final on = towerFloorsFor(7, data.enemies, events: 1);
+    for (var floor = 1; floor <= towerTop; floor++) {
+      final a = off[floor - 1], b = on[floor - 1];
+      expect(b.enemyIds, a.enemyIds);
+      expect(a.extra, towerBudgetOf(floor).extra);
+      expect(b.extra, towerEventsExtras[floor] ?? a.extra);
+      expect(a.extraFor('mage'), a.extra * towerProfessionScaleOf('mage'));
+      expect(b.extraFor('mage'),
+          b.extra * towerProfessionScaleOf('mage', events: 1));
+    }
+    expect(towerProfessionScaleOf('warrior'),
+        towerProfessionScale['warrior']! * towerFoeScale);
+    expect(towerProfessionScaleOf('warrior', events: 1),
+        towerProfessionScale['warrior']! * towerEventsFoeScale);
+    // The app's floor follows the run's events.
+    expect(towerFloorOf(at(7, 20), data).extra, on[19].extra);
+    expect(towerFloorOf(at(7, 20, events: 0), data).extra, off[19].extra);
+  });
+
   group('where events sit', () {
     test('never on a warden, a boss or the top; never on a floor met again',
         () {

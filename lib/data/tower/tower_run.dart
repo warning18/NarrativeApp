@@ -432,7 +432,8 @@ TowerRun towerStart({
 /// shortcut taken (TowerRun.shortcut, floor events PR 2), the tougher
 /// fight of towerShortcutFloor.
 TowerFloor towerFloorOf(TowerRun run, TowerData data) {
-  final floor = towerFloorsFor(run.seed, data.enemies)[run.floor - 1];
+  final floor =
+      towerFloorsFor(run.seed, data.enemies, events: run.events)[run.floor - 1];
   return (run.shortcut ?? false) &&
           towerEventKindOf(run) == TowerEventKind.shortcut
       ? towerShortcutFloor(floor)

@@ -169,7 +169,7 @@ TowerRun playTowerRun({
     events: events,
     data: data,
   );
-  final floors = towerFloorsFor(seed, data.enemies);
+  final floors = towerFloorsFor(seed, data.enemies, events: events);
   // The start's dice (its unlocks', a clan sworn at the start) tried
   // against the calling's own.
   final start = towerHeroOf(run, data);
