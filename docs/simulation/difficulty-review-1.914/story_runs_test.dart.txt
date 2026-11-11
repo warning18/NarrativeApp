@@ -1,0 +1,127 @@
+// Story difficulty review, v1.914 (docs/simulation/difficulty-review-1.914/).
+//
+// 100 full playthroughs of the main story with the playthrough simulator
+// (simulatePlaythroughs, sim_engine.dart), one per seed 1..100. Each run is
+// its own call with a one-entry plan, so run N is reproduced by seed N alone
+// (the engine seeds it with Random(N * 100003)).
+//
+// The plan: the 25 race x profession pairs (races and professions in the
+// order of races.json and professions.json), 4 runs each, one per goal of
+// the balance reports (random, favorGood, favorEvil, maximizeGold):
+//   pair = (seed - 1) ~/ 4, race = races[pair ~/ 5],
+//   profession = professions[pair % 5], goal = goals[(seed - 1) % 4].
+// The world is the full simulator world (test/support/sim_world.dart).
+//
+// SIM_POLICY picks the player: naive (default; every CI band and the L3's
+// 800-run check use it) or competent (the in-app simulator screen's player:
+// best loadout, best die, merges, companions). SIM_OUT names the JSON file
+// written (default story-runs-<policy>.json in the working directory).
+//
+// To rerun (from the repository root, at the version to measure):
+//   cp docs/simulation/difficulty-review-1.914/story_runs_test.dart.txt \
+//      test/zz_story_runs_test.dart
+//   SIM_POLICY=naive     SIM_OUT=/tmp/naive.json     flutter test test/zz_story_runs_test.dart
+//   SIM_POLICY=competent SIM_OUT=/tmp/competent.json flutter test test/zz_story_runs_test.dart
+//   # optional, the 800-run check for the comparison figures:
+//   SIM_GOALS=random,favorGood,favorEvil,maximizeGold SIM_RUNS=400 SIM_SEED=11 \
+//     SIM_OUT=/tmp/runs11.json flutter test test/sim_playthroughs_test.dart
+//   (the same with SIM_SEED=23, SIM_OUT=/tmp/runs23.json)
+//   python3 docs/simulation/difficulty-review-1.914/story_summary.py \
+//      /tmp/naive.json /tmp/competent.json <out dir> [/tmp/runs11.json /tmp/runs23.json]
+//   rm test/zz_story_runs_test.dart
+// About 30 s per policy, and 75 to 90 s per 400 runs of the check, on one core.
+// Measured at v1.914.0 (origin/main 3309315f), 2026-11-11.
+import 'dart:convert';
+import 'dart:io';
+
+import 'package:flutter_test/flutter_test.dart';
+
+import 'package:narrative_data_app/data/sim_policy.dart';
+import 'package:narrative_data_app/screens/playthrough_simulator_screen.dart';
+import 'support/sim_world.dart';
+
+final _fightLine = RegExp(r'^\[ch (\d+)\] (\S+) .* · fight (\S+): (won|lost)');
+
+void main() {
+  test('100 story runs, seeds 1..100, 25 race x profession pairs', () {
+    final policy = SimPolicy.values
+        .byName(Platform.environment['SIM_POLICY'] ?? 'naive');
+    final out = Platform.environment['SIM_OUT'] ??
+        'story-runs-${policy.name}.json';
+    final story = simStory();
+    final tables = simTables();
+    final config = simGameConfig();
+    final races = tables['races']!.keys.toList();
+    final professions = tables['professions']!.keys.toList();
+    const goals = [
+      SimStrategy.random,
+      SimStrategy.favorGood,
+      SimStrategy.favorEvil,
+      SimStrategy.maximizeGold,
+    ];
+    final rows = <Map<String, dynamic>>[];
+    for (var seed = 1; seed <= 100; seed++) {
+      final pair = (seed - 1) ~/ 4;
+      final r = simulatePlaythroughs(story,
+          tables: tables,
+          gameConfig: config,
+          plan: [
+            (
+              strategy: goals[(seed - 1) % 4],
+              raceId: races[pair ~/ 5],
+              professionId: professions[pair % 5],
+            ),
+          ],
+          seed: seed,
+          transcripts: true,
+          policy: policy).single;
+      final fights = <Map<String, dynamic>>[];
+      for (final line in r.transcript) {
+        final m = _fightLine.firstMatch(line);
+        if (m == null) continue;
+        fights.add({
+          'chapter': int.parse(m.group(1)!),
+          'node': m.group(2),
+          'enemy': m.group(3),
+          'won': m.group(4) == 'won',
+        });
+      }
+      rows.add({
+        'seed': seed,
+        'policy': policy.name,
+        'goal': r.strategy.name,
+        'race': r.raceId,
+        'profession': r.professionId,
+        'endedHow': r.endedHow,
+        'chapter': r.furthestChapter,
+        'level': r.finalLevel,
+        'gold': r.finalGold,
+        'steps': r.steps,
+        'companions': r.companions,
+        'byChapter': {
+          for (final e in r.byChapter.entries)
+            e.key: {
+              'attempts': e.value.attempts,
+              'won': e.value.won,
+              'fights': e.value.fights,
+              'firstTry': e.value.firstTry,
+            },
+        },
+        'enemiesByChapter': {
+          for (final c in r.enemiesByChapter.entries)
+            c.key: {
+              for (final e in c.value.entries)
+                e.key: {'fought': e.value.fought, 'lost': e.value.lost},
+            },
+        },
+        'arrivals': {
+          for (final a in r.arrivals.entries)
+            '${a.key}': {'level': a.value.level, 'gold': a.value.gold},
+        },
+        'fights': fights,
+      });
+    }
+    File(out).writeAsStringSync(jsonEncode(rows));
+    expect(rows, hasLength(100));
+  }, timeout: const Timeout(Duration(minutes: 30)));
+}

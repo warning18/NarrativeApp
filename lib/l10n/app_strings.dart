@@ -18,9 +18,9 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.en:
         'Tap a step on the map to see where it leads; tap it again or press Go to take it.',
     AppLanguage.fr:
-        'Touchez une étape de la carte pour voir où elle mène ; touchez-la encore ou appuyez sur Go pour la prendre.',
+        'Touchez une étape de la carte pour voir où elle mène ; touchez-la encore ou appuyez sur Partir pour la prendre.',
   },
-  'journey_go': {AppLanguage.en: 'Go', AppLanguage.fr: 'Go'},
+  'journey_go': {AppLanguage.en: 'Go', AppLanguage.fr: 'Partir'},
   'journey_move_lost': {
     AppLanguage.en: 'The fight is lost: you are taken to {place}.',
     AppLanguage.fr: 'Le combat est perdu\u00a0: on vous mène à {place}.',
@@ -379,7 +379,7 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.en: 'Back to the party',
     AppLanguage.fr: 'Revenir à la compagnie',
   },
-  'journey_calques': {AppLanguage.en: 'Calques', AppLanguage.fr: 'Calques'},
+  'journey_calques': {AppLanguage.en: 'Layers', AppLanguage.fr: 'Calques'},
   'journey_globe': {
     AppLanguage.en: 'The world as a sphere',
     AppLanguage.fr: 'Le monde en sphère',
@@ -390,11 +390,11 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   },
   'journey_calques_hint': {
     AppLanguage.en:
-        'One calque at a time keeps the map readable; the choice is kept.',
+        'One layer at a time keeps the map readable; the choice is kept.',
     AppLanguage.fr:
         'Un seul calque à la fois garde la carte lisible ; le choix est conservé.',
   },
-  'calque_none': {AppLanguage.en: 'No calque', AppLanguage.fr: 'Aucun calque'},
+  'calque_none': {AppLanguage.en: 'No layer', AppLanguage.fr: 'Aucun calque'},
   'calque_none_sub': {
     AppLanguage.en: 'the chart as it is',
     AppLanguage.fr: 'la carte telle quelle',
@@ -520,18 +520,18 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   },
   'weather_wind_from': {
     AppLanguage.en: 'wind from the {d}',
-    AppLanguage.fr: 'vent de {d}',
+    AppLanguage.fr: 'vent {d}',
   },
   'weather_calm': {AppLanguage.en: 'calm', AppLanguage.fr: 'calme'},
   'weather_height': {AppLanguage.en: '{m} m', AppLanguage.fr: '{m} m'},
-  'compass_N': {AppLanguage.en: 'N', AppLanguage.fr: 'N'},
-  'compass_NE': {AppLanguage.en: 'NE', AppLanguage.fr: 'NE'},
-  'compass_E': {AppLanguage.en: 'E', AppLanguage.fr: 'E'},
-  'compass_SE': {AppLanguage.en: 'SE', AppLanguage.fr: 'SE'},
-  'compass_S': {AppLanguage.en: 'S', AppLanguage.fr: 'S'},
-  'compass_SW': {AppLanguage.en: 'SW', AppLanguage.fr: 'SO'},
-  'compass_W': {AppLanguage.en: 'W', AppLanguage.fr: 'O'},
-  'compass_NW': {AppLanguage.en: 'NW', AppLanguage.fr: 'NO'},
+  'compass_N': {AppLanguage.en: 'north', AppLanguage.fr: 'du nord'},
+  'compass_NE': {AppLanguage.en: 'north-east', AppLanguage.fr: 'du nord-est'},
+  'compass_E': {AppLanguage.en: 'east', AppLanguage.fr: 'd’est'},
+  'compass_SE': {AppLanguage.en: 'south-east', AppLanguage.fr: 'du sud-est'},
+  'compass_S': {AppLanguage.en: 'south', AppLanguage.fr: 'du sud'},
+  'compass_SW': {AppLanguage.en: 'south-west', AppLanguage.fr: 'du sud-ouest'},
+  'compass_W': {AppLanguage.en: 'west', AppLanguage.fr: 'd’ouest'},
+  'compass_NW': {AppLanguage.en: 'north-west', AppLanguage.fr: 'du nord-ouest'},
   'sofar_strip_title': {
     AppLanguage.en: 'The story so far · Day {day}',
     AppLanguage.fr: 'L’histoire jusqu’ici · Jour {day}',

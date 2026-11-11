@@ -1,0 +1,1347 @@
+{
+  "what": "Tower difficulty review: the app Tower bot (playTowerRun, lib/data/tower/tower_bot.dart), no unlocks.",
+  "versions": {
+    "1.914": "origin/main 3309315f (what the player has today)",
+    "1.916": "PR #965 4b18a7bb (dice to the bag, the three Tower dice reworked, the bot tries a die gained before rolling it)"
+  },
+  "fixed50": {
+    "design": "seeds 1001..1050; pair i=(seed-1001)%25; race=sorted races[i//5] (dwarf, elf, human, orc, voidkin); profession=[warrior, mage, rogue, cleric, ranger][i%5]; cleric and ranger need an unlock in the Tower and are passed explicitly (allowed); oath pool dominion, mire, penitents; no start dice.",
+    "1.914": {
+      "runs": 50,
+      "reached": {
+        "floor5": {
+          "count": 49,
+          "of": 50,
+          "share": 0.98
+        },
+        "floor10": {
+          "count": 42,
+          "of": 50,
+          "share": 0.84
+        },
+        "floor15": {
+          "count": 36,
+          "of": 50,
+          "share": 0.72
+        },
+        "floor20": {
+          "count": 20,
+          "of": 50,
+          "share": 0.4
+        },
+        "floor25": {
+          "count": 14,
+          "of": 50,
+          "share": 0.28
+        },
+        "floor30": {
+          "count": 8,
+          "of": 50,
+          "share": 0.16
+        }
+      },
+      "won": {
+        "count": 8,
+        "of": 50,
+        "share": 0.16
+      },
+      "deathsPerFloor": {
+        "4": 1,
+        "7": 1,
+        "8": 2,
+        "9": 4,
+        "12": 2,
+        "13": 3,
+        "14": 1,
+        "16": 2,
+        "17": 6,
+        "18": 4,
+        "19": 4,
+        "20": 2,
+        "21": 2,
+        "23": 1,
+        "24": 1,
+        "25": 3,
+        "29": 3
+      },
+      "deathsPerFloorShareOfReached": {
+        "4": {
+          "count": 1,
+          "of": 50,
+          "share": 0.02
+        },
+        "7": {
+          "count": 1,
+          "of": 49,
+          "share": 0.02
+        },
+        "8": {
+          "count": 2,
+          "of": 48,
+          "share": 0.042
+        },
+        "9": {
+          "count": 4,
+          "of": 46,
+          "share": 0.087
+        },
+        "12": {
+          "count": 2,
+          "of": 42,
+          "share": 0.048
+        },
+        "13": {
+          "count": 3,
+          "of": 40,
+          "share": 0.075
+        },
+        "14": {
+          "count": 1,
+          "of": 37,
+          "share": 0.027
+        },
+        "16": {
+          "count": 2,
+          "of": 36,
+          "share": 0.056
+        },
+        "17": {
+          "count": 6,
+          "of": 34,
+          "share": 0.176
+        },
+        "18": {
+          "count": 4,
+          "of": 28,
+          "share": 0.143
+        },
+        "19": {
+          "count": 4,
+          "of": 24,
+          "share": 0.167
+        },
+        "20": {
+          "count": 2,
+          "of": 20,
+          "share": 0.1
+        },
+        "21": {
+          "count": 2,
+          "of": 18,
+          "share": 0.111
+        },
+        "23": {
+          "count": 1,
+          "of": 16,
+          "share": 0.063
+        },
+        "24": {
+          "count": 1,
+          "of": 15,
+          "share": 0.067
+        },
+        "25": {
+          "count": 3,
+          "of": 14,
+          "share": 0.214
+        },
+        "29": {
+          "count": 3,
+          "of": 11,
+          "share": 0.273
+        }
+      },
+      "deathsByFloorKind": {
+        "fight": 37,
+        "warden": 3,
+        "boss": 2
+      },
+      "deathsByFoePresent": {
+        "drowned_pilgrim": 13,
+        "angel_sentinel": 11,
+        "unmade_knight": 5,
+        "void_hound": 4,
+        "inquisition_soldier": 4,
+        "catacomb_ghoul": 3,
+        "glass_shepherd": 3,
+        "cultist_acolyte": 3,
+        "void_wisp": 2,
+        "inquisition_auxiliary": 2,
+        "claimant_morrow": 2,
+        "white_soldier": 2
+      },
+      "meanHealthEntering": {
+        "1-10": {
+          "mean": 0.964,
+          "floorEntries": 483
+        },
+        "11-20": {
+          "mean": 0.928,
+          "floorEntries": 339
+        },
+        "21-30": {
+          "mean": 0.895,
+          "floorEntries": 131
+        }
+      },
+      "byRace": {
+        "dwarf": {
+          "won": {
+            "count": 2,
+            "of": 10,
+            "share": 0.2
+          },
+          "reached20": {
+            "count": 3,
+            "of": 10,
+            "share": 0.3
+          },
+          "meanFloor": 18.5
+        },
+        "elf": {
+          "won": {
+            "count": 2,
+            "of": 10,
+            "share": 0.2
+          },
+          "reached20": {
+            "count": 4,
+            "of": 10,
+            "share": 0.4
+          },
+          "meanFloor": 20.4
+        },
+        "human": {
+          "won": {
+            "count": 1,
+            "of": 10,
+            "share": 0.1
+          },
+          "reached20": {
+            "count": 4,
+            "of": 10,
+            "share": 0.4
+          },
+          "meanFloor": 17.4
+        },
+        "orc": {
+          "won": {
+            "count": 2,
+            "of": 10,
+            "share": 0.2
+          },
+          "reached20": {
+            "count": 6,
+            "of": 10,
+            "share": 0.6
+          },
+          "meanFloor": 23.4
+        },
+        "voidkin": {
+          "won": {
+            "count": 1,
+            "of": 10,
+            "share": 0.1
+          },
+          "reached20": {
+            "count": 3,
+            "of": 10,
+            "share": 0.3
+          },
+          "meanFloor": 15.6
+        }
+      },
+      "byProfession": {
+        "cleric": {
+          "won": {
+            "count": 1,
+            "of": 10,
+            "share": 0.1
+          },
+          "reached20": {
+            "count": 4,
+            "of": 10,
+            "share": 0.4
+          },
+          "meanFloor": 19.3
+        },
+        "mage": {
+          "won": {
+            "count": 2,
+            "of": 10,
+            "share": 0.2
+          },
+          "reached20": {
+            "count": 4,
+            "of": 10,
+            "share": 0.4
+          },
+          "meanFloor": 18.6
+        },
+        "ranger": {
+          "won": {
+            "count": 2,
+            "of": 10,
+            "share": 0.2
+          },
+          "reached20": {
+            "count": 3,
+            "of": 10,
+            "share": 0.3
+          },
+          "meanFloor": 16.5
+        },
+        "rogue": {
+          "won": {
+            "count": 1,
+            "of": 10,
+            "share": 0.1
+          },
+          "reached20": {
+            "count": 4,
+            "of": 10,
+            "share": 0.4
+          },
+          "meanFloor": 18.8
+        },
+        "warrior": {
+          "won": {
+            "count": 2,
+            "of": 10,
+            "share": 0.2
+          },
+          "reached20": {
+            "count": 5,
+            "of": 10,
+            "share": 0.5
+          },
+          "meanFloor": 22.1
+        }
+      }
+    },
+    "1.916": {
+      "runs": 50,
+      "reached": {
+        "floor5": {
+          "count": 49,
+          "of": 50,
+          "share": 0.98
+        },
+        "floor10": {
+          "count": 47,
+          "of": 50,
+          "share": 0.94
+        },
+        "floor15": {
+          "count": 44,
+          "of": 50,
+          "share": 0.88
+        },
+        "floor20": {
+          "count": 30,
+          "of": 50,
+          "share": 0.6
+        },
+        "floor25": {
+          "count": 19,
+          "of": 50,
+          "share": 0.38
+        },
+        "floor30": {
+          "count": 9,
+          "of": 50,
+          "share": 0.18
+        }
+      },
+      "won": {
+        "count": 9,
+        "of": 50,
+        "share": 0.18
+      },
+      "deathsPerFloor": {
+        "4": 1,
+        "8": 2,
+        "12": 2,
+        "13": 1,
+        "15": 1,
+        "16": 3,
+        "17": 4,
+        "18": 2,
+        "19": 4,
+        "20": 2,
+        "21": 3,
+        "22": 1,
+        "23": 5,
+        "25": 2,
+        "26": 1,
+        "27": 1,
+        "28": 1,
+        "29": 5
+      },
+      "deathsPerFloorShareOfReached": {
+        "4": {
+          "count": 1,
+          "of": 50,
+          "share": 0.02
+        },
+        "8": {
+          "count": 2,
+          "of": 49,
+          "share": 0.041
+        },
+        "12": {
+          "count": 2,
+          "of": 47,
+          "share": 0.043
+        },
+        "13": {
+          "count": 1,
+          "of": 45,
+          "share": 0.022
+        },
+        "15": {
+          "count": 1,
+          "of": 44,
+          "share": 0.023
+        },
+        "16": {
+          "count": 3,
+          "of": 43,
+          "share": 0.07
+        },
+        "17": {
+          "count": 4,
+          "of": 40,
+          "share": 0.1
+        },
+        "18": {
+          "count": 2,
+          "of": 36,
+          "share": 0.056
+        },
+        "19": {
+          "count": 4,
+          "of": 34,
+          "share": 0.118
+        },
+        "20": {
+          "count": 2,
+          "of": 30,
+          "share": 0.067
+        },
+        "21": {
+          "count": 3,
+          "of": 28,
+          "share": 0.107
+        },
+        "22": {
+          "count": 1,
+          "of": 25,
+          "share": 0.04
+        },
+        "23": {
+          "count": 5,
+          "of": 24,
+          "share": 0.208
+        },
+        "25": {
+          "count": 2,
+          "of": 19,
+          "share": 0.105
+        },
+        "26": {
+          "count": 1,
+          "of": 17,
+          "share": 0.059
+        },
+        "27": {
+          "count": 1,
+          "of": 16,
+          "share": 0.063
+        },
+        "28": {
+          "count": 1,
+          "of": 15,
+          "share": 0.067
+        },
+        "29": {
+          "count": 5,
+          "of": 14,
+          "share": 0.357
+        }
+      },
+      "deathsByFloorKind": {
+        "fight": 36,
+        "warden": 3,
+        "boss": 2
+      },
+      "deathsByFoePresent": {
+        "drowned_pilgrim": 15,
+        "void_hound": 10,
+        "inquisition_auxiliary": 9,
+        "unmade_knight": 7,
+        "bone_sexton": 7,
+        "catacomb_ghoul": 4,
+        "hollow_reflection": 4,
+        "harbor_rat": 3,
+        "void_wisp": 3,
+        "claimant_morrow": 2,
+        "street_bandit": 2,
+        "white_admiral": 1
+      },
+      "meanHealthEntering": {
+        "1-10": {
+          "mean": 0.976,
+          "floorEntries": 490
+        },
+        "11-20": {
+          "mean": 0.924,
+          "floorEntries": 410
+        },
+        "21-30": {
+          "mean": 0.883,
+          "floorEntries": 186
+        }
+      },
+      "byRace": {
+        "dwarf": {
+          "won": {
+            "count": 5,
+            "of": 10,
+            "share": 0.5
+          },
+          "reached20": {
+            "count": 8,
+            "of": 10,
+            "share": 0.8
+          },
+          "meanFloor": 25.1
+        },
+        "elf": {
+          "won": {
+            "count": 3,
+            "of": 10,
+            "share": 0.3
+          },
+          "reached20": {
+            "count": 7,
+            "of": 10,
+            "share": 0.7
+          },
+          "meanFloor": 24.6
+        },
+        "human": {
+          "won": {
+            "count": 0,
+            "of": 10,
+            "share": 0.0
+          },
+          "reached20": {
+            "count": 5,
+            "of": 10,
+            "share": 0.5
+          },
+          "meanFloor": 19.0
+        },
+        "orc": {
+          "won": {
+            "count": 1,
+            "of": 10,
+            "share": 0.1
+          },
+          "reached20": {
+            "count": 5,
+            "of": 10,
+            "share": 0.5
+          },
+          "meanFloor": 20.7
+        },
+        "voidkin": {
+          "won": {
+            "count": 0,
+            "of": 10,
+            "share": 0.0
+          },
+          "reached20": {
+            "count": 5,
+            "of": 10,
+            "share": 0.5
+          },
+          "meanFloor": 19.2
+        }
+      },
+      "byProfession": {
+        "cleric": {
+          "won": {
+            "count": 1,
+            "of": 10,
+            "share": 0.1
+          },
+          "reached20": {
+            "count": 5,
+            "of": 10,
+            "share": 0.5
+          },
+          "meanFloor": 20.6
+        },
+        "mage": {
+          "won": {
+            "count": 3,
+            "of": 10,
+            "share": 0.3
+          },
+          "reached20": {
+            "count": 7,
+            "of": 10,
+            "share": 0.7
+          },
+          "meanFloor": 23.7
+        },
+        "ranger": {
+          "won": {
+            "count": 1,
+            "of": 10,
+            "share": 0.1
+          },
+          "reached20": {
+            "count": 5,
+            "of": 10,
+            "share": 0.5
+          },
+          "meanFloor": 19.6
+        },
+        "rogue": {
+          "won": {
+            "count": 2,
+            "of": 10,
+            "share": 0.2
+          },
+          "reached20": {
+            "count": 7,
+            "of": 10,
+            "share": 0.7
+          },
+          "meanFloor": 21.9
+        },
+        "warrior": {
+          "won": {
+            "count": 2,
+            "of": 10,
+            "share": 0.2
+          },
+          "reached20": {
+            "count": 6,
+            "of": 10,
+            "share": 0.6
+          },
+          "meanFloor": 22.8
+        }
+      }
+    }
+  },
+  "batch2000": {
+    "design": "1..2000, random race and profession among the open (warrior, mage, rogue), no unlocks",
+    "1.914": {
+      "seconds": 30,
+      "runs": 2000,
+      "reached": {
+        "floor5": {
+          "count": 1988,
+          "of": 2000,
+          "share": 0.994
+        },
+        "floor10": {
+          "count": 1816,
+          "of": 2000,
+          "share": 0.908
+        },
+        "floor15": {
+          "count": 1388,
+          "of": 2000,
+          "share": 0.694
+        },
+        "floor20": {
+          "count": 848,
+          "of": 2000,
+          "share": 0.424
+        },
+        "floor25": {
+          "count": 554,
+          "of": 2000,
+          "share": 0.277
+        },
+        "floor30": {
+          "count": 353,
+          "of": 2000,
+          "share": 0.177
+        }
+      },
+      "won": {
+        "count": 351,
+        "of": 2000,
+        "share": 0.176
+      },
+      "deathsPerFloor": {
+        "2": 1,
+        "4": 11,
+        "5": 14,
+        "6": 8,
+        "7": 11,
+        "8": 66,
+        "9": 73,
+        "10": 41,
+        "11": 130,
+        "12": 87,
+        "13": 91,
+        "14": 79,
+        "15": 108,
+        "16": 50,
+        "17": 177,
+        "18": 116,
+        "19": 89,
+        "20": 94,
+        "21": 69,
+        "22": 49,
+        "23": 45,
+        "24": 37,
+        "25": 70,
+        "26": 41,
+        "27": 24,
+        "28": 27,
+        "29": 39,
+        "30": 2
+      },
+      "deathsPerFloorShareOfReached": {
+        "2": {
+          "count": 1,
+          "of": 2000,
+          "share": 0.001
+        },
+        "4": {
+          "count": 11,
+          "of": 1999,
+          "share": 0.006
+        },
+        "5": {
+          "count": 14,
+          "of": 1988,
+          "share": 0.007
+        },
+        "6": {
+          "count": 8,
+          "of": 1974,
+          "share": 0.004
+        },
+        "7": {
+          "count": 11,
+          "of": 1966,
+          "share": 0.006
+        },
+        "8": {
+          "count": 66,
+          "of": 1955,
+          "share": 0.034
+        },
+        "9": {
+          "count": 73,
+          "of": 1889,
+          "share": 0.039
+        },
+        "10": {
+          "count": 41,
+          "of": 1816,
+          "share": 0.023
+        },
+        "11": {
+          "count": 130,
+          "of": 1775,
+          "share": 0.073
+        },
+        "12": {
+          "count": 87,
+          "of": 1645,
+          "share": 0.053
+        },
+        "13": {
+          "count": 91,
+          "of": 1558,
+          "share": 0.058
+        },
+        "14": {
+          "count": 79,
+          "of": 1467,
+          "share": 0.054
+        },
+        "15": {
+          "count": 108,
+          "of": 1388,
+          "share": 0.078
+        },
+        "16": {
+          "count": 50,
+          "of": 1280,
+          "share": 0.039
+        },
+        "17": {
+          "count": 177,
+          "of": 1230,
+          "share": 0.144
+        },
+        "18": {
+          "count": 116,
+          "of": 1053,
+          "share": 0.11
+        },
+        "19": {
+          "count": 89,
+          "of": 937,
+          "share": 0.095
+        },
+        "20": {
+          "count": 94,
+          "of": 848,
+          "share": 0.111
+        },
+        "21": {
+          "count": 69,
+          "of": 754,
+          "share": 0.092
+        },
+        "22": {
+          "count": 49,
+          "of": 685,
+          "share": 0.072
+        },
+        "23": {
+          "count": 45,
+          "of": 636,
+          "share": 0.071
+        },
+        "24": {
+          "count": 37,
+          "of": 591,
+          "share": 0.063
+        },
+        "25": {
+          "count": 70,
+          "of": 554,
+          "share": 0.126
+        },
+        "26": {
+          "count": 41,
+          "of": 484,
+          "share": 0.085
+        },
+        "27": {
+          "count": 24,
+          "of": 443,
+          "share": 0.054
+        },
+        "28": {
+          "count": 27,
+          "of": 419,
+          "share": 0.064
+        },
+        "29": {
+          "count": 39,
+          "of": 392,
+          "share": 0.099
+        },
+        "30": {
+          "count": 2,
+          "of": 353,
+          "share": 0.006
+        }
+      },
+      "deathsByFloorKind": {
+        "fight": 1320,
+        "boss": 137,
+        "warden": 192
+      },
+      "deathsByFoePresent": {
+        "drowned_pilgrim": 328,
+        "angel_sentinel": 225,
+        "catacomb_ghoul": 211,
+        "unmade_knight": 198,
+        "inquisition_soldier": 181,
+        "inquisition_auxiliary": 149,
+        "bone_sexton": 115,
+        "void_hound": 114,
+        "void_wisp": 102,
+        "claimant_morrow": 94,
+        "hollow_court_inquisitor": 80,
+        "street_bandit": 76
+      },
+      "meanHealthEntering": {
+        "1-10": {
+          "mean": 0.962,
+          "floorEntries": 19586
+        },
+        "11-20": {
+          "mean": 0.91,
+          "floorEntries": 13181
+        },
+        "21-30": {
+          "mean": 0.878,
+          "floorEntries": 5311
+        }
+      },
+      "byRace": {
+        "dwarf": {
+          "won": {
+            "count": 93,
+            "of": 377,
+            "share": 0.247
+          },
+          "reached20": {
+            "count": 191,
+            "of": 377,
+            "share": 0.507
+          },
+          "meanFloor": 20.4
+        },
+        "elf": {
+          "won": {
+            "count": 95,
+            "of": 393,
+            "share": 0.242
+          },
+          "reached20": {
+            "count": 195,
+            "of": 393,
+            "share": 0.496
+          },
+          "meanFloor": 20.4
+        },
+        "human": {
+          "won": {
+            "count": 39,
+            "of": 410,
+            "share": 0.095
+          },
+          "reached20": {
+            "count": 130,
+            "of": 410,
+            "share": 0.317
+          },
+          "meanFloor": 16.9
+        },
+        "orc": {
+          "won": {
+            "count": 93,
+            "of": 433,
+            "share": 0.215
+          },
+          "reached20": {
+            "count": 212,
+            "of": 433,
+            "share": 0.49
+          },
+          "meanFloor": 20.4
+        },
+        "voidkin": {
+          "won": {
+            "count": 31,
+            "of": 387,
+            "share": 0.08
+          },
+          "reached20": {
+            "count": 120,
+            "of": 387,
+            "share": 0.31
+          },
+          "meanFloor": 17.0
+        }
+      },
+      "byProfession": {
+        "mage": {
+          "won": {
+            "count": 95,
+            "of": 653,
+            "share": 0.145
+          },
+          "reached20": {
+            "count": 209,
+            "of": 653,
+            "share": 0.32
+          },
+          "meanFloor": 17.3
+        },
+        "rogue": {
+          "won": {
+            "count": 135,
+            "of": 644,
+            "share": 0.21
+          },
+          "reached20": {
+            "count": 331,
+            "of": 644,
+            "share": 0.514
+          },
+          "meanFloor": 20.5
+        },
+        "warrior": {
+          "won": {
+            "count": 121,
+            "of": 703,
+            "share": 0.172
+          },
+          "reached20": {
+            "count": 308,
+            "of": 703,
+            "share": 0.438
+          },
+          "meanFloor": 19.4
+        }
+      }
+    },
+    "1.916": {
+      "seconds": 36,
+      "runs": 2000,
+      "reached": {
+        "floor5": {
+          "count": 1998,
+          "of": 2000,
+          "share": 0.999
+        },
+        "floor10": {
+          "count": 1926,
+          "of": 2000,
+          "share": 0.963
+        },
+        "floor15": {
+          "count": 1610,
+          "of": 2000,
+          "share": 0.805
+        },
+        "floor20": {
+          "count": 1051,
+          "of": 2000,
+          "share": 0.526
+        },
+        "floor25": {
+          "count": 702,
+          "of": 2000,
+          "share": 0.351
+        },
+        "floor30": {
+          "count": 448,
+          "of": 2000,
+          "share": 0.224
+        }
+      },
+      "won": {
+        "count": 442,
+        "of": 2000,
+        "share": 0.221
+      },
+      "deathsPerFloor": {
+        "4": 2,
+        "5": 1,
+        "6": 1,
+        "7": 3,
+        "8": 32,
+        "9": 35,
+        "11": 95,
+        "12": 87,
+        "13": 78,
+        "14": 56,
+        "15": 39,
+        "16": 57,
+        "17": 182,
+        "18": 152,
+        "19": 129,
+        "20": 50,
+        "21": 103,
+        "22": 77,
+        "23": 67,
+        "24": 52,
+        "25": 54,
+        "26": 65,
+        "27": 39,
+        "28": 41,
+        "29": 55,
+        "30": 6
+      },
+      "deathsPerFloorShareOfReached": {
+        "4": {
+          "count": 2,
+          "of": 2000,
+          "share": 0.001
+        },
+        "5": {
+          "count": 1,
+          "of": 1998,
+          "share": 0.001
+        },
+        "6": {
+          "count": 1,
+          "of": 1997,
+          "share": 0.001
+        },
+        "7": {
+          "count": 3,
+          "of": 1996,
+          "share": 0.002
+        },
+        "8": {
+          "count": 32,
+          "of": 1993,
+          "share": 0.016
+        },
+        "9": {
+          "count": 35,
+          "of": 1961,
+          "share": 0.018
+        },
+        "11": {
+          "count": 95,
+          "of": 1926,
+          "share": 0.049
+        },
+        "12": {
+          "count": 87,
+          "of": 1831,
+          "share": 0.048
+        },
+        "13": {
+          "count": 78,
+          "of": 1744,
+          "share": 0.045
+        },
+        "14": {
+          "count": 56,
+          "of": 1666,
+          "share": 0.034
+        },
+        "15": {
+          "count": 39,
+          "of": 1610,
+          "share": 0.024
+        },
+        "16": {
+          "count": 57,
+          "of": 1571,
+          "share": 0.036
+        },
+        "17": {
+          "count": 182,
+          "of": 1514,
+          "share": 0.12
+        },
+        "18": {
+          "count": 152,
+          "of": 1332,
+          "share": 0.114
+        },
+        "19": {
+          "count": 129,
+          "of": 1180,
+          "share": 0.109
+        },
+        "20": {
+          "count": 50,
+          "of": 1051,
+          "share": 0.048
+        },
+        "21": {
+          "count": 103,
+          "of": 1001,
+          "share": 0.103
+        },
+        "22": {
+          "count": 77,
+          "of": 898,
+          "share": 0.086
+        },
+        "23": {
+          "count": 67,
+          "of": 821,
+          "share": 0.082
+        },
+        "24": {
+          "count": 52,
+          "of": 754,
+          "share": 0.069
+        },
+        "25": {
+          "count": 54,
+          "of": 702,
+          "share": 0.077
+        },
+        "26": {
+          "count": 65,
+          "of": 648,
+          "share": 0.1
+        },
+        "27": {
+          "count": 39,
+          "of": 583,
+          "share": 0.067
+        },
+        "28": {
+          "count": 41,
+          "of": 544,
+          "share": 0.075
+        },
+        "29": {
+          "count": 55,
+          "of": 503,
+          "share": 0.109
+        },
+        "30": {
+          "count": 6,
+          "of": 448,
+          "share": 0.013
+        }
+      },
+      "deathsByFloorKind": {
+        "fight": 1408,
+        "warden": 94,
+        "boss": 56
+      },
+      "deathsByFoePresent": {
+        "catacomb_ghoul": 374,
+        "drowned_pilgrim": 343,
+        "void_hound": 226,
+        "unmade_knight": 216,
+        "hollow_reflection": 210,
+        "inquisition_auxiliary": 203,
+        "bone_sexton": 190,
+        "inquisition_soldier": 134,
+        "void_wisp": 118,
+        "harbor_rat": 81,
+        "street_bandit": 70,
+        "slum_thug": 64
+      },
+      "meanHealthEntering": {
+        "1-10": {
+          "mean": 0.972,
+          "floorEntries": 19871
+        },
+        "11-20": {
+          "mean": 0.919,
+          "floorEntries": 15425
+        },
+        "21-30": {
+          "mean": 0.88,
+          "floorEntries": 6902
+        }
+      },
+      "byRace": {
+        "dwarf": {
+          "won": {
+            "count": 116,
+            "of": 377,
+            "share": 0.308
+          },
+          "reached20": {
+            "count": 226,
+            "of": 377,
+            "share": 0.599
+          },
+          "meanFloor": 22.4
+        },
+        "elf": {
+          "won": {
+            "count": 116,
+            "of": 393,
+            "share": 0.295
+          },
+          "reached20": {
+            "count": 247,
+            "of": 393,
+            "share": 0.628
+          },
+          "meanFloor": 22.7
+        },
+        "human": {
+          "won": {
+            "count": 64,
+            "of": 410,
+            "share": 0.156
+          },
+          "reached20": {
+            "count": 184,
+            "of": 410,
+            "share": 0.449
+          },
+          "meanFloor": 19.7
+        },
+        "orc": {
+          "won": {
+            "count": 108,
+            "of": 433,
+            "share": 0.249
+          },
+          "reached20": {
+            "count": 240,
+            "of": 433,
+            "share": 0.554
+          },
+          "meanFloor": 21.9
+        },
+        "voidkin": {
+          "won": {
+            "count": 38,
+            "of": 387,
+            "share": 0.098
+          },
+          "reached20": {
+            "count": 154,
+            "of": 387,
+            "share": 0.398
+          },
+          "meanFloor": 18.8
+        }
+      },
+      "byProfession": {
+        "mage": {
+          "won": {
+            "count": 203,
+            "of": 653,
+            "share": 0.311
+          },
+          "reached20": {
+            "count": 359,
+            "of": 653,
+            "share": 0.55
+          },
+          "meanFloor": 21.6
+        },
+        "rogue": {
+          "won": {
+            "count": 132,
+            "of": 644,
+            "share": 0.205
+          },
+          "reached20": {
+            "count": 337,
+            "of": 644,
+            "share": 0.523
+          },
+          "meanFloor": 20.9
+        },
+        "warrior": {
+          "won": {
+            "count": 107,
+            "of": 703,
+            "share": 0.152
+          },
+          "reached20": {
+            "count": 355,
+            "of": 703,
+            "share": 0.505
+          },
+          "meanFloor": 20.8
+        }
+      }
+    }
+  },
+  "notes": [
+    "Health share = run.health / max health just before each floor fight, from a step-by-step replay of playTowerRun checked equal (run JSON) to playTowerRun on all 50 fixed runs and the first 100 batch seeds.",
+    "deathsPerFloorShareOfReached = deaths on floor f / runs that reached f (the floor hazard).",
+    "deathsByFoePresent counts a death once per distinct foe id on the floor it died on.",
+    "The batch has only the three open professions; the fixed 50 also hold cleric and ranger."
+  ]
+}

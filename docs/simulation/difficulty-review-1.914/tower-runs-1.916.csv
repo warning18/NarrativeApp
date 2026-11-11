@@ -1,0 +1,51 @@
+seed,race,profession,floor_reached,outcome,death_enemy_ids,death_floor_kind,fights_fought,level_end,oaths,health_in_1_10,health_in_11_20,health_in_21_30
+1001,dwarf,warrior,27,died on floor 27,unmade_knight|drowned_pilgrim|bone_sexton,fight,27,16,penitents|dominion|mire,0.987,0.847,0.818
+1002,dwarf,mage,30,won,,,30,18,penitents|dominion|mire,0.951,0.985,0.945
+1003,dwarf,rogue,30,won,,,30,18,penitents|mire|dominion,0.987,0.881,0.823
+1004,dwarf,cleric,30,won,,,30,18,mire|dominion|penitents,0.979,0.950,0.956
+1005,dwarf,ranger,30,won,,,30,18,dominion|mire|penitents,0.991,0.970,0.981
+1006,elf,warrior,19,died on floor 19,drowned_pilgrim|drowned_pilgrim|drowned_pilgrim,fight,19,11,penitents|mire|dominion,0.985,0.933,
+1007,elf,mage,30,won,,,30,18,mire|penitents|dominion,0.972,1.000,0.929
+1008,elf,rogue,29,died on floor 29,unmade_knight|drowned_pilgrim|catacomb_ghoul,fight,29,17,penitents|dominion|mire,0.970,0.898,0.834
+1009,elf,cleric,17,died on floor 17,void_hound,fight,17,10,penitents|dominion,0.985,0.949,
+1010,elf,ranger,25,died on floor 25,white_admiral,warden,25,15,dominion|penitents|mire,0.989,0.931,0.943
+1011,human,warrior,23,died on floor 23,unmade_knight|unmade_knight|void_hound,fight,23,14,penitents|mire|dominion,0.986,0.986,0.988
+1012,human,mage,23,died on floor 23,unmade_knight|catacomb_ghoul|cultist_acolyte,fight,23,14,penitents|mire|dominion,0.909,0.960,0.728
+1013,human,rogue,21,died on floor 21,drowned_pilgrim|drowned_pilgrim|harbor_rat,fight,21,13,dominion|mire|penitents,0.979,0.965,1.000
+1014,human,cleric,16,died on floor 16,bone_sexton|inquisition_auxiliary|inquisition_auxiliary,fight,16,10,penitents|dominion|mire,0.979,0.995,
+1015,human,ranger,20,died on floor 20,claimant_morrow,boss,20,12,mire|penitents|dominion,0.987,0.890,
+1016,orc,warrior,23,died on floor 23,hollow_reflection|drowned_pilgrim|inquisition_auxiliary,fight,23,14,mire|penitents|dominion,0.986,0.861,0.575
+1017,orc,mage,29,died on floor 29,drowned_pilgrim|drowned_pilgrim|void_hound,fight,29,17,mire|dominion|penitents,0.965,0.978,0.960
+1018,orc,rogue,30,won,,,30,18,mire|dominion|penitents,1.000,0.950,0.871
+1019,orc,cleric,20,died on floor 20,claimant_morrow,boss,20,12,dominion|penitents|mire,0.987,0.952,
+1020,orc,ranger,19,died on floor 19,void_hound|street_bandit,fight,19,11,penitents|dominion|mire,0.927,0.818,
+1021,voidkin,warrior,13,died on floor 13,bone_sexton|bone_sexton,fight,13,8,mire|dominion,0.977,1.000,
+1022,voidkin,mage,19,died on floor 19,drowned_pilgrim|inquisition_auxiliary|inquisition_auxiliary,fight,19,11,dominion|mire|penitents,0.944,0.953,
+1023,voidkin,rogue,21,died on floor 21,hollow_reflection|void_hound,fight,21,13,penitents|dominion|mire,0.984,0.910,0.646
+1024,voidkin,cleric,29,died on floor 29,unmade_knight|inquisition_auxiliary,fight,29,17,penitents|mire|dominion,0.992,0.943,0.880
+1025,voidkin,ranger,8,died on floor 8,street_bandit,fight,8,5,dominion|penitents|mire,1.000,,
+1026,dwarf,warrior,30,won,,,30,18,dominion|penitents|mire,0.983,0.954,0.911
+1027,dwarf,mage,23,died on floor 23,inquisition_auxiliary|inquisition_auxiliary|inquisition_auxiliary,fight,23,14,mire|penitents|dominion,0.988,0.922,0.786
+1028,dwarf,rogue,21,died on floor 21,hollow_reflection|void_hound|void_wisp,fight,21,13,penitents|dominion|mire,0.985,0.906,0.903
+1029,dwarf,cleric,12,died on floor 12,catacomb_ghoul|catacomb_ghoul,fight,12,7,mire|penitents,0.987,0.931,
+1030,dwarf,ranger,18,died on floor 18,drowned_pilgrim|inquisition_auxiliary,fight,18,11,dominion|penitents|mire,0.971,0.960,
+1031,elf,warrior,30,won,,,30,18,penitents|mire|dominion,0.984,0.913,0.857
+1032,elf,mage,30,won,,,30,18,penitents|dominion|mire,0.984,0.933,0.955
+1033,elf,rogue,29,died on floor 29,drowned_pilgrim|void_wisp|void_wisp,fight,29,17,penitents|dominion|mire,0.995,0.862,0.793
+1034,elf,cleric,25,died on floor 25,strand_colossus,warden,25,15,penitents|dominion|mire,0.979,0.972,0.923
+1035,elf,ranger,12,died on floor 12,catacomb_ghoul,fight,12,7,penitents|mire,0.980,0.952,
+1036,human,warrior,17,died on floor 17,bone_sexton|void_hound,fight,17,10,mire|penitents|dominion,0.985,0.954,
+1037,human,mage,16,died on floor 16,bone_sexton,fight,16,10,dominion|mire|penitents,0.937,0.976,
+1038,human,rogue,17,died on floor 17,drowned_pilgrim,fight,17,10,penitents|dominion|mire,0.993,0.955,
+1039,human,cleric,15,died on floor 15,knell_keeper,warden,15,9,dominion|mire|penitents,0.993,0.971,
+1040,human,ranger,22,died on floor 22,hollow_reflection|inquisition_auxiliary,fight,22,13,dominion|mire|penitents,0.947,0.947,1.000
+1041,orc,warrior,18,died on floor 18,drowned_pilgrim,fight,18,11,mire|penitents|dominion,0.986,0.674,
+1042,orc,mage,29,died on floor 29,unmade_knight|drowned_pilgrim|bone_sexton,fight,29,17,mire|dominion|penitents,0.969,0.947,0.926
+1043,orc,rogue,4,died on floor 4,inquisition_soldier,fight,4,3,dominion|mire,1.000,,
+1044,orc,cleric,19,died on floor 19,drowned_pilgrim,fight,19,11,penitents|mire|dominion,0.984,0.840,
+1045,orc,ranger,16,died on floor 16,inquisition_auxiliary,fight,16,10,penitents|dominion|mire,0.980,0.888,
+1046,voidkin,warrior,28,died on floor 28,bone_sexton|inquisition_auxiliary|harbor_rat,fight,28,17,dominion|mire|penitents,0.969,0.833,0.766
+1047,voidkin,mage,8,died on floor 8,void_wisp,fight,8,5,mire|penitents,0.982,,
+1048,voidkin,rogue,17,died on floor 17,drowned_pilgrim|drowned_pilgrim|void_hound,fight,17,10,penitents|mire|dominion,0.982,0.964,
+1049,voidkin,cleric,23,died on floor 23,drowned_pilgrim|void_hound|harbor_rat,fight,23,14,penitents|dominion|mire,0.969,0.926,0.796
+1050,voidkin,ranger,26,died on floor 26,unmade_knight|void_hound,fight,26,16,mire|penitents|dominion,0.926,0.882,0.833
