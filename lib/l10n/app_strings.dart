@@ -2754,6 +2754,7 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   },
   'skills': {AppLanguage.en: 'Skills', AppLanguage.fr: 'Compétences'},
   'level_up': {AppLanguage.en: 'Level Up', AppLanguage.fr: 'Monter de niveau'},
+  'level_up_done': {AppLanguage.en: 'Done', AppLanguage.fr: 'Terminé'},
   'dice_loadout': {
     AppLanguage.en: 'Dice Loadout',
     AppLanguage.fr: 'Équipement de dés'

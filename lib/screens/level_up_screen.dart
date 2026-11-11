@@ -14,7 +14,13 @@ import '../widgets/level_up_stats.dart';
 import '../widgets/stat_pick_picker.dart';
 
 class LevelUpScreen extends ConsumerWidget {
-  const LevelUpScreen({super.key});
+  const LevelUpScreen({super.key, this.doneLabelKey = 'level_up_done'});
+
+  /// The string key of the button that closes the screen once no pick is
+  /// waiting (v1.910, the user's report from the Tower: after the pick the
+  /// only way on was the back arrow). The Tower passes its own
+  /// ('tower_continue', "Continue the climb").
+  final String doneLabelKey;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -26,10 +32,26 @@ class LevelUpScreen extends ConsumerWidget {
         ? 0.0
         : (session.currentXP / session.xpToNextLevel).clamp(0.0, 1.0);
 
+    final picksDone = session.pendingStatPicks == 0;
+
     return Scaffold(
       appBar: AppBar(title: Text(tr(ref, 'level_up')), actions: const [
         TourInfoButton(topic: TutorialTopic.levelUp),
       ]),
+      // Once every pick is taken, a clear way on (the back arrow still
+      // works, before and after).
+      bottomNavigationBar: picksDone
+          ? SafeArea(
+              minimum: const EdgeInsets.fromLTRB(16, 8, 16, 12),
+              child: FilledButton(
+                key: const Key('level_up_done'),
+                style: FilledButton.styleFrom(
+                    minimumSize: const Size.fromHeight(48)),
+                onPressed: () => Navigator.of(context).maybePop(),
+                child: Text(tr(ref, doneLabelKey)),
+              ),
+            )
+          : null,
       body: TutorialTrigger(
         topic: TutorialTopic.levelUp,
         child: ListView(

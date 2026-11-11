@@ -1,0 +1,470 @@
+{
+ "void_blast": {
+  "rarity": "epic",
+  "element": "Void",
+  "treatment": "glyph",
+  "size": [
+   16,
+   16
+  ]
+ },
+ "orc_bloodlust": {
+  "rarity": "epic",
+  "element": "Fire",
+  "treatment": "object",
+  "size": [
+   16,
+   16
+  ]
+ },
+ "voidkin_entropy_touch": {
+  "rarity": "epic",
+  "element": "Void",
+  "treatment": "glyph",
+  "size": [
+   16,
+   16
+  ]
+ },
+ "warrior_whirlwind": {
+  "rarity": "epic",
+  "element": "None",
+  "treatment": "glyph",
+  "size": [
+   16,
+   16
+  ]
+ },
+ "warrior_execute": {
+  "rarity": "epic",
+  "element": "None",
+  "treatment": "glyph",
+  "size": [
+   16,
+   16
+  ]
+ },
+ "mage_meteor": {
+  "rarity": "epic",
+  "element": "Fire",
+  "treatment": "glyph",
+  "size": [
+   16,
+   16
+  ]
+ },
+ "rogue_shadow_clone": {
+  "rarity": "epic",
+  "element": "Wind",
+  "treatment": "glyph",
+  "size": [
+   16,
+   16
+  ]
+ },
+ "cleric_revive_prayer": {
+  "rarity": "epic",
+  "element": "None",
+  "treatment": "glyph",
+  "size": [
+   16,
+   16
+  ]
+ },
+ "ranger_multi_shot": {
+  "rarity": "epic",
+  "element": "Wind",
+  "treatment": "glyph",
+  "size": [
+   16,
+   16
+  ]
+ },
+ "final_stand": {
+  "rarity": "epic",
+  "element": "None",
+  "treatment": "glyph",
+  "size": [
+   16,
+   16
+  ]
+ },
+ "blazing_shadow": {
+  "rarity": "legendary",
+  "element": "Fire",
+  "treatment": "glyph",
+  "size": [
+   16,
+   16
+  ]
+ },
+ "unbreakable_will": {
+  "rarity": "legendary",
+  "element": "None",
+  "treatment": "framed-original",
+  "size": [
+   16,
+   16
+  ]
+ },
+ "bastion_of_stone": {
+  "rarity": "legendary",
+  "element": "Earth",
+  "treatment": "glyph",
+  "size": [
+   16,
+   16
+  ]
+ },
+ "arcane_convergence": {
+  "rarity": "legendary",
+  "element": "Electricity",
+  "treatment": "glyph",
+  "size": [
+   16,
+   16
+  ]
+ },
+ "venomous_ambush": {
+  "rarity": "legendary",
+  "element": "Earth",
+  "treatment": "glyph",
+  "size": [
+   16,
+   16
+  ]
+ },
+ "wrath_of_dawn": {
+  "rarity": "legendary",
+  "element": "Fire",
+  "treatment": "glyph",
+  "size": [
+   16,
+   16
+  ]
+ },
+ "warrior_bastion_charge": {
+  "rarity": "epic",
+  "element": "Earth",
+  "treatment": "object",
+  "size": [
+   16,
+   16
+  ]
+ },
+ "warrior_writ_banner": {
+  "rarity": "epic",
+  "element": "Fire",
+  "treatment": "object",
+  "size": [
+   16,
+   16
+  ]
+ },
+ "mage_scalding_tempest": {
+  "rarity": "epic",
+  "element": "Water",
+  "treatment": "object",
+  "size": [
+   16,
+   16
+  ]
+ },
+ "mage_ember_aegis": {
+  "rarity": "epic",
+  "element": "Fire",
+  "treatment": "object",
+  "size": [
+   16,
+   16
+  ]
+ },
+ "rogue_viper_kiss": {
+  "rarity": "epic",
+  "element": "Earth",
+  "treatment": "object",
+  "size": [
+   16,
+   16
+  ]
+ },
+ "rogue_borrowed_time": {
+  "rarity": "epic",
+  "element": "Wind",
+  "treatment": "object",
+  "size": [
+   16,
+   16
+  ]
+ },
+ "cleric_sentinel_verdict": {
+  "rarity": "epic",
+  "element": "Fire",
+  "treatment": "object",
+  "size": [
+   16,
+   16
+  ]
+ },
+ "cleric_absolution": {
+  "rarity": "epic",
+  "element": "Light",
+  "treatment": "object",
+  "size": [
+   16,
+   16
+  ]
+ },
+ "ranger_snared_shot": {
+  "rarity": "epic",
+  "element": "Wind",
+  "treatment": "object",
+  "size": [
+   16,
+   16
+  ]
+ },
+ "ranger_pack_ambush": {
+  "rarity": "epic",
+  "element": "Earth",
+  "treatment": "object",
+  "size": [
+   16,
+   16
+  ]
+ },
+ "warrior_unbroken_stance": {
+  "rarity": "epic",
+  "element": "Earth",
+  "treatment": "object",
+  "size": [
+   16,
+   16
+  ]
+ },
+ "warrior_reaping_whirl": {
+  "rarity": "epic",
+  "element": "None",
+  "treatment": "object",
+  "size": [
+   16,
+   16
+  ]
+ },
+ "mage_pyre_heart": {
+  "rarity": "epic",
+  "element": "Fire",
+  "treatment": "object",
+  "size": [
+   16,
+   16
+  ]
+ },
+ "mage_mending_tide": {
+  "rarity": "epic",
+  "element": "Water",
+  "treatment": "object",
+  "size": [
+   16,
+   16
+  ]
+ },
+ "rogue_deadeye_thrust": {
+  "rarity": "epic",
+  "element": "None",
+  "treatment": "object",
+  "size": [
+   16,
+   16
+  ]
+ },
+ "rogue_second_skin": {
+  "rarity": "epic",
+  "element": "Water",
+  "treatment": "object",
+  "size": [
+   16,
+   16
+  ]
+ },
+ "cleric_hallowed_sanctuary": {
+  "rarity": "epic",
+  "element": "None",
+  "treatment": "object",
+  "size": [
+   16,
+   16
+  ]
+ },
+ "cleric_unyielding_vigil": {
+  "rarity": "epic",
+  "element": "Earth",
+  "treatment": "object",
+  "size": [
+   16,
+   16
+  ]
+ },
+ "ranger_deadeye_volley": {
+  "rarity": "epic",
+  "element": "Wind",
+  "treatment": "object",
+  "size": [
+   16,
+   16
+  ]
+ },
+ "ranger_call_of_the_wilds": {
+  "rarity": "epic",
+  "element": "Earth",
+  "treatment": "object",
+  "size": [
+   16,
+   16
+  ]
+ },
+ "warrior_matriarch_reckoning": {
+  "rarity": "epic",
+  "element": "None",
+  "treatment": "badge-ring",
+  "size": [
+   16,
+   16
+  ]
+ },
+ "warrior_gate_oath": {
+  "rarity": "epic",
+  "element": "Earth",
+  "treatment": "badge-ring",
+  "size": [
+   16,
+   16
+  ]
+ },
+ "mage_tear_sight": {
+  "rarity": "epic",
+  "element": "Void",
+  "treatment": "badge-ring",
+  "size": [
+   16,
+   16
+  ]
+ },
+ "mage_ash_ledger": {
+  "rarity": "epic",
+  "element": "Fire",
+  "treatment": "badge-ring",
+  "size": [
+   16,
+   16
+  ]
+ },
+ "rogue_marked_deck": {
+  "rarity": "epic",
+  "element": "None",
+  "treatment": "badge-ring",
+  "size": [
+   16,
+   16
+  ]
+ },
+ "rogue_borrowed_face": {
+  "rarity": "epic",
+  "element": "Wind",
+  "treatment": "badge-ring",
+  "size": [
+   16,
+   16
+  ]
+ },
+ "cleric_absolved_penance": {
+  "rarity": "epic",
+  "element": "Light",
+  "treatment": "badge-ring",
+  "size": [
+   16,
+   16
+  ]
+ },
+ "cleric_kept_lantern": {
+  "rarity": "epic",
+  "element": "Fire",
+  "treatment": "badge-ring",
+  "size": [
+   16,
+   16
+  ]
+ },
+ "ranger_followed_trail": {
+  "rarity": "epic",
+  "element": "Wind",
+  "treatment": "badge-ring",
+  "size": [
+   16,
+   16
+  ]
+ },
+ "ranger_horn_call": {
+  "rarity": "epic",
+  "element": "Earth",
+  "treatment": "badge-ring",
+  "size": [
+   16,
+   16
+  ]
+ },
+ "mage_thunderclap": {
+  "rarity": "epic",
+  "element": "Electricity",
+  "treatment": "ring32",
+  "size": [
+   32,
+   32
+  ]
+ },
+ "mage_stormcaller": {
+  "rarity": "legendary",
+  "element": "Electricity",
+  "treatment": "ring32",
+  "size": [
+   32,
+   32
+  ]
+ },
+ "cleric_winter_hush": {
+  "rarity": "legendary",
+  "element": "Ice",
+  "treatment": "ring32",
+  "size": [
+   32,
+   32
+  ]
+ },
+ "cleric_second_dawn": {
+  "rarity": "legendary",
+  "element": "Light",
+  "treatment": "ring32",
+  "size": [
+   32,
+   32
+  ]
+ },
+ "ranger_rain_of_arrows": {
+  "rarity": "epic",
+  "element": "Wind",
+  "treatment": "ring32",
+  "size": [
+   32,
+   32
+  ]
+ },
+ "ranger_windwalker": {
+  "rarity": "epic",
+  "element": "Wind",
+  "treatment": "ring32",
+  "size": [
+   32,
+   32
+  ]
+ }
+}

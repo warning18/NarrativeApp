@@ -62,6 +62,7 @@ Future<bool> showOfferIfWaiting(BuildContext context, WidgetRef ref,
   // One offer dialog at a time, opened over the whole app: a fight left
   // while the offer loads does not lose it.
   final navigator = Navigator.of(context, rootNavigator: true);
+  final scope = ProviderScope.containerOf(context, listen: false);
   if (offerOpenOn(navigator)) return true;
   _offerOpen[navigator] = true;
   try {
@@ -77,10 +78,15 @@ Future<bool> showOfferIfWaiting(BuildContext context, WidgetRef ref,
       }
       return false;
     }
+    // The dialog opens on the root navigator, above any scope that holds
+    // another hero (the Tower's detached session): it reads the session
+    // that drew the offer, the caller's, never the one at the root (v1.910:
+    // the root's had no offer and its spinner waited for ever).
     await showDialog<void>(
       context: navigator.context,
       barrierDismissible: false,
-      builder: (_) => OfferDialog(tables: tables),
+      builder: (_) => UncontrolledProviderScope(
+          container: scope, child: OfferDialog(tables: tables)),
     );
     return true;
   } finally {

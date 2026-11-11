@@ -1,0 +1,10 @@
+# Intro: version B for the ending (the user's mix) and the die proposal
+The mix: **version A for beats 1 to 4** (as shipped in 1.904, `art/pixellab-intro/final/`), **version B for the ending**. 0 new generations.
+## Plates (`final/`, 180x320, palette PNG8, 32 colours, no baked text, no die; `picks.json`)
+| File | Beat | Use |
+|---|---|---|
+| `plateB_table_pool.png` | 5 to 7 (the die drops, rests; the title) | B4 seed 6: a wooden tavern table seen at an angle, a dice cage, a candle, floorboards, deep shadow, and a **flat empty pool of warm light** in the middle. The painted die that was in the pool was painted out by hand (the pool refilled with its own colour). The die is code (`Die3D`): land it on the pool (about x 96, y 140 of 180x320, i.e. 53% across, 44% down). No fire animation. |
+| `plateB_shell_flash.png` | 6 (the die stops: the first shell, Narrative's lore) | B2 seed 5: the night bombardment of the harbour under the giant statue, burning ships, iron balls. Use as the flash when the die stops: cut or cross-fade to it for about a second over the table, then back to the table for beat 7 and the title. Seed 6 (`../pixellab-intro/staged/B2_s6.png`) is the alternative. |
+Draw cover-fit with nearest neighbour as the A plates; the table plate is the long hold (beats 5 to 7), the shell plate a short cut.
+## The die (`die/`, `docs/art/boards/intro-die-bone.png`)
+Today the intro's die is a big plain cube drawn in code. The game's dice now have a **bone body** (`art/pixellab-pilots/final/dice/die_d6_bone_*.png`, an isometric cube with no pips: the body the tiles use). Proposal: give the intro's cube the same bone look with a **hand-drawn bone face set**: `face1.png` to `face6.png` (32x32, 2 px ink rim, a 1 px light top-left and shade bottom-right bevel, round black pips, a **red pip on the 1**), usable as the skins of the six faces of `Die3D`; `cube_preview.png` shows faces 1, 2, 3 on an isometric cube. Generator `die_gen.py` (repo root). The die stays code (3D tumble, shadow, landing); only its face skin changes. Not wired.
