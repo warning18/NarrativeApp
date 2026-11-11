@@ -4,6 +4,7 @@ import '../l10n/app_locale.dart';
 import '../l10n/app_strings.dart';
 import '../theme/stitched_ink.dart';
 import '../utils/pixel_icons/pixel_icon.dart';
+import '../theme/icon_sizes.dart';
 
 /// One line of "what the spoils change": [label] (Gold, Dice, Bag...) going
 /// from [before] to [after], with the picture of what changes. The engine
@@ -215,7 +216,7 @@ class LootSheet extends StatelessWidget {
                         fontFamily: InkFonts.system,
                         color: scheme.onSurfaceVariant)),
                 Icon(Icons.arrow_forward,
-                    size: 14, color: scheme.onSurfaceVariant),
+                    size: IconSize.s16, color: scheme.onSurfaceVariant),
                 Text(c.after,
                     style: theme.textTheme.bodyMedium?.copyWith(
                         fontFamily: InkFonts.system,
@@ -247,7 +248,7 @@ class LootSheet extends StatelessWidget {
             if (r.detail != null) r.detail!,
             if (r.canUseNow)
               Row(children: [
-                Icon(Icons.bolt, size: 16, color: ink.heal),
+                Icon(Icons.bolt, size: IconSize.s16, color: ink.heal),
                 const SizedBox(width: 4),
                 Expanded(
                   child: Text(r.useLabel ?? _t('loot_use_now'),

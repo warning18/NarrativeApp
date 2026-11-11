@@ -31,6 +31,7 @@ import '../utils/pixel_icons/game_pixel_icons.dart' show ItemPixelIcon;
 import 'ability_radar.dart';
 import 'roll_power_row.dart';
 import 'sign_widgets.dart' show SignRarityChip, signRarityColor;
+import '../theme/icon_sizes.dart';
 
 class StatPickPicker extends ConsumerStatefulWidget {
   const StatPickPicker({super.key});
@@ -313,7 +314,7 @@ class _OfferBanner extends ConsumerWidget {
                     alignment: Alignment.center,
                     child: ItemPixelIcon(
                         trainingPathItem(path?.icon ?? ''), null,
-                        size: 28),
+                        size: IconSize.s32),
                   ),
                   const SizedBox(height: 6),
                   for (final MapEntry(:key, :value) in offer.gains.entries)
@@ -353,8 +354,8 @@ class _OfferBanner extends ConsumerWidget {
                   if (selected)
                     Padding(
                       padding: const EdgeInsets.only(top: 2),
-                      child:
-                          Icon(Icons.check_circle, size: 18, color: ink.gold),
+                      child: Icon(Icons.check_circle,
+                          size: IconSize.s16, color: ink.gold),
                     ),
                 ],
               ),

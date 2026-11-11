@@ -23,6 +23,7 @@ import '../providers/story_providers.dart';
 import '../screens/fate_coin_offer.dart';
 import 'approval_notice.dart';
 import '../theme/motion.dart';
+import '../theme/icon_sizes.dart';
 
 /// The camp's fate die (see camp_fate.dart) after a night's rest at the
 /// camp: [restedLine] says the night was had, then the die is rolled and
@@ -387,7 +388,7 @@ class _CampFateDialogState extends ConsumerState<CampFateDialog> {
         mainAxisSize: MainAxisSize.min,
         children: [
           Icon(face.icon,
-              size: 22,
+              size: IconSize.s32,
               color: lit ? scheme.onPrimaryContainer : scheme.onSurfaceVariant),
           const SizedBox(height: 4),
           Text(

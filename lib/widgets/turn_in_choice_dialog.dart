@@ -6,6 +6,7 @@ import '../data/turn_in_choices.dart';
 import '../l10n/app_locale.dart';
 import '../l10n/app_strings.dart';
 import '../providers/clans_provider.dart';
+import '../theme/icon_sizes.dart';
 import '../providers/combat_settings_provider.dart'
     show politicsHintsEnabledProvider;
 
@@ -78,7 +79,8 @@ Future<TurnInChoice?> showTurnInChoiceDialog(
                           opacity: 0.7,
                           child: Row(
                             children: [
-                              const Icon(Icons.flag_outlined, size: 12),
+                              const Icon(Icons.flag_outlined,
+                                  size: IconSize.inline),
                               const SizedBox(width: 4),
                               Flexible(
                                 child: Text(

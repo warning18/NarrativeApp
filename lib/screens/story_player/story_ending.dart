@@ -684,7 +684,7 @@ class EchoLine extends ConsumerWidget {
           children: [
             Row(
               children: [
-                Icon(Icons.history, size: 14, color: colour),
+                Icon(Icons.history, size: IconSize.s16, color: colour),
                 const SizedBox(width: 4),
                 Flexible(
                   child: Text(

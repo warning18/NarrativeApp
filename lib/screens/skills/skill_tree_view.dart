@@ -20,6 +20,7 @@ import '../../widgets/detail_dialog.dart';
 import '../../widgets/pixel_banner.dart';
 import 'skill_sheet.dart';
 import 'skills_view_model.dart';
+import '../../theme/icon_sizes.dart';
 
 class SkillTreeView extends ConsumerWidget {
   const SkillTreeView({super.key, required this.model});
@@ -260,7 +261,7 @@ class SkillNode extends ConsumerWidget {
                   ),
                   child: Opacity(
                     opacity: locked ? 0.4 : 1,
-                    child: SkillPixelIcon(id, size: 26),
+                    child: SkillPixelIcon(id, size: IconSize.s32),
                   ),
                 ),
                 // The clan that offers it hangs from the ring's upper left.
@@ -288,7 +289,8 @@ class SkillNode extends ConsumerWidget {
                       color: theme.scaffoldBackgroundColor,
                     ),
                     child: Icon(locked ? Icons.lock : kind.icon,
-                        size: 11, color: locked ? ink.ash : kind.color),
+                        size: IconSize.inline,
+                        color: locked ? ink.ash : kind.color),
                   ),
                 ),
               ],
@@ -421,7 +423,8 @@ class _MasteryNode extends ConsumerWidget {
                   border: Border.all(color: colour, width: 2),
                 ),
                 child: Icon(closed ? Icons.block : Icons.star,
-                    color: isMastered || ready ? ink.gold : ink.ash, size: 20),
+                    color: isMastered || ready ? ink.gold : ink.ash,
+                    size: IconSize.s16),
               ),
               const SizedBox(height: 3),
               // "Mastery" over its cost, shrunk to the column when French

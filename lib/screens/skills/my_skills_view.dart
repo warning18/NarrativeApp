@@ -17,6 +17,7 @@ import '../../utils/pixel_icons/game_pixel_icons.dart';
 import 'skill_sheet.dart';
 import 'skill_tree_view.dart' show TierPips;
 import 'skills_view_model.dart';
+import '../../theme/icon_sizes.dart';
 
 /// What the filter row picks by.
 enum _SkillFilter { all, attack, heal, mana, status }
@@ -104,7 +105,8 @@ class _MySkillsViewState extends ConsumerState<MySkillsView> {
                     key: Key('skill_filter_${f.name}'),
                     avatar: kind == null
                         ? null
-                        : Icon(kind.icon, size: 15, color: kind.color),
+                        : Icon(kind.icon,
+                            size: IconSize.s16, color: kind.color),
                     label: Text('${tr(ref, key)} ${count(f)}'),
                     selected: _filter == f,
                     onSelected: (_) => setState(() => _filter = f),
@@ -192,7 +194,7 @@ class _SkillRow extends ConsumerWidget {
           Row(mainAxisSize: MainAxisSize.min, children: [
             if (cost != null)
               Icon(Icons.arrow_upward,
-                  size: 11,
+                  size: IconSize.inline,
                   color: model.essence >= cost ? ink.voidColor : ink.ash),
             Text(
               !entry.tierable
@@ -219,7 +221,7 @@ class _SkillRow extends ConsumerWidget {
             BoxDecoration(border: Border(bottom: BorderSide(color: ink.seam))),
         child: Row(
           children: [
-            SkillPixelIcon(entry.id, size: 30),
+            SkillPixelIcon(entry.id, size: IconSize.s32),
             const SizedBox(width: 10),
             Expanded(
               child: Column(
@@ -231,7 +233,7 @@ class _SkillRow extends ConsumerWidget {
                           style: theme.textTheme.bodyLarge),
                     ),
                     const SizedBox(width: 6),
-                    Icon(kind.icon, size: 13, color: kind.color),
+                    Icon(kind.icon, size: IconSize.s16, color: kind.color),
                   ]),
                   if (summary.isNotEmpty)
                     Text(summary,
@@ -244,7 +246,7 @@ class _SkillRow extends ConsumerWidget {
             ),
             if (trailing != null) ...[const SizedBox(width: 8), trailing],
             const SizedBox(width: 4),
-            Icon(Icons.chevron_right, size: 18, color: ink.ash),
+            Icon(Icons.chevron_right, size: IconSize.s16, color: ink.ash),
           ],
         ),
       ),

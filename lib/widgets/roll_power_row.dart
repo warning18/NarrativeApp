@@ -14,6 +14,7 @@ import '../l10n/app_strings.dart';
 import '../providers/clans_provider.dart' show wardTargetsProvider;
 import '../theme/stitched_ink.dart';
 import 'ward_sheet.dart';
+import '../theme/icon_sizes.dart';
 
 class RollPowerRow extends ConsumerWidget {
   const RollPowerRow({
@@ -211,7 +212,7 @@ class _PowerButton extends StatelessWidget {
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
-                Icon(icon, size: 20, color: colour),
+                Icon(icon, size: IconSize.s16, color: colour),
                 const SizedBox(height: 2),
                 FittedBox(
                   fit: BoxFit.scaleDown,

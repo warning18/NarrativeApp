@@ -107,7 +107,8 @@ extension _ShipBattleFlow on _ShipBattlePanelState {
                         borderRadius: BorderRadius.circular(8),
                         border: Border.all(color: color),
                       ),
-                      child: Icon(_roomIcon(room), size: 18, color: color),
+                      child: Icon(_roomIcon(room),
+                          size: IconSize.s16, color: color),
                     ),
                     const SizedBox(width: 10),
                     Expanded(
@@ -157,7 +158,7 @@ extension _ShipBattleFlow on _ShipBattlePanelState {
               children: [
                 Row(
                   children: [
-                    Icon(Icons.bolt, color: ink.ember, size: 24),
+                    Icon(Icons.bolt, color: ink.ember, size: IconSize.s32),
                     const SizedBox(width: 8),
                     Expanded(
                       child: Text(trFor(lang, 'ship_push_title'),
@@ -296,7 +297,8 @@ extension _ShipBattleFlow on _ShipBattlePanelState {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Icon(Icons.lightbulb_outline,
-                  size: 18, color: theme.colorScheme.onSecondaryContainer),
+                  size: IconSize.s16,
+                  color: theme.colorScheme.onSecondaryContainer),
               const SizedBox(width: 8),
               Expanded(
                 child: Text(text,
@@ -308,7 +310,7 @@ extension _ShipBattleFlow on _ShipBattlePanelState {
                 key: const Key('ship_tip_ok'),
                 tooltip: trFor(lang, 'tip_got_it'),
                 visualDensity: VisualDensity.compact,
-                icon: Icon(Icons.check, size: 20, color: ink.gold),
+                icon: Icon(Icons.check, size: IconSize.s16, color: ink.gold),
                 onPressed: () =>
                     ref.read(tutorialProvider.notifier).markTipSeen(id),
               ),

@@ -24,6 +24,7 @@ import '../widgets/item_lore.dart';
 import '../widgets/item_stats.dart';
 import 'dice_loadout_screen.dart';
 import '../widgets/ink_loading.dart';
+import '../theme/icon_sizes.dart';
 
 class InventoryScreen extends ConsumerStatefulWidget {
   const InventoryScreen({super.key, this.allyId});
@@ -510,7 +511,7 @@ class _InventoryBodyState extends ConsumerState<_InventoryBody> {
                         (equippedDie['faces'] as List?)?.length ??
                         6,
                     size: 26))
-            : Icon(Icons.casino, size: 24, color: ink.gold),
+            : Icon(Icons.casino, size: IconSize.s32, color: ink.gold),
         worn: equippedDiceId != null && equippedDie != null
             ? dieDisplayName(equippedDiceId, language: lang)
             : null,
@@ -534,8 +535,9 @@ class _InventoryBodyState extends ConsumerState<_InventoryBody> {
             icon: equippedId != null
                 ? ItemPixelIcon(
                     equippedId, equippedItem?['itemType']?.toString(),
-                    size: 24)
-                : Icon(inventorySlotIcon(slot), size: 24, color: ink.ash),
+                    size: IconSize.s32)
+                : Icon(inventorySlotIcon(slot),
+                    size: IconSize.s32, color: ink.ash),
             worn: equippedItem?['itemName']?.toString(),
             lit: equippedId == null && candidates.isNotEmpty,
             tip: tr(ref, 'choose_item'),

@@ -18,7 +18,7 @@ extension _FightCards on _FightScreenState {
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Icon(icon, size: 11, color: color),
+          Icon(icon, size: IconSize.inline, color: color),
           const SizedBox(width: 2),
           Text(label,
               style: TextStyle(
@@ -56,7 +56,7 @@ extension _FightCards on _FightScreenState {
     return Row(
       mainAxisSize: MainAxisSize.min,
       children: [
-        Icon(icon, size: 12, color: color),
+        Icon(icon, size: IconSize.inline, color: color),
         const SizedBox(width: 2),
         Text(value,
             style: TextStyle(
@@ -264,7 +264,7 @@ extension _FightCards on _FightScreenState {
         mainAxisSize: MainAxisSize.min,
         children: [
           Icon(Icons.sync_problem,
-              size: 12, color: colorScheme.onErrorContainer),
+              size: IconSize.inline, color: colorScheme.onErrorContainer),
           const SizedBox(width: 4),
           Flexible(
             child: Text(tr(ref, 'intent_staggered_label'),
@@ -280,7 +280,7 @@ extension _FightCards on _FightScreenState {
         mainAxisSize: MainAxisSize.min,
         children: [
           Icon(Icons.warning_amber,
-              size: 12, color: colorScheme.onErrorContainer),
+              size: IconSize.inline, color: colorScheme.onErrorContainer),
           const SizedBox(width: 4),
           Flexible(
             child: Text(tr(ref, 'intent_charged_label'),
@@ -293,7 +293,7 @@ extension _FightCards on _FightScreenState {
         mainAxisSize: MainAxisSize.min,
         children: [
           Icon(Icons.help_outline,
-              size: 12, color: colorScheme.onErrorContainer),
+              size: IconSize.inline, color: colorScheme.onErrorContainer),
           const SizedBox(width: 4),
           Flexible(
             child: Text(tr(ref, 'intent_unknown_label'),
@@ -341,7 +341,7 @@ extension _FightCards on _FightScreenState {
           Row(
             children: [
               Icon(showCategory ? categoryIcon : Icons.visibility,
-                  size: 12, color: colorScheme.onErrorContainer),
+                  size: IconSize.inline, color: colorScheme.onErrorContainer),
               if (swings && tier == TelegraphTier.full && hit != null) ...[
                 const SizedBox(width: 2),
                 // What lands after armor, resist and block, then (dimmed)
@@ -357,12 +357,13 @@ extension _FightCards on _FightScreenState {
                   Padding(
                     padding: const EdgeInsets.only(left: 2),
                     child: Icon(Icons.shield,
-                        size: 11, color: colorScheme.onErrorContainer),
+                        size: IconSize.inline,
+                        color: colorScheme.onErrorContainer),
                   ),
               ],
               const SizedBox(width: 3),
               Icon(Icons.arrow_forward,
-                  size: 11, color: colorScheme.onErrorContainer),
+                  size: IconSize.inline, color: colorScheme.onErrorContainer),
               const SizedBox(width: 3),
               Expanded(
                 child: Text(
@@ -379,7 +380,7 @@ extension _FightCards on _FightScreenState {
                   tier == TelegraphTier.full &&
                   pending.move.element != 'None')
                 Icon(elementIcon(pending.move.element),
-                    size: 12, color: colorScheme.onErrorContainer),
+                    size: IconSize.inline, color: colorScheme.onErrorContainer),
             ],
           ),
           if (tier == TelegraphTier.full && !compact)
@@ -420,7 +421,7 @@ extension _FightCards on _FightScreenState {
             key: Key('intent_then_${enemy.key}'),
             children: [
               Icon(Icons.double_arrow,
-                  size: 11, color: colorScheme.onErrorContainer),
+                  size: IconSize.inline, color: colorScheme.onErrorContainer),
               const SizedBox(width: 3),
               Expanded(
                 child: Text(
@@ -542,7 +543,7 @@ extension _FightCards on _FightScreenState {
               children: [
                 Row(
                   children: [
-                    EnemyPixelIcon(enemy.enemyId, size: 40),
+                    EnemyPixelIcon(enemy.enemyId, size: IconSize.s48),
                     const SizedBox(width: 12),
                     Expanded(
                       child: Text(enemy.displayName,

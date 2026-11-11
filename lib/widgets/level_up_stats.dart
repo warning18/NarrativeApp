@@ -15,6 +15,7 @@ import '../tutorial/guide_tour.dart';
 import 'ability_radar.dart';
 import 'detail_dialog.dart';
 import 'stat_sheet.dart';
+import '../theme/icon_sizes.dart';
 
 class LevelUpStats extends ConsumerStatefulWidget {
   const LevelUpStats({super.key, this.tutorialTargets = false});
@@ -57,7 +58,7 @@ class _LevelUpStatsState extends ConsumerState<LevelUpStats> {
           child: Column(
             key: Key(key),
             children: [
-              Icon(icon, size: 18, color: ink.gold),
+              Icon(icon, size: IconSize.s16, color: ink.gold),
               const SizedBox(height: 2),
               Text(value,
                   style: theme.textTheme.titleSmall?.copyWith(
@@ -267,7 +268,7 @@ class _StatRow extends StatelessWidget {
                     borderRadius: BorderRadius.circular(4),
                     border: Border.all(color: ink.seam),
                   ),
-                  child: Icon(icon, size: 18, color: ink.gold),
+                  child: Icon(icon, size: IconSize.s16, color: ink.gold),
                 ),
                 const SizedBox(width: 10),
                 Expanded(

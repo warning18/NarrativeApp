@@ -19,6 +19,7 @@ import 'clan_glance.dart' show ClanMarks;
 import 'pixel_banner.dart';
 import 'sign_widgets.dart';
 import '../theme/palette.dart';
+import '../theme/icon_sizes.dart';
 
 /// The colour of a foe's square, and of the Hunted end of a meter.
 const Color clanFoeColor = Palette.bloodDark;
@@ -372,7 +373,7 @@ class FactionStandingCard extends ConsumerWidget {
                             mainAxisSize: MainAxisSize.min,
                             children: [
                               Icon(Icons.military_tech,
-                                  size: 18,
+                                  size: IconSize.s16,
                                   color: standingTierColor(StandingTier.sworn)),
                               Flexible(
                                 child: Text(
@@ -480,7 +481,7 @@ class _FactionShops extends ConsumerWidget {
             Row(
               mainAxisSize: MainAxisSize.min,
               children: [
-                ShopPixelIcon(e.key, size: 18),
+                ShopPixelIcon(e.key, size: IconSize.s16),
                 const SizedBox(width: 4),
                 Flexible(
                   child: Text(

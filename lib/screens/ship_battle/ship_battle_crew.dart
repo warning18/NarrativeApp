@@ -81,7 +81,7 @@ extension _ShipBattleCrew on _ShipBattlePanelState {
                 children: [
                   Center(
                     child: Icon(spent ? Icons.check : _orderIcon(order),
-                        size: 20, color: spent ? ink.ash : color),
+                        size: IconSize.s16, color: spent ? ink.ash : color),
                   ),
                   Positioned(
                     left: 3,
@@ -98,8 +98,8 @@ extension _ShipBattleCrew on _ShipBattlePanelState {
                     Positioned(
                       right: 2,
                       bottom: 1,
-                      child:
-                          Icon(Icons.directions_walk, size: 10, color: color),
+                      child: Icon(Icons.directions_walk,
+                          size: IconSize.inline, color: color),
                     ),
                 ],
               ),
@@ -144,7 +144,8 @@ extension _ShipBattleCrew on _ShipBattlePanelState {
               children: [
                 Row(
                   children: [
-                    Icon(_orderIcon(order), color: ink.gold, size: 26),
+                    Icon(_orderIcon(order),
+                        color: ink.gold, size: IconSize.s32),
                     const SizedBox(width: 10),
                     Expanded(
                       child: Text(trFor(lang, 'ship_order_${order.name}'),
@@ -283,7 +284,8 @@ extension _ShipBattleCrew on _ShipBattlePanelState {
                           _battle.autoStation();
                           _selectedCrewId = null;
                         }),
-                        icon: const Icon(Icons.auto_fix_high, size: 18),
+                        icon:
+                            const Icon(Icons.auto_fix_high, size: IconSize.s16),
                       ),
                       const SizedBox(width: 8),
                       Flexible(
@@ -298,7 +300,7 @@ extension _ShipBattleCrew on _ShipBattlePanelState {
                             }
                             _selectedCrewId = null;
                           }),
-                          icon: const Icon(Icons.bolt, size: 16),
+                          icon: const Icon(Icons.bolt, size: IconSize.s16),
                           label: Text(trFor(lang, 'ship_place_skills'),
                               overflow: TextOverflow.ellipsis),
                         ),
@@ -313,7 +315,7 @@ extension _ShipBattleCrew on _ShipBattlePanelState {
                       minimumSize: const Size(0, 44),
                       padding: const EdgeInsets.symmetric(horizontal: 18)),
                   onPressed: _startBattle,
-                  icon: const Icon(Icons.sailing, size: 18),
+                  icon: const Icon(Icons.sailing, size: IconSize.s16),
                   label: Text(trFor(lang, 'ship_place_start')),
                 ),
               ],
@@ -430,7 +432,7 @@ extension _ShipBattleCrew on _ShipBattlePanelState {
       return Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          const Icon(Icons.shield, size: 13, color: _previewColor),
+          const Icon(Icons.shield, size: IconSize.s16, color: _previewColor),
           Text(preview.hullDamage > 0 ? '−${preview.hullDamage}' : '0',
               style: style),
         ],
@@ -442,7 +444,8 @@ extension _ShipBattleCrew on _ShipBattlePanelState {
         Text('−${preview.hullDamage}', style: style),
         if (preview.roomDamage > 0) ...[
           const SizedBox(width: 3),
-          const Icon(Icons.grid_view, size: 11, color: _previewColor),
+          const Icon(Icons.grid_view,
+              size: IconSize.inline, color: _previewColor),
           Text('−${preview.roomDamage}', style: style),
         ],
         if (preview.roomKnockedOut) ...[
@@ -452,11 +455,12 @@ extension _ShipBattleCrew on _ShipBattlePanelState {
         if (preview.fireStarted) ...[
           const SizedBox(width: 2),
           const Icon(Icons.local_fire_department,
-              size: 13, color: _previewColor),
+              size: IconSize.s16, color: _previewColor),
         ],
         if (preview.leakOpened) ...[
           const SizedBox(width: 2),
-          const Icon(Icons.water_drop, size: 13, color: _previewColor),
+          const Icon(Icons.water_drop,
+              size: IconSize.s16, color: _previewColor),
         ],
       ],
     );
@@ -495,13 +499,14 @@ extension _ShipBattleCrew on _ShipBattlePanelState {
                 color: _battle.inRange(w) ? ink.blood : ink.ash,
                 track: ink.seam,
                 size: 18,
-                child: Icon(_weaponIcon(w), size: 9, color: ink.blood),
+                child: Icon(_weaponIcon(w),
+                    size: IconSize.inline, color: ink.blood),
               ),
               const SizedBox(width: 4),
               Text('${w.damage}', style: small?.copyWith(color: Colors.white)),
               if (aimAt != null) ...[
                 const SizedBox(width: 3),
-                Icon(Icons.south, size: 11, color: ink.blood),
+                Icon(Icons.south, size: IconSize.inline, color: ink.blood),
                 Text(trFor(lang, 'ship_room_${aimAt.name}_title'),
                     style: small?.copyWith(color: ink.blood)),
               ],
@@ -550,8 +555,8 @@ extension _ShipBattleCrew on _ShipBattlePanelState {
         color: ready ? ink.gold : ink.tide,
         track: ink.seam,
         size: 26,
-        child:
-            Icon(_weaponIcon(w), size: 13, color: ready ? ink.gold : ink.ash),
+        child: Icon(_weaponIcon(w),
+            size: IconSize.s16, color: ready ? ink.gold : ink.ash),
       );
       final damage = Row(
         mainAxisSize: MainAxisSize.min,
@@ -559,7 +564,7 @@ extension _ShipBattleCrew on _ShipBattlePanelState {
           if (w.ammo != ShipAmmo.round) ...[
             Icon(_ammoIcon(w.ammo),
                 key: Key('ship_weapon_ammo_${w.id}'),
-                size: 10,
+                size: IconSize.inline,
                 color: ready ? ink.ember : ink.ash),
             const SizedBox(width: 2),
           ],
@@ -696,7 +701,8 @@ extension _ShipBattleCrew on _ShipBattlePanelState {
                                   _battle.autoStation();
                                   _selectedCrewId = null;
                                 }),
-                        icon: const Icon(Icons.auto_fix_high, size: 16),
+                        icon:
+                            const Icon(Icons.auto_fix_high, size: IconSize.s16),
                         label: Text(trFor(lang, 'ship_auto_station_button'),
                             style: theme.textTheme.labelSmall),
                       ),

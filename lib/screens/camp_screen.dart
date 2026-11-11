@@ -47,6 +47,7 @@ import '../data/story_markup.dart' show stripStoryMarkup;
 import '../widgets/ink_sheet.dart';
 import '../theme/palette.dart';
 import '../widgets/ink_loading.dart';
+import '../theme/icon_sizes.dart';
 
 /// The party's camp from chapter 3, its base: the story stands here
 /// between trips. What happened on coming back, the open chapter (how much
@@ -257,7 +258,7 @@ class CampScreen extends ConsumerWidget {
                         textStyle: const TextStyle(
                             fontFamily: 'PixelifySans', fontSize: 12),
                       ),
-                      icon: const Icon(Icons.anchor, size: 16),
+                      icon: const Icon(Icons.anchor, size: IconSize.s16),
                       label: Text(tr(ref, 'harbor_title')),
                     ),
                   )
@@ -469,7 +470,7 @@ class _ChapterCard extends ConsumerWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Icon(done ? Icons.check_circle : Icons.radio_button_unchecked,
-                size: 18, color: done ? ink.heal : ink.ash),
+                size: IconSize.s16, color: done ? ink.heal : ink.ash),
             const SizedBox(width: 8),
             Expanded(
               child: Column(
@@ -552,7 +553,7 @@ class _ChapterCard extends ConsumerWidget {
           if (progress != null) ...[
             Row(children: [
               Icon(open ? Icons.flag : Icons.flag_outlined,
-                  size: 16, color: ink.gold),
+                  size: IconSize.s16, color: ink.gold),
               const SizedBox(width: 6),
               // Longer in French: cut short rather than overflow.
               Flexible(
@@ -590,7 +591,7 @@ class _ChapterCard extends ConsumerWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Icon(Icons.person_add_alt_1_outlined,
-                        size: 18, color: ink.voidColor),
+                        size: IconSize.s16, color: ink.voidColor),
                     const SizedBox(width: 8),
                     Expanded(
                       child: Text(
@@ -679,7 +680,8 @@ class _RestButton extends ConsumerWidget {
               ? null
               : () => restTheNight(context, ref,
                   message: tr(ref, 'party_rested_message'), atCamp: true),
-          icon: const Icon(Icons.local_fire_department_outlined, size: 18),
+          icon: const Icon(Icons.local_fire_department_outlined,
+              size: IconSize.s16),
           label: Text(tr(ref, 'rest_button')),
         ),
       );
@@ -723,7 +725,7 @@ class _CampSceneCardState extends ConsumerState<_CampSceneCard> {
             children: [
               Row(
                 children: [
-                  const Icon(Icons.menu_book_outlined, size: 20),
+                  const Icon(Icons.menu_book_outlined, size: IconSize.s16),
                   const SizedBox(width: 8),
                   Expanded(
                     child: Text(tr(ref, 'camp_scene_title'),
@@ -800,7 +802,7 @@ class _SceneChip extends StatelessWidget {
           ),
         ),
       ),
-      icon: const Icon(Icons.menu_book_outlined, size: 18),
+      icon: const Icon(Icons.menu_book_outlined, size: IconSize.s16),
       label: Text(title),
     );
   }
@@ -843,7 +845,8 @@ class _CampTabs extends ConsumerWidget {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Icon(icon, size: 16, color: on ? ink.gold : ink.ash),
+                  Icon(icon,
+                      size: IconSize.s16, color: on ? ink.gold : ink.ash),
                   const SizedBox(width: 4),
                   Flexible(
                     child: Text(label,

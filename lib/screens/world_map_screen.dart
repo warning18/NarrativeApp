@@ -26,6 +26,7 @@ import '../providers/map_look_provider.dart';
 import '../providers/player_session_provider.dart';
 import '../providers/story_providers.dart';
 import '../theme/palette.dart';
+import '../theme/icon_sizes.dart';
 
 const String _pixelFont = 'PixelifySans';
 const String _textFont = 'Spectral';
@@ -779,7 +780,7 @@ class _MapControls extends ConsumerWidget {
                 width: 34,
                 height: 34,
                 child: Icon(icon,
-                    size: 20,
+                    size: IconSize.s16,
                     color: onTap == null
                         ? tokens.muted.withValues(alpha: 0.5)
                         : tokens.ink),
@@ -966,7 +967,7 @@ class _LandmarkPanel extends ConsumerWidget {
               child: Row(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  Icon(Icons.place, size: 18, color: tokens.accent),
+                  Icon(Icons.place, size: IconSize.s16, color: tokens.accent),
                   const SizedBox(width: 4),
                   Text(tr(ref, 'world_map_here'),
                       style: pixel(15, color: tokens.accent)),

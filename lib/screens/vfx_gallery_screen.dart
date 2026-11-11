@@ -8,6 +8,7 @@ import '../l10n/app_locale.dart';
 import '../l10n/app_strings.dart';
 import '../providers/game_db_providers.dart';
 import '../widgets/combat_vfx.dart';
+import '../theme/icon_sizes.dart';
 
 /// The stand-in foe's health, for a real skill's share of it.
 const int _foeHealth = 60;
@@ -383,7 +384,7 @@ class _StandIn extends StatelessWidget {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Icon(icon, color: const Color(0xFFBDB6CC), size: 28),
+          Icon(icon, color: const Color(0xFFBDB6CC), size: IconSize.s32),
           const SizedBox(height: 4),
           Text(label,
               style: const TextStyle(color: Color(0xFFBDB6CC), fontSize: 12)),
