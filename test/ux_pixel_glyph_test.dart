@@ -38,14 +38,17 @@ void main() {
     }
   });
 
-  test('every glyph file that exists is a 16x16 palette PNG', () {
+  test(
+      'every glyph file that exists is a 16x16 (the small lock 8x8) palette PNG',
+      () {
     for (final g in PixelGlyphs.values) {
       final f = File(g.asset);
       if (!f.existsSync()) continue;
       final b = f.readAsBytesSync();
       final w = (b[16] << 24) | (b[17] << 16) | (b[18] << 8) | b[19];
       final h = (b[20] << 24) | (b[21] << 16) | (b[22] << 8) | b[23];
-      expect([w, h], [16, 16], reason: g.file);
+      final side = g == PixelGlyphs.lock8 ? 8 : 16;
+      expect([w, h], [side, side], reason: g.file);
       expect(b[25], 3, reason: '${g.file} must be PNG8');
     }
   });
