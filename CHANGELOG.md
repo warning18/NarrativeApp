@@ -10,7 +10,7 @@ isn't reconstructable from git history alone.
 
 ## [1.908.0+944]
 
-- Chips and tabs: a pixel-stepped rectangle (`PixelChipBorder`, corners in three 2 dp steps, no antialiasing) in place of the pill or rounded rectangle on the theme's chips, the inventory tabs and the places, ability and origin-story tags.
+- Chips and tabs: a pixel-stepped rectangle (`PixelChipBorder`, corners in three 2 dp steps, no antialiasing) in place of the pill or rounded rectangle on the theme's chips, the inventory tabs and the places, ability and origin-story tags. Fix: a plain chip's label was white on the parchment in the light theme (the theme's chip style had no text colour); it now uses the theme's ink.
 
 ## [1.904.0+940]
 

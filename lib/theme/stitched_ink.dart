@@ -355,9 +355,11 @@ ThemeData buildAppTheme(ColorScheme scheme) {
     chipTheme: ChipThemeData(
       shape: PixelChipBorder(side: seamSide),
       side: seamSide,
-      // Font and size only: the chip keeps its own colours for selected
-      // and disabled.
-      labelStyle: const TextStyle(fontFamily: InkFonts.system, fontSize: 12),
+      // Font, size and the theme's ink (without it a chip's label is white on
+      // the parchment in the light theme); the chip keeps its own fill for
+      // selected and disabled.
+      labelStyle: TextStyle(
+          fontFamily: InkFonts.system, fontSize: 12, color: scheme.onSurface),
     ),
     dialogTheme: DialogThemeData(
       backgroundColor: scheme.surfaceContainer,
