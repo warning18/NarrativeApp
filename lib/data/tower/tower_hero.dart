@@ -26,10 +26,11 @@ class TowerData {
     required Map<String, dynamic> dice,
     required this.skills,
     required this.items,
-    required this.enemies,
+    required Map<String, dynamic> enemies,
     required this.spells,
     this.trainingPaths = const {},
   })  : dice = towerDiceTable(dice),
+        enemies = towerEnemyTable(enemies),
         spellSpecs = parseSpells(spells);
 
   /// From the tables keyed by file name (as `gameDbProvider` or a test
@@ -69,6 +70,9 @@ class TowerData {
   final Map<String, dynamic> dice;
   final Map<String, dynamic> skills;
   final Map<String, dynamic> items;
+
+  /// The foes as the Tower fights them: the game's, with the stats the Tower
+  /// keeps of those the story retuned ([towerEnemyTable], [towerEnemyStats]).
   final Map<String, dynamic> enemies;
   final Map<String, dynamic> spells;
   final Map<String, SpellSpec> spellSpecs;
