@@ -27,6 +27,7 @@ import 'inventory_screen.dart';
 import 'skills/skills_screen.dart';
 import '../theme/palette.dart';
 import '../widgets/ink_loading.dart';
+import '../theme/icon_sizes.dart';
 
 class CompanionPage extends ConsumerWidget {
   const CompanionPage({super.key, required this.companionId});
@@ -101,7 +102,7 @@ class _CompanionBody extends ConsumerWidget {
                   borderRadius: BorderRadius.circular(12),
                 ),
                 child: Row(mainAxisSize: MainAxisSize.min, children: [
-                  Icon(icon, size: 13, color: c),
+                  Icon(icon, size: IconSize.s16, color: c),
                   const SizedBox(width: 4),
                   Text(s,
                       style: theme.textTheme.labelMedium?.copyWith(color: c)),
@@ -357,7 +358,7 @@ class _DrinkButton extends ConsumerWidget {
                   }
                 }
               },
-        icon: const Icon(Icons.local_drink_outlined, size: 18),
+        icon: const Icon(Icons.local_drink_outlined, size: IconSize.s16),
         label: Text(shared
             ? tr(ref, 'share_drink_done')
             : tr(ref, 'share_drink_button').replaceAll('{cost}', '$cost')),

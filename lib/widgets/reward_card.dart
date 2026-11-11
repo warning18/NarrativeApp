@@ -10,6 +10,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 
 import '../theme/stitched_ink.dart';
+import '../theme/icon_sizes.dart';
 
 /// One reward: its [icon] on a tile in [accent], its [title] and [sub]-line,
 /// the [value] at the right, a [tag] beside the title (a rarity), a [bar]
@@ -466,7 +467,8 @@ class _RewardCardState extends State<RewardCard>
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Icon(Icons.info_outline,
-                  size: 18, color: theme.colorScheme.onSurfaceVariant),
+                  size: IconSize.s16,
+                  color: theme.colorScheme.onSurfaceVariant),
               const SizedBox(width: 8),
               Expanded(
                 child: Text.rich(TextSpan(children: [

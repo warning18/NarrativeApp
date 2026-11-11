@@ -89,7 +89,7 @@ extension _FightQuick on _FightScreenState {
           OutlinedButton.icon(
             key: const Key('quick_resolve_stop'),
             onPressed: () => _update(() => _quick = false),
-            icon: const Icon(Icons.pan_tool_alt_outlined, size: 18),
+            icon: const Icon(Icons.pan_tool_alt_outlined, size: IconSize.s16),
             label: Text(tr(ref, 'quick_resolve_stop')),
           ),
         ],

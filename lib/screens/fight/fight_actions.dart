@@ -391,7 +391,7 @@ extension _FightActions on _FightScreenState {
             ),
             for (final enemy in candidates)
               ListTile(
-                leading: EnemyPixelIcon(enemy.enemyId, size: 28),
+                leading: EnemyPixelIcon(enemy.enemyId, size: IconSize.s32),
                 title: Text(enemy.displayName),
                 subtitle: Text(
                     '${trFor(lang, 'hp_label')} ${enemy.currentHealth} / ${enemy.maxHealth}'),

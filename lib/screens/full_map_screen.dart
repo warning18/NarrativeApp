@@ -28,6 +28,7 @@ import '../widgets/map_legend_sheet.dart';
 import 'heard_of_travel.dart' show setOutToHeardOf;
 import 'journal_screen.dart' show JournalScreen;
 import '../theme/palette.dart';
+import '../theme/icon_sizes.dart';
 
 /// Closes the full map's [route] wherever it is in the stack (not whatever
 /// is on top: a "walked to" notice can be over it). A route that is gone
@@ -477,7 +478,7 @@ class _MapToolbar extends ConsumerWidget {
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  Icon(icon, size: 20),
+                  Icon(icon, size: IconSize.s16),
                   const SizedBox(height: 2),
                   Text(label,
                       maxLines: 1,

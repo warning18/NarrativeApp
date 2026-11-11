@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 
 import '../theme/stitched_ink.dart';
 import '../utils/pixel_icons/game_pixel_icons.dart';
+import '../theme/icon_sizes.dart';
 
 /// One item of the spoils: its id and kind (for the icon) and its name.
 class SpoilItem {
@@ -142,7 +143,7 @@ class _FightSpoilsStripState extends State<FightSpoilsStrip>
         opacity: (p * 3).clamp(0.0, 1.0),
         child: Transform.translate(
           offset: Offset(0, -18 * (1 - fall)),
-          child: ItemPixelIcon(item.id, item.type, size: 28),
+          child: ItemPixelIcon(item.id, item.type, size: IconSize.s32),
         ),
       ),
     );

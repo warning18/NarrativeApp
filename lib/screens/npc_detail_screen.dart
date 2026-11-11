@@ -11,6 +11,7 @@ import '../providers/politics_provider.dart' show coastGateWorldProvider;
 import '../utils/game_icons.dart' show npcKindIcon;
 import '../widgets/head_avatar.dart';
 import '../widgets/people_widgets.dart';
+import '../theme/icon_sizes.dart';
 
 /// One person's page (v1.204, see people_codex.dart): who they are (icon,
 /// name, role, faction, place, the chapter they are met in), their
@@ -75,7 +76,7 @@ class NpcDetailScreen extends ConsumerWidget {
                         name: npcName,
                         size: 48,
                         fallback: Icon(npcKindIcon(npc['kind']?.toString()),
-                            size: 26),
+                            size: IconSize.s32),
                       ),
                       const SizedBox(width: 12),
                       Expanded(
@@ -145,7 +146,7 @@ class NpcDetailScreen extends ConsumerWidget {
                 child: Row(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Icon(Icons.history_edu, size: 18, color: muted),
+                    Icon(Icons.history_edu, size: IconSize.s16, color: muted),
                     const SizedBox(width: 8),
                     Expanded(
                       child: Text(line,
@@ -168,7 +169,8 @@ class NpcDetailScreen extends ConsumerWidget {
                 child: Row(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Icon(Icons.theater_comedy, size: 18, color: muted),
+                    Icon(Icons.theater_comedy,
+                        size: IconSize.s16, color: muted),
                     const SizedBox(width: 8),
                     Expanded(
                       child: Text(npcIntrigueLineText(line, french),

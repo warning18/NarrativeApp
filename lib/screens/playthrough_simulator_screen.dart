@@ -108,6 +108,7 @@ import '../providers/player_session_provider.dart' show playerSessionProvider;
 import 'autoplay_summary_dialog.dart';
 import '../utils/game_icons.dart';
 import '../theme/palette.dart';
+import '../theme/icon_sizes.dart';
 
 part 'playthrough_simulator/sim_engine.dart';
 part 'playthrough_simulator/sim_stats.dart';
@@ -654,7 +655,7 @@ class _PlaythroughSimulatorScreenState
           child: Row(
             children: [
               Icon(Icons.tune,
-                  size: 18,
+                  size: IconSize.s16,
                   color: Theme.of(context).colorScheme.onSurfaceVariant),
               const SizedBox(width: 8),
               Expanded(
@@ -671,7 +672,7 @@ class _PlaythroughSimulatorScreenState
                         height: 16,
                         child: CircularProgressIndicator(strokeWidth: 2),
                       )
-                    : const Icon(Icons.replay, size: 20),
+                    : const Icon(Icons.replay, size: IconSize.s16),
                 tooltip: tr(ref, 'auto_playthrough_button'),
                 onPressed: _running ? null : _run,
               ),

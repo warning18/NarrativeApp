@@ -51,6 +51,7 @@ import 'shop_detail_screen.dart';
 import '../data/narration_pages.dart' show joinedNarration;
 import '../data/story_markup.dart' show stripStoryMarkup;
 import '../widgets/ink_loading.dart';
+import '../theme/icon_sizes.dart';
 
 enum _ExpeditionPhase { event, completed, retreated }
 
@@ -806,7 +807,7 @@ class _ExpeditionScreenState extends ConsumerState<ExpeditionScreen> {
     if (rewardGold > 0) {
       rows.add(RewardLine(
         key: const Key('reward_gold'),
-        icon: Icon(Icons.paid, size: 30, color: ink.gold),
+        icon: Icon(Icons.paid, size: IconSize.s32, color: ink.gold),
         accent: ink.gold,
         title: trFor(lang, 'reward_gold'),
         sub: trFor(lang, 'reward_gold_zone_sub'),
@@ -842,7 +843,7 @@ class _ExpeditionScreenState extends ConsumerState<ExpeditionScreen> {
               ?.toString();
       rows.add(RewardLine(
         key: Key('reward_die_$rewardDiceId'),
-        icon: Icon(Icons.casino, size: 28, color: ink.tide),
+        icon: Icon(Icons.casino, size: IconSize.s32, color: ink.tide),
         accent: ink.tide,
         title: diceName ?? rewardDiceId,
         sub: trFor(lang, 'reward_die_made_for'),
@@ -873,7 +874,7 @@ class _ExpeditionScreenState extends ConsumerState<ExpeditionScreen> {
       );
       rows.add(RewardLine(
         key: const Key('reward_ally'),
-        icon: Icon(Icons.person_add_alt_1, size: 28, color: ink.heal),
+        icon: Icon(Icons.person_add_alt_1, size: IconSize.s32, color: ink.heal),
         accent: ink.heal,
         title: companion?['companionName']?.toString() ?? rewardAllyId,
         sub: trFor(lang, 'recruited_prefix'),
@@ -1186,7 +1187,7 @@ class _ExpeditionScreenState extends ConsumerState<ExpeditionScreen> {
         key: const ValueKey('expedition_cargo_gauge'),
         children: [
           Icon(Icons.local_shipping,
-              size: 18, color: low ? scheme.error : scheme.primary),
+              size: IconSize.s16, color: low ? scheme.error : scheme.primary),
           const SizedBox(width: 6),
           Text('${trFor(lang, 'escort_cargo_label')} $_cargo%',
               style: Theme.of(context).textTheme.labelMedium),
@@ -1208,7 +1209,7 @@ class _ExpeditionScreenState extends ConsumerState<ExpeditionScreen> {
       key: const ValueKey('expedition_deadline_gauge'),
       children: [
         Icon(Icons.hourglass_bottom,
-            size: 18, color: late ? scheme.error : scheme.primary),
+            size: IconSize.s16, color: late ? scheme.error : scheme.primary),
         const SizedBox(width: 6),
         Text(
           trFor(lang, 'delivery_days_line')
@@ -1235,7 +1236,8 @@ class _ExpeditionScreenState extends ConsumerState<ExpeditionScreen> {
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        Icon(icon, size: 56, color: Theme.of(context).colorScheme.primary),
+        Icon(icon,
+            size: IconSize.s64, color: Theme.of(context).colorScheme.primary),
         const SizedBox(height: 16),
         Text(title,
             style: Theme.of(context).textTheme.headlineSmall,

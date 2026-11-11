@@ -24,6 +24,7 @@ import 'pixel_banner.dart';
 import 'ink_sheet.dart';
 import 'ink_chip.dart';
 import '../theme/palette.dart';
+import '../theme/icon_sizes.dart';
 
 /// The races, the professions, the skill trees and the clans, together: what
 /// the choice reads.
@@ -285,7 +286,8 @@ class ChoiceCard extends ConsumerWidget {
                         Padding(
                           padding: const EdgeInsets.only(top: 4),
                           child: Row(children: [
-                            Icon(Icons.lock_outline, size: 14, color: ink.gold),
+                            Icon(Icons.lock_outline,
+                                size: IconSize.s16, color: ink.gold),
                             const SizedBox(width: 4),
                             Flexible(
                               child: Text(lockedNote!,
@@ -327,7 +329,8 @@ class ChoiceCard extends ConsumerWidget {
                 if (selected)
                   Padding(
                     padding: const EdgeInsets.only(left: 6),
-                    child: Icon(Icons.check_circle, color: ink.gold, size: 20),
+                    child: Icon(Icons.check_circle,
+                        color: ink.gold, size: IconSize.s16),
                   ),
               ]),
             ),
@@ -502,7 +505,8 @@ class _OpenChoiceState extends ConsumerState<OpenChoice> {
                         ],
                       ),
                     ),
-                    Icon(Icons.chevron_right, size: 18, color: ink.ash),
+                    Icon(Icons.chevron_right,
+                        size: IconSize.s16, color: ink.ash),
                   ]),
                 ),
               ),
@@ -517,7 +521,7 @@ class _OpenChoiceState extends ConsumerState<OpenChoice> {
               padding: const EdgeInsets.only(bottom: 4),
               child:
                   Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                Icon(icon, size: 16, color: ink.gold),
+                Icon(icon, size: IconSize.s16, color: ink.gold),
                 const SizedBox(width: 8),
                 Expanded(child: Text(text, style: theme.textTheme.bodySmall)),
               ]),
@@ -634,7 +638,7 @@ class StepSwitch extends ConsumerWidget {
                 if (record != null)
                   PresetMark(folder: folder, preset: record, size: 28)
                 else
-                  Icon(Icons.help_outline, size: 26, color: ink.ash),
+                  Icon(Icons.help_outline, size: IconSize.s32, color: ink.ash),
                 const SizedBox(width: 8),
                 Expanded(
                   child: Column(

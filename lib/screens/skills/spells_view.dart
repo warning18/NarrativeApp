@@ -18,6 +18,7 @@ import '../../utils/game_icons.dart';
 import '../../utils/spell_preview.dart';
 import '../../widgets/detail_dialog.dart';
 import '../../widgets/mana_meter.dart';
+import '../../theme/icon_sizes.dart';
 
 class SpellsView extends ConsumerWidget {
   const SpellsView({super.key});
@@ -65,7 +66,7 @@ class SpellsView extends ConsumerWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Row(children: [
-                const Icon(manaIcon, size: 18, color: manaColor),
+                const Icon(manaIcon, size: IconSize.s16, color: manaColor),
                 const SizedBox(width: 6),
                 Expanded(
                   child: Text(
@@ -167,7 +168,8 @@ class _SpellRow extends ConsumerWidget {
         context,
         title: name,
         description: description,
-        leading: Icon(spellEffectIcon(spell.effect), color: colour, size: 24),
+        leading: Icon(spellEffectIcon(spell.effect),
+            color: colour, size: IconSize.s32),
         closeLabel: tr(ref, 'close_button'),
         rows: [
           MapEntry(tr(ref, 'cost_label'),
@@ -198,7 +200,7 @@ class _SpellRow extends ConsumerWidget {
                 radius: 17,
                 backgroundColor: colour.withValues(alpha: 0.15),
                 child: Icon(spellEffectIcon(spell.effect),
-                    color: colour, size: 18),
+                    color: colour, size: IconSize.s16),
               ),
               const SizedBox(width: 10),
               Expanded(
@@ -217,7 +219,7 @@ class _SpellRow extends ConsumerWidget {
                 ),
               ),
               Icon(known ? Icons.chevron_right : Icons.lock_outline,
-                  size: 18, color: ink.ash),
+                  size: IconSize.s16, color: ink.ash),
             ],
           ),
         ),

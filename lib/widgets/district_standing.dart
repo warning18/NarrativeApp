@@ -22,6 +22,7 @@ import 'city_chart/city_chart.dart' show CityChartHold;
 import 'pixel_banner.dart' show ClanFlag, clanBannerId;
 import 'ink_sheet.dart';
 import '../theme/palette.dart';
+import '../theme/icon_sizes.dart';
 
 /// What the Town view says of one district.
 class DistrictStanding {
@@ -185,7 +186,8 @@ class DistrictStandingLine extends ConsumerWidget {
       child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
         Row(children: [
           if (s.flipped) ...[
-            const Icon(Icons.star, size: 12, color: Palette.goldDark),
+            const Icon(Icons.star,
+                size: IconSize.inline, color: Palette.goldDark),
             const SizedBox(width: 3),
           ],
           Flexible(
@@ -292,7 +294,8 @@ class DistrictLead extends StatelessWidget {
       return SizedBox(
           width: 22,
           child: Center(
-              child: Icon(Icons.lock_outline, size: 18, color: ink.ash)));
+              child: Icon(Icons.lock_outline,
+                  size: IconSize.s16, color: ink.ash)));
     }
     if (standing.held && clanBannerId(standing.holderId) != null) {
       return SizedBox(
@@ -344,7 +347,7 @@ class _LockedDistrictSheet extends ConsumerWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Row(children: [
-                Icon(Icons.lock_outline, size: 20, color: ink.ash),
+                Icon(Icons.lock_outline, size: IconSize.s16, color: ink.ash),
                 const SizedBox(width: 8),
                 Expanded(child: Text(name, style: theme.textTheme.titleMedium)),
               ]),

@@ -13,6 +13,7 @@ import '../l10n/app_strings.dart';
 import '../providers/choice_flow_provider.dart';
 import '../providers/geography_provider.dart';
 import '../theme/stitched_ink.dart';
+import '../theme/icon_sizes.dart';
 
 /// How long the notice stays when left alone.
 const Duration returnNoticeStay = Duration(seconds: 4);
@@ -140,7 +141,7 @@ class _ReturnNoticeState extends ConsumerState<ReturnNotice>
                   color: theme.colorScheme.surface,
                   border: Border.all(color: ink.gold, width: 2),
                 ),
-                child: Icon(Icons.undo, color: ink.gold, size: 18),
+                child: Icon(Icons.undo, color: ink.gold, size: IconSize.s16),
               ),
               const SizedBox(width: 10),
               Expanded(

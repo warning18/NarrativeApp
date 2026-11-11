@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../theme/stitched_ink.dart';
+import '../theme/icon_sizes.dart';
 
 /// The words in a speech bubble: the story's prose face, a size up.
 TextStyle? speechBubbleTextStyle(ThemeData theme) => theme.textTheme.bodyLarge
@@ -102,7 +103,7 @@ class SpeechBubble extends StatelessWidget {
                     onPressed: onVoice,
                     icon: Icon(
                         voice ? Icons.volume_up : Icons.volume_off_outlined,
-                        size: 20,
+                        size: IconSize.s16,
                         color: voice ? ink.gold : ink.ash),
                   ),
               ],

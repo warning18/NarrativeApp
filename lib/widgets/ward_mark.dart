@@ -11,6 +11,7 @@ import '../l10n/app_locale.dart';
 import '../providers/clans_provider.dart';
 import '../providers/player_session_provider.dart' show roadWardsProvider;
 import '../theme/stitched_ink.dart';
+import '../theme/icon_sizes.dart';
 
 class WardMark extends ConsumerWidget {
   const WardMark({super.key, required this.palette, this.compact = false});
@@ -50,8 +51,8 @@ class WardMark extends ConsumerWidget {
             ),
             child: Padding(
               padding: const EdgeInsets.all(6),
-              child:
-                  Icon(Icons.shield_outlined, size: 16, color: palette.place),
+              child: Icon(Icons.shield_outlined,
+                  size: IconSize.s16, color: palette.place),
             ),
           ),
         ),
@@ -71,7 +72,8 @@ class WardMark extends ConsumerWidget {
           child: Row(
             mainAxisSize: MainAxisSize.min,
             children: [
-              Icon(Icons.shield_outlined, size: 13, color: palette.place),
+              Icon(Icons.shield_outlined,
+                  size: IconSize.s16, color: palette.place),
               const SizedBox(width: 5),
               Flexible(
                 child: Text(

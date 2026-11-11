@@ -31,6 +31,7 @@ import 'city_chart_screen.dart';
 import 'vfx_gallery_screen.dart';
 import 'voyage_screen.dart';
 import '../widgets/ink_sheet.dart';
+import '../theme/icon_sizes.dart';
 
 /// Zone-tier style multipliers offered for a test fight's enemies.
 const List<double> _difficulties = [0.75, 1.0, 1.25, 1.5, 2.0];
@@ -492,7 +493,7 @@ class _FightLabScreenState extends ConsumerState<FightLabScreen> {
                   onDeleted: () => setState(() => _enemyIds.removeAt(i)),
                 ),
               ActionChip(
-                avatar: const Icon(Icons.add, size: 18),
+                avatar: const Icon(Icons.add, size: IconSize.s16),
                 label: Text(tr(ref, 'fight_lab_add_enemy')),
                 onPressed: _enemyIds.length >= 3 || enemies.isEmpty
                     ? null
@@ -614,7 +615,7 @@ class _FightLabScreenState extends ConsumerState<FightLabScreen> {
                 ),
               ActionChip(
                 key: const Key('fight_lab_add_companion'),
-                avatar: const Icon(Icons.group_add, size: 18),
+                avatar: const Icon(Icons.group_add, size: IconSize.s16),
                 label: Text(tr(ref, 'fight_lab_add_companion')),
                 onPressed: _companionIds.length >= companions.length ||
                         _companionIds.length >= _mostAllies(houses) ||

@@ -15,6 +15,7 @@ import '../providers/story_providers.dart';
 import '../theme/stitched_ink.dart';
 import 'ink_chip.dart';
 import '../theme/palette.dart';
+import '../theme/icon_sizes.dart';
 
 /// [text] with its first letter up, for a name that opens a line or heads
 /// a section (« l’Ancien Continent » → « L’Ancien Continent »).
@@ -150,7 +151,7 @@ class GeoBreadcrumb extends StatelessWidget {
           child: Padding(
             // Clear of the faded edge.
             padding: const EdgeInsets.only(left: 10, right: 4),
-            child: Icon(Icons.public, size: 15, color: colour),
+            child: Icon(Icons.public, size: IconSize.s16, color: colour),
           ),
         ),
       for (var i = 0; i < path.length; i++) ...[
@@ -302,7 +303,7 @@ class ThisLandSheet extends ConsumerWidget {
           for (final spot in focus) ...[
             Row(
               children: [
-                Icon(_geoPlaceIcon(spot), size: 16, color: ink.gold),
+                Icon(_geoPlaceIcon(spot), size: IconSize.s16, color: ink.gold),
                 const SizedBox(width: 6),
                 Expanded(
                   child: Text(_capitalised(spot.nameFor(french)),
@@ -364,7 +365,8 @@ class ThisLandSheet extends ConsumerWidget {
                   padding: const EdgeInsets.only(bottom: 4),
                   child: Row(
                     children: [
-                      Icon(hazardIcon(hazard), size: 16, color: ink.ember),
+                      Icon(hazardIcon(hazard),
+                          size: IconSize.s16, color: ink.ember),
                       const SizedBox(width: 6),
                       Expanded(
                         child: Text(hazard.nameFor(french),
@@ -421,7 +423,7 @@ class _BiomeChip extends StatelessWidget {
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Icon(biomeIcon(biome), size: 14, color: ink.heal),
+          Icon(biomeIcon(biome), size: IconSize.s16, color: ink.heal),
           const SizedBox(width: 4),
           Flexible(
             child: Text(
@@ -533,7 +535,7 @@ class _ContinentEntry extends ConsumerWidget {
         children: [
           Row(
             children: [
-              Icon(Icons.public, size: 18, color: ink.gold),
+              Icon(Icons.public, size: IconSize.s16, color: ink.gold),
               const SizedBox(width: 6),
               Expanded(
                 child: Text(_capitalised(continent.nameFor(french)),
@@ -555,7 +557,8 @@ class _ContinentEntry extends ConsumerWidget {
                   tilePadding: const EdgeInsets.only(left: 8),
                   childrenPadding: const EdgeInsets.only(left: 8, bottom: 8),
                   expandedCrossAxisAlignment: CrossAxisAlignment.stretch,
-                  leading: Icon(Icons.flag_outlined, size: 18, color: ink.ash),
+                  leading: Icon(Icons.flag_outlined,
+                      size: IconSize.s16, color: ink.ash),
                   title: Text(_capitalised(country.nameFor(french))),
                   subtitle: Text(rulerLine(country),
                       style:
@@ -667,7 +670,8 @@ class _ZoneCard extends ConsumerWidget {
                   child: Row(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Icon(_geoPlaceIcon(location), size: 16, color: ink.ash),
+                      Icon(_geoPlaceIcon(location),
+                          size: IconSize.s16, color: ink.ash),
                       const SizedBox(width: 6),
                       Expanded(
                         child: Text.rich(
@@ -815,7 +819,7 @@ class _PlaceTraits extends ConsumerWidget {
           child: Row(
             mainAxisSize: MainAxisSize.min,
             children: [
-              Icon(icon, size: 12, color: colour ?? ink.ash),
+              Icon(icon, size: IconSize.inline, color: colour ?? ink.ash),
               const SizedBox(width: 4),
               Flexible(
                 child: Text(text,

@@ -13,6 +13,7 @@ import '../widgets/ability_visuals.dart';
 import '../widgets/origin_scene_backdrop.dart';
 import '../widgets/story_text.dart';
 import '../theme/motion.dart';
+import '../theme/icon_sizes.dart';
 
 /// The formative memories, on their own page once the character is named:
 /// six moments from the age of six to sixteen (origin_stories.dart), one
@@ -280,7 +281,7 @@ class _OriginStoriesScreenState extends ConsumerState<OriginStoriesScreen> {
                   child: OutlinedButton.icon(
                     key: const Key('origin_random_all'),
                     onPressed: _chooseLifeAtRandom,
-                    icon: const Icon(Icons.casino_outlined, size: 18),
+                    icon: const Icon(Icons.casino_outlined, size: IconSize.s16),
                     label: Text(tr(ref, 'origin_random_all')),
                   ),
                 ),
@@ -294,7 +295,7 @@ class _OriginStoriesScreenState extends ConsumerState<OriginStoriesScreen> {
                     Padding(
                       padding: const EdgeInsets.only(top: 2),
                       child: Icon(Icons.history_edu_outlined,
-                          size: 18, color: colors.tertiary),
+                          size: IconSize.s16, color: colors.tertiary),
                     ),
                     const SizedBox(width: 8),
                     Expanded(
@@ -358,7 +359,7 @@ class _OriginStoriesScreenState extends ConsumerState<OriginStoriesScreen> {
                   child: TextButton.icon(
                     key: const Key('origin_random_one'),
                     onPressed: _chooseAtRandom,
-                    icon: const Icon(Icons.casino_outlined, size: 18),
+                    icon: const Icon(Icons.casino_outlined, size: IconSize.s16),
                     label: Text(tr(ref, 'origin_random_one')),
                   ),
                 ),
@@ -419,7 +420,7 @@ class _OriginStoriesScreenState extends ConsumerState<OriginStoriesScreen> {
         TextButton.icon(
           key: const Key('origin_random_again'),
           onPressed: _chooseLifeAtRandom,
-          icon: const Icon(Icons.casino_outlined, size: 18),
+          icon: const Icon(Icons.casino_outlined, size: IconSize.s16),
           label: Text(tr(ref, 'origin_random_again')),
         ),
         const SizedBox(height: 20),
@@ -469,8 +470,8 @@ class _OriginStoriesScreenState extends ConsumerState<OriginStoriesScreen> {
           children: [
             for (final entry in result.abilities.entries)
               Chip(
-                avatar:
-                    Icon(Icons.auto_awesome, size: 16, color: colors.primary),
+                avatar: Icon(Icons.auto_awesome,
+                    size: IconSize.s16, color: colors.primary),
                 label: Text('${tr(ref, '${entry.key}_label')} +${entry.value}'),
                 visualDensity: VisualDensity.compact,
               ),
@@ -479,7 +480,8 @@ class _OriginStoriesScreenState extends ConsumerState<OriginStoriesScreen> {
         const SizedBox(height: 20),
         Row(
           children: [
-            Icon(Icons.balance_outlined, size: 20, color: colors.primary),
+            Icon(Icons.balance_outlined,
+                size: IconSize.s16, color: colors.primary),
             const SizedBox(width: 8),
             Expanded(
               child: Text(
@@ -718,7 +720,7 @@ class _Tag extends StatelessWidget {
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Icon(icon, size: 14, color: color),
+          Icon(icon, size: IconSize.s16, color: color),
           const SizedBox(width: 5),
           Text(label,
               style: Theme.of(context)
@@ -869,7 +871,7 @@ class _SummaryRow extends StatelessWidget {
                 ),
               ),
               Icon(Icons.edit_outlined,
-                  size: 18, color: colors.onSurfaceVariant),
+                  size: IconSize.s16, color: colors.onSurfaceVariant),
             ],
           ),
         ),

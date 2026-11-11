@@ -307,7 +307,8 @@ extension _JourneyChoices on _JourneyViewState {
                 padding: const EdgeInsets.fromLTRB(16, 0, 8, 6),
                 child: Row(
                   children: [
-                    Icon(Icons.circle_outlined, size: 16, color: color),
+                    Icon(Icons.circle_outlined,
+                        size: IconSize.s16, color: color),
                     const SizedBox(width: 8),
                     Expanded(
                       child: Text('$title · ${members.length}',

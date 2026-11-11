@@ -15,6 +15,7 @@ import '../../theme/stitched_ink.dart';
 import '../../utils/pixel_icons/game_pixel_icons.dart';
 import '../../widgets/item_stats.dart';
 import '../../widgets/loot_sheet.dart';
+import '../../theme/icon_sizes.dart';
 
 class TowerSpoilsView extends ConsumerWidget {
   const TowerSpoilsView({super.key, required this.run, required this.onTake});
@@ -51,7 +52,7 @@ class TowerSpoilsView extends ConsumerWidget {
             label: tr(ref, 'loot_line_potions'),
             before: '×${run.potions - potions}',
             after: '×${run.potions}',
-            icon: Icon(Icons.science, size: 26, color: ink.heal),
+            icon: Icon(Icons.science, size: IconSize.s32, color: ink.heal),
             tone: ink.heal,
           ),
         if (antidotes > 0)
@@ -59,7 +60,7 @@ class TowerSpoilsView extends ConsumerWidget {
             label: tr(ref, 'loot_line_antidotes'),
             before: '×${run.antidotes - antidotes}',
             after: '×${run.antidotes}',
-            icon: const ItemPixelIcon('antidote', 'Potion', size: 28),
+            icon: const ItemPixelIcon('antidote', 'Potion', size: IconSize.s32),
             tone: ink.heal,
           ),
       ],
@@ -89,7 +90,7 @@ class TowerSpoilsView extends ConsumerWidget {
       id: '$i',
       name: item?['itemName']?.toString() ?? id,
       text: worn,
-      icon: ItemPixelIcon(id, type, size: 28),
+      icon: ItemPixelIcon(id, type, size: IconSize.s32),
     );
   }
 }

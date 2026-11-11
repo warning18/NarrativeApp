@@ -11,6 +11,7 @@ import '../l10n/app_strings.dart';
 import '../theme/stitched_ink.dart';
 import '../utils/pixel_icons/enemy_icons.dart';
 import '../utils/pixel_icons/pixel_icon.dart';
+import '../theme/icon_sizes.dart';
 
 /// Asks whether to spare [name] ([enemyId]) of [clan]; true to spare, false
 /// to finish it. [read] is what the party's Perception reads of them, when
@@ -105,8 +106,9 @@ class MercyDialog extends StatelessWidget {
                       ),
                       child: PixelIcon(
                         EnemyIcons.pathFor(enemyId),
-                        size: 72,
-                        fallback: Icon(Icons.person, size: 40, color: colour),
+                        size: IconSize.s64,
+                        fallback: Icon(Icons.person,
+                            size: IconSize.s48, color: colour),
                       ),
                     ),
                     const SizedBox(width: 14),
@@ -155,7 +157,7 @@ class MercyDialog extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Icon(Icons.visibility_outlined,
-                            size: 18, color: readColour),
+                            size: IconSize.s16, color: readColour),
                         const SizedBox(width: 8),
                         Expanded(
                           child: Text(

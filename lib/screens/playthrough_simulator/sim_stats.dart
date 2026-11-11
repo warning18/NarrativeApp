@@ -137,7 +137,7 @@ class _StatLine extends StatelessWidget {
       padding: const EdgeInsets.symmetric(vertical: 2),
       child: Row(
         children: [
-          Icon(icon, size: 16, color: color),
+          Icon(icon, size: IconSize.s16, color: color),
           const SizedBox(width: 6),
           Text(text,
               style: TextStyle(color: color, fontWeight: FontWeight.w600)),

@@ -30,6 +30,7 @@ import '../../widgets/sheet_kit.dart';
 import '../dice_loadout_screen.dart';
 import 'skills_view_model.dart';
 import '../../widgets/ink_sheet.dart';
+import '../../theme/icon_sizes.dart';
 
 /// The skills of the player ([allyId] null) or a companion, from the live
 /// session and tables; null while the skills table loads.
@@ -150,7 +151,7 @@ class _SkillSheet extends ConsumerWidget {
           ),
           child: Row(mainAxisSize: MainAxisSize.min, children: [
             if (icon != null) ...[
-              Icon(icon, size: 13, color: colour),
+              Icon(icon, size: IconSize.s16, color: colour),
               const SizedBox(width: 4),
             ],
             Flexible(
@@ -172,7 +173,7 @@ class _SkillSheet extends ConsumerWidget {
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             SheetHeader(
-              leading: SkillPixelIcon(skillId, size: 36),
+              leading: SkillPixelIcon(skillId, size: IconSize.s32),
               title: skillDisplayName(skillId, language: lang),
               titleStyle: theme.textTheme.titleLarge
                   ?.copyWith(fontFamily: InkFonts.display),
@@ -259,7 +260,7 @@ class _SkillSheet extends ConsumerWidget {
               key: Key('compare_pick_$id'),
               onPressed: () => Navigator.of(dialogContext).pop(id),
               child: Row(children: [
-                SkillPixelIcon(id, size: 22),
+                SkillPixelIcon(id, size: IconSize.s32),
                 const SizedBox(width: 10),
                 Expanded(child: Text(skillDisplayName(id, language: lang))),
               ]),
@@ -408,7 +409,7 @@ class _DiceLine extends ConsumerWidget {
           borderRadius: BorderRadius.circular(8),
         ),
         child: Row(children: [
-          Icon(Icons.casino_outlined, size: 18, color: ink.tide),
+          Icon(Icons.casino_outlined, size: IconSize.s16, color: ink.tide),
           const SizedBox(width: 8),
           Expanded(child: Text(text, style: theme.textTheme.bodyMedium)),
           Text('${tr(ref, 'skill_dice_link')} ›',
@@ -576,7 +577,7 @@ Future<void> showMasterySheet(
             children: [
               Row(
                 children: [
-                  Icon(Icons.star, color: ink.gold, size: 28),
+                  Icon(Icons.star, color: ink.gold, size: IconSize.s32),
                   const SizedBox(width: 12),
                   Expanded(
                     child: Text(

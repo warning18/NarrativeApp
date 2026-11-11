@@ -12,6 +12,7 @@ import '../data/map_charts.dart';
 import '../l10n/app_strings.dart';
 import '../providers/chapter_loop_provider.dart';
 import '../theme/stitched_ink.dart';
+import '../theme/icon_sizes.dart';
 
 /// The advice to show: the next chapter's, when the party is under it.
 final levelSignpostProvider = Provider<ChapterLevelAdvice?>((ref) {
@@ -53,7 +54,8 @@ class LevelSignpostRow extends ConsumerWidget {
           showDuration: const Duration(seconds: 8),
           child: Row(
             children: [
-              Icon(Icons.signpost_outlined, size: 18, color: ink.ember),
+              Icon(Icons.signpost_outlined,
+                  size: IconSize.s16, color: ink.ember),
               const SizedBox(width: 8),
               Expanded(
                 child: Text(
@@ -115,7 +117,8 @@ class LevelSignpostChip extends ConsumerWidget {
             child: Row(
               mainAxisSize: MainAxisSize.min,
               children: [
-                Icon(Icons.signpost_outlined, size: 13, color: ink.ember),
+                Icon(Icons.signpost_outlined,
+                    size: IconSize.s16, color: ink.ember),
                 const SizedBox(width: 5),
                 Text(label,
                     style: TextStyle(

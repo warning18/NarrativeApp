@@ -17,6 +17,7 @@ import 'item_detail_view.dart';
 import 'pixel_sprite.dart';
 import '../theme/palette.dart';
 import '../theme/motion.dart';
+import '../theme/icon_sizes.dart';
 
 /// What the player chose to do with the spoils before closing the chest:
 /// gear to put on at once and healing potions to drink on the spot.
@@ -503,7 +504,7 @@ class _SpoilsChestDialogState extends State<SpoilsChestDialog>
         id: '$slot',
         name: item?['itemName']?.toString() ?? itemId,
         text: text,
-        icon: ItemPixelIcon(itemId, type, size: 28),
+        icon: ItemPixelIcon(itemId, type, size: IconSize.s32),
         canUseNow: action != null,
         useLabel: action?.$1,
         useEnabled: action?.$3 != null,
@@ -610,13 +611,14 @@ class _SpoilsChestDialogState extends State<SpoilsChestDialog>
     Widget face;
     String label;
     if (index == 0) {
-      face =
-          const Icon(Icons.monetization_on, size: 36, color: Palette.goldDeep);
+      face = const Icon(Icons.monetization_on,
+          size: IconSize.s32, color: Palette.goldDeep);
       label = '+${widget.result.gold} ${_t('gold_label')}';
     } else {
       final itemId = widget.result.itemIds[index - 1];
       final item = widget.items[itemId] as Map<String, dynamic>?;
-      face = ItemPixelIcon(itemId, item?['itemType']?.toString(), size: 40);
+      face = ItemPixelIcon(itemId, item?['itemType']?.toString(),
+          size: IconSize.s32);
       label = item?['itemName']?.toString() ?? itemId;
     }
     return GestureDetector(
@@ -654,7 +656,7 @@ class _SpoilsChestDialogState extends State<SpoilsChestDialog>
               )
             : Center(
                 child: Icon(Icons.help_outline,
-                    size: 32, color: theme.colorScheme.outline),
+                    size: IconSize.s32, color: theme.colorScheme.outline),
               ),
       ),
     );

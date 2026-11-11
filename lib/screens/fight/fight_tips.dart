@@ -7,6 +7,7 @@ import '../../l10n/app_strings.dart';
 import '../../providers/player_session_provider.dart';
 import '../../providers/tutorial_provider.dart';
 import '../../theme/stitched_ink.dart';
+import '../../theme/icon_sizes.dart';
 
 /// The fight's one-time tips on its setup screen (see fight_tips.dart):
 /// what this fight's goal, doctrine and situation mean, the first time a
@@ -79,7 +80,7 @@ class _FightTipsCardState extends ConsumerState<FightTipsCard> {
           child: Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Icon(Icons.lightbulb_outline, size: 18, color: onTip),
+              Icon(Icons.lightbulb_outline, size: IconSize.s16, color: onTip),
               const SizedBox(width: 8),
               Expanded(
                 child: Column(
@@ -104,7 +105,7 @@ class _FightTipsCardState extends ConsumerState<FightTipsCard> {
                 tooltip: tr(ref, last ? 'tip_got_it' : 'tip_fight_next'),
                 visualDensity: VisualDensity.compact,
                 icon: Icon(last ? Icons.check : Icons.arrow_forward,
-                    size: 20, color: ink.gold),
+                    size: IconSize.s16, color: ink.gold),
                 onPressed: _next,
               ),
             ],
