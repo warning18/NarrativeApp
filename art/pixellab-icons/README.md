@@ -1,0 +1,3 @@
+# Harmonised icons (drop-in)
+`harmonised/skills/*.png` (157) and `harmonised/items/*.png` (132): the 289 original skill and item icons, same names and sizes (269 at 16x16, 20 at 32x32), made by `art/pixellab-pilots/icons/harmonise_gen.py`: every near-black outline pixel becomes the one ink `#0A0807`, every pixel snaps to the 63-colour `shared_palette.json`. Drawings untouched. Mean colour change 5.3 of 255 per icon (max 16.1). 0 generations. Sheets: `docs/art/boards/icons-harmonised-skills.png`, `icons-harmonised-items.png` (top row today, bottom row harmonised).
+Known side effect: a dark-purple fill (e.g. the purple ring skill) can become ink black. Not wired; UX copies the files over `assets/icons/skills|items/`.
