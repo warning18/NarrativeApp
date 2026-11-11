@@ -1,0 +1,144 @@
+diff --git a/lib/screens/fight/fight_board_view.dart b/lib/screens/fight/fight_board_view.dart
+index 9bec4fdc5..aad261879 100644
+--- a/lib/screens/fight/fight_board_view.dart
++++ b/lib/screens/fight/fight_board_view.dart
+@@ -675,6 +675,14 @@ extension _FightBoardView on _FightScreenState {
+                                     _update(() => _dieLocks.selected = null),
+                           ),
+                         ),
++                        if (protoMode == 'A')
++                          Positioned(
++                            left: 6, right: 6, top: 4,
++                            child: IgnorePointer(child: _FighterRow(
++                              allies: protoAllies ?? [for (final m in _party) _headIdFor(m)],
++                              foes: [for (final e in _enemies) e.enemyId],
++                              h: size.width < 340 ? 46 : size.width < 380 ? 54 : 62)),
++                          ),
+                         for (final actor in onBoard)
+                           () {
+                             final i = acting.indexOf(actor);
+@@ -925,3 +933,87 @@ extension _FightBoardView on _FightScreenState {
+   GlobalKey _dieKey(String id) =>
+       _cardKeys.putIfAbsent('die:$id', GlobalKey.new);
+ }
++
++// ---- PROTOTYPE (scratch, never committed) ---------------------------------
++String protoMode = 'A';
++List<String>? protoAllies;
++
++class _FighterRow extends StatefulWidget {
++  const _FighterRow({required this.allies, required this.foes, required this.h});
++  final List<String> allies; // 'hero' or a companion id
++  final List<String> foes;
++  final double h;
++  @override
++  State<_FighterRow> createState() => _FighterRowState();
++}
++
++class _FighterRowState extends State<_FighterRow> {
++  FightSpriteSet? _set(String id, bool ally) => id == 'hero'
++      ? roninSprite
++      : ally
++          ? companionFightSprite(id)
++          : enemyFightSprite(id);
++  @override
++  void initState() {
++    super.initState();
++    for (final id in widget.allies) {
++      final s = _set(id, true);
++      if (s != null) FightSpriteImages.load(s);
++    }
++    for (final id in widget.foes) {
++      final s = _set(id, false);
++      if (s != null) FightSpriteImages.load(s);
++    }
++  }
++
++  Widget _fig(String id, bool ally) {
++    final s = _set(id, ally);
++    if (s == null) return SizedBox(width: widget.h);
++    return ValueListenableBuilder<int>(
++      valueListenable: FightSpriteImages.loaded,
++      builder: (_, __, ___) {
++        final img = FightSpriteImages.idleOf(s);
++        final use = FightSpriteImages.effective(s);
++        final k = widget.h / 48 * use.drawScale;
++        final w = use.frameWidth * k, hh = use.frameHeight * k;
++        return SizedBox(
++          width: w,
++          height: widget.h,
++          child: img == null
++              ? null
++              : OverflowBox(
++                  alignment: Alignment.bottomCenter,
++                  minHeight: hh, maxHeight: hh, minWidth: w, maxWidth: w,
++                  child: Transform.translate(
++                    offset: Offset(0, use.footInset * k),
++                    child: Transform.scale(
++                      scaleX: (ally && !use.facesEast) ? -1 : 1,
++                      child: CustomPaint(size: Size(w, hh), painter: _ProtoPainter(img, use)),
++                    ),
++                  ),
++                ),
++        );
++      },
++    );
++  }
++
++  @override
++  Widget build(BuildContext context) => SizedBox(
++        height: widget.h,
++        child: Row(children: [
++          Expanded(child: Row(mainAxisAlignment: MainAxisAlignment.spaceEvenly, crossAxisAlignment: CrossAxisAlignment.end, children: [for (final a in widget.allies) Flexible(child: FittedBox(fit: BoxFit.scaleDown, alignment: Alignment.bottomCenter, child: _fig(a, true)))])),
++          const SizedBox(width: 8),
++          Expanded(child: Row(mainAxisAlignment: MainAxisAlignment.spaceEvenly, crossAxisAlignment: CrossAxisAlignment.end, children: [for (final f in widget.foes) Flexible(child: FittedBox(fit: BoxFit.scaleDown, alignment: Alignment.bottomCenter, child: _fig(f, false)))])),
++        ]),
++      );
++}
++
++class _ProtoPainter extends CustomPainter {
++  _ProtoPainter(this.img, this.set);
++  final ui.Image img;
++  final FightSpriteSet set;
++  @override
++  void paint(Canvas c, Size s) => c.drawImageRect(img, Rect.fromLTWH(0, 0, set.frameWidth.toDouble(), set.frameHeight.toDouble()), Offset.zero & s, Paint()..filterQuality = FilterQuality.none..isAntiAlias = false);
++  @override
++  bool shouldRepaint(_) => false;
++}
+diff --git a/lib/screens/fight/fight_view.dart b/lib/screens/fight/fight_view.dart
+index 96744be53..d79bb53a6 100644
+--- a/lib/screens/fight/fight_view.dart
++++ b/lib/screens/fight/fight_view.dart
+@@ -490,6 +490,14 @@ extension _FightView on _FightScreenState {
+             padding: const EdgeInsets.symmetric(horizontal: 12),
+             child: _buildSlots(items, previews),
+           ),
++          if (protoMode == 'B')
++            Padding(
++              padding: const EdgeInsets.fromLTRB(12, 4, 12, 0),
++              child: _FighterRow(
++                  allies: protoAllies ?? [for (final m in _party) _headIdFor(m)],
++                  foes: [for (final e in _enemies) e.enemyId],
++                  h: MediaQuery.sizeOf(context).width < 340 ? 46 : 56),
++            ),
+           const SizedBox(height: 8),
+           // The dice board takes what is left; the aim line is drawn over the
+           // cards and the board together.
+diff --git a/lib/screens/fight_screen.dart b/lib/screens/fight_screen.dart
+index 92728c7ff..20bae24b2 100644
+--- a/lib/screens/fight_screen.dart
++++ b/lib/screens/fight_screen.dart
+@@ -1,11 +1,13 @@
+ import 'dart:async';
+ import 'dart:math';
++import 'dart:ui' as ui;
+ 
+ import 'package:flutter/material.dart';
+ import 'package:flutter/services.dart';
+ import 'package:flutter_riverpod/flutter_riverpod.dart';
+ 
+ import '../combat/battlefield_condition.dart';
++import '../widgets/fight_sprites.dart';
+ import '../combat/field_anomaly.dart';
+ import '../combat/fight_ground_rule.dart';
+ import '../data/hunter_mercy.dart';
