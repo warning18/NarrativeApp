@@ -1,6 +1,6 @@
 // The world map's pictures (UX_SHOTS=<folder> UX_SHOT_TAG=before|after): the
-// real full-map screen at 412 px in French, the sphere and the flat chart
-// close in on the Salt Coast, with the Clans layer on and the layers sheet.
+// real full-map screen at 412 px in French, the sphere and then close in on
+// the Salt Coast, with the Clans layer on and the layers sheet.
 // Drawn only with UX_SHOTS.
 import 'dart:io';
 import 'dart:ui' as ui;
@@ -196,7 +196,7 @@ void main() {
     Navigator.of(tester.element(find.byType(BottomSheet))).pop();
     await settle();
 
-    // Close in: the flat chart on the Salt Coast, with and without the layer.
+    // Close in: the sphere on the Salt Coast, with and without the layer.
     await container.read(chartCalqueProvider.notifier).choose(ChartCalque.none);
     for (var i = 0; i < 2; i++) {
       await tester.tap(find.byKey(const ValueKey('journey_zoom_in')));
