@@ -116,6 +116,8 @@ SimCharacter towerFreshHero(String raceId, String professionId,
         break;
     }
   }
+  final people = towerPeoplePoints[raceId] ?? 0;
+  if (people > 0) hero.addAbilities({hero.preferredStat: people});
   if (unlocksOwned > 0) {
     hero.maxHealth =
         (hero.maxHealth * (1 + towerHealthPerUnlock * unlocksOwned)).round();
