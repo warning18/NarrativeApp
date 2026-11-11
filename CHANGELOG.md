@@ -8,6 +8,10 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.930.0+966]
+
+- Maps, release 1: the sphere is the world. The world map is the sphere only: it opens filling its box, turned to the party; "+" closes in on the party wherever the ball was turned, "−" shows the whole ball, and quick presses add up. Names keep clear of the buttons (English and French), and there are five 44 px map buttons instead of seven of 34. The flat world chart, the sphere switch in the layers sheet, the two pole buttons and the separate "Land" view leave the player's path; the older worlds A, B and C stay on Edit Mode's world page. Going up from a town, the fog is on from the first frame. The epilogue map and the direction of a district's ways out read the sphere's world, and so does the weather where the party stands (Core's agreed line in `climate_provider.dart`). Pictures: `docs/maps/sphere-and-locations/release-1/`.
+
 ## [1.929.0+965]
 
 - Fight: the fight screen can tell its caller how many rounds it has started (a new optional `onRound`, told 1 when the battle begins and the round's number each time a new one starts), so the Tower's rival can count the rounds a fight took. Nothing changes for any other fight.

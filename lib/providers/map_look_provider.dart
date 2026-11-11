@@ -99,36 +99,6 @@ final chartCalqueProvider =
     StateNotifierProvider<_ChartCalqueNotifier, ChartCalque>(
         (ref) => _ChartCalqueNotifier());
 
-const String chartGlobePrefsKey = 'world_map_globe';
-
-/// Whether the Journey's world map is looked at as a sphere (v1.200): the
-/// sphere until the player asks for the flat chart (v1.350: zooming out
-/// from the Journey lands on it), and the pick is kept.
-class _ChartGlobeNotifier extends StateNotifier<bool> {
-  _ChartGlobeNotifier() : super(true) {
-    _load();
-  }
-
-  bool _chosen = false;
-
-  Future<void> _load() async {
-    final prefs = await SharedPreferences.getInstance();
-    final on = prefs.getBool(chartGlobePrefsKey);
-    if (_chosen || on == null) return;
-    state = on;
-  }
-
-  Future<void> choose(bool on) async {
-    _chosen = true;
-    state = on;
-    final prefs = await SharedPreferences.getInstance();
-    await prefs.setBool(chartGlobePrefsKey, on);
-  }
-}
-
-final chartGlobeProvider = StateNotifierProvider<_ChartGlobeNotifier, bool>(
-    (ref) => _ChartGlobeNotifier());
-
 const String chartWeatherPrefsKey = 'world_map_weather';
 
 /// Whether the weather moves over the world map (v1.204, see
