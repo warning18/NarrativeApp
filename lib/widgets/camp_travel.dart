@@ -25,6 +25,7 @@ import '../screens/land_crossing_screen.dart' show runLandCrossing;
 import '../providers/app_mode_provider.dart';
 import 'immersive_notice.dart';
 import 'ship_widgets.dart';
+import '../theme/icon_sizes.dart';
 
 // The way between the camp and the places of the open chapters (see
 // chapter_loop.dart). The camp is the party's base: the story stands there
@@ -250,7 +251,8 @@ class CampReturnButton extends ConsumerWidget {
         alignment: Alignment.centerLeft,
       ),
       onPressed: busy ? null : () => returnToCamp(context, ref),
-      icon: const Icon(Icons.local_fire_department_outlined, size: 18),
+      icon:
+          const Icon(Icons.local_fire_department_outlined, size: IconSize.s16),
       label: Text(
         '${tr(ref, 'camp_return_button')} · '
         '${_routeLabelTo(ref, null, ports: ports, savedPortId: savedPortId)}',
@@ -330,7 +332,7 @@ class PlaceCard extends ConsumerWidget {
                 key: Key('place_companion_${place.id}'),
                 children: [
                   Icon(Icons.person_add_alt_1_outlined,
-                      size: 14, color: theme.colorScheme.tertiary),
+                      size: IconSize.s16, color: theme.colorScheme.tertiary),
                   const SizedBox(width: 4),
                   Flexible(
                     child: Text(tr(ref, 'place_companion_label'),
@@ -350,7 +352,7 @@ class PlaceCard extends ConsumerWidget {
             if (landmark != null)
               IconButton(
                 key: Key('map_${place.id}'),
-                icon: const Icon(Icons.map_outlined, size: 20),
+                icon: const Icon(Icons.map_outlined, size: IconSize.s16),
                 tooltip: tr(ref, 'map_on_map'),
                 visualDensity: VisualDensity.compact,
                 padding: EdgeInsets.zero,

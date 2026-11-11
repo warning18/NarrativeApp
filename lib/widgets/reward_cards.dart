@@ -10,6 +10,7 @@ import '../utils/pixel_icons/pixel_icon.dart';
 import 'item_lore.dart';
 import 'item_stats.dart';
 import 'reward_card.dart';
+import '../theme/icon_sizes.dart';
 
 /// The accent of a quest's chapter (the card's header colour); chapter art
 /// takes this over when it exists.
@@ -35,8 +36,9 @@ String chapterArtPath(int chapter) =>
 /// An item's own picture on a reward tile, a mark for its absence.
 Widget _rewardItemIcon(String itemId, Color accent) => PixelIcon(
       ItemIcons.pathFor(itemId),
-      size: 36,
-      fallback: Icon(Icons.inventory_2_outlined, size: 28, color: accent),
+      size: IconSize.s32,
+      fallback:
+          Icon(Icons.inventory_2_outlined, size: IconSize.s32, color: accent),
     );
 
 /// One row for an item: its name, its rarity as a tag and its stats under
@@ -141,7 +143,7 @@ RewardCardData questRewardCard(
       if (gold > 0)
         RewardLine(
           key: const Key('reward_gold'),
-          icon: Icon(Icons.paid, size: 30, color: ink.gold),
+          icon: Icon(Icons.paid, size: IconSize.s32, color: ink.gold),
           accent: ink.gold,
           title: trFor(lang, 'reward_gold'),
           sub: trFor(lang, 'reward_gold_sub'),
@@ -150,7 +152,7 @@ RewardCardData questRewardCard(
       if (xp > 0)
         RewardLine(
           key: const Key('reward_xp'),
-          icon: Icon(Icons.star, size: 30, color: ink.tide),
+          icon: Icon(Icons.star, size: IconSize.s32, color: ink.tide),
           accent: ink.tide,
           title: trFor(lang, 'reward_xp'),
           bar: leveledUp ? 1 : (xpNeeded <= 0 ? 0 : xpAfter / xpNeeded),

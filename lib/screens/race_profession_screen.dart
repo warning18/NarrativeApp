@@ -26,6 +26,7 @@ import '../widgets/empty_state.dart';
 import '../widgets/race_profession_cards.dart';
 import '../widgets/ink_sheet.dart';
 import '../widgets/ink_loading.dart';
+import '../theme/icon_sizes.dart';
 
 class RaceProfessionScreen extends ConsumerStatefulWidget {
   const RaceProfessionScreen({super.key, this.locks = const {}, this.onChosen});
@@ -168,7 +169,7 @@ class _RaceProfessionScreenState extends ConsumerState<RaceProfessionScreen> {
       const SizedBox(width: 6),
       ActionChip(
         key: const Key('rp_compare'),
-        avatar: Icon(Icons.compare_arrows, size: 16, color: ink.tide),
+        avatar: Icon(Icons.compare_arrows, size: IconSize.s16, color: ink.tide),
         label: Text(tr(ref, 'rp_compare'), style: TextStyle(color: ink.tide)),
         visualDensity: VisualDensity.compact,
         onPressed: () => showCompareSheet(context, ref, book,
@@ -701,7 +702,7 @@ class _ChoiceRow extends ConsumerWidget {
                               child: Row(
                                 mainAxisSize: MainAxisSize.min,
                                 children: [
-                                  SkillPixelIcon(_skillId, size: 14),
+                                  SkillPixelIcon(_skillId, size: IconSize.s16),
                                   const SizedBox(width: 4),
                                   Text(
                                       _skillNameIn(
@@ -765,7 +766,7 @@ class _SkillCard extends StatelessWidget {
               borderRadius: BorderRadius.circular(10),
               border: Border.all(color: scheme.primary.withValues(alpha: 0.5)),
             ),
-            child: SkillPixelIcon(skillId, size: 36),
+            child: SkillPixelIcon(skillId, size: IconSize.s32),
           ),
           const SizedBox(width: 14),
           Expanded(
@@ -914,7 +915,7 @@ class _CharacterSheet extends StatelessWidget {
             child: Row(
               mainAxisSize: MainAxisSize.min,
               children: [
-                Icon(icon, size: 14, color: ink.gold),
+                Icon(icon, size: IconSize.s16, color: ink.gold),
                 const SizedBox(width: 5),
                 Text(text, style: theme.textTheme.labelMedium),
               ],
@@ -1173,7 +1174,8 @@ class _CharacterSheet extends StatelessWidget {
                           style: theme.textTheme.titleSmall),
                     ),
                     if (!elements.isEmpty)
-                      Icon(Icons.chevron_right, size: 18, color: ink.ash),
+                      Icon(Icons.chevron_right,
+                          size: IconSize.s16, color: ink.ash),
                   ],
                 ),
                 const SizedBox(height: 6),
@@ -1224,12 +1226,12 @@ class _CharacterSheet extends StatelessWidget {
                     (Icons.science_outlined, session.potionCount),
                     (Icons.backpack, session.inventoryItemIds.length),
                   ]) ...[
-                    Icon(icon, size: 15, color: ink.gold),
+                    Icon(icon, size: IconSize.s16, color: ink.gold),
                     const SizedBox(width: 3),
                     Text('$count', style: theme.textTheme.labelMedium),
                     const SizedBox(width: 10),
                   ],
-                  Icon(Icons.chevron_right, size: 18, color: ink.ash),
+                  Icon(Icons.chevron_right, size: IconSize.s16, color: ink.ash),
                 ],
               ),
             ),

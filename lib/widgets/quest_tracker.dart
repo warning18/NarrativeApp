@@ -17,6 +17,7 @@ import '../utils/game_icons.dart';
 import 'quest_turn_in.dart';
 import 'ink_sheet.dart';
 import '../theme/palette.dart';
+import '../theme/icon_sizes.dart';
 
 /// The followed quest above the story: its name and the goal it waits on
 /// ("Defeat catacomb ghouls (1/3)"), a Turn in button once every objective
@@ -115,7 +116,7 @@ class _QuestTrackerBarState extends ConsumerState<QuestTrackerBar> {
                               objectives.isEmpty
                                   ? null
                                   : objectives.first['type']?.toString()),
-                          size: 18,
+                          size: IconSize.s16,
                           color: accent),
                       if (goal.ready)
                         Positioned(
@@ -123,7 +124,7 @@ class _QuestTrackerBarState extends ConsumerState<QuestTrackerBar> {
                             top: 1,
                             child: Icon(Icons.check_circle,
                                 key: const Key('quest_tracker_ready'),
-                                size: 13,
+                                size: IconSize.s16,
                                 color: accent))
                       else if (_highlight)
                         Positioned(
@@ -170,7 +171,7 @@ class _QuestTrackerBarState extends ConsumerState<QuestTrackerBar> {
                       objectives.isEmpty
                           ? null
                           : objectives.first['type']?.toString()),
-                  size: 20,
+                  size: IconSize.s16,
                   color: accent,
                 ),
                 const SizedBox(width: 8),
@@ -323,7 +324,7 @@ class _QuestSheet extends ConsumerWidget {
                       status.met
                           ? Icons.check_circle
                           : Icons.radio_button_unchecked,
-                      size: 18,
+                      size: IconSize.s16,
                       color: status.met
                           ? Palette.good
                           : theme.colorScheme.onSurfaceVariant,

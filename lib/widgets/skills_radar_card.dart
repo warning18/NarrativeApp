@@ -18,6 +18,7 @@ import 'ability_radar.dart';
 import 'radar_chart.dart';
 import 'stat_sheet.dart';
 import 'feature_unlock.dart';
+import '../theme/icon_sizes.dart';
 
 /// How many skills the Detail view lists before "All skills".
 const int _skillsCardRows = 6;
@@ -95,7 +96,7 @@ class _SkillsRadarCardState extends ConsumerState<SkillsRadarCard> {
                         borderRadius: BorderRadius.circular(4),
                         border: Border.all(color: ink.seam),
                       ),
-                      child: SkillPixelIcon(id, size: 20),
+                      child: SkillPixelIcon(id, size: IconSize.s16),
                     ),
                     const SizedBox(width: 8),
                     Expanded(

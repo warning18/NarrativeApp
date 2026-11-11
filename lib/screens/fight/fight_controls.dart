@@ -36,7 +36,7 @@ extension _FightControls on _FightScreenState {
                       border: Border.all(color: scheme.outlineVariant),
                     ),
                     child: Icon(Icons.history,
-                        size: 18, color: scheme.onSurfaceVariant),
+                        size: IconSize.s16, color: scheme.onSurfaceVariant),
                   ),
                 ),
                 if (unread)
@@ -83,7 +83,8 @@ extension _FightControls on _FightScreenState {
                     Row(
                       children: [
                         Icon(_logIcon(entry.kind),
-                            size: 12, color: _logColor(context, entry.kind)),
+                            size: IconSize.inline,
+                            color: _logColor(context, entry.kind)),
                         const SizedBox(width: 4),
                         Expanded(
                           child: Text(
@@ -107,7 +108,8 @@ extension _FightControls on _FightScreenState {
                 ],
               ),
             ),
-            Icon(Icons.unfold_more, size: 16, color: colorScheme.outline),
+            Icon(Icons.unfold_more,
+                size: IconSize.s16, color: colorScheme.outline),
           ],
         ),
       ),
@@ -139,7 +141,8 @@ extension _FightControls on _FightScreenState {
                       child: Row(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Icon(_logIcon(entry.kind), size: 14, color: color),
+                          Icon(_logIcon(entry.kind),
+                              size: IconSize.s16, color: color),
                           const SizedBox(width: 6),
                           Expanded(
                             child: Text(
@@ -249,7 +252,7 @@ extension _FightControls on _FightScreenState {
                     onPressed: (_rolling || rollsLeft <= 0 || allLocked)
                         ? null
                         : () => _rollDice(dice, skills, items),
-                    icon: const Icon(Icons.refresh, size: 18),
+                    icon: const Icon(Icons.refresh, size: IconSize.s16),
                     label: _oneLine('${tr(ref, 'reroll_button')} ($rollsLeft)'),
                   ),
                 ),
@@ -259,7 +262,7 @@ extension _FightControls on _FightScreenState {
                     onPressed: (_rolling || !_allTargetsPicked)
                         ? null
                         : () => _confirmRoll(skills, items),
-                    icon: const Icon(Icons.check, size: 18),
+                    icon: const Icon(Icons.check, size: IconSize.s16),
                     label: _oneLine(tr(ref, 'confirm_roll_button')),
                   ),
                 ),
@@ -269,7 +272,7 @@ extension _FightControls on _FightScreenState {
                     onPressed: (!anyDieAvailable || _rolling || _settlingRound)
                         ? null
                         : () => _rollDice(dice, skills, items),
-                    icon: const Icon(Icons.casino, size: 18),
+                    icon: const Icon(Icons.casino, size: IconSize.s16),
                     label: _oneLine(
                       acting.length > 1
                           ? '${tr(ref, 'roll_dice_button')} (${acting.length}×)'
@@ -310,7 +313,8 @@ extension _FightControls on _FightScreenState {
             ),
             child: Stack(
               children: [
-                Center(child: Icon(icon, size: 20, color: Palette.good)),
+                Center(
+                    child: Icon(icon, size: IconSize.s16, color: Palette.good)),
                 Positioned(
                   right: 2,
                   bottom: 1,
@@ -374,7 +378,7 @@ extension _FightControls on _FightScreenState {
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          const Icon(manaIcon, size: 16, color: manaColor),
+          const Icon(manaIcon, size: IconSize.s16, color: manaColor),
           const SizedBox(width: 2),
           // The Ash Well: named, and said empty while it still is.
           if (well) ...[
@@ -443,7 +447,8 @@ extension _FightControls on _FightScreenState {
               child: Row(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  Icon(spellEffectIcon(spell.effect), size: 15, color: color),
+                  Icon(spellEffectIcon(spell.effect),
+                      size: IconSize.s16, color: color),
                   const SizedBox(width: 4),
                   Text(
                     spell.nameFor(lang),
@@ -490,13 +495,14 @@ extension _FightControls on _FightScreenState {
               children: [
                 Row(
                   children: [
-                    Icon(spellEffectIcon(spell.effect), color: color, size: 28),
+                    Icon(spellEffectIcon(spell.effect),
+                        color: color, size: IconSize.s32),
                     const SizedBox(width: 10),
                     Expanded(
                       child: Text(spell.nameFor(lang),
                           style: theme.textTheme.titleMedium),
                     ),
-                    const Icon(manaIcon, size: 16, color: manaColor),
+                    const Icon(manaIcon, size: IconSize.s16, color: manaColor),
                     const SizedBox(width: 2),
                     Text('${_spellCost(spell)}',
                         style: const TextStyle(

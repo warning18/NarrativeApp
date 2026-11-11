@@ -54,6 +54,7 @@ import '../widgets/walk_bubble.dart';
 import 'crossing_rise_route.dart';
 import 'fight_screen.dart';
 import '../theme/motion.dart';
+import '../theme/icon_sizes.dart';
 
 /// The story choice (`'<node>#<choice index>'`) whose crossing was just
 /// lost or turned back from, after its check and fight went the party's
@@ -845,7 +846,7 @@ class _LandCrossingScreenState extends ConsumerState<LandCrossingScreen>
                             horizontal: 8, vertical: 4),
                         child: Row(mainAxisSize: MainAxisSize.min, children: [
                           const Icon(Icons.favorite,
-                              size: 16, color: Colors.white),
+                              size: IconSize.s16, color: Colors.white),
                           const SizedBox(width: 6),
                           // Shrinks with the screen and the text, so large text on
                           // a narrow phone keeps the numbers whole.

@@ -34,6 +34,7 @@ import '../theme/stitched_ink.dart';
 import '../widgets/chart_map_painter.dart';
 import '../widgets/pixel_banner.dart';
 import '../widgets/ink_sheet.dart';
+import '../theme/icon_sizes.dart';
 
 class EpilogueMapScreen extends ConsumerWidget {
   const EpilogueMapScreen({super.key});
@@ -614,7 +615,8 @@ class _TownRow extends ConsumerWidget {
                                       .replaceAll('{n}', '$differing'),
                               style: theme.textTheme.labelSmall
                                   ?.copyWith(color: ink.ash)),
-                          Icon(Icons.chevron_right, size: 14, color: ink.ash),
+                          Icon(Icons.chevron_right,
+                              size: IconSize.s16, color: ink.ash),
                         ]),
                       ),
                     ),

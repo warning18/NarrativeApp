@@ -12,6 +12,7 @@ import '../screens/companion_page.dart';
 import '../theme/stitched_ink.dart';
 import 'companion_parts.dart';
 import 'ink_loading.dart';
+import '../theme/icon_sizes.dart';
 
 class PartyFormation extends ConsumerWidget {
   const PartyFormation({super.key, required this.houses});
@@ -196,7 +197,7 @@ class PartyFormation extends ConsumerWidget {
         Padding(
           padding: const EdgeInsets.fromLTRB(2, 16, 2, 4),
           child: Row(children: [
-            Icon(Icons.explore_outlined, size: 16, color: ink.ash),
+            Icon(Icons.explore_outlined, size: IconSize.s16, color: ink.ash),
             const SizedBox(width: 6),
             Expanded(
               child: Text(tr(ref, 'party_still_out_there'),

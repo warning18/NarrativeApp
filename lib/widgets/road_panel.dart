@@ -14,6 +14,7 @@ import '../theme/stitched_ink.dart';
 import 'camp_fate_dialog.dart';
 import 'immersive_notice.dart';
 import 'moments.dart';
+import '../theme/icon_sizes.dart';
 
 /// A night's rest under way (see [restTheNight]): a second tap on Rest
 /// before it is over rests nothing.
@@ -85,7 +86,7 @@ class RoadPanel extends ConsumerWidget {
     Widget line(IconData icon, String title, String detail, {Color? tint}) =>
         ListTile(
           dense: true,
-          leading: Icon(icon, size: 20, color: tint),
+          leading: Icon(icon, size: IconSize.s16, color: tint),
           title: Text(title),
           subtitle: Text(detail, style: small),
         );

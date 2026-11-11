@@ -10,6 +10,7 @@ import 'dart:math' as math;
 import 'package:flutter/material.dart';
 
 import '../theme/stitched_ink.dart';
+import '../theme/icon_sizes.dart';
 
 /// One ring: the kind [id], its [label] and number of choices, its colour
 /// and the icons of the choices it holds.
@@ -138,7 +139,8 @@ class ChoiceRingsLayer extends StatelessWidget {
                                 fontFamily: InkFonts.system,
                                 fontSize: 11,
                                 color: ring.color))
-                        : Icon(ring.icons[k], size: 15, color: ring.color),
+                        : Icon(ring.icons[k],
+                            size: IconSize.s16, color: ring.color),
                   ),
                 ),
               ),
@@ -310,7 +312,7 @@ class ChoiceBeat extends StatelessWidget {
                   top: here.dy - innerRadius - 18 - 34 * t,
                   child: Opacity(
                     opacity: (1 - t).clamp(0.0, 1.0),
-                    child: Icon(icon, size: 28, color: color),
+                    child: Icon(icon, size: IconSize.s32, color: color),
                   ),
                 ),
               ],

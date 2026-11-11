@@ -10,6 +10,7 @@ import '../../theme/stitched_ink.dart';
 import 'tower_look.dart';
 import 'tower_providers.dart';
 import '../../widgets/ink_panel.dart';
+import '../../theme/icon_sizes.dart';
 
 /// The marks and unlocks, in the Tower's night theme (its body below).
 class TowerMarksScreen extends StatelessWidget {
@@ -93,7 +94,8 @@ class _TowerMarksBody extends ConsumerWidget {
                         ),
                         if (progress.unlocked.contains(u.id))
                           Row(mainAxisSize: MainAxisSize.min, children: [
-                            Icon(Icons.check, size: 18, color: ink.heal),
+                            Icon(Icons.check,
+                                size: IconSize.s16, color: ink.heal),
                             const SizedBox(width: 4),
                             Text(tr(ref, 'tower_owned')),
                           ])

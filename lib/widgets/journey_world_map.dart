@@ -23,6 +23,7 @@ import 'chart_map_painter.dart';
 import 'chart_weather.dart';
 import 'journey_place.dart' show RegionFlightPainter;
 import 'town_handover.dart';
+import '../theme/icon_sizes.dart';
 
 /// The chart the Journey's world map draws now: the story's world on the
 /// sphere, else the shape picked in the map's look. A move's path
@@ -892,7 +893,7 @@ class _JourneyWorldMapState extends ConsumerState<JourneyWorldMap>
                 width: 34,
                 height: 34,
                 child: Icon(icon,
-                    size: 20,
+                    size: IconSize.s16,
                     color: on ? widget.palette.mark : widget.palette.place),
               ),
             ),

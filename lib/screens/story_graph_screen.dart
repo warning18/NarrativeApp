@@ -23,6 +23,7 @@ import '../utils/story_export.dart';
 import 'story_node_editor_screen.dart';
 import '../widgets/ink_sheet.dart';
 import '../widgets/ink_loading.dart';
+import '../theme/icon_sizes.dart';
 
 /// A node box's fixed width — capped and ellipsized (see the node
 /// `builder` below) rather than left to grow with the id's length, so a
@@ -344,7 +345,7 @@ class _GraphViewState extends ConsumerState<_GraphView> {
                             children: [
                               Icon(
                                 Icons.nights_stay_outlined,
-                                size: 14,
+                                size: IconSize.s16,
                                 color: colorScheme.onSurfaceVariant
                                     .withValues(alpha: 0.7),
                               ),
@@ -386,7 +387,7 @@ class _GraphViewState extends ConsumerState<_GraphView> {
                         children: [
                           Icon(
                             style.icon,
-                            size: 14,
+                            size: IconSize.s16,
                             color: isCurrent
                                 ? colorScheme.onPrimary
                                 : style.onColor,
@@ -422,7 +423,7 @@ class _GraphViewState extends ConsumerState<_GraphView> {
                                 right: 2,
                                 child: Icon(
                                   Icons.comment,
-                                  size: 12,
+                                  size: IconSize.inline,
                                   color: isCurrent
                                       ? colorScheme.onPrimary
                                       : style.onColor,
@@ -871,8 +872,8 @@ class _Legend extends ConsumerWidget {
                   onTap: onClose,
                   child: Tooltip(
                     message: tr(ref, 'close_legend'),
-                    child:
-                        Icon(Icons.close, size: 16, color: colorScheme.outline),
+                    child: Icon(Icons.close,
+                        size: IconSize.s16, color: colorScheme.outline),
                   ),
                 ),
               ],
@@ -947,7 +948,8 @@ class _Legend extends ConsumerWidget {
                       border: Border.all(color: colorScheme.outlineVariant),
                     ),
                     child: Icon(Icons.nights_stay_outlined,
-                        size: 10, color: colorScheme.onSurfaceVariant),
+                        size: IconSize.inline,
+                        color: colorScheme.onSurfaceVariant),
                   ),
                   const SizedBox(width: 6),
                   Text(tr(ref, 'undiscovered_node_legend'),
@@ -998,7 +1000,7 @@ Future<void> _showNodeInfo(
               children: [
                 Row(
                   children: [
-                    Icon(style.icon, size: 18),
+                    Icon(style.icon, size: IconSize.s16),
                     const SizedBox(width: 6),
                     Text(
                       '${t('node')} ${node.id}',
@@ -1040,7 +1042,7 @@ Future<void> _showNodeInfo(
                     child: Row(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        const Icon(Icons.comment_outlined, size: 16),
+                        const Icon(Icons.comment_outlined, size: IconSize.s16),
                         const SizedBox(width: 8),
                         Expanded(child: Text(node.authoringComment!)),
                       ],

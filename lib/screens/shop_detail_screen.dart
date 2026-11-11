@@ -38,6 +38,7 @@ import '../widgets/moments.dart';
 import '../widgets/empty_state.dart';
 import '../theme/palette.dart';
 import '../widgets/ink_loading.dart';
+import '../theme/icon_sizes.dart';
 
 enum _ShopSort { nameAsc, priceLow, priceHigh, stockLeft }
 
@@ -236,7 +237,7 @@ class _ShopDetailScreenState extends ConsumerState<ShopDetailScreen> {
                                     priceFactor > 1
                                         ? Icons.trending_up
                                         : Icons.trending_down,
-                                    size: 18,
+                                    size: IconSize.s16,
                                     color: priceFactor > 1
                                         ? Theme.of(context).colorScheme.error
                                         : Theme.of(context).colorScheme.primary,
@@ -262,7 +263,7 @@ class _ShopDetailScreenState extends ConsumerState<ShopDetailScreen> {
                             children: [
                               Icon(
                                 Icons.sort,
-                                size: 18,
+                                size: IconSize.s16,
                                 color: Theme.of(context)
                                     .colorScheme
                                     .onSurfaceVariant,
@@ -320,8 +321,8 @@ class _ShopDetailScreenState extends ConsumerState<ShopDetailScreen> {
                                     (type) => Padding(
                                       padding: const EdgeInsets.only(right: 6),
                                       child: ChoiceChip(
-                                        avatar:
-                                            Icon(itemTypeIcon(type), size: 16),
+                                        avatar: Icon(itemTypeIcon(type),
+                                            size: IconSize.s16),
                                         label: Text(
                                             trItemType(ref, type, short: true)),
                                         selected: _typeFilter == type,
@@ -538,7 +539,7 @@ class _ShopDetailScreenState extends ConsumerState<ShopDetailScreen> {
                                               if (wearing) ...[
                                                 const SizedBox(width: 6),
                                                 const Icon(Icons.check_circle,
-                                                    size: 14,
+                                                    size: IconSize.s16,
                                                     color: Palette.goodStrong),
                                               ],
                                             ],
@@ -740,7 +741,7 @@ class _KeeperStrip extends StatelessWidget {
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          ShopPixelIcon(shopId, size: 44),
+          ShopPixelIcon(shopId, size: IconSize.s48),
           const SizedBox(width: 10),
           Expanded(
             child: Column(
@@ -807,7 +808,7 @@ class _FactionPriceLine extends StatelessWidget {
                     : factor < 1
                         ? Icons.trending_down
                         : Icons.balance,
-            size: 18,
+            size: IconSize.s16,
             color: Color(tierColor(tier)),
           ),
           const SizedBox(width: 8),

@@ -123,7 +123,7 @@ extension _FightView on _FightScreenState {
                 Row(
                   key: const Key('fight_host_note'),
                   children: [
-                    const Icon(Icons.groups_2_outlined, size: 16),
+                    const Icon(Icons.groups_2_outlined, size: IconSize.s16),
                     const SizedBox(width: 6),
                     Expanded(
                       child: Text(
@@ -168,7 +168,8 @@ extension _FightView on _FightScreenState {
                   children: [
                     for (final entry in charmCounts.entries)
                       FilterChip(
-                        avatar: ItemPixelIcon(entry.key, 'Charm', size: 18),
+                        avatar: ItemPixelIcon(entry.key, 'Charm',
+                            size: IconSize.s16),
                         label: Text(
                           '${(items[entry.key] as Map<String, dynamic>?)?['itemName'] ?? entry.key}'
                           '${entry.value > 1 ? ' x${entry.value}' : ''}',
@@ -206,7 +207,7 @@ extension _FightView on _FightScreenState {
               const SizedBox(height: 4),
               Row(
                 children: [
-                  const Icon(manaIcon, size: 14, color: manaColor),
+                  const Icon(manaIcon, size: IconSize.s16, color: manaColor),
                   const SizedBox(width: 4),
                   Expanded(
                     child: Text(
@@ -285,7 +286,7 @@ extension _FightView on _FightScreenState {
           backgroundColor: _isElite
               ? Palette.goldDeep
               : Theme.of(context).colorScheme.errorContainer,
-          child: EnemyPixelIcon(enemy.enemyId, size: 36),
+          child: EnemyPixelIcon(enemy.enemyId, size: IconSize.s32),
         ),
         const SizedBox(width: 12),
         Expanded(
@@ -667,7 +668,7 @@ extension _FightView on _FightScreenState {
             child: Row(
               mainAxisSize: MainAxisSize.min,
               children: [
-                Icon(icon, size: 13, color: color),
+                Icon(icon, size: IconSize.s16, color: color),
                 const SizedBox(width: 3),
                 Text(label,
                     style: TextStyle(
@@ -712,7 +713,7 @@ extension _FightView on _FightScreenState {
         scrollDirection: Axis.horizontal,
         child: Row(
           children: [
-            const Icon(Icons.auto_awesome, size: 16),
+            const Icon(Icons.auto_awesome, size: IconSize.s16),
             const SizedBox(width: 4),
             Text(tr(ref, 'surge_pick_label'),
                 style: Theme.of(context).textTheme.labelMedium),
@@ -825,7 +826,7 @@ extension _FightView on _FightScreenState {
                         _steadyActorIds.contains(actor.id)
                             ? Icons.anchor
                             : Icons.lock,
-                        size: 12,
+                        size: IconSize.inline,
                         color: accent),
                   ),
                 // A clan die's Resonance: lit (gold) or asleep (grey).
@@ -845,7 +846,7 @@ extension _FightView on _FightScreenState {
                               ? 'resonance_lit_tip'
                               : 'resonance_asleep_tip'),
                       child: Icon(Icons.auto_awesome,
-                          size: 14,
+                          size: IconSize.s16,
                           color: _dieResonance == Resonance.lit
                               ? Palette.goldDark
                               : Colors.white38),
@@ -975,7 +976,8 @@ extension _FightView on _FightScreenState {
             mainAxisAlignment: MainAxisAlignment.center,
             mainAxisSize: MainAxisSize.min,
             children: [
-              Icon(icon, size: 11, color: color.withValues(alpha: 0.45)),
+              Icon(icon,
+                  size: IconSize.inline, color: color.withValues(alpha: 0.45)),
               const SizedBox(width: 2),
               Text('+$tired',
                   style: TextStyle(
@@ -1001,13 +1003,13 @@ extension _FightView on _FightScreenState {
             mainAxisAlignment: MainAxisAlignment.center,
             mainAxisSize: MainAxisSize.min,
             children: [
-              Icon(icon, size: 11, color: color),
+              Icon(icon, size: IconSize.inline, color: color),
               const SizedBox(width: 2),
               Text(text,
                   style: TextStyle(
                       fontSize: 10, fontWeight: FontWeight.bold, color: color)),
               const SizedBox(width: 2),
-              Icon(Icons.my_location, size: 10, color: color),
+              Icon(Icons.my_location, size: IconSize.inline, color: color),
             ],
           ),
         );
@@ -1023,7 +1025,7 @@ extension _FightView on _FightScreenState {
       mainAxisAlignment: MainAxisAlignment.center,
       mainAxisSize: MainAxisSize.min,
       children: [
-        Icon(icon, size: 11, color: color),
+        Icon(icon, size: IconSize.inline, color: color),
         const SizedBox(width: 2),
         Text(
           text,
@@ -1056,7 +1058,7 @@ extension _FightView on _FightScreenState {
       return List.filled(
           count,
           DieCubeFace(
-              glyph: Icon(Icons.casino, size: 22, color: accent),
+              glyph: Icon(Icons.casino, size: IconSize.s32, color: accent),
               color: accent));
     }
     final language = ref.read(appLanguageProvider);
@@ -1101,7 +1103,7 @@ extension _FightView on _FightScreenState {
         color: Palette.amber88.withValues(alpha: 0.92),
         border: Border.all(color: color, width: 2),
       ),
-      child: SkillPixelIcon(_effectiveSkillId(face), size: 26),
+      child: SkillPixelIcon(_effectiveSkillId(face), size: IconSize.s32),
     );
   }
 
@@ -1260,7 +1262,7 @@ extension _FightView on _FightScreenState {
                   const SizedBox(height: 4),
                   Row(
                     children: [
-                      Icon(elementIcon(element), size: 14),
+                      Icon(elementIcon(element), size: IconSize.s16),
                       const SizedBox(width: 4),
                       Text('${trFor(lang, 'element_label')}: $element',
                           style: theme.textTheme.bodySmall),
@@ -1273,7 +1275,8 @@ extension _FightView on _FightScreenState {
                   Row(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Icon(keyword.icon, size: 14, color: keyword.color),
+                      Icon(keyword.icon,
+                          size: IconSize.s16, color: keyword.color),
                       const SizedBox(width: 4),
                       Expanded(
                         child: Text(
@@ -1305,7 +1308,7 @@ extension _FightView on _FightScreenState {
                       Navigator.of(sheetContext).pop();
                       _nudge(actor);
                     },
-                    icon: const Icon(Icons.swap_vert, size: 18),
+                    icon: const Icon(Icons.swap_vert, size: IconSize.s16),
                     label: Text(trFor(lang, 'nudge_button')
                         .replaceAll('{face}', nudgeTo.faceName)
                         .replaceAll('{n}', '$_nudgesLeft')),

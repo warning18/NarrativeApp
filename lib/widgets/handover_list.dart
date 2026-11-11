@@ -12,6 +12,7 @@ import '../providers/geography_provider.dart';
 import '../theme/stitched_ink.dart';
 import 'pixel_banner.dart';
 import 'town_handover.dart';
+import '../theme/icon_sizes.dart';
 
 class HandoverList extends ConsumerWidget {
   const HandoverList({super.key});
@@ -65,8 +66,8 @@ class HandoverList extends ConsumerWidget {
                     side(h.fromClan),
                     Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 6),
-                      child:
-                          Icon(Icons.arrow_forward, size: 14, color: ink.ash),
+                      child: Icon(Icons.arrow_forward,
+                          size: IconSize.s16, color: ink.ash),
                     ),
                     side(h.toClan),
                   ]),

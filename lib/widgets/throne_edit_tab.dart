@@ -12,6 +12,7 @@ import '../providers/politics_provider.dart';
 import 'clan_widgets.dart';
 import 'sign_widgets.dart';
 import 'throne_widgets.dart';
+import '../theme/icon_sizes.dart';
 
 /// Edit Mode's Clans & Politics, its Throne tab (v1.196, see throne.dart):
 /// a card per faction with its climb -- its House, its clan quest steps
@@ -102,7 +103,7 @@ class ThroneEditTab extends ConsumerWidget {
                     IconButton(
                       key: Key('throne_step_down_$id'),
                       visualDensity: VisualDensity.compact,
-                      icon: const Icon(Icons.remove, size: 18),
+                      icon: const Icon(Icons.remove, size: IconSize.s16),
                       tooltip: trFor(lang, 'throne_edit_steps')
                           .replaceAll('{n}', '${climb.steps}'),
                       onPressed: climb.steps <= 0
@@ -120,7 +121,7 @@ class ThroneEditTab extends ConsumerWidget {
                     IconButton(
                       key: Key('throne_step_up_$id'),
                       visualDensity: VisualDensity.compact,
-                      icon: const Icon(Icons.add, size: 18),
+                      icon: const Icon(Icons.add, size: IconSize.s16),
                       tooltip: trFor(lang, 'throne_edit_steps')
                           .replaceAll('{n}', '${climb.steps}'),
                       onPressed: climb.steps >= clanQuestSteps

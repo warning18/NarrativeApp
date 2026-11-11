@@ -164,7 +164,7 @@ class _PartyTransitState extends State<_PartyTransit>
                           transit.forced
                               ? Icons.warning_amber_rounded
                               : transit.icon ?? Icons.directions_walk,
-                          size: 18,
+                          size: IconSize.s16,
                           color: transit.forced
                               ? scheme.error
                               : scheme.onSurfaceVariant,

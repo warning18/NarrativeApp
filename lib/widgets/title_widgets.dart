@@ -8,6 +8,7 @@ import '../providers/clans_provider.dart';
 import '../providers/player_session_provider.dart';
 import '../theme/stitched_ink.dart';
 import 'title_detail_view.dart';
+import '../theme/icon_sizes.dart';
 
 /// The title worn, as it shows under the character's name ('' for none;
 /// see offers.dart's titles).
@@ -117,7 +118,7 @@ class TitleChips extends ConsumerWidget {
                                   title.negative
                                       ? Icons.report_outlined
                                       : Icons.workspace_premium,
-                                  size: 15,
+                                  size: IconSize.s16,
                                   color: color),
                               const SizedBox(width: 5),
                             ],

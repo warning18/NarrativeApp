@@ -5,6 +5,7 @@
 // road walk's own (journey_screen.dart's party transit); this file has the
 // words and the veil.
 import 'package:flutter/material.dart';
+import '../theme/icon_sizes.dart';
 
 /// [name] as it reads in the middle of a sentence: a leading article loses
 /// its capital ("The Stone Bridge" -> "the Stone Bridge", "Le Pont de
@@ -68,7 +69,7 @@ class TownDoorVeil extends StatelessWidget {
               ),
               Center(
                 child: Icon(icon,
-                    size: 44,
+                    size: IconSize.s48,
                     color: Colors.white.withValues(alpha: opacity * 0.9)),
               ),
             ],
