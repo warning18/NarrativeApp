@@ -37,3 +37,6 @@ Core confirmed the real order and that **lark_wreck on dunes and highhearth on s
 
 ## Done: lark_wreck and highhearth (2 generations, balance 984.5 to 982.5)
 `art/pixellab-backgrounds/redos/staged/lark_wreck_s7.png` (a ship wrecked on a dune in the Dune Sea: dunes stage) and `highhearth_s7.png` (a frost-bound stone village under the quarry cliff: snow stage) replace the batch B bands; sheet `docs/art/boards/backgrounds-redos2.png` (old above, redo below). Redo count: 14 of the approved 15 used. Held: 5 stage variants + a White Anchorage harbour road.
+
+## Stage variants (the held six, now made)
+Glass warm dusk, ash warm kiln, terraces red haze, waves night, hall wet vault and the White Anchorage harbour road: `art/pixellab-backgrounds/redos/staged/fight_{glass_greyhithe,ash_emberwick,terraces_akagiri,waves_crossing,hall_wet,cityroad_whiteanchorage}_s11.png` (180x320, one seed each, no retries; 6 generations). UX brief: each replaces the shared stage plate for the places listed in `docs/art/catalogue/stage-variants.md`; the shared plates stay for every other place. Board: `docs/art/boards/backgrounds-stage-variants.png`.

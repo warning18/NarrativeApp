@@ -248,7 +248,7 @@ class _BountyBoardState extends ConsumerState<BountyBoard>
 /// The wax of a met contract's seal.
 const Color _sealRed = Palette.red46;
 const Color _parchment = Palette.amber84a;
-const Color _noteInk = Color(0xFF2B2118);
+const Color _noteInk = Palette.brown13;
 const Color _noteBrown = Palette.orange35a;
 
 /// The board's wood: planks with a dark frame.

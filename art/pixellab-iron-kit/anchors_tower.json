@@ -8,7 +8,7 @@
    ],
    "size": [
     32,
-    10
+    16
    ],
    "anchor": "top edge (hangs down); tile, cycle variants, overlap 4 px"
   },
@@ -20,7 +20,7 @@
    ],
    "size": [
     32,
-    8
+    12
    ],
    "anchor": "bottom edge (rises)"
   },
@@ -47,7 +47,7 @@
    ],
    "size": [
     32,
-    10
+    16
    ],
    "anchor": "top edge (hangs down); tile, cycle variants, overlap 4 px"
   },
@@ -59,7 +59,7 @@
    ],
    "size": [
     32,
-    8
+    12
    ],
    "anchor": "bottom edge (rises)"
   },
@@ -86,7 +86,7 @@
    ],
    "size": [
     32,
-    10
+    16
    ],
    "anchor": "top edge (hangs down); tile, cycle variants, overlap 4 px"
   },
@@ -98,7 +98,7 @@
    ],
    "size": [
     32,
-    8
+    12
    ],
    "anchor": "bottom edge (rises)"
   },

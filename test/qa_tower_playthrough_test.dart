@@ -166,6 +166,7 @@ void main() {
 
     // --- the floors ---
     var floorsPlayed = 0;
+    var swappedDie = false;
     for (var step = 0; step < 400 && floorsPlayed <= maxFloors; step++) {
       if (has('tower_end_floor')) break;
       if (has('tower_fight')) {
@@ -173,6 +174,33 @@ void main() {
         final label = texts(8).join(' | ');
         note('FLOOR $floorsPlayed stand: $label');
         await shot('floor-$floorsPlayed-stand');
+        // The "Your dice" panel: a die not looked at yet is opened and put in
+        // play (once a run), and any dead end of the panel is a finding.
+        final newDots = find.byWidgetPredicate((w) =>
+            w.key is Key &&
+            (w.key as Key).toString().contains('tower_die_new_'));
+        if (newDots.evaluate().isNotEmpty && !swappedDie) {
+          final dotKey = '${newDots.evaluate().first.widget.key}';
+          final id =
+              RegExp('tower_die_new_([a-z_]+)').firstMatch(dotKey)?.group(1);
+          note('PANEL new die "$id" on floor $floorsPlayed');
+          if (id != null) {
+            await tapKey('tower_die_$id');
+            await shot('floor-$floorsPlayed-die-open');
+            final roll = find.byKey(const Key('tower_die_roll'));
+            if (roll.evaluate().isEmpty) {
+              note('FINDING dice panel: no "Roll this die" after opening $id');
+            } else if ((tester.widget(roll) as FilledButton).onPressed ==
+                null) {
+              note('PANEL $id is already in play');
+            } else {
+              await tapKey('tower_die_roll');
+              await shot('floor-$floorsPlayed-die-in-play');
+              note('PANEL put $id in play');
+              swappedDie = true;
+            }
+          }
+        }
         // The Fight button waits while the last floor is still being put
         // away: give it real time, and say how long it took.
         var waited = 0;

@@ -25,8 +25,8 @@ class TowerEndScreen extends StatelessWidget {
   final TowerProgress progress;
 
   @override
-  Widget build(BuildContext context) =>
-      TowerNight(child: _TowerEndBody(run: run, progress: progress));
+  Widget build(BuildContext context) => TowerNight(
+      floor: run.floor, child: _TowerEndBody(run: run, progress: progress));
 }
 
 class _TowerEndBody extends ConsumerWidget {
