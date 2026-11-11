@@ -394,6 +394,44 @@ const String towerSpoilsAntidote = 'antidote';
 /// hoard of 20.
 const int towerBagCap = 5;
 
+/// The floor events' version new runs start with (floor events PR 1,
+/// docs/proposals/tower-snakes-and-ladders.md; TowerRun.events). 0 until
+/// UX-2's event card ships, the user's call: a run with none plays as
+/// before the events.
+const int towerEventsLive = 0;
+
+/// The share of ordinary floors that hold a rival (floor events PR 1, the
+/// proposal's "Others"): win the floor's fight within [towerRivalRounds]
+/// rounds and the next floor is skipped. Only where a skip fits: the floor
+/// skipped and the one landed on both ordinary floors, so a skip never
+/// passes a warden or a boss.
+const double towerRivalShare = .10;
+
+/// The rounds a rival's fight is won within to skip the next floor.
+const int towerRivalRounds = 3;
+
+/// The share of ordinary floors that hold a setback (floor events PR 1,
+/// the proposal's option (a), cap 1): after the win and the card, the
+/// story's d20 check. Pass, a potion; fail, down 1 to 3 floors (drawn and
+/// shown before the roll), never below the floor after the last gate
+/// beaten. Measured: passed 71% of the time, about a point off the top.
+const double towerSetbackShare = .20;
+
+/// The setbacks a run may take: with none left, the test is not offered.
+const int towerSetbacksPerRun = 1;
+
+/// The ability each setback's check reads, by floor in turn (floor 1
+/// strength, 2 dexterity, 3 wisdom, 4 strength...).
+const List<String> towerSetbackAbilities = ['strength', 'dexterity', 'wisdom'];
+
+/// The setback check's DC: this on floors 1 to 6, one more every
+/// [towerSetbackDcFloors] floors (10 to 14).
+const int towerSetbackDcBase = 10;
+const int towerSetbackDcFloors = 6;
+
+/// The most floors a setback falls (1 to this, drawn).
+const int towerSetbackMaxFall = 3;
+
 /// The rarity steps, lowest first, and each band's odds (floors 1-9,
 /// 11-19, 21-29); a boss or warden floor draws one step up.
 const List<List<double>> towerRarityOdds = [
