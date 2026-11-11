@@ -8,7 +8,7 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
-## [1.909.0+945]
+## [1.907.0+943]
 
 - Dice: a die looks the same while it rolls and at rest. A phone whose roll ran slow used to turn the solid d4/d8/d10/d12/d20 on the board into the flat drawing in the middle of the roll, and it stayed flat (two different dice, shape and skin). A mounted die now never changes its drawing; a slow roll (12 frames in a row over 34 ms, was 6 over 24 ms) only makes the dice mounted after it, in the next fight, flat. Test: `test/ux_die_same_look_test.dart`; before/after in `docs/ux-shots/dice-same-look/`.
 

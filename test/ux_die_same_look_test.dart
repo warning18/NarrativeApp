@@ -1,4 +1,4 @@
-// A die looks the same rolling and at rest (v1.909): a slow roll no longer
+// A die looks the same rolling and at rest (v1.907): a slow roll no longer
 // turns the solid on the board into the flat drawing in the middle of the
 // fight; it only decides how the dice mounted after it are drawn.
 import 'package:flutter/material.dart';
