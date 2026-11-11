@@ -13,6 +13,14 @@ isn't reconstructable from git history alone.
 - Tower: once the level-up's pick is taken, the Level Up screen ends on a clear "Continue the climb" button back to the floor (the user's phone report: only the back arrow left it). The story's Level Up gets the same button, "Done", once no pick is waiting; the back arrow still works in both.
 - Tower: winning a warden or boss floor (5, 10, 15…) no longer leaves the fight stuck under an endless loading dialog with "Victory! Return" disabled. A Tower fight no longer queues the story's clan offer (the Tower has its own oath cards), and the clans' offer dialog now reads the hero that drew the offer, so it can never wait on a session that has none. Found by QA in a real playthrough.
 
+## [1.908.0+944]
+
+- Chips and tabs: a pixel-stepped rectangle (`PixelChipBorder`, corners in three 2 dp steps, no antialiasing) in place of the pill or rounded rectangle on the theme's chips, the inventory tabs and the places, ability and origin-story tags. Fix: a plain chip's label was white on the parchment in the light theme (the theme's chip style had no text colour); it now uses the theme's ink.
+
+## [1.907.0+943]
+
+- Dice: a die looks the same while it rolls and at rest. A phone whose roll ran slow used to turn the solid d4/d8/d10/d12/d20 on the board into the flat drawing in the middle of the roll, and it stayed flat (two different dice, shape and skin). A mounted die now never changes its drawing; a slow roll (12 frames in a row over 34 ms, was 6 over 24 ms) only makes the dice mounted after it, in the next fight, flat. Test: `test/ux_die_same_look_test.dart`; before/after in `docs/ux-shots/dice-same-look/`.
+
 ## [1.906.0+942]
 
 - Icons: Art's harmonised set of the 289 skill and item icons (one ink outline, the shared 63-colour palette; the drawings are untouched) replaces the originals in `assets/icons/skills` and `assets/icons/items`, same names and sizes.

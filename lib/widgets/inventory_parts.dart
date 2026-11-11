@@ -16,6 +16,7 @@ import 'item_lore.dart';
 import 'item_stats.dart';
 import '../theme/palette.dart';
 import '../theme/icon_sizes.dart';
+import '../theme/pixel_chip.dart';
 
 /// The inventory's tabs, in the order they are drawn.
 enum InventoryTab { all, gear, charms, potions, materials, books, quest, dice }
@@ -182,20 +183,20 @@ class InventoryTabBar extends StatelessWidget {
                 selected: tab == selected,
                 child: InkWell(
                   key: Key('inv_tab_${tab.name}'),
-                  borderRadius: BorderRadius.circular(16),
+                  customBorder: const PixelChipBorder(),
                   onTap: () => onSelect(tab),
                   child: Container(
                     padding: EdgeInsets.symmetric(
                         horizontal: narrow ? 8 : 12, vertical: 6),
-                    decoration: BoxDecoration(
+                    decoration: ShapeDecoration(
                       color: tab == selected
                           ? theme.colorScheme.primary.withValues(alpha: 0.2)
                           : Colors.transparent,
-                      borderRadius: BorderRadius.circular(16),
-                      border: Border.all(
-                          color: tab == selected
-                              ? theme.colorScheme.primary
-                              : ink.seam),
+                      shape: PixelChipBorder(
+                          side: BorderSide(
+                              color: tab == selected
+                                  ? theme.colorScheme.primary
+                                  : ink.seam)),
                     ),
                     child: Row(mainAxisSize: MainAxisSize.min, children: [
                       Text(trFor(language, inventoryTabLabelKey(tab)),

@@ -20,6 +20,7 @@ import 'city_chart_painter.dart';
 import '../motion.dart';
 import '../../theme/motion.dart';
 import '../../theme/icon_sizes.dart';
+import '../../theme/pixel_chip.dart';
 
 /// The words the view says, in the player's language (the host passes them).
 class CityChartText {
@@ -790,10 +791,10 @@ class _CityChartViewState extends State<CityChartView>
   }) =>
       Material(
         color: palette.fog.withValues(alpha: 0.92),
-        shape: StadiumBorder(side: BorderSide(color: palette.coast)),
+        shape: PixelChipBorder(side: BorderSide(color: palette.coast)),
         child: InkWell(
           key: key,
-          customBorder: const StadiumBorder(),
+          customBorder: const PixelChipBorder(),
           onTap: onTap,
           child: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
