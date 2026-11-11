@@ -8,6 +8,10 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.911.0+947]
+
+- Fight: the fighters stand on the board. The hero and the allies on the left (facing east), the foes on the right (facing west), along the top edge of the dice stage, drawn from the same sprites as the Journey scenes (`lib/widgets/fight_figures.dart`); 62, 54 and 46 px tall at 412, 360 and 320 px wide, scaled together when six stand there. They take no touch and the dice are drawn over them; a fighter with no sprite is left out (its card stays). Pictures in `docs/ux-shots/fighters/`; the enemy cards' portraits from the sprites follow.
+
 ## [1.908.0+944]
 
 - Chips and tabs: a pixel-stepped rectangle (`PixelChipBorder`, corners in three 2 dp steps, no antialiasing) in place of the pill or rounded rectangle on the theme's chips, the inventory tabs and the places, ability and origin-story tags. Fix: a plain chip's label was white on the parchment in the light theme (the theme's chip style had no text colour); it now uses the theme's ink.
