@@ -138,6 +138,12 @@ void main() {
         await tester.pump(const Duration(seconds: 1));
       }
     }
+    if (Platform.environment['ATLAS_LANG'] == 'fr') {
+      await tester.runAsync(() => container
+          .read(appLanguageProvider.notifier)
+          .setLanguage(AppLanguage.fr));
+      await settleApp(tester);
+    }
     await tester.pump(const Duration(milliseconds: 700));
     return container;
   }

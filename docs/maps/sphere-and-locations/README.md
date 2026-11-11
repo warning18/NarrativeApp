@@ -134,5 +134,7 @@ Picture first at each release: its screens are shown before the PR, as here.
 
 ## Not done
 
-French, the epilogue map itself, a move along a road on the patched sphere, anything on a real phone.
+The French pass on the patched sphere and the exact line for Core are in `french-and-core.md`.
+
+the epilogue map itself, a move along a road on the patched sphere, anything on a real phone.
 The dive's motion is described, not prototyped.
