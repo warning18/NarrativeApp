@@ -251,6 +251,18 @@ class _RaceProfessionScreenState extends ConsumerState<RaceProfessionScreen> {
                     professionId: _selectedProfessionId!,
                     showClans: !_tower),
               const SizedBox(height: 8),
+              if (!both && pickedHere == null)
+                Padding(
+                  padding: const EdgeInsets.only(bottom: 6),
+                  child: Text(
+                      _selectedRaceId == null && _selectedProfessionId == null
+                          ? 'Still to choose: a people and a calling'
+                          : _selectedRaceId == null
+                              ? 'Still to choose: a people'
+                              : 'Still to choose: a calling',
+                      key: const Key('rp_missing'),
+                      style: Theme.of(context).textTheme.labelMedium),
+                ),
               SizedBox(
                 width: double.infinity,
                 child: both || pickedHere == null

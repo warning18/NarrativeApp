@@ -19,6 +19,8 @@ import '../l10n/app_strings.dart';
 import '../providers/clans_provider.dart';
 import '../providers/game_db_providers.dart';
 import '../screens/race_profession_screen.dart' show PresetMark, leadAndRest;
+import '../theme/frame_style.dart';
+import '../theme/pixel_chip.dart';
 import '../theme/stitched_ink.dart';
 import 'pixel_banner.dart';
 import 'ink_sheet.dart';
@@ -188,10 +190,10 @@ class StatChips extends ConsumerWidget {
     final colour = value > 0 ? Palette.green40 : Palette.red46;
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
-      decoration: BoxDecoration(
+      decoration: ShapeDecoration(
         color: colour.withValues(alpha: 0.1),
-        border: Border.all(color: colour.withValues(alpha: 0.6)),
-        borderRadius: BorderRadius.circular(12),
+        shape: PixelChipBorder(
+            side: BorderSide(color: colour.withValues(alpha: 0.6))),
       ),
       child: Text('${value > 0 ? '+' : ''}$value $label',
           style:
@@ -247,22 +249,34 @@ class ChoiceCard extends ConsumerWidget {
         child: Material(
           key: Key('choice_card_$id'),
           color: selected
-              ? ink.gold.withValues(alpha: 0.1)
+              ? Color.alphaBlend(ink.gold.withValues(alpha: 0.16),
+                  theme.colorScheme.surfaceContainer)
               : theme.colorScheme.surfaceContainer,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(10),
-            side: BorderSide(
-                color: selected ? ink.gold : ink.seam, width: selected ? 2 : 1),
-          ),
+          // The first tier of the frames: the choice of who you are is made
+          // at the start, in wood (the pieces load while the menu opens).
+          shape: FrameImages.ready(FrameMaterial.wood, EnvDecor.none)
+              ? FrameBorder(
+                  piece: theme.brightness == Brightness.light
+                      ? FramePiece.panelParchment
+                      : FramePiece.panelDark,
+                  material: FrameMaterial.wood,
+                  pixel: 2,
+                  seed: id.hashCode)
+              : RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(10),
+                  side: BorderSide(
+                      color: selected ? ink.gold : ink.seam,
+                      width: selected ? 2 : 1),
+                ),
           child: InkWell(
             borderRadius: BorderRadius.circular(10),
             onTap: locked ? null : onTap,
             child: Padding(
               padding: EdgeInsets.fromLTRB(
-                  10, compact ? 7 : 10, 10, compact ? 7 : 10),
+                  16, compact ? 11 : 14, 16, compact ? 11 : 14),
               child: Row(children: [
                 PresetMark(
-                    folder: folder, preset: record, size: compact ? 30 : 44),
+                    folder: folder, preset: record, size: compact ? 32 : 48),
                 const SizedBox(width: 10),
                 Expanded(
                   child: Column(
@@ -625,11 +639,11 @@ class StepSwitch extends ConsumerWidget {
         child: Material(
           key: Key('rp_step_$slug'),
           color: on ? ink.gold.withValues(alpha: 0.14) : Colors.transparent,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(10),
-            side:
-                BorderSide(color: on ? ink.gold : ink.seam, width: on ? 2 : 1),
-          ),
+          shape: id == null
+              ? _DashedSlotBorder(color: on ? ink.gold : ink.ash)
+              : PixelChipBorder(
+                  side: BorderSide(
+                      color: on ? ink.gold : ink.seam, width: on ? 2 : 1)),
           child: InkWell(
             borderRadius: BorderRadius.circular(10),
             onTap: () => onStep(i),
@@ -639,7 +653,12 @@ class StepSwitch extends ConsumerWidget {
                 if (record != null)
                   PresetMark(folder: folder, preset: record, size: 28)
                 else
-                  Icon(Icons.help_outline, size: IconSize.s32, color: ink.ash),
+                  SizedBox(
+                      width: 28,
+                      child: Center(
+                          child: Text('?',
+                              style: theme.textTheme.titleLarge
+                                  ?.copyWith(color: ink.ash)))),
                 const SizedBox(width: 8),
                 Expanded(
                   child: Column(
@@ -872,4 +891,46 @@ Future<void> showCompareSheet(
       );
     }),
   );
+}
+
+/// An empty step slot: a dashed outline with stepped corners, so it reads as
+/// a place waiting for something (not a button that does nothing).
+class _DashedSlotBorder extends OutlinedBorder {
+  const _DashedSlotBorder({required this.color});
+  final Color color;
+
+  @override
+  EdgeInsetsGeometry get dimensions => const EdgeInsets.all(1);
+
+  @override
+  Path getInnerPath(Rect rect, {TextDirection? textDirection}) =>
+      Path()..addRect(rect.deflate(1));
+
+  @override
+  Path getOuterPath(Rect rect, {TextDirection? textDirection}) =>
+      const PixelChipBorder().getOuterPath(rect);
+
+  @override
+  void paint(Canvas canvas, Rect rect, {TextDirection? textDirection}) {
+    final paint = Paint()
+      ..color = color
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = 2
+      ..isAntiAlias = false;
+    final path = const PixelChipBorder().getOuterPath(rect.deflate(1));
+    for (final m in path.computeMetrics()) {
+      var d = 0.0;
+      while (d < m.length) {
+        canvas.drawPath(m.extractPath(d, (d + 6).clamp(0, m.length)), paint);
+        d += 11;
+      }
+    }
+  }
+
+  @override
+  _DashedSlotBorder copyWith({BorderSide? side, Color? color}) =>
+      _DashedSlotBorder(color: color ?? this.color);
+
+  @override
+  ShapeBorder scale(double t) => this;
 }
