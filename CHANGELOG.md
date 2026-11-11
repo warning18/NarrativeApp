@@ -8,6 +8,12 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.910.0+946]
+
+- Tower: once the level-up's pick is taken, the Level Up screen ends on a clear "Continue the climb" button back to the floor (the user's phone report: only the back arrow left it). The story's Level Up gets the same button, "Done", once no pick is waiting; the back arrow still works in both.
+- Tower: winning a warden or boss floor (5, 10, 15…) no longer leaves the fight stuck under an endless loading dialog with "Victory! Return" disabled. A Tower fight no longer queues the story's clan offer (the Tower has its own oath cards), and the clans' offer dialog now reads the hero that drew the offer, so it can never wait on a session that has none. Found by QA in a real playthrough.
+- Tower: beating a hunter no longer asks the story's "spare or finish" question; in the Tower a hunter falls like any foe (QA #956).
+
 ## [1.908.0+944]
 
 - Chips and tabs: a pixel-stepped rectangle (`PixelChipBorder`, corners in three 2 dp steps, no antialiasing) in place of the pill or rounded rectangle on the theme's chips, the inventory tabs and the places, ability and origin-story tags. Fix: a plain chip's label was white on the parchment in the light theme (the theme's chip style had no text colour); it now uses the theme's ink.

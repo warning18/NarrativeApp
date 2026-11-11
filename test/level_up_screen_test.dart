@@ -106,6 +106,8 @@ void main() {
     expect(find.text('4 picks'), findsOneWidget);
     expect(find.byKey(const Key('stat_pick_picker')), findsOneWidget);
     expect(find.byType(SnackBar), findsNothing);
+    // Picks still waiting: no button to leave yet (v1.910).
+    expect(find.byKey(const Key('level_up_done')), findsNothing);
   });
 
   testWidgets('with no pick waiting the plain radar is the only one',
@@ -131,6 +133,9 @@ void main() {
     expect(find.byKey(const Key('level_up_radar')), findsOneWidget);
     expect(find.byKey(const Key('stat_pick_radar')), findsNothing);
     expect(find.textContaining('picks'), findsNothing);
+    // Nothing left to pick: the story's Level Up ends on a clear button.
+    expect(find.byKey(const Key('level_up_done')), findsOneWidget);
+    expect(find.text('Done'), findsOneWidget);
   });
 
   testWidgets('the level-up pop-up shows the points and the grouped stats',
