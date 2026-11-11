@@ -24,3 +24,10 @@ Sheet: `docs/art/boards/skill-effects-pilot.png` (each style: today's strip, the
 
 ## Next (needs the user's pick)
 Approve the direction and the tint mechanism, then Tier 1 in batches of 10 styles (about 20 generations each), a sheet per batch before UX-2 wires it.
+
+## Amendment: the rawer version (user: "a bit more raw quality pixel art")
+**0 generations** (balance unchanged). Same 6 styles, made from the pilot strips by `art/pixellab-vfx/rawer_gen.py` (PIL only): each frame is reduced to a 24x24 grid and scaled x2 by whole pixels (chunkier clusters, hard stepped edges, no anti-aliasing or glow), **5 colours per strip plus the ink `#0A0807`** (median cut, dark to light), specks under 3 cells removed (fewer sparkles), 1-cell ink outline. Life cycle kept (appear, peak, fade); frost's last two frames now fade to empty.
+- Sheet: `docs/art/boards/skill-effects-rawer.png` (today | current pilot | rawer, per style). Re-tint check: `docs/art/boards/skill-effects-rawer-retint.png` (the same strip mapped by luminance rank to Fire and Void ramps: works, the 5 ranks are the 4-step ramp plus one).
+- Files: `art/pixellab-vfx/staged-rawer/vfx_<style>.png` (432x48 PNG8, 9 frames), GIFs in `gif-rawer/` (90 ms a frame).
+- Flame/heal fade-out stays in code (user's answer); signature animations not now; scope stays the 6 piloted styles.
+- Trade-off: heal loses its bright sparkles and some of the core; if it reads too flat, a hand-drawn 2-cell core is the 0-generation fix.

@@ -480,6 +480,69 @@ class IntroFloor extends CustomPainter {
   bool shouldRepaint(IntroFloor old) => old.flash != flash;
 }
 
+// ---------------------------------------------------------------------------
+// v1.904: the four plates of Version A (Art's, art/pixellab-intro/final/)
+// replace the code-drawn scenes; the embers, the ash and the shell's flash
+// stay code, over the still plate.
+// ---------------------------------------------------------------------------
+
+/// The plates, in the order of the intro: the Shroud burning (beats 1 and 2),
+/// the city on alert (3), Tallow Street and the Blind Beggar (4), the tavern
+/// room (5 to 7).
+const List<String> introPlates = [
+  'assets/visuals/intro/plate1_shroud_burns.png',
+  'assets/visuals/intro/plate2_city_on_alert.png',
+  'assets/visuals/intro/plate3_blind_beggar.png',
+  'assets/visuals/intro/plate4_tavern_room.png',
+];
+
+/// A plate (180 x 320) covering the stage, nearest neighbour, [zoom] times
+/// larger about [anchor] (a slow push in or a pan down between beats).
+class IntroPlate extends StatelessWidget {
+  const IntroPlate(this.plate,
+      {super.key, this.zoom = 1, this.anchor = Alignment.center});
+
+  /// Index into [introPlates].
+  final int plate;
+  final double zoom;
+  final Alignment anchor;
+
+  @override
+  Widget build(BuildContext context) => ClipRect(
+        child: Transform.scale(
+          scale: zoom,
+          alignment: anchor,
+          child: Image.asset(
+            introPlates[plate],
+            fit: BoxFit.cover,
+            width: double.infinity,
+            height: double.infinity,
+            filterQuality: FilterQuality.none,
+            gaplessPlayback: true,
+          ),
+        ),
+      );
+}
+
+/// The first shell lands outside: its light through the window, over the
+/// room's plate.
+class IntroFlash extends CustomPainter {
+  const IntroFlash();
+  @override
+  void paint(Canvas canvas, Size size) {
+    canvas.drawRect(
+        Offset.zero & size,
+        Paint()
+          ..shader = ui.Gradient.linear(
+              Offset.zero,
+              Offset(0, size.height * 0.5),
+              [const Color(0x99FFC070), const Color(0x00FFC070)]));
+  }
+
+  @override
+  bool shouldRepaint(IntroFlash old) => false;
+}
+
 /// A die, the old bone one: [roll] is how far through a tumble it is (null
 /// at rest), the front face showing [face].
 Widget introDie(double size, {double? roll, int face = 6}) => Die3D(

@@ -101,6 +101,7 @@ flutter:
     - assets/visuals/items/
     - assets/visuals/skills/
     - assets/visuals/dice/
+    - assets/visuals/intro/
     - assets/visuals/enemies/
     - assets/visuals/enemy_ships/
     - assets/visuals/ships/
