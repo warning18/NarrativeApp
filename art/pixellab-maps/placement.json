@@ -1,0 +1,30 @@
+{
+ "ashen_quarter": {
+  "plan_units_box": [
+   150,
+   170,
+   870,
+   880
+  ],
+  "pixels_per_unit": 0.5,
+  "size_px": [
+   360,
+   355
+  ],
+  "note": "pixel = (unit - box origin) * 0.5; anchors, gates, districts and building ids of city_plans.json line up unchanged"
+ },
+ "casino": {
+  "plan_units_box": [
+   92,
+   42,
+   908,
+   958
+  ],
+  "pixels_per_unit": 0.4,
+  "size_px": [
+   326,
+   366
+  ],
+  "note": "RoomPlan.frame = outline inflated by 48; pixel = (unit - box origin) * 0.4; anchors and doors of room_plan.dart _casino line up unchanged"
+ }
+}

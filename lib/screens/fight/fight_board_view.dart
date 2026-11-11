@@ -675,6 +675,22 @@ extension _FightBoardView on _FightScreenState {
                                     _update(() => _dieLocks.selected = null),
                           ),
                         ),
+                        // The fighters stand along the top edge of the
+                        // stage, under the dice (v1.911).
+                        Positioned(
+                          left: 6,
+                          right: 6,
+                          top: 4,
+                          child: IgnorePointer(
+                            child: FightFigures(
+                              allies: [
+                                for (final m in _party) _headIdFor(m),
+                              ],
+                              foes: [for (final e in _enemies) e.enemyId],
+                              height: fightFigureHeight(size.width),
+                            ),
+                          ),
+                        ),
                         for (final actor in onBoard)
                           () {
                             final i = acting.indexOf(actor);

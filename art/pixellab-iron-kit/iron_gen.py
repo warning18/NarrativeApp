@@ -11,7 +11,7 @@ IRON=dict(mid=H('#514C5A'),hi=H('#8A8497'),lo=H('#2E2A35'),rivet=H('#C9C3D3'),ru
 INNER={'dark':H('#26202C'),'parchment':H('#E4D7B6')}
 O='art/pixellab-iron-kit/'
 def new(w,h): return Image.new('RGBA',(w,h),(0,0,0,0))
-def iron_frame(w,h,inner,ink=2,band=3,chamfer=3,seed=1,rivets=True,rust=True,line_inner=True):
+def iron_frame(w,h,inner,ink=2,band=3,chamfer=3,seed=1,rivets=True,rust=True,line_inner=True,soft_ink=False):
     rnd=random.Random(seed); im=new(w,h); d=ImageDraw.Draw(im)
     def box(inset,col):
         x0=inset; y0=inset; x1=w-1-inset; y1=h-1-inset; c=max(0,chamfer-inset)
@@ -21,6 +21,10 @@ def iron_frame(w,h,inner,ink=2,band=3,chamfer=3,seed=1,rivets=True,rust=True,lin
     # bevel on the band: light top-left edge, shade bottom-right edge
     d.line([(b0+chamfer-1,b0),(w-1-b0-chamfer+1,b0)],fill=IRON['hi']); d.line([(b0,b0+chamfer-1),(b0,h-1-b0-chamfer+1)],fill=IRON['hi'])
     d.line([(b0+chamfer-1,h-1-b0),(w-1-b0-chamfer+1,h-1-b0)],fill=IRON['lo']); d.line([(w-1-b0,b0+chamfer-1),(w-1-b0,h-1-b0-chamfer+1)],fill=IRON['lo'])
+    if soft_ink and ink>=2:
+        for y in range(h):
+            for x in range(w):
+                if min(x,y,w-1-x,h-1-y)==1 and im.getpixel((x,y))[3]: im.putpixel((x,y),IRON['mid'])
     # inner field
     ix0,iy0,ix1,iy1=b1,b1,w-1-b1,h-1-b1
     d.rectangle((ix0,iy0,ix1,iy1),fill=INK if line_inner else inner); d.rectangle((ix0+1,iy0+1,ix1-1,iy1-1),fill=inner)
@@ -44,7 +48,7 @@ def stretch(im,w,h,m):
             if dx1>dx0 and dy1>dy0: out.alpha_composite(im.crop((sx0,sy0,sx1,sy1)).resize((dx1-dx0,dy1-dy0),Image.NEAREST),(dx0,dy0))
     return out
 # ---------------- UI pieces ----------------
-def panel(kind): return iron_frame(24,24,INNER[kind],seed=3)
+def panel(kind): return iron_frame(24,24,INNER[kind],seed=3,soft_ink=(kind=='parchment'))
 def hud_panel(): return iron_frame(16,16,H('#1B1620'),ink=1,band=2,chamfer=2,seed=4,rivets=False,line_inner=False)
 def button(kind,state):
     base={'primary':(H('#8A5A2B'),H('#C98B4A'),H('#4F3016')),'secondary':(IRON['mid'],IRON['hi'],IRON['lo'])}[kind]
@@ -82,7 +86,7 @@ def divider():
     for x in (2,21): d.rectangle((x,1,x+1,4),fill=IRON['rivet']); d.point((x+1,4),fill=INK)
     d.point((12,2),fill=IRON['rust'][1]); d.point((9,3),fill=IRON['rust'][0]); return im
 def dialog():
-    im=iron_frame(32,32,INNER['parchment'],ink=2,band=4,chamfer=4,seed=7)
+    im=iron_frame(32,32,INNER['parchment'],ink=2,band=4,chamfer=4,seed=7,soft_ink=True)
     d=ImageDraw.Draw(im)
     for x,y in ((2,2),(26,2),(2,26),(26,26)): d.rectangle((x,y,x+3,y+3),fill=INK); d.rectangle((x+1,y+1,x+2,y+2),fill=IRON['rivet'])
     return im
@@ -120,11 +124,10 @@ def bottom_wilds(im,d,r,w,h):
             for y in range(h-1,h-1-r.randrange(1,5),-1): px(d,x,y,G['moss'] if r.random()<.6 else G['leaf'])
     for _ in range(3): x=r.randrange(2,w-2); y=h-r.randrange(3,6); d.rectangle((x,y,x+1,y+1),fill=G['leaf']); px(d,x+1,y+1,G['leaf_d'])
 def corner_wilds(im,d,r,w,h):
-    x,y=1,1
-    for i in range(14): 
-        px(d,x,y,G['leaf_d']); x+=1 if r.random()<.6 else 0; y+=1 if r.random()<.7 else 0
-        if i%3==1: d.rectangle((x+1,y,x+2,y+1),fill=G['leaf']); px(d,x+2,y+1,G['moss'])
-    for k in range(w): px(d,k,0,G['moss']) if r.random()<.5 else None
+    a=r.randrange(9,13); b=r.randrange(9,13)
+    for x in range(a): px(d,x,0,G['leaf_d']); px(d,x,1,G['leaf'] if x%2 else G['moss'])
+    for y in range(1,b): px(d,0,y,G['leaf_d']); px(d,1,y,G['leaf'] if y%2 else G['moss'])
+    for x,y in ((3,2),(6,2),(2,4),(2,7)): d.rectangle((x,y,x+1,y+1),fill=G['leaf']); px(d,x+1,y+1,G['leaf_d'])
 def top_dunes(im,d,r,w,h):
     for x in range(w):
         for y in range(r.randrange(0,3) if (x//4)%2 else r.randrange(1,5)): px(d,x,y,G['sand'] if y<2 else G['sand_d'])
@@ -134,10 +137,14 @@ def bottom_dunes(im,d,r,w,h):
         for y in range(h-1,h-1-t,-1): px(d,x,y,G['sand_d'] if y>=h-1 else G['sand'])
     for _ in range(4): x=r.randrange(w-2); y=h-r.randrange(3,6); d.rectangle((x,y,x+1,y+1),fill=G['peb'])
 def corner_dunes(im,d,r,w,h):
-    for y in range(7):
-        for x in range(7-y):
-            px(d,x,y,G['sand'] if x+y<5 else G['sand_d'])
-    for _ in range(3): px(d,r.randrange(1,8),r.randrange(1,8),G['peb'])
+    a=r.randrange(9,13); b=r.randrange(9,13)
+    for x in range(a):
+        px(d,x,0,G['sand_d']); px(d,x,1,G['sand'])
+        if x<a-3 and r.random()<.8: px(d,x,2,G['sand'])
+    for y in range(1,b):
+        px(d,0,y,G['sand_d']); px(d,1,y,G['sand'])
+        if y<b-3 and r.random()<.8: px(d,2,y,G['sand'])
+    px(d,4,3,G['peb']); px(d,5,3,G['peb']); px(d,2,6,G['peb'])
 def top_frost(im,d,r,w,h):
     for x in range(w):
         for y in range(2): px(d,x,y,G['snow'] if y==0 else G['snow_d'])
@@ -151,9 +158,15 @@ def bottom_frost(im,d,r,w,h):
         t=r.randrange(2,5)
         for y in range(h-1,h-1-t,-1): px(d,x,y,G['snow'] if y<h-1 else G['snow_d'])
 def corner_frost(im,d,r,w,h):
-    for y in range(6):
-        for x in range(9-y): px(d,x,y,G['snow'] if x+y<7 else G['snow_d'])
-    for k in range(3): px(d,3+k*2,6,G['ice']); px(d,3+k*2,7,G['ice']) if k%2==0 else None
+    a=r.randrange(9,13); b=r.randrange(9,13)
+    for x in range(a):
+        px(d,x,0,G['snow_d']); px(d,x,1,G['snow'])
+        if x<a-3 and r.random()<.8: px(d,x,2,G['snow'])
+    for y in range(1,b):
+        px(d,0,y,G['snow_d']); px(d,1,y,G['snow'])
+        if y<b-3 and r.random()<.8: px(d,2,y,G['snow'])
+    for k in range(2): [px(d,3+k*3,2+t,G['ice']) for t in range(2+k)]
+    px(d,1,3,G['ice']); px(d,1,4,G['ice'])
 def top_coast(im,d,r,w,h):
     x=1
     while x<w-3:
@@ -169,8 +182,15 @@ def bottom_coast(im,d,r,w,h):
         if r.random()<.25: d.rectangle((x,h-3,x+1,h-2),fill=G['barn'])
     for _ in range(3): x=r.randrange(w-3); d.rectangle((x,h-4,x+2,h-2),fill=G['barn']); px(d,x+1,h-3,G['salt'])
 def corner_coast(im,d,r,w,h):
-    for i in range(8): px(d,i,i//2,G['rope'] if i%2 else G['rope_d']); px(d,i,i//2+1,G['rope_d'])
-    for k in range(4): d.rectangle((1+k*3,6+(k%2),3+k*3,8+(k%2)),fill=G['barn']); px(d,2+k*3,7+(k%2),G['salt'])
+    a=r.randrange(9,13); b=r.randrange(9,13)
+    for x in range(a):
+        px(d,x,0,G['rope_d']); px(d,x,1,G['rope'])
+        if x<a-3 and r.random()<.8: px(d,x,2,G['rope'])
+    for y in range(1,b):
+        px(d,0,y,G['rope_d']); px(d,1,y,G['rope'])
+        if y<b-3 and r.random()<.8: px(d,2,y,G['rope'])
+    for k in range(3): px(d,3+k*3,2,G['barn']); px(d,3+k*3,3,G['salt'])
+    px(d,2,5,G['barn'])
 def top_ash(im,d,r,w,h):
     for x in range(w):
         for y in range(r.randrange(1,4)): px(d,x,y,G['soot'])
@@ -180,10 +200,14 @@ def bottom_ash(im,d,r,w,h):
         for y in range(h-1,h-1-r.randrange(1,4),-1): px(d,x,y,G['soot'])
     for _ in range(3): px(d,r.randrange(w),h-r.randrange(2,5),G['ember'])
 def corner_ash(im,d,r,w,h):
-    for y in range(8):
-        for x in range(8-y): px(d,x,y,G['soot'])
-    for _ in range(3): px(d,r.randrange(1,6),r.randrange(1,6),G['ember'])
-    px(d,9,2,G['ember_l']); px(d,2,9,G['ember'])
+    a=r.randrange(9,13); b=r.randrange(9,13)
+    for x in range(a):
+        px(d,x,0,G['soot']); px(d,x,1,G['soot'])
+        if x<a-3 and r.random()<.8: px(d,x,2,G['soot'])
+    for y in range(1,b):
+        px(d,0,y,G['soot']); px(d,1,y,G['soot'])
+        if y<b-3 and r.random()<.8: px(d,2,y,G['soot'])
+    px(d,3,2,G['ember']); px(d,2,5,G['ember']); px(d,6,3,G['ember_l'])
 def top_city(im,d,r,w,h):
     for _ in range(5):
         x=r.randrange(w-3); L=r.randrange(2,h)
@@ -193,8 +217,14 @@ def top_city(im,d,r,w,h):
 def bottom_city(im,d,r,w,h):
     for _ in range(4): x=r.randrange(w-5); d.rectangle((x,h-r.randrange(2,4),x+r.randrange(2,5),h-1),fill=G['stain'])
 def corner_city(im,d,r,w,h):
-    for _ in range(7): px(d,r.randrange(0,9),r.randrange(0,9),G['stain'])
-    d.line([(2,1),(2,5)],fill=G['hook']); d.line([(2,5),(5,5)],fill=G['hook']); d.rectangle((5,5,6,7),fill=G['lantern'])
+    a=r.randrange(9,13); b=r.randrange(9,13)
+    for x in range(a):
+        px(d,x,0,G['stain']); px(d,x,1,G['stain'])
+        if x<a-3 and r.random()<.8: px(d,x,2,G['stain'])
+    for y in range(1,b):
+        px(d,0,y,G['stain']); px(d,1,y,G['stain'])
+        if y<b-3 and r.random()<.8: px(d,2,y,G['stain'])
+    d.line([(3,3),(3,5)],fill=G['hook']); d.rectangle((3,6,4,8),fill=G['lantern']); px(d,3,5,G['hook'])
 def top_sacred(im,d,r,w,h):
     x=1
     while x<w-2:
@@ -206,10 +236,14 @@ def bottom_sacred(im,d,r,w,h):
         if r.random()<.35: px(d,x,h-1,G['crack_d']); px(d,x+1,h-2,G['crack'])
     x=r.randrange(4,w-6); d.rectangle((x,h-4,x+1,h-2),fill=G['wax']); px(d,x,h-5,G['flame']); px(d,x,h-6,G['ember_l'])
 def corner_sacred(im,d,r,w,h):
-    pts=[(1,1),(2,2),(3,2),(4,3),(4,4),(5,5),(6,6),(7,6)]
-    for p in pts: px(d,*p,G['crack'])
-    for p in pts[::2]: px(d,p[0]+1,p[1]+1,G['crack_d'])
-    for x in range(1,6): px(d,x,0,G['wax']) if r.random()<.7 else None
+    a=r.randrange(9,13); b=r.randrange(9,13)
+    for x in range(a):
+        px(d,x,0,G['wax_d']); px(d,x,1,G['wax'])
+        if x<a-3 and r.random()<.8: px(d,x,2,G['wax'])
+    for y in range(1,b):
+        px(d,0,y,G['wax_d']); px(d,1,y,G['wax'])
+        if y<b-3 and r.random()<.8: px(d,2,y,G['wax'])
+    px(d,3,3,G['crack']); px(d,4,4,G['crack']); px(d,5,5,G['crack_d']); px(d,3,5,G['wax'])
 ENVS={'wilds':(top_wilds,bottom_wilds,corner_wilds),'dunes':(top_dunes,bottom_dunes,corner_dunes),'frost':(top_frost,bottom_frost,corner_frost),'coast':(top_coast,bottom_coast,corner_coast),'ash':(top_ash,bottom_ash,corner_ash),'city':(top_city,bottom_city,corner_city),'sacred_void':(top_sacred,bottom_sacred,corner_sacred)}
 def make_env(name,i,kind,fn,seed):
     sizes={'top':(32,10),'bottom':(32,8),'corner':(16,16)}; w,h=sizes[kind]

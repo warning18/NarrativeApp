@@ -17,6 +17,7 @@ import '../widgets/fight_backdrop.dart';
 import '../widgets/side_view/side_view.dart' show SideLayer, SideViewScene;
 import '../widgets/fight_board.dart';
 import '../widgets/fight_effect_icons.dart';
+import '../widgets/fight_figures.dart';
 import '../widgets/head_avatar.dart';
 import '../widgets/fight_pick_card.dart';
 import '../data/weather_effects.dart';
