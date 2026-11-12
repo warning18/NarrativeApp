@@ -17,7 +17,9 @@ import '../../providers/clans_provider.dart';
 import '../../widgets/race_profession_cards.dart' show ClanDisc;
 import '../../providers/game_db_providers.dart';
 import '../../theme/stitched_ink.dart';
+import '../../data/tower/tower_events.dart';
 import '../../widgets/ink_panel.dart';
+import 'tower_event_card.dart';
 
 /// What a card reads: its kind, its name and what it does.
 class TowerCardText {
@@ -78,7 +80,12 @@ class TowerOfferView extends ConsumerStatefulWidget {
     required this.run,
     required this.data,
     required this.onPick,
+    this.event,
   });
+
+  /// The floor's event (towerEventOf): a setback's test shows above the cards,
+  /// rolled when the run moves on.
+  final TowerEventView? event;
 
   final TowerRun run;
   final TowerData data;
@@ -115,6 +122,11 @@ class _TowerOfferViewState extends ConsumerState<TowerOfferView> {
             style: theme.textTheme.bodyMedium
                 ?.copyWith(color: theme.colorScheme.onSurfaceVariant)),
         const SizedBox(height: 12),
+        if (widget.event?.kind == TowerEventKind.test) ...[
+          TowerEventCard(widget.event!,
+              bagFull: widget.run.potions >= towerBagCap),
+          const SizedBox(height: 12),
+        ],
         for (var i = 0; i < offer.length; i++)
           Padding(
             padding: const EdgeInsets.only(bottom: 8),
@@ -179,7 +191,8 @@ class _TowerOfferViewState extends ConsumerState<TowerOfferView> {
           child: TextButton(
             key: const Key('tower_refuse'),
             onPressed: _done ? null : () => _pick(null),
-            child: Text(tr(ref, 'tower_refuse')),
+            child: Text(
+                tr(ref, offer.isEmpty ? 'tower_continue' : 'tower_refuse')),
           ),
         ),
       ],
