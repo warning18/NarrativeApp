@@ -8,6 +8,10 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.963.0+999]
+
+- Tower: the floors without a fight are live (floor events part 5, the user's option 2). A new climb now also meets the parley (talk your way past a floor's guardian with an ability check, or straight through if you are sworn to its clan), the Stair-Chandler's shop (always after the bosses of floors 10 and 20, and on 5% of other floors: a salve and a bundle of potions for the climb's marks, half price for his clan's sworn), and the Tally-Clerk's bargain (on 10% of floors: a tenth of your max health for a point on your damage stat, for the climb). To keep the climb as hard, the foes of such a climb are 1.17 (were 1.16), and the floor-25 warden and the floor-30 boss are a little softer. Measured on 2,000 seeds: 14.3% of climbs reach the top with no unlocks and 26.6% with all (were 13.3% and 24.9%); no ordinary floor ends more than 8.7% of the climbs that reach it; the floor-25 warden ends 13.8% and the floor-30 boss 27.5% (were 13.5% and 26.2%). A climb already started keeps the floors it began with.
+
 ## [1.962.0+998]
 
 - Tower: the shortcut's tougher fight is marked (UX, with Core's 1.961 change that a pack's shortcut is an Elite pack). The offer card wears a gold "Elite" chip under its line, and once the stair is taken every foe of an Elite pack wears the same chip on its own panel (a lone Elite keeps its chip on the first foe, as before). Before, the extra foe's panel was the only sign of the tougher fight. Two small edits (tower_event_card.dart, tower_floor_screen.dart); no new strings.

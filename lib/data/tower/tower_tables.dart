@@ -77,9 +77,11 @@ const int towerPeacefulEvents = 2;
 
 /// Every foe of the Tower in a run playing the floors without a fight
 /// ([towerPeacefulEvents]): 1.15, set for the whole set (the events, the
-/// parley, the merchant and the bargain: 14.0% and 24.8%, seeds 1 to 2000),
-/// so until PR 4's stores come, the parley alone runs a little under it.
-const double towerPeacefulFoeScale = 1.15;
+/// parley, the merchant and the bargain: 14.0% and 24.8%, seeds 1 to 2000);
+/// 1.17 since the shortcut's Elite pack (v1.961), which made 1.15 give
+/// 16.1% and 28.2%: with [towerPeacefulExtras], 14.25% and 26.55%, every
+/// ordinary floor under 9% (seeds 1 to 2000).
+const double towerPeacefulFoeScale = 1.17;
 
 /// The floors' extras that differ in a run with the floor events on
 /// (floor -> extra, in place of its [towerBudgets] one): the floor-20 boss
@@ -87,6 +89,14 @@ const double towerPeacefulFoeScale = 1.15;
 /// 10 to 15%; now 13.5% / 11.9%) and the floor-30 boss .35 (was .34: 17.9%
 /// alone, now 24.6% / 21.3%).
 const Map<int, double> towerEventsExtras = {20: .30, 30: .35};
+
+/// The floors' extras that differ again in a run playing the floors without
+/// a fight ([towerPeacefulEvents] or more; read before [towerEventsExtras]):
+/// the floor-25 warden .42 (was .43) and the floor-30 boss .34 (was .35),
+/// so that at [towerPeacefulFoeScale] they end about as many climbs as in
+/// version 1 (13.8% and 27.5% of those reaching them, against 13.5% and
+/// 26.2%; at .43 and .35, 15.4% and 29.9%). The user's option 2, v1.963.
+const Map<int, double> towerPeacefulExtras = {25: .42, 30: .34};
 
 /// What the unlocks owned give a run (v1.848, the user's call: unlocks give
 /// some power, not options only). Each one owned at the start: this share
@@ -440,9 +450,12 @@ const int towerBagCap = 5;
 /// The floor events' version new runs start with (floor events PR 1,
 /// docs/proposals/tower-snakes-and-ladders.md; TowerRun.events): 1, the
 /// setback, the rival and the shortcut, switched on by the user's call of
-/// 12 November 2026 once UX-2's cards had shipped (v1.944). A run saved
-/// before keeps the version it started with (0 plays as before the events).
-const int towerEventsLive = 1;
+/// 12 November 2026 once UX-2's cards had shipped (v1.944); 2
+/// ([towerPeacefulEvents]: the parley, the merchant and the bargain too)
+/// since the user's call of 12 November 2026 (option 2 of Core's switch
+/// review, v1.963). A run saved before keeps the version it started with
+/// (0 plays as before the events).
+const int towerEventsLive = 2;
 
 /// The share of ordinary floors that hold a rival (floor events PR 1, the
 /// proposal's "Others"): win the floor's fight within [towerRivalRounds]
