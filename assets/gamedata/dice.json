@@ -1125,7 +1125,7 @@
   },
   "gambler_die": {
     "diceName": "gambler_die",
-    "numberOfFaces": 20,
+    "numberOfFaces": 12,
     "professions": [],
     "races": [],
     "faces": [
@@ -1202,54 +1202,6 @@
       {
         "faceName": "Mend",
         "type": "Heal",
-        "value": 3,
-        "weight": 1.0
-      },
-      {
-        "faceName": "Strike",
-        "type": "Attack",
-        "value": 2,
-        "weight": 1.0
-      },
-      {
-        "faceName": "Guard",
-        "type": "Defend",
-        "value": 2,
-        "weight": 1.0
-      },
-      {
-        "faceName": "Mend",
-        "type": "Heal",
-        "value": 2,
-        "weight": 1.0
-      },
-      {
-        "faceName": "Strike",
-        "type": "Attack",
-        "value": 1,
-        "weight": 1.0
-      },
-      {
-        "faceName": "Guard",
-        "type": "Defend",
-        "value": 1,
-        "weight": 1.0
-      },
-      {
-        "faceName": "Mend",
-        "type": "Heal",
-        "value": 1,
-        "weight": 1.0
-      },
-      {
-        "faceName": "Strike",
-        "type": "Attack",
-        "value": 3,
-        "weight": 1.0
-      },
-      {
-        "faceName": "Guard",
-        "type": "Defend",
         "value": 3,
         "weight": 1.0
       }
