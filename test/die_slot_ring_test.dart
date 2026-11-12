@@ -43,15 +43,15 @@ void main() {
     expect(ringSlotSide(20, 380), greaterThan(44));
   });
 
-  // A d4 (stone), a d6 (starter), a d8 (flame), a d10 (storm), a d12
-  // (tempest) and the d20 (gambler), on a phone.
+  // A d4 (stone), a d6 (starter), a d8 (flame), a d10 (storm) and two d12s
+  // (tempest, and the gambler since v1.958), on a phone.
   for (final (id, n) in [
     ('stone_die', 4),
     ('starter_die', 6),
     ('flame_die', 8),
     ('storm_die', 10),
     ('tempest_die', 12),
-    ('gambler_die', 20),
+    ('gambler_die', 12),
   ]) {
     testWidgets('a d$n is a ring of $n slots ($id)', (tester) async {
       final overflows = <String>[];

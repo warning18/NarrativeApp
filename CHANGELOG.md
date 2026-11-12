@@ -8,6 +8,10 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.958.0+994]
+
+- Dice: the Gambler's Die is a d12 (was a d20), as the user asked: every die rolled in a fight has 4, 6, 8, 10 or 12 faces. It keeps all six of its own faces (Long Shot, Scrape, Lucky Strike, Wild Card, Pocket Flask, Second Thought) and one 1 and one 3 each of Strike, Guard and Mend. Its plain 2s go, so it swings harder around the same average. It now holds at most 3 copies of one skill (was 5). On a saved game, a skill set on a face beyond the twelfth goes back to the skill list (it stays learned; skill picks are free and can be redone), and Hammersmith work on such a face is paid back in full. The die looks the same, now as a d12.
+
 ## [1.957.0+993]
 
 - Effects: the last five skill effects in the Apollo palette (UX, Art's strips): the bolt's burst, the meteor's fall, the quake, the smoke and the mana, 9 frames each like the other Apollo effects. The quake's ground band is trimmed into a ragged scorch (no hard rectangle), the meteor is tilted so its head leads the fall, and the pale ground ring is gone from these five styles. About +1.0 KB of PNG8 in the app (5,997 to 7,048 bytes).

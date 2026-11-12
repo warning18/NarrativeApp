@@ -13,12 +13,18 @@
 //   the die); Hammersmith work on one is refunded in full: gold, iron ore
 //   and trophies, by [SmithingCost] ([smithingRefundFor]).
 //
+// - Version 3 (v1.958, the user's rule: a fight die has 4, 6, 8, 10 or 12
+//   faces): the Gambler's Die went from 20 faces to 12 ([shrunkDiceFacesV3]).
+//   Its first twelve faces stay where they were; a pick or Hammersmith work
+//   on faces 12 to 19 goes back as above.
+//
 // Pure: PlayerSession.fromJson runs [resizedDiceSave] on the raw map.
 import '../combat/face_smithing.dart';
 
 /// The dice data's version a save is written with. 1 (or none): the dice
-/// before their sizes; 2: the sizes of v1.569.
-const int diceDataVersion = 2;
+/// before their sizes; 2: the sizes of v1.569; 3: the Gambler's Die a d12
+/// (v1.958).
+const int diceDataVersion = 3;
 
 /// The save key holding [diceDataVersion].
 const String diceDataVersionKey = 'diceDataVersion';
@@ -32,6 +38,22 @@ const Map<String, Map<int, int>> shrunkDiceFaces = {
   'twinfang_die': {0: 0, 2: 2, 3: 3, 5: 1},
   'headsman_die': {0: 0, 1: 1, 2: 2, 3: 3},
 };
+
+/// The dice that shrank at version 3 (v1.958), as [shrunkDiceFaces]: the
+/// Gambler's Die kept its first twelve faces.
+const Map<String, Map<int, int>> shrunkDiceFacesV3 = {
+  'gambler_die': {
+    0: 0, 1: 1, 2: 2, 3: 3, 4: 4, 5: 5, //
+    6: 6, 7: 7, 8: 8, 9: 9, 10: 10, 11: 11,
+  },
+};
+
+/// Every die that shrank after a save's dice data version [from], each
+/// old face index to its new one.
+Map<String, Map<int, int>> _shrunkSince(int from) => {
+      if (from < 2) ...shrunkDiceFaces,
+      if (from < 3) ...shrunkDiceFacesV3,
+    };
 
 /// The companions whose signature die shrank (companions.json
 /// `signatureDiceId`), whose own face picks move with it.
@@ -68,11 +90,10 @@ SmithingCost smithingRefundFor(FaceUpgrade upgrade) {
 /// [faces] (face index -> anything, as saved) moved to [dieId]'s new
 /// indexes; the entries on dropped faces are passed to [dropped].
 Map<String, Object?> _moved(
-  String dieId,
+  Map<int, int> remap,
   Map<dynamic, dynamic> faces, [
   void Function(Object? value)? dropped,
 ]) {
-  final remap = shrunkDiceFaces[dieId]!;
   final out = <String, Object?>{};
   for (final entry in faces.entries) {
     final index = int.tryParse(entry.key.toString());
@@ -95,7 +116,7 @@ Object? _movedAlly(Object? ally) {
   if (dieId == null || picks is! Map) return ally;
   return {
     ...Map<String, dynamic>.from(ally),
-    'diceSkillAssignments': _moved(dieId, picks),
+    'diceSkillAssignments': _moved(shrunkDiceFaces[dieId]!, picks),
   };
 }
 
@@ -112,6 +133,8 @@ Map<String, dynamic> resizedDiceSave(Map<String, dynamic> json) {
   if (!_diceResizeDue(json)) return json;
   final out = Map<String, dynamic>.from(json);
   out[diceDataVersionKey] = diceDataVersion;
+  final from = (json[diceDataVersionKey] as num?)?.toInt() ?? 1;
+  final shrunk = _shrunkSince(from);
 
   // The player's picks, die by die.
   final picks = json['diceSkillAssignments'];
@@ -119,16 +142,15 @@ Map<String, dynamic> resizedDiceSave(Map<String, dynamic> json) {
     out['diceSkillAssignments'] = {
       for (final entry in picks.entries)
         entry.key.toString():
-            shrunkDiceFaces.containsKey(entry.key.toString()) &&
-                    entry.value is Map
-                ? _moved(entry.key.toString(), entry.value as Map)
+            shrunk.containsKey(entry.key.toString()) && entry.value is Map
+                ? _moved(shrunk[entry.key.toString()]!, entry.value as Map)
                 : entry.value,
     };
   }
 
   // A companion's picks, on their one signature die.
   final allies = json['recruitedAllies'];
-  if (allies is List) {
+  if (allies is List && from < 2) {
     out['recruitedAllies'] = [
       for (final ally in allies) _movedAlly(ally),
     ];
@@ -140,20 +162,19 @@ Map<String, dynamic> resizedDiceSave(Map<String, dynamic> json) {
   if (upgrades is Map) {
     out['diceUpgrades'] = {
       for (final entry in upgrades.entries)
-        entry.key.toString(): shrunkDiceFaces
-                    .containsKey(_dieOfUpgradesKey(entry.key.toString())) &&
-                entry.value is Map
-            ? _moved(
-                _dieOfUpgradesKey(entry.key.toString()), entry.value as Map,
-                (work) {
-                if (work is! Map) return;
-                final refund = smithingRefundFor(
-                    FaceUpgrade.fromJson(Map<String, dynamic>.from(work)));
-                refundGold += refund.gold;
-                refundIron += refund.iron;
-                refundTrophies += refund.trophies;
-              })
-            : entry.value,
+        entry.key.toString():
+            shrunk.containsKey(_dieOfUpgradesKey(entry.key.toString())) &&
+                    entry.value is Map
+                ? _moved(shrunk[_dieOfUpgradesKey(entry.key.toString())]!,
+                    entry.value as Map, (work) {
+                    if (work is! Map) return;
+                    final refund = smithingRefundFor(
+                        FaceUpgrade.fromJson(Map<String, dynamic>.from(work)));
+                    refundGold += refund.gold;
+                    refundIron += refund.iron;
+                    refundTrophies += refund.trophies;
+                  })
+                : entry.value,
     };
   }
   if (refundGold > 0) {
