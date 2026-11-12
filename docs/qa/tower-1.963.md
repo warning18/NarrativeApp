@@ -19,7 +19,7 @@ and 144 / 323 / 11,140) and `qa_tower_sim_test.dart` (its events default is now
 |---|---|---|---|
 | win floor 30, no unlocks | 14.25% | **14.25%** (check seeds 14.1%) | 13.2% |
 | win floor 30, all unlocks | 26.55% | **26.55%** (26.6%) | 24.9% |
-| floor 25 warden, lost (none / all) | 13.8 / 8.0% | **13.8 / 8.0%** | 13.5% / |
+| floor 25 warden, lost (none / all) | 13.8 / 8.0% | **13.8 / 8.0%** | 13.5% (none) |
 | floor 30 boss, lost (none / all) | 27.5 / 19.4% | **27.5 / 19.4%** | 26.2 / 23.5% |
 | floor 10 / 20 boss, lost (none) | | 6.1 / 13.8% | 6.3 / 13.6% |
 | floor 10 / 20 boss, lost (all) | | 2.6 / 14.6% | |
@@ -40,9 +40,9 @@ Counted from the bot's own choices (`qa_tower_events_report_test.dart`).
 | | no unlocks | all unlocks |
 |---|---|---|
 | floors that held a parley (of the floors reached) | 3,060 | 3,481 |
-| ...fought by choice | 2,029 (60 died there) | 2,522 (66) |
+| ...fought by choice | 2,089 (60 died there) | 2,588 (66) |
 | ...talked, failed (the fight follows) | 139 (9 died after) | 49 (3) |
-| ...talked, passed (the floor skipped), inferred | about 832 | about 840 |
+| ...talked, passed (the floor skipped), inferred | about 832 | about 844 |
 | runs that bought in a store | 974 (49%) | 687 (34%) |
 | stores that sold something | 1,216 | 794 |
 | ...salves / potion bundles bought | 679 / 918 | 581 / 326 |
