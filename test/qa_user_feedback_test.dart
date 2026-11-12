@@ -18,6 +18,7 @@ import 'package:narrative_data_app/main.dart';
 import 'package:narrative_data_app/providers/combat_settings_provider.dart';
 import 'package:narrative_data_app/providers/player_session_provider.dart';
 import 'package:narrative_data_app/providers/story_providers.dart';
+import 'package:narrative_data_app/widgets/story_scene_band.dart';
 import 'package:narrative_data_app/screens/settings_screen.dart';
 import 'package:narrative_data_app/theme/stitched_ink.dart';
 import 'package:narrative_data_app/widgets/feature_unlock.dart';
@@ -141,10 +142,17 @@ void main() {
       final first = tester.getRect(find
           .descendant(of: _sceneText, matching: find.byType(RichText))
           .first);
-      expect(first.top - card.top, lessThan(60),
+      // A place's picture (v1.953) stands above the words: they start at its
+      // foot, not at the card's top.
+      final band = find.descendant(
+          of: _sceneText, matching: find.byType(StorySceneBand));
+      final top =
+          band.evaluate().isEmpty ? card.top : tester.getRect(band).bottom;
+      expect(first.top - top, lessThan(60),
           reason: 'scene $node: the first line is at the top, not centred');
-      // And near the top of the screen, not in the middle of an empty page.
-      expect(first.top, lessThan(330),
+      // And near the top of the screen, not in the middle of an empty page
+      // (the picture takes its own height of it).
+      expect(first.top - (top - card.top), lessThan(330),
           reason: 'scene $node: no empty gap opens above the words');
     }
     await _leave(tester);
