@@ -9,7 +9,7 @@ OUT='art/pixellab-apollo-skills/vfx/'
 SIX=['flame','frost','lightning','heal','void_rift','shield']
 B1=['radiance','shout','stone_shield','arrow','shadow','pierce','heavy_slash','poison','splash','impact']
 B2=['holy_fire','quake','drain','fireball','wind','whirl','smoke','volley','claw','slash']
-src={**{s:f'art/pixellab-vfx/final/vfx_{s}.png' for s in SIX},**{s:f'art/pixellab-vfx/batch1/final/vfx_{s}.png' for s in B1},**{s:f'art/pixellab-vfx/batch2/final/vfx_{s}.png' for s in B2}}
+src={**{s:f'art/pixellab-vfx/final/vfx_{s}.png' for s in SIX},**{s:f'art/pixellab-vfx/batch1/final/vfx_{s}.png' for s in B1},**{s:(f'art/pixellab-vfx/retry2/final/vfx_{s}.png' if s in ('quake','holy_fire') else f'art/pixellab-vfx/batch2/final/vfx_{s}.png') for s in B2}}
 for s in B1:
     im=Image.open(src[s]).convert('RGBA')
     new=ramp(im,None) if s=='shadow' else remap(im,pal='apollo+cores')
