@@ -12,6 +12,11 @@ def reduce(src,dst,n=32):
     im=Image.open(src).convert('RGB'); q=im.quantize(colors=n,method=Image.Quantize.MEDIANCUT,dither=Image.Dither.NONE); os.makedirs(os.path.dirname(dst),exist_ok=True); q.save(dst,optimize=True)
 if __name__=='__main__':
     mode=sys.argv[1] if len(sys.argv)>1 else 'pilots'
-    if mode=='pilots':
+    if mode in ('pilots','all'):
         for (folder,name),(k,s) in PILOTS.items(): reduce(f'{R}{k}_s{s}/get_image_0.png',f'{O}{folder}/{name}.png')
-    print(sorted(os.listdir(O)))
+    if mode in ('rest','all'):
+        for name,(k,sd) in {'mark':('life_age8_mark',12),'beggar':('life_age10_beggar2',12),'calling':('life_age12_net',11),'lamp':('life_age14_lamp',11)}.items(): reduce(f'{R}{k}_s{sd}/get_image_0.png',f'{O}life/{name}.png')
+        pick={'frost_quarry':('exp_frost_quarry2',12),'ember_run':('exp_ember_run2',12),'white_fleet_grave':('exp_white_fleet_grave2',12)}
+        for z in ZONES:
+            k,sd=pick.get(z,(f'exp_{z}',11)); reduce(f'{R}{k}_s{sd}/get_image_0.png',f'{O}expeditions/z_{z}.png')
+    print({d:len(os.listdir(O+d)) for d in os.listdir(O)})
