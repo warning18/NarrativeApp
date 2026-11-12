@@ -15,6 +15,7 @@ import '../../data/tower/tower_hero.dart';
 import '../../data/tower/tower_progress.dart';
 import '../../data/tower/tower_run.dart';
 import '../../data/tower/tower_save.dart';
+import '../../data/tower/tower_tables.dart' show towerEventsLive;
 import '../../gamedata/db_schema.dart';
 import '../../providers/game_config_provider.dart';
 import '../../providers/game_db_providers.dart';
@@ -90,6 +91,7 @@ class TowerController extends StateNotifier<AsyncValue<TowerState>> {
       clanPool: progress.clans,
       startUnlocks: progress.startUnlocks,
       unlocksOwned: progress.unlocksOwned,
+      events: towerEventsLive,
       data: data,
     );
     await save.saveRun(run);

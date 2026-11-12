@@ -26,6 +26,11 @@ enum TowerStream {
 
   /// The bot's trial fights of the dice it owns (tower_bot.dart).
   dieTrial,
+
+  /// The floor events (floor events PR 1,
+  /// docs/proposals/tower-snakes-and-ladders.md): which floor holds one,
+  /// its fall, its roll (towerEventOf).
+  board,
 }
 
 /// The stream [purpose] of floor [floor] in the run of [seed]. Mixed by
