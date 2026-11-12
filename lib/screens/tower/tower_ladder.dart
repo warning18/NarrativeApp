@@ -55,8 +55,13 @@ class TowerLadder extends StatelessWidget {
         ),
         child: here
             ? Text('$n',
+                // The serif digits: the pixel face fills in at this size
+                // (a 26 read as 88).
                 style: label?.copyWith(
-                    fontWeight: FontWeight.w800, color: ink.gold, height: 1))
+                    fontFamily: InkFonts.prose,
+                    fontWeight: FontWeight.w800,
+                    color: ink.gold,
+                    height: 1))
             : isBoss(n)
                 ? Text('$n',
                     style: label?.copyWith(color: Colors.white70, height: 1))

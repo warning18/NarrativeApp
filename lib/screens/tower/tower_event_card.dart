@@ -230,23 +230,25 @@ class _ShortcutCard extends ConsumerWidget {
             tr(ref, 'tower_event_shortcut_lose_text')),
         if (onChoose != null) ...[
           const SizedBox(height: 12),
-          Row(children: [
-            Expanded(
-              child: FilledButton(
-                key: const Key('tower_shortcut_take'),
-                onPressed: () => onChoose!(true),
-                child: Text(tr(ref, 'tower_event_shortcut_take')),
-              ),
+          // Full width, the stair first and the door under it: neither wraps
+          // and both stand as tall.
+          SizedBox(
+            width: double.infinity,
+            child: FilledButton(
+              key: const Key('tower_shortcut_take'),
+              onPressed: () => onChoose!(true),
+              child: Text(tr(ref, 'tower_event_shortcut_take')),
             ),
-            const SizedBox(width: 8),
-            Expanded(
-              child: OutlinedButton(
-                key: const Key('tower_shortcut_decline'),
-                onPressed: () => onChoose!(false),
-                child: Text(tr(ref, 'tower_event_shortcut_decline')),
-              ),
+          ),
+          const SizedBox(height: 8),
+          SizedBox(
+            width: double.infinity,
+            child: OutlinedButton(
+              key: const Key('tower_shortcut_decline'),
+              onPressed: () => onChoose!(false),
+              child: Text(tr(ref, 'tower_event_shortcut_decline')),
             ),
-          ]),
+          ),
         ],
       ]),
     );
@@ -365,17 +367,22 @@ class TowerEventResultLine extends ConsumerWidget {
       key: const Key('tower_event_result'),
       child: Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
         Icon(
-            failed
-                ? (fell ? Icons.south : Icons.close)
-                : (skipped ? Icons.north : Icons.check),
+            result.kind == TowerEventKind.shortcut
+                ? Icons.north
+                : failed
+                    ? (fell ? Icons.south : Icons.close)
+                    : (skipped ? Icons.north : Icons.check),
             color: color,
             size: IconSize.s16),
         const SizedBox(width: 10),
         Expanded(
           child:
               Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+            // The stair's notes (taken, won, landed) share one face.
             Text(headline,
-                style: theme.textTheme.titleSmall?.copyWith(color: color)),
+                style: result.kind == TowerEventKind.shortcut
+                    ? theme.textTheme.bodyMedium
+                    : theme.textTheme.titleSmall?.copyWith(color: color)),
             if (rolled != null)
               Text(rolled,
                   style: theme.textTheme.bodySmall
