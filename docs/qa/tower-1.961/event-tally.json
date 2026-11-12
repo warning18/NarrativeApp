@@ -1,0 +1,77 @@
+{
+ "none": {
+  "tally": {
+   "shortcut_taken_won": 1286,
+   "shortcut_declined": 841,
+   "rival_failed": 612,
+   "rival_passed": 860,
+   "shortcut_passed": 247,
+   "shortcut_taken_lost": 76
+  },
+  "byFloor": {
+   "shortcut_taken": {
+    "1": 310,
+    "27": 24,
+    "22": 47,
+    "6": 208,
+    "7": 168,
+    "2": 210,
+    "11": 59,
+    "12": 96,
+    "17": 79,
+    "26": 26,
+    "21": 54,
+    "16": 81
+   },
+   "shortcut_lost": {
+    "11": 7,
+    "7": 5,
+    "21": 7,
+    "22": 8,
+    "16": 15,
+    "12": 13,
+    "17": 15,
+    "6": 5,
+    "26": 1
+   }
+  }
+ },
+ "all": {
+  "tally": {
+   "shortcut_taken_won": 1630,
+   "shortcut_declined": 809,
+   "rival_failed": 775,
+   "rival_passed": 944,
+   "shortcut_passed": 459,
+   "shortcut_taken_lost": 91
+  },
+  "byFloor": {
+   "shortcut_taken": {
+    "1": 310,
+    "6": 255,
+    "7": 196,
+    "11": 109,
+    "16": 123,
+    "2": 216,
+    "27": 59,
+    "17": 119,
+    "26": 50,
+    "22": 77,
+    "12": 131,
+    "21": 76
+   },
+   "shortcut_lost": {
+    "16": 18,
+    "7": 1,
+    "21": 9,
+    "12": 13,
+    "22": 10,
+    "11": 16,
+    "27": 2,
+    "17": 16,
+    "6": 3,
+    "26": 3
+   }
+  }
+ }
+}
