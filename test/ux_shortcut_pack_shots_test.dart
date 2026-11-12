@@ -63,6 +63,10 @@ Future<void> _loadFonts() async {
 void main() {
   final shots = Platform.environment['UX_SHOTS'];
   final tag = Platform.environment['UX_TAG'] ?? 'shot';
+  final lang =
+      Platform.environment['UX_LANG'] == 'fr' ? AppLanguage.fr : AppLanguage.en;
+  final width =
+      double.tryParse(Platform.environment['UX_WIDTH'] ?? '') ?? 412.0;
   final data = towerDataFromAssets();
   TowerRun base(int seed, int floor) => TowerRun(
         seed: seed,
@@ -130,17 +134,15 @@ void main() {
     SharedPreferences.setMockInitialValues({'app_language': 'en'});
     final (seed, floor) = packShortcut();
     SharedPreferences.setMockInitialValues({
-      'app_language': 'en',
+      'app_language': lang.name,
       'tower_run_v1': jsonEncode(settled(base(seed, floor)).toJson()),
     });
-    usePhone(tester, const Size(412, 1900));
+    usePhone(tester, Size(width, 1900));
     final container = ProviderContainer(
       overrides: [towerDataProvider.overrideWith((ref) async => data)],
     );
     addTearDown(container.dispose);
-    await container
-        .read(appLanguageProvider.notifier)
-        .setLanguage(AppLanguage.en);
+    await container.read(appLanguageProvider.notifier).setLanguage(lang);
     await tester.pumpWidget(
       UncontrolledProviderScope(
         container: container,
