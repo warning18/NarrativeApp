@@ -24,8 +24,8 @@ effect of the events from the foe scale. Reports: `tower-1.944/tower-batch.md`,
 | warden 5 / 15 / 25, lost | 0.9 / 7.5 / 15.0% | 0.9 / 7.5 / 15.0% | **1.2 / 7.5 / 13.7%** |
 | worst ordinary floor, lost | 10.6% (floor 28) | 9.3% (floor 28) | **10.7% (floor 21)**, then 22 (10.4%) |
 
-Seeds 10001 to 12000 agree (events live: top 13.3% none / 26.2% all in the
-batch check of the report).
+Seeds 10001 to 12000 agree (events live: median 19, floor 20 reached by
+46.0%, top 13.8% none / 26.3% all).
 
 What it says:
 
@@ -37,7 +37,8 @@ What it says:
   planned (13.5% / 25.3% are Core's own figures).
 - **Floors 27 and 28 are eased as agreed** (control: floor 28 9.3%, from
   10.6%), but with the events on the hardest ordinary floors move to 21 and 22
-  (10.7% and 10.4%): the shortcut lands on them or the extra foe scale does.
+  (10.7% and 10.4%); the batch does not say why (a shortcut's landing or the
+events-on foe scale are the candidates, Core's to tell).
   "No ordinary floor over 10%" is missed by 0.7 point on floor 21, hit by
   none of the floors above 22.
 - **The bosses did not move** (5.7 / 13.5 / 24.6% lost against 5.9 / 13.6 /
