@@ -35,7 +35,8 @@ Real screens of the build, 412 x 915 (dark with the Night look, light with Parch
 - **The strip is 36 px high, not 40.** At 40 the map loses 12 px, and on a 360 x 640 screen one way's mark
   could no longer be tapped (`journey_step_taps_test`). 36 passes. On a narrow screen the strip shrinks as a
   whole and stays on one line.
-- **The strip keeps today's look** (the map's colours, 12 px text) until UX says otherwise.
+- **The strip keeps today's look** (the map's colours, 12 px text), as UX asked: no frame. It is its own widget,
+  `lib/widgets/level_ladder.dart`, with its sizes and colours named at the top; UX owns its look from here.
 - **The dive lands on the Town**, as proposed. "+" then goes to the district and the room.
 
 ## Known, not in this release

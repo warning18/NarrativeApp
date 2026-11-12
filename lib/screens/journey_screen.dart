@@ -67,6 +67,7 @@ import '../theme/stitched_ink.dart';
 import '../utils/slow_frames.dart' show slowFrameHint;
 import '../tutorial/guide_tour.dart';
 import '../tutorial/tutorial_topics.dart';
+import '../widgets/level_ladder.dart';
 import '../widgets/detour_scene_band.dart';
 import '../widgets/biome_backdrop.dart';
 import '../widgets/choice_card.dart';
@@ -672,17 +673,17 @@ class _JourneyViewState extends ConsumerState<_JourneyView>
 
   /// A rung of the level strip: the world, the whole town, the district or
   /// the room, in one tap from any other.
-  void _goLevel(_LevelTab tab) {
+  void _goLevel(LadderRung tab) {
     // A rung shows what it names: a move still playing over the map ends.
     if (_transit != null) setState(() => _transit = null);
     final inRoom = _level == JourneyMapLevel.place && _sceneInside && !_outside;
     switch (tab) {
-      case _LevelTab.room:
+      case LadderRung.room:
         if (!_sceneInside || inRoom) return;
         if (_level != JourneyMapLevel.place) _arriveAtStreets(town: false);
         setState(() => _townView = false);
         _goInside();
-      case _LevelTab.district:
+      case LadderRung.district:
         if (_level != JourneyMapLevel.place) {
           _arriveAtStreets(town: false);
         } else if (inRoom) {
@@ -694,7 +695,7 @@ class _JourneyViewState extends ConsumerState<_JourneyView>
           setState(() => _cityFocus = null);
           _setTown(false);
         }
-      case _LevelTab.town:
+      case LadderRung.town:
         if (_level != JourneyMapLevel.place) {
           _arriveAtStreets();
         } else if (inRoom) {
@@ -702,7 +703,7 @@ class _JourneyViewState extends ConsumerState<_JourneyView>
         } else if (_canTown && !_townView) {
           _setTown(true);
         }
-      case _LevelTab.world:
+      case LadderRung.world:
         if (_level == JourneyMapLevel.place) {
           setState(() {
             _townView = false;
@@ -1921,12 +1922,10 @@ class _JourneyViewState extends ConsumerState<_JourneyView>
                 Row(
                   children: [
                     Expanded(
-                      child: _LevelTabs(
-                        selected: _LevelTab.district,
-                        townEnabled: false,
-                        roomEnabled: false,
+                      child: LevelLadder(
+                        lit: null,
+                        open: const {},
                         busy: true,
-                        enabled: false,
                         palette: palette,
                         onPick: (_) {},
                       ),
@@ -2262,20 +2261,27 @@ class _JourneyViewState extends ConsumerState<_JourneyView>
     final travelsOn = travelsFromHere &&
         ref.watch(knownPlacesProvider).any((p) => p.id != node.id);
 
-    final levelTabs = _LevelTabs(
-      selected: _level != JourneyMapLevel.place || _roadWalk
-          ? _LevelTab.world
-          : _sceneInside && !_outside
-              ? _LevelTab.room
+    final inRoomNow =
+        _level == JourneyMapLevel.place && _sceneInside && !_outside;
+    final levelTabs = LevelLadder(
+      lit: _level != JourneyMapLevel.place || _roadWalk
+          ? LadderRung.world
+          : inRoomNow
+              ? LadderRung.room
               : townView
-                  ? _LevelTab.town
-                  : _LevelTab.district,
-      // From a room the party steps out first: the Town rung is open
-      // wherever the town has a plan to show.
-      townEnabled: _canTown ||
-          _level != JourneyMapLevel.place ||
-          (_sceneInside && !_outside && cityChart != null),
-      roomEnabled: _sceneInside,
+                  ? LadderRung.town
+                  : LadderRung.district,
+      open: {
+        LadderRung.world,
+        LadderRung.district,
+        // From a room the party steps out first: the Town rung is open
+        // wherever the town has a plan to show.
+        if (_canTown ||
+            _level != JourneyMapLevel.place ||
+            (inRoomNow && cityChart != null))
+          LadderRung.town,
+        if (_sceneInside) LadderRung.room,
+      },
       busy: _busy,
       palette: palette,
       onPick: _goLevel,
@@ -2377,7 +2383,7 @@ class _JourneyViewState extends ConsumerState<_JourneyView>
                     icon: Icons.add,
                     tip: tr(ref, 'journey_tab_district'),
                     palette: palette,
-                    onTap: _busy ? null : () => _goLevel(_LevelTab.district),
+                    onTap: _busy ? null : () => _goLevel(LadderRung.district),
                   ),
                 ),
               // A scene inside a building keeps its room: looking out at the
@@ -2617,7 +2623,7 @@ class _JourneyViewState extends ConsumerState<_JourneyView>
                                 palette: palette,
                                 onTap: _busy
                                     ? null
-                                    : () => _goLevel(_LevelTab.district),
+                                    : () => _goLevel(LadderRung.district),
                               ),
                             ),
                           if (_hasBannerPins(steps)) _legendButton(palette),
@@ -5238,9 +5244,6 @@ void openStoryReader(BuildContext context, WidgetRef ref) {
   ));
 }
 
-/// The Journey map's levels as tabs (v1.350).
-enum _LevelTab { world, town, district, room }
-
 /// The streets growing out of the place as the ball is left (the dive): the
 /// map comes up from four fifths of its size and out of the dark, over
 /// [clock] (0 to 1).
@@ -5260,91 +5263,6 @@ class _GrowIn extends StatelessWidget {
         child: child,
       ),
     );
-  }
-}
-
-/// The level strip on the map: the world, the whole town, the district, the
-/// room, one rung each. The one looked at is lit; a rung that does not
-/// exist here (no town plan, no room) is dimmed.
-class _LevelTabs extends ConsumerWidget {
-  const _LevelTabs({
-    required this.selected,
-    required this.townEnabled,
-    required this.roomEnabled,
-    required this.busy,
-    required this.palette,
-    required this.onPick,
-    this.enabled = true,
-  });
-
-  final _LevelTab selected;
-  final bool townEnabled;
-  final bool roomEnabled;
-  final bool busy;
-
-  /// False on a locked page (v1.553): every tab greyed, none lit.
-  final bool enabled;
-  final ChartPalette palette;
-  final ValueChanged<_LevelTab> onPick;
-
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    Widget tab(_LevelTab t, String label, {bool enabled = true}) {
-      final open = enabled && this.enabled;
-      final on = this.enabled && t == selected;
-      final colour = on
-          ? palette.mark
-          : open
-              ? palette.place
-              : palette.label.withValues(alpha: 0.5);
-      return InkWell(
-        key: Key('journey_tab_${t.name}'),
-        onTap: open && !busy && !on ? () => onPick(t) : null,
-        child: Container(
-          height: 36,
-          padding: const EdgeInsets.symmetric(horizontal: 12),
-          alignment: Alignment.center,
-          decoration: BoxDecoration(
-            color: on ? palette.mark.withValues(alpha: 0.18) : null,
-            border: Border(
-              bottom: BorderSide(
-                  color: on ? palette.mark : Colors.transparent, width: 2),
-            ),
-          ),
-          child: Text(label,
-              style: TextStyle(
-                  fontFamily: InkFonts.system,
-                  fontSize: 12,
-                  height: 1,
-                  color: colour)),
-        ),
-      );
-    }
-
-    // Four rungs on one line: on a narrow screen the strip shrinks as a
-    // whole and never wraps or overflows.
-    return FittedBox(
-        fit: BoxFit.scaleDown,
-        alignment: AlignmentDirectional.centerStart,
-        child: Material(
-          color: palette.land.withValues(alpha: 0.92),
-          shape: RoundedRectangleBorder(
-            side: BorderSide(color: palette.coast, width: 2),
-          ),
-          clipBehavior: Clip.antiAlias,
-          child: Row(
-            key: const Key('journey_level_tabs'),
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              tab(_LevelTab.world, tr(ref, 'journey_tab_world')),
-              tab(_LevelTab.town, tr(ref, 'journey_tab_town'),
-                  enabled: townEnabled),
-              tab(_LevelTab.district, tr(ref, 'journey_tab_district')),
-              tab(_LevelTab.room, tr(ref, 'journey_tab_room'),
-                  enabled: roomEnabled),
-            ],
-          ),
-        ));
   }
 }
 
