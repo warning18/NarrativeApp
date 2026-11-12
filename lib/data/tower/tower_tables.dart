@@ -57,8 +57,11 @@ const double towerFoeScale = 1.18;
 /// at [towerFoeScale] took the top to 10.2% with no unlocks, 22.1% with
 /// all (seeds 1 to 2000); at 1.14, with [towerEventsExtras], 13.5% and
 /// 25.3% (the events cost the unlocked runs more: no one scale gives back
-/// both 12.6% and 26.8%).
-const double towerEventsFoeScale = 1.14;
+/// both 12.6% and 26.8%). Floor events PR 3: 1.15 (was 1.14), set for the
+/// whole set of docs/proposals/tower-peaceful-floors-and-stores.md (the
+/// events, the parley, the merchant and the bargain: 14.0% and 24.8%), so
+/// until PR 4's stores come, the parley alone runs a little under it.
+const double towerEventsFoeScale = 1.15;
 
 /// The floors' extras that differ in a run with the floor events on
 /// (floor -> extra, in place of its [towerBudgets] one): the floor-20 boss
@@ -461,6 +464,32 @@ const int towerSetbackMaxFall = 3;
 /// the next gate; won, the floor's spoils and card and a card on landing;
 /// lost, the run ends. Only where a skip fits.
 const double towerShortcutShare = .15;
+
+/// The draw of the floors you may get past without fighting, and of the
+/// stores (floor events PR 3, docs/proposals/tower-peaceful-floors-and-stores.md):
+/// one more draw per floor on the board stream, at this index plus the
+/// floor (towerRandom), so no draw of the floor events moves. Only on an
+/// ordinary floor from [towerPeacefulFirstFloor] to the one below the top
+/// that holds no floor event. Its ranges, in this order: a parley under
+/// [towerParleyShare] (0 to .15); PR 4's merchant and bargain take the
+/// next ranges (.15 to .30, .30 to .40); nothing above.
+const int towerPeacefulDraw = 3000;
+
+/// The first floor the draw above may hold one (floor 1 deals the first
+/// oath).
+const int towerPeacefulFirstFloor = 2;
+
+/// The share of those floors that hold a parley (floor events PR 3): before
+/// the fight, a guardian of a clan (drawn from [towerClans]) bars the way.
+/// Talk, the setback's d20 check (its DC, [towerParleyAbilities] by floor),
+/// or pass with no roll when sworn to the guardian's clan: past the floor,
+/// its level and its marks given (by height), its spoils, its card and its
+/// recovery given up. A talk failed, or a fight chosen: the floor's fight.
+const double towerParleyShare = .15;
+
+/// The ability each parley's talk reads, by floor in turn (floor 1
+/// charisma, 2 wisdom, 3 dexterity, 4 charisma...).
+const List<String> towerParleyAbilities = ['charisma', 'wisdom', 'dexterity'];
 
 /// The rarity steps, lowest first, and each band's odds (floors 1-9,
 /// 11-19, 21-29); a boss or warden floor draws one step up.

@@ -1511,6 +1511,10 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.en: 'The shortcut holds: you land on floor {to}',
     AppLanguage.fr: 'Le raccourci tient : vous arrivez à l’étage {to}',
   },
+  'tower_event_parley_over': {
+    AppLanguage.en: 'The parley is over: floor {to}',
+    AppLanguage.fr: 'Fin des pourparlers : étage {to}',
+  },
   'tower_event_rolled': {
     AppLanguage.en: 'You roll {roll}, total {total}.',
     AppLanguage.fr: 'Vous obtenez {roll}, total {total}.',

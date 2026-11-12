@@ -29,9 +29,11 @@ class TowerEventCard extends ConsumerWidget {
         return _TestCard(view, bagFull);
       case TowerEventKind.rival:
         return _RivalCard(view);
-      // The shortcut's card is UX-2's to draw (floor events PR 2 adds the
-      // kind; events stay off for players until it has one).
+      // The shortcut's and the parley's cards are UX-2's to draw (floor
+      // events PR 2 and 3 add the kinds; events stay off for players until
+      // they have one).
       case TowerEventKind.shortcut:
+      case TowerEventKind.parley:
       case null:
         return const SizedBox.shrink();
     }
@@ -234,6 +236,7 @@ class TowerEventResultLine extends ConsumerWidget {
       (TowerEventKind.rival, false) => sub('tower_event_rival_lost'),
       // A lost shortcut ends the run, so only a won one shows here.
       (TowerEventKind.shortcut, _) => sub('tower_event_shortcut_landed'),
+      (TowerEventKind.parley, _) => sub('tower_event_parley_over'),
     };
     final rolled = result.roll == null
         ? null
