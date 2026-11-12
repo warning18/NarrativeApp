@@ -25,7 +25,9 @@ String _sub(WidgetRef ref, String key, Map<String, Object> values) {
 }
 
 /// The pictures of the Tower's people (the user's PixelLab characters, 64x64,
-/// standing, front, in assets/visuals/tower/npc/): the Stair-Chandler, the
+/// standing, turned a quarter toward the words at their left, in
+/// assets/visuals/tower/npc/), drawn at their own size (one picture pixel is
+/// one scene pixel, as the hero's): the Stair-Chandler, the
 /// Tally-Clerk and the guardian of a Dominion or Vigil parley. A missing file
 /// draws nothing.
 const Set<String> towerNpcNames = {'chandler', 'clerk', 'guardian'};
@@ -34,7 +36,7 @@ const Set<String> towerNpcNames = {'chandler', 'clerk', 'guardian'};
 const Set<String> towerOfficerClans = {'dominion', 'vigil'};
 
 class TowerNpcFigure extends StatelessWidget {
-  const TowerNpcFigure(this.name, {super.key, this.size = 72});
+  const TowerNpcFigure(this.name, {super.key, this.size = 64});
 
   final String name;
   final double size;
