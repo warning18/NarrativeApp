@@ -146,13 +146,14 @@ void main() {
       // foot, not at the card's top.
       final band = find.descendant(
           of: _sceneText, matching: find.byType(StorySceneBand));
-      final top =
-          band.evaluate().isEmpty ? card.top : tester.getRect(band).bottom;
-      expect(first.top - top, lessThan(60),
+      final bandRect = band.evaluate().isEmpty ? null : tester.getRect(band);
+      if (bandRect != null) {
+        expect(bandRect.top - card.top, lessThan(60),
+            reason: 'scene $node: the picture is at the top, not centred');
+      }
+      expect(first.top - (bandRect?.bottom ?? card.top), lessThan(60),
           reason: 'scene $node: the first line is at the top, not centred');
-      // And near the top of the screen, not in the middle of an empty page
-      // (the picture takes its own height of it).
-      expect(first.top - (top - card.top), lessThan(330),
+      expect(first.top - (bandRect?.height ?? 0), lessThan(330),
           reason: 'scene $node: no empty gap opens above the words');
     }
     await _leave(tester);
