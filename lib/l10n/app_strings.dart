@@ -1438,6 +1438,14 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.en: 'Your bag is full: you drink it at once.',
     AppLanguage.fr: 'Votre sac est plein : vous la buvez aussitôt.',
   },
+  'tower_event_fail_same_text': {
+    AppLanguage.en: 'you slip: climb floor {n} again.',
+    AppLanguage.fr: 'vous glissez : l’étage {n} est à refaire.',
+  },
+  'tower_event_fell_same': {
+    AppLanguage.en: 'You slip on floor {from}: climb it again',
+    AppLanguage.fr: 'Vous glissez à l’étage {from} : à refaire',
+  },
   'tower_event_chance': {
     AppLanguage.en: 'chance to pass (d20 {mod} against {dc})',
     AppLanguage.fr: 'chances de réussir (d20 {mod} contre {dc})',

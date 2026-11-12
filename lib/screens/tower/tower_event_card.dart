@@ -220,7 +220,9 @@ class TowerEventResultLine extends ConsumerWidget {
         .replaceAll('{to}', '${result.to}')
         .replaceAll('{skipped}', '${result.from + 1}');
     final headline = switch ((result.kind, result.passed)) {
-      (TowerEventKind.test, false) => sub('tower_event_fell'),
+      (TowerEventKind.test, false) => sub(result.to == result.from
+          ? 'tower_event_fell_same'
+          : 'tower_event_fell'),
       (TowerEventKind.test, true) =>
         sub('tower_event_held_${towerSetbackAbilityOf(result.from)}'),
       (TowerEventKind.rival, true) => sub('tower_event_outran'),
