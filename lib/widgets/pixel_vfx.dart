@@ -26,6 +26,10 @@ enum PixelMotion {
   fall,
 }
 
+/// The turn that brings a strip drawn head to the lower left (3 pi over 4)
+/// to a head to the right, the way a travel expects it.
+const double _headLeft = -3 * pi / 4;
+
 /// One strip of a plan, played over a window of the burst's time.
 class PixelLayer {
   const PixelLayer(
@@ -38,6 +42,9 @@ class PixelLayer {
     this.loop = false,
     this.hitOnly = false,
     this.fade = false,
+    this.frameFrom = 0,
+    this.frameTo = -1,
+    this.tilt = 0,
   });
 
   /// The strip's file, without `vfx_`.
@@ -58,6 +65,17 @@ class PixelLayer {
   final bool loop;
   final bool hitOnly;
 
+  /// The frames of the strip it plays: from [frameFrom] up to (not
+  /// including) [frameTo], the whole strip when [frameTo] is negative. A
+  /// strip that holds a flight and its burst is cut in two layers.
+  final int frameFrom;
+  final int frameTo;
+
+  /// A turn, in radians, so the strip's head leads along a travel: the
+  /// strips are drawn diagonally, head to the lower left (3 pi over 4 on the
+  /// screen), so a flight turns them by minus that.
+  final double tilt;
+
   /// The last third of the strip shrinks and fades out in code (the flame
   /// and the heal: their last frames are not drawn to vanish).
   final bool fade;
@@ -76,8 +94,27 @@ const Map<VfxStyle, List<PixelLayer>> pixelPlans = {
   VfxStyle.whirl: [PixelLayer('whirl')],
   VfxStyle.claw: [PixelLayer('claw', fade: true)],
   VfxStyle.impact: [PixelLayer('impact')],
-  VfxStyle.arrow: [PixelLayer('arrow', fade: true)],
-  VfxStyle.volley: [PixelLayer('volley', fade: true)],
+  // The arrow, the fireball and the volley keep their flight from the
+  // caster; Art's strip holds the flight (head to the lower left, turned
+  // along the path) and the burst, cut in two layers.
+  VfxStyle.arrow: [
+    PixelLayer('arrow',
+        motion: PixelMotion.travel,
+        span: 0.45,
+        loop: true,
+        anchor: Offset(8, 38),
+        frameFrom: 4,
+        tilt: _headLeft),
+    PixelLayer('arrow', t0: 0.45, span: 0.55, frameTo: 4, fade: true),
+  ],
+  VfxStyle.volley: [
+    PixelLayer('volley',
+        motion: PixelMotion.travel,
+        span: 0.7,
+        anchor: Offset(8, 38),
+        tilt: _headLeft),
+    PixelLayer('volley', t0: 0.7, span: 0.3, frameFrom: 8, fade: true),
+  ],
   VfxStyle.bolt: [
     PixelLayer('orb',
         motion: PixelMotion.travel,
@@ -88,7 +125,17 @@ const Map<VfxStyle, List<PixelLayer>> pixelPlans = {
   ],
   VfxStyle.lightning: [PixelLayer('lightning', anchor: Offset(24, 40))],
   VfxStyle.flame: [PixelLayer('flame', anchor: Offset(24, 40), fade: true)],
-  VfxStyle.fireball: [PixelLayer('fireball')],
+  VfxStyle.fireball: [
+    PixelLayer('fireball',
+        motion: PixelMotion.travel,
+        span: 0.45,
+        loop: true,
+        anchor: Offset(17, 28),
+        size: 1.3,
+        frameTo: 6,
+        tilt: _headLeft),
+    PixelLayer('fireball', t0: 0.45, span: 0.55, frameFrom: 6, size: 1.3),
+  ],
   VfxStyle.meteor: [
     PixelLayer('meteor_proj',
         motion: PixelMotion.fall,
@@ -126,11 +173,39 @@ const Map<VfxStyle, List<PixelLayer>> pixelPlans = {
   VfxStyle.phase: [PixelLayer('phase', size: 1.8)],
 };
 
+/// The styles drawn in Art's Apollo strips, which carry their own impact:
+/// the pale ground ring a strong blow adds is the old look and fights their
+/// warm colours, so they go without it. The styles still on the old strips
+/// (the bolt, the meteor, the quake, the smoke) keep it.
+const Set<VfxStyle> _apolloImpact = {
+  VfxStyle.slash,
+  VfxStyle.heavySlash,
+  VfxStyle.pierce,
+  VfxStyle.whirl,
+  VfxStyle.claw,
+  VfxStyle.impact,
+  VfxStyle.arrow,
+  VfxStyle.volley,
+  VfxStyle.lightning,
+  VfxStyle.flame,
+  VfxStyle.fireball,
+  VfxStyle.holyFire,
+  VfxStyle.frost,
+  VfxStyle.splash,
+  VfxStyle.poison,
+  VfxStyle.wind,
+  VfxStyle.voidRift,
+  VfxStyle.drain,
+  VfxStyle.shadow,
+  VfxStyle.radiance,
+};
+
 /// The strips a blow of [tier] adds under its landing.
 List<PixelLayer> _pixelTierLayers(VfxStyle style, VfxTier tier, bool hit) {
   if (!hit ||
       tier.index < VfxTier.strong.index ||
-      systemVfxStyles.contains(style)) {
+      systemVfxStyles.contains(style) ||
+      _apolloImpact.contains(style)) {
     return const [];
   }
   final at = vfxImpactAt(style);
@@ -336,10 +411,13 @@ bool paintPixelBurst(
     if (lt < 0 || lt > 1) return;
     final image = PixelVfxTints.of(l.asset, palette)!;
     final side = image.height.toDouble();
-    final frames = (image.width / side).round();
+    final strip = (image.width / side).round();
+    final first = l.frameFrom.clamp(0, strip - 1);
+    final end = l.frameTo < 0 ? strip : l.frameTo.clamp(first + 1, strip);
+    final frames = end - first;
     final progress =
         l.loop && frames < 8 ? (lt * frames * 2.4) % frames : lt * frames;
-    final i = progress.floor().clamp(0, frames - 1);
+    final i = first + progress.floor().clamp(0, frames - 1);
     final k = unit * l.size;
     var pos = at;
     var angle = 0.0;
@@ -363,7 +441,7 @@ bool paintPixelBurst(
     }
     canvas.save();
     canvas.translate(pos.dx.roundToDouble(), pos.dy.roundToDouble());
-    if (angle != 0) canvas.rotate(angle);
+    if (angle != 0 || l.tilt != 0) canvas.rotate(angle + l.tilt);
     // A fading strip (flame, heal): the last third shrinks toward its anchor
     // and fades, in whole pixels.
     final out = l.fade ? pixelFadeOut(lt) : 0.0;
