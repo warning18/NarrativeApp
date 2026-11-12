@@ -8,6 +8,10 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.957.0+993]
+
+- Effects: the last five skill effects in the Apollo palette (UX, Art's strips): the bolt's burst, the meteor's fall, the quake, the smoke and the mana, 9 frames each like the other Apollo effects. The quake's ground band is trimmed into a ragged scorch (no hard rectangle), the meteor is tilted so its head leads the fall, and the pale ground ring is gone from these five styles. About +4.4 KB of PNG8 in the app.
+
 ## [1.955.0+991]
 
 - **Narrative: French typography across the interface strings.** The French values of
