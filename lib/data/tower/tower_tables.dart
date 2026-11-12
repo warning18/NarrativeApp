@@ -64,7 +64,9 @@ const double towerFoeScale = 1.18;
 /// all (seeds 1 to 2000); at 1.14, with [towerEventsExtras], 13.5% and
 /// 25.3% (the events cost the unlocked runs more: no one scale gives back
 /// both 12.6% and 26.8%). The live curve since v1.944 (events version 1).
-const double towerEventsFoeScale = 1.14;
+/// 1.16 since a pack's shortcut is an Elite pack (towerShortcutFloor, no
+/// foe added): 13.2% and 24.9%, every ordinary floor under 9%.
+const double towerEventsFoeScale = 1.16;
 
 /// The floor events' version that adds the floors without a fight (floor
 /// events PR 3 and 4, docs/proposals/tower-peaceful-floors-and-stores.md:

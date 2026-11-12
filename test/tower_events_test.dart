@@ -11,7 +11,7 @@ import 'dart:math';
 import 'package:flutter_test/flutter_test.dart';
 
 import 'package:narrative_data_app/combat/fight_numbers.dart'
-    show potionHealAmount;
+    show eliteStatMultiplier, potionHealAmount;
 import 'package:narrative_data_app/combat/stat_rules.dart' show levelStatPicks;
 import 'package:narrative_data_app/data/ability_check.dart' show checkChance;
 import 'package:narrative_data_app/data/tower/tower_bot.dart';
@@ -427,17 +427,47 @@ void main() {
         expect(view.skip, inInclusiveRange(1, 3));
         expect(view.landsOn, floor + 1 + view.skip!);
         expect(view.landsOn, lessThan(nextGate(floor)));
-        if (base.isPack || base.elite) {
-          expect(view.foeIds, [...base.enemyIds, base.enemyIds.first]);
-          expect(view.elite, isFalse);
-        } else {
-          expect(view.foeIds, base.enemyIds);
-          expect(view.elite, isTrue);
-        }
+        // The same foes: a pack an Elite pack, a lone foe an Elite; a
+        // pack or a lone Elite, the extra times the Elite's.
+        final tough = towerShortcutFloor(base);
+        expect(view.foeIds, base.enemyIds);
+        expect(view.elite, !base.isPack);
+        expect(view.elitePack, base.isPack);
+        expect(tough.elite, view.elite);
+        expect(tough.elitePack, view.elitePack);
+        expect(
+            tough.extra,
+            closeTo(
+                base.isPack || base.elite
+                    ? base.extra * eliteStatMultiplier
+                    : base.extra,
+                1e-9));
         // A floor met again offers none.
         expect(
             towerEventKindOf(run.copyWith(crest: floor, setbacks: 1)), isNull);
       }
+    });
+
+    test('the tougher floor: a lone foe an Elite, a pack an Elite pack', () {
+      TowerFloor floor(List<String> ids, {bool elite = false}) => TowerFloor(
+          floor: 21,
+          kind: TowerFloorKind.fight,
+          chapter: 6,
+          extra: .5,
+          enemyIds: ids,
+          elite: elite);
+      final lone = towerShortcutFloor(floor(['a']));
+      expect((lone.elite, lone.elitePack, lone.extra), (true, false, .5));
+      final loneElite = towerShortcutFloor(floor(['a'], elite: true));
+      expect((loneElite.elite, loneElite.elitePack), (true, false));
+      expect(loneElite.extra, closeTo(.5 * eliteStatMultiplier, 1e-9));
+      final pack = towerShortcutFloor(floor(['a', 'b', 'b']));
+      expect(pack.enemyIds, ['a', 'b', 'b']);
+      expect((pack.elite, pack.elitePack), (false, true));
+      expect(pack.extra, closeTo(.5 * eliteStatMultiplier, 1e-9));
+      // The Elite pack's multiplier is in its extra: the fight forces no
+      // Elite on top of it.
+      expect(pack.modifiersFor('warrior').forceElite, isFalse);
     });
 
     test('chosen once, before the fight; taken, the fight is the tougher', () {
@@ -451,6 +481,7 @@ void main() {
       final fought = towerFloorOf(taken, data);
       expect(fought.enemyIds, towerEventOf(run, data)!.foeIds);
       expect(fought.elite, towerEventOf(run, data)!.elite);
+      expect(fought.elitePack, towerEventOf(run, data)!.elitePack);
       expect(fought.modifiersFor('warrior').forceElite, fought.elite);
       expect(towerChooseShortcut(taken, data, false).shortcut, isTrue);
       final declined = towerChooseShortcut(run, data, false);

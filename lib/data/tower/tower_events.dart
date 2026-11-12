@@ -17,7 +17,8 @@
 
 import 'dart:math';
 
-import '../../combat/fight_numbers.dart' show potionHealAmount;
+import '../../combat/fight_numbers.dart'
+    show eliteStatMultiplier, potionHealAmount;
 import '../ability_check.dart' show checkBonusFor, checkChance, checkPasses;
 import '../sim_combat.dart' show SimCharacter;
 import 'tower_floors.dart';
@@ -223,6 +224,7 @@ class TowerEventView {
     this.landsOn,
     this.foeIds,
     this.elite,
+    this.elitePack,
     this.skip,
     this.lossEndsRun,
     this.accepted,
@@ -271,13 +273,14 @@ class TowerEventView {
   final int? rounds;
   final int? landsOn;
 
-  /// A shortcut: the foes fought if it is taken (towerShortcutFloor), the
-  /// first an Elite or not ([elite]; a floor already a pack or an Elite
-  /// gets one more foe instead), the floors skipped ([skip], landing on
-  /// [landsOn]), a loss ending the run ([lossEndsRun], true), and the
-  /// player's choice ([accepted]: null until chosen, TowerRun.shortcut).
+  /// A shortcut: the foes fought if it is taken (towerShortcutFloor), a
+  /// lone foe an Elite ([elite]), a pack an Elite pack ([elitePack]), the
+  /// floors skipped ([skip], landing on [landsOn]), a loss ending the run
+  /// ([lossEndsRun], true), and the player's choice ([accepted]: null
+  /// until chosen, TowerRun.shortcut).
   final List<String>? foeIds;
   final bool? elite;
+  final bool? elitePack;
   final int? skip;
   final bool? lossEndsRun;
   final bool? accepted;
@@ -636,18 +639,23 @@ int towerShortcutLandsOn(int floor, int skip) =>
     min(floor + 1 + skip, _nextGate(floor) - 1);
 
 /// [floor] made tougher for a shortcut (the proposal's option (a)): a lone
-/// foe made an Elite (eliteStatMultiplier); a pack, or a lone foe already
-/// an Elite, one more foe (its strongest again).
+/// foe made an Elite (eliteStatMultiplier); a lone foe already an Elite
+/// stays one, its extra times eliteStatMultiplier; a pack the same foes as
+/// an Elite pack ([TowerFloor.elitePack]): its extra times
+/// eliteStatMultiplier, no foe added (one more foe made the late packs'
+/// shortcut lost 39% of the time and took floors 21 and 22 over 10% of
+/// the runs, seeds 1 to 2000).
 TowerFloor towerShortcutFloor(TowerFloor floor) => TowerFloor(
       floor: floor.floor,
       kind: floor.kind,
       chapter: floor.chapter,
-      extra: floor.extra,
-      enemyIds: floor.isPack || floor.elite
-          ? [...floor.enemyIds, floor.enemyIds.first]
-          : floor.enemyIds,
+      extra: floor.isPack || floor.elite
+          ? floor.extra * eliteStatMultiplier
+          : floor.extra,
+      enemyIds: floor.enemyIds,
       affixes: floor.affixes,
-      elite: !floor.isPack && !floor.elite,
+      elite: !floor.isPack,
+      elitePack: floor.isPack,
       events: floor.events,
     );
 
@@ -792,6 +800,7 @@ TowerEventView? towerEventOf(TowerRun run, TowerData data,
         setbacksLeft: setbacksLeft,
         foeIds: tough.enemyIds,
         elite: tough.elite,
+        elitePack: tough.elitePack,
         skip: landsOn - floor - 1,
         landsOn: landsOn,
         lossEndsRun: true,
