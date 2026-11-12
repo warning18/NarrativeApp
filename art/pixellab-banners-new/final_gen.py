@@ -19,30 +19,29 @@ def erase(a,box,M):
     for y in range(y0,y1+1):
         for x in range(x0,x1+1): a[y,x]=(*M,255)
 def lantern(im):
-    d=ImageDraw.Draw(im); X=32
+    d=ImageDraw.Draw(im); X=31
     def r(x0,y0,x1,y1,c): d.rectangle((x0,y0,x1,y1),fill=c)
     # hanging ring
-    r(X-5,19,X+4,20,INK); r(X-5,19,X-4,27,INK); r(X+3,19,X+4,27,INK)
-    r(X-4,20,X+3,21,CREAM); r(X-4,20,X-3,26,CREAM); r(X+2,20,X+3,26,CREAM_D)
-    # domed cap: stepped trapezoid
-    for k,(w,y) in enumerate(((5,26),(8,28),(11,30),(13,32))):
-        r(X-w-1,y,X+w,y+1,INK)
-    for k,(w,y) in enumerate(((4,27),(7,29),(10,31),(12,33))):
-        r(X-w,y,X+w-1,y+1,CREAM); r(X+w-2,y,X+w-1,y+1,CREAM_D)
-    # body: four posts and a glass with a blue flame
-    r(X-11,34,X+10,53,INK); r(X-10,34,X+9,52,CREAM)
-    r(X-7,36,X+6,50,INK); r(X-6,37,X+5,49,(21,32,56,255))
-    fl={37:(0,0),38:(0,0),39:(-1,1),40:(-1,1),41:(-2,2),42:(-2,2),43:(-3,3),44:(-3,3),45:(-3,3),46:(-3,3),47:(-2,2),48:(-2,1)}
-    for y,(a,b) in fl.items():
-        for x in range(X+a-1,X+b): im.putpixel((x,y),(79,143,186,255))
-    for y in range(40,48):
-        for x in range(X-2,X+1): im.putpixel((x,y),(115,190,211,255))
-    for y in range(43,47): im.putpixel((X-1,y),(235,237,233,255))
-    im.putpixel((X-1,37),(165,221,219,255)); im.putpixel((X-1,38),(165,221,219,255))
-    r(X-10,34,X-8,52,CREAM); r(X+7,34,X+9,52,CREAM_D); r(X-10,34,X-10,51,CREAM_L)
+    r(X-5,18,X+5,19,INK); r(X-5,18,X-4,26,INK); r(X+4,18,X+5,26,INK)
+    r(X-4,19,X+4,20,CREAM); r(X-4,19,X-3,25,CREAM); r(X+3,19,X+4,25,CREAM_D)
+    # domed cap: stepped trapezoid, wider than the body
+    for (w,y) in ((6,25),(9,27),(12,29),(15,31)): r(X-w-1,y,X+w,y+1,INK)
+    for (w,y) in ((5,26),(8,28),(11,30),(14,32)): r(X-w,y,X+w-1,y+1,CREAM); r(X+w-2,y,X+w-1,y+1,CREAM_D)
+    # body: posts either side, tall glass with a big blue flame
+    r(X-14,33,X+13,57,INK); r(X-13,33,X+12,56,CREAM)
+    r(X-10,35,X+9,54,INK); r(X-9,36,X+8,53,(21,32,56,255))
+    fl=[(38,0,0),(39,-1,0),(40,-1,1),(41,-2,1),(42,-2,2),(43,-3,2),(44,-3,3),(45,-4,3),(46,-4,4),(47,-4,4),(48,-4,4),(49,-4,4),(50,-3,3),(51,-3,2)]
+    for y,a,b in fl:
+        for x in range(X+a,X+b+1): im.putpixel((x,y),(79,143,186,255))
+    for y in range(43,51):
+        for x in range(X-2,X+2): im.putpixel((x,y),(115,190,211,255))
+    for y in range(45,50):
+        for x in range(X-1,X+1): im.putpixel((x,y),(235,237,233,255))
+    for y in (36,37): im.putpixel((X,y),(165,221,219,255))
+    r(X-13,33,X-11,56,CREAM); r(X+10,33,X+12,56,CREAM_D); r(X-13,33,X-13,55,CREAM_L); r(X-1,36,X-1,36,(21,32,56,255))
     # base with two small feet
-    r(X-9,53,X+8,56,INK); r(X-8,53,X+7,55,CREAM); r(X-8,55,X+7,55,CREAM_D)
-    r(X-7,56,X-4,58,INK); r(X-6,56,X-5,57,CREAM); r(X+3,56,X+6,58,INK); r(X+4,56,X+5,57,CREAM)
+    r(X-12,56,X+11,59,INK); r(X-11,56,X+10,58,CREAM); r(X-11,58,X+10,58,CREAM_D)
+    r(X-10,59,X-6,61,INK); r(X-9,59,X-7,60,CREAM); r(X+5,59,X+9,61,INK); r(X+6,59,X+8,60,CREAM)
 def leaf(im):
     cx,cy=34,44; L=22.0; ang=np.radians(-52); ux,uy=np.cos(ang),np.sin(ang)   # axis from the bottom-left stem to the top-right tip
     W=11.5; mask=np.zeros((128,64),bool)
