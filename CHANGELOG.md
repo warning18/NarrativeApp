@@ -10,7 +10,7 @@ isn't reconstructable from git history alone.
 
 ## [1.956.0+992]
 
-- Banners: the 20 banners in the new Apollo look (UX, Art's redraw): the thirteen clan standards and the seven relic and fleet banners keep their names, size (64x128) and clan colours, with a coloured header band, stitched border and hem over the cloth's folds. No code changed. About +18.9 KB of PNG8 in the app.
+- Banners: the 20 banners in the new Apollo look (UX, Art's redraw): the thirteen clan standards and the seven relic and fleet banners keep their names, size (64x128) and clan colours, with a coloured header band, stitched border and hem over the cloth's folds. No code changed. About 6.7 KB less PNG8 in the app (32,936 to 26,237 bytes).
 
 ## [1.955.0+991]
 
