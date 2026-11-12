@@ -268,10 +268,10 @@ abstract final class ApolloTones {
   ApolloTones._();
 
   static const List<int> fire = [
-    0xFFE8C170,
+    0xFFF2C14E,
     0xFFDA863E,
-    0xFF884B2B,
-    0xFF341C27
+    0xFFCF573C,
+    0xFF752438
   ];
   static const List<int> water = [
     0xFFA4DDDB,
