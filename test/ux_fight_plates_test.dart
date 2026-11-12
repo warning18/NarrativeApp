@@ -17,11 +17,36 @@ void main() {
     String? of(String? s) => fightPlateAsset(FightStage.cityRoad, s);
     expect(of('alster'), endsWith('/cityroad.png'));
     expect(of(null), endsWith('/cityroad.png'));
-    expect(of('white_anchorage'), endsWith('/cityroad.png'));
+    expect(of('white_anchorage'), endsWith('/cityroad_whiteanchorage.png'));
+    expect(of('white_wells'), endsWith('/cityroad.png'));
     expect(of('saltmouth'), endsWith('/cityroad_saltmouth.png'));
     expect(of('black_reliquary'), endsWith('/cityroad_frost.png'));
     expect(of('ashen_quarter'), endsWith('/cityroad_frost.png'));
     expect(of('candlehold'), endsWith('/cityroad_candlehold.png'));
+  });
+
+  test('a stage version is worn by its places, the shared picture elsewhere',
+      () {
+    String of(FightStage st, String? s, {String? p}) =>
+        fightPlateAsset(st, s, placeId: p);
+    expect(of(FightStage.glass, 'greyhithe'), endsWith('/glass_greyhithe.png'));
+    expect(of(FightStage.glass, 'hollow_shore', p: 'beyond_the_tear'),
+        endsWith('/glass_greyhithe.png'));
+    expect(of(FightStage.glass, 'somewhere'), endsWith('/glass.png'));
+    expect(of(FightStage.ash, 'emberwick'), endsWith('/ash_emberwick.png'));
+    expect(of(FightStage.ash, null), endsWith('/ash.png'));
+    expect(
+        of(FightStage.terraces, 'akagiri'), endsWith('/terraces_akagiri.png'));
+    expect(
+        of(FightStage.waves, 'the_crossing'), endsWith('/waves_crossing.png'));
+    expect(of(FightStage.waves, null), endsWith('/waves.png'));
+    expect(of(FightStage.hall, 'drowned_cloister'), endsWith('/hall_wet.png'));
+    expect(of(FightStage.hall, 'alster', p: 'alster_undercroft'),
+        endsWith('/hall_wet.png'));
+    expect(
+        of(FightStage.hall, 'alster', p: 'alster_hall'), endsWith('/hall.png'));
+    // A version belongs to its stage: a city road at Greyhithe is no glass.
+    expect(of(FightStage.cityRoad, 'greyhithe'), endsWith('/cityroad.png'));
   });
 
   test('every stage has its picture, bundled, a 180 x 320 palette PNG', () {
@@ -42,6 +67,7 @@ void main() {
       'saltmouth',
       'black_reliquary',
       'candlehold',
+      'white_anchorage',
     ]) {
       final asset = fightPlateAsset(FightStage.cityRoad, s);
       expect(File(asset).existsSync(), isTrue, reason: asset);

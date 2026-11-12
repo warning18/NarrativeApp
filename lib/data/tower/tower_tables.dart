@@ -637,3 +637,58 @@ Map<String, dynamic>? _faceNamed(Map die, Object? name) {
   }
   return null;
 }
+
+/// The foes as the Tower fights them, where the story's were retuned after
+/// the Tower's curve was set (v1.926, the story difficulty review's findings
+/// 5 to 7, enemies.json): the Tower keeps their stats as they were, so the
+/// story's walls coming down does not move the climb (v1.922's curve). Each
+/// entry: the fields replaced, and `moves` the chance of each skill move
+/// (skillID -> chance). Only the Tower reads them ([towerEnemyRecord],
+/// TowerData.enemies, the floor's fight).
+const Map<String, Map<String, Object>> towerEnemyStats = {
+  'inquisition_soldier': {
+    'maxHealth': 30,
+    'moves': {'brace': 25},
+  },
+  'inquisition_auxiliary': {'maxHealth': 24},
+  'drowned_pilgrim': {'maxHealth': 33, 'damage': 4},
+  'void_hound': {
+    'maxHealth': 27,
+    'guile': 4,
+    'moves': {'pack_howl': 20},
+  },
+  'dock_overseer': {'maxHealth': 22, 'damage': 3, 'guile': 2},
+  'hollow_court_inquisitor': {'maxHealth': 46},
+};
+
+/// [record], foe [id]'s (enemies.json, localized or not), as the Tower
+/// fights it: its [towerEnemyStats] put back, the rest as it is. [record]
+/// itself is left as it is.
+Map<String, dynamic> towerEnemyRecord(String id, Map<String, dynamic> record) {
+  final stats = towerEnemyStats[id];
+  if (stats == null) return record;
+  final moves = stats['moves'] as Map<String, int>?;
+  return {
+    ...record,
+    for (final MapEntry(:key, :value) in stats.entries)
+      if (key != 'moves') key: value,
+    if (moves != null && record['skillMoves'] is List)
+      'skillMoves': [
+        for (final move in record['skillMoves'] as List)
+          if (move is Map && moves[move['skillID']] != null)
+            {...move.cast<String, dynamic>(), 'chance': moves[move['skillID']]}
+          else
+            move,
+      ],
+  };
+}
+
+/// [enemies] (enemies.json's records) as the Tower fights them
+/// ([towerEnemyRecord]). [enemies] itself is left as it is.
+Map<String, dynamic> towerEnemyTable(Map<String, dynamic> enemies) {
+  if (!towerEnemyStats.keys.any(enemies.containsKey)) return enemies;
+  return {
+    for (final MapEntry(:key, :value) in enemies.entries)
+      key: value is Map<String, dynamic> ? towerEnemyRecord(key, value) : value,
+  };
+}

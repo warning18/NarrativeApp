@@ -8,6 +8,34 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.933.0+969]
+
+- Tower: the engine of two floor events, setbacks and rivals (floor events PR 1, docs/proposals/tower-snakes-and-ladders.md). **They stay off for players** until the user has seen UX-2's event cards: a run started now plays exactly as before. In the engine: a setback is a d20 check after an ordinary floor (strength, dexterity or wisdom, DC 10 to 14, odds shown) that gives a potion, or on a fail drops the hero 1 to 3 floors, never past a warden or boss, once a run; a rival is a fight that, won within 3 rounds, skips the next floor. A floor met again after a fall pays nothing, and a fall never takes a level or a mark away.
+
+## [1.932.0+968]
+
+- Story: three ordinary foes that killed more than their chapter's bosses are softened, and chapter 2 gets one fight with teeth (difficulty review, findings 5 to 7). The Inquisition soldier guards more often and has less health (chapter 3's wall, the salt circle at Akagiri, eases; its partner the auxiliary is a little softer too). The drowned pilgrims hit for 3 instead of 4 (Wrack's End's lamp-line). The void hounds have less health and guile and howl less (Highhearth's quarry gate). The dock overseer in chapter 2 is now a real fight; chapter 2 stays the easiest chapter. One boss line: the Hollow Court inquisitor (chapter 4) has 49 health instead of 46, so it stays as hard as it was before the softer pilgrims let heroes reach it stronger. The Tower keeps all six foes as they were, so the climb doesn't change.
+
+## [1.931.0+967]
+
+- Fight backgrounds by place: Art's six stage versions. The glass shore at Greyhithe, Hollow Shore and the White Fleet Grave wears a brown dusk, the ash at Emberwick a kiln's glow, the terraces at Akagiri a red haze, the waves at the Crossing a night sea, a wet vault in the drowned cloister and under Alster, and the city road at White Anchorage a harbour of hulls. A version is worn by its places only (the stage must match too); every other place keeps the stage's shared picture. The dice board leans further to the night and dusk pictures (their board was a day colour), and the kiln's floor gets a veil so the log row reads. Pictures: `docs/ux-shots/stage-versions/`.
+
+## [1.930.0+966]
+
+- Maps, release 1: the sphere is the world. The world map is the sphere only: it opens filling its box, turned to the party; "+" closes in on the party wherever the ball was turned, "−" shows the whole ball, and quick presses add up. Names keep clear of the buttons (English and French), and there are five 44 px map buttons instead of seven of 34. The flat world chart, the sphere switch in the layers sheet, the two pole buttons and the separate "Land" view leave the player's path; the older worlds A, B and C stay on Edit Mode's world page. Going up from a town, the fog is on from the first frame. The epilogue map and the direction of a district's ways out read the sphere's world, and so does the weather where the party stands (Core's agreed line in `climate_provider.dart`). Pictures: `docs/maps/sphere-and-locations/release-1/`.
+
+## [1.929.0+965]
+
+- Fight: the fight screen can tell its caller how many rounds it has started (a new optional `onRound`, told 1 when the battle begins and the round's number each time a new one starts), so the Tower's rival can count the rounds a fight took. Nothing changes for any other fight.
+
+## [1.927.0+963]
+
+- Tower: Art's decorations on the frames, by band: the night rooms (floors 1 to 10) hang chains and candle stubs, the stone stair (11 to 20) has cracks and rubble, the void (21 to 30) violet cracks and a glow. A few pieces per screen, at the frame's pixel density: corner pieces on the oaths panel, two pieces hanging from the first foe's panel (its content starts under them, never under a piece) and two standing on the health panel's lower edge, picked by the floor so they are stable. Every other panel and every button stays clean. Pictures: `docs/ux-shots/tower-decorations/`.
+
+## [1.925.0+961]
+
+- Character choice and the life: the peoples and callings are Art's free-standing emblems (no plate behind them) on cards in the wood frame, the first tier of the frames (dark and parchment), and the page says what is still to be chosen ("Still to choose: a people and a calling") above the start button. The life's first screen reads better in the light theme. Pictures: `docs/ux-shots/life-redo-build/`.
+
 ## [1.923.0+959]
 
 - Tower: old-iron frames. The Tower's panels, cards, dialogs and buttons wear Art's iron kit instead of the plain bevel, and the frame gets less cheap as you climb: floors 1 to 10 wood, 11 to 20 iron, 21 to 30 silver, and gilt for good once a run is won (blackened steel with a heavy gold band and corner plates). A wood or silver button has a flat plate under its label so the label reads; iron and gilt buttons wear the kit's steel face. The frames load while the menu opens; until they are in, a panel keeps its bevel. The other screens are unchanged (frames reach them later). Pictures: `docs/ux-shots/frames-tower/`.

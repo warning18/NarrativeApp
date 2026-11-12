@@ -38,13 +38,16 @@ Color _fightBoardBase(FightStage stage) => switch (stage) {
 /// Paints the board's surface for [stage]: the same picture every time (a
 /// fixed seed), never animated.
 class _FightBoardPainter extends CustomPainter {
-  const _FightBoardPainter(this.stage, [this.tint]);
+  const _FightBoardPainter(this.stage, [this.tint, this.lean = 0.38]);
 
   final FightStage stage;
 
   /// The ground colour of the picture behind the board: the surface leans
   /// towards it, so the board and the picture are one place.
   final Color? tint;
+
+  /// How far the surface leans to [tint].
+  final double lean;
 
   @override
   void paint(Canvas canvas, Size size) {
@@ -429,10 +432,10 @@ class _FightBoardPainter extends CustomPainter {
               fill(Colors.white, 0.75));
         }
     }
-    final lean = tint;
-    if (lean != null) {
+    final toward = tint;
+    if (toward != null) {
       canvas.drawRect(Rect.fromLTWH(0, 0, w, h),
-          Paint()..color = lean.withValues(alpha: 0.38));
+          Paint()..color = toward.withValues(alpha: lean));
     }
     // The edge falls into shadow, so the dice stand out in the middle.
     canvas.drawRect(
@@ -449,7 +452,7 @@ class _FightBoardPainter extends CustomPainter {
 
   @override
   bool shouldRepaint(_FightBoardPainter old) =>
-      old.stage != stage || old.tint != tint;
+      old.stage != stage || old.tint != tint || old.lean != lean;
 }
 
 /// The board surface for [stage], with [child] (the dice) on it. Rounded and
@@ -491,8 +494,10 @@ class FightBoardSurface extends StatelessWidget {
                 valueListenable: FightPlateImages.loaded,
                 builder: (context, _, __) => CustomPaint(
                   key: const Key('fight_board_skin'),
-                  painter: _FightBoardPainter(stage,
-                      plate == null ? null : FightPlateImages.tintOf(plate!)),
+                  painter: _FightBoardPainter(
+                      stage,
+                      plate == null ? null : FightPlateImages.tintOf(plate!),
+                      plate == null ? 0.38 : FightPlateImages.leanOf(plate!)),
                 ),
               ),
             ),

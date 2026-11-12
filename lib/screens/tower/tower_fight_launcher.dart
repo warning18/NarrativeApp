@@ -8,6 +8,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../combat/field_anomaly.dart' show FightStage;
 import '../../data/tower/tower_hero.dart';
 import '../../data/tower/tower_run.dart';
+import '../../data/tower/tower_tables.dart' show towerEnemyRecord;
 import '../../gamedata/db_schema.dart';
 import '../../providers/game_db_providers.dart';
 import '../../providers/combat_active_provider.dart';
@@ -29,7 +30,8 @@ Future<TowerFightResult?> towerFightFor(
   final floor = towerFloorOf(run, data);
   final records = <String, Map<String, dynamic>>{
     for (final id in floor.enemyIds)
-      if (enemies[id] case final Map<String, dynamic> record) id: record,
+      if (enemies[id] case final Map<String, dynamic> record)
+        id: towerEnemyRecord(id, record),
   };
   // A floor may hold the same foe twice (two Harbour Rats): the records are
   // by id, so it is the distinct foes that must all be found (v1.914, QA's

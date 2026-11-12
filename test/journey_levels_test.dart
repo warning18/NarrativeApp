@@ -7,6 +7,8 @@ import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import 'package:narrative_data_app/data/chart_globe.dart';
+import 'package:narrative_data_app/data/map_charts.dart';
 import 'package:narrative_data_app/providers/map_look_provider.dart';
 import 'package:narrative_data_app/providers/story_providers.dart';
 import 'package:narrative_data_app/screens/journal_screen.dart';
@@ -21,9 +23,7 @@ void main() {
     TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
         .setMockMethodCallHandler(
             const MethodChannel('flutter_tts'), (call) async => 1);
-    // The flat chart first: the sphere is the default now (v1.350), and the
-    // test turns it on from the Layers sheet further down.
-    SharedPreferences.setMockInitialValues({chartGlobePrefsKey: false});
+    SharedPreferences.setMockInitialValues({});
     usePhone(tester, const Size(400, 860));
 
     final container = await openGame(tester, overrides: [storedCityPlans]);
@@ -153,28 +153,43 @@ void main() {
     expect(find.byType(JourneyWorldMap), findsOneWidget);
     expect(find.byKey(const ValueKey('journey_city_chart')), findsNothing);
     expect(find.byKey(const ValueKey('journey_level_hint')), findsOneWidget);
-    // No jump (v1.201.1): the chart opens close, where the streets were,
-    // and glides out to the land's zoom.
-    double chartScale() => tester
-        .widget<InteractiveViewer>(
-            find.byKey(const ValueKey('journey_world_viewer')))
-        .transformationController!
-        .value
-        .getMaxScaleOnAxis();
-    // The saved look loads a frame after the chart opens: the glide starts
-    // from there.
+    // No jump (v1.201.1): the sphere opens close, where the streets were,
+    // and glides out to the zoom that fills its box, turned to the party.
+    final map = find.byType(JourneyWorldMap);
+    GlobeView globeNow() => journeyGlobeOf(tester.element(map))!;
+    final box = tester.getSize(map);
+    final k =
+        (box.shortestSide * 0.9 / (2 * GlobeView.baseRadius)).clamp(0.0, 3.6);
+    final fill = JourneyWorldMapZoom.fillFor(box, 2 * GlobeView.baseRadius * k);
+    expect(fill, greaterThan(1));
     await tester.pump(const Duration(milliseconds: 20));
-    final early = chartScale();
-    expect(early, greaterThan(JourneyWorldMapZoom.land + 1));
+    final early = globeNow().zoom;
+    expect(early, greaterThan(fill + 1));
     await tester.pump(const Duration(milliseconds: 150));
-    final later = chartScale();
+    final later = globeNow().zoom;
     expect(later, lessThan(early));
     await tester.pump(const Duration(milliseconds: 400));
-    expect(chartScale(), closeTo(JourneyWorldMapZoom.land, 0.01));
+    expect(globeNow().zoom, closeTo(fill, 0.01));
+    // The ball covers its box, corners included, and is turned to the
+    // party: its place is at the middle of the map.
+    final pxRadius = globeNow().radius * k;
+    expect(pxRadius * 2,
+        greaterThanOrEqualTo(Offset(box.width, box.height).distance - 0.5));
+    final story = chartOf(MapShape.story);
+    final party = tester.widget<JourneyWorldMap>(map).here!;
+    final at = globeNow().clamp(story.of(party));
+    expect((at - globeNow().centre).distance, lessThan(1));
+    // − shows the whole ball; no pole buttons, no sphere switch.
     await tester.tap(find.byKey(const Key('journey_zoom_out')));
     await tester.pump();
+    await tester.pump(const Duration(milliseconds: 400));
+    expect(globeNow().zoom, closeTo(1, 0.01));
+    expect(find.byKey(const Key('journey_pole_north')), findsNothing);
+    expect(find.byKey(const Key('journey_pole_south')), findsNothing);
     await tester.tap(find.byKey(const Key('journey_recentre')));
     await tester.pump();
+    await tester.pump(const Duration(milliseconds: 400));
+    expect(globeNow().zoom, closeTo(fill, 0.01));
     // Zoomed in as far as the chart goes, on the party's place, the
     // streets come back; − looks out again.
     for (var i = 0;
@@ -216,36 +231,29 @@ void main() {
     final prefs = await tester.runAsync(SharedPreferences.getInstance);
     expect(prefs!.getString(chartCalquePrefsKey), 'clans');
 
-    // The world as a sphere: turned with a drag, closer with +, a tap
-    // picks a place on it; the choice is kept.
+    // The Layers sheet no longer offers a flat chart.
     await tester.tap(find.byKey(const Key('journey_layers')));
     await settleApp(tester);
-    await tester.tap(find.byKey(const Key('journey_globe')));
-    await settleApp(tester);
-    // The sheet closed (it can fill the screen, so a tap above it
-    // would land on it).
+    expect(find.byKey(const Key('journey_globe')), findsNothing);
+    expect(find.byKey(const Key('journey_weather')), findsOneWidget);
     tester.state<NavigatorState>(find.byType(Navigator).first).pop();
     await settleApp(tester);
-    expect(container.read(chartGlobeProvider), isTrue);
-    expect(prefs.getBool(chartGlobePrefsKey), isTrue);
+    // The sphere: turned with a drag, and + comes back to the party
+    // wherever the ball was turned.
     final globe = find.byKey(const ValueKey('journey_globe_canvas'));
     expect(globe, findsOneWidget);
+    expect(find.byKey(const ValueKey('journey_world_canvas')), findsNothing);
+    await tester.drag(globe, const Offset(-120, 40));
+    await tester.pump();
+    expect((globeNow().clamp(story.of(party)) - globeNow().centre).distance,
+        greaterThan(10));
     await tester.tap(find.byKey(const Key('journey_zoom_in')));
     await tester.pump();
-    // The sphere wears the whole story world: two pole buttons turn it right
-    // over either pole.
-    expect(find.byKey(const Key('journey_pole_north')), findsOneWidget);
-    expect(find.byKey(const Key('journey_pole_south')), findsOneWidget);
-    await tester.tap(find.byKey(const Key('journey_pole_north')));
-    await tester.pump(const Duration(milliseconds: 900));
-    await tester.tap(find.byKey(const Key('journey_pole_south')));
-    await tester.pump(const Duration(milliseconds: 900));
-    await tester.drag(globe, const Offset(-60, 20));
-    await tester.pump();
-    await tester.tap(find.byKey(const Key('journey_recentre')));
-    await tester.pump();
-    // A tap on the party's own place, on the sphere as on the chart, is
-    // the streets again (v1.201).
+    await tester.pump(const Duration(milliseconds: 400));
+    expect(globeNow().zoom, closeTo(JourneyWorldMapZoom.district, 0.01));
+    expect((globeNow().clamp(story.of(party)) - globeNow().centre).distance,
+        lessThan(1));
+    // A tap on the party's own place is the streets again (v1.201).
     await tester.tap(globe);
     await tester.pump(const Duration(milliseconds: 400));
     expect(globe, findsNothing);
@@ -253,17 +261,6 @@ void main() {
     await tester.tap(find.byKey(const Key('journey_place_zoom_out')));
     await tester.pump(const Duration(milliseconds: 300));
     expect(globe, findsOneWidget);
-    await tester.runAsync(
-        () => container.read(chartGlobeProvider.notifier).choose(false));
-    await settleApp(tester);
-    expect(globe, findsNothing);
-    expect(find.byType(JourneyWorldMap), findsOneWidget);
-    await tester.tap(find.byKey(const Key('journey_recentre')));
-    await tester.pump();
-    await tester.tapAt(tester.getRect(find.byType(JourneyWorldMap)).center);
-    await tester.pump(const Duration(milliseconds: 300));
-    expect(find.byKey(const ValueKey('journey_world_canvas')), findsNothing);
-    expect(find.byKey(const ValueKey('journey_city_chart')), findsOneWidget);
     final error = tester.takeException();
     expect(error, isNull,
         reason: error is FlutterError ? error.toStringDeep() : '$error');

@@ -116,11 +116,10 @@ Kept from the atlas:
   Later, for F: a "sea side" per city in `tool/city_plans/` and a regenerated `city_plans.json`.
 - Strings: "Room" for the new rung (EN and FR), and the sphere switch's two strings go.
 
-**Tests.** Five files drive the flat chart and must be rewritten for the sphere, not dropped:
-`journey_levels_test.dart`, `map_poi_zoom_test.dart`, `map_readability_test.dart`, and QA's
-`qa_smoke_world_test.dart` and `qa_smoke_tints_test.dart` (QA's files: through the Manager).
-`world_map_edit_test.dart` and `world_map_test.dart` stay with Edit Mode's page. New tests: the opening
-frame (the party in view, no name under the buttons), the dive both ways, the fog never off.
+**Tests.** Four of Maps' files drove the flat chart and were rewritten for the sphere in release 1
+(`journey_levels_test.dart`, `map_readability_test.dart`, `map_poi_zoom_test.dart`, `world_move_view_test.dart`),
+with the smallest edit to QA's `qa_smoke_world_test.dart` and `qa_smoke_tints_test.dart`.
+`world_map_edit_test.dart` and `world_map_test.dart` stay with Edit Mode's page.
 
 **Build order, each release usable on its own**
 

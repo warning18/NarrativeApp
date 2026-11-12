@@ -17,8 +17,6 @@ import 'package:narrative_data_app/data/world_map.dart';
 import 'package:narrative_data_app/gamedata/db_schema.dart';
 import 'package:narrative_data_app/providers/game_db_providers.dart';
 import 'package:narrative_data_app/providers/story_providers.dart';
-import 'package:narrative_data_app/providers/map_look_provider.dart'
-    show chartGlobeProvider;
 import 'package:narrative_data_app/widgets/city_chart/city_chart.dart';
 import 'package:narrative_data_app/widgets/city_chart/city_chart_view.dart';
 import 'package:narrative_data_app/widgets/journey_world_map.dart';
@@ -171,7 +169,6 @@ void main() {
         ),
         bare: true,
         prepare: (container) async {
-          await container.read(chartGlobeProvider.notifier).choose(false);
           await container.read(storyDataProvider.future);
           for (final schema in [
             factionsSchema,
@@ -213,7 +210,6 @@ void main() {
         },
         after: _clearToasts,
         prepare: (container) async {
-          await container.read(chartGlobeProvider.notifier).choose(false);
           await container.read(storyDataProvider.future);
           for (final schema in [
             factionsSchema,
@@ -257,7 +253,6 @@ void main() {
         },
         after: _clearToasts,
         prepare: (container) async {
-          await container.read(chartGlobeProvider.notifier).choose(false);
           await container.read(storyDataProvider.future);
           for (final schema in [
             factionsSchema,
@@ -271,14 +266,8 @@ void main() {
           }
         },
       ),
-      SmokeCase('world_move_flat', worldMove(), bare: true),
-      SmokeCase(
-        'world_move_globe',
-        worldMove(),
-        bare: true,
-        prepare: (container) =>
-            container.read(chartGlobeProvider.notifier).choose(true),
-      ),
+      // The move over the world, on the sphere (the only world map).
+      SmokeCase('world_move_globe', worldMove(), bare: true),
       SmokeCase(
         'roll_power_row',
         Column(children: [
