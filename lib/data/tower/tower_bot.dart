@@ -140,6 +140,8 @@ SimFightOutcome towerBotFight({
 /// among those open, unless given; it starts unsworn ([clanId] swears one
 /// from the start) and takes the first oath it is offered ([choice], when
 /// given, picks its cards instead: an offer's index, or null to refuse).
+/// [events] is the floor events' version the run plays (towerStart; 0,
+/// none, every test's and band's climb as before them).
 TowerRun playTowerRun({
   required int seed,
   required TowerData data,
@@ -148,6 +150,7 @@ TowerRun playTowerRun({
   String? professionId,
   String? clanId,
   int? Function(TowerRun run)? choice,
+  int events = 0,
 }) {
   final pick = towerRandom(seed, 0, TowerStream.start);
   T draw<T>(List<T> from) => from[pick.nextInt(from.length)];
@@ -162,6 +165,7 @@ TowerRun playTowerRun({
     clanPool: clans,
     startUnlocks: progress.startUnlocks,
     unlocksOwned: progress.unlocksOwned,
+    events: events,
     data: data,
   );
   final floors = towerFloorsFor(seed, data.enemies);
@@ -181,30 +185,17 @@ TowerRun playTowerRun({
       floor: floor,
       hero: hero,
       data: data,
-      random: towerRandom(seed, floor.floor, TowerStream.fight),
+      random: towerRandom(seed, towerBotFightDraw(run), TowerStream.fight),
     );
     run = towerAfterFight(run, data,
         won: outcome.won,
         healthLeft: hero.currentHealth,
         potionsLeft: hero.potions,
-        maxHealthBefore: maxHealth);
+        maxHealthBefore: maxHealth,
+        rounds: outcome.rounds);
     if (run.status == TowerStatus.choosing) {
       // The level-up first, as the story's bot takes its picks.
-      // Each step's hero built once and handed on (towerHeroOf replays the
-      // whole run).
-      while (towerPendingPicks(run) > 0) {
-        final hero = towerHeroOf(run, data);
-        final offer = towerStatPickOffer(run, data, hero: hero);
-        if (offer.isEmpty) break;
-        run = towerTakeStatPick(
-            run,
-            data,
-            statPickForShares(
-                offer,
-                simBuildShares[run.professionId] ?? {hero.preferredStat: 1.0},
-                hero.pickedPoints),
-            offer: offer);
-      }
+      run = _botStatPicks(run, data);
       final hero = towerHeroOf(run, data);
       final owned = hero.ownedDice.keys.toSet();
       final index = (choice ?? towerBotChoice)(run);
@@ -212,6 +203,8 @@ TowerRun playTowerRun({
           ? run.offer[index]
           : null;
       run = towerPick(run, data, index, hero: hero);
+      // A rival's skip: the skipped floor's picks, taken on landing.
+      run = _botStatPicks(run, data);
       // A die gained (a die card's, an oath's) goes to the bag: tried.
       final gained = switch (card?.kind) {
         TowerRewardKind.die => card!.id,
@@ -225,6 +218,39 @@ TowerRun playTowerRun({
   }
   return run;
 }
+
+/// [run] with the level-up picks it waits on taken as the bot takes them
+/// (the story's bot's shares). Each step's hero built once and handed on
+/// (towerHeroOf replays the whole run).
+TowerRun _botStatPicks(TowerRun run, TowerData data) {
+  while (towerPendingPicks(run) > 0) {
+    final hero = towerHeroOf(run, data);
+    final offer = towerStatPickOffer(run, data, hero: hero);
+    if (offer.isEmpty) break;
+    run = towerTakeStatPick(
+        run,
+        data,
+        statPickForShares(
+            offer,
+            simBuildShares[run.professionId] ?? {hero.preferredStat: 1.0},
+            hero.pickedPoints),
+        offer: offer);
+  }
+  return run;
+}
+
+/// How far apart a floor's refights draw on the fight stream: a floor met
+/// again after the run's nth setback draws floor + n x this (floor events
+/// PR 1, as the proposal's harness drew them), so a refight is a fresh
+/// fight, not the one won before.
+const int towerBotRevisitSalt = 1000;
+
+/// The fight stream's index of [run]'s fight (towerRandom's floor): its
+/// floor, or on a floor met again (at or below TowerRun.crest) its floor
+/// salted by the setbacks taken, so a refight is a fresh fight.
+int towerBotFightDraw(TowerRun run) => run.floor <= run.crest
+    ? run.floor + towerBotRevisitSalt * run.setbacks
+    : run.floor;
 
 /// The trial fights the bot gives each die it tries ([towerBotRollBest]).
 const int towerBotDieTrialFights = 4;
