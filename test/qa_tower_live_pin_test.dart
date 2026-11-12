@@ -44,8 +44,11 @@ void main() {
   // A pack's shortcut an Elite pack, no foe added, the events' foes 1.16
   // (Core's events-on review): these were 58 / 231 / 9358 and
   // 129 / 334 / 11203.
-  const none = (top: 55, floor20: 220, floorSum: 9247);
-  const all = (top: 126, floor20: 320, floorSum: 10963);
+  // v1.963: the floors without a fight switched on (towerEventsLive 2, the
+  // user's option 2: their foes 1.17, floors 25 and 30 .42 and .34): these
+  // were 55 / 220 / 9247 and 126 / 320 / 10963.
+  const none = (top: 66, floor20: 240, floorSum: 9609);
+  const all = (top: 144, floor20: 323, floorSum: 11140);
 
   test('the live Tower, no unlocks, is the pinned curve', () {
     final m = _measure(const TowerProgress());
