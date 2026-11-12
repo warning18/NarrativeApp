@@ -32,11 +32,17 @@ const Map<String, double> towerProfessionScale = {
 };
 
 /// The foes' scale for [professionId] (1 for the others), with the
-/// Tower's own [towerFoeScale], or [towerEventsFoeScale] in a run playing
-/// the floor events ([events] 1 or more, TowerRun.events).
+/// Tower's own [towerFoeScale], [towerEventsFoeScale] in a run playing
+/// the floor events ([events] 1 or more, TowerRun.events), or
+/// [towerPeacefulFoeScale] in one playing the floors without a fight too
+/// ([towerPeacefulEvents] or more).
 double towerProfessionScaleOf(String professionId, {int events = 0}) =>
     (towerProfessionScale[professionId] ?? 1.0) *
-    (events >= 1 ? towerEventsFoeScale : towerFoeScale);
+    (events >= towerPeacefulEvents
+        ? towerPeacefulFoeScale
+        : events >= 1
+            ? towerEventsFoeScale
+            : towerFoeScale);
 
 /// Every foe of the Tower, on top of the floors' extras (v1.857): the
 /// level-up's stat picks are the player's, the main game's way, and spread
@@ -57,11 +63,21 @@ const double towerFoeScale = 1.18;
 /// at [towerFoeScale] took the top to 10.2% with no unlocks, 22.1% with
 /// all (seeds 1 to 2000); at 1.14, with [towerEventsExtras], 13.5% and
 /// 25.3% (the events cost the unlocked runs more: no one scale gives back
-/// both 12.6% and 26.8%). Floor events PR 3: 1.15 (was 1.14), set for the
-/// whole set of docs/proposals/tower-peaceful-floors-and-stores.md (the
-/// events, the parley, the merchant and the bargain: 14.0% and 24.8%), so
-/// until PR 4's stores come, the parley alone runs a little under it.
-const double towerEventsFoeScale = 1.15;
+/// both 12.6% and 26.8%). The live curve since v1.944 (events version 1).
+const double towerEventsFoeScale = 1.14;
+
+/// The floor events' version that adds the floors without a fight (floor
+/// events PR 3 and 4, docs/proposals/tower-peaceful-floors-and-stores.md:
+/// the parley, the merchant and the bargain). A run plays them only when
+/// its TowerRun.events is this or more, so switching the setback, the
+/// rival and the shortcut on (towerEventsLive 1) leaves them off.
+const int towerPeacefulEvents = 2;
+
+/// Every foe of the Tower in a run playing the floors without a fight
+/// ([towerPeacefulEvents]): 1.15, set for the whole set (the events, the
+/// parley, the merchant and the bargain: 14.0% and 24.8%, seeds 1 to 2000),
+/// so until PR 4's stores come, the parley alone runs a little under it.
+const double towerPeacefulFoeScale = 1.15;
 
 /// The floors' extras that differ in a run with the floor events on
 /// (floor -> extra, in place of its [towerBudgets] one): the floor-20 boss

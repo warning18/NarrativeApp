@@ -42,11 +42,12 @@ void main() {
   }
 
   /// The first floors of seeds 1.. holding an event of [kind].
-  List<(int, int)> floorsOf(TowerEventKind kind, {int count = 40}) {
+  List<(int, int)> floorsOf(TowerEventKind kind,
+      {int count = 40, int events = 1}) {
     final found = <(int, int)>[];
     for (var seed = 1; found.length < count && seed < 2000; seed++) {
       for (var floor = 1; floor < towerTop; floor++) {
-        if (towerEventKindOf(at(seed, floor)) == kind) {
+        if (towerEventKindOf(at(seed, floor, events: events)) == kind) {
           found.add((seed, floor));
         }
       }
@@ -525,7 +526,22 @@ void main() {
   });
 
   group('the parley', () {
-    final parleys = floorsOf(TowerEventKind.parley, count: 60);
+    test('only in a run of the floors without a fight (events 2)', () {
+      for (var seed = 1; seed <= 200; seed++) {
+        for (var floor = 1; floor < towerTop; floor++) {
+          expect(
+              towerEventKindOf(at(seed, floor)), isNot(TowerEventKind.parley),
+              reason: 'events 1: $seed f$floor');
+        }
+      }
+      expect(towerProfessionScaleOf('mage', events: 1),
+          towerProfessionScale['mage']! * towerEventsFoeScale);
+      expect(towerProfessionScaleOf('mage', events: towerPeacefulEvents),
+          towerProfessionScale['mage']! * towerPeacefulFoeScale);
+    });
+
+    final parleys =
+        floorsOf(TowerEventKind.parley, count: 60, events: towerPeacefulEvents);
 
     /// The floor events' draw as PR 2 drew it (tower_events.dart's _drawn),
     /// rewritten here: the parley must never move it.
@@ -548,7 +564,7 @@ void main() {
               raceId: 'human',
               professionId: 'warrior',
               clanId: clan,
-              events: 1,
+              events: towerPeacefulEvents,
               data: data)
           .copyWith(floor: floor);
       return run.copyWith(health: towerHeroOf(run, data).maxHealth);
@@ -558,7 +574,8 @@ void main() {
       var free = 0, found = 0;
       for (var seed = 1; seed <= 400; seed++) {
         for (var floor = 1; floor <= towerTop; floor++) {
-          final kind = towerEventKindOf(at(seed, floor));
+          final kind =
+              towerEventKindOf(at(seed, floor, events: towerPeacefulEvents));
           // The floor events' draws have not moved.
           if (kind != TowerEventKind.parley) {
             expect(kind, before(seed, floor), reason: '$seed f$floor');
@@ -578,7 +595,8 @@ void main() {
           expect(kind == TowerEventKind.parley, drawn, reason: '$seed f$floor');
           if (drawn) {
             found++;
-            expect(towerParleyClanOf(at(seed, floor)),
+            expect(
+                towerParleyClanOf(at(seed, floor, events: towerPeacefulEvents)),
                 towerClans[random.nextInt(towerClans.length)]);
           }
         }
@@ -587,7 +605,9 @@ void main() {
       // Never on a floor met again, nor in a run with its events off.
       for (final (seed, floor) in parleys) {
         expect(
-            towerEventKindOf(at(seed, floor).copyWith(crest: floor)), isNull);
+            towerEventKindOf(at(seed, floor, events: towerPeacefulEvents)
+                .copyWith(crest: floor)),
+            isNull);
         expect(towerEventKindOf(at(seed, floor, events: 0)), isNull);
       }
     });
@@ -595,7 +615,7 @@ void main() {
     test('the view: the check, the clan, the oath, the landing', () {
       expect(parleys, isNotEmpty);
       for (final (seed, floor) in parleys) {
-        final run = at(seed, floor);
+        final run = at(seed, floor, events: towerPeacefulEvents);
         final view = towerEventOf(run, data)!;
         expect(view.kind, TowerEventKind.parley);
         expect(view.floor, floor);
@@ -624,14 +644,17 @@ void main() {
         (TowerEventKind.shortcut, 'shortcut'),
       ]) {
         final (seed, floor) = floorsOf(kind, count: 1).first;
-        expect(towerEventOf(at(seed, floor), data)!.background, key);
+        expect(
+            towerEventOf(at(seed, floor, events: towerPeacefulEvents), data)!
+                .background,
+            key);
       }
     });
 
     test('talked: a pass goes on, a fail fights; chosen once', () {
       var passes = 0, fails = 0;
       for (final (seed, floor) in parleys) {
-        final run = at(seed, floor);
+        final run = at(seed, floor, events: towerPeacefulEvents);
         final view = towerEventOf(run, data)!;
         final talked = towerChooseParley(run, data, true);
         final result = talked.lastEvent!;
@@ -678,7 +701,7 @@ void main() {
 
     test('the fight chosen: the floor fought as usual', () {
       final (seed, floor) = parleys.first;
-      final run = at(seed, floor);
+      final run = at(seed, floor, events: towerPeacefulEvents);
       final fight = towerChooseParley(run, data, false);
       expect(fight.parley, isFalse);
       expect(fight.floor, floor);
@@ -691,7 +714,7 @@ void main() {
       expect(next.spoils, contains(floor));
       // Not offered: nothing to choose.
       for (var f = 1; f < towerTop; f++) {
-        final plain = at(seed, f);
+        final plain = at(seed, f, events: towerPeacefulEvents);
         if (towerEventKindOf(plain) == TowerEventKind.parley) continue;
         expect(towerChooseParley(plain, data, true), same(plain));
       }
@@ -699,7 +722,8 @@ void main() {
 
     test('sworn to the guardian\'s clan: passed with no roll', () {
       for (final (seed, floor) in parleys.take(20)) {
-        final clan = towerParleyClanOf(at(seed, floor))!;
+        final clan =
+            towerParleyClanOf(at(seed, floor, events: towerPeacefulEvents))!;
         final run = sworn(seed, floor, clan);
         final talked = towerChooseParley(run, data, true);
         expect(talked.floor, floor + 1);
@@ -718,7 +742,8 @@ void main() {
     test('a pass: the level and the marks, no spoils, card or heal', () {
       var checked = 0;
       for (final (seed, floor) in parleys) {
-        final clan = towerParleyClanOf(at(seed, floor))!;
+        final clan =
+            towerParleyClanOf(at(seed, floor, events: towerPeacefulEvents))!;
         final full = sworn(seed, floor, clan);
         final run = full.copyWith(health: full.health ~/ 2);
         final passed = towerChooseParley(run, data, true);
@@ -746,7 +771,8 @@ void main() {
     test('the choice round-trips through the save', () {
       final (seed, floor) = parleys.first;
       for (final talk in [true, false]) {
-        final run = at(seed, floor).copyWith(parley: talk);
+        final run =
+            at(seed, floor, events: towerPeacefulEvents).copyWith(parley: talk);
         final json =
             jsonDecode(jsonEncode(run.toJson())) as Map<String, dynamic>;
         expect(json['parley'], talk);
@@ -755,11 +781,32 @@ void main() {
         expect(loaded.copyWith(floor: 3).parley, talk);
         expect(loaded.copyWith(clearParley: true).parley, isNull);
       }
-      expect(at(seed, floor).toJson(), isNot(contains('parley')));
+      expect(at(seed, floor, events: towerPeacefulEvents).toJson(),
+          isNot(contains('parley')));
       const result = TowerEventResult(
           kind: TowerEventKind.parley, passed: true, from: 4, to: 5);
       expect(TowerEventResult.fromJson(result.toJson()), result);
     });
+  });
+
+  test('the bot with the floors without a fight meets parleys and ends', () {
+    var met = 0;
+    for (var seed = 1; seed <= 40; seed++) {
+      final run = playTowerRun(
+          seed: seed,
+          data: data,
+          events: towerPeacefulEvents,
+          choice: towerBotChoice);
+      expect(run.isOver, isTrue);
+      expect(run.events, towerPeacefulEvents);
+      for (var floor = 1; floor <= run.floorReached; floor++) {
+        if (towerEventKindOf(at(seed, floor, events: towerPeacefulEvents)) ==
+            TowerEventKind.parley) {
+          met++;
+        }
+      }
+    }
+    expect(met, greaterThan(0));
   });
 
   test('the bot with events: runs end, levels and marks never drop', () {

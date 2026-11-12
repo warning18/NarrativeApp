@@ -295,8 +295,10 @@ bool towerIsRevisit(TowerRun run) =>
 /// left.
 _Drawn? _eventOf(TowerRun run) {
   if (run.events < 1 || run.isOver || run.floor <= run.crest) return null;
-  final drawn =
-      _drawn(run.seed, run.floor) ?? _peacefulDrawn(run.seed, run.floor);
+  final drawn = _drawn(run.seed, run.floor) ??
+      (run.events >= towerPeacefulEvents
+          ? _peacefulDrawn(run.seed, run.floor)
+          : null);
   if (drawn == null) return null;
   if (drawn.kind == TowerEventKind.test &&
       run.setbacks >= towerSetbacksPerRun) {
