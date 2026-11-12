@@ -174,7 +174,9 @@ class TowerParleyCard extends ConsumerWidget {
   }
 }
 
-/// One thing the merchant sells this run.
+/// One thing the merchant sells this run. (The merchant's stall and the
+/// bargain's card below are wired by Core's floor events PR 4: unreachable
+/// until then, drawn and tested as pictures; keep them, Cleanup.)
 class TowerStallItem {
   const TowerStallItem({
     required this.id,
