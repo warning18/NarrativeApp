@@ -23,7 +23,6 @@ import '../combat/face_keywords.dart';
 import '../utils/face_style.dart';
 import 'die_poly3d.dart';
 import 'die_skins.dart';
-import 'die_solids.dart';
 import 'pixel_sprite.dart';
 import 'poly_die.dart';
 import '../theme/palette.dart';
@@ -84,33 +83,34 @@ const double dieRestTurnY = 0.26;
 /// Perspective: the eye sits `1 / _perspective` in front of the cube.
 const double _perspective = 0.0016;
 
-/// The smallest square a die is drawn as a real solid in; smaller ones (the
-/// rail, the loadout's ring) are identity tiles and stay flat.
+/// The smallest square a die's facets carry their glyphs in; a smaller die
+/// (the loadout's list tiles) is still a real solid, drawn without them.
 const double dieSolidMinSize = 40;
 
 /// A frame that takes longer than this, [dieSlowFrames] times in a row during
-/// a roll, marks the phone as too slow for the solids. A die already on
-/// screen never changes its drawing (it looked like two different dice, one
-/// rolling and one at rest, v1.907): the flat drawing starts with the dice
-/// that are mounted after, the next fight.
+/// a roll, marks the phone as slow. Every die is a real solid on every phone
+/// (a flat polygon is never what a roll looks like): a slow phone gets the
+/// solids cheaper (no glyph plaques on the facets, a shorter tumble), for the
+/// dice mounted after, so a die never changes its drawing while it is on
+/// screen (it looked like two different dice, v1.907).
 const Duration dieFrameBudget = Duration(milliseconds: 34);
 const int dieSlowFrames = 12;
 
 /// Set once a roll was slow; read when a die is mounted, never after.
-bool dieSolidsDemoted = false;
+bool dieCheapSolids = false;
 int _slowRun = 0;
 
-/// One frame of a roll, judged: [dieSlowFrames] slow ones in a row demote
-/// the solids for the dice mounted from now on.
+/// One frame of a roll, judged: [dieSlowFrames] slow ones in a row make the
+/// solids cheaper for the dice mounted from now on.
 @visibleForTesting
 void dieJudgeFrame(Duration span) {
   _slowRun = span > dieFrameBudget ? _slowRun + 1 : 0;
-  if (_slowRun >= dieSlowFrames) dieSolidsDemoted = true;
+  if (_slowRun >= dieSlowFrames) dieCheapSolids = true;
 }
 
 @visibleForTesting
 void dieResetQuality() {
-  dieSolidsDemoted = false;
+  dieCheapSolids = false;
   _slowRun = 0;
 }
 
@@ -137,7 +137,6 @@ class Die3D extends StatefulWidget {
     this.cursed = false,
     this.shape = DieShape.d6,
     this.artId,
-    this.flat = false,
     this.facets,
   }) : assert(faces.length == 6);
 
@@ -195,10 +194,6 @@ class Die3D extends StatefulWidget {
   /// The die's id: its art (see die_art.dart) is drawn on a flat die.
   final String? artId;
 
-  /// A d6 drawn flat like the other shapes (with its art) rather than as the
-  /// tumbling cube.
-  final bool flat;
-
   /// Every face of the die, the landed one first, for a solid of more than
   /// six sides: each facet carries its own face (die_poly3d.dart). Without it
   /// the solid's facets repeat [faces].
@@ -212,24 +207,24 @@ class _Die3DState extends State<Die3D> with SingleTickerProviderStateMixin {
   late final AnimationController _burst = AnimationController(
       vsync: this, duration: const Duration(milliseconds: 900));
 
-  /// Whether this die is drawn flat because the phone was too slow before it
-  /// was mounted; fixed for its whole life, so it looks the same rolling and
-  /// at rest.
-  late final bool _flatFallback = dieSolidsDemoted;
+  /// Whether this solid is drawn cheaper because the phone was too slow
+  /// before it was mounted; fixed for its whole life, so it looks the same
+  /// rolling and at rest.
+  late final bool _cheap = dieCheapSolids;
   bool _watching = false;
 
   @override
   void initState() {
     super.initState();
     PixelStrips.preload(_pixelNames(widget.fx));
-    if (dieSolidOf(widget.shape) != null) {
+    if (_solid) {
       SchedulerBinding.instance.addTimingsCallback(_onTimings);
       _watching = true;
     }
   }
 
   void _onTimings(List<FrameTiming> timings) {
-    if (_flatFallback || !widget.rolling) return;
+    if (_cheap || !widget.rolling) return;
     for (final t in timings) {
       dieJudgeFrame(t.totalSpan);
     }
@@ -426,19 +421,12 @@ class _Die3DState extends State<Die3D> with SingleTickerProviderStateMixin {
                   skin: _skin,
                   size: size,
                   t: t,
+                  // The facets' glyphs need room, and a slow phone does
+                  // without them (and turns a little less).
+                  showGlyphs: !_cheap && size >= dieSolidMinSize,
+                  turns: _cheap ? 1.2 : null,
                   unrolled: _unrolled,
                   landed: widget.fx != null && !widget.dim && t >= 1,
-                )
-              else if (widget.shape != DieShape.d6 || widget.flat)
-                PolyDie(
-                  shape: widget.shape,
-                  size: size,
-                  skin: _skin,
-                  glyph: widget.faces.first.glyph,
-                  progress: t,
-                  still: true,
-                  glowing: false,
-                  dieId: widget.artId,
                 )
               else
                 for (final p in placed)
@@ -455,13 +443,9 @@ class _Die3DState extends State<Die3D> with SingleTickerProviderStateMixin {
     );
   }
 
-  /// Whether the die is drawn as a real solid: a d4, d8, d10, d12 or d20 of
-  /// a size where its facets can carry a glyph, not asked flat and not slow.
-  bool get _solid =>
-      !widget.flat &&
-      !_flatFallback &&
-      widget.size >= dieSolidMinSize &&
-      dieSolidOf(widget.shape) != null;
+  /// Whether the die is a real solid (a d4, d8, d10, d12 or d20); a d6 is
+  /// the cube. Every die is one or the other, at every size.
+  bool get _solid => widget.shape != DieShape.d6;
 
   /// Not rolled yet: the front shows a "?" in place of its face.
   bool get _unrolled => widget.dim && !widget.rolling;
