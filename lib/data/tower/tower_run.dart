@@ -9,6 +9,7 @@ import '../../combat/fight_numbers.dart' show potionHealAmount;
 import '../../combat/stat_rules.dart' show levelStatPicks;
 import '../sim_combat.dart' show SimCharacter;
 import '../training.dart' show StatPickOffer;
+import 'tower_events.dart';
 import 'tower_floors.dart';
 import 'tower_hero.dart';
 import 'tower_rewards.dart';
@@ -54,6 +55,10 @@ class TowerRun {
     this.antidotes = 0,
     this.dieChoice,
     this.seenDieIds = const {},
+    this.crest = 0,
+    this.events = 0,
+    this.setbacks = 0,
+    this.lastEvent,
   });
 
   /// A saved run. A save from an older version is brought up to date once,
@@ -131,6 +136,12 @@ class TowerRun {
       seenDieIds: {
         for (final id in (json['seen'] as List?) ?? const []) id.toString(),
       },
+      crest: (json['crest'] as num?)?.toInt() ?? 0,
+      events: (json['events'] as num?)?.toInt() ?? 0,
+      setbacks: (json['setbacks'] as num?)?.toInt() ?? 0,
+      lastEvent: json['last'] is Map<String, dynamic>
+          ? TowerEventResult.fromJson(json['last'] as Map<String, dynamic>)
+          : null,
     );
     if (json.containsKey('picks')) return run;
     final earned = (towerLevelAfter(run.floorsCleared) - 1) * levelStatPicks;
@@ -216,6 +227,28 @@ class TowerRun {
   /// (towerMarkDieSeen). A run saved before [dieChoice] reads as all seen.
   final Set<String> seenDieIds;
 
+  /// The highest floor cleared (floor events PR 1,
+  /// docs/proposals/tower-snakes-and-ladders.md), kept when a setback sends
+  /// the hero down, raised when a rival's skip lands. 0 on a run that never
+  /// fell or skipped (a run saved before).
+  final int crest;
+
+  /// The floor events' version the run plays (towerEventsLive when it
+  /// began): 0, none, the run plays as before them (a run saved before).
+  final int events;
+
+  /// The setbacks the run has taken (towerSetbacksPerRun at most).
+  final int setbacks;
+
+  /// How the last event ended (tower_events.dart), shown until the next
+  /// fight ends; null when none is to show.
+  final TowerEventResult? lastEvent;
+
+  /// The height cleared: the levels, the stat picks earned, the hero's
+  /// replay (towerHeroOf) and the marks read it, so a fall never takes a
+  /// level or a mark away.
+  int get heightCleared => max(floorsCleared, crest);
+
   bool get isOver =>
       status == TowerStatus.dead ||
       status == TowerStatus.won ||
@@ -228,12 +261,17 @@ class TowerRun {
         _ => floor - 1,
       };
 
-  /// The highest floor reached (fought, won or lost).
-  int get floorReached => status == TowerStatus.won ? towerTop : floor;
+  /// The highest floor reached (fought, won or lost; a floor fallen from
+  /// counts).
+  int get floorReached =>
+      status == TowerStatus.won ? towerTop : max(floor, crest);
 
-  /// The marks the run has earned so far (§7): banked when it ends.
-  int get marks => towerMarksOf(floorsCleared, refused.length);
+  /// The marks the run has earned so far (§7): banked when it ends. Paid by
+  /// the height cleared.
+  int get marks => towerMarksOf(heightCleared, refused.length);
 
+  /// A copy with the fields given. [lastEvent] can't be cleared by passing
+  /// null: [clearLastEvent] clears it.
   TowerRun copyWith({
     int? floor,
     int? health,
@@ -247,6 +285,11 @@ class TowerRun {
     int? antidotes,
     String? dieChoice,
     Set<String>? seenDieIds,
+    int? crest,
+    int? events,
+    int? setbacks,
+    TowerEventResult? lastEvent,
+    bool clearLastEvent = false,
   }) =>
       TowerRun(
         seed: seed,
@@ -267,6 +310,10 @@ class TowerRun {
         antidotes: antidotes ?? this.antidotes,
         dieChoice: dieChoice ?? this.dieChoice,
         seenDieIds: seenDieIds ?? this.seenDieIds,
+        crest: crest ?? this.crest,
+        events: events ?? this.events,
+        setbacks: setbacks ?? this.setbacks,
+        lastEvent: clearLastEvent ? null : lastEvent ?? this.lastEvent,
       );
 
   Map<String, dynamic> toJson() => {
@@ -295,6 +342,10 @@ class TowerRun {
         if (antidotes != 0) 'antidotes': antidotes,
         if (dieChoice != null) 'die': dieChoice,
         if (seenDieIds.isNotEmpty) 'seen': (seenDieIds.toList()..sort()),
+        if (crest != 0) 'crest': crest,
+        if (events != 0) 'events': events,
+        if (setbacks != 0) 'setbacks': setbacks,
+        if (lastEvent != null) 'last': lastEvent!.toJson(),
       };
 }
 
@@ -319,7 +370,9 @@ int towerMarksOf(int floorsCleared, int refusals) {
 /// calling's own die (the start's dice in the bag, [TowerRun.dieChoice]). It is sworn
 /// to no clan (v1.855): the clans of [clanPool] (TowerProgress.clans)
 /// offer their oaths on the way up. A [clanId] swears one from the start:
-/// its oath taken on floor 0 (the bot's and the tests').
+/// its oath taken on floor 0 (the bot's and the tests'). [events] is the
+/// floor events' version it plays (TowerRun.events; the app's
+/// towerEventsLive), 0 none.
 TowerRun towerStart({
   required int seed,
   required String raceId,
@@ -328,6 +381,7 @@ TowerRun towerStart({
   Iterable<String> clanPool = towerStartClanPool,
   Iterable<String> startUnlocks = const [],
   int unlocksOwned = 0,
+  int events = 0,
   required TowerData data,
 }) {
   final unlocks = [
@@ -358,6 +412,7 @@ TowerRun towerStart({
     health: hero.maxHealth,
     dieChoice: die,
     seenDieIds: {die},
+    events: events,
   );
 }
 
@@ -373,15 +428,24 @@ TowerFloor towerFloorOf(TowerRun run, TowerData data) =>
 /// it carried (the flask's potions are drunk first: what the bag held is
 /// gone only past them); null, the bag as it was. [maxHealthBefore], when
 /// given, is the hero's max health as the fight began (the bot has built
-/// it: towerHeroOf replays the whole run).
+/// it: towerHeroOf replays the whole run). [rounds] is the rounds the fight
+/// took (a rival's floor, tower_events.dart: won within towerRivalRounds,
+/// the next floor is skipped); null, not counted (no skip).
+///
+/// A floor met again (floor events PR 1: at or below TowerRun.crest) pays
+/// nothing: no level (the height counts it already), no spoils, no card,
+/// no healing. The last event's result is cleared (a rival's floor sets
+/// its own).
 TowerRun towerAfterFight(TowerRun run, TowerData data,
     {required bool won,
     required int healthLeft,
     int? potionsLeft,
     int? antidotesLeft,
-    int? maxHealthBefore}) {
+    int? maxHealthBefore,
+    int? rounds}) {
   if (run.status != TowerStatus.climbing) return run;
   if (!won) return run.copyWith(status: TowerStatus.dead, health: 0);
+  final rival = towerRivalResultOf(run, rounds);
   final potions =
       potionsLeft == null ? run.potions : min(run.potions, max(0, potionsLeft));
   final antidotes = antidotesLeft == null
@@ -392,10 +456,23 @@ TowerRun towerAfterFight(TowerRun run, TowerData data,
         status: TowerStatus.won,
         health: max(1, healthLeft),
         potions: potions,
-        antidotes: antidotes);
+        antidotes: antidotes,
+        clearLastEvent: true);
+  }
+  final leveled = run.copyWith(
+      status: TowerStatus.choosing,
+      lastEvent: rival,
+      clearLastEvent: rival == null);
+  if (towerIsRevisit(run)) {
+    final hero = towerHeroOf(leveled, data);
+    return leveled.copyWith(
+      potions: potions,
+      antidotes: antidotes,
+      offer: const [],
+      health: healthLeft.clamp(1, hero.maxHealth),
+    );
   }
   final before = maxHealthBefore ?? towerHeroOf(run, data).maxHealth;
-  final leveled = run.copyWith(status: TowerStatus.choosing);
   // The hero with the floor's levels: built once, then given the spoils
   // (as towerHeroOf would replay them).
   final hero = towerHeroOf(leveled, data);
@@ -455,7 +532,7 @@ int towerLevelAfter(int floorsCleared) => floorsCleared <= 0
 /// itself: the picks earned by its level, less those it took.
 int towerPendingPicks(TowerRun run) {
   if (run.isOver) return 0;
-  final earned = (towerLevelAfter(run.floorsCleared) - 1) * levelStatPicks;
+  final earned = (towerLevelAfter(run.heightCleared) - 1) * levelStatPicks;
   return max(0, earned - run.statPicks.length);
 }
 
@@ -485,7 +562,9 @@ TowerRun towerTakeStatPick(TowerRun run, TowerData data, int index,
 /// (the screen opens the Level Up before the cards); a pick still waiting
 /// here is given its first offer, the calling, so the climb never stalls.
 /// [hero], when given, is [run]'s hero already built (towerHeroOf); it is
-/// given the card.
+/// given the card. Then the floor's event (floor events PR 1,
+/// towerAfterEvent): a setback's test rolled, a rival's skip landed; a
+/// skip's level-up picks wait on the landing floor.
 TowerRun towerPick(TowerRun run, TowerData data, int? index,
     {SimCharacter? hero}) {
   if (run.status != TowerStatus.choosing) return run;
@@ -496,23 +575,30 @@ TowerRun towerPick(TowerRun run, TowerData data, int? index,
     hero = null;
   }
   if (index == null || index < 0 || index >= run.offer.length) {
-    return run.copyWith(
-      status: TowerStatus.climbing,
-      floor: run.floor + 1,
-      refused: run.offer.isEmpty ? run.refused : {...run.refused, run.floor},
-      offer: const [],
-    );
+    return towerAfterEvent(
+        run,
+        run.copyWith(
+          status: TowerStatus.climbing,
+          floor: run.floor + 1,
+          refused:
+              run.offer.isEmpty ? run.refused : {...run.refused, run.floor},
+          offer: const [],
+        ),
+        data);
   }
   final card = run.offer[index];
   hero ??= towerHeroOf(run, data);
   towerApplyReward(hero, card, data, bag: run.dieChoice != null);
-  return run.copyWith(
-    status: TowerStatus.climbing,
-    floor: run.floor + 1,
-    health: hero.currentHealth.clamp(1, hero.maxHealth),
-    taken: {...run.taken, run.floor: card},
-    offer: const [],
-  );
+  return towerAfterEvent(
+      run,
+      run.copyWith(
+        status: TowerStatus.climbing,
+        floor: run.floor + 1,
+        health: hero.currentHealth.clamp(1, hero.maxHealth),
+        taken: {...run.taken, run.floor: card},
+        offer: const [],
+      ),
+      data);
 }
 
 /// [run] left by the player: over, its marks earned.

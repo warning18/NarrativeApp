@@ -262,7 +262,8 @@ void towerRollDie(SimCharacter hero, String dieId, TowerData data) {
 }
 
 /// The run's hero now: rebuilt from [run]'s start, the levels of the
-/// floors it cleared and the cards it took, with the run's health.
+/// floors it cleared (its height, TowerRun.heightCleared: a fall keeps
+/// them, floor events PR 1) and the cards it took, with the run's health.
 ///
 /// The die in play is [TowerRun.dieChoice]: the dice gained wait in the
 /// bag, and the chosen one, when it is not the calling's own, is rolled
@@ -285,7 +286,7 @@ SimCharacter towerHeroOf(TowerRun run, TowerData data) {
   ];
   final picksAt = <List<int>>[const []];
   var level = 1, pick = 0;
-  for (var floor = 1; floor <= run.floorsCleared; floor++) {
+  for (var floor = 1; floor <= run.heightCleared; floor++) {
     final next = max(level, towerBudgetOf(floor).levelAfter);
     final from = min(pick, run.statPicks.length);
     pick += (next - level) * levelStatPicks;
@@ -318,7 +319,7 @@ SimCharacter towerHeroOf(TowerRun run, TowerData data) {
     floor = 0;
     pick = 0;
   }
-  for (floor++; floor <= run.floorsCleared; floor++) {
+  for (floor++; floor <= run.heightCleared; floor++) {
     towerLevelTo(hero, towerBudgetOf(floor).levelAfter);
     // The floor's level-up picks, taken before its cards (towerPick waits
     // for them): each drawn as the hero stands then.
