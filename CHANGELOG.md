@@ -8,6 +8,18 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.943.0+979]
+
+- Towns: the sea lies where the sphere puts it. Saltmouth, Greyhithe and the White Anchorage have their sea to the north now. Their whole plan is turned a half turn: water, walls, streets, bridges, districts, buildings and the town's services. Their streets, buildings and names are the same, only turned. Every other town keeps its sea to the south, as the sphere has it. The plans are turned where they are stored, so no hand edit is lost. The plan generator no longer reproduces the stored plans and is not to be run for now (`docs/city-plans-tools.md`).
+
+## [1.942.0+978]
+
+- Tower floor events, the shortcut card (UX; the events are still off for players until the user's OK, so nothing shows yet): before an ordinary floor's fight the offer reads "A stair in the wall" with what a win skips and that a loss ends the climb, and two full-width buttons, "Take the stair" and "Take the door"; the fight waits for the choice. The stair taken shows a one-line note, the won fight's cards a line with the way up, the landing floor Core's result line (all in one face), and the rail an arrow up to the landing. Also: an Elite foe with an affix no longer squeezes its name into a vertical strip on a small phone (its marks wrap under the name), and the rail's current floor is drawn in the serif digits (a 26 read as 88).
+
+## [1.940.0+976]
+
+- Maps, release 3: the locations. The fog over a district not yet found lets its streets and blocks show through; its names and pins stay hidden, the "?" and the dashed outline stay. On the city plan page "+" closes in on the party, not on the middle of the city. The party's breathing ring is on its own layer, so the whole plan is no longer redrawn every frame. Inside a building the label names the building, not its town, and no rain, snow or ash is drawn under its roof. Not in this release: the sea on the side where the sphere puts it (waits for Core's turned plans). Pictures: `docs/maps/sphere-and-locations/release-3/`.
+
 ## [1.939.0+975]
 
 - Tower: floor events, part 2 (docs/proposals/tower-snakes-and-ladders.md). **Events still stay off for players** until the user has seen UX-2's event cards: a run started now plays as before, apart from floors 27 and 28, which are a little softer for everyone (their extra foe strength drops from 32% and 34% to 31%). In the engine: a shortcut offers, before an ordinary floor's fight, a tougher version of it (a lone foe becomes an Elite, a pack gets one more foe); won, the hero skips 1 to 3 floors, never past the next warden or boss; lost, the run ends, as any lost fight does. A run with events plays on its own foe curve (a softer base, a little more on the floor-20 and floor-30 bosses), so a run with events lands about where one without does. The Tower fight now counts its rounds, so a rival's three-round goal can be checked. With events on and every unlock, the share of runs reaching the top is 1.5 points under the target band's centre; it is left as it is.

@@ -399,6 +399,21 @@ class _CityChartViewState extends State<CityChartView>
     _move.forward(from: 0);
   }
 
+  /// The + button: closer, on the party when it is on the plan (its place
+  /// comes to the middle), else about the middle of the view.
+  void _zoomInOnParty() {
+    final party = _painter().partyPoint;
+    final centre = _size.center(Offset.zero);
+    if (party == null) {
+      _zoomAbout(centre, 1.6);
+      return;
+    }
+    final scale = (_scale * 1.6).clamp(_minScale, _maxScale);
+    _animateTo(scale, _clamped(centre - party * scale, scale));
+    setState(
+        () => _focus = scale / _fitted >= cityChartDetailZoom ? _focus : null);
+  }
+
   /// Zooms about the screen point [focal] by [factor].
   void _zoomAbout(Offset focal, double factor) {
     final scale = (_scale * factor).clamp(_minScale, _maxScale);
@@ -435,7 +450,10 @@ class _CityChartViewState extends State<CityChartView>
   bool _known(String id) =>
       widget.explored == null || widget.explored!.contains(id);
 
-  CityChartPainter _painter({double pulse = 0}) => CityChartPainter(
+  CityChartPainter _painter(
+          {double pulse = 0, CityChartLayer layer = CityChartLayer.all}) =>
+      CityChartPainter(
+        layer: layer,
         chart: widget.chart,
         palette: ChartPalette.of(widget.look),
         scale: _scale,
@@ -651,13 +669,28 @@ class _CityChartViewState extends State<CityChartView>
                 _lastTap = (now, d.localPosition);
                 _tap(d.localPosition);
               },
-              child: AnimatedBuilder(
-                animation: _breath,
-                builder: (context, _) => CustomPaint(
-                  painter: _painter(pulse: _breath.value),
-                  size: Size.infinite,
+              // The plan is drawn once and kept; only the party's ring is
+              // redrawn as it breathes.
+              child: Stack(fit: StackFit.expand, children: [
+                RepaintBoundary(
+                  child: CustomPaint(
+                    key: const Key('city_chart_plan'),
+                    painter: _painter(layer: CityChartLayer.base),
+                    size: Size.infinite,
+                  ),
                 ),
-              ),
+                RepaintBoundary(
+                  child: AnimatedBuilder(
+                    animation: _breath,
+                    builder: (context, _) => CustomPaint(
+                      key: const Key('city_chart_party'),
+                      painter: _painter(
+                          pulse: _breath.value, layer: CityChartLayer.party),
+                      size: Size.infinite,
+                    ),
+                  ),
+                ),
+              ]),
             ),
           ),
         ),
@@ -691,7 +724,7 @@ class _CityChartViewState extends State<CityChartView>
                 palette: palette,
                 icon: Icons.add,
                 tooltip: text.zoomIn,
-                onTap: () => _zoomAbout(_size.center(Offset.zero), 1.6),
+                onTap: _zoomInOnParty,
               ),
               const SizedBox(height: 8),
               _round(

@@ -127,6 +127,11 @@ class _TowerOfferViewState extends ConsumerState<TowerOfferView> {
               bagFull: widget.run.potions >= towerBagCap),
           const SizedBox(height: 12),
         ],
+        if (widget.event?.kind == TowerEventKind.shortcut &&
+            (widget.event?.accepted ?? false)) ...[
+          TowerShortcutWonLine(widget.event!),
+          const SizedBox(height: 12),
+        ],
         for (var i = 0; i < offer.length; i++)
           Padding(
             padding: const EdgeInsets.only(bottom: 8),
