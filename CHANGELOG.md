@@ -8,6 +8,13 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.959.0+995]
+
+- Tower: floor events, part 4, the merchant and the bargain (docs/proposals/tower-peaceful-floors-and-stores.md). **Off for players**: they only play in a climb of events version 2, which no player starts yet. In the engine:
+  - **Merchant:** opens on the landing after a won ordinary floor (5% of floors), and always after the bosses of floors 10 and 20, as a shop room of its own. It sells a salve (heals 40%, 3 marks) and a bundle of 2 potions (4 marks), paid in this climb's marks. A hero sworn to its clan pays half (2 marks each). Marks spent there are not banked at the end.
+  - **Bargain:** 10% of floors. Give up a tenth of your max health for the rest of the climb, for +1 to your calling's damage stat.
+  - Measured with the parley, on 2,000 seeds at the stores' foe scale (1.15): 14.0% of climbs reach the top with no unlocks and 24.8% with all, about 1.7 to 2 shops a climb, and about 1.3 fewer marks banked than without the stores.
+
 ## [1.957.0+993]
 
 - Effects: the last five skill effects in the Apollo palette (UX, Art's strips): the bolt's burst, the meteor's fall, the quake, the smoke and the mana, 9 frames each like the other Apollo effects. The quake's ground band is trimmed into a ragged scorch (no hard rectangle), the meteor is tilted so its head leads the fall, and the pale ground ring is gone from these five styles. About +1.0 KB of PNG8 in the app (5,997 to 7,048 bytes).
