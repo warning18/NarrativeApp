@@ -8,6 +8,10 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.940.0+976]
+
+- Maps, release 3: the locations. The fog over a district not yet found lets its streets and blocks show through; its names and pins stay hidden, the "?" and the dashed outline stay. On the city plan page "+" closes in on the party, not on the middle of the city. The party's breathing ring is on its own layer, so the whole plan is no longer redrawn every frame. Inside a building the label names the building, not its town, and no rain, snow or ash is drawn under its roof. Not in this release: the sea on the side where the sphere puts it (waits for Core's turned plans). Pictures: `docs/maps/sphere-and-locations/release-3/`.
+
 ## [1.937.0+973]
 
 - Tower floor events, the cards (UX; the events are still off for players until the user's OK, so nothing shows yet): a setback shows its test above the cards (the ability, the odds as a percent and a bar with the DC, what a pass and a fail give and where a fall lands, the setbacks left), a rival shows its condition before the fight (win within 3 rounds to skip a floor; otherwise no skip), the next floor says how the event ended (the roll and total, the fall or the skip) with an arrow along the rail, and a floor met again says it pays nothing. The words are by ability (strength, dexterity, wisdom) and EN/FR (Narrative). After a rival's skip the Level Up opens on the landing floor. Pictures: `docs/ux-shots/tower-event-cards-real/`.
