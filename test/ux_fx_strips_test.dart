@@ -33,7 +33,7 @@ void main() {
       final (w, h) = _size('assets/visuals/pixel_fx/vfx_$k.png');
       expect((w, h), (384, 48), reason: 'vfx_$k: 8 frames of 48');
     }
-    // Art's Apollo strips: the six pilots and the eighteen of v1.946.
+    // Art's Apollo strips: the six pilots, the eighteen of v1.946 and the last five.
     for (final k in [
       'flame',
       'frost',
@@ -58,7 +58,12 @@ void main() {
       'shadow',
       'radiance',
       'shout',
-      'stone_shield'
+      'stone_shield',
+      'quake',
+      'smoke',
+      'zap',
+      'meteor_proj',
+      'mana'
     ]) {
       final (w, h) = _size('assets/visuals/pixel_fx/vfx_$k.png');
       expect((w, h), (432, 48), reason: 'vfx_$k: 9 frames of 48');
