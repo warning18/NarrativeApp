@@ -1573,6 +1573,19 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.en: 'The shortcut holds: you land on floor {to}',
     AppLanguage.fr: 'Le raccourci tient : vous arrivez à l’étage {to}',
   },
+  'tower_event_parley_passed': {
+    AppLanguage.en: 'Words carry you past: floor {to}, and nothing gained.',
+    AppLanguage.fr:
+        'Les mots vous font passer\u00a0: étage {to}, sans rien gagner.',
+  },
+  'tower_event_parley_failed': {
+    AppLanguage.en: 'The words fail: the guardian takes up its guard.',
+    AppLanguage.fr: 'Les mots échouent\u00a0: le gardien reprend sa garde.',
+  },
+  'tower_event_parley_sworn': {
+    AppLanguage.en: 'It knows your oath: it steps aside, no roll.',
+    AppLanguage.fr: 'Il connaît votre serment\u00a0: il s’écarte, sans jet.',
+  },
   'tower_event_rolled': {
     AppLanguage.en: 'You roll {roll}, total {total}.',
     AppLanguage.fr: 'Vous obtenez {roll}, total {total}.',
