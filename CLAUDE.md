@@ -73,9 +73,12 @@ branch `claude/apk-workflow-issue-24c8hx` is retired. Its handoff note is
   prompt, seed, model, size, cost, what it is for).
 - It never changes the UX (layouts stay), the code, a number or an id. It hands
   UX palette-reduced files and a short brief; UX wires them into `assets/visuals/`
-  and `lib/widgets/` in its own PR. Banners are improved in their current style,
-  never restyled. Picture first for every category; state the cost of a call before
-  making it and ask the user before a batch above about 30 generations.
+  and `lib/widgets/` in its own PR. Banners follow the user's decision of
+  12 November 2026: redrawn in the new style, each keeping its emblem, its main
+  colour and the folds of its cloth, in the Apollo palette
+  (`docs/art/palette-apollo.md`), which the skill icons and effects use too.
+  Picture first for every category; state the cost of a call before making it
+  and ask the user before a batch above about 30 generations.
 
 **Maps owns:**
 - the room and place plans: `lib/data/room_plan.dart`, `place_plan.dart`,
@@ -193,6 +196,10 @@ overwrites the first release and the in-app updater never sees it.
 CI runs the format check, `flutter analyze` and the whole test suite
 (including the simulator tests and the `qa_` guards) on every PR. There is
 no per-PR QA review: the user reviews releases by hand.
+
+CI's Flutter is pinned (`flutter-version` in `.github/workflows/`, 3.47.9 since
+v1.923): a new stable once broke every build between two merges. Use the same
+version locally. Raising it is the manager's change, in its own PR.
 
 QA's jobs:
 - **Keep the suite fast.** Profile it (`flutter test --reporter json`), cut
