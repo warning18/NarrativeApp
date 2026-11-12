@@ -21,6 +21,7 @@ import 'package:narrative_data_app/screens/expedition_screen.dart';
 import 'package:narrative_data_app/screens/origin_stories_screen.dart';
 import 'package:narrative_data_app/screens/race_profession_screen.dart';
 import 'package:narrative_data_app/widgets/origin_scene_backdrop.dart';
+import 'package:narrative_data_app/widgets/screen_pictures.dart';
 import 'package:narrative_data_app/theme/stitched_ink.dart';
 import 'support/fonts.dart';
 import 'support/pump.dart';
@@ -58,13 +59,13 @@ void main() {
       (AppLanguage.en, 412.0, true, 'en412-dark'),
     ]) {
       final key = GlobalKey();
-      Future<ProviderContainer> open(Widget home) async {
+      Future<ProviderContainer> open(Widget home, {double height = 780}) async {
         SharedPreferences.resetStatic();
         SharedPreferences.setMockInitialValues({
           'app_language': lang.name,
           if (dark) 'app_theme_mode': 'dark',
         });
-        usePhone(tester, Size(width, 780));
+        usePhone(tester, Size(width, height));
         final container = ProviderContainer();
         addTearDown(container.dispose);
         await container.read(appLanguageProvider.notifier).setLanguage(lang);
@@ -150,6 +151,63 @@ void main() {
       await tester.tap(find.byKey(const Key('rp_next')));
       await settle();
       await shot('character-calling');
+
+      if (lang == AppLanguage.en) {
+        // The six ages' headers, and a handful of the other zones' bands.
+        await open(Builder(builder: (context) {
+          final surface = Theme.of(context).colorScheme.surface;
+          Widget header(String id) => SizedBox(
+                height: 210,
+                child: Stack(fit: StackFit.expand, children: [
+                  OriginSceneBackdrop(memoryId: id),
+                  DecoratedBox(
+                    decoration: BoxDecoration(
+                      gradient: LinearGradient(
+                        begin: Alignment.topCenter,
+                        end: Alignment.bottomCenter,
+                        stops: const [0.3, 0.78],
+                        colors: [Colors.transparent, surface],
+                      ),
+                    ),
+                  ),
+                ]),
+              );
+          return SingleChildScrollView(
+            child: Column(children: [
+              for (final id in const [
+                'sparrow',
+                'mark_dwarf',
+                'beggar',
+                'calling_mage',
+                'lamp',
+                'board',
+              ])
+                header(id),
+            ]),
+          );
+        }), height: 1300);
+        await shot('life-six-ages');
+        await open(Builder(builder: (context) {
+          return SingleChildScrollView(
+            child: Column(children: [
+              for (final id in const [
+                'z_fishermans_row',
+                'z_ossuary_galleries',
+                'z_frost_quarry',
+                'z_white_fleet_grave',
+                'z_ember_run',
+                'z_scaffold_yards',
+                'z_glass_strand',
+                'z_lantern_train',
+                'z_cinder_row',
+                'z_dead_heart_approach',
+              ])
+                ExpeditionBand(asset: expeditionBandAsset(id)!),
+            ]),
+          );
+        }), height: 1300);
+        await shot('expedition-bands');
+      }
 
       // An expedition: the Lantern Docks.
       await open(ExpeditionScreen(

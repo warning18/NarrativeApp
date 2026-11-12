@@ -9,16 +9,40 @@ import 'package:flutter/material.dart';
 
 /// The painted bands, by file stem (see [lifeBandStemOf]); a memory without
 /// one keeps the code-drawn scene (origin_scene_backdrop.dart).
-const Set<String> lifeBandIds = {'sparrow', 'board'};
+const Set<String> lifeBandIds = {
+  'sparrow',
+  'mark',
+  'beggar',
+  'calling',
+  'lamp',
+  'board',
+};
 
 /// The character choice's plates, by step: the people, then the calling.
 const Set<String> characterPlateIds = {'race', 'calling'};
 
 /// The zones that have a band (zones.json ids).
 const Set<String> expeditionBandIds = {
-  'z_lantern_docks',
-  'z_cinder_row',
+  'z_bell_road',
+  'z_beyond_the_tear',
   'z_changeling_fen',
+  'z_cinder_row',
+  'z_dead_heart_approach',
+  'z_drowned_stair',
+  'z_ember_run',
+  'z_exorcists_road',
+  'z_fever_bark',
+  'z_fishermans_row',
+  'z_frost_quarry',
+  'z_glass_strand',
+  'z_lantern_docks',
+  'z_lantern_train',
+  'z_ossuary_galleries',
+  'z_salt_road',
+  'z_scaffold_yards',
+  'z_shroud_vigil',
+  'z_tanners_court',
+  'z_white_fleet_grave',
 };
 
 /// The band file a memory uses: the age's own (a race's mark at age 8 and a
