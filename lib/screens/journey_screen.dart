@@ -88,6 +88,7 @@ import '../widgets/scene_stage.dart';
 import '../widgets/scene_vignette.dart';
 import '../widgets/journey_fx.dart';
 import '../widgets/prologue_opening.dart';
+import '../widgets/story_scene_band.dart';
 import '../widgets/story_text.dart';
 import '../providers/story_text_provider.dart'
     show storyTextDoneProvider, storyTextSkipProvider;
