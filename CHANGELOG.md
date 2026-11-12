@@ -8,6 +8,10 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.946.0+982]
+
+- Effects: eighteen more skill effects in the Apollo palette (UX, with Art's strips): slash, heavy slash, pierce, claw, whirl, impact, arrow, volley, fireball, holy fire, splash, poison, wind, drain, shadow, radiance, shout and stone shield. Quake and smoke keep today's until Art's redraw is shown. The arrow, the volley and the fireball still fly from the caster (Art's strip holds the flight and the burst) and the strips that end with the object in view fade out. The pale ground ring a strong blow added under them is gone from the Apollo effects, which carry their own impact. Three French event strings take a no-break space before the colon.
+
 ## [1.945.0+981]
 
 - Maps: going up from a town to the world, the town's plan shrinks a little and fades over the ball instead of cutting. The full map page, opened from the Journey, carries the level strip (World · Town · District · Room); a tap on a rung returns to the Journey on that level. Fixed: after going up to the world from a district, "Town" could land on the district.

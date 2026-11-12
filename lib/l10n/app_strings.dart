@@ -1501,11 +1501,11 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.en:
         'You outrun your rival: floor {skipped} is skipped, you land on floor {to}',
     AppLanguage.fr:
-        'Vous devancez votre rival : l’étage {skipped} est sauté, vous arrivez à l’étage {to}',
+        'Vous devancez votre rival : l’étage {skipped} est sauté, vous arrivez à l’étage {to}',
   },
   'tower_event_rival_lost': {
     AppLanguage.en: 'Your rival gets away: no skip',
-    AppLanguage.fr: 'Votre rival vous échappe : pas de saut',
+    AppLanguage.fr: 'Votre rival vous échappe : pas de saut',
   },
   'tower_event_shortcut': {
     AppLanguage.en: 'Shortcut',
@@ -1571,7 +1571,7 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   },
   'tower_event_shortcut_landed': {
     AppLanguage.en: 'The shortcut holds: you land on floor {to}',
-    AppLanguage.fr: 'Le raccourci tient : vous arrivez à l’étage {to}',
+    AppLanguage.fr: 'Le raccourci tient : vous arrivez à l’étage {to}',
   },
   'tower_event_rolled': {
     AppLanguage.en: 'You roll {roll}, total {total}.',
