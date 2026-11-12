@@ -19,6 +19,9 @@ import '../../theme/palette.dart';
 /// the buildings their names and the ways their pins.
 const double cityChartDetailZoom = 2.0;
 
+/// The parts of the plan a painter draws (see [CityChartPainter.layer]).
+enum CityChartLayer { all, base, party }
+
 class CityChartPainter extends CustomPainter {
   CityChartPainter({
     required this.chart,
@@ -42,6 +45,7 @@ class CityChartPainter extends CustomPainter {
     this.banners = const {},
     this.bannersDark = true,
     this.pulse = 0,
+    this.layer = CityChartLayer.all,
     this.phase = DayPhase.day,
     this.buildingNames = true,
   });
@@ -95,6 +99,14 @@ class CityChartPainter extends CustomPainter {
   /// 0 to 1, repeating: the party's mark breathing.
   final double pulse;
 
+  /// What this painter draws: the whole plan, the plan without the party's
+  /// mark (drawn once and kept), or the mark alone (redrawn as it breathes).
+  final CityChartLayer layer;
+
+  /// How solid the fog over an unexplored district is: its streets and
+  /// blocks show through, its names and pins do not.
+  static const double fogAlpha = 0.55;
+
   /// The part of the day (the world clock): dawn and dusk wash the town in
   /// warm light, night in deep blue with its windows and lanterns lit.
   final DayPhase phase;
@@ -120,6 +132,11 @@ class CityChartPainter extends CustomPainter {
     canvas.clipRect(Offset.zero & size);
     canvas.translate(offset.dx, offset.dy);
     canvas.scale(scale);
+    if (layer == CityChartLayer.party) {
+      _partyMark(canvas);
+      canvas.restore();
+      return;
+    }
     final p = palette;
     final dark = p.land.computeLuminance() < 0.4;
     final ground = _mix(p.land, p.coast, dark ? 0.16 : 0.10);
@@ -345,16 +362,18 @@ class CityChartPainter extends CustomPainter {
     // What the party has not found: fog, a dashed outline.
     for (final d in chart.districts) {
       if (_known(d.id)) continue;
-      canvas.drawPath(d.blocks, fill..color = p.fog.withValues(alpha: 0.88));
+      canvas.drawPath(
+          d.blocks, fill..color = p.fog.withValues(alpha: fogAlpha));
       // Its buildings stand a little beyond its blocks: fogged too.
       for (final b in chart.buildings) {
         if (chart.districts[b.district].id != d.id) continue;
-        canvas.drawPath(b.shape, fill..color = p.fog.withValues(alpha: 0.88));
+        canvas.drawPath(
+            b.shape, fill..color = p.fog.withValues(alpha: fogAlpha));
         canvas.drawPath(
             b.shape,
             stroke
               ..strokeWidth = 7
-              ..color = p.fog.withValues(alpha: 0.88));
+              ..color = p.fog.withValues(alpha: fogAlpha));
       }
       _dashed(
           canvas,
@@ -913,11 +932,9 @@ class CityChartPainter extends CustomPainter {
   /// The pins' radius on the screen.
   static const double pinRadius = 12;
 
-  void _pins(Canvas canvas) {
-    final p = palette;
-    final inv = 1 / scale;
-    // The party's mark: a breathing ring on the building it stands at, or
-    // on its district when it is not at a way.
+  /// Where the party's mark stands on the plan: the building of the way it
+  /// is at, a building's doorstep, or its district; null when unknown.
+  Offset? get partyPoint {
     Offset? here;
     for (final w in chart.ways) {
       if (w.id == hereWayId) here = pinAt(w);
@@ -926,25 +943,35 @@ class CityChartPainter extends CustomPainter {
     here ??= chart.here;
     if (here == null && hereDistrict != null) {
       final d = chart.districtById(hereDistrict!);
-      if (d != null && _known(d.id)) here = d.centre.translate(0, 22 * inv);
+      if (d != null && _known(d.id)) here = d.centre.translate(0, 22 / scale);
     }
     // Walking to a way (the host's walk), the mark is where the walk is.
-    here = partyAt ?? here;
-    if (here != null) {
-      canvas.save();
-      canvas.translate(here.dx, here.dy);
-      canvas.scale(inv);
-      final r = 14 + 4 * pulse;
-      canvas.drawCircle(
-          Offset.zero,
-          r,
-          Paint()
-            ..style = PaintingStyle.stroke
-            ..strokeWidth = 2
-            ..color = p.mark.withValues(alpha: 1 - 0.5 * pulse));
-      canvas.drawCircle(Offset.zero, 4, Paint()..color = p.mark);
-      canvas.restore();
-    }
+    return partyAt ?? here;
+  }
+
+  /// The party's mark: a breathing ring.
+  void _partyMark(Canvas canvas) {
+    final here = partyPoint;
+    if (here == null) return;
+    canvas.save();
+    canvas.translate(here.dx, here.dy);
+    canvas.scale(1 / scale);
+    final r = 14 + 4 * pulse;
+    canvas.drawCircle(
+        Offset.zero,
+        r,
+        Paint()
+          ..style = PaintingStyle.stroke
+          ..strokeWidth = 2
+          ..color = palette.mark.withValues(alpha: 1 - 0.5 * pulse));
+    canvas.drawCircle(Offset.zero, 4, Paint()..color = palette.mark);
+    canvas.restore();
+  }
+
+  void _pins(Canvas canvas) {
+    final p = palette;
+    final inv = 1 / scale;
+    if (layer == CityChartLayer.all) _partyMark(canvas);
     if (!detailed) return;
     for (final w in chart.ways) {
       final d = chart.districts[w.district];
@@ -1088,6 +1115,7 @@ class CityChartPainter extends CustomPainter {
       !mapEquals(old.banners, banners) ||
       old.bannersDark != bannersDark ||
       old.pulse != pulse ||
+      old.layer != layer ||
       old.phase != phase ||
       old.buildingNames != buildingNames;
 }
