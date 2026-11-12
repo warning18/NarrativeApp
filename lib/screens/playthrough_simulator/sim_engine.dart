@@ -358,14 +358,20 @@ class _SimContext {
     this.policy = SimPolicy.naive,
     this.merges = const {},
     this.companions = const {},
+    this.onFight,
   });
+
+  /// Called before each fight's first try with the build on arrival
+  /// (sim_snapshot.dart), to replay it; null, nothing is built.
+  final SimFightWatch? onFight;
 
   /// companions.json: whom the competent player recruits and seats
   /// (sim_companions.dart). None, or the naive player: a solo run.
   final Map<String, dynamic> companions;
 
   /// How the simulated player plays its choices (sim_policy.dart): naive,
-  /// the CI bands' measure, or competent, a real player's.
+  /// the CI bands' measure; competent, a real player's who plays well;
+  /// typical, between them; or stubborn.
   final SimPolicy policy;
 
   /// skill_merges.json: what the competent player crafts at the
@@ -1397,6 +1403,17 @@ _SimResult _simulate(
     party?.levelIs(c.level);
     // Aligned gear answers to the walk's alignment, as in the game.
     c.alignmentLabel = _alignmentLabelOf(alignment);
+    sim.onFight?.call(
+        currentId,
+        chapter,
+        [for (final e in entries) e.key],
+        () => simSessionSave(
+            character: c,
+            growth: growth,
+            party: party,
+            gold: gold,
+            flags: flags,
+            alignment: alignment));
     for (var attempt = 1; attempt <= maxAttempts; attempt++) {
       final signs = signsNow(host: host);
       final perks = growth?.perks ?? PerkEffects.none;
@@ -2462,6 +2479,7 @@ _SimContext _simContextOf(
   bool championFights = false,
   bool featureLadder = false,
   SimPolicy policy = SimPolicy.naive,
+  SimFightWatch? onFight,
 }) {
   Map<String, dynamic> table(String name) => tables[name] ?? const {};
   final written = writtenStepsFrom(table('expedition_steps'));
@@ -2509,6 +2527,7 @@ _SimContext _simContextOf(
     policy: policy,
     merges: table('skill_merges'),
     companions: table('companions'),
+    onFight: onFight,
   );
 }
 
@@ -2617,6 +2636,7 @@ List<SimRunSummary> simulatePlaythroughs(
   bool championFights = false,
   bool featureLadder = false,
   SimPolicy policy = SimPolicy.naive,
+  SimFightWatch? onFight,
 }) {
   final sim = _simContextOf(tables, gameConfig,
       clashOff: clashOff,
@@ -2625,7 +2645,8 @@ List<SimRunSummary> simulatePlaythroughs(
       reinforcement: reinforcement,
       championFights: championFights,
       featureLadder: featureLadder,
-      policy: policy);
+      policy: policy,
+      onFight: onFight);
   final enemies = tables['enemies'] ?? const {};
   final out = <SimRunSummary>[];
   for (var i = 0; i < plan.length; i++) {

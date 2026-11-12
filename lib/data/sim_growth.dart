@@ -135,6 +135,7 @@ class SimGrowth {
   /// How the player plays its choices (sim_policy.dart).
   final SimPolicy policy;
   bool get competent => policy == SimPolicy.competent;
+  bool get typical => policy == SimPolicy.typical;
 
   /// Every clan offer taken, in order: the banners offered, the one taken
   /// and why (both policies).
@@ -981,11 +982,14 @@ class SimGrowth {
   /// [inventory], the pack); at the Skillwright ([skillwright]) every
   /// skill merge worth crafting (simMergeWorthIt); then the best die it
   /// owns (the dice it has bought and its own) with its skills best
-  /// placed. Nothing for the naive player.
+  /// placed. The typical player wears what it found when it is plainly
+  /// better and rolls a plainly better die it owns ([prepareTypical]).
+  /// Nothing for the naive player.
   void prepareForFight({
     Iterable<String> inventory = const [],
     bool skillwright = false,
   }) {
+    if (typical) return prepareTypical(inventory: inventory);
     if (!competent) return;
     final c = character;
     equipBest(extra: inventory);
@@ -1008,6 +1012,33 @@ class SimGrowth {
       }
     }
     c.rollBestDie(tables.skills);
+    assignSkills();
+  }
+
+  /// The typical player before a fight (sim_policy.dart): each piece of
+  /// [inventory] (the pack: loot, a scene's or a quest's item) worn when it
+  /// may and its flat attack plus armor ([simFlatGearScore]) beats the
+  /// worn one's, slot by slot, no sets weighed; then the die it owns whose
+  /// average roll beats the one in play by [simTypicalDieMargin], no
+  /// trial, its skills placed as the walk places them.
+  void prepareTypical({Iterable<String> inventory = const []}) {
+    final c = character;
+    for (final id in inventory.toList()..sort()) {
+      final item = tables.items[id];
+      if (item is! Map<String, dynamic> || item['isEquippable'] != true) {
+        continue;
+      }
+      final slot = item['equipSlot']?.toString() ?? '';
+      if (slot.isEmpty || c.equippedBySlot[slot] == id || !_canWear(item)) {
+        continue;
+      }
+      final worn = tables.items[c.equippedBySlot[slot]];
+      if (simFlatGearScore(item) >
+          simFlatGearScore(worn is Map<String, dynamic> ? worn : null)) {
+        c.equippedBySlot[slot] = id;
+      }
+    }
+    c.rollBestDie(tables.skills, margin: simTypicalDieMargin);
     assignSkills();
   }
 
@@ -1054,6 +1085,9 @@ class SimGrowth {
         if (faces != null && !character.ownedDice.containsKey(gift.id)) {
           character.ownedDice[gift.id] = faces;
           if (competent) character.rollBestDie(tables.skills);
+          if (typical) {
+            character.rollBestDie(tables.skills, margin: simTypicalDieMargin);
+          }
         }
     }
     return alignment;

@@ -1,0 +1,614 @@
+{
+ "naive": {
+  "encounterWinPct": 76.9,
+  "runsWithNoDeath": 0,
+  "endings": {
+   "ending": 100
+  },
+  "medianFinalLevel": 21.0,
+  "chapters": {
+   "1": {
+    "runsReached": 100,
+    "encounters": 385,
+    "firstTryPct": 90.4,
+    "within3Pct": 92.7,
+    "deaths": 8,
+    "medianArrivalLevel": 1.0
+   },
+   "2": {
+    "runsReached": 100,
+    "encounters": 677,
+    "firstTryPct": 90.8,
+    "within3Pct": 97.9,
+    "deaths": 14,
+    "medianArrivalLevel": 3.0
+   },
+   "3": {
+    "runsReached": 100,
+    "encounters": 1382,
+    "firstTryPct": 64.8,
+    "within3Pct": 85.4,
+    "deaths": 202,
+    "medianArrivalLevel": 5.0
+   },
+   "4": {
+    "runsReached": 100,
+    "encounters": 1002,
+    "firstTryPct": 45.0,
+    "within3Pct": 74.1,
+    "deaths": 260,
+    "medianArrivalLevel": 8.0
+   },
+   "5": {
+    "runsReached": 100,
+    "encounters": 1330,
+    "firstTryPct": 55.1,
+    "within3Pct": 74.5,
+    "deaths": 339,
+    "medianArrivalLevel": 11.0
+   },
+   "6": {
+    "runsReached": 100,
+    "encounters": 790,
+    "firstTryPct": 34.9,
+    "within3Pct": 61.8,
+    "deaths": 302,
+    "medianArrivalLevel": 15.0
+   },
+   "7": {
+    "runsReached": 100,
+    "encounters": 174,
+    "firstTryPct": 36.8,
+    "within3Pct": 56.9,
+    "deaths": 75,
+    "medianArrivalLevel": 18.0
+   },
+   "8": {
+    "runsReached": 100,
+    "encounters": 392,
+    "firstTryPct": 26.8,
+    "within3Pct": 49.7,
+    "deaths": 197,
+    "medianArrivalLevel": 19.0
+   }
+  },
+  "bosses": {
+   "aurel_vane": {
+    "target": 75,
+    "fought": 32,
+    "lost": 14,
+    "lossPct": 43.8
+   },
+   "void_stalker": {
+    "target": 65,
+    "fought": 100,
+    "lost": 42,
+    "lossPct": 42.0
+   },
+   "hollow_court_inquisitor": {
+    "target": 55,
+    "fought": 98,
+    "lost": 38,
+    "lossPct": 38.8
+   },
+   "bone_warden": {
+    "target": 55,
+    "fought": 134,
+    "lost": 50,
+    "lossPct": 37.3
+   },
+   "void_archon": {
+    "target": 50,
+    "fought": 83,
+    "lost": 52,
+    "lossPct": 62.7
+   },
+   "white_admiral": {
+    "target": 45,
+    "fought": 67,
+    "lost": 42,
+    "lossPct": 62.7
+   },
+   "claimant_vane": {
+    "target": 40,
+    "fought": 15,
+    "lost": 9,
+    "lossPct": 60.0
+   },
+   "claimant_tallis": {
+    "target": 40,
+    "fought": 70,
+    "lost": 48,
+    "lossPct": 68.6
+   },
+   "claimant_morrow": {
+    "target": 40,
+    "fought": 15,
+    "lost": 11,
+    "lossPct": 73.3
+   },
+   "tear_herald": {
+    "target": 35,
+    "fought": 100,
+    "lost": 73,
+    "lossPct": 73.0
+   },
+   "void_sovereign": {
+    "target": 35,
+    "fought": 58,
+    "lost": 41,
+    "lossPct": 70.7
+   }
+  },
+  "deadliestFights": [
+   {
+    "fight": "ch8 7810:tear_herald",
+    "deaths": 73,
+    "fought": 100,
+    "lossPct": 73.0
+   },
+   {
+    "fight": "ch5 zone:z_shroud_vigil:void_archon",
+    "deaths": 52,
+    "fought": 83,
+    "lossPct": 62.7
+   },
+   {
+    "fight": "ch7 7520_tallis:claimant_tallis",
+    "deaths": 48,
+    "fought": 70,
+    "lossPct": 68.6
+   },
+   {
+    "fight": "ch6 7002:hollow_reflection",
+    "deaths": 46,
+    "fought": 87,
+    "lossPct": 52.9
+   },
+   {
+    "fight": "ch6 zone:z_glass_strand:strand_colossus",
+    "deaths": 43,
+    "fought": 64,
+    "lossPct": 67.2
+   },
+   {
+    "fight": "ch5 zone:z_ember_run:rime_bailiff",
+    "deaths": 43,
+    "fought": 97,
+    "lossPct": 44.3
+   },
+   {
+    "fight": "ch6 zone:z_white_fleet_grave:white_admiral",
+    "deaths": 42,
+    "fought": 67,
+    "lossPct": 62.7
+   },
+   {
+    "fight": "ch8 zone:z_beyond_the_tear:void_sovereign",
+    "deaths": 41,
+    "fought": 58,
+    "lossPct": 70.7
+   },
+   {
+    "fight": "ch4 zone:z_drowned_stair:hollow_court_inquisitor",
+    "deaths": 38,
+    "fought": 98,
+    "lossPct": 38.8
+   },
+   {
+    "fight": "ch6 zone:z_lantern_train:glass_shepherd",
+    "deaths": 37,
+    "fought": 74,
+    "lossPct": 50.0
+   }
+  ]
+ },
+ "typical": {
+  "encounterWinPct": 98.7,
+  "runsWithNoDeath": 65,
+  "endings": {
+   "ending": 100
+  },
+  "medianFinalLevel": 24.0,
+  "chapters": {
+   "1": {
+    "runsReached": 100,
+    "encounters": 386,
+    "firstTryPct": 93.3,
+    "within3Pct": 94.3,
+    "deaths": 9,
+    "medianArrivalLevel": 1.0
+   },
+   "2": {
+    "runsReached": 100,
+    "encounters": 698,
+    "firstTryPct": 98.9,
+    "within3Pct": 100.0,
+    "deaths": 0,
+    "medianArrivalLevel": 3.0
+   },
+   "3": {
+    "runsReached": 100,
+    "encounters": 1596,
+    "firstTryPct": 99.5,
+    "within3Pct": 100.0,
+    "deaths": 0,
+    "medianArrivalLevel": 5.0
+   },
+   "4": {
+    "runsReached": 100,
+    "encounters": 1148,
+    "firstTryPct": 97.9,
+    "within3Pct": 99.8,
+    "deaths": 2,
+    "medianArrivalLevel": 9.0
+   },
+   "5": {
+    "runsReached": 100,
+    "encounters": 1481,
+    "firstTryPct": 93.7,
+    "within3Pct": 98.7,
+    "deaths": 19,
+    "medianArrivalLevel": 12.0
+   },
+   "6": {
+    "runsReached": 100,
+    "encounters": 921,
+    "firstTryPct": 92.7,
+    "within3Pct": 98.5,
+    "deaths": 14,
+    "medianArrivalLevel": 16.5
+   },
+   "7": {
+    "runsReached": 100,
+    "encounters": 177,
+    "firstTryPct": 91.5,
+    "within3Pct": 96.6,
+    "deaths": 6,
+    "medianArrivalLevel": 20.0
+   },
+   "8": {
+    "runsReached": 100,
+    "encounters": 506,
+    "firstTryPct": 81.4,
+    "within3Pct": 94.7,
+    "deaths": 27,
+    "medianArrivalLevel": 21.0
+   }
+  },
+  "bosses": {
+   "aurel_vane": {
+    "target": 75,
+    "fought": 28,
+    "lost": 6,
+    "lossPct": 21.4
+   },
+   "void_stalker": {
+    "target": 65,
+    "fought": 131,
+    "lost": 0,
+    "lossPct": 0.0
+   },
+   "hollow_court_inquisitor": {
+    "target": 55,
+    "fought": 100,
+    "lost": 0,
+    "lossPct": 0.0
+   },
+   "bone_warden": {
+    "target": 55,
+    "fought": 146,
+    "lost": 0,
+    "lossPct": 0.0
+   },
+   "void_archon": {
+    "target": 50,
+    "fought": 100,
+    "lost": 3,
+    "lossPct": 3.0
+   },
+   "white_admiral": {
+    "target": 45,
+    "fought": 98,
+    "lost": 2,
+    "lossPct": 2.0
+   },
+   "claimant_vane": {
+    "target": 40,
+    "fought": 12,
+    "lost": 1,
+    "lossPct": 8.3
+   },
+   "claimant_tallis": {
+    "target": 40,
+    "fought": 72,
+    "lost": 2,
+    "lossPct": 2.8
+   },
+   "claimant_morrow": {
+    "target": 40,
+    "fought": 16,
+    "lost": 3,
+    "lossPct": 18.8
+   },
+   "tear_herald": {
+    "target": 35,
+    "fought": 100,
+    "lost": 10,
+    "lossPct": 10.0
+   },
+   "void_sovereign": {
+    "target": 35,
+    "fought": 96,
+    "lost": 12,
+    "lossPct": 12.5
+   }
+  },
+  "deadliestFights": [
+   {
+    "fight": "ch8 zone:z_beyond_the_tear:void_sovereign",
+    "deaths": 12,
+    "fought": 96,
+    "lossPct": 12.5
+   },
+   {
+    "fight": "ch8 7810:tear_herald",
+    "deaths": 10,
+    "fought": 100,
+    "lossPct": 10.0
+   },
+   {
+    "fight": "ch5 6100:void_hound",
+    "deaths": 6,
+    "fought": 62,
+    "lossPct": 9.7
+   },
+   {
+    "fight": "ch1 850:rat_matriarch",
+    "deaths": 5,
+    "fought": 9,
+    "lossPct": 55.6
+   },
+   {
+    "fight": "ch1 855:rat_matriarch",
+    "deaths": 4,
+    "fought": 7,
+    "lossPct": 57.1
+   },
+   {
+    "fight": "ch6 zone:z_glass_strand:strand_colossus",
+    "deaths": 4,
+    "fought": 100,
+    "lossPct": 4.0
+   },
+   {
+    "fight": "ch5 6200_house_quarrymen:void_hound",
+    "deaths": 3,
+    "fought": 26,
+    "lossPct": 11.5
+   },
+   {
+    "fight": "ch6 zone:z_lantern_train:glass_shepherd",
+    "deaths": 3,
+    "fought": 100,
+    "lossPct": 3.0
+   },
+   {
+    "fight": "ch7 7520_morrow:claimant_morrow",
+    "deaths": 3,
+    "fought": 16,
+    "lossPct": 18.8
+   },
+   {
+    "fight": "ch8 zone:z_beyond_the_tear:unmade_knight",
+    "deaths": 3,
+    "fought": 63,
+    "lossPct": 4.8
+   }
+  ]
+ },
+ "competent": {
+  "encounterWinPct": 98.7,
+  "runsWithNoDeath": 73,
+  "endings": {
+   "ending": 100
+  },
+  "medianFinalLevel": 25.0,
+  "chapters": {
+   "1": {
+    "runsReached": 100,
+    "encounters": 380,
+    "firstTryPct": 95.3,
+    "within3Pct": 95.5,
+    "deaths": 6,
+    "medianArrivalLevel": 1.0
+   },
+   "2": {
+    "runsReached": 100,
+    "encounters": 676,
+    "firstTryPct": 99.3,
+    "within3Pct": 99.7,
+    "deaths": 2,
+    "medianArrivalLevel": 3.0
+   },
+   "3": {
+    "runsReached": 100,
+    "encounters": 1604,
+    "firstTryPct": 99.8,
+    "within3Pct": 100.0,
+    "deaths": 0,
+    "medianArrivalLevel": 5.0
+   },
+   "4": {
+    "runsReached": 100,
+    "encounters": 1133,
+    "firstTryPct": 97.5,
+    "within3Pct": 99.8,
+    "deaths": 2,
+    "medianArrivalLevel": 9.0
+   },
+   "5": {
+    "runsReached": 100,
+    "encounters": 1481,
+    "firstTryPct": 94.5,
+    "within3Pct": 98.6,
+    "deaths": 21,
+    "medianArrivalLevel": 12.0
+   },
+   "6": {
+    "runsReached": 100,
+    "encounters": 922,
+    "firstTryPct": 93.8,
+    "within3Pct": 97.8,
+    "deaths": 20,
+    "medianArrivalLevel": 17.0
+   },
+   "7": {
+    "runsReached": 100,
+    "encounters": 170,
+    "firstTryPct": 94.7,
+    "within3Pct": 98.2,
+    "deaths": 3,
+    "medianArrivalLevel": 20.5
+   },
+   "8": {
+    "runsReached": 100,
+    "encounters": 507,
+    "firstTryPct": 85.0,
+    "within3Pct": 94.7,
+    "deaths": 27,
+    "medianArrivalLevel": 21.5
+   }
+  },
+  "bosses": {
+   "aurel_vane": {
+    "target": 75,
+    "fought": 29,
+    "lost": 4,
+    "lossPct": 13.8
+   },
+   "void_stalker": {
+    "target": 65,
+    "fought": 134,
+    "lost": 0,
+    "lossPct": 0.0
+   },
+   "hollow_court_inquisitor": {
+    "target": 55,
+    "fought": 100,
+    "lost": 0,
+    "lossPct": 0.0
+   },
+   "bone_warden": {
+    "target": 55,
+    "fought": 143,
+    "lost": 0,
+    "lossPct": 0.0
+   },
+   "void_archon": {
+    "target": 50,
+    "fought": 100,
+    "lost": 6,
+    "lossPct": 6.0
+   },
+   "white_admiral": {
+    "target": 45,
+    "fought": 98,
+    "lost": 2,
+    "lossPct": 2.0
+   },
+   "claimant_vane": {
+    "target": 40,
+    "fought": 14,
+    "lost": 1,
+    "lossPct": 7.1
+   },
+   "claimant_tallis": {
+    "target": 40,
+    "fought": 68,
+    "lost": 1,
+    "lossPct": 1.5
+   },
+   "claimant_morrow": {
+    "target": 40,
+    "fought": 18,
+    "lost": 1,
+    "lossPct": 5.6
+   },
+   "tear_herald": {
+    "target": 35,
+    "fought": 100,
+    "lost": 9,
+    "lossPct": 9.0
+   },
+   "void_sovereign": {
+    "target": 35,
+    "fought": 96,
+    "lost": 9,
+    "lossPct": 9.4
+   }
+  },
+  "deadliestFights": [
+   {
+    "fight": "ch8 7810:tear_herald",
+    "deaths": 9,
+    "fought": 100,
+    "lossPct": 9.0
+   },
+   {
+    "fight": "ch8 zone:z_beyond_the_tear:void_sovereign",
+    "deaths": 9,
+    "fought": 96,
+    "lossPct": 9.4
+   },
+   {
+    "fight": "ch6 zone:z_lantern_train:glass_shepherd",
+    "deaths": 7,
+    "fought": 100,
+    "lossPct": 7.0
+   },
+   {
+    "fight": "ch5 6200:void_hound",
+    "deaths": 6,
+    "fought": 62,
+    "lossPct": 9.7
+   },
+   {
+    "fight": "ch5 zone:z_shroud_vigil:void_archon",
+    "deaths": 6,
+    "fought": 100,
+    "lossPct": 6.0
+   },
+   {
+    "fight": "ch6 7002:hollow_reflection",
+    "deaths": 6,
+    "fought": 77,
+    "lossPct": 7.8
+   },
+   {
+    "fight": "ch1 855:rat_matriarch",
+    "deaths": 4,
+    "fought": 6,
+    "lossPct": 66.7
+   },
+   {
+    "fight": "ch8 zone:z_beyond_the_tear:unmade_knight",
+    "deaths": 4,
+    "fought": 60,
+    "lossPct": 6.7
+   },
+   {
+    "fight": "ch8 7002_approach:hollow_reflection",
+    "deaths": 3,
+    "fought": 58,
+    "lossPct": 5.2
+   },
+   {
+    "fight": "ch5 6200_house_quarrymen:void_hound",
+    "deaths": 3,
+    "fought": 25,
+    "lossPct": 12.0
+   }
+  ]
+ }
+}

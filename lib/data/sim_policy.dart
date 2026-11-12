@@ -5,7 +5,7 @@
 // [SimPolicy.naive] is the simulator as it always played (every CI band is
 // measured with it); [SimPolicy.competent] plays those choices the way a
 // competent real player would, so its numbers read as "the game for
-// someone who plays it well".
+// someone who plays it well"; [SimPolicy.typical] sits between them.
 import '../combat/combat_engine.dart' show elementFieldPrefixes;
 import '../combat/dice_faces.dart' show isOpenSkillFace;
 import '../combat/gear_effects.dart';
@@ -25,8 +25,29 @@ import 'sim_growth.dart' show simSkillScore;
 ///   competent one does, takes the naive banners, buys spellbooks and
 ///   potions, but keeps its starting die and its starting gear for the
 ///   whole run (no piece worn, no die bought). The gap between it and
-///   [competent] is what the gear and the dice are worth.
-enum SimPolicy { naive, competent, stubborn }
+///   [competent] is what the gear and the dice are worth;
+/// - [typical]: a real player who takes what is plainly better and
+///   nothing more (docs/simulation/typical-player.md). It plays the naive
+///   banners and shops (potions, gear by flat damage plus armor) and
+///   recruits and seats companions as [stubborn] does; it wears a piece
+///   it finds (loot, a scene's or a quest's item) when its flat attack
+///   plus armor beats the worn one's ([simFlatGearScore]); and it rolls a
+///   die it owns or buys when its average roll ([simDieValue]) beats the
+///   one in play by [simTypicalDieMargin], with no trial fights. No sets
+///   weighed, no merges.
+enum SimPolicy { naive, competent, stubborn, typical }
+
+/// A piece's worth to the typical (and the naive) player: its flat attack
+/// plus armor, -1 for no piece.
+int simFlatGearScore(Map<String, dynamic>? item) => item == null
+    ? -1
+    : ((item['attackDamage'] as num?)?.toInt() ?? 0) +
+        ((item['armor'] as num?)?.toInt() ?? 0);
+
+/// How much more a die's average roll ([simDieValue]) must be worth than
+/// the one in play's for the typical player to roll it, or buy it: a
+/// plainly better die, not a rounding.
+const double simTypicalDieMargin = 0.25;
 
 /// One clan offer as the run took it: when ([chapter], [source]: level,
 /// boss, chapter, tome...), the banners offered (`clan:kind:gift`), the one

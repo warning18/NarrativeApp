@@ -1,0 +1,135 @@
+// The typical player's measure (docs/simulation/typical-player.md): the
+// story set of difficulty-review-1.914/story_runs_test.dart.txt (seeds
+// 1..100, the 25 race x profession pairs x 4 goals), with SIM_POLICY naive,
+// typical or competent, and with SIM_BUILDS the builds each run brings to
+// the fights of SIM_BUILD_NODES (scene ids, comma-separated; default the
+// five deadliest: 3200,5100,6200,7002,7810) on arrival, as PlayerSession
+// saves (sim_snapshot.dart), written to that JSON file.
+//
+// To rerun (from the repository root):
+//   cp docs/simulation/typical-player-runs_test.dart.txt test/zz_story_runs_test.dart
+//   for p in naive typical competent; do
+//     SIM_POLICY=$p SIM_OUT=/tmp/$p.json SIM_BUILDS=/tmp/$p-builds.json \
+//       flutter test test/zz_story_runs_test.dart
+//   done
+//   python3 docs/simulation/typical_summary.py /tmp/naive.json \
+//     /tmp/typical.json /tmp/competent.json /tmp/typical-builds.json <out dir>
+//   rm test/zz_story_runs_test.dart
+import 'dart:convert';
+import 'dart:io';
+
+import 'package:flutter_test/flutter_test.dart';
+
+import 'package:narrative_data_app/data/sim_policy.dart';
+
+import 'package:narrative_data_app/screens/playthrough_simulator_screen.dart';
+import 'support/sim_world.dart';
+
+final _fightLine = RegExp(r'^\[ch (\d+)\] (\S+) .* · fight (\S+): (won|lost)');
+
+void main() {
+  test('100 story runs, seeds 1..100, 25 race x profession pairs', () {
+    final policy =
+        SimPolicy.values.byName(Platform.environment['SIM_POLICY'] ?? 'naive');
+    final out =
+        Platform.environment['SIM_OUT'] ?? 'story-runs-${policy.name}.json';
+    final story = simStory();
+    final tables = simTables();
+    final config = simGameConfig();
+    final races = tables['races']!.keys.toList();
+    final professions = tables['professions']!.keys.toList();
+    const goals = [
+      SimStrategy.random,
+      SimStrategy.favorGood,
+      SimStrategy.favorEvil,
+      SimStrategy.maximizeGold,
+    ];
+    final buildsOut = Platform.environment['SIM_BUILDS'];
+    final buildNodes =
+        (Platform.environment['SIM_BUILD_NODES'] ?? '3200,5100,6200,7002,7810')
+            .split(',')
+            .toSet();
+    final builds = <Map<String, dynamic>>[];
+    final rows = <Map<String, dynamic>>[];
+    for (var seed = 1; seed <= 100; seed++) {
+      final pair = (seed - 1) ~/ 4;
+      final seen = <String>{};
+      final r = simulatePlaythroughs(story,
+              onFight: buildsOut == null
+                  ? null
+                  : (node, chapter, enemyIds, save) {
+                      if (!buildNodes.contains(node) || !seen.add(node)) return;
+                      builds.add({
+                        'seed': seed,
+                        'node': node,
+                        'chapter': chapter,
+                        'enemies': enemyIds,
+                        'save': save(),
+                      });
+                    },
+              tables: tables,
+              gameConfig: config,
+              plan: [
+                (
+                  strategy: goals[(seed - 1) % 4],
+                  raceId: races[pair ~/ 5],
+                  professionId: professions[pair % 5],
+                ),
+              ],
+              seed: seed,
+              transcripts: true,
+              policy: policy)
+          .single;
+      final fights = <Map<String, dynamic>>[];
+      for (final line in r.transcript) {
+        final m = _fightLine.firstMatch(line);
+        if (m == null) continue;
+        fights.add({
+          'chapter': int.parse(m.group(1)!),
+          'node': m.group(2),
+          'enemy': m.group(3),
+          'won': m.group(4) == 'won',
+        });
+      }
+      rows.add({
+        'seed': seed,
+        'policy': policy.name,
+        'goal': r.strategy.name,
+        'race': r.raceId,
+        'profession': r.professionId,
+        'endedHow': r.endedHow,
+        'chapter': r.furthestChapter,
+        'level': r.finalLevel,
+        'gold': r.finalGold,
+        'steps': r.steps,
+        'companions': r.companions,
+        'byChapter': {
+          for (final e in r.byChapter.entries)
+            e.key: {
+              'attempts': e.value.attempts,
+              'won': e.value.won,
+              'fights': e.value.fights,
+              'firstTry': e.value.firstTry,
+            },
+        },
+        'enemiesByChapter': {
+          for (final c in r.enemiesByChapter.entries)
+            c.key: {
+              for (final e in c.value.entries)
+                e.key: {'fought': e.value.fought, 'lost': e.value.lost},
+            },
+        },
+        'arrivals': {
+          for (final a in r.arrivals.entries)
+            '${a.key}': {'level': a.value.level, 'gold': a.value.gold},
+        },
+        'fights': fights,
+      });
+    }
+    File(out).writeAsStringSync(jsonEncode(rows));
+    if (buildsOut != null) {
+      File(buildsOut).writeAsStringSync(jsonEncode(builds));
+    }
+    expect(rows, hasLength(100));
+  }, timeout: const Timeout(Duration(minutes: 30)));
+}
