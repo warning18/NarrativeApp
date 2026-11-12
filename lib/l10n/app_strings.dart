@@ -1574,14 +1574,13 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.fr: 'Pourparlers',
   },
   'tower_parley_title': {
-    AppLanguage.en: 'A guardian bars the way',
-    AppLanguage.fr: 'Un gardien barre la route',
+    AppLanguage.en: 'A guardian bars the stair',
+    AppLanguage.fr: 'Un gardien barre l’escalier',
   },
   'tower_parley_body': {
-    AppLanguage.en:
-        'It does not look eager to fight. Perhaps it can be talked past.',
+    AppLanguage.en: 'It wants a word, not a blow. Talk, and it may let you by.',
     AppLanguage.fr:
-        'Il n’a pas l’air pressé de se battre. On peut peut-être le convaincre de vous laisser passer.',
+        'Il veut un mot, pas un coup. Parlez, il vous laissera peut-être passer.',
   },
   'tower_parley_sworn': {
     AppLanguage.en: 'You are sworn to its clan: it lets you pass, no roll.',
@@ -1601,8 +1600,8 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.fr: 'Échec',
   },
   'tower_parley_fail_text': {
-    AppLanguage.en: 'The fight, as it would have been',
-    AppLanguage.fr: 'Le combat, comme il aurait eu lieu',
+    AppLanguage.en: 'The fight goes ahead',
+    AppLanguage.fr: 'Le combat a lieu',
   },
   'tower_parley_forgo': {
     AppLanguage.en:
@@ -1624,13 +1623,13 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   },
   'tower_merchant_title': {
     AppLanguage.en: 'The Stair-Chandler',
-    AppLanguage.fr: 'Le Chandelier de l’escalier',
+    AppLanguage.fr: 'Le Marchand de lumière',
   },
   'tower_merchant_body': {
     AppLanguage.en:
-        'Salves and potions for a climber with marks to spend. Nothing here leaves the Tower.',
+        'Salves and potions by candlelight, paid in marks. Nothing here leaves the Tower.',
     AppLanguage.fr:
-        'Des onguents et des potions pour qui a des marques à dépenser. Rien d’ici ne quitte la Tour.',
+        'Onguents et potions à la lueur d’une chandelle, payés en marques. Rien d’ici ne quitte la Tour.',
   },
   'tower_merchant_wallet': {
     AppLanguage.en: 'Marks to spend: {n}',
@@ -1642,7 +1641,7 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   },
   'tower_merchant_half_price': {
     AppLanguage.en: 'Half price for those sworn to {clan}',
-    AppLanguage.fr: 'Moitié prix pour ceux qui ont prêté serment à {clan}',
+    AppLanguage.fr: 'Moitié prix pour qui a prêté serment à {clan}',
   },
   'tower_merchant_salve': {
     AppLanguage.en: 'Salve',
@@ -1650,7 +1649,7 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   },
   'tower_merchant_salve_text': {
     AppLanguage.en: 'Heals {n}% of your health.',
-    AppLanguage.fr: 'Rend {n} % de votre santé.',
+    AppLanguage.fr: 'Rend {n} % de votre santé.',
   },
   'tower_merchant_potions': {
     AppLanguage.en: 'Potion bundle',
@@ -1658,11 +1657,15 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   },
   'tower_merchant_potions_text': {
     AppLanguage.en: '{n} potions into the bag.',
-    AppLanguage.fr: '{n} potions dans la sacoche.',
+    AppLanguage.fr: '{n} potions dans le sac.',
   },
   'tower_merchant_price': {
     AppLanguage.en: '{n} marks',
     AppLanguage.fr: '{n} marques',
+  },
+  'tower_merchant_price_one': {
+    AppLanguage.en: '{n} mark',
+    AppLanguage.fr: '{n} marque',
   },
   'tower_merchant_buy': {
     AppLanguage.en: 'Buy',
@@ -1673,8 +1676,8 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.fr: 'Acheté',
   },
   'tower_merchant_leave': {
-    AppLanguage.en: 'Leave the stall',
-    AppLanguage.fr: 'Quitter l’échoppe',
+    AppLanguage.en: 'Back to the stair',
+    AppLanguage.fr: 'Retour à l’escalier',
   },
   'tower_bargain': {
     AppLanguage.en: 'Bargain',
@@ -1686,9 +1689,9 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   },
   'tower_bargain_body': {
     AppLanguage.en:
-        'He will take a tenth of your health, for the rest of the climb, and add a point where you strike.',
+        'He will enter a tenth of your health in his ledger, and a point where you strike, for the rest of the climb.',
     AppLanguage.fr:
-        'Il prendra un dixième de votre santé pour le reste de l’ascension, et ajoutera un point là où vous frappez.',
+        'Il inscrira dans son registre un dixième de votre santé, et un point là où vous frappez, pour le reste de l’ascension.',
   },
   'tower_bargain_gain': {
     AppLanguage.en: 'Gain',
@@ -1707,8 +1710,8 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.fr: '{n} de santé maximale en moins, pour l’ascension',
   },
   'tower_bargain_accept': {
-    AppLanguage.en: 'Accept',
-    AppLanguage.fr: 'Accepter',
+    AppLanguage.en: 'Sign',
+    AppLanguage.fr: 'Signer',
   },
   'tower_bargain_refuse': {
     AppLanguage.en: 'Refuse',

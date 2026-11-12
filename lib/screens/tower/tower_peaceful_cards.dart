@@ -281,7 +281,13 @@ class TowerMerchantRoom extends ConsumerWidget {
               ),
               const SizedBox(width: 8),
               Column(crossAxisAlignment: CrossAxisAlignment.end, children: [
-                Text(_sub(ref, 'tower_merchant_price', {'n': item.price}),
+                Text(
+                    _sub(
+                        ref,
+                        item.price == 1
+                            ? 'tower_merchant_price_one'
+                            : 'tower_merchant_price',
+                        {'n': item.price}),
                     style: theme.textTheme.labelLarge?.copyWith(
                         color: item.affordable || item.bought
                             ? ink.gold
