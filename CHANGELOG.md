@@ -8,6 +8,10 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.960.0+996]
+
+- Tower: the shop room and the bargain's card (UX, floor events part 4). **Invisible for players**: they show only in a climb of events version 2, which no player starts yet. After the bosses of floors 10 and 20, and on 5% of other floors, the Stair-Chandler's stall opens: marks to spend, a salve (3 marks) and a bundle of potions (4 marks, half price for those sworn to the clan), a Buy that dims when you cannot pay, and a framed "Back to the stair"; the fight waits until you leave. On 10% of floors the Tally-Clerk offers his bargain (a tenth of your max health for a point on your damage stat, for the climb), with Sign and Refuse; the fight waits for the choice. Art's shop and alcove plates (tower_shop, tower_bargain, about 36 KB of PNG8) are the pictures behind them. Only tower_event_card.dart, tower_floor_screen.dart, tower_backdrop.dart and a comment in tower_peaceful_cards.dart change.
+
 ## [1.959.0+995]
 
 - Tower: floor events, part 4, the merchant and the bargain (docs/proposals/tower-peaceful-floors-and-stores.md). **Off for players**: they only play in a climb of events version 2, which no player starts yet. In the engine:
