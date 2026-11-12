@@ -8,6 +8,16 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.955.0+991]
+
+- **Narrative: French typography across the interface strings.** The French values of
+  `app_strings.dart` now follow the French rules everywhere: a no-break space before
+  `: ; ! ? %` and inside « », and the curly ’ for the apostrophe (644 strings; a colon
+  can no longer wrap alone to a new line). French only; no key and no English text
+  changed. `tool/fix_fr_typography.py` does it, and the new
+  `test/app_strings_french_typography_test.dart` keeps it that way when a session adds
+  a string. Four tests that pinned the old spelling follow.
+
 ## [1.954.0+990]
 
 - Tower: the parley card (UX, floor events part 3). **Invisible for players**: it shows only in a climb of events version 2, which no player starts yet. Before an ordinary floor's fight a guardian may offer to talk: a card with the guardian's plate, the d20 check with its target and odds, and Talk / Fight buttons; a sworn clan passes without a roll. A pass climbs a floor with its level and marks; a failed talk reads like the setback's line and leads to the fight. The merchant and bargain widgets are unreachable mocks until Core's PR 4 wires them. The plate is Art's first version (`towerEventPlate`, one line to swap).

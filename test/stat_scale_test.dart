@@ -103,7 +103,7 @@ void main() {
 
     test('in French', () {
       expect(statPickEffect('dexterity', 'rogue', 1, AppLanguage.fr),
-          '+1 DEX: +1 dégâts, +2 % d’esquive');
+          '+1 DEX: +1 dégâts, +2\u00a0% d’esquive');
       expect(statPickEffect('wisdom', 'mage', 1, AppLanguage.fr),
           '+1 SAG: +1 mana');
     });
