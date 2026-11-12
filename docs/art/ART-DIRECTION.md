@@ -18,7 +18,7 @@ Reference sheet: `docs/art/boards/art-direction-reference.png`. Palette: `art/pi
 - **Do** start from an approved file; match its outline, palette and light; state the cost before a PixelLab call; stage palette-reduced PNG8 and hand off with a short brief.
 - **Do** keep icons and effects hand-drawn or scripted when a shape is simple (0 generations); use PixelLab for characters, scenes and painted plates.
 - **Don't** add a glow, a gradient, soft shadows, outer outlines in a second colour, or text in any picture; don't use more than about 6 colours per effect or more than the shared 63 per icon.
-- **Don't** restyle an approved set; banners and icons are harmonised, never redrawn. **Don't** put a different face, outfit or proportion on a returning character.
+- **Don't** restyle an approved set; icons are harmonised, never redrawn (banners were redrawn once, by the user's decision, see below). **Don't** put a different face, outfit or proportion on a returning character.
 
 ## PixelLab prompt blocks (PixelLab has no negative-prompt field: the negatives go into the description as "no ...")
 Common suffix **S**: `16-bit pixel art, chibi dark medieval fantasy, flat colour with a dark ink outline, muted warm palette, light from the top-left, no glow, no gradient, no text, no UI`.
@@ -35,3 +35,5 @@ Common suffix **S**: `16-bit pixel art, chibi dark medieval fantasy, flat colour
 The user adopted this direction ("it fits, please keep it updated if any change on overall design"). Whenever an overall design decision lands, the Art session updates this page in its next art/docs PR and says so in the PR description.
 
 - **Palettes (decided by the user, "Skills take Apollo palette"):** skills: Apollo 46 + two core brights (F2C14E hot yellow, FFF6E0 near white); world and interface stay muted. Skill icons and the effect strips are in `art/pixellab-apollo-skills/` (void stays the hand-walked magenta-violet; no extra violet or orange kept). Hex list for any new skill art: `docs/art/palette-apollo.md`. Tools: `tool/apollo_remap.py`, `tool/apollo_skills.py`.
+
+- **Banners (decided by the user):** the 20 clan standards and standards are redrawn in the new look: the PixelLab (a) redraw with its frame (coloured header band, stitched border, hem) over the vertical folds of today's cloth, in Apollo 46 + two core brights (cream emblem FFF6E0 / E7D5B3, cloth on the cool near-blacks, one clan colour ramp per clan). Dominion's emblem is a lantern, Mire's leaf is simplified. Files `art/pixellab-banners-new/apollo/`, brief `docs/art/banners-final-brief.md`.
