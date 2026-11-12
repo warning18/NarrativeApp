@@ -97,15 +97,15 @@ void main() {
     late ui.Image steel;
     ui.Image? tinted;
     await tester.runAsync(() async {
-      PixelStrips.preload(['vfx_impact']);
-      for (var i = 0; i < 100 && PixelStrips.of('vfx_impact') == null; i++) {
+      PixelStrips.preload(['vfx_zap']);
+      for (var i = 0; i < 100 && PixelStrips.of('vfx_zap') == null; i++) {
         await Future<void>.delayed(const Duration(milliseconds: 20));
       }
-      steel = PixelStrips.of('vfx_impact')!;
-      PixelVfxTints.of('vfx_impact', fire);
+      steel = PixelStrips.of('vfx_zap')!;
+      PixelVfxTints.of('vfx_zap', fire);
       for (var i = 0; i < 100 && tinted == null; i++) {
         await Future<void>.delayed(const Duration(milliseconds: 20));
-        tinted = PixelVfxTints.of('vfx_impact', fire);
+        tinted = PixelVfxTints.of('vfx_zap', fire);
       }
     });
     expect(tinted, isNotNull);

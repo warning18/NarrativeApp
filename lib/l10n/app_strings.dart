@@ -1501,11 +1501,11 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.en:
         'You outrun your rival: floor {skipped} is skipped, you land on floor {to}',
     AppLanguage.fr:
-        'Vous devancez votre rival : l’étage {skipped} est sauté, vous arrivez à l’étage {to}',
+        'Vous devancez votre rival : l’étage {skipped} est sauté, vous arrivez à l’étage {to}',
   },
   'tower_event_rival_lost': {
     AppLanguage.en: 'Your rival gets away: no skip',
-    AppLanguage.fr: 'Votre rival vous échappe : pas de saut',
+    AppLanguage.fr: 'Votre rival vous échappe : pas de saut',
   },
   'tower_event_shortcut': {
     AppLanguage.en: 'Shortcut',
@@ -1569,9 +1569,170 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.fr:
         'L’escalier tient : après cette carte, vous montez à l’étage {to}.',
   },
+  'tower_parley': {
+    AppLanguage.en: 'Parley',
+    AppLanguage.fr: 'Pourparlers',
+  },
+  'tower_parley_title': {
+    AppLanguage.en: 'A guardian bars the stair',
+    AppLanguage.fr: 'Un gardien barre l’escalier',
+  },
+  'tower_parley_body': {
+    AppLanguage.en: 'It wants a word, not a blow. Talk, and it may let you by.',
+    AppLanguage.fr:
+        'Il veut un mot, pas un coup. Parlez, il vous laissera peut-être passer.',
+  },
+  'tower_parley_sworn': {
+    AppLanguage.en: 'You are sworn to its clan: it lets you pass, no roll.',
+    AppLanguage.fr:
+        'Vous avez prêté serment à son clan : il vous laisse passer, sans jet.',
+  },
+  'tower_parley_pass': {
+    AppLanguage.en: 'Pass',
+    AppLanguage.fr: 'Réussite',
+  },
+  'tower_parley_pass_text': {
+    AppLanguage.en: 'No fight: you go on to floor {n}',
+    AppLanguage.fr: 'Pas de combat : vous passez à l’étage {n}',
+  },
+  'tower_parley_fail': {
+    AppLanguage.en: 'Fail',
+    AppLanguage.fr: 'Échec',
+  },
+  'tower_parley_fail_text': {
+    AppLanguage.en: 'The fight goes ahead',
+    AppLanguage.fr: 'Le combat a lieu',
+  },
+  'tower_parley_forgo': {
+    AppLanguage.en:
+        'You give up this floor’s spoils, its card and the healing a win brings.',
+    AppLanguage.fr:
+        'Vous renoncez au butin de l’étage, à sa carte et aux soins qu’apporte une victoire.',
+  },
+  'tower_parley_talk': {
+    AppLanguage.en: 'Talk',
+    AppLanguage.fr: 'Parlementer',
+  },
+  'tower_parley_fight': {
+    AppLanguage.en: 'Fight',
+    AppLanguage.fr: 'Combattre',
+  },
+  'tower_merchant': {
+    AppLanguage.en: 'Merchant',
+    AppLanguage.fr: 'Marchand',
+  },
+  'tower_merchant_title': {
+    AppLanguage.en: 'The Stair-Chandler',
+    AppLanguage.fr: 'Le Marchand de lumière',
+  },
+  'tower_merchant_body': {
+    AppLanguage.en:
+        'Salves and potions by candlelight, paid in marks. Nothing here leaves the Tower.',
+    AppLanguage.fr:
+        'Onguents et potions à la lueur d’une chandelle, payés en marques. Rien d’ici ne quitte la Tour.',
+  },
+  'tower_merchant_wallet': {
+    AppLanguage.en: 'Marks to spend: {n}',
+    AppLanguage.fr: 'Marques à dépenser : {n}',
+  },
+  'tower_merchant_sworn': {
+    AppLanguage.en: 'Half price: you are sworn to its clan',
+    AppLanguage.fr: 'Moitié prix : vous avez prêté serment à son clan',
+  },
+  'tower_merchant_half_price': {
+    AppLanguage.en: 'Half price for those sworn to {clan}',
+    AppLanguage.fr: 'Moitié prix pour qui a prêté serment à {clan}',
+  },
+  'tower_merchant_salve': {
+    AppLanguage.en: 'Salve',
+    AppLanguage.fr: 'Onguent',
+  },
+  'tower_merchant_salve_text': {
+    AppLanguage.en: 'Heals {n}% of your health.',
+    AppLanguage.fr: 'Rend {n} % de votre santé.',
+  },
+  'tower_merchant_potions': {
+    AppLanguage.en: 'Potion bundle',
+    AppLanguage.fr: 'Lot de potions',
+  },
+  'tower_merchant_potions_text': {
+    AppLanguage.en: '{n} potions into the bag.',
+    AppLanguage.fr: '{n} potions dans le sac.',
+  },
+  'tower_merchant_price': {
+    AppLanguage.en: '{n} marks',
+    AppLanguage.fr: '{n} marques',
+  },
+  'tower_merchant_price_one': {
+    AppLanguage.en: '{n} mark',
+    AppLanguage.fr: '{n} marque',
+  },
+  'tower_merchant_buy': {
+    AppLanguage.en: 'Buy',
+    AppLanguage.fr: 'Acheter',
+  },
+  'tower_merchant_bought': {
+    AppLanguage.en: 'Bought',
+    AppLanguage.fr: 'Acheté',
+  },
+  'tower_merchant_leave': {
+    AppLanguage.en: 'Back to the stair',
+    AppLanguage.fr: 'Retour à l’escalier',
+  },
+  'tower_bargain': {
+    AppLanguage.en: 'Bargain',
+    AppLanguage.fr: 'Marché',
+  },
+  'tower_bargain_title': {
+    AppLanguage.en: 'The Tally-Clerk',
+    AppLanguage.fr: 'Le Greffier des comptes',
+  },
+  'tower_bargain_body': {
+    AppLanguage.en:
+        'He will enter a tenth of your health in his ledger, and a point where you strike, for the rest of the climb.',
+    AppLanguage.fr:
+        'Il inscrira dans son registre un dixième de votre santé, et un point là où vous frappez, pour le reste de l’ascension.',
+  },
+  'tower_bargain_gain': {
+    AppLanguage.en: 'Gain',
+    AppLanguage.fr: 'Gain',
+  },
+  'tower_bargain_gain_text': {
+    AppLanguage.en: '+1 {stat}, for the climb',
+    AppLanguage.fr: '+1 {stat}, pour l’ascension',
+  },
+  'tower_bargain_cost': {
+    AppLanguage.en: 'Cost',
+    AppLanguage.fr: 'Coût',
+  },
+  'tower_bargain_cost_text': {
+    AppLanguage.en: '{n} less maximum health, for the climb',
+    AppLanguage.fr: '{n} de santé maximale en moins, pour l’ascension',
+  },
+  'tower_bargain_accept': {
+    AppLanguage.en: 'Sign',
+    AppLanguage.fr: 'Signer',
+  },
+  'tower_bargain_refuse': {
+    AppLanguage.en: 'Refuse',
+    AppLanguage.fr: 'Refuser',
+  },
   'tower_event_shortcut_landed': {
     AppLanguage.en: 'The shortcut holds: you land on floor {to}',
-    AppLanguage.fr: 'Le raccourci tient : vous arrivez à l’étage {to}',
+    AppLanguage.fr: 'Le raccourci tient : vous arrivez à l’étage {to}',
+  },
+  'tower_event_parley_passed': {
+    AppLanguage.en: 'Words carry you past: floor {to}, and nothing gained.',
+    AppLanguage.fr:
+        'Les mots vous font passer\u00a0: étage {to}, sans rien gagner.',
+  },
+  'tower_event_parley_failed': {
+    AppLanguage.en: 'The words fail: the guardian takes up its guard.',
+    AppLanguage.fr: 'Les mots échouent\u00a0: le gardien reprend sa garde.',
+  },
+  'tower_event_parley_sworn': {
+    AppLanguage.en: 'It knows your oath: it steps aside, no roll.',
+    AppLanguage.fr: 'Il connaît votre serment\u00a0: il s’écarte, sans jet.',
   },
   'tower_event_rolled': {
     AppLanguage.en: 'You roll {roll}, total {total}.',
@@ -1673,7 +1834,7 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   },
   'tower_bought_with_marks': {
     AppLanguage.en: 'Bought with marks: {n}',
-    AppLanguage.fr: 'S\'achète en marques : {n}',
+    AppLanguage.fr: 'S’achète en marques : {n}',
   },
   'tower_pick_race': {
     AppLanguage.en: 'People',
@@ -1894,7 +2055,7 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.en:
         'He keeps the Great Hall, and asks only that you do not stop.',
     AppLanguage.fr:
-        'Il garde la Grande Salle et ne demande qu’une chose : que vous ne vous arrêtiez pas.',
+        'Il garde la Grande Salle et ne demande qu’une chose : que vous ne vous arrêtiez pas.',
   },
   'tower_boss_line_30': {
     AppLanguage.en:
@@ -1948,11 +2109,11 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   },
   'tower_spoils_title': {
     AppLanguage.en: 'Floor {n} spoils',
-    AppLanguage.fr: 'Butin de l\'étage {n}',
+    AppLanguage.fr: 'Butin de l’étage {n}',
   },
   'tower_spoils_worn': {
     AppLanguage.en: 'Worn at once if it beats what you wear.',
-    AppLanguage.fr: 'Porté aussitôt s\'il vaut mieux que votre tenue.',
+    AppLanguage.fr: 'Porté aussitôt s’il vaut mieux que votre tenue.',
   },
   'tower_spoils_bag': {
     AppLanguage.en: 'Into the bag, for the next fights.',
@@ -1960,7 +2121,7 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   },
   'tower_spoils_none': {
     AppLanguage.en: 'The floor gave nothing this time.',
-    AppLanguage.fr: 'L\'étage n\'a rien donné cette fois.',
+    AppLanguage.fr: 'L’étage n’a rien donné cette fois.',
   },
   'tower_take': {
     AppLanguage.en: 'Take',
@@ -2017,7 +2178,7 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   },
   'tower_oath_text': {
     AppLanguage.en: 'Swear to them: their standing and their die.',
-    AppLanguage.fr: 'Prêtez-leur serment : leur estime et leur dé.',
+    AppLanguage.fr: 'Prêtez-leur serment : leur estime et leur dé.',
   },
   // The Tower's dice bag (towerDiceOf): a die gained waits in it.
   'tower_dice_title': {

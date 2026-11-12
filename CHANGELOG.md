@@ -8,6 +8,46 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.954.0+990]
+
+- Tower: the parley card (UX, floor events part 3). **Invisible for players**: it shows only in a climb of events version 2, which no player starts yet. Before an ordinary floor's fight a guardian may offer to talk: a card with the guardian's plate, the d20 check with its target and odds, and Talk / Fight buttons; a sworn clan passes without a roll. A pass climbs a floor with its level and marks; a failed talk reads like the setback's line and leads to the fight. The merchant and bargain widgets are unreachable mocks until Core's PR 4 wires them. The plate is Art's first version (`towerEventPlate`, one line to swap).
+
+## [1.953.0+989]
+
+- Story scenes: a picture for each of the story's places (UX, with Art's bands). Seventy-three places, from Alster's high quay to Akagiri's forge, show a 240x100 band at the top of the scene's words, in the Journey's scene and the Story tab; a place with none (the Hollow Shore, left bare by choice) shows what it showed before. About 0.57 MB of PNG8 in the app.
+
+## [1.952.0+988]
+
+- Dice: every die the player sees is a real 3D solid, on every phone (UX, the user's feedback). The flat fallback is gone: a slow phone used to turn every later die flat after one slow roll (the Tower's d8s and d12 above all); now it gets the same solid cheaper (no glyph plaques on the facets, a shorter tumble), which costs less than the flat polygon did. The die in the middle of the loadout's ring, a flat squeeze-and-turn polygon for every shape, is a real solid tumbling like a fight die. A solid is drawn at any size, and the still tiles (the Tower's "Your dice", the loadout's rail, the inventory's d10) are resting solids with the die's own mark on the front facet. The d4 rests turned so two faces show and the d10 stands on its apex, its front kite the largest. The d10 is checked to be a true pentagonal trapezohedron; no die is drawn as a coin (a count of 4 or fewer reads as a d4).
+
+## [1.950.0+986]
+
+- Tower: floor events, part 3, the parley (docs/proposals/tower-peaceful-floors-and-stores.md). **Off for players**: it only plays in a climb of events version 2, which no player starts yet. In the engine, before an ordinary floor's fight, a guardian of one of the six clans may offer to talk. Talking is a d20 check, rolled on charisma, wisdom or dexterity depending on the floor, with the setback's target and the odds shown. If you are sworn to the guardian's clan, you pass with no roll. A pass takes you up a floor with its level and marks, but no spoils, card or heal. A failed talk leads to the floor's normal fight. A climb with the parley (and, later, the stores) plays at its own foe scale (1.15), so the live climb's numbers do not move. Each kind of floor event now has a background key for its picture.
+
+## [1.949.0+985]
+
+- **Narrative: French typography on six Tower strings.** The spoils title and lines,
+  the oath text, "bought with marks" and the floor-20 boss line used straight
+  apostrophes and a plain space before ":"; they now use ’ and the no-break space,
+  as the rest of the French does. French only; no key or English text changed.
+
+## [1.947.0+983]
+
+- Tower: the hero's head is the marker on the rail, and it steps up after a won fight (UX). The moment the cards open, the head walks one notch up in about a second; after a won shortcut it climbs the whole stair along the gold arrow; a setback's fall walks it down. A tap puts it on its notch at once, reduced motion skips the walk, and a defeat never shows it (the run is over). The floor number rides in a small gold tag above the head, since the head covers the notch's own number.
+
+## [1.946.0+982]
+
+- Effects: eighteen more skill effects in the Apollo palette (UX, with Art's strips): slash, heavy slash, pierce, claw, whirl, impact, arrow, volley, fireball, holy fire, splash, poison, wind, drain, shadow, radiance, shout and stone shield. Quake and smoke keep today's until Art's redraw is shown. The arrow, the volley and the fireball still fly from the caster (Art's strip holds the flight and the burst) and the strips that end with the object in view fade out. The pale ground ring a strong blow added under them is gone from the Apollo effects, which carry their own impact. Three French event strings take a no-break space before the colon.
+
+## [1.945.0+981]
+
+- Maps: going up from a town to the world, the town's plan shrinks a little and fades over the ball instead of cutting. The full map page, opened from the Journey, carries the level strip (World · Town · District · Room); a tap on a rung returns to the Journey on that level. Fixed: after going up to the world from a district, "Town" could land on the district.
+- Maps: close up, the sphere's ground is shown in hard squares instead of a blur (the user's choice of 12 November). On the whole ball it stays smooth.
+
+## [1.944.0+980]
+
+- Tower: the floor events are on. A new climb meets three of them between ordinary floors. A **setback** is a d20 check (strength, dexterity or wisdom, odds shown): pass it and you gain a potion, fail it and you slip back 1 to 3 floors, never past a warden or a boss, once a climb. A **rival** is a fight that, won within 3 rounds, lets you skip the next floor. A **shortcut** offers a tougher version of the floor's fight: win it and you skip 1 to 3 floors, lose it and the climb ends. A floor you meet again after a slip pays nothing, and a slip never takes away a level or a mark. The foes are tuned so a climb with events is about as hard as one without. A climb started before this version keeps playing without them.
+
 ## [1.943.0+979]
 
 - Towns: the sea lies where the sphere puts it. Saltmouth, Greyhithe and the White Anchorage have their sea to the north now. Their whole plan is turned a half turn: water, walls, streets, bridges, districts, buildings and the town's services. Their streets, buildings and names are the same, only turned. Every other town keeps its sea to the south, as the sphere has it. The plans are turned where they are stored, so no hand edit is lost. The plan generator no longer reproduces the stored plans and is not to be run for now (`docs/city-plans-tools.md`).

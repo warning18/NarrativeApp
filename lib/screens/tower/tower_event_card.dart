@@ -11,12 +11,13 @@ import '../../l10n/app_strings.dart';
 import '../../theme/icon_sizes.dart';
 import '../../theme/stitched_ink.dart';
 import '../../widgets/ink_panel.dart';
+import 'tower_peaceful_cards.dart' show TowerParleyCard;
 
 /// The card of [view]'s event, or nothing when its floor holds none (a floor
 /// met again, or one shown only for its last result).
 class TowerEventCard extends ConsumerWidget {
   const TowerEventCard(this.view,
-      {super.key, this.bagFull = false, this.onShortcut});
+      {super.key, this.bagFull = false, this.onShortcut, this.onParley});
 
   final TowerEventView view;
 
@@ -27,6 +28,9 @@ class TowerEventCard extends ConsumerWidget {
   /// shows its two buttons while the choice is open and this is given.
   final void Function(bool take)? onShortcut;
 
+  /// A parley's choice: true talks, false fights.
+  final void Function(bool talk)? onParley;
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     switch (view.kind) {
@@ -36,14 +40,29 @@ class TowerEventCard extends ConsumerWidget {
         return _RivalCard(view);
       case TowerEventKind.shortcut:
         return _ShortcutCard(view, onShortcut);
+      // The parley: the guardian's card until the choice is made (a failed
+      // talk reads in the result line, a fight chosen needs no card).
+      case TowerEventKind.parley:
+        if (view.accepted != null) return const SizedBox.shrink();
+        return TowerParleyCard(
+          ability: view.ability ?? 'charisma',
+          dc: view.dc ?? 10,
+          modifier: view.modifier ?? 0,
+          chance: view.chance ?? 0,
+          landsOn: view.landsOn ?? view.floor + 1,
+          clanId: view.clanId,
+          oathPass: view.oathPass ?? false,
+          onTalk: onParley == null ? null : () => onParley!(true),
+          onFight: onParley == null ? null : () => onParley!(false),
+        );
       case null:
         return const SizedBox.shrink();
     }
   }
 }
 
-class _Tag extends StatelessWidget {
-  const _Tag(this.icon, this.text, this.color);
+class TowerEventTag extends StatelessWidget {
+  const TowerEventTag(this.icon, this.text, this.color, {super.key});
 
   final IconData icon;
   final String text;
@@ -62,8 +81,9 @@ class _Tag extends StatelessWidget {
   }
 }
 
-class _Outcome extends StatelessWidget {
-  const _Outcome(this.icon, this.color, this.label, this.text);
+class TowerEventOutcome extends StatelessWidget {
+  const TowerEventOutcome(this.icon, this.color, this.label, this.text,
+      {super.key});
 
   final IconData icon;
   final Color color;
@@ -116,7 +136,8 @@ class _TestCard extends ConsumerWidget {
       key: const Key('tower_event_test'),
       lit: true,
       child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-        _Tag(Icons.trending_down, tr(ref, 'tower_event_setback'), ink.blood),
+        TowerEventTag(
+            Icons.trending_down, tr(ref, 'tower_event_setback'), ink.blood),
         const SizedBox(height: 6),
         Text(sub('tower_event_test_title', {'ability': ability}),
             style: theme.textTheme.titleMedium
@@ -140,13 +161,13 @@ class _TestCard extends ConsumerWidget {
         ]),
         Text(sub('tower_event_chance', {'mod': signed, 'dc': dc}),
             style: theme.textTheme.bodySmall),
-        _Outcome(
+        TowerEventOutcome(
             Icons.check_circle_outline,
             ink.heal,
             tr(ref, 'tower_event_pass'),
             tr(ref, 'tower_event_pass_text_${view.ability}') +
                 (bagFull ? ' ${tr(ref, 'tower_event_pass_full')}' : '')),
-        _Outcome(
+        TowerEventOutcome(
             Icons.south,
             ink.blood,
             tr(ref, 'tower_event_fail'),
@@ -203,7 +224,7 @@ class _ShortcutCard extends ConsumerWidget {
       key: const Key('tower_event_shortcut'),
       lit: true,
       child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-        _Tag(Icons.stairs, tr(ref, 'tower_event_shortcut'), ink.gold),
+        TowerEventTag(Icons.stairs, tr(ref, 'tower_event_shortcut'), ink.gold),
         const SizedBox(height: 6),
         Text(tr(ref, 'tower_event_shortcut_title'),
             style: theme.textTheme.titleMedium
@@ -219,14 +240,17 @@ class _ShortcutCard extends ConsumerWidget {
                     : 'tower_event_shortcut_pack'),
             style: theme.textTheme.bodyMedium
                 ?.copyWith(color: theme.colorScheme.onSurfaceVariant)),
-        _Outcome(
+        TowerEventOutcome(
             Icons.north,
             ink.gold,
             tr(ref, 'tower_event_shortcut_win'),
             sub(skip == 1
                 ? 'tower_event_shortcut_win_one'
                 : 'tower_event_shortcut_win_many')),
-        _Outcome(Icons.south, ink.blood, tr(ref, 'tower_event_shortcut_lose'),
+        TowerEventOutcome(
+            Icons.south,
+            ink.blood,
+            tr(ref, 'tower_event_shortcut_lose'),
             tr(ref, 'tower_event_shortcut_lose_text')),
         if (onChoose != null) ...[
           const SizedBox(height: 12),
@@ -299,7 +323,7 @@ class _RivalCard extends ConsumerWidget {
       key: const Key('tower_event_rival'),
       lit: true,
       child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-        _Tag(Icons.bolt, tr(ref, 'tower_event_rival'), ink.gold),
+        TowerEventTag(Icons.bolt, tr(ref, 'tower_event_rival'), ink.gold),
         const SizedBox(height: 6),
         Text(tr(ref, 'tower_event_rival_title'),
             style: theme.textTheme.titleMedium
@@ -307,13 +331,13 @@ class _RivalCard extends ConsumerWidget {
         Text(sub('tower_event_rival_body', {'n': view.floor + 1}),
             style: theme.textTheme.bodyMedium
                 ?.copyWith(color: theme.colorScheme.onSurfaceVariant)),
-        _Outcome(
+        TowerEventOutcome(
             Icons.timer_outlined,
             ink.gold,
             sub('tower_event_rival_win', {'n': view.rounds ?? 3}),
             sub('tower_event_rival_win_text',
                 {'n': view.landsOn ?? view.floor + 2})),
-        _Outcome(
+        TowerEventOutcome(
             Icons.arrow_forward,
             theme.colorScheme.onSurfaceVariant,
             tr(ref, 'tower_event_rival_slow'),
@@ -352,6 +376,11 @@ class TowerEventResultLine extends ConsumerWidget {
       (TowerEventKind.rival, false) => sub('tower_event_rival_lost'),
       // A lost shortcut ends the run, so only a won one shows here.
       (TowerEventKind.shortcut, _) => sub('tower_event_shortcut_landed'),
+      (TowerEventKind.parley, false) => sub('tower_event_parley_failed'),
+      // No roll: the guardian knew the oath.
+      (TowerEventKind.parley, true) => sub(result.roll == null
+          ? 'tower_event_parley_sworn'
+          : 'tower_event_parley_passed'),
     };
     final rolled = result.roll == null
         ? null

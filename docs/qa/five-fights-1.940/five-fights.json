@@ -1,0 +1,650 @@
+[
+ {
+  "fight": "3200",
+  "run": 0,
+  "profession": "mage",
+  "foes": [
+   "inquisition_soldier",
+   "inquisition_auxiliary"
+  ],
+  "outcome": "won",
+  "rounds": 7
+ },
+ {
+  "fight": "3200",
+  "run": 1,
+  "profession": "mage",
+  "foes": [
+   "inquisition_soldier",
+   "inquisition_auxiliary"
+  ],
+  "outcome": "won",
+  "rounds": 9
+ },
+ {
+  "fight": "3200",
+  "run": 2,
+  "profession": "mage",
+  "foes": [
+   "inquisition_soldier",
+   "inquisition_auxiliary"
+  ],
+  "outcome": "lost",
+  "rounds": 2
+ },
+ {
+  "fight": "3200",
+  "run": 3,
+  "profession": "mage",
+  "foes": [
+   "inquisition_soldier",
+   "inquisition_auxiliary"
+  ],
+  "outcome": "won",
+  "rounds": 5
+ },
+ {
+  "fight": "3200",
+  "run": 4,
+  "profession": "mage",
+  "foes": [
+   "inquisition_soldier",
+   "inquisition_auxiliary"
+  ],
+  "outcome": "lost",
+  "rounds": 6
+ },
+ {
+  "fight": "3200",
+  "run": 5,
+  "profession": "mage",
+  "foes": [
+   "inquisition_soldier",
+   "inquisition_auxiliary"
+  ],
+  "outcome": "lost",
+  "rounds": 6
+ },
+ {
+  "fight": "3200",
+  "run": 6,
+  "profession": "mage",
+  "foes": [
+   "inquisition_soldier",
+   "inquisition_auxiliary"
+  ],
+  "outcome": "won",
+  "rounds": 7
+ },
+ {
+  "fight": "3200",
+  "run": 7,
+  "profession": "mage",
+  "foes": [
+   "inquisition_soldier",
+   "inquisition_auxiliary"
+  ],
+  "outcome": "lost",
+  "rounds": 2
+ },
+ {
+  "fight": "3200",
+  "run": 8,
+  "profession": "mage",
+  "foes": [
+   "inquisition_soldier",
+   "inquisition_auxiliary"
+  ],
+  "outcome": "won",
+  "rounds": 7
+ },
+ {
+  "fight": "3200",
+  "run": 9,
+  "profession": "mage",
+  "foes": [
+   "inquisition_soldier",
+   "inquisition_auxiliary"
+  ],
+  "outcome": "won",
+  "rounds": 7
+ },
+ {
+  "fight": "3200",
+  "run": 10,
+  "profession": "mage",
+  "foes": [
+   "inquisition_soldier",
+   "inquisition_auxiliary"
+  ],
+  "outcome": "won",
+  "rounds": 4
+ },
+ {
+  "fight": "3200",
+  "run": 11,
+  "profession": "mage",
+  "foes": [
+   "inquisition_soldier",
+   "inquisition_auxiliary"
+  ],
+  "outcome": "won",
+  "rounds": 10
+ },
+ {
+  "fight": "5100",
+  "run": 0,
+  "profession": "warrior",
+  "foes": [
+   "drowned_pilgrim",
+   "drowned_pilgrim"
+  ],
+  "outcome": "won",
+  "rounds": 4
+ },
+ {
+  "fight": "5100",
+  "run": 1,
+  "profession": "warrior",
+  "foes": [
+   "drowned_pilgrim",
+   "drowned_pilgrim"
+  ],
+  "outcome": "won",
+  "rounds": 4
+ },
+ {
+  "fight": "5100",
+  "run": 2,
+  "profession": "warrior",
+  "foes": [
+   "drowned_pilgrim",
+   "drowned_pilgrim"
+  ],
+  "outcome": "won",
+  "rounds": 4
+ },
+ {
+  "fight": "5100",
+  "run": 3,
+  "profession": "warrior",
+  "foes": [
+   "drowned_pilgrim",
+   "drowned_pilgrim"
+  ],
+  "outcome": "won",
+  "rounds": 3
+ },
+ {
+  "fight": "5100",
+  "run": 4,
+  "profession": "warrior",
+  "foes": [
+   "drowned_pilgrim",
+   "drowned_pilgrim"
+  ],
+  "outcome": "won",
+  "rounds": 7
+ },
+ {
+  "fight": "5100",
+  "run": 5,
+  "profession": "warrior",
+  "foes": [
+   "drowned_pilgrim",
+   "drowned_pilgrim"
+  ],
+  "outcome": "won",
+  "rounds": 4
+ },
+ {
+  "fight": "5100",
+  "run": 6,
+  "profession": "warrior",
+  "foes": [
+   "drowned_pilgrim",
+   "drowned_pilgrim"
+  ],
+  "outcome": "won",
+  "rounds": 8
+ },
+ {
+  "fight": "5100",
+  "run": 7,
+  "profession": "warrior",
+  "foes": [
+   "drowned_pilgrim",
+   "drowned_pilgrim"
+  ],
+  "outcome": "won",
+  "rounds": 5
+ },
+ {
+  "fight": "5100",
+  "run": 8,
+  "profession": "warrior",
+  "foes": [
+   "drowned_pilgrim",
+   "drowned_pilgrim"
+  ],
+  "outcome": "won",
+  "rounds": 6
+ },
+ {
+  "fight": "5100",
+  "run": 9,
+  "profession": "warrior",
+  "foes": [
+   "drowned_pilgrim",
+   "drowned_pilgrim"
+  ],
+  "outcome": "won",
+  "rounds": 5
+ },
+ {
+  "fight": "5100",
+  "run": 10,
+  "profession": "warrior",
+  "foes": [
+   "drowned_pilgrim",
+   "drowned_pilgrim"
+  ],
+  "outcome": "won",
+  "rounds": 8
+ },
+ {
+  "fight": "5100",
+  "run": 11,
+  "profession": "warrior",
+  "foes": [
+   "drowned_pilgrim",
+   "drowned_pilgrim"
+  ],
+  "outcome": "won",
+  "rounds": 8
+ },
+ {
+  "fight": "6200",
+  "run": 0,
+  "profession": "rogue",
+  "foes": [
+   "void_hound",
+   "void_hound"
+  ],
+  "outcome": "lost",
+  "rounds": 7
+ },
+ {
+  "fight": "6200",
+  "run": 1,
+  "profession": "rogue",
+  "foes": [
+   "void_hound",
+   "void_hound"
+  ],
+  "outcome": "lost",
+  "rounds": 8
+ },
+ {
+  "fight": "6200",
+  "run": 2,
+  "profession": "rogue",
+  "foes": [
+   "void_hound",
+   "void_hound"
+  ],
+  "outcome": "lost",
+  "rounds": 9
+ },
+ {
+  "fight": "6200",
+  "run": 3,
+  "profession": "rogue",
+  "foes": [
+   "void_hound",
+   "void_hound"
+  ],
+  "outcome": "won",
+  "rounds": 9
+ },
+ {
+  "fight": "6200",
+  "run": 4,
+  "profession": "rogue",
+  "foes": [
+   "void_hound",
+   "void_hound"
+  ],
+  "outcome": "lost",
+  "rounds": 6
+ },
+ {
+  "fight": "6200",
+  "run": 5,
+  "profession": "rogue",
+  "foes": [
+   "void_hound",
+   "void_hound"
+  ],
+  "outcome": "won",
+  "rounds": 10
+ },
+ {
+  "fight": "6200",
+  "run": 6,
+  "profession": "rogue",
+  "foes": [
+   "void_hound",
+   "void_hound"
+  ],
+  "outcome": "lost",
+  "rounds": 12
+ },
+ {
+  "fight": "6200",
+  "run": 7,
+  "profession": "rogue",
+  "foes": [
+   "void_hound",
+   "void_hound"
+  ],
+  "outcome": "won",
+  "rounds": 10
+ },
+ {
+  "fight": "6200",
+  "run": 8,
+  "profession": "rogue",
+  "foes": [
+   "void_hound",
+   "void_hound"
+  ],
+  "outcome": "lost",
+  "rounds": 11
+ },
+ {
+  "fight": "6200",
+  "run": 9,
+  "profession": "rogue",
+  "foes": [
+   "void_hound",
+   "void_hound"
+  ],
+  "outcome": "won",
+  "rounds": 9
+ },
+ {
+  "fight": "6200",
+  "run": 10,
+  "profession": "rogue",
+  "foes": [
+   "void_hound",
+   "void_hound"
+  ],
+  "outcome": "won",
+  "rounds": 10
+ },
+ {
+  "fight": "6200",
+  "run": 11,
+  "profession": "rogue",
+  "foes": [
+   "void_hound",
+   "void_hound"
+  ],
+  "outcome": "lost",
+  "rounds": 12
+ },
+ {
+  "fight": "7002",
+  "run": 0,
+  "profession": "warrior",
+  "foes": [
+   "hollow_reflection",
+   "hollow_reflection"
+  ],
+  "outcome": "won",
+  "rounds": 3
+ },
+ {
+  "fight": "7002",
+  "run": 1,
+  "profession": "warrior",
+  "foes": [
+   "hollow_reflection",
+   "hollow_reflection"
+  ],
+  "outcome": "won",
+  "rounds": 2
+ },
+ {
+  "fight": "7002",
+  "run": 2,
+  "profession": "warrior",
+  "foes": [
+   "hollow_reflection",
+   "hollow_reflection"
+  ],
+  "outcome": "won",
+  "rounds": 2
+ },
+ {
+  "fight": "7002",
+  "run": 3,
+  "profession": "warrior",
+  "foes": [
+   "hollow_reflection",
+   "hollow_reflection"
+  ],
+  "outcome": "won",
+  "rounds": 2
+ },
+ {
+  "fight": "7002",
+  "run": 4,
+  "profession": "warrior",
+  "foes": [
+   "hollow_reflection",
+   "hollow_reflection"
+  ],
+  "outcome": "won",
+  "rounds": 3
+ },
+ {
+  "fight": "7002",
+  "run": 5,
+  "profession": "warrior",
+  "foes": [
+   "hollow_reflection",
+   "hollow_reflection"
+  ],
+  "outcome": "won",
+  "rounds": 4
+ },
+ {
+  "fight": "7002",
+  "run": 6,
+  "profession": "warrior",
+  "foes": [
+   "hollow_reflection",
+   "hollow_reflection"
+  ],
+  "outcome": "won",
+  "rounds": 4
+ },
+ {
+  "fight": "7002",
+  "run": 7,
+  "profession": "warrior",
+  "foes": [
+   "hollow_reflection",
+   "hollow_reflection"
+  ],
+  "outcome": "won",
+  "rounds": 2
+ },
+ {
+  "fight": "7002",
+  "run": 8,
+  "profession": "warrior",
+  "foes": [
+   "hollow_reflection",
+   "hollow_reflection"
+  ],
+  "outcome": "won",
+  "rounds": 3
+ },
+ {
+  "fight": "7002",
+  "run": 9,
+  "profession": "warrior",
+  "foes": [
+   "hollow_reflection",
+   "hollow_reflection"
+  ],
+  "outcome": "won",
+  "rounds": 6
+ },
+ {
+  "fight": "7002",
+  "run": 10,
+  "profession": "warrior",
+  "foes": [
+   "hollow_reflection",
+   "hollow_reflection"
+  ],
+  "outcome": "won",
+  "rounds": 3
+ },
+ {
+  "fight": "7002",
+  "run": 11,
+  "profession": "warrior",
+  "foes": [
+   "hollow_reflection",
+   "hollow_reflection"
+  ],
+  "outcome": "won",
+  "rounds": 4
+ },
+ {
+  "fight": "7810",
+  "run": 0,
+  "profession": "warrior",
+  "foes": [
+   "tear_herald"
+  ],
+  "outcome": "won",
+  "rounds": 12
+ },
+ {
+  "fight": "7810",
+  "run": 1,
+  "profession": "warrior",
+  "foes": [
+   "tear_herald"
+  ],
+  "outcome": "won",
+  "rounds": 12
+ },
+ {
+  "fight": "7810",
+  "run": 2,
+  "profession": "warrior",
+  "foes": [
+   "tear_herald"
+  ],
+  "outcome": "won",
+  "rounds": 12
+ },
+ {
+  "fight": "7810",
+  "run": 3,
+  "profession": "warrior",
+  "foes": [
+   "tear_herald"
+  ],
+  "outcome": "won",
+  "rounds": 12
+ },
+ {
+  "fight": "7810",
+  "run": 4,
+  "profession": "warrior",
+  "foes": [
+   "tear_herald"
+  ],
+  "outcome": "won",
+  "rounds": 10
+ },
+ {
+  "fight": "7810",
+  "run": 5,
+  "profession": "warrior",
+  "foes": [
+   "tear_herald"
+  ],
+  "outcome": "won",
+  "rounds": 14
+ },
+ {
+  "fight": "7810",
+  "run": 6,
+  "profession": "warrior",
+  "foes": [
+   "tear_herald"
+  ],
+  "outcome": "lost",
+  "rounds": 11
+ },
+ {
+  "fight": "7810",
+  "run": 7,
+  "profession": "warrior",
+  "foes": [
+   "tear_herald"
+  ],
+  "outcome": "won",
+  "rounds": 13
+ },
+ {
+  "fight": "7810",
+  "run": 8,
+  "profession": "warrior",
+  "foes": [
+   "tear_herald"
+  ],
+  "outcome": "won",
+  "rounds": 11
+ },
+ {
+  "fight": "7810",
+  "run": 9,
+  "profession": "warrior",
+  "foes": [
+   "tear_herald"
+  ],
+  "outcome": "lost",
+  "rounds": 13
+ },
+ {
+  "fight": "7810",
+  "run": 10,
+  "profession": "warrior",
+  "foes": [
+   "tear_herald"
+  ],
+  "outcome": "won",
+  "rounds": 10
+ },
+ {
+  "fight": "7810",
+  "run": 11,
+  "profession": "warrior",
+  "foes": [
+   "tear_herald"
+  ],
+  "outcome": "won",
+  "rounds": 11
+ }
+]

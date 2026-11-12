@@ -10,6 +10,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:narrative_data_app/main.dart';
 import 'package:narrative_data_app/providers/story_providers.dart';
+import 'package:narrative_data_app/widgets/story_scene_band.dart';
 
 import 'support/pump.dart';
 
@@ -71,7 +72,16 @@ void main() {
             of: find.byKey(const ValueKey('journey_scene_text')),
             matching: find.byType(RichText))
         .first);
-    expect(first.top - card.top, lessThan(60),
+    // A place's picture (v1.953) stands above the words: they start at its foot.
+    final band = find.descendant(
+        of: find.byKey(const ValueKey('journey_scene_text')),
+        matching: find.byType(StorySceneBand));
+    final bandRect = band.evaluate().isEmpty ? null : tester.getRect(band);
+    if (bandRect != null) {
+      expect(bandRect.top - card.top, lessThan(60),
+          reason: 'the picture is at the top, not centred');
+    }
+    expect(first.top - (bandRect?.bottom ?? card.top), lessThan(60),
         reason: 'the first line is at the top, not centred in empty space');
     await tester.pumpWidget(const SizedBox());
     await tester.pump(const Duration(seconds: 10));
