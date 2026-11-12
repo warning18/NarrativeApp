@@ -39,6 +39,10 @@ class TowerEventCard extends ConsumerWidget {
       // The parley's card is UX-2's to draw (floor events PR 3 adds the
       // kind; events stay off for players until it has one).
       case TowerEventKind.parley:
+      // The merchant's and the bargain's cards are UX-2's to draw too
+      // (floor events PR 4).
+      case TowerEventKind.merchant:
+      case TowerEventKind.bargain:
       case null:
         return const SizedBox.shrink();
     }
@@ -344,7 +348,8 @@ class TowerEventResultLine extends ConsumerWidget {
     String sub(String key) => tr(ref, key)
         .replaceAll('{from}', '${result.from}')
         .replaceAll('{to}', '${result.to}')
-        .replaceAll('{skipped}', '${result.from + 1}');
+        .replaceAll('{skipped}', '${result.from + 1}')
+        .replaceAll('{paid}', '${result.paid}');
     final headline = switch ((result.kind, result.passed)) {
       (TowerEventKind.test, false) => sub(result.to == result.from
           ? 'tower_event_fell_same'
@@ -360,6 +365,9 @@ class TowerEventResultLine extends ConsumerWidget {
       (TowerEventKind.parley, true) => sub(result.roll == null
           ? 'tower_event_parley_sworn'
           : 'tower_event_parley_passed'),
+      (TowerEventKind.merchant, _) => sub('tower_event_merchant_paid'),
+      (TowerEventKind.bargain, true) => sub('tower_event_bargain_taken'),
+      (TowerEventKind.bargain, false) => sub('tower_event_bargain_refused'),
     };
     final rolled = result.roll == null
         ? null

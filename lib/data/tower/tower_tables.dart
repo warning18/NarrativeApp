@@ -487,8 +487,10 @@ const double towerShortcutShare = .15;
 /// floor (towerRandom), so no draw of the floor events moves. Only on an
 /// ordinary floor from [towerPeacefulFirstFloor] to the one below the top
 /// that holds no floor event. Its ranges, in this order: a parley under
-/// [towerParleyShare] (0 to .15); PR 4's merchant and bargain take the
-/// next ranges (.15 to .30, .30 to .40); nothing above.
+/// [towerParleyShare] (0 to .15), a merchant in the next
+/// [towerMerchantShare] (.15 to .20), a bargain in the next
+/// [towerBargainShare] (.20 to .30; floor events PR 4); nothing above.
+/// Only in a run playing [towerPeacefulEvents] or more.
 const int towerPeacefulDraw = 3000;
 
 /// The first floor the draw above may hold one (floor 1 deals the first
@@ -506,6 +508,42 @@ const double towerParleyShare = .15;
 /// The ability each parley's talk reads, by floor in turn (floor 1
 /// charisma, 2 wisdom, 3 dexterity, 4 charisma...).
 const List<String> towerParleyAbilities = ['charisma', 'wisdom', 'dexterity'];
+
+/// The share of those floors whose landing holds a merchant (floor events
+/// PR 4): on the landing after the floor's win and its card, before the
+/// next fight, a merchant of a clan (drawn from [towerClans]) sells its
+/// stock ([towerSalvePrice], [towerBundlePrice]) for the run's own marks
+/// (TowerRun.marksSpent comes off what the run banks), at half price
+/// (rounded up) to a hero sworn to its clan. It takes no floor of its own.
+const double towerMerchantShare = .05;
+
+/// The share of those floors whose landing holds a bargain (floor events
+/// PR 4): [towerBargainHealthShare] of the max health, for the rest of the
+/// run, for [towerBargainPoints] to the calling's damage stat. Taken or
+/// refused, once.
+const double towerBargainShare = .10;
+
+/// The floors whose landing always holds a merchant (floor events PR 4: a
+/// shop room after each boss below the top). Its clan is drawn on the
+/// floor's own index of the peaceful draw ([towerPeacefulDraw] + floor),
+/// which a gate floor never otherwise reads.
+const Set<int> towerShopFloors = {10, 20};
+
+/// The merchant's salve: its price in marks and the share of the max
+/// health it heals.
+const int towerSalvePrice = 3;
+const double towerSalveShare = .40;
+
+/// The merchant's potion bundle: its price in marks and the potions it puts
+/// in the bag (up to [towerBagCap]).
+const int towerBundlePrice = 4;
+const int towerBundlePotions = 2;
+
+/// The bargain's price, a share of the max health as it stands when it is
+/// taken (at least 1), cut for the rest of the run, and the points it gives
+/// the calling's damage stat.
+const double towerBargainHealthShare = .10;
+const int towerBargainPoints = 1;
 
 /// The rarity steps, lowest first, and each band's odds (floors 1-9,
 /// 11-19, 21-29); a boss or warden floor draws one step up.
