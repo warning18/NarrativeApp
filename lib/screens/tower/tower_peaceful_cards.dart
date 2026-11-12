@@ -26,8 +26,7 @@ String _sub(WidgetRef ref, String key, Map<String, Object> values) {
 
 /// The pictures of the Tower's people (the user's PixelLab characters, 64x64,
 /// standing, turned a quarter toward the words at their left, in
-/// assets/visuals/tower/npc/), drawn at their own size (one picture pixel is
-/// one scene pixel, as the hero's): the Stair-Chandler, the
+/// assets/visuals/tower/npc/): the Stair-Chandler, the
 /// Tally-Clerk and the guardian of a Dominion or Vigil parley. A missing file
 /// draws nothing.
 const Set<String> towerNpcNames = {'chandler', 'clerk', 'guardian'};
@@ -35,23 +34,50 @@ const Set<String> towerNpcNames = {'chandler', 'clerk', 'guardian'};
 /// The clans whose guardian wears the officer's coat of the picture.
 const Set<String> towerOfficerClans = {'dominion', 'vigil'};
 
+/// How many screen pixels one picture pixel of a figure takes, and the size of
+/// the parley's foe figure beside them (both the same height at 1 and 54).
+int towerNpcScale = 1;
+double towerParleyFoeSize = 54;
+
+/// A figure trimmed to the part of its 64x64 canvas that holds it (the same
+/// box for all three: 29 by 51, the feet on the bottom row).
 class TowerNpcFigure extends StatelessWidget {
-  const TowerNpcFigure(this.name, {super.key, this.size = 64});
+  const TowerNpcFigure(this.name, {super.key});
 
   final String name;
-  final double size;
+
+  static const _x0 = 18, _y0 = 6, _w = 29, _h = 51;
 
   @override
-  Widget build(BuildContext context) => Image.asset(
-        'assets/visuals/tower/npc/$name.png',
-        key: Key('tower_npc_$name'),
-        width: size,
-        height: size,
-        fit: BoxFit.contain,
-        filterQuality: FilterQuality.none,
-        isAntiAlias: false,
-        errorBuilder: (_, __, ___) => const SizedBox.shrink(),
-      );
+  Widget build(BuildContext context) {
+    final k = towerNpcScale;
+    return SizedBox(
+      key: Key('tower_npc_$name'),
+      width: _w * k.toDouble(),
+      height: _h * k.toDouble(),
+      child: ClipRect(
+        child: OverflowBox(
+          alignment: Alignment.topLeft,
+          minWidth: 0,
+          minHeight: 0,
+          maxWidth: 64.0 * k,
+          maxHeight: 64.0 * k,
+          child: Transform.translate(
+            offset: Offset(-_x0 * k.toDouble(), -_y0 * k.toDouble()),
+            child: Image.asset(
+              'assets/visuals/tower/npc/$name.png',
+              width: 64.0 * k,
+              height: 64.0 * k,
+              fit: BoxFit.fill,
+              filterQuality: FilterQuality.none,
+              isAntiAlias: false,
+              errorBuilder: (_, __, ___) => const SizedBox.shrink(),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
 }
 
 /// A card's head (its tag, title and words) with the figure standing at its
@@ -164,7 +190,7 @@ class TowerParleyCard extends ConsumerWidget {
               ? const TowerNpcFigure('guardian')
               : foeId == null
                   ? null
-                  : TowerFoeFigure(foeId!, size: 72),
+                  : TowerFoeFigure(foeId!, size: towerParleyFoeSize),
           children: [
             TowerEventTag(
                 Icons.forum_outlined, tr(ref, 'tower_parley'), ink.gold),
