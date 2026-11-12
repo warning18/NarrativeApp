@@ -479,8 +479,10 @@ class _JourneyWorldMapState extends ConsumerState<JourneyWorldMap>
     _framedOn = on;
     final centre = _globeCentre(box);
     final fill = _fillZoom(box);
-    if (widget.level == JourneyMapLevel.land && here != null) {
-      // Opened where the streets were left, the ball glides out to the
+    if (here != null &&
+        focus == null &&
+        (widget.level == JourneyMapLevel.land || widget.enterZoom != null)) {
+      // Opened where the streets were left, the ball pulls back out to the
       // zoom that fills the box.
       final from = (widget.enterZoom ?? fill).clamp(fill, _maxZoom);
       _globe = geo.globeAt(geo.of(here), from, centre);
@@ -510,6 +512,7 @@ class _JourneyWorldMapState extends ConsumerState<JourneyWorldMap>
 
   /// A pinch or drag on the sphere: it turns, or comes closer.
   void _onGlobeScaleStart(ScaleStartDetails d) {
+    if (_diving) return;
     _takeCamera();
     _glide.stop();
     _pinchStartZoom = _globe?.zoom ?? 1;
@@ -539,7 +542,7 @@ class _JourneyWorldMapState extends ConsumerState<JourneyWorldMap>
   /// (wherever it was turned), or one rung out.
   void _globeZoom(double factor) {
     final g = _globe;
-    if (g == null) return;
+    if (g == null || _diving) return;
     final fill = _fillZoom(_box);
     final zoom = _settledZoom;
     if (factor < 1) {
@@ -578,7 +581,7 @@ class _JourneyWorldMapState extends ConsumerState<JourneyWorldMap>
     }
     if (nearest == null) return;
     if (nearest.id == widget.here?.id && widget.onZoomIn != null) {
-      widget.onZoomIn!();
+      _dive();
       return;
     }
     setState(() => _selectedId = nearest!.id);
@@ -589,8 +592,39 @@ class _JourneyWorldMapState extends ConsumerState<JourneyWorldMap>
   bool _intoPlace() {
     if (widget.onZoomIn == null) return false;
     if (_settledZoom < _maxZoom - 0.01) return false;
-    widget.onZoomIn!();
+    _dive();
     return true;
+  }
+
+  /// The dive: the ball closes in on the party's place, past its closest
+  /// zoom, and the streets are handed over to as it gets there (at once
+  /// with reduced motion).
+  bool _diving = false;
+  static const double _diveZoom = JourneyWorldMapZoom.max * 2.2;
+
+  void _dive() {
+    final enter = widget.onZoomIn;
+    if (enter == null || _diving) return;
+    final here = widget.here;
+    final g = _globe;
+    if (here == null || g == null || MediaQuery.of(context).disableAnimations) {
+      enter();
+      return;
+    }
+    _diving = true;
+    _animateGlobe(
+        zoom: _diveZoom, turnTo: _geo.globeAt(_geo.of(here), 1, g.centre));
+    void done(AnimationStatus status) {
+      if (status != AnimationStatus.completed &&
+          status != AnimationStatus.dismissed) {
+        return;
+      }
+      _glide.removeStatusListener(done);
+      _diving = false;
+      if (mounted) enter();
+    }
+
+    _glide.addStatusListener(done);
   }
 
   /// The side of a map button: a thumb's width.

@@ -288,6 +288,7 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   },
   'journey_tab_town': {AppLanguage.en: 'Town', AppLanguage.fr: 'Ville'},
   'journey_tab_world': {AppLanguage.en: 'World', AppLanguage.fr: 'Monde'},
+  'journey_tab_room': {AppLanguage.en: 'Room', AppLanguage.fr: 'Salle'},
   // A scene the story brought the party to holds it on its page (v1.553).
   'journey_choose_first': {
     AppLanguage.en: 'Choose first',
