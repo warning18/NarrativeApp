@@ -5,7 +5,7 @@ camp. Three tools in `tool/city_plans/` write it.
 
 | Tool | What it does | Safe to run? |
 |---|---|---|
-| `turn_city_plans.dart` | Turns each stored plan so its sea lies on its side of the coast (`citySeaSides` in `city_plan_generator.dart`). Each plan's side is stored in its `seaSide` field, and a plan already on its side is left as it is. | Yes, any number of times |
+| `turn_city_plans.dart` | Turns each stored plan so its sea lies on its side of the coast (`citySeaSides` in `city_plan_generator.dart`), then pins the services again. Each plan's side is stored in its `seaSide` field, and a plan already on its side is left as it is. | Yes, any number of times |
 | `place_services.dart` | Pins each town's services again on its stored plan | Yes |
 | `gen_city_plans.dart` | Lays every plan out again from scratch | **No, not for now** |
 
@@ -37,8 +37,12 @@ Cloister, Wrack's End, Cove Camp and Kindly Hill were all read as south.
 A turn changes every point of the plan and each bridge's angle:
 - the points: `sea`, `rivers`, `islands`, `canals`, `wall` (runs, gates' `at`,
   towers), `avenues`, `streets`, `bridges` (`at`), `squares`, `districts`
-  (`shape`, `label`, `entry`), `buildings` (`shape`) and `services` (`at`);
+  (`shape`, `label`, `entry`) and `buildings` (`shape`);
 - each bridge's `angle`, which gains 180° and is kept in (-180, 180].
+
+The `services` are then pinned again on the turned plan, as
+`place_services.dart` pins them, so a pin can sit a unit off the old one
+turned (Saltmouth's forge: 252 rather than 253).
 
 Ids (the gates' among them, so `gate_northwest` keeps its name), `names`,
 `anchors`, `seed` and the widths and lengths stay as they are.

@@ -544,11 +544,13 @@ void main() {
       // A building of the geography is named on its lot as it is there.
       ...lots.named,
     }..removeWhere((b, _) => lots.freed.contains(b));
-    // The town's services, pinned on the plan as laid (wave 14).
-    record['services'] = placeTownServices(
-        city, jsonDecode(jsonEncode(record)) as Map<String, dynamic>);
-    // The sea turned to the side of the coast (proposal F).
-    out[city] = turnCityPlan(record, citySeaSides[city] ?? SeaSide.south);
+    // The sea turned to the side of the coast (proposal F), then the
+    // town's services pinned on the plan as it lies (wave 14).
+    final turned = jsonDecode(jsonEncode(
+            turnCityPlan(record, citySeaSides[city] ?? SeaSide.south)))
+        as Map<String, dynamic>;
+    turned['services'] = placeTownServices(city, turned);
+    out[city] = turned;
   }
   file.writeAsStringSync(encodeCityPlans(out));
   stdout.writeln('wrote $_out');
