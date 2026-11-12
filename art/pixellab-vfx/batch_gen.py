@@ -10,6 +10,10 @@ BATCHES = {'retry1': {
  'retry2': {
  'quake': ("jagged bright crack lines splitting flat ground and radiating from one point, small rock chunks flying up, dust puffs, brown earth tones, no mound, no pile", "the cracks split outward and rocks jump up, then the dust settles and everything fades away until nothing is left"),
  'holy_fire': ("a tall pillar of bright golden white fire made only of flames, a cream white core, orange tips, no torch, no handle, no base", "the pillar of fire flares up, burns at its peak, then dies down and fades away until nothing is left")},
+ 'batch3': {
+ 'zap': ("a magic bolt impact: a bright cyan and white star-shaped crackle burst with jagged lightning arcs radiating out and small sparks", "the burst flashes, the arcs spread outward, then everything fades away until nothing is left"),
+ 'meteor_proj': ("a blazing meteor falling diagonally, a rough dark rock wrapped in orange fire with a white-hot edge and a long trailing flame tail", "the meteor keeps falling, its flames flicker and the tail waves, a smooth repeating loop"),
+ 'mana': ("a swirl of blue mana: glowing blue and cyan motes spiralling around a bright white core with small star sparkles", "the motes spiral inward, the core pulses at its peak, then everything fades away until nothing is left")},
  'batch2': {
  'holy_fire': ("a column of holy fire, a white-gold flame with a cream core and orange gold tongues, a few rising golden sparks", "the holy fire flares up, burns at its peak, then dies down and fades away until nothing is left"),
  'quake': ("the ground cracking open, jagged brown fissures radiating from a centre with flying rock chunks and a ring of dust", "the ground cracks open and rocks fly up, then the dust settles and fades away"),

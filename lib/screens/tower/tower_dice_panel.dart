@@ -14,9 +14,8 @@ import '../../theme/icon_sizes.dart';
 import '../../theme/pixel_chip.dart';
 import '../../theme/stitched_ink.dart';
 import '../../utils/face_style.dart';
-import '../../widgets/die_skins.dart';
 import '../../widgets/ink_panel.dart';
-import '../../widgets/poly_die.dart';
+import '../../widgets/die_tile.dart';
 
 class TowerDicePanel extends ConsumerStatefulWidget {
   const TowerDicePanel({
@@ -92,12 +91,10 @@ class _TowerDicePanelState extends ConsumerState<TowerDicePanel> {
                               Stack(
                                 clipBehavior: Clip.none,
                                 children: [
-                                  PolyDie(
-                                    shape: dieShapeOf(d.faces.length),
-                                    size: 48,
-                                    skin: dieSkinOf(d.id),
+                                  DieTile(
                                     dieId: d.id,
-                                    still: true,
+                                    faces: d.faces.length,
+                                    size: 48,
                                     glowing: d.inPlay,
                                   ),
                                   if (d.isNew)

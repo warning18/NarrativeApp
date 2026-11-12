@@ -12,6 +12,7 @@ import '../l10n/app_strings.dart';
 import '../theme/stitched_ink.dart';
 import '../utils/pixel_icons/game_pixel_icons.dart';
 import 'die_skins.dart';
+import 'die_tile.dart';
 import 'item_lore.dart';
 import 'item_stats.dart';
 import '../theme/palette.dart';
@@ -558,8 +559,10 @@ const Map<int, String> _boneShapes = {
 };
 
 /// A die as a tile in its own skin: the stone, its edge and its glow, with the
-/// die's bone body on it (v1.902); a d10, or a tile too small for a body (under
-/// 28 px), keeps the stone with the mark cut in it and the shape's name.
+/// die's bone body on it (v1.902, Art's pre-rendered 3D body); a d10 has no
+/// body: it is the live solid at rest (die_tile.dart); a tile too small for
+/// either (under 28 px) keeps the stone with the mark cut in it and the
+/// shape's name.
 class InventoryDieTile extends StatelessWidget {
   const InventoryDieTile(
       {super.key,
@@ -627,7 +630,15 @@ class InventoryDieTile extends StatelessWidget {
       // The body is drawn at the tile's full size (not shrunk by the border), so
       // its pixels keep their scale.
       child: (body == null
-              ? null
+              // A die with no bone body (the d10) is the live solid at rest.
+              ? (size >= 28
+                  ? Center(
+                      child: DieTile(
+                          dieId: dieId,
+                          faces: faces,
+                          size: size * 0.86,
+                          glowing: false))
+                  : null)
               : OverflowBox(
                   minWidth: size,
                   maxWidth: size,

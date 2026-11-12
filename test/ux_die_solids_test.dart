@@ -2,6 +2,8 @@
 // die_poly3d.dart): the right corners and facets, flat facets, a facet for
 // each face, glyphs only on facets that face the viewer, and the flat
 // drawing kept for small tiles, reduced motion and "flat".
+import 'dart:math' as math;
+
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
@@ -19,8 +21,7 @@ List<DieCubeFace> _faces(int n) => [
             color: FaceKind.values[i % FaceKind.values.length].color)
     ];
 
-Widget _die(DieShape shape, int n,
-        {double size = 60, bool flat = false, bool dim = false}) =>
+Widget _die(DieShape shape, int n, {double size = 60, bool dim = false}) =>
     Directionality(
       textDirection: TextDirection.ltr,
       child: Center(
@@ -30,7 +31,6 @@ Widget _die(DieShape shape, int n,
           accent: Colors.orange,
           size: size,
           shape: shape,
-          flat: flat,
           dim: dim,
           skin: dieSkinOf('flame_die'),
         ),
@@ -88,17 +88,78 @@ void main() {
     expect(find.byKey(const ValueKey('glyph_0')), findsOneWidget);
   });
 
-  testWidgets('small tiles, "flat" and the d6 keep their own drawing',
+  testWidgets('every die is a solid at every size, the d6 the cube',
       (tester) async {
-    await tester.pumpWidget(_die(DieShape.d20, 20, size: 26));
-    expect(find.byType(PolyDie3D), findsNothing);
-    expect(find.byType(PolyDie), findsOneWidget);
-    await tester.pumpWidget(_die(DieShape.d8, 8, flat: true));
-    expect(find.byType(PolyDie3D), findsNothing);
+    for (final (shape, n) in [
+      (DieShape.d4, 4),
+      (DieShape.d8, 8),
+      (DieShape.d10, 10),
+      (DieShape.d12, 12),
+      (DieShape.d20, 20),
+    ]) {
+      for (final size in [26.0, 48.0, 60.0]) {
+        await tester.pumpWidget(_die(shape, n, size: size));
+        expect(find.byType(PolyDie3D), findsOneWidget,
+            reason: '$shape at $size');
+        expect(find.byType(PolyDie), findsNothing, reason: '$shape at $size');
+      }
+    }
+    // Under 40 px a facet has no room for its glyph: a plain solid.
+    await tester.pumpWidget(_die(DieShape.d12, 12, size: 26));
+    expect(find.byKey(const ValueKey('glyph_0')), findsNothing);
     await tester.pumpWidget(_die(DieShape.d6, 6));
     expect(find.byType(PolyDie3D), findsNothing);
-    await tester.pumpWidget(_die(DieShape.coin, 2));
-    expect(find.byType(PolyDie3D), findsNothing);
+    expect(find.byType(PolyDie), findsNothing);
+    // Any other count reads as the next size up, never as a coin.
+    expect(dieShapeOf(2), DieShape.d4);
+    expect(dieShapeOf(7), DieShape.d8);
+    expect(dieShapeOf(12), DieShape.d12);
+    expect(dieShapeOf(13), DieShape.d20);
+  });
+
+  test('the d10 is a real pentagonal trapezohedron, not a stretched d8', () {
+    final s = dieSolidOf(DieShape.d10)!;
+    // Twelve corners (two apexes and a zigzag ring of ten), ten kites.
+    expect(s.verts.length, 12);
+    expect(s.faces.length, 10);
+    for (final f in s.faces) {
+      expect(f.length, 4, reason: 'every facet is a kite');
+    }
+    // The apexes meet five kites each, the ring corners three each.
+    final valence = List.filled(s.verts.length, 0);
+    for (final f in s.faces) {
+      for (final v in f) {
+        valence[v]++;
+      }
+    }
+    expect(valence.take(2), everyElement(5));
+    expect(valence.skip(2), everyElement(3));
+    // Euler: V - E + F = 2 with 20 edges.
+    final edges = <String>{};
+    for (final f in s.faces) {
+      for (var i = 0; i < 4; i++) {
+        final a = f[i], b = f[(i + 1) % 4];
+        edges.add(a < b ? '$a-$b' : '$b-$a');
+      }
+    }
+    expect(edges.length, 20);
+    expect(s.verts.length - edges.length + s.faces.length, 2);
+    // The ten kites are congruent: the same area.
+    double area(List<int> f) {
+      final c = s.centre(s.faces.indexOf(f));
+      var total = 0.0;
+      for (var i = 0; i < 4; i++) {
+        final a = vsub(s.verts[f[i]], c), b = vsub(s.verts[f[(i + 1) % 4]], c);
+        final x = vcross(a, b);
+        total += math.sqrt(vdot(x, x)) / 2;
+      }
+      return total;
+    }
+
+    final areas = [for (final f in s.faces) area(f)];
+    for (final a in areas) {
+      expect(a, closeTo(areas.first, 1e-6));
+    }
   });
 
   testWidgets('a die not rolled yet shows a ? and no face; a rolled one none',
