@@ -96,23 +96,41 @@ void main() {
           await tester.tap(enter);
           await settle(10);
         }
+        String onScreen() => [
+              for (final e in find.byType(Text).evaluate())
+                if ((e.widget as Text).data case final String t
+                    when t.isNotEmpty)
+                  t
+            ].take(40).join(' | ');
         for (var i = 0; i < 300; i++) {
           final back = find.text('Victory! Return');
           if (back.evaluate().isNotEmpty) break;
+          // The fight's screen loads its foes in the background: on a slow
+          // runner "Enter Battle" can come after the first look, so it is
+          // answered whenever it is on the screen, not only once.
+          final enter = find.text('Enter Battle');
           final confirm = find.text('Confirm');
           final roll = find.textContaining('Roll Dice');
-          if (confirm.evaluate().isNotEmpty) {
+          if (enter.evaluate().isNotEmpty) {
+            await tester.ensureVisible(enter);
+            await tester.pump();
+            await tester.tap(enter);
+          } else if (confirm.evaluate().isNotEmpty) {
             await tester.tap(confirm.first);
           } else if (roll.evaluate().isNotEmpty) {
             await tester.tap(roll.first);
           }
           await tester.pump(const Duration(milliseconds: 400));
+          // Real time for what loads in the background (not the fake clock).
           await tester.runAsync(
-              () => Future<void>.delayed(const Duration(milliseconds: 10)));
+              () => Future<void>.delayed(const Duration(milliseconds: 40)));
         }
         // The Return button must come, and must work, within a few seconds.
         final back = find.text('Victory! Return');
-        expect(back, findsOneWidget, reason: 'floor $floor: no Return button');
+        expect(back, findsOneWidget,
+            reason: 'floor $floor: no Return button after 300 rounds'
+                '${find.text('Face what comes').evaluate().isNotEmpty ? ' (the hero was beaten)' : ''}'
+                '. On screen: ${onScreen()}');
         final button = find.ancestor(
             of: back,
             matching: find.byWidgetPredicate((w) => w is ButtonStyleButton));
