@@ -21,6 +21,7 @@ import '../factions.dart' show ClanData;
 import '../sim_combat.dart';
 import '../training.dart' show statPickForShares;
 import 'tower_dice.dart' show towerChooseDie;
+import 'tower_events.dart';
 import 'tower_floors.dart';
 import 'tower_hero.dart';
 import 'tower_progress.dart';
@@ -168,7 +169,7 @@ TowerRun playTowerRun({
     events: events,
     data: data,
   );
-  final floors = towerFloorsFor(seed, data.enemies);
+  final floors = towerFloorsFor(seed, data.enemies, events: events);
   // The start's dice (its unlocks', a clan sworn at the start) tried
   // against the calling's own.
   final start = towerHeroOf(run, data);
@@ -177,22 +178,33 @@ TowerRun playTowerRun({
       if (id != start.diceId) id,
   ]);
   while (!run.isOver) {
-    final floor = floors[run.floor - 1];
-    final hero = towerHeroOf(run, data);
-    final maxHealth = hero.maxHealth;
-    final outcome = towerBotFight(
-      run: run,
-      floor: floor,
-      hero: hero,
-      data: data,
-      random: towerRandom(seed, towerBotFightDraw(run), TowerStream.fight),
-    );
-    run = towerAfterFight(run, data,
-        won: outcome.won,
-        healthLeft: hero.currentHealth,
-        potionsLeft: hero.potions,
-        maxHealthBefore: maxHealth,
-        rounds: outcome.rounds);
+    if (run.status == TowerStatus.climbing) {
+      var hero = towerHeroOf(run, data);
+      // A shortcut (floor events PR 2): taken with health to spare.
+      if (towerEventKindOf(run) == TowerEventKind.shortcut &&
+          run.shortcut == null) {
+        run = towerChooseShortcut(run, data,
+            hero.currentHealth >= towerBotShortcutHealth * hero.maxHealth);
+        hero = towerHeroOf(run, data);
+      }
+      final floor = run.shortcut ?? false
+          ? towerShortcutFloor(floors[run.floor - 1])
+          : floors[run.floor - 1];
+      final maxHealth = hero.maxHealth;
+      final outcome = towerBotFight(
+        run: run,
+        floor: floor,
+        hero: hero,
+        data: data,
+        random: towerRandom(seed, towerBotFightDraw(run), TowerStream.fight),
+      );
+      run = towerAfterFight(run, data,
+          won: outcome.won,
+          healthLeft: hero.currentHealth,
+          potionsLeft: hero.potions,
+          maxHealthBefore: maxHealth,
+          rounds: outcome.rounds);
+    }
     if (run.status == TowerStatus.choosing) {
       // The level-up first, as the story's bot takes its picks.
       run = _botStatPicks(run, data);
@@ -203,7 +215,8 @@ TowerRun playTowerRun({
           ? run.offer[index]
           : null;
       run = towerPick(run, data, index, hero: hero);
-      // A rival's skip: the skipped floor's picks, taken on landing.
+      // A skip's landing: the skipped floors' picks, taken there (a
+      // shortcut's landing card, if any, is the next pass's choice).
       run = _botStatPicks(run, data);
       // A die gained (a die card's, an oath's) goes to the bag: tried.
       final gained = switch (card?.kind) {
@@ -251,6 +264,11 @@ const int towerBotRevisitSalt = 1000;
 int towerBotFightDraw(TowerRun run) => run.floor <= run.crest
     ? run.floor + towerBotRevisitSalt * run.setbacks
     : run.floor;
+
+/// The health share at which the bot takes a shortcut (floor events PR 2;
+/// the proposal measured 70, 80 and 90%: at 80% it took 57 to 64% of the
+/// offers and won 91 to 92%).
+const double towerBotShortcutHealth = .80;
 
 /// The trial fights the bot gives each die it tries ([towerBotRollBest]).
 const int towerBotDieTrialFights = 4;

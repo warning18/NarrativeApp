@@ -12,6 +12,7 @@ library;
 
 import 'dart:math';
 
+import '../theme/palette.dart';
 import 'status_effect.dart';
 
 enum VfxStyle {
@@ -156,25 +157,31 @@ int vfxDurationMs(VfxStyle style) {
   }
 }
 
-/// Two colors, ARGB.
+/// Two colors, ARGB, and the four tones of the Apollo palette the pixel
+/// strips are drawn in (highlight, middle, shadow, deep; see
+/// [ApolloTones]). The middle tone is [primary], the highlight [secondary].
 class VfxPalette {
-  const VfxPalette(this.primary, this.secondary);
+  const VfxPalette(this.primary, this.secondary, [this.tones]);
+
   final int primary;
   final int secondary;
+  final List<int>? tones;
 }
 
-const Map<String, VfxPalette> _elementPalettes = {
-  'None': VfxPalette(0xFFFFFFFF, 0xFFB0BEC5),
-  'Fire': VfxPalette(0xFFFF7043, 0xFFFFD54F),
-  'Ice': VfxPalette(0xFFB3E5FC, 0xFFFFFFFF),
-  'Water': VfxPalette(0xFF4FC3F7, 0xFFB2EBF2),
-  'Earth': VfxPalette(0xFFA1887F, 0xFFD7CCC8),
-  'Wind': VfxPalette(0xFFC5E1A5, 0xFFE0F7FA),
-  'Void': VfxPalette(0xFF7E57C2, 0xFFCE93D8),
-  'Light': VfxPalette(0xFFFFF176, 0xFFFFFDE7),
-  'Electricity': VfxPalette(0xFF80D8FF, 0xFFFFEB3B),
+VfxPalette _apollo(List<int> t) => VfxPalette(t[1], t[0], t);
+
+final Map<String, VfxPalette> _elementPalettes = {
+  'None': const VfxPalette(0xFFFFFFFF, 0xFFB0BEC5),
+  'Fire': _apollo(ApolloTones.fire),
+  'Ice': _apollo(ApolloTones.ice),
+  'Water': _apollo(ApolloTones.water),
+  'Earth': _apollo(ApolloTones.earth),
+  'Wind': _apollo(ApolloTones.wind),
+  'Void': _apollo(ApolloTones.voidTones),
+  'Light': _apollo(ApolloTones.light),
+  'Electricity': _apollo(ApolloTones.electricity),
   // An enemy's plain attack, with no element of its own.
-  'Enemy': VfxPalette(0xFFE53935, 0xFFFF8A65),
+  'Enemy': _apollo(ApolloTones.enemy),
 };
 
 /// Every element with its own colors.
@@ -191,27 +198,27 @@ VfxPalette paletteForElement(String element) =>
 VfxPalette paletteFor(VfxStyle style, String element) {
   switch (style) {
     case VfxStyle.poison:
-      return const VfxPalette(0xFF66BB6A, 0xFFC5E1A5);
+      return _apollo(ApolloTones.poison);
     case VfxStyle.mana:
-      return const VfxPalette(0xFF3FA3A8, 0xFFB388FF);
+      return _apollo(ApolloTones.mana);
     case VfxStyle.stun:
     case VfxStyle.crit:
-      return const VfxPalette(0xFFFFD54F, 0xFFFFFFFF);
+      return _apollo(ApolloTones.gold);
     case VfxStyle.weaken:
-      return const VfxPalette(0xFFEF5350, 0xFF9E9E9E);
+      return _apollo(ApolloTones.weaken);
     case VfxStyle.miss:
-      return const VfxPalette(0xFFBDBDBD, 0xFFFFFFFF);
+      return _apollo(ApolloTones.miss);
     case VfxStyle.phase:
-      return const VfxPalette(0xFFE53935, 0xFF7E57C2);
+      return _apollo(ApolloTones.phase);
     case VfxStyle.smoke:
-      return const VfxPalette(0xFF9E9E9E, 0xFFE0E0E0);
+      return _apollo(ApolloTones.smoke);
     case VfxStyle.heal:
       return element == 'None' || element == 'Water'
-          ? const VfxPalette(0xFF66BB6A, 0xFFFFF59D)
+          ? _apollo(ApolloTones.heal)
           : paletteForElement(element);
     case VfxStyle.shield:
       return element == 'None'
-          ? const VfxPalette(0xFF64B5F6, 0xFFE3F2FD)
+          ? _apollo(ApolloTones.shield)
           : paletteForElement(element);
     case VfxStyle.stoneShield:
       return element == 'None'

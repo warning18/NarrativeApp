@@ -12,6 +12,14 @@ isn't reconstructable from git history alone.
 
 - Maps, release 3: the locations. The fog over a district not yet found lets its streets and blocks show through; its names and pins stay hidden, the "?" and the dashed outline stay. On the city plan page "+" closes in on the party, not on the middle of the city. The party's breathing ring is on its own layer, so the whole plan is no longer redrawn every frame. Inside a building the label names the building, not its town, and no rain, snow or ash is drawn under its roof. Not in this release: the sea on the side where the sphere puts it (waits for Core's turned plans). Pictures: `docs/maps/sphere-and-locations/release-3/`.
 
+## [1.939.0+975]
+
+- Tower: floor events, part 2 (docs/proposals/tower-snakes-and-ladders.md). **Events still stay off for players** until the user has seen UX-2's event cards: a run started now plays as before, apart from floors 27 and 28, which are a little softer for everyone (their extra foe strength drops from 32% and 34% to 31%). In the engine: a shortcut offers, before an ordinary floor's fight, a tougher version of it (a lone foe becomes an Elite, a pack gets one more foe); won, the hero skips 1 to 3 floors, never past the next warden or boss; lost, the run ends, as any lost fight does. A run with events plays on its own foe curve (a softer base, a little more on the floor-20 and floor-30 bosses), so a run with events lands about where one without does. The Tower fight now counts its rounds, so a rival's three-round goal can be checked. With events on and every unlock, the share of runs reaching the top is 1.5 points under the target band's centre; it is left as it is.
+
+## [1.938.0+974]
+
+- Skills in the Apollo palette: the 157 skill icons and the six main effect strips (flame, frost, lightning, heal, void rift, shield) are Art's Apollo versions, and every element's effect tints, plus the fixed ones (poison, mana, shield, gold, weaken, miss, phase, smoke, heal), take Apollo tones named in `ApolloTones` (lib/theme/palette.dart). Fire is pushed hotter inside the palette. Rarity accents are unchanged.
+
 ## [1.937.0+973]
 
 - Tower floor events, the cards (UX; the events are still off for players until the user's OK, so nothing shows yet): a setback shows its test above the cards (the ability, the odds as a percent and a bar with the DC, what a pass and a fail give and where a fall lands, the setbacks left), a rival shows its condition before the fight (win within 3 rounds to skip a floor; otherwise no skip), the next floor says how the event ended (the roll and total, the fall or the skip) with an arrow along the rail, and a floor met again says it pays nothing. The words are by ability (strength, dexterity, wisdom) and EN/FR (Narrative). After a rival's skip the Level Up opens on the landing floor. Pictures: `docs/ux-shots/tower-event-cards-real/`.

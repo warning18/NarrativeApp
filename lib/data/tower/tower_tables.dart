@@ -32,9 +32,11 @@ const Map<String, double> towerProfessionScale = {
 };
 
 /// The foes' scale for [professionId] (1 for the others), with the
-/// Tower's own [towerFoeScale].
-double towerProfessionScaleOf(String professionId) =>
-    (towerProfessionScale[professionId] ?? 1.0) * towerFoeScale;
+/// Tower's own [towerFoeScale], or [towerEventsFoeScale] in a run playing
+/// the floor events ([events] 1 or more, TowerRun.events).
+double towerProfessionScaleOf(String professionId, {int events = 0}) =>
+    (towerProfessionScale[professionId] ?? 1.0) *
+    (events >= 1 ? towerEventsFoeScale : towerFoeScale);
 
 /// Every foe of the Tower, on top of the floors' extras (v1.857): the
 /// level-up's stat picks are the player's, the main game's way, and spread
@@ -48,6 +50,22 @@ double towerProfessionScaleOf(String professionId) =>
 /// voidkin's start (towerPeoplePoints): the top with no unlocks back near
 /// the curve review's (12.6%; 17.9% with the start alone).
 const double towerFoeScale = 1.18;
+
+/// Every foe of the Tower in a run with the floor events on (floor events
+/// PR 2, docs/proposals/tower-snakes-and-ladders.md, TowerRun.events 1 or
+/// more): the curve with them on. The shortcut, the setback and the rival
+/// at [towerFoeScale] took the top to 10.2% with no unlocks, 22.1% with
+/// all (seeds 1 to 2000); at 1.14, with [towerEventsExtras], 13.5% and
+/// 25.3% (the events cost the unlocked runs more: no one scale gives back
+/// both 12.6% and 26.8%).
+const double towerEventsFoeScale = 1.14;
+
+/// The floors' extras that differ in a run with the floor events on
+/// (floor -> extra, in place of its [towerBudgets] one): the floor-20 boss
+/// .30 (was .29: at [towerEventsFoeScale] alone it killed 9.4%, under its
+/// 10 to 15%; now 13.5% / 11.9%) and the floor-30 boss .35 (was .34: 17.9%
+/// alone, now 24.6% / 21.3%).
+const Map<int, double> towerEventsExtras = {20: .30, 30: .35};
 
 /// What the unlocks owned give a run (v1.848, the user's call: unlocks give
 /// some power, not options only). Each one owned at the start: this share
@@ -129,7 +147,11 @@ class TowerBudget {
 /// deaths spread evenly over the ordinary floors (chapter 5's floors 17 to
 /// 19 had killed 12% of those who reached them, the floors around 5%), the
 /// bosses and wardens made peaks (floor 10 about 9% of those who reach it,
-/// floor 20 12%, floor 30 23%; it had been 1%).
+/// floor 20 12%, floor 30 23%; it had been 1%). Floor events PR 2 (QA's
+/// finding on v1.922: floor 28 killed 10.6%, over the 10% an ordinary
+/// floor may): floors 27 and 28 at .31 (were .32 and .34), every run;
+/// with the events off the worst ordinary floor 9.3% (f28), the top 12.9%
+/// with no unlocks, 27.4% with all (was 12.6%, 26.8%).
 const List<TowerBudget> towerBudgets = [
   TowerBudget(1, 0.30, levelAfter: 2),
   TowerBudget(1, 0.30, levelAfter: 2),
@@ -269,7 +291,7 @@ const List<TowerBudget> towerBudgets = [
       maxAffixes: 2,
       eliteChance: .25,
       levelAfter: 16),
-  TowerBudget(7, 0.32,
+  TowerBudget(7, 0.31,
       minFoes: 2,
       maxFoes: 3,
       packChance: .70,
@@ -277,7 +299,7 @@ const List<TowerBudget> towerBudgets = [
       maxAffixes: 2,
       eliteChance: .25,
       levelAfter: 17),
-  TowerBudget(8, 0.34,
+  TowerBudget(8, 0.31,
       minFoes: 2,
       maxFoes: 3,
       packChance: .70,
@@ -431,6 +453,14 @@ const int towerSetbackDcFloors = 6;
 
 /// The most floors a setback falls (1 to this, drawn).
 const int towerSetbackMaxFall = 3;
+
+/// The share of ordinary floors that hold a shortcut (floor events PR 2,
+/// the proposal's "Shortcut floors" and recommended set): before the fight,
+/// fight the floor's foe as an Elite (a pack one foe more) and skip 1 to
+/// [towerSetbackMaxFall] floors (drawn, shown), never past the floor before
+/// the next gate; won, the floor's spoils and card and a card on landing;
+/// lost, the run ends. Only where a skip fits.
+const double towerShortcutShare = .15;
 
 /// The rarity steps, lowest first, and each band's odds (floors 1-9,
 /// 11-19, 21-29); a boss or warden floor draws one step up.

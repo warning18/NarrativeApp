@@ -54,6 +54,7 @@ class TowerFloor {
     required this.enemyIds,
     this.affixes = const [],
     this.elite = false,
+    this.events = 0,
   });
 
   /// 1..[towerTop].
@@ -75,12 +76,17 @@ class TowerFloor {
   /// A lone ordinary foe made an Elite.
   final bool elite;
 
+  /// The floor events' version of the run it is in (TowerRun.events): with
+  /// them on, the foes' scale is towerEventsFoeScale and [extra] reads
+  /// towerEventsExtras (floor events PR 2).
+  final int events;
+
   bool get isPack => enemyIds.length > 1;
 
   /// The multiplier on the curve the fight of a hero of [professionId] runs
   /// at: the floor's extra and the profession's scale.
   double extraFor(String professionId) =>
-      extra * towerProfessionScaleOf(professionId);
+      extra * towerProfessionScaleOf(professionId, events: events);
 
   /// What the fight screen is handed for this floor, for a hero of
   /// [professionId] (the Tower's context: no scene, no chest, no gold or
@@ -113,21 +119,26 @@ List<String> towerPoolOf(int chapter, Map<String, dynamic> enemies) => [
 int _healthOf(String id, Map<String, dynamic> enemies) =>
     ((enemies[id] as Map?)?['maxHealth'] as num?)?.toInt() ?? 0;
 
-/// The 30 floors of the run of [seed], against `enemies.json`.
-List<TowerFloor> towerFloorsFor(int seed, Map<String, dynamic> enemies) {
+/// The 30 floors of the run of [seed], against `enemies.json`, for a run
+/// playing the floor events' version [events] (TowerRun.events: their
+/// extras and foes' scale; the foes drawn are the same).
+List<TowerFloor> towerFloorsFor(int seed, Map<String, dynamic> enemies,
+    {int events = 0}) {
   final floors = <TowerFloor>[];
   for (var floor = 1; floor <= towerTop; floor++) {
     final recent = {
       for (final f in floors.reversed.take(towerNoRepeatFloors)) ...f.enemyIds,
     };
-    floors.add(_floorOf(seed, floor, enemies, recent));
+    floors.add(_floorOf(seed, floor, enemies, recent, events));
   }
   return floors;
 }
 
-TowerFloor _floorOf(
-    int seed, int floor, Map<String, dynamic> enemies, Set<String> recent) {
+TowerFloor _floorOf(int seed, int floor, Map<String, dynamic> enemies,
+    Set<String> recent, int events) {
   final budget = towerBudgetOf(floor);
+  final extra =
+      events >= 1 ? towerEventsExtras[floor] ?? budget.extra : budget.extra;
   final random = towerRandom(seed, floor, TowerStream.foes);
   final affixRandom = towerRandom(seed, floor, TowerStream.affix);
   List<EnemyAffix> affixes(bool pack) {
@@ -150,7 +161,8 @@ TowerFloor _floorOf(
           floor: floor,
           kind: budget.kind,
           chapter: budget.chapter,
-          extra: budget.extra,
+          extra: extra,
+          events: events,
           enemyIds: [towerBosses[floor]!]);
     case TowerFloorKind.warden:
       final pool = towerWardens[floor]!;
@@ -158,7 +170,8 @@ TowerFloor _floorOf(
           floor: floor,
           kind: budget.kind,
           chapter: budget.chapter,
-          extra: budget.extra,
+          extra: extra,
+          events: events,
           enemyIds: [pool[random.nextInt(pool.length)]],
           affixes: affixes(false));
     case TowerFloorKind.fight:
@@ -188,7 +201,8 @@ TowerFloor _floorOf(
           floor: floor,
           kind: budget.kind,
           chapter: budget.chapter,
-          extra: budget.extra,
+          extra: extra,
+          events: events,
           enemyIds: ids,
           affixes: affixes(pack),
           elite: elite);
