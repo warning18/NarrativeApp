@@ -1,0 +1,13 @@
+# Apollo 46 palette + two core brights (skills)
+Start every new skill icon or effect from these colours (nearest-colour remap with `tool/apollo_remap.py`, palette `apollo+cores`).
+| group | hex |
+|---|---|
+| blue | 172038 253A5E 3C5E8B 4F8FBA 73BED3 A4DDDB |
+| green | 19332D 25562E 468232 75A743 A8CA58 D0DA91 |
+| brown/skin | 4D2B32 7A4841 AD7757 C09473 D7B594 E7D5B3 |
+| orange/red | 341C27 602C2C 884B2B BE772B DE9E41 E8C170 |
+| red | 241527 411D31 752438 A53030 CF573C DA863E |
+| purple/pink | 1E1D39 402751 7A367B A23E8C C65197 DF84A5 |
+| grey/ink | 090A14 10141F 151D28 202E37 394A50 577277 819796 A8B5B2 C7CFCC EBEDE9 |
+| core brights (kept for hot cores) | F2C14E FFF6E0 |
+Ink for outlines: 090A14. Void effects use the purples 402751 7A367B A23E8C C65197 (there is no true violet in the palette).
