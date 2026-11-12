@@ -46,6 +46,7 @@ class PolyDie3D extends StatelessWidget {
     required this.size,
     required this.t,
     this.showGlyphs = true,
+    this.turns,
     this.unrolled = false,
     this.landed = false,
   });
@@ -63,6 +64,10 @@ class PolyDie3D extends StatelessWidget {
   final double t;
   final bool showGlyphs;
 
+  /// The turns the tumble makes before it settles ([_tumbleTurns] when null;
+  /// fewer on a slow phone).
+  final double? turns;
+
   /// Not rolled yet: the front facet shows a "?" and the others no glyph.
   final bool unrolled;
 
@@ -72,10 +77,10 @@ class PolyDie3D extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final solid = dieSolidOf(shape)!;
+    final solid = dieSolidOf(shape) ?? dieSolidOf(DieShape.d4)!;
     final radius = size * dieSolidScale(shape) / 2;
     final e = Curves.easeOutCubic.transform(t.clamp(0.0, 1.0));
-    final spin = (1 - e) * _tumbleTurns * 2 * math.pi;
+    final spin = (1 - e) * (turns ?? _tumbleTurns) * 2 * math.pi;
     final model = Matrix4.identity()
       ..rotateX(spin * 0.9)
       ..rotateY(spin * 1.3)
