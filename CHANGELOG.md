@@ -8,6 +8,10 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.956.0+992]
+
+- Banners: the 20 banners in the new Apollo look (UX, Art's redraw): the thirteen clan standards and the seven relic and fleet banners keep their names, size (64x128) and clan colours, with a coloured header band, stitched border and hem over the cloth's folds. No code changed. About +18.9 KB of PNG8 in the app.
+
 ## [1.955.0+991]
 
 - **Narrative: French typography across the interface strings.** The French values of
