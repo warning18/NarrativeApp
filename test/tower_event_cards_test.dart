@@ -151,4 +151,57 @@ void main() {
           reason: 'events ${on ? 'on' : 'off'}');
     }
   });
+
+  testWidgets('a shortcut is offered before the fight and chosen once',
+      (tester) async {
+    final (seed, floor) = floorWith(TowerEventKind.shortcut);
+    final view = towerEventOf(run(seed, floor), data)!;
+    // The card alone: the odds are Core's, the buttons only when asked for.
+    await tester.pumpWidget(host(TowerEventCard(view)));
+    await tester.pump();
+    expect(find.byKey(const Key('tower_event_shortcut')), findsOneWidget);
+    expect(find.byKey(const Key('tower_shortcut_take')), findsNothing);
+    expect(
+        find.textContaining('land on floor ${view.landsOn}',
+            findRichText: true),
+        findsOneWidget);
+    expect(find.textContaining('The run ends here', findRichText: true),
+        findsOneWidget);
+
+    for (final take in [true, false]) {
+      SharedPreferences.resetStatic();
+      SharedPreferences.setMockInitialValues({
+        'tower_run_v1': jsonEncode(run(seed, floor).toJson()),
+      });
+      usePhone(tester, const Size(400, 1600));
+      final container = ProviderContainer(overrides: [
+        towerDataProvider.overrideWith((ref) async => data),
+      ]);
+      addTearDown(container.dispose);
+      await tester.pumpWidget(UncontrolledProviderScope(
+        container: container,
+        child: const MaterialApp(home: TowerFloorScreen()),
+      ));
+      Future<void> settle() async {
+        for (var i = 0; i < 30; i++) {
+          await tester.runAsync(
+              () => Future<void>.delayed(const Duration(milliseconds: 20)));
+          await tester.pump(const Duration(milliseconds: 100));
+        }
+      }
+
+      await settle();
+      // The choice comes first: no fight button until it is made.
+      expect(find.byKey(const Key('tower_event_shortcut')), findsOneWidget);
+      expect(find.byKey(const Key('tower_fight')), findsNothing);
+      await tester.tap(find
+          .byKey(Key(take ? 'tower_shortcut_take' : 'tower_shortcut_decline')));
+      await settle();
+      expect(find.byKey(const Key('tower_fight')), findsOneWidget);
+      expect(find.byKey(const Key('tower_event_shortcut')), findsNothing);
+      expect(find.byKey(const Key('tower_event_shortcut_taken')),
+          take ? findsOneWidget : findsNothing);
+      expect(container.read(towerProvider).value!.run!.shortcut, take);
+    }
+  });
 }

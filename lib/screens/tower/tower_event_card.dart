@@ -15,12 +15,17 @@ import '../../widgets/ink_panel.dart';
 /// The card of [view]'s event, or nothing when its floor holds none (a floor
 /// met again, or one shown only for its last result).
 class TowerEventCard extends ConsumerWidget {
-  const TowerEventCard(this.view, {super.key, this.bagFull = false});
+  const TowerEventCard(this.view,
+      {super.key, this.bagFull = false, this.onShortcut});
 
   final TowerEventView view;
 
   /// The potion bag is full: a pass drinks the potion at once.
   final bool bagFull;
+
+  /// A shortcut's choice: true takes the stair, false the door. The card
+  /// shows its two buttons while the choice is open and this is given.
+  final void Function(bool take)? onShortcut;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -29,9 +34,8 @@ class TowerEventCard extends ConsumerWidget {
         return _TestCard(view, bagFull);
       case TowerEventKind.rival:
         return _RivalCard(view);
-      // The shortcut's card is UX-2's to draw (floor events PR 2 adds the
-      // kind; events stay off for players until it has one).
       case TowerEventKind.shortcut:
+        return _ShortcutCard(view, onShortcut);
       case null:
         return const SizedBox.shrink();
     }
@@ -157,6 +161,118 @@ class _TestCard extends ConsumerWidget {
                 {'n': view.setbacksLeft}),
             style: theme.textTheme.bodySmall
                 ?.copyWith(color: theme.colorScheme.onSurfaceVariant)),
+      ]),
+    );
+  }
+}
+
+/// The shortcut offered before a floor's fight: the stair (a tougher fight,
+/// floors skipped, a loss ends the run) or the door (the floor as it is).
+/// Taken, it shows as a line; declined, nothing.
+class _ShortcutCard extends ConsumerWidget {
+  const _ShortcutCard(this.view, this.onChoose);
+
+  final TowerEventView view;
+  final void Function(bool take)? onChoose;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final theme = Theme.of(context);
+    final ink = InkColors.of(context);
+    final skip = view.skip ?? 1;
+    final landsOn = view.landsOn ?? view.floor + skip + 1;
+    if (view.accepted == false) return const SizedBox.shrink();
+    if (view.accepted ?? false) {
+      return InkPanel(
+        key: const Key('tower_event_shortcut_taken'),
+        lit: true,
+        child: Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
+          Icon(Icons.stairs, size: IconSize.s16, color: ink.gold),
+          const SizedBox(width: 10),
+          Expanded(
+              child: Text(tr(ref, 'tower_event_shortcut_taken'),
+                  style: theme.textTheme.bodyMedium)),
+        ]),
+      );
+    }
+    String sub(String key) => tr(ref, key)
+        .replaceAll('{a}', '${view.floor + 1}')
+        .replaceAll('{b}', '${landsOn - 1}')
+        .replaceAll('{to}', '$landsOn');
+    return InkPanel(
+      key: const Key('tower_event_shortcut'),
+      lit: true,
+      child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+        _Tag(Icons.stairs, tr(ref, 'tower_event_shortcut'), ink.gold),
+        const SizedBox(height: 6),
+        Text(tr(ref, 'tower_event_shortcut_title'),
+            style: theme.textTheme.titleMedium
+                ?.copyWith(fontFamily: InkFonts.display)),
+        Text(tr(ref, 'tower_event_shortcut_body'),
+            style: theme.textTheme.bodyMedium
+                ?.copyWith(color: theme.colorScheme.onSurfaceVariant)),
+        Text(
+            tr(
+                ref,
+                (view.elite ?? false)
+                    ? 'tower_event_shortcut_elite'
+                    : 'tower_event_shortcut_pack'),
+            style: theme.textTheme.bodyMedium
+                ?.copyWith(color: theme.colorScheme.onSurfaceVariant)),
+        _Outcome(
+            Icons.north,
+            ink.gold,
+            tr(ref, 'tower_event_shortcut_win'),
+            sub(skip == 1
+                ? 'tower_event_shortcut_win_one'
+                : 'tower_event_shortcut_win_many')),
+        _Outcome(Icons.south, ink.blood, tr(ref, 'tower_event_shortcut_lose'),
+            tr(ref, 'tower_event_shortcut_lose_text')),
+        if (onChoose != null) ...[
+          const SizedBox(height: 12),
+          Row(children: [
+            Expanded(
+              child: FilledButton(
+                key: const Key('tower_shortcut_take'),
+                onPressed: () => onChoose!(true),
+                child: Text(tr(ref, 'tower_event_shortcut_take')),
+              ),
+            ),
+            const SizedBox(width: 8),
+            Expanded(
+              child: OutlinedButton(
+                key: const Key('tower_shortcut_decline'),
+                onPressed: () => onChoose!(false),
+                child: Text(tr(ref, 'tower_event_shortcut_decline')),
+              ),
+            ),
+          ]),
+        ],
+      ]),
+    );
+  }
+}
+
+/// After a won shortcut's fight, above the cards: where the run goes next.
+class TowerShortcutWonLine extends ConsumerWidget {
+  const TowerShortcutWonLine(this.view, {super.key});
+
+  final TowerEventView view;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final theme = Theme.of(context);
+    final ink = InkColors.of(context);
+    return InkPanel(
+      key: const Key('tower_event_shortcut_won'),
+      child: Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
+        Icon(Icons.north, size: IconSize.s16, color: ink.gold),
+        const SizedBox(width: 10),
+        Expanded(
+            child: Text(
+                tr(ref, 'tower_event_shortcut_won')
+                    .replaceAll('{to}', '${view.landsOn}'),
+                style: theme.textTheme.bodyMedium)),
       ]),
     );
   }

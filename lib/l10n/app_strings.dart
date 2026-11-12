@@ -1507,6 +1507,68 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.en: 'Your rival gets away: no skip',
     AppLanguage.fr: 'Votre rival vous échappe : pas de saut',
   },
+  'tower_event_shortcut': {
+    AppLanguage.en: 'Shortcut',
+    AppLanguage.fr: 'Raccourci',
+  },
+  'tower_event_shortcut_title': {
+    AppLanguage.en: 'A stair in the wall',
+    AppLanguage.fr: 'Un escalier dans le mur',
+  },
+  'tower_event_shortcut_body': {
+    AppLanguage.en:
+        'A narrow stair climbs past the next floors. A tougher guard holds it.',
+    AppLanguage.fr:
+        'Un étroit escalier monte au-delà des prochains étages. Un garde plus coriace le tient.',
+  },
+  'tower_event_shortcut_elite': {
+    AppLanguage.en: 'An Elite stands in the fight\'s place.',
+    AppLanguage.fr: 'Un Élite prend la place du combat.',
+  },
+  'tower_event_shortcut_pack': {
+    AppLanguage.en: 'One more foe joins the fight.',
+    AppLanguage.fr: 'Un adversaire de plus se joint au combat.',
+  },
+  'tower_event_shortcut_win': {
+    AppLanguage.en: 'Win',
+    AppLanguage.fr: 'Victoire',
+  },
+  'tower_event_shortcut_win_one': {
+    AppLanguage.en: 'Floor {a} is skipped, you land on floor {to}',
+    AppLanguage.fr: 'L’étage {a} est sauté, vous arrivez à l’étage {to}',
+  },
+  'tower_event_shortcut_win_many': {
+    AppLanguage.en: 'Floors {a} to {b} are skipped, you land on floor {to}',
+    AppLanguage.fr:
+        'Les étages {a} à {b} sont sautés, vous arrivez à l’étage {to}',
+  },
+  'tower_event_shortcut_lose': {
+    AppLanguage.en: 'Lose',
+    AppLanguage.fr: 'Défaite',
+  },
+  'tower_event_shortcut_lose_text': {
+    AppLanguage.en: 'The run ends here',
+    AppLanguage.fr: 'La partie s’arrête ici',
+  },
+  'tower_event_shortcut_take': {
+    AppLanguage.en: 'Take the stair',
+    AppLanguage.fr: 'Prendre l’escalier',
+  },
+  'tower_event_shortcut_decline': {
+    AppLanguage.en: 'Take the door',
+    AppLanguage.fr: 'Prendre la porte',
+  },
+  'tower_event_shortcut_taken': {
+    AppLanguage.en:
+        'You took the stair: this is the tougher fight, and a loss ends the run.',
+    AppLanguage.fr:
+        'Vous avez pris l’escalier : c’est le combat difficile, et une défaite met fin à la partie.',
+  },
+  'tower_event_shortcut_won': {
+    AppLanguage.en: 'The stair held: after this card you climb to floor {to}.',
+    AppLanguage.fr:
+        'L’escalier a tenu : après cette carte, vous montez à l’étage {to}.',
+  },
   'tower_event_shortcut_landed': {
     AppLanguage.en: 'The shortcut holds: you land on floor {to}',
     AppLanguage.fr: 'Le raccourci tient : vous arrivez à l’étage {to}',
