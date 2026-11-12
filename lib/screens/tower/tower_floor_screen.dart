@@ -143,6 +143,19 @@ class _TowerFloorScreenState extends ConsumerState<_TowerFloorBody> {
     }
   }
 
+  /// The merchant's Buy; the stall stays open for the next one.
+  Future<void> _buy(TowerRun run, TowerData data, String id) =>
+      ref.read(towerProvider.notifier).setRun(towerBuy(run, data, id));
+
+  /// The merchant's Leave: the store closes and the fight is next.
+  Future<void> _leaveStore(TowerRun run) =>
+      ref.read(towerProvider.notifier).setRun(towerLeaveStore(run));
+
+  /// The bargain's choice; its hero change shows in the health at once.
+  Future<void> _bargain(TowerRun run, TowerData data, bool accept) => ref
+      .read(towerProvider.notifier)
+      .setRun(towerChooseBargain(run, data, accept));
+
   Future<void> _leave(TowerRun run) async {
     final yes = await showInkConfirm(
       context,
@@ -252,6 +265,9 @@ class _TowerFloorScreenState extends ConsumerState<_TowerFloorBody> {
                               busy: _busy,
                               onFight: () => _fight(run, data),
                               onParley: (talk) => _parley(run, data, talk),
+                              onBuy: (id) => _buy(run, data, id),
+                              onLeaveStore: () => _leaveStore(run),
+                              onBargain: (take) => _bargain(run, data, take),
                               onShortcut: (take) => ref
                                   .read(towerProvider.notifier)
                                   .setRun(towerChooseShortcut(run, data, take)),
@@ -274,6 +290,9 @@ class _FloorIntro extends ConsumerWidget {
     required this.onFight,
     this.onShortcut,
     this.onParley,
+    this.onBuy,
+    this.onLeaveStore,
+    this.onBargain,
     this.event,
   });
 
@@ -290,6 +309,12 @@ class _FloorIntro extends ConsumerWidget {
 
   /// The parley's choice (true: talk); the fight waits for it.
   final void Function(bool talk)? onParley;
+
+  /// The merchant's Buy and Leave, and the bargain's choice (true takes
+  /// it); the fight waits for the store to close or the bargain to be chosen.
+  final void Function(String id)? onBuy;
+  final VoidCallback? onLeaveStore;
+  final void Function(bool accept)? onBargain;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -343,6 +368,12 @@ class _FloorIntro extends ConsumerWidget {
           if (e.kind == TowerEventKind.parley) ...[
             const SizedBox(height: 6),
             TowerEventCard(e, onParley: onParley),
+          ],
+          if (e.kind == TowerEventKind.merchant ||
+              e.kind == TowerEventKind.bargain) ...[
+            const SizedBox(height: 6),
+            TowerEventCard(e,
+                onBuy: onBuy, onLeaveStore: onLeaveStore, onBargain: onBargain),
           ],
         ],
         if (danger) ...[
@@ -437,10 +468,14 @@ class _FloorIntro extends ConsumerWidget {
         ..._dicePanel(ref),
         const SizedBox(height: 16),
         // A shortcut is chosen first: its card holds the two buttons.
-        // A shortcut or a parley is chosen first: its card holds the buttons.
-        if (!(event?.kind == TowerEventKind.shortcut ||
-                event?.kind == TowerEventKind.parley) ||
-            event?.accepted != null)
+        // A shortcut or a parley is chosen first, a bargain too, and an open
+        // store is left first: their cards hold the buttons.
+        if ((!(event?.kind == TowerEventKind.shortcut ||
+                    event?.kind == TowerEventKind.parley ||
+                    event?.kind == TowerEventKind.bargain) ||
+                event?.accepted != null) &&
+            !((event?.storeOpen ?? false) &&
+                event?.kind == TowerEventKind.merchant))
           FilledButton(
             key: const Key('tower_fight'),
             onPressed: busy ? null : onFight,
