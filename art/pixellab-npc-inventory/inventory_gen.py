@@ -9,7 +9,7 @@ ents=[]
 for o in range(0,200,50):
     for l in call('list_characters',{"limit":50,"offset":o}).splitlines():
         m=re.match(r'\s+([0-9a-f-]{36}) \| (.*?) \| (.*)',l)
-        if m and any(m.group(2)==g for g in GROUPS): ents.append((m.group(1),m.group(2),m.group(3)))
+        if m and any(m.group(2).strip()==g for g in GROUPS): ents.append((m.group(1),m.group(2).strip(),m.group(3)))
 print(len(ents),'entries'); out=[]
 for i,(cid,name,rest) in enumerate(ents):
     t=call('get_character',{"character_id":cid})
