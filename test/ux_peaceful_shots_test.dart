@@ -172,7 +172,7 @@ void main() {
       await open(
           11,
           () => TowerMerchantRoom(
-                wallet: 7,
+                wallet: 3,
                 clanId: 'vigil',
                 stock: const [
                   TowerStallItem(
@@ -180,7 +180,7 @@ void main() {
                   TowerStallItem(
                       id: 'potions',
                       icon: Icons.science_outlined,
-                      price: 8,
+                      price: 4,
                       amount: 2,
                       affordable: false),
                 ],
@@ -191,7 +191,7 @@ void main() {
       await open(
           11,
           () => TowerMerchantRoom(
-                wallet: 4,
+                wallet: 2,
                 clanId: 'vigil',
                 discount: true,
                 stock: const [

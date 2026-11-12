@@ -7,6 +7,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../l10n/app_locale.dart' show appLanguageProvider;
 import '../../l10n/app_strings.dart';
 import '../../providers/clans_provider.dart';
 import '../../theme/icon_sizes.dart';
@@ -239,16 +240,21 @@ class TowerMerchantRoom extends ConsumerWidget {
               style: theme.textTheme.bodyMedium
                   ?.copyWith(color: theme.colorScheme.onSurfaceVariant)),
           const SizedBox(height: 10),
-          Wrap(spacing: 8, runSpacing: 6, children: [
-            InkChip(_sub(ref, 'tower_merchant_wallet', {'n': wallet}),
-                color: ink.gold),
-            if (discount)
-              InkChip(tr(ref, 'tower_merchant_sworn'), color: ink.heal),
-          ]),
-          if (faction != null) ...[
-            const SizedBox(height: 8),
-            ClanDisc(faction, size: 28, name: true),
-          ],
+          InkChip(_sub(ref, 'tower_merchant_wallet', {'n': wallet}),
+              color: ink.gold),
+          const SizedBox(height: 6),
+          // The half price: a muted line for a climber who is not sworn to
+          // the clan, the green chip for one who is.
+          if (discount)
+            InkChip(tr(ref, 'tower_merchant_sworn'), color: ink.heal)
+          else if (faction != null)
+            Text(
+                _sub(ref, 'tower_merchant_half_price',
+                    {'clan': faction.shortFor(ref.watch(appLanguageProvider))}),
+                key: const Key('tower_merchant_half_price'),
+                style: theme.textTheme.bodySmall?.copyWith(
+                    fontStyle: FontStyle.italic,
+                    color: theme.colorScheme.onSurfaceVariant)),
         ]),
       ),
       for (final item in stock)
@@ -281,16 +287,21 @@ class TowerMerchantRoom extends ConsumerWidget {
                             ? ink.gold
                             : ink.blood)),
                 const SizedBox(height: 4),
-                FilledButton(
-                  key: Key('tower_stall_buy_${item.id}'),
-                  onPressed: item.bought || !item.affordable || onBuy == null
-                      ? null
-                      : () => onBuy!(item.id),
-                  child: Text(tr(
-                      ref,
-                      item.bought
-                          ? 'tower_merchant_bought'
-                          : 'tower_merchant_buy')),
+                // A Buy you cannot pay for is switched off and dimmed, like a
+                // bought one.
+                Opacity(
+                  opacity: item.affordable || item.bought ? 1 : .4,
+                  child: FilledButton(
+                    key: Key('tower_stall_buy_${item.id}'),
+                    onPressed: item.bought || !item.affordable || onBuy == null
+                        ? null
+                        : () => onBuy!(item.id),
+                    child: Text(tr(
+                        ref,
+                        item.bought
+                            ? 'tower_merchant_bought'
+                            : 'tower_merchant_buy')),
+                  ),
                 ),
               ]),
             ]),

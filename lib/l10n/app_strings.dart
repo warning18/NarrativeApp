@@ -1640,6 +1640,10 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.en: 'Half price: you are sworn to its clan',
     AppLanguage.fr: 'Moitié prix : vous avez prêté serment à son clan',
   },
+  'tower_merchant_half_price': {
+    AppLanguage.en: 'Half price for those sworn to {clan}',
+    AppLanguage.fr: 'Moitié prix pour ceux qui ont prêté serment à {clan}',
+  },
   'tower_merchant_salve': {
     AppLanguage.en: 'Salve',
     AppLanguage.fr: 'Onguent',
