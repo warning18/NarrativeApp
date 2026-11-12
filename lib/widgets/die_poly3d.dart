@@ -30,6 +30,26 @@ double dieSolidScale(DieShape shape) => switch (shape) {
       _ => 1.0,
     };
 
+/// How a solid rests: tipped and turned a little from the front facet square
+/// to the viewer, and rolled about the line of sight. The d8 and the d12 sit
+/// well with the shared tip and turn; the d4 is turned further, so two of
+/// its faces show (square on it reads as a flat triangle), and the d10 is
+/// rolled so its apex points up: it stands, its front kite the largest face.
+({double tip, double turn, double roll}) dieRestPoseOf(DieShape shape) =>
+    switch (shape) {
+      DieShape.d4 => (
+          tip: dieRestTipX + 0.3,
+          turn: dieRestTurnY + 0.55,
+          roll: 0.0
+        ),
+      DieShape.d10 => (
+          tip: dieRestTipX,
+          turn: dieRestTurnY,
+          roll: -math.pi / 2
+        ),
+      _ => (tip: dieRestTipX, turn: dieRestTurnY, roll: 0.0),
+    };
+
 /// The least side, in logical pixels, a facet's glyph box may have to be
 /// drawn (a plaque smaller than this does not read).
 const double dieGlyphMinSide = 12;
@@ -78,6 +98,7 @@ class PolyDie3D extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final solid = dieSolidOf(shape) ?? dieSolidOf(DieShape.d4)!;
+    final rest = dieRestPoseOf(shape);
     final radius = size * dieSolidScale(shape) / 2;
     final e = Curves.easeOutCubic.transform(t.clamp(0.0, 1.0));
     final spin = (1 - e) * (turns ?? _tumbleTurns) * 2 * math.pi;
@@ -85,8 +106,9 @@ class PolyDie3D extends StatelessWidget {
       ..rotateX(spin * 0.9)
       ..rotateY(spin * 1.3)
       ..rotateZ(spin * 0.35)
-      ..rotateX(dieRestTipX)
-      ..rotateY(dieRestTurnY)
+      ..rotateX(rest.tip)
+      ..rotateY(rest.turn)
+      ..rotateZ(rest.roll)
       ..multiply(_rest(solid));
     final m = model.storage;
     Vec3 rot(Vec3 p) => [
