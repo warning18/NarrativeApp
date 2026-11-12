@@ -1,0 +1,508 @@
+// Rerun: apply the throwaway hooks below to lib/data/tower/, copy this file to
+// test/zz_peace_test.dart, run e.g.
+//   CFGS='base,set115=parley:.15;th:.7;shop:.15;pwhet:999;clan:1;dark:.10;darks:1;darkp:.10;scale:1.15' \
+//   SEEDS=2000 ONLY=none CHECK=1 flutter test test/zz_peace_test.dart
+// then revert the hooks and delete the test.
+/* Throwaway hooks:
+diff --git a/lib/data/tower/tower_hero.dart b/lib/data/tower/tower_hero.dart
+index 70556cd0..9f762fbf 100644
+--- a/lib/data/tower/tower_hero.dart
++++ b/lib/data/tower/tower_hero.dart
+@@ -335,6 +335,11 @@ SimCharacter towerHeroOf(TowerRun run, TowerData data) {
+   // The die the player chose (the floors' heroes are kept on the calling's
+   // own, so a new choice rebuilds nothing).
+   if (run.dieChoice case final die?) towerRollDie(hero, die, data);
++  // THROWAWAY (harness): the run's bought or rested bonuses.
++  if (towerHarnessBonus[run.seed] case final b?) {
++    if (b.stats.isNotEmpty) hero.addAbilities(b.stats);
++    if (b.maxHp != 0) hero.maxHealth = max(1, hero.maxHealth + b.maxHp);
++  }
+   hero.currentHealth = run.health.clamp(0, hero.maxHealth);
+   hero.mana = hero.maxMana;
+   // The flask, filled every floor, and the bag the spoils filled.
+@@ -372,3 +377,6 @@ TowerHeroView towerHeroView(TowerRun run, SimCharacter hero) => TowerHeroView(
+           if (r.id.isNotEmpty) r.id,
+       },
+     );
++
++/// THROWAWAY (harness): per seed, stat points and max health added.
++final Map<int, ({Map<String, int> stats, int maxHp})> towerHarnessBonus = {};
+diff --git a/lib/data/tower/tower_tables.dart b/lib/data/tower/tower_tables.dart
+index 7f77e272..9f664892 100644
+--- a/lib/data/tower/tower_tables.dart
++++ b/lib/data/tower/tower_tables.dart
+@@ -58,7 +58,7 @@ const double towerFoeScale = 1.18;
+ /// all (seeds 1 to 2000); at 1.14, with [towerEventsExtras], 13.5% and
+ /// 25.3% (the events cost the unlocked runs more: no one scale gives back
+ /// both 12.6% and 26.8%).
+-const double towerEventsFoeScale = 1.14;
++double towerEventsFoeScale = 1.14; // THROWAWAY (harness)
+ 
+ /// The floors' extras that differ in a run with the floor events on
+ /// (floor -> extra, in place of its [towerBudgets] one): the floor-20 boss
+*/
+// Throwaway: Tower peaceful floors and stores, on the real floor events.
+// Needs the throwaway hooks in lib/data/tower/ (towerHarnessBonus in
+// tower_hero.dart, towerEventsFoeScale made a var). Not committed.
+//
+// CFGS='base,toll=toll:.10;tollk:hp;tollp:.2;th:.5' SEEDS=2000 ONLY=none \
+//   OUT=out.txt flutter test test/zz_peace_test.dart
+import 'dart:io';
+import 'dart:math';
+
+import 'package:flutter_test/flutter_test.dart';
+import 'package:narrative_data_app/data/ability_check.dart';
+import 'package:narrative_data_app/data/sim_combat.dart' show simBuildShares;
+import 'package:narrative_data_app/data/training.dart' show statPickForShares;
+import 'package:narrative_data_app/data/tower/tower_bot.dart';
+import 'package:narrative_data_app/data/tower/tower_events.dart';
+import 'package:narrative_data_app/data/tower/tower_floors.dart';
+import 'package:narrative_data_app/data/tower/tower_hero.dart';
+import 'package:narrative_data_app/data/tower/tower_progress.dart';
+import 'package:narrative_data_app/data/tower/tower_rewards.dart';
+import 'package:narrative_data_app/data/tower/tower_run.dart';
+import 'package:narrative_data_app/data/tower/tower_tables.dart';
+
+final _data = towerDataFromAssets();
+final _env = Platform.environment;
+final _out = StringBuffer();
+void say(String s) {
+  _out.writeln(s);
+  // ignore: avoid_print
+  print(s);
+}
+
+String pc(num x) => '${(100 * x).toStringAsFixed(1)}%';
+bool isGate(int f) => towerBudgetOf(f).kind != TowerFloorKind.fight;
+
+class Cfg {
+  Cfg(this.name, this.kv);
+  final String name;
+  final Map<String, String> kv;
+  double d(String k, double v) => double.tryParse(kv[k] ?? '') ?? v;
+  int i(String k, int v) => int.tryParse(kv[k] ?? '') ?? v;
+  String s(String k, String v) => kv[k] ?? v;
+  // The draw's kinds, in this order.
+  static const kinds = ['toll', 'parley', 'guard', 'rest', 'shop', 'qm', 'dark'];
+  late final shares = {for (final k in kinds) k: d(k, 0)};
+}
+
+class Fight {
+  Fight(this.floor, this.won, this.kind);
+  final int floor;
+  final bool won;
+  final String kind; // plain | shortcut | revisit
+}
+
+class Res {
+  late TowerRun run;
+  final fights = <Fight>[];
+  final enter2130 = <double>[];
+  final c = <String, int>{};
+  int spent = 0;
+  bool capped = false;
+  void inc(String k, [int n = 1]) => c[k] = (c[k] ?? 0) + n;
+}
+
+TowerRun botPicks(TowerRun run) {
+  while (towerPendingPicks(run) > 0) {
+    final hero = towerHeroOf(run, _data);
+    final offer = towerStatPickOffer(run, _data, hero: hero);
+    if (offer.isEmpty) break;
+    run = towerTakeStatPick(
+        run,
+        _data,
+        statPickForShares(
+            offer,
+            simBuildShares[run.professionId] ?? {hero.preferredStat: 1.0},
+            hero.pickedPoints),
+        offer: offer);
+  }
+  return run;
+}
+
+/// The peaceful or store kind drawn on floor [f] of [seed]: only an
+/// ordinary floor, 2 to 29, that holds no floor event.
+(String, Random)? peaceOf(int seed, int f, Cfg cfg, TowerRun run) {
+  if (f < 2 || f >= towerTop || isGate(f)) return null;
+  final probe = run.copyWith(
+      floor: f,
+      setbacks: 0,
+      crest: 0,
+      status: TowerStatus.climbing,
+      clearShortcut: true);
+  if (towerEventKindOf(probe) != null) return null;
+  final r = towerRandom(seed, 3000 + f, TowerStream.board);
+  final u = r.nextDouble();
+  var acc = 0.0;
+  for (final k in Cfg.kinds) {
+    acc += cfg.shares[k]!;
+    if (u < acc) return (k, r);
+  }
+  return null;
+}
+
+void addBonus(int seed, {String? stat, int points = 0, int maxHp = 0}) {
+  final b = towerHarnessBonus[seed] ?? (stats: <String, int>{}, maxHp: 0);
+  final stats = {...b.stats};
+  if (stat != null) stats[stat] = (stats[stat] ?? 0) + points;
+  towerHarnessBonus[seed] = (stats: stats, maxHp: b.maxHp + maxHp);
+}
+
+/// [run] past floor [run.floor] without its fight: its level arrives (its
+/// max health added), no spoils, no card, no recovery.
+TowerRun pass(TowerRun run) {
+  final f = run.floor;
+  final before = towerHeroOf(run, _data).maxHealth;
+  final landed = run.copyWith(
+      floor: f + 1, crest: max(run.crest, f), clearShortcut: true);
+  final after = towerHeroOf(landed, _data).maxHealth;
+  return botPicks(landed.copyWith(
+      health: (run.health + after - before).clamp(1, after)));
+}
+
+Res play(int seed, TowerProgress progress, Cfg cfg) {
+  final res = Res();
+  towerHarnessBonus.remove(seed);
+  towerEventsFoeScale = cfg.d('scale', 1.14);
+  final events = cfg.i('events', 1);
+  final pick = towerRandom(seed, 0, TowerStream.start);
+  T draw<T>(List<T> from) => from[pick.nextInt(from.length)];
+  final races = _data.races.keys.toList()..sort();
+  final professions = progress.professions.toList()..sort();
+  final clans = progress.clans.toList()..sort();
+  var run = towerStart(
+    seed: seed,
+    raceId: draw(races),
+    professionId: draw(professions),
+    clanPool: clans,
+    startUnlocks: progress.startUnlocks,
+    unlocksOwned: progress.unlocksOwned,
+    events: events,
+    data: _data,
+  );
+  final floors = towerFloorsFor(seed, _data.enemies, events: events);
+  final start = towerHeroOf(run, _data);
+  run = towerBotRollBest(run, _data, floors, [
+    for (final id in start.ownedDice.keys)
+      if (id != start.diceId) id,
+  ]);
+  final used = <int>{};
+  var entered = 0;
+  var guard = 0;
+  final th = cfg.d('th', .5);
+  while (!run.isOver) {
+    if (++guard > 150) {
+      res.capped = true;
+      break;
+    }
+    if (run.status == TowerStatus.climbing) {
+      final f = run.floor;
+      var hero = towerHeroOf(run, _data);
+      if (f >= 21 && f > entered) {
+        res.enter2130.add(hero.currentHealth / hero.maxHealth);
+      }
+      entered = max(entered, f);
+      // A peaceful floor: before the fight.
+      final pk = f > run.crest && !used.contains(f)
+          ? peaceOf(seed, f, cfg, run)
+          : null;
+      if (pk != null && const ['toll', 'parley', 'guard', 'rest'].contains(pk.$1)) {
+        used.add(f);
+        final (kind, r) = pk;
+        final low = hero.currentHealth < th * hero.maxHealth;
+        res.inc('$kind offered');
+        var passed = false;
+        switch (kind) {
+          case 'toll':
+            if (cfg.s('tollk', 'hp') == 'hp') {
+              final cost = (cfg.d('tollp', .2) * hero.maxHealth).round();
+              if (low && run.health > cost) {
+                run = run.copyWith(health: run.health - cost);
+                passed = true;
+              }
+            } else {
+              final n = cfg.i('tolln', 1);
+              if (low && run.potions >= n) {
+                run = run.copyWith(potions: run.potions - n);
+                passed = true;
+              }
+            }
+          case 'parley':
+            final clan = towerClans[r.nextInt(towerClans.length)];
+            final roll = r.nextInt(20) + 1;
+            if (cfg.i('oath', 1) == 1 && run.clanIds.contains(clan)) {
+              if (low || cfg.i('always', 0) == 1) {
+                passed = true;
+                res.inc('parley oath');
+              }
+            } else if (low || cfg.i('always', 0) == 1) {
+              const abilities = ['charisma', 'wisdom', 'dexterity'];
+              final ability = abilities[(f - 1) % abilities.length];
+              final mod = checkBonusFor(hero.abilityScore(ability));
+              final dc = towerSetbackDcOf(f) + cfg.i('dc', 0);
+              res.inc('parley tried');
+              res.inc('parley mod', mod);
+              if (checkPasses(roll, mod, dc)) {
+                passed = true;
+                res.inc('parley won');
+              } else {
+                // Fail: the fight, the foe striking first.
+                final hit = (cfg.d('failp', 0) * hero.maxHealth).round();
+                run = run.copyWith(health: max(1, run.health - hit));
+                hero = towerHeroOf(run, _data);
+              }
+            }
+          case 'guard':
+            final clan = towerClans[r.nextInt(towerClans.length)];
+            final sworn = cfg.i('main', 0) == 1
+                ? run.mainClanId == clan
+                : run.clanIds.contains(clan);
+            if (sworn) {
+              res.inc('guard sworn');
+              if (low || cfg.i('always', 0) == 1) passed = true;
+            }
+          case 'rest':
+            passed = true;
+            if (hero.currentHealth < cfg.d('rth', .7) * hero.maxHealth) {
+              final heal = (cfg.d('heal', .3) * hero.maxHealth).round();
+              run = run.copyWith(
+                  health: min(hero.maxHealth, run.health + heal));
+              res.inc('rest healed');
+            } else {
+              addBonus(seed, stat: hero.preferredStat, points: 1);
+              res.inc('rest stat');
+            }
+        }
+        if (passed) {
+          res.inc('$kind passed');
+          res.inc('passed');
+          run = pass(run);
+          continue;
+        }
+      }
+      // A shortcut (floor events PR 2): as playTowerRun.
+      if (towerEventKindOf(run) == TowerEventKind.shortcut &&
+          run.shortcut == null) {
+        run = towerChooseShortcut(run, _data,
+            hero.currentHealth >= towerBotShortcutHealth * hero.maxHealth);
+        hero = towerHeroOf(run, _data);
+      }
+      final took = run.shortcut ?? false;
+      final floor =
+          took ? towerShortcutFloor(floors[f - 1]) : floors[f - 1];
+      final revisit = f <= run.crest;
+      final maxHealth = hero.maxHealth;
+      final outcome = towerBotFight(
+        run: run,
+        floor: floor,
+        hero: hero,
+        data: _data,
+        random: towerRandom(seed, towerBotFightDraw(run), TowerStream.fight),
+      );
+      res.fights.add(Fight(f, outcome.won,
+          took ? 'shortcut' : (revisit ? 'revisit' : 'plain')));
+      run = towerAfterFight(run, _data,
+          won: outcome.won,
+          healthLeft: hero.currentHealth,
+          potionsLeft: hero.potions,
+          maxHealthBefore: maxHealth,
+          rounds: outcome.rounds);
+    }
+    if (run.status == TowerStatus.choosing) {
+      final f = run.floor;
+      final fresh = !towerIsRevisit(run) && !towerIsShortcutLanding(run);
+      run = botPicks(run);
+      final hero = towerHeroOf(run, _data);
+      final owned = hero.ownedDice.keys.toSet();
+      final index = towerBotChoice(run);
+      final card = index != null && index >= 0 && index < run.offer.length
+          ? run.offer[index]
+          : null;
+      run = towerPick(run, _data, index, hero: hero);
+      run = botPicks(run);
+      final gained = switch (card?.kind) {
+        TowerRewardKind.die => card!.id,
+        TowerRewardKind.clanOath => towerClanDieOf(card!.id, _data.dice),
+        _ => null,
+      };
+      if (gained != null && !owned.contains(gained)) {
+        run = towerBotRollBest(run, _data, floors, [gained]);
+      }
+      // A store: on the landing after its floor's win and card.
+      if (fresh &&
+          !used.contains(f) &&
+          run.status == TowerStatus.climbing &&
+          run.floor == f + 1) {
+        final pk = peaceOf(seed, f, cfg, run);
+        if (pk != null && const ['shop', 'qm', 'dark'].contains(pk.$1)) {
+          used.add(f);
+          store(pk.$1, pk.$2, run, cfg, res, seed, (r) => run = r);
+        }
+      }
+    }
+  }
+  res.run = run;
+  return res;
+}
+
+void store(String kind, Random r, TowerRun run, Cfg cfg, Res res, int seed,
+    void Function(TowerRun) set) {
+  var hero = towerHeroOf(run, _data);
+  if (kind == 'dark') {
+    res.inc('dark offered');
+    final cost = (cfg.d('darkp', .10) * hero.maxHealth).round();
+    final take = cfg.i('always', 1) == 1 ||
+        hero.currentHealth >= cfg.d('dth', .5) * hero.maxHealth;
+    if (take) {
+      res.inc('dark taken');
+      addBonus(seed,
+          stat: hero.preferredStat, points: cfg.i('darks', 2), maxHp: -cost);
+      hero = towerHeroOf(run, _data);
+      set(run.copyWith(health: min(run.health, hero.maxHealth)));
+    }
+    return;
+  }
+  // The merchant (shop) or the sworn clan's quartermaster (qm, half price).
+  if (kind == 'qm' && run.mainClanId.isEmpty) {
+    res.inc('qm unsworn');
+    return;
+  }
+  res.inc('$kind visited');
+  // The merchant's clan (clan:1): sworn to it, half price.
+  final clan = towerClans[r.nextInt(towerClans.length)];
+  final half = kind == 'qm' ||
+      (cfg.i('clan', 0) == 1 && run.clanIds.contains(clan));
+  if (half) res.inc('$kind half');
+  int price(int p) => half ? (p + 1) ~/ 2 : p;
+  final pricePot = price(cfg.i('ppot', 4));
+  final priceWhet = price(cfg.i('pwhet', 6));
+  final priceSalve = price(cfg.i('psalve', 3));
+  int wallet() => run.marks - res.spent;
+  final cur = cfg.s('cur', 'marks');
+  if (cur == 'marks') {
+    if (wallet() >= priceWhet) {
+      res.spent += priceWhet;
+      addBonus(seed, stat: hero.preferredStat, points: 1);
+      res.inc('$kind whet');
+    }
+    if (hero.currentHealth < .6 * hero.maxHealth && wallet() >= priceSalve) {
+      res.spent += priceSalve;
+      final heal = (cfg.d('salve', .4) * hero.maxHealth).round();
+      run = run.copyWith(health: min(hero.maxHealth, run.health + heal));
+      res.inc('$kind salve');
+    }
+    if (run.potions <= 3 && wallet() >= pricePot) {
+      res.spent += pricePot;
+      run = run.copyWith(potions: min(towerBagCap, run.potions + 2));
+      res.inc('$kind pots');
+    }
+  } else {
+    // Paid in bag potions: a whetstone for [ppot] potions.
+    final n = price(cfg.i('wpot', 2));
+    if (run.potions >= n) {
+      run = run.copyWith(potions: run.potions - n);
+      addBonus(seed, stat: hero.preferredStat, points: 1);
+      res.inc('$kind whet');
+    }
+  }
+  set(run);
+}
+
+int median(List<num> v) {
+  if (v.isEmpty) return 0;
+  final s = [...v]..sort();
+  return s[s.length ~/ 2].round();
+}
+
+void report(String name, List<Res> rs) {
+  final n = rs.length;
+  final won = rs.where((r) => r.run.status == TowerStatus.won).length;
+  final nf = [for (final r in rs) r.fights.length];
+  final deathAt = <int, int>{}, foughtAt = <int, int>{};
+  for (final r in rs) {
+    for (final x in r.fights) {
+      if (x.kind == 'shortcut') continue;
+      foughtAt[x.floor] = (foughtAt[x.floor] ?? 0) + 1;
+      if (!x.won) deathAt[x.floor] = (deathAt[x.floor] ?? 0) + 1;
+    }
+  }
+  String rate(int f) => pc((deathAt[f] ?? 0) / max(1, foughtAt[f] ?? 0));
+  var worst = 0, worstR = -1.0;
+  for (var f = 1; f <= 30; f++) {
+    if (isGate(f)) continue;
+    final r = (deathAt[f] ?? 0) / max(1, foughtAt[f] ?? 0);
+    if (r > worstR) {
+      worstR = r;
+      worst = f;
+    }
+  }
+  double mean(Iterable<num> v) =>
+      v.isEmpty ? 0 : v.fold<num>(0, (a, b) => a + b) / v.length;
+  final enter = [for (final r in rs) ...r.enter2130];
+  final banked = [for (final r in rs) max(0, r.run.marks - r.spent)];
+  say('| $name | ${pc(won / n)} ($won/$n) | ${mean(nf).toStringAsFixed(1)} / ${median(nf)}'
+      ' | ${rate(5)} / ${rate(15)} / ${rate(25)}'
+      ' | ${rate(10)} / ${rate(20)} / ${rate(30)}'
+      ' | f$worst ${pc(worstR)} | ${mean(enter).toStringAsFixed(2)}'
+      ' | ${mean(banked).toStringAsFixed(1)} |');
+  final all = <String, int>{};
+  for (final r in rs) {
+    r.c.forEach((k, v) => all[k] = (all[k] ?? 0) + v);
+  }
+  final keys = all.keys.toList()..sort();
+  say('    ${[
+    for (final k in keys) '$k ${(all[k]! / n).toStringAsFixed(2)}',
+  ].join(' | ')} | spent ${mean([for (final r in rs) r.spent]).toStringAsFixed(1)}'
+      ' | capped ${rs.where((r) => r.capped).length} max fights ${nf.reduce(max)}');
+}
+
+Cfg parseCfg(String spec) {
+  if (!spec.contains('=')) return Cfg(spec, const {});
+  final parts = spec.split('=');
+  return Cfg(parts[0], {
+    for (final p in parts[1].split(';'))
+      p.split(':')[0]: p.split(':').sublist(1).join(':'),
+  });
+}
+
+void main() {
+  final specs = (_env['CFGS'] ?? 'base').split(',');
+  final from = int.tryParse(_env['FROM'] ?? '') ?? 1;
+  final seeds = int.tryParse(_env['SEEDS'] ?? '') ?? 2000;
+  test('peace', () {
+    final sw = Stopwatch()..start();
+    for (final spec in specs) {
+      final cfg = parseCfg(spec);
+      for (final c in {
+        'none': const TowerProgress(),
+        'all': towerAllUnlocked
+      }.entries) {
+        if (_env['ONLY'] != null && _env['ONLY'] != c.key) continue;
+        final rs = [
+          for (var s = from; s < from + seeds; s++) play(s, c.value, cfg)
+        ];
+        report('${cfg.name}/${c.key}', rs);
+        if (_env['CHECK'] == '1') {
+          var same = 0;
+          towerEventsFoeScale = 1.14;
+          for (var s = from; s < from + seeds; s++) {
+            towerHarnessBonus.remove(s);
+            final b = playTowerRun(
+                seed: s, data: _data, progress: c.value, events: 1);
+            final a = rs[s - from].run;
+            if (a.floorReached == b.floorReached &&
+                a.status == b.status &&
+                a.health == b.health &&
+                a.marks == b.marks) {
+              same++;
+            }
+          }
+          say('  vs playTowerRun(events: 1) identical: $same/$seeds');
+        }
+      }
+    }
+    say('time ${sw.elapsed.inSeconds}s');
+    File(_env['OUT'] ?? '/dev/null').writeAsStringSync(_out.toString());
+  }, timeout: Timeout.none);
+}
