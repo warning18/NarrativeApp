@@ -11,7 +11,7 @@ import 'dart:math';
 import 'package:flutter_test/flutter_test.dart';
 
 import 'package:narrative_data_app/combat/fight_numbers.dart'
-    show potionHealAmount;
+    show eliteStatMultiplier, potionHealAmount;
 import 'package:narrative_data_app/combat/stat_rules.dart' show levelStatPicks;
 import 'package:narrative_data_app/data/ability_check.dart' show checkChance;
 import 'package:narrative_data_app/data/tower/tower_bot.dart';
@@ -428,8 +428,11 @@ void main() {
         expect(view.landsOn, floor + 1 + view.skip!);
         expect(view.landsOn, lessThan(nextGate(floor)));
         if (base.isPack || base.elite) {
-          expect(view.foeIds, [...base.enemyIds, base.enemyIds.first]);
+          // An Elite pack: the same foes, the extra times the Elite's.
+          expect(view.foeIds, base.enemyIds);
           expect(view.elite, isFalse);
+          expect(towerShortcutFloor(base).extra,
+              closeTo(base.extra * eliteStatMultiplier, 1e-9));
         } else {
           expect(view.foeIds, base.enemyIds);
           expect(view.elite, isTrue);

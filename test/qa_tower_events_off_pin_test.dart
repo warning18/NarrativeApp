@@ -38,8 +38,11 @@ _Pin _measure(TowerProgress progress) {
 void main() {
   // v1.944: the floor events switched on (towerEventsLive 1, the user's
   // call); events off, these were 55 / 242 / 9522 and 145 / 335 / 11294.
-  const none = (top: 58, floor20: 231, floorSum: 9358);
-  const all = (top: 129, floor20: 334, floorSum: 11203);
+  // A pack's shortcut an Elite pack, no foe added, the events' foes 1.16
+  // (Core's events-on review): these were 58 / 231 / 9358 and
+  // 129 / 334 / 11203.
+  const none = (top: 56, floor20: 222, floorSum: 9264);
+  const all = (top: 128, floor20: 323, floorSum: 11016);
 
   test('the live Tower (events off), no unlocks, is the pinned curve', () {
     final m = _measure(const TowerProgress());

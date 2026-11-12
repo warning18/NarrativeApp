@@ -17,7 +17,8 @@
 
 import 'dart:math';
 
-import '../../combat/fight_numbers.dart' show potionHealAmount;
+import '../../combat/fight_numbers.dart'
+    show eliteStatMultiplier, potionHealAmount;
 import '../ability_check.dart' show checkBonusFor, checkChance, checkPasses;
 import '../sim_combat.dart' show SimCharacter;
 import 'tower_floors.dart';
@@ -637,15 +638,18 @@ int towerShortcutLandsOn(int floor, int skip) =>
 
 /// [floor] made tougher for a shortcut (the proposal's option (a)): a lone
 /// foe made an Elite (eliteStatMultiplier); a pack, or a lone foe already
-/// an Elite, one more foe (its strongest again).
+/// an Elite, the same foes as an Elite pack: its extra times
+/// eliteStatMultiplier, no foe added (one more foe made the late packs'
+/// shortcut lost 39% of the time and took floors 21 and 22 over 10% of
+/// the runs, seeds 1 to 2000).
 TowerFloor towerShortcutFloor(TowerFloor floor) => TowerFloor(
       floor: floor.floor,
       kind: floor.kind,
       chapter: floor.chapter,
-      extra: floor.extra,
-      enemyIds: floor.isPack || floor.elite
-          ? [...floor.enemyIds, floor.enemyIds.first]
-          : floor.enemyIds,
+      extra: floor.isPack || floor.elite
+          ? floor.extra * eliteStatMultiplier
+          : floor.extra,
+      enemyIds: floor.enemyIds,
       affixes: floor.affixes,
       elite: !floor.isPack && !floor.elite,
       events: floor.events,
