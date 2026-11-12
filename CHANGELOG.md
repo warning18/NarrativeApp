@@ -8,6 +8,10 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.944.0+980]
+
+- Tower: the floor events are on. A new climb meets three of them between ordinary floors. A **setback** is a d20 check (strength, dexterity or wisdom, odds shown): pass it and you gain a potion, fail it and you slip back 1 to 3 floors, never past a warden or a boss, once a climb. A **rival** is a fight that, won within 3 rounds, lets you skip the next floor. A **shortcut** offers a tougher version of the floor's fight: win it and you skip 1 to 3 floors, lose it and the climb ends. A floor you meet again after a slip pays nothing, and a slip never takes away a level or a mark. The foes are tuned so a climb with events is about as hard as one without. A climb started before this version keeps playing without them.
+
 ## [1.943.0+979]
 
 - Towns: the sea lies where the sphere puts it. Saltmouth, Greyhithe and the White Anchorage have their sea to the north now. Their whole plan is turned a half turn: water, walls, streets, bridges, districts, buildings and the town's services. Their streets, buildings and names are the same, only turned. Every other town keeps its sea to the south, as the sphere has it. The plans are turned where they are stored, so no hand edit is lost. The plan generator no longer reproduces the stored plans and is not to be run for now (`docs/city-plans-tools.md`).
