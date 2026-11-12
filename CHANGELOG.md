@@ -8,9 +8,13 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
-## [1.941.0+977]
+## [1.943.0+979]
 
 - Towns: the sea lies where the sphere puts it. Saltmouth, Greyhithe and the White Anchorage have their sea to the north now. Their whole plan is turned a half turn: water, walls, streets, bridges, districts, buildings and the town's services. Their streets, buildings and names are the same, only turned. Every other town keeps its sea to the south, as the sphere has it. The plans are turned where they are stored, so no hand edit is lost. The plan generator no longer reproduces the stored plans and is not to be run for now (`docs/city-plans-tools.md`).
+
+## [1.942.0+978]
+
+- Tower floor events, the shortcut card (UX; the events are still off for players until the user's OK, so nothing shows yet): before an ordinary floor's fight the offer reads "A stair in the wall" with what a win skips and that a loss ends the climb, and two full-width buttons, "Take the stair" and "Take the door"; the fight waits for the choice. The stair taken shows a one-line note, the won fight's cards a line with the way up, the landing floor Core's result line (all in one face), and the rail an arrow up to the landing. Also: an Elite foe with an affix no longer squeezes its name into a vertical strip on a small phone (its marks wrap under the name), and the rail's current floor is drawn in the serif digits (a 26 read as 88).
 
 ## [1.940.0+976]
 
