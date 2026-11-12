@@ -2,6 +2,9 @@
 // writes them to assets/gamedata/city_plans.json, keeping the building
 // names already there. Run from the repository's root:
 //   dart run tool/city_plans/gen_city_plans.dart
+//
+// Do not run it for now: it no longer reproduces city_plans.json (later
+// hand edits would be lost). See docs/city-plans-tools.md.
 import 'dart:convert';
 import 'dart:io';
 
@@ -544,7 +547,8 @@ void main() {
     // The town's services, pinned on the plan as laid (wave 14).
     record['services'] = placeTownServices(
         city, jsonDecode(jsonEncode(record)) as Map<String, dynamic>);
-    out[city] = record;
+    // The sea turned to the side of the coast (proposal F).
+    out[city] = turnCityPlan(record, citySeaSides[city] ?? SeaSide.south);
   }
   file.writeAsStringSync(encodeCityPlans(out));
   stdout.writeln('wrote $_out');
