@@ -4,7 +4,7 @@ Audit by the Art session, 2026-11-10, v1.889 tree. No generation done for it.
 PixelLab balance at the audit: **1,331.5 generations** left of 2,000 (refills 2026-11-16, Tier 1).
 The user's library: 129 characters in about 25 groups (Hero 26 states + 1, peasant/Mimi/woman groups, Orsolya Keld 9, bandit 6, oni 5+2, goblin shaman 5, scavenger 4, rat 3, noble bouncer 3, Sedge 2, Dices 2, a bear, a 128px ship, a few singles).
 
-Rule of the user: the UX does not change; only the elements drawn inside screens get new art. Banners keep today's style.
+Rule of the user: the UX does not change; only the elements drawn inside screens get new art. Banners: redrawn in the new look by the user's decision (see `docs/art/banners-final-brief.md`).
 
 ## Prices (from PixelLab's help, free to read)
 
