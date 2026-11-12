@@ -11,6 +11,7 @@ isn't reconstructable from git history alone.
 ## [1.945.0+981]
 
 - Maps: going up from a town to the world, the town's plan shrinks a little and fades over the ball instead of cutting. The full map page, opened from the Journey, carries the level strip (World · Town · District · Room); a tap on a rung returns to the Journey on that level. Fixed: after going up to the world from a district, "Town" could land on the district.
+- Maps: close up, the sphere's ground is shown in hard squares instead of a blur (the user's choice of 12 November). On the whole ball it stays smooth.
 
 ## [1.943.0+979]
 
