@@ -1736,6 +1736,18 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.en: 'It knows your oath: it steps aside, no roll.',
     AppLanguage.fr: 'Il connaît votre serment\u00a0: il s’écarte, sans jet.',
   },
+  'tower_event_merchant_paid': {
+    AppLanguage.en: 'Bought from the merchant: {paid} marks.',
+    AppLanguage.fr: 'Acheté au marchand\u00a0: {paid} marques.',
+  },
+  'tower_event_bargain_taken': {
+    AppLanguage.en: 'The bargain is struck.',
+    AppLanguage.fr: 'Le marché est conclu.',
+  },
+  'tower_event_bargain_refused': {
+    AppLanguage.en: 'You refuse the bargain.',
+    AppLanguage.fr: 'Vous refusez le marché.',
+  },
   'tower_event_rolled': {
     AppLanguage.en: 'You roll {roll}, total {total}.',
     AppLanguage.fr: 'Vous obtenez {roll}, total {total}.',

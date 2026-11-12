@@ -8,6 +8,13 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.959.0+995]
+
+- Tower: floor events, part 4, the merchant and the bargain (docs/proposals/tower-peaceful-floors-and-stores.md). **Off for players**: they only play in a climb of events version 2, which no player starts yet. In the engine:
+  - **Merchant:** opens on the landing after a won ordinary floor (5% of floors), and always after the bosses of floors 10 and 20, as a shop room of its own. It sells a salve (heals 40%, 3 marks) and a bundle of 2 potions (4 marks), paid in this climb's marks. A hero sworn to its clan pays half (2 marks each). Marks spent there are not banked at the end.
+  - **Bargain:** 10% of floors. Give up a tenth of your max health for the rest of the climb, for +1 to your calling's damage stat.
+  - Measured with the parley, on 2,000 seeds at the stores' foe scale (1.15): 14.0% of climbs reach the top with no unlocks and 24.8% with all, about 1.7 to 2 shops a climb, and about 1.3 fewer marks banked than without the stores.
+
 ## [1.958.0+994]
 
 - Dice: the Gambler's Die is a d12 (was a d20), as the user asked: every die rolled in a fight has 4, 6, 8, 10 or 12 faces. It keeps all six of its own faces (Long Shot, Scrape, Lucky Strike, Wild Card, Pocket Flask, Second Thought) and one 1 and one 3 each of Strike, Guard and Mend. Its plain 2s go, so it swings harder around the same average. It now holds at most 3 copies of one skill (was 5). On a saved game, a skill set on a face beyond the twelfth goes back to the skill list (it stays learned; skill picks are free and can be redone), and Hammersmith work on such a face is paid back in full. The die looks the same, now as a d12.

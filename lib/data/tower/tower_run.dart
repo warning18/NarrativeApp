@@ -61,6 +61,10 @@ class TowerRun {
     this.lastEvent,
     this.shortcut,
     this.parley,
+    this.marksSpent = 0,
+    this.bought = const {},
+    this.store,
+    this.bargains = const {},
   });
 
   /// A saved run. A save from an older version is brought up to date once,
@@ -146,6 +150,20 @@ class TowerRun {
           : null,
       shortcut: json['shortcut'] as bool?,
       parley: json['parley'] as bool?,
+      marksSpent: (json['spent'] as num?)?.toInt() ?? 0,
+      bought: {
+        for (final MapEntry(:key, :value)
+            in ((json['bought'] as Map?) ?? const {}).entries)
+          int.parse(key.toString()): [
+            for (final id in value as List) id.toString(),
+          ],
+      },
+      store: (json['store'] as num?)?.toInt(),
+      bargains: {
+        for (final MapEntry(:key, :value)
+            in ((json['bargains'] as Map?) ?? const {}).entries)
+          int.parse(key.toString()): (value as num).toInt(),
+      },
     );
     if (json.containsKey('picks')) return run;
     final earned = (towerLevelAfter(run.floorsCleared) - 1) * levelStatPicks;
@@ -260,6 +278,25 @@ class TowerRun {
   /// the run moves on.
   final bool? parley;
 
+  /// The marks spent in the stores (floor events PR 4, towerBuy): they come
+  /// off what the run banks ([marks]).
+  final int marksSpent;
+
+  /// What each floor's store sold (floor events PR 4, floor -> the stock's
+  /// ids, towerStockIds, in the order bought).
+  final Map<int, List<String>> bought;
+
+  /// The floor whose store is open on its landing (floor events PR 4: a
+  /// merchant or a bargain, towerStoreKindOf), or null. Cleared by
+  /// towerLeaveStore or the next fight.
+  final int? store;
+
+  /// Each floor's bargain (floor events PR 4, towerChooseBargain): floor ->
+  /// the max health it cut (towerBargainHealthShare of the max health then;
+  /// towerHeroOf replays the cut, and the stat point, after the levels), or
+  /// 0 when it was refused.
+  final Map<int, int> bargains;
+
   /// The height cleared: the levels, the stat picks earned, the hero's
   /// replay (towerHeroOf) and the marks read it, so a fall never takes a
   /// level or a mark away.
@@ -282,13 +319,17 @@ class TowerRun {
   int get floorReached =>
       status == TowerStatus.won ? towerTop : max(floor, crest);
 
-  /// The marks the run has earned so far (§7): banked when it ends. Paid by
-  /// the height cleared.
-  int get marks => towerMarksOf(heightCleared, refused.length);
+  /// The marks the run has earned so far (§7), paid by the height cleared,
+  /// before the stores (floor events PR 4).
+  int get marksEarned => towerMarksOf(heightCleared, refused.length);
 
-  /// A copy with the fields given. [lastEvent], [shortcut] and [parley]
-  /// can't be cleared by passing null: [clearLastEvent], [clearShortcut]
-  /// and [clearParley] clear them.
+  /// The marks the run banks when it ends: those it earned, less those it
+  /// spent in the stores ([marksSpent]). Also what a store may still take.
+  int get marks => max(0, marksEarned - marksSpent);
+
+  /// A copy with the fields given. [lastEvent], [shortcut], [parley] and
+  /// [store] can't be cleared by passing null: [clearLastEvent],
+  /// [clearShortcut], [clearParley] and [clearStore] clear them.
   TowerRun copyWith({
     int? floor,
     int? health,
@@ -311,6 +352,11 @@ class TowerRun {
     bool clearShortcut = false,
     bool? parley,
     bool clearParley = false,
+    int? marksSpent,
+    Map<int, List<String>>? bought,
+    int? store,
+    bool clearStore = false,
+    Map<int, int>? bargains,
   }) =>
       TowerRun(
         seed: seed,
@@ -337,6 +383,10 @@ class TowerRun {
         lastEvent: clearLastEvent ? null : lastEvent ?? this.lastEvent,
         shortcut: clearShortcut ? null : shortcut ?? this.shortcut,
         parley: clearParley ? null : parley ?? this.parley,
+        marksSpent: marksSpent ?? this.marksSpent,
+        bought: bought ?? this.bought,
+        store: clearStore ? null : store ?? this.store,
+        bargains: bargains ?? this.bargains,
       );
 
   Map<String, dynamic> toJson() => {
@@ -371,6 +421,17 @@ class TowerRun {
         if (lastEvent != null) 'last': lastEvent!.toJson(),
         if (shortcut != null) 'shortcut': shortcut,
         if (parley != null) 'parley': parley,
+        if (marksSpent != 0) 'spent': marksSpent,
+        if (bought.isNotEmpty)
+          'bought': {
+            for (final MapEntry(:key, :value) in bought.entries) '$key': value,
+          },
+        if (store != null) 'store': store,
+        if (bargains.isNotEmpty)
+          'bargains': {
+            for (final MapEntry(:key, :value) in bargains.entries)
+              '$key': value,
+          },
       };
 }
 
@@ -477,6 +538,8 @@ TowerRun towerAfterFight(TowerRun run, TowerData data,
     int? maxHealthBefore,
     int? rounds}) {
   if (run.status != TowerStatus.climbing) return run;
+  // The store on the landing closes with the fight (floor events PR 4).
+  if (run.store != null) run = run.copyWith(clearStore: true);
   if (!won) return run.copyWith(status: TowerStatus.dead, health: 0);
   final rival = towerRivalResultOf(run, rounds);
   final potions =
@@ -600,7 +663,8 @@ TowerRun towerTakeStatPick(TowerRun run, TowerData data, int index,
 /// towerAfterEvent): a setback's test rolled, a rival's or a shortcut's
 /// skip landed (a shortcut's landing card dealt: the run chooses again, on
 /// the floor below the landing); a skip's level-up picks wait on the
-/// landing.
+/// landing. Last, a store on the landing opens (floor events PR 4,
+/// towerOpenStore).
 TowerRun towerPick(TowerRun run, TowerData data, int? index,
     {SimCharacter? hero}) {
   if (run.status != TowerStatus.choosing) return run;
@@ -611,34 +675,38 @@ TowerRun towerPick(TowerRun run, TowerData data, int? index,
     hero = null;
   }
   if (index == null || index < 0 || index >= run.offer.length) {
-    return towerAfterEvent(
+    return towerOpenStore(
         run,
-        run.copyWith(
-          status: TowerStatus.climbing,
-          floor: run.floor + 1,
-          refused:
-              run.offer.isEmpty ? run.refused : {...run.refused, run.floor},
-          offer: const [],
-          clearShortcut: true,
-          clearParley: true,
-        ),
-        data);
+        towerAfterEvent(
+            run,
+            run.copyWith(
+              status: TowerStatus.climbing,
+              floor: run.floor + 1,
+              refused:
+                  run.offer.isEmpty ? run.refused : {...run.refused, run.floor},
+              offer: const [],
+              clearShortcut: true,
+              clearParley: true,
+            ),
+            data));
   }
   final card = run.offer[index];
   hero ??= towerHeroOf(run, data);
   towerApplyReward(hero, card, data, bag: run.dieChoice != null);
-  return towerAfterEvent(
+  return towerOpenStore(
       run,
-      run.copyWith(
-        status: TowerStatus.climbing,
-        floor: run.floor + 1,
-        health: hero.currentHealth.clamp(1, hero.maxHealth),
-        taken: {...run.taken, run.floor: card},
-        offer: const [],
-        clearShortcut: true,
-        clearParley: true,
-      ),
-      data);
+      towerAfterEvent(
+          run,
+          run.copyWith(
+            status: TowerStatus.climbing,
+            floor: run.floor + 1,
+            health: hero.currentHealth.clamp(1, hero.maxHealth),
+            taken: {...run.taken, run.floor: card},
+            offer: const [],
+            clearShortcut: true,
+            clearParley: true,
+          ),
+          data));
 }
 
 /// [run] left by the player: over, its marks earned.

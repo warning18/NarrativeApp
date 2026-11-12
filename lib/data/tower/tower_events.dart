@@ -7,8 +7,13 @@
 // other draw moves; a run whose TowerRun.events is 0 meets none and plays
 // as before. Floor events PR 3 (docs/proposals/tower-peaceful-floors-and-stores.md)
 // adds the parley, on its own draw of that stream: talk past a floor's
-// guardian (a check, or no roll when sworn to its clan) or fight it. Pure: towerAfterFight and towerPick resolve them, the screen
-// reads towerEventOf.
+// guardian (a check, or no roll when sworn to its clan) or fight it. Floor
+// events PR 4 adds the stores on the same draw, on the landing after a won
+// floor: the merchant (a salve and a potion bundle for the run's marks; one
+// always after the bosses of towerShopFloors) and the bargain (max health
+// for a stat point). The parley and the stores play only from events
+// version towerPeacefulEvents. Pure: towerAfterFight and towerPick resolve
+// them, the screen reads towerEventOf.
 
 import 'dart:math';
 
@@ -42,6 +47,18 @@ enum TowerEventKind {
   /// floor, the floor's level and marks given, its spoils, card and
   /// recovery given up; failed, or the fight chosen, the floor's fight.
   parley,
+
+  /// The merchant (floor events PR 4), a store on the landing after the
+  /// floor's win and card: its stock (towerStockIds) for the run's marks,
+  /// half price when sworn to its clan (towerBuy), until the player leaves
+  /// (towerLeaveStore) or fights.
+  merchant,
+
+  /// The bargain (floor events PR 4), a store on the landing after the
+  /// floor's win and card: [towerBargainHealthShare] of the max health for
+  /// the rest of the run, for [towerBargainPoints] to the calling's damage
+  /// stat; taken or refused once (towerChooseBargain).
+  bargain,
 }
 
 /// The background picture of each kind's card (UX-2's, drawn by Art): a
@@ -51,6 +68,8 @@ String towerEventBackgroundOf(TowerEventKind kind) => switch (kind) {
       TowerEventKind.rival => 'rival',
       TowerEventKind.shortcut => 'shortcut',
       TowerEventKind.parley => 'parley',
+      TowerEventKind.merchant => 'merchant',
+      TowerEventKind.bargain => 'bargain',
     };
 
 /// What a parley's pass gives up (TowerEventView.forgoes): the floor's
@@ -68,6 +87,9 @@ class TowerEventResult {
     required this.passed,
     required this.from,
     required this.to,
+    this.bought = const [],
+    this.paid = 0,
+    this.healed = 0,
   });
 
   factory TowerEventResult.fromJson(Map<String, dynamic> json) =>
@@ -78,6 +100,11 @@ class TowerEventResult {
         passed: json['passed'] == true,
         from: (json['from'] as num).toInt(),
         to: (json['to'] as num).toInt(),
+        bought: [
+          for (final id in (json['bought'] as List?) ?? const []) id.toString(),
+        ],
+        paid: (json['paid'] as num?)?.toInt() ?? 0,
+        healed: (json['healed'] as num?)?.toInt() ?? 0,
       );
 
   final TowerEventKind kind;
@@ -96,6 +123,14 @@ class TowerEventResult {
   final int from;
   final int to;
 
+  /// A merchant (floor events PR 4): what its store sold so far (stock
+  /// ids, in the order bought), the marks paid for it, the health its salve
+  /// gave back. A merchant's result is [passed] and runs [from] the floor
+  /// whose store it is [to] the landing. A bargain's [passed] is taken.
+  final List<String> bought;
+  final int paid;
+  final int healed;
+
   Map<String, dynamic> toJson() => {
         'kind': kind.name,
         if (roll != null) 'roll': roll,
@@ -103,6 +138,9 @@ class TowerEventResult {
         'passed': passed,
         'from': from,
         'to': to,
+        if (bought.isNotEmpty) 'bought': bought,
+        if (paid != 0) 'paid': paid,
+        if (healed != 0) 'healed': healed,
       };
 
   @override
@@ -113,10 +151,59 @@ class TowerEventResult {
       other.total == total &&
       other.passed == passed &&
       other.from == from &&
-      other.to == to;
+      other.to == to &&
+      other.bought.join(',') == bought.join(',') &&
+      other.paid == paid &&
+      other.healed == healed;
 
   @override
-  int get hashCode => Object.hash(kind, roll, total, passed, from, to);
+  int get hashCode => Object.hash(
+      kind, roll, total, passed, from, to, bought.join(','), paid, healed);
+}
+
+/// What a merchant sells (TowerStockView.kind).
+enum TowerStockKind {
+  /// Heals [towerSalveShare] of the max health.
+  salve,
+
+  /// Puts [towerBundlePotions] potions in the bag (up to [towerBagCap]).
+  potions,
+}
+
+/// The merchant's stock, by id (TowerRun.bought), in the order shown.
+const Map<String, TowerStockKind> towerStockIds = {
+  'salve': TowerStockKind.salve,
+  'potions': TowerStockKind.potions,
+};
+
+/// One line of a merchant's stock (TowerEventView.stock).
+class TowerStockView {
+  const TowerStockView({
+    required this.id,
+    required this.kind,
+    required this.price,
+    required this.amount,
+    required this.bought,
+    required this.affordable,
+  });
+
+  /// The stock's id (towerStockIds) and what it is.
+  final String id;
+  final TowerStockKind kind;
+
+  /// Its price in marks, the sworn discount applied (towerStockPriceOf).
+  final int price;
+
+  /// What it gives: the health a salve heals (as the hero stands now), the
+  /// potions a bundle puts in the bag.
+  final int amount;
+
+  /// Bought already at this store (one of each a store).
+  final bool bought;
+
+  /// Not bought yet, within the wallet (TowerEventView.wallet), and of use
+  /// (a bundle needs room in the bag): towerBuy takes it.
+  final bool affordable;
 }
 
 /// What the floor screen shows of [TowerRun.floor]'s event (towerEventOf).
@@ -142,6 +229,13 @@ class TowerEventView {
     this.clanId,
     this.oathPass,
     this.forgoes,
+    this.discount,
+    this.wallet,
+    this.stock,
+    this.maxHealthCost,
+    this.stat,
+    this.points,
+    this.storeOpen = false,
     this.background = '',
     this.result,
   });
@@ -199,9 +293,31 @@ class TowerEventView {
   final bool? oathPass;
   final List<String>? forgoes;
 
+  /// A merchant (floor events PR 4): its clan ([clanId]), sworn to it
+  /// ([discount]: half price, rounded up), the marks left to spend
+  /// ([wallet]: TowerRun.marks, those earned less those spent) and its
+  /// [stock] (towerStockIds' order).
+  final bool? discount;
+  final int? wallet;
+  final List<TowerStockView>? stock;
+
+  /// A bargain (floor events PR 4): the max health it costs as the hero
+  /// stands now ([maxHealthCost]), the stat it raises ([stat]: the
+  /// calling's damage stat) and by how much ([points]), and the choice
+  /// ([accepted]: null until chosen, TowerRun.bargains).
+  final int? maxHealthCost;
+  final String? stat;
+  final int? points;
+
+  /// A store is open on this landing (floor events PR 4: [kind] merchant
+  /// or bargain, TowerRun.store): the screen shows its panel before the
+  /// next fight. [floor] is the landing; the store's floor is the one
+  /// below. Left (towerLeaveStore), the view is the landing's own event.
+  final bool storeOpen;
+
   /// The key of the card's background picture (towerEventBackgroundOf:
-  /// 'setback', 'rival', 'shortcut', 'parley'); '' when the floor holds no
-  /// event.
+  /// 'setback', 'rival', 'shortcut', 'parley', 'merchant', 'bargain'); ''
+  /// when the floor holds no event.
   final String background;
 
   /// The last event's end (TowerRun.lastEvent), until the next fight ends.
@@ -270,8 +386,188 @@ _Drawn? _peacefulDrawn(int seed, int floor) {
   if (u < towerParleyShare) {
     return _Drawn(TowerEventKind.parley, 0, roll, clanId: clanId);
   }
+  if (u < towerParleyShare + towerMerchantShare) {
+    return _Drawn(TowerEventKind.merchant, 0, roll, clanId: clanId);
+  }
+  if (u < towerParleyShare + towerMerchantShare + towerBargainShare) {
+    return _Drawn(TowerEventKind.bargain, 0, roll, clanId: clanId);
+  }
   return null;
 }
+
+bool _isStore(TowerEventKind kind) =>
+    kind == TowerEventKind.merchant || kind == TowerEventKind.bargain;
+
+/// The store (floor events PR 4) on the landing after the run of [seed]
+/// wins [floor]: a merchant or a bargain of the peaceful draw
+/// (_peacefulDrawn), or a merchant after each boss of [towerShopFloors],
+/// its clan drawn on that floor's own index of the draw (after its first
+/// draw, as _peacefulDrawn reads them).
+_Drawn? _storeDrawn(int seed, int floor) {
+  if (towerShopFloors.contains(floor)) {
+    final random =
+        towerRandom(seed, towerPeacefulDraw + floor, TowerStream.board)
+          ..nextDouble();
+    return _Drawn(TowerEventKind.merchant, 0, 0,
+        clanId: towerClans[random.nextInt(towerClans.length)]);
+  }
+  final drawn = _peacefulDrawn(seed, floor);
+  return drawn != null && _isStore(drawn.kind) ? drawn : null;
+}
+
+/// [next] (the run moved on from [chose], its floor's card picked or
+/// refused, towerPick) with the store of [chose]'s floor open (floor
+/// events PR 4, TowerRun.store): only on a run playing
+/// [towerPeacefulEvents] or more, after a floor won for the first time (not
+/// met again, not a shortcut's landing card), when [next] climbs on the
+/// very next floor (a fall or a skip passes the store by, like the
+/// spoils). [next] as it is otherwise.
+TowerRun towerOpenStore(TowerRun chose, TowerRun next) {
+  if (chose.events < towerPeacefulEvents ||
+      chose.status != TowerStatus.choosing ||
+      towerIsRevisit(chose) ||
+      towerIsShortcutLanding(chose) ||
+      next.status != TowerStatus.climbing ||
+      next.floor != chose.floor + 1 ||
+      _storeDrawn(chose.seed, chose.floor) == null) {
+    return next;
+  }
+  return next.copyWith(store: chose.floor);
+}
+
+/// The store open on [run]'s landing (TowerRun.store, floor events PR 4):
+/// the floor's drawn store, while the run climbs on the floor above it.
+_Drawn? _openStore(TowerRun run) {
+  final floor = run.store;
+  if (floor == null ||
+      run.events < towerPeacefulEvents ||
+      run.status != TowerStatus.climbing ||
+      run.floor != floor + 1) {
+    return null;
+  }
+  return _storeDrawn(run.seed, floor);
+}
+
+/// The kind of store open on [run]'s landing (merchant or bargain), or
+/// none.
+TowerEventKind? towerStoreKindOf(TowerRun run) => _openStore(run)?.kind;
+
+/// The merchant's clan of the store open on [run]'s landing; null when no
+/// merchant is open.
+String? towerStoreClanOf(TowerRun run) {
+  final store = _openStore(run);
+  return store?.kind == TowerEventKind.merchant ? store!.clanId : null;
+}
+
+/// The price of [kind] at a merchant of [clanId] for [run]: its price
+/// ([towerSalvePrice], [towerBundlePrice]), half (rounded up) when [run]
+/// is sworn to that clan.
+int towerStockPriceOf(TowerRun run, TowerStockKind kind, String clanId) {
+  final price = switch (kind) {
+    TowerStockKind.salve => towerSalvePrice,
+    TowerStockKind.potions => towerBundlePrice,
+  };
+  return run.clanIds.contains(clanId) ? (price + 1) ~/ 2 : price;
+}
+
+/// [run] can take [kind]: a bundle needs room in the bag.
+bool _canTake(TowerRun run, TowerStockKind kind) =>
+    kind != TowerStockKind.potions || run.potions < towerBagCap;
+
+/// The health a salve heals [hero]: [towerSalveShare] of its max health.
+int towerSalveHealOf(SimCharacter hero) =>
+    (hero.maxHealth * towerSalveShare).round();
+
+/// The max health a bargain costs [hero] now: [towerBargainHealthShare] of
+/// it, at least 1.
+int towerBargainCostOf(SimCharacter hero) =>
+    max(1, (hero.maxHealth * towerBargainHealthShare).round());
+
+/// [run] buying [stockId] (towerStockIds) at the merchant open on its
+/// landing (floor events PR 4): only once a store, only within the marks it
+/// can spend (TowerRun.marks), a bundle only with room in the bag; [run] as
+/// it is otherwise. The salve heals ([towerSalveHealOf], up to the max
+/// health), the bundle fills the bag (up to [towerBagCap]). The price goes
+/// to TowerRun.marksSpent, the id to TowerRun.bought, and the store's sales
+/// so far to TowerRun.lastEvent. [hero], when given, is [run]'s hero
+/// already built (towerHeroOf).
+TowerRun towerBuy(TowerRun run, TowerData data, String stockId,
+    {SimCharacter? hero}) {
+  final store = _openStore(run);
+  final kind = towerStockIds[stockId];
+  if (store == null || store.kind != TowerEventKind.merchant || kind == null) {
+    return run;
+  }
+  final floor = run.store!;
+  final sold = run.bought[floor] ?? const [];
+  if (sold.contains(stockId) || !_canTake(run, kind)) return run;
+  final price = towerStockPriceOf(run, kind, store.clanId);
+  if (price > run.marks) return run;
+  var health = run.health;
+  var potions = run.potions;
+  switch (kind) {
+    case TowerStockKind.salve:
+      final built = hero ?? towerHeroOf(run, data);
+      health = min(built.maxHealth, run.health + towerSalveHealOf(built));
+    case TowerStockKind.potions:
+      potions = min(towerBagCap, run.potions + towerBundlePotions);
+  }
+  final last = run.lastEvent;
+  final before =
+      last != null && last.kind == TowerEventKind.merchant && last.from == floor
+          ? last
+          : null;
+  return run.copyWith(
+    health: health,
+    potions: potions,
+    marksSpent: run.marksSpent + price,
+    bought: {
+      ...run.bought,
+      floor: [...sold, stockId],
+    },
+    lastEvent: TowerEventResult(
+      kind: TowerEventKind.merchant,
+      passed: true,
+      from: floor,
+      to: floor + 1,
+      bought: [...sold, stockId],
+      paid: (before?.paid ?? 0) + price,
+      healed: (before?.healed ?? 0) + health - run.health,
+    ),
+  );
+}
+
+/// [run] after its bargain's choice (floor events PR 4): only while the
+/// bargain is open on its landing, and once; [run] as it is otherwise.
+/// Taken ([accept]): its cut ([towerBargainCostOf] as the hero stands now)
+/// saved in TowerRun.bargains, which towerHeroOf replays with the stat
+/// point, the health held within the new max. Refused: 0 saved. Either way
+/// the choice is TowerRun.lastEvent, and the store stays open until left.
+/// [hero], when given, is [run]'s hero already built (towerHeroOf).
+TowerRun towerChooseBargain(TowerRun run, TowerData data, bool accept,
+    {SimCharacter? hero}) {
+  final store = _openStore(run);
+  if (store == null || store.kind != TowerEventKind.bargain) return run;
+  final floor = run.store!;
+  if (run.bargains.containsKey(floor)) return run;
+  final cut = accept ? towerBargainCostOf(hero ?? towerHeroOf(run, data)) : 0;
+  final chosen = run.copyWith(
+    bargains: {...run.bargains, floor: cut},
+    lastEvent: TowerEventResult(
+        kind: TowerEventKind.bargain,
+        passed: accept,
+        from: floor,
+        to: floor + 1),
+  );
+  if (!accept) return chosen;
+  final after = towerHeroOf(chosen, data).maxHealth;
+  return chosen.copyWith(health: min(chosen.health, after));
+}
+
+/// [run] with the store on its landing left (floor events PR 4): closed,
+/// the landing's own event next; [run] as it is when none is open.
+TowerRun towerLeaveStore(TowerRun run) =>
+    run.store == null ? run : run.copyWith(clearStore: true);
 
 /// [run] choosing the card on a shortcut's landing (floor events PR 2):
 /// its floor the one below the landing, already counted in TowerRun.crest,
@@ -299,7 +595,8 @@ _Drawn? _eventOf(TowerRun run) {
       (run.events >= towerPeacefulEvents
           ? _peacefulDrawn(run.seed, run.floor)
           : null);
-  if (drawn == null) return null;
+  // A store is not the floor's: it opens on the landing above it.
+  if (drawn == null || _isStore(drawn.kind)) return null;
   if (drawn.kind == TowerEventKind.test &&
       run.setbacks >= towerSetbacksPerRun) {
     return null;
@@ -411,7 +708,11 @@ TowerRun towerChooseParley(TowerRun run, TowerData data, bool talk,
   }
   if (!result.passed) return run.copyWith(parley: true, lastEvent: result);
   return _land(
-      run.copyWith(lastEvent: result, clearShortcut: true, clearParley: true),
+      run.copyWith(
+          lastEvent: result,
+          clearShortcut: true,
+          clearParley: true,
+          clearStore: true),
       from + 1,
       data);
 }
@@ -441,6 +742,8 @@ int towerSetbackFallTo(int floor, int fall) =>
 TowerEventView? towerEventOf(TowerRun run, TowerData data,
     {SimCharacter? hero}) {
   if (run.events < 1 || run.isOver) return null;
+  final store = _openStore(run);
+  if (store != null) return _storeView(run, data, store, hero);
   // A shortcut's landing card: no event, the shortcut's result.
   final event = towerIsShortcutLanding(run) ? null : _eventOf(run);
   final revisit = towerIsRevisit(run);
@@ -518,6 +821,9 @@ TowerEventView? towerEventOf(TowerRun run, TowerData data,
         background: towerEventBackgroundOf(TowerEventKind.parley),
         result: run.lastEvent,
       );
+    // A store is shown by _storeView (_eventOf never holds one).
+    case TowerEventKind.merchant:
+    case TowerEventKind.bargain:
     case null:
       return TowerEventView(
         kind: null,
@@ -527,6 +833,61 @@ TowerEventView? towerEventOf(TowerRun run, TowerData data,
         result: run.lastEvent,
       );
   }
+}
+
+/// The view of the store [store] open on [run]'s landing (floor events
+/// PR 4): TowerEventView.storeOpen.
+TowerEventView _storeView(
+    TowerRun run, TowerData data, _Drawn store, SimCharacter? hero) {
+  final floor = run.store!;
+  final built = hero ?? towerHeroOf(run, data);
+  final setbacksLeft = max(0, towerSetbacksPerRun - run.setbacks);
+  if (store.kind == TowerEventKind.bargain) {
+    final chosen = run.bargains[floor];
+    return TowerEventView(
+      kind: TowerEventKind.bargain,
+      floor: run.floor,
+      revisit: false,
+      setbacksLeft: setbacksLeft,
+      maxHealthCost: towerBargainCostOf(built),
+      stat: built.preferredStat,
+      points: towerBargainPoints,
+      accepted: chosen == null ? null : chosen > 0,
+      storeOpen: true,
+      background: towerEventBackgroundOf(TowerEventKind.bargain),
+      result: run.lastEvent,
+    );
+  }
+  final wallet = run.marks;
+  final sold = run.bought[floor] ?? const [];
+  return TowerEventView(
+    kind: TowerEventKind.merchant,
+    floor: run.floor,
+    revisit: false,
+    setbacksLeft: setbacksLeft,
+    clanId: store.clanId,
+    discount: run.clanIds.contains(store.clanId),
+    wallet: wallet,
+    stock: [
+      for (final MapEntry(key: id, value: kind) in towerStockIds.entries)
+        TowerStockView(
+          id: id,
+          kind: kind,
+          price: towerStockPriceOf(run, kind, store.clanId),
+          amount: switch (kind) {
+            TowerStockKind.salve => towerSalveHealOf(built),
+            TowerStockKind.potions => towerBundlePotions,
+          },
+          bought: sold.contains(id),
+          affordable: !sold.contains(id) &&
+              _canTake(run, kind) &&
+              towerStockPriceOf(run, kind, store.clanId) <= wallet,
+        ),
+    ],
+    storeOpen: true,
+    background: towerEventBackgroundOf(TowerEventKind.merchant),
+    result: run.lastEvent,
+  );
 }
 
 /// [next] (climbing) landed on floor [to], the floors below it counted in
@@ -569,6 +930,9 @@ TowerRun towerAfterEvent(TowerRun won, TowerRun next, TowerData data) {
     // A parley's floor won: its fight was fought (the talk failed, or the
     // fight chosen), the climb as usual.
     case TowerEventKind.parley:
+    // A store is never the floor's own event (_eventOf).
+    case TowerEventKind.merchant:
+    case TowerEventKind.bargain:
       return next;
     case TowerEventKind.rival:
       final result = won.lastEvent;
