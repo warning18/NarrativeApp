@@ -212,9 +212,11 @@ class TowerEventResultLine extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final theme = Theme.of(context);
     final ink = InkColors.of(context);
-    final fell = result.to < result.from;
+    // A slip on the same floor is a failure too: the mark follows the roll.
+    final failed = !result.passed;
+    final fell = failed && result.kind == TowerEventKind.test;
     final skipped = result.to > result.from + 1;
-    final color = fell ? ink.blood : ink.gold;
+    final color = failed ? ink.blood : ink.gold;
     String sub(String key) => tr(ref, key)
         .replaceAll('{from}', '${result.from}')
         .replaceAll('{to}', '${result.to}')
@@ -230,14 +232,23 @@ class TowerEventResultLine extends ConsumerWidget {
     };
     final rolled = result.roll == null
         ? null
-        : tr(ref, 'tower_event_rolled')
+        : tr(
+                ref,
+                result.kind == TowerEventKind.test
+                    ? 'tower_event_rolled_against'
+                    : 'tower_event_rolled')
             .replaceAll('{roll}', '${result.roll}')
-            .replaceAll('{total}', '${result.total}');
+            .replaceAll('{total}', '${result.total}')
+            .replaceAll('{dc}', '${towerSetbackDcOf(result.from)}');
     return InkPanel(
       key: const Key('tower_event_result'),
       child: Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
-        Icon(fell ? Icons.south : (skipped ? Icons.north : Icons.check),
-            color: color, size: IconSize.s16),
+        Icon(
+            failed
+                ? (fell ? Icons.south : Icons.close)
+                : (skipped ? Icons.north : Icons.check),
+            color: color,
+            size: IconSize.s16),
         const SizedBox(width: 10),
         Expanded(
           child:

@@ -1510,6 +1510,10 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.en: 'You roll {roll}, total {total}.',
     AppLanguage.fr: 'Vous obtenez {roll}, total {total}.',
   },
+  'tower_event_rolled_against': {
+    AppLanguage.en: 'You roll {roll}, total {total} against {dc}.',
+    AppLanguage.fr: 'Vous obtenez {roll}, total {total} contre {dc}.',
+  },
   'tower_event_nothing_again': {
     AppLanguage.en: 'A floor you climb twice pays nothing the second time.',
     AppLanguage.fr:

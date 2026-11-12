@@ -103,7 +103,7 @@ void main() {
         to: 12))));
     await tester.pump();
     expect(find.text('You fall from floor 14 to floor 12'), findsOneWidget);
-    expect(find.text('You roll 6, total 9.'), findsOneWidget);
+    expect(find.text('You roll 6, total 9 against 12.'), findsOneWidget);
     await tester.pumpWidget(host(const TowerEventResultLine(TowerEventResult(
         kind: TowerEventKind.test,
         roll: 2,
@@ -113,6 +113,10 @@ void main() {
         to: 12))));
     await tester.pump();
     expect(find.text('You slip on floor 12: climb it again'), findsOneWidget);
+    expect(find.text('You roll 2, total 7 against 11.'), findsOneWidget);
+    // The slip wears the fall mark, never the pass check.
+    expect(find.byIcon(Icons.south), findsOneWidget);
+    expect(find.byIcon(Icons.check), findsNothing);
     await tester.pumpWidget(host(const TowerEventResultLine(TowerEventResult(
         kind: TowerEventKind.rival, passed: true, from: 16, to: 18))));
     await tester.pump();
