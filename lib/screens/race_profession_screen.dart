@@ -17,6 +17,7 @@ import '../utils/game_icons.dart';
 import '../utils/pixel_icons/game_pixel_icons.dart';
 import '../utils/pixel_icons/pixel_icon.dart';
 import '../theme/stitched_ink.dart';
+import '../widgets/screen_pictures.dart';
 import '../widgets/ability_radar.dart';
 import '../widgets/ability_visuals.dart';
 import '../widgets/detail_dialog.dart';
@@ -204,7 +205,7 @@ class _RaceProfessionScreenState extends ConsumerState<RaceProfessionScreen> {
       ),
     ]);
 
-    return Column(
+    final column = Column(
       children: [
         Padding(
           padding: const EdgeInsets.fromLTRB(12, 10, 12, 4),
@@ -299,6 +300,14 @@ class _RaceProfessionScreenState extends ConsumerState<RaceProfessionScreen> {
         ),
       ],
     );
+    // The step's plate under the page, the page colour over it (the Tower's
+    // own climb keeps its plain page).
+    final plate = _tower ? null : characterPlateAsset(_step);
+    if (plate == null) return column;
+    return Stack(fit: StackFit.expand, children: [
+      Positioned.fill(child: ScreenPlate(asset: plate)),
+      column,
+    ]);
   }
 
   /// The Tower: the pick goes to the caller, nothing is asked or saved here.
