@@ -40,6 +40,16 @@ void main() {
     ]) {
       final tally = <String, int>{};
       void add(String key) => tally[key] = (tally[key] ?? 0) + 1;
+      // The shortcut's floor (the floor fought): taken, and lost there.
+      final byFloor = <String, Map<String, int>>{
+        'shortcut_taken': <String, int>{},
+        'shortcut_lost': <String, int>{},
+      };
+      void addAt(String key, int floor) {
+        final m = byFloor[key]!;
+        m['$floor'] = (m['$floor'] ?? 0) + 1;
+      }
+
       final rows = <Map<String, dynamic>>[];
       for (var seed = first; seed < first + seeds; seed++) {
         final run = playTowerRun(
@@ -54,12 +64,15 @@ void main() {
             }
             if (run.shortcut != null) {
               add(run.shortcut! ? 'shortcut_taken_won' : 'shortcut_declined');
+              if (run.shortcut!) addAt('shortcut_taken', run.floor);
             }
             return towerBotChoice(run);
           },
         );
         if (run.status == TowerStatus.dead && (run.shortcut ?? false)) {
           add('shortcut_taken_lost');
+          addAt('shortcut_taken', run.floor);
+          addAt('shortcut_lost', run.floor);
         }
         rows.add({
           'seed': seed,
@@ -71,6 +84,7 @@ void main() {
       }
       (report['cases'] as Map<String, dynamic>)[name] = {
         'tally': tally,
+        'byFloor': byFloor,
         'runs': rows,
       };
     }
