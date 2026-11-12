@@ -90,7 +90,7 @@ Whole story, naive 100 runs: encounters won 73.9% (1.914) -> 76.9% (1.932); runs
   under 1.5 standard errors of the difference (n of 500 to 1,000: about 2.8
   to 3.1 points; 96 fights: 7 points), so none is a real change, but the
   void archon and the white admiral now sit under their targets (50 and 45)
-  and were over before. The `boss_balance_test` bands hold (CI).
+  and were over before (the review's own table of targets).
 - **Whole story, naive 100 runs: 73.9% to 76.9% of encounters won.**
 
 Chapter 4 won 68.4% to 74.1% (100) and 71.4% to 73.5% (800): the pilgrim's
