@@ -10,7 +10,7 @@ isn't reconstructable from git history alone.
 
 ## [1.957.0+993]
 
-- Effects: the last five skill effects in the Apollo palette (UX, Art's strips): the bolt's burst, the meteor's fall, the quake, the smoke and the mana, 9 frames each like the other Apollo effects. The quake's ground band is trimmed into a ragged scorch (no hard rectangle), the meteor is tilted so its head leads the fall, and the pale ground ring is gone from these five styles. About +4.4 KB of PNG8 in the app.
+- Effects: the last five skill effects in the Apollo palette (UX, Art's strips): the bolt's burst, the meteor's fall, the quake, the smoke and the mana, 9 frames each like the other Apollo effects. The quake's ground band is trimmed into a ragged scorch (no hard rectangle), the meteor is tilted so its head leads the fall, and the pale ground ring is gone from these five styles. About +1.0 KB of PNG8 in the app (5,997 to 7,048 bytes).
 
 ## [1.955.0+991]
 
