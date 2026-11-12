@@ -319,6 +319,9 @@ class TowerMerchantRoom extends ConsumerWidget {
         width: double.infinity,
         child: OutlinedButton(
           key: const Key('tower_merchant_leave'),
+          // A solid ground: on the plate's arch the bare frame read weakly.
+          style: OutlinedButton.styleFrom(
+              backgroundColor: theme.colorScheme.surface),
           onPressed: onLeave,
           child: Text(tr(ref, 'tower_merchant_leave')),
         ),
