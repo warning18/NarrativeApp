@@ -259,3 +259,115 @@ abstract final class Palette {
   /// A firm red, for damage.
   static const Color danger = Color(0xFFD32F2F);
 }
+
+/// The Apollo palette's tones for skill effects: four per family, highlight,
+/// middle, shadow and deep (ARGB ints, the form `VfxPalette` takes). The
+/// middle tone is what a skill's icon and its effect read as; the strips of
+/// `assets/visuals/pixel_fx` are drawn in the four.
+abstract final class ApolloTones {
+  ApolloTones._();
+
+  static const List<int> fire = [
+    0xFFE8C170,
+    0xFFDA863E,
+    0xFF884B2B,
+    0xFF341C27
+  ];
+  static const List<int> water = [
+    0xFFA4DDDB,
+    0xFF4F8FBA,
+    0xFF3C5E8B,
+    0xFF172038
+  ];
+  static const List<int> ice = [0xFFEBEDE9, 0xFFA4DDDB, 0xFF577277, 0xFF202E37];
+  static const List<int> earth = [
+    0xFFE7D5B3,
+    0xFFC09473,
+    0xFF7A4841,
+    0xFF241527
+  ];
+  static const List<int> wind = [
+    0xFFD0DA91,
+    0xFFA8CA58,
+    0xFF25562E,
+    0xFF19332D
+  ];
+  static const List<int> voidTones = [
+    0xFFDF84A5,
+    0xFFA23E8C,
+    0xFF7A367B,
+    0xFF402751
+  ];
+  static const List<int> light = [
+    0xFFFFF6E0,
+    0xFFE8C170,
+    0xFF884B2B,
+    0xFF341C27
+  ];
+  static const List<int> electricity = [
+    0xFFFFF6E0,
+    0xFFF2C14E,
+    0xFF3C5E8B,
+    0xFF172038
+  ];
+  static const List<int> enemy = [
+    0xFFCF573C,
+    0xFFA53030,
+    0xFF602C2C,
+    0xFF341C27
+  ];
+  static const List<int> poison = [
+    0xFFA8CA58,
+    0xFF468232,
+    0xFF25562E,
+    0xFF19332D
+  ];
+  static const List<int> mana = [
+    0xFFA4DDDB,
+    0xFF73BED3,
+    0xFF3C5E8B,
+    0xFF172038
+  ];
+  static const List<int> shield = [
+    0xFFEBEDE9,
+    0xFF4F8FBA,
+    0xFF3C5E8B,
+    0xFF172038
+  ];
+  static const List<int> gold = [
+    0xFFFFF6E0,
+    0xFFF2C14E,
+    0xFFBE772B,
+    0xFF602C2C
+  ];
+  static const List<int> weaken = [
+    0xFFA8B5B2,
+    0xFFCF573C,
+    0xFF752438,
+    0xFF411D31
+  ];
+  static const List<int> miss = [
+    0xFFEBEDE9,
+    0xFFA8B5B2,
+    0xFF577277,
+    0xFF202E37
+  ];
+  static const List<int> phase = [
+    0xFFDF84A5,
+    0xFFA53030,
+    0xFF752438,
+    0xFF411D31
+  ];
+  static const List<int> smoke = [
+    0xFFC7CFCC,
+    0xFF819796,
+    0xFF394A50,
+    0xFF10141F
+  ];
+  static const List<int> heal = [
+    0xFFFFF6E0,
+    0xFFA8CA58,
+    0xFF468232,
+    0xFF19332D
+  ];
+}

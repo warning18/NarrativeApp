@@ -11,6 +11,7 @@ import 'dart:ui' as ui;
 import 'package:flutter/material.dart';
 
 import '../combat/skill_vfx.dart';
+import '../theme/palette.dart';
 import 'pixel_sprite.dart';
 
 /// How a layer of a plan moves.
@@ -178,6 +179,8 @@ class PixelVfxTints {
   /// The tones [palette] recolours them to; null for the plain steel.
   static List<int>? tonesFor(VfxPalette palette) {
     if (palette.primary == 0xFFFFFFFF) return null;
+    final own = palette.tones;
+    if (own != null) return [for (final t in own) t & 0xFFFFFF];
     final mid = Color(palette.primary);
     final hi = Color.lerp(Color(palette.secondary), Colors.white, 0.4)!;
     final lo = Color.lerp(mid, Colors.black, 0.5)!;
@@ -458,7 +461,8 @@ class PixelMoment extends StatefulWidget {
   final Duration delay;
 
   /// The gold of a moment worth marking.
-  static const VfxPalette gold = VfxPalette(0xFFF2C14E, 0xFFFFE9A8);
+  static const VfxPalette gold =
+      VfxPalette(0xFFF2C14E, 0xFFFFF6E0, ApolloTones.gold);
 
   @override
   State<PixelMoment> createState() => _PixelMomentState();
