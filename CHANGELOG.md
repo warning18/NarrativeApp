@@ -8,6 +8,10 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.954.0+990]
+
+- Tower: the parley card (UX, floor events part 3). **Invisible for players**: it shows only in a climb of events version 2, which no player starts yet. Before an ordinary floor's fight a guardian may offer to talk: a card with the guardian's plate, the d20 check with its target and odds, and Talk / Fight buttons; a sworn clan passes without a roll. A pass climbs a floor with its level and marks; a failed talk reads like the setback's line and leads to the fight. The merchant and bargain widgets are unreachable mocks until Core's PR 4 wires them. The plate is Art's first version (`towerEventPlate`, one line to swap).
+
 ## [1.953.0+989]
 
 - Story scenes: a picture for each of the story's places (UX, with Art's bands). Seventy-three places, from Alster's high quay to Akagiri's forge, show a 240x100 band at the top of the scene's words, in the Journey's scene and the Story tab; a place with none (the Hollow Shore, left bare by choice) shows what it showed before. About 0.57 MB of PNG8 in the app.

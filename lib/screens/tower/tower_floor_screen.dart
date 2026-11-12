@@ -129,6 +129,20 @@ class _TowerFloorScreenState extends ConsumerState<_TowerFloorBody> {
     }
   }
 
+  /// The parley's choice: talk (a pass lands on the next floor, its level's
+  /// pick waits there like a rival's) or fight.
+  Future<void> _parley(TowerRun run, TowerData data, bool talk) async {
+    final next = towerChooseParley(run, data, talk);
+    await ref.read(towerProvider.notifier).setRun(next);
+    if (!next.isOver &&
+        next.status == TowerStatus.climbing &&
+        towerPendingPicks(next) > 0 &&
+        mounted) {
+      _resumed = true;
+      await _levelUp(next, data);
+    }
+  }
+
   Future<void> _leave(TowerRun run) async {
     final yes = await showInkConfirm(
       context,
@@ -199,6 +213,11 @@ class _TowerFloorScreenState extends ConsumerState<_TowerFloorBody> {
       ),
       body: TowerBackdrop(
         floor: run.floor,
+        // The picture of the event on offer (the parley's guardian), until it
+        // is chosen; the floor's own otherwise.
+        asset: event != null && event.accepted == null
+            ? towerEventPlate(event.background)
+            : null,
         child: SafeArea(
           child: Listener(
             // A tap anywhere puts the head on its notch at once.
@@ -232,6 +251,7 @@ class _TowerFloorScreenState extends ConsumerState<_TowerFloorBody> {
                               event: event,
                               busy: _busy,
                               onFight: () => _fight(run, data),
+                              onParley: (talk) => _parley(run, data, talk),
                               onShortcut: (take) => ref
                                   .read(towerProvider.notifier)
                                   .setRun(towerChooseShortcut(run, data, take)),
@@ -253,6 +273,7 @@ class _FloorIntro extends ConsumerWidget {
     required this.busy,
     required this.onFight,
     this.onShortcut,
+    this.onParley,
     this.event,
   });
 
@@ -266,6 +287,9 @@ class _FloorIntro extends ConsumerWidget {
 
   /// The shortcut's choice (true: the stair); the fight waits for it.
   final void Function(bool take)? onShortcut;
+
+  /// The parley's choice (true: talk); the fight waits for it.
+  final void Function(bool talk)? onParley;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -315,6 +339,10 @@ class _FloorIntro extends ConsumerWidget {
           if (e.kind == TowerEventKind.shortcut) ...[
             const SizedBox(height: 6),
             TowerEventCard(e, onShortcut: onShortcut),
+          ],
+          if (e.kind == TowerEventKind.parley) ...[
+            const SizedBox(height: 6),
+            TowerEventCard(e, onParley: onParley),
           ],
         ],
         if (danger) ...[
@@ -409,7 +437,10 @@ class _FloorIntro extends ConsumerWidget {
         ..._dicePanel(ref),
         const SizedBox(height: 16),
         // A shortcut is chosen first: its card holds the two buttons.
-        if (event?.kind != TowerEventKind.shortcut || event?.accepted != null)
+        // A shortcut or a parley is chosen first: its card holds the buttons.
+        if (!(event?.kind == TowerEventKind.shortcut ||
+                event?.kind == TowerEventKind.parley) ||
+            event?.accepted != null)
           FilledButton(
             key: const Key('tower_fight'),
             onPressed: busy ? null : onFight,
