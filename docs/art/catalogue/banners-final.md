@@ -1,0 +1,2 @@
+# Banners final (the user's pick): 20 generations for the other 16 (+ the pilot's 14), 0 for the recipe
+`art/pixellab-banners-new/gen.py` (pixflux img2img from today's file, strength 100, seed 9; retry strength 140, seed 11), `final_gen.py` (folds, lantern, leaf, clan ramps, by hand), `sheet_final.py` (Apollo + banner rules, sheets). Prompts are in `KEEP` of gen.py (base style text + the clan's cloth, emblem and accent words + the (a) direction). Brief: `docs/art/banners-final-brief.md`.
