@@ -116,6 +116,7 @@ flutter:
     - assets/visuals/walker/
     - assets/visuals/fighters/
     - assets/visuals/tower/
+    - assets/visuals/scenes/
     - assets/visuals/fight_plates/
     - assets/ui/frames/wood/
     - assets/ui/frames/iron/
