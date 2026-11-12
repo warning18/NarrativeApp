@@ -14,6 +14,7 @@ import 'package:narrative_data_app/combat/fight_numbers.dart'
 import 'package:narrative_data_app/combat/stat_rules.dart' show levelStatPicks;
 import 'package:narrative_data_app/data/tower/tower_bot.dart';
 import 'package:narrative_data_app/data/tower/tower_events.dart';
+import 'package:narrative_data_app/data/tower/tower_floors.dart';
 import 'package:narrative_data_app/data/tower/tower_hero.dart';
 import 'package:narrative_data_app/data/tower/tower_progress.dart';
 import 'package:narrative_data_app/data/tower/tower_run.dart';
@@ -64,7 +65,7 @@ void main() {
         () {
       final run = playTowerRun(seed: 3, data: data);
       final json = jsonDecode(jsonEncode(run.toJson())) as Map<String, dynamic>;
-      for (final key in ['crest', 'events', 'setbacks', 'last']) {
+      for (final key in ['crest', 'events', 'setbacks', 'last', 'shortcut']) {
         expect(json, isNot(contains(key)));
       }
       final loaded = TowerRun.fromJson(json);
@@ -91,7 +92,13 @@ void main() {
           final zero = playTowerRun(
               seed: seed, data: data, progress: progress, events: 0);
           final json = off.toJson();
-          for (final key in ['crest', 'events', 'setbacks', 'last']) {
+          for (final key in [
+            'crest',
+            'events',
+            'setbacks',
+            'last',
+            'shortcut'
+          ]) {
             expect(json, isNot(contains(key)), reason: '$seed');
           }
           expect(jsonEncode(zero.toJson()), jsonEncode(json), reason: '$seed');
@@ -124,6 +131,27 @@ void main() {
     });
   });
 
+  test('a run with the events on fights at their own scale and extras', () {
+    final off = towerFloorsFor(7, data.enemies);
+    final on = towerFloorsFor(7, data.enemies, events: 1);
+    for (var floor = 1; floor <= towerTop; floor++) {
+      final a = off[floor - 1], b = on[floor - 1];
+      expect(b.enemyIds, a.enemyIds);
+      expect(a.extra, towerBudgetOf(floor).extra);
+      expect(b.extra, towerEventsExtras[floor] ?? a.extra);
+      expect(a.extraFor('mage'), a.extra * towerProfessionScaleOf('mage'));
+      expect(b.extraFor('mage'),
+          b.extra * towerProfessionScaleOf('mage', events: 1));
+    }
+    expect(towerProfessionScaleOf('warrior'),
+        towerProfessionScale['warrior']! * towerFoeScale);
+    expect(towerProfessionScaleOf('warrior', events: 1),
+        towerProfessionScale['warrior']! * towerEventsFoeScale);
+    // The app's floor follows the run's events.
+    expect(towerFloorOf(at(7, 20), data).extra, on[19].extra);
+    expect(towerFloorOf(at(7, 20, events: 0), data).extra, off[19].extra);
+  });
+
   group('where events sit', () {
     test('never on a warden, a boss or the top; never on a floor met again',
         () {
@@ -134,7 +162,7 @@ void main() {
           if (isGate(floor) || floor == towerTop) {
             expect(kind, isNull, reason: '$seed f$floor');
           }
-          if (kind == TowerEventKind.rival) {
+          if (kind == TowerEventKind.rival || kind == TowerEventKind.shortcut) {
             // A skip fits: the floor skipped and the one landed on are
             // ordinary floors.
             expect(isGate(floor + 1) || isGate(floor + 2), isFalse);
@@ -150,8 +178,10 @@ void main() {
       }
     });
 
-    test('about a tenth of floors a rival, a fifth a setback', () {
-      var floors = 0, rivals = 0, tests = 0;
+    test(
+        'about a tenth of floors a rival, a fifth a setback, less than '
+        'a sixth a shortcut', () {
+      var floors = 0, rivals = 0, tests = 0, shortcuts = 0;
       for (var seed = 1; seed <= 400; seed++) {
         for (var floor = 1; floor < towerTop; floor++) {
           if (isGate(floor)) continue;
@@ -161,6 +191,8 @@ void main() {
               rivals++;
             case TowerEventKind.test:
               tests++;
+            case TowerEventKind.shortcut:
+              shortcuts++;
             case null:
           }
         }
@@ -168,6 +200,8 @@ void main() {
       expect(tests / floors, closeTo(towerSetbackShare, .02));
       // Only where a skip fits.
       expect(rivals / floors, inInclusiveRange(.05, towerRivalShare + .01));
+      expect(
+          shortcuts / floors, inInclusiveRange(.05, towerShortcutShare + .01));
     });
   });
 
@@ -348,8 +382,140 @@ void main() {
     });
   });
 
+  group('the shortcut', () {
+    final shortcuts = floorsOf(TowerEventKind.shortcut, count: 30);
+
+    int nextGate(int floor) {
+      var g = floor + 1;
+      while (g < towerTop && !isGate(g)) {
+        g++;
+      }
+      return g;
+    }
+
+    test('the view: the tougher foes, the skip, where it lands', () {
+      expect(shortcuts, isNotEmpty);
+      for (final (seed, floor) in shortcuts) {
+        final run = at(seed, floor);
+        final view = towerEventOf(run, data)!;
+        final base = towerFloorsFor(seed, data.enemies)[floor - 1];
+        expect(view.kind, TowerEventKind.shortcut);
+        expect(view.lossEndsRun, isTrue);
+        expect(view.accepted, isNull);
+        expect(view.skip, inInclusiveRange(1, 3));
+        expect(view.landsOn, floor + 1 + view.skip!);
+        expect(view.landsOn, lessThan(nextGate(floor)));
+        if (base.isPack || base.elite) {
+          expect(view.foeIds, [...base.enemyIds, base.enemyIds.first]);
+          expect(view.elite, isFalse);
+        } else {
+          expect(view.foeIds, base.enemyIds);
+          expect(view.elite, isTrue);
+        }
+        // A floor met again offers none.
+        expect(
+            towerEventKindOf(run.copyWith(crest: floor, setbacks: 1)), isNull);
+      }
+    });
+
+    test('chosen once, before the fight; taken, the fight is the tougher', () {
+      final (seed, floor) = shortcuts.first;
+      final run = at(seed, floor);
+      final base = towerFloorsFor(seed, data.enemies)[floor - 1];
+      expect(towerFloorOf(run, data).enemyIds, base.enemyIds);
+      final taken = towerChooseShortcut(run, data, true);
+      expect(taken.shortcut, isTrue);
+      expect(towerEventOf(taken, data)!.accepted, isTrue);
+      final fought = towerFloorOf(taken, data);
+      expect(fought.enemyIds, towerEventOf(run, data)!.foeIds);
+      expect(fought.elite, towerEventOf(run, data)!.elite);
+      expect(fought.modifiersFor('warrior').forceElite, fought.elite);
+      expect(towerChooseShortcut(taken, data, false).shortcut, isTrue);
+      final declined = towerChooseShortcut(run, data, false);
+      expect(declined.shortcut, isFalse);
+      expect(towerFloorOf(declined, data).enemyIds, base.enemyIds);
+      // Not offered: nothing to choose.
+      final plain = at(seed, floor + 1);
+      if (towerEventKindOf(plain) != TowerEventKind.shortcut) {
+        expect(towerChooseShortcut(plain, data, true).shortcut, isNull);
+      }
+      expect(TowerRun.fromJson(jsonDecode(jsonEncode(taken.toJson()))).shortcut,
+          isTrue);
+    });
+
+    test('taken and lost: the run ends', () {
+      final (seed, floor) = shortcuts.first;
+      final taken = towerChooseShortcut(at(seed, floor), data, true);
+      final lost =
+          towerAfterFight(taken, data, won: false, healthLeft: 0, rounds: 9);
+      expect(lost.status, TowerStatus.dead);
+    });
+
+    test('declined: the climb as usual', () {
+      for (final (seed, floor) in shortcuts) {
+        final declined = towerChooseShortcut(at(seed, floor), data, false);
+        final next = winAndMove(declined);
+        expect(next.floor, floor + 1);
+        expect(next.crest, 0);
+        expect(next.shortcut, isNull);
+      }
+    });
+
+    test('taken and won: its spoils and card, k floors up, a card on landing',
+        () {
+      var landingCards = 0;
+      for (final (seed, floor) in shortcuts) {
+        final run = at(seed, floor);
+        final view = towerEventOf(run, data)!;
+        final to = view.landsOn!;
+        final taken = towerChooseShortcut(run, data, true);
+        final won = towerAfterFight(taken, data,
+            won: true, healthLeft: taken.health, rounds: 9);
+        final plain =
+            towerAfterFight(run, data, won: true, healthLeft: run.health);
+        // The floor's own spoils and card.
+        expect(won.spoils, plain.spoils);
+        expect(won.offer.map((r) => r.toJson()).toList(),
+            plain.offer.map((r) => r.toJson()).toList());
+        final card = won.offer.isEmpty ? null : 0;
+        var next = towerPick(won, data, card);
+        if (card != null) expect(next.taken[floor], won.offer[0]);
+        expect(next.shortcut, isNull);
+        expect(next.crest, to - 1);
+        expect(next.heightCleared, to - 1);
+        expect(next.lastEvent!.kind, TowerEventKind.shortcut);
+        expect(next.lastEvent!.to, to);
+        for (var f = floor + 1; f < to; f++) {
+          expect(next.spoils, isNot(contains(f)));
+        }
+        expect(
+            towerPendingPicks(next),
+            (towerLevelAfter(to - 1) - 1) * levelStatPicks -
+                next.statPicks.length);
+        if (next.status == TowerStatus.choosing) {
+          // The card on landing: the floor below the landing deals it.
+          landingCards++;
+          expect(next.floor, to - 1);
+          expect(next.offer, isNotEmpty);
+          expect(towerIsShortcutLanding(next), isTrue);
+          expect(towerIsRevisit(next), isFalse);
+          expect(towerEventOf(next, data)!.kind, isNull);
+          final offered = next.offer.first;
+          next = towerPick(next, data, 0);
+          expect(next.taken[to - 1], offered);
+        }
+        expect(next.status, TowerStatus.climbing);
+        expect(next.floor, to);
+        expect(next.crest, to - 1);
+        expect(next.marks, towerMarksOf(to - 1, next.refused.length));
+        expect(towerIsRevisit(next), isFalse);
+      }
+      expect(landingCards, greaterThan(0));
+    });
+  });
+
   test('the bot with events: runs end, levels and marks never drop', () {
-    var fell = 0, skipped = 0;
+    var fell = 0, skipped = 0, shortcuts = 0;
     for (var seed = 1; seed <= 40; seed++) {
       var height = 0, marks = 0, level = 1;
       final seen = <TowerRun>[];
@@ -377,8 +543,14 @@ void main() {
           r.lastEvent?.kind == TowerEventKind.rival && r.lastEvent!.passed)) {
         skipped++;
       }
+      if (seen.any((r) =>
+          r.lastEvent?.kind == TowerEventKind.shortcut &&
+          r.lastEvent!.passed)) {
+        shortcuts++;
+      }
     }
     expect(fell, greaterThan(0));
     expect(skipped, greaterThan(0));
+    expect(shortcuts, greaterThan(0));
   });
 }
