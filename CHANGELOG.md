@@ -8,6 +8,10 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.953.0+989]
+
+- Story scenes: a picture for each of the story's places (UX, with Art's bands). Seventy-three places, from Alster's high quay to Akagiri's forge, show a 240x100 band at the top of the scene's words, in the Journey's scene and the Story tab; a place with none (the Hollow Shore, left bare by choice) shows what it showed before. About 0.57 MB of PNG8 in the app.
+
 ## [1.950.0+986]
 
 - Tower: floor events, part 3, the parley (docs/proposals/tower-peaceful-floors-and-stores.md). **Off for players**: it only plays in a climb of events version 2, which no player starts yet. In the engine, before an ordinary floor's fight, a guardian of one of the six clans may offer to talk. Talking is a d20 check, rolled on charisma, wisdom or dexterity depending on the floor, with the setback's target and the odds shown. If you are sworn to the guardian's clan, you pass with no roll. A pass takes you up a floor with its level and marks, but no spoils, card or heal. A failed talk leads to the floor's normal fight. A climb with the parley (and, later, the stores) plays at its own foe scale (1.15), so the live climb's numbers do not move. Each kind of floor event now has a background key for its picture.
