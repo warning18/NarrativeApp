@@ -442,7 +442,8 @@ void main() {
 
     test('the odds line', () {
       expect(riskyOddsText(5, AppLanguage.en), 'Gift 80% · Price 20%');
-      expect(riskyOddsText(0, AppLanguage.fr), 'Don 75 % · Prix 25 %');
+      expect(
+          riskyOddsText(0, AppLanguage.fr), 'Don 75\u00a0% · Prix 25\u00a0%');
     });
 
     test('the result lines', () {

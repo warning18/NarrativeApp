@@ -250,7 +250,7 @@ void main() {
       expect(
           wardSetLine('compact', AppLanguage.fr,
               data: data, nemesis: 'compact'),
-          'Le cairn cache votre piste aux chasseurs du Pacte des Cendres ; '
+          'Le cairn cache votre piste aux chasseurs du Pacte des Cendres\u00a0; '
           'son champion, lui, vous trouvera.');
       expect(
           wardSetLine('crows', AppLanguage.en, data: data, nemesis: 'crows'),
@@ -263,7 +263,7 @@ void main() {
       expect(
           wardLine('ward_mark', AppLanguage.fr,
               clanId: 'dominion', data: data, n: 4),
-          'Protection contre la chasse du Dominion de la Lanterne : 4 routes');
+          'Protection contre la chasse du Dominion de la Lanterne\u00a0: 4 routes');
       expect(wardLine('ward_length', AppLanguage.en, roads: 6, cost: 2),
           '6 roads · charges: 2');
       // The cost is read as a label, so one charge never reads "1 charges".

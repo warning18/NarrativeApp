@@ -224,7 +224,7 @@ void main() {
         .read(appLanguageProvider.notifier)
         .setLanguage(AppLanguage.fr));
     await tester.pump(const Duration(milliseconds: 400));
-    expect(find.text('Nouveau : Compétences'), findsOneWidget);
+    expect(find.text('Nouveau\u00a0: Compétences'), findsOneWidget);
     expect(find.text('Montre-moi'), findsOneWidget);
     expect(find.text('Plus tard'), findsOneWidget);
     await _save(tester, 'unlock-card-fr-320');
