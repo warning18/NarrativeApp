@@ -153,7 +153,8 @@ class TowerFightResult {
       {required this.won,
       required this.healthLeft,
       this.potionsLeft,
-      this.antidotesLeft});
+      this.antidotesLeft,
+      this.rounds});
 
   final bool won;
 
@@ -164,6 +165,10 @@ class TowerFightResult {
   /// was.
   final int? potionsLeft;
   final int? antidotesLeft;
+
+  /// The rounds the fight took (floor events PR 2, a rival's floor); null,
+  /// not counted.
+  final int? rounds;
 }
 
 /// Plays the fight of [run]'s floor and says how it ended; null when it was

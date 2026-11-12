@@ -13,6 +13,8 @@
 //
 // TOWER_SEEDS (default 500) seeds from TOWER_FIRST (default 1) are played in
 // each of the two cases; TOWER_OUT is where the batch's JSON goes.
+// TOWER_EVENTS (default 1) is the floor events' version the bot plays
+// (floor events PR 2: the curve is set with them on; 0, as before them).
 import 'dart:convert';
 import 'dart:io';
 
@@ -66,14 +68,25 @@ const _floor20 = (min: 0.33, max: 0.53);
 const _topNone = (min: 0.07, max: 0.20);
 const _topAll = (min: 0.23, max: 0.37);
 
+/// The floor events' version the batch and the guards play (TOWER_EVENTS):
+/// the foes' scale and the floors' extras of floor events PR 2 are set for
+/// the climb with them on (docs/proposals/tower-snakes-and-ladders.md).
+final _events = int.tryParse(Platform.environment['TOWER_EVENTS'] ?? '') ?? 1;
+
 /// The first seeds of the in-suite batch (the full batch is TOWER_SEEDS).
 const _guardSeeds = 500;
 
 final _data = towerDataFromAssets();
 
-List<TowerRun> _play(int first, int count, TowerProgress progress) => [
+List<TowerRun> _play(int first, int count, TowerProgress progress,
+        {int? events}) =>
+    [
       for (var seed = first; seed < first + count; seed++)
-        playTowerRun(seed: seed, data: _data, progress: progress),
+        playTowerRun(
+            seed: seed,
+            data: _data,
+            progress: progress,
+            events: events ?? _events),
     ];
 
 int _median(List<int> values) {
@@ -94,6 +107,8 @@ Map<String, dynamic> _json(TowerRun run) => {
       'floorReached': run.floorReached,
       'floorsCleared': run.floorsCleared,
       'marks': run.marks,
+      'crest': run.crest,
+      'setbacks': run.setbacks,
       'refused': run.refused.length,
       'spoils': run.spoils.values.fold<int>(0, (n, items) => n + items.length),
       'taken': {
@@ -123,6 +138,7 @@ void main() {
         'first': first,
         'count': count,
         'top': towerTop,
+        'events': _events,
         'cases': {
           for (final e in cases.entries)
             e.key: [for (final r in e.value) _json(r)],
@@ -158,7 +174,7 @@ void main() {
     }
   });
 
-  test('the balance holds what the design asks (tower-mechanics.md §11)', () {
+  void balance(List<TowerRun> none, List<TowerRun> all) {
     String line(String name, List<TowerRun> runs) => '$name: median floor '
         '${_median([for (final r in runs) r.floorReached])}, floor 20 '
         '${(100 * _share(runs, (r) => r.floorReached >= 20)).toStringAsFixed(1)}'
@@ -181,5 +197,17 @@ void main() {
     expect(_share(all, (r) => r.status == TowerStatus.won),
         greaterThanOrEqualTo(_share(none, (r) => r.status == TowerStatus.won)),
         reason: reason);
+  }
+
+  test('the balance holds what the design asks (tower-mechanics.md §11)', () {
+    balance(none, all);
+  });
+
+  // Today's climb, the floor events off (towerEventsLive 0, floor events
+  // PR 2): its own foes' scale, held by the same bands on the same seeds.
+  test('the balance holds with the floor events off', () {
+    if (_events == 0) return;
+    balance(_play(1, _guardSeeds, const TowerProgress(), events: 0),
+        _play(1, _guardSeeds, towerAllUnlocked, events: 0));
   });
 }

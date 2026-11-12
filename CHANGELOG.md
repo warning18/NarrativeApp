@@ -8,6 +8,10 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.939.0+975]
+
+- Tower: floor events, part 2 (docs/proposals/tower-snakes-and-ladders.md). **Events still stay off for players** until the user has seen UX-2's event cards: a run started now plays as before, apart from floors 27 and 28, which are a little softer for everyone (their extra foe strength drops from 32% and 34% to 31%). In the engine: a shortcut offers, before an ordinary floor's fight, a tougher version of it (a lone foe becomes an Elite, a pack gets one more foe); won, the hero skips 1 to 3 floors, never past the next warden or boss; lost, the run ends, as any lost fight does. A run with events plays on its own foe curve (a softer base, a little more on the floor-20 and floor-30 bosses), so a run with events lands about where one without does. The Tower fight now counts its rounds, so a rival's three-round goal can be checked. With events on and every unlock, the share of runs reaching the top is 1.5 points under the target band's centre; it is left as it is.
+
 ## [1.938.0+974]
 
 - Skills in the Apollo palette: the 157 skill icons and the six main effect strips (flame, frost, lightning, heal, void rift, shield) are Art's Apollo versions, and every element's effect tints, plus the fixed ones (poison, mana, shield, gold, weaken, miss, phase, smoke, heal), take Apollo tones named in `ApolloTones` (lib/theme/palette.dart). Fire is pushed hotter inside the palette. Rarity accents are unchanged.

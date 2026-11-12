@@ -51,6 +51,13 @@ class TowerFightSession {
   int get potionsLeft => current.potionCount;
   int get antidotesLeft => current.antidoteCount;
 
+  /// The rounds the fight has started (floor events PR 2: a rival's floor
+  /// is skipped when it is won within towerRivalRounds); 0 before the first.
+  int rounds = 0;
+
+  /// What FightScreen's onRound is handed: each round started, its number.
+  void onRound(int round) => rounds = round;
+
   /// [child] (the FightScreen) under the Tower hero's session: every read
   /// of playerSessionProvider below it is the Tower's, every write stays
   /// in it and is never saved. Its dice table is the Tower's (TowerData.dice:

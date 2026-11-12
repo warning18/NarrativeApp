@@ -93,7 +93,8 @@ class _TowerFloorScreenState extends ConsumerState<_TowerFloorBody> {
           won: result.won,
           healthLeft: result.healthLeft,
           potionsLeft: result.potionsLeft,
-          antidotesLeft: result.antidotesLeft);
+          antidotesLeft: result.antidotesLeft,
+          rounds: result.rounds);
       if (next.isOver) {
         await _finish(next);
       } else {
