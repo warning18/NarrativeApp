@@ -8,6 +8,10 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.941.0+977]
+
+- Towns: the sea lies where the sphere puts it. Saltmouth, Greyhithe and the White Anchorage have their sea to the north now. Their whole plan is turned a half turn: water, walls, streets, bridges, districts, buildings and the town's services. Their streets, buildings and names are the same, only turned. Every other town keeps its sea to the south, as the sphere has it. The plans are turned where they are stored, so no hand edit is lost. The plan generator no longer reproduces the stored plans and is not to be run for now (`docs/city-plans-tools.md`).
+
 ## [1.940.0+976]
 
 - Maps, release 3: the locations. The fog over a district not yet found lets its streets and blocks show through; its names and pins stay hidden, the "?" and the dashed outline stay. On the city plan page "+" closes in on the party, not on the middle of the city. The party's breathing ring is on its own layer, so the whole plan is no longer redrawn every frame. Inside a building the label names the building, not its town, and no rain, snow or ash is drawn under its roof. Not in this release: the sea on the side where the sphere puts it (waits for Core's turned plans). Pictures: `docs/maps/sphere-and-locations/release-3/`.
