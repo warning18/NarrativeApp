@@ -38,10 +38,15 @@ void main() {
           ? chunk.substring(frAt + 15, enAt)
           : chunk.substring(frAt + 15);
       final key = heads[i].group(1)!;
-      if (plainSpace.hasMatch(fr))
+      if (plainSpace.hasMatch(fr)) {
         faults.add('$key: plain space before : ; ! ? %');
-      if (guillemet.hasMatch(fr)) faults.add('$key: plain space inside « »');
-      if (straight.hasMatch(fr)) faults.add('$key: straight apostrophe');
+      }
+      if (guillemet.hasMatch(fr)) {
+        faults.add('$key: plain space inside « »');
+      }
+      if (straight.hasMatch(fr)) {
+        faults.add('$key: straight apostrophe');
+      }
     }
     expect(faults, isEmpty,
         reason: 'run: python3 tool/fix_fr_typography.py --write '
