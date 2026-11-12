@@ -8,6 +8,10 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.965.0+1001]
+
+- Road crossing, desert: Art's painted layers (UX; the user's "Go for desert", with the calm four-colour sky). The desert road's sky, far mesas, mid dunes and near sand are now pictures scrolling at the code kit's own speeds (0, 0.15, 0.4, 0.8); the sun, the goal, the path, the party, the weather and the dusk tint and stars stay code and lie over them. The goal stands on the mesas' ground with a dark outline. Until the pictures are in, the code kit draws; the fight ground, the life header, the detour scenes, the world view and the other five kits keep their code look. About 4.5 KB of PNG8 in the app.
+
 ## [1.964.0+1000]
 
 - Screen backgrounds (UX, Art's painted pictures, no figures, no layout change). **Life choices**: each memory's header shows a painted band of its place for the six ages (the rope-walk gutter, the alley with ribbons, the snowy street with the blind man's sign, the pier with nets, Old Hesk's house at dusk, the parents' house in snow), under the existing fade; the race's mark at age 8 and the calling's memory at age 12 share the age's band, and a new memory without one keeps the code-drawn scene. **Character choice**: a plate for the people and one for the calling behind the list, the page colour over it at 70%, and a solid foot behind the start button (not on the Tower's climb). **Expeditions**: a band for each of the 20 zones above the road. The character screen's "Still to choose: a people and a calling" line was English-only text in French; it is now three strings (the French lines are the UX's, for Narrative to word). About 190 KB of PNG8 in the app.
