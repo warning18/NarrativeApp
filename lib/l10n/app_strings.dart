@@ -5007,6 +5007,18 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.en: 'What it offers you',
     AppLanguage.fr: 'Ce qu’il vous offre',
   },
+  'rp_missing_both': {
+    AppLanguage.en: 'Still to choose: a people and a calling',
+    AppLanguage.fr: 'Reste à choisir\u00a0: un peuple et une vocation',
+  },
+  'rp_missing_people': {
+    AppLanguage.en: 'Still to choose: a people',
+    AppLanguage.fr: 'Reste à choisir\u00a0: un peuple',
+  },
+  'rp_missing_calling': {
+    AppLanguage.en: 'Still to choose: a calling',
+    AppLanguage.fr: 'Reste à choisir\u00a0: une vocation',
+  },
   'rp_next_calling': {
     AppLanguage.en: 'Next: your calling',
     AppLanguage.fr: 'Suite\u00a0: votre vocation',

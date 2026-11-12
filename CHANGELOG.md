@@ -8,6 +8,14 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.965.0+1001]
+
+- Road crossing, desert: Art's painted layers (UX; the user's "Go for desert", with the calm four-colour sky). The desert road's sky, far mesas, mid dunes and near sand are now pictures scrolling at the code kit's own speeds (0, 0.15, 0.4, 0.8); the sun, the goal, the path, the party, the weather and the dusk tint and stars stay code and lie over them. The goal stands on the mesas' ground with a dark outline. Until the pictures are in, the code kit draws; the fight ground, the life header, the detour scenes, the world view and the other five kits keep their code look. About 20 KB of PNG8 in the app.
+
+## [1.964.0+1000]
+
+- Screen backgrounds (UX, Art's painted pictures, no figures, no layout change). **Life choices**: each memory's header shows a painted band of its place for the six ages (the rope-walk gutter, the alley with ribbons, the snowy street with the blind man's sign, the pier with nets, Old Hesk's house at dusk, the parents' house in snow), under the existing fade; the race's mark at age 8 and the calling's memory at age 12 share the age's band, and a new memory without one keeps the code-drawn scene. **Character choice**: a plate for the people and one for the calling behind the list, the page colour over it at 70%, and a solid foot behind the start button (not on the Tower's climb). **Expeditions**: a band for each of the 20 zones above the road. The character screen's "Still to choose: a people and a calling" line was English-only text in French; it is now three strings (the French lines are the UX's, for Narrative to word). About 190 KB of PNG8 in the app.
+
 ## [1.963.0+999]
 
 - Tower: the floors without a fight are live (floor events part 5, the user's option 2). A new climb now also meets the parley (talk your way past a floor's guardian with an ability check, or straight through if you are sworn to its clan), the Stair-Chandler's shop (always after the bosses of floors 10 and 20, and on 5% of other floors: a salve and a bundle of potions for the climb's marks, half price for his clan's sworn), and the Tally-Clerk's bargain (on 10% of floors: a tenth of your max health for a point on your damage stat, for the climb). To keep the climb as hard, the foes of such a climb are 1.17 (were 1.16), and the floor-25 warden and the floor-30 boss are a little softer. Measured on 2,000 seeds: 14.3% of climbs reach the top with no unlocks and 26.6% with all (were 13.3% and 24.9%); no ordinary floor ends more than 8.7% of the climbs that reach it; the floor-25 warden ends 13.8% and the floor-30 boss 27.5% (were 13.5% and 26.2%). A climb already started keeps the floors it began with.
