@@ -417,10 +417,11 @@ const String towerSpoilsAntidote = 'antidote';
 const int towerBagCap = 5;
 
 /// The floor events' version new runs start with (floor events PR 1,
-/// docs/proposals/tower-snakes-and-ladders.md; TowerRun.events). 0 until
-/// UX-2's event card ships, the user's call: a run with none plays as
-/// before the events.
-const int towerEventsLive = 0;
+/// docs/proposals/tower-snakes-and-ladders.md; TowerRun.events): 1, the
+/// setback, the rival and the shortcut, switched on by the user's call of
+/// 12 November 2026 once UX-2's cards had shipped (v1.944). A run saved
+/// before keeps the version it started with (0 plays as before the events).
+const int towerEventsLive = 1;
 
 /// The share of ordinary floors that hold a rival (floor events PR 1, the
 /// proposal's "Others"): win the floor's fight within [towerRivalRounds]
