@@ -26,6 +26,12 @@ void main() {
   test('a picture has a path only when its id has a file', () {
     expect(lifeBandAsset('sparrow'), 'assets/visuals/life/sparrow.png');
     expect(lifeBandAsset('lamp'), isNull);
+    // The race's mark (age 8) and the calling's memory (age 12) share the
+    // age's band.
+    expect(lifeBandStemOf('mark_dwarf'), 'mark');
+    expect(lifeBandStemOf('mark_voidkin'), 'mark');
+    expect(lifeBandStemOf('calling_mage'), 'calling');
+    expect(lifeBandStemOf('sparrow'), 'sparrow');
     expect(characterPlateAsset(0), 'assets/visuals/character/race.png');
     expect(characterPlateAsset(1), 'assets/visuals/character/calling.png');
     expect(expeditionBandAsset('z_lantern_docks'),

@@ -7,8 +7,8 @@
 // each id set below is the folder's files (a test keeps them the same).
 import 'package:flutter/material.dart';
 
-/// The memories that have a painted band (OriginMemory.id); the others keep
-/// the code-drawn scene (origin_scene_backdrop.dart).
+/// The painted bands, by file stem (see [lifeBandStemOf]); a memory without
+/// one keeps the code-drawn scene (origin_scene_backdrop.dart).
 const Set<String> lifeBandIds = {'sparrow', 'board'};
 
 /// The character choice's plates, by step: the people, then the calling.
@@ -21,8 +21,19 @@ const Set<String> expeditionBandIds = {
   'z_changeling_fen',
 };
 
-String? lifeBandAsset(String memoryId) =>
-    lifeBandIds.contains(memoryId) ? 'assets/visuals/life/$memoryId.png' : null;
+/// The band file a memory uses: the age's own (a race's mark at age 8 and a
+/// calling's memory at age 12 share the age's band, 'mark' and 'calling'), or
+/// the memory's id.
+String lifeBandStemOf(String memoryId) => memoryId.startsWith('mark_')
+    ? 'mark'
+    : memoryId.startsWith('calling_')
+        ? 'calling'
+        : memoryId;
+
+String? lifeBandAsset(String memoryId) {
+  final stem = lifeBandStemOf(memoryId);
+  return lifeBandIds.contains(stem) ? 'assets/visuals/life/$stem.png' : null;
+}
 
 /// The plate of the character choice's [step] (0 the people, 1 the calling).
 String? characterPlateAsset(int step) {
