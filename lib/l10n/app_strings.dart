@@ -1569,6 +1569,147 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.fr:
         'L’escalier tient : après cette carte, vous montez à l’étage {to}.',
   },
+  'tower_parley': {
+    AppLanguage.en: 'Parley',
+    AppLanguage.fr: 'Pourparlers',
+  },
+  'tower_parley_title': {
+    AppLanguage.en: 'A guardian bars the way',
+    AppLanguage.fr: 'Un gardien barre la route',
+  },
+  'tower_parley_body': {
+    AppLanguage.en:
+        'It does not look eager to fight. Perhaps it can be talked past.',
+    AppLanguage.fr:
+        'Il n’a pas l’air pressé de se battre. On peut peut-être le convaincre de vous laisser passer.',
+  },
+  'tower_parley_sworn': {
+    AppLanguage.en: 'You are sworn to its clan: it lets you pass, no roll.',
+    AppLanguage.fr:
+        'Vous avez prêté serment à son clan : il vous laisse passer, sans jet.',
+  },
+  'tower_parley_pass': {
+    AppLanguage.en: 'Pass',
+    AppLanguage.fr: 'Réussite',
+  },
+  'tower_parley_pass_text': {
+    AppLanguage.en: 'No fight: you go on to floor {n}',
+    AppLanguage.fr: 'Pas de combat : vous passez à l’étage {n}',
+  },
+  'tower_parley_fail': {
+    AppLanguage.en: 'Fail',
+    AppLanguage.fr: 'Échec',
+  },
+  'tower_parley_fail_text': {
+    AppLanguage.en: 'The fight, as it would have been',
+    AppLanguage.fr: 'Le combat, comme il aurait eu lieu',
+  },
+  'tower_parley_forgo': {
+    AppLanguage.en:
+        'You give up this floor’s spoils, its card and the healing a win brings.',
+    AppLanguage.fr:
+        'Vous renoncez au butin de l’étage, à sa carte et aux soins qu’apporte une victoire.',
+  },
+  'tower_parley_talk': {
+    AppLanguage.en: 'Talk',
+    AppLanguage.fr: 'Parlementer',
+  },
+  'tower_parley_fight': {
+    AppLanguage.en: 'Fight',
+    AppLanguage.fr: 'Combattre',
+  },
+  'tower_merchant': {
+    AppLanguage.en: 'Merchant',
+    AppLanguage.fr: 'Marchand',
+  },
+  'tower_merchant_title': {
+    AppLanguage.en: 'The Stair-Chandler',
+    AppLanguage.fr: 'Le Chandelier de l’escalier',
+  },
+  'tower_merchant_body': {
+    AppLanguage.en:
+        'Salves and potions for a climber with marks to spend. Nothing here leaves the Tower.',
+    AppLanguage.fr:
+        'Des onguents et des potions pour qui a des marques à dépenser. Rien d’ici ne quitte la Tour.',
+  },
+  'tower_merchant_wallet': {
+    AppLanguage.en: 'Marks to spend: {n}',
+    AppLanguage.fr: 'Marques à dépenser : {n}',
+  },
+  'tower_merchant_sworn': {
+    AppLanguage.en: 'Half price: you are sworn to its clan',
+    AppLanguage.fr: 'Moitié prix : vous avez prêté serment à son clan',
+  },
+  'tower_merchant_salve': {
+    AppLanguage.en: 'Salve',
+    AppLanguage.fr: 'Onguent',
+  },
+  'tower_merchant_salve_text': {
+    AppLanguage.en: 'Heals {n}% of your health.',
+    AppLanguage.fr: 'Rend {n} % de votre santé.',
+  },
+  'tower_merchant_potions': {
+    AppLanguage.en: 'Potion bundle',
+    AppLanguage.fr: 'Lot de potions',
+  },
+  'tower_merchant_potions_text': {
+    AppLanguage.en: '{n} potions into the bag.',
+    AppLanguage.fr: '{n} potions dans la sacoche.',
+  },
+  'tower_merchant_price': {
+    AppLanguage.en: '{n} marks',
+    AppLanguage.fr: '{n} marques',
+  },
+  'tower_merchant_buy': {
+    AppLanguage.en: 'Buy',
+    AppLanguage.fr: 'Acheter',
+  },
+  'tower_merchant_bought': {
+    AppLanguage.en: 'Bought',
+    AppLanguage.fr: 'Acheté',
+  },
+  'tower_merchant_leave': {
+    AppLanguage.en: 'Leave the stall',
+    AppLanguage.fr: 'Quitter l’échoppe',
+  },
+  'tower_bargain': {
+    AppLanguage.en: 'Bargain',
+    AppLanguage.fr: 'Marché',
+  },
+  'tower_bargain_title': {
+    AppLanguage.en: 'The Tally-Clerk',
+    AppLanguage.fr: 'Le Greffier des comptes',
+  },
+  'tower_bargain_body': {
+    AppLanguage.en:
+        'He will take a tenth of your health, for the rest of the climb, and add a point where you strike.',
+    AppLanguage.fr:
+        'Il prendra un dixième de votre santé pour le reste de l’ascension, et ajoutera un point là où vous frappez.',
+  },
+  'tower_bargain_gain': {
+    AppLanguage.en: 'Gain',
+    AppLanguage.fr: 'Gain',
+  },
+  'tower_bargain_gain_text': {
+    AppLanguage.en: '+1 {stat}, for the climb',
+    AppLanguage.fr: '+1 {stat}, pour l’ascension',
+  },
+  'tower_bargain_cost': {
+    AppLanguage.en: 'Cost',
+    AppLanguage.fr: 'Coût',
+  },
+  'tower_bargain_cost_text': {
+    AppLanguage.en: '{n} less maximum health, for the climb',
+    AppLanguage.fr: '{n} de santé maximale en moins, pour l’ascension',
+  },
+  'tower_bargain_accept': {
+    AppLanguage.en: 'Accept',
+    AppLanguage.fr: 'Accepter',
+  },
+  'tower_bargain_refuse': {
+    AppLanguage.en: 'Refuse',
+    AppLanguage.fr: 'Refuser',
+  },
   'tower_event_shortcut_landed': {
     AppLanguage.en: 'The shortcut holds: you land on floor {to}',
     AppLanguage.fr: 'Le raccourci tient : vous arrivez à l’étage {to}',
