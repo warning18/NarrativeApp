@@ -13,7 +13,18 @@ for y in range(10,51):
     for x in range(sky.shape[1]):
         if (x+y)%2==0 and not (sky[y,x,:3]==sky[y+1,x,:3]).all() and (sky[y,x,:3]==sky[y,max(x-1,0),:3]).all() and (sky[y,x,:3]==sky[y,min(x+1,sky.shape[1]-1),:3]).all():
             sky[y,x,:3]=sky[y+1,x,:3]
-save(sky,'desert_sky.png')
+save(sky,'desert_sky_busy.png')
+# calm sky (the user: 'sky with less colors'): a reduction of the pick to FOUR Apollo colours in four flat bands (violet, rose-brown, orange, gold; the code sky has five bands
+# with wide dither) with only a narrow 2x2 Bayer dither on each band edge, 0 generations; the band heights follow the pick (violet top, glow at the horizon)
+CAL=[(0x40,0x27,0x51),(0x7A,0x48,0x41),(0xDA,0x86,0x3E),(0xE8,0xC1,0x70)]   # Apollo 402751, 7A4841, DA863E, E8C170
+BAY=[[0,2],[3,1]]; calm=np.zeros_like(sky); calm[...,3]=255; EDGES=[14,27,39]
+for y in range(52):
+    i=sum(1 for e in EDGES if y>=e); nxt=min(i+1,len(CAL)-1)
+    d_to=(EDGES[i]-y) if i<len(EDGES) else 99          # rows to the next edge
+    f=0 if d_to>2 else (3-d_to)/4.0                   # dither only over the last two rows before an edge
+    for x in range(sky.shape[1]):
+        calm[y,x,:3]=CAL[nxt] if f*4>BAY[y%2][x%2] and f>0 else CAL[i]
+save(calm,'desert_sky.png')
 # far: window starting and ending on flat ground, then mirrored so the tile wraps seamlessly
 far=load('desert_far2_s6'); A=far[:,88:192]; farT=np.concatenate([A,A[:,::-1]],axis=1); save(farT,'desert_far.png')
 # mid: smooth dunes: the ends differ by 2 rows, so shift each column vertically by a linear ramp
@@ -34,11 +45,12 @@ print({n:Image.open(O+n).size for n in ('desert_sky.png','desert_far.png','deser
 # ---- the composition ----
 UNIT=190/72; W=412; GW=int(round(W/UNIT))+1   # scene pixels across
 LAY={'far':(Image.open(O+'desert_far.png'),28,0.15),'mid':(Image.open(O+'desert_mid.png'),38,0.4),'near':(Image.open(O+'desert_near.png'),48,0.8)}
-sk=Image.open(O+'desert_sky.png'); ronin=Image.open('assets/visuals/walker/ronin_walk_east.png').convert('RGBA').crop((0,0,42,47))
+sk=Image.open(O+'desert_sky.png'); sk_busy=Image.open(O+'desert_sky_busy.png'); ronin=Image.open('assets/visuals/walker/ronin_walk_east.png').convert('RGBA').crop((0,0,42,47))
 sandfill=tuple(int(v) for v in np.array(Image.open(O+'desert_mid.png').convert('RGBA'))[10,5,:3])
-def scene(scroll_px,dusk=False):
-    g=Image.new('RGBA',(GW,72),(0,0,0,255)); g.paste(sk,(0,0))
-    if sk.width<GW: g.paste(sk.crop((sk.width-(GW-sk.width),0,sk.width,52)),(sk.width,0))
+def scene(scroll_px,dusk=False,sky=None):
+    sky=sky or sk
+    g=Image.new('RGBA',(GW,72),(0,0,0,255)); g.paste(sky,(0,0))
+    if sky.width<GW: g.paste(sky.crop((sky.width-(GW-sky.width),0,sky.width,52)),(sky.width,0))
     d=ImageDraw.Draw(g)
     cx,cy=int(GW*0.72),30                                         # the sun disc stays code
     for y in range(-9,10):
@@ -62,12 +74,13 @@ def scene(scroll_px,dusk=False):
 F=ImageFont.load_default(size=13)
 today=Image.open('docs/ux-shots/backdrops-crossing-desert-versions.png').convert('RGB').crop((8,54,408,238)).resize((412,190),Image.NEAREST)
 rows=[('day',False),('dusk (kit_hour wash)',True)]
-sh=Image.new('RGB',(412*4+50,(190+26)*2+30),(20,17,26)); d=ImageDraw.Draw(sh)
-d.text((10,4),'Road crossing, desert: today | painted layers at three scroll positions (0, 160 and 320 px), at 412 x 190, the ronin on the code path',font=F,fill=(233,224,201))
+sh=Image.new('RGB',(412*5+70,(190+26)*2+30),(20,17,26)); d=ImageDraw.Draw(sh)
+d.text((10,4),'Road crossing, desert: today | pilot B as merged (the busy sky) | calm sky (four Apollo colours, 0 generations) at scroll 0, 160 and 320 px, 412 x 190',font=F,fill=(233,224,201))
 for r,(lab,dusk) in enumerate(rows):
     y=24+r*216; d.text((10,y),lab,font=F,fill=(233,224,201))
     if r==0: sh.paste(today,(10,y+18))
     else:
         t=today.convert('RGBA'); wash=Image.new('RGBA',t.size,(0x7A,0x4A,0x7C,int(255*0.20))); sh.paste(Image.alpha_composite(t,wash).convert('RGB'),(10,y+18))
-    for i,sc in enumerate((0,160,320)): sh.paste(scene(sc,dusk),(10+(i+1)*(412+10),y+18))
-sh.save('docs/art/boards/crossing-parallax-desert-pilot-b.png'); print(sh.size)
+    sh.paste(scene(0,dusk,sk_busy),(10+(412+10),y+18))
+    for i,sc in enumerate((0,160,320)): sh.paste(scene(sc,dusk),(10+(i+2)*(412+10),y+18))
+sh.save('docs/art/boards/crossing-parallax-desert-pilot-b2.png'); print(sh.size)
