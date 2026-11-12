@@ -8,6 +8,10 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.935.0+971]
+
+- Tower: floor events, part 2 (docs/proposals/tower-snakes-and-ladders.md). **Events still stay off for players** until the user has seen UX-2's event cards: a run started now plays as before, apart from floors 27 and 28, which are a little softer for everyone (their extra foe strength drops from 32% and 34% to 31%). In the engine: a shortcut offers, before an ordinary floor's fight, a tougher version of it (a lone foe becomes an Elite, a pack gets one more foe); won, the hero skips one or two floors, never past the next warden or boss; lost, the run ends, as any lost fight does. A run with events plays on its own foe curve (a softer base, a little more on the floor-20 and floor-30 bosses), so a run with events lands about where one without does. The Tower fight now counts its rounds, so a rival's three-round goal can be checked. With events on and every unlock, the share of runs reaching the top is 1.5 points under the target band's centre; it is left as it is.
+
 ## [1.933.0+969]
 
 - Tower: the engine of two floor events, setbacks and rivals (floor events PR 1, docs/proposals/tower-snakes-and-ladders.md). **They stay off for players** until the user has seen UX-2's event cards: a run started now plays exactly as before. In the engine: a setback is a d20 check after an ordinary floor (strength, dexterity or wisdom, DC 10 to 14, odds shown) that gives a potion, or on a fail drops the hero 1 to 3 floors, never past a warden or boss, once a run; a rival is a fight that, won within 3 rounds, skips the next floor. A floor met again after a fall pays nothing, and a fall never takes a level or a mark away.
