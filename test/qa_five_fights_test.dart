@@ -1,0 +1,334 @@
+// QA: the five deadliest story fights of the difficulty review, played on the
+// REAL fight screen by a basic player (the walkthrough drivers' dice play:
+// roll, confirm, no rerolls, no thought), with Core's "typical" heroes.
+//
+// Inert unless QA_FIVE=<folder> is set (it writes `five-fights.json`, one row
+// a run, and `_trace.txt`). Other variables:
+//   QA_FIVE_BUILDS   the builds file (default docs/simulation/typical-player-builds.json)
+//   QA_FIVE_N        runs a fight (default 12)
+//   QA_FIVE_IDS      comma list of encounter ids (default all five)
+//   QA_FIVE_PROF     a profession id to play (default: the file's mostCommonProfession)
+//
+// Each run loads the build's PlayerSession (PlayerSession.fromJson of its
+// `save`), opens FightScreen on the fight's foes in the build's chapter
+// (EncounterModifiers(chapter, isTest)), with Random(1000 * id + run) for the
+// dice, so a run can be played again alone. The place, the zone and the
+// scene's own modifiers are NOT set: the foes and the hero only.
+//
+// The figure is a LOWER bound on a fight (a basic player), not a typical one.
+import 'dart:async';
+import 'dart:convert';
+import 'dart:io';
+import 'dart:math';
+import 'dart:ui' as ui;
+
+import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
+import 'package:flutter/services.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_test/flutter_test.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+
+import 'package:narrative_data_app/combat/encounter.dart';
+import 'package:narrative_data_app/gamedata/db_schema.dart';
+import 'package:narrative_data_app/main.dart';
+import 'package:narrative_data_app/providers/app_mode_provider.dart';
+import 'package:narrative_data_app/providers/game_db_providers.dart';
+import 'package:narrative_data_app/providers/player_session_provider.dart';
+import 'package:narrative_data_app/screens/fight_screen.dart';
+
+import 'qa_smoke_harness.dart';
+
+void main() {
+  final out = Platform.environment['QA_FIVE'];
+  if (out == null) {
+    test('the five-fights check runs only with QA_FIVE', () {});
+    return;
+  }
+  setUpAll(() async {
+    TestWidgetsFlutterBinding.ensureInitialized();
+    await loadSmokeFonts();
+  });
+
+  testWidgets('five fights, a basic player, a typical hero', (tester) async {
+    final builds = jsonDecode(File(Platform.environment['QA_FIVE_BUILDS'] ??
+            'docs/simulation/typical-player-builds.json')
+        .readAsStringSync()) as Map<String, dynamic>;
+    final runs = int.tryParse(Platform.environment['QA_FIVE_N'] ?? '') ?? 12;
+    final ids = (Platform.environment['QA_FIVE_IDS'] ?? '')
+        .split(',')
+        .where((s) => s.isNotEmpty)
+        .toList();
+    final trace = <String>[];
+    final rows = <Map<String, dynamic>>[];
+    void note(String s) {
+      trace.add(s);
+      // ignore: avoid_print
+      print('FIVE $s');
+    }
+
+    TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
+        .setMockMethodCallHandler(
+            const MethodChannel('flutter_tts'), (call) async => 1);
+    SharedPreferences.setMockInitialValues({
+      'tutorial_enabled': false,
+      'combat_dice_speed': 'quad',
+    });
+    tester.view.devicePixelRatio = 1;
+    addTearDown(tester.view.reset);
+    tester.view.physicalSize = smokeSizes.first;
+
+    Future<void> settle([int n = 6]) async {
+      for (var i = 0; i < n; i++) {
+        await tester.runAsync(
+            () => Future<void>.delayed(const Duration(milliseconds: 40)));
+        await tester.pump(const Duration(milliseconds: 100));
+      }
+    }
+
+    final boundary = GlobalKey();
+    await tester.pumpWidget(ProviderScope(
+        child: RepaintBoundary(key: boundary, child: const MyApp())));
+    await settle(10);
+    await tester.tap(find.byKey(const Key('menu_edit_mode')));
+    await settle(10);
+    final container =
+        ProviderScope.containerOf(tester.element(find.byType(MaterialApp)));
+    await tester.runAsync(
+        () => container.read(appModeProvider.notifier).setMode(AppMode.inGame));
+    await settle(6);
+    await tester.runAsync(() =>
+        container.read(gameDbProvider(enemiesSchema).notifier).whenLoaded());
+    final enemies = container.read(localizedDbProvider(enemiesSchema)).value ??
+        const <String, dynamic>{};
+
+    bool has(String key) => find.byKey(Key(key)).evaluate().isNotEmpty;
+
+    for (final id in (ids.isEmpty ? builds.keys.toList() : ids)) {
+      final fight = builds[id] as Map<String, dynamic>;
+      final prof = Platform.environment['QA_FIVE_PROF'] ??
+          fight['mostCommonProfession'] as String;
+      final build = (fight['byProfession'] as Map<String, dynamic>)[prof]
+          as Map<String, dynamic>;
+      final foes = [for (final e in build['enemies'] as List) '$e'];
+      for (var run = 0; run < runs; run++) {
+        // Core's builds file keeps `diceSkillAssignments` of the die in use as
+        // {face: skill}; PlayerSession wants {dieId: {face: skill}}: a flat map
+        // is nested under the equipped die, as the game would hold it.
+        final save = Map<String, dynamic>.from(build['save'] as Map);
+        final assigned = save['diceSkillAssignments'];
+        if (assigned is Map && assigned.values.any((v) => v is! Map)) {
+          save['diceSkillAssignments'] = {
+            '${save['equippedDiceId']}': assigned,
+          };
+        }
+        await tester.runAsync(() => container
+            .read(playerSessionProvider.notifier)
+            .loadSession(PlayerSession.fromJson(save)));
+        var rounds = 0;
+        final nav = tester.state<NavigatorState>(find.byType(Navigator).first);
+        bool? result;
+        unawaited(nav
+            .push<bool>(MaterialPageRoute(
+              builder: (_) => FightScreen(
+                enemyId: foes.first,
+                enemy: enemies[foes.first] as Map<String, dynamic>,
+                additionalEnemyIds: foes.skip(1).toList(),
+                additionalEnemies: {
+                  for (final f in foes.skip(1))
+                    f: enemies[f] as Map<String, dynamic>,
+                },
+                modifiers: EncounterModifiers(
+                    chapter: build['chapter'] as int, isTest: true),
+                random: Random(1000 * (int.tryParse(id) ?? 0) + run),
+                onRound: (n) => rounds = n,
+              ),
+            ))
+            .then((v) => result = v));
+        await settle(10);
+        var outcome = 'timeout';
+        for (var i = 0; i < 600 && outcome == 'timeout'; i++) {
+          if (find.text('Victory! Return').evaluate().isNotEmpty) {
+            outcome = 'won';
+            break;
+          }
+          // A lost fight's button reads "Retreat" in the story and "Face what
+          // comes" where a loss continues (the Tower).
+          if (find.text('Face what comes').evaluate().isNotEmpty ||
+              find.text('Retreat').evaluate().isNotEmpty) {
+            outcome = 'lost';
+            break;
+          }
+          final enter = find.text('Enter Battle');
+          final confirm = find.text('Confirm');
+          final roll = find.textContaining('Roll Dice');
+          if (enter.evaluate().isNotEmpty) {
+            await tester.ensureVisible(enter);
+            await tester.pump();
+            await tester.tap(enter);
+          } else if (confirm.evaluate().isNotEmpty) {
+            await tester.tap(confirm.first);
+          } else if (roll.evaluate().isNotEmpty) {
+            await tester.tap(roll.first);
+          }
+          await tester.pump(const Duration(milliseconds: 400));
+          await tester.runAsync(
+              () => Future<void>.delayed(const Duration(milliseconds: 40)));
+        }
+        if (outcome == 'timeout') {
+          final bytes = await tester.runAsync(() async {
+            final object = boundary.currentContext!.findRenderObject()!
+                as RenderRepaintBoundary;
+            final image = await object.toImage();
+            return image.toByteData(format: ui.ImageByteFormat.png);
+          });
+          Directory(out).createSync(recursive: true);
+          File('$out/stuck_${id}_$run.png')
+              .writeAsBytesSync(bytes!.buffer.asUint8List());
+          note('$id run $run: stuck. On screen: ${[
+            for (final e in find.byType(Text).evaluate())
+              if ((e.widget as Text).data case final String t when t.isNotEmpty)
+                t
+          ].take(60).join(' | ')}. Buttons: ${[
+            for (final e in find
+                .byWidgetPredicate((w) => w is ButtonStyleButton)
+                .evaluate())
+              if (e.widget is ButtonStyleButton &&
+                  (e.widget as ButtonStyleButton).enabled)
+                [
+                  for (final t in find
+                      .descendant(
+                          of: find.byWidget(e.widget),
+                          matching: find.byType(Text))
+                      .evaluate())
+                    (t.widget as Text).data
+                ].join('/')
+          ]}');
+        }
+        // Leave the fight: chest, offers, the question of mercy, Return.
+        for (var i = 0;
+            i < 120 && find.byType(FightScreen).evaluate().isNotEmpty;
+            i++) {
+          final dialogButtons = find.descendant(
+              of: find.byType(Dialog),
+              matching: find.byWidgetPredicate(
+                  (w) => w is ButtonStyleButton && w.enabled));
+          if (has('mercy_finish')) {
+            await tester.tap(find.byKey(const Key('mercy_finish')));
+          } else if (has('offer_confirm_accept')) {
+            await tester.tap(find.byKey(const Key('offer_confirm_accept')));
+          } else if (has('stat_pick_picker')) {
+            // The level's stat pick: the first of the three, as a player who
+            // just goes on.
+            final taken = find.byKey(const Key('stat_pick_take'));
+            if (taken.evaluate().isEmpty ||
+                !(tester.widget(taken) as ButtonStyleButton).enabled) {
+              final first = find.byKey(const Key('stat_pick_offer_0'));
+              if (first.evaluate().isNotEmpty) {
+                await tester.tap(first);
+                await tester.pump(const Duration(milliseconds: 200));
+              }
+            }
+            if (taken.evaluate().isNotEmpty &&
+                (tester.widget(taken) as ButtonStyleButton).enabled) {
+              await tester.ensureVisible(taken);
+              await tester.tap(taken);
+            }
+          } else if (has('offer_take_button')) {
+            // The clans' offer after a boss: the first suitor, taken.
+            final suitor = find.byWidgetPredicate(
+                (w) => w.key is Key && '${w.key}'.contains('offer_suitor_'));
+            final take = find.byKey(const Key('offer_take_button'));
+            if (!(tester.widget(take) as ButtonStyleButton).enabled &&
+                suitor.evaluate().isNotEmpty) {
+              await tester.tap(suitor.first);
+              await tester.pump(const Duration(milliseconds: 200));
+            }
+            if ((tester.widget(take) as ButtonStyleButton).enabled) {
+              await tester.ensureVisible(take);
+              await tester.tap(take);
+            }
+          } else if (dialogButtons.evaluate().isNotEmpty) {
+            // The level reached, the clans' offer after a boss: answered with
+            // its first enabled button, as a player who just goes on.
+            await tester.tap(dialogButtons.first);
+          } else if (find.text('Take all').evaluate().isNotEmpty) {
+            await tester.tap(find.text('Take all').first);
+          } else if (find
+                  .text('What the spoils change')
+                  .evaluate()
+                  .isNotEmpty &&
+              find.text('Take').evaluate().isNotEmpty) {
+            await tester.tap(find.text('Take').last);
+          } else if (find.text('Victory! Return').evaluate().isNotEmpty) {
+            final b = find.ancestor(
+                of: find.text('Victory! Return'),
+                matching:
+                    find.byWidgetPredicate((w) => w is ButtonStyleButton));
+            if ((tester.widget(b.first) as ButtonStyleButton).enabled) {
+              await tester.tap(find.text('Victory! Return').first);
+            }
+          } else if (find.text('Retreat').evaluate().isNotEmpty) {
+            await tester.tap(find.text('Retreat').first);
+          } else if (find.text('Face what comes').evaluate().isNotEmpty) {
+            await tester.tap(find.text('Face what comes').first);
+          }
+          await tester.pump(const Duration(milliseconds: 300));
+          await tester.runAsync(
+              () => Future<void>.delayed(const Duration(milliseconds: 40)));
+        }
+        if (find.byType(FightScreen).evaluate().isNotEmpty) {
+          note('$id run $run: the fight did not close; popping it. Dialogs: ${{
+            for (final e in find
+                .byWidgetPredicate((w) =>
+                    '${w.runtimeType}'.contains('Dialog') ||
+                    '${w.runtimeType}'.contains('Sheet') ||
+                    '${w.runtimeType}'.contains('Loading'))
+                .evaluate())
+              '${e.widget.runtimeType}'
+          }}. In the dialog: ${[
+            for (final e in find
+                .descendant(
+                    of: find.byType(Dialog), matching: find.byType(Text))
+                .evaluate())
+              (e.widget as Text).data
+          ].take(25).join(' | ')}. Return enabled: ${[
+            for (final e in find
+                .ancestor(
+                    of: find.text('Victory! Return'),
+                    matching:
+                        find.byWidgetPredicate((w) => w is ButtonStyleButton))
+                .evaluate())
+              (e.widget as ButtonStyleButton).enabled
+          ]}. On screen: ${[
+            for (final e in find.byType(Text).evaluate())
+              if ((e.widget as Text).data case final String t when t.isNotEmpty)
+                t
+          ].take(30).join(' | ')}');
+          // Whatever is still open on top of the fight (an offer) goes with it.
+          nav.popUntil((route) => route.isFirst);
+          await settle(4);
+        }
+        // The fight's own verdict, what it popped with when it was left.
+        if (result != null) outcome = result! ? 'won' : 'lost';
+        rows.add({
+          'fight': id,
+          'run': run,
+          'profession': prof,
+          'foes': foes,
+          'outcome': outcome,
+          'rounds': rounds,
+        });
+        note('$id run $run ($prof): $outcome in $rounds rounds');
+        await settle(4);
+      }
+      Directory(out).createSync(recursive: true);
+      File('$out/five-fights.json')
+          .writeAsStringSync(const JsonEncoder.withIndent(' ').convert(rows));
+    }
+    Directory(out).createSync(recursive: true);
+    File('$out/five-fights.json')
+        .writeAsStringSync(const JsonEncoder.withIndent(' ').convert(rows));
+    File('$out/_trace.txt').writeAsStringSync('${trace.join('\n')}\n');
+  }, timeout: const Timeout(Duration(minutes: 120)));
+}

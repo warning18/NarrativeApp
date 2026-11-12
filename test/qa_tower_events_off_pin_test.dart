@@ -36,8 +36,10 @@ _Pin _measure(TowerProgress progress) {
 }
 
 void main() {
-  const none = (top: 55, floor20: 242, floorSum: 9522);
-  const all = (top: 145, floor20: 335, floorSum: 11294);
+  // v1.944: the floor events switched on (towerEventsLive 1, the user's
+  // call); events off, these were 55 / 242 / 9522 and 145 / 335 / 11294.
+  const none = (top: 58, floor20: 231, floorSum: 9358);
+  const all = (top: 129, floor20: 334, floorSum: 11203);
 
   test('the live Tower (events off), no unlocks, is the pinned curve', () {
     final m = _measure(const TowerProgress());
