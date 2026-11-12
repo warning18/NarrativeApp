@@ -34,4 +34,4 @@ Common suffix **S**: `16-bit pixel art, chibi dark medieval fantasy, flat colour
 ## Keeping this page current
 The user adopted this direction ("it fits, please keep it updated if any change on overall design"). Whenever an overall design decision lands, the Art session updates this page in its next art/docs PR and says so in the PR description.
 
-- **Palettes (pending the user's final word):** skills: Apollo 46 + two core brights (F2C14E hot yellow, FFF6E0 near white); world and interface stay muted. Staged, not wired: `art/pixellab-apollo-skills/`; tool `tool/apollo_remap.py`, `tool/apollo_skills.py`.
+- **Palettes (decided by the user, "Skills take Apollo palette"):** skills: Apollo 46 + two core brights (F2C14E hot yellow, FFF6E0 near white); world and interface stay muted. Skill icons and the effect strips are in `art/pixellab-apollo-skills/` (void stays the hand-walked magenta-violet; no extra violet or orange kept). Hex list for any new skill art: `docs/art/palette-apollo.md`. Tools: `tool/apollo_remap.py`, `tool/apollo_skills.py`.
