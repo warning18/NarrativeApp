@@ -70,7 +70,7 @@ List<SideLayer> desertLayers({double progress = 0, bool painted = false}) {
       final top = DesertPictures.sandRow * u;
       c.drawRect(Rect.fromLTWH(0, top, s.width, s.height - top),
           Paint()..color = _DesertLook.sand);
-      _goal(c, s, u, progress);
+      _goal(c, s, u, progress, painted: true);
     }),
     SideLayer(code[3].speed, (c, s, scroll, t, u) {
       if (!DesertPictures.loaded) code[3].paint(c, s, scroll, t, u);
@@ -247,7 +247,8 @@ void _sun(Canvas canvas, Size size, double scroll, double t, double u) {
 
 /// The goal on the horizon: a face of rock among the mesas, nearer with
 /// [progress].
-void _goal(Canvas canvas, Size size, double u, double progress) {
+void _goal(Canvas canvas, Size size, double u, double progress,
+    {bool painted = false}) {
   final w = size.width / u;
   final x = w * (1.05 - 0.62 * progress.clamp(0, 1));
   final scale = 1 + progress.clamp(0, 1) * 0.8;
@@ -255,7 +256,13 @@ void _goal(Canvas canvas, Size size, double u, double progress) {
   final rim = Paint()..color = _DesertLook.mesaRim;
   final dark = Paint()..color = const Color(0xFF2E1C24);
   final bw = (14 * scale).round(), bh = (16 * scale).round();
-  const base = 44.0;
+  // Over Art's mesas it stands on their flat ground (row 47) with a dark
+  // outline, so it reads against them.
+  final base = painted ? 47.0 : 44.0;
+  if (painted) {
+    sidePixels(
+        canvas, u, dark, x - bw / 2 - 1, base - bh - 1, bw + 2.0, bh + 2.0);
+  }
   sidePixels(
       canvas, u, body, x - bw / 2, base - bh, bw.toDouble(), bh.toDouble());
   sidePixels(canvas, u, rim, x - bw / 2, base - bh, bw.toDouble(), 1);
