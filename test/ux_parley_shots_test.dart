@@ -81,8 +81,9 @@ void main() {
         final r = settled(base(seed, floor));
         if (towerEventKindOf(r) != TowerEventKind.parley) continue;
         if (!failing) return (seed, floor);
-        if (towerChooseParley(r, data, true).parley == true)
+        if (towerChooseParley(r, data, true).parley ?? false) {
           return (seed, floor);
+        }
       }
     }
     throw StateError('none');
