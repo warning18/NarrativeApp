@@ -24,6 +24,7 @@ import '../widgets/help_hint.dart' show TourInfoButton;
 import '../widgets/camp_travel.dart' show travelToPlace;
 import '../widgets/chart_map_painter.dart' show ChartFog;
 import '../widgets/journey_world_map.dart';
+import '../widgets/level_ladder.dart';
 import '../widgets/map_legend_sheet.dart';
 import 'heard_of_travel.dart' show setOutToHeardOf;
 import 'journal_screen.dart' show JournalScreen;
@@ -64,9 +65,15 @@ enum _MapSheetChoice { travel, setOut, markGoal, clearGoal }
 /// offer to travel there. [focusId] opens it on that place with its sheet
 /// up (the camp's "On the map").
 class FullMapScreen extends ConsumerStatefulWidget {
-  const FullMapScreen({super.key, this.focusId});
+  const FullMapScreen({super.key, this.focusId, this.rungs});
 
   final String? focusId;
+
+  /// Opened from the Journey's World rung: the other rungs that can be
+  /// taken from there. The page then carries the Journey's strip, World
+  /// lit, and a rung picked is handed back as the page's result. Null
+  /// (opened from the top bar, the camp or the tour) shows no strip.
+  final Set<LadderRung>? rungs;
 
   @override
   ConsumerState<FullMapScreen> createState() => _FullMapScreenState();
@@ -358,6 +365,19 @@ class _FullMapScreenState extends ConsumerState<FullMapScreen> {
                   ),
                 ),
               ),
+              if (widget.rungs case final rungs?)
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(10, 6, 10, 0),
+                  child: Align(
+                    alignment: AlignmentDirectional.centerStart,
+                    child: LevelLadder(
+                      lit: LadderRung.world,
+                      open: {LadderRung.world, ...rungs},
+                      palette: palette,
+                      onPick: (rung) => Navigator.of(context).pop(rung),
+                    ),
+                  ),
+                ),
               if (chaptersReached.length > 1)
                 TutorialTarget(
                   id: 'map.chapters',

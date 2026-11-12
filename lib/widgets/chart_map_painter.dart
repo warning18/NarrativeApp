@@ -888,7 +888,13 @@ class ChartMapPainter extends CustomPainter {
           Paint()
             ..shader = ui.ImageShader(skin, TileMode.clamp, TileMode.clamp,
                 Matrix4.identity().storage,
-                filterQuality: FilterQuality.medium));
+                // Close up the skin is stretched several times: it is shown
+                // as hard pixels, not smoothed into a blur. Far off, where
+                // it is shrunk, it stays smooth (hard, it would shimmer).
+                // The change falls on the step where the skin itself gets
+                // finer.
+                filterQuality:
+                    _lod >= 1 ? FilterQuality.none : FilterQuality.medium));
     }
     final grid = Paint()
       ..color = palette.seaLine.withValues(alpha: 0.7)
