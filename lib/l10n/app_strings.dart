@@ -1528,9 +1528,8 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.fr: 'Un Élite prend la place du combat.',
   },
   'tower_event_shortcut_pack': {
-    // Placeholder wording, for Narrative to word.
-    AppLanguage.en: 'The foes fight as an Elite pack.',
-    AppLanguage.fr: 'Les adversaires combattent en meute d’élite.',
+    AppLanguage.en: 'The whole pack fights as Elites.',
+    AppLanguage.fr: 'Toute la meute combat en Élites.',
   },
   'tower_event_shortcut_win': {
     AppLanguage.en: 'Win',
