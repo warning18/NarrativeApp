@@ -115,13 +115,15 @@ void main() {
       }
     }
 
-    for (final (lang, width, tag) in [
-      (AppLanguage.fr, 360.0, 'fr360'),
-      (AppLanguage.en, 412.0, 'en412'),
+    for (final (lang, width, tag, brightness) in [
+      (AppLanguage.fr, 360.0, 'fr360', Brightness.light),
+      (AppLanguage.en, 412.0, 'en412', Brightness.light),
+      (AppLanguage.en, 412.0, 'dark-en412', Brightness.dark),
     ]) {
       Future<ProviderContainer> open(TowerRun run) async {
         SharedPreferences.setMockInitialValues({
           'app_language': lang.name,
+          if (brightness == Brightness.dark) 'app_theme_mode': 'dark',
           'tower_run_v1': jsonEncode(run.toJson()),
         });
         usePhone(tester, Size(width, 1500));
@@ -136,9 +138,8 @@ void main() {
             key: key,
             child: MaterialApp(
                 key: UniqueKey(),
-                theme: buildAppTheme(container
-                    .read(appPaletteProvider)
-                    .schemeFor(Brightness.light)),
+                theme: buildAppTheme(
+                    container.read(appPaletteProvider).schemeFor(brightness)),
                 home: const TowerFloorScreen()),
           ),
         ));
