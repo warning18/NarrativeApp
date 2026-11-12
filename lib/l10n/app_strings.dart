@@ -1501,11 +1501,11 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.en:
         'You outrun your rival: floor {skipped} is skipped, you land on floor {to}',
     AppLanguage.fr:
-        'Vous devancez votre rival : l’étage {skipped} est sauté, vous arrivez à l’étage {to}',
+        'Vous devancez votre rival : l’étage {skipped} est sauté, vous arrivez à l’étage {to}',
   },
   'tower_event_rival_lost': {
     AppLanguage.en: 'Your rival gets away: no skip',
-    AppLanguage.fr: 'Votre rival vous échappe : pas de saut',
+    AppLanguage.fr: 'Votre rival vous échappe : pas de saut',
   },
   'tower_event_shortcut': {
     AppLanguage.en: 'Shortcut',
@@ -1571,7 +1571,7 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   },
   'tower_event_shortcut_landed': {
     AppLanguage.en: 'The shortcut holds: you land on floor {to}',
-    AppLanguage.fr: 'Le raccourci tient : vous arrivez à l’étage {to}',
+    AppLanguage.fr: 'Le raccourci tient : vous arrivez à l’étage {to}',
   },
   'tower_event_parley_passed': {
     AppLanguage.en: 'Words carry you past: floor {to}, and nothing gained.',
@@ -1686,7 +1686,7 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   },
   'tower_bought_with_marks': {
     AppLanguage.en: 'Bought with marks: {n}',
-    AppLanguage.fr: 'S\'achète en marques : {n}',
+    AppLanguage.fr: 'S’achète en marques : {n}',
   },
   'tower_pick_race': {
     AppLanguage.en: 'People',
@@ -1907,7 +1907,7 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.en:
         'He keeps the Great Hall, and asks only that you do not stop.',
     AppLanguage.fr:
-        'Il garde la Grande Salle et ne demande qu’une chose : que vous ne vous arrêtiez pas.',
+        'Il garde la Grande Salle et ne demande qu’une chose : que vous ne vous arrêtiez pas.',
   },
   'tower_boss_line_30': {
     AppLanguage.en:
@@ -1961,11 +1961,11 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   },
   'tower_spoils_title': {
     AppLanguage.en: 'Floor {n} spoils',
-    AppLanguage.fr: 'Butin de l\'étage {n}',
+    AppLanguage.fr: 'Butin de l’étage {n}',
   },
   'tower_spoils_worn': {
     AppLanguage.en: 'Worn at once if it beats what you wear.',
-    AppLanguage.fr: 'Porté aussitôt s\'il vaut mieux que votre tenue.',
+    AppLanguage.fr: 'Porté aussitôt s’il vaut mieux que votre tenue.',
   },
   'tower_spoils_bag': {
     AppLanguage.en: 'Into the bag, for the next fights.',
@@ -1973,7 +1973,7 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   },
   'tower_spoils_none': {
     AppLanguage.en: 'The floor gave nothing this time.',
-    AppLanguage.fr: 'L\'étage n\'a rien donné cette fois.',
+    AppLanguage.fr: 'L’étage n’a rien donné cette fois.',
   },
   'tower_take': {
     AppLanguage.en: 'Take',
@@ -2030,7 +2030,7 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   },
   'tower_oath_text': {
     AppLanguage.en: 'Swear to them: their standing and their die.',
-    AppLanguage.fr: 'Prêtez-leur serment : leur estime et leur dé.',
+    AppLanguage.fr: 'Prêtez-leur serment : leur estime et leur dé.',
   },
   // The Tower's dice bag (towerDiceOf): a die gained waits in it.
   'tower_dice_title': {
