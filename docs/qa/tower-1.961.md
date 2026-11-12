@@ -34,8 +34,9 @@ median 22, floor 20 62.5%, mean 21.9, the floor 30 boss lost 23.5% (was
 What it says:
 
 - **The fix does what it was for.** The two floors over 10% (21 and 22) are
-  now the 2nd and 3rd hardest at 8.6% and 8.8%; no ordinary floor is over 10%
-  any more, and the hardest ordinary floor is 22.
+  now at 8.6% and 8.8%; no ordinary floor is over 10% any more. They are
+  still the hardest two ordinary floors (22 first, 21 second, then 23 at
+  8.3%), but 1.5 to 2 points down.
 - **A shortcut on the deep floors is no longer a coin.** Lost shortcuts on
   floors 21 to 29 fell from 38.6% to 10.6%; the share of climbs that end on
   one, from 6.1% to 3.8% (none) and from 9.3% to 4.5% (all unlocks). The
