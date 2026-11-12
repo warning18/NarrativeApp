@@ -8,6 +8,10 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.942.0+978]
+
+- Tower floor events, the shortcut card (UX; the events are still off for players until the user's OK, so nothing shows yet): before an ordinary floor's fight the offer reads "A stair in the wall" with what a win skips and that a loss ends the climb, and two full-width buttons, "Take the stair" and "Take the door"; the fight waits for the choice. The stair taken shows a one-line note, the won fight's cards a line with the way up, the landing floor Core's result line (all in one face), and the rail an arrow up to the landing. Also: an Elite foe with an affix no longer squeezes its name into a vertical strip on a small phone (its marks wrap under the name), and the rail's current floor is drawn in the serif digits (a 26 read as 88).
+
 ## [1.940.0+976]
 
 - Maps, release 3: the locations. The fog over a district not yet found lets its streets and blocks show through; its names and pins stay hidden, the "?" and the dashed outline stay. On the city plan page "+" closes in on the party, not on the middle of the city. The party's breathing ring is on its own layer, so the whole plan is no longer redrawn every frame. Inside a building the label names the building, not its town, and no rain, snow or ash is drawn under its roof. Not in this release: the sea on the side where the sphere puts it (waits for Core's turned plans). Pictures: `docs/maps/sphere-and-locations/release-3/`.
