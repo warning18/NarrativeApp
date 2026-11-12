@@ -60,6 +60,7 @@ class TowerRun {
     this.setbacks = 0,
     this.lastEvent,
     this.shortcut,
+    this.parley,
   });
 
   /// A saved run. A save from an older version is brought up to date once,
@@ -144,6 +145,7 @@ class TowerRun {
           ? TowerEventResult.fromJson(json['last'] as Map<String, dynamic>)
           : null,
       shortcut: json['shortcut'] as bool?,
+      parley: json['parley'] as bool?,
     );
     if (json.containsKey('picks')) return run;
     final earned = (towerLevelAfter(run.floorsCleared) - 1) * levelStatPicks;
@@ -251,6 +253,13 @@ class TowerRun {
   /// every floor without one). Cleared when the run moves on.
   final bool? shortcut;
 
+  /// The choice on this floor's parley (floor events PR 3,
+  /// towerChooseParley): talked (true: a talk failed, the fight follows; a
+  /// talk passed moves the run on, clearing it), the fight chosen (false),
+  /// or null until chosen (and on every floor without one). Cleared when
+  /// the run moves on.
+  final bool? parley;
+
   /// The height cleared: the levels, the stat picks earned, the hero's
   /// replay (towerHeroOf) and the marks read it, so a fall never takes a
   /// level or a mark away.
@@ -277,9 +286,9 @@ class TowerRun {
   /// the height cleared.
   int get marks => towerMarksOf(heightCleared, refused.length);
 
-  /// A copy with the fields given. [lastEvent] and [shortcut] can't be
-  /// cleared by passing null: [clearLastEvent] and [clearShortcut] clear
-  /// them.
+  /// A copy with the fields given. [lastEvent], [shortcut] and [parley]
+  /// can't be cleared by passing null: [clearLastEvent], [clearShortcut]
+  /// and [clearParley] clear them.
   TowerRun copyWith({
     int? floor,
     int? health,
@@ -300,6 +309,8 @@ class TowerRun {
     bool clearLastEvent = false,
     bool? shortcut,
     bool clearShortcut = false,
+    bool? parley,
+    bool clearParley = false,
   }) =>
       TowerRun(
         seed: seed,
@@ -325,6 +336,7 @@ class TowerRun {
         setbacks: setbacks ?? this.setbacks,
         lastEvent: clearLastEvent ? null : lastEvent ?? this.lastEvent,
         shortcut: clearShortcut ? null : shortcut ?? this.shortcut,
+        parley: clearParley ? null : parley ?? this.parley,
       );
 
   Map<String, dynamic> toJson() => {
@@ -358,6 +370,7 @@ class TowerRun {
         if (setbacks != 0) 'setbacks': setbacks,
         if (lastEvent != null) 'last': lastEvent!.toJson(),
         if (shortcut != null) 'shortcut': shortcut,
+        if (parley != null) 'parley': parley,
       };
 }
 
@@ -607,6 +620,7 @@ TowerRun towerPick(TowerRun run, TowerData data, int? index,
               run.offer.isEmpty ? run.refused : {...run.refused, run.floor},
           offer: const [],
           clearShortcut: true,
+          clearParley: true,
         ),
         data);
   }
@@ -622,6 +636,7 @@ TowerRun towerPick(TowerRun run, TowerData data, int? index,
         taken: {...run.taken, run.floor: card},
         offer: const [],
         clearShortcut: true,
+        clearParley: true,
       ),
       data);
 }
