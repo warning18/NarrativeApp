@@ -9,6 +9,7 @@ import 'package:flutter/material.dart';
 
 import '../../providers/walking_party_provider.dart'
     show WalkingPartyMember, heroWalkerId;
+import 'desert_pictures.dart';
 import 'encounter_figure.dart';
 import 'party_look.dart';
 import 'side_sprite.dart';
@@ -33,6 +34,7 @@ abstract final class _DesertLook {
   static const midRim = Color(0xFFF0BE80);
   static const near = Color(0xFFB87444);
   static const nearRim = Color(0xFFD99A5E);
+  static const sand = Color(0xFFE8AE6D);
   static const path = Color(0xFF8E5A32);
   static const pathDark = Color(0xFF6E4324);
   static const pathLight = Color(0xFFB07845);
@@ -45,7 +47,49 @@ const _bayer = [
 
 /// The layers, back to front. [progress] brings the goal's silhouette
 /// nearer as the days go.
-List<SideLayer> desertLayers({double progress = 0}) => [
+///
+/// [painted] (the road crossing's) draws Art's pictures for the sky, the far
+/// mesas, the mid dunes and the near sand once they are loaded
+/// (desert_pictures.dart); the fight ground, the life header, the detours and
+/// the world view keep the code drawing, as does the crossing until then.
+List<SideLayer> desertLayers({double progress = 0, bool painted = false}) {
+  final code = _codeLayers(progress);
+  if (!painted) return code;
+  return [
+    // The sky.
+    SideLayer(code[0].speed, (c, s, scroll, t, u) {
+      DesertPictures.loaded
+          ? paintDesertSky(c, s, u)
+          : code[0].paint(c, s, scroll, t, u);
+    }),
+    code[1],
+    // The far mesas, the sand under the layers and the goal over the mesas.
+    SideLayer(code[2].speed, (c, s, scroll, t, u) {
+      if (!DesertPictures.loaded) return code[2].paint(c, s, scroll, t, u);
+      paintDesertTile(c, s, DesertPictures.far, scroll, u);
+      final top = DesertPictures.sandRow * u;
+      c.drawRect(Rect.fromLTWH(0, top, s.width, s.height - top),
+          Paint()..color = _DesertLook.sand);
+      _goal(c, s, u, progress, painted: true);
+    }),
+    SideLayer(code[3].speed, (c, s, scroll, t, u) {
+      if (!DesertPictures.loaded) code[3].paint(c, s, scroll, t, u);
+    }),
+    SideLayer(code[4].speed, (c, s, scroll, t, u) {
+      DesertPictures.loaded
+          ? paintDesertTile(c, s, DesertPictures.mid, scroll, u)
+          : code[4].paint(c, s, scroll, t, u);
+    }),
+    SideLayer(code[5].speed, (c, s, scroll, t, u) {
+      DesertPictures.loaded
+          ? paintDesertTile(c, s, DesertPictures.near, scroll, u)
+          : code[5].paint(c, s, scroll, t, u);
+    }),
+    code[6],
+  ];
+}
+
+List<SideLayer> _codeLayers(double progress) => [
       const SideLayer(0, _sky),
       const SideLayer(0.05, _sun),
       SideLayer(0.15, (c, s, scroll, t, u) {
@@ -203,7 +247,8 @@ void _sun(Canvas canvas, Size size, double scroll, double t, double u) {
 
 /// The goal on the horizon: a face of rock among the mesas, nearer with
 /// [progress].
-void _goal(Canvas canvas, Size size, double u, double progress) {
+void _goal(Canvas canvas, Size size, double u, double progress,
+    {bool painted = false}) {
   final w = size.width / u;
   final x = w * (1.05 - 0.62 * progress.clamp(0, 1));
   final scale = 1 + progress.clamp(0, 1) * 0.8;
@@ -211,7 +256,13 @@ void _goal(Canvas canvas, Size size, double u, double progress) {
   final rim = Paint()..color = _DesertLook.mesaRim;
   final dark = Paint()..color = const Color(0xFF2E1C24);
   final bw = (14 * scale).round(), bh = (16 * scale).round();
-  const base = 44.0;
+  // Over Art's mesas it stands on their flat ground (row 47) with a dark
+  // outline, so it reads against them.
+  final base = painted ? 47.0 : 44.0;
+  if (painted) {
+    sidePixels(
+        canvas, u, dark, x - bw / 2 - 1, base - bh - 1, bw + 2.0, bh + 2.0);
+  }
   sidePixels(
       canvas, u, body, x - bw / 2, base - bh, bw.toDouble(), bh.toDouble());
   sidePixels(canvas, u, rim, x - bw / 2, base - bh, bw.toDouble(), 1);
