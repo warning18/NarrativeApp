@@ -142,7 +142,8 @@ const Map<VfxStyle, List<PixelLayer>> pixelPlans = {
         span: 0.4,
         loop: true,
         anchor: Offset(24, 30),
-        size: 1.3),
+        size: 1.3,
+        tilt: -pi / 4),
     PixelLayer('explosion', t0: 0.4, span: 0.6, size: 1.4),
     PixelLayer('quake', t0: 0.4, span: 0.6, anchor: Offset(24, 34)),
   ],
@@ -175,8 +176,8 @@ const Map<VfxStyle, List<PixelLayer>> pixelPlans = {
 
 /// The styles drawn in Art's Apollo strips, which carry their own impact:
 /// the pale ground ring a strong blow adds is the old look and fights their
-/// warm colours, so they go without it. The styles still on the old strips
-/// (the bolt, the meteor, the quake, the smoke) keep it.
+/// warm colours, so they go without it. Every style with a strip is in it
+/// now; the pale ring stays only for the styles drawn from other strips.
 const Set<VfxStyle> _apolloImpact = {
   VfxStyle.slash,
   VfxStyle.heavySlash,
@@ -198,6 +199,11 @@ const Set<VfxStyle> _apolloImpact = {
   VfxStyle.drain,
   VfxStyle.shadow,
   VfxStyle.radiance,
+  VfxStyle.bolt,
+  VfxStyle.meteor,
+  VfxStyle.quake,
+  VfxStyle.smoke,
+  VfxStyle.mana,
 };
 
 /// The strips a blow of [tier] adds under its landing.
