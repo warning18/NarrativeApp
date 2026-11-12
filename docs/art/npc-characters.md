@@ -3,8 +3,18 @@
 **Standing rule (the user, 12 November): for the next NPC creations, use "Hero - Starter_basic_hero" as the reference** (state `Starter_basic_hero`, id `de5e44f4-1c9d-4043-96cf-eed8d324a086`; 48x48, side view, 8 directions, a v3 walk in 2 directions). Naming examples from the account: the orc starter is "orc starter", the mage "Hero_Mage_Basic".
 **What the groups are** (the user): *Male - Peasant | Warrior | Mercenary | Hunter*: every status is a variation of that character, usable as an enemy, an NPC or other by context. *Hero*: every status is a variation of the hero. *Young peasant with a straw hat*: all NPCs, each status its own character (shop owners, town crowd). *Paysant woman*: the same for women NPCs.
 **Counts:** the account has 153 characters; these four groups are **62 statuses**: Hero 27, Young peasant 15, Male - Peasant 11, Paysant woman 9. All have 8 directions. Read through the client (`list_characters`, `get_character`, one front frame per status by the free workbench inspect: nothing charged, balance unchanged at 849.5). The inventory data: `art/pixellab-npc-inventory/inventory.json`, frames `art/pixellab-npc-inventory/frames/`, the generator `inventory_gen.py`. Contact sheets: `docs/art/boards/npc-hero.png`, `npc-male-peasant.png`, `npc-young-peasant.png`, `npc-peasant-woman.png`.
-**Note on the animations:** the API lists them per status; only 2 of the 15 Young peasant statuses (#48, #55) show one (the user remembers "most have at least a walk": the others may have it in a sibling state or not be listed, to check with the user). Heroes with an animation: 10 of 27; Male - Peasant 7 of 11; Paysant woman 0 of 9.
+**Note on the animations:** the API lists them per status; only 2 of the 15 Young peasant statuses (#48, #55) show one (the user remembers "most have at least a walk": the others may have it in a sibling state or not be listed, to check with the user). Checked against the full group downloads (141 files for the young peasants): the listing is complete. Statuses with an animation: Hero 10 of 27; Male - Peasant 6 of 11; Young peasant 2 of 15; Paysant woman 0 of 9.
 **Size and view mismatches to know:** the Hero is 48x48 side (the game's side-view hero sprite is 42x47); the peasants are 64x64, the Young peasant side view, but Male - Peasant and Paysant woman are *low top-down*, not side, which differs from the side-view game; one Hero state is 64x64 (#46), one Young peasant is 52x52 (#55).
+
+## Used where (the single list; the user's order: the Tower three, then shopkeepers and town crowd, then enemies and Tower foes, then hero variations)
+| status | used as | file | state |
+|---|---|---|---|
+| #36 Young peasant, Fatter with bigger b | the Stair-Chandler (Tower shop) | `art/pixellab-npc-export/stair_chandler.png` | exported, not wired |
+| #37 Young peasant, Older librarian | the Tally-Clerk (Tower bargain) | `art/pixellab-npc-export/tally_clerk.png` | exported, not wired |
+| #47 Young peasant, Another passant hat | the parley guardian (Tower parley) | `art/pixellab-npc-export/parley_guardian.png` | exported, not wired |
+| the rest | shopkeepers and town crowd, enemies and Tower foes, hero variations | to export as UX-2 asks | not started |
+
+The two groups drawn from slightly above (Male - Peasant | Warrior | Mercenary | Hunter, and Paysant woman) are **spots only**: used as they are where a figure stands facing the player, never walking on a road; no redraws (the user, 12 November).
 
 ## Hero (48x48 side (one 64x64 side))
 | # | status (name as stored, cut at 20 characters) | animations | proposed use |

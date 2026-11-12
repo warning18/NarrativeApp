@@ -1,0 +1,36 @@
+{
+  "group_id": "c0860ae2-dfc5-48ad-be3f-e20ebda72dc3",
+  "states": [
+    {
+      "character": {
+        "id": "ada3310d-6460-41cd-9bf4-7a98489bb923",
+        "name": "Older librarian",
+        "prompt": "Young peasant with a straw hat ",
+        "size": {
+          "width": 64,
+          "height": 64
+        },
+        "template_id": "mannequin",
+        "directions": 8,
+        "view": "side",
+        "created_at": "2026-09-10T15:37:29.638132+00:00"
+      },
+      "folder": "Older_librarian",
+      "frames": {
+        "rotations": {
+          "south": "Older_librarian/rotations/south.png",
+          "south-east": "Older_librarian/rotations/south-east.png",
+          "east": "Older_librarian/rotations/east.png",
+          "north-east": "Older_librarian/rotations/north-east.png",
+          "north": "Older_librarian/rotations/north.png",
+          "north-west": "Older_librarian/rotations/north-west.png",
+          "west": "Older_librarian/rotations/west.png",
+          "south-west": "Older_librarian/rotations/south-west.png"
+        },
+        "animations": {}
+      }
+    }
+  ],
+  "export_version": "3.1",
+  "export_date": "2026-11-12T22:06:06.464235"
+}

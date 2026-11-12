@@ -1,0 +1,36 @@
+{
+  "group_id": "c0860ae2-dfc5-48ad-be3f-e20ebda72dc3",
+  "states": [
+    {
+      "character": {
+        "id": "21f084cb-8c76-4155-87a6-18a5391f8bae",
+        "name": "Another passant hat",
+        "prompt": "Young peasant with a straw hat ",
+        "size": {
+          "width": 64,
+          "height": 64
+        },
+        "template_id": "mannequin",
+        "directions": 8,
+        "view": "side",
+        "created_at": "2026-09-10T07:50:41.109533+00:00"
+      },
+      "folder": "Another_passant_hat",
+      "frames": {
+        "rotations": {
+          "south": "Another_passant_hat/rotations/south.png",
+          "south-east": "Another_passant_hat/rotations/south-east.png",
+          "east": "Another_passant_hat/rotations/east.png",
+          "north-east": "Another_passant_hat/rotations/north-east.png",
+          "north": "Another_passant_hat/rotations/north.png",
+          "north-west": "Another_passant_hat/rotations/north-west.png",
+          "west": "Another_passant_hat/rotations/west.png",
+          "south-west": "Another_passant_hat/rotations/south-west.png"
+        },
+        "animations": {}
+      }
+    }
+  ],
+  "export_version": "3.1",
+  "export_date": "2026-11-12T22:06:07.576375"
+}
