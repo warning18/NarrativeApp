@@ -8,9 +8,13 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
-## [1.937.0+973]
+## [1.939.0+975]
 
 - Skills in the Apollo palette: the 157 skill icons and the six main effect strips (flame, frost, lightning, heal, void rift, shield) are Art's Apollo versions, and every element's effect tints, plus the fixed ones (poison, mana, shield, gold, weaken, miss, phase, smoke, heal), take Apollo tones named in `ApolloTones` (lib/theme/palette.dart). Fire is pushed hotter inside the palette. Rarity accents are unchanged.
+
+## [1.936.0+972]
+
+- Maps, release 2: the ladder and the dive. One strip of four rungs, World, Town, District, Room, each one tap from any other; the rung looked at is lit and a rung that does not exist here is dimmed. "Town" now works from inside a room (the party steps out and the whole town is shown). "+" goes down one rung and "−" goes up one on every map: the button into a building is a "+", and on the whole town only the district's "+" shows. The world and the town are joined by a move: going down, the ball closes in on the place and the town grows out of it, landing on the whole town with no door veil; going up, the ball opens close on the place and pulls back until it fills its box. The city plan page takes the map's own square buttons. The strip is a new widget, `lib/widgets/level_ladder.dart`, 36 px high (40 took 12 px from the map and broke a tap on a 360 x 640 screen). French for the new rung: "Salle". Pictures: `docs/maps/sphere-and-locations/release-2/`.
 
 ## [1.933.0+969]
 

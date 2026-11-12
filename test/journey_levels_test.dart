@@ -254,7 +254,12 @@ void main() {
     expect((globeNow().clamp(story.of(party)) - globeNow().centre).distance,
         lessThan(1));
     // A tap on the party's own place is the streets again (v1.201).
+    // The ball closes in on it first (the dive), then hands over.
     await tester.tap(globe);
+    await tester.pump();
+    await tester.pump(const Duration(milliseconds: 150));
+    expect(globeNow().zoom, greaterThan(JourneyWorldMapZoom.max));
+    await tester.pump(const Duration(milliseconds: 250));
     await tester.pump(const Duration(milliseconds: 400));
     expect(globe, findsNothing);
     expect(find.byKey(const ValueKey('journey_city_chart')), findsOneWidget);
