@@ -151,11 +151,18 @@ class _TowerFloorScreenState extends ConsumerState<_TowerFloorBody> {
     // How the last event moved the run, for the rail: an arrow down a fall,
     // up a skip, ending on this floor.
     final last = event?.result;
-    final jump = last != null &&
-            last.to == run.floor &&
-            (last.to < last.from || last.to > last.from + 1)
-        ? (last.from, last.to)
+    // A shortcut offered or taken: the arrow up to where it lands.
+    final stair = event?.kind == TowerEventKind.shortcut &&
+            (event?.accepted ?? true) &&
+            event?.landsOn != null
+        ? (run.floor, event!.landsOn!)
         : null;
+    final jump = stair ??
+        (last != null &&
+                last.to == run.floor &&
+                (last.to < last.from || last.to > last.from + 1)
+            ? (last.from, last.to)
+            : null);
     // Back on a floor won with a pick still owed: the Level Up first.
     if (!_resumed && choosing && towerPendingPicks(run) > 0) {
       _resumed = true;
@@ -206,6 +213,9 @@ class _TowerFloorScreenState extends ConsumerState<_TowerFloorBody> {
                             event: event,
                             busy: _busy,
                             onFight: () => _fight(run, data),
+                            onShortcut: (take) => ref
+                                .read(towerProvider.notifier)
+                                .setRun(towerChooseShortcut(run, data, take)),
                           ),
               ),
             ],
@@ -222,6 +232,7 @@ class _FloorIntro extends ConsumerWidget {
     required this.data,
     required this.busy,
     required this.onFight,
+    this.onShortcut,
     this.event,
   });
 
@@ -232,6 +243,9 @@ class _FloorIntro extends ConsumerWidget {
   final TowerEventView? event;
   final bool busy;
   final VoidCallback onFight;
+
+  /// The shortcut's choice (true: the stair); the fight waits for it.
+  final void Function(bool take)? onShortcut;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -278,6 +292,10 @@ class _FloorIntro extends ConsumerWidget {
             const SizedBox(height: 6),
             TowerEventCard(e),
           ],
+          if (e.kind == TowerEventKind.shortcut) ...[
+            const SizedBox(height: 6),
+            TowerEventCard(e, onShortcut: onShortcut),
+          ],
         ],
         if (danger) ...[
           const SizedBox(height: 10),
@@ -319,28 +337,36 @@ class _FloorIntro extends ConsumerWidget {
               decor: id == floor.enemyIds.first
                   ? const EnvParts(top: 2)
                   : EnvParts.none,
-              child: Row(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Expanded(
-                    child: Text('${(enemies[id] as Map?)?['enemyName'] ?? id}',
-                        style: theme.textTheme.titleSmall),
+                  Row(
+                    children: [
+                      Expanded(
+                        child: Text(
+                            '${(enemies[id] as Map?)?['enemyName'] ?? id}',
+                            style: theme.textTheme.titleSmall),
+                      ),
+                      // The foe stands in its panel when it has art (v1.900).
+                      if (id == floor.enemyIds.first) TowerFoeFigure(id),
+                    ],
                   ),
-                  // The foe stands in its panel when it has art (v1.900).
-                  if (id == floor.enemyIds.first) TowerFoeFigure(id),
-                  if (id == floor.enemyIds.first) ...[
-                    for (final a in floor.affixes)
-                      Padding(
-                        padding: const EdgeInsets.only(left: 6),
-                        child: InkChip(tr(ref, affixLabelKey(a)),
-                            color: ink.blood, dense: true),
-                      ),
-                    if (floor.elite)
-                      Padding(
-                        padding: const EdgeInsets.only(left: 6),
-                        child: InkChip(tr(ref, 'tower_floor_elite'),
-                            color: ink.gold, dense: true),
-                      ),
-                  ],
+                  // The marks wrap under the name: an Elite with an affix is
+                  // too wide for one line on a small phone.
+                  if (id == floor.enemyIds.first &&
+                      (floor.affixes.isNotEmpty || floor.elite))
+                    Wrap(
+                      spacing: 6,
+                      runSpacing: 4,
+                      children: [
+                        for (final a in floor.affixes)
+                          InkChip(tr(ref, affixLabelKey(a)),
+                              color: ink.blood, dense: true),
+                        if (floor.elite)
+                          InkChip(tr(ref, 'tower_floor_elite'),
+                              color: ink.gold, dense: true),
+                      ],
+                    ),
                 ],
               ),
             ),
@@ -362,11 +388,13 @@ class _FloorIntro extends ConsumerWidget {
         // The bag: shown once the hero owns more than its first die.
         ..._dicePanel(ref),
         const SizedBox(height: 16),
-        FilledButton(
-          key: const Key('tower_fight'),
-          onPressed: busy ? null : onFight,
-          child: Text(tr(ref, 'tower_fight')),
-        ),
+        // A shortcut is chosen first: its card holds the two buttons.
+        if (event?.kind != TowerEventKind.shortcut || event?.accepted != null)
+          FilledButton(
+            key: const Key('tower_fight'),
+            onPressed: busy ? null : onFight,
+            child: Text(tr(ref, 'tower_fight')),
+          ),
       ],
     );
   }
