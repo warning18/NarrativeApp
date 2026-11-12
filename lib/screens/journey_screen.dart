@@ -2531,7 +2531,12 @@ class _JourneyViewState extends ConsumerState<_JourneyView>
                                       : !_pinIdx.contains(_selected)
                                           ? null
                                           : _pinIdx.indexOf(_selected!),
-                                  hereName: hereName,
+                                  // Inside a building the label names it,
+                                  // not its town.
+                                  hereName: _sceneInside && !_outside
+                                      ? hereBuilding?.nameFor(french) ??
+                                          hereName
+                                      : hereName,
                                   youAreHere: tr(ref, 'journey_you_are_here'),
                                   leadsTo: tr(ref, 'journey_leads_to'),
                                   palette: palette,
@@ -2547,7 +2552,10 @@ class _JourneyViewState extends ConsumerState<_JourneyView>
                                   stamp: _stamp,
                                   burn: _burn,
                                   unroll: _unroll,
-                                  weather: journeyWeatherOf(sky?.kind, chapter),
+                                  // No rain, snow or ash under a roof.
+                                  weather: _sceneInside && !_outside
+                                      ? JourneyWeather.none
+                                      : journeyWeatherOf(sky?.kind, chapter),
                                   stepIds: _pinIdx,
                                   // The choices acted out here are in the
                                   // scene view, not on the map.

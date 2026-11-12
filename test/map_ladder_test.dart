@@ -8,6 +8,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:narrative_data_app/providers/story_providers.dart';
+import 'package:narrative_data_app/widgets/journey_fx.dart';
 import 'package:narrative_data_app/widgets/journey_world_map.dart';
 import 'support/open_game.dart';
 import 'support/pump.dart';
@@ -51,6 +52,17 @@ void main() {
     ];
     expect(xs, [...xs]..sort());
     expect(room, findsOneWidget);
+    // The room's label names the building, not its town, and no rain, snow
+    // or ash is drawn under its roof.
+    // (The breadcrumb above the map names both; the label is the second
+    // "The Blind Beggar" and there is no second "Alster".)
+    expect(find.text('The Blind Beggar'), findsNWidgets(2));
+    expect(find.text('Alster'), findsOneWidget);
+    final fx = tester
+        .widgetList<CustomPaint>(find.byType(CustomPaint))
+        .map((c) => c.painter)
+        .whereType<JourneyFxPainter>();
+    expect(fx.every((p) => p.weather == JourneyWeather.none), isTrue);
 
     // Town from inside the room: the party steps out and the whole town
     // is shown (the rung was greyed before).
