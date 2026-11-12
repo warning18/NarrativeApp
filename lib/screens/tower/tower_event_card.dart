@@ -11,12 +11,13 @@ import '../../l10n/app_strings.dart';
 import '../../theme/icon_sizes.dart';
 import '../../theme/stitched_ink.dart';
 import '../../widgets/ink_panel.dart';
+import 'tower_peaceful_cards.dart' show TowerParleyCard;
 
 /// The card of [view]'s event, or nothing when its floor holds none (a floor
 /// met again, or one shown only for its last result).
 class TowerEventCard extends ConsumerWidget {
   const TowerEventCard(this.view,
-      {super.key, this.bagFull = false, this.onShortcut});
+      {super.key, this.bagFull = false, this.onShortcut, this.onParley});
 
   final TowerEventView view;
 
@@ -27,6 +28,9 @@ class TowerEventCard extends ConsumerWidget {
   /// shows its two buttons while the choice is open and this is given.
   final void Function(bool take)? onShortcut;
 
+  /// A parley's choice: true talks, false fights.
+  final void Function(bool talk)? onParley;
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     switch (view.kind) {
@@ -36,9 +40,21 @@ class TowerEventCard extends ConsumerWidget {
         return _RivalCard(view);
       case TowerEventKind.shortcut:
         return _ShortcutCard(view, onShortcut);
-      // The parley's card is UX-2's to draw (floor events PR 3 adds the
-      // kind; events stay off for players until it has one).
+      // The parley: the guardian's card until the choice is made (a failed
+      // talk reads in the result line, a fight chosen needs no card).
       case TowerEventKind.parley:
+        if (view.accepted != null) return const SizedBox.shrink();
+        return TowerParleyCard(
+          ability: view.ability ?? 'charisma',
+          dc: view.dc ?? 10,
+          modifier: view.modifier ?? 0,
+          chance: view.chance ?? 0,
+          landsOn: view.landsOn ?? view.floor + 1,
+          clanId: view.clanId,
+          oathPass: view.oathPass ?? false,
+          onTalk: onParley == null ? null : () => onParley!(true),
+          onFight: onParley == null ? null : () => onParley!(false),
+        );
       case null:
         return const SizedBox.shrink();
     }
