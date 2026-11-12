@@ -217,7 +217,7 @@ void main() {
           if (has('mercy_finish')) {
             await tester.tap(find.byKey(const Key('mercy_finish')));
           } else if (find.text('Take all').evaluate().isNotEmpty) {
-            await tester.tap(find.text('Take all'));
+            await tester.tap(find.text('Take all').first);
           } else if (find
                   .text('What the spoils change')
                   .evaluate()
@@ -230,24 +230,32 @@ void main() {
                 matching:
                     find.byWidgetPredicate((w) => w is ButtonStyleButton));
             if ((tester.widget(b.first) as ButtonStyleButton).enabled) {
-              await tester.tap(find.text('Victory! Return'));
+              await tester.tap(find.text('Victory! Return').first);
             }
           } else if (find.text('Retreat').evaluate().isNotEmpty) {
-            await tester.tap(find.text('Retreat'));
+            await tester.tap(find.text('Retreat').first);
           } else if (find.text('Face what comes').evaluate().isNotEmpty) {
-            await tester.tap(find.text('Face what comes'));
+            await tester.tap(find.text('Face what comes').first);
           }
           await tester.pump(const Duration(milliseconds: 300));
           await tester.runAsync(
               () => Future<void>.delayed(const Duration(milliseconds: 40)));
         }
         if (find.byType(FightScreen).evaluate().isNotEmpty) {
-          note('$id run $run: the fight did not close; popping it');
+          note(
+              '$id run $run: the fight did not close; popping it. On screen: ${[
+            for (final e in find.byType(Text).evaluate())
+              if ((e.widget as Text).data case final String t when t.isNotEmpty)
+                t
+          ].take(30).join(' | ')}');
           nav.pop();
           await settle(4);
         }
         await settle(4);
       }
+      Directory(out).createSync(recursive: true);
+      File('$out/five-fights.json')
+          .writeAsStringSync(const JsonEncoder.withIndent(' ').convert(rows));
     }
     Directory(out).createSync(recursive: true);
     File('$out/five-fights.json')
