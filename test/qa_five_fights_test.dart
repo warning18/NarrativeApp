@@ -19,8 +19,10 @@
 import 'dart:convert';
 import 'dart:io';
 import 'dart:math';
+import 'dart:ui' as ui;
 
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -83,7 +85,9 @@ void main() {
       }
     }
 
-    await tester.pumpWidget(const ProviderScope(child: MyApp()));
+    final boundary = GlobalKey();
+    await tester.pumpWidget(ProviderScope(
+        child: RepaintBoundary(key: boundary, child: const MyApp())));
     await settle(10);
     await tester.tap(find.byKey(const Key('menu_edit_mode')));
     await settle(10);
@@ -107,10 +111,19 @@ void main() {
           as Map<String, dynamic>;
       final foes = [for (final e in build['enemies'] as List) '$e'];
       for (var run = 0; run < runs; run++) {
+        // Core's builds file keeps `diceSkillAssignments` of the die in use as
+        // {face: skill}; PlayerSession wants {dieId: {face: skill}}: a flat map
+        // is nested under the equipped die, as the game would hold it.
+        final save = Map<String, dynamic>.from(build['save'] as Map);
+        final assigned = save['diceSkillAssignments'];
+        if (assigned is Map && assigned.values.any((v) => v is! Map)) {
+          save['diceSkillAssignments'] = {
+            '${save['equippedDiceId']}': assigned,
+          };
+        }
         await tester.runAsync(() => container
             .read(playerSessionProvider.notifier)
-            .loadSession(PlayerSession.fromJson(
-                Map<String, dynamic>.from(build['save'] as Map))));
+            .loadSession(PlayerSession.fromJson(save)));
         var rounds = 0;
         final nav = tester.state<NavigatorState>(find.byType(Navigator).first);
         nav.push<bool>(MaterialPageRoute(
@@ -135,7 +148,10 @@ void main() {
             outcome = 'won';
             break;
           }
-          if (find.text('Face what comes').evaluate().isNotEmpty) {
+          // A lost fight's button reads "Retreat" in the story and "Face what
+          // comes" where a loss continues (the Tower).
+          if (find.text('Face what comes').evaluate().isNotEmpty ||
+              find.text('Retreat').evaluate().isNotEmpty) {
             outcome = 'lost';
             break;
           }
@@ -154,6 +170,36 @@ void main() {
           await tester.pump(const Duration(milliseconds: 400));
           await tester.runAsync(
               () => Future<void>.delayed(const Duration(milliseconds: 40)));
+        }
+        if (outcome == 'timeout') {
+          final bytes = await tester.runAsync(() async {
+            final object = boundary.currentContext!.findRenderObject()!
+                as RenderRepaintBoundary;
+            final image = await object.toImage();
+            return image.toByteData(format: ui.ImageByteFormat.png);
+          });
+          Directory(out).createSync(recursive: true);
+          File('$out/stuck_${id}_$run.png')
+              .writeAsBytesSync(bytes!.buffer.asUint8List());
+          note('$id run $run: stuck. On screen: ${[
+            for (final e in find.byType(Text).evaluate())
+              if ((e.widget as Text).data case final String t when t.isNotEmpty)
+                t
+          ].take(60).join(' | ')}. Buttons: ${[
+            for (final e in find
+                .byWidgetPredicate((w) => w is ButtonStyleButton)
+                .evaluate())
+              if (e.widget is ButtonStyleButton &&
+                  (e.widget as ButtonStyleButton).enabled)
+                [
+                  for (final t in find
+                      .descendant(
+                          of: find.byWidget(e.widget),
+                          matching: find.byType(Text))
+                      .evaluate())
+                    (t.widget as Text).data
+                ].join('/')
+          ]}');
         }
         rows.add({
           'fight': id,
@@ -186,6 +232,8 @@ void main() {
             if ((tester.widget(b.first) as ButtonStyleButton).enabled) {
               await tester.tap(find.text('Victory! Return'));
             }
+          } else if (find.text('Retreat').evaluate().isNotEmpty) {
+            await tester.tap(find.text('Retreat'));
           } else if (find.text('Face what comes').evaluate().isNotEmpty) {
             await tester.tap(find.text('Face what comes'));
           }
