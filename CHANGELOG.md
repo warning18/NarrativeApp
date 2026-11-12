@@ -8,6 +8,13 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.949.0+985]
+
+- **Narrative: French typography on six Tower strings.** The spoils title and lines,
+  the oath text, "bought with marks" and the floor-20 boss line used straight
+  apostrophes and a plain space before ":"; they now use ’ and the no-break space,
+  as the rest of the French does. French only; no key or English text changed.
+
 ## [1.943.0+979]
 
 - Towns: the sea lies where the sphere puts it. Saltmouth, Greyhithe and the White Anchorage have their sea to the north now. Their whole plan is turned a half turn: water, walls, streets, bridges, districts, buildings and the town's services. Their streets, buildings and names are the same, only turned. Every other town keeps its sea to the south, as the sphere has it. The plans are turned where they are stored, so no hand edit is lost. The plan generator no longer reproduces the stored plans and is not to be run for now (`docs/city-plans-tools.md`).
