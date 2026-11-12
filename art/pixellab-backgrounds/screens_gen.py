@@ -37,6 +37,12 @@ P.update({
  'exp_ember_run':("pixel art, a frozen pilgrims' road in the snow, a glowing ember brazier on a sled, a far chapel with a bell, blue dusk, "+B,240,72),
  'exp_lantern_train':("pixel art, a night road with a train of carts hung with lanterns, glass shards at the roadside, a grey shore, violet sky, "+B,240,72),
 })
+P.update({
+ 'life_age10_beggar2':("pixel art, the front of a small tavern on a cobbled street in a winter evening, a hanging painted sign of a blind man, snow falling, warm lit windows, dusk, an empty street, no people, no crowd, "+B,240,100),
+ 'exp_ember_run2':("pixel art, a frozen pilgrims' road in the snow, a lit ember brazier standing on a wooden sled with nobody near it, a far chapel with a bell, snowy pines, blue dusk, an empty road, no people, no creatures, "+B,240,72),
+ 'exp_white_fleet_grave2':("pixel art, old wooden sailing ships with tall masts and torn sails half-buried in grey sand, white painted hulls, no funnels, no steamers, dusk, "+B,240,72),
+ 'exp_frost_quarry2':("pixel art, a wide frosted stone quarry seen from the front, stepped cut stone walls with icicles, a few cut blocks and a wooden crane, snow on the ground, pale light, "+B,240,72),
+})
 if __name__=='__main__':
     st=sys.argv[1]; keys=sys.argv[2].split(',') if len(sys.argv)>2 and sys.argv[2] else list(P); seeds=[int(x) for x in sys.argv[3].split(',')] if len(sys.argv)>3 else [11,12]
     queue=[(k,s) for k in keys for s in seeds]; active=[]; done=[]
