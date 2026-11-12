@@ -8,6 +8,10 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.962.0+998]
+
+- Tower: the shortcut's tougher fight is marked (UX, with Core's 1.961 change that a pack's shortcut is an Elite pack). The offer card wears a gold "Elite" chip under its line, and once the stair is taken every foe of an Elite pack wears the same chip on its own panel (a lone Elite keeps its chip on the first foe, as before). Before, the extra foe's panel was the only sign of the tougher fight. Two small edits (tower_event_card.dart, tower_floor_screen.dart); no new strings.
+
 ## [1.961.0+997]
 
 - Tower: the shortcut on a pack floor is fairer (Core's events-on review, the user's choice B). Taking the stair on a floor of several foes no longer adds a foe: the same pack fights as Elites (each foe 35% tougher), and the card says so. A lone foe still becomes an Elite, and one that already was stays an Elite and grows 35% tougher too. The floor events' foes are 1.16 (were 1.14) to keep the curve. Measured on 2,000 seeds: floors 21 and 22 end 8.6% and 8.8% of climbs (were 10.6% and 10.3%, over the 1-in-10 limit), every ordinary floor under 9%; a shortcut taken above floor 20 is lost 11% of the time (was 39%), and 3.8% of climbs end on a lost shortcut (was 6.1%); 13.2% of climbs reach the top with no unlocks and 24.9% with all (were 13.5% and 25.3%). A new display-only flag (elitePack) lets the card and floor screen show the Elite chip on such a pack.
