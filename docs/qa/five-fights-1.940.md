@@ -31,7 +31,7 @@ It is the fight of "a player who does not think", with a typical hero.
 
 - **It says the fight can be won, and how fast.** 6200 is the only fight a
   basic player loses more often than not (7 of 12): the void hounds are the
-  hardest of the five on this hero (12 rounds a fight, 270 health each).
+  hardest of the five on this hero (10 rounds a fight, 270 health each).
   3200 is a coin with a lean (8 of 12), its losses come early (a median of 4
   rounds: the hero falls first while both allies are up, the soldier and the
   auxiliary hit hard together).
@@ -39,15 +39,16 @@ It is the fight of "a player who does not think", with a typical hero.
   opens the fight on the foes and the chapter only: the scene's place, zone,
   anomaly, goal and every other modifier a story scene adds are NOT set, so
   7002 (3 rounds, 12 of 12) and 5100 (12 of 12) are very likely easier than
-  the same scenes in the game. The 1.932 review's naive-player runs lose 5100
-  about half the time (31 of 61) and 7002 about half (46 of 87); this driver
+  the same scenes in the game. The 1.932 review's naive-player runs lose the drowned
+  pilgrim about half the time (31 of 61, chapter 4) and 7002 about half
+  (46 of 87); this driver
   loses neither once. That gap is the modifiers and the hero's "typical"
   gear, not a better player: do not read 12 of 12 as "the fight is easy".
   The honest use: compare the same fight before and after a change to the
   data, on the same seeds.
 - **N = 12 is small.** A share of 8 of 12 is 67% with a standard error of
   about 14 points; only the gaps (5100 and 7002 at 12, 6200 at 5) are firm.
-  A fight near half (6200) would want N = 30 (about 8 minutes).
+  A fight near half (6200) would want N = 30 (a few minutes more).
 
 ## Findings
 
