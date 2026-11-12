@@ -8,6 +8,10 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.947.0+983]
+
+- Tower: the hero's head is the marker on the rail, and it steps up after a won fight (UX). The moment the cards open, the head walks one notch up in about a second; after a won shortcut it climbs the whole stair along the gold arrow; a setback's fall walks it down. A tap puts it on its notch at once, reduced motion skips the walk, and a defeat never shows it (the run is over). The floor number rides in a small gold tag above the head, since the head covers the notch's own number.
+
 ## [1.946.0+982]
 
 - Effects: eighteen more skill effects in the Apollo palette (UX, with Art's strips): slash, heavy slash, pierce, claw, whirl, impact, arrow, volley, fireball, holy fire, splash, poison, wind, drain, shadow, radiance, shout and stone shield. Quake and smoke keep today's until Art's redraw is shown. The arrow, the volley and the fireball still fly from the caster (Art's strip holds the flight and the burst) and the strips that end with the object in view fade out. The pale ground ring a strong blow added under them is gone from the Apollo effects, which carry their own impact. Three French event strings take a no-break space before the colon.
