@@ -10,10 +10,13 @@ P={
  'tower_shop':T+"a small landing with a lit wooden door set in the wall and warm light spilling out, shelves of candles, lamps and lanterns, bundles of wicks and blocks of wax on a counter, one hanging lamp, stacked crates"+END,
  'tower_bargain':T+"a cold stone alcove like a shrine with a high ledger desk, an open ledger book, an inkwell and quill, an abacus, a rack of tally sticks, a brass balance scale, a single pale candle, cold bluish light, something unwholesome about it"+END,
 }
+P['tower_parley2']=T+"a stair landing where the stone staircase going up is barred by a heavy iron gate with a lowered portcullis and a thick wooden bar, a wide empty stone landing in front of the gate with a faded rug, iron lanterns on the walls, nobody here, no people"+END
 if __name__=='__main__':
     st=sys.argv[1]; active=[]; done=[]
-    for k in P:
-        for s in (11,12):
+    keys=sys.argv[2].split(',') if len(sys.argv)>2 else list(P)
+    seeds=tuple(int(x) for x in sys.argv[3].split(',')) if len(sys.argv)>3 else (11,12)
+    for k in [x for x in keys if x!='tower_parley2' or len(sys.argv)>2]:
+        for s in seeds:
             r=R.call('create_image_pixen',{"description":P[k],"width":180,"height":320,"no_background":False,"view":"side","outline":"single color black outline","detail":"medium detail","seed":s})
             active.append(dict(k=k,s=s,job=R.field(r,'job_id')))
     json.dump(active,open(st,'w'))
