@@ -18,7 +18,7 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.en:
         'Tap a step on the map to see where it leads; tap it again or press Go to take it.',
     AppLanguage.fr:
-        'Touchez une étape de la carte pour voir où elle mène ; touchez-la encore ou appuyez sur Partir pour la prendre.',
+        'Touchez une étape de la carte pour voir où elle mène\u00a0; touchez-la encore ou appuyez sur Partir pour la prendre.',
   },
   'journey_go': {AppLanguage.en: 'Go', AppLanguage.fr: 'Partir'},
   'journey_move_lost': {
@@ -89,7 +89,7 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.en:
         'Pinch to zoom, drag to look about; tap a place you have reached to read of it. Zoom in on your own place, or tap it, to come back to its streets.',
     AppLanguage.fr:
-        'Pincez pour zoomer, glissez pour regarder ; touchez un lieu atteint pour le lire. Zoomez sur votre lieu, ou touchez-le, pour revenir à ses rues.',
+        'Pincez pour zoomer, glissez pour regarder\u00a0; touchez un lieu atteint pour le lire. Zoomez sur votre lieu, ou touchez-le, pour revenir à ses rues.',
   },
   'journey_city_places_here': {
     AppLanguage.en: 'Places here · tap one',
@@ -254,7 +254,7 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.en:
         'No clan rules here, so the blessing is small and plain: +3% party max health, and a block of 1 at the start, for 3 fights.',
     AppLanguage.fr:
-        'Aucun clan ne gouverne ici, la bénédiction est donc simple et modeste : +3 % de santé maximale du groupe, et un blocage de 1 au départ, pendant 3 combats.',
+        'Aucun clan ne gouverne ici, la bénédiction est donc simple et modeste : +3\u00a0% de santé maximale du groupe, et un blocage de 1 au départ, pendant 3 combats.',
   },
   'temple_blessing_standing': {
     AppLanguage.en: '+1 standing, once a chapter',
@@ -292,7 +292,7 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   // A scene the story brought the party to holds it on its page (v1.553).
   'journey_choose_first': {
     AppLanguage.en: 'Choose first',
-    AppLanguage.fr: 'Choisissez d\'abord',
+    AppLanguage.fr: 'Choisissez d’abord',
   },
   'journey_look_out': {
     AppLanguage.en: 'Look out at the land',
@@ -310,7 +310,7 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.en:
         'A fight or a roll is not a banner: it is played where you stand.',
     AppLanguage.fr:
-        'Un combat ou un jet n’est pas une bannière : il se joue là où vous êtes.',
+        'Un combat ou un jet n’est pas une bannière\u00a0: il se joue là où vous êtes.',
   },
   'journey_returned': {
     AppLanguage.en: 'You came back to {place}',
@@ -342,7 +342,7 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   },
   'journey_pin_detour_line': {
     AppLanguage.en: 'An expedition: a place to search.',
-    AppLanguage.fr: 'Une expédition : un lieu à fouiller.',
+    AppLanguage.fr: 'Une expédition\u00a0: un lieu à fouiller.',
   },
   'journey_pin_shop': {
     AppLanguage.en: 'Shop and service',
@@ -366,7 +366,7 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   },
   'journey_pin_rest_line': {
     AppLanguage.en: 'A fire or a bed: you recover.',
-    AppLanguage.fr: 'Un feu ou un lit : on récupère.',
+    AppLanguage.fr: 'Un feu ou un lit\u00a0: on récupère.',
   },
   'journey_pin_way': {
     AppLanguage.en: 'Plain way',
@@ -385,7 +385,7 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.en:
         'One layer at a time keeps the map readable; the choice is kept.',
     AppLanguage.fr:
-        'Un seul calque à la fois garde la carte lisible ; le choix est conservé.',
+        'Un seul calque à la fois garde la carte lisible\u00a0; le choix est conservé.',
   },
   'calque_none': {AppLanguage.en: 'No layer', AppLanguage.fr: 'Aucun calque'},
   'calque_none_sub': {
@@ -399,7 +399,7 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   'calque_clans_sub': {
     AppLanguage.en: 'who rules each land; stripes where two contest it',
     AppLanguage.fr:
-        'qui tient chaque pays ; des rayures où deux se le disputent',
+        'qui tient chaque pays\u00a0; des rayures où deux se le disputent',
   },
   'calque_standing': {
     AppLanguage.en: 'Your standing',
@@ -440,7 +440,7 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   'calque_humidity': {AppLanguage.en: 'Humidity', AppLanguage.fr: 'Humidité'},
   'calque_humidity_sub': {
     AppLanguage.en: 'dry ochre to sodden blue: where the rain falls',
-    AppLanguage.fr: 'de l’ocre sec au bleu détrempé : où tombe la pluie',
+    AppLanguage.fr: 'de l’ocre sec au bleu détrempé\u00a0: où tombe la pluie',
   },
   'calque_warmth': {AppLanguage.en: 'Warmth', AppLanguage.fr: 'Chaleur'},
   'calque_warmth_sub': {
@@ -466,7 +466,7 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.en:
         'a clear land view; the sky shows when you look at the whole world',
     AppLanguage.fr:
-        'un pays dégagé ; le ciel se montre quand vous regardez le monde entier',
+        'un pays dégagé\u00a0; le ciel se montre quand vous regardez le monde entier',
   },
   'weather_effect_rain': {
     AppLanguage.en:
@@ -478,7 +478,7 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.en:
         'the snow smothers the flames (Fire −25%) and sharpens the cold (Ice +25%); the enemy is harder to read',
     AppLanguage.fr:
-        'la neige étouffe les flammes (Feu −25\u00a0%) et aiguise le froid (Glace +25\u00a0%) ; l’ennemi se lit moins bien',
+        'la neige étouffe les flammes (Feu −25\u00a0%) et aiguise le froid (Glace +25\u00a0%)\u00a0; l’ennemi se lit moins bien',
   },
   'weather_effect_fog': {
     AppLanguage.en:
@@ -574,7 +574,7 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   },
   'sofar_now_last': {
     AppLanguage.en: 'Last you chose: {choice}.',
-    AppLanguage.fr: 'Votre dernier choix : {choice}.',
+    AppLanguage.fr: 'Votre dernier choix\u00a0: {choice}.',
   },
   'sofar_now_land': {
     AppLanguage.en: '{land} land',
@@ -616,7 +616,7 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   'journey_kind_road': {AppLanguage.en: 'Road', AppLanguage.fr: 'Route'},
   'echo_because': {
     AppLanguage.en: 'Because you chose “{choice}”',
-    AppLanguage.fr: 'Parce que vous avez choisi « {choice} »',
+    AppLanguage.fr: 'Parce que vous avez choisi «\u00a0{choice}\u00a0»',
   },
   'journal_story_tab': {AppLanguage.en: 'Scenes', AppLanguage.fr: 'Scènes'},
   'journal_changed_title': {
@@ -633,16 +633,17 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.en:
         'A champion holds this road: an Elite fight, a better chest.',
     AppLanguage.fr:
-        'Un champion tient cette route : un combat d’Élite, un meilleur coffre.',
+        'Un champion tient cette route\u00a0: un combat d’Élite, un meilleur coffre.',
   },
   'journey_event_shrine': {
     AppLanguage.en: 'A wayside shrine on this road: a place to heal.',
-    AppLanguage.fr: 'Un sanctuaire sur cette route : de quoi vous soigner.',
+    AppLanguage.fr:
+        'Un sanctuaire sur cette route\u00a0: de quoi vous soigner.',
   },
   'journey_event_caravan': {
     AppLanguage.en: 'The Wayfarer’s Caravan is on this road: rare goods.',
     AppLanguage.fr:
-        'La Caravane du Voyageur est sur cette route : des marchandises rares.',
+        'La Caravane du Voyageur est sur cette route\u00a0: des marchandises rares.',
   },
   // The world's places (v1.197): the Journey map's breadcrumb, This land,
   // the codex's Lands and the road's hazards.
@@ -821,7 +822,7 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.en:
         'The longer you linger, the more your enemies gather: they hit harder and last longer (+{p}%).',
     AppLanguage.fr:
-        'Plus vous vous attardez, plus vos ennemis se rassemblent : ils frappent plus fort et tiennent plus longtemps (+{p} %).',
+        'Plus vous vous attardez, plus vos ennemis se rassemblent\u00a0: ils frappent plus fort et tiennent plus longtemps (+{p}\u00a0%).',
   },
   'road_threat_off': {
     AppLanguage.en:
@@ -831,25 +832,25 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   },
   'condition_line': {
     AppLanguage.en: 'This chapter: {name}',
-    AppLanguage.fr: 'Ce chapitre : {name}',
+    AppLanguage.fr: 'Ce chapitre\u00a0: {name}',
   },
   'condition_where': {
     AppLanguage.en:
         'It lasts the whole chapter. Tap your stats at the top of the screen to see it again, under The road.',
     AppLanguage.fr:
-        'Cela dure tout le chapitre. Touchez vos statistiques en haut de l’écran pour le revoir, sous « La route ».',
+        'Cela dure tout le chapitre. Touchez vos statistiques en haut de l’écran pour le revoir, sous «\u00a0La route\u00a0».',
   },
   'condition_shop_line': {
     AppLanguage.en: '{name}: prices {p}%',
-    AppLanguage.fr: '{name} : prix {p} %',
+    AppLanguage.fr: '{name}\u00a0: prix {p}\u00a0%',
   },
   'condition_pay_line': {
     AppLanguage.en: '{name}: {delta} gold on the pay',
-    AppLanguage.fr: '{name} : {delta} or sur la paie',
+    AppLanguage.fr: '{name}\u00a0: {delta} or sur la paie',
   },
   'road_rations_line': {
     AppLanguage.en: 'Rations: {n}/{max}',
-    AppLanguage.fr: 'Rations : {n}/{max}',
+    AppLanguage.fr: 'Rations\u00a0: {n}/{max}',
   },
   'road_rations_help': {
     AppLanguage.en:
@@ -860,7 +861,7 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   'road_rations_label': {AppLanguage.en: 'Rations', AppLanguage.fr: 'Rations'},
   'stats_threat': {
     AppLanguage.en: 'Your enemies are gathering (+{p}%)',
-    AppLanguage.fr: 'Vos ennemis se rassemblent (+{p} %)',
+    AppLanguage.fr: 'Vos ennemis se rassemblent (+{p}\u00a0%)',
   },
   'road_buy_one': {
     AppLanguage.en: 'Buy 1 ({gold} gold)',
@@ -876,7 +877,7 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   },
   'road_sellsword_hired': {
     AppLanguage.en: 'Sellsword under contract: {n} fights left',
-    AppLanguage.fr: 'Mercenaire sous contrat : encore {n} combats',
+    AppLanguage.fr: 'Mercenaire sous contrat\u00a0: encore {n} combats',
   },
   'road_sellsword_help': {
     AppLanguage.en:
@@ -901,7 +902,7 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   'road_note_hungry': {
     AppLanguage.en: 'Nothing left to eat: hunger costs you {n} health.',
     AppLanguage.fr:
-        'Plus rien à manger : la faim vous coûte {n} points de santé.',
+        'Plus rien à manger\u00a0: la faim vous coûte {n} points de santé.',
   },
   'road_note_low': {
     AppLanguage.en: 'Rations are running low ({n} left).',
@@ -923,13 +924,13 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   },
   'sellsword_strikes': {
     AppLanguage.en: 'Your sellsword strikes {name} for {n}.',
-    AppLanguage.fr: 'Votre mercenaire frappe {name} : {n} dégâts.',
+    AppLanguage.fr: 'Votre mercenaire frappe {name}\u00a0: {n} dégâts.',
   },
   'threat_fight_note': {
     AppLanguage.en:
         'Your enemies have gathered strength while you lingered (+{p}%).',
     AppLanguage.fr:
-        'Vos ennemis se sont renforcés pendant que vous vous attardiez (+{p} %).',
+        'Vos ennemis se sont renforcés pendant que vous vous attardiez (+{p}\u00a0%).',
   },
   'camp_party_section': {
     AppLanguage.en: 'Who comes along',
@@ -969,7 +970,7 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   },
   'travel_on_title': {
     AppLanguage.en: 'Where to next',
-    AppLanguage.fr: 'Et maintenant, où ?',
+    AppLanguage.fr: 'Et maintenant, où\u00a0?',
   },
   'places_section': {
     AppLanguage.en: 'Places you know',
@@ -979,7 +980,7 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.en:
         'No place found yet. Expeditions find them: a town, a village, a ruin worth the walk.',
     AppLanguage.fr:
-        'Aucun lieu trouvé pour l’instant. Les expéditions les révèlent : une ville, un village, une ruine qui vaut la marche.',
+        'Aucun lieu trouvé pour l’instant. Les expéditions les révèlent\u00a0: une ville, un village, une ruine qui vaut la marche.',
   },
   'place_kind_town': {AppLanguage.en: 'Town', AppLanguage.fr: 'Ville'},
   'place_kind_village': {AppLanguage.en: 'Village', AppLanguage.fr: 'Village'},
@@ -993,12 +994,12 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   'place_found_line': {
     AppLanguage.en: 'New place: {place}. You can travel there now.',
     AppLanguage.fr:
-        'Nouveau lieu : {place}. Vous pouvez désormais vous y rendre.',
+        'Nouveau lieu\u00a0: {place}. Vous pouvez désormais vous y rendre.',
   },
   'companion_hint': {
     AppLanguage.en: 'Word at the fire: someone in {place} might join you.',
     AppLanguage.fr:
-        'Au coin du feu, on parle de quelqu’un qui pourrait vous rejoindre : {place}.',
+        'Au coin du feu, on parle de quelqu’un qui pourrait vous rejoindre\u00a0: {place}.',
   },
   'place_companion_label': {
     AppLanguage.en: 'someone to meet',
@@ -1006,11 +1007,12 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   },
   'chapter_quests_progress': {
     AppLanguage.en: 'Quests completed: {done} of {goal}',
-    AppLanguage.fr: 'Quêtes accomplies : {done} sur {goal}',
+    AppLanguage.fr: 'Quêtes accomplies\u00a0: {done} sur {goal}',
   },
   'main_quest_shut_lock': {
     AppLanguage.en: 'Not yet: the camp shows what this chapter still asks.',
-    AppLanguage.fr: 'Pas encore : le camp indique ce que ce chapitre demande.',
+    AppLanguage.fr:
+        'Pas encore\u00a0: le camp indique ce que ce chapitre demande.',
   },
   'choice_gold_short_lock': {
     AppLanguage.en: '{choice} · not enough gold ({gold} in the purse)',
@@ -1018,7 +1020,7 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   },
   'chapter_progress': {
     AppLanguage.en: 'Explored: {done} of {goal}',
-    AppLanguage.fr: 'Exploré : {done} sur {goal}',
+    AppLanguage.fr: 'Exploré\u00a0: {done} sur {goal}',
   },
   'main_quest_label': {
     AppLanguage.en: 'Main quest',
@@ -1054,7 +1056,7 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.en:
         'You are in {place}, {route} from the camp. The camp is your base: your companions’ gear, skills and dice, the works and the Harbour are there. Go back whenever you like.',
     AppLanguage.fr:
-        'Vous êtes à {place}, à {route} du camp. Le camp est votre base : l’équipement, les compétences et les dés de vos compagnons, les ouvrages et le port s’y trouvent. Revenez-y quand vous voulez.',
+        'Vous êtes à {place}, à {route} du camp. Le camp est votre base\u00a0: l’équipement, les compétences et les dés de vos compagnons, les ouvrages et le port s’y trouvent. Revenez-y quand vous voulez.',
   },
   'camp_sail_section': {
     AppLanguage.en: 'Set sail',
@@ -1078,17 +1080,17 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.en:
         'You have sailed out from the camp. Its expeditions, shops and rest are wherever the Eel is moored; sail back to camp to go on with the story.',
     AppLanguage.fr:
-        'Vous avez quitté le camp par la mer. Expéditions, boutiques et repos sont là où l’Eel est amarré ; rentrez au camp pour reprendre le récit.',
+        'Vous avez quitté le camp par la mer. Expéditions, boutiques et repos sont là où l’Eel est amarré\u00a0; rentrez au camp pour reprendre le récit.',
   },
   'ship_away_note': {
     AppLanguage.en:
         'The story has taken you away from camp. The Rusty Eel can still sail to the ports on the chart; the camp opens again when the story brings you back.',
     AppLanguage.fr:
-        'Le récit se poursuit loin du camp. Le Rusty Eel peut encore gagner les ports de la carte ; le camp rouvre quand le récit vous y ramène.',
+        'Le récit se poursuit loin du camp. Le Rusty Eel peut encore gagner les ports de la carte\u00a0; le camp rouvre quand le récit vous y ramène.',
   },
   'ship_ashore_section': {
     AppLanguage.en: 'Ashore at {port}',
-    AppLanguage.fr: 'À terre : {port}',
+    AppLanguage.fr: 'À terre\u00a0: {port}',
   },
   'harbor_title': {AppLanguage.en: 'Harbour', AppLanguage.fr: 'Port'},
   'ally_gear_button': {AppLanguage.en: 'Gear', AppLanguage.fr: 'Équipement'},
@@ -1111,7 +1113,7 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   },
   'load_confirm_title': {
     AppLanguage.en: 'Load this save?',
-    AppLanguage.fr: 'Charger cette sauvegarde ?',
+    AppLanguage.fr: 'Charger cette sauvegarde\u00a0?',
   },
   'load_confirm_body': {
     AppLanguage.en:
@@ -1142,7 +1144,7 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.en:
         'Rewards, wounds and loot stay; your own die and party come back',
     AppLanguage.fr:
-        'Récompenses, blessures et butin restent ; votre dé et votre groupe reviennent',
+        'Récompenses, blessures et butin restent\u00a0; votre dé et votre groupe reviennent',
   },
   'fight_lab_full_health': {
     AppLanguage.en: 'Start at full health',
@@ -1217,23 +1219,23 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   },
   'sea_waters_open': {
     AppLanguage.en: 'Open sea: long swells',
-    AppLanguage.fr: 'Haute mer : longue houle',
+    AppLanguage.fr: 'Haute mer\u00a0: longue houle',
   },
   'sea_waters_shallows': {
     AppLanguage.en: 'Shallows: clear water over sand',
-    AppLanguage.fr: 'Hauts-fonds : eau claire sur le sable',
+    AppLanguage.fr: 'Hauts-fonds\u00a0: eau claire sur le sable',
   },
   'sea_waters_drowned': {
     AppLanguage.en: 'Drowned waters: murk and kelp',
-    AppLanguage.fr: 'Eaux noyées : vase et varech',
+    AppLanguage.fr: 'Eaux noyées\u00a0: vase et varech',
   },
   'sea_waters_abyss': {
     AppLanguage.en: 'The abyss: black water, void light',
-    AppLanguage.fr: 'L\'abîme : eau noire, lueurs du vide',
+    AppLanguage.fr: 'L’abîme\u00a0: eau noire, lueurs du vide',
   },
   'sea_waters_ashen': {
     AppLanguage.en: 'Ashen chop: grey waves, falling ash',
-    AppLanguage.fr: 'Clapot de cendre : vagues grises, cendre qui tombe',
+    AppLanguage.fr: 'Clapot de cendre\u00a0: vagues grises, cendre qui tombe',
   },
   'fight_lab_enemy_ship': {
     AppLanguage.en: 'Enemy ship',
@@ -1245,7 +1247,7 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   },
   'fight_lab_all_parts_desc': {
     AppLanguage.en: 'Off: your boat as it is now',
-    AppLanguage.fr: 'Désactivé : votre bateau tel qu’il est',
+    AppLanguage.fr: 'Désactivé\u00a0: votre bateau tel qu’il est',
   },
   'fight_lab_start_ship': {
     AppLanguage.en: 'Start the test battle',
@@ -1269,7 +1271,7 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   },
   'fight_lab_ship_fled': {
     AppLanguage.en: 'Test battle over: the Eel got away',
-    AppLanguage.fr: 'Combat d\'essai terminé : l\'Eel s\'est échappé',
+    AppLanguage.fr: 'Combat d’essai terminé\u00a0: l’Eel s’est échappé',
   },
   'fight_lab_ship_escaped': {
     AppLanguage.en: 'The enemy got away',
@@ -1335,7 +1337,7 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.en:
         'Start a new story from character creation? The story in progress is replaced. Games saved in a slot are kept.',
     AppLanguage.fr:
-        'Commencer une nouvelle histoire à la création du personnage ? L’histoire en cours est remplacée. Les parties sauvegardées dans un emplacement sont conservées.',
+        'Commencer une nouvelle histoire à la création du personnage\u00a0? L’histoire en cours est remplacée. Les parties sauvegardées dans un emplacement sont conservées.',
   },
   'menu_load': {AppLanguage.en: 'Load', AppLanguage.fr: 'Charger'},
   'menu_no_saves': {
@@ -1501,11 +1503,11 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.en:
         'You outrun your rival: floor {skipped} is skipped, you land on floor {to}',
     AppLanguage.fr:
-        'Vous devancez votre rival : l’étage {skipped} est sauté, vous arrivez à l’étage {to}',
+        'Vous devancez votre rival : l’étage {skipped} est sauté, vous arrivez à l’étage {to}',
   },
   'tower_event_rival_lost': {
     AppLanguage.en: 'Your rival gets away: no skip',
-    AppLanguage.fr: 'Votre rival vous échappe : pas de saut',
+    AppLanguage.fr: 'Votre rival vous échappe : pas de saut',
   },
   'tower_event_shortcut': {
     AppLanguage.en: 'Shortcut',
@@ -1569,9 +1571,157 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.fr:
         'L’escalier tient : après cette carte, vous montez à l’étage {to}.',
   },
+  'tower_parley': {
+    AppLanguage.en: 'Parley',
+    AppLanguage.fr: 'Pourparlers',
+  },
+  'tower_parley_title': {
+    AppLanguage.en: 'A guardian bars the stair',
+    AppLanguage.fr: 'Un gardien barre l’escalier',
+  },
+  'tower_parley_body': {
+    AppLanguage.en: 'It wants a word, not a blow. Talk, and it may let you by.',
+    AppLanguage.fr:
+        'Il veut un mot, pas un coup. Parlez, il vous laissera peut-être passer.',
+  },
+  'tower_parley_sworn': {
+    AppLanguage.en: 'You are sworn to its clan: it lets you pass, no roll.',
+    AppLanguage.fr:
+        'Vous avez prêté serment à son clan : il vous laisse passer, sans jet.',
+  },
+  'tower_parley_pass': {
+    AppLanguage.en: 'Pass',
+    AppLanguage.fr: 'Réussite',
+  },
+  'tower_parley_pass_text': {
+    AppLanguage.en: 'No fight: you go on to floor {n}',
+    AppLanguage.fr: 'Pas de combat : vous passez à l’étage {n}',
+  },
+  'tower_parley_fail': {
+    AppLanguage.en: 'Fail',
+    AppLanguage.fr: 'Échec',
+  },
+  'tower_parley_fail_text': {
+    AppLanguage.en: 'The fight goes ahead',
+    AppLanguage.fr: 'Le combat a lieu',
+  },
+  'tower_parley_forgo': {
+    AppLanguage.en:
+        'You give up this floor’s spoils, its card and the healing a win brings.',
+    AppLanguage.fr:
+        'Vous renoncez au butin de l’étage, à sa carte et aux soins qu’apporte une victoire.',
+  },
+  'tower_parley_talk': {
+    AppLanguage.en: 'Talk',
+    AppLanguage.fr: 'Parlementer',
+  },
+  'tower_parley_fight': {
+    AppLanguage.en: 'Fight',
+    AppLanguage.fr: 'Combattre',
+  },
+  'tower_merchant': {
+    AppLanguage.en: 'Merchant',
+    AppLanguage.fr: 'Marchand',
+  },
+  'tower_merchant_title': {
+    AppLanguage.en: 'The Stair-Chandler',
+    AppLanguage.fr: 'Le Marchand de lumière',
+  },
+  'tower_merchant_body': {
+    AppLanguage.en:
+        'Salves and potions by candlelight, paid in marks. Nothing here leaves the Tower.',
+    AppLanguage.fr:
+        'Onguents et potions à la lueur d’une chandelle, payés en marques. Rien d’ici ne quitte la Tour.',
+  },
+  'tower_merchant_wallet': {
+    AppLanguage.en: 'Marks to spend: {n}',
+    AppLanguage.fr: 'Marques à dépenser : {n}',
+  },
+  'tower_merchant_sworn': {
+    AppLanguage.en: 'Half price: you are sworn to its clan',
+    AppLanguage.fr: 'Moitié prix : vous avez prêté serment à son clan',
+  },
+  'tower_merchant_half_price': {
+    AppLanguage.en: 'Half price for those sworn to {clan}',
+    AppLanguage.fr: 'Moitié prix pour qui a prêté serment à {clan}',
+  },
+  'tower_merchant_salve': {
+    AppLanguage.en: 'Salve',
+    AppLanguage.fr: 'Onguent',
+  },
+  'tower_merchant_salve_text': {
+    AppLanguage.en: 'Heals {n}% of your health.',
+    AppLanguage.fr: 'Rend {n} % de votre santé.',
+  },
+  'tower_merchant_potions': {
+    AppLanguage.en: 'Potion bundle',
+    AppLanguage.fr: 'Lot de potions',
+  },
+  'tower_merchant_potions_text': {
+    AppLanguage.en: '{n} potions into the bag.',
+    AppLanguage.fr: '{n} potions dans le sac.',
+  },
+  'tower_merchant_price': {
+    AppLanguage.en: '{n} marks',
+    AppLanguage.fr: '{n} marques',
+  },
+  'tower_merchant_price_one': {
+    AppLanguage.en: '{n} mark',
+    AppLanguage.fr: '{n} marque',
+  },
+  'tower_merchant_buy': {
+    AppLanguage.en: 'Buy',
+    AppLanguage.fr: 'Acheter',
+  },
+  'tower_merchant_bought': {
+    AppLanguage.en: 'Bought',
+    AppLanguage.fr: 'Acheté',
+  },
+  'tower_merchant_leave': {
+    AppLanguage.en: 'Back to the stair',
+    AppLanguage.fr: 'Retour à l’escalier',
+  },
+  'tower_bargain': {
+    AppLanguage.en: 'Bargain',
+    AppLanguage.fr: 'Marché',
+  },
+  'tower_bargain_title': {
+    AppLanguage.en: 'The Tally-Clerk',
+    AppLanguage.fr: 'Le Greffier des comptes',
+  },
+  'tower_bargain_body': {
+    AppLanguage.en:
+        'He will enter a tenth of your health in his ledger, and a point where you strike, for the rest of the climb.',
+    AppLanguage.fr:
+        'Il inscrira dans son registre un dixième de votre santé, et un point là où vous frappez, pour le reste de l’ascension.',
+  },
+  'tower_bargain_gain': {
+    AppLanguage.en: 'Gain',
+    AppLanguage.fr: 'Gain',
+  },
+  'tower_bargain_gain_text': {
+    AppLanguage.en: '+1 {stat}, for the climb',
+    AppLanguage.fr: '+1 {stat}, pour l’ascension',
+  },
+  'tower_bargain_cost': {
+    AppLanguage.en: 'Cost',
+    AppLanguage.fr: 'Coût',
+  },
+  'tower_bargain_cost_text': {
+    AppLanguage.en: '{n} less maximum health, for the climb',
+    AppLanguage.fr: '{n} de santé maximale en moins, pour l’ascension',
+  },
+  'tower_bargain_accept': {
+    AppLanguage.en: 'Sign',
+    AppLanguage.fr: 'Signer',
+  },
+  'tower_bargain_refuse': {
+    AppLanguage.en: 'Refuse',
+    AppLanguage.fr: 'Refuser',
+  },
   'tower_event_shortcut_landed': {
     AppLanguage.en: 'The shortcut holds: you land on floor {to}',
-    AppLanguage.fr: 'Le raccourci tient : vous arrivez à l’étage {to}',
+    AppLanguage.fr: 'Le raccourci tient : vous arrivez à l’étage {to}',
   },
   'tower_event_parley_passed': {
     AppLanguage.en: 'Words carry you past: floor {to}, and nothing gained.',
@@ -1698,7 +1848,7 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   },
   'tower_bought_with_marks': {
     AppLanguage.en: 'Bought with marks: {n}',
-    AppLanguage.fr: 'S\'achète en marques : {n}',
+    AppLanguage.fr: 'S’achète en marques : {n}',
   },
   'tower_pick_race': {
     AppLanguage.en: 'People',
@@ -1919,7 +2069,7 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.en:
         'He keeps the Great Hall, and asks only that you do not stop.',
     AppLanguage.fr:
-        'Il garde la Grande Salle et ne demande qu’une chose : que vous ne vous arrêtiez pas.',
+        'Il garde la Grande Salle et ne demande qu’une chose : que vous ne vous arrêtiez pas.',
   },
   'tower_boss_line_30': {
     AppLanguage.en:
@@ -1973,11 +2123,11 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   },
   'tower_spoils_title': {
     AppLanguage.en: 'Floor {n} spoils',
-    AppLanguage.fr: 'Butin de l\'étage {n}',
+    AppLanguage.fr: 'Butin de l’étage {n}',
   },
   'tower_spoils_worn': {
     AppLanguage.en: 'Worn at once if it beats what you wear.',
-    AppLanguage.fr: 'Porté aussitôt s\'il vaut mieux que votre tenue.',
+    AppLanguage.fr: 'Porté aussitôt s’il vaut mieux que votre tenue.',
   },
   'tower_spoils_bag': {
     AppLanguage.en: 'Into the bag, for the next fights.',
@@ -1985,7 +2135,7 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   },
   'tower_spoils_none': {
     AppLanguage.en: 'The floor gave nothing this time.',
-    AppLanguage.fr: 'L\'étage n\'a rien donné cette fois.',
+    AppLanguage.fr: 'L’étage n’a rien donné cette fois.',
   },
   'tower_take': {
     AppLanguage.en: 'Take',
@@ -2042,7 +2192,7 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   },
   'tower_oath_text': {
     AppLanguage.en: 'Swear to them: their standing and their die.',
-    AppLanguage.fr: 'Prêtez-leur serment : leur estime et leur dé.',
+    AppLanguage.fr: 'Prêtez-leur serment : leur estime et leur dé.',
   },
   // The Tower's dice bag (towerDiceOf): a die gained waits in it.
   'tower_dice_title': {
@@ -2073,7 +2223,7 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.en:
         'Your camp is set up on the shore in chapter 3. From then on it is your base: you rest there, choose who comes along, build, and set out to the towns and expeditions around it.',
     AppLanguage.fr:
-        'Votre campement s’installe sur le rivage au chapitre 3. Il devient alors votre base : vous vous y reposez, choisissez qui vous accompagne, bâtissez et partez vers les villes et les expéditions alentour.',
+        'Votre campement s’installe sur le rivage au chapitre 3. Il devient alors votre base\u00a0: vous vous y reposez, choisissez qui vous accompagne, bâtissez et partez vers les villes et les expéditions alentour.',
   },
   'nav_data': {AppLanguage.en: 'Data', AppLanguage.fr: 'Données'},
   'title_story': {AppLanguage.en: 'Story', AppLanguage.fr: 'Histoire'},
@@ -2155,7 +2305,7 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   },
   'title_map': {
     AppLanguage.en: 'Story Map',
-    AppLanguage.fr: "Carte de l'histoire"
+    AppLanguage.fr: "Carte de l’histoire"
   },
   'title_data': {AppLanguage.en: 'Game Data', AppLanguage.fr: 'Données du jeu'},
   'settings': {AppLanguage.en: 'Settings', AppLanguage.fr: 'Paramètres'},
@@ -2164,7 +2314,7 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   'detour': {AppLanguage.en: 'Detour', AppLanguage.fr: 'Détour'},
   'detour_on_the_way': {
     AppLanguage.en: 'Detour on your way:',
-    AppLanguage.fr: 'Détour en chemin :',
+    AppLanguage.fr: 'Détour en chemin\u00a0:',
   },
   'detour_resumes': {
     AppLanguage.en:
@@ -2182,11 +2332,11 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   },
   'choice_fight_roster': {
     AppLanguage.en: 'Fight: {roster}',
-    AppLanguage.fr: 'Combat : {roster}',
+    AppLanguage.fr: 'Combat\u00a0: {roster}',
   },
   'restart_story': {
     AppLanguage.en: 'Restart Story',
-    AppLanguage.fr: "Recommencer l'histoire"
+    AppLanguage.fr: "Recommencer l’histoire"
   },
   'the_end': {AppLanguage.en: 'The End', AppLanguage.fr: 'Fin'},
   'branch_end_message': {
@@ -2233,7 +2383,7 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   },
   'main_story_beat': {
     AppLanguage.en: 'Main Story Beat',
-    AppLanguage.fr: "Étape principale de l'histoire",
+    AppLanguage.fr: "Étape principale de l’histoire",
   },
   'undiscovered_node_legend': {
     AppLanguage.en: 'Undiscovered',
@@ -2242,7 +2392,7 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   'node_not_yet_discovered': {
     AppLanguage.en: "You haven't reached this part of the story yet.",
     AppLanguage.fr:
-        "Vous n'avez pas encore atteint cette partie de l'histoire.",
+        "Vous n’avez pas encore atteint cette partie de l’histoire.",
   },
   'main_beat_chip': {
     AppLanguage.en: 'Main Beat',
@@ -2250,7 +2400,7 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   },
   'requires_label': {
     AppLanguage.en: 'Requires:',
-    AppLanguage.fr: 'Nécessite :'
+    AppLanguage.fr: 'Nécessite\u00a0:'
   },
   'choices_label': {AppLanguage.en: 'Choices', AppLanguage.fr: 'Choix'},
   'no_choices_ending': {
@@ -2263,7 +2413,7 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   },
   'autoplay_to_node': {
     AppLanguage.en: 'Autoplay to this node',
-    AppLanguage.fr: 'Jouer automatiquement jusqu\'à ce nœud',
+    AppLanguage.fr: 'Jouer automatiquement jusqu’à ce nœud',
   },
   'autoplay_running': {
     AppLanguage.en: 'Playing ahead…',
@@ -2275,7 +2425,7 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   },
   'autoplay_no_path': {
     AppLanguage.en: 'No forward path to that node from here.',
-    AppLanguage.fr: "Aucun chemin possible jusqu'à ce nœud depuis ici.",
+    AppLanguage.fr: "Aucun chemin possible jusqu’à ce nœud depuis ici.",
   },
   'autoplay_step_cap_reached': {
     AppLanguage.en: 'Stopped after many steps without reaching the chapter — '
@@ -2357,11 +2507,11 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   },
   'required_alignment': {
     AppLanguage.en: 'Required alignment score (minimum)',
-    AppLanguage.fr: "Score d'alignement requis (minimum)",
+    AppLanguage.fr: "Score d’alignement requis (minimum)",
   },
   'required_alignment_max': {
     AppLanguage.en: 'Required alignment score (maximum)',
-    AppLanguage.fr: "Score d'alignement requis (maximum)",
+    AppLanguage.fr: "Score d’alignement requis (maximum)",
   },
   'required_flags': {
     AppLanguage.en: 'Required flags (comma-separated)',
@@ -2383,11 +2533,11 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   },
   'challenge_successes_needed': {
     AppLanguage.en: 'Skill challenge: successes needed',
-    AppLanguage.fr: 'Épreuve de compétence : réussites requises',
+    AppLanguage.fr: 'Épreuve de compétence\u00a0: réussites requises',
   },
   'challenge_max_failures': {
     AppLanguage.en: 'Skill challenge: max failures',
-    AppLanguage.fr: 'Épreuve de compétence : échecs max.',
+    AppLanguage.fr: 'Épreuve de compétence\u00a0: échecs max.',
   },
   'challenge_hint': {
     AppLanguage.en:
@@ -2405,19 +2555,19 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.en:
         'Defeat Destination Node (a lost fight goes here instead of retrying)',
     AppLanguage.fr:
-        'Nœud de destination en cas de défaite (un combat perdu y mène au lieu d\'être rejoué)',
+        'Nœud de destination en cas de défaite (un combat perdu y mène au lieu d’être rejoué)',
   },
   'fail_destination_node': {
     AppLanguage.en: 'Fail Destination Node (empty = same node, no reward)',
     AppLanguage.fr:
-        'Nœud de destination en cas d\'échec (vide = même nœud, sans récompense)',
+        'Nœud de destination en cas d’échec (vide = même nœud, sans récompense)',
   },
   'none_option': {AppLanguage.en: 'None', AppLanguage.fr: 'Aucun(e)'},
   'check_label': {AppLanguage.en: 'check', AppLanguage.fr: 'jet de'},
   'vs_dc_label': {AppLanguage.en: 'vs DC', AppLanguage.fr: 'contre DD'},
   'ability_check_success': {
     AppLanguage.en: 'Success!',
-    AppLanguage.fr: 'Réussite !',
+    AppLanguage.fr: 'Réussite\u00a0!',
   },
   'ability_check_fail': {
     AppLanguage.en: 'Failure.',
@@ -2461,13 +2611,13 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   },
   'reset_story': {
     AppLanguage.en: 'Reset story to defaults',
-    AppLanguage.fr: "Réinitialiser l'histoire"
+    AppLanguage.fr: "Réinitialiser l’histoire"
   },
   'reset_story_confirm': {
     AppLanguage.en:
         'This discards all edits to the story text and reloads the bundled version.',
     AppLanguage.fr:
-        "Ceci annule toutes les modifications du texte de l'histoire et recharge la version d'origine.",
+        "Ceci annule toutes les modifications du texte de l’histoire et recharge la version d’origine.",
   },
   'cancel': {AppLanguage.en: 'Cancel', AppLanguage.fr: 'Annuler'},
   'reset': {AppLanguage.en: 'Reset', AppLanguage.fr: 'Réinitialiser'},
@@ -2487,7 +2637,7 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.en:
         'Your last session could not be read, so a new one started. The old save was kept aside, untouched.',
     AppLanguage.fr:
-        'Votre dernière partie n’a pas pu être lue : une nouvelle a commencé. L’ancienne sauvegarde a été mise de côté, intacte.',
+        'Votre dernière partie n’a pas pu être lue\u00a0: une nouvelle a commencé. L’ancienne sauvegarde a été mise de côté, intacte.',
   },
   'hub_done_count': {
     AppLanguage.en: '{done}/{total} done',
@@ -2525,12 +2675,12 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   },
   'sell_worn_note': {
     AppLanguage.en: 'Worn: take it off to sell it',
-    AppLanguage.fr: 'Porté : retirez-le pour le vendre',
+    AppLanguage.fr: 'Porté\u00a0: retirez-le pour le vendre',
   },
-  'sold_prefix': {AppLanguage.en: 'Sold', AppLanguage.fr: 'Vendu :'},
+  'sold_prefix': {AppLanguage.en: 'Sold', AppLanguage.fr: 'Vendu\u00a0:'},
   'forge_title': {AppLanguage.en: 'Forge', AppLanguage.fr: 'Forge'},
   'forge_button': {AppLanguage.en: 'Forge', AppLanguage.fr: 'Forger'},
-  'forged_prefix': {AppLanguage.en: 'Forged:', AppLanguage.fr: 'Forgé :'},
+  'forged_prefix': {AppLanguage.en: 'Forged:', AppLanguage.fr: 'Forgé\u00a0:'},
   // The forge's roll (forge_roll.dart): its tiers, what moves it, and a
   // forged piece's name around the base item's.
   'forge_tier_flawed': {AppLanguage.en: 'Flawed', AppLanguage.fr: 'Défectueux'},
@@ -2577,7 +2727,7 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.en:
         'A flawed piece is −1 on its main number and loses nothing else; Fine is +1, Masterwork +2.',
     AppLanguage.fr:
-        'Une pièce défectueuse perd 1 sur son chiffre principal et rien d’autre ; belle facture : +1, de maître : +2.',
+        'Une pièce défectueuse perd 1 sur son chiffre principal et rien d’autre\u00a0; belle facture\u00a0: +1, de maître\u00a0: +2.',
   },
   'forge_hint_tip': {
     AppLanguage.en: 'Where to find the ore',
@@ -2585,7 +2735,7 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   },
   'forge_have_need': {
     AppLanguage.en: '{item} have {have} · need {need}',
-    AppLanguage.fr: '{item} : {have} en main · {need} requis',
+    AppLanguage.fr: '{item}\u00a0: {have} en main · {need} requis',
   },
   'forge_short_of': {
     AppLanguage.en: 'Short of {n} {item}',
@@ -2621,12 +2771,12 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.en:
         'A flawed roll loses nothing more: the piece is made, weaker, and can be sold.',
     AppLanguage.fr:
-        'Un jet défectueux ne coûte rien de plus : la pièce est faite, plus faible, et peut se vendre.',
+        'Un jet défectueux ne coûte rien de plus\u00a0: la pièce est faite, plus faible, et peut se vendre.',
   },
   'forge_sells_for': {AppLanguage.en: 'Sells for', AppLanguage.fr: 'Se vend'},
   'forge_spent': {
     AppLanguage.en: 'Spent: {list}',
-    AppLanguage.fr: 'Dépensé : {list}',
+    AppLanguage.fr: 'Dépensé\u00a0: {list}',
   },
   'forge_take_it': {AppLanguage.en: 'Take it', AppLanguage.fr: 'La prendre'},
   'forge_another': {
@@ -2652,7 +2802,7 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   'save_slot_empty': {AppLanguage.en: 'Empty', AppLanguage.fr: 'Vide'},
   'save_slot_overwrite_title': {
     AppLanguage.en: 'Save over this game?',
-    AppLanguage.fr: 'Écraser cette sauvegarde ?',
+    AppLanguage.fr: 'Écraser cette sauvegarde\u00a0?',
   },
   'save_slot_overwrite_button': {
     AppLanguage.en: 'Save over it',
@@ -2671,11 +2821,11 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.en:
         'Ironman: with permadeath on, a saved game can’t be loaded, and a death deletes every save.',
     AppLanguage.fr:
-        'Ironman : avec la mort définitive, une sauvegarde ne peut pas être chargée, et une mort les efface toutes.',
+        'Ironman\u00a0: avec la mort définitive, une sauvegarde ne peut pas être chargée, et une mort les efface toutes.',
   },
   'ironman_load_tooltip': {
     AppLanguage.en: 'Ironman: no loading while permadeath is on',
-    AppLanguage.fr: 'Ironman : pas de chargement avec la mort définitive',
+    AppLanguage.fr: 'Ironman\u00a0: pas de chargement avec la mort définitive',
   },
   'game_loaded_message': {
     AppLanguage.en: 'Game loaded.',
@@ -2697,9 +2847,9 @@ const Map<String, Map<AppLanguage, String>> _strings = {
             'own setting automatically; pick a fixed theme to override every chapter with it.',
     AppLanguage.fr:
         'Les 5 étapes principales de chaque chapitre ne changent jamais. Ceci choisit '
-            "l'ambiance des rencontres, boutiques et quêtes générées entre elles. Le mode "
-            'automatique correspond au décor propre à chaque scène ; choisissez une ambiance '
-            'fixe pour l\'imposer à tous les chapitres.',
+            "l’ambiance des rencontres, boutiques et quêtes générées entre elles. Le mode "
+            'automatique correspond au décor propre à chaque scène\u00a0; choisissez une ambiance '
+            'fixe pour l’imposer à tous les chapitres.',
   },
   'map_theme_auto_label': {
     AppLanguage.en: 'Auto (match story)',
@@ -2721,10 +2871,10 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.en: 'Wilds Beyond',
     AppLanguage.fr: 'Terres Sauvages'
   },
-  'gold_mod': {AppLanguage.en: 'Gold mod', AppLanguage.fr: "Modif. d'or"},
+  'gold_mod': {AppLanguage.en: 'Gold mod', AppLanguage.fr: "Modif. d’or"},
   'alignment_mod': {
     AppLanguage.en: 'Alignment mod',
-    AppLanguage.fr: "Modif. d'alignement"
+    AppLanguage.fr: "Modif. d’alignement"
   },
   'heal_amount': {AppLanguage.en: 'Heal amount', AppLanguage.fr: 'Soins'},
   'flags_to_add': {
@@ -2737,19 +2887,19 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   },
   'trigger_enemy_id': {
     AppLanguage.en: 'Trigger enemy ID',
-    AppLanguage.fr: "ID d'ennemi déclenché"
+    AppLanguage.fr: "ID d’ennemi déclenché"
   },
   'trigger_enemy_ids': {
     AppLanguage.en: 'Trigger enemy IDs (pack, comma-separated)',
-    AppLanguage.fr: "IDs d'ennemis déclenchés (groupe, séparés par virgule)"
+    AppLanguage.fr: "IDs d’ennemis déclenchés (groupe, séparés par virgule)"
   },
   'trigger_enemy_ids_helper': {
     AppLanguage.en:
         'Overrides Trigger enemy ID above when set — a 2-3 enemy pack fight. '
             'Never include a tuned boss/unique enemy here.',
     AppLanguage.fr:
-        "Remplace l'ID d'ennemi déclenché ci-dessus si renseigné — un combat "
-            "de groupe de 2 à 3 ennemis. N'incluez jamais un boss ou un "
+        "Remplace l’ID d’ennemi déclenché ci-dessus si renseigné — un combat "
+            "de groupe de 2 à 3 ennemis. N’incluez jamais un boss ou un "
             "ennemi unique ici.",
   },
   'unlock_shop_id': {
@@ -2793,7 +2943,7 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   },
   'failed_to_load_story': {
     AppLanguage.en: 'Failed to load story',
-    AppLanguage.fr: "Échec du chargement de l'histoire",
+    AppLanguage.fr: "Échec du chargement de l’histoire",
   },
   'player_session': {
     AppLanguage.en: 'Player Session',
@@ -2856,7 +3006,7 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   'shop_undiscovered': {
     AppLanguage.en: 'Undiscovered — find this shop during the story.',
     AppLanguage.fr:
-        "Non découverte — trouvez cette boutique au cours de l'histoire.",
+        "Non découverte — trouvez cette boutique au cours de l’histoire.",
   },
   'not_yet_encountered': {
     AppLanguage.en: 'Not yet encountered.',
@@ -2892,7 +3042,7 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   },
   'base_damage_desc': {
     AppLanguage.en: 'Added to every attack you land in combat.',
-    AppLanguage.fr: 'S\'ajoute à chaque attaque que vous portez en combat.',
+    AppLanguage.fr: 'S’ajoute à chaque attaque que vous portez en combat.',
   },
   'base_armor_desc': {
     AppLanguage.en: 'Reduces the damage you take from enemy attacks.',
@@ -2911,8 +3061,8 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.fr:
         'Augmente vos chances de coup critique, et de trouver un meilleur '
             'butin après un combat. Tous les 3 points de la meilleure Chance '
-            'du groupe donnent aussi un coup de pouce par combat, jusqu\'à '
-            '3 : un appui long sur un dé tombé le tourne sur sa face opposée.',
+            'du groupe donnent aussi un coup de pouce par combat, jusqu’à '
+            '3\u00a0: un appui long sur un dé tombé le tourne sur sa face opposée.',
   },
   'charisma_desc': {
     AppLanguage.en: 'Opens persuasion-gated dialogue and story choices.',
@@ -2947,8 +3097,8 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.fr:
         'Intervient dans les jets de Constitution des choix narratifs — '
             'endurer ce qui arrêterait la plupart des gens. Augmente aussi '
-            'l\'armure des boucliers liés à la Constitution et débloque '
-            'l\'équipement le plus lourd.',
+            'l’armure des boucliers liés à la Constitution et débloque '
+            'l’équipement le plus lourd.',
   },
   'intelligence_desc': {
     AppLanguage.en:
@@ -2956,9 +3106,9 @@ const Map<String, Map<AppLanguage, String>> _strings = {
             'out, reading what others missed. Also boosts damage on '
             'Intelligence-scaling weapons like staves.',
     AppLanguage.fr:
-        'Intervient dans les jets d\'Intelligence des choix narratifs — '
-            'comprendre ce que d\'autres ont manqué. Augmente aussi les '
-            'dégâts des armes liées à l\'Intelligence (bâtons).',
+        'Intervient dans les jets d’Intelligence des choix narratifs — '
+            'comprendre ce que d’autres ont manqué. Augmente aussi les '
+            'dégâts des armes liées à l’Intelligence (bâtons).',
   },
   'wisdom_desc': {
     AppLanguage.en:
@@ -2972,8 +3122,8 @@ const Map<String, Map<AppLanguage, String>> _strings = {
             'les gens, sentir ce qui se trame vraiment. En combat, elle '
             'renforce aussi chaque soin, ajoute 1 point de mana à chaque '
             'face Mana et compétence de mana tous les 3 points de Sagesse, '
-            'et raccourcit la durée du Poison, de l\'Étourdissement ou de '
-            'l\'Affaiblissement.',
+            'et raccourcit la durée du Poison, de l’Étourdissement ou de '
+            'l’Affaiblissement.',
   },
   'perception_desc': {
     AppLanguage.en:
@@ -2982,10 +3132,10 @@ const Map<String, Map<AppLanguage, String>> _strings = {
             'their Guile) what kind of move it is or exactly what it '
             'does.',
     AppLanguage.fr:
-        'Vous permet de lire le prochain coup d\'un ennemi avant qu\'il '
+        'Vous permet de lire le prochain coup d’un ennemi avant qu’il '
             'ne survienne — qui il va viser, et (avec assez de '
             'Perspicacité face à sa Ruse) le type de coup ou exactement '
-            'ce qu\'il fait.',
+            'ce qu’il fait.',
   },
   'fight': {AppLanguage.en: 'Fight', AppLanguage.fr: 'Combattre'},
   'gold_label': {AppLanguage.en: 'gold', AppLanguage.fr: 'or'},
@@ -3047,11 +3197,11 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   'inv_new': {AppLanguage.en: 'New', AppLanguage.fr: 'Nouveau'},
   'inv_goes_on': {
     AppLanguage.en: 'goes on the {slot}',
-    AppLanguage.fr: 'se porte : {slot}',
+    AppLanguage.fr: 'se porte\u00a0: {slot}',
   },
   'inv_worn_on': {
     AppLanguage.en: 'worn on the {slot}',
-    AppLanguage.fr: 'porté : {slot}',
+    AppLanguage.fr: 'porté\u00a0: {slot}',
   },
   'inv_compare_hold': {
     AppLanguage.en: 'Hold a row to compare',
@@ -3065,7 +3215,7 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   },
   'inv_die_made_for': {
     AppLanguage.en: 'Made for the {who}',
-    AppLanguage.fr: 'Conçu pour : {who}',
+    AppLanguage.fr: 'Conçu pour\u00a0: {who}',
   },
   'inv_type_weapon': {AppLanguage.en: 'Weapon', AppLanguage.fr: 'Arme'},
   'inv_type_armor': {AppLanguage.en: 'Armour', AppLanguage.fr: 'Armure'},
@@ -3090,14 +3240,17 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   'wisdom_mana_bonus_line': {
     AppLanguage.en: 'Wisdom {wis}: +{n} mana on every Mana face and mana '
         'skill (1 more per 3 Wisdom).',
-    AppLanguage.fr: 'Sagesse {wis} : +{n} mana sur chaque face Mana et '
+    AppLanguage.fr: 'Sagesse {wis}\u00a0: +{n} mana sur chaque face Mana et '
         'compétence de mana (1 de plus tous les 3 points).',
   },
   'quest_goal_ready': {
     AppLanguage.en: 'Goal reached: turn it in',
-    AppLanguage.fr: 'Objectif atteint : à rendre',
+    AppLanguage.fr: 'Objectif atteint\u00a0: à rendre',
   },
-  'quest_goal_prefix': {AppLanguage.en: 'Goal:', AppLanguage.fr: 'Objectif :'},
+  'quest_goal_prefix': {
+    AppLanguage.en: 'Goal:',
+    AppLanguage.fr: 'Objectif\u00a0:'
+  },
   'quest_updated_label': {
     AppLanguage.en: 'Updated',
     AppLanguage.fr: 'Mis à jour',
@@ -3113,7 +3266,7 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   },
   'quest_following_label': {
     AppLanguage.en: 'Followed: its goal shows above the story',
-    AppLanguage.fr: 'Suivie : son objectif s’affiche au-dessus du récit',
+    AppLanguage.fr: 'Suivie\u00a0: son objectif s’affiche au-dessus du récit',
   },
   'quest_objectives_title': {
     AppLanguage.en: 'Objectives',
@@ -3164,7 +3317,7 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   },
   'shop_at_camp': {
     AppLanguage.en: 'At the camp: open it from the Camp tab.',
-    AppLanguage.fr: 'Au camp : ouvrez-la depuis l’onglet Campement.',
+    AppLanguage.fr: 'Au camp\u00a0: ouvrez-la depuis l’onglet Campement.',
   },
   'npcs_none_met': {
     AppLanguage.en: 'No one to speak with yet.',
@@ -3284,7 +3437,7 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   'reward_die_traded': {
     AppLanguage.en: 'The {die} is made for another class: you took its '
         'price in gold instead.',
-    AppLanguage.fr: 'Le {die} est fait pour une autre classe : vous en '
+    AppLanguage.fr: 'Le {die} est fait pour une autre classe\u00a0: vous en '
         'avez pris le prix en or.',
   },
   'choose_die': {AppLanguage.en: 'Choose die', AppLanguage.fr: 'Choisir un dé'},
@@ -3296,7 +3449,7 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   'inventory_empty': {
     AppLanguage.en: 'Your inventory is empty. Buy or loot some gear!',
     AppLanguage.fr:
-        "Votre inventaire est vide. Achetez ou pillez de l'équipement !",
+        "Votre inventaire est vide. Achetez ou pillez de l’équipement\u00a0!",
   },
   'faces_label': {AppLanguage.en: 'faces', AppLanguage.fr: 'faces'},
   'skill_tree_intro': {
@@ -3309,7 +3462,7 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.en:
         'Mastered: {branch}. Its skills fight a tier higher. Each other branch can still be learned, but not mastered.',
     AppLanguage.fr:
-        'Maîtrisée : {branch}. Ses compétences combattent un rang au-dessus. Les autres branches s’apprennent encore, mais ne se maîtrisent plus.',
+        'Maîtrisée\u00a0: {branch}. Ses compétences combattent un rang au-dessus. Les autres branches s’apprennent encore, mais ne se maîtrisent plus.',
   },
   'skill_after_label': {
     AppLanguage.en: 'After {skill}',
@@ -3334,7 +3487,7 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   'mastery_label': {AppLanguage.en: 'Mastery', AppLanguage.fr: 'Maîtrise'},
   'mastery_title': {
     AppLanguage.en: 'Mastery of the {branch}',
-    AppLanguage.fr: 'Maîtrise : {branch}',
+    AppLanguage.fr: 'Maîtrise\u00a0: {branch}',
   },
   'mastery_body': {
     AppLanguage.en:
@@ -3360,7 +3513,7 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   },
   'mastery_gained': {
     AppLanguage.en: 'Mastered: {branch}',
-    AppLanguage.fr: 'Maîtrisée : {branch}',
+    AppLanguage.fr: 'Maîtrisée\u00a0: {branch}',
   },
   'skill_filter_all': {AppLanguage.en: 'All', AppLanguage.fr: 'Toutes'},
   'filter_attack': {AppLanguage.en: 'Attack', AppLanguage.fr: 'Attaque'},
@@ -3375,7 +3528,7 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.en:
         'A companion keeps to their own trade: {class} skills only, one point each, in any order. What their die already carries is theirs from the start.',
     AppLanguage.fr:
-        'Un compagnon s’en tient à son métier : compétences de {class} uniquement, un point chacune, dans l’ordre voulu. Ce que porte déjà son dé lui appartient dès le départ.',
+        'Un compagnon s’en tient à son métier\u00a0: compétences de {class} uniquement, un point chacune, dans l’ordre voulu. Ce que porte déjà son dé lui appartient dès le départ.',
   },
   'skill_points_label': {
     AppLanguage.en: 'Skill Points',
@@ -3420,13 +3573,13 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   'merge_confirm_message': {
     AppLanguage.en: 'Merge these skills? Both are lost for good this life:',
     AppLanguage.fr:
-        'Fusionner ces compétences ? Les deux seront perdues pour cette vie :',
+        'Fusionner ces compétences\u00a0? Les deux seront perdues pour cette vie\u00a0:',
   },
   'craft_sheet_intro': {
     AppLanguage.en:
         'At the Skillwright\'s bench, two skills you know become one. Both are spent.',
     AppLanguage.fr:
-        'Sur l\'établi de l\'Atelier des techniques, deux compétences connues n\'en font plus qu\'une. Les deux sont perdues.',
+        'Sur l’établi de l’Atelier des techniques, deux compétences connues n’en font plus qu’une. Les deux sont perdues.',
   },
   'craft_known_tag': {AppLanguage.en: 'Known', AppLanguage.fr: 'Connue'},
   'craft_missing_tag': {AppLanguage.en: 'Missing', AppLanguage.fr: 'Manquante'},
@@ -3447,7 +3600,7 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.en:
         'Pick two eight-faced dice you own. Both are spent, with the skills set on them; Hammersmith work on them is paid back. The tally die has twelve plain faces to fill.',
     AppLanguage.fr:
-        'Choisissez deux dés à huit faces que vous possédez. Les deux sont perdus, avec les compétences posées dessus ; le travail du Maître-forgeron vous est rendu. Le dé du décompte a douze faces simples à garnir.',
+        'Choisissez deux dés à huit faces que vous possédez. Les deux sont perdus, avec les compétences posées dessus\u00a0; le travail du Maître-forgeron vous est rendu. Le dé du décompte a douze faces simples à garnir.',
   },
   'weave_button': {
     AppLanguage.en: 'Recut',
@@ -3467,7 +3620,7 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   },
   'shop_no_stock': {
     AppLanguage.en: 'This shop has no stock configured.',
-    AppLanguage.fr: "Cette boutique n'a aucun stock configuré.",
+    AppLanguage.fr: "Cette boutique n’a aucun stock configuré.",
   },
   'buy_button': {AppLanguage.en: 'Buy', AppLanguage.fr: 'Acheter'},
   'bought_prefix': {AppLanguage.en: 'Bought', AppLanguage.fr: 'Achat de'},
@@ -3477,11 +3630,11 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   'sort_name': {AppLanguage.en: 'Name (A-Z)', AppLanguage.fr: 'Nom (A-Z)'},
   'sort_price_low': {
     AppLanguage.en: 'Price: Low to High',
-    AppLanguage.fr: 'Prix : croissant',
+    AppLanguage.fr: 'Prix\u00a0: croissant',
   },
   'sort_price_high': {
     AppLanguage.en: 'Price: High to Low',
-    AppLanguage.fr: 'Prix : décroissant',
+    AppLanguage.fr: 'Prix\u00a0: décroissant',
   },
   'sort_stock': {
     AppLanguage.en: 'Most in stock',
@@ -3533,7 +3686,7 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   },
   'voice_section_desc': {
     AppLanguage.en: 'Choose which voice reads the story aloud.',
-    AppLanguage.fr: "Choisis la voix qui lit l'histoire à voix haute.",
+    AppLanguage.fr: "Choisis la voix qui lit l’histoire à voix haute.",
   },
   'auto_read_aloud_setting_title': {
     AppLanguage.en: 'Auto-read narration',
@@ -3543,9 +3696,9 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.en: 'Reads each scene aloud as soon as it appears: in the '
         "ElevenLabs voice when it is on, otherwise in the device's built-in "
         'voice.',
-    AppLanguage.fr: "Lit chaque scène à voix haute dès son affichage : avec "
+    AppLanguage.fr: "Lit chaque scène à voix haute dès son affichage\u00a0: avec "
         "la voix ElevenLabs si elle est activée, sinon avec la voix intégrée "
-        "de l'appareil.",
+        "de l’appareil.",
   },
   'elevenlabs_voice_setting_title': {
     AppLanguage.en: 'Use the ElevenLabs voice (recorded)',
@@ -3561,7 +3714,7 @@ const Map<String, Map<AppLanguage, String>> _strings = {
         "ElevenLabs et gardé sur cet appareil, puis lu hors ligne. Les scènes "
         "pas encore enregistrées le sont à la lecture (cela consomme des "
         "crédits ElevenLabs). Sans clé, seules les scènes enregistrées "
-        "utilisent cette voix ; les autres, la voix de l'appareil.",
+        "utilisent cette voix\u00a0; les autres, la voix de l’appareil.",
   },
   'elevenlabs_api_key_label': {
     AppLanguage.en: 'ElevenLabs API key',
@@ -3576,7 +3729,7 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   'elevenlabs_api_key_missing_hint': {
     AppLanguage.en: 'No key: only scenes already recorded can be heard in '
         'this voice. Stored only on this device.',
-    AppLanguage.fr: 'Pas de clé : seules les scènes déjà enregistrées '
+    AppLanguage.fr: 'Pas de clé\u00a0: seules les scènes déjà enregistrées '
         "peuvent être lues avec cette voix. Stockée uniquement sur cet "
         'appareil.',
   },
@@ -3593,12 +3746,12 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   'elevenlabs_recorded_count': {
     AppLanguage.en: 'In this language: {count} paragraphs recorded on this '
         'device, {bundled} shipped inside the app. Recorded here:',
-    AppLanguage.fr: 'Dans cette langue : {count} paragraphes enregistrés sur '
-        "cet appareil, {bundled} fournis avec l'application. Enregistrés ici :",
+    AppLanguage.fr: 'Dans cette langue\u00a0: {count} paragraphes enregistrés sur '
+        "cet appareil, {bundled} fournis avec l’application. Enregistrés ici\u00a0:",
   },
   'elevenlabs_record_all_button': {
     AppLanguage.en: 'Record the whole story',
-    AppLanguage.fr: "Enregistrer toute l'histoire",
+    AppLanguage.fr: "Enregistrer toute l’histoire",
   },
   'elevenlabs_record_button': {
     AppLanguage.en: 'Record',
@@ -3616,11 +3769,11 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   },
   'elevenlabs_record_nothing': {
     AppLanguage.en: 'The whole story is already recorded in this language.',
-    AppLanguage.fr: "Toute l'histoire est déjà enregistrée dans cette langue.",
+    AppLanguage.fr: "Toute l’histoire est déjà enregistrée dans cette langue.",
   },
   'elevenlabs_recording_title': {
     AppLanguage.en: 'Recording the story…',
-    AppLanguage.fr: "Enregistrement de l'histoire…",
+    AppLanguage.fr: "Enregistrement de l’histoire…",
   },
   'elevenlabs_progress': {
     AppLanguage.en: '{done} / {total}',
@@ -3657,7 +3810,7 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.fr: "Choisissez les scènes par type et par chapitre, cochez-les et "
         "enregistrez-les avec la voix ElevenLabs. La marque de chaque scène "
         "indique combien de ses paragraphes sont enregistrés (sur cet appareil "
-        "ou dans l'application). Envoyez les enregistrements sur GitHub pour "
+        "ou dans l’application). Envoyez les enregistrements sur GitHub pour "
         'les livrer avec le jeu.',
   },
   'narration_filter_kind': {AppLanguage.en: 'Kind', AppLanguage.fr: 'Type'},
@@ -3708,8 +3861,8 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   'narration_variations_desc': {
     AppLanguage.en: "Each companion's aside, and the callback, race, "
         "profession and hub lines a scene can add.",
-    AppLanguage.fr: "L'aparté de chaque compagnon, et les rappels, lignes de "
-        "race, de profession et de lieu qu'une scène peut ajouter.",
+    AppLanguage.fr: "L’aparté de chaque compagnon, et les rappels, lignes de "
+        "race, de profession et de lieu qu’une scène peut ajouter.",
   },
   'narration_scenes_shown': {
     AppLanguage.en: '{count} scenes',
@@ -3733,7 +3886,7 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   },
   'elevenlabs_push_needs_token': {
     AppLanguage.en: 'Set your GitHub token in Settings (Edit Mode) first.',
-    AppLanguage.fr: "Renseignez d'abord votre jeton GitHub dans les Paramètres "
+    AppLanguage.fr: "Renseignez d’abord votre jeton GitHub dans les Paramètres "
         '(mode Édition).',
   },
   'elevenlabs_push_checking': {
@@ -3754,7 +3907,7 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.fr: "{count} enregistrements ne sont pas encore dans le dépôt. "
         "Ils seront envoyés en un seul commit sur une nouvelle branche, "
         "{branch}, dans assets/narration/. Ouvrez une pull request depuis "
-        "celle-ci pour les livrer dans l'application.",
+        "celle-ci pour les livrer dans l’application.",
   },
   'elevenlabs_pushing_title': {
     AppLanguage.en: 'Pushing recordings…',
@@ -3779,7 +3932,7 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.en: "Delete this voice's recordings in both languages? "
         'Recording them again uses ElevenLabs credits.',
     AppLanguage.fr: 'Supprimer les enregistrements de cette voix dans les '
-        'deux langues ? Les refaire consommera des crédits ElevenLabs.',
+        'deux langues\u00a0? Les refaire consommera des crédits ElevenLabs.',
   },
   'elevenlabs_deleted': {
     AppLanguage.en: 'Recordings deleted.',
@@ -3788,9 +3941,9 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   'elevenlabs_web_unsupported': {
     AppLanguage.en: 'Recorded voices need the app (Android, iOS or desktop); '
         'the web version uses the device voice.',
-    AppLanguage.fr: "Les voix enregistrées nécessitent l'application "
-        '(Android, iOS ou ordinateur) ; la version web utilise la voix de '
-        "l'appareil.",
+    AppLanguage.fr: "Les voix enregistrées nécessitent l’application "
+        '(Android, iOS ou ordinateur)\u00a0; la version web utilise la voix de '
+        "l’appareil.",
   },
   'voice_error_prefix': {
     AppLanguage.en: 'Voice failed',
@@ -3800,11 +3953,11 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   'cost_label': {AppLanguage.en: 'Cost', AppLanguage.fr: 'Coût'},
   'equip_slot_label': {
     AppLanguage.en: 'Equip Slot',
-    AppLanguage.fr: "Emplacement d'équipement"
+    AppLanguage.fr: "Emplacement d’équipement"
   },
   'attack_damage_label': {
     AppLanguage.en: 'Attack Damage',
-    AppLanguage.fr: "Dégâts d'attaque"
+    AppLanguage.fr: "Dégâts d’attaque"
   },
   'armor_label': {AppLanguage.en: 'Armour', AppLanguage.fr: 'Armure'},
   'fire_dmg_label': {AppLanguage.en: 'Fire Dmg', AppLanguage.fr: 'Dégâts Feu'},
@@ -3882,11 +4035,11 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   },
   'charm_use_prefix': {
     AppLanguage.en: 'Burned at the start of a fight:',
-    AppLanguage.fr: 'Consumé au début d’un combat :',
+    AppLanguage.fr: 'Consumé au début d’un combat\u00a0:',
   },
   'tome_stat_point_desc': {
     AppLanguage.en: 'Read on the spot: one stat point.',
-    AppLanguage.fr: 'Lu sur-le-champ : un point de caractéristique.',
+    AppLanguage.fr: 'Lu sur-le-champ\u00a0: un point de caractéristique.',
   },
   'tome_skill_point_desc': {
     AppLanguage.en: 'Read on the spot: the clans come to you with an offer.',
@@ -3939,7 +4092,7 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   'loot_cannot_wear_note': {
     AppLanguage.en: 'You cannot wear this yet; it goes to your pack.',
     AppLanguage.fr:
-        'Vous ne pouvez pas encore le porter ; il va dans votre sac.',
+        'Vous ne pouvez pas encore le porter\u00a0; il va dans votre sac.',
   },
   'loot_equipped_message': {
     AppLanguage.en: 'You put on',
@@ -3947,12 +4100,12 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   },
   'loot_drank_message': {
     AppLanguage.en: 'You drink a potion from the chest: +{hp} HP.',
-    AppLanguage.fr: 'Vous buvez une potion du coffre : +{hp} PV.',
+    AppLanguage.fr: 'Vous buvez une potion du coffre\u00a0: +{hp} PV.',
   },
   'loot_potion_kept_message': {
     AppLanguage.en: 'Leveling up healed you; the potion stays in your pack.',
     AppLanguage.fr:
-        'La montée de niveau vous a soigné ; la potion reste dans votre sac.',
+        'La montée de niveau vous a soigné\u00a0; la potion reste dans votre sac.',
   },
   'face_attack_label': {AppLanguage.en: 'Attack', AppLanguage.fr: 'Attaque'},
   'face_guard_label': {AppLanguage.en: 'Guard', AppLanguage.fr: 'Garde'},
@@ -3962,7 +4115,7 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.en:
         'Set on a {face} face, a skill replaces the face\'s own action and works at 70% power. On an Attack face it never hits for less than the attack; on a Heal face it never heals less than the heal.',
     AppLanguage.fr:
-        'Posée sur une face {face}, une compétence remplace l’action de la face et agit à 70 % de sa puissance. Sur une face Attaque, elle ne frappe jamais moins fort que l’attaque ; sur une face Soin, elle ne soigne jamais moins que le soin.',
+        'Posée sur une face {face}, une compétence remplace l’action de la face et agit à 70\u00a0% de sa puissance. Sur une face Attaque, elle ne frappe jamais moins fort que l’attaque\u00a0; sur une face Soin, elle ne soigne jamais moins que le soin.',
   },
   'pick_face_skill_title': {
     AppLanguage.en: 'Choose this face\'s skill',
@@ -3986,7 +4139,7 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   },
   'face_now_line': {
     AppLanguage.en: 'Face {n} · now: {face}',
-    AppLanguage.fr: 'Face {n} · actuellement : {face}',
+    AppLanguage.fr: 'Face {n} · actuellement\u00a0: {face}',
   },
   'map_replay_all': {
     AppLanguage.en: 'Replay all',
@@ -3998,7 +4151,7 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   },
   'map_set_out_expedition': {
     AppLanguage.en: 'You set out on the expedition that finds it: {zone}.',
-    AppLanguage.fr: 'Vous partez en expédition pour la trouver : {zone}.',
+    AppLanguage.fr: 'Vous partez en expédition pour la trouver\u00a0: {zone}.',
   },
   'map_mark_goal': {
     AppLanguage.en: 'Mark as goal',
@@ -4033,7 +4186,7 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   },
   'channeled_face_badge': {
     AppLanguage.en: 'On a {face} face · 70%',
-    AppLanguage.fr: 'Sur une face {face} · 70 %',
+    AppLanguage.fr: 'Sur une face {face} · 70\u00a0%',
   },
   'edit_auto_win_tooltip': {
     AppLanguage.en: 'Win this fight (edit mode)',
@@ -4041,7 +4194,7 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   },
   'edit_auto_win_log': {
     AppLanguage.en: 'Edit mode: the fight is won on the spot.',
-    AppLanguage.fr: 'Mode édition : le combat est gagné sur-le-champ.',
+    AppLanguage.fr: 'Mode édition\u00a0: le combat est gagné sur-le-champ.',
   },
   'hub_expeditions_section': {
     AppLanguage.en: 'Expeditions',
@@ -4084,7 +4237,7 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   },
   'purse_essence_note': {
     AppLanguage.en: 'to raise a tier · earned with XP',
-    AppLanguage.fr: 'pour monter d\'un rang · gagnée avec l\'XP',
+    AppLanguage.fr: 'pour monter d’un rang · gagnée avec l’XP',
   },
   'skills_ready': {
     AppLanguage.en: '{n} ready to learn',
@@ -4092,7 +4245,7 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   },
   'skills_none_ready': {
     AppLanguage.en: 'Nothing to learn right now',
-    AppLanguage.fr: 'Rien à apprendre pour l\'instant',
+    AppLanguage.fr: 'Rien à apprendre pour l’instant',
   },
   'skills_rules_short': {
     AppLanguage.en:
@@ -4142,7 +4295,7 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   },
   'raise_tier_short': {
     AppLanguage.en: '{n} more essence needed; it comes with XP.',
-    AppLanguage.fr: 'Encore {n} d\'essence ; elle vient avec l\'XP.',
+    AppLanguage.fr: 'Encore {n} d’essence\u00a0; elle vient avec l’XP.',
   },
   'tier_max_label': {
     AppLanguage.en: 'Highest tier',
@@ -4154,7 +4307,7 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   },
   'skill_no_tiers_note': {
     AppLanguage.en: 'Everyone has this one: it has no tiers.',
-    AppLanguage.fr: 'Tout le monde l\'a : elle n\'a pas de rang.',
+    AppLanguage.fr: 'Tout le monde l’a\u00a0: elle n’a pas de rang.',
   },
   'compare_with': {
     AppLanguage.en: 'Compare with…',
@@ -4182,7 +4335,7 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   },
   'mine_empty': {
     AppLanguage.en: 'Nothing here yet: learn skills in the Tree.',
-    AppLanguage.fr: 'Rien ici pour l\'instant : apprenez dans l\'Arbre.',
+    AppLanguage.fr: 'Rien ici pour l’instant\u00a0: apprenez dans l’Arbre.',
   },
   'spells_known': {
     AppLanguage.en: 'Known',
@@ -4210,7 +4363,8 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   },
   'ship_shield_line': {
     AppLanguage.en: 'Shield: blocks {n} hit(s) a fight, then recharges',
-    AppLanguage.fr: 'Bouclier : pare {n} coup(s) par combat, puis se recharge',
+    AppLanguage.fr:
+        'Bouclier\u00a0: pare {n} coup(s) par combat, puis se recharge',
   },
   'shield_short_label': {
     AppLanguage.en: 'Shield',
@@ -4243,7 +4397,8 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   },
   'level_signpost_row': {
     AppLanguage.en: 'Chapter {n}: level {level} advised (you: {you})',
-    AppLanguage.fr: 'Chapitre {n} : niveau {level} conseillé (vous : {you})',
+    AppLanguage.fr:
+        'Chapitre {n}\u00a0: niveau {level} conseillé (vous\u00a0: {you})',
   },
   'level_signpost_short': {
     AppLanguage.en: 'Ch. {n} · lvl {level}',
@@ -4283,7 +4438,7 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   },
   'harbour_not_built_title': {
     AppLanguage.en: 'The Harbour: not built yet',
-    AppLanguage.fr: 'Le Port : pas encore bâti',
+    AppLanguage.fr: 'Le Port\u00a0: pas encore bâti',
   },
   'harbour_not_built_body': {
     AppLanguage.en:
@@ -4338,13 +4493,13 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   'fate_coin_offer': {
     AppLanguage.en: 'The check fails. Flip your fate coin to roll it again?',
     AppLanguage.fr:
-        'L’épreuve échoue. Lancer votre pièce du destin pour la rejouer ?',
+        'L’épreuve échoue. Lancer votre pièce du destin pour la rejouer\u00a0?',
   },
   'forge_hut_offer': {
     AppLanguage.en:
         'The piece comes out flawed. The Bone-Caster’s Hut can roll it again ({n} left). Spend a charge?',
     AppLanguage.fr:
-        'La pièce sort défectueuse. La Hutte du jeteur d’os peut la relancer ({n} restant). Dépenser une charge ?',
+        'La pièce sort défectueuse. La Hutte du jeteur d’os peut la relancer ({n} restant). Dépenser une charge\u00a0?',
   },
   'forge_hut_rolled': {
     AppLanguage.en: 'The Bone-Caster’s Hut rolled it again.',
@@ -4354,7 +4509,7 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.en:
         'The piece comes out flawed. Flip your fate coin to forge it again?',
     AppLanguage.fr:
-        'La pièce sort défectueuse. Lancer votre pièce du destin pour la forger de nouveau ?',
+        'La pièce sort défectueuse. Lancer votre pièce du destin pour la forger de nouveau\u00a0?',
   },
   'fate_coin_flip_button': {
     AppLanguage.en: 'Flip the fate coin',
@@ -4486,11 +4641,12 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.en:
         'The Eel is hauled up at the camp. Build the harbour in Town before she can sail.',
     AppLanguage.fr:
-        'Le Rusty Eel est hissé au camp. Bâtissez le port en Ville avant qu\'il puisse prendre la mer.',
+        'Le Rusty Eel est hissé au camp. Bâtissez le port en Ville avant qu’il puisse prendre la mer.',
   },
   'harbour_built_body': {
     AppLanguage.en: 'Refit the Eel: parts for her slots.',
-    AppLanguage.fr: 'Radouber le Rusty Eel : des pièces pour ses emplacements.',
+    AppLanguage.fr:
+        'Radouber le Rusty Eel\u00a0: des pièces pour ses emplacements.',
   },
   'tut_camp_0': {
     AppLanguage.en:
@@ -4532,7 +4688,7 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   },
   'stake_push': {
     AppLanguage.en: 'win: nothing lost · fail −{n} hull',
-    AppLanguage.fr: 'réussite : rien de perdu · échec −{n} coque',
+    AppLanguage.fr: 'réussite\u00a0: rien de perdu · échec −{n} coque',
   },
   'stake_shelter': {
     AppLanguage.en: 'Safe · one more day at sea',
@@ -4548,23 +4704,25 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   },
   'stake_pay': {
     AppLanguage.en: '−{n} gold · they sheer off',
-    AppLanguage.fr: '−{n} or · ils s\'éloignent',
+    AppLanguage.fr: '−{n} or · ils s’éloignent',
   },
   'stake_outrun': {
     AppLanguage.en: 'win: away clean · fail −{n} hull, then a fight',
-    AppLanguage.fr: 'réussite : on s\'échappe · échec −{n} coque, puis combat',
+    AppLanguage.fr:
+        'réussite\u00a0: on s’échappe · échec −{n} coque, puis combat',
   },
   'stake_hold_still': {
     AppLanguage.en: 'win: it passes, a sign of it · fail: a fight',
-    AppLanguage.fr: 'réussite : elle passe, un signe d\'elle · échec : combat',
+    AppLanguage.fr:
+        'réussite\u00a0: elle passe, un signe d’elle · échec\u00a0: combat',
   },
   'stake_fight': {
     AppLanguage.en: 'A sea fight: guns, crew and rooms',
-    AppLanguage.fr: 'Un combat naval : canons, équipage et salles',
+    AppLanguage.fr: 'Un combat naval\u00a0: canons, équipage et salles',
   },
   'route_today': {
     AppLanguage.en: 'today',
-    AppLanguage.fr: 'aujourd\'hui',
+    AppLanguage.fr: 'aujourd’hui',
   },
   'route_day_quiet': {
     AppLanguage.en: 'quiet',
@@ -4581,15 +4739,16 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   'hub_tab_all': {AppLanguage.en: 'All', AppLanguage.fr: 'Tout'},
   'hub_enter_button': {
     AppLanguage.en: 'Enter {place}',
-    AppLanguage.fr: 'Entrer : {place}',
+    AppLanguage.fr: 'Entrer\u00a0: {place}',
   },
   'hub_back_button': {
     AppLanguage.en: 'Back to {place}',
-    AppLanguage.fr: 'Retour : {place}',
+    AppLanguage.fr: 'Retour\u00a0: {place}',
   },
   'hub_enter_hint': {
     AppLanguage.en: 'Read once: Reread it any time from the place\'s card.',
-    AppLanguage.fr: 'Lu une fois : « Relire » sur la carte du lieu.',
+    AppLanguage.fr:
+        'Lu une fois\u00a0: «\u00a0Relire\u00a0» sur la carte du lieu.',
   },
   'hub_story_unfold': {
     AppLanguage.en: 'Read the scene again',
@@ -4615,7 +4774,7 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.en:
         'You arrive in a town. Read what is happening here, then enter: its shops, expeditions, people and challenges are sorted into tabs, and you can come and go between them as you like. When you want to go on with the story, open "Move on" at the bottom.',
     AppLanguage.fr:
-        'Vous arrivez en ville. Lisez ce qui s’y passe, puis entrez : ses boutiques, expéditions, habitants et défis sont rangés par onglets ; allez de l’un à l’autre à votre guise. Quand vous voudrez reprendre la route, ouvrez « Quitter les lieux » en bas.',
+        'Vous arrivez en ville. Lisez ce qui s’y passe, puis entrez\u00a0: ses boutiques, expéditions, habitants et défis sont rangés par onglets\u00a0; allez de l’un à l’autre à votre guise. Quand vous voudrez reprendre la route, ouvrez «\u00a0Quitter les lieux\u00a0» en bas.',
   },
   'arrival_town_button': {
     AppLanguage.en: 'Enter the town',
@@ -4625,7 +4784,7 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.en:
         'You arrive at {place}. Its shops, people and challenges are sorted into tabs once you enter, and everything you do here counts toward the chapter. "Back to the camp" takes you home; "Travel on" takes you to the other places you know.',
     AppLanguage.fr:
-        'Vous arrivez à {place}. Ses boutiques, habitants et défis sont rangés par onglets une fois entré, et tout ce que vous y faites compte pour le chapitre. « Retour au camp » vous ramène à la base ; « Aller ailleurs » vous mène vers les autres lieux connus.',
+        'Vous arrivez à {place}. Ses boutiques, habitants et défis sont rangés par onglets une fois entré, et tout ce que vous y faites compte pour le chapitre. «\u00a0Retour au camp\u00a0» vous ramène à la base\u00a0; «\u00a0Aller ailleurs\u00a0» vous mène vers les autres lieux connus.',
   },
   'arrival_away_button': {AppLanguage.en: 'Go in', AppLanguage.fr: 'Entrer'},
   'story_end_message': {
@@ -4654,7 +4813,7 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   },
   'slot_empty_compare_note': {
     AppLanguage.en: 'Nothing worn in this slot yet',
-    AppLanguage.fr: "Rien n'est porté à cet emplacement",
+    AppLanguage.fr: "Rien n’est porté à cet emplacement",
   },
   'shop_details_hint': {
     AppLanguage.en: 'Tap or hold an item for its full stats.',
@@ -4722,7 +4881,7 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   },
   'debug_stats_section_title': {
     AppLanguage.en: 'Debug: Edit Stats',
-    AppLanguage.fr: 'Débogage : modifier les statistiques',
+    AppLanguage.fr: 'Débogage\u00a0: modifier les statistiques',
   },
   'debug_stats_section_desc': {
     AppLanguage.en:
@@ -4758,7 +4917,7 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   'antidotes_label': {AppLanguage.en: 'Antidotes', AppLanguage.fr: 'Antidotes'},
   'inventory_items_label': {
     AppLanguage.en: 'Inventory Items',
-    AppLanguage.fr: "Objets d'inventaire",
+    AppLanguage.fr: "Objets d’inventaire",
   },
   'equipped_items_label': {
     AppLanguage.en: 'Equipped Items',
@@ -4920,7 +5079,7 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   },
   'start_new_game_dialog_title': {
     AppLanguage.en: 'Start new game?',
-    AppLanguage.fr: 'Commencer une nouvelle partie ?',
+    AppLanguage.fr: 'Commencer une nouvelle partie\u00a0?',
   },
   'start_new_game_dialog_prefix': {
     AppLanguage.en: 'This begins your journey as a',
@@ -4940,8 +5099,8 @@ const Map<String, Map<AppLanguage, String>> _strings = {
         'Race and profession can only be changed by restarting the story '
             'from the very beginning.',
     AppLanguage.fr:
-        "La race et la profession ne peuvent être modifiées qu'en recommençant "
-            "l'histoire depuis le tout début.",
+        "La race et la profession ne peuvent être modifiées qu’en recommençant "
+            "l’histoire depuis le tout début.",
   },
   'luck_abbrev': {AppLanguage.en: 'LUCK', AppLanguage.fr: 'CHC'},
   'cha_abbrev': {AppLanguage.en: 'CHA', AppLanguage.fr: 'CHR'},
@@ -4989,7 +5148,7 @@ const Map<String, Map<AppLanguage, String>> _strings = {
         "Once you begin, your race and profession can't be changed for the rest "
             'of this run. Choose a name to carry with you.',
     AppLanguage.fr:
-        "Une fois l'histoire commencée, votre race et votre profession ne "
+        "Une fois l’histoire commencée, votre race et votre profession ne "
             'pourront plus changer pour le reste de cette partie. Choisissez '
             'un nom à porter.',
   },
@@ -5017,9 +5176,9 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.en: 'Six moments from before the story, from the age of six '
         'to sixteen. Each answer leans who you are, and teaches you something '
         'you will carry into it.',
-    AppLanguage.fr: "Six moments d'avant l'histoire, de six à seize ans. "
+    AppLanguage.fr: "Six moments d’avant l’histoire, de six à seize ans. "
         'Chaque réponse oriente la personne que vous êtes, et vous apprend '
-        "quelque chose que vous emporterez dans l'histoire.",
+        "quelque chose que vous emporterez dans l’histoire.",
   },
   'origin_memory_progress': {
     AppLanguage.en: 'Memory {n} of {total}',
@@ -5063,7 +5222,7 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   },
   'origin_lean_neutral': {
     AppLanguage.en: 'Leans neither way',
-    AppLanguage.fr: "Ne penche d'aucun côté",
+    AppLanguage.fr: "Ne penche d’aucun côté",
   },
   'origin_next_memory': {
     AppLanguage.en: 'Next memory',
@@ -5085,11 +5244,11 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.en: 'These memories are yours now. From here on, you tell '
         'the story yourself.',
     AppLanguage.fr: 'Ces souvenirs sont désormais les vôtres. À partir '
-        "d'ici, c'est vous qui racontez l'histoire.",
+        "d’ici, c’est vous qui racontez l’histoire.",
   },
   'origin_portrait_good': {
     AppLanguage.en: 'The slums never managed to teach you to look away.',
-    AppLanguage.fr: "Les taudis n'ont jamais réussi à vous apprendre à "
+    AppLanguage.fr: "Les taudis n’ont jamais réussi à vous apprendre à "
         'détourner les yeux.',
   },
   'origin_portrait_evil': {
@@ -5175,7 +5334,7 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   },
   'stat_sheet_per_point': {
     AppLanguage.en: 'Each point: {effects}',
-    AppLanguage.fr: 'Chaque point : {effects}',
+    AppLanguage.fr: 'Chaque point\u00a0: {effects}',
   },
   'stat_sheet_from': {
     AppLanguage.en: 'Where it comes from',
@@ -5188,7 +5347,7 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   },
   'stat_sheet_in_fight': {
     AppLanguage.en: 'In a fight: {n}',
-    AppLanguage.fr: 'En combat : {n}',
+    AppLanguage.fr: 'En combat\u00a0: {n}',
   },
   'stat_radar_hint': {
     AppLanguage.en: 'Tap an ability to see where it comes from.',
@@ -5235,15 +5394,15 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   },
   'stat_effect_dodge': {
     AppLanguage.en: '+{n}% dodge',
-    AppLanguage.fr: '+{n} % d’esquive',
+    AppLanguage.fr: '+{n}\u00a0% d’esquive',
   },
   'stat_effect_crit': {
     AppLanguage.en: '+{n}% crit',
-    AppLanguage.fr: '+{n} % de critique',
+    AppLanguage.fr: '+{n}\u00a0% de critique',
   },
   'stat_effect_block': {
     AppLanguage.en: '+{n}% block',
-    AppLanguage.fr: '+{n} % de blocage',
+    AppLanguage.fr: '+{n}\u00a0% de blocage',
   },
   'stat_effect_mana': {
     AppLanguage.en: '+{n} mana',
@@ -5259,7 +5418,7 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   },
   'stat_effect_shop_prices': {
     AppLanguage.en: '−{n}% shop prices',
-    AppLanguage.fr: '−{n} % en boutique',
+    AppLanguage.fr: '−{n}\u00a0% en boutique',
   },
   'stat_effect_story_checks': {
     AppLanguage.en: 'story checks',
@@ -5301,7 +5460,7 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.en:
         'A skill fits on 3 faces of a die at most if it is common, 2 if uncommon or rare, and 1 if epic or legendary. A die also holds one copy of a skill per four faces: 1 on a d4, 2 on a d6 or d8, 3 on a d12.',
     AppLanguage.fr:
-        'Une compétence tient sur 3 faces d’un dé au plus si elle est commune, 2 si elle est peu commune ou rare, et 1 si elle est épique ou légendaire. Un dé porte aussi un exemplaire d’une compétence par quatre faces : 1 sur un d4, 2 sur un d6 ou un d8, 3 sur un d12.',
+        'Une compétence tient sur 3 faces d’un dé au plus si elle est commune, 2 si elle est peu commune ou rare, et 1 si elle est épique ou légendaire. Un dé porte aussi un exemplaire d’une compétence par quatre faces\u00a0: 1 sur un d4, 2 sur un d6 ou un d8, 3 sur un d12.',
   },
   'skill_faces_count': {
     AppLanguage.en: '{rarity} · on {n}/{max} faces',
@@ -5317,7 +5476,8 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   },
   'face_over_limit_label': {
     AppLanguage.en: 'Over its limit: the face does its own action',
-    AppLanguage.fr: 'Au-delà de sa limite : la face fait son action de base',
+    AppLanguage.fr:
+        'Au-delà de sa limite\u00a0: la face fait son action de base',
   },
   'drag_skill_hint': {
     AppLanguage.en:
@@ -5338,7 +5498,7 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.en:
         'No skills unlocked yet — unlock some on the Skills screen.',
     AppLanguage.fr:
-        "Aucune compétence débloquée pour le moment — débloquez-en sur l'écran Compétences.",
+        "Aucune compétence débloquée pour le moment — débloquez-en sur l’écran Compétences.",
   },
   'clear_assigned_skill_tooltip': {
     AppLanguage.en: 'Clear assigned skill',
@@ -5351,7 +5511,7 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   'custom_label': {AppLanguage.en: 'Custom', AppLanguage.fr: 'Personnalisé'},
   'fight_begins_prefix': {
     AppLanguage.en: 'The fight begins!',
-    AppLanguage.fr: 'Le combat commence !'
+    AppLanguage.fr: 'Le combat commence\u00a0!'
   },
   'has_label': {AppLanguage.en: 'has', AppLanguage.fr: 'a'},
   'you_take_damage_prefix': {
@@ -5378,7 +5538,7 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   'damage_word': {AppLanguage.en: 'damage', AppLanguage.fr: 'dégâts'},
   'is_knocked_out_suffix': {
     AppLanguage.en: 'is knocked out!',
-    AppLanguage.fr: 'est mis hors combat !',
+    AppLanguage.fr: 'est mis hors combat\u00a0!',
   },
   'knocked_out_label': {
     AppLanguage.en: 'Knocked Out',
@@ -5390,15 +5550,15 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   },
   'poisoned_suffix': {
     AppLanguage.en: 'is poisoned!',
-    AppLanguage.fr: 'est empoisonné(e) !',
+    AppLanguage.fr: 'est empoisonné(e)\u00a0!',
   },
   'stunned_suffix': {
     AppLanguage.en: 'is stunned!',
-    AppLanguage.fr: 'est étourdi(e) !',
+    AppLanguage.fr: 'est étourdi(e)\u00a0!',
   },
   'weakened_suffix': {
     AppLanguage.en: 'is weakened!',
-    AppLanguage.fr: 'est affaibli(e) !',
+    AppLanguage.fr: 'est affaibli(e)\u00a0!',
   },
   'stunned_skip_turn_suffix': {
     AppLanguage.en: "is stunned and can't act this round.",
@@ -5406,7 +5566,7 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   },
   'fight_pick_title': {
     AppLanguage.en: 'Who fights?',
-    AppLanguage.fr: 'Qui combat ?'
+    AppLanguage.fr: 'Qui combat\u00a0?'
   },
   'fight_pick_hint': {
     AppLanguage.en:
@@ -5455,7 +5615,7 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   'no_companions_recruited': {
     AppLanguage.en: 'No companions recruited yet — their quests are out there.',
     AppLanguage.fr:
-        "Aucun compagnon recruté pour l'instant — leurs quêtes vous attendent.",
+        "Aucun compagnon recruté pour l’instant — leurs quêtes vous attendent.",
   },
   'requires_house_prefix': {
     AppLanguage.en: 'Requires',
@@ -5503,7 +5663,7 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   },
   'companion_seat_bench': {
     AppLanguage.en: 'Seated: move to the bench',
-    AppLanguage.fr: 'Assis : mettre sur le banc',
+    AppLanguage.fr: 'Assis\u00a0: mettre sur le banc',
   },
   'companion_stays_alone': {
     AppLanguage.en: 'Stays seated while no one else is.',
@@ -5570,7 +5730,8 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   'resolve_label': {AppLanguage.en: 'Resolve', AppLanguage.fr: 'Résolution'},
   'resolve_bonus_suffix': {
     AppLanguage.en: 'health and damage: the Shroud has learned this enemy',
-    AppLanguage.fr: 'de santé et de dégâts : le Linceul a appris cet ennemi'
+    AppLanguage.fr:
+        'de santé et de dégâts\u00a0: le Linceul a appris cet ennemi'
   },
   'house_built_prefix': {AppLanguage.en: 'Built', AppLanguage.fr: 'Construit'},
   'build_button': {AppLanguage.en: 'Build', AppLanguage.fr: 'Construire'},
@@ -5663,7 +5824,7 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   },
   'town_limit_reached': {
     AppLanguage.en: 'Limit reached: {built} of {limit}',
-    AppLanguage.fr: 'Limite atteinte : {built} sur {limit}',
+    AppLanguage.fr: 'Limite atteinte\u00a0: {built} sur {limit}',
   },
   'town_ready_count': {
     AppLanguage.en: '{n} ready to build',
@@ -5686,11 +5847,11 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   },
   'town_raised_quay': {
     AppLanguage.en: '{name} goes up on the quay.',
-    AppLanguage.fr: '{name} s\'élève sur le quai.'
+    AppLanguage.fr: '{name} s’élève sur le quai.'
   },
   'town_raised_level': {
     AppLanguage.en: '{name} is raised on level {level}.',
-    AppLanguage.fr: '{name} s\'élève au niveau {level}.'
+    AppLanguage.fr: '{name} s’élève au niveau {level}.'
   },
   'town_counts': {
     AppLanguage.en: '{houses} of {total} houses · {additions} additions',
@@ -5759,7 +5920,7 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   'zones_section': {AppLanguage.en: 'Zones', AppLanguage.fr: 'Zones'},
   'no_zones_available': {
     AppLanguage.en: 'No zones to explore here yet.',
-    AppLanguage.fr: "Aucune zone à explorer ici pour l'instant.",
+    AppLanguage.fr: "Aucune zone à explorer ici pour l’instant.",
   },
   'zone_cleared_label': {AppLanguage.en: 'Cleared', AppLanguage.fr: 'Nettoyée'},
   'begin_expedition_button': {
@@ -5778,7 +5939,7 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.en:
         'Id, chapter, text and choices of every node, in chapter order: for reading or review',
     AppLanguage.fr:
-        'Id, chapitre, texte et choix de chaque nœud, par chapitre : pour lire ou relire',
+        'Id, chapitre, texte et choix de chaque nœud, par chapitre\u00a0: pour lire ou relire',
   },
   'export_nodes_full': {
     AppLanguage.en: 'Full',
@@ -5816,13 +5977,13 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.en:
         'Bring the wagons through {n} stages; {boss} waits at the end. You are paid for what arrives.',
     AppLanguage.fr:
-        'Menez les chariots à travers {n} étapes ; {boss} attend au bout. La paie dépend de ce qui arrive.',
+        'Menez les chariots à travers {n} étapes\u00a0; {boss} attend au bout. La paie dépend de ce qui arrive.',
   },
   'expedition_goal_delivery': {
     AppLanguage.en:
         'Deliver within {days} days: {n} stages, then {boss}. Destination: {place}. Late, it pays half.',
     AppLanguage.fr:
-        'Livrez en {days} jours : {n} étapes, puis {boss}. Destination : {place}. En retard, la paie est de moitié.',
+        'Livrez en {days} jours\u00a0: {n} étapes, puis {boss}. Destination\u00a0: {place}. En retard, la paie est de moitié.',
   },
   'escort_cargo_label': {
     AppLanguage.en: 'Wagons’ load',
@@ -5830,12 +5991,12 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   },
   'delivery_days_line': {
     AppLanguage.en: 'Days on the road: {used} of {deadline}',
-    AppLanguage.fr: 'Jours de route : {used} sur {deadline}',
+    AppLanguage.fr: 'Jours de route\u00a0: {used} sur {deadline}',
   },
   'escort_cargo_lost': {
     AppLanguage.en: 'The wagons lost {n}% of their load ({left}% left).',
     AppLanguage.fr:
-        'Les chariots ont perdu {n} % de leur chargement (il en reste {left} %).',
+        'Les chariots ont perdu {n}\u00a0% de leur chargement (il en reste {left}\u00a0%).',
   },
   'escort_day_lost': {
     AppLanguage.en: 'That cost a day on the road.',
@@ -5843,11 +6004,12 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   },
   'delivery_day_lost': {
     AppLanguage.en: 'That cost a day: {used} of {deadline} days gone.',
-    AppLanguage.fr: 'Cela a coûté une journée : {used} jours sur {deadline}.',
+    AppLanguage.fr:
+        'Cela a coûté une journée\u00a0: {used} jours sur {deadline}.',
   },
   'delivery_day_saved': {
     AppLanguage.en: 'A day saved: {used} of {deadline} days gone.',
-    AppLanguage.fr: 'Une journée de gagnée : {used} jours sur {deadline}.',
+    AppLanguage.fr: 'Une journée de gagnée\u00a0: {used} jours sur {deadline}.',
   },
   'expedition_hurt': {
     AppLanguage.en: 'The effort cost you {n} health.',
@@ -5861,7 +6023,8 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   },
   'escort_arrived': {
     AppLanguage.en: 'The wagons arrived with {n}% of their load.',
-    AppLanguage.fr: 'Les chariots sont arrivés avec {n} % de leur chargement.',
+    AppLanguage.fr:
+        'Les chariots sont arrivés avec {n}\u00a0% de leur chargement.',
   },
   'escort_item_missed': {
     AppLanguage.en: 'Too little arrived for the merchant’s extra thanks.',
@@ -5870,12 +6033,12 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   },
   'delivery_on_time': {
     AppLanguage.en: 'Delivered on time: {used} of {deadline} days.',
-    AppLanguage.fr: 'Livré à temps : {used} jours sur {deadline}.',
+    AppLanguage.fr: 'Livré à temps\u00a0: {used} jours sur {deadline}.',
   },
   'delivery_late': {
     AppLanguage.en: 'Delivered {n} days late: half the pay, and no thanks.',
     AppLanguage.fr:
-        'Livré avec {n} jours de retard : la moitié de la paie, et aucun remerciement.',
+        'Livré avec {n} jours de retard\u00a0: la moitié de la paie, et aucun remerciement.',
   },
   'escort_done_title': {
     AppLanguage.en: 'The wagons are in',
@@ -5943,7 +6106,7 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   },
   'banner_piece_heirloom_shroud': {
     AppLanguage.en: 'The heirloom piece',
-    AppLanguage.fr: "Le fragment de l'héritage",
+    AppLanguage.fr: "Le fragment de l’héritage",
   },
   'banner_piece_moon_shard_shroud': {
     AppLanguage.en: 'The moon-shard piece',
@@ -5951,7 +6114,7 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   },
   'banner_piece_warden_standard': {
     AppLanguage.en: "The Warden's standard",
-    AppLanguage.fr: "L'étendard du Gardien",
+    AppLanguage.fr: "L’étendard du Gardien",
   },
   'banner_piece_reliquary_thread': {
     AppLanguage.en: 'The reliquary thread',
@@ -5998,7 +6161,7 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   'keyword_growth_desc': {
     AppLanguage.en: 'the face gains 1 each time it is used in this fight.',
     AppLanguage.fr:
-        'la face gagne 1 à chaque fois qu\'elle sert dans ce combat.',
+        'la face gagne 1 à chaque fois qu’elle sert dans ce combat.',
   },
   'keyword_echo': {
     AppLanguage.en: 'Echo',
@@ -6018,7 +6181,7 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.en:
         'the strike hits for double, and costs its roller 8% of their max health.',
     AppLanguage.fr:
-        'le coup frappe double, et coûte à qui le lance 8 % de sa santé max.',
+        'le coup frappe double, et coûte à qui le lance 8\u00a0% de sa santé max.',
   },
   'keyword_steady': {
     AppLanguage.en: 'Steady',
@@ -6036,7 +6199,7 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   },
   'combo_flank_desc': {
     AppLanguage.en: 'Two strikes: each hits 15% harder.',
-    AppLanguage.fr: 'Deux coups : chacun frappe 15 % plus fort.',
+    AppLanguage.fr: 'Deux coups\u00a0: chacun frappe 15\u00a0% plus fort.',
   },
   'combo_volley': {
     AppLanguage.en: 'Volley',
@@ -6046,7 +6209,7 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.en:
         'Three strikes or more: each hits 15% harder and catches every other enemy for a quarter.',
     AppLanguage.fr:
-        'Trois coups ou plus : chacun frappe 15 % plus fort et touche chaque autre ennemi pour un quart.',
+        'Trois coups ou plus\u00a0: chacun frappe 15\u00a0% plus fort et touche chaque autre ennemi pour un quart.',
   },
   'combo_shelter': {
     AppLanguage.en: 'Shelter',
@@ -6056,7 +6219,7 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.en:
         'A Guard and a Heal: the heal also mends the rest of the party for half.',
     AppLanguage.fr:
-        'Une garde et un soin : le soin soigne aussi le reste du groupe pour moitié.',
+        'Une garde et un soin\u00a0: le soin soigne aussi le reste du groupe pour moitié.',
   },
   'combo_shieldWall': {
     AppLanguage.en: 'Shield Wall',
@@ -6066,7 +6229,7 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.en:
         'Two Guards or more: every party member holds the biggest guard.',
     AppLanguage.fr:
-        'Deux gardes ou plus : chaque membre du groupe tient la plus grande garde.',
+        'Deux gardes ou plus\u00a0: chaque membre du groupe tient la plus grande garde.',
   },
   'combo_wellspring': {
     AppLanguage.en: 'Wellspring',
@@ -6074,11 +6237,12 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   },
   'combo_wellspring_desc': {
     AppLanguage.en: 'Two Mana faces or more: 2 more mana.',
-    AppLanguage.fr: 'Deux faces de mana ou plus : 2 de mana en plus.',
+    AppLanguage.fr: 'Deux faces de mana ou plus\u00a0: 2 de mana en plus.',
   },
   'shelter_heals': {
     AppLanguage.en: 'Shelter: {name}\'s heal reaches the party (+{n} each).',
-    AppLanguage.fr: 'Abri : le soin de {name} atteint le groupe (+{n} chacun).',
+    AppLanguage.fr:
+        'Abri\u00a0: le soin de {name} atteint le groupe (+{n} chacun).',
   },
   'heal_target_log': {
     AppLanguage.en: '{name} mends {target} (+{n}).',
@@ -6086,11 +6250,11 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   },
   'splash_hits': {
     AppLanguage.en: '{name} is caught by the blow: {n} damage.',
-    AppLanguage.fr: '{name} est pris dans le coup : {n} dégâts.',
+    AppLanguage.fr: '{name} est pris dans le coup\u00a0: {n} dégâts.',
   },
   'pain_costs': {
     AppLanguage.en: 'Pain: {name} loses {n} health.',
-    AppLanguage.fr: 'Douleur : {name} perd {n} de santé.',
+    AppLanguage.fr: 'Douleur\u00a0: {name} perd {n} de santé.',
   },
   'tamper_hex': {
     AppLanguage.en: 'Hex',
@@ -6147,11 +6311,11 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.en:
         '{name}\'s {face} face is cursed: it now strikes with Pain.',
     AppLanguage.fr:
-        'La face {face} de {name} est maudite : elle frappe désormais avec Douleur.',
+        'La face {face} de {name} est maudite\u00a0: elle frappe désormais avec Douleur.',
   },
   'tamper_hex_sprung': {
     AppLanguage.en: 'Hex: {name}\'s {from} is rolled again: {to}.',
-    AppLanguage.fr: 'Maléfice : {from} de {name} est relancé : {to}.',
+    AppLanguage.fr: 'Maléfice\u00a0: {from} de {name} est relancé\u00a0: {to}.',
   },
   'silenced_face_label': {
     AppLanguage.en: 'Silenced',
@@ -6159,17 +6323,19 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   },
   'silence_round_note': {
     AppLanguage.en: 'Silence: Skill faces land blank this round.',
-    AppLanguage.fr: 'Silence : les faces de compétence tombent vides ce round.',
+    AppLanguage.fr:
+        'Silence\u00a0: les faces de compétence tombent vides ce round.',
   },
   'cursed_face_note': {
     AppLanguage.en:
         'Cursed: this face strikes with Pain for the rest of the fight.',
     AppLanguage.fr:
-        'Maudite : cette face frappe avec Douleur pour le reste du combat.',
+        'Maudite\u00a0: cette face frappe avec Douleur pour le reste du combat.',
   },
   'steady_kept_note': {
     AppLanguage.en: 'Steady: this face stays put through the rerolls.',
-    AppLanguage.fr: 'Stable : cette face reste en place pendant les relances.',
+    AppLanguage.fr:
+        'Stable\u00a0: cette face reste en place pendant les relances.',
   },
   'nudges_label': {
     AppLanguage.en: 'Nudges',
@@ -6179,7 +6345,7 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.en:
         'Luck: long-press a landed die to turn it to its opposite face.',
     AppLanguage.fr:
-        'Chance : appui long sur un dé tombé pour le tourner sur sa face opposée.',
+        'Chance\u00a0: appui long sur un dé tombé pour le tourner sur sa face opposée.',
   },
   'nudge_button': {
     AppLanguage.en: 'Nudge to {face} ({n} left)',
@@ -6187,7 +6353,8 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   },
   'nudge_log': {
     AppLanguage.en: 'Nudge: {name}\'s die turns from {from} to {to}.',
-    AppLanguage.fr: 'Coup de pouce : le dé de {name} passe de {from} à {to}.',
+    AppLanguage.fr:
+        'Coup de pouce\u00a0: le dé de {name} passe de {from} à {to}.',
   },
   'smith_hone': {
     AppLanguage.en: 'Hone',
@@ -6197,7 +6364,7 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.en:
         '+1 to an Attack, Guard or Heal face (three times at most).',
     AppLanguage.fr:
-        '+1 à une face d\'attaque, de garde ou de soin (trois fois au plus).',
+        '+1 à une face d’attaque, de garde ou de soin (trois fois au plus).',
   },
   'smith_temper': {
     AppLanguage.en: 'Temper',
@@ -6205,7 +6372,7 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   },
   'smith_temper_desc': {
     AppLanguage.en: 'Give an Attack face an element.',
-    AppLanguage.fr: 'Donner un élément à une face d\'attaque.',
+    AppLanguage.fr: 'Donner un élément à une face d’attaque.',
   },
   'smith_inscribe': {
     AppLanguage.en: 'Inscribe',
@@ -6215,7 +6382,7 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.en:
         'Carve a keyword into the face (one per face; a new one replaces it).',
     AppLanguage.fr:
-        'Graver un mot-clé sur la face (un par face ; un nouveau le remplace).',
+        'Graver un mot-clé sur la face (un par face\u00a0; un nouveau le remplace).',
   },
   'smith_recast': {
     AppLanguage.en: 'Recast',
@@ -6225,7 +6392,7 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.en:
         'Turn an Attack, Guard or Heal face into another of the three. It keeps its number, up to the die\'s best face of the new kind.',
     AppLanguage.fr:
-        'Changer une face d\'attaque, de garde ou de soin en une autre des trois. Elle garde son nombre, sans dépasser la meilleure face de ce type sur le dé.',
+        'Changer une face d’attaque, de garde ou de soin en une autre des trois. Elle garde son nombre, sans dépasser la meilleure face de ce type sur le dé.',
   },
   'smith_title': {
     AppLanguage.en: 'Dice smithing',
@@ -6235,7 +6402,7 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.en:
         'The work stays on the die: a companion\'s die keeps it too, separately from your own copy of the same die.',
     AppLanguage.fr:
-        'Le travail reste sur le dé : le dé d\'un compagnon le garde aussi, séparément de votre exemplaire du même dé.',
+        'Le travail reste sur le dé\u00a0: le dé d’un compagnon le garde aussi, séparément de votre exemplaire du même dé.',
   },
   'smith_open_button': {
     AppLanguage.en: 'Smith dice',
@@ -6255,7 +6422,7 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   },
   'smith_done': {
     AppLanguage.en: 'The Hammersmith worked the face: {work}.',
-    AppLanguage.fr: 'Le Maître-forgeron a travaillé la face : {work}.',
+    AppLanguage.fr: 'Le Maître-forgeron a travaillé la face\u00a0: {work}.',
   },
   'smith_nothing': {
     AppLanguage.en: 'Nothing more can be done to this face.',
@@ -6296,9 +6463,12 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   },
   'drink_antidote_prefix': {
     AppLanguage.en: 'You drink the antidote. Your afflictions fade.',
-    AppLanguage.fr: "Vous buvez l'antidote. Vos afflictions se dissipent.",
+    AppLanguage.fr: "Vous buvez l’antidote. Vos afflictions se dissipent.",
   },
-  'victory_prefix': {AppLanguage.en: 'Victory!', AppLanguage.fr: 'Victoire !'},
+  'victory_prefix': {
+    AppLanguage.en: 'Victory!',
+    AppLanguage.fr: 'Victoire\u00a0!'
+  },
   'loot_label': {AppLanguage.en: 'loot', AppLanguage.fr: 'butin'},
   'defeat_message': {
     AppLanguage.en: 'You are overwhelmed, but crawl away to recover.',
@@ -6324,7 +6494,7 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   },
   'equip_die_hint': {
     AppLanguage.en: 'Equip a die from Inventory before fighting.',
-    AppLanguage.fr: "Équipez un dé depuis l'Inventaire avant de combattre.",
+    AppLanguage.fr: "Équipez un dé depuis l’Inventaire avant de combattre.",
   },
   'enter_battle_button': {
     AppLanguage.en: 'Enter Battle',
@@ -6337,7 +6507,7 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   },
   'victory_return_button': {
     AppLanguage.en: 'Victory! Return',
-    AppLanguage.fr: 'Victoire ! Retour'
+    AppLanguage.fr: 'Victoire\u00a0! Retour'
   },
   'retreat_button': {
     AppLanguage.en: 'Retreat',
@@ -6374,7 +6544,7 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   },
   'spell_learned_prefix': {
     AppLanguage.en: 'Learned',
-    AppLanguage.fr: 'Appris :',
+    AppLanguage.fr: 'Appris\u00a0:',
   },
   'round_label': {AppLanguage.en: 'Round', AppLanguage.fr: 'Manche'},
   'round_tip': {
@@ -6396,7 +6566,7 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   'confirm_hint': {
     AppLanguage.en: 'Last roll: these faces resolve when you confirm.',
     AppLanguage.fr:
-        'Dernier lancer : ces faces s\'appliquent à la confirmation.',
+        'Dernier lancer\u00a0: ces faces s’appliquent à la confirmation.',
   },
   'preview_against_prefix': {
     AppLanguage.en: 'Against',
@@ -6428,7 +6598,7 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   },
   'intent_target_prefix': {
     AppLanguage.en: 'It is about to go for',
-    AppLanguage.fr: 'Il s\'apprête à viser',
+    AppLanguage.fr: 'Il s’apprête à viser',
   },
   'fled_label': {AppLanguage.en: 'Fled', AppLanguage.fr: 'En fuite'},
   'battle_log_title': {
@@ -6489,7 +6659,7 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.en:
         'Cast from the action bar during your turn in battle, like a potion.',
     AppLanguage.fr:
-        "Lancés depuis la barre d'action pendant votre tour au combat, comme une potion.",
+        "Lancés depuis la barre d’action pendant votre tour au combat, comme une potion.",
   },
   'known_label': {AppLanguage.en: 'Known', AppLanguage.fr: 'Connu'},
   'not_learned_label': {
@@ -6512,7 +6682,7 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   },
   'where_to_learn_label': {
     AppLanguage.en: 'Where to learn',
-    AppLanguage.fr: 'Où l\'apprendre'
+    AppLanguage.fr: 'Où l’apprendre'
   },
   'mana_pool_label': {
     AppLanguage.en: 'Mana pool',
@@ -6537,7 +6707,7 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.en:
         'Mana faces on your dice refill the pool mid-fight; resting refills it fully.',
     AppLanguage.fr:
-        'Les faces Mana de vos dés remplissent la réserve en combat ; le repos la remplit entièrement.',
+        'Les faces Mana de vos dés remplissent la réserve en combat\u00a0; le repos la remplit entièrement.',
   },
   'antidote_button_prefix': {
     AppLanguage.en: 'Antidote',
@@ -6545,7 +6715,7 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   },
   'vfx_dodge_label': {
     AppLanguage.en: 'Dodge!',
-    AppLanguage.fr: 'Esquive !',
+    AppLanguage.fr: 'Esquive\u00a0!',
   },
   'vfx_gallery_title': {
     AppLanguage.en: 'Effects gallery',
@@ -6555,7 +6725,7 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.en:
         'Plays each skill effect at each power. In a fight, the power comes from the skill: its rarity, its upgrades, how much of the target\'s health it takes, a critical, a boss. A mighty blow also shakes the screen.',
     AppLanguage.fr:
-        'Joue chaque effet de compétence à chaque puissance. En combat, la puissance vient de la compétence : sa rareté, ses améliorations, la part de vie de la cible qu’elle emporte, un critique, un boss. Un coup dévastateur fait aussi trembler l’écran.',
+        'Joue chaque effet de compétence à chaque puissance. En combat, la puissance vient de la compétence\u00a0: sa rareté, ses améliorations, la part de vie de la cible qu’elle emporte, un critique, un boss. Un coup dévastateur fait aussi trembler l’écran.',
   },
   'vfx_gallery_hero': {
     AppLanguage.en: 'Hero',
@@ -6595,7 +6765,8 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   },
   'vfx_gallery_no_skill': {
     AppLanguage.en: 'None: pick a style and a power below',
-    AppLanguage.fr: 'Aucune : choisissez un style et une puissance plus bas',
+    AppLanguage.fr:
+        'Aucune\u00a0: choisissez un style et une puissance plus bas',
   },
   'vfx_gallery_upgrades': {
     AppLanguage.en: 'Upgrades',
@@ -6693,17 +6864,17 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.en:
         'Draws each skill\'s and spell\'s effect on screen in fights, bigger for a stronger one, with floating damage and healing numbers.',
     AppLanguage.fr:
-        "Affiche l'effet de chaque compétence et de chaque sort pendant les combats, plus grand pour les plus puissants, avec les dégâts et soins flottants.",
+        "Affiche l’effet de chaque compétence et de chaque sort pendant les combats, plus grand pour les plus puissants, avec les dégâts et soins flottants.",
   },
   'tremble_setting_title': {
     AppLanguage.en: 'Screen tremble on hit',
-    AppLanguage.fr: "Tremblement d'écran à l'impact",
+    AppLanguage.fr: "Tremblement d’écran à l’impact",
   },
   'tremble_setting_desc': {
     AppLanguage.en:
         'Shakes the screen briefly when you take damage in combat, and when a mighty blow lands (with a vibration).',
     AppLanguage.fr:
-        "Fait légèrement trembler l'écran lorsque vous subissez des dégâts au combat, et quand un coup dévastateur porte (avec une vibration).",
+        "Fait légèrement trembler l’écran lorsque vous subissez des dégâts au combat, et quand un coup dévastateur porte (avec une vibration).",
   },
   'language_coverage_note': {
     AppLanguage.en:
@@ -6711,7 +6882,7 @@ const Map<String, Map<AppLanguage, String>> _strings = {
             'the Legend, and every gameplay screen. Game data tables, field names, and IDs '
             'stay in English.',
     AppLanguage.fr:
-        "S'applique à toute l'application — navigation, l'histoire complète "
+        "S’applique à toute l’application — navigation, l’histoire complète "
             '(lecteur et carte), la Légende, et tous les écrans de jeu. Les tables de données, '
             'les noms de champs et les identifiants restent en anglais.',
   },
@@ -6739,7 +6910,7 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   'palette_section_desc': {
     AppLanguage.en: 'Choose an accent palette for the whole app.',
     AppLanguage.fr:
-        "Choisissez une palette d'accentuation pour toute l'application.",
+        "Choisissez une palette d’accentuation pour toute l’application.",
   },
   'palette_stitched_ink': {
     AppLanguage.en: 'Stitched Ink',
@@ -6771,12 +6942,12 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   },
   'palette_mist_slate': {
     AppLanguage.en: 'Mist Slate',
-    AppLanguage.fr: "Brume d'ardoise"
+    AppLanguage.fr: "Brume d’ardoise"
   },
   'combat_section_title': {AppLanguage.en: 'Combat', AppLanguage.fr: 'Combat'},
   'what_happens_next_label': {
     AppLanguage.en: 'What happens next?',
-    AppLanguage.fr: 'Que se passe-t-il ensuite ?',
+    AppLanguage.fr: 'Que se passe-t-il ensuite\u00a0?',
   },
   'ai_prompt_hint': {
     AppLanguage.en: 'e.g. Lysa wakes up and finds the Grey Bundle missing.',
@@ -6803,7 +6974,7 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   },
   'node_activated': {
     AppLanguage.en: 'Node activated — jumped to it in the story.',
-    AppLanguage.fr: "Nœud activé — vous y avez été téléporté dans l'histoire.",
+    AppLanguage.fr: "Nœud activé — vous y avez été téléporté dans l’histoire.",
   },
   'you_deal_prefix': {
     AppLanguage.en: 'you deal',
@@ -6860,7 +7031,10 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.en: 'nothing happens.',
     AppLanguage.fr: 'il ne se passe rien.',
   },
-  'attacks_suffix': {AppLanguage.en: 'attacks!', AppLanguage.fr: 'attaque !'},
+  'attacks_suffix': {
+    AppLanguage.en: 'attacks!',
+    AppLanguage.fr: 'attaque\u00a0!'
+  },
   // v1.162: the camp's bounty board (see contracts.dart).
   'bounty_board_section': {
     AppLanguage.en: 'Bounty board',
@@ -6907,7 +7081,7 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   },
   'contract_claimed': {
     AppLanguage.en: 'Contract paid:',
-    AppLanguage.fr: 'Contrat payé :',
+    AppLanguage.fr: 'Contrat payé\u00a0:',
   },
   'contract_essence_label': {
     AppLanguage.en: 'essence',
@@ -6968,7 +7142,7 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   },
   'perk_keenEye_desc': {
     AppLanguage.en: '+5% chance of a critical hit.',
-    AppLanguage.fr: '+5 % de chances de coup critique.',
+    AppLanguage.fr: '+5\u00a0% de chances de coup critique.',
   },
   'perk_lightFeet': {
     AppLanguage.en: 'Light Feet',
@@ -6976,7 +7150,7 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   },
   'perk_lightFeet_desc': {
     AppLanguage.en: '+4% chance to dodge.',
-    AppLanguage.fr: '+4 % de chances d’esquive.',
+    AppLanguage.fr: '+4\u00a0% de chances d’esquive.',
   },
   'perk_heavyHand': {
     AppLanguage.en: 'Heavy Hand',
@@ -6992,7 +7166,8 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   },
   'perk_ironHide_desc': {
     AppLanguage.en: '+10% chance to block a blow (it loses half).',
-    AppLanguage.fr: '+10 % de chances de bloquer un coup (il perd la moitié).',
+    AppLanguage.fr:
+        '+10\u00a0% de chances de bloquer un coup (il perd la moitié).',
   },
   'perk_vigor': {
     AppLanguage.en: 'Vigour',
@@ -7016,7 +7191,7 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   },
   'perk_plunderer_desc': {
     AppLanguage.en: '+10% gold from fights.',
-    AppLanguage.fr: '+10 % d’or gagné en combat.',
+    AppLanguage.fr: '+10\u00a0% d’or gagné en combat.',
   },
   'perk_quickStudy': {
     AppLanguage.en: 'Quick Study',
@@ -7024,7 +7199,7 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   },
   'perk_quickStudy_desc': {
     AppLanguage.en: '+10% XP from fights.',
-    AppLanguage.fr: '+10 % d’XP gagnée en combat.',
+    AppLanguage.fr: '+10\u00a0% d’XP gagnée en combat.',
   },
   'perk_leader': {
     AppLanguage.en: 'Leader',
@@ -7032,7 +7207,7 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   },
   'perk_leader_desc': {
     AppLanguage.en: 'Companions deal +5% damage.',
-    AppLanguage.fr: 'Les membres du groupe infligent +5 % de dégâts.',
+    AppLanguage.fr: 'Les membres du groupe infligent +5\u00a0% de dégâts.',
   },
   'perk_deepWell': {
     AppLanguage.en: 'Deep Well',
@@ -7055,7 +7230,7 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   // v1.163: sea choices.
   'ship_log_paid': {
     AppLanguage.en: 'Paid {n} gold; the raider sheers off',
-    AppLanguage.fr: '{n} pièces d’or versées ; le pillard s’écarte',
+    AppLanguage.fr: '{n} pièces d’or versées\u00a0; le pillard s’écarte',
   },
   'ship_log_outran': {
     AppLanguage.en: 'The Eel outruns them',
@@ -7068,7 +7243,7 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   'ship_log_outrun_failed': {
     AppLanguage.en: 'They catch the Eel and rake her: −{n} hull',
     AppLanguage.fr:
-        'Ils rattrapent le Rusty Eel et le mitraillent : −{n} points de coque',
+        'Ils rattrapent le Rusty Eel et le mitraillent\u00a0: −{n} points de coque',
   },
   'ship_log_pushed_through': {
     AppLanguage.en: 'Through the storm with nothing lost',
@@ -7076,12 +7251,12 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   },
   'ship_log_push_failed': {
     AppLanguage.en: 'The storm punishes the gamble: −{n} hull',
-    AppLanguage.fr: 'La tempête punit le pari : −{n} points de coque',
+    AppLanguage.fr: 'La tempête punit le pari\u00a0: −{n} points de coque',
   },
   'ship_log_sheltered': {
     AppLanguage.en: 'Sheltered in a cove; the crossing takes a day longer',
     AppLanguage.fr:
-        'À l’abri dans une crique ; la traversée prend un jour de plus',
+        'À l’abri dans une crique\u00a0; la traversée prend un jour de plus',
   },
   'ship_log_boarded': {
     AppLanguage.en: 'Found {n} gold in the hold',
@@ -7091,7 +7266,7 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.en:
         'The hulk rolled against the Eel as she was grappled: {n} hull lost',
     AppLanguage.fr:
-        'L’épave a roulé contre la Rusty Eel pendant l’abordage : {n} points de coque perdus',
+        'L’épave a roulé contre la Rusty Eel pendant l’abordage\u00a0: {n} points de coque perdus',
   },
   'ship_log_passed_by': {
     AppLanguage.en: 'The derelict drifts astern',
@@ -7099,7 +7274,7 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   },
   'ship_log_rested': {
     AppLanguage.en: 'The crew rests: {n} health back',
-    AppLanguage.fr: 'L’équipage se repose : {n} points de vie récupérés',
+    AppLanguage.fr: 'L’équipage se repose\u00a0: {n} points de vie récupérés',
   },
   'sea_choice_cost': {
     AppLanguage.en: '{n} gold',
@@ -7108,7 +7283,7 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   // v1.163: quest turn-in choices.
   'turn_in_choice_title': {
     AppLanguage.en: 'How do you settle it?',
-    AppLanguage.fr: 'Comment réglez-vous l’affaire ?',
+    AppLanguage.fr: 'Comment réglez-vous l’affaire\u00a0?',
   },
   'turn_in_gold_varies': {
     AppLanguage.en: '{min}–{max} gold, by how you settle it',
@@ -7141,15 +7316,16 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   },
   'approval_effect_devoted': {
     AppLanguage.en: '+10% damage and health in fights',
-    AppLanguage.fr: '+10 % de dégâts et de santé en combat',
+    AppLanguage.fr: '+10\u00a0% de dégâts et de santé en combat',
   },
   'approval_effect_friendly': {
     AppLanguage.en: '+5% damage in fights',
-    AppLanguage.fr: '+5 % de dégâts en combat',
+    AppLanguage.fr: '+5\u00a0% de dégâts en combat',
   },
   'approval_effect_wary': {
     AppLanguage.en: '−10% damage in fights; leaves if pushed further',
-    AppLanguage.fr: '−10 % de dégâts en combat ; part si cela continue',
+    AppLanguage.fr:
+        '−10\u00a0% de dégâts en combat\u00a0; part si cela continue',
   },
   'approval_likes': {
     AppLanguage.en: 'Likes',
@@ -7226,11 +7402,11 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   },
   'charge_release_suffix': {
     AppLanguage.en: 'unleashes the blow it wound up!',
-    AppLanguage.fr: ': le coup préparé s’abat !',
+    AppLanguage.fr: ': le coup préparé s’abat\u00a0!',
   },
   'charge_broken_suffix': {
     AppLanguage.en: 'is knocked off balance: the wind-up is broken!',
-    AppLanguage.fr: 'perd l’équilibre : son élan est brisé !',
+    AppLanguage.fr: 'perd l’équilibre\u00a0: son élan est brisé\u00a0!',
   },
   'staggered_skip_turn_suffix': {
     AppLanguage.en: 'is still reeling and loses the turn.',
@@ -7238,19 +7414,19 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   },
   'weak_to_suffix': {
     AppLanguage.en: 'is weak to',
-    AppLanguage.fr: '— point faible :',
+    AppLanguage.fr: '— point faible\u00a0:',
   },
   'resists_suffix': {
     AppLanguage.en: 'resists',
-    AppLanguage.fr: '— résistance :',
+    AppLanguage.fr: '— résistance\u00a0:',
   },
   'weak_to_label': {
     AppLanguage.en: 'Weak to',
-    AppLanguage.fr: 'Point faible :',
+    AppLanguage.fr: 'Point faible\u00a0:',
   },
   'resists_label': {
     AppLanguage.en: 'Resists',
-    AppLanguage.fr: 'Résistance :',
+    AppLanguage.fr: 'Résistance\u00a0:',
   },
   'guard_soaks_suffix': {
     AppLanguage.en: '— the guard soaks',
@@ -7262,12 +7438,12 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   },
   'enemy_guards_word': {
     AppLanguage.en: 'raises a guard of',
-    AppLanguage.fr: 'lève sa garde :',
+    AppLanguage.fr: 'lève sa garde\u00a0:',
   },
   'enemy_winds_up_suffix': {
     AppLanguage.en: 'is winding up a heavy blow. Break it before it lands!',
     AppLanguage.fr:
-        'prépare un coup puissant. Brisez son élan avant qu’il ne frappe !',
+        'prépare un coup puissant. Brisez son élan avant qu’il ne frappe\u00a0!',
   },
   'enemy_rallies_message': {
     AppLanguage.en: 'The enemy presses harder',
@@ -7283,7 +7459,7 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   },
   'enemy_guard_tooltip': {
     AppLanguage.en: 'Raised guard: soaks your next hits',
-    AppLanguage.fr: 'Garde levée : absorbe vos prochains coups',
+    AppLanguage.fr: 'Garde levée\u00a0: absorbe vos prochains coups',
   },
   'winding_up_label': {
     AppLanguage.en: 'Winding up',
@@ -7305,11 +7481,11 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   },
   'intent_staggered_label': {
     AppLanguage.en: 'Staggered: loses its next turn',
-    AppLanguage.fr: 'Déséquilibre : perd son prochain tour',
+    AppLanguage.fr: 'Déséquilibre\u00a0: perd son prochain tour',
   },
   'intent_charged_label': {
     AppLanguage.en: 'Charged blow incoming!',
-    AppLanguage.fr: 'Coup chargé imminent !',
+    AppLanguage.fr: 'Coup chargé imminent\u00a0!',
   },
   'defend_draws_attacks_hint': {
     AppLanguage.en: 'draws attacks',
@@ -7338,19 +7514,19 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.en: 'Debuff',
     AppLanguage.fr: 'Affaiblissement',
   },
-  'the_enemy_label': {AppLanguage.en: 'The enemy', AppLanguage.fr: "L'ennemi"},
+  'the_enemy_label': {AppLanguage.en: 'The enemy', AppLanguage.fr: "L’ennemi"},
   'elite_prefix': {AppLanguage.en: 'Elite', AppLanguage.fr: 'Élite'},
   'critical_hit_suffix': {
     AppLanguage.en: '(Critical Hit!)',
-    AppLanguage.fr: '(Coup Critique !)',
+    AppLanguage.fr: '(Coup Critique\u00a0!)',
   },
   'you_dodge_suffix': {
     AppLanguage.en: 'you dodge it!',
-    AppLanguage.fr: 'vous esquivez !',
+    AppLanguage.fr: 'vous esquivez\u00a0!',
   },
   'dodges_suffix': {
     AppLanguage.en: 'dodges it!',
-    AppLanguage.fr: 'esquive !',
+    AppLanguage.fr: 'esquive\u00a0!',
   },
   'updates_section': {
     AppLanguage.en: 'Updates',
@@ -7372,17 +7548,18 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   },
   'update_available_suffix_ios': {
     AppLanguage.en: 'is available. Download it now?',
-    AppLanguage.fr: 'est disponible. La télécharger maintenant ?',
+    AppLanguage.fr: 'est disponible. La télécharger maintenant\u00a0?',
   },
   'ios_update_hint': {
     AppLanguage.en: 'An iPhone installs it through AltStore or SideStore: '
         'in the screen that opens, use Share to open it in one of them. '
         'Or save it to Files and install it from a computer with '
         'Sideloadly.',
-    AppLanguage.fr: "Un iPhone l'installe avec AltStore ou SideStore : dans "
-        "l'écran qui s'ouvre, utilisez Partager pour l'ouvrir dans l'une de "
-        "ces applications. Ou enregistrez-le dans Fichiers et installez-le "
-        'depuis un ordinateur avec Sideloadly.',
+    AppLanguage.fr:
+        "Un iPhone l’installe avec AltStore ou SideStore\u00a0: dans "
+            "l’écran qui s’ouvre, utilisez Partager pour l’ouvrir dans l’une de "
+            "ces applications. Ou enregistrez-le dans Fichiers et installez-le "
+            'depuis un ordinateur avec Sideloadly.',
   },
   'download_open_button': {
     AppLanguage.en: 'Download & Open',
@@ -7391,7 +7568,7 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   'ios_open_failed': {
     AppLanguage.en: "Couldn't open the downloaded file. It is also in the "
         'latest release on GitHub.',
-    AppLanguage.fr: "Impossible d'ouvrir le fichier téléchargé. Il se trouve "
+    AppLanguage.fr: "Impossible d’ouvrir le fichier téléchargé. Il se trouve "
         'aussi dans la dernière version publiée sur GitHub.',
   },
   'checking_for_updates': {
@@ -7410,7 +7587,7 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   'update_check_needs_token': {
     AppLanguage.en: 'This repository is private — set a GitHub Personal '
         'Access Token below (in Edit mode) to check for updates.',
-    AppLanguage.fr: 'Ce dépôt est privé — définissez un jeton d\'accès '
+    AppLanguage.fr: 'Ce dépôt est privé — définissez un jeton d’accès '
         'personnel GitHub ci-dessous (en mode Édition) pour rechercher '
         'des mises à jour.',
   },
@@ -7425,7 +7602,7 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   'update_available_suffix': {
     AppLanguage.en: 'is available. Download and install it now?',
     AppLanguage.fr:
-        "est disponible. La télécharger et l'installer maintenant ?",
+        "est disponible. La télécharger et l’installer maintenant\u00a0?",
   },
   'download_install_button': {
     AppLanguage.en: 'Download & Install',
@@ -7442,7 +7619,7 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   'install_failed': {
     AppLanguage.en: "Couldn't start the installer. If prompted, allow this "
         'app to install unknown apps, then try again.',
-    AppLanguage.fr: "Impossible de lancer l'installation. Si demandé, "
+    AppLanguage.fr: "Impossible de lancer l’installation. Si demandé, "
         'autorisez cette application à installer des applications inconnues, '
         'puis réessayez.',
   },
@@ -7459,7 +7636,7 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   },
   'enemy_stats_label': {
     AppLanguage.en: 'Enemy Stats',
-    AppLanguage.fr: "Statistiques de l'ennemi"
+    AppLanguage.fr: "Statistiques de l’ennemi"
   },
   'permadeath_setting_title': {
     AppLanguage.en: 'Permadeath',
@@ -7473,9 +7650,9 @@ const Map<String, Map<AppLanguage, String>> _strings = {
             'class basics. Ironman: saved games can’t be loaded, and a death '
             'deletes them.',
     AppLanguage.fr: 'Une fois activée, perdre un combat renvoie le même personnage au début de '
-        "l'histoire. Vous conservez votre niveau, vos statistiques, votre or et vos compagnons, "
+        "l’histoire. Vous conservez votre niveau, vos statistiques, votre or et vos compagnons, "
         'mais perdez tous vos objets et vos compétences reviennent aux bases de votre classe. '
-        'Mode Ironman : les sauvegardes ne peuvent pas être chargées, et une mort les efface.',
+        'Mode Ironman\u00a0: les sauvegardes ne peuvent pas être chargées, et une mort les efface.',
   },
   'you_died_title': {
     AppLanguage.en: 'You Died',
@@ -7487,8 +7664,8 @@ const Map<String, Map<AppLanguage, String>> _strings = {
             'and companions; your pack is empty and your skills are back to '
             'your class basics. Your saved games are gone with the rest.',
     AppLanguage.fr:
-        "L'histoire recommence avec vous. Vous conservez votre niveau, vos statistiques, "
-            'votre or et vos compagnons ; votre sac est vide et vos compétences '
+        "L’histoire recommence avec vous. Vous conservez votre niveau, vos statistiques, "
+            'votre or et vos compagnons\u00a0; votre sac est vide et vos compétences '
             'reviennent aux bases de votre classe. Vos sauvegardes sont parties avec le reste.',
   },
   'items_lost_label': {
@@ -7573,15 +7750,15 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   },
   'discovery_title': {
     AppLanguage.en: 'Discovered!',
-    AppLanguage.fr: 'Découverte !'
+    AppLanguage.fr: 'Découverte\u00a0!'
   },
   'shop_discovered_message': {
     AppLanguage.en: 'A new shop is available:',
-    AppLanguage.fr: 'Une nouvelle boutique est disponible :',
+    AppLanguage.fr: 'Une nouvelle boutique est disponible\u00a0:',
   },
   'quest_discovered_message': {
     AppLanguage.en: 'A new quest is available:',
-    AppLanguage.fr: 'Une nouvelle quête est disponible :',
+    AppLanguage.fr: 'Une nouvelle quête est disponible\u00a0:',
   },
   'open_shop_button': {
     AppLanguage.en: 'Open Shop',
@@ -7664,14 +7841,14 @@ const Map<String, Map<AppLanguage, String>> _strings = {
             'you push them to GitHub as a branch. Needs a Personal Access Token with '
             'Contents: Read and write on this repo. Stored only on this device.',
     AppLanguage.fr:
-        "Les modifications faites dans l'onglet Données et l'éditeur d'histoire "
-            "restent sur cet appareil tant qu'elles ne sont pas envoyées sur GitHub sous forme "
-            "de branche. Nécessite un jeton d'accès personnel avec accès Contents: Read and "
+        "Les modifications faites dans l’onglet Données et l’éditeur d’histoire "
+            "restent sur cet appareil tant qu’elles ne sont pas envoyées sur GitHub sous forme "
+            "de branche. Nécessite un jeton d’accès personnel avec accès Contents: Read and "
             "write sur ce dépôt. Stocké uniquement sur cet appareil.",
   },
   'github_token_label': {
     AppLanguage.en: 'GitHub Personal Access Token',
-    AppLanguage.fr: "Jeton d'accès personnel GitHub",
+    AppLanguage.fr: "Jeton d’accès personnel GitHub",
   },
   'show_token_tooltip': {
     AppLanguage.en: 'Show token',
@@ -7697,22 +7874,22 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.en:
         'No local edits to push — the Data tab and story editor are unchanged from the bundled defaults.',
     AppLanguage.fr:
-        "Aucune modification locale à envoyer — l'onglet Données et l'éditeur "
-            "d'histoire sont inchangés par rapport aux valeurs par défaut.",
+        "Aucune modification locale à envoyer — l’onglet Données et l’éditeur "
+            "d’histoire sont inchangés par rapport aux valeurs par défaut.",
   },
   'set_github_token_first_message': {
     AppLanguage.en: 'Set your GitHub token above first.',
-    AppLanguage.fr: "Renseignez d'abord votre jeton GitHub ci-dessus.",
+    AppLanguage.fr: "Renseignez d’abord votre jeton GitHub ci-dessus.",
   },
   'push_confirm_title': {
     AppLanguage.en: 'Push to GitHub?',
-    AppLanguage.fr: 'Envoyer vers GitHub ?'
+    AppLanguage.fr: 'Envoyer vers GitHub\u00a0?'
   },
   'push_confirm_message': {
     AppLanguage.en:
         'This will push the following changed files to a new branch:',
     AppLanguage.fr:
-        'Cela enverra les fichiers modifiés suivants vers une nouvelle branche :',
+        'Cela enverra les fichiers modifiés suivants vers une nouvelle branche\u00a0:',
   },
   'branch_name_label': {
     AppLanguage.en: 'Branch name',
@@ -7722,7 +7899,10 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.en: 'Pushing…',
     AppLanguage.fr: 'Envoi en cours…'
   },
-  'push_success_title': {AppLanguage.en: 'Pushed!', AppLanguage.fr: 'Envoyé !'},
+  'push_success_title': {
+    AppLanguage.en: 'Pushed!',
+    AppLanguage.fr: 'Envoyé\u00a0!'
+  },
   'push_success_message': {
     AppLanguage.en:
         'Your edits are now on a new branch. Open a pull request to bring them into the game.',
@@ -7740,13 +7920,13 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   },
   'push_failed_prefix': {
     AppLanguage.en: 'Push failed',
-    AppLanguage.fr: "Échec de l'envoi"
+    AppLanguage.fr: "Échec de l’envoi"
   },
   'push_button': {AppLanguage.en: 'Push', AppLanguage.fr: 'Envoyer'},
   'strategy_label': {AppLanguage.en: 'Strategy', AppLanguage.fr: 'Stratégie'},
   'play_to_chapter_title': {
     AppLanguage.en: 'Play to Chapter',
-    AppLanguage.fr: 'Jouer jusqu\'au chapitre',
+    AppLanguage.fr: 'Jouer jusqu’au chapitre',
   },
   'play_to_chapter_subtitle': {
     AppLanguage.en: 'Plays real choices forward using the strategy above, '
@@ -7756,14 +7936,14 @@ const Map<String, Map<AppLanguage, String>> _strings = {
         'again until one gets there.',
     AppLanguage.fr:
         "Enchaîne de vrais choix selon la stratégie ci-dessus, avec de "
-            "l'or, un alignement, des drapeaux et des combats réellement "
+            "l’or, un alignement, des drapeaux et des combats réellement "
             "gagnés, puis vous redonne la main dans la vue Histoire une "
             'fois le chapitre atteint. Une partie perdue en chemin est '
             'annulée et rejouée jusqu’à ce qu’une y parvienne.',
   },
   'play_to_chapter_button': {
     AppLanguage.en: 'Play to Chapter',
-    AppLanguage.fr: 'Jouer jusqu\'au chapitre',
+    AppLanguage.fr: 'Jouer jusqu’au chapitre',
   },
   'ptc_new_game': {
     AppLanguage.en: 'Start a new game',
@@ -7911,13 +8091,13 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   },
   'sim_runs_casting_label': {
     AppLanguage.en: 'runs casting',
-    AppLanguage.fr: 'parties l\'ayant lancé'
+    AppLanguage.fr: 'parties l’ayant lancé'
   },
   'sim_combat_model_note': {
     AppLanguage.en:
         'Fights: a solo character of a random race and profession, the real dice, enemy moves, statuses, chapter curve and spells; no companions, affixes or conditions. Shops are visited once when unlocked; a new chapter counts as a rest.',
     AppLanguage.fr:
-        "Combats : un personnage seul de race et classe aléatoires, les vrais dés, coups ennemis, statuts, courbe de chapitre et sorts ; sans compagnons, affixes ni conditions. Chaque boutique est visitée une fois au déblocage ; un nouveau chapitre vaut un repos.",
+        "Combats\u00a0: un personnage seul de race et classe aléatoires, les vrais dés, coups ennemis, statuts, courbe de chapitre et sorts\u00a0; sans compagnons, affixes ni conditions. Chaque boutique est visitée une fois au déblocage\u00a0; un nouveau chapitre vaut un repos.",
   },
   'sim_strategy_random': {
     AppLanguage.en: 'Random',
@@ -7933,7 +8113,7 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   },
   'sim_strategy_maximize_gold': {
     AppLanguage.en: 'Maximize Gold',
-    AppLanguage.fr: "Maximiser l'or",
+    AppLanguage.fr: "Maximiser l’or",
   },
   'sim_strategy_explore': {
     AppLanguage.en: 'Explore every branch',
@@ -7963,7 +8143,7 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   },
   'exceeded_step_cap_label': {
     AppLanguage.en: 'did not reach an ending (hit the step limit)',
-    AppLanguage.fr: "n'ont pas atteint de fin (limite de pas atteinte)",
+    AppLanguage.fr: "n’ont pas atteint de fin (limite de pas atteinte)",
   },
   'furthest_chapter_label': {
     AppLanguage.en: 'Furthest chapter reached',
@@ -8055,7 +8235,7 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   },
   'export_failed_prefix': {
     AppLanguage.en: 'Export failed',
-    AppLanguage.fr: "Échec de l'export"
+    AppLanguage.fr: "Échec de l’export"
   },
   'chapter_filter_all_label': {AppLanguage.en: 'All', AppLanguage.fr: 'Tout'},
   'prologue_label': {AppLanguage.en: 'Prologue', AppLanguage.fr: 'Prologue'},
@@ -8073,7 +8253,7 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   },
   'app_mode_section_title': {
     AppLanguage.en: 'App Mode',
-    AppLanguage.fr: "Mode de l'application"
+    AppLanguage.fr: "Mode de l’application"
   },
   'app_mode_section_desc': {
     AppLanguage.en:
@@ -8112,7 +8292,7 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   },
   'tutorials_section_hint': {
     AppLanguage.en: 'Replay a tour of any feature.',
-    AppLanguage.fr: "Revoir la visite d'une fonctionnalité.",
+    AppLanguage.fr: "Revoir la visite d’une fonctionnalité.",
   },
   'tut_seen_label': {
     AppLanguage.en: 'Seen',
@@ -8288,7 +8468,7 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.en:
         'Tap a step to see what it costs or brings. Go, or a second tap on the step, walks the party there.',
     AppLanguage.fr:
-        'Touchez une étape pour voir ce qu’elle coûte ou rapporte. « Go », ou un second toucher sur l’étape, y mène le groupe.',
+        'Touchez une étape pour voir ce qu’elle coûte ou rapporte. «\u00a0Go\u00a0», ou un second toucher sur l’étape, y mène le groupe.',
   },
   'tut_journey_5': {
     AppLanguage.en:
@@ -8385,11 +8565,11 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   },
   'map_leg_chapters': {
     AppLanguage.en: 'Road and place colours: one colour per chapter',
-    AppLanguage.fr: 'Couleurs des routes et des lieux : une par chapitre',
+    AppLanguage.fr: 'Couleurs des routes et des lieux\u00a0: une par chapitre',
   },
   'map_leg_fog': {
     AppLanguage.en: 'Uncharted: the story has not reached it',
-    AppLanguage.fr: 'Inexploré : l’histoire n’y est pas encore allée',
+    AppLanguage.fr: 'Inexploré\u00a0: l’histoire n’y est pas encore allée',
   },
   'map_leg_shop': {
     AppLanguage.en: 'A shop (Shops & camps layer)',
@@ -8757,7 +8937,7 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.en:
         'No nodes have a reviewer comment yet. Open a node in Edit Mode to leave one.',
     AppLanguage.fr:
-        "Aucun nœud n'a de commentaire pour l'instant. Ouvrez un nœud en mode édition pour en laisser un.",
+        "Aucun nœud n’a de commentaire pour l’instant. Ouvrez un nœud en mode édition pour en laisser un.",
   },
   'export_as_text_option': {
     AppLanguage.en: 'Export as text (.txt)',
@@ -8779,11 +8959,11 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   },
   'chest_tier_silver': {
     AppLanguage.en: 'Silver Chest',
-    AppLanguage.fr: "Coffre d'argent",
+    AppLanguage.fr: "Coffre d’argent",
   },
   'chest_tier_gold': {
     AppLanguage.en: 'Gold Chest',
-    AppLanguage.fr: "Coffre d'or",
+    AppLanguage.fr: "Coffre d’or",
   },
   'chest_tier_void': {
     AppLanguage.en: 'Void Chest',
@@ -8791,7 +8971,7 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   },
   'chest_tap_hint': {
     AppLanguage.en: 'Tap the chest to open it.',
-    AppLanguage.fr: "Touchez le coffre pour l'ouvrir.",
+    AppLanguage.fr: "Touchez le coffre pour l’ouvrir.",
   },
   'chest_slot_hint': {
     AppLanguage.en: 'Tap each slot to see what you found.',
@@ -8850,11 +9030,11 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.en:
         'Skips the tap-to-open and reveals every slot at once after a fight.',
     AppLanguage.fr:
-        "Saute l'ouverture au toucher et révèle toutes les cases d'un coup après un combat.",
+        "Saute l’ouverture au toucher et révèle toutes les cases d’un coup après un combat.",
   },
   'alignment_hunters_setting_title': {
     AppLanguage.en: 'Alignment has consequences',
-    AppLanguage.fr: "L'alignement a des conséquences",
+    AppLanguage.fr: "L’alignement a des conséquences",
   },
   'alignment_hunters_setting_desc': {
     AppLanguage.en:
@@ -8893,7 +9073,7 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.en:
         'While it stands, the rest of the pack hits harder. Kill it first.',
     AppLanguage.fr:
-        "Tant qu'il tient debout, le reste de la meute frappe plus fort. Abattez-le en premier.",
+        "Tant qu’il tient debout, le reste de la meute frappe plus fort. Abattez-le en premier.",
   },
   'armored_absorbs_suffix': {
     AppLanguage.en: 'shrugs off part of the blow (armoured).',
@@ -9233,7 +9413,7 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   },
   'flees_suffix': {
     AppLanguage.en: 'breaks and flees the fight!',
-    AppLanguage.fr: 'panique et fuit le combat !',
+    AppLanguage.fr: 'panique et fuit le combat\u00a0!',
   },
   // The fight-length rules (fight_length.dart).
   'execute_log': {
@@ -9274,7 +9454,8 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   },
   'spec_verdict_log': {
     AppLanguage.en: 'The Verdict: the last face of the run strikes double.',
-    AppLanguage.fr: 'Le Verdict : la dernière face de la série frappe double.',
+    AppLanguage.fr:
+        'Le Verdict\u00a0: la dernière face de la série frappe double.',
   },
   'spec_vanguard_heal_log': {
     AppLanguage.en: 'The lantern\'s fire against the dark heals you {n} HP.',
@@ -9283,13 +9464,13 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   },
   'spec_rot_log': {
     AppLanguage.en: 'The Rot spreads in {name}: {n} a turn.',
-    AppLanguage.fr: 'La Pourriture gagne {name} : {n} par tour.',
+    AppLanguage.fr: 'La Pourriture gagne {name}\u00a0: {n} par tour.',
   },
   'spec_ashen_log': {
     AppLanguage.en:
         'The fire gives back: 1 mana, a little health, an affliction lifted.',
     AppLanguage.fr:
-        'Le feu rend : 1 de mana, un peu de vie, une affliction levée.',
+        'Le feu rend\u00a0: 1 de mana, un peu de vie, une affliction levée.',
   },
   'spec_vigil_log': {
     AppLanguage.en: 'The long vigil mends you {n} HP.',
@@ -9301,7 +9482,7 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   },
   'spec_toll_log': {
     AppLanguage.en: 'The storm collects its toll: {n} HP back.',
-    AppLanguage.fr: 'L’orage perçoit son péage : {n} PV repris.',
+    AppLanguage.fr: 'L’orage perçoit son péage\u00a0: {n} PV repris.',
   },
   'spec_halved_log': {
     AppLanguage.en:
@@ -9391,11 +9572,11 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.en:
         'The Tribunal hears the case once: the Well refills by a third.',
     AppLanguage.fr:
-        'Le Tribunal entend l’affaire une fois : le Puits se remplit d’un tiers.',
+        'Le Tribunal entend l’affaire une fois\u00a0: le Puits se remplit d’un tiers.',
   },
   'spec_briar_log': {
     AppLanguage.en: 'The briar bites back: {name} takes {n}.',
-    AppLanguage.fr: 'La ronce rend le coup : {name} subit {n}.',
+    AppLanguage.fr: 'La ronce rend le coup\u00a0: {name} subit {n}.',
   },
   'trail_ahead_log': {
     AppLanguage.en: 'On the trail ahead: {face}.',
@@ -9749,7 +9930,7 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.en:
         'Only two enemies can reach you each round; the rest hold back.',
     AppLanguage.fr:
-        'Seuls deux ennemis peuvent vous atteindre chaque tour ; les autres restent en retrait.',
+        'Seuls deux ennemis peuvent vous atteindre chaque tour\u00a0; les autres restent en retrait.',
   },
   'condition_high_ground': {
     AppLanguage.en: 'High Ground',
@@ -10174,7 +10355,7 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.en:
         'Each blow you land builds momentum; a blow you take sets it back. When it is full, your next strike is a sure critical.',
     AppLanguage.fr:
-        'Chaque coup que vous portez fait monter l’élan ; un coup reçu le fait retomber. Quand il est plein, votre prochain coup est un critique assuré.',
+        'Chaque coup que vous portez fait monter l’élan\u00a0; un coup reçu le fait retomber. Quand il est plein, votre prochain coup est un critique assuré.',
   },
   'incoming_tip': {
     AppLanguage.en:
@@ -10184,33 +10365,34 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   },
   'momentum_ready_label': {
     AppLanguage.en: 'Momentum: next strike crits!',
-    AppLanguage.fr: 'Élan : le prochain coup est critique !',
+    AppLanguage.fr: 'Élan\u00a0: le prochain coup est critique\u00a0!',
   },
   'momentum_ready_message': {
     AppLanguage.en: 'Momentum builds -- the next strike is a sure critical.',
-    AppLanguage.fr: "L'élan monte : le prochain coup sera critique à coup sûr.",
+    AppLanguage.fr:
+        "L’élan monte\u00a0: le prochain coup sera critique à coup sûr.",
   },
   'retreat_confirm_title': {
     AppLanguage.en: 'Get away from this fight?',
-    AppLanguage.fr: 'Fuir ce combat ?',
+    AppLanguage.fr: 'Fuir ce combat\u00a0?',
   },
   'retreat_confirm_body': {
     AppLanguage.en:
         'You drop {gold} gold{potion} getting clear and keep the wounds you have. Nothing is won. A detour is left behind; a fight in the story waits where it was.',
     AppLanguage.fr:
-        'Vous laissez tomber {gold} or{potion} en vous dégageant et gardez vos blessures. Rien n’est gagné. Un détour est abandonné ; un combat de l’histoire vous attend là où il était.',
+        'Vous laissez tomber {gold} or{potion} en vous dégageant et gardez vos blessures. Rien n’est gagné. Un détour est abandonné\u00a0; un combat de l’histoire vous attend là où il était.',
   },
   'read_scroll_prefix': {
     AppLanguage.en: 'You read the',
-    AppLanguage.fr: 'Vous lisez :',
+    AppLanguage.fr: 'Vous lisez\u00a0:',
   },
   'surge_pick_label': {
     AppLanguage.en: 'Crit goes to:',
-    AppLanguage.fr: 'Le critique pour :',
+    AppLanguage.fr: 'Le critique pour\u00a0:',
   },
   'momentum_surge_message': {
     AppLanguage.en: 'Momentum surges into the blow!',
-    AppLanguage.fr: "L'élan se déchaîne dans le coup !",
+    AppLanguage.fr: "L’élan se déchaîne dans le coup\u00a0!",
   },
   'charms_label': {AppLanguage.en: 'Charms', AppLanguage.fr: 'Charmes'},
   'charms_hint': {
@@ -10220,7 +10402,7 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   },
   'charm_used_prefix': {
     AppLanguage.en: 'Charm burned:',
-    AppLanguage.fr: 'Charme consumé :',
+    AppLanguage.fr: 'Charme consumé\u00a0:',
   },
   'charm_fourth_roll_desc': {
     AppLanguage.en: 'One extra reroll every round this fight.',
@@ -10228,7 +10410,8 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   },
   'charm_lucky_coin_desc': {
     AppLanguage.en: 'Your critical-hit chance rises by 15% this fight.',
-    AppLanguage.fr: 'Votre chance de coup critique augmente de 15 % ce combat.',
+    AppLanguage.fr:
+        'Votre chance de coup critique augmente de 15\u00a0% ce combat.',
   },
   'charm_iron_skin_desc': {
     AppLanguage.en: '+1 armour this fight.',
@@ -10246,13 +10429,13 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.en:
         'A hunt: the quarry is tougher than its kind and carries two traits, but its lair holds a Gold chest at least.',
     AppLanguage.fr:
-        "Une traque : la proie est plus coriace que ses semblables et porte deux traits, mais son repaire recèle au moins un coffre d'or.",
+        "Une traque\u00a0: la proie est plus coriace que ses semblables et porte deux traits, mais son repaire recèle au moins un coffre d’or.",
   },
   'hunter_fight_note': {
     AppLanguage.en:
         'A hunter sent for you. It yields more than its kind, and never less than a Silver chest.',
     AppLanguage.fr:
-        "Un chasseur envoyé pour vous. Il rapporte plus que ses semblables, et jamais moins qu'un coffre d'argent.",
+        "Un chasseur envoyé pour vous. Il rapporte plus que ses semblables, et jamais moins qu’un coffre d’argent.",
   },
   'aligned_gear_label': {
     AppLanguage.en: 'Aligned',
@@ -10273,7 +10456,7 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   'hide_if_flags': {
     AppLanguage.en: 'Hide once any of these flags is held (comma-separated)',
     AppLanguage.fr:
-        'Masquer dès que l\'un de ces drapeaux est détenu (séparés par des virgules)',
+        'Masquer dès que l’un de ces drapeaux est détenu (séparés par des virgules)',
   },
   'zone_tier_label': {AppLanguage.en: 'Tier', AppLanguage.fr: 'Palier'},
   'zone_main_label': {
@@ -10298,7 +10481,7 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.en:
         "The zone's master guards its reward. Win, and the spoils chest is never below Gold.",
     AppLanguage.fr:
-        "Le maître de la zone garde sa récompense. Gagnez, et le coffre de butin ne sera jamais en dessous de l'or.",
+        "Le maître de la zone garde sa récompense. Gagnez, et le coffre de butin ne sera jamais en dessous de l’or.",
   },
   'zone_flag_cinder_row_cleared': {
     AppLanguage.en: 'Cinder Row, cleared',
@@ -10413,7 +10596,7 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.en:
         'The Eel as she would look: try a part or a look on her before you pay for it.',
     AppLanguage.fr:
-        'L\'Eel telle qu\'elle serait : essayez une pièce ou une parure sur elle avant de payer.',
+        'L’Eel telle qu’elle serait : essayez une pièce ou une parure sur elle avant de payer.',
   },
   'looks_section': {
     AppLanguage.en: 'Paint, cloth, carving and flag',
@@ -10435,7 +10618,7 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   'look_worn_notice': {AppLanguage.en: 'Fitted', AppLanguage.fr: 'Posée'},
   'look_trophy_locked': {
     AppLanguage.en: 'A beast\'s trophy',
-    AppLanguage.fr: 'Trophée d\'une bête',
+    AppLanguage.fr: 'Trophée d’une bête',
   },
   'look_trophy_note': {
     AppLanguage.en: 'Won from {beast}, once it is slain.',
@@ -10451,7 +10634,7 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   },
   'part_try_clear': {
     AppLanguage.en: 'Stop trying',
-    AppLanguage.fr: 'Annuler l\'essai'
+    AppLanguage.fr: 'Annuler l’essai'
   },
   'part_trying_label': {
     AppLanguage.en: 'Trying {part}: not yet fitted.',
@@ -10485,7 +10668,7 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.en:
         'Rebuild the Eel on another hull: her name, looks and crew stay. A hull is built once; going back to one is free.',
     AppLanguage.fr:
-        'Rebâtir l\'Eel sur une autre coque : son nom, ses parures et son équipage restent. Une coque se bâtit une fois ; y revenir ne coûte rien.',
+        'Rebâtir l’Eel sur une autre coque : son nom, ses parures et son équipage restent. Une coque se bâtit une fois ; y revenir ne coûte rien.',
   },
   'hull_aboard_label': {AppLanguage.en: 'Aboard', AppLanguage.fr: 'En service'},
   'hull_owned_note': {
@@ -10500,7 +10683,7 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   'hull_flying_label': {AppLanguage.en: 'Flies', AppLanguage.fr: 'Vole'},
   'hull_confirm_title': {
     AppLanguage.en: 'Rebuild the Eel as a {hull}?',
-    AppLanguage.fr: 'Rebâtir l\'Eel en {hull} ?',
+    AppLanguage.fr: 'Rebâtir l’Eel en {hull} ?',
   },
   'hull_confirm_body': {
     AppLanguage.en:
@@ -10515,7 +10698,7 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   'hull_confirm_yes': {AppLanguage.en: 'Rebuild', AppLanguage.fr: 'Rebâtir'},
   'hull_rebuilt_notice': {
     AppLanguage.en: 'The Eel is rebuilt: {hull}',
-    AppLanguage.fr: 'L\'Eel est rebâtie : {hull}',
+    AppLanguage.fr: 'L’Eel est rebâtie : {hull}',
   },
   'hull_trying_label': {
     AppLanguage.en: 'Trying the {hull} hull: not yet built.',
@@ -10523,62 +10706,62 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   },
   'sail_repaint_note': {
     AppLanguage.en: 'Painting the sail replaces the sigil already on it.',
-    AppLanguage.fr: 'Peindre la voile remplace le sigil qui s\'y trouve déjà.',
+    AppLanguage.fr: 'Peindre la voile remplace le sigil qui s’y trouve déjà.',
   },
   'sail_medium_match_label': {
     AppLanguage.en:
         'Painted your people\'s way: the sigil holds twice as strong',
     AppLanguage.fr:
-        'Peint à la manière de votre peuple : le sigil tient deux fois plus fort',
+        'Peint à la manière de votre peuple\u00a0: le sigil tient deux fois plus fort',
   },
   'sail_power_flight': {
     AppLanguage.en: 'Flight: storms and raiders pass beneath the keel',
-    AppLanguage.fr: 'Vol : tempêtes et pillards passent sous la quille',
+    AppLanguage.fr: 'Vol\u00a0: tempêtes et pillards passent sous la quille',
   },
   'sail_power_foresight': {
     AppLanguage.en:
         'Foresight: tomorrow\'s weather shown, and where the enemy\'s guns are aimed',
     AppLanguage.fr:
-        'Prescience : le temps de demain annoncé, et où pointent les canons ennemis',
+        'Prescience\u00a0: le temps de demain annoncé, et où pointent les canons ennemis',
   },
   'sail_power_hearth': {
     AppLanguage.en:
         'Hearth: every day at sea heals the crew and mends the hull',
     AppLanguage.fr:
-        'Foyer : chaque jour en mer soigne l\'équipage et répare la coque',
+        'Foyer\u00a0: chaque jour en mer soigne l’équipage et répare la coque',
   },
   'sail_power_windknot': {
     AppLanguage.en: 'Wind-knot: a shorter crossing, and richer wrecks',
     AppLanguage.fr:
-        'Nœud de vent : une traversée plus courte, et des épaves plus riches',
+        'Nœud de vent\u00a0: une traversée plus courte, et des épaves plus riches',
   },
   'sail_power_voidmark': {
     AppLanguage.en:
         'Void mark: a void volley in battle, and storms that do not bite',
     AppLanguage.fr:
-        'Marque du Néant : une bordée de Néant au combat, et des tempêtes qui ne mordent plus',
+        'Marque du Néant\u00a0: une bordée de Néant au combat, et des tempêtes qui ne mordent plus',
   },
   'ship_log_lift': {
     AppLanguage.en:
         'The painted sail lifts the Eel clear of the weather: {n} bad days pass beneath her keel.',
     AppLanguage.fr:
-        'La voile peinte soulève l\'Eel au-dessus du temps : {n} mauvais jours passent sous sa quille.',
+        'La voile peinte soulève l’Eel au-dessus du temps\u00a0: {n} mauvais jours passent sous sa quille.',
   },
   'ship_log_foresight_prefix': {
     AppLanguage.en: 'The Kraken\'s Eye sees ahead',
-    AppLanguage.fr: 'L\'Œil du Kraken voit devant',
+    AppLanguage.fr: 'L’Œil du Kraken voit devant',
   },
   'ship_log_hearth': {
     AppLanguage.en:
         'The hearth-mark warms the crew: +{n} health, and the hull knits.',
     AppLanguage.fr:
-        'La marque du foyer réchauffe l\'équipage : +{n} de santé, et la coque se ressoude.',
+        'La marque du foyer réchauffe l’équipage\u00a0: +{n} de santé, et la coque se ressoude.',
   },
   'ship_log_windknot': {
     AppLanguage.en:
         'The wind-knot finds the faster passage: {n} fewer days at sea.',
     AppLanguage.fr:
-        'Le nœud de vent trouve le passage le plus rapide : {n} jours de mer en moins.',
+        'Le nœud de vent trouve le passage le plus rapide\u00a0: {n} jours de mer en moins.',
   },
   'ship_log_void_calm': {
     AppLanguage.en: 'The void mark takes the storm\'s teeth.',
@@ -10602,7 +10785,7 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.fr: 'une apparition'
   },
   'ports_section': {AppLanguage.en: 'Chart', AppLanguage.fr: 'Carte marine'},
-  'sail_button': {AppLanguage.en: 'Set sail', AppLanguage.fr: "Lever l'ancre"},
+  'sail_button': {AppLanguage.en: 'Set sail', AppLanguage.fr: "Lever l’ancre"},
   'moored_here_label': {
     AppLanguage.en: 'Moored here',
     AppLanguage.fr: 'Amarré ici'
@@ -10625,7 +10808,7 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.en:
         'The Rusty Eel took on too much water. You put back to the port you left, hull barely holding.',
     AppLanguage.fr:
-        "Le Rusty Eel a embarqué trop d'eau. Vous regagnez le port que vous aviez quitté, la coque tenant à peine.",
+        "Le Rusty Eel a embarqué trop d’eau. Vous regagnez le port que vous aviez quitté, la coque tenant à peine.",
   },
   'go_ashore_button': {
     AppLanguage.en: 'Go ashore',
@@ -10650,7 +10833,7 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   },
   'ship_log_salvage': {
     AppLanguage.en: 'Salvaged {n} gold',
-    AppLanguage.fr: '{n} pièces d\'or récupérées',
+    AppLanguage.fr: '{n} pièces d’or récupérées',
   },
   'ship_fight_won_prefix': {
     AppLanguage.en: 'Prize taken',
@@ -10670,7 +10853,8 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   'ship_room_hold': {AppLanguage.en: 'hold', AppLanguage.fr: 'la cale'},
   'ship_room_helm_hint': {
     AppLanguage.en: 'Evasion: 8% per pip. A helmsman adds their own.',
-    AppLanguage.fr: 'Esquive : 8 % par cran. Un barreur ajoute la sienne.',
+    AppLanguage.fr:
+        'Esquive\u00a0: 8\u00a0% par cran. Un barreur ajoute la sienne.',
   },
   'ship_room_guns_hint': {
     AppLanguage.en:
@@ -10693,25 +10877,25 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   'ship_room_bulwark_open_hint': {
     AppLanguage.en: 'The bulwark is down: the rail is open to boarders.',
     AppLanguage.fr:
-        'Le pavois est à terre : le bastingage est ouvert aux assaillants.',
+        'Le pavois est à terre\u00a0: le bastingage est ouvert aux assaillants.',
   },
   'ship_board_button': {
     AppLanguage.en: 'Board them',
-    AppLanguage.fr: 'À l\'abordage'
+    AppLanguage.fr: 'À l’abordage'
   },
   'ship_board_hint': {
     AppLanguage.en:
         'Side by side with their rail open: board and fight {crew} at the rail (their helm may slip the grapples; it ends the turn).',
     AppLanguage.fr:
-        'Bord à bord, leur bastingage ouvert : abordez et affrontez {crew} au bastingage (leur barre peut esquiver les grappins ; cela termine le tour).',
+        'Bord à bord, leur bastingage ouvert\u00a0: abordez et affrontez {crew} au bastingage (leur barre peut esquiver les grappins\u00a0; cela termine le tour).',
   },
   'ship_order_here': {
     AppLanguage.en: 'at the {room}',
-    AppLanguage.fr: 'au poste : {room}',
+    AppLanguage.fr: 'au poste\u00a0: {room}',
   },
   'ship_order_go': {
     AppLanguage.en: 'goes to the {room}',
-    AppLanguage.fr: 'va au poste : {room}',
+    AppLanguage.fr: 'va au poste\u00a0: {room}',
   },
   'ship_order_anywhere': {
     AppLanguage.en: 'from anywhere',
@@ -10719,11 +10903,11 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   },
   'ship_order_from_label': {
     AppLanguage.en: 'Given from:',
-    AppLanguage.fr: 'Donné depuis :',
+    AppLanguage.fr: 'Donné depuis\u00a0:',
   },
   'ship_order_now_label': {
     AppLanguage.en: 'now at:',
-    AppLanguage.fr: 'actuellement :',
+    AppLanguage.fr: 'actuellement\u00a0:',
   },
   'ship_order_once_label': {
     AppLanguage.en: 'Once a battle. Tap the die to give it.',
@@ -10735,19 +10919,19 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   },
   'ship_place_title': {
     AppLanguage.en: 'Stations!',
-    AppLanguage.fr: 'À vos postes !',
+    AppLanguage.fr: 'À vos postes\u00a0!',
   },
   'ship_place_intro': {
     AppLanguage.en:
         'The {ship} comes on. Set each hand where they will fight: an order is given from its own rooms.',
     AppLanguage.fr:
-        '{ship} approche. Placez chacun là où il se battra : un ordre se donne depuis ses propres postes.',
+        '{ship} approche. Placez chacun là où il se battra\u00a0: un ordre se donne depuis ses propres postes.',
   },
   'ship_place_hint': {
     AppLanguage.en:
         'Drag a hand onto a room, or tap them then the room. Gold: their order can be given from where they stand.',
     AppLanguage.fr:
-        'Glissez un membre sur une salle, ou touchez-le puis la salle. En or : son ordre peut être donné d’où il se tient.',
+        'Glissez un membre sur une salle, ou touchez-le puis la salle. En or\u00a0: son ordre peut être donné d’où il se tient.',
   },
   'ship_place_skills': {
     AppLanguage.en: 'By orders',
@@ -10755,7 +10939,7 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   },
   'ship_place_start': {
     AppLanguage.en: 'Battle!',
-    AppLanguage.fr: 'Au combat !',
+    AppLanguage.fr: 'Au combat\u00a0!',
   },
   'ship_auto_station_button': {
     AppLanguage.en: 'Auto-station',
@@ -10768,28 +10952,28 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   'ship_log_boarding_won': {
     AppLanguage.en: 'The {ship} is yours: her crew is cut down at the rail',
     AppLanguage.fr:
-        '{ship} est à vous : son équipage est taillé en pièces au bastingage',
+        '{ship} est à vous\u00a0: son équipage est taillé en pièces au bastingage',
   },
   'ship_log_boarding_repelled': {
     AppLanguage.en: 'Thrown back to the Eel, -{n} hull; the {ship} fights on',
     AppLanguage.fr:
-        'Repoussés vers l\'Eel, -{n} de coque ; {ship} poursuit le combat',
+        'Repoussés vers l’Eel, -{n} de coque\u00a0; {ship} poursuit le combat',
   },
   'ship_log_boarding_abandoned': {
     AppLanguage.en:
         'The boarding party falls back to the Eel and cuts the grapples; the {ship} fights on',
     AppLanguage.fr:
-        'L\'équipe d\'abordage regagne l\'Eel et tranche les grappins ; {ship} poursuit le combat',
+        'L’équipe d’abordage regagne l’Eel et tranche les grappins\u00a0; {ship} poursuit le combat',
   },
   'ship_log_grapple_slipped': {
     AppLanguage.en: 'The {ship} slips the grapples; the turn is lost',
-    AppLanguage.fr: '{ship} esquive les grappins ; le tour est perdu',
+    AppLanguage.fr: '{ship} esquive les grappins\u00a0; le tour est perdu',
   },
   'ship_log_boarders': {
     AppLanguage.en:
         'Boarders from the {ship} come over the rail into the hold!',
     AppLanguage.fr:
-        'Des assaillants de {ship} franchissent le bastingage jusqu\'à la cale !',
+        'Des assaillants de {ship} franchissent le bastingage jusqu’à la cale\u00a0!',
   },
   'ship_log_boarders_repelled': {
     AppLanguage.en: 'The boarders are thrown into the sea',
@@ -10799,15 +10983,15 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.en:
         'The boarders wreck the hold before they are driven off, -{n} hull',
     AppLanguage.fr:
-        'Les assaillants saccagent la cale avant d\'être repoussés, -{n} de coque',
+        'Les assaillants saccagent la cale avant d’être repoussés, -{n} de coque',
   },
   'ship_log_prize_part': {
     AppLanguage.en: 'Prize: {weapon} taken aboard',
-    AppLanguage.fr: 'Prise : {weapon} embarqué',
+    AppLanguage.fr: 'Prise\u00a0: {weapon} embarqué',
   },
   'ship_log_prize_gold': {
     AppLanguage.en: 'Prize: {n} gold from the hold',
-    AppLanguage.fr: 'Prise : {n} pièces d\'or de la cale',
+    AppLanguage.fr: 'Prise\u00a0: {n} pièces d’or de la cale',
   },
   'ship_layers_label': {AppLanguage.en: 'Layers', AppLanguage.fr: 'Couches'},
   'charge_turns_label': {
@@ -10830,13 +11014,13 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   'ship_turn_seconds': {AppLanguage.en: '{n} s', AppLanguage.fr: '{n} s'},
   'ship_log_time_up': {
     AppLanguage.en: 'Time runs out: the turn ends.',
-    AppLanguage.fr: 'Le temps est écoulé : le tour se termine.',
+    AppLanguage.fr: 'Le temps est écoulé\u00a0: le tour se termine.',
   },
   'ship_log_time_up_held': {
     AppLanguage.en:
         'Time runs out: {ship} holds her fire; her guns keep their charge.',
     AppLanguage.fr:
-        'Le temps est écoulé : {ship} retient son tir ; ses armes gardent leur charge.',
+        'Le temps est écoulé\u00a0: {ship} retient son tir\u00a0; ses armes gardent leur charge.',
   },
   'turn_seconds_bonus_label': {
     AppLanguage.en: '+{n} s per turn of a timed battle',
@@ -10850,7 +11034,7 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.en:
         'Each turn of a ship battle has a time limit (20 s, more with a Speaking Tube). When it runs out, the turn ends as it stands; a turn ended with half the time left is quick orders, +10% evasion.',
     AppLanguage.fr:
-        'Chaque tour de bataille navale a une limite de temps (20 s, davantage avec un Porte-voix). Quand elle est écoulée, le tour se termine en l’état ; un tour terminé avec la moitié du temps restant donne des ordres rapides, +10 % d’esquive.',
+        'Chaque tour de bataille navale a une limite de temps (20 s, davantage avec un Porte-voix). Quand elle est écoulée, le tour se termine en l’état\u00a0; un tour terminé avec la moitié du temps restant donne des ordres rapides, +10\u00a0% d’esquive.',
   },
   'ship_end_turn_button': {
     AppLanguage.en: 'End turn',
@@ -10904,7 +11088,7 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.en:
         'Hold an enemy room to aim: stop the marker in the middle for a critical. Slow gives the marker more time; off makes every shot a plain one.',
     AppLanguage.fr:
-        'Maintenez une salle ennemie pour viser : arrêtez le curseur au milieu pour un critique. Lent laisse plus de temps au curseur ; désactivé, chaque tir est un tir simple.',
+        'Maintenez une salle ennemie pour viser\u00a0: arrêtez le curseur au milieu pour un critique. Lent laisse plus de temps au curseur\u00a0; désactivé, chaque tir est un tir simple.',
   },
   'aimed_shots_normal': {AppLanguage.en: 'Normal', AppLanguage.fr: 'Normal'},
   'aimed_shots_slow': {AppLanguage.en: 'Slow', AppLanguage.fr: 'Lent'},
@@ -10914,11 +11098,11 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.en:
         'The ships start at medium range. Once a turn the helm can close in or pull away: far off, both ships are harder to hit; side by side, easier. Some weapons reach only so far.',
     AppLanguage.fr:
-        'Les navires commencent à moyenne portée. Une fois par tour, la barre peut se rapprocher ou s’éloigner : de loin, les deux navires sont plus durs à toucher ; bord à bord, plus faciles. Certaines armes ne portent pas partout.',
+        'Les navires commencent à moyenne portée. Une fois par tour, la barre peut se rapprocher ou s’éloigner\u00a0: de loin, les deux navires sont plus durs à toucher\u00a0; bord à bord, plus faciles. Certaines armes ne portent pas partout.',
   },
   'tip_ship_habit': {
     AppLanguage.en: 'How {ship} fights:',
-    AppLanguage.fr: 'Comment {ship} se bat :',
+    AppLanguage.fr: 'Comment {ship} se bat\u00a0:',
   },
   'tip_ship_weather': {
     AppLanguage.en:
@@ -10930,37 +11114,37 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.en:
         'Tap a room to fire, or hold it to take aim: stop the marker in the middle for a critical that cannot be slipped; at the edges the shot goes wide. Settings can slow the marker or turn aiming off.',
     AppLanguage.fr:
-        'Touchez une salle pour tirer, ou maintenez-la pour viser : arrêtez le curseur au milieu pour un critique impossible à esquiver ; aux bords, le tir part à côté. Les réglages peuvent ralentir le curseur ou désactiver la visée.',
+        'Touchez une salle pour tirer, ou maintenez-la pour viser\u00a0: arrêtez le curseur au milieu pour un critique impossible à esquiver\u00a0; aux bords, le tir part à côté. Les réglages peuvent ralentir le curseur ou désactiver la visée.',
   },
   'tip_ship_orders': {
     AppLanguage.en:
         'Each hand aboard can give one order a battle, from the right room: tap their die under the sea and they go there and give it; hold it to read it. Drag a hand onto a room to move them.',
     AppLanguage.fr:
-        'Chaque membre de l’équipage peut donner un ordre par bataille, depuis le bon poste : touchez son dé sous la mer, il s’y rend et le donne ; maintenez-le pour le lire. Glissez un membre sur une salle pour le déplacer.',
+        'Chaque membre de l’équipage peut donner un ordre par bataille, depuis le bon poste\u00a0: touchez son dé sous la mer, il s’y rend et le donne\u00a0; maintenez-le pour le lire. Glissez un membre sur une salle pour le déplacer.',
   },
   'tip_ship_fire': {
     AppLanguage.en:
         'Fire aboard: a burning room loses a pip and 3 hull every round. The hand at that station puts it out at the start of the turn.',
     AppLanguage.fr:
-        'Le feu à bord : une salle en flammes perd un cran et 3 points de coque à chaque tour. La personne à ce poste l’éteint au début du tour.',
+        'Le feu à bord\u00a0: une salle en flammes perd un cran et 3 points de coque à chaque tour. La personne à ce poste l’éteint au début du tour.',
   },
   'tip_ship_leak': {
     AppLanguage.en:
         'A leak: the sea is in the hold and costs hull every round until the hand in the hold bails it.',
     AppLanguage.fr:
-        'Une voie d’eau : la mer entre dans la cale et coûte de la coque à chaque tour, jusqu’à ce que la personne en cale l’écope.',
+        'Une voie d’eau\u00a0: la mer entre dans la cale et coûte de la coque à chaque tour, jusqu’à ce que la personne en cale l’écope.',
   },
   'tip_ship_boarding': {
     AppLanguage.en:
         'Their rail is open and the ships lie side by side: you can board them. The deck is fought on the dice; winning it wins the battle and their hold.',
     AppLanguage.fr:
-        'Leur bastingage est ouvert et les navires sont bord à bord : vous pouvez les aborder. Le pont se dispute aux dés ; le gagner vous donne la victoire et leur cale.',
+        'Leur bastingage est ouvert et les navires sont bord à bord\u00a0: vous pouvez les aborder. Le pont se dispute aux dés\u00a0; le gagner vous donne la victoire et leur cale.',
   },
   'tip_ship_sea': {
     AppLanguage.en:
         'The sea has its own say: now and then a rogue wave, a sea creature or a drifting wreck changes the round.',
     AppLanguage.fr:
-        'La mer a son mot à dire : de temps en temps, une lame de fond, une créature marine ou une épave à la dérive change le tour.',
+        'La mer a son mot à dire\u00a0: de temps en temps, une lame de fond, une créature marine ou une épave à la dérive change le tour.',
   },
   // One-time fight tips (fight_tips.dart): the first fight that shows a
   // goal, a doctrine or a situation explains it. A hold's tip takes its
@@ -10976,55 +11160,55 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.en:
         'Their sturdiest fighter is the Captain. Bring the Captain down and the rest flee: you win, though those who ran leave only part of their spoils. The pay is a little better.',
     AppLanguage.fr:
-        'Leur combattant le plus robuste est le Capitaine. Abattez le Capitaine et les autres s’enfuient : vous gagnez, mais les fuyards ne laissent qu’une partie de leur butin. La paie est un peu meilleure.',
+        'Leur combattant le plus robuste est le Capitaine. Abattez le Capitaine et les autres s’enfuient\u00a0: vous gagnez, mais les fuyards ne laissent qu’une partie de leur butin. La paie est un peu meilleure.',
   },
   'tip_fight_goal_subdue': {
     AppLanguage.en:
         'Wear them down below {pct}% health and they yield and pay a ransom, more gold than their usual reward. A blow that kills outright leaves only the usual spoils.',
     AppLanguage.fr:
-        'Usez-les jusque sous {pct} % de vie et ils se rendent et paient une rançon : plus d’or que leur récompense habituelle. Un coup qui les tue net ne laisse que le butin habituel.',
+        'Usez-les jusque sous {pct} % de vie et ils se rendent et paient une rançon\u00a0: plus d’or que leur récompense habituelle. Un coup qui les tue net ne laisse que le butin habituel.',
   },
   'tip_fight_doctrine_dominion': {
     AppLanguage.en:
         'Every third round (the 3rd, the 6th…) the Writ silences your skill faces: count on plain Attack and Defend then. The Dominion’s soldiers are often Armoured and shrug off a little of each Attack hit; skills cut through.',
     AppLanguage.fr:
-        'Tous les trois tours (le 3e, le 6e…), l’Édit fait taire vos faces de compétence : comptez alors sur l’Attaque et la Défense simples. Les soldats du Dominion sont souvent Cuirassés et encaissent un peu de chaque coup d’Attaque ; les compétences passent.',
+        'Tous les trois tours (le 3e, le 6e…), l’Édit fait taire vos faces de compétence\u00a0: comptez alors sur l’Attaque et la Défense simples. Les soldats du Dominion sont souvent Cuirassés et encaissent un peu de chaque coup d’Attaque\u00a0; les compétences passent.',
   },
   'tip_fight_doctrine_crows': {
     AppLanguage.en:
         'Each hit a Salt Crow lands lifts some of your gold, and the Crow keeps it on itself (its card shows how much). Defeat it to win the gold back; whatever a Crow still carries when the fight ends, or takes when it runs, is lost.',
     AppLanguage.fr:
-        'Chaque coup que porte une Corneille de Sel vous prend un peu d’or, qu’elle garde sur elle (sa carte montre combien). Battez-la pour le récupérer : ce qu’une Corneille porte encore à la fin du combat, ou emporte en fuyant, est perdu.',
+        'Chaque coup que porte une Corneille de Sel vous prend un peu d’or, qu’elle garde sur elle (sa carte montre combien). Battez-la pour le récupérer\u00a0: ce qu’une Corneille porte encore à la fin du combat, ou emporte en fuyant, est perdu.',
   },
   'tip_fight_doctrine_penitents': {
     AppLanguage.en:
         'The Ashen Penitents are often Frenzied: once below half health they hit much harder. Finish a wounded one quickly.',
     AppLanguage.fr:
-        'Les Pénitents de Cendre sont souvent Enragés : sous la moitié de leur vie, ils frappent bien plus fort. Achevez vite un blessé.',
+        'Les Pénitents de Cendre sont souvent Enragés\u00a0: sous la moitié de leur vie, ils frappent bien plus fort. Achevez vite un blessé.',
   },
   'tip_fight_doctrine_choir': {
     AppLanguage.en:
         'The Choir’s sentinels are often Armoured: they shrug off a little of each Attack hit, while skills cut straight through.',
     AppLanguage.fr:
-        'Les sentinelles du Chœur sont souvent Cuirassées : elles encaissent un peu de chaque coup d’Attaque, alors que les compétences passent.',
+        'Les sentinelles du Chœur sont souvent Cuirassées\u00a0: elles encaissent un peu de chaque coup d’Attaque, alors que les compétences passent.',
   },
   'tip_fight_doctrine_pit': {
     AppLanguage.en:
         'The Pit’s things are often Venomous: their attacks poison whoever they hit.',
     AppLanguage.fr:
-        'Les créatures de la Fosse sont souvent Venimeuses : leurs attaques empoisonnent leur cible.',
+        'Les créatures de la Fosse sont souvent Venimeuses\u00a0: leurs attaques empoisonnent leur cible.',
   },
   'tip_fight_doctrine_giants': {
     AppLanguage.en:
         'The giants of Highhearth are often Armoured: they shrug off a little of each Attack hit, while skills cut straight through.',
     AppLanguage.fr:
-        'Les géants de Haut-Âtre sont souvent Cuirassés : ils encaissent un peu de chaque coup d’Attaque, alors que les compétences passent.',
+        'Les géants de Haut-Âtre sont souvent Cuirassés\u00a0: ils encaissent un peu de chaque coup d’Attaque, alors que les compétences passent.',
   },
   'tip_fight_doctrine_tidekin': {
     AppLanguage.en:
         'The Tide-Kin are often Skittish: badly hurt, they flee and you get only part of their spoils. Finish them before they slip away.',
     AppLanguage.fr:
-        'Les Gens de la Marée sont souvent Craintifs : gravement blessés, ils fuient et vous n’avez qu’une partie de leur butin. Achevez-les avant qu’ils filent.',
+        'Les Gens de la Marée sont souvent Craintifs\u00a0: gravement blessés, ils fuient et vous n’avez qu’une partie de leur butin. Achevez-les avant qu’ils filent.',
   },
   'tip_fight_situation_ambush': {
     AppLanguage.en:
@@ -11042,30 +11226,29 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.en:
         'Only two enemies can reach you each round; the rest hold back until there is room. Winning in the press improves the spoils chest a little.',
     AppLanguage.fr:
-        'Seuls deux ennemis peuvent vous atteindre chaque tour ; les autres attendent qu’une place se libère. Gagner dans la cohue améliore un peu le coffre de butin.',
+        'Seuls deux ennemis peuvent vous atteindre chaque tour\u00a0; les autres attendent qu’une place se libère. Gagner dans la cohue améliore un peu le coffre de butin.',
   },
   'tip_fight_situation_high_ground': {
     AppLanguage.en:
         'You hold the high ground: every Defend face you roll blocks half again as much.',
     AppLanguage.fr:
-        'Vous tenez la hauteur : chaque face Défense que vous obtenez bloque moitié plus.',
+        'Vous tenez la hauteur\u00a0: chaque face Défense que vous obtenez bloque moitié plus.',
   },
   'tip_fight_situation_shrine': {
     AppLanguage.en:
         'A shrine stands here: every Heal face and every potion restores half again as much.',
     AppLanguage.fr:
-        'Un sanctuaire se dresse ici : chaque face Soin et chaque potion soigne moitié plus.',
+        'Un sanctuaire se dresse ici\u00a0: chaque face Soin et chaque potion soigne moitié plus.',
   },
   'ship_fire_hint': {
     AppLanguage.en:
         'Tap a ready weapon, then the room to hit; hold the room to take aim.',
     AppLanguage.fr:
-        'Touchez une arme prête, puis la salle à frapper ; maintenez la salle pour viser.',
+        'Touchez une arme prête, puis la salle à frapper\u00a0; maintenez la salle pour viser.',
   },
   'ship_station_hint': {
     AppLanguage.en: 'Tap a crew member, then the room to send them to.',
-    AppLanguage.fr:
-        'Touchez un membre d\'équipage, puis la salle où l\'envoyer.',
+    AppLanguage.fr: 'Touchez un membre d’équipage, puis la salle où l’envoyer.',
   },
   'ship_aim_prefix': {AppLanguage.en: 'Aiming at', AppLanguage.fr: 'Vise'},
   'ship_incoming_label': {
@@ -11086,7 +11269,7 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   },
   'ship_log_shield_stripped': {
     AppLanguage.en: '{n} shield layers torn away at once!',
-    AppLanguage.fr: '{n} couches de bouclier arrachées d\'un coup\u00a0!',
+    AppLanguage.fr: '{n} couches de bouclier arrachées d’un coup\u00a0!',
   },
   'ship_log_shield_gap': {
     AppLanguage.en: 'The shot finds the gap in the shield!',
@@ -11122,7 +11305,7 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   },
   'ship_log_fire_started': {
     AppLanguage.en: 'Fire in the {ship}\'s {room}!',
-    AppLanguage.fr: 'Feu dans {room} de {ship} !',
+    AppLanguage.fr: 'Feu dans {room} de {ship}\u00a0!',
   },
   'ship_log_fire_burns': {
     AppLanguage.en: 'The fire spreads in the {ship}\'s {room}',
@@ -11143,48 +11326,50 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   'ship_log_dice_stun': {
     AppLanguage.en: "{crew}'s die stuns the {weapon}: a step of charge lost",
     AppLanguage.fr:
-        'Le dé de {crew} étourdit {weapon} : un cran de charge perdu',
+        'Le dé de {crew} étourdit {weapon}\u00a0: un cran de charge perdu',
   },
   'ship_log_dice_wound': {
     AppLanguage.en: "{crew}'s die winds the {weapon} a step",
-    AppLanguage.fr: 'Le dé de {crew} remonte {weapon} d\'un cran',
+    AppLanguage.fr: 'Le dé de {crew} remonte {weapon} d’un cran',
   },
   'ship_dice_blank': {
     AppLanguage.en: 'Its die has no face for this room: nothing this turn',
-    AppLanguage.fr: 'Son dé n\'a aucune face pour cette salle : rien ce tour',
+    AppLanguage.fr:
+        'Son dé n’a aucune face pour cette salle\u00a0: rien ce tour',
   },
   'ship_dice_attack': {
     AppLanguage.en: 'Its die landed a strike: your shots +{n}% this turn',
-    AppLanguage.fr: 'Son dé donne un coup : vos tirs +{n} % ce tour',
+    AppLanguage.fr: 'Son dé donne un coup\u00a0: vos tirs +{n}\u00a0% ce tour',
   },
   'ship_dice_poison': {
     AppLanguage.en: 'Its die landed a venom: your shots +{n}% this turn',
-    AppLanguage.fr: 'Son dé donne un venin : vos tirs +{n} % ce tour',
+    AppLanguage.fr: 'Son dé donne un venin\u00a0: vos tirs +{n}\u00a0% ce tour',
   },
   'ship_dice_defend': {
     AppLanguage.en: 'Its die landed a guard: enemy shots -{n}% this turn',
-    AppLanguage.fr: 'Son dé donne une garde : tirs ennemis -{n} % ce tour',
+    AppLanguage.fr:
+        'Son dé donne une garde\u00a0: tirs ennemis -{n}\u00a0% ce tour',
   },
   'ship_dice_heal': {
     AppLanguage.en: 'Its die landed a mending: hull +{n} when the round ends',
-    AppLanguage.fr: 'Son dé donne un soin : coque +{n} en fin de tour',
+    AppLanguage.fr: 'Son dé donne un soin\u00a0: coque +{n} en fin de tour',
   },
   'ship_dice_mana': {
     AppLanguage.en:
         'Its die landed a charge: a gun wound a step when the round ends',
     AppLanguage.fr:
-        'Son dé donne une charge : un canon remonté d\'un cran en fin de tour',
+        'Son dé donne une charge\u00a0: un canon remonté d’un cran en fin de tour',
   },
   'ship_dice_stun': {
     AppLanguage.en:
         "Its die landed a stun: the enemy's most charged gun loses a step",
     AppLanguage.fr:
-        'Son dé donne un étourdissement : le canon ennemi le plus chargé perd un cran',
+        'Son dé donne un étourdissement\u00a0: le canon ennemi le plus chargé perd un cran',
   },
   'ship_dice_weaken': {
     AppLanguage.en: 'Its die landed a sap: enemy shots -{n}% this turn',
     AppLanguage.fr:
-        'Son dé donne un affaiblissement : tirs ennemis -{n} % ce tour',
+        'Son dé donne un affaiblissement\u00a0: tirs ennemis -{n}\u00a0% ce tour',
   },
   'ship_log_crew_hurt': {
     AppLanguage.en: '{crew} is hurt at the {room}, -{n}',
@@ -11204,47 +11389,49 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   },
   'ship_log_critical': {
     AppLanguage.en: 'A clean hit!',
-    AppLanguage.fr: 'Coup parfait !',
+    AppLanguage.fr: 'Coup parfait\u00a0!',
   },
   'ship_log_focus': {
     AppLanguage.en: 'Focused fire: the {room} takes another pip',
-    AppLanguage.fr: 'Tir concentré : {room} perd un cran de plus',
+    AppLanguage.fr: 'Tir concentré\u00a0: {room} perd un cran de plus',
   },
   'ship_log_grape': {
     AppLanguage.en: 'Grapeshot cuts down the {ship}\'s crew',
-    AppLanguage.fr: 'La mitraille fauche l\'équipage de {ship}',
+    AppLanguage.fr: 'La mitraille fauche l’équipage de {ship}',
   },
   'ship_log_close_in': {
     AppLanguage.en: 'The {ship} closes in: {range}',
-    AppLanguage.fr: '{ship} se rapproche : {range}',
+    AppLanguage.fr: '{ship} se rapproche\u00a0: {range}',
   },
   'ship_log_pull_away': {
     AppLanguage.en: 'The {ship} pulls away: {range}',
-    AppLanguage.fr: '{ship} s\'éloigne : {range}',
+    AppLanguage.fr: '{ship} s’éloigne\u00a0: {range}',
   },
   'ship_log_enemy_closes': {
     AppLanguage.en: 'The {ship} closes in: {range}',
-    AppLanguage.fr: '{ship} se rapproche : {range}',
+    AppLanguage.fr: '{ship} se rapproche\u00a0: {range}',
   },
   'ship_log_enemy_pulls_away': {
     AppLanguage.en: 'The {ship} pulls away: {range}',
-    AppLanguage.fr: '{ship} s\'éloigne : {range}',
+    AppLanguage.fr: '{ship} s’éloigne\u00a0: {range}',
   },
   'ship_log_quick_orders': {
     AppLanguage.en: 'Quick orders: the Eel is already turning, +{n}% evasion',
-    AppLanguage.fr: 'Ordres rapides : l\'Eel vire déjà, +{n} % d\'esquive',
+    AppLanguage.fr:
+        'Ordres rapides\u00a0: l’Eel vire déjà, +{n}\u00a0% d’esquive',
   },
   'ship_log_escaped': {
     AppLanguage.en: 'The {ship} slips away over the horizon',
-    AppLanguage.fr: '{ship} disparaît à l\'horizon',
+    AppLanguage.fr: '{ship} disparaît à l’horizon',
   },
   'ship_log_enemy_leak_plugged': {
     AppLanguage.en: 'The {ship} plugs a leak',
-    AppLanguage.fr: '{ship} colmate une voie d\'eau',
+    AppLanguage.fr: '{ship} colmate une voie d’eau',
   },
   'ship_log_rammed': {
     AppLanguage.en: 'The {ship} rams you! -{n} hull, and the sea comes in',
-    AppLanguage.fr: '{ship} vous éperonne ! -{n} de coque, et la mer entre',
+    AppLanguage.fr:
+        '{ship} vous éperonne\u00a0! -{n} de coque, et la mer entre',
   },
   'ship_log_warded': {
     AppLanguage.en: 'A ward of void turns {weapon} aside',
@@ -11252,7 +11439,7 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   },
   'ship_log_wreck_hit': {
     AppLanguage.en: '{weapon} smashes into the drifting wreck',
-    AppLanguage.fr: '{weapon} s\'écrase sur l\'épave à la dérive',
+    AppLanguage.fr: '{weapon} s’écrase sur l’épave à la dérive',
   },
   'ship_log_squall_quench': {
     AppLanguage.en: 'The squall puts out the {ship}\'s fires',
@@ -11260,7 +11447,7 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   },
   'ship_log_flooding': {
     AppLanguage.en: 'The {ship} takes on water, -{n} hull',
-    AppLanguage.fr: '{ship} embarque de l\'eau, -{n} de coque',
+    AppLanguage.fr: '{ship} embarque de l’eau, -{n} de coque',
   },
   'ship_log_rigging_torn': {
     AppLanguage.en: 'Chain shot tears the {ship}\'s rigging',
@@ -11268,23 +11455,23 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   },
   'ship_log_leak': {
     AppLanguage.en: 'The {ship} is holed below the waterline!',
-    AppLanguage.fr: 'Voie d\'eau sous la ligne de flottaison de {ship} !',
+    AppLanguage.fr: 'Voie d’eau sous la ligne de flottaison de {ship}\u00a0!',
   },
   'ship_log_weather_calm': {
     AppLanguage.en: 'The wind drops: calm',
-    AppLanguage.fr: 'Le vent tombe : calme',
+    AppLanguage.fr: 'Le vent tombe\u00a0: calme',
   },
   'ship_log_weather_tailwind': {
     AppLanguage.en: 'The wind swings behind the Eel',
-    AppLanguage.fr: 'Le vent passe dans le dos de l\'Eel',
+    AppLanguage.fr: 'Le vent passe dans le dos de l’Eel',
   },
   'ship_log_weather_crosswind': {
     AppLanguage.en: 'A crosswind rises: shots drift',
-    AppLanguage.fr: 'Un vent de travers se lève : les tirs dévient',
+    AppLanguage.fr: 'Un vent de travers se lève\u00a0: les tirs dévient',
   },
   'ship_log_weather_squall': {
     AppLanguage.en: 'A squall sweeps in: rain on every deck',
-    AppLanguage.fr: 'Un grain arrive : la pluie sur tous les ponts',
+    AppLanguage.fr: 'Un grain arrive\u00a0: la pluie sur tous les ponts',
   },
   'ship_log_weather_fog': {
     AppLanguage.en: 'Fog rolls in',
@@ -11294,82 +11481,83 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.en:
         'A rogue wave breaks over both ships: a shield layer lost on each',
     AppLanguage.fr:
-        'Une vague scélérate balaie les deux navires : chacun perd une couche de bouclier',
+        'Une vague scélérate balaie les deux navires\u00a0: chacun perd une couche de bouclier',
   },
   'ship_event_sea_creature': {
     AppLanguage.en:
         'Something huge rises under the {ship}! -{n} hull, the hold stove in',
     AppLanguage.fr:
-        'Une chose énorme surgit sous {ship} ! -{n} de coque, la cale enfoncée',
+        'Une chose énorme surgit sous {ship}\u00a0! -{n} de coque, la cale enfoncée',
   },
   'ship_event_wreck': {
     AppLanguage.en:
         'A wreck drifts between the ships: the next shot at the Eel will hit it',
     AppLanguage.fr:
-        'Une épave dérive entre les navires : le prochain tir contre l\'Eel la touchera',
+        'Une épave dérive entre les navires\u00a0: le prochain tir contre l’Eel la touchera',
   },
   'ship_log_got_away': {
     AppLanguage.en: 'The {ship} got away: no prize, but the Eel sails on',
     AppLanguage.fr:
-        '{ship} a pris la fuite : pas de prise, mais l\'Eel poursuit sa route',
+        '{ship} a pris la fuite\u00a0: pas de prise, mais l’Eel poursuit sa route',
   },
   'ship_order_log_allHands': {
     AppLanguage.en: '{crew}: "All hands!" Every damaged room is mended a pip',
     AppLanguage.fr:
-        '{crew} : « Tout le monde sur le pont ! » Chaque salle endommagée regagne un cran',
+        '{crew}\u00a0: «\u00a0Tout le monde sur le pont\u00a0!\u00a0» Chaque salle endommagée regagne un cran',
   },
   'ship_order_log_brace': {
     AppLanguage.en: '{crew}: "Brace!" The Eel takes half the hull this round',
     AppLanguage.fr:
-        '{crew} : « Tenez bon ! » L\'Eel ne perd que la moitié de la coque ce tour-ci',
+        '{crew}\u00a0: «\u00a0Tenez bon\u00a0!\u00a0» L’Eel ne perd que la moitié de la coque ce tour-ci',
   },
   'ship_order_log_grapple': {
     AppLanguage.en: '{crew}: "Grapple!" The ships are hauled side by side',
     AppLanguage.fr:
-        '{crew} : « Grappins ! » Les navires sont hâlés bord à bord',
+        '{crew}\u00a0: «\u00a0Grappins\u00a0!\u00a0» Les navires sont hâlés bord à bord',
   },
   'ship_order_log_bless': {
     AppLanguage.en:
         '{crew} blesses the deck: the fires die and the crew take heart',
     AppLanguage.fr:
-        '{crew} bénit le pont : les feux meurent et l\'équipage reprend courage',
+        '{crew} bénit le pont\u00a0: les feux meurent et l’équipage reprend courage',
   },
   'ship_order_log_shoreUp': {
     AppLanguage.en: '{crew} shores up the bulwark: mended, and a layer raised',
-    AppLanguage.fr: '{crew} étaye le pavois : réparé, et une couche relevée',
+    AppLanguage.fr:
+        '{crew} étaye le pavois\u00a0: réparé, et une couche relevée',
   },
   'ship_order_log_markHelm': {
     AppLanguage.en: '{crew} marks their helmsman: they slip nothing this turn',
     AppLanguage.fr:
-        '{crew} marque leur timonier : il n\'esquive rien ce tour-ci',
+        '{crew} marque leur timonier\u00a0: il n’esquive rien ce tour-ci',
   },
   'ship_order_log_cutRigging': {
     AppLanguage.en:
         '{crew} cuts their rigging: every weapon loses a step of charge',
     AppLanguage.fr:
-        '{crew} coupe leur gréement : chaque arme perd un cran de charge',
+        '{crew} coupe leur gréement\u00a0: chaque arme perd un cran de charge',
   },
   'ship_order_log_eagleEye': {
     AppLanguage.en: '{crew} takes aim: the next shot will be a clean hit',
-    AppLanguage.fr: '{crew} ajuste : le prochain tir fera mouche',
+    AppLanguage.fr: '{crew} ajuste\u00a0: le prochain tir fera mouche',
   },
   'ship_order_log_voidWard': {
     AppLanguage.en: '{crew} raises a ward of void over the Eel',
-    AppLanguage.fr: '{crew} dresse une garde du Néant sur l\'Eel',
+    AppLanguage.fr: '{crew} dresse une garde du Néant sur l’Eel',
   },
   'ship_quick_orders_hint': {
     AppLanguage.en:
         'End the turn with half the clock left: +{n}% evasion against the volley that follows.',
     AppLanguage.fr:
-        'Terminez le tour avec la moitié du temps restant : +{n} % d\'esquive contre la bordée qui suit.',
+        'Terminez le tour avec la moitié du temps restant\u00a0: +{n}\u00a0% d’esquive contre la bordée qui suit.',
   },
   'ship_aim_fire_button': {
     AppLanguage.en: 'Fire!',
-    AppLanguage.fr: 'Feu !',
+    AppLanguage.fr: 'Feu\u00a0!',
   },
   'ship_weather_next_label': {
     AppLanguage.en: 'next:',
-    AppLanguage.fr: 'ensuite :',
+    AppLanguage.fr: 'ensuite\u00a0:',
   },
   'ship_weather_calm': {
     AppLanguage.en: 'Calm',
@@ -11393,37 +11581,37 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   },
   'ship_weather_calm_hint': {
     AppLanguage.en: 'Calm sea: nothing changes.',
-    AppLanguage.fr: 'Mer calme : rien ne change.',
+    AppLanguage.fr: 'Mer calme\u00a0: rien ne change.',
   },
   'ship_weather_tailwind_hint': {
     AppLanguage.en:
         'Wind behind the Eel: +10% evasion for her, and her helm turns without a hand\'s work.',
     AppLanguage.fr:
-        'Vent dans le dos de l\'Eel : +10 % d\'esquive pour elle, et sa barre manœuvre sans y employer personne.',
+        'Vent dans le dos de l’Eel\u00a0: +10\u00a0% d’esquive pour elle, et sa barre manœuvre sans y employer personne.',
   },
   'ship_weather_crosswind_hint': {
     AppLanguage.en:
         'Shots drift: +10% evasion for both ships (the Wind-Knot turns it into a tailwind for the Eel).',
     AppLanguage.fr:
-        'Les tirs dévient : +10 % d\'esquive pour les deux navires (le Nœud de Vent en fait un vent arrière pour l\'Eel).',
+        'Les tirs dévient\u00a0: +10\u00a0% d’esquive pour les deux navires (le Nœud de Vent en fait un vent arrière pour l’Eel).',
   },
   'ship_weather_squall_hint': {
     AppLanguage.en:
         'Rain on every deck: no fire starts, and every fire goes out at the end of the round.',
     AppLanguage.fr:
-        'La pluie sur tous les ponts : aucun feu ne prend, et tous s\'éteignent en fin de tour.',
+        'La pluie sur tous les ponts\u00a0: aucun feu ne prend, et tous s’éteignent en fin de tour.',
   },
   'ship_weather_fog_hint': {
     AppLanguage.en:
         'The enemy\'s aim cannot be read, and both ships gain +5% evasion.',
     AppLanguage.fr:
-        'La visée ennemie ne se lit plus, et les deux navires gagnent +5 % d\'esquive.',
+        'La visée ennemie ne se lit plus, et les deux navires gagnent +5\u00a0% d’esquive.',
   },
   'ship_wreck_hint': {
     AppLanguage.en:
         'A wreck drifts between the ships: the next enemy shot hits it.',
     AppLanguage.fr:
-        'Une épave dérive entre les navires : le prochain tir ennemi la touche.',
+        'Une épave dérive entre les navires\u00a0: le prochain tir ennemi la touche.',
   },
   'ship_close_in_button': {
     AppLanguage.en: 'Close in',
@@ -11431,7 +11619,7 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   },
   'ship_pull_away_button': {
     AppLanguage.en: 'Pull away',
-    AppLanguage.fr: 'S\'éloigner',
+    AppLanguage.fr: 'S’éloigner',
   },
   'ship_range_close': {
     AppLanguage.en: 'close range',
@@ -11461,18 +11649,18 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.en:
         'Side by side: -10% evasion for both ships; boarding is possible; every weapon reaches.',
     AppLanguage.fr:
-        'Bord à bord : -10 % d\'esquive pour les deux navires ; l\'abordage est possible ; toutes les armes portent.',
+        'Bord à bord\u00a0: -10\u00a0% d’esquive pour les deux navires\u00a0; l’abordage est possible\u00a0; toutes les armes portent.',
   },
   'ship_range_medium_hint': {
     AppLanguage.en: 'Medium range: no change; fire pots cannot reach.',
     AppLanguage.fr:
-        'Moyenne portée : rien ne change ; les pots à feu ne portent pas.',
+        'Moyenne portée\u00a0: rien ne change\u00a0; les pots à feu ne portent pas.',
   },
   'ship_range_long_hint': {
     AppLanguage.en:
         'Far apart: +10% evasion for both ships; harpoons and fire pots cannot reach. A fleeing ship escapes from here.',
     AppLanguage.fr:
-        'Loin l\'un de l\'autre : +10 % d\'esquive pour les deux navires ; harpons et pots à feu ne portent pas. Un navire en fuite s\'échappe d\'ici.',
+        'Loin l’un de l’autre\u00a0: +10\u00a0% d’esquive pour les deux navires\u00a0; harpons et pots à feu ne portent pas. Un navire en fuite s’échappe d’ici.',
   },
   'ship_habit_flee': {
     AppLanguage.en: 'Runs when hurt',
@@ -11480,7 +11668,7 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   },
   'ship_habit_marksman': {
     AppLanguage.en: 'Keeps its distance, shoots the crew',
-    AppLanguage.fr: 'Garde ses distances, vise l\'équipage',
+    AppLanguage.fr: 'Garde ses distances, vise l’équipage',
   },
   'ship_habit_ram': {
     AppLanguage.en: 'Rams',
@@ -11502,19 +11690,19 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.en:
         'Closes in to grapple while healthy; at 40% hull or less it runs for long range, and escapes if it starts its turn there. Close in, or break its helm.',
     AppLanguage.fr:
-        'Se rapproche pour agripper tant qu\'il est intact ; à 40 % de coque ou moins il file vers la longue portée, et s\'échappe s\'il y commence son tour. Rapprochez-vous, ou brisez sa barre.',
+        'Se rapproche pour agripper tant qu’il est intact\u00a0; à 40\u00a0% de coque ou moins il file vers la longue portée, et s’échappe s’il y commence son tour. Rapprochez-vous, ou brisez sa barre.',
   },
   'ship_habit_marksman_hint': {
     AppLanguage.en:
         'Steers for long range and aims at the rooms your crew stand in; its hits hurt the crew half again as much.',
     AppLanguage.fr:
-        'Cherche la longue portée et vise les salles où se tient votre équipage ; ses coups blessent moitié plus l\'équipage.',
+        'Cherche la longue portée et vise les salles où se tient votre équipage\u00a0; ses coups blessent moitié plus l’équipage.',
   },
   'ship_habit_ram_hint': {
     AppLanguage.en:
         'Steers alongside and, once a battle, rams: 12 hull through any shield, and a leak.',
     AppLanguage.fr:
-        'Vient bord à bord et, une fois par bataille, éperonne : 12 de coque à travers tout bouclier, et une voie d\'eau.',
+        'Vient bord à bord et, une fois par bataille, éperonne\u00a0: 12 de coque à travers tout bouclier, et une voie d’eau.',
   },
   'ship_habit_boarder_hint': {
     AppLanguage.en:
@@ -11525,7 +11713,7 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   'ship_focus_hint': {
     AppLanguage.en: 'Hit this turn: another hit here knocks off an extra pip.',
     AppLanguage.fr:
-        'Touchée ce tour : un nouveau coup ici arrache un cran de plus.',
+        'Touchée ce tour\u00a0: un nouveau coup ici arrache un cran de plus.',
   },
   'ship_out_of_range_label': {
     AppLanguage.en: 'out of reach',
@@ -11533,13 +11721,13 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   },
   'ship_slips_label': {
     AppLanguage.en: 'SLIPS {n}%',
-    AppLanguage.fr: 'ESQUIVE {n} %',
+    AppLanguage.fr: 'ESQUIVE {n}\u00a0%',
   },
   'ship_evasion_hint': {
     AppLanguage.en:
         'The chance this ship slips a shot: its helm, its helmsman, the range and the weather. None at all with its helm knocked out.',
     AppLanguage.fr:
-        'La chance que ce navire esquive un tir : sa barre, son timonier, la portée et le temps. Aucune si sa barre est hors d\'usage.',
+        'La chance que ce navire esquive un tir\u00a0: sa barre, son timonier, la portée et le temps. Aucune si sa barre est hors d’usage.',
   },
   'ship_crew_button': {
     AppLanguage.en: 'Crew',
@@ -11575,41 +11763,41 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   },
   'ship_ammo_round_hint': {
     AppLanguage.en: 'Round shot: the weapon as it is.',
-    AppLanguage.fr: 'Boulet : l\'arme telle quelle.',
+    AppLanguage.fr: 'Boulet\u00a0: l’arme telle quelle.',
   },
   'ship_ammo_chain_hint': {
     AppLanguage.en:
         'Chain shot: half the hull, but it tears a pip off their helm wherever it lands.',
     AppLanguage.fr:
-        'Boulet ramé : moitié moins de coque, mais il arrache un cran à leur barre où qu\'il touche.',
+        'Boulet ramé\u00a0: moitié moins de coque, mais il arrache un cran à leur barre où qu’il touche.',
   },
   'ship_ammo_grape_hint': {
     AppLanguage.en:
         'Grapeshot: half the hull, but their crew repairs one less for two rounds.',
     AppLanguage.fr:
-        'Mitraille : moitié moins de coque, mais leur équipage répare une fois de moins pendant deux tours.',
+        'Mitraille\u00a0: moitié moins de coque, mais leur équipage répare une fois de moins pendant deux tours.',
   },
   'ship_ammo_heated_hint': {
     AppLanguage.en:
         'Heated shot: three quarters of the hull, and the room it lands in burns.',
     AppLanguage.fr:
-        'Boulet rouge : trois quarts de la coque, et la salle touchée prend feu.',
+        'Boulet rouge\u00a0: trois quarts de la coque, et la salle touchée prend feu.',
   },
   'ship_orders_label': {
     AppLanguage.en: 'Orders:',
-    AppLanguage.fr: 'Ordres :',
+    AppLanguage.fr: 'Ordres\u00a0:',
   },
   'ship_order_allHands': {
     AppLanguage.en: 'All hands!',
-    AppLanguage.fr: 'Tous sur le pont !',
+    AppLanguage.fr: 'Tous sur le pont\u00a0!',
   },
   'ship_order_brace': {
     AppLanguage.en: 'Brace!',
-    AppLanguage.fr: 'Tenez bon !',
+    AppLanguage.fr: 'Tenez bon\u00a0!',
   },
   'ship_order_grapple': {
     AppLanguage.en: 'Grapple!',
-    AppLanguage.fr: 'Grappins !',
+    AppLanguage.fr: 'Grappins\u00a0!',
   },
   'ship_order_bless': {
     AppLanguage.en: 'Bless the deck',
@@ -11629,7 +11817,7 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   },
   'ship_order_eagleEye': {
     AppLanguage.en: 'Eagle eye',
-    AppLanguage.fr: 'Œil d\'aigle',
+    AppLanguage.fr: 'Œil d’aigle',
   },
   'ship_order_voidWard': {
     AppLanguage.en: 'Void ward',
@@ -11639,56 +11827,56 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.en:
         'Once a battle: every damaged room on the Eel is mended a pip.',
     AppLanguage.fr:
-        'Une fois par bataille : chaque salle endommagée de l\'Eel regagne un cran.',
+        'Une fois par bataille\u00a0: chaque salle endommagée de l’Eel regagne un cran.',
   },
   'ship_order_brace_hint': {
     AppLanguage.en: 'Once a battle: the Eel takes half the hull this round.',
     AppLanguage.fr:
-        'Une fois par bataille : l\'Eel ne perd que la moitié de la coque ce tour-ci.',
+        'Une fois par bataille\u00a0: l’Eel ne perd que la moitié de la coque ce tour-ci.',
   },
   'ship_order_grapple_hint': {
     AppLanguage.en:
         'Once a battle: the ships are hauled side by side and the grapples hold; board this turn, shields or not.',
     AppLanguage.fr:
-        'Une fois par bataille : les navires sont hâlés bord à bord et les grappins tiennent ; abordez ce tour-ci, boucliers ou non.',
+        'Une fois par bataille\u00a0: les navires sont hâlés bord à bord et les grappins tiennent\u00a0; abordez ce tour-ci, boucliers ou non.',
   },
   'ship_order_bless_hint': {
     AppLanguage.en:
         'Once a battle: every fire aboard goes out and the crew heal 10.',
     AppLanguage.fr:
-        'Une fois par bataille : tous les feux à bord s\'éteignent et l\'équipage récupère 10 points de vie.',
+        'Une fois par bataille\u00a0: tous les feux à bord s’éteignent et l’équipage récupère 10 points de vie.',
   },
   'ship_order_shoreUp_hint': {
     AppLanguage.en:
         'Once a battle: the bulwark is mended and a shield layer raised.',
     AppLanguage.fr:
-        'Une fois par bataille : le pavois est réparé et une couche de bouclier relevée.',
+        'Une fois par bataille\u00a0: le pavois est réparé et une couche de bouclier relevée.',
   },
   'ship_order_markHelm_hint': {
     AppLanguage.en: 'Once a battle: the enemy slips nothing this turn.',
     AppLanguage.fr:
-        'Une fois par bataille : l\'ennemi n\'esquive rien ce tour-ci.',
+        'Une fois par bataille\u00a0: l’ennemi n’esquive rien ce tour-ci.',
   },
   'ship_order_cutRigging_hint': {
     AppLanguage.en: 'Once a battle: every enemy weapon loses a step of charge.',
     AppLanguage.fr:
-        'Une fois par bataille : chaque arme ennemie perd un cran de charge.',
+        'Une fois par bataille\u00a0: chaque arme ennemie perd un cran de charge.',
   },
   'ship_order_eagleEye_hint': {
     AppLanguage.en:
         'Once a battle: the next shot this turn cannot be slipped, does half again the hull and an extra pip.',
     AppLanguage.fr:
-        'Une fois par bataille : le prochain tir de ce tour ne peut être esquivé, inflige moitié plus de coque et un cran de plus.',
+        'Une fois par bataille\u00a0: le prochain tir de ce tour ne peut être esquivé, inflige moitié plus de coque et un cran de plus.',
   },
   'ship_order_voidWard_hint': {
     AppLanguage.en:
         'Once a battle: the first enemy shot this round is turned aside.',
     AppLanguage.fr:
-        'Une fois par bataille : le premier tir ennemi de ce tour est détourné.',
+        'Une fois par bataille\u00a0: le premier tir ennemi de ce tour est détourné.',
   },
   'weapon_reach_label': {
     AppLanguage.en: 'reach:',
-    AppLanguage.fr: 'portée :',
+    AppLanguage.fr: 'portée\u00a0:',
   },
   'ship_log_enemy_fire_out': {
     AppLanguage.en: 'The {ship} fights the fire in its {room}',
@@ -11700,7 +11888,7 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   },
   'home_port_label': {
     AppLanguage.en: 'Home port',
-    AppLanguage.fr: "Port d'attache"
+    AppLanguage.fr: "Port d’attache"
   },
   'chapter_short_prefix': {
     AppLanguage.en: 'Chapter',
@@ -11719,7 +11907,7 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   'phases_label': {AppLanguage.en: 'Phases', AppLanguage.fr: 'Phases'},
   'phases_hint': {
     AppLanguage.en: 'this one changes as it weakens',
-    AppLanguage.fr: "celui-ci change à mesure qu'il faiblit",
+    AppLanguage.fr: "celui-ci change à mesure qu’il faiblit",
   },
   'phase_heals_prefix': {
     AppLanguage.en: 'recovers',
@@ -11739,7 +11927,7 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   'unique_label': {AppLanguage.en: 'Unique', AppLanguage.fr: 'Unique'},
   'unique_lifesteal_desc': {
     AppLanguage.en: 'heals {v}% of the damage it deals',
-    AppLanguage.fr: "soigne {v} % des dégâts infligés",
+    AppLanguage.fr: "soigne {v}\u00a0% des dégâts infligés",
   },
   'unique_thorns_desc': {
     AppLanguage.en: 'whatever hits you takes {v} damage back',
@@ -11747,7 +11935,7 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   },
   'unique_thorns_percent_desc': {
     AppLanguage.en: 'whatever hits you takes {v}% of the blow back',
-    AppLanguage.fr: 'ce qui vous frappe encaisse {v} % du coup en retour',
+    AppLanguage.fr: 'ce qui vous frappe encaisse {v}\u00a0% du coup en retour',
   },
   'unique_second_wind_desc': {
     AppLanguage.en: 'once per fight, a lethal blow leaves you at 1 HP',
@@ -11759,11 +11947,11 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   },
   'unique_crit_desc': {
     AppLanguage.en: '+{v}% critical chance',
-    AppLanguage.fr: '+{v} % de chance de critique',
+    AppLanguage.fr: '+{v}\u00a0% de chance de critique',
   },
   'unique_dodge_desc': {
     AppLanguage.en: '+{v}% dodge',
-    AppLanguage.fr: "+{v} % d'esquive",
+    AppLanguage.fr: "+{v}\u00a0% d’esquive",
   },
   'lifesteal_suffix': {
     AppLanguage.en: 'drinks back',
@@ -11771,11 +11959,11 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   },
   'thorns_suffix': {
     AppLanguage.en: 'is cut by the thorns for',
-    AppLanguage.fr: 'est entaillé par les épines :',
+    AppLanguage.fr: 'est entaillé par les épines\u00a0:',
   },
   'second_wind_message': {
     AppLanguage.en: 'refuses to fall — the Phoenix Sigil burns out!',
-    AppLanguage.fr: "refuse de tomber — le Sceau du Phénix se consume !",
+    AppLanguage.fr: "refuse de tomber — le Sceau du Phénix se consume\u00a0!",
   },
   // --- Companion targeting ---
   'companion_auto_target_setting_title': {
@@ -11811,7 +11999,7 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.en:
         'The next cycle starts the story from the top with a new character who inherits every die you own, every spell you know and a quarter of your gold. Level, gear, companions, camp and quests start over.',
     AppLanguage.fr:
-        "Le cycle suivant reprend l'histoire depuis le début avec un nouveau personnage qui hérite de tous vos dés, de tous vos sorts et d'un quart de votre or. Niveau, équipement, compagnons, camp et quêtes recommencent.",
+        "Le cycle suivant reprend l’histoire depuis le début avec un nouveau personnage qui hérite de tous vos dés, de tous vos sorts et d’un quart de votre or. Niveau, équipement, compagnons, camp et quêtes recommencent.",
   },
   'new_game_plus_enemies_prefix': {
     AppLanguage.en: 'Enemies',
@@ -11893,7 +12081,7 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.en:
         'A town wears its holder’s colour. A road in a clan’s colour joins two towns of that clan; a grey dashed road joins towns of different holders. The numbers are the big towns.',
     AppLanguage.fr:
-        'Une ville porte la couleur de son maître. Une route de la couleur d’un clan relie deux villes de ce clan ; une route grise en pointillés relie des villes de maîtres différents. Les numéros sont les grandes villes.',
+        'Une ville porte la couleur de son maître. Une route de la couleur d’un clan relie deux villes de ce clan\u00a0; une route grise en pointillés relie des villes de maîtres différents. Les numéros sont les grandes villes.',
   },
   'aftermath_heading': {
     AppLanguage.en: 'After the fight',
@@ -11915,7 +12103,7 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.en:
         'The fire burns low. Before sleep, someone rolls the camp\'s old die, the one that decides the night.',
     AppLanguage.fr:
-        'Le feu baisse. Avant de dormir, quelqu\'un lance le vieux dé du camp, celui qui décide de la nuit.',
+        'Le feu baisse. Avant de dormir, quelqu’un lance le vieux dé du camp, celui qui décide de la nuit.',
   },
   'fate_roll_button': {
     AppLanguage.en: 'Roll',
@@ -11959,25 +12147,25 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.en:
         'Someone gathering firewood finds a purse half buried in the sand, and no one to claim it.',
     AppLanguage.fr:
-        'En ramassant du bois, quelqu\'un trouve une bourse à moitié enfouie dans le sable, et personne pour la réclamer.',
+        'En ramassant du bois, quelqu’un trouve une bourse à moitié enfouie dans le sable, et personne pour la réclamer.',
   },
   'fate_windfall_rations': {
     AppLanguage.en:
         'A crate washes up on the shore with its seal still good: salt fish and hard bread.',
     AppLanguage.fr:
-        'Une caisse s\'échoue sur la rive, le sceau intact : du poisson salé et du pain dur.',
+        'Une caisse s’échoue sur la rive, le sceau intact\u00a0: du poisson salé et du pain dur.',
   },
   'fate_visitor_pilgrims': {
     AppLanguage.en:
         'Three pilgrims come out of the dark, thin as their staffs. They ask for nothing, which is worse.',
     AppLanguage.fr:
-        'Trois pèlerins sortent de l\'obscurité, maigres comme leurs bâtons. Ils ne demandent rien, et c\'est pire.',
+        'Trois pèlerins sortent de l’obscurité, maigres comme leurs bâtons. Ils ne demandent rien, et c’est pire.',
   },
   'fate_visitor_deserter': {
     AppLanguage.en:
         'A young soldier in Crusade colours stumbles into the firelight, sword belt cut away. "They hang deserters."',
     AppLanguage.fr:
-        'Un jeune soldat aux couleurs de la Croisade entre en titubant dans la lumière du feu, le baudrier tranché. « Ils pendent les déserteurs. »',
+        'Un jeune soldat aux couleurs de la Croisade entre en titubant dans la lumière du feu, le baudrier tranché. «\u00a0Ils pendent les déserteurs.\u00a0»',
   },
   'fate_visitor_storyteller': {
     AppLanguage.en:
@@ -12025,19 +12213,19 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.en:
         'They eat in silence and leave before dawn, lighter of step.',
     AppLanguage.fr:
-        'Ils mangent en silence et repartent avant l\'aube, d\'un pas plus léger.',
+        'Ils mangent en silence et repartent avant l’aube, d’un pas plus léger.',
   },
   'fate_result_sendOn': {
     AppLanguage.en:
         'They nod as if they had expected it, and walk on into the dark.',
     AppLanguage.fr:
-        'Ils hochent la tête comme s\'ils s\'y attendaient, et repartent dans la nuit.',
+        'Ils hochent la tête comme s’ils s’y attendaient, et repartent dans la nuit.',
   },
   'fate_result_hideDeserter': {
     AppLanguage.en:
         'At dawn a patrol passes the camp and finds nothing. The deserter is gone by noon, in a borrowed cloak.',
     AppLanguage.fr:
-        'À l\'aube, une patrouille passe au camp et ne trouve rien. Le déserteur est parti avant midi, dans un manteau prêté.',
+        'À l’aube, une patrouille passe au camp et ne trouve rien. Le déserteur est parti avant midi, dans un manteau prêté.',
   },
   'fate_result_handOver': {
     AppLanguage.en:
@@ -12049,7 +12237,7 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.en:
         'The tale runs past midnight, and the whole camp laughs in the same places.',
     AppLanguage.fr:
-        'L\'histoire dure jusqu\'après minuit, et tout le camp rit aux mêmes endroits.',
+        'L’histoire dure jusqu’après minuit, et tout le camp rit aux mêmes endroits.',
   },
   'fate_result_sendAway': {
     AppLanguage.en: 'The storyteller shrugs and takes the tale elsewhere.',
@@ -12060,7 +12248,7 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.en:
         'A rider stops to water a horse and talks of {place}. Before dawn, it is on your map.',
     AppLanguage.fr:
-        'Un cavalier s\'arrête pour abreuver son cheval et parle de {place}. Avant l\'aube, l\'endroit est sur votre carte.',
+        'Un cavalier s’arrête pour abreuver son cheval et parle de {place}. Avant l’aube, l’endroit est sur votre carte.',
   },
   'fate_quarrel': {
     AppLanguage.en: '{a} and {b} are at it again, {topic}.',
@@ -12085,7 +12273,7 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   'fate_result_side': {
     AppLanguage.en: '{winner} nods. {loser} goes to sleep without a word.',
     AppLanguage.fr:
-        '{winner} approuve d\'un signe de tête. {loser} va se coucher sans un mot.',
+        '{winner} approuve d’un signe de tête. {loser} va se coucher sans un mot.',
   },
   'fate_result_peace': {
     AppLanguage.en:
@@ -12094,7 +12282,7 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   },
   'fate_result_no_peace': {
     AppLanguage.en: 'Your words only give them something else to argue about.',
-    AppLanguage.fr: 'Vos mots ne leur donnent qu\'un autre sujet de dispute.',
+    AppLanguage.fr: 'Vos mots ne leur donnent qu’un autre sujet de dispute.',
   },
   'fate_theft': {
     AppLanguage.en: 'Something moves among the packs in the dark.',
@@ -12109,7 +12297,7 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   'fate_theft_gold': {
     AppLanguage.en:
         'By morning the thief is long gone, and the gold with them.',
-    AppLanguage.fr: 'Au matin, le voleur est loin, et l\'or avec lui.',
+    AppLanguage.fr: 'Au matin, le voleur est loin, et l’or avec lui.',
   },
   'fate_theft_rations': {
     AppLanguage.en:
@@ -12120,7 +12308,7 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.en:
         'By morning the thief is gone, empty-handed: there was nothing left to take.',
     AppLanguage.fr:
-        "Au matin, le voleur est reparti les mains vides : il n'y avait plus rien à prendre.",
+        "Au matin, le voleur est reparti les mains vides\u00a0: il n’y avait plus rien à prendre.",
   },
   'fate_check_line': {
     AppLanguage.en: '{stat} {total} against {dc}.',
@@ -12130,12 +12318,12 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.en:
         'Nothing comes out of the dark tonight. The fire, the sea, and sleep.',
     AppLanguage.fr:
-        'Rien ne sort de l\'obscurité cette nuit. Le feu, la mer, et le sommeil.',
+        'Rien ne sort de l’obscurité cette nuit. Le feu, la mer, et le sommeil.',
   },
   'fate_quiet_1': {
     AppLanguage.en: 'Someone hums an old song until the others join in, badly.',
     AppLanguage.fr:
-        'Quelqu\'un fredonne une vieille chanson jusqu\'à ce que les autres s\'y mettent, mal.',
+        'Quelqu’un fredonne une vieille chanson jusqu’à ce que les autres s’y mettent, mal.',
   },
   'fate_quiet_2': {
     AppLanguage.en:
@@ -12165,7 +12353,7 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   },
   'fate_place_found': {
     AppLanguage.en: 'New place: {place}',
-    AppLanguage.fr: 'Nouveau lieu : {place}',
+    AppLanguage.fr: 'Nouveau lieu\u00a0: {place}',
   },
   'ship_run_button': {
     AppLanguage.en: 'Run for it',
@@ -12175,21 +12363,22 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.en:
         'Far off, turn tail instead of firing: three turns of it and the Eel is away (a tailwind counts double). No gun fires in a turn you run.',
     AppLanguage.fr:
-        'De loin, virer de bord au lieu de tirer : trois tours et l\'Eel est hors d\'atteinte (un vent arrière compte double). Aucun canon ne tire pendant un tour de fuite.',
+        'De loin, virer de bord au lieu de tirer\u00a0: trois tours et l’Eel est hors d’atteinte (un vent arrière compte double). Aucun canon ne tire pendant un tour de fuite.',
   },
   'ship_escape_label': {
     AppLanguage.en: 'run: {n} to go',
-    AppLanguage.fr: 'fuite : encore {n}',
+    AppLanguage.fr: 'fuite\u00a0: encore {n}',
   },
   'ship_run_left_hint': {
     AppLanguage.en: 'Turns of running still needed to get away: {n}.',
-    AppLanguage.fr: 'Tours de fuite encore nécessaires pour s\'échapper : {n}.',
+    AppLanguage.fr:
+        'Tours de fuite encore nécessaires pour s’échapper\u00a0: {n}.',
   },
   'ship_run_warning': {
     AppLanguage.en:
         'Hull under 30%: get to long range and run for it while you can.',
     AppLanguage.fr:
-        'Coque sous 30 % : gagnez la longue portée et prenez la fuite tant que vous le pouvez.',
+        'Coque sous 30\u00a0%\u00a0: gagnez la longue portée et prenez la fuite tant que vous le pouvez.',
   },
   'ship_log_running': {
     AppLanguage.en: 'The {ship} turns tail and runs ({n}/3)',
@@ -12201,13 +12390,14 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   },
   'ship_log_run_caught': {
     AppLanguage.en: 'The {ship} closes the gap: the run loses ground ({n}/3)',
-    AppLanguage.fr: '{ship} réduit l\'écart : la fuite perd du terrain ({n}/3)',
+    AppLanguage.fr:
+        '{ship} réduit l’écart\u00a0: la fuite perd du terrain ({n}/3)',
   },
   'tip_ship_run': {
     AppLanguage.en:
         'At long range the Eel can run for it instead of firing. Three turns of running and she is away, two with the wind behind her. If the enemy closes the gap, the run loses a turn: start before the hull runs low.',
     AppLanguage.fr:
-        'À longue portée, l\'Eel peut prendre la fuite au lieu de tirer. Trois tours de fuite et il est hors d\'atteinte, deux avec le vent arrière. Si l\'ennemi réduit l\'écart, la fuite perd un tour : fuyez avant que la coque ne soit trop basse.',
+        'À longue portée, l’Eel peut prendre la fuite au lieu de tirer. Trois tours de fuite et il est hors d’atteinte, deux avec le vent arrière. Si l’ennemi réduit l’écart, la fuite perd un tour\u00a0: fuyez avant que la coque ne soit trop basse.',
   },
   'contract_sinkShips': {
     AppLanguage.en: 'Sink or take {n} ships at sea',
@@ -12215,12 +12405,12 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   },
   'contract_takeShip': {
     AppLanguage.en: 'Take a ship by boarding her',
-    AppLanguage.fr: 'Prendre un navire à l\'abordage',
+    AppLanguage.fr: 'Prendre un navire à l’abordage',
   },
   'contract_keelIntact': {
     AppLanguage.en: 'Win a sea fight losing no more than a quarter of the hull',
     AppLanguage.fr:
-        'Gagner un combat en mer sans perdre plus d\'un quart de la coque',
+        'Gagner un combat en mer sans perdre plus d’un quart de la coque',
   }, // --- Sea beasts (v1.185, see sea_beasts.dart) ---
   'contract_beastFought': {
     AppLanguage.en: 'Stand up to a sea beast and live',
@@ -12247,7 +12437,7 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.en:
         'Its bites and blows charge here. Knock the jaws out and it strikes at nothing.',
     AppLanguage.fr:
-        'Ses morsures et ses coups se préparent ici. Gueule hors d\'état, la bête ne frappe plus rien.',
+        'Ses morsures et ses coups se préparent ici. Gueule hors d’état, la bête ne frappe plus rien.',
   },
   'beast_room_bulwark_hint': {
     AppLanguage.en:
@@ -12259,19 +12449,19 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.en:
         'While the heart beats it heals every round. Stop it, or hold it on a harpoon line.',
     AppLanguage.fr:
-        'Tant que le cœur bat, la bête guérit à chaque tour. Arrêtez ce cœur, ou tenez-la au bout d\'une ligne de harpon.',
+        'Tant que le cœur bat, la bête guérit à chaque tour. Arrêtez ce cœur, ou tenez-la au bout d’une ligne de harpon.',
   },
   'beast_status_turning': {
     AppLanguage.en: 'Turning for the deep!',
-    AppLanguage.fr: 'Part vers les fonds !',
+    AppLanguage.fr: 'Part vers les fonds\u00a0!',
   },
   'beast_status_tethered': {
     AppLanguage.en: 'On the line: {n}',
-    AppLanguage.fr: 'À la ligne : {n}',
+    AppLanguage.fr: 'À la ligne\u00a0: {n}',
   },
   'beast_status_dives_now': {
     AppLanguage.en: 'Dives this turn!',
-    AppLanguage.fr: 'Plonge ce tour-ci !',
+    AppLanguage.fr: 'Plonge ce tour-ci\u00a0!',
   },
   'beast_status_dives_in': {
     AppLanguage.en: 'Dives in {n}',
@@ -12287,27 +12477,27 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   },
   'beast_status_edge': {
     AppLanguage.en: 'Known ways: -{n}% slip',
-    AppLanguage.fr: 'Ruses connues : -{n} % d\'esquive',
+    AppLanguage.fr: 'Ruses connues\u00a0: -{n}\u00a0% d’esquive',
   },
   'tip_ship_beast': {
     AppLanguage.en:
         'A sea beast, not a ship. It heals every round while its heart beats, some dive under the Eel, and when it is hurt it turns for the deep and is gone the next turn. Tear its fins or hold it on a harpoon line and it cannot go. Run for it if it is too much: its wounds stay with it for the next meeting.',
     AppLanguage.fr:
-        'Une bête marine, pas un navire. Elle guérit à chaque tour tant que son cœur bat, certaines plongent sous l\'Eel, et blessée elle part vers les fonds et disparaît au tour suivant. Déchirez ses nageoires ou tenez-la au bout d\'une ligne de harpon et elle ne peut plus partir. Fuyez si c\'est trop : ses blessures la suivent jusqu\'à la prochaine rencontre.',
+        'Une bête marine, pas un navire. Elle guérit à chaque tour tant que son cœur bat, certaines plongent sous l’Eel, et blessée elle part vers les fonds et disparaît au tour suivant. Déchirez ses nageoires ou tenez-la au bout d’une ligne de harpon et elle ne peut plus partir. Fuyez si c’est trop\u00a0: ses blessures la suivent jusqu’à la prochaine rencontre.',
   },
   'tip_ship_tether': {
     AppLanguage.en:
         'A harpoon that bites holds the beast on the line for a few rounds: no healing, no diving, no fleeing while it holds.',
     AppLanguage.fr:
-        'Un harpon qui mord tient la bête au bout de la ligne quelques tours : ni guérison, ni plongée, ni fuite tant qu\'il tient.',
+        'Un harpon qui mord tient la bête au bout de la ligne quelques tours\u00a0: ni guérison, ni plongée, ni fuite tant qu’il tient.',
   },
   'ship_log_tethered': {
     AppLanguage.en: 'The harpoon bites: the {ship} is on the line ({n})',
-    AppLanguage.fr: 'Le harpon mord : {ship} est à la ligne ({n})',
+    AppLanguage.fr: 'Le harpon mord\u00a0: {ship} est à la ligne ({n})',
   },
   'ship_log_tether_slips': {
     AppLanguage.en: 'The line goes slack: the {ship} is free of it',
-    AppLanguage.fr: 'La ligne mollit : {ship} s\'en libère',
+    AppLanguage.fr: 'La ligne mollit\u00a0: {ship} s’en libère',
   },
   'ship_log_beast_escaped': {
     AppLanguage.en: 'The {ship} sounds into the deep and is gone',
@@ -12315,13 +12505,13 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   },
   'ship_log_beast_dives': {
     AppLanguage.en: 'The {ship} dives under the Eel…',
-    AppLanguage.fr: '{ship} plonge sous l\'Eel…',
+    AppLanguage.fr: '{ship} plonge sous l’Eel…',
   },
   'ship_log_beast_breach': {
     AppLanguage.en:
         '…and breaches beneath her keel! -{n} hull, and the sea comes in',
     AppLanguage.fr:
-        '…et jaillit sous sa quille ! -{n} de coque, et la mer entre',
+        '…et jaillit sous sa quille\u00a0! -{n} de coque, et la mer entre',
   },
   'ship_log_beast_heals': {
     AppLanguage.en: 'The {ship}\'s wounds close, +{n}',
@@ -12330,7 +12520,7 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   'ship_log_beast_turning': {
     AppLanguage.en: 'The {ship} turns for the deep: hold it now or lose it',
     AppLanguage.fr:
-        '{ship} vire vers les fonds : retenez la bête maintenant, ou elle est perdue',
+        '{ship} vire vers les fonds\u00a0: retenez la bête maintenant, ou elle est perdue',
   },
   'ship_log_beast_turns_back': {
     AppLanguage.en: 'Its wounds closed, the {ship} turns back to the fight',
@@ -12343,7 +12533,7 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   'beast_ship_log_enemy_fire_out': {
     AppLanguage.en:
         'The {ship} rolls in the swell and the fire on its {room} dies',
-    AppLanguage.fr: '{ship} roule dans la houle et le feu sur {room} s\'éteint',
+    AppLanguage.fr: '{ship} roule dans la houle et le feu sur {room} s’éteint',
   },
   'beast_ship_log_enemy_leak_plugged': {
     AppLanguage.en: 'A wound on the {ship} stops bleeding',
@@ -12351,7 +12541,7 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   },
   'beast_ship_log_leak': {
     AppLanguage.en: 'The {ship} is bleeding!',
-    AppLanguage.fr: '{ship} saigne !',
+    AppLanguage.fr: '{ship} saigne\u00a0!',
   },
   'beast_ship_log_flooding': {
     AppLanguage.en: 'The {ship} bleeds, -{n}',
@@ -12364,7 +12554,7 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   'beast_ship_log_boarders': {
     AppLanguage.en: 'The {ship}\'s arms come over the rail into the hold!',
     AppLanguage.fr:
-        'Les bras de {ship} franchissent le bastingage jusqu\'à la cale !',
+        'Les bras de {ship} franchissent le bastingage jusqu’à la cale\u00a0!',
   },
   'sea_event_beast': {
     AppLanguage.en: 'a sea beast',
@@ -12382,44 +12572,44 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   'beast_known_line': {
     AppLanguage.en: 'The crew knows its ways: it slips {n}% less.',
     AppLanguage.fr:
-        'L\'équipage connaît ses ruses : la bête esquive {n} % de moins.',
+        'L’équipage connaît ses ruses\u00a0: la bête esquive {n}\u00a0% de moins.',
   },
   'ship_log_beast_sign_wreck': {
     AppLanguage.en: 'The wreck\'s timbers bear the marks of {ship}.',
-    AppLanguage.fr: 'Les bordages de l\'épave portent les marques de {ship}.',
+    AppLanguage.fr: 'Les bordages de l’épave portent les marques de {ship}.',
   },
   'ship_log_beast_sign_sighting': {
     AppLanguage.en: 'The crew marks where it went down: a sign of {ship}.',
     AppLanguage.fr:
-        'L\'équipage note où la chose a plongé : un signe de {ship}.',
+        'L’équipage note où la chose a plongé\u00a0: un signe de {ship}.',
   },
   'ship_log_beast_watched': {
     AppLanguage.en:
         'Every eye aboard follows {ship} as it goes: a sign of where it lairs.',
     AppLanguage.fr:
-        'Chaque regard à bord suit {ship} qui s\'éloigne : un signe de son repaire.',
+        'Chaque regard à bord suit {ship} qui s’éloigne\u00a0: un signe de son repaire.',
   },
   'ship_log_beast_sign_outran': {
     AppLanguage.en:
         'Looking back, the crew marks where it turned away: a sign of {ship}.',
     AppLanguage.fr:
-        'En se retournant, l\'équipage note où la bête a renoncé : un signe de {ship}.',
+        'En se retournant, l’équipage note où la bête a renoncé\u00a0: un signe de {ship}.',
   },
   'ship_log_beast_clues': {
     AppLanguage.en: 'Signs of {ship}: {n} of {of}',
-    AppLanguage.fr: 'Signes de {ship} : {n} sur {of}',
+    AppLanguage.fr: 'Signes de {ship}\u00a0: {n} sur {of}',
   },
   'ship_log_beast_hunt_ready': {
     AppLanguage.en:
         'Enough signs of {ship} to hunt it: the Harbour can send the Eel out.',
     AppLanguage.fr:
-        'Assez de signes de {ship} pour partir en chasse : le Port peut envoyer l\'Eel.',
+        'Assez de signes de {ship} pour partir en chasse\u00a0: le Port peut envoyer l’Eel.',
   },
   'ship_log_beast_passed': {
     AppLanguage.en:
         'Sails struck, nobody breathing: {ship} passes beneath the keel.',
     AppLanguage.fr:
-        'Voiles amenées, personne ne respire : {ship} passe sous la quille.',
+        'Voiles amenées, personne ne respire\u00a0: {ship} passe sous la quille.',
   },
   'ship_log_beast_noticed': {
     AppLanguage.en: 'A rope creaks, and {ship} turns toward the sound.',
@@ -12429,26 +12619,26 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.en:
         'It is faster than any sail: it rams the Eel\'s quarter, -{n} hull',
     AppLanguage.fr:
-        'Aucune voile ne va plus vite : un coup de boutoir dans la hanche de l\'Eel, -{n} de coque',
+        'Aucune voile ne va plus vite\u00a0: un coup de boutoir dans la hanche de l’Eel, -{n} de coque',
   },
   'ship_log_beast_slain': {
     AppLanguage.en: '{ship} goes still, and the sea around the Eel turns red.',
-    AppLanguage.fr: '{ship} ne bouge plus, et la mer rougit autour de l\'Eel.',
+    AppLanguage.fr: '{ship} ne bouge plus, et la mer rougit autour de l’Eel.',
   },
   'ship_log_beast_got_away': {
     AppLanguage.en: '{ship} gets away, carrying its wounds into the deep.',
-    AppLanguage.fr:
-        '{ship} s\'échappe et emporte ses blessures vers les fonds.',
+    AppLanguage.fr: '{ship} s’échappe et emporte ses blessures vers les fonds.',
   },
   'ship_log_trophy_fitted': {
     AppLanguage.en: 'A trophy for the Eel: {weapon}, fitted at once.',
-    AppLanguage.fr: 'Un trophée pour l\'Eel : {weapon}, monté sur-le-champ.',
+    AppLanguage.fr:
+        'Un trophée pour l’Eel\u00a0: {weapon}, monté sur-le-champ.',
   },
   'ship_log_trophy_waiting': {
     AppLanguage.en:
         'A trophy for the Eel: {weapon}. No room aboard; it waits at the Harbour.',
     AppLanguage.fr:
-        'Un trophée pour l\'Eel : {weapon}. Pas de place à bord ; il attend au Port.',
+        'Un trophée pour l’Eel\u00a0: {weapon}. Pas de place à bord\u00a0; il attend au Port.',
   },
   'beasts_section': {
     AppLanguage.en: 'Sea beasts',
@@ -12458,13 +12648,13 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.en:
         'No beast has crossed the Eel\'s path yet. They roam the open water from the Ashen Coast outward.',
     AppLanguage.fr:
-        'Aucune bête n\'a encore croisé la route de l\'Eel. Elles rôdent en haute mer, de la Côte de Cendre vers le large.',
+        'Aucune bête n’a encore croisé la route de l’Eel. Elles rôdent en haute mer, de la Côte de Cendre vers le large.',
   },
   'beasts_hint': {
     AppLanguage.en:
         'Every fight with a beast seen through to the end and survived, every beast let pass or outrun, and some wrecks give a sign of where it lairs (a fight run from gives none). With {of} signs the Eel can go out and hunt it: it carries its wounds, and the crew knows its ways.',
     AppLanguage.fr:
-        'Chaque combat contre une bête mené jusqu\'au bout et dont l\'Eel réchappe, chaque bête laissée passer ou distancée, et certaines épaves donnent un signe de son repaire (un combat qu\'on a fui n\'en donne aucun). Avec {of} signes, l\'Eel peut partir en chasse : la bête garde ses blessures, et l\'équipage connaît ses ruses.',
+        'Chaque combat contre une bête mené jusqu’au bout et dont l’Eel réchappe, chaque bête laissée passer ou distancée, et certaines épaves donnent un signe de son repaire (un combat qu’on a fui n’en donne aucun). Avec {of} signes, l’Eel peut partir en chasse\u00a0: la bête garde ses blessures, et l’équipage connaît ses ruses.',
   },
   'beast_slain_label': {
     AppLanguage.en: 'Slain. Its trophy is at the shipwright\'s.',
@@ -12472,15 +12662,15 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   },
   'beast_signs_label': {
     AppLanguage.en: 'Signs: {n} of {of}',
-    AppLanguage.fr: 'Signes : {n} sur {of}',
+    AppLanguage.fr: 'Signes\u00a0: {n} sur {of}',
   },
   'beast_wounds_label': {
     AppLanguage.en: 'Wounds it carries: {n}',
-    AppLanguage.fr: 'Blessures portées : {n}',
+    AppLanguage.fr: 'Blessures portées\u00a0: {n}',
   },
   'beast_hunt_away_hint': {
     AppLanguage.en: 'The Eel must be moored at the camp to set out.',
-    AppLanguage.fr: 'L\'Eel doit être amarré au camp pour partir.',
+    AppLanguage.fr: 'L’Eel doit être amarré au camp pour partir.',
   },
   'beast_hunt_button': {
     AppLanguage.en: 'Hunt',
@@ -12496,7 +12686,7 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   },
   'part_stored_note': {
     AppLanguage.en: 'In store at the Harbour: it goes back on for nothing.',
-    AppLanguage.fr: 'En réserve au Port : il se remonte sans frais.',
+    AppLanguage.fr: 'En réserve au Port\u00a0: il se remonte sans frais.',
   },
   'free_label': {
     AppLanguage.en: 'free',
@@ -12525,17 +12715,17 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.en:
         'It steers one range closer, then fires. Pull away to keep your distance.',
     AppLanguage.fr:
-        'L\'ennemi se rapproche d\'une portée, puis tire. Éloignez-vous pour garder la distance.',
+        'L’ennemi se rapproche d’une portée, puis tire. Éloignez-vous pour garder la distance.',
   },
   'ship_intent_pullAway': {
     AppLanguage.en: 'Pulling away',
-    AppLanguage.fr: 'S\'éloigne',
+    AppLanguage.fr: 'S’éloigne',
   },
   'ship_intent_pullAway_hint': {
     AppLanguage.en:
         'It steers one range farther off, then fires. Close in to stay on it.',
     AppLanguage.fr:
-        'L\'ennemi s\'éloigne d\'une portée, puis tire. Rapprochez-vous pour ne pas le lâcher.',
+        'L’ennemi s’éloigne d’une portée, puis tire. Rapprochez-vous pour ne pas le lâcher.',
   },
   'ship_intent_ram': {
     AppLanguage.en: 'Coming about to ram',
@@ -12545,17 +12735,17 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.en:
         'Side by side, it drives its prow into you: hull through any shield, and a leak. Pull away before it comes, or brace.',
     AppLanguage.fr:
-        'Bord à bord, l\'ennemi vous enfonce sa proue : de la coque malgré les boucliers, et une voie d\'eau. Éloignez-vous avant, ou préparez-vous à encaisser.',
+        'Bord à bord, l’ennemi vous enfonce sa proue\u00a0: de la coque malgré les boucliers, et une voie d’eau. Éloignez-vous avant, ou préparez-vous à encaisser.',
   },
   'ship_intent_board': {
     AppLanguage.en: 'Crew massing at the rail',
-    AppLanguage.fr: 'L\'équipage se masse au bastingage',
+    AppLanguage.fr: 'L’équipage se masse au bastingage',
   },
   'ship_intent_board_hint': {
     AppLanguage.en:
         'After its volley its crew comes over your rail if the rail is open. Keep a shield up, pull away, or put a hand in the hold.',
     AppLanguage.fr:
-        'Après sa bordée, son équipage passe votre bastingage s\'il est ouvert. Gardez un bouclier levé, éloignez-vous, ou postez quelqu\'un dans la cale.',
+        'Après sa bordée, son équipage passe votre bastingage s’il est ouvert. Gardez un bouclier levé, éloignez-vous, ou postez quelqu’un dans la cale.',
   },
   'ship_intent_mend': {
     AppLanguage.en: 'All hands to the pumps',
@@ -12565,7 +12755,7 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.en:
         'Its crew mends instead of fighting: its guns hold fire this round and come back charged. Hit it hard now.',
     AppLanguage.fr:
-        'Son équipage répare au lieu de se battre : ses pièces se taisent ce tour-ci et reviennent chargées. Frappez fort maintenant.',
+        'Son équipage répare au lieu de se battre\u00a0: ses pièces se taisent ce tour-ci et reviennent chargées. Frappez fort maintenant.',
   },
   'ship_intent_brace': {
     AppLanguage.en: 'Braced for your volley',
@@ -12575,7 +12765,7 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.en:
         'This turn your shots take half the hull they would (its rooms as ever), and it holds its own fire. Repair, push a room or manoeuvre, or aim at its rooms.',
     AppLanguage.fr:
-        'Ce tour-ci, vos tirs ne lui prennent que la moitié de la coque (ses salles, elles, comme d\'habitude), et l\'ennemi retient son feu. Réparez, forcez une salle ou manœuvrez, ou visez ses salles.',
+        'Ce tour-ci, vos tirs ne lui prennent que la moitié de la coque (ses salles, elles, comme d’habitude), et l’ennemi retient son feu. Réparez, forcez une salle ou manœuvrez, ou visez ses salles.',
   },
   'ship_intent_flee': {
     AppLanguage.en: 'Making sail to run',
@@ -12585,7 +12775,7 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.en:
         'It runs for it: one range farther off, and gone if it is already far. Close in to keep it.',
     AppLanguage.fr:
-        'L\'ennemi prend la fuite : une portée plus loin, et hors de vue s\'il est déjà loin. Rapprochez-vous pour le retenir.',
+        'L’ennemi prend la fuite\u00a0: une portée plus loin, et hors de vue s’il est déjà loin. Rapprochez-vous pour le retenir.',
   },
   'ship_intent_dive': {
     AppLanguage.en: 'Going under',
@@ -12595,11 +12785,11 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.en:
         'It goes under and comes up beneath you: hull through any shield, and a leak. Brace.',
     AppLanguage.fr:
-        'La bête plonge et remonte sous vous : de la coque malgré les boucliers, et une voie d\'eau. Préparez-vous à encaisser.',
+        'La bête plonge et remonte sous vous\u00a0: de la coque malgré les boucliers, et une voie d’eau. Préparez-vous à encaisser.',
   },
   'beast_ship_intent_volley': {
     AppLanguage.en: 'About to strike',
-    AppLanguage.fr: 'S\'apprête à frapper',
+    AppLanguage.fr: 'S’apprête à frapper',
   },
   'beast_ship_intent_volley_hint': {
     AppLanguage.en:
@@ -12625,7 +12815,7 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.en:
         'Side by side, it drives into you: hull through any shield, and a leak. Pull away before it comes, or brace.',
     AppLanguage.fr:
-        'Bord à bord, la bête vous percute : de la coque malgré les boucliers, et une voie d\'eau. Éloignez-vous avant, ou préparez-vous à encaisser.',
+        'Bord à bord, la bête vous percute\u00a0: de la coque malgré les boucliers, et une voie d’eau. Éloignez-vous avant, ou préparez-vous à encaisser.',
   },
   'ship_intent_hidden': {
     AppLanguage.en: 'Hidden by the fog',
@@ -12633,13 +12823,13 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   },
   'ship_intent_hidden_hint': {
     AppLanguage.en: 'The fog hides what the enemy means to do next.',
-    AppLanguage.fr: 'Le brouillard cache ce que l\'ennemi prépare.',
+    AppLanguage.fr: 'Le brouillard cache ce que l’ennemi prépare.',
   },
   'tip_ship_intent': {
     AppLanguage.en:
         'Read the enemy: its next move shows under its name. The fog hides it.',
     AppLanguage.fr:
-        'Lisez l\'ennemi : son prochain coup s\'affiche sous son nom. Le brouillard le cache.',
+        'Lisez l’ennemi\u00a0: son prochain coup s’affiche sous son nom. Le brouillard le cache.',
   },
   'ship_log_intent_helm_slow': {
     AppLanguage.en: 'The {ship}\'s helm is slow to answer',
@@ -12647,27 +12837,28 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   },
   'ship_log_intent_ram_missed': {
     AppLanguage.en: 'The {ship}\'s prow cuts empty water',
-    AppLanguage.fr: 'La proue de {ship} ne fend que l\'eau',
+    AppLanguage.fr: 'La proue de {ship} ne fend que l’eau',
   },
   'ship_log_intent_board_foiled': {
     AppLanguage.en:
         'The {ship}\'s boarders are left at the rail: too far to jump',
     AppLanguage.fr:
-        'Les abordeurs de {ship} restent au bastingage : trop loin pour sauter',
+        'Les abordeurs de {ship} restent au bastingage\u00a0: trop loin pour sauter',
   },
   'ship_log_intent_board_held': {
     AppLanguage.en: 'The {ship}\'s boarders hang back: your rail holds',
-    AppLanguage.fr: 'Les abordeurs de {ship} hésitent : votre bastingage tient',
+    AppLanguage.fr:
+        'Les abordeurs de {ship} hésitent\u00a0: votre bastingage tient',
   },
   'ship_log_intent_mend': {
     AppLanguage.en:
         'Every hand aboard the {ship} runs to the pumps and the fires',
-    AppLanguage.fr: 'Tout l\'équipage de {ship} court aux pompes et aux feux',
+    AppLanguage.fr: 'Tout l’équipage de {ship} court aux pompes et aux feux',
   },
   'ship_log_intent_brace': {
     AppLanguage.en: 'The {ship} braces for your volley: half the hull',
     AppLanguage.fr:
-        '{ship} encaisse votre bordée : la moitié seulement de la coque',
+        '{ship} encaisse votre bordée\u00a0: la moitié seulement de la coque',
   },
   // --- v1.190: push a room past its limit ----------------------------------
   'ship_push_button': {
@@ -12686,30 +12877,30 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   },
   'ship_push_guns_hint': {
     AppLanguage.en: 'Push the guns: every gun a step closer to firing.',
-    AppLanguage.fr: 'Forcer les canons : chaque pièce gagne un cran.',
+    AppLanguage.fr: 'Forcer les canons\u00a0: chaque pièce gagne un cran.',
   },
   'ship_push_helm_hint': {
     AppLanguage.en: 'Push the helm: harder to hit this round.',
-    AppLanguage.fr: 'Forcer la barre : plus dur à toucher ce tour-ci.',
+    AppLanguage.fr: 'Forcer la barre\u00a0: plus dur à toucher ce tour-ci.',
   },
   'ship_push_bulwark_hint': {
     AppLanguage.en: 'Push the bulwark: one more shield layer now.',
     AppLanguage.fr:
-        'Forcer le pavois : une couche de bouclier de plus tout de suite.',
+        'Forcer le pavois\u00a0: une couche de bouclier de plus tout de suite.',
   },
   'ship_push_hold_hint': {
     AppLanguage.en: 'Push the hold: bail a leak and patch {n} hull.',
     AppLanguage.fr:
-        'Forcer la cale : écoper une voie d\'eau et colmater {n} de coque.',
+        'Forcer la cale\u00a0: écoper une voie d’eau et colmater {n} de coque.',
   },
   'ship_push_strain_label': {
     AppLanguage.en: 'Strain {n}%',
-    AppLanguage.fr: 'Tension {n} %',
+    AppLanguage.fr: 'Tension {n}\u00a0%',
   },
   'ship_push_strain_hint': {
     AppLanguage.en: 'Strain {n}%: the room may lose a pip, or catch fire.',
     AppLanguage.fr:
-        'Tension {n} % : la salle peut perdre un cran, ou prendre feu.',
+        'Tension {n}\u00a0%\u00a0: la salle peut perdre un cran, ou prendre feu.',
   },
   'ship_push_flash': {
     AppLanguage.en: 'Pushed',
@@ -12717,55 +12908,55 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   },
   'ship_push_strain_flash': {
     AppLanguage.en: 'Strain!',
-    AppLanguage.fr: 'Tension !',
+    AppLanguage.fr: 'Tension\u00a0!',
   },
   'tip_ship_push': {
     AppLanguage.en:
         'Once a turn, the bolt pushes one of the Eel\'s rooms past its limit: the guns charge, the helm slips, the bulwark shields, the hold patches. Each push risks the room, more every time.',
     AppLanguage.fr:
-        'Une fois par tour, l\'éclair force une salle de l\'Eel au-delà de ses limites : les canons chargent, la barre esquive, le pavois protège, la cale colmate. Chaque fois, la salle risque davantage de céder.',
+        'Une fois par tour, l’éclair force une salle de l’Eel au-delà de ses limites\u00a0: les canons chargent, la barre esquive, le pavois protège, la cale colmate. Chaque fois, la salle risque davantage de céder.',
   },
   'ship_log_push_guns': {
     AppLanguage.en: 'Guns pushed past their limit: every gun a step closer',
-    AppLanguage.fr: 'Canons forcés : chaque pièce gagne un cran',
+    AppLanguage.fr: 'Canons forcés\u00a0: chaque pièce gagne un cran',
   },
   'ship_log_push_helm': {
     AppLanguage.en: 'Helm pushed past its limit: +{n}% evasion this round',
-    AppLanguage.fr: 'Barre forcée : +{n} % d\'esquive ce tour-ci',
+    AppLanguage.fr: 'Barre forcée\u00a0: +{n}\u00a0% d’esquive ce tour-ci',
   },
   'ship_log_push_bulwark': {
     AppLanguage.en: 'Bulwark pushed past its limit: one more shield layer',
-    AppLanguage.fr: 'Pavois forcé : une couche de bouclier de plus',
+    AppLanguage.fr: 'Pavois forcé\u00a0: une couche de bouclier de plus',
   },
   'ship_log_push_hold': {
     AppLanguage.en:
         'Hold pushed past its limit: the pumps and the patches, +{n}',
-    AppLanguage.fr: 'Cale forcée : les pompes et les rustines, +{n}',
+    AppLanguage.fr: 'Cale forcée\u00a0: les pompes et les rustines, +{n}',
   },
   'ship_log_push_strain': {
     AppLanguage.en: 'The strain tells: a pip lost in the {room}',
-    AppLanguage.fr: 'La tension se paie : un cran perdu pour {room}',
+    AppLanguage.fr: 'La tension se paie\u00a0: un cran perdu pour {room}',
   },
   'ship_log_push_strain_fire': {
     AppLanguage.en:
         'The strain tells: a pip lost in the {room}, and it catches fire!',
     AppLanguage.fr:
-        'La tension se paie : un cran perdu pour {room}, et le feu y prend !',
+        'La tension se paie\u00a0: un cran perdu pour {room}, et le feu y prend\u00a0!',
   },
   // --- v1.190: the battle gets worse over time ------------------------------
   'ship_log_fire_spreads': {
     AppLanguage.en: 'The fire spreads to the {ship}\'s {room}!',
-    AppLanguage.fr: 'Le feu gagne {room} de {ship} !',
+    AppLanguage.fr: 'Le feu gagne {room} de {ship}\u00a0!',
   },
   'ship_heavy_label': {
     AppLanguage.en: '−{n}%',
-    AppLanguage.fr: '−{n} %',
+    AppLanguage.fr: '−{n}\u00a0%',
   },
   'ship_heavy_hint': {
     AppLanguage.en:
         'Heavy with water: −{n}%. Each open leak costs this ship evasion until it is bailed.',
     AppLanguage.fr:
-        'De l\'eau à bord : −{n} %. Chaque voie d\'eau ouverte coûte de l\'esquive à ce navire jusqu\'à ce qu\'on l\'écope.',
+        'De l’eau à bord\u00a0: −{n}\u00a0%. Chaque voie d’eau ouverte coûte de l’esquive à ce navire jusqu’à ce qu’on l’écope.',
   },
   'ship_weather_squall_coming': {
     AppLanguage.en: 'Squall coming',
@@ -12775,17 +12966,17 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.en:
         'A squall builds out of the crosswind: next round the rain puts every fire out and starts none.',
     AppLanguage.fr:
-        'Un grain se forme dans le vent de travers : au prochain tour, la pluie éteint tous les feux et n\'en allume aucun.',
+        'Un grain se forme dans le vent de travers\u00a0: au prochain tour, la pluie éteint tous les feux et n’en allume aucun.',
   },
   'ship_sail_coming_label': {
     AppLanguage.en: 'Sail on the horizon: {n}',
-    AppLanguage.fr: 'Voile à l\'horizon : {n}',
+    AppLanguage.fr: 'Voile à l’horizon\u00a0: {n}',
   },
   'ship_sail_coming_hint': {
     AppLanguage.en:
         'A friend of theirs: in {n} rounds its guns join the fight, at medium and long range. Finish this before it comes, or fight side by side.',
     AppLanguage.fr:
-        'Un renfort de l\'ennemi : dans {n} tours, ses canons entrent dans la bataille, à moyenne et longue portée. Finissez-en avant, ou battez-vous bord à bord.',
+        'Un renfort de l’ennemi\u00a0: dans {n} tours, ses canons entrent dans la bataille, à moyenne et longue portée. Finissez-en avant, ou battez-vous bord à bord.',
   },
   'ship_consort_label': {
     AppLanguage.en: 'Consort',
@@ -12795,11 +12986,11 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.en:
         'Its friend has come up: its guns fire at medium and long range. Side by side, only the ship itself can reach you.',
     AppLanguage.fr:
-        'Son renfort est arrivé : ses canons tirent à moyenne et longue portée. Bord à bord, seul le navire lui-même vous atteint.',
+        'Son renfort est arrivé\u00a0: ses canons tirent à moyenne et longue portée. Bord à bord, seul le navire lui-même vous atteint.',
   },
   'ship_log_sail_sighted': {
     AppLanguage.en: 'A sail on the horizon, flying the {ship}\'s colours',
-    AppLanguage.fr: 'Une voile à l\'horizon, aux couleurs de {ship}',
+    AppLanguage.fr: 'Une voile à l’horizon, aux couleurs de {ship}',
   },
   'ship_log_sail_arrives': {
     AppLanguage.en: 'The {ship}\'s consort comes up and runs out her guns',
@@ -13317,7 +13508,7 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   },
   'level_up_patron_line': {
     AppLanguage.en: '{clan}’s favour: {gains}',
-    AppLanguage.fr: 'Faveur de {clan} : {gains}',
+    AppLanguage.fr: 'Faveur de {clan}\u00a0: {gains}',
   },
   'patron_max_health': {
     AppLanguage.en: '+{n} max health',
@@ -13372,7 +13563,7 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   },
   'clans_shops_label': {
     AppLanguage.en: 'Their shops:',
-    AppLanguage.fr: 'Leurs boutiques :',
+    AppLanguage.fr: 'Leurs boutiques\u00a0:',
   },
   'clans_title_play': {
     AppLanguage.en: 'Clans',
@@ -13735,27 +13926,27 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   },
   'clan_die_resonance_lit': {
     AppLanguage.en: 'Resonance: +{n} to faces up to {max}',
-    AppLanguage.fr: "Résonance : +{n} aux faces jusqu'à {max}",
+    AppLanguage.fr: "Résonance\u00a0: +{n} aux faces jusqu’à {max}",
   },
   'clan_die_resonance_main': {
     AppLanguage.en: 'Resonance asleep: {clan} is not your main clan',
     AppLanguage.fr:
-        "Résonance endormie : {clan} n'est pas votre clan principal",
+        "Résonance endormie\u00a0: {clan} n’est pas votre clan principal",
   },
   'clan_die_resonance_standing': {
     AppLanguage.en: 'Resonance asleep: stand Friend or better with {clan}',
-    AppLanguage.fr: 'Résonance endormie : soyez au moins Ami de {clan}',
+    AppLanguage.fr: 'Résonance endormie\u00a0: soyez au moins Ami de {clan}',
   },
   'resonance_lit_tip': {
     AppLanguage.en:
         "Resonance lit: this clan die's small faces count one more.",
     AppLanguage.fr:
-        'Résonance allumée : les petites faces de ce dé de clan comptent un de plus.',
+        'Résonance allumée\u00a0: les petites faces de ce dé de clan comptent un de plus.',
   },
   'resonance_asleep_tip': {
     AppLanguage.en: 'Resonance asleep: see the dice bag for why.',
     AppLanguage.fr:
-        'Résonance endormie : voyez le sac de dés pour savoir pourquoi.',
+        'Résonance endormie\u00a0: voyez le sac de dés pour savoir pourquoi.',
   },
   'offer_die_note': {
     AppLanguage.en:
@@ -13832,7 +14023,7 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   },
   'offer_risky_odds': {
     AppLanguage.en: 'Gift {gift}% · Price {price}%',
-    AppLanguage.fr: 'Don {gift} % · Prix {price} %',
+    AppLanguage.fr: 'Don {gift}\u00a0% · Prix {price}\u00a0%',
   },
   'offer_risky_gift': {
     AppLanguage.en: 'The die is kind. {clan} keeps its word.',
@@ -13921,7 +14112,7 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.en:
         'The cairn hides your trail from {clan}’s ordinary hunters; its champion still comes.',
     AppLanguage.fr:
-        'Le cairn cache votre piste aux chasseurs {clan} ; son champion, lui, vous trouvera.',
+        'Le cairn cache votre piste aux chasseurs {clan}\u00a0; son champion, lui, vous trouvera.',
   },
   'ward_ended': {
     AppLanguage.en: 'The ward on {clan}’s hunters has worn off.',
@@ -13942,7 +14133,7 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   },
   'ward_mark': {
     AppLanguage.en: 'Warded from {clan}: {n} roads',
-    AppLanguage.fr: 'Protection contre la chasse {clan} : {n} routes',
+    AppLanguage.fr: 'Protection contre la chasse {clan}\u00a0: {n} routes',
   },
   'ward_no_target': {
     AppLanguage.en: 'No clan is hunting you.',
@@ -13994,7 +14185,7 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   'feature_placeRules_line': {
     AppLanguage.en: 'A place can bend a fight: the town guards, the mist.',
     AppLanguage.fr:
-        'Un lieu peut infléchir un combat : la garde de la ville, la brume.',
+        'Un lieu peut infléchir un combat\u00a0: la garde de la ville, la brume.',
   },
   'feature_conditions_name': {
     AppLanguage.en: 'Battlefield conditions',
@@ -14003,7 +14194,7 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   'feature_conditions_line': {
     AppLanguage.en: 'Rain, dark or crowd: the ground now changes the fight.',
     AppLanguage.fr:
-        'Pluie, nuit ou foule : le terrain change désormais le combat.',
+        'Pluie, nuit ou foule\u00a0: le terrain change désormais le combat.',
   },
   'feature_levelUp_name': {
     AppLanguage.en: 'Level up',
@@ -14030,7 +14221,7 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.en:
         'Carry, wear and compare what you find; the dice loadout too.',
     AppLanguage.fr:
-        'Portez, équipez et comparez vos trouvailles ; l’ordre des dés aussi.',
+        'Portez, équipez et comparez vos trouvailles\u00a0; l’ordre des dés aussi.',
   },
   'feature_skills_name': {
     AppLanguage.en: 'Skills',
@@ -14056,18 +14247,18 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   'feature_clans_line': {
     AppLanguage.en: 'Clans may offer signs and titles; Gifts holds them.',
     AppLanguage.fr:
-        'Les clans peuvent offrir signes et titres ; les Dons les gardent.',
+        'Les clans peuvent offrir signes et titres\u00a0; les Dons les gardent.',
   },
   'feature_new': {
     AppLanguage.en: 'New: {name}',
-    AppLanguage.fr: 'Nouveau : {name}',
+    AppLanguage.fr: 'Nouveau\u00a0: {name}',
   },
   'feature_show_me': {AppLanguage.en: 'Show me', AppLanguage.fr: 'Montre-moi'},
   'feature_later': {AppLanguage.en: 'Later', AppLanguage.fr: 'Plus tard'},
   'feature_ok': {AppLanguage.en: 'OK', AppLanguage.fr: 'OK'},
   'feature_opens_in': {
     AppLanguage.en: 'Opens in chapter {n}: {name}',
-    AppLanguage.fr: 'S’ouvre au chapitre {n} : {name}',
+    AppLanguage.fr: 'S’ouvre au chapitre {n}\u00a0: {name}',
   },
   'tile_inventory': {
     AppLanguage.en: 'Inventory',
@@ -14527,7 +14718,7 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.en:
         'A fusion needs both parent skills and Trusted standing with both clans; either clan offers it, and taking it raises both. An ascension raises a skill you know and needs Friend standing with its clan. A sub-clan skill comes in the sub-clan’s voice once it is your friend; a secret is taught by its clan to those who did the deed.',
     AppLanguage.fr:
-        'Une fusion demande les deux compétences d’origine et le palier « Confiance » auprès des deux clans\u00a0; l’un ou l’autre la propose, et la prendre élève les deux. Une ascension élève une compétence que vous connaissez et demande le palier « Amitié » auprès de son clan. Une compétence de sous-clan arrive avec la voix du sous-clan une fois qu’il est votre ami ; un secret est enseigné par son clan à ceux qui ont accompli l’acte.',
+        'Une fusion demande les deux compétences d’origine et le palier «\u00a0Confiance\u00a0» auprès des deux clans\u00a0; l’un ou l’autre la propose, et la prendre élève les deux. Une ascension élève une compétence que vous connaissez et demande le palier «\u00a0Amitié\u00a0» auprès de son clan. Une compétence de sous-clan arrive avec la voix du sous-clan une fois qu’il est votre ami ; un secret est enseigné par son clan à ceux qui ont accompli l’acte.',
   },
   'clans_tab_throne': {AppLanguage.en: 'Throne', AppLanguage.fr: 'Trône'},
   'clans_tab_throne_room': {

@@ -26,6 +26,10 @@ enum PixelMotion {
   fall,
 }
 
+/// The turn that brings a strip drawn head to the lower left (3 pi over 4)
+/// to a head to the right, the way a travel expects it.
+const double _headLeft = -3 * pi / 4;
+
 /// One strip of a plan, played over a window of the burst's time.
 class PixelLayer {
   const PixelLayer(
@@ -38,6 +42,9 @@ class PixelLayer {
     this.loop = false,
     this.hitOnly = false,
     this.fade = false,
+    this.frameFrom = 0,
+    this.frameTo = -1,
+    this.tilt = 0,
   });
 
   /// The strip's file, without `vfx_`.
@@ -58,6 +65,17 @@ class PixelLayer {
   final bool loop;
   final bool hitOnly;
 
+  /// The frames of the strip it plays: from [frameFrom] up to (not
+  /// including) [frameTo], the whole strip when [frameTo] is negative. A
+  /// strip that holds a flight and its burst is cut in two layers.
+  final int frameFrom;
+  final int frameTo;
+
+  /// A turn, in radians, so the strip's head leads along a travel: the
+  /// strips are drawn diagonally, head to the lower left (3 pi over 4 on the
+  /// screen), so a flight turns them by minus that.
+  final double tilt;
+
   /// The last third of the strip shrinks and fades out in code (the flame
   /// and the heal: their last frames are not drawn to vanish).
   final bool fade;
@@ -65,21 +83,37 @@ class PixelLayer {
   String get asset => 'vfx_$name';
 }
 
-const _impactAt = PixelLayer('impact_s', t0: 0.45, span: 0.55);
-
-/// The plan of every style that is a fixed list of layers; the volley and
-/// the drain are laid out in code (see [paintPixelBurst]).
+/// The plan of every style that is a fixed list of layers; the drain is
+/// laid out in code (see [paintPixelBurst]).
 const Map<VfxStyle, List<PixelLayer>> pixelPlans = {
-  VfxStyle.slash: [PixelLayer('slash')],
-  VfxStyle.heavySlash: [PixelLayer('heavy')],
-  VfxStyle.pierce: [PixelLayer('pierce')],
+  // Art's Apollo strips: each effect is one strip drawn at the target; the
+  // ones that end with the object still in view fade out in code.
+  VfxStyle.slash: [PixelLayer('slash', fade: true)],
+  VfxStyle.heavySlash: [PixelLayer('heavy_slash', fade: true)],
+  VfxStyle.pierce: [PixelLayer('pierce', fade: true)],
   VfxStyle.whirl: [PixelLayer('whirl')],
-  VfxStyle.claw: [PixelLayer('claw')],
+  VfxStyle.claw: [PixelLayer('claw', fade: true)],
   VfxStyle.impact: [PixelLayer('impact')],
+  // The arrow, the fireball and the volley keep their flight from the
+  // caster; Art's strip holds the flight (head to the lower left, turned
+  // along the path) and the burst, cut in two layers.
   VfxStyle.arrow: [
-    PixelLayer('arrow_proj',
-        motion: PixelMotion.travel, span: 0.45, loop: true),
-    _impactAt,
+    PixelLayer('arrow',
+        motion: PixelMotion.travel,
+        span: 0.45,
+        loop: true,
+        anchor: Offset(8, 38),
+        frameFrom: 4,
+        tilt: _headLeft),
+    PixelLayer('arrow', t0: 0.45, span: 0.55, frameTo: 4, fade: true),
+  ],
+  VfxStyle.volley: [
+    PixelLayer('volley',
+        motion: PixelMotion.travel,
+        span: 0.7,
+        anchor: Offset(8, 38),
+        tilt: _headLeft),
+    PixelLayer('volley', t0: 0.7, span: 0.3, frameFrom: 8, fade: true),
   ],
   VfxStyle.bolt: [
     PixelLayer('orb',
@@ -92,13 +126,15 @@ const Map<VfxStyle, List<PixelLayer>> pixelPlans = {
   VfxStyle.lightning: [PixelLayer('lightning', anchor: Offset(24, 40))],
   VfxStyle.flame: [PixelLayer('flame', anchor: Offset(24, 40), fade: true)],
   VfxStyle.fireball: [
-    PixelLayer('orb',
+    PixelLayer('fireball',
         motion: PixelMotion.travel,
         span: 0.45,
         loop: true,
-        anchor: Offset(32, 24),
-        size: 1.3),
-    PixelLayer('explosion', t0: 0.45, span: 0.55),
+        anchor: Offset(17, 28),
+        size: 1.3,
+        frameTo: 6,
+        tilt: _headLeft),
+    PixelLayer('fireball', t0: 0.45, span: 0.55, frameFrom: 6, size: 1.3),
   ],
   VfxStyle.meteor: [
     PixelLayer('meteor_proj',
@@ -106,16 +142,19 @@ const Map<VfxStyle, List<PixelLayer>> pixelPlans = {
         span: 0.4,
         loop: true,
         anchor: Offset(24, 30),
-        size: 1.3),
+        size: 1.3,
+        tilt: -pi / 4),
     PixelLayer('explosion', t0: 0.4, span: 0.6, size: 1.4),
     PixelLayer('quake', t0: 0.4, span: 0.6, anchor: Offset(24, 34)),
   ],
-  VfxStyle.holyFire: [PixelLayer('holy_beam', anchor: Offset(24, 40))],
+  VfxStyle.holyFire: [
+    PixelLayer('holy_fire', anchor: Offset(24, 40), fade: true)
+  ],
   VfxStyle.frost: [PixelLayer('frost')],
-  VfxStyle.splash: [PixelLayer('splash', anchor: Offset(24, 32))],
-  VfxStyle.poison: [PixelLayer('poison', anchor: Offset(24, 32))],
+  VfxStyle.splash: [PixelLayer('splash', anchor: Offset(24, 32), fade: true)],
+  VfxStyle.poison: [PixelLayer('poison', anchor: Offset(24, 32), fade: true)],
   VfxStyle.smoke: [PixelLayer('smoke', anchor: Offset(24, 36))],
-  VfxStyle.wind: [PixelLayer('wind')],
+  VfxStyle.wind: [PixelLayer('wind', fade: true)],
   VfxStyle.quake: [PixelLayer('quake', anchor: Offset(24, 34))],
   VfxStyle.voidRift: [PixelLayer('void_rift')],
   VfxStyle.drain: [PixelLayer('drain', span: 0.8)],
@@ -123,7 +162,9 @@ const Map<VfxStyle, List<PixelLayer>> pixelPlans = {
   VfxStyle.radiance: [PixelLayer('radiance')],
   VfxStyle.heal: [PixelLayer('heal', anchor: Offset(24, 28), fade: true)],
   VfxStyle.shield: [PixelLayer('shield', anchor: Offset(24, 26))],
-  VfxStyle.stoneShield: [PixelLayer('stone_shield', anchor: Offset(24, 32))],
+  VfxStyle.stoneShield: [
+    PixelLayer('stone_shield', anchor: Offset(24, 32), fade: true)
+  ],
   VfxStyle.mana: [PixelLayer('mana', anchor: Offset(24, 26))],
   VfxStyle.shout: [PixelLayer('shout', anchor: Offset(24, 26))],
   VfxStyle.stun: [PixelLayer('stun', anchor: Offset(24, 14))],
@@ -133,11 +174,44 @@ const Map<VfxStyle, List<PixelLayer>> pixelPlans = {
   VfxStyle.phase: [PixelLayer('phase', size: 1.8)],
 };
 
+/// The styles drawn in Art's Apollo strips, which carry their own impact:
+/// the pale ground ring a strong blow adds is the old look and fights their
+/// warm colours, so they go without it. Every style with a strip is in it
+/// now; the pale ring stays only for the styles drawn from other strips.
+const Set<VfxStyle> _apolloImpact = {
+  VfxStyle.slash,
+  VfxStyle.heavySlash,
+  VfxStyle.pierce,
+  VfxStyle.whirl,
+  VfxStyle.claw,
+  VfxStyle.impact,
+  VfxStyle.arrow,
+  VfxStyle.volley,
+  VfxStyle.lightning,
+  VfxStyle.flame,
+  VfxStyle.fireball,
+  VfxStyle.holyFire,
+  VfxStyle.frost,
+  VfxStyle.splash,
+  VfxStyle.poison,
+  VfxStyle.wind,
+  VfxStyle.voidRift,
+  VfxStyle.drain,
+  VfxStyle.shadow,
+  VfxStyle.radiance,
+  VfxStyle.bolt,
+  VfxStyle.meteor,
+  VfxStyle.quake,
+  VfxStyle.smoke,
+  VfxStyle.mana,
+};
+
 /// The strips a blow of [tier] adds under its landing.
 List<PixelLayer> _pixelTierLayers(VfxStyle style, VfxTier tier, bool hit) {
   if (!hit ||
       tier.index < VfxTier.strong.index ||
-      systemVfxStyles.contains(style)) {
+      systemVfxStyles.contains(style) ||
+      _apolloImpact.contains(style)) {
     return const [];
   }
   final at = vfxImpactAt(style);
@@ -153,7 +227,6 @@ List<PixelLayer> _pixelTierLayers(VfxStyle style, VfxTier tier, bool hit) {
 /// Every strip a style may use, for preloading.
 Set<String> pixelAssetsFor(VfxStyle style) => {
       for (final l in pixelPlans[style] ?? const <PixelLayer>[]) l.asset,
-      if (style == VfxStyle.volley) ...['vfx_arrow_proj', 'vfx_impact_s'],
       if (style == VfxStyle.drain) 'vfx_orb',
       'vfx_shock',
     };
@@ -311,33 +384,7 @@ bool paintPixelBurst(
 
   // The few layers the volley and the drain lay out in code.
   final extra = <(PixelLayer, Offset, Offset?)>[];
-  if (style == VfxStyle.volley) {
-    final arrows = switch (tier) {
-      VfxTier.light => 2,
-      VfxTier.normal => 3,
-      VfxTier.strong => 5,
-      VfxTier.mighty => 7,
-    };
-    final step = 0.3 / arrows;
-    for (var i = 0; i < arrows; i++) {
-      final lane = i - (arrows - 1) / 2;
-      final from = Offset(
-          c.dx - s * 1.4 + i * s * 0.22 * 5 / arrows, rect.top - s * 1.3);
-      final to = Offset(
-          c.dx + lane * s * 0.3 * 3 / arrows, c.dy + (i.isEven ? 0 : s * 0.12));
-      extra.add((
-        PixelLayer('arrow_proj',
-            motion: PixelMotion.travel, t0: i * step, span: 0.4, loop: true),
-        from,
-        to
-      ));
-      extra.add((
-        PixelLayer('impact_s', t0: i * step + 0.4, span: 0.4, size: 0.8),
-        to,
-        null
-      ));
-    }
-  } else if (style == VfxStyle.drain) {
+  if (style == VfxStyle.drain) {
     layers.addAll(pixelPlans[style]!);
     final to = sourceRect?.center ?? Offset(c.dx, rect.top - s);
     extra.add((
@@ -370,10 +417,13 @@ bool paintPixelBurst(
     if (lt < 0 || lt > 1) return;
     final image = PixelVfxTints.of(l.asset, palette)!;
     final side = image.height.toDouble();
-    final frames = (image.width / side).round();
+    final strip = (image.width / side).round();
+    final first = l.frameFrom.clamp(0, strip - 1);
+    final end = l.frameTo < 0 ? strip : l.frameTo.clamp(first + 1, strip);
+    final frames = end - first;
     final progress =
         l.loop && frames < 8 ? (lt * frames * 2.4) % frames : lt * frames;
-    final i = progress.floor().clamp(0, frames - 1);
+    final i = first + progress.floor().clamp(0, frames - 1);
     final k = unit * l.size;
     var pos = at;
     var angle = 0.0;
@@ -397,7 +447,7 @@ bool paintPixelBurst(
     }
     canvas.save();
     canvas.translate(pos.dx.roundToDouble(), pos.dy.roundToDouble());
-    if (angle != 0) canvas.rotate(angle);
+    if (angle != 0 || l.tilt != 0) canvas.rotate(angle + l.tilt);
     // A fading strip (flame, heal): the last third shrinks toward its anchor
     // and fades, in whole pixels.
     final out = l.fade ? pixelFadeOut(lt) : 0.0;

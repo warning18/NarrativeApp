@@ -24,8 +24,7 @@ final Map<String, dynamic> _dice =
 
 void main() {
   test('every die size has its shape, a d7 reads as the next size up', () {
-    expect([2, 4, 6, 8, 10, 12, 20].map(dieShapeOf), [
-      DieShape.coin,
+    expect([4, 6, 8, 10, 12, 20].map(dieShapeOf), [
       DieShape.d4,
       DieShape.d6,
       DieShape.d8,
@@ -35,6 +34,8 @@ void main() {
     ]);
     expect(dieShapeOf(7), DieShape.d8);
     expect(dieShapeOf(3), DieShape.d4);
+    // No die has two faces: the coin is no shape a count gives any more.
+    expect(dieShapeOf(2), DieShape.d4);
     expect(dieShapeOf(16), DieShape.d20);
   });
 
@@ -138,14 +139,12 @@ void main() {
         ),
       ));
       await tester.pump(const Duration(milliseconds: 100));
-      // The solids (d4, d8, d10, d12, d20) are real 3D from v1.903; the coin
-      // stays the flat drawing and the d6 the cube.
-      final solid = dieSolidOf(shape) != null;
-      expect(find.byType(PolyDie3D), solid ? findsOneWidget : findsNothing,
+      // The solids (d4, d8, d10, d12, d20) are real 3D from v1.903 and the d6
+      // the cube; none is a flat drawing (v1.952; a coin falls to a d4).
+      expect(find.byType(PolyDie3D),
+          shape == DieShape.d6 ? findsNothing : findsOneWidget,
           reason: shape.name);
-      expect(find.byType(PolyDie),
-          shape == DieShape.coin ? findsOneWidget : findsNothing,
-          reason: shape.name);
+      expect(find.byType(PolyDie), findsNothing, reason: shape.name);
       expect(tester.takeException(), isNull, reason: shape.name);
     }
   });

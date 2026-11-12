@@ -8,8 +8,10 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:narrative_data_app/providers/story_providers.dart';
+import 'package:narrative_data_app/screens/full_map_screen.dart';
 import 'package:narrative_data_app/widgets/journey_fx.dart';
 import 'package:narrative_data_app/widgets/journey_world_map.dart';
+import 'package:narrative_data_app/widgets/level_ladder.dart';
 import 'support/open_game.dart';
 import 'support/pump.dart';
 
@@ -72,6 +74,37 @@ void main() {
     expect(find.byKey(const Key('journey_town_zoom_in')), findsOneWidget);
     // On the town, + is the district; the way inside waits a rung lower.
     expect(find.byKey(const Key('journey_go_inside')), findsNothing);
+
+    // World from the town: the ball is up at once, and the town shrinks
+    // into its mark over it for a fifth of a second.
+    await tester.tap(rung('world'));
+    await tester.pump();
+    await tester.pump(const Duration(milliseconds: 100));
+    expect(world, findsOneWidget);
+    expect(town, findsNothing);
+    expect(find.byKey(const ValueKey('journey_town_leaving')), findsOneWidget);
+    await tester.pump(const Duration(milliseconds: 150));
+    await tester.pump(const Duration(milliseconds: 500));
+    await settleApp(tester);
+    expect(world, findsOneWidget);
+    expect(town, findsNothing);
+    expect(find.byKey(const ValueKey('journey_town_leaving')), findsNothing);
+
+    // The full map is the World rung enlarged: it carries the strip, World
+    // lit, and a rung picked there is gone to on the Journey.
+    await press(tester, find.byKey(const Key('journey_full_map')));
+    expect(find.byType(FullMapScreen), findsOneWidget);
+    expect(
+        tester
+            .widget<LevelLadder>(find.descendant(
+                of: find.byType(FullMapScreen),
+                matching: find.byType(LevelLadder)))
+            .lit,
+        LadderRung.world);
+    await press(tester, rung('town').last);
+    expect(find.byType(FullMapScreen), findsNothing);
+    expect(town, findsOneWidget);
+    expect(find.byKey(const Key('journey_town_zoom_in')), findsOneWidget);
 
     // Room from the town.
     await press(tester, rung('room'));

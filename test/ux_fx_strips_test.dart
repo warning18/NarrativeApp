@@ -29,17 +29,41 @@ void main() {
       final (w, h) = _size('assets/visuals/pixel_fx/die_$k.png');
       expect((w, h), (320, 40), reason: 'die_$k: 8 frames of 40');
     }
-    for (final k in ['slash', 'heavy', 'crit']) {
+    for (final k in ['crit']) {
       final (w, h) = _size('assets/visuals/pixel_fx/vfx_$k.png');
       expect((w, h), (384, 48), reason: 'vfx_$k: 8 frames of 48');
     }
+    // Art's Apollo strips: the six pilots, the eighteen of v1.946 and the last five.
     for (final k in [
       'flame',
       'frost',
       'lightning',
       'heal',
       'shield',
-      'void_rift'
+      'void_rift',
+      'slash',
+      'heavy_slash',
+      'pierce',
+      'claw',
+      'whirl',
+      'impact',
+      'arrow',
+      'volley',
+      'fireball',
+      'holy_fire',
+      'splash',
+      'poison',
+      'wind',
+      'drain',
+      'shadow',
+      'radiance',
+      'shout',
+      'stone_shield',
+      'quake',
+      'smoke',
+      'zap',
+      'meteor_proj',
+      'mana'
     ]) {
       final (w, h) = _size('assets/visuals/pixel_fx/vfx_$k.png');
       expect((w, h), (432, 48), reason: 'vfx_$k: 9 frames of 48');
@@ -106,12 +130,36 @@ void main() {
     }
   });
 
-  test('only the flame and the heal fade', () {
+  test('only the strips that end with the object in view fade', () {
+    // The flame and the heal, and the Apollo strips of v1.946 that end on
+    // their object (the rest end on their own).
+    const fading = {
+      'flame',
+      'heal',
+      'slash',
+      'heavy_slash',
+      'pierce',
+      'claw',
+      'poison',
+      'splash',
+      'stone_shield',
+      'arrow',
+      'volley',
+      'wind',
+      'holy_fire',
+    };
     for (final e in pixelPlans.entries) {
       for (final l in e.value) {
-        expect(l.fade, ['flame', 'heal'].contains(l.name),
-            reason: '${e.key} ${l.name}');
+        if (l.fade) {
+          expect(fading, contains(l.name), reason: '${e.key} ${l.name}');
+        }
       }
+    }
+    // The flight layers of the arrow, the volley and the fireball never fade.
+    for (final style in ['arrow', 'volley', 'fireball']) {
+      final plan =
+          pixelPlans.entries.firstWhere((e) => e.key.name == style).value.first;
+      expect(plan.fade, isFalse, reason: '$style flies');
     }
   });
 }

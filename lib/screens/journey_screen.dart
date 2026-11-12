@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:math' as math;
 import 'dart:ui' as ui;
+import 'package:flutter/rendering.dart' show RenderRepaintBoundary;
 
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
@@ -87,6 +88,7 @@ import '../widgets/scene_stage.dart';
 import '../widgets/scene_vignette.dart';
 import '../widgets/journey_fx.dart';
 import '../widgets/prologue_opening.dart';
+import '../widgets/story_scene_band.dart';
 import '../widgets/story_text.dart';
 import '../providers/story_text_provider.dart'
     show storyTextDoneProvider, storyTextSkipProvider;
@@ -622,7 +624,75 @@ class _JourneyViewState extends ConsumerState<_JourneyView>
   /// The streets growing back under the chart when they are looked at
   /// again (v1.201.1).
   late final AnimationController _arrive = AnimationController(
-      vsync: this, duration: const Duration(milliseconds: 360), value: 1);
+      vsync: this,
+      duration: const Duration(milliseconds: 360),
+      reverseDuration: const Duration(milliseconds: 200),
+      value: 1);
+
+  /// Whether the town's own map is what the place shows (set while
+  /// building): it shrinks into its mark before the world takes over.
+  bool _cityMapUp = false;
+
+  /// A picture of the town's map as it was when the streets were left: it
+  /// shrinks back into its mark over the world for 0.2 s, then is let go.
+  ui.Image? _townShot;
+
+  /// Where the plan sits in that picture, in the map box's own measure.
+  Rect _townShotAt = Rect.zero;
+  final GlobalKey _placeShotKey = GlobalKey();
+
+  void _dropTownShot() {
+    _townShot?.dispose();
+    _townShot = null;
+  }
+
+  /// Leaves the streets for the world: [apply] puts the ball up at once (it
+  /// opens close on the place and pulls back out), and a picture of the
+  /// town's map shrinks and fades over it (not with reduced motion, nor
+  /// where the place has no town map).
+  void _leaveForWorld(VoidCallback apply) {
+    ui.Image? shot;
+    if (_cityMapUp &&
+        _level == JourneyMapLevel.place &&
+        !MediaQuery.of(context).disableAnimations) {
+      final box = _placeShotKey.currentContext?.findRenderObject();
+      if (box is RenderRepaintBoundary && !box.debugNeedsPaint) {
+        // Only the plan shrinks, not the list under it.
+        RenderBox? plan;
+        void find(Element e) {
+          if (plan != null) return;
+          if (e.widget.key == const ValueKey('city_chart_plan')) {
+            final r = e.renderObject;
+            if (r is RenderBox && r.hasSize) plan = r;
+            return;
+          }
+          e.visitChildElements(find);
+        }
+
+        _placeShotKey.currentContext!.visitChildElements(find);
+        final found = plan;
+        if (found != null) {
+          _townShotAt =
+              found.localToGlobal(Offset.zero, ancestor: box) & found.size;
+          shot = box.toImageSync(
+              pixelRatio: MediaQuery.devicePixelRatioOf(context));
+        }
+      }
+    }
+    _dropTownShot();
+    setState(() {
+      apply();
+      _townShot = shot;
+    });
+    if (shot == null) return;
+    _arrive.reverse(from: 1).whenComplete(() {
+      // Unless the streets were come back to meanwhile (they own the
+      // clock again and have let the picture go).
+      if (!mounted || !identical(_townShot, shot)) return;
+      setState(_dropTownShot);
+      _arrive.value = 1;
+    });
+  }
 
   /// Looks out from the streets at the land (v1.201): a pinch in on the
   /// place's map or its − button; zooming back in on the place returns.
@@ -648,8 +718,10 @@ class _JourneyViewState extends ConsumerState<_JourneyView>
       });
       return;
     }
-    setState(() {
-      _townView = false;
+    // (The town stays the view under the world: switching it to the
+    // district here would have the plan re-frame unseen and report that
+    // district when the streets come back.)
+    _leaveForWorld(() {
       _enterZoom = (JourneyWorldMapZoom.max * from)
           .clamp(JourneyWorldMapZoom.land, JourneyWorldMapZoom.max);
       _level = JourneyMapLevel.world;
@@ -705,8 +777,7 @@ class _JourneyViewState extends ConsumerState<_JourneyView>
         }
       case LadderRung.world:
         if (_level == JourneyMapLevel.place) {
-          setState(() {
-            _townView = false;
+          _leaveForWorld(() {
             // The ball opens close on the place and pulls back out.
             _enterZoom = JourneyWorldMapZoom.max;
             _level = JourneyMapLevel.world;
@@ -731,12 +802,21 @@ class _JourneyViewState extends ConsumerState<_JourneyView>
       _cityFocusToken++;
       if (!town) _cityFocus = null;
       _level = JourneyMapLevel.place;
+      _dropTownShot();
       _lookedAt = null;
       _outside = _sceneInside;
       // Coming down from the world is not a walk through the door: no
       // veil, no words; the streets grow out of the place.
       _showedRoom = null;
     });
+    // The chart's report of the district it framed last comes a frame
+    // late: it is not the player's pick, and must not undo the town.
+    if (town) {
+      _moveFraming = true;
+      WidgetsBinding.instance.addPostFrameCallback((_) => WidgetsBinding
+          .instance
+          .addPostFrameCallback((_) => _moveFraming = false));
+    }
     _arrive.forward(from: 0);
   }
 
@@ -867,6 +947,7 @@ class _JourneyViewState extends ConsumerState<_JourneyView>
   void dispose() {
     slowFrameHint = null;
     _jolt.dispose();
+    _dropTownShot();
     _arrive.dispose();
     _door.dispose();
     _cityWalk.dispose();
@@ -2247,9 +2328,22 @@ class _JourneyViewState extends ConsumerState<_JourneyView>
             onSelect: (landmark) => setState(() => _lookedAt = landmark),
             onZoomIn: _arriveAtStreets,
             enterZoom: _enterZoom,
-            onFullMap: () => Navigator.of(context).push(
-              MaterialPageRoute(builder: (_) => const FullMapScreen()),
-            ),
+            // The full map is the World rung enlarged: it carries the same
+            // strip, and a rung picked there is gone to here.
+            onFullMap: () async {
+              final rung = await Navigator.of(context).push<LadderRung>(
+                MaterialPageRoute(
+                  builder: (_) => FullMapScreen(rungs: {
+                    LadderRung.district,
+                    if (_sceneInside) LadderRung.room,
+                    if (cityChart != null) LadderRung.town,
+                  }),
+                ),
+              );
+              if (rung != null && rung != LadderRung.world && mounted) {
+                _goLevel(rung);
+              }
+            },
             fog: editing ? ChartFog.none : ChartFog.uncharted,
           ),
         );
@@ -2423,6 +2517,7 @@ class _JourneyViewState extends ConsumerState<_JourneyView>
         !townView &&
         cityChart?.here == null;
     // While it walks, a tap anywhere on the map lands it there at once.
+    _cityMapUp = cityView != null;
     final cityMap = cityView == null
         ? null
         : Stack(
@@ -2755,11 +2850,14 @@ class _JourneyViewState extends ConsumerState<_JourneyView>
                                         ? Stack(
                                             children: [
                                               Positioned.fill(
-                                                child: cityMap == null
-                                                    ? map
-                                                    : _GrowIn(
-                                                        clock: _arrive,
-                                                        child: map),
+                                                child: RepaintBoundary(
+                                                  key: _placeShotKey,
+                                                  child: cityMap == null
+                                                      ? map
+                                                      : _GrowIn(
+                                                          clock: _arrive,
+                                                          child: map),
+                                                ),
                                               ),
                                               Positioned.fill(
                                                 child: TownDoorVeil(
@@ -2799,7 +2897,33 @@ class _JourneyViewState extends ConsumerState<_JourneyView>
                                                 ),
                                             ],
                                           )
-                                        : worldMap,
+                                        // The world, and over it for a
+                                        // moment the town shrinking into
+                                        // its mark. (One Stack either way,
+                                        // so the ball keeps its state when
+                                        // the picture is let go.)
+                                        : Stack(children: [
+                                            Positioned.fill(child: worldMap),
+                                            if (_townShot != null)
+                                              Positioned.fromRect(
+                                                rect: _townShotAt,
+                                                child: IgnorePointer(
+                                                  child: _GrowIn(
+                                                    clock: _arrive,
+                                                    child: CustomPaint(
+                                                      key: const ValueKey(
+                                                          'journey_town_leaving'),
+                                                      painter: _TownShotPainter(
+                                                          _townShot!,
+                                                          _townShotAt,
+                                                          MediaQuery
+                                                              .devicePixelRatioOf(
+                                                                  context)),
+                                                    ),
+                                                  ),
+                                                ),
+                                              ),
+                                          ]),
                                   ),
                                   // The level tabs under the map (v1.350), not
                                   // over it: a mark scrolled to the foot would
@@ -5986,4 +6110,28 @@ class _CityDistrictView extends ConsumerWidget {
       builder: (context, full, _) => layout(full),
     );
   }
+}
+
+/// The town's plan as it was when left, cut out of the picture of the map
+/// box: [at] in the box's measure, [ratio] the picture's pixels per point.
+class _TownShotPainter extends CustomPainter {
+  final ui.Image shot;
+  final Rect at;
+  final double ratio;
+  const _TownShotPainter(this.shot, this.at, this.ratio);
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    canvas.drawImageRect(
+      shot,
+      Rect.fromLTWH(
+          at.left * ratio, at.top * ratio, at.width * ratio, at.height * ratio),
+      Offset.zero & size,
+      Paint()..filterQuality = FilterQuality.low,
+    );
+  }
+
+  @override
+  bool shouldRepaint(_TownShotPainter old) =>
+      !identical(old.shot, shot) || old.at != at || old.ratio != ratio;
 }
