@@ -8,6 +8,10 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.947.0+983]
+
+- Tower: the hero's head is the marker on the rail, and it steps up after a won fight (UX). The moment the cards open, the head walks one notch up in about a second; after a won shortcut it climbs the whole stair along the gold arrow; a setback's fall walks it down. A tap puts it on its notch at once, reduced motion skips the walk, and a defeat never shows it (the run is over). The floor number rides in a small gold tag above the head, since the head covers the notch's own number.
+
 ## [1.943.0+979]
 
 - Towns: the sea lies where the sphere puts it. Saltmouth, Greyhithe and the White Anchorage have their sea to the north now. Their whole plan is turned a half turn: water, walls, streets, bridges, districts, buildings and the town's services. Their streets, buildings and names are the same, only turned. Every other town keeps its sea to the south, as the sphere has it. The plans are turned where they are stored, so no hand edit is lost. The plan generator no longer reproduces the stored plans and is not to be run for now (`docs/city-plans-tools.md`).
