@@ -38,6 +38,9 @@ Future<void> _enter(
   SharedPreferences.setMockInitialValues({
     'gamedb_dice': jsonEncode({
       ...dice,
+      // The hero's die a d20 too: the Gambler's Die is a d12 since v1.958,
+      // and no die of the game is a d20 any more.
+      'gambler_die': twenty('gambler_die'),
       'holy_die': twenty('holy_die'),
       'shadow_die': twenty('shadow_die'),
     }),
