@@ -11,6 +11,7 @@ import 'package:narrative_data_app/providers/app_mode_provider.dart';
 import 'package:narrative_data_app/providers/player_session_provider.dart';
 import 'package:narrative_data_app/screens/dice_loadout_screen.dart';
 import 'package:narrative_data_app/widgets/poly_die.dart';
+import 'package:narrative_data_app/widgets/die_3d.dart';
 import 'package:narrative_data_app/widgets/rolling_die.dart';
 import 'support/pump.dart';
 
@@ -66,8 +67,16 @@ void main() {
     // (A slot also takes a double tap, so its single tap waits a moment.)
     await tester.pump(const Duration(milliseconds: 350));
     await tester.pump(const Duration(milliseconds: 150));
-    double progress() =>
-        tester.widget<PolyDie>(find.byType(PolyDie).first).progress!;
+    // The die in the ring is a real solid (or the cube), never a flat
+    // polygon: its roll is the solid's own.
+    double progress() => tester
+        .widget<Die3D>(find
+            .descendant(
+                of: find.byType(RollingDie), matching: find.byType(Die3D))
+            .first)
+        .roll!
+        .value;
+    expect(find.byType(PolyDie), findsNothing);
     expect(tester.widget<RollingDie>(find.byType(RollingDie)).face, 1);
     expect(progress(), lessThan(1));
     await tester.tap(find.byKey(const ValueKey('rolling_die')));

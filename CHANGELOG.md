@@ -12,6 +12,10 @@ isn't reconstructable from git history alone.
 
 - Story scenes: a picture for each of the story's places (UX, with Art's bands). Seventy-three places, from Alster's high quay to Akagiri's forge, show a 240x100 band at the top of the scene's words, in the Journey's scene and the Story tab; a place with none (the Hollow Shore, left bare by choice) shows what it showed before. About 0.57 MB of PNG8 in the app.
 
+## [1.952.0+988]
+
+- Dice: every die the player sees is a real 3D solid, on every phone (UX, the user's feedback). The flat fallback is gone: a slow phone used to turn every later die flat after one slow roll (the Tower's d8s and d12 above all); now it gets the same solid cheaper (no glyph plaques on the facets, a shorter tumble), which costs less than the flat polygon did. The die in the middle of the loadout's ring, a flat squeeze-and-turn polygon for every shape, is a real solid tumbling like a fight die. A solid is drawn at any size, and the still tiles (the Tower's "Your dice", the loadout's rail, the inventory's d10) are resting solids with the die's own mark on the front facet. The d4 rests turned so two faces show and the d10 stands on its apex, its front kite the largest. The d10 is checked to be a true pentagonal trapezohedron; no die is drawn as a coin (a count of 4 or fewer reads as a d4).
+
 ## [1.950.0+986]
 
 - Tower: floor events, part 3, the parley (docs/proposals/tower-peaceful-floors-and-stores.md). **Off for players**: it only plays in a climb of events version 2, which no player starts yet. In the engine, before an ordinary floor's fight, a guardian of one of the six clans may offer to talk. Talking is a d20 check, rolled on charisma, wisdom or dexterity depending on the floor, with the setback's target and the odds shown. If you are sworn to the guardian's clan, you pass with no roll. A pass takes you up a floor with its level and marks, but no spoils, card or heal. A failed talk leads to the floor's normal fight. A climb with the parley (and, later, the stores) plays at its own foe scale (1.15), so the live climb's numbers do not move. Each kind of floor event now has a background key for its picture.
