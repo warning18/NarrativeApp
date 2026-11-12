@@ -66,13 +66,13 @@ void main() {
   final tag = Platform.environment['UX_TAG'] ?? 'shot';
   final data = towerDataFromAssets();
   TowerRun base(int seed, int floor) => TowerRun(
-    seed: seed,
-    raceId: 'human',
-    professionId: 'warrior',
-    floor: floor,
-    health: 40,
-    events: 1,
-  );
+        seed: seed,
+        raceId: 'human',
+        professionId: 'warrior',
+        floor: floor,
+        health: 40,
+        events: 1,
+      );
   TowerRun settled(TowerRun r) {
     for (var g = 0; g < 64 && towerPendingPicks(r) > 0; g++) {
       final t = towerTakeStatPick(r, data, 0);
@@ -111,7 +111,8 @@ void main() {
       late Uint8List bytes;
       await tester.runAsync(() async {
         final image = await b.toImage(pixelRatio: 2);
-        bytes = (await image.toByteData(format: ui.ImageByteFormat.png))!.buffer
+        bytes = (await image.toByteData(format: ui.ImageByteFormat.png))!
+            .buffer
             .asUint8List();
       });
       Directory(shots!).createSync(recursive: true);
