@@ -14,6 +14,7 @@ import 'dart:io';
 import 'package:flutter_test/flutter_test.dart';
 
 import 'package:narrative_data_app/data/tower/tower_bot.dart';
+import 'package:narrative_data_app/data/tower/tower_events.dart';
 import 'package:narrative_data_app/data/tower/tower_progress.dart';
 import 'package:narrative_data_app/data/tower/tower_run.dart';
 import 'package:narrative_data_app/data/tower/tower_tables.dart';
@@ -62,6 +63,9 @@ void main() {
             if (e != null) {
               add('${e.kind.name}_${e.passed ? 'passed' : 'failed'}');
             }
+            if (run.parley != null) {
+              add(run.parley! ? 'parley_talked_failed' : 'parley_fought');
+            }
             if (run.shortcut != null) {
               add(run.shortcut! ? 'shortcut_taken_won' : 'shortcut_declined');
               if (run.shortcut!) addAt('shortcut_taken', run.floor);
@@ -69,6 +73,33 @@ void main() {
             return towerBotChoice(run);
           },
         );
+        if (run.status == TowerStatus.dead && run.parley != null) {
+          add(run.parley! ? 'parley_talked_failed_died' : 'parley_fought_died');
+        }
+        // The floors that held a parley, a merchant or a bargain, counted
+        // from the draw (the floors the run reached), and the stores' use.
+        final base = towerStart(
+            seed: seed,
+            raceId: run.raceId,
+            professionId: run.professionId,
+            events: events,
+            data: data);
+        for (var f = 1; f <= run.floorReached && f < towerTop; f++) {
+          final kind = towerEventKindOf(base.copyWith(floor: f));
+          if (kind == TowerEventKind.parley) add('parley_floors');
+        }
+        if (run.bought.isNotEmpty) add('runs_that_bought');
+        for (final e in run.bought.entries) {
+          add('stores_with_a_purchase');
+          for (final id in e.value) {
+            add('bought_$id');
+          }
+        }
+        if (run.marksSpent > 0) add('runs_that_spent_marks');
+        for (final cut in run.bargains.values) {
+          add(cut > 0 ? 'bargain_signed' : 'bargain_refused');
+        }
+        if (!run.isOver) add('RUN_NOT_OVER');
         if (run.status == TowerStatus.dead && (run.shortcut ?? false)) {
           add('shortcut_taken_lost');
           addAt('shortcut_taken', run.floor);
@@ -80,6 +111,9 @@ void main() {
           'floorReached': run.floorReached,
           'setbacks': run.setbacks,
           'crest': run.crest,
+          'marksSpent': run.marksSpent,
+          'bought': run.bought.values.fold<int>(0, (n, v) => n + v.length),
+          'bargains': run.bargains.length,
         });
       }
       (report['cases'] as Map<String, dynamic>)[name] = {
