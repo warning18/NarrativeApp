@@ -355,7 +355,11 @@ class TowerEventResultLine extends ConsumerWidget {
       (TowerEventKind.rival, false) => sub('tower_event_rival_lost'),
       // A lost shortcut ends the run, so only a won one shows here.
       (TowerEventKind.shortcut, _) => sub('tower_event_shortcut_landed'),
-      (TowerEventKind.parley, _) => sub('tower_event_parley_over'),
+      (TowerEventKind.parley, false) => sub('tower_event_parley_failed'),
+      // No roll: the guardian knew the oath.
+      (TowerEventKind.parley, true) => sub(result.roll == null
+          ? 'tower_event_parley_sworn'
+          : 'tower_event_parley_passed'),
     };
     final rolled = result.roll == null
         ? null
