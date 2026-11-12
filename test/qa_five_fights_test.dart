@@ -16,6 +16,7 @@
 // scene's own modifiers are NOT set: the foes and the hero only.
 //
 // The figure is a LOWER bound on a fight (a basic player), not a typical one.
+import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 import 'dart:math';
@@ -126,21 +127,24 @@ void main() {
             .loadSession(PlayerSession.fromJson(save)));
         var rounds = 0;
         final nav = tester.state<NavigatorState>(find.byType(Navigator).first);
-        nav.push<bool>(MaterialPageRoute(
-          builder: (_) => FightScreen(
-            enemyId: foes.first,
-            enemy: enemies[foes.first] as Map<String, dynamic>,
-            additionalEnemyIds: foes.skip(1).toList(),
-            additionalEnemies: {
-              for (final f in foes.skip(1))
-                f: enemies[f] as Map<String, dynamic>,
-            },
-            modifiers: EncounterModifiers(
-                chapter: build['chapter'] as int, isTest: true),
-            random: Random(1000 * (int.tryParse(id) ?? 0) + run),
-            onRound: (n) => rounds = n,
-          ),
-        ));
+        bool? result;
+        unawaited(nav
+            .push<bool>(MaterialPageRoute(
+              builder: (_) => FightScreen(
+                enemyId: foes.first,
+                enemy: enemies[foes.first] as Map<String, dynamic>,
+                additionalEnemyIds: foes.skip(1).toList(),
+                additionalEnemies: {
+                  for (final f in foes.skip(1))
+                    f: enemies[f] as Map<String, dynamic>,
+                },
+                modifiers: EncounterModifiers(
+                    chapter: build['chapter'] as int, isTest: true),
+                random: Random(1000 * (int.tryParse(id) ?? 0) + run),
+                onRound: (n) => rounds = n,
+              ),
+            ))
+            .then((v) => result = v));
         await settle(10);
         var outcome = 'timeout';
         for (var i = 0; i < 600 && outcome == 'timeout'; i++) {
@@ -201,21 +205,53 @@ void main() {
                 ].join('/')
           ]}');
         }
-        rows.add({
-          'fight': id,
-          'run': run,
-          'profession': prof,
-          'foes': foes,
-          'outcome': outcome,
-          'rounds': rounds,
-        });
-        note('$id run $run ($prof): $outcome in $rounds rounds');
         // Leave the fight: chest, offers, the question of mercy, Return.
         for (var i = 0;
             i < 120 && find.byType(FightScreen).evaluate().isNotEmpty;
             i++) {
+          final dialogButtons = find.descendant(
+              of: find.byType(Dialog),
+              matching: find.byWidgetPredicate(
+                  (w) => w is ButtonStyleButton && w.enabled));
           if (has('mercy_finish')) {
             await tester.tap(find.byKey(const Key('mercy_finish')));
+          } else if (has('offer_confirm_accept')) {
+            await tester.tap(find.byKey(const Key('offer_confirm_accept')));
+          } else if (has('stat_pick_picker')) {
+            // The level's stat pick: the first of the three, as a player who
+            // just goes on.
+            final taken = find.byKey(const Key('stat_pick_take'));
+            if (taken.evaluate().isEmpty ||
+                !(tester.widget(taken) as ButtonStyleButton).enabled) {
+              final first = find.byKey(const Key('stat_pick_offer_0'));
+              if (first.evaluate().isNotEmpty) {
+                await tester.tap(first);
+                await tester.pump(const Duration(milliseconds: 200));
+              }
+            }
+            if (taken.evaluate().isNotEmpty &&
+                (tester.widget(taken) as ButtonStyleButton).enabled) {
+              await tester.ensureVisible(taken);
+              await tester.tap(taken);
+            }
+          } else if (has('offer_take_button')) {
+            // The clans' offer after a boss: the first suitor, taken.
+            final suitor = find.byWidgetPredicate(
+                (w) => w.key is Key && '${w.key}'.contains('offer_suitor_'));
+            final take = find.byKey(const Key('offer_take_button'));
+            if (!(tester.widget(take) as ButtonStyleButton).enabled &&
+                suitor.evaluate().isNotEmpty) {
+              await tester.tap(suitor.first);
+              await tester.pump(const Duration(milliseconds: 200));
+            }
+            if ((tester.widget(take) as ButtonStyleButton).enabled) {
+              await tester.ensureVisible(take);
+              await tester.tap(take);
+            }
+          } else if (dialogButtons.evaluate().isNotEmpty) {
+            // The level reached, the clans' offer after a boss: answered with
+            // its first enabled button, as a player who just goes on.
+            await tester.tap(dialogButtons.first);
           } else if (find.text('Take all').evaluate().isNotEmpty) {
             await tester.tap(find.text('Take all').first);
           } else if (find
@@ -242,15 +278,48 @@ void main() {
               () => Future<void>.delayed(const Duration(milliseconds: 40)));
         }
         if (find.byType(FightScreen).evaluate().isNotEmpty) {
-          note(
-              '$id run $run: the fight did not close; popping it. On screen: ${[
+          note('$id run $run: the fight did not close; popping it. Dialogs: ${{
+            for (final e in find
+                .byWidgetPredicate((w) =>
+                    '${w.runtimeType}'.contains('Dialog') ||
+                    '${w.runtimeType}'.contains('Sheet') ||
+                    '${w.runtimeType}'.contains('Loading'))
+                .evaluate())
+              '${e.widget.runtimeType}'
+          }}. In the dialog: ${[
+            for (final e in find
+                .descendant(
+                    of: find.byType(Dialog), matching: find.byType(Text))
+                .evaluate())
+              (e.widget as Text).data
+          ].take(25).join(' | ')}. Return enabled: ${[
+            for (final e in find
+                .ancestor(
+                    of: find.text('Victory! Return'),
+                    matching:
+                        find.byWidgetPredicate((w) => w is ButtonStyleButton))
+                .evaluate())
+              (e.widget as ButtonStyleButton).enabled
+          ]}. On screen: ${[
             for (final e in find.byType(Text).evaluate())
               if ((e.widget as Text).data case final String t when t.isNotEmpty)
                 t
           ].take(30).join(' | ')}');
-          nav.pop();
+          // Whatever is still open on top of the fight (an offer) goes with it.
+          nav.popUntil((route) => route.isFirst);
           await settle(4);
         }
+        // The fight's own verdict, what it popped with when it was left.
+        if (result != null) outcome = result! ? 'won' : 'lost';
+        rows.add({
+          'fight': id,
+          'run': run,
+          'profession': prof,
+          'foes': foes,
+          'outcome': outcome,
+          'rounds': rounds,
+        });
+        note('$id run $run ($prof): $outcome in $rounds rounds');
         await settle(4);
       }
       Directory(out).createSync(recursive: true);
