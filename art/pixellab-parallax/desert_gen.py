@@ -10,12 +10,14 @@ L={
  'far2':("pixel art, a seamless horizontal strip of tall red-brown flat-topped mesas and sandstone buttes with steep sides and shaded cliffs filling most of the strip height, hazy, transparent sky above, tileable left to right"+END,192,24,True),
  'mid':("pixel art, a seamless horizontal strip of rolling warm sand dunes with soft ridges and light on the top edge, transparent above the ridge, tileable left to right"+END,192,20,True),
  'mid2':("pixel art, a seamless horizontal strip of rolling orange-ochre sand dunes, each dune with a bright lit top edge and a deep shaded orange-brown side, strong contrast, transparent above the ridge, tileable left to right"+END,192,20,True),
+ 'sky2':("pixel art, a desert sky only, smooth horizontal bands with checkerboard dithering between the bands, deep dusky violet at the very top rising through plum and rose to orange and a pale gold glow at the horizon, nothing but sky, no ground, no hills, no sun, no clouds"+END,160,52,False),
  'near':("pixel art, a seamless horizontal strip of darker foreground sand dunes with a few small rocks and dry grass tufts on the ridge, transparent above the ridge, tileable left to right"+END,192,24,True),
 }
 if __name__=='__main__':
     st=sys.argv[1]; seed=int(sys.argv[2]) if len(sys.argv)>2 else 5
     keys=sys.argv[3].split(',') if len(sys.argv)>3 else list(L)
-    pal=base64.b64encode(open('assets/visuals/fight_plates/dunes.png','rb').read()).decode(); active=[]
+    import os
+    pal=base64.b64encode(open(os.environ.get('PAL','assets/visuals/fight_plates/dunes.png'),'rb').read()).decode(); active=[]
     for k in keys:
         d,w,h,nb=L[k]
         r=R.call('create_image_pixflux',{"description":d,"width":w,"height":h,"no_background":nb,"view":"side","outline":"selective outline","detail":"medium detail","color_image_base64":pal,"seed":seed})

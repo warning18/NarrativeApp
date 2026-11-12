@@ -5,9 +5,14 @@ from PIL import Image, ImageDraw, ImageFont
 R='art/pixellab-parallax/raw/'; O='art/pixellab-parallax/desert/'
 def load(k): return np.array(Image.open(R+k+'/get_image_0.png').convert('RGBA'))
 def save(a,n): Image.fromarray(a,'RGBA').save(O+n)
-# sky: the generated sky has a ridge at the bottom (rows 33+): continue the horizon haze down instead (the code's ground sits under it anyway)
-sky=load('desert_sky_s5'); 
-for y in range(33,52): sky[y]=sky[32]
+# sky (the user's option B, a richer sky): the second sky (forced palette = today's code sky colours, seed 21) with its baked ground cut off: rows 0 to 29 kept (the baked sun dome sits below), the horizon
+# row continued down (the code ground sits under it anyway); then a checkerboard dither across every band edge, as the code sky does
+sky=load('desert_sky2_s21')
+for y in range(30,52): sky[y]=sky[29]
+for y in range(10,51):
+    for x in range(sky.shape[1]):
+        if (x+y)%2==0 and not (sky[y,x,:3]==sky[y+1,x,:3]).all() and (sky[y,x,:3]==sky[y,max(x-1,0),:3]).all() and (sky[y,x,:3]==sky[y,min(x+1,sky.shape[1]-1),:3]).all():
+            sky[y,x,:3]=sky[y+1,x,:3]
 save(sky,'desert_sky.png')
 # far: window starting and ending on flat ground, then mirrored so the tile wraps seamlessly
 far=load('desert_far2_s6'); A=far[:,88:192]; farT=np.concatenate([A,A[:,::-1]],axis=1); save(farT,'desert_far.png')
@@ -65,4 +70,4 @@ for r,(lab,dusk) in enumerate(rows):
     else:
         t=today.convert('RGBA'); wash=Image.new('RGBA',t.size,(0x7A,0x4A,0x7C,int(255*0.20))); sh.paste(Image.alpha_composite(t,wash).convert('RGB'),(10,y+18))
     for i,sc in enumerate((0,160,320)): sh.paste(scene(sc,dusk),(10+(i+1)*(412+10),y+18))
-sh.save('docs/art/boards/crossing-parallax-desert-pilot.png'); print(sh.size)
+sh.save('docs/art/boards/crossing-parallax-desert-pilot-b.png'); print(sh.size)
