@@ -402,4 +402,26 @@ void main() {
     }
     expect(towerPeoplePoints, {'human': 2, 'voidkin': 3});
   });
+
+  // The story's retuned foes (v1.926, enemies.json) keep their old stats in
+  // the Tower (towerEnemyStats), so the climb is as it was.
+  test('the Tower fights the retuned foes as they were', () {
+    final raw = towerDataFromAssets().enemies;
+    for (final MapEntry(key: id, value: stats) in towerEnemyStats.entries) {
+      final foe = raw[id] as Map<String, dynamic>;
+      for (final MapEntry(:key, :value) in stats.entries) {
+        if (key == 'moves') {
+          for (final MapEntry(key: skill, value: chance)
+              in (value as Map<String, int>).entries) {
+            final move = (foe['skillMoves'] as List)
+                .cast<Map>()
+                .firstWhere((m) => m['skillID'] == skill);
+            expect(move['chance'], chance, reason: '$id $skill');
+          }
+        } else {
+          expect(foe[key], value, reason: '$id $key');
+        }
+      }
+    }
+  });
 }
