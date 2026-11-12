@@ -49,8 +49,9 @@ void main() {
           events: events,
           choice: (run) {
             final e = run.lastEvent;
-            if (e != null)
+            if (e != null) {
               add('${e.kind.name}_${e.passed ? 'passed' : 'failed'}');
+            }
             if (run.shortcut != null) {
               add(run.shortcut! ? 'shortcut_taken_won' : 'shortcut_declined');
             }
