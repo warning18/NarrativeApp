@@ -12,6 +12,15 @@ isn't reconstructable from git history alone.
 
 - Effects: eighteen more skill effects in the Apollo palette (UX, with Art's strips): slash, heavy slash, pierce, claw, whirl, impact, arrow, volley, fireball, holy fire, splash, poison, wind, drain, shadow, radiance, shout and stone shield. Quake and smoke keep today's until Art's redraw is shown. The arrow, the volley and the fireball still fly from the caster (Art's strip holds the flight and the burst) and the strips that end with the object in view fade out. The pale ground ring a strong blow added under them is gone from the Apollo effects, which carry their own impact. Three French event strings take a no-break space before the colon.
 
+## [1.945.0+981]
+
+- Maps: going up from a town to the world, the town's plan shrinks a little and fades over the ball instead of cutting. The full map page, opened from the Journey, carries the level strip (World · Town · District · Room); a tap on a rung returns to the Journey on that level. Fixed: after going up to the world from a district, "Town" could land on the district.
+- Maps: close up, the sphere's ground is shown in hard squares instead of a blur (the user's choice of 12 November). On the whole ball it stays smooth.
+
+## [1.944.0+980]
+
+- Tower: the floor events are on. A new climb meets three of them between ordinary floors. A **setback** is a d20 check (strength, dexterity or wisdom, odds shown): pass it and you gain a potion, fail it and you slip back 1 to 3 floors, never past a warden or a boss, once a climb. A **rival** is a fight that, won within 3 rounds, lets you skip the next floor. A **shortcut** offers a tougher version of the floor's fight: win it and you skip 1 to 3 floors, lose it and the climb ends. A floor you meet again after a slip pays nothing, and a slip never takes away a level or a mark. The foes are tuned so a climb with events is about as hard as one without. A climb started before this version keeps playing without them.
+
 ## [1.943.0+979]
 
 - Towns: the sea lies where the sphere puts it. Saltmouth, Greyhithe and the White Anchorage have their sea to the north now. Their whole plan is turned a half turn: water, walls, streets, bridges, districts, buildings and the town's services. Their streets, buildings and names are the same, only turned. Every other town keeps its sea to the south, as the sphere has it. The plans are turned where they are stored, so no hand edit is lost. The plan generator no longer reproduces the stored plans and is not to be run for now (`docs/city-plans-tools.md`).
