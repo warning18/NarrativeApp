@@ -7,6 +7,9 @@ PIX = "16-bit pixel art, flat colour with a dark ink outline, hot bright core, c
 BATCHES = {'retry1': {
  'heavy_slash': ("one huge curved diagonal slash mark across the frame, a single white and crimson crescent blade streak with a sharp bright edge, nothing else", "the slash streak sweeps across, then thins and fades away until nothing is left"),
  'splash': ("a clean splash of blue water: a crown of droplets rising from a flat ripple ring, only water, light blue and white", "the water crown splashes up, peaks, then collapses into ripples and fades away completely")},
+ 'retry2': {
+ 'quake': ("jagged bright crack lines splitting flat ground and radiating from one point, small rock chunks flying up, dust puffs, brown earth tones, no mound, no pile", "the cracks split outward and rocks jump up, then the dust settles and everything fades away until nothing is left"),
+ 'holy_fire': ("a tall pillar of bright golden white fire made only of flames, a cream white core, orange tips, no torch, no handle, no base", "the pillar of fire flares up, burns at its peak, then dies down and fades away until nothing is left")},
  'batch2': {
  'holy_fire': ("a column of holy fire, a white-gold flame with a cream core and orange gold tongues, a few rising golden sparks", "the holy fire flares up, burns at its peak, then dies down and fades away until nothing is left"),
  'quake': ("the ground cracking open, jagged brown fissures radiating from a centre with flying rock chunks and a ring of dust", "the ground cracks open and rocks fly up, then the dust settles and fades away"),
