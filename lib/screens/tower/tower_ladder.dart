@@ -13,7 +13,11 @@ import '../../theme/stitched_ink.dart';
 const double towerLadderWidth = 40;
 
 class TowerLadder extends StatelessWidget {
-  const TowerLadder({super.key, required this.floor});
+  const TowerLadder({super.key, required this.floor, this.jump});
+
+  /// How the last event moved the run: from this floor to [floor] (a skip up,
+  /// a fall down), drawn as an arrow beside the rail.
+  final (int, int)? jump;
 
   /// The floor the party stands on (1 to 30).
   final int floor;
@@ -68,7 +72,7 @@ class TowerLadder extends StatelessWidget {
       );
     }
 
-    return SizedBox(
+    final rail = SizedBox(
       key: const Key('tower_ladder'),
       width: towerLadderWidth,
       child: Column(
@@ -88,5 +92,54 @@ class TowerLadder extends StatelessWidget {
         ],
       ),
     );
+    final jump = this.jump;
+    if (jump == null) return rail;
+    return Stack(children: [
+      rail,
+      Positioned.fill(
+          child: IgnorePointer(
+              child: CustomPaint(
+                  painter:
+                      _JumpPainter(jump.$1, jump.$2, ink.gold, ink.blood)))),
+    ]);
   }
+}
+
+/// An arrow along the rail from floor [from] to floor [to]: gold going up,
+/// blood coming down, dashed, with its head on the floor the run lands on.
+class _JumpPainter extends CustomPainter {
+  _JumpPainter(this.from, this.to, this.up, this.down);
+
+  final int from, to;
+  final Color up, down;
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    final row = size.height / towerTop;
+    double y(int n) => (towerTop - n) * row + row / 2;
+    final color = to > from ? up : down;
+    final x = size.width + 5;
+    final paint = Paint()
+      ..color = color
+      ..strokeWidth = 2.5
+      ..strokeCap = StrokeCap.round;
+    final y0 = y(from), y1 = y(to);
+    final dir = y1 > y0 ? 1.0 : -1.0;
+    var yy = y0;
+    while ((y1 - yy) * dir > 8) {
+      canvas.drawLine(Offset(x, yy), Offset(x, yy + dir * 6), paint);
+      yy += dir * 11;
+    }
+    final head = Path()
+      ..moveTo(x, y1)
+      ..lineTo(x - 5, y1 - dir * 9)
+      ..lineTo(x + 5, y1 - dir * 9)
+      ..close();
+    canvas.drawPath(head, Paint()..color = color);
+    canvas.drawCircle(Offset(x, y0), 3.5, Paint()..color = color);
+  }
+
+  @override
+  bool shouldRepaint(_JumpPainter old) =>
+      old.from != from || old.to != to || old.up != up || old.down != down;
 }

@@ -288,6 +288,7 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   },
   'journey_tab_town': {AppLanguage.en: 'Town', AppLanguage.fr: 'Ville'},
   'journey_tab_world': {AppLanguage.en: 'World', AppLanguage.fr: 'Monde'},
+  'journey_tab_room': {AppLanguage.en: 'Room', AppLanguage.fr: 'Salle'},
   // A scene the story brought the party to holds it on its page (v1.553).
   'journey_choose_first': {
     AppLanguage.en: 'Choose first',
@@ -1369,6 +1370,159 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   'tower_fight_ground': {
     AppLanguage.en: 'The Ashen Tower · floor {n}',
     AppLanguage.fr: 'La Tour de Cendre · étage {n}',
+  },
+  // The Tower's floor events (floor events PR 1): the setback's test, the
+  // rival, how an event ended, a floor met again. Narrative words them.
+  'tower_event_setback': {
+    AppLanguage.en: 'Setback',
+    AppLanguage.fr: 'Revers',
+  },
+  'tower_event_rival': {
+    AppLanguage.en: 'Rival',
+    AppLanguage.fr: 'Rival',
+  },
+  'tower_event_test_title': {
+    AppLanguage.en: 'A test of {ability}',
+    AppLanguage.fr: 'Une épreuve de {ability}',
+  },
+  'tower_event_test_body_strength': {
+    AppLanguage.en: 'The stair is slick with ash. Hold on.',
+    AppLanguage.fr: 'L’escalier est glissant de cendre. Tenez bon.',
+  },
+  'tower_event_test_body_dexterity': {
+    AppLanguage.en: 'A tread gives way under your foot. Catch yourself.',
+    AppLanguage.fr: 'Une marche cède sous votre pied. Rattrapez-vous.',
+  },
+  'tower_event_test_body_wisdom': {
+    AppLanguage.en:
+        'Something about this landing is wrong. See it before it springs.',
+    AppLanguage.fr:
+        'Quelque chose cloche sur ce palier. Voyez-le avant qu’il ne se referme.',
+  },
+  'tower_event_pass_text_strength': {
+    AppLanguage.en: 'hold on and take a potion.',
+    AppLanguage.fr: 'vous tenez bon et gagnez une potion.',
+  },
+  'tower_event_pass_text_dexterity': {
+    AppLanguage.en: 'catch yourself and take a potion.',
+    AppLanguage.fr: 'vous vous rattrapez et gagnez une potion.',
+  },
+  'tower_event_pass_text_wisdom': {
+    AppLanguage.en: 'see the trap and take a potion.',
+    AppLanguage.fr: 'vous voyez le piège et gagnez une potion.',
+  },
+  'tower_event_fail_text_strength': {
+    AppLanguage.en: 'your grip gives: fall to floor {n}.',
+    AppLanguage.fr: 'votre prise cède : vous chutez à l’étage {n}.',
+  },
+  'tower_event_fail_text_dexterity': {
+    AppLanguage.en: 'your foot slips: fall to floor {n}.',
+    AppLanguage.fr: 'votre pied glisse : vous chutez à l’étage {n}.',
+  },
+  'tower_event_fail_text_wisdom': {
+    AppLanguage.en: 'the trap springs: fall to floor {n}.',
+    AppLanguage.fr: 'le piège se referme : vous chutez à l’étage {n}.',
+  },
+  'tower_event_held_strength': {
+    AppLanguage.en: 'You hold on at floor {from}',
+    AppLanguage.fr: 'Vous tenez bon à l’étage {from}',
+  },
+  'tower_event_held_dexterity': {
+    AppLanguage.en: 'You catch yourself at floor {from}',
+    AppLanguage.fr: 'Vous vous rattrapez à l’étage {from}',
+  },
+  'tower_event_held_wisdom': {
+    AppLanguage.en: 'You see the trap at floor {from}',
+    AppLanguage.fr: 'Vous voyez le piège à l’étage {from}',
+  },
+  'tower_event_pass_full': {
+    AppLanguage.en: 'Your bag is full: you drink it at once.',
+    AppLanguage.fr: 'Votre sac est plein : vous la buvez aussitôt.',
+  },
+  'tower_event_fail_same_text': {
+    AppLanguage.en: 'you slip: climb floor {n} again.',
+    AppLanguage.fr: 'vous glissez : l’étage {n} est à refaire.',
+  },
+  'tower_event_fell_same': {
+    AppLanguage.en: 'You slip on floor {from}: climb it again',
+    AppLanguage.fr: 'Vous glissez à l’étage {from} : à refaire',
+  },
+  'tower_event_chance': {
+    AppLanguage.en: 'chance to pass (d20 {mod} against {dc})',
+    AppLanguage.fr: 'chances de réussir (d20 {mod} contre {dc})',
+  },
+  'tower_event_pass': {
+    AppLanguage.en: 'Pass',
+    AppLanguage.fr: 'Réussite',
+  },
+  'tower_event_fail': {
+    AppLanguage.en: 'Fail',
+    AppLanguage.fr: 'Échec',
+  },
+  'tower_event_left': {
+    AppLanguage.en: '{n} setbacks left on this climb',
+    AppLanguage.fr: '{n} revers restants sur cette ascension',
+  },
+  'tower_event_left_one': {
+    AppLanguage.en: '1 setback left on this climb',
+    AppLanguage.fr: '1 revers restant sur cette ascension',
+  },
+  'tower_event_rival_title': {
+    AppLanguage.en: 'A rival races you up',
+    AppLanguage.fr: 'Un rival vous fait la course',
+  },
+  'tower_event_rival_body': {
+    AppLanguage.en:
+        'Beat them fast and the stair will not make you climb floor {n}.',
+    AppLanguage.fr:
+        'Battez-le vite et l’escalier ne vous fera pas gravir l’étage {n}.',
+  },
+  'tower_event_rival_win': {
+    AppLanguage.en: 'Win within {n} rounds',
+    AppLanguage.fr: 'Victoire en {n} tours au plus',
+  },
+  'tower_event_rival_win_text': {
+    AppLanguage.en: 'skip to floor {n}.',
+    AppLanguage.fr: 'vous sautez à l’étage {n}.',
+  },
+  'tower_event_rival_slow': {
+    AppLanguage.en: 'Too slow',
+    AppLanguage.fr: 'Trop lent',
+  },
+  'tower_event_rival_slow_text': {
+    AppLanguage.en: 'no skip: the climb goes on.',
+    AppLanguage.fr: 'pas de saut : l’ascension continue.',
+  },
+  'tower_event_fell': {
+    AppLanguage.en: 'You fall from floor {from} to floor {to}',
+    AppLanguage.fr: 'Vous tombez de l’étage {from} à l’étage {to}',
+  },
+  'tower_event_outran': {
+    AppLanguage.en:
+        'You outrun your rival: floor {skipped} is skipped, you land on floor {to}',
+    AppLanguage.fr:
+        'Vous devancez votre rival : l’étage {skipped} est sauté, vous arrivez à l’étage {to}',
+  },
+  'tower_event_rival_lost': {
+    AppLanguage.en: 'Your rival gets away: no skip',
+    AppLanguage.fr: 'Votre rival vous échappe : pas de saut',
+  },
+  'tower_event_rolled': {
+    AppLanguage.en: 'You roll {roll}, total {total}.',
+    AppLanguage.fr: 'Vous obtenez {roll}, total {total}.',
+  },
+  'tower_event_rolled_against': {
+    AppLanguage.en: 'You roll {roll}, total {total} against {dc}.',
+    AppLanguage.fr: 'Vous obtenez {roll}, total {total} contre {dc}.',
+  },
+  'tower_event_nothing_again': {
+    AppLanguage.en: 'A floor you climb twice pays nothing the second time.',
+    AppLanguage.fr:
+        'Un étage gravi deux fois ne rapporte rien la seconde fois.',
+  },
+  'tower_event_nothing': {
+    AppLanguage.en: 'You have been here: this floor pays nothing.',
+    AppLanguage.fr: 'Étage déjà franchi : il ne rapporte rien.',
   },
   'tower_floor_of': {
     AppLanguage.en: 'Floor {n} of 30',

@@ -7,6 +7,20 @@ PIX = "16-bit pixel art, flat colour with a dark ink outline, hot bright core, c
 BATCHES = {'retry1': {
  'heavy_slash': ("one huge curved diagonal slash mark across the frame, a single white and crimson crescent blade streak with a sharp bright edge, nothing else", "the slash streak sweeps across, then thins and fades away until nothing is left"),
  'splash': ("a clean splash of blue water: a crown of droplets rising from a flat ripple ring, only water, light blue and white", "the water crown splashes up, peaks, then collapses into ripples and fades away completely")},
+ 'retry2': {
+ 'quake': ("jagged bright crack lines splitting flat ground and radiating from one point, small rock chunks flying up, dust puffs, brown earth tones, no mound, no pile", "the cracks split outward and rocks jump up, then the dust settles and everything fades away until nothing is left"),
+ 'holy_fire': ("a tall pillar of bright golden white fire made only of flames, a cream white core, orange tips, no torch, no handle, no base", "the pillar of fire flares up, burns at its peak, then dies down and fades away until nothing is left")},
+ 'batch2': {
+ 'holy_fire': ("a column of holy fire, a white-gold flame with a cream core and orange gold tongues, a few rising golden sparks", "the holy fire flares up, burns at its peak, then dies down and fades away until nothing is left"),
+ 'quake': ("the ground cracking open, jagged brown fissures radiating from a centre with flying rock chunks and a ring of dust", "the ground cracks open and rocks fly up, then the dust settles and fades away"),
+ 'drain': ("a swirling magenta and purple vortex pulling thin streams of light into a glowing orb", "the streams spiral inward into the orb, which pulses, then fades away"),
+ 'fireball': ("a round fireball with a trailing flame tail, orange and yellow with a white-hot core", "the fireball flies and flickers, then bursts into sparks and fades away"),
+ 'wind': ("three curling gusts of wind, pale teal and white swirling lines with a few small leaves", "the gusts swirl outward and thin out until they vanish"),
+ 'whirl': ("a spinning ring of circular blade streaks around a centre, silver and white with sharp edges", "the blade ring spins faster, then thins out and fades away"),
+ 'smoke': ("a billowing puff of grey smoke, rounded grey and dark blue-grey clouds", "the smoke puffs outward, billows, then thins and fades away"),
+ 'volley': ("three wooden arrows raining down diagonally with white motion streaks", "the arrows fall and land with small flashes, then fade away"),
+ 'claw': ("three parallel claw slash marks, white with red edges and a few sparks", "the claw marks rake across one after another, then fade away"),
+ 'slash': ("a clean diagonal sword slash, a silver-white crescent with a bright edge and a few sparks", "the slash sweeps across then thins and fades away")},
  'batch1': {
  'radiance': ("a burst of holy golden light, a bright white core with eight radiating rays", "the light blooms outward, shines at its peak, then fades away until nothing is left"),
  'shout': ("three curved sound waves bursting outward from a roaring centre, orange and cream", "the sound waves expand outward and thin out until they vanish"),

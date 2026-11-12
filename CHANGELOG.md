@@ -8,6 +8,14 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.937.0+973]
+
+- Tower floor events, the cards (UX; the events are still off for players until the user's OK, so nothing shows yet): a setback shows its test above the cards (the ability, the odds as a percent and a bar with the DC, what a pass and a fail give and where a fall lands, the setbacks left), a rival shows its condition before the fight (win within 3 rounds to skip a floor; otherwise no skip), the next floor says how the event ended (the roll and total, the fall or the skip) with an arrow along the rail, and a floor met again says it pays nothing. The words are by ability (strength, dexterity, wisdom) and EN/FR (Narrative). After a rival's skip the Level Up opens on the landing floor. Pictures: `docs/ux-shots/tower-event-cards-real/`.
+
+## [1.936.0+972]
+
+- Maps, release 2: the ladder and the dive. One strip of four rungs, World, Town, District, Room, each one tap from any other; the rung looked at is lit and a rung that does not exist here is dimmed. "Town" now works from inside a room (the party steps out and the whole town is shown). "+" goes down one rung and "−" goes up one on every map: the button into a building is a "+", and on the whole town only the district's "+" shows. The world and the town are joined by a move: going down, the ball closes in on the place and the town grows out of it, landing on the whole town with no door veil; going up, the ball opens close on the place and pulls back until it fills its box. The city plan page takes the map's own square buttons. The strip is a new widget, `lib/widgets/level_ladder.dart`, 36 px high (40 took 12 px from the map and broke a tap on a 360 x 640 screen). French for the new rung: "Salle". Pictures: `docs/maps/sphere-and-locations/release-2/`.
+
 ## [1.933.0+969]
 
 - Tower: the engine of two floor events, setbacks and rivals (floor events PR 1, docs/proposals/tower-snakes-and-ladders.md). **They stay off for players** until the user has seen UX-2's event cards: a run started now plays exactly as before. In the engine: a setback is a d20 check after an ordinary floor (strength, dexterity or wisdom, DC 10 to 14, odds shown) that gives a potion, or on a fail drops the hero 1 to 3 floors, never past a warden or boss, once a run; a rival is a fight that, won within 3 rounds, skips the next floor. A floor met again after a fall pays nothing, and a fall never takes a level or a mark away.
