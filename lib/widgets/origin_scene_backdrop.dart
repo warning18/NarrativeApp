@@ -14,6 +14,7 @@ import 'side_view/fen_kit.dart';
 import 'side_view/frost_kit.dart';
 import 'side_view/sea_kit.dart';
 import 'side_view/scene_windows.dart';
+import 'screen_pictures.dart';
 import 'side_view/side_view.dart';
 import 'street_view/street_view.dart';
 
@@ -91,6 +92,12 @@ class OriginSceneBackdrop extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // A memory with a painted band (Art's) shows it; the others keep the
+    // scene drawn in code.
+    final band = lifeBandAsset(memoryId);
+    if (band != null) {
+      return SizedBox(height: height, child: LifeBand(asset: band));
+    }
     final b = originBackdropOf(memoryId);
     // Each memory keeps its own version of the place.
     final version = sceneWindowOfId(memoryId);
