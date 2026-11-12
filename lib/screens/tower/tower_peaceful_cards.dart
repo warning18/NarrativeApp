@@ -174,9 +174,8 @@ class TowerParleyCard extends ConsumerWidget {
   }
 }
 
-/// One thing the merchant sells this run. (The merchant's stall and the
-/// bargain's card below are wired by Core's floor events PR 4: unreachable
-/// until then, drawn and tested as pictures; keep them, Cleanup.)
+/// One thing the merchant sells this run (Core's TowerStockView, as the
+/// stall shows it).
 class TowerStallItem {
   const TowerStallItem({
     required this.id,
@@ -320,6 +319,9 @@ class TowerMerchantRoom extends ConsumerWidget {
         width: double.infinity,
         child: OutlinedButton(
           key: const Key('tower_merchant_leave'),
+          // A solid ground: on the plate's arch the bare frame read weakly.
+          style: OutlinedButton.styleFrom(
+              backgroundColor: theme.colorScheme.surface),
           onPressed: onLeave,
           child: Text(tr(ref, 'tower_merchant_leave')),
         ),

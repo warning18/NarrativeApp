@@ -11,13 +11,21 @@ import '../../l10n/app_strings.dart';
 import '../../theme/icon_sizes.dart';
 import '../../theme/stitched_ink.dart';
 import '../../widgets/ink_panel.dart';
-import 'tower_peaceful_cards.dart' show TowerParleyCard;
+import '../../data/tower/tower_tables.dart' show towerSalveShare;
+import 'tower_peaceful_cards.dart'
+    show TowerBargainCard, TowerMerchantRoom, TowerParleyCard, TowerStallItem;
 
 /// The card of [view]'s event, or nothing when its floor holds none (a floor
 /// met again, or one shown only for its last result).
 class TowerEventCard extends ConsumerWidget {
   const TowerEventCard(this.view,
-      {super.key, this.bagFull = false, this.onShortcut, this.onParley});
+      {super.key,
+      this.bagFull = false,
+      this.onShortcut,
+      this.onParley,
+      this.onBuy,
+      this.onLeaveStore,
+      this.onBargain});
 
   final TowerEventView view;
 
@@ -30,6 +38,12 @@ class TowerEventCard extends ConsumerWidget {
 
   /// A parley's choice: true talks, false fights.
   final void Function(bool talk)? onParley;
+
+  /// The merchant's Buy (the stock's id) and Leave, and the bargain's choice
+  /// (true takes it).
+  final void Function(String id)? onBuy;
+  final VoidCallback? onLeaveStore;
+  final void Function(bool accept)? onBargain;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -55,10 +69,42 @@ class TowerEventCard extends ConsumerWidget {
           onTalk: onParley == null ? null : () => onParley!(true),
           onFight: onParley == null ? null : () => onParley!(false),
         );
-      // The merchant's and the bargain's cards are UX-2's to draw (floor
-      // events PR 4 adds the kinds; events version 2 is not live yet).
+      // The merchant's stall while its store is open (Leave closes it; the
+      // next fight does too), and the bargain until it is chosen (a chosen
+      // one reads in the result line).
       case TowerEventKind.merchant:
+        if (!view.storeOpen) return const SizedBox.shrink();
+        return TowerMerchantRoom(
+          wallet: view.wallet ?? 0,
+          clanId: view.clanId,
+          discount: view.discount ?? false,
+          stock: [
+            for (final item in view.stock ?? const <TowerStockView>[])
+              TowerStallItem(
+                id: item.id,
+                icon: item.kind == TowerStockKind.salve
+                    ? Icons.healing
+                    : Icons.local_drink_outlined,
+                price: item.price,
+                // The salve's text says a share of the health, not points.
+                amount: item.kind == TowerStockKind.salve
+                    ? (towerSalveShare * 100).round()
+                    : item.amount,
+                bought: item.bought,
+                affordable: item.affordable,
+              ),
+          ],
+          onBuy: onBuy,
+          onLeave: onLeaveStore,
+        );
       case TowerEventKind.bargain:
+        if (view.accepted != null) return const SizedBox.shrink();
+        return TowerBargainCard(
+          maxHealthCost: view.maxHealthCost ?? 0,
+          stat: view.stat ?? 'strength',
+          onAccept: onBargain == null ? null : () => onBargain!(true),
+          onRefuse: onBargain == null ? null : () => onBargain!(false),
+        );
       case null:
         return const SizedBox.shrink();
     }
