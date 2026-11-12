@@ -103,15 +103,10 @@ class TowerLadderState extends State<TowerLadder>
                 ]
               : null,
         ),
+        // The notch stood on shows no number of its own: the head's tag
+        // above carries it.
         child: here
-            ? Text('$n',
-                // The serif digits: the pixel face fills in at this size
-                // (a 26 read as 88).
-                style: label?.copyWith(
-                    fontFamily: InkFonts.prose,
-                    fontWeight: FontWeight.w800,
-                    color: ink.gold,
-                    height: 1))
+            ? const SizedBox.shrink()
             : isBoss(n)
                 ? Text('$n',
                     style: label?.copyWith(color: Colors.white70, height: 1))
@@ -172,6 +167,32 @@ class TowerLadderState extends State<TowerLadder>
                   width: size,
                   height: size,
                   child: HeadAvatar(id: 'hero', name: '', size: size),
+                ),
+                // The floor the head stands on, as a small gold tag above
+                // it: the head covers the notch's own number.
+                Positioned(
+                  key: const Key('tower_ladder_number'),
+                  left: 0,
+                  right: 0,
+                  top: max(0,
+                      (towerTop - headFloor) * row + row / 2 - size / 2 - 15),
+                  child: Center(
+                    child: DecoratedBox(
+                      decoration: BoxDecoration(
+                        color: night.withValues(alpha: .9),
+                        borderRadius: BorderRadius.circular(4),
+                      ),
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 3),
+                        child: Text('${headFloor.round()}',
+                            style: label?.copyWith(
+                                fontFamily: InkFonts.prose,
+                                fontWeight: FontWeight.w800,
+                                color: ink.gold,
+                                height: 1.2)),
+                      ),
+                    ),
+                  ),
                 ),
               ]),
             );
