@@ -112,7 +112,7 @@ void main() {
   testWidgets('French, at 320 px', (tester) async {
     await _pump(tester, _advice(note: 'La salle des Lanternes mord.'),
         size: const Size(320, 250), language: AppLanguage.fr);
-    expect(find.text('Chapitre 4 : niveau 9 conseillé (vous : 6)'),
+    expect(find.text('Chapitre 4\u00a0: niveau 9 conseillé (vous\u00a0: 6)'),
         findsOneWidget);
     expect(find.text('Ch. 4 · niv. 9'), findsOneWidget);
     expect(find.text('Niv. 9'), findsOneWidget);
