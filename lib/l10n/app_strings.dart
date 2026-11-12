@@ -1547,8 +1547,8 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.fr: 'Défaite',
   },
   'tower_event_shortcut_lose_text': {
-    AppLanguage.en: 'The run ends here',
-    AppLanguage.fr: 'La partie s’arrête ici',
+    AppLanguage.en: 'The climb ends here',
+    AppLanguage.fr: 'L’ascension s’arrête ici',
   },
   'tower_event_shortcut_take': {
     AppLanguage.en: 'Take the stair',
@@ -1560,14 +1560,14 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   },
   'tower_event_shortcut_taken': {
     AppLanguage.en:
-        'You took the stair: this is the tougher fight, and a loss ends the run.',
+        'You take the stair: this is the tougher fight, and a loss ends the climb.',
     AppLanguage.fr:
-        'Vous avez pris l’escalier : c’est le combat difficile, et une défaite met fin à la partie.',
+        'Vous prenez l’escalier : c’est le combat difficile, et une défaite met fin à l’ascension.',
   },
   'tower_event_shortcut_won': {
-    AppLanguage.en: 'The stair held: after this card you climb to floor {to}.',
+    AppLanguage.en: 'The stair holds: after this card you climb to floor {to}.',
     AppLanguage.fr:
-        'L’escalier a tenu : après cette carte, vous montez à l’étage {to}.',
+        'L’escalier tient : après cette carte, vous montez à l’étage {to}.',
   },
   'tower_event_shortcut_landed': {
     AppLanguage.en: 'The shortcut holds: you land on floor {to}',

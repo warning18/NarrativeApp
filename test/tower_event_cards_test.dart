@@ -165,7 +165,7 @@ void main() {
         find.textContaining('land on floor ${view.landsOn}',
             findRichText: true),
         findsOneWidget);
-    expect(find.textContaining('The run ends here', findRichText: true),
+    expect(find.textContaining('The climb ends here', findRichText: true),
         findsOneWidget);
 
     for (final take in [true, false]) {
