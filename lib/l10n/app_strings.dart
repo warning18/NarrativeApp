@@ -1927,8 +1927,8 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.fr: 'ÉTAGE {n} · GARDIEN',
   },
   'tower_floor_elite': {
-    AppLanguage.en: 'An Elite waits here.',
-    AppLanguage.fr: 'Un Élite attend ici.',
+    AppLanguage.en: 'Elite',
+    AppLanguage.fr: 'Élite',
   },
   'tower_foes': {
     AppLanguage.en: 'Foes',
