@@ -1,12 +1,15 @@
-// QA pin (Core's floor events PR 2, v1.939): the Tower players get today is
-// the floor events OFF (towerEventsLive = 0). The balance guard of
-// qa_tower_sim_test.dart holds it inside wide bands; this test pins it as
-// numbers, on the same first 500 seeds, so any later drift of the live curve
-// (a foe's scale, a floor's extras, the heal between floors) shows here even
-// when the bands still hold.
+// QA pin of the LIVE Tower (Core's floor events, v1.944): the Tower players
+// get is the floor events' version `towerEventsLive` (1 since v1.944: the
+// setback, the rival and the shortcut, at the events-on foe scale). The
+// balance guard of qa_tower_sim_test.dart holds it inside wide bands; this
+// test pins it as numbers, on the same first 500 seeds, so any later drift of
+// the live curve (a foe's scale, a floor's extras, the heal between floors)
+// shows here even when the bands still hold.
 //
-// The bot plays the LIVE floor events' version (towerEventsLive, 0 today), so
-// when they are switched on this test asks for the new numbers, on purpose.
+// The bot plays the LIVE version (towerEventsLive), so it moves only on the
+// day that constant does (2 adds the quiet floors): the test then asks for
+// the new numbers, on purpose. (It was named qa_tower_events_off_pin_test.dart
+// while the events were off.)
 //
 // The numbers are the bot's (playTowerRun) on seeds 1 to 500, once
 // with no unlocks and once with all of them. When the live curve is changed
@@ -41,17 +44,17 @@ void main() {
   const none = (top: 58, floor20: 231, floorSum: 9358);
   const all = (top: 129, floor20: 334, floorSum: 11203);
 
-  test('the live Tower (events off), no unlocks, is the pinned curve', () {
+  test('the live Tower, no unlocks, is the pinned curve', () {
     final m = _measure(const TowerProgress());
     expect(m, none,
-        reason: 'events-off, no unlocks: top ${m.top}, floor 20 ${m.floor20}, '
+        reason: 'live Tower, no unlocks: top ${m.top}, floor 20 ${m.floor20}, '
             'floor sum ${m.floorSum} (mean ${m.floorSum / 500})');
   });
 
-  test('the live Tower (events off), all unlocks, is the pinned curve', () {
+  test('the live Tower, all unlocks, is the pinned curve', () {
     final m = _measure(towerAllUnlocked);
     expect(m, all,
-        reason: 'events-off, all unlocks: top ${m.top}, floor 20 ${m.floor20}, '
+        reason: 'live Tower, all unlocks: top ${m.top}, floor 20 ${m.floor20}, '
             'floor sum ${m.floorSum} (mean ${m.floorSum / 500})');
   });
 }

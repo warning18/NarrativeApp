@@ -87,6 +87,6 @@ choose otherwise.
 
 ## Pin
 
-`qa_tower_events_off_pin_test.dart` reads `towerEventsLive`; Core re-pinned it
+`qa_tower_live_pin_test.dart` (then named qa_tower_events_off_pin_test.dart) reads `towerEventsLive`; Core re-pinned it
 on the live curve (58 / 231 / 9,358 no unlocks; 129 / 334 / 11,203 all
 unlocks) and I verified the numbers on the branch.
