@@ -75,11 +75,12 @@ void main() {
     return r;
   }
 
-  (int, int) parleyFloor({bool failing = false}) {
+  (int, int) parleyFloor({bool failing = false, Set<String>? clans}) {
     for (var seed = 1; seed < 600; seed++) {
       for (var floor = 4; floor < 29; floor++) {
         final r = settled(base(seed, floor));
         if (towerEventKindOf(r) != TowerEventKind.parley) continue;
+        if (clans != null && !clans.contains(towerParleyClanOf(r))) continue;
         if (!failing) return (seed, floor);
         if (towerChooseParley(r, data, true).parley ?? false) {
           return (seed, floor);
@@ -147,6 +148,15 @@ void main() {
       final (seed, floor) = parleyFloor();
       await open(base(seed, floor));
       await shot('parley-offer-$tag');
+      // The officer's picture (Dominion, Vigil) and the floor foe's own
+      // figure (the other clans).
+      final (os, of) = parleyFloor(clans: {'dominion', 'vigil'});
+      await open(base(os, of));
+      await shot('parley-officer-$tag');
+      final (ns, nf) =
+          parleyFloor(clans: {'mire', 'crows', 'compact', 'penitents'});
+      await open(base(ns, nf));
+      await shot('parley-foe-$tag');
       final clan = towerParleyClanOf(settled(base(seed, floor)))!;
       await open(base(seed, floor,
           taken: {0: TowerReward(TowerRewardKind.clanOath, id: clan)}));

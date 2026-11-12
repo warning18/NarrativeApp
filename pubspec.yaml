@@ -116,6 +116,7 @@ flutter:
     - assets/visuals/walker/
     - assets/visuals/fighters/
     - assets/visuals/tower/
+    - assets/visuals/tower/npc/
     - assets/visuals/life/
     - assets/visuals/character/
     - assets/visuals/expeditions/

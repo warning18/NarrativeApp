@@ -26,7 +26,8 @@ class TowerEventCard extends ConsumerWidget {
       this.onParley,
       this.onBuy,
       this.onLeaveStore,
-      this.onBargain});
+      this.onBargain,
+      this.foeId});
 
   final TowerEventView view;
 
@@ -45,6 +46,10 @@ class TowerEventCard extends ConsumerWidget {
   final void Function(String id)? onBuy;
   final VoidCallback? onLeaveStore;
   final void Function(bool accept)? onBargain;
+
+  /// The floor's first foe, whose figure the parley card shows for a clan
+  /// with no picture of its own.
+  final String? foeId;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -67,6 +72,7 @@ class TowerEventCard extends ConsumerWidget {
           landsOn: view.landsOn ?? view.floor + 1,
           clanId: view.clanId,
           oathPass: view.oathPass ?? false,
+          foeId: foeId,
           onTalk: onParley == null ? null : () => onParley!(true),
           onFight: onParley == null ? null : () => onParley!(false),
         );
