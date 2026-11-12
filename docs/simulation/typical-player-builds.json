@@ -146,9 +146,11 @@
       "quick_heal"
      ],
      "diceSkillAssignments": {
-      "1": "cleric_prayer",
-      "4": "cleric_purify",
-      "5": "dwarf_stoneskin"
+      "apprentice_die": {
+       "1": "cleric_prayer",
+       "4": "cleric_purify",
+       "5": "dwarf_stoneskin"
+      }
      },
      "raceId": "dwarf",
      "professionId": "cleric",
@@ -940,9 +942,11 @@
       "zealous_conviction"
      ],
      "diceSkillAssignments": {
-      "2": "ranger_call_of_the_wilds",
-      "4": "elf_keen_eye",
-      "5": "zealous_conviction"
+      "starter_die": {
+       "2": "ranger_call_of_the_wilds",
+       "4": "elf_keen_eye",
+       "5": "zealous_conviction"
+      }
      },
      "raceId": "elf",
      "professionId": "ranger",
@@ -1312,9 +1316,11 @@
       "zealous_conviction"
      ],
      "diceSkillAssignments": {
-      "2": "rogue_backstab",
-      "4": "elf_keen_eye",
-      "5": "zealous_conviction"
+      "starter_die": {
+       "2": "rogue_backstab",
+       "4": "elf_keen_eye",
+       "5": "zealous_conviction"
+      }
      },
      "raceId": "elf",
      "professionId": "rogue",
@@ -2090,7 +2096,9 @@
       "zealous_conviction"
      ],
      "diceSkillAssignments": {
-      "2": "celestial_ward"
+      "headsman_die": {
+       "2": "celestial_ward"
+      }
      },
      "raceId": "human",
      "professionId": "cleric",
@@ -2552,7 +2560,9 @@
       "zealous_conviction"
      ],
      "diceSkillAssignments": {
-      "8": "mage_emberwife_coal"
+      "arcane_die": {
+       "8": "mage_emberwife_coal"
+      }
      },
      "raceId": "elf",
      "professionId": "mage",
@@ -3038,9 +3048,11 @@
       "zealous_conviction"
      ],
      "diceSkillAssignments": {
-      "2": "ranger_pack_ambush",
-      "4": "ranger_call_of_the_wilds",
-      "5": "ranger_trap_set"
+      "starter_die": {
+       "2": "ranger_pack_ambush",
+       "4": "ranger_call_of_the_wilds",
+       "5": "ranger_trap_set"
+      }
      },
      "raceId": "elf",
      "professionId": "ranger",
@@ -3490,7 +3502,9 @@
       "shadow_step"
      ],
      "diceSkillAssignments": {
-      "1": "rogue_deadeye_thrust"
+      "shadow_die": {
+       "1": "rogue_deadeye_thrust"
+      }
      },
      "raceId": "human",
      "professionId": "rogue",
@@ -3969,9 +3983,11 @@
       "warrior_unbroken_stance"
      ],
      "diceSkillAssignments": {
-      "2": "warrior_quarry_break",
-      "4": "orc_berserk_rage",
-      "5": "orc_savage_cleave"
+      "starter_die": {
+       "2": "warrior_quarry_break",
+       "4": "orc_berserk_rage",
+       "5": "orc_savage_cleave"
+      }
      },
      "raceId": "orc",
      "professionId": "warrior",
@@ -5030,7 +5046,9 @@
       "voidkin_umbral_veil"
      ],
      "diceSkillAssignments": {
-      "2": "mage_tear_sight"
+      "headsman_die": {
+       "2": "mage_tear_sight"
+      }
      },
      "raceId": "voidkin",
      "professionId": "mage",
@@ -5633,9 +5651,11 @@
       "zealous_conviction"
      ],
      "diceSkillAssignments": {
-      "2": "ranger_pack_ambush",
-      "4": "ranger_followed_trail",
-      "5": "ranger_call_of_the_wilds"
+      "starter_die": {
+       "2": "ranger_pack_ambush",
+       "4": "ranger_followed_trail",
+       "5": "ranger_call_of_the_wilds"
+      }
      },
      "raceId": "dwarf",
      "professionId": "ranger",
@@ -6199,7 +6219,9 @@
       "shadow_step"
      ],
      "diceSkillAssignments": {
-      "1": "rogue_backstab"
+      "shadow_die": {
+       "1": "rogue_backstab"
+      }
      },
      "raceId": "dwarf",
      "professionId": "rogue",
@@ -6806,9 +6828,11 @@
       "warrior_unbroken_stance"
      ],
      "diceSkillAssignments": {
-      "2": "warrior_quarry_break",
-      "4": "orc_berserk_rage",
-      "5": "orc_savage_cleave"
+      "starter_die": {
+       "2": "warrior_quarry_break",
+       "4": "orc_berserk_rage",
+       "5": "orc_savage_cleave"
+      }
      },
      "raceId": "orc",
      "professionId": "warrior",
@@ -7361,7 +7385,9 @@
       "zealous_conviction"
      ],
      "diceSkillAssignments": {
-      "2": "voidkin_entropy_touch"
+      "headsman_die": {
+       "2": "voidkin_entropy_touch"
+      }
      },
      "raceId": "voidkin",
      "professionId": "cleric",
@@ -7982,8 +8008,10 @@
       "zealous_conviction"
      ],
      "diceSkillAssignments": {
-      "5": "voidkin_entropy_touch",
-      "7": "mage_emberwife_coal"
+      "flame_die": {
+       "5": "voidkin_entropy_touch",
+       "7": "mage_emberwife_coal"
+      }
      },
      "raceId": "voidkin",
      "professionId": "mage",
@@ -8631,9 +8659,11 @@
       "zealous_conviction"
      ],
      "diceSkillAssignments": {
-      "2": "ranger_pack_ambush",
-      "4": "ranger_followed_trail",
-      "5": "ranger_call_of_the_wilds"
+      "starter_die": {
+       "2": "ranger_pack_ambush",
+       "4": "ranger_followed_trail",
+       "5": "ranger_call_of_the_wilds"
+      }
      },
      "raceId": "dwarf",
      "professionId": "ranger",
@@ -9253,7 +9283,9 @@
       "shadow_step"
      ],
      "diceSkillAssignments": {
-      "1": "rogue_backstab"
+      "shadow_die": {
+       "1": "rogue_backstab"
+      }
      },
      "raceId": "dwarf",
      "professionId": "rogue",
@@ -9913,9 +9945,11 @@
       "zealous_conviction"
      ],
      "diceSkillAssignments": {
-      "2": "final_stand",
-      "4": "warrior_quarry_break",
-      "5": "celestial_ward"
+      "starter_die": {
+       "2": "final_stand",
+       "4": "warrior_quarry_break",
+       "5": "celestial_ward"
+      }
      },
      "raceId": "human",
      "professionId": "warrior",
@@ -10612,7 +10646,9 @@
       "zealous_conviction"
      ],
      "diceSkillAssignments": {
-      "2": "cleric_scorched_hymn"
+      "headsman_die": {
+       "2": "cleric_scorched_hymn"
+      }
      },
      "raceId": "human",
      "professionId": "cleric",
@@ -12166,10 +12202,12 @@
       "voidkin_umbral_veil"
      ],
      "diceSkillAssignments": {
-      "1": "ranger_deadeye_volley",
-      "4": "voidkin_entropy_touch",
-      "5": "ranger_trap_set",
-      "8": "precision_thrust"
+      "storm_die": {
+       "1": "ranger_deadeye_volley",
+       "4": "voidkin_entropy_touch",
+       "5": "ranger_trap_set",
+       "8": "precision_thrust"
+      }
      },
      "raceId": "voidkin",
      "professionId": "ranger",
@@ -12906,7 +12944,9 @@
       "zealous_conviction"
      ],
      "diceSkillAssignments": {
-      "1": "voidkin_entropy_touch"
+      "shadow_die": {
+       "1": "voidkin_entropy_touch"
+      }
      },
      "raceId": "voidkin",
      "professionId": "rogue",
@@ -13619,9 +13659,11 @@
       "zealous_conviction"
      ],
      "diceSkillAssignments": {
-      "2": "warrior_quarry_break",
-      "4": "orc_berserk_rage",
-      "5": "orc_savage_cleave"
+      "starter_die": {
+       "2": "warrior_quarry_break",
+       "4": "orc_berserk_rage",
+       "5": "orc_savage_cleave"
+      }
      },
      "raceId": "orc",
      "professionId": "warrior",
