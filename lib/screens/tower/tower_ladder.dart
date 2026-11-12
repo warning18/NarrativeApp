@@ -3,27 +3,74 @@
 // climbed, the floor the party stands on glowing with its number, the
 // wardens (5, 15, 25) wider and the bosses (10, 20, 30) widest and ringed in
 // blood, with their number in them.
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 
 import '../../data/tower/tower_tables.dart';
 import '../../theme/palette.dart';
 import '../../theme/stitched_ink.dart';
+import '../../widgets/head_avatar.dart';
 
 /// The width the ladder takes.
 const double towerLadderWidth = 40;
 
-class TowerLadder extends StatelessWidget {
+class TowerLadder extends StatefulWidget {
   const TowerLadder({super.key, required this.floor, this.jump});
 
   /// How the last event moved the run: from this floor to [floor] (a skip up,
   /// a fall down), drawn as an arrow beside the rail.
   final (int, int)? jump;
 
-  /// The floor the party stands on (1 to 30).
+  /// The floor the party stands on (1 to 30). When it changes, the hero's
+  /// head on the rail walks to the new notch (see [TowerLadderState]).
   final int floor;
 
   static bool isWarden(int n) => n % 10 == 5;
   static bool isBoss(int n) => n % 10 == 0;
+
+  @override
+  State<TowerLadder> createState() => TowerLadderState();
+}
+
+/// How long the head takes to climb to its notch.
+const Duration towerStepDuration = Duration(milliseconds: 1000);
+
+class TowerLadderState extends State<TowerLadder>
+    with SingleTickerProviderStateMixin {
+  late final AnimationController _step =
+      AnimationController(vsync: this, duration: towerStepDuration);
+  late double _from = widget.floor.toDouble();
+  late double _to = widget.floor.toDouble();
+
+  /// The floor the head stands on now, between floors while it walks.
+  double get headFloor =>
+      _from + (_to - _from) * Curves.easeInOut.transform(_step.value);
+
+  /// Puts the head on its notch at once (a tap, or reduced motion).
+  void skip() {
+    if (_step.isAnimating) _step.value = 1;
+  }
+
+  @override
+  void didUpdateWidget(TowerLadder oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.floor == widget.floor) return;
+    final here = headFloor;
+    _from = here;
+    _to = widget.floor.toDouble();
+    if (MediaQuery.maybeDisableAnimationsOf(context) ?? false) {
+      _step.value = 1;
+    } else {
+      _step.forward(from: 0);
+    }
+  }
+
+  @override
+  void dispose() {
+    _step.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -31,6 +78,9 @@ class TowerLadder extends StatelessWidget {
     final label = Theme.of(context).textTheme.labelSmall;
     const night = Color(0xFF211E28);
     const dark = Palette.night8c;
+    final floor = widget.floor;
+    const isBoss = TowerLadder.isBoss;
+    const isWarden = TowerLadder.isWarden;
     Widget stone(int n) {
       final here = n == floor;
       final lit = n <= floor;
@@ -97,15 +147,37 @@ class TowerLadder extends StatelessWidget {
         ],
       ),
     );
-    final jump = this.jump;
-    if (jump == null) return rail;
+    final jump = widget.jump;
     return Stack(children: [
       rail,
+      if (jump != null)
+        Positioned.fill(
+            child: IgnorePointer(
+                child: CustomPaint(
+                    painter:
+                        _JumpPainter(jump.$1, jump.$2, ink.gold, ink.blood)))),
+      // The hero's head on the rail: it walks up (or down) to its notch.
       Positioned.fill(
-          child: IgnorePointer(
-              child: CustomPaint(
-                  painter:
-                      _JumpPainter(jump.$1, jump.$2, ink.gold, ink.blood)))),
+        child: IgnorePointer(
+          child: LayoutBuilder(builder: (context, box) {
+            final row = box.maxHeight / towerTop;
+            final size = min(row * 1.15, 26.0);
+            return AnimatedBuilder(
+              animation: _step,
+              builder: (context, _) => Stack(children: [
+                Positioned(
+                  key: const Key('tower_ladder_head'),
+                  left: (box.maxWidth - size) / 2,
+                  top: (towerTop - headFloor) * row + row / 2 - size / 2,
+                  width: size,
+                  height: size,
+                  child: HeadAvatar(id: 'hero', name: '', size: size),
+                ),
+              ]),
+            );
+          }),
+        ),
+      ),
     ]);
   }
 }

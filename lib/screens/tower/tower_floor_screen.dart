@@ -3,6 +3,8 @@
 // and the way to fight it; once it is won, its cards (take one, or none).
 // A run is moved only through lib/data/tower/ and the controller; the fight
 // itself is played by the launcher (tower_providers.dart).
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -54,6 +56,9 @@ class _TowerFloorBody extends ConsumerStatefulWidget {
 class _TowerFloorScreenState extends ConsumerState<_TowerFloorBody> {
   bool _busy = false;
   bool _resumed = false;
+
+  /// The rail, to skip its step on a tap.
+  final _ladder = GlobalKey<TowerLadderState>();
 
   /// The floor whose spoils sheet was taken: its boon or oath comes next.
   int _spoilsTaken = 0;
@@ -157,6 +162,16 @@ class _TowerFloorScreenState extends ConsumerState<_TowerFloorBody> {
             event?.landsOn != null
         ? (run.floor, event!.landsOn!)
         : null;
+    // Where the hero's head stands on the rail: on the floor won, it is
+    // already on the next notch (or the stair's landing), so the step is
+    // taken as the cards open, never after a defeat (the run is over then).
+    final headFloor = !choosing
+        ? run.floor
+        : (event?.kind == TowerEventKind.shortcut &&
+                (event?.accepted ?? false) &&
+                event?.landsOn != null)
+            ? event!.landsOn!
+            : min(run.floor + 1, towerTop);
     final jump = stair ??
         (last != null &&
                 last.to == run.floor &&
@@ -185,40 +200,45 @@ class _TowerFloorScreenState extends ConsumerState<_TowerFloorBody> {
       body: TowerBackdrop(
         floor: run.floor,
         child: SafeArea(
-          child: Row(
-            children: [
-              Padding(
-                padding: const EdgeInsets.fromLTRB(8, 4, 4, 8),
-                child: TowerLadder(floor: run.floor, jump: jump),
-              ),
-              Expanded(
-                child: choosing && _spoilsTaken != run.floor
-                    ? TowerSpoilsView(
-                        run: run,
-                        onTake: () => run.offer.isEmpty &&
-                                event?.kind != TowerEventKind.test
-                            ? _pick(run, data, null)
-                            : setState(() => _spoilsTaken = run.floor),
-                      )
-                    : choosing
-                        ? TowerOfferView(
-                            run: run,
-                            data: data,
-                            event: event,
-                            onPick: (i) => _pick(run, data, i),
-                          )
-                        : _FloorIntro(
-                            run: run,
-                            data: data,
-                            event: event,
-                            busy: _busy,
-                            onFight: () => _fight(run, data),
-                            onShortcut: (take) => ref
-                                .read(towerProvider.notifier)
-                                .setRun(towerChooseShortcut(run, data, take)),
-                          ),
-              ),
-            ],
+          child: Listener(
+            // A tap anywhere puts the head on its notch at once.
+            onPointerDown: (_) => _ladder.currentState?.skip(),
+            child: Row(
+              children: [
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(8, 4, 4, 8),
+                  child:
+                      TowerLadder(key: _ladder, floor: headFloor, jump: jump),
+                ),
+                Expanded(
+                  child: choosing && _spoilsTaken != run.floor
+                      ? TowerSpoilsView(
+                          run: run,
+                          onTake: () => run.offer.isEmpty &&
+                                  event?.kind != TowerEventKind.test
+                              ? _pick(run, data, null)
+                              : setState(() => _spoilsTaken = run.floor),
+                        )
+                      : choosing
+                          ? TowerOfferView(
+                              run: run,
+                              data: data,
+                              event: event,
+                              onPick: (i) => _pick(run, data, i),
+                            )
+                          : _FloorIntro(
+                              run: run,
+                              data: data,
+                              event: event,
+                              busy: _busy,
+                              onFight: () => _fight(run, data),
+                              onShortcut: (take) => ref
+                                  .read(towerProvider.notifier)
+                                  .setRun(towerChooseShortcut(run, data, take)),
+                            ),
+                ),
+              ],
+            ),
           ),
         ),
       ),
