@@ -205,6 +205,9 @@ class _RaceProfessionScreenState extends ConsumerState<RaceProfessionScreen> {
       ),
     ]);
 
+    // The step's plate under the page, the page colour over it (the Tower's
+    // own climb keeps its plain page).
+    final plate = _tower ? null : characterPlateAsset(_step);
     final column = Column(
       children: [
         Padding(
@@ -240,69 +243,81 @@ class _RaceProfessionScreenState extends ConsumerState<RaceProfessionScreen> {
             ],
           ),
         ),
-        SafeArea(
-          top: false,
-          child: Padding(
-            padding: const EdgeInsets.fromLTRB(12, 4, 12, 12),
-            child: Column(mainAxisSize: MainAxisSize.min, children: [
-              if (both)
-                SummaryCard(
-                    book: book,
-                    raceId: _selectedRaceId!,
-                    professionId: _selectedProfessionId!,
-                    showClans: !_tower),
-              const SizedBox(height: 8),
-              if (!both && pickedHere == null)
-                Padding(
-                  padding: const EdgeInsets.only(bottom: 6),
-                  child: Text(
-                      _selectedRaceId == null && _selectedProfessionId == null
-                          ? 'Still to choose: a people and a calling'
-                          : _selectedRaceId == null
-                              ? 'Still to choose: a people'
-                              : 'Still to choose: a calling',
-                      key: const Key('rp_missing'),
-                      style: Theme.of(context).textTheme.labelMedium),
+        // A solid foot behind the start button when a plate is under the page.
+        ColoredBox(
+          color: plate == null
+              ? Colors.transparent
+              : Theme.of(context).scaffoldBackgroundColor,
+          child: SafeArea(
+            top: false,
+            child: Padding(
+              padding: const EdgeInsets.fromLTRB(12, 4, 12, 12),
+              child: Column(mainAxisSize: MainAxisSize.min, children: [
+                if (both)
+                  SummaryCard(
+                      book: book,
+                      raceId: _selectedRaceId!,
+                      professionId: _selectedProfessionId!,
+                      showClans: !_tower),
+                const SizedBox(height: 8),
+                if (!both && pickedHere == null)
+                  Padding(
+                    padding: const EdgeInsets.only(bottom: 6),
+                    child: Text(
+                        tr(
+                            ref,
+                            _selectedRaceId == null &&
+                                    _selectedProfessionId == null
+                                ? 'rp_missing_both'
+                                : _selectedRaceId == null
+                                    ? 'rp_missing_people'
+                                    : 'rp_missing_calling'),
+                        key: const Key('rp_missing'),
+                        style: Theme.of(context).textTheme.labelMedium),
+                  ),
+                SizedBox(
+                  width: double.infinity,
+                  child: both || pickedHere == null
+                      ? FilledButton.icon(
+                          key: const Key('rp_start'),
+                          onPressed: !both || _starting
+                              ? null
+                              : _tower
+                                  ? _climb
+                                  : () => _confirmStart(
+                                        context,
+                                        races[_selectedRaceId!]
+                                            as Map<String, dynamic>,
+                                        professions[_selectedProfessionId!]
+                                            as Map<String, dynamic>,
+                                      ),
+                          icon: const Icon(Icons.play_arrow),
+                          label: Text(tr(
+                              ref,
+                              _tower
+                                  ? 'tower_climb'
+                                  : 'start_new_game_button')),
+                        )
+                      : FilledButton.tonalIcon(
+                          key: const Key('rp_next'),
+                          onPressed: () => setState(() {
+                            _step = _step == 0 ? 1 : 0;
+                            _listAll = false;
+                          }),
+                          icon: const Icon(Icons.arrow_forward),
+                          label: Text(tr(
+                              ref,
+                              _step == 0
+                                  ? 'rp_next_calling'
+                                  : 'rp_next_people')),
+                        ),
                 ),
-              SizedBox(
-                width: double.infinity,
-                child: both || pickedHere == null
-                    ? FilledButton.icon(
-                        key: const Key('rp_start'),
-                        onPressed: !both || _starting
-                            ? null
-                            : _tower
-                                ? _climb
-                                : () => _confirmStart(
-                                      context,
-                                      races[_selectedRaceId!]
-                                          as Map<String, dynamic>,
-                                      professions[_selectedProfessionId!]
-                                          as Map<String, dynamic>,
-                                    ),
-                        icon: const Icon(Icons.play_arrow),
-                        label: Text(tr(ref,
-                            _tower ? 'tower_climb' : 'start_new_game_button')),
-                      )
-                    : FilledButton.tonalIcon(
-                        key: const Key('rp_next'),
-                        onPressed: () => setState(() {
-                          _step = _step == 0 ? 1 : 0;
-                          _listAll = false;
-                        }),
-                        icon: const Icon(Icons.arrow_forward),
-                        label: Text(tr(ref,
-                            _step == 0 ? 'rp_next_calling' : 'rp_next_people')),
-                      ),
-              ),
-            ]),
+              ]),
+            ),
           ),
         ),
       ],
     );
-    // The step's plate under the page, the page colour over it (the Tower's
-    // own climb keeps its plain page).
-    final plate = _tower ? null : characterPlateAsset(_step);
     if (plate == null) return column;
     return Stack(fit: StackFit.expand, children: [
       Positioned.fill(child: ScreenPlate(asset: plate)),

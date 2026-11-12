@@ -85,9 +85,10 @@ void main() {
         return container;
       }
 
-      Future<void> shot(String file) async {
-        final b =
-            key.currentContext!.findRenderObject()! as RenderRepaintBoundary;
+      final headerKey = GlobalKey();
+      Future<void> shot(String file, {GlobalKey? of}) async {
+        final b = (of ?? key).currentContext!.findRenderObject()!
+            as RenderRepaintBoundary;
         late Uint8List bytes;
         await tester.runAsync(() async {
           final image = await b.toImage(pixelRatio: 2);
@@ -118,25 +119,28 @@ void main() {
         final surface = Theme.of(context).colorScheme.surface;
         return Align(
           alignment: Alignment.topCenter,
-          child: SizedBox(
-            height: 210,
-            child: Stack(fit: StackFit.expand, children: [
-              const OriginSceneBackdrop(memoryId: 'board'),
-              DecoratedBox(
-                decoration: BoxDecoration(
-                  gradient: LinearGradient(
-                    begin: Alignment.topCenter,
-                    end: Alignment.bottomCenter,
-                    stops: const [0.3, 0.78],
-                    colors: [Colors.transparent, surface],
+          child: RepaintBoundary(
+            key: headerKey,
+            child: SizedBox(
+              height: 210,
+              child: Stack(fit: StackFit.expand, children: [
+                const OriginSceneBackdrop(memoryId: 'board'),
+                DecoratedBox(
+                  decoration: BoxDecoration(
+                    gradient: LinearGradient(
+                      begin: Alignment.topCenter,
+                      end: Alignment.bottomCenter,
+                      stops: const [0.3, 0.78],
+                      colors: [Colors.transparent, surface],
+                    ),
                   ),
                 ),
-              ),
-            ]),
+              ]),
+            ),
           ),
         );
       }));
-      await shot('life-age16-header');
+      await shot('life-age16-header', of: headerKey);
 
       // The character choice: the people, then the calling.
       await open(const RaceProfessionScreen());
