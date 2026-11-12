@@ -281,12 +281,13 @@ class SimCharacter {
 
   /// The best die owned for the competent player (simDieValue, its skills
   /// best placed by simSkillAssignments) rolled from now on, when it beats
-  /// the one in play and passes its [dieTrial].
-  void rollBestDie(Map<String, dynamic> skills) {
+  /// the one in play (by [margin]) and passes its [dieTrial] (the typical
+  /// player has none).
+  void rollBestDie(Map<String, dynamic> skills, {double margin = 0.01}) {
     final caster = knownSpells.isNotEmpty;
     final now = simDieValue(diceFaces, diceSkillAssignments, skills,
             damage: baseDamage, caster: caster) +
-        0.01;
+        margin;
     final better = <({
       String id,
       List<Map<String, dynamic>> faces,
@@ -669,6 +670,13 @@ class SimCharacter {
       equippedBySlot[entry.key] = entry.value.key;
     }
 
+    // 4. The typical player buys the shop's die it may roll whose average
+    //    roll is plainly better than its own (no trial fights), and rolls
+    //    it.
+    if (policy == SimPolicy.typical) {
+      return _buyTypicalDie(shop, dice, skills, purse);
+    }
+
     // 4. A caster who can afford the sage die swaps to it: two Deep Focus
     //    faces keep the pool fed. Its own Skill face carries its skill, so
     //    the starter die's Technique assignments no longer apply.
@@ -690,6 +698,51 @@ class SimCharacter {
       }
     }
     return purse;
+  }
+
+  /// The typical player's die at a shop: the best of the shop's dice it
+  /// may roll and afford, when its average roll (simDieValue, its skills
+  /// placed as the walk places them) beats the one in play by
+  /// [simTypicalDieMargin]. Bought and rolled; returns the gold left.
+  int _buyTypicalDie(Map<String, dynamic> shop, Map<String, dynamic> dice,
+      Map<String, dynamic> skills, int purse) {
+    final caster = knownSpells.isNotEmpty;
+    var best = simDieValue(diceFaces, diceSkillAssignments, skills,
+            damage: baseDamage, caster: caster) +
+        simTypicalDieMargin;
+    String? pick;
+    for (final raw in (shop['diceStock'] as List?) ?? const []) {
+      final id = raw.toString();
+      final die = dice[id] as Map<String, dynamic>?;
+      final faces = (die?['faces'] as List?)?.cast<Map<String, dynamic>>();
+      if (die == null ||
+          faces == null ||
+          faces.isEmpty ||
+          ownedDice.containsKey(id) ||
+          purse < ((die['cost'] as num?)?.toInt() ?? 0) ||
+          !simCanUseDie(die, professionId: professionId, raceId: raceId)) {
+        continue;
+      }
+      final v = simDieValue(
+          faces,
+          simSkillAssignments(
+              faces: faces,
+              current: const {},
+              unlocked: unlockedSkillIds,
+              skills: skills),
+          skills,
+          damage: baseDamage,
+          caster: caster);
+      if (v > best) {
+        best = v;
+        pick = id;
+      }
+    }
+    if (pick == null) return purse;
+    final die = dice[pick] as Map<String, dynamic>;
+    ownedDice[pick] = (die['faces'] as List).cast<Map<String, dynamic>>();
+    rollBestDie(skills, margin: simTypicalDieMargin);
+    return purse - ((die['cost'] as num?)?.toInt() ?? 0);
   }
 
   /// What both shop visits start with: the stock, how many of each the

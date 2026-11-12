@@ -69,6 +69,7 @@ import '../data/sim_growth.dart';
 import '../data/sim_policy.dart';
 import '../data/skill_craft.dart' show skillCraftOpen;
 import '../data/sim_quests.dart';
+import '../data/sim_snapshot.dart';
 import '../data/temple.dart';
 import '../data/town_rulers.dart' show townRulers;
 import '../data/story_graph_integrity.dart';

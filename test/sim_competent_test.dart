@@ -419,4 +419,127 @@ void main() {
       expect(stubborn.offerPicks, hasLength(stubborn.offers));
     });
   });
+
+  group('the typical player', () {
+    test('wears a found piece when its flat attack plus armor is higher', () {
+      final g = _growth(policy: SimPolicy.typical);
+      g.prepareForFight(inventory: ['rusty_sword', 'leather']);
+      expect(g.character.equippedBySlot,
+          {'Weapon': 'rusty_sword', 'Top': 'leather'});
+      g.prepareForFight(inventory: ['fine_sword', 'mail', 'rusty_sword']);
+      expect(
+          g.character.equippedBySlot, {'Weapon': 'fine_sword', 'Top': 'mail'});
+      // Nothing kept in a pack to weigh later, as the competent one does.
+      expect(g.character.ownedItemIds, isEmpty);
+    });
+
+    test('weighs no set: the plainly bigger pieces win', () {
+      final g = _growth(policy: SimPolicy.typical);
+      // The competent player keeps set_blade + set_coat here (see gear).
+      g.prepareForFight(
+          inventory: ['fine_sword', 'mail', 'set_blade', 'set_coat']);
+      expect(
+          g.character.equippedBySlot, {'Weapon': 'fine_sword', 'Top': 'mail'});
+    });
+
+    test('rolls a plainly better die it owns, with no trial', () {
+      final g = _growth(policy: SimPolicy.typical);
+      final c = g.character;
+      c.ownedDice['war_die'] =
+          ((_dice['war_die'] as Map)['faces'] as List).cast();
+      // The walk sets a die trial for the competent player only.
+      expect(c.dieTrial, isNull);
+      g.prepareForFight();
+      expect(c.diceId, 'war_die');
+    });
+
+    test('buys a die at a shop when its average roll is plainly better', () {
+      final g = _growth(policy: SimPolicy.typical);
+      final c = g.character;
+      g.assignSkills();
+      final left = c.visitShop(
+        {
+          'diceStock': ['war_die', 'mage_die'],
+        },
+        _items,
+        _dice,
+        const {},
+        200,
+        skills: _skills,
+        itemSets: _sets,
+      );
+      expect(left, 150);
+      expect(c.diceId, 'war_die');
+      expect(c.ownedDice.keys, containsAll(['own_die', 'war_die']));
+    });
+  });
+
+  group('the typical player, whole runs (seed 7, four professions)', () {
+    List<SimRunSummary> runs(SimPolicy policy) => simulatePlaythroughs(
+          _story(),
+          tables: _tables,
+          gameConfig: _table('game_config'),
+          plan: const [
+            (
+              strategy: SimStrategy.random,
+              raceId: null,
+              professionId: 'warrior'
+            ),
+            (
+              strategy: SimStrategy.favorGood,
+              raceId: null,
+              professionId: 'mage'
+            ),
+            (
+              strategy: SimStrategy.favorEvil,
+              raceId: null,
+              professionId: 'rogue'
+            ),
+            (
+              strategy: SimStrategy.maximizeGold,
+              raceId: null,
+              professionId: 'ranger'
+            ),
+          ],
+          seed: 7,
+          policy: policy,
+        );
+    // Encounters won on the first try, and tries lost, over the runs.
+    ({int firstTry, int lost}) tally(List<SimRunSummary> rs) {
+      var firstTry = 0, lost = 0;
+      for (final r in rs) {
+        for (final c in r.byChapter.values) {
+          firstTry += c.firstTry;
+          lost += c.attempts - c.won;
+        }
+      }
+      return (firstTry: firstTry, lost: lost);
+    }
+
+    late List<SimRunSummary> naive, typical, competent;
+    setUpAll(() {
+      naive = runs(SimPolicy.naive);
+      typical = runs(SimPolicy.typical);
+      competent = runs(SimPolicy.competent);
+    });
+
+    test('sits between the naive and the competent player', () {
+      final n = tally(naive), t = tally(typical), c = tally(competent);
+      printOnFailure('tries lost: naive ${n.lost}, typical ${t.lost}, '
+          'competent ${c.lost}');
+      expect(t.lost, lessThan(n.lost));
+      expect(t.lost, greaterThanOrEqualTo(c.lost));
+    });
+
+    test('wears the gear it finds and may switch dice', () {
+      for (final r in typical) {
+        expect(r.endedHow, 'ending', reason: r.ending);
+        expect(r.gear, isNotEmpty);
+      }
+      // Some run ends on a die it bought or was given, not a starting one.
+      expect(typical.map((r) => r.die),
+          anyElement(isNot(anyOf('starter_die', 'apprentice_die', isEmpty))));
+      expect(typical.map((r) => r.merged), everyElement(isEmpty));
+    });
+  });
 }
