@@ -12,6 +12,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import 'package:narrative_data_app/providers/palette_provider.dart';
 import 'package:narrative_data_app/providers/player_session_provider.dart';
 import 'package:narrative_data_app/screens/dice_loadout_screen.dart';
 import 'package:narrative_data_app/theme/stitched_ink.dart';
@@ -30,9 +31,9 @@ void main() {
   testWidgets('the gambler die', skip: shots == null, (tester) async {
     TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
         .setMockMethodCallHandler(
-          const MethodChannel('flutter_tts'),
-          (call) async => 1,
-        );
+      const MethodChannel('flutter_tts'),
+      (call) async => 1,
+    );
     await tester.runAsync(loadAppFonts);
     final dice = jsonDecode(
       File('assets/gamedata/dice.json').readAsStringSync(),
@@ -46,7 +47,8 @@ void main() {
       late Uint8List bytes;
       await tester.runAsync(() async {
         final image = await b.toImage(pixelRatio: 2);
-        bytes = (await image.toByteData(format: ui.ImageByteFormat.png))!.buffer
+        bytes = (await image.toByteData(format: ui.ImageByteFormat.png))!
+            .buffer
             .asUint8List();
       });
       File('$shots/$name-$tag.png').writeAsBytesSync(bytes);
@@ -63,15 +65,17 @@ void main() {
         container: container,
         child: RepaintBoundary(
           key: key,
-          child: const MaterialApp(home: DiceLoadoutScreen()),
+          child: MaterialApp(
+              theme: buildAppTheme(container
+                  .read(appPaletteProvider)
+                  .schemeFor(Brightness.light)),
+              home: const DiceLoadoutScreen()),
         ),
       ),
     );
     await settleApp(tester);
     await tester.runAsync(
-      () => container
-          .read(playerSessionProvider.notifier)
-          .loadSession(
+      () => container.read(playerSessionProvider.notifier).loadSession(
             PlayerSession.fromJson({
               'raceId': 'dwarf',
               'professionId': 'warrior',
@@ -86,37 +90,37 @@ void main() {
 
     // Rolling at a fight's size, mid-roll and at rest.
     List<DieCubeFace> faces(int k) => [
-      for (var i = 0; i < k; i++)
-        DieCubeFace(
-          glyph: Text(
-            '${i + 1}',
-            style: const TextStyle(
-              color: Colors.white,
-              fontSize: 18,
-              fontWeight: FontWeight.w800,
+          for (var i = 0; i < k; i++)
+            DieCubeFace(
+              glyph: Text(
+                '${i + 1}',
+                style: const TextStyle(
+                  color: Colors.white,
+                  fontSize: 18,
+                  fontWeight: FontWeight.w800,
+                ),
+              ),
+              color: FaceKind.values[i % 6].color,
             ),
-          ),
-          color: FaceKind.values[i % 6].color,
-        ),
-    ];
+        ];
     final skin = dieSkinOf('gambler_die');
     final size = n == 12 ? 80.0 : 87.0;
     Widget die(double? roll) => SizedBox(
-      width: size * 2.1,
-      height: size * 2.1,
-      child: Center(
-        child: Die3D(
-          faces: faces(6),
-          facets: faces(n),
-          accent: skin.edge,
-          size: size,
-          shape: dieShapeOf(n),
-          skin: skin,
-          roll: roll == null ? null : AlwaysStoppedAnimation<double>(roll),
-          rolling: roll != null,
-        ),
-      ),
-    );
+          width: size * 2.1,
+          height: size * 2.1,
+          child: Center(
+            child: Die3D(
+              faces: faces(6),
+              facets: faces(n),
+              accent: skin.edge,
+              size: size,
+              shape: dieShapeOf(n),
+              skin: skin,
+              roll: roll == null ? null : AlwaysStoppedAnimation<double>(roll),
+              rolling: roll != null,
+            ),
+          ),
+        );
     final key2 = GlobalKey();
     usePhone(tester, const Size(600, 260));
     await tester.pumpWidget(
