@@ -431,17 +431,22 @@ class _FloorIntro extends ConsumerWidget {
                     ],
                   ),
                   // The marks wrap under the name: an Elite with an affix is
-                  // too wide for one line on a small phone.
-                  if (id == floor.enemyIds.first &&
-                      (floor.affixes.isNotEmpty || floor.elite))
+                  // too wide for one line on a small phone. A lone Elite wears
+                  // its mark on its panel; a pack made an Elite pack (the
+                  // shortcut's tougher fight) on every foe's.
+                  if ((id == floor.enemyIds.first &&
+                          (floor.affixes.isNotEmpty || floor.elite)) ||
+                      floor.elitePack)
                     Wrap(
                       spacing: 6,
                       runSpacing: 4,
                       children: [
-                        for (final a in floor.affixes)
-                          InkChip(tr(ref, affixLabelKey(a)),
-                              color: ink.blood, dense: true),
-                        if (floor.elite)
+                        if (id == floor.enemyIds.first)
+                          for (final a in floor.affixes)
+                            InkChip(tr(ref, affixLabelKey(a)),
+                                color: ink.blood, dense: true),
+                        if ((id == floor.enemyIds.first && floor.elite) ||
+                            floor.elitePack)
                           InkChip(tr(ref, 'tower_floor_elite'),
                               color: ink.gold, dense: true),
                       ],

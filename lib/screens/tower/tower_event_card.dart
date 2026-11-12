@@ -10,6 +10,7 @@ import '../../data/tower/tower_events.dart';
 import '../../l10n/app_strings.dart';
 import '../../theme/icon_sizes.dart';
 import '../../theme/stitched_ink.dart';
+import '../../widgets/ink_chip.dart';
 import '../../widgets/ink_panel.dart';
 import '../../data/tower/tower_tables.dart' show towerSalveShare;
 import 'tower_peaceful_cards.dart'
@@ -290,6 +291,18 @@ class _ShortcutCard extends ConsumerWidget {
                     : 'tower_event_shortcut_pack'),
             style: theme.textTheme.bodyMedium
                 ?.copyWith(color: theme.colorScheme.onSurfaceVariant)),
+        // The tougher fight, marked as on the foes' own panels (an Elite, or
+        // a pack made an Elite pack).
+        if ((view.elite ?? false) || (view.elitePack ?? false)) ...[
+          const SizedBox(height: 6),
+          Align(
+            alignment: Alignment.centerLeft,
+            child: InkChip(tr(ref, 'tower_floor_elite'),
+                key: const Key('tower_event_shortcut_elite_chip'),
+                color: ink.gold,
+                dense: true),
+          ),
+        ],
         TowerEventOutcome(
             Icons.north,
             ink.gold,
