@@ -10,7 +10,7 @@ isn't reconstructable from git history alone.
 
 ## [1.965.0+1001]
 
-- Road crossing, desert: Art's painted layers (UX; the user's "Go for desert", with the calm four-colour sky). The desert road's sky, far mesas, mid dunes and near sand are now pictures scrolling at the code kit's own speeds (0, 0.15, 0.4, 0.8); the sun, the goal, the path, the party, the weather and the dusk tint and stars stay code and lie over them. The goal stands on the mesas' ground with a dark outline. Until the pictures are in, the code kit draws; the fight ground, the life header, the detour scenes, the world view and the other five kits keep their code look. About 20 KB of PNG8 in the app.
+- Road crossing, desert: Art's painted layers (UX; the user's "Go for desert", with the calm four-colour sky). The desert road's sky, far mesas, mid dunes and near sand are now pictures scrolling at the code kit's own speeds (0, 0.15, 0.4, 0.8); the sun, the goal, the path, the party, the weather and the dusk tint and stars stay code and lie over them. The goal stands on the mesas' ground with a dark outline. Until the pictures are in, the code kit draws; the fight ground, the life header, the detour scenes, the world view and the other five kits keep their code look. About 4.5 KB of PNG8 in the app.
 
 ## [1.964.0+1000]
 
