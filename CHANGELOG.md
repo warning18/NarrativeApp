@@ -8,6 +8,17 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.950.0+986]
+
+- Tower: floor events, part 3, the parley (docs/proposals/tower-peaceful-floors-and-stores.md). **Off for players**: it only plays in a climb of events version 2, which no player starts yet. In the engine, before an ordinary floor's fight, a guardian of one of the six clans may offer to talk. Talking is a d20 check, rolled on charisma, wisdom or dexterity depending on the floor, with the setback's target and the odds shown. If you are sworn to the guardian's clan, you pass with no roll. A pass takes you up a floor with its level and marks, but no spoils, card or heal. A failed talk leads to the floor's normal fight. A climb with the parley (and, later, the stores) plays at its own foe scale (1.15), so the live climb's numbers do not move. Each kind of floor event now has a background key for its picture.
+
+## [1.949.0+985]
+
+- **Narrative: French typography on six Tower strings.** The spoils title and lines,
+  the oath text, "bought with marks" and the floor-20 boss line used straight
+  apostrophes and a plain space before ":"; they now use ’ and the no-break space,
+  as the rest of the French does. French only; no key or English text changed.
+
 ## [1.947.0+983]
 
 - Tower: the hero's head is the marker on the rail, and it steps up after a won fight (UX). The moment the cards open, the head walks one notch up in about a second; after a won shortcut it climbs the whole stair along the gold arrow; a setback's fall walks it down. A tap puts it on its notch at once, reduced motion skips the walk, and a defeat never shows it (the run is over). The floor number rides in a small gold tag above the head, since the head covers the notch's own number.
