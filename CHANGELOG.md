@@ -8,9 +8,21 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
-## [1.935.0+971]
+## [1.939.0+975]
 
 - Tower: floor events, part 2 (docs/proposals/tower-snakes-and-ladders.md). **Events still stay off for players** until the user has seen UX-2's event cards: a run started now plays as before, apart from floors 27 and 28, which are a little softer for everyone (their extra foe strength drops from 32% and 34% to 31%). In the engine: a shortcut offers, before an ordinary floor's fight, a tougher version of it (a lone foe becomes an Elite, a pack gets one more foe); won, the hero skips 1 to 3 floors, never past the next warden or boss; lost, the run ends, as any lost fight does. A run with events plays on its own foe curve (a softer base, a little more on the floor-20 and floor-30 bosses), so a run with events lands about where one without does. The Tower fight now counts its rounds, so a rival's three-round goal can be checked. With events on and every unlock, the share of runs reaching the top is 1.5 points under the target band's centre; it is left as it is.
+
+## [1.938.0+974]
+
+- Skills in the Apollo palette: the 157 skill icons and the six main effect strips (flame, frost, lightning, heal, void rift, shield) are Art's Apollo versions, and every element's effect tints, plus the fixed ones (poison, mana, shield, gold, weaken, miss, phase, smoke, heal), take Apollo tones named in `ApolloTones` (lib/theme/palette.dart). Fire is pushed hotter inside the palette. Rarity accents are unchanged.
+
+## [1.937.0+973]
+
+- Tower floor events, the cards (UX; the events are still off for players until the user's OK, so nothing shows yet): a setback shows its test above the cards (the ability, the odds as a percent and a bar with the DC, what a pass and a fail give and where a fall lands, the setbacks left), a rival shows its condition before the fight (win within 3 rounds to skip a floor; otherwise no skip), the next floor says how the event ended (the roll and total, the fall or the skip) with an arrow along the rail, and a floor met again says it pays nothing. The words are by ability (strength, dexterity, wisdom) and EN/FR (Narrative). After a rival's skip the Level Up opens on the landing floor. Pictures: `docs/ux-shots/tower-event-cards-real/`.
+
+## [1.936.0+972]
+
+- Maps, release 2: the ladder and the dive. One strip of four rungs, World, Town, District, Room, each one tap from any other; the rung looked at is lit and a rung that does not exist here is dimmed. "Town" now works from inside a room (the party steps out and the whole town is shown). "+" goes down one rung and "−" goes up one on every map: the button into a building is a "+", and on the whole town only the district's "+" shows. The world and the town are joined by a move: going down, the ball closes in on the place and the town grows out of it, landing on the whole town with no door veil; going up, the ball opens close on the place and pulls back until it fills its box. The city plan page takes the map's own square buttons. The strip is a new widget, `lib/widgets/level_ladder.dart`, 36 px high (40 took 12 px from the map and broke a tap on a 360 x 640 screen). French for the new rung: "Salle". Pictures: `docs/maps/sphere-and-locations/release-2/`.
 
 ## [1.933.0+969]
 

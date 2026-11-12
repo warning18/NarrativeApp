@@ -97,14 +97,20 @@ void main() {
     expect(find.byKey(const ValueKey('journey_city_chart')), findsNothing);
     expect(find.byKey(const ValueKey('journey_world_map')), findsOneWidget);
 
-    // Back in from the land: the streets round the building first.
+    // Back in from the world: the town first.
     await tester.tap(find.byKey(const Key('journey_recentre')));
     await tester.pump();
     await tester.tapAt(tester.getRect(find.byType(JourneyWorldMap)).center);
     await tester.pump(const Duration(milliseconds: 300));
     await settleApp(tester);
     await tester.pump(const Duration(seconds: 1));
+    // The dive lands on the whole town; + goes down a rung to the district
+    // round the building, and + again is the way back inside.
     expect(find.byKey(const ValueKey('journey_city_chart')), findsOneWidget);
+    expect(find.byKey(const Key('journey_town_zoom_in')), findsOneWidget);
+    expect(find.byKey(const Key('journey_go_inside')), findsNothing);
+    await tester.tap(find.byKey(const Key('journey_town_zoom_in')));
+    await settleApp(tester);
     expect(find.byKey(const Key('journey_go_inside')), findsOneWidget);
 
     // After the fight, the way out the back sits at the back door, inside.

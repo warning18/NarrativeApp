@@ -7,6 +7,7 @@ import 'dart:ui' as ui;
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:narrative_data_app/combat/skill_vfx.dart';
+import 'package:narrative_data_app/theme/palette.dart';
 import 'package:narrative_data_app/widgets/pixel_sprite.dart';
 import 'package:narrative_data_app/widgets/pixel_vfx.dart';
 
@@ -30,7 +31,7 @@ void main() {
     final fire = PixelVfxTints.tonesFor(paletteForElement('Fire'))!;
     expect(fire.length, 4);
     // The middle tone is the palette's own colour.
-    expect(fire[1], 0xFF7043);
+    expect(fire[1], ApolloTones.fire[1] & 0xFFFFFF);
     expect(fire[0], isNot(fire[2]));
   });
 
@@ -127,6 +128,6 @@ void main() {
     final after = await tester.runAsync(() => colours(tinted!));
     expect(before, contains(0xC9D1DC));
     expect(after, isNot(contains(0xC9D1DC)));
-    expect(after, contains(0xFF7043));
+    expect(after, contains(ApolloTones.fire[1] & 0xFFFFFF));
   });
 }
