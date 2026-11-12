@@ -61,7 +61,11 @@ Map<String, dynamic> simSessionSave({
         .toList()
       ..sort(),
     'unlockedSkillIds': c.unlockedSkillIds.toList()..sort(),
-    'diceSkillAssignments': c.diceSkillAssignments,
+    // By die, as PlayerSession holds them: the sim keeps the faces of the
+    // die in play only.
+    'diceSkillAssignments': {
+      if (c.diceSkillAssignments.isNotEmpty) c.diceId: c.diceSkillAssignments,
+    },
     'raceId': c.raceId,
     'professionId': c.professionId,
     'ownedDiceIds': c.ownedDice.keys.toList()..sort(),

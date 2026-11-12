@@ -105,6 +105,94 @@ class CityPlanSpec {
   final bool village;
 }
 
+/// The side of a city plan its sea lies on, by the clockwise quarter turns
+/// (on the screen, y down) that take the south to it.
+enum SeaSide {
+  south(0),
+  west(1),
+  north(2),
+  east(3);
+
+  const SeaSide(this.quarterTurns);
+  final int quarterTurns;
+}
+
+/// Where each plan's sea lies (proposal F: the side of its coast on the
+/// sphere's chart); a plan not named here keeps its sea to the south, as
+/// city_plan_generator lays every plan out.
+const Map<String, SeaSide> citySeaSides = {
+  // Read by Maps on the story chart (chart_story.dart): the nearest coast's
+  // bearing and the sea within 16 units in each quarter.
+  'saltmouth': SeaSide.north,
+  'greyhithe': SeaSide.north,
+  'white_anchorage': SeaSide.north,
+};
+
+/// The side [record]'s sea lies on now: its `seaSide`, south if it has none.
+SeaSide seaSideOf(Map<String, Object?> record) =>
+    SeaSide.values.firstWhere((s) => s.name == record['seaSide'],
+        orElse: () => SeaSide.south);
+
+/// [record] (a plan, its services pinned) turned round the middle of the
+/// plan (500, 500) so its sea lies on [side] rather than where it lies now
+/// ([seaSideOf]), with [side] written in its `seaSide`: every point of it
+/// (sea, rivers, islands, canals, wall, avenues, streets, bridges, squares,
+/// districts, buildings, services) and each bridge's angle. Ids (the
+/// gates' among them) and names stay as they are; a plan already on
+/// [side] comes back as it is, so turning twice turns once.
+Map<String, Object?> turnCityPlan(Map<String, Object?> record, SeaSide side) {
+  final k = (side.quarterTurns - seaSideOf(record).quarterTurns) % 4;
+  if (k == 0) {
+    return side == SeaSide.south && !record.containsKey('seaSide')
+        ? record
+        : {...record, 'seaSide': side.name};
+  }
+  List<num> turn(List<num> p) {
+    var x = p[0] - 500, y = p[1] - 500;
+    for (var i = 0; i < k; i++) {
+      (x, y) = (-y, x);
+    }
+    return [_keepType(p[0], x + 500), _keepType(p[1], y + 500)];
+  }
+
+  // Every [x, y] pair is a point (the plans hold no other pair of
+  // numbers); a bridge's angle turns with it.
+  Object? walk(Object? v, {bool bridge = false}) {
+    if (v is List) {
+      if (v.length == 2 && v.every((e) => e is num)) {
+        return turn(v.cast<num>());
+      }
+      return [for (final e in v) walk(e, bridge: bridge)];
+    }
+    if (v is Map) {
+      return {
+        for (final MapEntry(key: mk, value: mv) in v.entries)
+          mk: bridge && mk == 'angle' && mv is num
+              ? _turnAngle(mv, k)
+              : walk(mv, bridge: bridge),
+      };
+    }
+    return v;
+  }
+
+  return {
+    for (final MapEntry(:key, :value) in record.entries)
+      if (key != 'seaSide')
+        key: key == 'seed' ? value : walk(value, bridge: key == 'bridges'),
+    'seaSide': side.name,
+  };
+}
+
+num _keepType(num like, num v) => like is int ? v.round() : v;
+
+/// A bridge's angle (degrees, on the screen) after [k] clockwise quarter
+/// turns, kept in (-180, 180].
+int _turnAngle(num angle, int k) {
+  var a = (angle + 90 * k).round() % 360;
+  if (a > 180) a -= 360;
+  return a;
+}
+
 /// Lays [spec]'s city out: the record city_plans.json stores.
 Map<String, Object?> generateCityPlan(CityPlanSpec spec) =>
     _CityGen(spec).build();
