@@ -8,6 +8,10 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.946.0+982]
+
+- Effects: eighteen more skill effects in the Apollo palette (UX, with Art's strips): slash, heavy slash, pierce, claw, whirl, impact, arrow, volley, fireball, holy fire, splash, poison, wind, drain, shadow, radiance, shout and stone shield. Quake and smoke keep today's until Art's redraw is shown. The arrow, the volley and the fireball still fly from the caster (Art's strip holds the flight and the burst) and the strips that end with the object in view fade out. The pale ground ring a strong blow added under them is gone from the Apollo effects, which carry their own impact. Three French event strings take a no-break space before the colon.
+
 ## [1.943.0+979]
 
 - Towns: the sea lies where the sphere puts it. Saltmouth, Greyhithe and the White Anchorage have their sea to the north now. Their whole plan is turned a half turn: water, walls, streets, bridges, districts, buildings and the town's services. Their streets, buildings and names are the same, only turned. Every other town keeps its sea to the south, as the sphere has it. The plans are turned where they are stored, so no hand edit is lost. The plan generator no longer reproduces the stored plans and is not to be run for now (`docs/city-plans-tools.md`).
