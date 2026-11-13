@@ -29,6 +29,7 @@ import '../utils/game_icons.dart';
 import '../utils/pixel_icons/game_pixel_icons.dart';
 import '../widgets/immersive_notice.dart';
 import '../widgets/item_stats.dart';
+import '../widgets/keeper_figure.dart';
 import '../widgets/item_detail_view.dart';
 import '../widgets/dice_smithing_sheet.dart';
 import '../widgets/shop_trade_sheets.dart';
@@ -739,9 +740,15 @@ class _KeeperStrip extends StatelessWidget {
       key: const ValueKey('shop_keeper_strip'),
       padding: const EdgeInsets.only(bottom: 8),
       child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
+        crossAxisAlignment: keeperHasFigure(shopId)
+            ? CrossAxisAlignment.center
+            : CrossAxisAlignment.start,
         children: [
-          ShopPixelIcon(shopId, size: IconSize.s48),
+          // The keeper standing, when there is a figure; else the shop's sign.
+          if (keeperHasFigure(shopId))
+            KeeperFigure(shopId)
+          else
+            ShopPixelIcon(shopId, size: IconSize.s48),
           const SizedBox(width: 10),
           Expanded(
             child: Column(
