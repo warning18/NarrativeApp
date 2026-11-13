@@ -72,6 +72,39 @@ const FightSpriteSet roninSprite = FightSpriteSet(
   frames: 8,
 );
 
+/// The hero's figures, by people and calling (the user's PixelLab Hero
+/// states, 48 x 48, facing east, the figure 44 tall with four empty rows under
+/// the feet). A dwarf or an orc wears their people's figure; every other
+/// people wears the calling's (an elf or a voidkin has no figure of their
+/// own yet, so they wear the human's). A hero whose raceId and professionId
+/// match nothing keeps the ronin.
+const Map<String, String> _heroByRace = {
+  'dwarf': 'dwarf',
+  'orc': 'orc',
+};
+
+const Map<String, String> _heroByCalling = {
+  'warrior': 'warrior',
+  'mage': 'mage',
+  'rogue': 'rogue',
+  'cleric': 'cleric',
+  'ranger': 'ranger',
+};
+
+/// The figure of a hero of [raceId] and [professionId] (the ids of
+/// races.json and professions.json; '' before the character is made).
+FightSpriteSet heroSpriteFor(String raceId, String professionId) {
+  final name = _heroByRace[raceId] ?? _heroByCalling[professionId];
+  if (name == null) return roninSprite;
+  return FightSpriteSet(
+    id: 'hero_$name',
+    idleAsset: 'assets/visuals/heroes/${name}_idle_east.png',
+    frameWidth: 48,
+    frameHeight: 48,
+    footInset: 4,
+  );
+}
+
 const String _fighters = 'assets/visuals/fighters';
 
 /// The frame size and the empty rows under the feet of the sprites that are

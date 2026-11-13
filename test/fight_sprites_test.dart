@@ -76,4 +76,30 @@ void main() {
     expect(enemyFightSprite('inquisition_soldier')!.id,
         isNot(enemyFightSprite('inquisition_auxiliary')!.id));
   });
+
+  test('the hero wears the figure of their people or calling', () {
+    // A dwarf or an orc: their people, whatever the calling.
+    expect(heroSpriteFor('dwarf', 'mage').id, 'hero_dwarf');
+    expect(heroSpriteFor('orc', 'cleric').id, 'hero_orc');
+    // Every other people: the calling's.
+    for (final c in ['warrior', 'mage', 'rogue', 'cleric', 'ranger']) {
+      for (final r in ['human', 'elf', 'voidkin']) {
+        expect(heroSpriteFor(r, c).id, 'hero_$c', reason: '$r $c');
+      }
+    }
+    // Not made yet, or unknown: the ronin.
+    expect(heroSpriteFor('', ''), same(roninSprite));
+    expect(heroSpriteFor('human', 'bard'), same(roninSprite));
+    // Each figure is a 48 x 48 PNG that faces east.
+    for (final n in ['warrior', 'mage', 'rogue', 'cleric', 'ranger']) {
+      final set = heroSpriteFor('human', n);
+      expect(set.facesEast, isTrue);
+      final data = ByteData.sublistView(File(set.idleAsset).readAsBytesSync());
+      expect(data.getUint32(16), 48, reason: n);
+      expect(data.getUint32(20), 48, reason: n);
+    }
+    for (final r in ['dwarf', 'orc']) {
+      expect(File(heroSpriteFor(r, 'warrior').idleAsset).existsSync(), isTrue);
+    }
+  });
 }
