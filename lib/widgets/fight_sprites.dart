@@ -91,6 +91,14 @@ const Map<String, String> _heroByCalling = {
   'ranger': 'ranger',
 };
 
+/// Whose walk the side view paints for a hero of [raceId] and
+/// [professionId]: the figure's own name when it has a walk (the callings'
+/// figures do; a dwarf and an orc have none yet), else 'ronin'.
+String heroWalkName(String raceId, String professionId) =>
+    _heroByRace.containsKey(raceId)
+        ? 'ronin'
+        : _heroByCalling[professionId] ?? 'ronin';
+
 /// The figure of a hero of [raceId] and [professionId] (the ids of
 /// races.json and professions.json; '' before the character is made).
 FightSpriteSet heroSpriteFor(String raceId, String professionId) {
