@@ -31,4 +31,4 @@ The sewer ones are 60 x 60 side views: `lib/widgets/fight_sprites.dart` keeps a 
 | `axe_soldier` | Male - Peasant, gambison and an axe (#30) | `champion_compact`, `compact_quarryman_brodin`, `slum_thug` |
 | `watchman` | Male - Peasant, helmet and a staff (#31) | `inquisition_legate` |
 | `hooded_merc` | Male - Peasant, heavy hooded mercenary (#32) | `purifier_vell`, `champion_mire`, `hollow_court_zealot` |
-| `spear_merc` | Male - Peasant, mercenary with a spear (#33) | `brine_jack`, `vigil_spearman_halvard` |
+| `spear_merc` | Male - Peasant, mercenary with a spear (#33) | `brine_jack` |

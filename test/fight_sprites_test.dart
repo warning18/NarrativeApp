@@ -82,7 +82,6 @@ void main() {
       'champion_mire': 'hooded_merc',
       'hollow_court_zealot': 'hooded_merc',
       'brine_jack': 'spear_merc',
-      'vigil_spearman_halvard': 'spear_merc',
       'champion_compact': 'axe_soldier',
       'compact_quarryman_brodin': 'axe_soldier',
       'slum_thug': 'axe_soldier',
