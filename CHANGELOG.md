@@ -8,6 +8,10 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.971.0+1007]
+
+- The dwarf and the orc hero are the user's own states (UX, Art's exports of Hero_basic_dwarf and Hero_basic_orc). A dwarf hero stands as the bare, grey-bearded dwarf and an orc hero as the orc starter in a white shirt, in fights, on the hero's card and head and on the scene stage, instead of the stand-ins of v1.970 (the armoured dwarf and the cloaked orc). They now walk and stand as themselves on roads and journeys too (6 frames each, east and west), where they walked as the ronin before; only a hero who has not made their character yet keeps the ronin. About 12 KB of PNG8 in the app.
+
 ## [1.970.0+1006]
 
 - The hero stands and walks as their people or calling (UX, the user's PixelLab Hero states; the user chose the warrior, mage, cleric, ranger and rogue figures). In a fight, on the hero's card and head, on the scene stage and on the road, a hero who has made their character is no longer the ronin: a warrior is Hero_basic_warrior, a mage, a cleric, a ranger (with a bow) and a rogue (hooded) each have their own figure, a dwarf and an orc wear their people's figure (stand-ins until the user's own states exist), and an elf or a voidkin wears their calling's. On roads and journeys the five callings walk (6 frames, the rogue 8 and 9) and stand as their own figure; a dwarf and an orc still walk as the ronin until their walks exist. A hero who has not made their character yet keeps the ronin. About 30 KB of PNG8 in the app.

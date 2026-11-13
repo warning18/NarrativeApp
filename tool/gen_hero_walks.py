@@ -30,6 +30,8 @@ VARIANTS = {
     'cleric': '05_hero_cleric',
     'ranger': '11_hero_rogue_starter',
     'rogue': '12_hero_hero_rogue_basic',
+    'dwarf': '01_hero_no_armor_and_no_shie',
+    'orc': '04_hero_orc_starter',
 }
 
 
