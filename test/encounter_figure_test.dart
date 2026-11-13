@@ -28,7 +28,7 @@ void main() {
         'wreck_scavenger');
     // A fight with an enemy that has no art yet: a placeholder (sprite
     // null), not nothing.
-    final thug = roadEncounterFigure('x', fightEnemyId: 'slum_thug');
+    final thug = roadEncounterFigure('x', fightEnemyId: 'sore_loser');
     expect(thug, isNotNull);
     expect(thug!.sprite, isNull);
     // A fight with an enemy that has art wears it.

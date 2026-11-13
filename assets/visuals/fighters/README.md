@@ -25,3 +25,10 @@ The sewer ones are 60 x 60 side views: `lib/widgets/fight_sprites.dart` keeps a 
 | `street_bandit` | Bandit from the desert, Pit wretch no hood | `street_bandit` |
 | `iron_golem` | Iron Golem (60 x 60, Art pilots) | `iron_golem` |
 | `void_sovereign` | Void Sovereign (60 x 60, Art pilots) | `void_sovereign` |
+| `hunter` | Male - Peasant, Hunter style (#18; 64 x 64, drawn at 0.92) | `compact_anvil_deaf_tove` |
+| `knight_cape` | Male - Peasant, sword, shield and red cape (#23) | `claimant_morrow` |
+| `pole_arm` | Male - Peasant, helmet, cape and a pole-arm (#25) | `inquisition_high_warden`, `dock_overseer` |
+| `axe_soldier` | Male - Peasant, gambison and an axe (#30) | `champion_compact`, `compact_quarryman_brodin`, `slum_thug` |
+| `watchman` | Male - Peasant, helmet and a staff (#31) | `inquisition_legate` |
+| `hooded_merc` | Male - Peasant, heavy hooded mercenary (#32) | `purifier_vell`, `champion_mire`, `hollow_court_zealot` |
+| `spear_merc` | Male - Peasant, mercenary with a spear (#33) | `brine_jack`, `vigil_spearman_halvard` |

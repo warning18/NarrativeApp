@@ -71,7 +71,32 @@ void main() {
       expect(data.getUint32(16), 60, reason: id);
       expect(data.getUint32(20), 60, reason: id);
     }
-    expect(enemyFightSprite('slum_thug'), isNull);
+    expect(enemyFightSprite('sore_loser'), isNull);
+    // The Male-Peasant foes of the user's PixelLab account: 64 x 64, west.
+    const peasants = {
+      'claimant_morrow': 'knight_cape',
+      'inquisition_high_warden': 'pole_arm',
+      'dock_overseer': 'pole_arm',
+      'inquisition_legate': 'watchman',
+      'purifier_vell': 'hooded_merc',
+      'champion_mire': 'hooded_merc',
+      'hollow_court_zealot': 'hooded_merc',
+      'brine_jack': 'spear_merc',
+      'vigil_spearman_halvard': 'spear_merc',
+      'champion_compact': 'axe_soldier',
+      'compact_quarryman_brodin': 'axe_soldier',
+      'slum_thug': 'axe_soldier',
+      'compact_anvil_deaf_tove': 'hunter',
+    };
+    peasants.forEach((id, name) {
+      final set = enemyFightSprite(id)!;
+      expect(set.id, name, reason: id);
+      expect(set.facesEast, isFalse, reason: id);
+      expect(set.frameWidth, 64, reason: id);
+      final data = ByteData.sublistView(File(set.idleAsset).readAsBytesSync());
+      expect(data.getUint32(16), 64, reason: id);
+      expect(data.getUint32(20), 64, reason: id);
+    });
     // Two ranks wear the two soldier variants.
     expect(enemyFightSprite('inquisition_soldier')!.id,
         isNot(enemyFightSprite('inquisition_auxiliary')!.id));
