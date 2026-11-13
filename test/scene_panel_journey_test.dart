@@ -22,9 +22,13 @@ Future<void> _until(WidgetTester tester, Finder found) async {
   }
 }
 
-Finder _inVignette(String text) => find.descendant(
-    of: find.byKey(const Key('scene_vignette')),
-    matching: find.textContaining(text));
+/// The scene that faces someone: the vignette, or the stage when the foe has
+/// art (the Slum Thug has stood as a figure since v1.969).
+final Finder _scene = find.byWidgetPredicate((w) =>
+    w.key == const Key('scene_vignette') || w.key == const Key('scene_stage'));
+
+Finder _inVignette(String text) =>
+    find.descendant(of: _scene, matching: find.textContaining(text));
 
 void main() {
   setUp(rootBundle.clear);
@@ -51,8 +55,8 @@ void main() {
     container.read(storyPlayProvider.notifier).restart('260');
     await _until(tester, find.text('Read'));
     await tester.tap(find.text('Read'));
-    await _until(tester, find.byKey(const Key('scene_vignette')));
-    expect(find.byKey(const Key('scene_vignette')), findsOneWidget);
+    await _until(tester, _scene);
+    expect(_scene, findsOneWidget);
     expect(find.text('Pay the toll, or fight?'), findsOneWidget);
     expect(_inVignette('Slum Thug'), findsOneWidget);
 

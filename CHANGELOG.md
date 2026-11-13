@@ -8,6 +8,10 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.969.0+1005]
+
+- Fight sprites: twelve foes stand as figures (UX, the user's PixelLab characters, the Male-Peasant statuses; Narrative matched them). Seven figures, each a still 64 x 64 frame facing the hero (the fight does the lunge and the flash, as for every fighter), drawn at the ronin's pixel size: Hesk Morrow (the red-caped knight), the Inquisition High Warden and Overseer Renn (the pole-arm captain), the Legate's Champion (helmet and staff), Purifier Vell, the Heron Queen's Hand and the Court's zealot (the hooded mercenary), Brine Jack (the spearman), Master Hollis Reck, Brodin Stonehand and the Slum Thug (the axe soldier), Tove the Unheard (the hunter in furs). The foes without a fitting figure keep their portrait card (the smuggler captain, the Court's inquisitor, the Sore Loser, Halvard, the women, the turned companions, the creatures); the same figure never stands twice on one fight screen of a chapter. The same art shows on the Tower's cards and the foes' portraits. About 6 KB of PNG8 in the app.
+
 ## [1.968.0+1004]
 
 - Shop pages: the keeper stands in the strip (UX, the user's PixelLab characters, "yes to the shop keeper strip"). For eight shops the keeper's figure, about 100 px tall and turned toward the words, takes the place of the shop's sign at the left of the strip: Orrin Vell (the Weaponsmith), Imra of the Smoke (the Arcane Bazaar), Sister Ysolde (Apothecary Row), Magister Corvane (the Arcane Academy), Hask (the Ossuary), Wickwarden Tallis (the Last Lantern), the Wreck-Wright (the Anchorage Chandlery) and the Crow (the Black Market Docks). The six other shops (the cellar-boy, Hesta Brann, the Keyholder, Dagny Ironhand, Needle, Old Pell) keep their sign until a figure fits. The strip is about 50 px taller on those eight pages; nothing else moves. About 2.5 KB of PNG8 in the app.
