@@ -124,6 +124,13 @@ const Map<String, ({int size, int foot, double scale})> _enemyFrames = {
   'plague_hound': (size: 60, foot: 2, scale: 0.85),
   'iron_golem': (size: 60, foot: 3, scale: 0.9),
   'void_sovereign': (size: 60, foot: 2, scale: 0.9),
+  'hunter': (size: 64, foot: 7, scale: 0.92),
+  'knight_cape': (size: 64, foot: 7, scale: 0.92),
+  'pole_arm': (size: 64, foot: 7, scale: 0.92),
+  'axe_soldier': (size: 64, foot: 7, scale: 0.92),
+  'watchman': (size: 64, foot: 7, scale: 0.92),
+  'hooded_merc': (size: 64, foot: 7, scale: 0.92),
+  'spear_merc': (size: 64, foot: 7, scale: 0.92),
 };
 
 FightSpriteSet _enemySet(String name) {
@@ -160,6 +167,18 @@ const Map<String, String> _enemySprites = {
   'street_bandit': 'street_bandit',
   'iron_golem': 'iron_golem',
   'void_sovereign': 'void_sovereign',
+  'claimant_morrow': 'knight_cape',
+  'inquisition_high_warden': 'pole_arm',
+  'dock_overseer': 'pole_arm',
+  'inquisition_legate': 'watchman',
+  'purifier_vell': 'hooded_merc',
+  'champion_mire': 'hooded_merc',
+  'hollow_court_zealot': 'hooded_merc',
+  'brine_jack': 'spear_merc',
+  'champion_compact': 'axe_soldier',
+  'compact_quarryman_brodin': 'axe_soldier',
+  'slum_thug': 'axe_soldier',
+  'compact_anvil_deaf_tove': 'hunter',
 };
 
 /// The art an enemy stands in the fight with (facing west, toward the

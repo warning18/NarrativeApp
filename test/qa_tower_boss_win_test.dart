@@ -72,6 +72,10 @@ void main() {
       }
       expect(f, findsWidgets, reason: 'no "$key" on the screen');
       await tester.ensureVisible(f.first);
+      // A list estimates what it has not laid out yet: the first scroll can
+      // stop short of the real end, so it is asked once more.
+      await tester.pump();
+      await tester.ensureVisible(f.first);
       await tester.tap(f.first);
       await settle();
     }
