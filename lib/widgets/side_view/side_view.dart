@@ -9,6 +9,7 @@ import 'package:flutter/material.dart';
 
 import '../fight_sprites.dart';
 import 'desert_pictures.dart';
+import '../hero_sprite.dart';
 import 'side_sprite.dart';
 
 /// The scene's height in "pixels": every kit paints on this grid, scaled up
@@ -101,6 +102,7 @@ class _SideViewSceneState extends State<SideViewScene>
 
   @override
   Widget build(BuildContext context) {
+    SideSprites.setHero(heroWalkOf(context));
     final still = MediaQuery.of(context).disableAnimations;
     if (!still && !_started) {
       _started = true;

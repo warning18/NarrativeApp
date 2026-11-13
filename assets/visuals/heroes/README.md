@@ -1,0 +1,5 @@
+# The hero's figures (the user's PixelLab Hero states)
+
+`<name>_idle_east.png`: the standing figure for the fight, the hero heads and the scene stage (48 x 48, facing east, figure 44 tall); `name` is warrior, mage, rogue, cleric, ranger, dwarf or orc (`heroSpriteFor` in `lib/widgets/fight_sprites.dart`: a dwarf or an orc wears their people's figure, every other people the calling's). Art's native 48 x 48 east frames (`art/pixellab-npc-export/<NN>_hero_*/native48/east.png`). The dwarf (#6) and orc (#13) are stand-ins until the user's own states exist.
+
+`<name>_walk_{east,west}.png` and `<name>_stand_{east,west}.png`: the side-view walk (6 frames, 8 for the rogue's east and 9 for the west, 48 x 48 each, feet on the last row) and the frame where the legs are closest together, for the five callings. Made by `tool/gen_hero_walks.py` from Art's frames in `art/hero-walks/` (not bundled); painted by `lib/widgets/side_view/side_sprite.dart`. A dwarf or an orc has no walk yet and walks as the ronin (`assets/visuals/walker`).

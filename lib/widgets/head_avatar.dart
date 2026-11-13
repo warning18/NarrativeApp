@@ -11,6 +11,7 @@ import 'dart:ui' as ui;
 
 import '../utils/pixel_icons/enemy_icons.dart';
 import 'fight_sprites.dart';
+import 'hero_sprite.dart';
 
 /// Heads of figures that have a sprite of their own though their enemy
 /// record borrows another icon (the borrowed one would be the wrong face).
@@ -102,16 +103,16 @@ class HeadAvatar extends StatelessWidget {
           color: scheme.surfaceContainerHighest.withValues(alpha: 0.7),
           borderRadius: BorderRadius.circular(8),
         ),
-        child: _spriteHead(asset, letter),
+        child: _spriteHead(context, asset, letter),
       ),
     );
   }
 
   /// The head cropped from the character's standing sprite when there is one
   /// (the new art), else the old head picture, else the letter.
-  Widget _spriteHead(String asset, Widget letter) {
+  Widget _spriteHead(BuildContext context, String asset, Widget letter) {
     final set = id == 'hero'
-        ? roninSprite
+        ? heroSpriteOf(context)
         : enemyFightSprite(id) ?? companionFightSprite(id);
     final old = asset.isEmpty
         ? letter

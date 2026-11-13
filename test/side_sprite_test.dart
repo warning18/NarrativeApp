@@ -9,6 +9,7 @@ import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 
+import 'package:narrative_data_app/widgets/fight_sprites.dart';
 import 'package:narrative_data_app/widgets/side_view/desert_kit.dart';
 import 'package:narrative_data_app/widgets/side_view/side_sprite.dart';
 import 'package:narrative_data_app/widgets/side_view/side_view.dart';
@@ -100,5 +101,40 @@ void main() {
             .writeAsBytesSync(data!.buffer.asUint8List());
       });
     }
+  });
+
+  test('a hero walks as their calling; a dwarf or an orc has no walk yet', () {
+    for (final c in ['warrior', 'mage', 'rogue', 'cleric', 'ranger']) {
+      for (final r in ['human', 'elf', 'voidkin']) {
+        expect(heroWalkName(r, c), c, reason: '$r $c');
+      }
+      for (final n in ['walk', 'stand']) {
+        for (final side in ['east', 'west']) {
+          expect(File('assets/visuals/heroes/${c}_${n}_$side.png').existsSync(),
+              isTrue,
+              reason: '$c $n $side');
+        }
+      }
+    }
+    expect(heroWalkName('dwarf', 'warrior'), 'ronin');
+    expect(heroWalkName('orc', 'mage'), 'ronin');
+    expect(heroWalkName('', ''), 'ronin');
+  });
+
+  testWidgets('asking for a hero loads their walk and paints it',
+      (tester) async {
+    SideSprites.reset();
+    SideSprites.setHero('mage');
+    // Let the images decode (real time, not the test's clock).
+    for (var i = 0; i < 20 && !SideSprites.loaded; i++) {
+      await tester.runAsync(
+          () => Future<void>.delayed(const Duration(milliseconds: 50)));
+    }
+    expect(SideSprites.loaded, isTrue);
+    final a = await tester.runAsync(() => frame(0.0));
+    final b = await tester.runAsync(() => frame(0.25));
+    expect(a, isNot(equals(b)), reason: 'the walk steps');
+    expect(a!.any((v) => v != 0), isTrue);
+    SideSprites.reset();
   });
 }
