@@ -15,3 +15,23 @@ Honest notes: they are 64x64, bigger than the 48x48 hero and the 42x47 side-view
 
 ## The PixelLab lantern state (the user's choice; 10 generations; supersedes the hand-drawn one)
 A new state "Stair-Chandler lantern" of #36 (id `b9c876a8-a200-44c3-a9c7-cc7a2d0d17ac`, `create_character_state`, edit "holding a small lit iron lantern in one hand, held out at his side at hip height ... the same man, same face, same beard, same clothes", `use_color_palette_from_reference`, seed 7). **Cost 10 generations on the first try** (balance 849.5 to 839.5). All 8 directions: `art/pixellab-npc-export/stair_chandler_lantern_<direction>.png` (south, south-east, east, north-east, north, north-west, west, south-west), 64x64 PNG8, transparent index 31, the figure on the same rows as before (rows 7 to 55). The man is unchanged (face, beard, clothes), the lantern hangs from one hand in every direction. By hand I only brightened the lantern's glass panes to the Apollo yellows (E8C170 and FFF6E0): PixelLab drew them peach and cream. The first hand-drawn files are kept as `stair_chandler_hand_lantern_{south-west,west,south}.png`. Sheet: `docs/art/boards/npc-stair-chandler-lantern-pixellab.png` (before and after, 8 directions at 2x, the south-west at 2x and at the card size next to the hand-drawn one). Raw: `art/pixellab-npc-export/lantern_state/`. Honest note: the lantern is small at the card size (about 7 pixels high, a lit speck at his side); the lantern in the south-west frame hangs at his left, away from the card text.
+
+## Keepers and faces (the user: "yes to shopkeepers and faces for people"; free, 0 generations)
+Exported by status, all 8 directions each, PNG8, 64x64, transparent index 31, **feet on row 55 in every frame** (a 48x48 hero status is centred on the 64x64 canvas and shifted so its feet stand on row 55 like the others; its native frames are in `native48/`). Folder per status in `art/pixellab-npc-export/<folder>/<direction>.png` (south, south-east, east, north-east, north, north-west, west, south-west); sheet `docs/art/boards/npc-export-keepers.png`; list in `keepers_export.json`. UX-2 copies east to `<npc id>.png` and south to `<npc id>_south.png`.
+| # | folder | what |
+|---|---|---|
+| 20 | `20_paysant_woman_same_as_warlord_a_bi` | woman, feathered hat and green dress |
+| 35 | `35_young_peasant_same_with_no_book_bu` | old grey-haired man, green vest |
+| 42 | `42_young_peasant_change_clothes_for_h` | man in a dark brown cloak |
+| 38 | `38_young_peasant_longer_bear_skinnier` | bearded man, blue and green vest |
+| 50 | `50_paysant_woman_change_face_and_hair` | red-haired woman, green dress |
+| 29 | `29_male_peasant_change_the_spear_for` | helmet and spear |
+| 53 | `53_paysant_woman_idle` | brown-haired woman, green dress |
+| 49 | `49_paysant_woman_same_style_but_other` | blonde, straw hat, blue skirt |
+| 34 | `34_young_peasant_thinner_body_and_tal` | thin man, brown vest |
+| 36 | `36_young_peasant_fatter_with_bigger_b` | the stout bearded man (the Stair-Chandler's body; the lantern state is separate) |
+| 39 | `39_young_peasant_medieval_style_peasa` | ragged peasant |
+| 2 | `02_hero_no_weapon_cheaper_eq` | dwarf with helm and shield (48x48 padded) |
+| 6 | `06_hero_dwarf_warrior` | dwarf in heavy armour (48x48 padded) |
+| 41 | `41_young_peasant_same_style_but_diffe` | bearded man, green vest (Hesk Morrow) |
+Note: #29, #50, #53, #49, #20 are from the two groups drawn from slightly above ("spots only": standing facing the player, never walking): use south or the three-quarter frames.
