@@ -8,6 +8,10 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.967.0+1003]
+
+- Faces for the people of the story (UX, the user's PixelLab characters, "yes to heads cut from the figures"). Thirteen people now wear a head cut from their own figure where a letter sat (the scene vignette of the journey screens, the NPC page's head slot): the keepers Orrin Vell, Imra of the Smoke, Sister Ysolde, Magister Corvane, Hask, Wickwarden Tallis, the Wreck-Wright and the Crow, and Old Harker, the sign-painter, Joss Harrow, Old Wick and Dorran Quill. Everyone else keeps their letter (the Wharf Keyholder, Tamsin Brask, Hesk Morrow, Hesta Brann, Dagny Ironhand, Old Pell, the cellar-boy, Needle and the others have no figure that fits yet). Shared faces: Corvane and Old Harker are the same face, and Joss Harrow and the sign-painter. `tool/gen_fight_heads.py` cuts them from `art/npc-heads/` (not bundled). The Stair-Chandler carries his PixelLab lantern on his shop card (Art's file, the user's choice). About 3 KB of PNG8 in the app.
+
 ## [1.966.0+1002]
 
 - Tower: the people of the floors without a fight have faces (UX, the user's PixelLab characters; they show on new climbs, since the floors without a fight are live from v1.963). The Stair-Chandler stands at the right of his stall's head, the Tally-Clerk beside his bargain, and the parley's guardian is the officer for a Dominion or Vigil floor; for the four other clans (Mire, Crows, Compact, Penitents) the floor's own foe stands there instead (nothing when it has no art). They are drawn at twice their size (about 100 px tall, turned a quarter toward the words), and the foe's figure at the same height. About 4 KB of PNG8 in the app.
