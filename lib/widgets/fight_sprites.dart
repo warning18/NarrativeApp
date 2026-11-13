@@ -119,6 +119,9 @@ const Map<String, String> _enemySprites = {
   'street_bandit': 'street_bandit',
   'iron_golem': 'iron_golem',
   'void_sovereign': 'void_sovereign',
+  'compact_quarryman_brodin': 'compact_dwarf',
+  'vigil_spearman_halvard': 'vigil_spear',
+  'slum_thug': 'street_peasant',
 };
 
 /// The art an enemy stands in the fight with (facing west, toward the
