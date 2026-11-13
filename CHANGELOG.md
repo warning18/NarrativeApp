@@ -8,6 +8,10 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.968.0+1004]
+
+- Shop pages: the keeper stands in the strip (UX, the user's PixelLab characters, "yes to the shop keeper strip"). For eight shops the keeper's figure, about 100 px tall and turned toward the words, takes the place of the shop's sign at the left of the strip: Orrin Vell (the Weaponsmith), Imra of the Smoke (the Arcane Bazaar), Sister Ysolde (Apothecary Row), Magister Corvane (the Arcane Academy), Hask (the Ossuary), Wickwarden Tallis (the Last Lantern), the Wreck-Wright (the Anchorage Chandlery) and the Crow (the Black Market Docks). The six other shops (the cellar-boy, Hesta Brann, the Keyholder, Dagny Ironhand, Needle, Old Pell) keep their sign until a figure fits. The strip is about 50 px taller on those eight pages; nothing else moves. About 2.5 KB of PNG8 in the app.
+
 ## [1.967.0+1003]
 
 - Faces for the people of the story (UX, the user's PixelLab characters, "yes to heads cut from the figures"). Thirteen people now wear a head cut from their own figure where a letter sat (the scene vignette of the journey screens, the NPC page's head slot): the keepers Orrin Vell, Imra of the Smoke, Sister Ysolde, Magister Corvane, Hask, Wickwarden Tallis, the Wreck-Wright and the Crow, and Old Harker, the sign-painter, Joss Harrow, Old Wick and Dorran Quill. Everyone else keeps their letter (the Wharf Keyholder, Tamsin Brask, Hesk Morrow, Hesta Brann, Dagny Ironhand, Old Pell, the cellar-boy, Needle and the others have no figure that fits yet). Shared faces: Corvane and Old Harker are the same face, and Joss Harrow and the sign-painter. `tool/gen_fight_heads.py` cuts them from `art/npc-heads/` (not bundled). The Stair-Chandler carries his PixelLab lantern on his shop card (Art's file, the user's choice). About 3 KB of PNG8 in the app.
