@@ -14,7 +14,25 @@ import 'fight_sprites.dart';
 
 /// Heads of figures that have a sprite of their own though their enemy
 /// record borrows another icon (the borrowed one would be the wrong face).
-const Set<String> _ownHeads = {'aurel_vane'};
+const Set<String> _ownHeads = {'aurel_vane', ..._npcHeads};
+
+/// The story's people who have a head cut from their own figure
+/// (tool/gen_fight_heads.py, art/npc-heads).
+const Set<String> _npcHeads = {
+  'keeper_weaponsmith_forge',
+  'keeper_arcane_bazaar',
+  'keeper_apothecary_row',
+  'keeper_arcane_academy',
+  'keeper_ossuary_relics',
+  'keeper_last_lantern',
+  'keeper_anchorage_chandlery',
+  'keeper_black_market_docks',
+  'old_harker',
+  'sign_painter',
+  'joss_harrow',
+  'wick_sweeper',
+  'dorran_quill',
+};
 
 /// The head image of character [id] (hero, a companion, an enemy, an NPC),
 /// or null when none can exist (the asset may still be missing: the widget
