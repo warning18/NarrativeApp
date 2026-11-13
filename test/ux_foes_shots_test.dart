@@ -124,7 +124,7 @@ const _fights = <(String, String, List<String>)>[
 
 void main() {
   final shots = Platform.environment['UX_SHOTS'];
-  setUp(() => FightSpriteImages.reset());
+  setUp(FightSpriteImages.reset);
   for (final (tag, id, more) in _fights) {
     for (final w in [360.0, 412.0]) {
       for (final dark in [false, true]) {
