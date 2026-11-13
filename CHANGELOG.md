@@ -10,7 +10,7 @@ isn't reconstructable from git history alone.
 
 ## [1.966.0+1002]
 
-- Tower: the people of the floors without a fight have faces (UX, the user's PixelLab characters; **invisible for players** like the cards, events version 2 only). The Stair-Chandler stands at the right of his stall's head, the Tally-Clerk beside his bargain, and the parley's guardian is the officer for a Dominion or Vigil floor; for the four other clans (Mire, Crows, Compact, Penitents) the floor's own foe stands there instead (nothing when it has no art). They are drawn at twice their size (about 100 px tall, turned a quarter toward the words), and the foe's figure at the same height. About 4 KB of PNG8 in the app.
+- Tower: the people of the floors without a fight have faces (UX, the user's PixelLab characters; they show on new climbs, since the floors without a fight are live from v1.963). The Stair-Chandler stands at the right of his stall's head, the Tally-Clerk beside his bargain, and the parley's guardian is the officer for a Dominion or Vigil floor; for the four other clans (Mire, Crows, Compact, Penitents) the floor's own foe stands there instead (nothing when it has no art). They are drawn at twice their size (about 100 px tall, turned a quarter toward the words), and the foe's figure at the same height. About 4 KB of PNG8 in the app.
 
 ## [1.965.0+1001]
 
