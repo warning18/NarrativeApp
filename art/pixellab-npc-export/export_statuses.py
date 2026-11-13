@@ -16,11 +16,14 @@ for n in [int(x) for x in sys.argv[1].split(',')]:
     subprocess.run(['curl','-sS','-o',z,f"https://api.pixellab.ai/mcp/characters/{r['id']}/download?states={r['id']}"],check=True)
     zf=zipfile.ZipFile(z); tmp=f'{X}{n}'; zf.extractall(tmp); rot=glob.glob(tmp+'/*/rotations')[0]
     os.makedirs(f'{D}{name}',exist_ok=True)
+    nat={dn:Image.open(f'{rot}/{dn}.png').convert('RGBA') for dn in DIRS}; off=0
+    if nat['east'].size!=(64,64):                      # a 48x48 status: centred on 64x64, shifted so the feet stand on row 55 like the 64x64 statuses
+        off=55-max(int(np.where(np.array(im)[...,3]>0)[0].max()) for im in nat.values())
     for dn in DIRS:
-        im=Image.open(f'{rot}/{dn}.png').convert('RGBA')
+        im=nat[dn]
         if im.size!=(64,64):
             os.makedirs(f'{D}{name}/native{im.width}',exist_ok=True); png8(im,f'{D}{name}/native{im.width}/{dn}.png')
-            c=Image.new('RGBA',(64,64),(0,0,0,0)); c.alpha_composite(im,((64-im.width)//2,64-im.height)); im=c
+            c=Image.new('RGBA',(64,64),(0,0,0,0)); c.alpha_composite(im,((64-im.width)//2,off)); im=c
         png8(im,f'{D}{name}/{dn}.png')
     res[str(n)]=name; print(n,name,Image.open(f'{D}{name}/east.png').size)
 json.dump(res,open(D+'keepers_export.json','w'),indent=1)
