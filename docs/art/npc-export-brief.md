@@ -35,3 +35,15 @@ Exported by status, all 8 directions each, PNG8, 64x64, transparent index 31, **
 | 6 | `06_hero_dwarf_warrior` | dwarf in heavy armour (48x48 padded) |
 | 41 | `41_young_peasant_same_style_but_diffe` | bearded man, green vest (Hesk Morrow) |
 Note: #29, #50, #53, #49, #20 are from the two groups drawn from slightly above ("spots only": standing facing the player, never walking): use south or the three-quarter frames.
+
+## Male - Peasant enemies (the user and Narrative's check; free, 0 generations)
+#23, #25, #30, #31, #32, #33, #18, all 8 directions, PNG8 64x64, transparent index 31, same folder scheme; UX-2 takes **west** for the fight sprite and **south** for portraits. Sheet `docs/art/boards/npc-export-male-peasant-enemies.png`. These come from a group drawn from slightly above ("spots only"): the west frame is the closest to a side view available. The feet stand on rows 55 to 56 (native frames, not shifted; a weapon tip reaches row 57 in #33's north-east and north-west).
+| # | folder | what |
+|---|---|---|
+| 23 | `23_male_peasant_same_with_a_sword_an` | knight with sword, shield and a red cape |
+| 25 | `25_male_peasant_same_with_a_cape` | helmet, cape and a pole-arm |
+| 30 | `30_male_peasant_add_a_gambison_and_a` | gambison and an axe |
+| 31 | `31_male_peasant_change_the_helmet_st` | helmet and a staff |
+| 32 | `32_male_peasant_mercenary_style_with` | heavy hooded mercenary |
+| 33 | `33_male_peasant_mercenary_same_style` | mercenary with a spear |
+| 18 | `18_male_peasant_hunter_style` | hunter in furs |

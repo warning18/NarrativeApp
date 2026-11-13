@@ -10,7 +10,7 @@ def png8(im,dst):
     a=np.array(im.convert('RGBA')); mask=a[...,3]<128
     q=Image.fromarray(a[...,:3]).quantize(colors=31,method=Image.Quantize.MEDIANCUT,dither=Image.Dither.NONE); arr=np.array(q); arr[mask]=31
     pal=q.getpalette()[:93]; pal=pal+[0]*(96-len(pal)); out=Image.fromarray(arr,'P'); out.putpalette(pal+[0]*(768-96)); out.save(dst,optimize=True,transparency=31)
-res={}; os.makedirs(X,exist_ok=True)
+res=json.load(open(D+'keepers_export.json')) if os.path.exists(D+'keepers_export.json') else {}; os.makedirs(X,exist_ok=True)
 for n in [int(x) for x in sys.argv[1].split(',')]:
     r=inv[n]; name=f"{n:02d}_{slug(r['group'].split('|')[0].split(' with')[0])}_{slug(r['state'])}"; z=f'{X}{n}.zip'
     subprocess.run(['curl','-sS','-o',z,f"https://api.pixellab.ai/mcp/characters/{r['id']}/download?states={r['id']}"],check=True)
@@ -22,5 +22,5 @@ for n in [int(x) for x in sys.argv[1].split(',')]:
             os.makedirs(f'{D}{name}/native{im.width}',exist_ok=True); png8(im,f'{D}{name}/native{im.width}/{dn}.png')
             c=Image.new('RGBA',(64,64),(0,0,0,0)); c.alpha_composite(im,((64-im.width)//2,64-im.height)); im=c
         png8(im,f'{D}{name}/{dn}.png')
-    res[n]=name; print(n,name,Image.open(f'{D}{name}/east.png').size)
+    res[str(n)]=name; print(n,name,Image.open(f'{D}{name}/east.png').size)
 json.dump(res,open(D+'keepers_export.json','w'),indent=1)
