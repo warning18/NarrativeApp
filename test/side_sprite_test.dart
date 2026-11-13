@@ -103,7 +103,7 @@ void main() {
     }
   });
 
-  test('a hero walks as their calling; a dwarf or an orc has no walk yet', () {
+  test('a hero walks as their people or calling', () {
     for (final c in ['warrior', 'mage', 'rogue', 'cleric', 'ranger']) {
       for (final r in ['human', 'elf', 'voidkin']) {
         expect(heroWalkName(r, c), c, reason: '$r $c');
@@ -116,8 +116,17 @@ void main() {
         }
       }
     }
-    expect(heroWalkName('dwarf', 'warrior'), 'ronin');
-    expect(heroWalkName('orc', 'mage'), 'ronin');
+    expect(heroWalkName('dwarf', 'mage'), 'dwarf');
+    expect(heroWalkName('orc', 'cleric'), 'orc');
+    for (final c in ['dwarf', 'orc']) {
+      for (final n in ['walk', 'stand']) {
+        for (final side in ['east', 'west']) {
+          expect(File('assets/visuals/heroes/${c}_${n}_$side.png').existsSync(),
+              isTrue,
+              reason: '$c $n $side');
+        }
+      }
+    }
     expect(heroWalkName('', ''), 'ronin');
   });
 

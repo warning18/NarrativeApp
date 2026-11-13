@@ -92,12 +92,10 @@ const Map<String, String> _heroByCalling = {
 };
 
 /// Whose walk the side view paints for a hero of [raceId] and
-/// [professionId]: the figure's own name when it has a walk (the callings'
-/// figures do; a dwarf and an orc have none yet), else 'ronin'.
+/// [professionId]: the figure's own name (every figure has a walk), 'ronin'
+/// for a hero who has none (not made yet, or an unknown calling).
 String heroWalkName(String raceId, String professionId) =>
-    _heroByRace.containsKey(raceId)
-        ? 'ronin'
-        : _heroByCalling[professionId] ?? 'ronin';
+    _heroByRace[raceId] ?? _heroByCalling[professionId] ?? 'ronin';
 
 /// The figure of a hero of [raceId] and [professionId] (the ids of
 /// races.json and professions.json; '' before the character is made).
