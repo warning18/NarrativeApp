@@ -16,11 +16,89 @@ import '../../widgets/ink_chip.dart';
 import '../../widgets/ink_panel.dart';
 import '../../widgets/race_profession_cards.dart' show ClanDisc;
 import 'tower_event_card.dart' show TowerEventOutcome, TowerEventTag;
+import 'tower_look.dart' show TowerFoeFigure;
 
 String _sub(WidgetRef ref, String key, Map<String, Object> values) {
   var text = tr(ref, key);
   values.forEach((k, v) => text = text.replaceAll('{$k}', '$v'));
   return text;
+}
+
+/// The pictures of the Tower's people (the user's PixelLab characters, 64x64,
+/// standing, turned a quarter toward the words at their left, in
+/// assets/visuals/tower/npc/): the Stair-Chandler, the
+/// Tally-Clerk and the guardian of a Dominion or Vigil parley. A missing file
+/// draws nothing.
+const Set<String> towerNpcNames = {'chandler', 'clerk', 'guardian'};
+
+/// The clans whose guardian wears the officer's coat of the picture.
+const Set<String> towerOfficerClans = {'dominion', 'vigil'};
+
+/// How many screen pixels one picture pixel of a figure takes, and the size of
+/// the parley's foe figure beside them (the same height: 2 and 108).
+int towerNpcScale = 2;
+double towerParleyFoeSize = 108;
+
+/// A figure trimmed to the part of its 64x64 canvas that holds it (the same
+/// box for all three: 29 by 51, the feet on the bottom row).
+class TowerNpcFigure extends StatelessWidget {
+  const TowerNpcFigure(this.name, {super.key});
+
+  final String name;
+
+  static const _x0 = 18, _y0 = 6, _w = 29, _h = 51;
+
+  @override
+  Widget build(BuildContext context) {
+    final k = towerNpcScale;
+    return SizedBox(
+      key: Key('tower_npc_$name'),
+      width: _w * k.toDouble(),
+      height: _h * k.toDouble(),
+      child: ClipRect(
+        child: OverflowBox(
+          alignment: Alignment.topLeft,
+          minWidth: 0,
+          minHeight: 0,
+          maxWidth: 64.0 * k,
+          maxHeight: 64.0 * k,
+          child: Transform.translate(
+            offset: Offset(-_x0 * k.toDouble(), -_y0 * k.toDouble()),
+            child: Image.asset(
+              'assets/visuals/tower/npc/$name.png',
+              width: 64.0 * k,
+              height: 64.0 * k,
+              fit: BoxFit.fill,
+              filterQuality: FilterQuality.none,
+              isAntiAlias: false,
+              errorBuilder: (_, __, ___) => const SizedBox.shrink(),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+/// A card's head (its tag, title and words) with the figure standing at its
+/// right, when there is one.
+class _Head extends StatelessWidget {
+  const _Head({required this.children, this.figure});
+
+  final List<Widget> children;
+  final Widget? figure;
+
+  @override
+  Widget build(BuildContext context) {
+    final column = Column(
+        crossAxisAlignment: CrossAxisAlignment.start, children: children);
+    if (figure == null) return column;
+    return Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
+      Expanded(child: column),
+      const SizedBox(width: 8),
+      figure!,
+    ]);
+  }
 }
 
 /// The two buttons of a choice, stacked full width: the first is the way
@@ -72,6 +150,7 @@ class TowerParleyCard extends ConsumerWidget {
     required this.landsOn,
     this.clanId,
     this.oathPass = false,
+    this.foeId,
     this.onTalk,
     this.onFight,
   });
@@ -89,6 +168,10 @@ class TowerParleyCard extends ConsumerWidget {
   /// The guardian's clan, and whether the hero is sworn to it (no roll).
   final String? clanId;
   final bool oathPass;
+
+  /// The floor's own foe, whose figure stands by the card when the guardian's
+  /// clan has no picture of its own.
+  final String? foeId;
   final VoidCallback? onTalk;
   final VoidCallback? onFight;
 
@@ -102,14 +185,24 @@ class TowerParleyCard extends ConsumerWidget {
       key: const Key('tower_parley'),
       lit: true,
       child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-        TowerEventTag(Icons.forum_outlined, tr(ref, 'tower_parley'), ink.gold),
-        const SizedBox(height: 6),
-        Text(tr(ref, 'tower_parley_title'),
-            style: theme.textTheme.titleMedium
-                ?.copyWith(fontFamily: InkFonts.display)),
-        Text(tr(ref, 'tower_parley_body'),
-            style: theme.textTheme.bodyMedium
-                ?.copyWith(color: theme.colorScheme.onSurfaceVariant)),
+        _Head(
+          figure: towerOfficerClans.contains(clanId)
+              ? const TowerNpcFigure('guardian')
+              : foeId == null
+                  ? null
+                  : TowerFoeFigure(foeId!, size: towerParleyFoeSize),
+          children: [
+            TowerEventTag(
+                Icons.forum_outlined, tr(ref, 'tower_parley'), ink.gold),
+            const SizedBox(height: 6),
+            Text(tr(ref, 'tower_parley_title'),
+                style: theme.textTheme.titleMedium
+                    ?.copyWith(fontFamily: InkFonts.display)),
+            Text(tr(ref, 'tower_parley_body'),
+                style: theme.textTheme.bodyMedium
+                    ?.copyWith(color: theme.colorScheme.onSurfaceVariant)),
+          ],
+        ),
         if (faction != null) ...[
           const SizedBox(height: 8),
           ClanDisc(faction, size: 28, name: true),
@@ -231,15 +324,20 @@ class TowerMerchantRoom extends ConsumerWidget {
         key: const Key('tower_merchant'),
         lit: true,
         child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-          TowerEventTag(
-              Icons.storefront_outlined, tr(ref, 'tower_merchant'), ink.gold),
-          const SizedBox(height: 6),
-          Text(tr(ref, 'tower_merchant_title'),
-              style: theme.textTheme.titleMedium
-                  ?.copyWith(fontFamily: InkFonts.display)),
-          Text(tr(ref, 'tower_merchant_body'),
-              style: theme.textTheme.bodyMedium
-                  ?.copyWith(color: theme.colorScheme.onSurfaceVariant)),
+          _Head(
+            figure: const TowerNpcFigure('chandler'),
+            children: [
+              TowerEventTag(Icons.storefront_outlined,
+                  tr(ref, 'tower_merchant'), ink.gold),
+              const SizedBox(height: 6),
+              Text(tr(ref, 'tower_merchant_title'),
+                  style: theme.textTheme.titleMedium
+                      ?.copyWith(fontFamily: InkFonts.display)),
+              Text(tr(ref, 'tower_merchant_body'),
+                  style: theme.textTheme.bodyMedium
+                      ?.copyWith(color: theme.colorScheme.onSurfaceVariant)),
+            ],
+          ),
           const SizedBox(height: 10),
           InkChip(_sub(ref, 'tower_merchant_wallet', {'n': wallet}),
               color: ink.gold),
@@ -355,14 +453,19 @@ class TowerBargainCard extends ConsumerWidget {
       key: const Key('tower_bargain'),
       lit: true,
       child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-        TowerEventTag(Icons.balance, tr(ref, 'tower_bargain'), ink.gold),
-        const SizedBox(height: 6),
-        Text(tr(ref, 'tower_bargain_title'),
-            style: theme.textTheme.titleMedium
-                ?.copyWith(fontFamily: InkFonts.display)),
-        Text(tr(ref, 'tower_bargain_body'),
-            style: theme.textTheme.bodyMedium
-                ?.copyWith(color: theme.colorScheme.onSurfaceVariant)),
+        _Head(
+          figure: const TowerNpcFigure('clerk'),
+          children: [
+            TowerEventTag(Icons.balance, tr(ref, 'tower_bargain'), ink.gold),
+            const SizedBox(height: 6),
+            Text(tr(ref, 'tower_bargain_title'),
+                style: theme.textTheme.titleMedium
+                    ?.copyWith(fontFamily: InkFonts.display)),
+            Text(tr(ref, 'tower_bargain_body'),
+                style: theme.textTheme.bodyMedium
+                    ?.copyWith(color: theme.colorScheme.onSurfaceVariant)),
+          ],
+        ),
         TowerEventOutcome(
             Icons.north,
             ink.gold,
