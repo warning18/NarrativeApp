@@ -35,9 +35,9 @@ const Set<String> towerNpcNames = {'chandler', 'clerk', 'guardian'};
 const Set<String> towerOfficerClans = {'dominion', 'vigil'};
 
 /// How many screen pixels one picture pixel of a figure takes, and the size of
-/// the parley's foe figure beside them (both the same height at 1 and 54).
-int towerNpcScale = 1;
-double towerParleyFoeSize = 54;
+/// the parley's foe figure beside them (the same height: 2 and 108).
+int towerNpcScale = 2;
+double towerParleyFoeSize = 108;
 
 /// A figure trimmed to the part of its 64x64 canvas that holds it (the same
 /// box for all three: 29 by 51, the feet on the bottom row).

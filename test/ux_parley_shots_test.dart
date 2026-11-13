@@ -110,6 +110,7 @@ void main() {
             .buffer
             .asUint8List();
       });
+      Directory(shots!).createSync(recursive: true);
       File('$shots/$name.png').writeAsBytesSync(bytes);
     }
 

@@ -8,6 +8,10 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.966.0+1002]
+
+- Tower: the people of the floors without a fight have faces (UX, the user's PixelLab characters; **invisible for players** like the cards, events version 2 only). The Stair-Chandler stands at the right of his stall's head, the Tally-Clerk beside his bargain, and the parley's guardian is the officer for a Dominion or Vigil floor; for the four other clans (Mire, Crows, Compact, Penitents) the floor's own foe stands there instead (nothing when it has no art). They are drawn at twice their size (about 100 px tall, turned a quarter toward the words), and the foe's figure at the same height. About 4 KB of PNG8 in the app.
+
 ## [1.965.0+1001]
 
 - Road crossing, desert: Art's painted layers (UX; the user's "Go for desert", with the calm four-colour sky). The desert road's sky, far mesas, mid dunes and near sand are now pictures scrolling at the code kit's own speeds (0, 0.15, 0.4, 0.8); the sun, the goal, the path, the party, the weather and the dusk tint and stars stay code and lie over them. The goal stands on the mesas' ground with a dark outline. Until the pictures are in, the code kit draws; the fight ground, the life header, the detour scenes, the world view and the other five kits keep their code look. About 4.5 KB of PNG8 in the app.
