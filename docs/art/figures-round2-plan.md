@@ -41,3 +41,6 @@ States made from Starter_basic_hero, 48x48, 8 directions, PNG8 64x64 (feet on ro
 | companion_liora | `d84b42f5-6a87-4055-b626-785175fd0de1` | item 8 |
 | companion_grosh | `cdd2b8a4-5e77-4081-9f15-8e3ed7fea951` | item 10 |
 The elf and the orc read as their races (pointed ears, gold hair; green skin, tusks); the states did not stay too human. No walks yet.
+
+## Decision (15 November)
+The user declined the 3 test figures: "Do not use them, I'll tell you what to use." They are not handed to UX; the files stay on the branch, undeleted. No more figures and no walks. The user will name the existing PixelLab characters or states to use. Later: walks for the companions only, east and west.
