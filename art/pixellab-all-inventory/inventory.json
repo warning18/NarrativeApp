@@ -1,0 +1,1507 @@
+[
+ {
+  "i": 0,
+  "id": "5bc49f28-8665-4c73-953a-cea02f3518f9",
+  "group": "pro_style_admiral",
+  "state": "Idle",
+  "size": "60x60px",
+  "view": "low top-down",
+  "directions": "8",
+  "anims": [],
+  "frame": "art/pixellab-all-inventory/frames/000/pixelart_workbench_0.png",
+  "look": "pirate admiral, tricorn hat, pale coat"
+ },
+ {
+  "i": 1,
+  "id": "da729845-8701-4e2a-82e3-a82cd35f9628",
+  "group": "chibi_bone_warden",
+  "state": "Idle",
+  "size": "48x48px",
+  "view": "side",
+  "directions": "8",
+  "anims": [],
+  "frame": "art/pixellab-all-inventory/frames/001/pixelart_workbench_0.png",
+  "look": "chibi skeleton holding a torch"
+ },
+ {
+  "i": 2,
+  "id": "588f8458-d6fd-46c2-bffe-ad8d06ae1692",
+  "group": "chibi_admiral",
+  "state": "Idle",
+  "size": "48x48px",
+  "view": "side",
+  "directions": "8",
+  "anims": [],
+  "frame": "art/pixellab-all-inventory/frames/002/pixelart_workbench_0.png",
+  "look": "chibi admiral, white uniform, peaked cap"
+ },
+ {
+  "i": 3,
+  "id": "43321867-2bb7-4351-87d5-fa10b0be76e5",
+  "group": "catacomb_ghoul",
+  "state": "Idle",
+  "size": "60x60px",
+  "view": "side",
+  "directions": "8",
+  "anims": [
+   {
+    "name": "Idle",
+    "dirs": 1,
+    "where": "west",
+    "frames": 8
+   }
+  ],
+  "frame": "art/pixellab-all-inventory/frames/003/pixelart_workbench_0.png",
+  "look": "hooded green ghoul in a brown robe"
+ },
+ {
+  "i": 4,
+  "id": "c09d1f1c-b058-408b-b559-96151477f3a8",
+  "group": "claimant_tallis",
+  "state": "Idle",
+  "size": "60x60px",
+  "view": "side",
+  "directions": "8",
+  "anims": [
+   {
+    "name": "Idle",
+    "dirs": 1,
+    "where": "west",
+    "frames": 8
+   }
+  ],
+  "frame": "art/pixellab-all-inventory/frames/004/pixelart_workbench_0.png",
+  "look": "grey hooded claimant with a lantern and staff"
+ },
+ {
+  "i": 5,
+  "id": "be382e30-cd6d-404a-8c4b-b97e5e7cdd2f",
+  "group": "claimant_morrow",
+  "state": "Idle",
+  "size": "60x60px",
+  "view": "side",
+  "directions": "8",
+  "anims": [
+   {
+    "name": "Idle",
+    "dirs": 1,
+    "where": "west",
+    "frames": 8
+   }
+  ],
+  "frame": "art/pixellab-all-inventory/frames/005/pixelart_workbench_0.png",
+  "look": "grey-haired armoured claimant, red and steel"
+ },
+ {
+  "i": 6,
+  "id": "d6c18568-40c4-4605-8938-33e369d1af3e",
+  "group": "claimant_vane",
+  "state": "Idle",
+  "size": "60x60px",
+  "view": "side",
+  "directions": "8",
+  "anims": [
+   {
+    "name": "Idle",
+    "dirs": 1,
+    "where": "west",
+    "frames": 8
+   }
+  ],
+  "frame": "art/pixellab-all-inventory/frames/006/pixelart_workbench_0.png",
+  "look": "white-armoured claimant with a lantern staff"
+ },
+ {
+  "i": 7,
+  "id": "88f7028a-7a39-43e7-8125-c81a606b0b91",
+  "group": "tear_herald_3",
+  "state": "Idle",
+  "size": "60x60px",
+  "view": "side",
+  "directions": "8",
+  "anims": [],
+  "frame": "art/pixellab-all-inventory/frames/007/pixelart_workbench_0.png",
+  "look": "purple hooded herald, red emblem"
+ },
+ {
+  "i": 8,
+  "id": "2adc725d-401d-4b81-a83a-4227aa0458c7",
+  "group": "tear_herald_2",
+  "state": "Idle",
+  "size": "60x60px",
+  "view": "side",
+  "directions": "8",
+  "anims": [],
+  "frame": "art/pixellab-all-inventory/frames/008/pixelart_workbench_0.png",
+  "look": "purple hooded herald, blue banner"
+ },
+ {
+  "i": 9,
+  "id": "17da15fc-a720-4001-83eb-c6894d4b4584",
+  "group": "hollow_reflection",
+  "state": "Idle",
+  "size": "60x60px",
+  "view": "side",
+  "directions": "8",
+  "anims": [
+   {
+    "name": "Idle",
+    "dirs": 1,
+    "where": "west",
+    "frames": 8
+   }
+  ],
+  "frame": "art/pixellab-all-inventory/frames/009/pixelart_workbench_0.png",
+  "look": "dark armoured samurai-like reflection, wide hat"
+ },
+ {
+  "i": 10,
+  "id": "1351bbcb-d380-487b-8888-6924d5963d47",
+  "group": "cultist_acolyte",
+  "state": "Idle",
+  "size": "60x60px",
+  "view": "side",
+  "directions": "8",
+  "anims": [
+   {
+    "name": "Idle",
+    "dirs": 1,
+    "where": "west",
+    "frames": 8
+   }
+  ],
+  "frame": "art/pixellab-all-inventory/frames/010/pixelart_workbench_0.png",
+  "look": "purple hooded cultist, praying hands"
+ },
+ {
+  "i": 11,
+  "id": "db631f10-bc30-4fe9-9d7f-ca453d4e1a42",
+  "group": "inquisition_high_warden",
+  "state": "Idle",
+  "size": "60x60px",
+  "view": "side",
+  "directions": "8",
+  "anims": [
+   {
+    "name": "Idle",
+    "dirs": 1,
+    "where": "west",
+    "frames": 8
+   }
+  ],
+  "frame": "art/pixellab-all-inventory/frames/011/pixelart_workbench_0.png",
+  "look": "steel-armoured warden, plume helm"
+ },
+ {
+  "i": 12,
+  "id": "00ee8b6f-0796-4068-99f5-410a07a2d582",
+  "group": "bone_warden",
+  "state": "Idle",
+  "size": "60x60px",
+  "view": "side",
+  "directions": "8",
+  "anims": [
+   {
+    "name": "Idle",
+    "dirs": 1,
+    "where": "west",
+    "frames": 8
+   }
+  ],
+  "frame": "art/pixellab-all-inventory/frames/012/pixelart_workbench_0.png",
+  "look": "horned skull warden, bone armour, whip"
+ },
+ {
+  "i": 13,
+  "id": "c4fe9dfe-a210-40f7-af11-9c921fd10e15",
+  "group": "white_admiral",
+  "state": "Idle",
+  "size": "60x60px",
+  "view": "side",
+  "directions": "8",
+  "anims": [
+   {
+    "name": "Idle",
+    "dirs": 1,
+    "where": "west",
+    "frames": 8
+   }
+  ],
+  "frame": "art/pixellab-all-inventory/frames/013/pixelart_workbench_0.png",
+  "look": "admiral in white coat, bicorne hat, sabre"
+ },
+ {
+  "i": 14,
+  "id": "0e82ff49-f902-4637-8971-0aa99dcc3b51",
+  "group": "tear_herald",
+  "state": "Idle",
+  "size": "60x60px",
+  "view": "side",
+  "directions": "8",
+  "anims": [],
+  "frame": "art/pixellab-all-inventory/frames/014/pixelart_workbench_0.png",
+  "look": "hooded tattered herald, dark purple"
+ },
+ {
+  "i": 15,
+  "id": "8d3c5d3d-ffde-4d16-b491-efe75f8a8957",
+  "group": "renn_c",
+  "state": "Idle",
+  "size": "48x48px",
+  "view": "side",
+  "directions": "8",
+  "anims": [],
+  "frame": "art/pixellab-all-inventory/frames/015/pixelart_workbench_0.png",
+  "look": "man in a black wide-brim hat and coat, satchel"
+ },
+ {
+  "i": 16,
+  "id": "7e248546-6718-4fda-88b9-b5d3407f1790",
+  "group": "renn_b",
+  "state": "Idle",
+  "size": "48x48px",
+  "view": "side",
+  "directions": "8",
+  "anims": [],
+  "frame": "art/pixellab-all-inventory/frames/016/pixelart_workbench_0.png",
+  "look": "bald bearded smith in an apron"
+ },
+ {
+  "i": 17,
+  "id": "bb273e79-1fff-44ff-909b-ddc2968b7c91",
+  "group": "renn_a",
+  "state": "Idle",
+  "size": "48x48px",
+  "view": "side",
+  "directions": "8",
+  "anims": [],
+  "frame": "art/pixellab-all-inventory/frames/017/pixelart_workbench_0.png",
+  "look": "officer in a dark coat and peaked cap, book"
+ },
+ {
+  "i": 18,
+  "id": "afc30f43-afd8-4b20-ada0-287f623d3177",
+  "group": "sable",
+  "state": "Idle",
+  "size": "48x48px",
+  "view": "side",
+  "directions": "8",
+  "anims": [],
+  "frame": "art/pixellab-all-inventory/frames/018/pixelart_workbench_0.png",
+  "look": "hooded woman in dark leathers"
+ },
+ {
+  "i": 19,
+  "id": "dcc7dd9a-f799-4004-8a69-aa5d826d10c9",
+  "group": "kelda",
+  "state": "Idle",
+  "size": "48x48px",
+  "view": "side",
+  "directions": "8",
+  "anims": [],
+  "frame": "art/pixellab-all-inventory/frames/019/pixelart_workbench_0.png",
+  "look": "red-haired dwarf with axe and round shield"
+ },
+ {
+  "i": 20,
+  "id": "a02561e0-85e5-4903-af4e-ca1e9e8090cc",
+  "group": "renn",
+  "state": "Idle",
+  "size": "48x48px",
+  "view": "side",
+  "directions": "8",
+  "anims": [],
+  "frame": "art/pixellab-all-inventory/frames/020/pixelart_workbench_0.png",
+  "look": "officer in a long white coat, peaked cap"
+ },
+ {
+  "i": 21,
+  "id": "364a48ef-e7c6-440c-89f5-30c1108565e9",
+  "group": "lysa",
+  "state": "Idle",
+  "size": "48x48px",
+  "view": "side",
+  "directions": "8",
+  "anims": [],
+  "frame": "art/pixellab-all-inventory/frames/021/pixelart_workbench_0.png",
+  "look": "hooded woman in brown, shoulder bag"
+ },
+ {
+  "i": 22,
+  "id": "7ae33aa4-9428-4ea7-adf8-0461bd0cbf24",
+  "group": "void_sovereign",
+  "state": "Idle",
+  "size": "60x60px",
+  "view": "side",
+  "directions": "8",
+  "anims": [],
+  "frame": "art/pixellab-all-inventory/frames/022/pixelart_workbench_0.png",
+  "look": "crowned void lord in a dark violet cloak"
+ },
+ {
+  "i": 23,
+  "id": "3424606c-7557-4086-8734-47146ed6dab4",
+  "group": "iron_golem",
+  "state": "Idle",
+  "size": "60x60px",
+  "view": "side",
+  "directions": "8",
+  "anims": [],
+  "frame": "art/pixellab-all-inventory/frames/023/pixelart_workbench_0.png",
+  "look": "heavy iron golem, dark steel"
+ },
+ {
+  "i": 24,
+  "id": "effc6b6b-91f7-4540-b101-bfae7720ef60",
+  "group": "A low level demon",
+  "state": "Idle",
+  "size": "48x48px",
+  "view": "side",
+  "directions": "8",
+  "anims": [],
+  "frame": "art/pixellab-all-inventory/frames/024/pixelart_workbench_0.png",
+  "look": "small red devil with horns"
+ },
+ {
+  "i": 25,
+  "id": "d7c46eed-dd72-49ea-b40f-8de11b47048c",
+  "group": "A low level angel with blond hairs",
+  "state": "Idle",
+  "size": "48x48px",
+  "view": "side",
+  "directions": "8",
+  "anims": [],
+  "frame": "art/pixellab-all-inventory/frames/025/pixelart_workbench_0.png",
+  "look": "blond angel boy, white tunic, small wings"
+ },
+ {
+  "i": 26,
+  "id": "0285e8bf-3585-4188-9255-bd220cc042a4",
+  "group": "City Wreck scavenger",
+  "state": "No armor and no hood",
+  "size": "48x48px",
+  "view": "side",
+  "directions": "8",
+  "anims": [],
+  "frame": "art/pixellab-all-inventory/frames/026/pixelart_workbench_0.png",
+  "look": "scavenger, hood and mask, no armour"
+ },
+ {
+  "i": 27,
+  "id": "ce7616eb-6e15-47d5-8a92-7a71be683f4f",
+  "group": "City Wreck scavenger",
+  "state": "No backpack change o",
+  "size": "48x48px",
+  "view": "side",
+  "directions": "8",
+  "anims": [],
+  "frame": "art/pixellab-all-inventory/frames/027/pixelart_workbench_0.png",
+  "look": "scavenger, goggles and mask, backpack removed"
+ },
+ {
+  "i": 28,
+  "id": "5384fc6d-91c9-466d-a5ae-00f2a507277b",
+  "group": "City Wreck scavenger",
+  "state": "Medieval like",
+  "size": "48x48px",
+  "view": "side",
+  "directions": "8",
+  "anims": [],
+  "frame": "art/pixellab-all-inventory/frames/028/pixelart_workbench_0.png",
+  "look": "scavenger, medieval look, hood and mask"
+ },
+ {
+  "i": 29,
+  "id": "10ca7941-1e96-453f-9e75-5a8243297ba7",
+  "group": "City Wreck scavenger",
+  "state": "Idle",
+  "size": "48x48px",
+  "view": "side",
+  "directions": "8",
+  "anims": [],
+  "frame": "art/pixellab-all-inventory/frames/029/pixelart_workbench_0.png",
+  "look": "scavenger, hood, mask, armour plates"
+ },
+ {
+  "i": 30,
+  "id": "035ea21a-b8eb-41a6-b0d9-0c66ae758d54",
+  "group": "Bandit from the desert",
+  "state": "Pit wretch no hood",
+  "size": "48x48px",
+  "view": "side",
+  "directions": "8",
+  "anims": [],
+  "frame": "art/pixellab-all-inventory/frames/030/pixelart_workbench_0.png",
+  "look": "desert bandit, brown cloak, no hood"
+ },
+ {
+  "i": 31,
+  "id": "66a180a3-86e2-4a3e-b470-e8aecee89334",
+  "group": "High Lantern-Bearer Orsolya Keld",
+  "state": "No hood and holding",
+  "size": "48x48px",
+  "view": "low top-down",
+  "directions": "8",
+  "anims": [],
+  "frame": "art/pixellab-all-inventory/frames/031/pixelart_workbench_0.png",
+  "look": "dark-faced bearer, hooded cloak, lantern pole"
+ },
+ {
+  "i": 32,
+  "id": "210d0beb-d191-49bc-a64d-5d4e3139abb7",
+  "group": "High Lantern-Bearer Orsolya Keld",
+  "state": "The Ash Confessor -",
+  "size": "48x48px",
+  "view": "low top-down",
+  "directions": "8",
+  "anims": [],
+  "frame": "art/pixellab-all-inventory/frames/032/pixelart_workbench_0.png",
+  "look": "dark-faced robed figure, no hood (Ash Confessor)"
+ },
+ {
+  "i": 33,
+  "id": "8c791174-325e-4735-bb87-0e39d6f35af1",
+  "group": "High Lantern-Bearer Orsolya Keld",
+  "state": "High Lantern-Bearer",
+  "size": "48x48px",
+  "view": "low top-down",
+  "directions": "8",
+  "anims": [
+   {
+    "name": "Walking",
+    "dirs": 1,
+    "where": "east",
+    "frames": 8
+   }
+  ],
+  "frame": "art/pixellab-all-inventory/frames/033/pixelart_workbench_0.png",
+  "look": "hooded woman in white and gold, lantern and scroll"
+ },
+ {
+  "i": 34,
+  "id": "e440b77b-4534-4f34-a983-02ec40c676a6",
+  "group": "Sedge of the Returned",
+  "state": "Slightly differents",
+  "size": "48x48px",
+  "view": "low top-down",
+  "directions": "8",
+  "anims": [],
+  "frame": "art/pixellab-all-inventory/frames/034/pixelart_workbench_0.png",
+  "look": "masked bark-faced figure, green cloak"
+ },
+ {
+  "i": 35,
+  "id": "47c19c38-8866-43f8-b16c-01a504798a5c",
+  "group": "Bandit from the desert",
+  "state": "Slighly differents c",
+  "size": "48x48px",
+  "view": "side",
+  "directions": "8",
+  "anims": [],
+  "frame": "art/pixellab-all-inventory/frames/035/pixelart_workbench_0.png",
+  "look": "desert bandit, brown robes, dark skin"
+ },
+ {
+  "i": 36,
+  "id": "6ce6e2b3-79b0-4799-ac04-5d477896a043",
+  "group": "Bandit from the desert",
+  "state": "One of the veiled sc",
+  "size": "48x48px",
+  "view": "side",
+  "directions": "8",
+  "anims": [
+   {
+    "name": "Walking",
+    "dirs": 1,
+    "where": "east",
+    "frames": 8
+   }
+  ],
+  "frame": "art/pixellab-all-inventory/frames/036/pixelart_workbench_0.png",
+  "look": "desert veiled scout, goggles and quiver"
+ },
+ {
+  "i": 37,
+  "id": "992f75f0-3e6b-498e-9d94-53c76de3a2ca",
+  "group": "The Noble Bouncer",
+  "state": "Thiner man, no beard",
+  "size": "48x48px",
+  "view": "side",
+  "directions": "8",
+  "anims": [],
+  "frame": "art/pixellab-all-inventory/frames/037/pixelart_workbench_0.png",
+  "look": "thin bouncer, green waistcoat, white sleeves"
+ },
+ {
+  "i": 38,
+  "id": "838589e7-9878-4cd1-9f83-fec4e24fd58d",
+  "group": "Sedge of the Returned",
+  "state": "Idle",
+  "size": "48x48px",
+  "view": "low top-down",
+  "directions": "8",
+  "anims": [],
+  "frame": "art/pixellab-all-inventory/frames/038/pixelart_workbench_0.png",
+  "look": "masked bark-faced figure, mossy cloak"
+ },
+ {
+  "i": 39,
+  "id": "4559bda2-ea29-4df8-be23-9cba11b49721",
+  "group": "Bandit from the desert",
+  "state": "woman, differents cl",
+  "size": "48x48px",
+  "view": "side",
+  "directions": "8",
+  "anims": [],
+  "frame": "art/pixellab-all-inventory/frames/039/pixelart_workbench_0.png",
+  "look": "desert woman, red headband, green cloak"
+ },
+ {
+  "i": 40,
+  "id": "e24e6017-2446-4774-9650-a1c07863ca20",
+  "group": "Bandit from the desert",
+  "state": "differents clothes n",
+  "size": "48x48px",
+  "view": "side",
+  "directions": "8",
+  "anims": [],
+  "frame": "art/pixellab-all-inventory/frames/040/pixelart_workbench_0.png",
+  "look": "desert bandit, dark hooded cloak"
+ },
+ {
+  "i": 41,
+  "id": "0309b6ab-3753-4ce7-8eb4-185ffbd31508",
+  "group": "A Nobel from middle age",
+  "state": "Noble with other clo",
+  "size": "64x64px",
+  "view": "side",
+  "directions": "8",
+  "anims": [],
+  "frame": "art/pixellab-all-inventory/frames/041/pixelart_workbench_0.png",
+  "look": "old noble, white beard, blue robe and gold cape"
+ },
+ {
+  "i": 42,
+  "id": "dc46d6cc-049d-4d56-b6d7-5135d597a692",
+  "group": "Bandit from the desert",
+  "state": "Idle",
+  "size": "48x48px",
+  "view": "side",
+  "directions": "8",
+  "anims": [
+   {
+    "name": "Walking",
+    "dirs": 1,
+    "where": "east",
+    "frames": 8
+   }
+  ],
+  "frame": "art/pixellab-all-inventory/frames/042/pixelart_workbench_0.png",
+  "look": "desert bandit, sand turban and robe"
+ },
+ {
+  "i": 43,
+  "id": "325da462-5356-4a33-8e58-c64701f46586",
+  "group": "The Noble Bouncer",
+  "state": "A looter who got to",
+  "size": "48x48px",
+  "view": "side",
+  "directions": "8",
+  "anims": [],
+  "frame": "art/pixellab-all-inventory/frames/043/pixelart_workbench_0.png",
+  "look": "big bouncer, dark waistcoat, white shirt"
+ },
+ {
+  "i": 44,
+  "id": "833cf558-3ff9-4d81-bd8e-f7f2a53870b3",
+  "group": "Big rat monster",
+  "state": "A rat matriarch grow",
+  "size": "60x60px",
+  "view": "side",
+  "directions": "8",
+  "anims": [
+   {
+    "name": "Walking",
+    "dirs": 2,
+    "where": "west, east",
+    "frames": 8
+   }
+  ],
+  "frame": "art/pixellab-all-inventory/frames/044/pixelart_workbench_0.png",
+  "look": "huge fat rat matriarch"
+ },
+ {
+  "i": 45,
+  "id": "311dfc3d-8cfd-433b-9ac3-edad67df3e6c",
+  "group": "Big rat monster",
+  "state": "Plague Hound A hound",
+  "size": "60x60px",
+  "view": "side",
+  "directions": "8",
+  "anims": [],
+  "frame": "art/pixellab-all-inventory/frames/045/pixelart_workbench_0.png",
+  "look": "plague hound, dark rat-like dog"
+ },
+ {
+  "i": 46,
+  "id": "91c578f8-45bd-4960-922f-698adad1178e",
+  "group": "The Noble Bouncer",
+  "state": "Idle",
+  "size": "48x48px",
+  "view": "side",
+  "directions": "8",
+  "anims": [],
+  "frame": "art/pixellab-all-inventory/frames/046/pixelart_workbench_0.png",
+  "look": "big bouncer, dark waistcoat, white shirt"
+ },
+ {
+  "i": 47,
+  "id": "f09b3029-cbf3-47b6-bff0-9523041abd7b",
+  "group": "Big rat monster",
+  "state": "Idle",
+  "size": "60x60px",
+  "view": "side",
+  "directions": "8",
+  "anims": [
+   {
+    "name": "Walking",
+    "dirs": 2,
+    "where": "west, east",
+    "frames": 8
+   }
+  ],
+  "frame": "art/pixellab-all-inventory/frames/047/pixelart_workbench_0.png",
+  "look": "brown rat"
+ },
+ {
+  "i": 48,
+  "id": "82d48cfe-25d5-4c1a-9a72-749c35c3ae1e",
+  "group": "Mimi",
+  "state": "Orange China inu",
+  "size": "64x64px",
+  "view": "side",
+  "directions": "8",
+  "anims": [
+   {
+    "name": "Walking",
+    "dirs": 2,
+    "where": "west, east",
+    "frames": 8
+   }
+  ],
+  "frame": "art/pixellab-all-inventory/frames/048/pixelart_workbench_0.png",
+  "look": "orange Shiba dog, front"
+ },
+ {
+  "i": 49,
+  "id": "8d99c5e4-8b29-40ee-afc0-48c3b158e33c",
+  "group": "A goblin shaman of the mountains",
+  "state": "Slightly different f",
+  "size": "64x64px",
+  "view": "side",
+  "directions": "8",
+  "anims": [],
+  "frame": "art/pixellab-all-inventory/frames/049/pixelart_workbench_0.png",
+  "look": "green goblin, tattered brown cloth"
+ },
+ {
+  "i": 50,
+  "id": "7fb60d4f-0a06-4139-ae69-162405c88f47",
+  "group": "High Lantern-Bearer Orsolya Keld",
+  "state": "White Soldier",
+  "size": "48x48px",
+  "view": "low top-down",
+  "directions": "8",
+  "anims": [
+   {
+    "name": "Walking",
+    "dirs": 2,
+    "where": "west, east",
+    "frames": 8
+   }
+  ],
+  "frame": "art/pixellab-all-inventory/frames/050/pixelart_workbench_0.png",
+  "look": "white-hooded soldier, red face"
+ },
+ {
+  "i": 51,
+  "id": "1e0e9cd9-eb05-4999-af75-6a3a6a62a7fb",
+  "group": "A goblin shaman of the mountains",
+  "state": "slighlty different h",
+  "size": "64x64px",
+  "view": "side",
+  "directions": "8",
+  "anims": [
+   {
+    "name": "Walking",
+    "dirs": 1,
+    "where": "east",
+    "frames": 8
+   }
+  ],
+  "frame": "art/pixellab-all-inventory/frames/051/pixelart_workbench_0.png",
+  "look": "green goblin with a crest"
+ },
+ {
+  "i": 52,
+  "id": "4ee7090b-e17b-4b33-b584-1aaedd1e275a",
+  "group": "A goblin shaman of the mountains",
+  "state": "Change clother and m",
+  "size": "64x64px",
+  "view": "side",
+  "directions": "8",
+  "anims": [],
+  "frame": "art/pixellab-all-inventory/frames/052/pixelart_workbench_0.png",
+  "look": "green goblin, brown robe"
+ },
+ {
+  "i": 53,
+  "id": "7004b45a-c1f1-45f0-a758-c67eff3a1a13",
+  "group": "A goblin shaman of the mountains",
+  "state": "Remove the hat and s",
+  "size": "64x64px",
+  "view": "side",
+  "directions": "8",
+  "anims": [],
+  "frame": "art/pixellab-all-inventory/frames/053/pixelart_workbench_0.png",
+  "look": "goblin shaman with a skull staff"
+ },
+ {
+  "i": 54,
+  "id": "dab23169-bb31-4b63-9a5b-9092d1fe9e16",
+  "group": "Mimi",
+  "state": "transform it as a ch",
+  "size": "64x64px",
+  "view": "side",
+  "directions": "8",
+  "anims": [],
+  "frame": "art/pixellab-all-inventory/frames/054/pixelart_workbench_0.png",
+  "look": "white and grey husky dog"
+ },
+ {
+  "i": 55,
+  "id": "f414f172-6b7a-487b-a20d-6249fbd3d20c",
+  "group": "Japanese Oni monk with 2 horns thin face and a white kimono with red borders",
+  "state": "girl version",
+  "size": "64x64px",
+  "view": "side",
+  "directions": "8",
+  "anims": [],
+  "frame": "art/pixellab-all-inventory/frames/055/pixelart_workbench_0.png",
+  "look": "girl oni, red horns, dark kimono"
+ },
+ {
+  "i": 56,
+  "id": "6dcf5e39-e220-4fe3-88f9-a1184a963662",
+  "group": "High Lantern-Bearer Orsolya Keld",
+  "state": "Inquisitor-General Aurel Vane",
+  "size": "48x48px",
+  "view": "low top-down",
+  "directions": "8",
+  "anims": [
+   {
+    "name": "Walking",
+    "dirs": 2,
+    "where": "west, east",
+    "frames": 8
+   }
+  ],
+  "frame": "art/pixellab-all-inventory/frames/056/pixelart_workbench_0.png",
+  "look": "masked inquisitor, dark coat, red sash"
+ },
+ {
+  "i": 57,
+  "id": "bfa9441a-96a1-4e4e-b098-aabdcb960cd6",
+  "group": "Japanese Oni monk with 2 horns thin face and a white kimono with red borders",
+  "state": "slightly change clot",
+  "size": "64x64px",
+  "view": "side",
+  "directions": "8",
+  "anims": [
+   {
+    "name": "Walking",
+    "dirs": 1,
+    "where": "east",
+    "frames": 8
+   }
+  ],
+  "frame": "art/pixellab-all-inventory/frames/057/pixelart_workbench_0.png",
+  "look": "small oni, red horns, dark robe"
+ },
+ {
+  "i": 58,
+  "id": "2adda32e-81b0-4330-af26-985294ee9823",
+  "group": "High Lantern-Bearer Orsolya Keld",
+  "state": "Slightly change clot",
+  "size": "48x48px",
+  "view": "low top-down",
+  "directions": "8",
+  "anims": [
+   {
+    "name": "Walking",
+    "dirs": 2,
+    "where": "west, east",
+    "frames": 8
+   }
+  ],
+  "frame": "art/pixellab-all-inventory/frames/058/pixelart_workbench_0.png",
+  "look": "masked inquisitor in black and gold with a crown"
+ },
+ {
+  "i": 59,
+  "id": "e37a7d39-0d61-418b-af4d-588797ca4d06",
+  "group": "High Lantern-Bearer Orsolya Keld",
+  "state": "Inquisition Warden",
+  "size": "48x48px",
+  "view": "low top-down",
+  "directions": "8",
+  "anims": [
+   {
+    "name": "Walking",
+    "dirs": 2,
+    "where": "west, east",
+    "frames": 8
+   }
+  ],
+  "frame": "art/pixellab-all-inventory/frames/059/pixelart_workbench_0.png",
+  "look": "masked warden, grey hood, purple sash"
+ },
+ {
+  "i": 60,
+  "id": "e6eff6f9-a734-4dd9-a484-a9b6d41d1480",
+  "group": "High Lantern-Bearer Orsolya Keld",
+  "state": "Inquisition Soldier_02",
+  "size": "48x48px",
+  "view": "low top-down",
+  "directions": "8",
+  "anims": [
+   {
+    "name": "v3:walking",
+    "dirs": 2,
+    "where": "west, east",
+    "frames": 8
+   },
+   {
+    "name": "Walking",
+    "dirs": 1,
+    "where": "east",
+    "frames": 8
+   }
+  ],
+  "frame": "art/pixellab-all-inventory/frames/060/pixelart_workbench_0.png",
+  "look": "masked soldier, black hood, dark robe"
+ },
+ {
+  "i": 61,
+  "id": "31b8aeed-9a76-42ae-8c5a-b623569546eb",
+  "group": "High Lantern-Bearer Orsolya Keld",
+  "state": "Inquisition Soldier_03",
+  "size": "48x48px",
+  "view": "low top-down",
+  "directions": "8",
+  "anims": [
+   {
+    "name": "Walking",
+    "dirs": 2,
+    "where": "west, east",
+    "frames": 8
+   }
+  ],
+  "frame": "art/pixellab-all-inventory/frames/061/pixelart_workbench_0.png",
+  "look": "masked soldier, purple robe, grey mask"
+ },
+ {
+  "i": 62,
+  "id": "6168773b-ed87-49f0-9c46-5b22842a0126",
+  "group": "Mimi",
+  "state": "Make it with angel w",
+  "size": "64x64px",
+  "view": "side",
+  "directions": "8",
+  "anims": [
+   {
+    "name": "Walking",
+    "dirs": 2,
+    "where": "west, east",
+    "frames": 8
+   }
+  ],
+  "frame": "art/pixellab-all-inventory/frames/062/pixelart_workbench_0.png",
+  "look": "black and white bulldog with angel wings"
+ },
+ {
+  "i": 63,
+  "id": "1c4aa55f-304d-4590-8686-6262cdad52c2",
+  "group": "Mimi",
+  "state": "Make it with demon w",
+  "size": "64x64px",
+  "view": "side",
+  "directions": "8",
+  "anims": [
+   {
+    "name": "Walking",
+    "dirs": 2,
+    "where": "east, west",
+    "frames": 8
+   }
+  ],
+  "frame": "art/pixellab-all-inventory/frames/063/pixelart_workbench_0.png",
+  "look": "black and white bulldog with bat wings"
+ },
+ {
+  "i": 64,
+  "id": "92e2fcb2-cccf-4461-b461-d2d9a2c3536c",
+  "group": "Mimi",
+  "state": "Sitting down",
+  "size": "64x64px",
+  "view": "side",
+  "directions": "8",
+  "anims": [],
+  "frame": "art/pixellab-all-inventory/frames/064/pixelart_workbench_0.png",
+  "look": "black and white bulldog, sitting"
+ },
+ {
+  "i": 65,
+  "id": "c70e8f3d-58a3-4f3c-a87a-a4505c6b56a1",
+  "group": "Mimi",
+  "state": "Bigger black stains (copy 2)",
+  "size": "64x64px",
+  "view": "side",
+  "directions": "8",
+  "anims": [
+   {
+    "name": "custom-The dog start walking and jump",
+    "dirs": 1,
+    "where": "east",
+    "frames": 9
+   }
+  ],
+  "frame": "art/pixellab-all-inventory/frames/065/pixelart_workbench_0.png",
+  "look": "black and white bulldog, front (big stains copy)"
+ },
+ {
+  "i": 66,
+  "id": "12852609-1718-461d-9a43-3ac5999973f3",
+  "group": "Mimi",
+  "state": "Bigger black stains (copy)",
+  "size": "64x64px",
+  "view": "side",
+  "directions": "8",
+  "anims": [
+   {
+    "name": "bark",
+    "dirs": 1,
+    "where": "south",
+    "frames": 6
+   }
+  ],
+  "frame": "art/pixellab-all-inventory/frames/066/pixelart_workbench_0.png",
+  "look": "black and white bulldog, front (bark)"
+ },
+ {
+  "i": 67,
+  "id": "68933e8a-7947-4ce7-9360-5ee797dc2e0e",
+  "group": "Mimi",
+  "state": "Idle - Running",
+  "size": "64x64px",
+  "view": "side",
+  "directions": "8",
+  "anims": [
+   {
+    "name": "Full Sprint",
+    "dirs": 2,
+    "where": "west, east",
+    "frames": 8
+   }
+  ],
+  "frame": "art/pixellab-all-inventory/frames/067/pixelart_workbench_0.png",
+  "look": "black and white bulldog, front (sprint)"
+ },
+ {
+  "i": 68,
+  "id": "4637ae4f-6366-4b66-a374-3ee15f36908a",
+  "group": "Mimi",
+  "state": "Sitting - Walking",
+  "size": "64x64px",
+  "view": "side",
+  "directions": "8",
+  "anims": [
+   {
+    "name": "Idle",
+    "dirs": 1,
+    "where": "south",
+    "frames": 8
+   }
+  ],
+  "frame": "art/pixellab-all-inventory/frames/068/pixelart_workbench_0.png",
+  "look": "black and white bulldog, front (sitting walk)"
+ },
+ {
+  "i": 69,
+  "id": "8b18d3a8-f4ea-47cd-8317-bc645a17ec3c",
+  "group": "Mimi",
+  "state": "Fight - Attack",
+  "size": "64x64px",
+  "view": "side",
+  "directions": "8",
+  "anims": [
+   {
+    "name": "bark",
+    "dirs": 4,
+    "where": "south, north, west, east",
+    "frames": 6
+   }
+  ],
+  "frame": "art/pixellab-all-inventory/frames/069/pixelart_workbench_0.png",
+  "look": "black and white bulldog, snarling, attack pose"
+ },
+ {
+  "i": 70,
+  "id": "650af610-a36c-4333-b37b-ca318b552fab",
+  "group": "Japanese Oni monk with 2 horns thin face and a white kimono with red borders",
+  "state": "older and darker clo",
+  "size": "64x64px",
+  "view": "side",
+  "directions": "8",
+  "anims": [],
+  "frame": "art/pixellab-all-inventory/frames/070/pixelart_workbench_0.png",
+  "look": "small grey oni, horn bumps, dark robe"
+ },
+ {
+  "i": 71,
+  "id": "60e82755-68b6-49ca-a3b6-04d0e511e25f",
+  "group": "Japanese Oni monk with 2 horns thin face and a white kimono with red borders",
+  "state": "Same with a small ta",
+  "size": "64x64px",
+  "view": "side",
+  "directions": "8",
+  "anims": [],
+  "frame": "art/pixellab-all-inventory/frames/071/pixelart_workbench_0.png",
+  "look": "small pale oni, white robe, red sash"
+ },
+ {
+  "i": 72,
+  "id": "3c02550d-c845-4e0d-a5b5-291ebd3164d7",
+  "group": "Japanese Oni monk with 2 horns thin face and a white kimono with red borders",
+  "state": "Horns are red but hu",
+  "size": "64x64px",
+  "view": "side",
+  "directions": "8",
+  "anims": [
+   {
+    "name": "Walking",
+    "dirs": 1,
+    "where": "east",
+    "frames": 8
+   }
+  ],
+  "frame": "art/pixellab-all-inventory/frames/072/pixelart_workbench_0.png",
+  "look": "girl oni, red horns, white robe"
+ },
+ {
+  "i": 73,
+  "id": "d21078ec-462e-44c6-9fd9-fcf99585feef",
+  "group": "Japanese Oni monk with 2",
+  "state": "Simpler face, the on",
+  "size": "64x64px",
+  "view": "side",
+  "directions": "8",
+  "anims": [],
+  "frame": "art/pixellab-all-inventory/frames/073/pixelart_workbench_0.png",
+  "look": "oni monk, brown horns, white kimono red borders"
+ },
+ {
+  "i": 74,
+  "id": "dcde6a49-0738-4633-b1cd-6c34b500c017",
+  "group": "Japanese Oni monk with 2",
+  "state": "Idle",
+  "size": "64x64px",
+  "view": "side",
+  "directions": "8",
+  "anims": [],
+  "frame": "art/pixellab-all-inventory/frames/074/pixelart_workbench_0.png",
+  "look": "oni monk, red face mask, white kimono"
+ },
+ {
+  "i": 75,
+  "id": "af1e8704-06e0-4abe-b1db-644a71a6f0e1",
+  "group": "Mimi",
+  "state": "Idle - Walking",
+  "size": "64x64px",
+  "view": "side",
+  "directions": "8",
+  "anims": [
+   {
+    "name": "Walking",
+    "dirs": 8,
+    "where": "north-east, north-west, south-west, south-east, north, south, west, east",
+    "frames": 8
+   }
+  ],
+  "frame": "art/pixellab-all-inventory/frames/075/pixelart_workbench_0.png",
+  "look": "black and white bulldog, front"
+ },
+ {
+  "i": 76,
+  "id": "3b7d97ac-4b55-4575-8aed-954cd1e0df5e",
+  "group": "A Nobel from middle age",
+  "state": "Noble in armor",
+  "size": "64x64px",
+  "view": "side",
+  "directions": "8",
+  "anims": [
+   {
+    "name": "Walking",
+    "dirs": 1,
+    "where": "east",
+    "frames": 8
+   }
+  ],
+  "frame": "art/pixellab-all-inventory/frames/076/pixelart_workbench_0.png",
+  "look": "noble in green and steel armour"
+ },
+ {
+  "i": 77,
+  "id": "a2557827-a484-48f0-852b-f7afd02d4c67",
+  "group": "I would like a huge blue fist falling from the sky to hit the ground",
+  "state": "Another color and wi",
+  "size": "64x64px",
+  "view": "side",
+  "directions": "8",
+  "anims": [],
+  "frame": "art/pixellab-all-inventory/frames/077/pixelart_workbench_0.png",
+  "look": "huge red fist (slam effect)"
+ },
+ {
+  "i": 78,
+  "id": "85b4f170-e0df-4e9f-9b8f-d09bbaa8c730",
+  "group": "I would like a huge blue fist falling from the sky to hit the ground",
+  "state": "Idle",
+  "size": "64x64px",
+  "view": "side",
+  "directions": "8",
+  "anims": [
+   {
+    "name": "custom-The fist is hitting the ceilin",
+    "dirs": 1,
+    "where": "north",
+    "frames": 9
+   }
+  ],
+  "frame": "art/pixellab-all-inventory/frames/078/pixelart_workbench_0.png",
+  "look": "huge blue fist (slam effect)"
+ },
+ {
+  "i": 79,
+  "id": "ac0c3d1f-3bf1-4277-929a-a6a5282da68f",
+  "group": "Dices",
+  "state": "More classics colors",
+  "size": "52x52px",
+  "view": "high top-down",
+  "directions": "8",
+  "anims": [],
+  "frame": "art/pixellab-all-inventory/frames/079/pixelart_workbench_0.png",
+  "look": "blue d20 die with green leaves, feet"
+ },
+ {
+  "i": 80,
+  "id": "08031f43-9ee2-436c-b12d-1c599738f2bb",
+  "group": "Dices",
+  "state": "Idle",
+  "size": "52x52px",
+  "view": "high top-down",
+  "directions": "8",
+  "anims": [],
+  "frame": "art/pixellab-all-inventory/frames/080/pixelart_workbench_0.png",
+  "look": "red d20 die with gold flames, feet"
+ },
+ {
+  "i": 81,
+  "id": "71b8e3f7-4259-46b0-baac-1aaa0fe9f632",
+  "group": "A Nobel from middle age",
+  "state": "Change for less rich",
+  "size": "64x64px",
+  "view": "side",
+  "directions": "8",
+  "anims": [
+   {
+    "name": "Walking",
+    "dirs": 1,
+    "where": "east",
+    "frames": 8
+   }
+  ],
+  "frame": "art/pixellab-all-inventory/frames/081/pixelart_workbench_0.png",
+  "look": "less rich noble, brown tunic, green cape"
+ },
+ {
+  "i": 82,
+  "id": "f3601c29-1fd5-4f73-8a6f-57c601a03ead",
+  "group": "Ship for ftl like game but medieval ship inspiration final fantasy 10",
+  "state": "Idle",
+  "size": "128x128px",
+  "view": "low top-down",
+  "directions": "8",
+  "anims": [],
+  "frame": "art/pixellab-all-inventory/frames/082/pixelart_workbench_0.png",
+  "look": "medieval ship with a blue engine glow"
+ },
+ {
+  "i": 83,
+  "id": "c57d617c-07d1-4130-bf6c-02b4b1a26d6a",
+  "group": "paysan soldier",
+  "state": "Idle",
+  "size": "64x64px",
+  "view": "side",
+  "directions": "8",
+  "anims": [],
+  "frame": "art/pixellab-all-inventory/frames/083/pixelart_workbench_0.png",
+  "look": "peasant soldier, straw hat"
+ },
+ {
+  "i": 84,
+  "id": "2962402c-7a5f-4d04-8156-2d36418bac8e",
+  "group": "A goblin shaman of the mountains",
+  "state": "Idle",
+  "size": "64x64px",
+  "view": "side",
+  "directions": "8",
+  "anims": [],
+  "frame": "art/pixellab-all-inventory/frames/084/pixelart_workbench_0.png",
+  "look": "goblin shaman with straw hat, staff"
+ },
+ {
+  "i": 85,
+  "id": "aee98cd7-3d0f-4ec2-b5b8-92c2278c939f",
+  "group": "warrior woman with orange hair",
+  "state": "mid sword-slash with",
+  "size": "60x60px",
+  "view": "low top-down",
+  "directions": "8",
+  "anims": [
+   {
+    "name": "slash",
+    "dirs": 8,
+    "where": "north-west, north, north-east, south-west, west, south-east, south, east",
+    "frames": 7
+   }
+  ],
+  "frame": "art/pixellab-all-inventory/frames/085/pixelart_workbench_0.png",
+  "look": "orange-haired warrior woman, sword slash"
+ },
+ {
+  "i": 86,
+  "id": "1ceadbed-05aa-489c-8788-92d4527ccc23",
+  "group": "warrior woman with orange hair",
+  "state": "hands extended about",
+  "size": "60x60px",
+  "view": "low top-down",
+  "directions": "8",
+  "anims": [
+   {
+    "name": "spell 2",
+    "dirs": 2,
+    "where": "north-east, north-west",
+    "frames": 7
+   },
+   {
+    "name": "spell",
+    "dirs": 6,
+    "where": "north, south-west, south-east, east, west, south",
+    "frames": 7
+   }
+  ],
+  "frame": "art/pixellab-all-inventory/frames/086/pixelart_workbench_0.png",
+  "look": "orange-haired warrior woman, casting"
+ },
+ {
+  "i": 87,
+  "id": "ed397e2e-7f37-4883-bac8-75280684abf9",
+  "group": "warrior woman with orange hair",
+  "state": "warrior woman with orange hair",
+  "size": "60x60px",
+  "view": "low top-down",
+  "directions": "8",
+  "anims": [
+   {
+    "name": "running-jump",
+    "dirs": 8,
+    "where": "north-east, west, north-west, south-west, south, north, east, south-east",
+    "frames": 8
+   },
+   {
+    "name": "jump",
+    "dirs": 8,
+    "where": "north-east, west, north-west, south-west, south, north, east, south-east",
+    "frames": 8
+   },
+   {
+    "name": "custom-The character stands in a stea",
+    "dirs": 8,
+    "where": "south-west, west, east, north, north-east, north-west, south-east, south",
+    "frames": 7
+   },
+   {
+    "name": "run",
+    "dirs": 8,
+    "where": "north-west, south-west, west, east, south, north, north-east, south-east",
+    "frames": 6
+   },
+   {
+    "name": "running-6-frames",
+    "dirs": 8,
+    "where": "north-west, south-west, west, east, south, north, north-east, south-east",
+    "frames": 6
+   },
+   {
+    "name": "walk",
+    "dirs": 8,
+    "where": "south, north, north-west, north-east, south-west, west, east, south-east",
+    "frames": 7
+   },
+   {
+    "name": "custom-The character walks forward wi",
+    "dirs": 8,
+    "where": "south, north, north-west, north-east, south-west, west, east, south-east",
+    "frames": 7
+   }
+  ],
+  "frame": "art/pixellab-all-inventory/frames/087/pixelart_workbench_0.png",
+  "look": "orange-haired warrior woman, idle"
+ },
+ {
+  "i": 88,
+  "id": "2474b54e-0fb9-46ed-a54d-ae71921fca78",
+  "group": "old man bald",
+  "state": "old man bald",
+  "size": "44x44px",
+  "view": "low top-down",
+  "directions": "8",
+  "anims": [
+   {
+    "name": "custom-The character walks forward wi",
+    "dirs": 8,
+    "where": "west, north, south-west, north-west, north-east, east, south-east, south",
+    "frames": 7
+   },
+   {
+    "name": "walk",
+    "dirs": 8,
+    "where": "west, north, south-west, north-west, north-east, east, south-east, south",
+    "frames": 7
+   },
+   {
+    "name": "custom-The character stands firmly in",
+    "dirs": 8,
+    "where": "east, west, north, north-west, south-west, north-east, south-east, south",
+    "frames": 9
+   },
+   {
+    "name": "custom-The character stands firmly in",
+    "dirs": 8,
+    "where": "east, west, north, north-west, south-west, north-east, south-east, south",
+    "frames": 9
+   }
+  ],
+  "frame": "art/pixellab-all-inventory/frames/088/pixelart_workbench_0.png",
+  "look": "bald old man in a brown apron"
+ },
+ {
+  "i": 89,
+  "id": "31dc48f5-b7b3-4f12-9781-929e7cb6c6e3",
+  "group": "blonde farmer with long hair and a dress",
+  "state": "blonde farmer with long hair and a dress",
+  "size": "44x44px",
+  "view": "low top-down",
+  "directions": "8",
+  "anims": [
+   {
+    "name": "jump",
+    "dirs": 8,
+    "where": "east, west, north-west, south-west, north-east, north, south-east, south",
+    "frames": 8
+   },
+   {
+    "name": "jump",
+    "dirs": 8,
+    "where": "east, west, north-west, south-west, north-east, north, south-east, south",
+    "frames": 8
+   },
+   {
+    "name": "custom-The woman stands in a steady,",
+    "dirs": 8,
+    "where": "north, north-west, north-east, south-west, west, east, south-east, south",
+    "frames": 9
+   },
+   {
+    "name": "custom-The woman stands in a steady,",
+    "dirs": 8,
+    "where": "north, north-west, north-east, south-west, west, east, south-east, south",
+    "frames": 9
+   },
+   {
+    "name": "walk",
+    "dirs": 8,
+    "where": "west, south-west, north-west, south, north, east, north-east, south-east",
+    "frames": 6
+   },
+   {
+    "name": "walk",
+    "dirs": 8,
+    "where": "west, south-west, north-west, south, north, east, north-east, south-east",
+    "frames": 6
+   },
+   {
+    "name": "run",
+    "dirs": 8,
+    "where": "north-east, west, east, south-west, south-east, north, north-west, south",
+    "frames": 6
+   },
+   {
+    "name": "run",
+    "dirs": 8,
+    "where": "north-east, west, east, south-west, south-east, north, north-west, south",
+    "frames": 6
+   }
+  ],
+  "frame": "art/pixellab-all-inventory/frames/089/pixelart_workbench_0.png",
+  "look": "blonde farm woman in a grey dress"
+ },
+ {
+  "i": 90,
+  "id": "fd8cbddf-dec7-4684-bf47-28d5bc5da3a1",
+  "group": "flat shaded light brown bear",
+  "state": "flat shaded light brown bear",
+  "size": "88x88px",
+  "view": "low top-down",
+  "directions": "8",
+  "anims": [
+   {
+    "name": "attack",
+    "dirs": 8,
+    "where": "north, south-west, south-east, north-west, west, north-east, east, south",
+    "frames": 7
+   },
+   {
+    "name": "attack-right",
+    "dirs": 8,
+    "where": "north, south-west, south-east, north-west, west, north-east, east, south",
+    "frames": 7
+   },
+   {
+    "name": "walk-6-frames",
+    "dirs": 8,
+    "where": "south-west, west, north-west, north, north-east, east, south-east, south",
+    "frames": 6
+   },
+   {
+    "name": "walk",
+    "dirs": 8,
+    "where": "south-west, west, north-west, north, north-east, east, south-east, south",
+    "frames": 6
+   }
+  ],
+  "frame": "art/pixellab-all-inventory/frames/090/pixelart_workbench_0.png",
+  "look": "small light brown bear"
+ }
+]
