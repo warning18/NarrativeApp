@@ -3613,7 +3613,7 @@
     "damage": 4,
     "guile": 5,
     "faction": "",
-    "group": "spire",
+    "group": "dominion",
     "reaction": "",
     "weakTo": [
       "Void"
@@ -4346,6 +4346,7 @@
     "damage": 6,
     "guile": 12,
     "faction": "dominion",
+    "group": "claimants",
     "reaction": "",
     "weakTo": [
       "Electricity"

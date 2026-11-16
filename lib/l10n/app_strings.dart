@@ -7448,7 +7448,7 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   // the names of their fight blocks' looks.
   'enemy_group_hollow_court': {
     AppLanguage.en: 'The Hollow Court',
-    AppLanguage.fr: 'La Cour creuse',
+    AppLanguage.fr: 'La Cour Creuse',
   },
   'enemy_group_turned': {
     AppLanguage.en: 'The Turned',
@@ -7466,12 +7466,8 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.en: 'The Void Cults',
     AppLanguage.fr: 'Les cultes du vide',
   },
-  'enemy_group_spire': {
-    AppLanguage.en: 'The Spire',
-    AppLanguage.fr: 'La Flèche',
-  },
   'enemy_group_common_folk': {
-    AppLanguage.en: 'Common folk',
+    AppLanguage.en: 'Common Folk',
     AppLanguage.fr: 'Le petit peuple',
   },
   'enemy_recovers_word': {
