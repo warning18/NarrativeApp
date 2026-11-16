@@ -8,6 +8,10 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.976.0+1012]
+
+- Clan offer: each clan's card has a backdrop of its own (UX, the user's pick "the clan backdrop", Art's PixelLab pieces). The art zone behind the banner and the gift's plate is the clan's picture in its colours with a faint motif of its banner (the Lantern Dominion, the Salt Crows, the Cinder Compact, the Mire Courts, the Grey Vigil, the Ashen Penitents, and the Wayfarer), in place of the shared tier backdrop; the tier's frame and plate stay as they were, so the rarity still reads from the frame. A clan without a backdrop keeps the tier's. The effect line is back on the card: one gold line under the tags saying what the gift does (a skill's damage, multiplier, healing or mana; a sign's first effect; an object's stats; a title's or a boon's first effect; a perk's words). No rule or number changes.
+
 ## [1.975.0+1011]
 
 - Clan offer: the gifts are cards and rows (UX, the user's call "build the clan offer, use tiers and add epic and legendary"). What is new (a skill, a fusion, a sign, an object, a title, a Sworn boon, a first specialisation, the clan's die) is a card in a fanned hand: touch one and it rises in front, with its clan's words on it. What raises something you already have (an ascension, a perk rank, a specialisation's rank II or upgrade) is a row under the hand, headed "Raises what you have". One pick across both, always the three gifts of today's offer; the button names the gift and the clan in full ("Take Iron Stance from The Emberwives of the Cinder Compact"). The frames are Art's PixelLab tiers: common is iron, uncommon bronze, rare silver with a blue gem, epic gilded with purple gems, legendary gold under a crown of rays; a skill wears its own rarity, any other gift its offer rarity. The clan's colour stays on the name band and the banner. The compass, the clan's block and the gift's full words below are unchanged, and no rule or number changes.
