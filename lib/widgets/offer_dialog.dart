@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../combat/combat_engine.dart' show applySkillTier;
 import '../combat/dice_faces.dart'
     show dieDisplayName, skillDisplayName, skillRarity;
 import '../combat/specialisations.dart' show specId;
@@ -149,6 +150,70 @@ String _giftTagKey(OfferGift gift, Map<String, dynamic> skills) {
     }
   }
   return 'offer_gift_${gift.kind.name}';
+}
+
+/// What a gift does, in one line for its card: a skill's damage, multiplier,
+/// healing or mana, a sign's first effect, an object's stats, a title's or a
+/// boon's first effect, a perk's words, a specialisation's first sentence.
+String _giftEffect(
+  OfferGift gift, {
+  required OfferTables tables,
+  required Map<String, dynamic> items,
+  required Map<String, dynamic> skills,
+  required AppLanguage lang,
+}) {
+  String firstSentence(String text) {
+    final cut = text.indexOf(RegExp(r'[.!?](\s|$)'));
+    return (cut < 0 ? text : text.substring(0, cut + 1)).trim();
+  }
+
+  switch (gift.kind) {
+    case GiftKind.skill:
+      final skill = skills[gift.id];
+      if (skill is! Map<String, dynamic>) return '';
+      final s = applySkillTier(skill, 0);
+      final damage = (s['damageMod'] as num?)?.toInt() ?? 0;
+      final multiplier = (s['damageMultiplier'] as num?)?.toDouble() ?? 1.0;
+      final heal = (s['healAmount'] as num?)?.toInt() ?? 0;
+      final mana = (s['manaGain'] as num?)?.toInt() ?? 0;
+      final line = [
+        if (damage > 0)
+          trFor(lang, 'summary_damage').replaceAll('{n}', '$damage'),
+        if (multiplier > 1.0) '×${multiplier.toStringAsFixed(1)}',
+        if (heal > 0) trFor(lang, 'summary_heal').replaceAll('{n}', '$heal'),
+        if (mana > 0) trFor(lang, 'summary_mana').replaceAll('{n}', '$mana'),
+      ].join(' · ');
+      return line.isNotEmpty
+          ? line
+          : firstSentence(skill['description']?.toString() ?? '');
+    case GiftKind.sign:
+      final sign = tables.signs[gift.id];
+      if (sign == null) return '';
+      final lines = signEffectLines(sign, gift.rarity, 1, lang);
+      return lines.isEmpty ? '' : lines.first;
+    case GiftKind.object:
+      final item = items[gift.id] as Map<String, dynamic>?;
+      return [
+        for (final line in gearStatLines(item, null, lang).take(2))
+          '${line.label} ${line.value > 0 ? '+' : ''}${line.value}',
+      ].join(' · ');
+    case GiftKind.title:
+      final effects = tables.data.titles[gift.id]?.effects ?? const [];
+      return effects.isEmpty ? '' : signEffectText(effects.first, lang);
+    case GiftKind.sworn:
+      final effects = tables.data.faction(gift.id)?.sworn?.effects ?? const [];
+      return effects.isEmpty ? '' : signEffectText(effects.first, lang);
+    case GiftKind.perk:
+      final perk = perkFromName(gift.id);
+      return perk == null ? '' : trFor(lang, perkDescKey(perk));
+    case GiftKind.spec:
+      final fr = lang == AppLanguage.fr;
+      final text = tables.specs[gift.id]?.giftFor(fr) ??
+          tables.specVariants[gift.id]?.textFor(fr);
+      return text == null ? '' : firstSentence(text);
+    case GiftKind.die:
+      return firstSentence(trFor(lang, 'offer_die_note'));
+  }
 }
 
 /// The gift's name in [lang].
@@ -699,6 +764,8 @@ class _OfferGifts extends ConsumerWidget {
       List<Widget> tags,
       String greeting,
       String clanName,
+      String effect,
+      String backdropId,
       String? standing,
       bool good,
     }) parts(Suitor suitor) {
@@ -734,6 +801,9 @@ class _OfferGifts extends ConsumerWidget {
         ],
         greeting: _suitorGreeting(suitor, data, lang),
         clanName: _suitorName(suitor, data, lang),
+        effect: _giftEffect(gift,
+            tables: tables, items: items, skills: skills, lang: lang),
+        backdropId: suitor.isWayfarer ? 'wayfarer' : suitor.factionId,
         standing: preview.isEmpty ? null : preview.first.text,
         good: preview.isEmpty || preview.first.delta >= 0,
       );
@@ -763,6 +833,8 @@ class _OfferGifts extends ConsumerWidget {
                       tags: p.tags,
                       greeting: p.greeting,
                       clanName: p.clanName,
+                      effect: p.effect,
+                      backdropId: p.backdropId,
                       standing: p.standing,
                       standingGood: p.good,
                       lit: s.factionId == selected,
