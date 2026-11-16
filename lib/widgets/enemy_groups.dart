@@ -182,8 +182,10 @@ final Map<String, EnemyGroup> enemyGroups = {
       EnemyGroup('claimants', 'The Claimants', _c(0x884B2B), glyph: 'crown'),
   'champions': EnemyGroup('champions', 'The Champions', _c(0xF2C14E),
       glyph: 'crown', ornament: 'rivets'),
-  'cult': EnemyGroup('cult', 'The Cult', _c(0xA53030),
+  'void_cults': EnemyGroup('void_cults', 'The Void Cults', _c(0xA53030),
       glyph: 'flame', ornament: 'spikes'),
+  'common_folk':
+      EnemyGroup('common_folk', 'Common folk', _c(0x9A8C6E), glyph: 'fist'),
   'people':
       EnemyGroup('people', 'People of no clan', _c(0x7A4841), glyph: 'mask'),
 };
