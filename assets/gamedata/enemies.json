@@ -337,6 +337,7 @@
     "damage": 2,
     "guile": 1,
     "faction": "",
+    "group": "void_cults",
     "reaction": "",
     "weakTo": [
       "Light"
@@ -1058,6 +1059,7 @@
     "damage": 4,
     "guile": 7,
     "faction": "",
+    "group": "hollow_court",
     "reaction": "",
     "weakTo": [
       "Light"
@@ -1836,6 +1838,7 @@
     "damage": 5,
     "guile": 9,
     "faction": "",
+    "group": "hollow_court",
     "reaction": "",
     "weakTo": [
       "Electricity"
@@ -2467,6 +2470,7 @@
     "damage": 6,
     "guile": 9,
     "faction": "",
+    "group": "turned",
     "reaction": "",
     "weakTo": [
       "Light"
@@ -2534,6 +2538,7 @@
     "damage": 7,
     "guile": 9,
     "faction": "",
+    "group": "turned",
     "reaction": "",
     "weakTo": [
       "Light"
@@ -2601,6 +2606,7 @@
     "damage": 6,
     "guile": 9,
     "faction": "",
+    "group": "turned",
     "reaction": "",
     "weakTo": [
       "Light"
@@ -2668,6 +2674,7 @@
     "damage": 8,
     "guile": 9,
     "faction": "",
+    "group": "turned",
     "reaction": "",
     "weakTo": [
       "Light"
@@ -2735,6 +2742,7 @@
     "damage": 8,
     "guile": 9,
     "faction": "",
+    "group": "turned",
     "reaction": "",
     "weakTo": [
       "Light"
@@ -2802,6 +2810,7 @@
     "damage": 7,
     "guile": 9,
     "faction": "",
+    "group": "turned",
     "reaction": "",
     "weakTo": [
       "Light"
@@ -2869,6 +2878,7 @@
     "damage": 6,
     "guile": 9,
     "faction": "",
+    "group": "turned",
     "reaction": "",
     "weakTo": [
       "Light"
@@ -2936,6 +2946,7 @@
     "damage": 7,
     "guile": 9,
     "faction": "",
+    "group": "turned",
     "reaction": "",
     "weakTo": [
       "Light"
@@ -3602,6 +3613,7 @@
     "damage": 4,
     "guile": 5,
     "faction": "",
+    "group": "dominion",
     "reaction": "",
     "weakTo": [
       "Void"
@@ -4334,6 +4346,7 @@
     "damage": 6,
     "guile": 12,
     "faction": "dominion",
+    "group": "claimants",
     "reaction": "",
     "weakTo": [
       "Electricity"
@@ -4453,6 +4466,7 @@
     "damage": 5,
     "guile": 9,
     "faction": "",
+    "group": "claimants",
     "reaction": "",
     "weakTo": [
       "Electricity"
@@ -4572,6 +4586,7 @@
     "damage": 5,
     "guile": 11,
     "faction": "",
+    "group": "claimants",
     "reaction": "",
     "weakTo": [
       "Void"
@@ -4875,6 +4890,7 @@
     "damage": 2,
     "guile": 0,
     "faction": "",
+    "group": "common_folk",
     "reaction": "",
     "weakTo": [],
     "resists": [],
@@ -5373,6 +5389,7 @@
     "damage": 5,
     "guile": 9,
     "faction": "",
+    "group": "champions",
     "reaction": "",
     "weakTo": [
       "Electricity"
@@ -5489,6 +5506,7 @@
     "damage": 6,
     "guile": 9,
     "faction": "",
+    "group": "champions",
     "reaction": "",
     "weakTo": [
       "Electricity"
@@ -5605,6 +5623,7 @@
     "damage": 6,
     "guile": 9,
     "faction": "",
+    "group": "champions",
     "reaction": "",
     "weakTo": [
       "Electricity"
@@ -5721,6 +5740,7 @@
     "damage": 6,
     "guile": 9,
     "faction": "",
+    "group": "champions",
     "reaction": "",
     "weakTo": [
       "Electricity"
@@ -5837,6 +5857,7 @@
     "damage": 6,
     "guile": 9,
     "faction": "",
+    "group": "champions",
     "reaction": "",
     "weakTo": [
       "Electricity"
@@ -5953,6 +5974,7 @@
     "damage": 6,
     "guile": 9,
     "faction": "",
+    "group": "champions",
     "reaction": "",
     "weakTo": [
       "Electricity"

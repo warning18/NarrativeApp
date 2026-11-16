@@ -8,6 +8,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
+import 'package:narrative_data_app/data/enemy_groups.dart';
 import 'package:narrative_data_app/widgets/enemy_groups.dart';
 import 'package:narrative_data_app/widgets/fight_block.dart';
 
@@ -44,25 +45,33 @@ void main() {
       jsonDecode(File('assets/gamedata/enemies.json').readAsStringSync())
           as Map<String, dynamic>;
 
+  test("every group Core names has a look; the Horn-Taker wears the Dominion's",
+      () {
+    for (final id in enemyGroupIds) {
+      expect(enemyGroups, contains(id));
+    }
+    expect(groupLookOf({'group': 'dominion', 'kind': 'person'}).id, 'dominion');
+  });
+
   test('a group is read from the enemy\'s group, else faction, else kind', () {
     expect(
-        enemyGroupOf({'faction': 'dominion', 'kind': 'person'}).id, 'dominion');
-    expect(enemyGroupOf({'kind': 'undead'}).id, 'undead');
-    expect(enemyGroupOf({'kind': 'person'}).id, 'people');
+        groupLookOf({'faction': 'dominion', 'kind': 'person'}).id, 'dominion');
+    expect(groupLookOf({'kind': 'undead'}).id, 'undead');
+    expect(groupLookOf({'kind': 'person'}).id, 'people');
     // Core's own group wins over the faction and the kind.
     expect(
-        enemyGroupOf({'group': 'hollow_court', 'faction': '', 'kind': 'person'})
+        groupLookOf({'group': 'hollow_court', 'faction': '', 'kind': 'person'})
             .id,
         'hollow_court');
     // An unknown group falls through to the next field, then to the fallback.
-    expect(enemyGroupOf({'group': 'no_such', 'kind': 'beast'}).id, 'beast');
-    expect(enemyGroupOf({'group': 'no_such'}).id, 'people');
-    expect(enemyGroupOf(null).id, 'people');
+    expect(groupLookOf({'group': 'no_such', 'kind': 'beast'}).id, 'beast');
+    expect(groupLookOf({'group': 'no_such'}).id, 'people');
+    expect(groupLookOf(null).id, 'people');
   });
 
   test('every enemy has a group, and the clans have their banners', () {
     for (final MapEntry(:key, :value) in enemies.entries) {
-      final g = enemyGroupOf(value as Map<String, dynamic>);
+      final g = groupLookOf(value as Map<String, dynamic>);
       expect(enemyGroups, contains(g.id), reason: key);
     }
     for (final id in [

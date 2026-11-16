@@ -380,7 +380,7 @@ extension _FightBoardView on _FightScreenState {
         _selectedTargets.containsKey(pickedActor.id);
     final aimedByPicked =
         canRetarget && _selectedTargets[pickedActor.id] == enemy.key;
-    final group = enemyGroupOf(enemy.data);
+    final group = groupLookOf(enemy.data);
     final who = enemy.displayName;
     final extras = _enemyExtraCount(enemy);
     _fxGroup = [];

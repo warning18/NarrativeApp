@@ -10,6 +10,7 @@
 // group is never data.
 import 'package:flutter/material.dart';
 
+import '../data/enemy_groups.dart';
 import 'pixel_banner.dart';
 
 /// The pixel marks drawn when a group has no banner of its own.
@@ -190,15 +191,15 @@ final Map<String, EnemyGroup> enemyGroups = {
       EnemyGroup('people', 'People of no clan', _c(0x7A4841), glyph: 'mask'),
 };
 
-/// The group of an enemy record: its own `group`, else its `faction`, else its
-/// `kind`; "people of no clan" when none is known.
-EnemyGroup enemyGroupOf(Map<String, dynamic>? enemy) {
-  String field(String key) => (enemy?[key] ?? '').toString().trim();
-  for (final key in const ['group', 'faction', 'kind']) {
-    final group = enemyGroups[field(key)];
-    if (group != null) return group;
-  }
-  return enemyGroups['people']!;
+/// The look of an enemy record: the group Core reads from it (`enemyGroupOf`,
+/// lib/data/enemy_groups.dart: its own `group`, else its `faction`, else its
+/// `kind`); a group nobody here dresses falls back to its `kind`, then to
+/// "people of no clan".
+EnemyGroup groupLookOf(Map<String, dynamic>? enemy) {
+  if (enemy == null) return enemyGroups['people']!;
+  return enemyGroups[enemyGroupOf(enemy)] ??
+      enemyGroups[(enemy['kind'] ?? '').toString().trim()] ??
+      enemyGroups['people']!;
 }
 
 /// The pixel mark [name], [px] dp a pixel, in [color].
