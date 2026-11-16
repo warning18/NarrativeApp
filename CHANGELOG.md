@@ -8,6 +8,10 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.972.0+1008]
+
+- Enemies: the people who answer to no clan get groups of their own, for the fight's new stats blocks (the user's call; no number changes). The Hollow Court (its zealot and inquisitor), the Turned (the eight companions turned against you), the Claimants (Hesk Morrow, Maud Tallis and Cassian Oriel, the three rival claims of chapter 7), the Champions (the six clans' champions), the Void Cults (the cultist acolyte) and Common Folk (the Sore Loser). The Horn-Taker wears the Lantern Dominion's look. Each group has an English and a French name; the blocks that use them come with UX's next change.
+
 ## [1.971.0+1007]
 
 - The dwarf and the orc hero are the user's own states (UX, Art's exports of Hero_basic_dwarf and Hero_basic_orc). A dwarf hero stands as the bare, grey-bearded dwarf and an orc hero as the orc starter in a white shirt, in fights, on the hero's card and head and on the scene stage, instead of the stand-ins of v1.970 (the armoured dwarf and the cloaked orc). They now walk and stand as themselves on roads and journeys too (6 frames each, east and west), where they walked as the ronin before; only a hero who has not made their character yet keeps the ronin. About 12 KB of PNG8 in the app.
