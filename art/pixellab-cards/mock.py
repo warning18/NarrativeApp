@@ -8,8 +8,10 @@ CLAN={'dominion':('The Lantern Dominion','#2F62B5','clan_dominion','Kneel to the
       'penitents':('The Ashen Penitents','#CBB68E','clan_penitents','We take no coin. We take names.')}
 SK={'strike':('Power Strike','+1 damage','A blunt, honest blow.','Common','improvised_strike'),
     'missile':('Arcane Missile','+2 damage · x1.2','A bolt that does not miss.','Uncommon','mage_arcane_missile'),
+    'nova':('Frost Nova','+2 damage · x1.3','A burst of freezing energy.','Epic','mage_frost_nova'),
+    'eclipse':('Archon Eclipse','+3 damage · x2.0','The sun goes out.','Legendary','archon_eclipse'),
     'fireball':('Fireball','+1 damage · x1.8','Hurl a bolt of fire at the enemy.','Rare','fireball')}
-TIERCOL={'Common':'#819796','Uncommon':'#DE9E41','Rare':'#73BED3'}
+TIERCOL={'Common':'#819796','Uncommon':'#DE9E41','Rare':'#73BED3','Epic':'#C65197','Legendary':'#F2C14E'}
 def card(tier,clan,sk):
     cname,col,ban,words=CLAN[clan];nm,eff,desc,rar,icon=SK[sk];col=hexc(col)
     im=Image.new('RGBA',(210,346),(21,29,40,255));g=ImageDraw.Draw(im)
@@ -23,7 +25,7 @@ def card(tier,clan,sk):
     f=font('PixelifySans-Regular',13);w=g.textlength(eff,font=f);g.text((105-w/2,202),eff,font=f,fill=(235,237,233))
     f=font('Spectral-Regular',13);w=g.textlength(desc,font=f);g.text((105-w/2,224),desc,font=f,fill=(168,181,178))
     f=font('PixelifySans-Regular',11);x=62
-    for lab,c in (('Fire' if sk=='fireball' else 'Arcane','#CF573C' if sk=='fireball' else '#A23E8C'),(rar,TIERCOL[rar])):
+    for lab,c in ((('Fire','#CF573C') if sk=='fireball' else ('Water','#4F8FBA') if sk=='nova' else ('Void','#A23E8C') if sk=='eclipse' else ('Arcane','#A23E8C')),(rar,TIERCOL[rar])):
         w=g.textlength(lab,font=f);g.rectangle([x-4,252,x+w+4,270],outline=hexc(c));g.text((x,254),lab,font=f,fill=hexc(c));x+=w+14
     g.line([(14,282),(196,282)],fill=(57,74,80))
     f=font('Spectral-Italic',12);w=g.textlength('"'+words+'"',font=f);g.text((105-w/2,288),'"'+words+'"',font=f,fill=(168,181,178))
@@ -38,6 +40,8 @@ def sheet(cards,out,scale):
 if __name__=='__main__':
     B='docs/art/boards/'
     t1=[card('common','dominion','strike'),card('uncommon','dominion','missile'),card('rare','dominion','fireball')]
+    t5=t1[:3]+[card('epic','dominion','nova'),card('legendary','dominion','eclipse')]
+    sheet(t5,B+'card-five-tiers-1x.png',1);sheet(t5,B+'card-five-tiers-2x.png',2)
     t2=[card('rare',c,'fireball') for c in ('dominion','crows','penitents')]
     sheet(t1,B+'card-tiers-1x.png',1);sheet(t1,B+'card-tiers-2x.png',2)
     sheet(t2,B+'card-rare-clans-1x.png',1);sheet(t2,B+'card-rare-clans-2x.png',2)

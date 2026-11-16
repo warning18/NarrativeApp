@@ -3,7 +3,7 @@ import sys, numpy as np
 sys.path.insert(0,'tool'); import apollo_remap as AR
 from PIL import Image, ImageDraw, ImageFont
 R='art/pixellab-cards/raw/'; F='art/pixellab-cards/final/'
-PICK={'frame':{'common':2,'uncommon':1,'rare':1},'plate':{'common':1,'uncommon':1,'rare':1},'backdrop':{'common':1,'uncommon':1,'rare':1}}
+PICK={'frame':{'common':2,'uncommon':1,'rare':1,'epic':1,'legendary':1},'plate':{'common':1,'uncommon':1,'rare':1,'epic':2,'legendary':2},'backdrop':{'common':1,'uncommon':1,'rare':1,'epic':1,'legendary':1}}
 RAW={'backdrop':'art/pixellab-cards/raw/'}
 def png8(im,path):
     a=np.array(im.convert('RGBA'));mk=a[...,3]<128
