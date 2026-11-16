@@ -12,11 +12,12 @@ SK={'strike':('Power Strike','+1 damage','A blunt, honest blow.','Common','impro
     'eclipse':('Archon Eclipse','+3 damage · x2.0','The sun goes out.','Legendary','archon_eclipse'),
     'fireball':('Fireball','+1 damage · x1.8','Hurl a bolt of fire at the enemy.','Rare','fireball')}
 TIERCOL={'Common':'#819796','Uncommon':'#DE9E41','Rare':'#73BED3','Epic':'#C65197','Legendary':'#F2C14E'}
-def card(tier,clan,sk):
+def card(tier,clan,sk): return card_with(tier,clan,sk,None,None,None)
+def card_with(tier,clan,sk,bdimg,el,elc):
     cname,col,ban,words=CLAN[clan];nm,eff,desc,rar,icon=SK[sk];col=hexc(col)
     im=Image.new('RGBA',(210,346),(21,29,40,255));g=ImageDraw.Draw(im)
-    bd=Image.open(f'{F}backdrop_{tier}.png').convert('RGBA').resize((208,152),0);im.paste(bd,(1,1))
-    tint=Image.new('RGBA',(208,152),col+(46,));im.alpha_composite(tint,(1,1))
+    bd=(bdimg if bdimg is not None else Image.open(f'{F}backdrop_{tier}.png')).convert('RGBA').resize((208,152),0);im.paste(bd,(1,1))
+    if bdimg is None: im.alpha_composite(Image.new('RGBA',(208,152),col+(46,)),(1,1))
     b=Image.open(f'assets/visuals/banners/{ban}.png').convert('RGBA');b=b.resize((48,96),0);im.alpha_composite(b,(24,14))
     pl=Image.open(f'{F}plate_{tier}.png').convert('RGBA').resize((80,80),0);im.alpha_composite(pl,(112,42))
     ic=Image.open(f'art/pixellab-apollo-skills/icons/{icon}.png').convert('RGBA').resize((48,48),0);im.alpha_composite(ic,(128,58))
@@ -25,7 +26,7 @@ def card(tier,clan,sk):
     f=font('PixelifySans-Regular',13);w=g.textlength(eff,font=f);g.text((105-w/2,202),eff,font=f,fill=(235,237,233))
     f=font('Spectral-Regular',13);w=g.textlength(desc,font=f);g.text((105-w/2,224),desc,font=f,fill=(168,181,178))
     f=font('PixelifySans-Regular',11);x=62
-    for lab,c in ((('Fire','#CF573C') if sk=='fireball' else ('Water','#4F8FBA') if sk=='nova' else ('Void','#A23E8C') if sk=='eclipse' else ('Arcane','#A23E8C')),(rar,TIERCOL[rar])):
+    for lab,c in (((el,elc) if el else ('Fire','#CF573C') if sk=='fireball' else ('Water','#4F8FBA') if sk=='nova' else ('Void','#A23E8C') if sk=='eclipse' else ('Arcane','#A23E8C')),(rar,TIERCOL[rar])):
         w=g.textlength(lab,font=f);g.rectangle([x-4,252,x+w+4,270],outline=hexc(c));g.text((x,254),lab,font=f,fill=hexc(c));x+=w+14
     g.line([(14,282),(196,282)],fill=(57,74,80))
     f=font('Spectral-Italic',12);w=g.textlength('"'+words+'"',font=f);g.text((105-w/2,288),'"'+words+'"',font=f,fill=(168,181,178))
