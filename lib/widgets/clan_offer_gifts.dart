@@ -15,6 +15,7 @@ import '../data/signs.dart' show SignRarity;
 import '../combat/dice_faces.dart' show SkillRarity;
 import '../combat/spec_variants.dart' show SpecVariantInfo, SpecVariantKind;
 import '../theme/motion.dart';
+import '../theme/palette.dart';
 import '../theme/pixel_chip.dart';
 import '../theme/stitched_ink.dart';
 import 'pixel_banner.dart';
@@ -67,10 +68,10 @@ bool giftRaises(
   }
 }
 
-const Color _outline = Color(0xFF090A14);
+const Color _outline = Palette.apolloOutline;
 const Color _night = Color(0xFF10141F);
 const Color _navy = Color(0xFF172038);
-const Color _cream = Color(0xFFEBEDE9);
+const Color _cream = Palette.apolloCream;
 const Color _gold = Color(0xFFE8C170);
 const Color _core = Color(0xFFF2C14E);
 
