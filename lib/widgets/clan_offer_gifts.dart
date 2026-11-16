@@ -310,8 +310,11 @@ class ClanHandFan extends StatelessWidget {
   static const double _rest = 0.66;
   static const double _up = 0.84;
 
-  /// The hand's height: a card in hand, lifted.
-  static double get height => clanCardHeight * _up + 42;
+  /// The hand's height: a card in hand, lifted; at rest the hand takes only
+  /// what the three resting cards need (and grows, with a short ease, when
+  /// one is touched), so no empty band sits above it.
+  static double get liftedHeight => clanCardHeight * _up + 42;
+  static double get restHeight => clanCardHeight * _rest + 22;
 
   @override
   Widget build(BuildContext context) {
@@ -366,8 +369,10 @@ class ClanHandFan extends StatelessWidget {
               if (i != lit) i,
             if (lit >= 0 && lit < n) lit,
           ];
-          return SizedBox(
-            height: height,
+          return AnimatedContainer(
+            duration: const Duration(milliseconds: 160),
+            curve: Curves.easeOut,
+            height: lit >= 0 ? liftedHeight : restHeight,
             child: Stack(
               clipBehavior: Clip.none,
               children: [for (final i in order) one(i)],

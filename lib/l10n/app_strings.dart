@@ -13795,9 +13795,9 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.fr: 'Toucher pour passer',
   },
   'offer_select_hint': {
-    AppLanguage.en: 'Pick a clan below to see its banner and its gift.',
+    AppLanguage.en: 'Touch a card or a row to read its gift and its clan.',
     AppLanguage.fr:
-        'Choisissez un clan ci-dessous pour voir sa bannière et son don.',
+        'Touchez une carte ou une ligne pour lire son don et son clan.',
   },
   'offer_hint': {
     AppLanguage.en: 'Take one gift: the one you take is a side chosen.',

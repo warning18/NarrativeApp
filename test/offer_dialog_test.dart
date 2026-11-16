@@ -557,8 +557,8 @@ void main() {
     expect(find.text('Œil perçant'), findsOneWidget);
     expect(find.text('+6\u00a0Pacte'), findsOneWidget);
     expect(
-        find.text('Choisissez un clan ci-dessous pour voir sa bannière et son '
-            'don.'),
+        find.text('Touchez une carte ou une ligne pour lire son don et son '
+            'clan.'),
         findsOneWidget);
     await tester.ensureVisible(find.byKey(const Key('offer_suitor_compact')));
     await tester.tap(find.byKey(const Key('offer_suitor_compact')));
