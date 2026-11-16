@@ -18,6 +18,8 @@ import '../widgets/fight_plates.dart'
     show FightPlateImages, FightPlateOverride, fightPlateAsset;
 import '../widgets/side_view/side_view.dart' show SideLayer, SideViewScene;
 import '../widgets/fight_board.dart';
+import '../widgets/enemy_groups.dart';
+import '../widgets/fight_block.dart';
 import '../widgets/fight_effect_icons.dart';
 import '../widgets/fight_figures.dart';
 import '../widgets/head_avatar.dart';
