@@ -33,7 +33,7 @@ Enemies for the round after (not started; needs the user's OK): void_hound, cult
 
 Test (cleared, 30 gens, no walks): items 4, 8, 10.
 
-## Test result (15 November, 30 gens, balance 796.5)
+## Test result (15 November, 30 gens)
 States made from Starter_basic_hero, 48x48, 8 directions, PNG8 64x64 (feet on row 55) in `art/pixellab-figures-round2/<name>/<direction>.png`. Sheets: `docs/art/boards/figures-round2-test-1x.png`, `-2x.png` (Starter_basic_hero, Stair-Chandler, Dagny, Liora, Grosh; south and east at 2x).
 | Name | State id | Prompt (look line, item) |
 |---|---|---|

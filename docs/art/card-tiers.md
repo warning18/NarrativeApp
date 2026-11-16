@@ -24,7 +24,7 @@ The mock is composed in `art/pixellab-cards/mock.py` (real banners, real icons, 
 | backdrop x3 | 1, 2 | 1 each | 250 |
 Cost: 30 generations in all (18 for the first round at strength 300, 12 for frames and plates at 110). The raw outputs are in `art/pixellab-cards/raw/` and `raw1/`.
 
-## Epic and legendary (12 gens, balance counted from 796)
+## Epic and legendary (12 gens)
 | Piece | Seeds | Picked | Strength |
 |---|---|---|---|
 | frame epic, legendary | 1, 2 | 1, 1 | 110 |

@@ -76,3 +76,6 @@ Balance 1251.5 before, 1227.5 after: **24 generations**.
 `art/pixellab-icons/harmonised/` (skills 157, items 132), one ink + 63-colour palette, same names and sizes. Sheets `docs/art/boards/icons-harmonised-*.png`. Not wired.
 ## Skill effects, rawer amendment (0 generations)
 Strips `art/pixellab-vfx/staged-rawer/` (flame, frost, lightning, heal, void_rift, shield), made by `rawer_gen.py` from the pilot strips: 24x24 grid x2, 5 colours + ink, no glow. Sheet `docs/art/boards/skill-effects-rawer.png`. Not wired.
+
+## Balance
+16 November 2026: the user confirmed the PixelLab allowance was reset. `get_balance`: 1958 generations left of 2000 (42 used since the reset: 30 for the card tiers, 12 for epic and legendary). Earlier figures in these docs (796.5 and so on) are from the previous period.
