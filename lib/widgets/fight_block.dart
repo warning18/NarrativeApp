@@ -10,6 +10,7 @@
 // intent) and what a tap does stay with the fight (fight_board_view.dart).
 import 'package:flutter/material.dart';
 
+import '../theme/icon_sizes.dart';
 import '../theme/palette.dart';
 import '../theme/pixel_chip.dart';
 import '../theme/stitched_ink.dart';
@@ -204,7 +205,7 @@ class FightBlock extends StatelessWidget {
         mainAxisSize: MainAxisSize.min,
         children: [
           Icon(rank == FightRank.boss ? Icons.workspace_premium : Icons.star,
-              size: 11, color: ink),
+              size: IconSize.inline, color: ink),
           const SizedBox(width: 1),
           Text(rank == FightRank.boss ? 'BOSS' : 'ELITE',
               style: TextStyle(
@@ -236,7 +237,7 @@ class FightBlock extends StatelessWidget {
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              Icon(icon, size: 7.5, color: color),
+              Icon(icon, size: IconSize.inline, color: color),
               Text(value,
                   maxLines: 1,
                   softWrap: false,
