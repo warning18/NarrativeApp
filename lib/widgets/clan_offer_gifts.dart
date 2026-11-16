@@ -14,6 +14,7 @@ import '../data/offers.dart';
 import '../data/signs.dart' show SignRarity;
 import '../combat/dice_faces.dart' show SkillRarity;
 import '../combat/spec_variants.dart' show SpecVariantInfo, SpecVariantKind;
+import '../theme/motion.dart';
 import '../theme/pixel_chip.dart';
 import '../theme/stitched_ink.dart';
 import 'pixel_banner.dart';
@@ -339,7 +340,7 @@ class ClanHandFan extends StatelessWidget {
                 .clamp(0.0, width - upW);
             return AnimatedPositioned(
               key: ValueKey('hand_slot_$i'),
-              duration: const Duration(milliseconds: 160),
+              duration: Motion.fast,
               curve: Curves.easeOut,
               left: left,
               bottom: isUp ? 24 : 0,
@@ -348,7 +349,7 @@ class ClanHandFan extends StatelessWidget {
                 behavior: HitTestBehavior.opaque,
                 onTap: onTap == null ? null : () => onTap!(i),
                 child: AnimatedOpacity(
-                  duration: const Duration(milliseconds: 160),
+                  duration: Motion.fast,
                   opacity: dim ? 0.72 : 1,
                   child: Transform.rotate(
                     angle: angle,
@@ -370,7 +371,7 @@ class ClanHandFan extends StatelessWidget {
             if (lit >= 0 && lit < n) lit,
           ];
           return AnimatedContainer(
-            duration: const Duration(milliseconds: 160),
+            duration: Motion.fast,
             curve: Curves.easeOut,
             height: lit >= 0 ? liftedHeight : restHeight,
             child: Stack(
