@@ -527,7 +527,7 @@ Widget aOffer(BuildContext context, {int? hover, int? picked}) {
       extra = Column(mainAxisAlignment: MainAxisAlignment.center, children: [
         Plate(o.skill, size: 54),
         const SizedBox(height: 4),
-        Text('I → II', style: _sys(context, size: 13, color: _apCore)),
+        Text('I  >  II', style: _sys(context, size: 13, color: _apCore)),
         Text('${o.essence} essence',
             style: _sys(context, size: 10, color: const Color(0xFFA4DDDB))),
       ]);
@@ -677,7 +677,7 @@ class BRow extends StatelessWidget {
             ])
           else if (offer!.kind == Kind.upgrade)
             Text(
-                'Tier I → II: ${s.effect(1)}  →  ${s.effect(2)}\n${offer!.essence} essence',
+                'Tier I to II: ${s.effect(1)}  to  ${s.effect(2)}\n${offer!.essence} essence',
                 style: _body(context, size: 12))
           else
             Text('${s.desc}\nOffered by ${offer!.clan}.',
@@ -1117,7 +1117,7 @@ Widget cBig(BuildContext context, Offer o,
               child: Column(children: [
                 Text(
                     o.kind == Kind.upgrade
-                        ? '${s.effect(1)}  →  ${s.effect(2)}'
+                        ? '${s.effect(1)}  to  ${s.effect(2)}'
                         : (s.effect().isEmpty ? s.desc : s.effect()),
                     textAlign: TextAlign.center,
                     style: _sys(context, size: 12, color: _apCream)),
