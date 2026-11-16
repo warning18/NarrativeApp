@@ -23,8 +23,15 @@ import 'package:narrative_data_app/l10n/app_locale.dart';
 import 'package:narrative_data_app/providers/game_db_providers.dart';
 import 'package:narrative_data_app/providers/player_session_provider.dart';
 import 'package:narrative_data_app/theme/stitched_ink.dart';
+import 'package:narrative_data_app/combat/dice_faces.dart' show SkillRarity;
+import 'package:narrative_data_app/combat/spec_variants.dart'
+    show SpecVariantInfo, SpecVariantKind;
+import 'package:narrative_data_app/combat/specialisations.dart' show Spec;
+import 'package:narrative_data_app/widgets/clan_offer_gifts.dart';
 import 'package:narrative_data_app/widgets/clan_peek.dart';
 import 'package:narrative_data_app/widgets/offer_dialog.dart';
+import 'package:narrative_data_app/widgets/pixel_banner.dart'
+    show pixelBannerSize;
 
 import 'player_session_provider_test.dart' show baseSession;
 import 'support/fonts.dart';
@@ -238,6 +245,8 @@ void main() {
     expect(find.byKey(const Key('offer_select_hint')), findsOneWidget);
 
     // A crest on the ring does the same, for any clan.
+    await tester.ensureVisible(find.byKey(const Key('compass_mire')));
+    await tester.pump();
     final crest = await tester
         .startGesture(tester.getCenter(find.byKey(const Key('compass_mire'))));
     await tester.pump(const Duration(milliseconds: 700));
@@ -298,6 +307,65 @@ void main() {
     expect(find.byKey(const Key('clan_details_penitents')), findsNothing);
   });
 
+  testWidgets('what is new is a card in the hand, what raises is a row',
+      (tester) async {
+    await _open(tester, french: false);
+    // A skill and a sign are new: two cards. A perk rank raises: one row.
+    expect(find.byType(ClanCardView), findsNWidgets(2));
+    expect(find.byType(ClanRaiseRow), findsOneWidget);
+    expect(find.byKey(const Key('offer_raises_header')), findsOneWidget);
+    // One pick across both: a card, then the row; the button names the gift
+    // and the clan in full.
+    await tester.ensureVisible(find.byKey(const Key('offer_suitor_compact')));
+    await tester.tapAt(
+        tester.getTopLeft(find.byKey(const Key('offer_suitor_compact'))) +
+            const Offset(22, 110));
+    await _settle(tester);
+    expect(tester.widget<Text>(find.byKey(const Key('offer_take_label'))).data,
+        'Take Iron Stance from The Emberwives of the Cinder Compact');
+    await tester.ensureVisible(find.byKey(const Key('offer_suitor_wayfarer')));
+    await tester.tap(find.byKey(const Key('offer_suitor_wayfarer')));
+    await _settle(tester);
+    expect(tester.widget<Text>(find.byKey(const Key('offer_take_label'))).data,
+        'Take Keen Eye from The Wayfarer');
+    expect(tester.takeException(), isNull);
+  });
+
+  test('the gifts that raise, and the tier of each gift', () {
+    const skills = {
+      'ascended': {'ascendsSkillID': 'base'},
+      'plain': {'description': 'x'},
+    };
+    const variants = {
+      'rank_two': SpecVariantInfo(
+          id: 'rank_two', spec: Spec.berserker, kind: SpecVariantKind.rank),
+      'variant': SpecVariantInfo(
+          id: 'variant', spec: Spec.berserker, kind: SpecVariantKind.variant),
+    };
+    bool raises(GiftKind kind, String id) =>
+        giftRaises(OfferGift(kind: kind, id: id),
+            skills: skills, specVariants: variants);
+    expect(raises(GiftKind.skill, 'ascended'), isTrue);
+    expect(raises(GiftKind.skill, 'plain'), isFalse);
+    expect(raises(GiftKind.perk, 'keenEye'), isTrue);
+    expect(raises(GiftKind.spec, 'rank_two'), isTrue);
+    expect(raises(GiftKind.spec, 'variant'), isFalse);
+    expect(raises(GiftKind.spec, 'a_first_spec'), isFalse);
+    for (final kind in [
+      GiftKind.sign,
+      GiftKind.object,
+      GiftKind.title,
+      GiftKind.sworn,
+      GiftKind.die,
+    ]) {
+      expect(raises(kind, 'x'), isFalse, reason: kind.name);
+    }
+    expect(tierOfSkill(SkillRarity.legendary), CardTier.legendary);
+    expect(tierOfSkill(SkillRarity.uncommon), CardTier.uncommon);
+    expect(tierOfGiftRarity(SignRarity.common), CardTier.common);
+    expect(tierOfGiftRarity(SignRarity.heroic), CardTier.legendary);
+  });
+
   testWidgets('three suitors stacked at 360 px; one taken, the next kept',
       (tester) async {
     final container = await _open(tester, french: false);
@@ -321,7 +389,9 @@ void main() {
     // The rest is told under the compass, once a banner is picked: before,
     // only the compass and a hint.
     expect(find.text('The Emberwives of the Cinder Compact'), findsNothing);
-    expect(find.textContaining('broke every hammer in the Row'), findsNothing);
+    // The card carries the clan's words; the hall below stays empty.
+    expect(
+        find.textContaining('broke every hammer in the Row'), findsOneWidget);
     expect(find.byKey(const Key('offer_select_hint')), findsOneWidget);
     expect(find.byKey(const Key('clan_compass')), findsOneWidget);
     expect(
@@ -367,9 +437,9 @@ void main() {
     await _settle(tester);
     expect(find.byKey(const Key('clan_details_compact')), findsNothing);
     expect(tester.getSize(find.byKey(const Key('offer_banner_compact'))),
-        const Size(88, 128));
+        pixelBannerSize);
     expect(tester.getSize(find.byKey(const Key('offer_banner_penitents'))),
-        const Size(88, 128),
+        pixelBannerSize,
         reason: 'every banner is one size, picked or not');
     // The politics of the pick, by the relations as they stand, on the
     // crests: +6 for the Compact, +1.5 for its friends, -3 for its foe.
@@ -405,8 +475,8 @@ void main() {
     await tester.ensureVisible(find.byKey(const Key('offer_suitor_wayfarer')));
     await tester.tap(find.byKey(const Key('offer_suitor_wayfarer')));
     await _settle(tester);
-    expect(find.text('The Wayfarer'), findsNWidgets(2),
-        reason: 'the row and the hall');
+    expect(find.text('The Wayfarer'), findsOneWidget,
+        reason: 'the hall\'s title (the row says it in capitals)');
     expect(find.text('No faction: standing doesn’t move.'), findsOneWidget);
     await _shot(tester, 'gift_wayfarer');
     expect(tester.takeException(), isNull, reason: 'fits 360 px');
@@ -487,8 +557,8 @@ void main() {
     expect(find.text('Œil perçant'), findsOneWidget);
     expect(find.text('+6\u00a0Pacte'), findsOneWidget);
     expect(
-        find.text('Choisissez un clan ci-dessous pour voir sa bannière et son '
-            'don.'),
+        find.text('Touchez une carte ou une ligne pour lire son don et son '
+            'clan.'),
         findsOneWidget);
     await tester.ensureVisible(find.byKey(const Key('offer_suitor_compact')));
     await tester.tap(find.byKey(const Key('offer_suitor_compact')));
@@ -515,10 +585,12 @@ void main() {
     await tester.ensureVisible(find.byKey(const Key('offer_suitor_wayfarer')));
     await tester.tap(find.byKey(const Key('offer_suitor_wayfarer')));
     await _settle(tester);
-    expect(find.text('Le Voyageur'), findsNWidgets(2));
+    expect(find.text('Le Voyageur'), findsOneWidget,
+        reason: 'the hall\'s title (the row says it in capitals)');
     expect(find.text('Sans faction\u00a0: la réputation ne bouge pas.'),
         findsOneWidget);
-    expect(find.text('Prendre ce don'), findsOneWidget);
+    expect(find.text('Prendre Œil perçant — Le Voyageur'), findsOneWidget,
+        reason: 'the button names the gift and the clan');
     expect(tester.takeException(), isNull, reason: 'fits 360 px');
 
     await tester.ensureVisible(find.byKey(const Key('offer_suitor_wayfarer')));

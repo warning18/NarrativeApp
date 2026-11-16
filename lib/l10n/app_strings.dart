@@ -13795,9 +13795,9 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.fr: 'Toucher pour passer',
   },
   'offer_select_hint': {
-    AppLanguage.en: 'Pick a clan below to see its banner and its gift.',
+    AppLanguage.en: 'Touch a card or a row to read its gift and its clan.',
     AppLanguage.fr:
-        'Choisissez un clan ci-dessous pour voir sa bannière et son don.',
+        'Touchez une carte ou une ligne pour lire son don et son clan.',
   },
   'offer_hint': {
     AppLanguage.en: 'Take one gift: the one you take is a side chosen.',
@@ -13807,6 +13807,18 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   'offer_pending': {
     AppLanguage.en: '{n} waiting',
     AppLanguage.fr: '{n}\u00a0en attente',
+  },
+  'offer_take_named': {
+    AppLanguage.en: 'Take {gift} from {clan}',
+    AppLanguage.fr: 'Prendre {gift} — {clan}',
+  },
+  'offer_raises_header': {
+    AppLanguage.en: 'RAISES WHAT YOU HAVE',
+    AppLanguage.fr: 'AMÉLIORE CE QUE VOUS AVEZ',
+  },
+  'offer_raises_line': {
+    AppLanguage.en: 'Raises something you already have.',
+    AppLanguage.fr: 'Améliore ce que vous avez déjà.',
   },
   'offer_take_button': {
     AppLanguage.en: 'Take this gift',

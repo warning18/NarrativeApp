@@ -73,8 +73,8 @@ class FightBlock extends StatelessWidget {
     final frame = borderColor ?? (ranked ? Palette.goldDeep : plateColor);
     final plateInk =
         ThemeData.estimateBrightnessForColor(plateColor) == Brightness.light
-            ? const Color(0xFF090A14)
-            : const Color(0xFFEBEDE9);
+            ? Palette.apolloOutline
+            : Palette.apolloCream;
     final g = group;
     return DecoratedBox(
       key: Key('fight_block_${name}_${g?.id ?? 'ally'}'),
@@ -92,8 +92,8 @@ class FightBlock extends StatelessWidget {
             ? null
             : OrnamentPainter(
                 g.ornament,
-                Color.lerp(plateColor, const Color(0xFFEBEDE9), 0.55)!,
-                const Color(0xFF090A14)),
+                Color.lerp(plateColor, Palette.apolloCream, 0.55)!,
+                Palette.apolloOutline),
         child: Column(
           children: [
             Container(

@@ -22,6 +22,11 @@ abstract final class Palette {
   static const Color emberDark = Color(0xFFE0762B);
   static const Color goldDark = Color(0xFFF2C14E);
   static const Color goldLight = Color(0xFF8A5A00);
+
+  /// Apollo's darkest ink and its cream (docs/art/palette-apollo.md): the
+  /// outline and the light text of the card and block pieces.
+  static const Color apolloOutline = Color(0xFF090A14);
+  static const Color apolloCream = Color(0xFFEBEDE9);
   static const Color healDark = Color(0xFF7DBE6A);
   static const Color seamDark = Color(0xFF3B3743);
   static const Color tideDark = Color(0xFF4FB0B0);
