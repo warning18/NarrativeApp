@@ -8,6 +8,10 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.974.0+1010]
+
+- Fight: two fixes to the new blocks (UX, from the manager's look at the real screen). An enemy's health bar reads red, then deep orange, then orange as it falls, so it no longer passes for an ally's green bar (the party's bar is unchanged). The intent in a block says "Unknown" (French "Inconnue") instead of "Intent unknown", which was cut off at 360 dp wide; the full label stays elsewhere. No rule or number changes.
+
 ## [1.973.0+1009]
 
 - Fight: a new block for every fighter (UX, the user's pick "C, nameplate and gems", with the per-group look). Every hero, companion and enemy on the board is now a block with a nameplate across the top (the name, the turn number for the party, the rank mark for an Elite or a boss), under it the head with the armour and the damage as two small gems on its corner, the health bar beside it, and the status chips and the intent under the bar. The numbers sit in the same place on every block. An enemy wears its group: the nameplate's colour, the emblem on the plate (the clan's own banner for the Lantern Dominion, the Salt Crows, the Cinder Compact, the Mire Courts, the Grey Vigil and the Ashen Penitents; a pixel mark for the Choir, the Pit, the giants, the Tide-Kin, the dead, the Void, beasts, constructs) and a corner ornament (studs, spikes, rivets or bites). The group is read from the enemy's own `group` when it has one, else its `faction`, else its `kind`; the people of no clan have looks for Core's groups: the Hollow Court, the Turned, the Claimants, the Champions, the Void Cults and the common folk, and one shared look for the rest. An enemy's armour gem is its guard in the fight and is hidden at 0 (it no longer reads "C"). Nothing in the fight's rules, targeting, taps or numbers changes.

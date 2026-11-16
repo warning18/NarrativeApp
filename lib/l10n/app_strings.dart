@@ -6598,6 +6598,10 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.en: 'Intent unknown',
     AppLanguage.fr: 'Intention inconnue',
   },
+  'intent_unknown_short': {
+    AppLanguage.en: 'Unknown',
+    AppLanguage.fr: 'Inconnue',
+  },
   'intent_label': {
     AppLanguage.en: 'Next move',
     AppLanguage.fr: 'Prochain coup'
