@@ -314,6 +314,9 @@ void main() {
     expect(find.byType(ClanCardView), findsNWidgets(2));
     expect(find.byType(ClanRaiseRow), findsOneWidget);
     expect(find.byKey(const Key('offer_raises_header')), findsOneWidget);
+    // Each card says what its gift does, in one line (the skill's healing).
+    expect(find.byKey(const Key('offer_card_effect')), findsNWidgets(2));
+    expect(find.text('heals 3'), findsOneWidget);
     // One pick across both: a card, then the row; the button names the gift
     // and the clan in full.
     await tester.ensureVisible(find.byKey(const Key('offer_suitor_compact')));
@@ -322,12 +325,12 @@ void main() {
             const Offset(22, 110));
     await _settle(tester);
     expect(tester.widget<Text>(find.byKey(const Key('offer_take_label'))).data,
-        'Take Iron Stance from The Emberwives of the Cinder Compact');
+        'Take Iron Stance from the Emberwives of the Cinder Compact');
     await tester.ensureVisible(find.byKey(const Key('offer_suitor_wayfarer')));
     await tester.tap(find.byKey(const Key('offer_suitor_wayfarer')));
     await _settle(tester);
     expect(tester.widget<Text>(find.byKey(const Key('offer_take_label'))).data,
-        'Take Keen Eye from The Wayfarer');
+        'Take Keen Eye from the Wayfarer');
     expect(tester.takeException(), isNull);
   });
 

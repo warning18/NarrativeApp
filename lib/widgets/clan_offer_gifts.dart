@@ -107,6 +107,8 @@ class ClanCardView extends StatelessWidget {
     required this.tags,
     required this.greeting,
     required this.clanName,
+    this.effect,
+    this.backdropId,
     this.standing,
     this.standingGood = true,
     this.lit = false,
@@ -133,6 +135,15 @@ class ClanCardView extends StatelessWidget {
   final bool standingGood;
   final bool lit;
   final bool risky;
+
+  /// What the gift does, in one line (a skill's damage or healing, an object's
+  /// stats...), gold under the tags.
+  final String? effect;
+
+  /// The clan's own backdrop (`assets/visuals/cards/clans/backdrop_<id>.png`,
+  /// PixelLab, in the clan's colours with a motif of its banner), in place of
+  /// the tier's; null, or a clan without one, keeps the tier's.
+  final String? backdropId;
 
   @override
   Widget build(BuildContext context) {
@@ -162,15 +173,7 @@ class ClanCardView extends StatelessWidget {
             Positioned(
               left: 1,
               top: 1,
-              child: Stack(
-                children: [
-                  _art(_asset('backdrop', tier), width: 208, height: 152),
-                  Container(
-                      width: 208,
-                      height: 152,
-                      color: color.withValues(alpha: 0.18)),
-                ],
-              ),
+              child: _ClanBackdrop(tier: tier, color: color, id: backdropId),
             ),
             Positioned(
                 left: 18,
@@ -233,8 +236,23 @@ class ClanCardView extends StatelessWidget {
                       ],
                     ),
                   ),
+                  if (effect != null && effect!.isNotEmpty) ...[
+                    const SizedBox(height: 5),
+                    Text(
+                      effect!,
+                      key: const Key('offer_card_effect'),
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      textAlign: TextAlign.center,
+                      style: const TextStyle(
+                          fontFamily: InkFonts.system,
+                          fontSize: 12,
+                          height: 1.2,
+                          color: _gold),
+                    ),
+                  ],
                   if (standing != null) ...[
-                    const SizedBox(height: 6),
+                    SizedBox(height: effect == null ? 6 : 2),
                     Text(
                       standing!,
                       maxLines: 1,
@@ -282,6 +300,37 @@ class ClanCardView extends StatelessWidget {
           ],
         ),
       ),
+    );
+  }
+}
+
+/// The art zone's backdrop: the clan's own picture when it has one, else the
+/// tier's under the clan's tint.
+class _ClanBackdrop extends StatelessWidget {
+  const _ClanBackdrop({required this.tier, required this.color, this.id});
+
+  final CardTier tier;
+  final Color color;
+  final String? id;
+
+  @override
+  Widget build(BuildContext context) {
+    final fallback = Stack(
+      children: [
+        _art(_asset('backdrop', tier), width: 208, height: 152),
+        Container(
+            width: 208, height: 152, color: color.withValues(alpha: 0.18)),
+      ],
+    );
+    if (id == null) return fallback;
+    return Image.asset(
+      'assets/visuals/cards/clans/backdrop_$id.png',
+      width: 208,
+      height: 152,
+      fit: BoxFit.fill,
+      filterQuality: FilterQuality.none,
+      gaplessPlayback: true,
+      errorBuilder: (_, __, ___) => fallback,
     );
   }
 }

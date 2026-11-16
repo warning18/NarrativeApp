@@ -201,6 +201,23 @@ const ClanOffer _hand = ClanOffer(ticket: _level, suitors: [
   ),
 ]);
 
+const ClanOffer _clans = ClanOffer(ticket: _level, suitors: [
+  Suitor(
+    factionId: 'dominion',
+    gift: OfferGift(
+        kind: GiftKind.skill, id: 'fireball', rarity: SignRarity.rare),
+  ),
+  Suitor(
+    factionId: 'mire',
+    gift: OfferGift(
+        kind: GiftKind.skill, id: 'ranger_multi_shot', rarity: SignRarity.epic),
+  ),
+  Suitor(
+    factionId: wayfarerId,
+    gift: OfferGift(kind: GiftKind.object, id: 'helm_iron_cap'),
+  ),
+]);
+
 void main() {
   final shots = Platform.environment['UX_SHOTS'];
   setUpAll(() async {
@@ -230,6 +247,10 @@ void main() {
     testWidgets('mixed $width', skip: shots == null, (tester) async {
       await run(tester, 'mixed-${width.toInt()}', _offer,
           width: width, taps: ['compact', 'wayfarer']);
+    });
+    testWidgets('clans $width', skip: shots == null, (tester) async {
+      await run(tester, 'clans-${width.toInt()}', _clans,
+          width: width, taps: ['mire']);
     });
     testWidgets('tiers $width', skip: shots == null, (tester) async {
       await run(tester, 'tiers-${width.toInt()}', _hand,
