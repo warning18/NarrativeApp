@@ -7444,6 +7444,36 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.en: '— the guard soaks',
     AppLanguage.fr: '— la garde absorbe',
   },
+  // The groups of the enemies of no faction (lib/data/enemy_groups.dart),
+  // the names of their fight blocks' looks.
+  'enemy_group_hollow_court': {
+    AppLanguage.en: 'The Hollow Court',
+    AppLanguage.fr: 'La Cour creuse',
+  },
+  'enemy_group_turned': {
+    AppLanguage.en: 'The Turned',
+    AppLanguage.fr: 'Les Retournés',
+  },
+  'enemy_group_claimants': {
+    AppLanguage.en: 'The Claimants',
+    AppLanguage.fr: 'Les Prétendants',
+  },
+  'enemy_group_champions': {
+    AppLanguage.en: 'The Champions',
+    AppLanguage.fr: 'Les Champions',
+  },
+  'enemy_group_void_cults': {
+    AppLanguage.en: 'The Void Cults',
+    AppLanguage.fr: 'Les cultes du vide',
+  },
+  'enemy_group_spire': {
+    AppLanguage.en: 'The Spire',
+    AppLanguage.fr: 'La Flèche',
+  },
+  'enemy_group_common_folk': {
+    AppLanguage.en: 'Common folk',
+    AppLanguage.fr: 'Le petit peuple',
+  },
   'enemy_recovers_word': {
     AppLanguage.en: 'recovers',
     AppLanguage.fr: 'récupère',

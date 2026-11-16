@@ -1,6 +1,7 @@
 import '../combat/field_anomaly.dart' show FightStage;
 import '../combat/skill_vfx.dart';
 import '../data/companion_remarks.dart' show remarkTriggerOptions;
+import '../data/enemy_groups.dart' show enemyGroupIds;
 import '../data/land_crossing.dart' show landTerrains;
 import '../data/geography.dart'
     show
