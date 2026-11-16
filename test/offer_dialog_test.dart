@@ -325,12 +325,12 @@ void main() {
             const Offset(22, 110));
     await _settle(tester);
     expect(tester.widget<Text>(find.byKey(const Key('offer_take_label'))).data,
-        'Take Iron Stance from The Emberwives of the Cinder Compact');
+        'Take Iron Stance from the Emberwives of the Cinder Compact');
     await tester.ensureVisible(find.byKey(const Key('offer_suitor_wayfarer')));
     await tester.tap(find.byKey(const Key('offer_suitor_wayfarer')));
     await _settle(tester);
     expect(tester.widget<Text>(find.byKey(const Key('offer_take_label'))).data,
-        'Take Keen Eye from The Wayfarer');
+        'Take Keen Eye from the Wayfarer');
     expect(tester.takeException(), isNull);
   });
 

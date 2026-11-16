@@ -114,6 +114,18 @@ String _suitorName(Suitor suitor, ClanData data, AppLanguage lang) {
   return '${voice.nameFor(lang)} ${faction.nameOfFor(lang)}';
 }
 
+/// [name] in the middle of an English sentence: a leading article loses its
+/// capital ("from the Mire Courts"). French names are left as they are.
+String _midSentence(String name, AppLanguage lang) {
+  if (lang != AppLanguage.en) return name;
+  for (final article in const ['The ', 'Your ']) {
+    if (name.startsWith(article)) {
+      return '${article[0].toLowerCase()}${name.substring(1)}';
+    }
+  }
+  return name;
+}
+
 /// What the suitor says: their intro the first time, else a greeting.
 String _suitorGreeting(Suitor suitor, ClanData data, AppLanguage lang) {
   if (suitor.isWayfarer) {
@@ -677,8 +689,10 @@ class _OfferDialogState extends ConsumerState<OfferDialog> {
                                           lang: lang))
                                   .replaceAll(
                                       '{clan}',
-                                      _suitorName(
-                                          selected, widget.tables.data, lang)),
+                                      _midSentence(
+                                          _suitorName(selected,
+                                              widget.tables.data, lang),
+                                          lang)),
                           key: const Key('offer_take_label'),
                           textAlign: TextAlign.center,
                           maxLines: 2,
