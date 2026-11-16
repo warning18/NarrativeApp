@@ -13808,6 +13808,18 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.en: '{n} waiting',
     AppLanguage.fr: '{n}\u00a0en attente',
   },
+  'offer_take_named': {
+    AppLanguage.en: 'Take {gift} from {clan}',
+    AppLanguage.fr: 'Prendre {gift} — {clan}',
+  },
+  'offer_raises_header': {
+    AppLanguage.en: 'RAISES WHAT YOU HAVE',
+    AppLanguage.fr: 'AMÉLIORE CE QUE VOUS AVEZ',
+  },
+  'offer_raises_line': {
+    AppLanguage.en: 'Raises something you already have.',
+    AppLanguage.fr: 'Améliore ce que vous avez déjà.',
+  },
   'offer_take_button': {
     AppLanguage.en: 'Take this gift',
     AppLanguage.fr: 'Prendre ce don',

@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../combat/dice_faces.dart' show dieDisplayName, skillDisplayName;
+import '../combat/dice_faces.dart'
+    show dieDisplayName, skillDisplayName, skillRarity;
 import '../combat/specialisations.dart' show specId;
 import '../data/camp_rolls.dart' show suitorBanishable;
 import '../data/companion_remarks.dart';
@@ -28,17 +29,16 @@ import '../utils/pixel_icons/item_icons.dart';
 import '../utils/pixel_icons/pixel_icon.dart';
 import '../utils/pixel_icons/skill_icons.dart';
 import 'clan_compass.dart';
+import 'clan_offer_gifts.dart';
 import 'clan_peek.dart';
 import 'clan_radar_chart.dart';
 import 'companion_remark_bubble.dart';
 import 'item_stats.dart';
-import 'clan_glance.dart' show ClanMarks;
 import 'pixel_banner.dart';
 import 'reward_card.dart';
 import 'reward_cards.dart';
 import 'roll_power_row.dart';
 import 'sign_widgets.dart';
-import 'wind_banner.dart';
 import '../theme/palette.dart';
 import '../theme/motion.dart';
 import 'ink_loading.dart';
@@ -529,27 +529,13 @@ class _OfferDialogState extends ConsumerState<OfferDialog> {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.stretch,
                         children: [
-                          Row(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              for (final suitor in offer.suitors)
-                                Expanded(
-                                  child: _OfferBanner(
-                                    key:
-                                        Key('offer_suitor_${suitor.factionId}'),
-                                    suitor: suitor,
-                                    ticket: ticket,
-                                    tables: widget.tables,
-                                    selected: _selected == suitor.factionId,
-                                    dimmed: _selected != null &&
-                                        _selected != suitor.factionId,
-                                    onTap: _busy
-                                        ? null
-                                        : () => setState(
-                                            () => _selected = suitor.factionId),
-                                  ),
-                                ),
-                            ],
+                          _OfferGifts(
+                            offer: offer,
+                            tables: widget.tables,
+                            selected: _selected,
+                            onPick: _busy
+                                ? null
+                                : (id) => setState(() => _selected = id),
                           ),
                           const SizedBox(height: 10),
                           ConstrainedBox(
@@ -610,7 +596,29 @@ class _OfferDialogState extends ConsumerState<OfferDialog> {
                         onPressed: selected == null || _busy
                             ? null
                             : () => _take(offer),
-                        child: Text(trFor(lang, 'offer_take_button')),
+                        child: Text(
+                          selected == null
+                              ? trFor(lang, 'offer_take_button')
+                              : trFor(lang, 'offer_take_named')
+                                  .replaceAll(
+                                      '{gift}',
+                                      _giftName(selected.gift,
+                                          tables: widget.tables,
+                                          localizedItems: ref
+                                                  .watch(localizedDbProvider(
+                                                      itemsSchema))
+                                                  .value ??
+                                              const {},
+                                          lang: lang))
+                                  .replaceAll(
+                                      '{clan}',
+                                      _suitorName(
+                                          selected, widget.tables.data, lang)),
+                          key: const Key('offer_take_label'),
+                          textAlign: TextAlign.center,
+                          maxLines: 2,
+                          overflow: TextOverflow.ellipsis,
+                        ),
                       ),
                     ],
                   ),
@@ -648,147 +656,177 @@ class _Drawing extends StatelessWidget {
   }
 }
 
-/// A suitor as a banner, a little smaller than its pixels (three quarters):
-/// the clan's own banner (a Wayfarer's plain pennant) lit in its colour when
-/// picked, and the gift under it by kind and name with the first standing it
-/// moves. A tap picks it; the compass and the words below tell the rest.
-class _OfferBanner extends ConsumerWidget {
-  const _OfferBanner({
-    super.key,
-    required this.suitor,
-    required this.ticket,
+/// The offer's gifts: what is new as cards in a fanned hand, what raises
+/// something the hero has as rows under it. One pick across both: a tap on a
+/// card or a row picks its clan's suitor, and the compass and the words below
+/// tell the rest.
+class _OfferGifts extends ConsumerWidget {
+  const _OfferGifts({
+    required this.offer,
     required this.tables,
     required this.selected,
-    required this.dimmed,
-    required this.onTap,
+    required this.onPick,
   });
 
-  final Suitor suitor;
-  final OfferTicket ticket;
+  final ClanOffer offer;
   final OfferTables tables;
-  final bool selected;
-  final bool dimmed;
-  final VoidCallback? onTap;
+  final String? selected;
+  final void Function(String factionId)? onPick;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final theme = Theme.of(context);
     final lang = ref.watch(appLanguageProvider);
     final session = ref.watch(playerSessionProvider);
     final items = ref.watch(localizedDbProvider(itemsSchema)).value ?? const {};
     final skills =
         ref.watch(localizedDbProvider(skillsSchema)).value ?? const {};
     final data = tables.data;
-    final faction = data.faction(suitor.factionId);
-    final color = _suitorColor(suitor, data);
-    final gift = suitor.gift;
-    final name =
-        _giftName(gift, tables: tables, localizedItems: items, lang: lang);
-    final preview = standingPreviewParts(suitor, ticket,
-        politics: session.politics,
-        data: data,
-        lang: lang,
-        flags: session.flags);
-    final bannerId = suitor.isWayfarer ? null : clanBannerId(suitor.factionId);
-    final who = _suitorName(suitor, data, lang);
-    const good = Palette.green43;
+    final cards = <Suitor>[];
+    final rows = <Suitor>[];
+    for (final s in offer.suitors) {
+      (giftRaises(s.gift, skills: skills, specVariants: tables.specVariants)
+              ? rows
+              : cards)
+          .add(s);
+    }
 
-    // One box for every banner, so none changes size when another is picked
-    // (the picked one only takes the wind).
-    final bannerBox = pixelBannerSize.width + 2 * WindBanner.room;
-    final Widget inner = bannerId == null
-        ? _PlainFlag(color: color, wayfarer: suitor.isWayfarer)
-        : ClanMarks(
-            factionId: suitor.factionId,
-            discSize: 34,
-            plate: true,
-            child: SizedBox(
-              key: Key('offer_banner_${suitor.factionId}'),
-              width: bannerBox,
-              height: pixelBannerSize.height,
-              child: selected
-                  ? WindBanner(id: bannerId, scale: 1)
-                  : Center(child: PixelBanner(id: bannerId, scale: 1)),
-            ),
-          );
-    final Widget flag = SizedBox(
-      width: bannerBox * 0.75,
-      height: pixelBannerSize.height * 0.75,
-      child: FittedBox(child: inner),
-    );
+    ({
+      CardTier tier,
+      Color color,
+      Widget flag,
+      Widget icon,
+      String name,
+      List<Widget> tags,
+      String greeting,
+      String clanName,
+      String? standing,
+      bool good,
+    }) parts(Suitor suitor) {
+      final color = _suitorColor(suitor, data);
+      final gift = suitor.gift;
+      final preview = standingPreviewParts(suitor, offer.ticket,
+          politics: session.politics,
+          data: data,
+          lang: lang,
+          flags: session.flags);
+      final skill = skills[gift.id];
+      final bannerId =
+          suitor.isWayfarer ? null : clanBannerId(suitor.factionId);
+      return (
+        tier: gift.kind == GiftKind.skill && skill is Map<String, dynamic>
+            ? tierOfSkill(skillRarity(skill))
+            : tierOfGiftRarity(gift.rarity),
+        color: color,
+        flag: KeyedSubtree(
+          key: Key('offer_banner_${suitor.factionId}'),
+          child: clanCardFlag(bannerId,
+              plain: _PlainFlag(color: color, wayfarer: suitor.isWayfarer)),
+        ),
+        icon: _giftGlyph(gift, color, size: IconSize.s48),
+        name:
+            _giftName(gift, tables: tables, localizedItems: items, lang: lang),
+        tags: [
+          _Tag(text: trFor(lang, _giftTagKey(gift, skills)), color: color),
+          if (gift.kind != GiftKind.perk)
+            SignRarityChip(rarity: gift.rarity, language: lang),
+          if (suitor.risky)
+            _Tag(text: trFor(lang, 'offer_risky_badge'), color: Palette.alert),
+        ],
+        greeting: _suitorGreeting(suitor, data, lang),
+        clanName: _suitorName(suitor, data, lang),
+        standing: preview.isEmpty ? null : preview.first.text,
+        good: preview.isEmpty || preview.first.delta >= 0,
+      );
+    }
 
-    return ClanPeek(
-      factionId: suitor.isWayfarer ? null : suitor.factionId,
-      child: Semantics(
-        button: true,
-        selected: selected,
-        label: '$who: $name',
-        child: GestureDetector(
-          behavior: HitTestBehavior.opaque,
-          onTap: onTap,
-          child: AnimatedOpacity(
-            duration: Motion.fast,
-            opacity: dimmed ? 0.62 : 1,
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 2),
-              child: Column(
-                children: [
-                  Container(
-                    padding: const EdgeInsets.symmetric(vertical: 4),
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(6),
-                      border: Border.all(
-                          color: selected ? color : Colors.transparent,
-                          width: 2),
-                      color: selected ? color.withValues(alpha: 0.12) : null,
+    Widget peek(Suitor s, Widget child) =>
+        ClanPeek(factionId: s.isWayfarer ? null : s.factionId, child: child);
+
+    final litCard = cards.indexWhere((s) => s.factionId == selected);
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        if (cards.isNotEmpty)
+          ClanHandFan(
+            cards: [
+              for (final s in cards)
+                Builder(builder: (_) {
+                  final p = parts(s);
+                  return peek(
+                    s,
+                    ClanCardView(
+                      tier: p.tier,
+                      color: p.color,
+                      flag: p.flag,
+                      icon: p.icon,
+                      name: p.name,
+                      tags: p.tags,
+                      greeting: p.greeting,
+                      clanName: p.clanName,
+                      standing: p.standing,
+                      standingGood: p.good,
+                      lit: s.factionId == selected,
                     ),
-                    child: Center(child: flag),
-                  ),
-                  const SizedBox(height: 4),
-                  // Scales down a little rather than cutting "The Wayfarer"
-                  // with an ellipsis on a 320 px phone.
-                  FittedBox(
-                    fit: BoxFit.scaleDown,
-                    child: Text(
-                      suitor.isWayfarer
-                          ? who
-                          : (faction?.shortFor(lang) ?? who),
-                      maxLines: 1,
-                      style: theme.textTheme.labelMedium
-                          ?.copyWith(color: color, fontWeight: FontWeight.w700),
-                    ),
-                  ),
-                  const SizedBox(height: 3),
-                  _Tag(
-                      text: trFor(lang, _giftTagKey(gift, skills)),
-                      color: color),
-                  const SizedBox(height: 3),
-                  Text(
-                    name,
-                    key: Key('offer_gift_${gift.id}'),
-                    textAlign: TextAlign.center,
-                    maxLines: 2,
-                    overflow: TextOverflow.ellipsis,
-                    style: theme.textTheme.titleSmall,
-                  ),
-                  if (preview.isNotEmpty) ...[
-                    const SizedBox(height: 3),
-                    Text(
-                      preview.first.text,
-                      textAlign: TextAlign.center,
-                      style: theme.textTheme.labelMedium?.copyWith(
-                          color: preview.first.delta >= 0
-                              ? good
-                              : theme.colorScheme.error,
-                          fontWeight: FontWeight.w600),
-                    ),
-                  ],
-                ],
-              ),
+                  );
+                }),
+            ],
+            keys: [for (final s in cards) Key('offer_suitor_${s.factionId}')],
+            lit: litCard,
+            onTap: onPick == null ? null : (i) => onPick!(cards[i].factionId),
+          ),
+        if (rows.isNotEmpty) ...[
+          const SizedBox(height: 6),
+          Padding(
+            padding: const EdgeInsets.only(left: 4, bottom: 4),
+            child: Text(
+              trFor(lang, 'offer_raises_header'),
+              key: const Key('offer_raises_header'),
+              style: TextStyle(
+                  fontFamily: InkFonts.system,
+                  fontSize: 10,
+                  color: Theme.of(context).colorScheme.onSurfaceVariant),
             ),
           ),
-        ),
-      ),
+          for (final s in rows)
+            Padding(
+              key: Key('offer_suitor_${s.factionId}'),
+              padding: const EdgeInsets.only(bottom: 6),
+              child: Builder(builder: (_) {
+                final p = parts(s);
+                final skill = skills[s.gift.id];
+                final base = skill is Map<String, dynamic>
+                    ? skill['ascendsSkillID']?.toString() ?? ''
+                    : '';
+                return peek(
+                  s,
+                  Semantics(
+                    button: true,
+                    selected: s.factionId == selected,
+                    label: '${p.clanName}: ${p.name}',
+                    child: ClanRaiseRow(
+                      tier: p.tier,
+                      color: p.color,
+                      flag: p.flag,
+                      icon: p.icon,
+                      name: p.name,
+                      tags: p.tags,
+                      raises: base.isNotEmpty
+                          ? trFor(lang, 'offer_ascension_line').replaceAll(
+                              '{skill}', skillDisplayName(base, language: lang))
+                          : trFor(lang, 'offer_raises_line'),
+                      greeting: p.greeting,
+                      clanName: p.clanName,
+                      standing: p.standing,
+                      standingGood: p.good,
+                      selected: s.factionId == selected,
+                      onTap: onPick == null ? null : () => onPick!(s.factionId),
+                    ),
+                  ),
+                );
+              }),
+            ),
+        ],
+      ],
     );
   }
 }
@@ -1133,7 +1171,7 @@ class _GiftIcon extends StatelessWidget {
 
 /// The picture inside a gift's tile: an object's or a skill's own, else a
 /// mark for its kind.
-Widget _giftGlyph(OfferGift gift, Color color) {
+Widget _giftGlyph(OfferGift gift, Color color, {double size = IconSize.s32}) {
   final IconData fallback = switch (gift.kind) {
     GiftKind.skill => Icons.auto_fix_high,
     GiftKind.object => Icons.inventory_2_outlined,
@@ -1144,12 +1182,12 @@ Widget _giftGlyph(OfferGift gift, Color color) {
     GiftKind.die => Icons.casino_outlined,
     GiftKind.perk => Icons.star_outline,
   };
-  final mark = Icon(fallback, size: IconSize.s32, color: color);
+  final mark = Icon(fallback, size: size, color: color);
   return switch (gift.kind) {
     GiftKind.object =>
-      PixelIcon(ItemIcons.pathFor(gift.id), size: IconSize.s32, fallback: mark),
-    GiftKind.skill => PixelIcon(SkillIcons.pathFor(gift.id),
-        size: IconSize.s32, fallback: mark),
+      PixelIcon(ItemIcons.pathFor(gift.id), size: size, fallback: mark),
+    GiftKind.skill =>
+      PixelIcon(SkillIcons.pathFor(gift.id), size: size, fallback: mark),
     _ => mark,
   };
 }
