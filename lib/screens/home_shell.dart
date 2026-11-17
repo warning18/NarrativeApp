@@ -332,8 +332,9 @@ class _HomeShellState extends ConsumerState<HomeShell> {
     );
 
     // At 320 px the five bar buttons left the title one or two letters
-    // ("Pe..."): narrower buttons give it room (#892).
-    final barButton = MediaQuery.sizeOf(context).width < 360
+    // ("Pe..."): narrower buttons give it room (#892); at 360 "Character"
+    // was still cut to "Chara...", so up to 400.
+    final barButton = MediaQuery.sizeOf(context).width < 400
         ? IconButton.styleFrom(
             minimumSize: const Size(36, 40),
             padding: EdgeInsets.zero,

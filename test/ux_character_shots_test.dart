@@ -54,7 +54,32 @@ void main() {
             'raceId': 'human',
             'professionId': 'warrior',
             'level': 8,
-            'characterName': 'Maren',
+            'characterName': 'Edda Voss',
+            'gold': 340,
+            'currentXP': 410,
+            'strength': 14,
+            'dexterity': 11,
+            'constitution': 13,
+            'intelligence': 8,
+            'wisdom': 9,
+            'perception': 12,
+            'luck': 7,
+            'charisma': 10,
+            'currentHealth': 41,
+            'maxHealth': 52,
+            'unlockedSkillIds': ['heavy_attack', 'shield_bash'],
+            'inventoryItemIds': [
+              'sword_t6',
+              'armor_leather',
+              'helm_iron_cap',
+              'boots_iron_shod'
+            ],
+            'equippedItemIds': [
+              'sword_t6',
+              'armor_leather',
+              'helm_iron_cap',
+              'boots_iron_shod'
+            ],
           })));
       await tester.runAsync(() =>
           container.read(appModeProvider.notifier).setMode(AppMode.inGame));

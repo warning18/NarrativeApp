@@ -34,6 +34,7 @@ import '../theme/palette.dart';
 import '../theme/icon_sizes.dart';
 import '../theme/pixel_chip.dart';
 import '../widgets/clan_offer_gifts.dart' show CardTier;
+import '../widgets/head_avatar.dart';
 import '../widgets/story_panel.dart' show StoryFrame;
 
 class CharacterScreen extends ConsumerWidget {
@@ -161,12 +162,9 @@ class _CharacterHeader extends ConsumerWidget {
                           band: 0.5,
                           padding: EdgeInsets.zero,
                           fill: theme.colorScheme.surfaceContainer,
+                          // The hero's own head (the letter when none).
                           child: Center(
-                            child: Text(
-                              name.characters.first.toUpperCase(),
-                              style: theme.textTheme.headlineMedium
-                                  ?.copyWith(color: ink.gold),
-                            ),
+                            child: HeadAvatar(id: 'hero', name: name, size: 44),
                           ),
                         ),
                       ),
