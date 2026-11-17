@@ -17,7 +17,9 @@ import '../utils/pixel_icons/game_pixel_icons.dart';
 import 'ability_radar.dart';
 import 'radar_chart.dart';
 import 'stat_sheet.dart';
+import 'clan_offer_gifts.dart' show CardTier;
 import 'feature_unlock.dart';
+import 'story_panel.dart' show StoryFrame, StoryGem;
 import '../theme/icon_sizes.dart';
 
 /// How many skills the Detail view lists before "All skills".
@@ -149,7 +151,7 @@ class _SkillsRadarCardState extends ConsumerState<SkillsRadarCard> {
     }
 
     Widget bar(String label, int value, int highest) => Padding(
-          padding: const EdgeInsets.symmetric(vertical: 2),
+          padding: const EdgeInsets.symmetric(vertical: 3),
           child: Row(
             children: [
               SizedBox(
@@ -170,13 +172,8 @@ class _SkillsRadarCardState extends ConsumerState<SkillsRadarCard> {
                   ),
                 ),
               ),
-              SizedBox(
-                width: 28,
-                child: Text('$value',
-                    textAlign: TextAlign.end,
-                    style: theme.textTheme.bodySmall
-                        ?.copyWith(fontWeight: FontWeight.w700)),
-              ),
+              const SizedBox(width: 8),
+              StoryGem('$value', radarGold, size: 30),
             ],
           ),
         );
@@ -244,13 +241,12 @@ class _SkillsRadarCardState extends ConsumerState<SkillsRadarCard> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        Material(
+        StoryFrame(
           key: const Key('character_skills_card'),
-          color: theme.colorScheme.surfaceContainer,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(4),
-            side: BorderSide(color: ink.seam),
-          ),
+          tier: CardTier.common,
+          band: 0.5,
+          padding: EdgeInsets.zero,
+          fill: theme.colorScheme.surfaceContainer,
           child: Padding(
             padding: const EdgeInsets.symmetric(vertical: 6),
             child: Column(
