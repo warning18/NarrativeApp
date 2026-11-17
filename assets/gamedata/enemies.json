@@ -1117,7 +1117,7 @@
       }
     ],
     "description": "A zealot of the Hollow Court, the inquisitors who kneel to no living master and pray to the tear in the Church’s own words.",
-    "description_fr": "Un fanatique de la Cour creuse, ces inquisiteurs qui ne s’agenouillent devant aucun maître vivant et prient la déchirure avec les mots mêmes de l’Église.",
+    "description_fr": "Un fanatique de la Cour Creuse, ces inquisiteurs qui ne s’agenouillent devant aucun maître vivant et prient la déchirure avec les mots mêmes de l’Église.",
     "enemyName_fr": "Zélote de la Cour Creuse",
     "biomes": [
       "fen"
@@ -1932,7 +1932,7 @@
       }
     ],
     "description": "An inquisitor of the Hollow Court, one of those who knelt to the tear for a generation and gathered its taken.",
-    "description_fr": "Un inquisiteur de la Cour creuse, de ceux qui se sont agenouillés devant la déchirure pendant une génération et ont rassemblé ses captifs.",
+    "description_fr": "Un inquisiteur de la Cour Creuse, de ceux qui se sont agenouillés devant la déchirure pendant une génération et ont rassemblé ses captifs.",
     "enemyName_fr": "Inquisiteur de la Cour Creuse",
     "biomes": [
       "fen"
