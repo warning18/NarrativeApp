@@ -8,6 +8,9 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.984.0+1020]
+- Quests: each quest sits on a nameplate in its clan's colour (the pin in the band, the followed quest outlined) and its story reads in the reading font, like the other story screens.
+
 ## [1.983.0+1019]
 
 - Chapter title: the card that inks in when a chapter begins wears the new look (UX, the user's pick "the mix" with the deep frames). The chapter's number stands large over its label, the card is held in the quiet deep frame, and the chapter's colour, its title, the note and the news from the coast are as they were. The card still lets taps through and stays as long as before.
