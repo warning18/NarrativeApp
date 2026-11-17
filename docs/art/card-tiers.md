@@ -35,3 +35,6 @@ Sheets: `docs/art/boards/card-five-tiers-1x.png` and `-2x.png` (Power Strike, Ar
 ## Honest notes
 - PixelLab is used as a stylist on a skeleton I drew in code: asked for a free card frame it gives no clean transparent centre, so the layout is fixed and PixelLab adds the metal, the rivets and the gem.
 - The common frame is plain on purpose; the rare one is the only one with a gem. The legendary halo is a ring in the backdrop plus a ray crown on the frame, not a ring around the card.
+
+## Deep frames for the story screens (17 November, 0 generations)
+`frame_common_dim.png`, `frame_uncommon_dim.png`, `frame_rare_dim.png`, `frame_epic_dim.png`, `frame_legendary_dim.png` in `art/pixellab-cards/final/`: PNG8, 104 x 172, the same frames with every light tone two steps down its Apollo ramp (UX-2's `deep` table, `docs/ux-shots/story-mix/remap_frames.py` on `claude/ux-2-story-mix`, applied by `art/pixellab-cards/dim.py`). A palette remap only. The offer cards keep the original frames, plates and backdrops, which are untouched. The common one is nearly the colour of the card behind it, as the table asks.
