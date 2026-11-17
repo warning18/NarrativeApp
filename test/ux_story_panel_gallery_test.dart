@@ -127,7 +127,7 @@ void main() {
           debugShowCheckedModeBanner: false,
           theme: buildAppTheme(AppPalette.stitchedInk
               .schemeFor(dark ? Brightness.dark : Brightness.light)),
-          home: Builder(builder: _page),
+          home: const Builder(builder: _page),
         ),
       ));
       for (var i = 0; i < 3; i++) {
