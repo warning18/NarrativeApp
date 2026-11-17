@@ -8,6 +8,9 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.986.0+1022]
+- Character: the portrait wears the rare deep frame, HP, Mana and Gold are pixel-cornered gems, the abilities (as plates with their value in a gem) and the alignment sit in the quiet deep frame, like the other story screens.
+
 ## [1.985.0+1021]
 - Journal: the Now, Scenes and What-changed cards wear the quiet deep frame (the scene you are at, the rich metal), the chapter headings the display face and the scenes the reading font, like the other story screens.
 

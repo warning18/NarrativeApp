@@ -85,15 +85,16 @@ void main() {
                 .writeAsBytesSync(bytes!.buffer.asUint8List());
           });
       await save('character');
-      for (final (i, name) in const [(1, 'gifts'), (2, 'pages')]) {
-        final tabs = find.descendant(
-            of: find.byType(TabBar), matching: find.byType(Tab));
-        if (tabs.evaluate().length > i) {
-          await tester.tap(tabs.at(i));
-          await settleApp(tester);
-          await tester.pump(const Duration(seconds: 1));
-          await save('character-$name');
-        }
+      for (final (key, name) in const [
+        ('character_view_detail', 'detail'),
+        ('character_view_skills', 'skills'),
+      ]) {
+        final seg = find.byKey(Key(key));
+        if (seg.evaluate().isEmpty) continue;
+        await tester.tap(seg);
+        await settleApp(tester);
+        await tester.pump(const Duration(seconds: 1));
+        await save('character-$name');
       }
     }
   });

@@ -19,7 +19,7 @@ import 'radar_chart.dart';
 import 'stat_sheet.dart';
 import 'clan_offer_gifts.dart' show CardTier;
 import 'feature_unlock.dart';
-import 'story_panel.dart' show StoryFrame;
+import 'story_panel.dart' show StoryFrame, StoryGem;
 import '../theme/icon_sizes.dart';
 
 /// How many skills the Detail view lists before "All skills".
@@ -151,7 +151,7 @@ class _SkillsRadarCardState extends ConsumerState<SkillsRadarCard> {
     }
 
     Widget bar(String label, int value, int highest) => Padding(
-          padding: const EdgeInsets.symmetric(vertical: 2),
+          padding: const EdgeInsets.symmetric(vertical: 3),
           child: Row(
             children: [
               SizedBox(
@@ -172,13 +172,8 @@ class _SkillsRadarCardState extends ConsumerState<SkillsRadarCard> {
                   ),
                 ),
               ),
-              SizedBox(
-                width: 28,
-                child: Text('$value',
-                    textAlign: TextAlign.end,
-                    style: theme.textTheme.bodySmall
-                        ?.copyWith(fontWeight: FontWeight.w700)),
-              ),
+              const SizedBox(width: 8),
+              StoryGem('$value', radarGold, size: 30),
             ],
           ),
         );
