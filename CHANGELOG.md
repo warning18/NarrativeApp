@@ -11,6 +11,9 @@ isn't reconstructable from git history alone.
 ## [1.988.0+1024]
 - Clans: each clan's standing card is a nameplate in the clan's colour with its emblem in the band, the sworn clan outlined in gold, like the other story screens.
 
+## [1.987.0+1023]
+- Inventory: what is worn wears its rarity's deep frame, in the equipment slots and in the bag's worn rows (common to legendary), like the other story screens.
+
 ## [1.986.0+1022]
 - Character: the portrait wears the rare deep frame, HP, Mana and Gold are pixel-cornered gems, the abilities (as plates with their value in a gem) and the alignment sit in the quiet deep frame, like the other story screens. The portrait is the hero's own head (the letter only when there is none), and the top bar's narrower buttons now reach 400 dp so "Character" is no longer cut to "Chara..." at 360.
 
