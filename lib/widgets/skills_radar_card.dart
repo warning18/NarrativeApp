@@ -17,7 +17,9 @@ import '../utils/pixel_icons/game_pixel_icons.dart';
 import 'ability_radar.dart';
 import 'radar_chart.dart';
 import 'stat_sheet.dart';
+import 'clan_offer_gifts.dart' show CardTier;
 import 'feature_unlock.dart';
+import 'story_panel.dart' show StoryFrame;
 import '../theme/icon_sizes.dart';
 
 /// How many skills the Detail view lists before "All skills".
@@ -244,13 +246,12 @@ class _SkillsRadarCardState extends ConsumerState<SkillsRadarCard> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        Material(
+        StoryFrame(
           key: const Key('character_skills_card'),
-          color: theme.colorScheme.surfaceContainer,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(4),
-            side: BorderSide(color: ink.seam),
-          ),
+          tier: CardTier.common,
+          band: 0.5,
+          padding: EdgeInsets.zero,
+          fill: theme.colorScheme.surfaceContainer,
           child: Padding(
             padding: const EdgeInsets.symmetric(vertical: 6),
             child: Column(
