@@ -46,9 +46,12 @@ import 'npc_detail_screen.dart';
 import 'shop_detail_screen.dart';
 import 'port_screen.dart';
 import '../theme/palette.dart';
+import '../theme/stitched_ink.dart' show InkFonts;
 import '../widgets/ink_loading.dart';
 import '../theme/icon_sizes.dart';
 import '../widgets/pixel_glyph.dart';
+import '../widgets/story_panel.dart' show StoryPlate, storyInkOn;
+import '../data/story_plates.dart' show questClanOf;
 
 class PlayScreen extends ConsumerWidget {
   const PlayScreen({super.key});
@@ -583,6 +586,7 @@ class _QuestList extends ConsumerWidget {
           style: Theme.of(context).textTheme.bodyMedium);
     }
     final followedId = followedQuestIdOf(session);
+    final clanData = ref.watch(clanDataProvider);
 
     return Column(
       children: keys.map((questId) {
@@ -649,48 +653,46 @@ class _QuestList extends ConsumerWidget {
         }
 
         final theme = Theme.of(context);
-        return Card(
-          shape: isFollowed
-              ? RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(12),
-                  side: BorderSide(color: theme.colorScheme.primary, width: 2),
-                )
-              : null,
-          child: Padding(
-            padding: const EdgeInsets.all(16),
+        final clanFaction = clanData.factions[questClanOf(quest)];
+        final plateColor = clanFaction == null
+            ? (category == 'Main'
+                ? Palette.goldDark
+                : theme.colorScheme.outline)
+            : Color(clanFaction.color);
+        return Padding(
+          padding: const EdgeInsets.symmetric(vertical: 4),
+          child: StoryPlate(
+            key: ValueKey('quest_plate_$questId'),
+            title: questName,
+            color: plateColor,
+            frame: isFollowed ? theme.colorScheme.primary : null,
+            lead: Icon(questIcon(category, firstObjectiveType),
+                size: IconSize.s16, color: storyInkOn(plateColor)),
+            trail: isActive && !isEditMode
+                ? InkResponse(
+                    onTap: isFollowed
+                        ? null
+                        : () => ref
+                            .read(playerSessionProvider.notifier)
+                            .trackQuest(questId),
+                    child: Tooltip(
+                      message: isFollowed
+                          ? tr(ref, 'quests_section_following')
+                          : tr(ref, 'quest_follow_button'),
+                      child: Icon(
+                          isFollowed ? Icons.push_pin : Icons.push_pin_outlined,
+                          size: IconSize.s16,
+                          color: storyInkOn(plateColor)),
+                    ),
+                  )
+                : null,
+            padding: const EdgeInsets.all(14),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Row(
-                  children: [
-                    Icon(questIcon(category, firstObjectiveType)),
-                    const SizedBox(width: 12),
-                    Expanded(
-                      child:
-                          Text(questName, style: theme.textTheme.titleMedium),
-                    ),
-                    // Follow a quest in progress: its goal shows above the
-                    // story.
-                    if (isActive && !isEditMode)
-                      IconButton(
-                        tooltip: isFollowed
-                            ? tr(ref, 'quests_section_following')
-                            : tr(ref, 'quest_follow_button'),
-                        icon: Icon(
-                          isFollowed ? Icons.push_pin : Icons.push_pin_outlined,
-                          color: isFollowed ? theme.colorScheme.primary : null,
-                        ),
-                        onPressed: isFollowed
-                            ? null
-                            : () => ref
-                                .read(playerSessionProvider.notifier)
-                                .trackQuest(questId),
-                      ),
-                  ],
-                ),
                 if (category != null && category.isNotEmpty)
                   Padding(
-                    padding: const EdgeInsets.only(left: 36),
+                    padding: EdgeInsets.zero,
                     child: Text(
                       tr(ref, category == 'Main' ? 'quest_main' : 'quest_side'),
                       style: theme.textTheme.labelSmall
@@ -702,7 +704,7 @@ class _QuestList extends ConsumerWidget {
                   Text(
                     dialogue,
                     style: theme.textTheme.bodyMedium?.copyWith(
-                      fontFamily: 'serif',
+                      fontFamily: InkFonts.prose,
                       height: 1.55,
                       letterSpacing: 0.1,
                     ),

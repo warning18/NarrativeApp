@@ -9,8 +9,11 @@ import '../providers/geography_provider.dart';
 import '../providers/player_session_provider.dart';
 import '../providers/politics_provider.dart' show coastGateWorldProvider;
 import '../utils/game_icons.dart' show npcKindIcon;
+import '../theme/stitched_ink.dart';
+import '../widgets/clan_offer_gifts.dart' show CardTier;
 import '../widgets/head_avatar.dart';
 import '../widgets/people_widgets.dart';
+import '../widgets/story_panel.dart' show StoryFrame;
 import '../theme/icon_sizes.dart';
 
 /// One person's page (v1.204, see people_codex.dart): who they are (icon,
@@ -54,87 +57,88 @@ class NpcDetailScreen extends ConsumerWidget {
         : npc['dialogueLines'] as List? ?? const [];
     final lines = linesRaw.map((e) => e.toString()).toList();
     final talkedTo = session.talkedToNpcIds.contains(npcId);
+    // The clan's colour on the quotes' rail, the page's seam when they have none.
+    final clanFaction = clanData.factions[npc['faction']?.toString() ?? ''];
+    final railColor = clanFaction == null
+        ? InkColors.of(context).seam
+        : Color(clanFaction.color);
 
     return Scaffold(
       appBar: AppBar(title: Text(npcName)),
       body: ListView(
-        padding: const EdgeInsets.all(16),
+        padding: const EdgeInsets.fromLTRB(24, 16, 24, 16),
         children: [
-          Card(
-            child: Padding(
-              padding: const EdgeInsets.all(16),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Row(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      // Their head when there is one (the sprite's crop), else
-                      // the mark of their kind.
-                      HeadAvatar(
-                        id: npcId,
-                        name: npcName,
-                        size: 48,
-                        fallback: Icon(npcKindIcon(npc['kind']?.toString()),
-                            size: IconSize.s32),
-                      ),
-                      const SizedBox(width: 12),
-                      Expanded(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(npcName, style: theme.textTheme.titleLarge),
-                            if (role.isNotEmpty)
-                              Text(role,
-                                  key: const Key('npc_role'),
-                                  style: theme.textTheme.bodyMedium),
-                            const SizedBox(height: 4),
-                            Wrap(
-                              spacing: 8,
-                              runSpacing: 4,
-                              crossAxisAlignment: WrapCrossAlignment.center,
-                              children: [
-                                NpcFactionTag(
-                                    data: clanData,
-                                    factionId: npc['faction']?.toString() ?? '',
-                                    language: language),
-                                if (place.isNotEmpty)
-                                  Text(place,
-                                      key: const Key('npc_place'),
-                                      style: theme.textTheme.bodySmall
-                                          ?.copyWith(color: muted)),
-                                Text(
-                                  tr(ref, 'npc_met_in_chapter')
-                                      .replaceAll('{n}', '${npcChapter(npc)}'),
-                                  key: const Key('npc_met_chapter'),
-                                  style: theme.textTheme.bodySmall
-                                      ?.copyWith(color: muted),
-                                ),
-                              ],
-                            ),
-                          ],
-                        ),
-                      ),
-                    ],
-                  ),
-                  if (description.isNotEmpty) ...[
-                    const SizedBox(height: 12),
-                    Text(description, style: theme.textTheme.bodyMedium),
-                  ],
-                  if (want.isNotEmpty) ...[
-                    const SizedBox(height: 12),
-                    Text(tr(ref, 'npc_want_label'),
-                        style: theme.textTheme.labelLarge),
-                    const SizedBox(height: 2),
-                    Text(want,
-                        key: const Key('npc_want'),
-                        style: theme.textTheme.bodyMedium
-                            ?.copyWith(fontStyle: FontStyle.italic)),
-                  ],
-                ],
+          // The page, not a card (the story's mix: quiet type for reading):
+          // their face in the quiet frame, the name, the role, the clan.
+          Center(
+            child: StoryFrame(
+              tier: CardTier.common,
+              band: 0.6,
+              padding: const EdgeInsets.all(6),
+              // Their head when there is one (the sprite's crop), else the
+              // mark of their kind.
+              child: HeadAvatar(
+                id: npcId,
+                name: npcName,
+                size: 76,
+                fallback: Icon(npcKindIcon(npc['kind']?.toString()),
+                    size: IconSize.s48),
               ),
             ),
           ),
+          const SizedBox(height: 10),
+          Center(
+            child: Text(npcName,
+                textAlign: TextAlign.center,
+                style: theme.textTheme.headlineSmall
+                    ?.copyWith(fontFamily: InkFonts.display)),
+          ),
+          if (role.isNotEmpty)
+            Center(
+              child: Text(role,
+                  key: const Key('npc_role'),
+                  textAlign: TextAlign.center,
+                  style: theme.textTheme.bodyMedium),
+            ),
+          const SizedBox(height: 6),
+          Wrap(
+            alignment: WrapAlignment.center,
+            spacing: 8,
+            runSpacing: 4,
+            crossAxisAlignment: WrapCrossAlignment.center,
+            children: [
+              NpcFactionTag(
+                  data: clanData,
+                  factionId: npc['faction']?.toString() ?? '',
+                  language: language),
+              if (place.isNotEmpty)
+                Text(place,
+                    key: const Key('npc_place'),
+                    style: theme.textTheme.bodySmall?.copyWith(color: muted)),
+              Text(
+                tr(ref, 'npc_met_in_chapter')
+                    .replaceAll('{n}', '${npcChapter(npc)}'),
+                key: const Key('npc_met_chapter'),
+                style: theme.textTheme.bodySmall?.copyWith(color: muted),
+              ),
+            ],
+          ),
+          Divider(height: 28, color: InkColors.of(context).seam),
+          if (description.isNotEmpty)
+            Text(description,
+                style: theme.textTheme.bodyLarge
+                    ?.copyWith(fontFamily: InkFonts.prose, height: 1.55)),
+          if (want.isNotEmpty) ...[
+            const SizedBox(height: 14),
+            Text(tr(ref, 'npc_want_label'), style: theme.textTheme.labelLarge),
+            const SizedBox(height: 2),
+            Text(want,
+                key: const Key('npc_want'),
+                style: theme.textTheme.bodyLarge?.copyWith(
+                    fontFamily: InkFonts.prose,
+                    fontStyle: FontStyle.italic,
+                    height: 1.5)),
+          ],
           if (passed.isNotEmpty) ...[
             const SizedBox(height: 16),
             Text(tr(ref, 'npc_passed_between'),
@@ -184,16 +188,20 @@ class NpcDetailScreen extends ConsumerWidget {
           const SizedBox(height: 16),
           for (final line in lines)
             Padding(
-              padding: const EdgeInsets.only(bottom: 10),
-              child: Card(
-                color: theme.colorScheme.surfaceContainerHighest,
-                child: Padding(
-                  padding: const EdgeInsets.all(12),
-                  child: Text(
-                    line,
-                    style: theme.textTheme.bodyMedium
-                        ?.copyWith(fontStyle: FontStyle.italic),
+              padding: const EdgeInsets.only(bottom: 14),
+              child: Container(
+                padding: const EdgeInsets.only(left: 12),
+                decoration: BoxDecoration(
+                  border: Border(
+                    left: BorderSide(color: railColor, width: 3),
                   ),
+                ),
+                child: Text(
+                  line,
+                  style: theme.textTheme.bodyLarge?.copyWith(
+                      fontFamily: InkFonts.prose,
+                      fontStyle: FontStyle.italic,
+                      height: 1.5),
                 ),
               ),
             ),

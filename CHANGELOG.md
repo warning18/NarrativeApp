@@ -8,6 +8,31 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.984.0+1020]
+- Quests: each quest sits on a nameplate in its clan's colour (the pin in the band, the followed quest outlined) and its story reads in the reading font, like the other story screens. The turn-in dialog's choices weigh like the Journey choice cards (a quiet frame for alignment or politics, the rich metal for a claim, a pledge or a big approval shift).
+
+## [1.983.0+1019]
+
+- Chapter title: the card that inks in when a chapter begins wears the new look (UX, the user's pick "the mix" with the deep frames). The chapter's number stands large over its label, the card is held in the quiet deep frame, and the chapter's colour, its title, the note and the news from the coast are as they were. The card still lets taps through and stays as long as before.
+## [1.982.0+1018]
+
+- Journey: in a scene played in the street before a door, the places list names each way by its own words, as its pin on the street does. The Saltmouth market listed "The captain's moorings" twice (both ways stand before that house); it now lists "Walk the stalls before dealing with Vane" and "Lift what you can from an unwatched crate". A way inside a building is still listed by the building's name.
+
+## [1.981.0+1017]
+
+- Story reading screens: choices and NPCs wear the new look (UX, the user's pick "the mix" with the deep frames; the first of its screens). A choice card shows how much its choice weighs (Core's `choiceWeightOf`, v1.977): a plain choice is the card as it was; a weighty one (alignment, a companion's approval, standing, an item or a quest) wears its clan's accent, a rail and a tint in the quiet frame, gold when no clan is touched; a major one (a claim, a pledge, the Throne, a companion's approval of 5 or more, a banner piece) wears the rich metal, gilded, and gold for a banner piece. A shut way stays plain. An NPC's page is now a page: their face in the quiet frame, the name, the role, the clan and where they are, the words at a reading size, and what they say on a rail in their clan's colour. Nothing about what a choice does changes.
+## [1.980.0+1016]
+
+- Fights: two new duo techniques, as the user asked, for the two companion pairs that meet most and had none (Core's combinations review). **Hold and Hallow** (Kelda and Maren): every party member gains a guard. **The Gap in the Glare** (Maren and Sable): the target is struck and stunned for a turn. They work like every duo: both companions in the fight at Friendly approval, each keeping a signature face in the same round; their strength comes from the pair's base damage, as for the others. An older pair keeps its turn when a companion could join two. Measured on 100 simulated runs: parties with a duo pair at the Tear Herald go from 14 to 79 (71 with both companions friendly). Names and lines by Narrative.
+
+## [1.979.0+1015]
+
+- Clans: fusions come sooner, as the user asked (Core's combinations review: 7 of the 10 fusions were never offered in 200 simulated runs). A clan now offers a fusion once you are its Friend and the partner clan's Friend too (was Trusted with both), the same step as an ascension. Viper Kiss now fuses Shadow Step and Poisoned Blade (was Backstab and Poisoned Blade, the very pair the merge Venomous Ambush takes), so the two no longer compete for the same skills; it comes from the same two branches, the shadow and the venom, as before. The clan screen's hint says Friend.
+
+## [1.978.0+1014]
+
+- Story panels: the kit for the story side's new look (UX, the user's pick "the mix" with the deep frames; docs/proposals/story-mix.md). `StoryFrame` dresses any box in Art's rarity frames (nine-sliced, so the corners and each tier's ornaments, the gem, the crown and the leaves, keep their size and only the plain metal stretches); it wears `frame_<tier>_dim.png`, Art's deep re-tone of the frames (every tier two steps down the Apollo ramps, no generation; the five files are in `assets/visuals/cards/`), and the original frames when a dim file is missing. `StoryPlate` and `StoryGem` are the fight blocks' nameplate and gems for the story's state screens, and `storyWeightFrame` maps a choice's weight (`lib/data/story_plates.dart`) to its frame: plain has none, weighty the clan's accent in the quiet frame, major the rich metal. Nothing on a screen changes yet; the screens come one by one.
+
 ## [1.977.0+1013]
 
 - Story: what each choice's and quest's plate shows, for UX-2's story redesign (display only; no rule changes). A choice now tells which clan its effects touch (its claim, an offer, a pledge, or the standing it moves most; none when its consequences are hidden) and how much it weighs: plain, weighty (alignment, a companion's approval, politics, an item or a quest) or major (a claim, a pledge, the Throne, a banner piece, an ally lost, or a companion's approval moved by 5 or more). Of the story's 1,156 choices, 259 touch a clan; 622 are plain, 476 weighty and 58 major. Quests get an optional display `clan` (empty for now: Narrative fills it; proposals in docs/proposals/quest-clans.md); a quest without one wears its faction's plate, or the neutral one. The plates themselves come with UX-2's change.
