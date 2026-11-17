@@ -378,11 +378,26 @@ extension _JourneyChoices on _JourneyViewState {
             : enemyRoster(ids, enemies);
     final to = step.tags.destination;
     final cat = journeyPinCatOf(step.kind, step.questTie);
+    // What the choice weighs and the clan it touches (Core's story_plates):
+    // the card's frame follows.
+    final clanData = ref.watch(clanDataProvider);
+    final clanId = choiceClanOf(choice,
+        subclanClans: {
+          for (final sub in clanData.subclans.values) sub.id: sub.clanId,
+        },
+        clans: clanData.factions.keys.toSet());
+    final weight = choiceWeightOf(choice);
+    final clanFaction = clanData.factions[clanId];
     return Opacity(
       // The choice taken stays lit; the others dim while it plays out.
       opacity: _busy && _pressed != null && _pressed != i ? 0.45 : 1,
       child: ChoiceCard(
         key: ValueKey('journey_choice_card_$i'),
+        weight: step.locked ? ChoiceWeight.plain : weight,
+        clanColor: clanFaction == null ? null : Color(clanFaction.color),
+        richTier: (choice.grantsBannerPieceId ?? '').isNotEmpty
+            ? CardTier.legendary
+            : CardTier.epic,
         icon: step.onCard ? _iconOf(step) : step.glyph.icon,
         leading: step.onCard || cat == null
             ? null
