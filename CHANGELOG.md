@@ -8,6 +8,10 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.983.0+1019]
+
+- Chapter title: the card that inks in when a chapter begins wears the new look (UX, the user's pick "the mix" with the deep frames). The chapter's number stands large over its label, the card is held in the quiet deep frame, and the chapter's colour, its title, the note and the news from the coast are as they were. The card still lets taps through and stays as long as before.
+
 ## [1.981.0+1017]
 
 - Story reading screens: choices and NPCs wear the new look (UX, the user's pick "the mix" with the deep frames; the first of its screens). A choice card shows how much its choice weighs (Core's `choiceWeightOf`, v1.977): a plain choice is the card as it was; a weighty one (alignment, a companion's approval, standing, an item or a quest) wears its clan's accent, a rail and a tint in the quiet frame, gold when no clan is touched; a major one (a claim, a pledge, the Throne, a companion's approval of 5 or more, a banner piece) wears the rich metal, gilded, and gold for a banner piece. A shut way stays plain. An NPC's page is now a page: their face in the quiet frame, the name, the role, the clan and where they are, the words at a reading size, and what they say on a rail in their clan's colour. Nothing about what a choice does changes.
