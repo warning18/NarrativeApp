@@ -199,6 +199,25 @@ void main() {
     expect(
         chart.buildings.firstWhere((b) => b.key == 'alster_b005').story, true);
 
+    // The list under the street names each way by its own words, as its
+    // pin is, not by the house all three stand before (v1.982: the market
+    // listed "The captain's moorings" twice).
+    await tester.tap(find.byKey(const Key('journey_tab_district')));
+    await tester.pump(const Duration(seconds: 1));
+    final rowTexts = <String>[
+      for (var i = 0; i < 3; i++)
+        for (final key in [
+          ValueKey('journey_city_pin_$i'),
+          ValueKey('journey_city_row_$i'),
+        ])
+          for (final t in tester.widgetList<Text>(find.descendant(
+              of: find.byKey(key), matching: find.byType(Text))))
+            if ((t.data ?? '').isNotEmpty) t.data!,
+    ];
+    expect(rowTexts, hasLength(3), reason: '$rowTexts');
+    expect(rowTexts.toSet(), hasLength(3), reason: '$rowTexts');
+    expect(rowTexts, isNot(contains('The family house')));
+
     // Inside the ruins (470), the room again.
     play.jumpTo('470');
     await settleApp(tester);

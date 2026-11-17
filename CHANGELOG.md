@@ -11,6 +11,9 @@ isn't reconstructable from git history alone.
 ## [1.983.0+1019]
 
 - Chapter title: the card that inks in when a chapter begins wears the new look (UX, the user's pick "the mix" with the deep frames). The chapter's number stands large over its label, the card is held in the quiet deep frame, and the chapter's colour, its title, the note and the news from the coast are as they were. The card still lets taps through and stays as long as before.
+## [1.982.0+1018]
+
+- Journey: in a scene played in the street before a door, the places list names each way by its own words, as its pin on the street does. The Saltmouth market listed "The captain's moorings" twice (both ways stand before that house); it now lists "Walk the stalls before dealing with Vane" and "Lift what you can from an unwatched crate". A way inside a building is still listed by the building's name.
 
 ## [1.981.0+1017]
 
