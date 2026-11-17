@@ -142,8 +142,12 @@ class JournalScreen extends ConsumerWidget {
             title: Text(tr(ref, 'journal_title')),
             actions: const [TourInfoButton(topic: TutorialTopic.journal)],
             bottom: TabBar(
-                isScrollable: true,
-                tabAlignment: TabAlignment.start,
+                // Four tabs fit a 360 dp phone, a long label on two lines.
+                labelPadding: const EdgeInsets.symmetric(horizontal: 3),
+                labelStyle:
+                    const TextStyle(fontFamily: InkFonts.system, fontSize: 11),
+                unselectedLabelStyle:
+                    const TextStyle(fontFamily: InkFonts.system, fontSize: 11),
                 tabs: [
                   Tab(
                       key: const ValueKey('journal_now_tab'),
