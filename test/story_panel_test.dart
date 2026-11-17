@@ -67,6 +67,10 @@ void main() {
       (tester) async {
     await tester.runAsync(StoryFrames.instance.preload);
     expect(StoryFrames.instance.imageFor(CardTier.rare)?.width, 104);
+    // Art's deep re-tone is in the bundle, so every tier loads the dim art.
+    for (final tier in CardTier.values) {
+      expect(StoryFrames.instance.dim[tier], isTrue, reason: tier.name);
+    }
     await tester.pumpWidget(const MaterialApp(
       home: Scaffold(
         body: Center(

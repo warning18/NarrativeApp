@@ -8,6 +8,10 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.978.0+1014]
+
+- Story panels: the kit for the story side's new look (UX, the user's pick "the mix" with the deep frames; docs/proposals/story-mix.md). `StoryFrame` dresses any box in Art's rarity frames (nine-sliced, so the corners and each tier's ornaments, the gem, the crown and the leaves, keep their size and only the plain metal stretches); it wears `frame_<tier>_dim.png`, Art's deep re-tone of the frames (every tier two steps down the Apollo ramps, no generation; the five files are in `assets/visuals/cards/`), and the original frames when a dim file is missing. `StoryPlate` and `StoryGem` are the fight blocks' nameplate and gems for the story's state screens, and `storyWeightFrame` maps a choice's weight (`lib/data/story_plates.dart`) to its frame: plain has none, weighty the clan's accent in the quiet frame, major the rich metal. Nothing on a screen changes yet; the screens come one by one.
+
 ## [1.977.0+1013]
 
 - Story: what each choice's and quest's plate shows, for UX-2's story redesign (display only; no rule changes). A choice now tells which clan its effects touch (its claim, an offer, a pledge, or the standing it moves most; none when its consequences are hidden) and how much it weighs: plain, weighty (alignment, a companion's approval, politics, an item or a quest) or major (a claim, a pledge, the Throne, a banner piece, an ally lost, or a companion's approval moved by 5 or more). Of the story's 1,156 choices, 259 touch a clan; 622 are plain, 476 weighty and 58 major. Quests get an optional display `clan` (empty for now: Narrative fills it; proposals in docs/proposals/quest-clans.md); a quest without one wears its faction's plate, or the neutral one. The plates themselves come with UX-2's change.
