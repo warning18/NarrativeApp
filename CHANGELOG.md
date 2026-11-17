@@ -8,6 +8,10 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.978.0+1014]
+
+- Story: what each choice's and quest's plate shows, for UX-2's story redesign (display only; no rule changes). A choice now tells which clan its effects touch (its claim, an offer, a pledge, or the standing it moves most; none when its consequences are hidden) and how much it weighs: plain, weighty (alignment, a companion's approval, politics, an item or a quest) or major (a claim, a pledge, the Throne, a banner piece, an ally lost, or a companion's approval moved by 5 or more). Of the story's 1,156 choices, 259 touch a clan; 622 are plain, 476 weighty and 58 major. Quests get an optional display `clan` (empty for now: Narrative fills it; proposals in docs/proposals/quest-clans.md); a quest without one wears its faction's plate, or the neutral one. The plates themselves come with UX-2's change.
+
 ## [1.976.0+1012]
 
 - Clan offer: each clan's card has a backdrop of its own (UX, the user's pick "the clan backdrop", Art's PixelLab pieces). The art zone behind the banner and the gift's plate is the clan's picture in its colours with a faint motif of its banner (the Lantern Dominion, the Salt Crows, the Cinder Compact, the Mire Courts, the Grey Vigil, the Ashen Penitents, and the Wayfarer), in place of the shared tier backdrop; the tier's frame and plate stay as they were, so the rarity still reads from the frame. A clan without a backdrop keeps the tier's. The effect line is back on the card: one gold line under the tags saying what the gift does (a skill's damage, multiplier, healing or mana; a sign's first effect; an object's stats; a title's or a boon's first effect; a perk's words). No rule or number changes.
