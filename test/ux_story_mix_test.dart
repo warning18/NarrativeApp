@@ -412,6 +412,146 @@ class Mix {
         ));
   }
 
+  /// A scene with choices at Core's three weights: plain (the number and the
+  /// words), weighty (a clan accent: its rail, emblem and tint, in the quiet
+  /// frame) and major (the rich metal: a claim, a pledge, a banner piece).
+  static Widget sceneLevels(BuildContext c,
+      {required String band,
+      required String location,
+      required String text,
+      required String prompt,
+      required List<(String, int, String?, String?, Tier)> choices}) {
+    final ink = InkColors.of(c);
+    final scheme = Theme.of(c).colorScheme;
+    return _phone(c,
+        chapter: 'x',
+        title: location,
+        body: ListView(
+          physics: const NeverScrollableScrollPhysics(),
+          padding: const EdgeInsets.fromLTRB(22, 0, 22, 8),
+          children: [
+            const SizedBox(height: 14),
+            Framed(
+                tier: Tier.common,
+                band: 0.5,
+                padding: EdgeInsets.zero,
+                child: _png('assets/visuals/scenes/$band.png',
+                    w: double.infinity, h: 112)),
+            const SizedBox(height: 18),
+            Text(text, style: _prose(c, 17, h: 1.55)),
+            DirC._rule(c),
+            Text(prompt,
+                style: _prose(c, 15.5,
+                    italic: true, color: scheme.onSurfaceVariant)),
+            const SizedBox(height: 10),
+            for (final (i, ch) in choices.indexed) ...[
+              _level(c, '${i + 1}', ch.$1, ch.$2, ch.$3, ch.$4, ch.$5),
+              const SizedBox(height: 8),
+            ],
+            const SizedBox(height: 10),
+            _button(c, 'Back to the map', ink.gold, icon: Icons.map_outlined),
+          ],
+        ));
+  }
+
+  static Widget _level(BuildContext c, String n, String text, int level,
+      String? clan, String? tag, Tier major) {
+    final ink = InkColors.of(c);
+    final words = Expanded(child: Text(text, style: _prose(c, 17, h: 1.35)));
+    final lead = SizedBox(
+        width: 22,
+        child: clan == null
+            ? Text(n, style: _display(c, 18, color: ink.gold))
+            : _emblem(clan, 18));
+    final tagText = tag == null
+        ? const SizedBox.shrink()
+        : Padding(
+            padding: const EdgeInsets.only(left: 6, top: 3),
+            child: Text(tag, style: _sys(c, 9.5, color: ink.voidColor)));
+    final row = Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [lead, const SizedBox(width: 8), words, tagText]);
+    switch (level) {
+      case 0:
+        return Padding(
+            padding: const EdgeInsets.symmetric(vertical: 8), child: row);
+      case 1:
+        // A clan accent: the clan's rail and tint, the quiet frame.
+        return Framed(
+          tier: Tier.common,
+          band: 0.6,
+          padding: const EdgeInsets.symmetric(horizontal: 2),
+          fill: _clanColor(clan ?? 'dominion').withValues(alpha: 0.16),
+          child: IntrinsicHeight(
+            child:
+                Row(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
+              Container(width: 3, color: _clanColor(clan ?? 'dominion')),
+              const SizedBox(width: 8),
+              Expanded(child: row),
+            ]),
+          ),
+        );
+      default:
+        // Major: the rich metal, with the clan's tint under it.
+        return Framed(
+          tier: major,
+          band: 0.8,
+          padding: const EdgeInsets.symmetric(horizontal: 2, vertical: 2),
+          fill: clan == null
+              ? ink.gold.withValues(alpha: 0.10)
+              : _clanColor(clan).withValues(alpha: 0.18),
+          child: row,
+        );
+    }
+  }
+
+  static Widget tribunal(BuildContext c) => sceneLevels(c,
+          band: 'reliquary_tribunal_chapel',
+          location: 'The Reliquary',
+          text:
+              'The Tribunal had lost its Spire but not its habits. It sat now in a reliquary chapel in the Quarter, three judges in violet above a voidkin prisoner in chains. It wanted a witness to say what he was, because the Dominion hangs no one without one, the eldest judge said; a witness is what makes a hanging a verdict.',
+          prompt:
+              'The prisoner was charged with letting something through. What do you say?',
+          choices: const [
+            (
+              'Tell the truth: he was fighting it',
+              1,
+              'vigil',
+              'Vigil +10 · Dominion −5',
+              Tier.epic
+            ),
+            (
+              'Swear that he let it through',
+              1,
+              'dominion',
+              'Dominion +15 · Vigil −10',
+              Tier.epic
+            ),
+          ]);
+
+  static Widget throne(BuildContext c) => sceneLevels(c,
+          band: 'beyond_the_tear',
+          location: 'Beyond the tear',
+          text:
+              'The Sovereign fell, if fell is the word for something that had never properly stood, and the tear behind its throne shivered like a held breath finally let go. The grey it had worn as a crown since the first night came away in my hands: the sixth piece, a circlet of cloth, light as ash and warm as a hand.',
+          prompt: 'The Shroud is whole. What do you do with the throne?',
+          choices: const [
+            (
+              'Step back through the tear',
+              2,
+              null,
+              'Banner piece',
+              Tier.legendary
+            ),
+            (
+              'Cut the taken’s names from the throne first',
+              2,
+              null,
+              'Banner piece · Alignment +1',
+              Tier.legendary
+            ),
+          ]);
+
   static Widget npc(BuildContext c) {
     final ink = InkColors.of(c);
     const clan = 'dominion';
@@ -845,6 +985,8 @@ void main() {
           .schemeFor(dark ? Brightness.dark : Brightness.light);
       final screens = <String, Widget Function(BuildContext)>{
         'scene': Mix.scene,
+        'tribunal': Mix.tribunal,
+        'throne': Mix.throne,
         'npc': Mix.npc,
         'chapter': Mix.chapter,
         'quests': Mix.quests,

@@ -38,3 +38,11 @@ Art's frames read pale because their light tones are the top of the ramps: iron 
 ## Needs from Core and Narrative (Manager is asking)
 - A choice's clan and weight, read from its existing standing and alignment effects, else a `clan` field per choice.
 - A quest's clan: a `clan` field on a quest.
+
+## Core's three weights on the choices (the next pictures)
+Core's `choiceWeightOf` gives plain, weighty or major, `choiceClanOf` a faction or none (about 260 of the 1156 choices get a clan), and `questClanOf` a quest's plate colour; they ship in `lib/data/story_plates.dart` (v1.978), after the kit. The mapping I drew:
+- **plain**: the number and the words, no frame.
+- **weighty**: a clan accent: the clan's rail, emblem and tint in the quiet (deep common) frame; with no clan, the gold accent.
+- **major** (a claim, a pledge, the throne, a companion's approval of 5 or more, a banner piece): the rich rarity metal, the clan's tint under it; epic (gilded) for a claim or a pledge, legendary (gold) for a banner piece.
+`docs/ux-shots/story-mix/levels-dark.png` and `levels-light.png` show it on three real scenes: Saltmouth's market (plain and weighty, a Salt Crows choice), the Reliquary tribunal (two weighty clan choices: Vigil and Dominion, the standing each moves), and Beyond the tear (two major choices that grant the sixth banner piece). The same pictures alone: `weighted-<scene|tribunal|throne>-<dark|light>.png`. The quests' plates already take the clan colour (`questClanOf`); a quest with no clan gets the neutral gold plate.
+Note: on a long row the gold and legendary frames stretch their ornaments; the kit should draw a frame's corner and edge ornaments at their own size and repeat or stretch only the plain edge (a small change in the nine-slice painter), which the mock does not do.
