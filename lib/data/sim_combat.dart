@@ -317,6 +317,70 @@ class SimCharacter {
     }
   }
 
+  /// The die a player who swaps per fight holds against [foes] (the setup
+  /// screen's choice, which stars the die hitting a known weakness): of the
+  /// die in play and the dice owned that carry an element some foe is weak
+  /// to, the one worth most against them ([simDieValueAgainst]). Rolled for
+  /// the next fight only; the caller puts the die back after it. Returns
+  /// whether an owned die matches a weakness, and the die swapped to (null:
+  /// the die in play is kept, as when no owned die matches).
+  ({bool matchOwned, String? swappedTo}) holdDieAgainst(
+      List<Map<String, dynamic>> foes, Map<String, dynamic> skills) {
+    if (foes.isEmpty) return (matchOwned: false, swappedTo: null);
+    final caster = knownSpells.isNotEmpty;
+    final currentMatches =
+        simDieHitsWeakness(diceFaces, diceSkillAssignments, skills, foes);
+    var best = simDieValueAgainst(diceFaces, diceSkillAssignments, skills, foes,
+        damage: baseDamage, caster: caster);
+    var matchOwned = currentMatches;
+    ({
+      String id,
+      List<Map<String, dynamic>> faces,
+      Map<String, String> placed
+    })? pick;
+    for (final id in ownedDice.keys.toList()..sort()) {
+      if (id == diceId) continue;
+      final faces = ownedDice[id]!;
+      final placed = simSkillAssignments(
+          faces: faces,
+          current: const {},
+          unlocked: unlockedSkillIds,
+          skills: skills);
+      if (!simDieHitsWeakness(faces, placed, skills, foes)) continue;
+      matchOwned = true;
+      final v = simDieValueAgainst(faces, placed, skills, foes,
+          damage: baseDamage, caster: caster);
+      if (v > best) {
+        best = v;
+        pick = (id: id, faces: faces, placed: placed);
+      }
+    }
+    if (pick == null) return (matchOwned: matchOwned, swappedTo: null);
+    diceId = pick.id;
+    diceFaces = pick.faces;
+    diceSkillAssignments = pick.placed;
+    return (matchOwned: matchOwned, swappedTo: pick.id);
+  }
+
+  /// Whether the die in play or an owned one carries an element one of
+  /// [foes] is weak to (to measure [holdDieAgainst]; nothing changes).
+  bool ownsDieHittingWeakness(
+      List<Map<String, dynamic>> foes, Map<String, dynamic> skills) {
+    if (simDieHitsWeakness(diceFaces, diceSkillAssignments, skills, foes)) {
+      return true;
+    }
+    for (final e in ownedDice.entries) {
+      if (e.key == diceId) continue;
+      final placed = simSkillAssignments(
+          faces: e.value,
+          current: const {},
+          unlocked: unlockedSkillIds,
+          skills: skills);
+      if (simDieHitsWeakness(e.value, placed, skills, foes)) return true;
+    }
+    return false;
+  }
+
   /// Runs [fight] (a trial) and puts back everything a fight changes on the
   /// character: its health, mana, potions, afflictions, the stats a fight
   /// lends, the die in play and the run's tallies.
