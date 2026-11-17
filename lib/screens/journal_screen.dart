@@ -45,6 +45,13 @@ Widget _journalCard(
           key: key, tier: tier, band: 0.5, padding: padding, child: child),
     );
 
+/// A chapter's name worth showing: not empty, and not just "Chapter 3" again
+/// (a chapter with no name of its own carries its number as its title).
+bool _isNamed(String title) =>
+    title.isNotEmpty &&
+    !RegExp(r'^(chapter|chapitre|prologue)\s*\d*$', caseSensitive: false)
+        .hasMatch(title.trim());
+
 String _chapterTitle(int chapter, AppLanguage lang) => chapter == 0
     ? trFor(lang, 'chapter_band_prologue')
     : '${trFor(lang, 'chapter_label')} $chapter';
@@ -134,18 +141,21 @@ class JournalScreen extends ConsumerWidget {
           appBar: AppBar(
             title: Text(tr(ref, 'journal_title')),
             actions: const [TourInfoButton(topic: TutorialTopic.journal)],
-            bottom: TabBar(tabs: [
-              Tab(
-                  key: const ValueKey('journal_now_tab'),
-                  text: tr(ref, 'sofar_now')),
-              Tab(text: tr(ref, 'journal_story_tab')),
-              Tab(
-                  key: const ValueKey('journal_changed_tab'),
-                  text: tr(ref, 'journal_changed_title')),
-              Tab(
-                  key: const ValueKey('journal_news_tab'),
-                  text: tr(ref, 'journal_news_tab')),
-            ]),
+            bottom: TabBar(
+                isScrollable: true,
+                tabAlignment: TabAlignment.start,
+                tabs: [
+                  Tab(
+                      key: const ValueKey('journal_now_tab'),
+                      text: tr(ref, 'sofar_now')),
+                  Tab(text: tr(ref, 'journal_story_tab')),
+                  Tab(
+                      key: const ValueKey('journal_changed_tab'),
+                      text: tr(ref, 'journal_changed_title')),
+                  Tab(
+                      key: const ValueKey('journal_news_tab'),
+                      text: tr(ref, 'journal_news_tab')),
+                ]),
           ),
           body: TabBarView(children: [
             const _StorySoFarPage(),
@@ -356,7 +366,9 @@ class _StorySoFarPage extends ConsumerWidget {
             tr(ref, 'sofar_day_chapter')
                     .replaceAll('{day}', '${state.day}')
                     .replaceAll('{chapter}', '${state.chapter}') +
-                (state.chapterTitle.isEmpty ? '' : ' · ${state.chapterTitle}'),
+                (_isNamed(state.chapterTitle)
+                    ? ' · ${state.chapterTitle}'
+                    : ''),
             style: theme.textTheme.labelMedium?.copyWith(color: ink.ash),
           ),
         ),

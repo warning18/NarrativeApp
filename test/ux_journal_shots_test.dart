@@ -30,7 +30,7 @@ void main() {
             const MethodChannel('flutter_tts'), (call) async => 1);
     await tester.runAsync(loadAppFonts);
     Directory(shots!).createSync(recursive: true);
-    for (final dark in [true, false]) {
+    for (final (dark, fr) in [(true, false), (false, false), (false, true)]) {
       SharedPreferences.setMockInitialValues({
         'app_theme_mode': dark ? 'dark' : 'light',
         'tutorial_enabled': false,
@@ -47,7 +47,7 @@ void main() {
           ProviderScope.containerOf(tester.element(find.byType(MaterialApp)));
       await tester.runAsync(() => container
           .read(appLanguageProvider.notifier)
-          .setLanguage(AppLanguage.en));
+          .setLanguage(fr ? AppLanguage.fr : AppLanguage.en));
       await tester.runAsync(() => container
           .read(playerSessionProvider.notifier)
           .loadSession(PlayerSession.fromJson(const {
@@ -71,7 +71,7 @@ void main() {
       for (var k = 0; k < 4; k++) {
         await tester.pump(const Duration(seconds: 1));
       }
-      final theme = dark ? 'dark' : 'light';
+      final theme = '${dark ? 'dark' : 'light'}${fr ? '-fr' : ''}';
       Future<void> save(String name) => tester.runAsync(() async {
             final render = boundary.currentContext!.findRenderObject()
                 as RenderRepaintBoundary;
@@ -82,7 +82,7 @@ void main() {
                 .writeAsBytesSync(bytes!.buffer.asUint8List());
           });
       await save('journal-now');
-      await tester.tap(find.text('Scenes'));
+      await tester.tap(find.text(fr ? 'Scènes' : 'Scenes'));
       await settleApp(tester);
       await tester.pump(const Duration(seconds: 1));
       await save('journal-scenes');
