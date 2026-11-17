@@ -359,11 +359,23 @@ class _SimContext {
     this.merges = const {},
     this.companions = const {},
     this.onFight,
+    this.swapDiePerFight = false,
+    this.onFightDie,
   });
 
   /// Called before each fight's first try with the build on arrival
   /// (sim_snapshot.dart), to replay it; null, nothing is built.
   final SimFightWatch? onFight;
+
+  /// Whether the hero holds, before each fight, the owned die that hits a
+  /// foe's weakness best (SimCharacter.holdDieAgainst), as the setup
+  /// screen lets a player; off (the default and every guard's), one die
+  /// per run as the policy rolls it.
+  final bool swapDiePerFight;
+
+  /// Called after each fight try with its die (sim_snapshot.dart), to
+  /// measure the swap; null, nothing is told.
+  final SimDieWatch? onFightDie;
 
   /// companions.json: whom the competent player recruits and seats
   /// (sim_companions.dart). None, or the naive player: a solo run.
@@ -1419,6 +1431,19 @@ _SimResult _simulate(
       final perks = growth?.perks ?? PerkEffects.none;
       final allies =
           party?.fightAllies(signs: signs, perks: perks) ?? const <SimAlly>[];
+      // The die that hits a foe's weakness, held for this try only
+      // ([_SimContext.swapDiePerFight]); the die in play comes back after.
+      final keptDie =
+          (id: c.diceId, faces: c.diceFaces, placed: c.diceSkillAssignments);
+      final foes = [for (final e in entries) e.value];
+      final held = sim.swapDiePerFight
+          ? c.holdDieAgainst(foes, sim.skills)
+          : (sim.onFightDie == null
+              ? (matchOwned: false, swappedTo: null)
+              : (
+                  matchOwned: c.ownsDieHittingWeakness(foes, sim.skills),
+                  swappedTo: null
+                ));
       // A clan's die with its Resonance lit rolls its low faces one more
       // (clan_dice.dart), for this fight.
       final ownFaces = c.diceFaces;
@@ -1448,6 +1473,20 @@ _SimResult _simulate(
         allies: allies,
       );
       c.diceFaces = ownFaces;
+      sim.onFightDie?.call(
+          chapter: chapter,
+          enemyIds: [for (final e in entries) e.key],
+          matchOwned: held.matchOwned,
+          swappedTo: held.swappedTo,
+          die: c.diceId,
+          rounds: outcome.rounds,
+          won: outcome.won);
+      if (held.swappedTo != null) {
+        c
+          ..diceId = keptDie.id
+          ..diceFaces = keptDie.faces
+          ..diceSkillAssignments = keptDie.placed;
+      }
       party?.afterFight(allies, won: outcome.won, signs: signs);
       // Every pact runs one fight on, won or lost; so does a blessing.
       c.heldSigns = countDownPacts(c.heldSigns);
@@ -2480,6 +2519,8 @@ _SimContext _simContextOf(
   bool featureLadder = false,
   SimPolicy policy = SimPolicy.naive,
   SimFightWatch? onFight,
+  bool swapDiePerFight = false,
+  SimDieWatch? onFightDie,
 }) {
   Map<String, dynamic> table(String name) => tables[name] ?? const {};
   final written = writtenStepsFrom(table('expedition_steps'));
@@ -2528,6 +2569,8 @@ _SimContext _simContextOf(
     merges: table('skill_merges'),
     companions: table('companions'),
     onFight: onFight,
+    swapDiePerFight: swapDiePerFight,
+    onFightDie: onFightDie,
   );
 }
 
@@ -2637,6 +2680,8 @@ List<SimRunSummary> simulatePlaythroughs(
   bool featureLadder = false,
   SimPolicy policy = SimPolicy.naive,
   SimFightWatch? onFight,
+  bool swapDiePerFight = false,
+  SimDieWatch? onFightDie,
 }) {
   final sim = _simContextOf(tables, gameConfig,
       clashOff: clashOff,
@@ -2646,7 +2691,9 @@ List<SimRunSummary> simulatePlaythroughs(
       championFights: championFights,
       featureLadder: featureLadder,
       policy: policy,
-      onFight: onFight);
+      onFight: onFight,
+      swapDiePerFight: swapDiePerFight,
+      onFightDie: onFightDie);
   final enemies = tables['enemies'] ?? const {};
   final out = <SimRunSummary>[];
   for (var i = 0; i < plan.length; i++) {
