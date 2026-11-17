@@ -7,8 +7,10 @@ import 'package:flutter/scheduler.dart';
 
 import '../combat/skill_vfx.dart' show VfxPalette;
 import '../theme/stitched_ink.dart';
+import 'clan_offer_gifts.dart' show CardTier;
 import 'journey_fx.dart';
 import 'pixel_vfx.dart';
+import 'story_panel.dart' show StoryFrame;
 import '../theme/palette.dart';
 import '../theme/icon_sizes.dart';
 
@@ -382,6 +384,10 @@ Duration chapterCardDuration(int newsCount) {
 
 const Duration _chapterCardLongest = Duration(milliseconds: 10400);
 
+/// The digits of a chapter's number ("Chapter 3" gives "3"), or null.
+String? _chapterNumeral(String number) =>
+    RegExp(r'\d+').firstMatch(number)?.group(0);
+
 /// The chapter's title card (see [showChapterCard]).
 class ChapterCard extends StatefulWidget {
   const ChapterCard({
@@ -441,14 +447,17 @@ class _ChapterCardState extends State<ChapterCard>
               child: ClipRect(
                 child: Align(
                   heightFactor: open.clamp(0.01, 1.0),
-                  child: Container(
+                  child: StoryFrame(
                     key: const ValueKey('chapter_card'),
-                    width: double.infinity,
+                    tier: CardTier.common,
+                    band: 0.5,
                     padding: const EdgeInsets.symmetric(
-                        vertical: 36, horizontal: 24),
-                    color: Color.alphaBlend(
+                        vertical: 28, horizontal: 14),
+                    // The page, opaque, under a wash of the chapter's colour: the story's text
+                    // does not show through the news.
+                    fill: Color.alphaBlend(
                         widget.colour.withValues(alpha: 0.22),
-                        theme.colorScheme.surface.withValues(alpha: 0.95)),
+                        theme.colorScheme.surface),
                     child: Stack(
                       alignment: Alignment.center,
                       children: [
@@ -483,6 +492,18 @@ class _ChapterCardState extends State<ChapterCard>
                         Column(
                           mainAxisSize: MainAxisSize.min,
                           children: [
+                            // The chapter's number, large, when it has one.
+                            if (_chapterNumeral(widget.number) case final n?)
+                              Opacity(
+                                opacity: ink,
+                                child: Text(n,
+                                    key: const ValueKey('chapter_card_numeral'),
+                                    style: theme.textTheme.displayMedium
+                                        ?.copyWith(
+                                            fontFamily: InkFonts.display,
+                                            color: widget.colour,
+                                            height: 1)),
+                              ),
                             Text(widget.number.toUpperCase(),
                                 style: theme.textTheme.labelLarge?.copyWith(
                                     color: widget.colour, letterSpacing: 3)),

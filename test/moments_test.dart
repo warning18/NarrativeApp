@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 import 'package:narrative_data_app/widgets/moments.dart';
+import 'package:narrative_data_app/widgets/story_panel.dart' show StoryFrame;
 
 void main() {
   testWidgets('an achievement toast slides in, then goes', (tester) async {
@@ -43,6 +44,11 @@ void main() {
         number: 'Chapter 3', title: 'The Spire', colour: Colors.orange));
     await tester.pump(const Duration(milliseconds: 800));
     expect(find.byKey(const ValueKey('chapter_card')), findsOneWidget);
+    // The chapter's number, large, over the label; the card wears the quiet
+    // frame.
+    expect(find.byKey(const ValueKey('chapter_card_numeral')), findsOneWidget);
+    expect(find.text('3'), findsOneWidget);
+    expect(find.byType(StoryFrame), findsOneWidget);
     await tester.tap(find.text('under'), warnIfMissed: false);
     expect(taps, 1);
     await tester.pumpAndSettle();
