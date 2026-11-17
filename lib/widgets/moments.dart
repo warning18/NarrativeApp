@@ -453,10 +453,11 @@ class _ChapterCardState extends State<ChapterCard>
                     band: 0.5,
                     padding: const EdgeInsets.symmetric(
                         vertical: 28, horizontal: 14),
-                    // The page under the colour of the chapter, as it was.
+                    // The page, opaque, under a wash of the chapter's colour: the story's text
+                    // does not show through the news.
                     fill: Color.alphaBlend(
                         widget.colour.withValues(alpha: 0.22),
-                        theme.colorScheme.surface.withValues(alpha: 0.95)),
+                        theme.colorScheme.surface),
                     child: Stack(
                       alignment: Alignment.center,
                       children: [
