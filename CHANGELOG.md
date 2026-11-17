@@ -8,6 +8,10 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.980.0+1016]
+
+- Fights: two new duo techniques, as the user asked, for the two companion pairs that meet most and had none (Core's combinations review). **Hold and Hallow** (Kelda and Maren): every party member gains a guard. **The Gap in the Glare** (Maren and Sable): the target is struck and stunned for a turn. They work like every duo: both companions in the fight at Friendly approval, each keeping a signature face in the same round; their strength comes from the pair's base damage, as for the others. An older pair keeps its turn when a companion could join two. Measured on 100 simulated runs: parties with a duo pair at the Tear Herald go from 14 to 79 (71 with both companions friendly). Names and lines by Narrative.
+
 ## [1.979.0+1015]
 
 - Clans: fusions come sooner, as the user asked (Core's combinations review: 7 of the 10 fusions were never offered in 200 simulated runs). A clan now offers a fusion once you are its Friend and the partner clan's Friend too (was Trusted with both), the same step as an ascension. Viper Kiss now fuses Shadow Step and Poisoned Blade (was Backstab and Poisoned Blade, the very pair the merge Venomous Ambush takes), so the two no longer compete for the same skills; it comes from the same two branches, the shadow and the venom, as before. The clan screen's hint says Friend.
