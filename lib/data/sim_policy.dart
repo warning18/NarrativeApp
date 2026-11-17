@@ -6,8 +6,10 @@
 // measured with it); [SimPolicy.competent] plays those choices the way a
 // competent real player would, so its numbers read as "the game for
 // someone who plays it well"; [SimPolicy.typical] sits between them.
-import '../combat/combat_engine.dart' show elementFieldPrefixes;
+import '../combat/combat_engine.dart'
+    show elementFieldPrefixes, elementMultiplierFor;
 import '../combat/dice_faces.dart' show isOpenSkillFace;
+import '../combat/face_element.dart' show faceHitElement;
 import '../combat/gear_effects.dart';
 import '../models/ally_state.dart' show equipmentBonusFor;
 import 'sim_growth.dart' show simSkillScore;
@@ -273,6 +275,70 @@ double simFaceValue(
       }(),
     _ => 0.0,
   };
+}
+
+/// The element face [i] of [faces] strikes with, its skill's own first
+/// (faceHitElement); null for a face that strikes nothing.
+String? _simFaceElement(List<Map<String, dynamic>> faces, int i,
+    Map<String, String> assignments, Map<String, dynamic> skills) {
+  final face = faces[i];
+  final type = face['type']?.toString() ?? '';
+  if (type != 'Attack' && type != 'Skill') return null;
+  final linked = face['linkedSkillID']?.toString() ?? '';
+  final id = assignments['$i'] ?? (linked.isEmpty ? 'heavy_attack' : linked);
+  return faceHitElement(type, face['element']?.toString() ?? '', skills[id]);
+}
+
+/// The mean element multiplier (weakness, resistance) of [element] over
+/// [foes].
+double _simElementFactor(String element, List<Map<String, dynamic>> foes) {
+  var sum = 0.0;
+  for (final f in foes) {
+    sum += elementMultiplierFor(f, element);
+  }
+  return sum / foes.length;
+}
+
+/// Whether a striking face of [faces] carries an element one of [foes] is
+/// weak to (the die the fight setup screen stars).
+bool simDieHitsWeakness(
+    List<Map<String, dynamic>> faces,
+    Map<String, String> assignments,
+    Map<String, dynamic> skills,
+    List<Map<String, dynamic>> foes) {
+  for (var i = 0; i < faces.length; i++) {
+    final element = _simFaceElement(faces, i, assignments, skills);
+    if (element == null) continue;
+    if (foes.any((f) => elementMultiplierFor(f, element) > 1.0)) return true;
+  }
+  return false;
+}
+
+/// [simDieValue] against [foes]: each striking face's worth times its
+/// element's mean multiplier over them (x3 a weakness, x0.5 a
+/// resistance); the other faces as they are.
+double simDieValueAgainst(
+  List<Map<String, dynamic>> faces,
+  Map<String, String> assignments,
+  Map<String, dynamic> skills,
+  List<Map<String, dynamic>> foes, {
+  required int damage,
+  bool caster = false,
+}) {
+  var total = 0.0, weights = 0.0;
+  for (var i = 0; i < faces.length; i++) {
+    final w = (faces[i]['weight'] as num?)?.toDouble() ?? 1.0;
+    final element = _simFaceElement(faces, i, assignments, skills);
+    final factor = element == null || foes.isEmpty
+        ? 1.0
+        : _simElementFactor(element, foes);
+    total += w *
+        factor *
+        simFaceValue(faces, i, assignments, skills,
+            damage: damage, caster: caster);
+    weights += w;
+  }
+  return weights <= 0 ? 0 : total / weights;
 }
 
 /// Whether [die] (a dice.json record) is one the character may roll: no
