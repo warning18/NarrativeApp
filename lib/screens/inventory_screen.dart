@@ -540,6 +540,7 @@ class _InventoryBodyState extends ConsumerState<_InventoryBody> {
                 : PixelGlyph(inventorySlotGlyph(slot),
                     size: IconSize.s32, color: ink.ash, opacity: 0.7),
             worn: equippedItem?['itemName']?.toString(),
+            tier: itemTierOf(equippedItem),
             lit: equippedId == null && candidates.isNotEmpty,
             tip: tr(ref, 'choose_item'),
             clearTip: tr(ref, 'unequip'),
