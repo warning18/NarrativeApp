@@ -338,10 +338,11 @@ class InventorySlotTile extends StatelessWidget {
                 Opacity(opacity: filled ? 1 : 0.5, child: icon),
                 const SizedBox(height: 4),
                 Text(worn ?? slotLabel,
-                    maxLines: 1,
+                    maxLines: filled ? 3 : 1,
                     overflow: TextOverflow.ellipsis,
                     textAlign: TextAlign.center,
                     style: theme.textTheme.bodySmall?.copyWith(
+                        height: 1.15,
                         color: filled ? null : ink.ash,
                         fontStyle: filled ? null : FontStyle.italic)),
               ],

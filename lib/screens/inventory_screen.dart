@@ -712,11 +712,14 @@ class _InventoryBodyState extends ConsumerState<_InventoryBody> {
       padding: const EdgeInsets.all(16),
       children: [
         caption(tr(ref, 'equipment_section')),
-        GridView.count(
-          crossAxisCount: 3,
-          mainAxisSpacing: 8,
-          crossAxisSpacing: 8,
-          childAspectRatio: 1.25,
+        GridView(
+          // A fixed height: a worn piece's name takes up to three lines (v1.989).
+          gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+            crossAxisCount: 3,
+            mainAxisSpacing: 8,
+            crossAxisSpacing: 8,
+            mainAxisExtent: 98,
+          ),
           shrinkWrap: true,
           physics: const NeverScrollableScrollPhysics(),
           children: slotTiles,

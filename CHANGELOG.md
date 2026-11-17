@@ -8,6 +8,9 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.989.0+1025]
+- Inventory: a worn piece's name shows whole in its equipment tile (up to three lines, the tiles a little taller), in English and French.
+
 ## [1.987.0+1023]
 - Inventory: what is worn wears its rarity's deep frame, in the equipment slots and in the bag's worn rows (common to legendary), like the other story screens.
 
