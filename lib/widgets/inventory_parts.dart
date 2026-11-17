@@ -17,7 +17,9 @@ import 'item_lore.dart';
 import 'item_stats.dart';
 import '../theme/palette.dart';
 import '../theme/icon_sizes.dart';
+import 'clan_offer_gifts.dart' show CardTier;
 import 'pixel_glyph.dart';
+import 'story_panel.dart' show StoryFrame;
 import '../theme/pixel_chip.dart';
 
 /// The inventory's tabs, in the order they are drawn.
@@ -42,6 +44,17 @@ String inventoryTabLabelKey(InventoryTab tab) => 'inv_tab_${tab.name}';
 
 /// How the rows are ordered.
 enum InventorySort { newest, rarity, name }
+
+/// The deep frame an item's rarity wears (null when it has none).
+CardTier? itemTierOf(Map<String, dynamic>? item) =>
+    switch (item?['rarity']?.toString().trim()) {
+      'Common' => CardTier.common,
+      'Uncommon' => CardTier.uncommon,
+      'Rare' => CardTier.rare,
+      'Epic' => CardTier.epic,
+      'Relic' => CardTier.legendary,
+      _ => null,
+    };
 
 int _rarityRank(String? rarity) => switch (rarity?.trim()) {
       'Relic' => 0,
@@ -289,7 +302,11 @@ class InventorySlotTile extends StatelessWidget {
     this.onClear,
     this.clearTip = '',
     this.tip = '',
+    this.tier,
   });
+
+  /// The rarity frame the piece worn here wears.
+  final CardTier? tier;
 
   final String slotLabel;
   final Widget icon;
@@ -307,6 +324,55 @@ class InventorySlotTile extends StatelessWidget {
     final theme = Theme.of(context);
     final ink = InkColors.of(context);
     final filled = worn != null;
+    final content = Tooltip(
+      message: tip,
+      child: Stack(children: [
+        Positioned.fill(
+          child: Padding(
+            padding: const EdgeInsets.fromLTRB(4, 6, 4, 6),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Opacity(opacity: filled ? 1 : 0.5, child: icon),
+                const SizedBox(height: 4),
+                Text(worn ?? slotLabel,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    textAlign: TextAlign.center,
+                    style: theme.textTheme.bodySmall?.copyWith(
+                        color: filled ? null : ink.ash,
+                        fontStyle: filled ? null : FontStyle.italic)),
+              ],
+            ),
+          ),
+        ),
+        if (onClear != null)
+          Positioned(
+            top: 0,
+            right: 0,
+            child: IconButton(
+              icon: const Icon(Icons.close, size: IconSize.s16),
+              tooltip: clearTip,
+              visualDensity: VisualDensity.compact,
+              constraints: const BoxConstraints(minWidth: 28, minHeight: 28),
+              padding: EdgeInsets.zero,
+              onPressed: onClear,
+            ),
+          ),
+      ]),
+    );
+    if (filled && tier != null) {
+      return StoryFrame(
+        tier: tier!,
+        band: 0.5,
+        padding: EdgeInsets.zero,
+        fill: theme.colorScheme.surfaceContainer,
+        child: Material(
+          type: MaterialType.transparency,
+          child: InkWell(onTap: onTap, child: content),
+        ),
+      );
+    }
     return Material(
       color: theme.colorScheme.surfaceContainer,
       shape: RoundedRectangleBorder(
@@ -322,44 +388,7 @@ class InventorySlotTile extends StatelessWidget {
       child: InkWell(
         borderRadius: BorderRadius.circular(8),
         onTap: onTap,
-        child: Tooltip(
-          message: tip,
-          child: Stack(children: [
-            Positioned.fill(
-              child: Padding(
-                padding: const EdgeInsets.fromLTRB(4, 6, 4, 6),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Opacity(opacity: filled ? 1 : 0.5, child: icon),
-                    const SizedBox(height: 4),
-                    Text(worn ?? slotLabel,
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
-                        textAlign: TextAlign.center,
-                        style: theme.textTheme.bodySmall?.copyWith(
-                            color: filled ? null : ink.ash,
-                            fontStyle: filled ? null : FontStyle.italic)),
-                  ],
-                ),
-              ),
-            ),
-            if (onClear != null)
-              Positioned(
-                top: 0,
-                right: 0,
-                child: IconButton(
-                  icon: const Icon(Icons.close, size: IconSize.s16),
-                  tooltip: clearTip,
-                  visualDensity: VisualDensity.compact,
-                  constraints:
-                      const BoxConstraints(minWidth: 28, minHeight: 28),
-                  padding: EdgeInsets.zero,
-                  onPressed: onClear,
-                ),
-              ),
-          ]),
-        ),
+        child: content,
       ),
     );
   }
@@ -421,6 +450,121 @@ class InventoryRow extends StatelessWidget {
     final name = item?['itemName']?.toString() ?? itemId;
     final type = item?['itemType']?.toString();
     final gear = isGear(item);
+    final body = Padding(
+      padding: const EdgeInsets.fromLTRB(10, 8, 10, 8),
+      child: Row(children: [
+        ItemPixelIcon(itemId, type, size: IconSize.s32),
+        const SizedBox(width: 10),
+        Expanded(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(children: [
+                Flexible(
+                  child: Text(name,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: theme.textTheme.bodyLarge
+                          ?.copyWith(fontFamily: InkFonts.display)),
+                ),
+                if (count != null && count! > 1) ...[
+                  const SizedBox(width: 6),
+                  Text('×$count',
+                      style: theme.textTheme.labelMedium
+                          ?.copyWith(color: ink.ash)),
+                ],
+                if (fresh) ...[
+                  const SizedBox(width: 6),
+                  Tooltip(
+                    message: trFor(language, 'inv_new'),
+                    child: Container(
+                      key: Key('inv_new_$itemId'),
+                      width: 8,
+                      height: 8,
+                      decoration: BoxDecoration(
+                          shape: BoxShape.circle, color: ink.gold),
+                    ),
+                  ),
+                ],
+              ]),
+              const SizedBox(height: 2),
+              Row(children: [
+                if (slot != null && slot!.isNotEmpty) ...[
+                  PixelGlyph(inventorySlotGlyph(slot!),
+                      size: IconSize.s16, color: ink.ash),
+                  const SizedBox(width: 3),
+                ],
+                Flexible(
+                  child: Text(line,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style:
+                          theme.textTheme.bodySmall?.copyWith(color: ink.ash)),
+                ),
+              ]),
+              if (gear)
+                Padding(
+                  padding: const EdgeInsets.only(top: 4),
+                  child: ItemStatChips(
+                      item: item,
+                      equipped: isWorn ? null : worn,
+                      language: language,
+                      compact: true,
+                      maxChips: 3,
+                      deltaVsEmpty: false),
+                ),
+            ],
+          ),
+        ),
+        if (locked)
+          Padding(
+            padding: const EdgeInsets.only(left: 8),
+            child: PixelGlyph(PixelGlyphs.lock, color: ink.ash),
+          )
+        else if (actionLabel != null && onAction != null)
+          Padding(
+            padding: const EdgeInsets.only(left: 8),
+            child: isWorn
+                ? OutlinedButton(
+                    key: Key('inv_action_$itemId'),
+                    style: OutlinedButton.styleFrom(
+                        visualDensity: VisualDensity.compact,
+                        padding: const EdgeInsets.symmetric(horizontal: 10)),
+                    onPressed: onAction,
+                    child: Text(actionLabel!))
+                : FilledButton(
+                    key: Key('inv_action_$itemId'),
+                    style: FilledButton.styleFrom(
+                        visualDensity: VisualDensity.compact,
+                        padding: const EdgeInsets.symmetric(horizontal: 12)),
+                    onPressed: onAction,
+                    child: Text(actionLabel!)),
+          ),
+      ]),
+    );
+    final tier = itemTierOf(item);
+    if (isWorn && tier != null && !selected) {
+      return Opacity(
+        opacity: locked ? 0.6 : 1,
+        child: Padding(
+          padding: const EdgeInsets.only(bottom: 6),
+          child: StoryFrame(
+            tier: tier,
+            band: 0.5,
+            padding: EdgeInsets.zero,
+            fill: theme.colorScheme.surfaceContainer,
+            child: Material(
+              type: MaterialType.transparency,
+              child: InkWell(
+                onTap: onTap,
+                onLongPress: onLongPress,
+                child: body,
+              ),
+            ),
+          ),
+        ),
+      );
+    }
     return Opacity(
       opacity: locked ? 0.6 : 1,
       child: Card(
@@ -441,100 +585,7 @@ class InventoryRow extends StatelessWidget {
           borderRadius: BorderRadius.circular(8),
           onTap: onTap,
           onLongPress: onLongPress,
-          child: Padding(
-            padding: const EdgeInsets.fromLTRB(10, 8, 10, 8),
-            child: Row(children: [
-              ItemPixelIcon(itemId, type, size: IconSize.s32),
-              const SizedBox(width: 10),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Row(children: [
-                      Flexible(
-                        child: Text(name,
-                            maxLines: 1,
-                            overflow: TextOverflow.ellipsis,
-                            style: theme.textTheme.bodyLarge
-                                ?.copyWith(fontFamily: InkFonts.display)),
-                      ),
-                      if (count != null && count! > 1) ...[
-                        const SizedBox(width: 6),
-                        Text('×$count',
-                            style: theme.textTheme.labelMedium
-                                ?.copyWith(color: ink.ash)),
-                      ],
-                      if (fresh) ...[
-                        const SizedBox(width: 6),
-                        Tooltip(
-                          message: trFor(language, 'inv_new'),
-                          child: Container(
-                            key: Key('inv_new_$itemId'),
-                            width: 8,
-                            height: 8,
-                            decoration: BoxDecoration(
-                                shape: BoxShape.circle, color: ink.gold),
-                          ),
-                        ),
-                      ],
-                    ]),
-                    const SizedBox(height: 2),
-                    Row(children: [
-                      if (slot != null && slot!.isNotEmpty) ...[
-                        PixelGlyph(inventorySlotGlyph(slot!),
-                            size: IconSize.s16, color: ink.ash),
-                        const SizedBox(width: 3),
-                      ],
-                      Flexible(
-                        child: Text(line,
-                            maxLines: 1,
-                            overflow: TextOverflow.ellipsis,
-                            style: theme.textTheme.bodySmall
-                                ?.copyWith(color: ink.ash)),
-                      ),
-                    ]),
-                    if (gear)
-                      Padding(
-                        padding: const EdgeInsets.only(top: 4),
-                        child: ItemStatChips(
-                            item: item,
-                            equipped: isWorn ? null : worn,
-                            language: language,
-                            compact: true,
-                            maxChips: 3,
-                            deltaVsEmpty: false),
-                      ),
-                  ],
-                ),
-              ),
-              if (locked)
-                Padding(
-                  padding: const EdgeInsets.only(left: 8),
-                  child: PixelGlyph(PixelGlyphs.lock, color: ink.ash),
-                )
-              else if (actionLabel != null && onAction != null)
-                Padding(
-                  padding: const EdgeInsets.only(left: 8),
-                  child: isWorn
-                      ? OutlinedButton(
-                          key: Key('inv_action_$itemId'),
-                          style: OutlinedButton.styleFrom(
-                              visualDensity: VisualDensity.compact,
-                              padding:
-                                  const EdgeInsets.symmetric(horizontal: 10)),
-                          onPressed: onAction,
-                          child: Text(actionLabel!))
-                      : FilledButton(
-                          key: Key('inv_action_$itemId'),
-                          style: FilledButton.styleFrom(
-                              visualDensity: VisualDensity.compact,
-                              padding:
-                                  const EdgeInsets.symmetric(horizontal: 12)),
-                          onPressed: onAction,
-                          child: Text(actionLabel!)),
-                ),
-            ]),
-          ),
+          child: body,
         ),
       ),
     );
