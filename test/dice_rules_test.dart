@@ -197,7 +197,12 @@ void main() {
         expect(duoTechniques.where((d) => d.involves(id)), isNotEmpty,
             reason: id);
       }
-      expect(duoTechniques.map((d) => d.id).toSet(), hasLength(9));
+      expect(duoTechniques.map((d) => d.id).toSet(), hasLength(11));
+      // v1.980: the two commonest pairs have their duo, after the older ones.
+      expect(duoTechniques.singleWhere((d) => d.pairs('maren', 'kelda')).id,
+          'hold_and_hallow');
+      expect(duoTechniques.singleWhere((d) => d.pairs('sable', 'maren')).id,
+          'gap_in_the_glare');
     });
 
     test('Tobin and Malrik, who never share a party, share no duo', () {
@@ -240,6 +245,17 @@ void main() {
       expect(firing, hasLength(1));
       expect(firing.single.id, 'anvil_and_hammer');
       expect(duoPower(20, 15), 35);
+    });
+
+    test('the two v1.980 duos fire, and yield to an older pair', () {
+      DuoCandidate c(String id) =>
+          DuoCandidate(companionId: id, approval: 12, onSignatureFace: true);
+      expect(duosFiring([c('kelda'), c('maren')]).single.id, 'hold_and_hallow');
+      expect(
+          duosFiring([c('sable'), c('maren')]).single.id, 'gap_in_the_glare');
+      // Maren with Tobin too: their Twin Litany comes first, Kelda waits.
+      expect(duosFiring([c('kelda'), c('maren'), c('tobin')]).map((d) => d.id),
+          ['twin_litany']);
     });
   });
 

@@ -11,6 +11,13 @@ isn't reconstructable from git history alone.
 ## [1.981.0+1017]
 
 - Story reading screens: choices and NPCs wear the new look (UX, the user's pick "the mix" with the deep frames; the first of its screens). A choice card shows how much its choice weighs (Core's `choiceWeightOf`, v1.977): a plain choice is the card as it was; a weighty one (alignment, a companion's approval, standing, an item or a quest) wears its clan's accent, a rail and a tint in the quiet frame, gold when no clan is touched; a major one (a claim, a pledge, the Throne, a companion's approval of 5 or more, a banner piece) wears the rich metal, gilded, and gold for a banner piece. A shut way stays plain. An NPC's page is now a page: their face in the quiet frame, the name, the role, the clan and where they are, the words at a reading size, and what they say on a rail in their clan's colour. Nothing about what a choice does changes.
+## [1.980.0+1016]
+
+- Fights: two new duo techniques, as the user asked, for the two companion pairs that meet most and had none (Core's combinations review). **Hold and Hallow** (Kelda and Maren): every party member gains a guard. **The Gap in the Glare** (Maren and Sable): the target is struck and stunned for a turn. They work like every duo: both companions in the fight at Friendly approval, each keeping a signature face in the same round; their strength comes from the pair's base damage, as for the others. An older pair keeps its turn when a companion could join two. Measured on 100 simulated runs: parties with a duo pair at the Tear Herald go from 14 to 79 (71 with both companions friendly). Names and lines by Narrative.
+
+## [1.979.0+1015]
+
+- Clans: fusions come sooner, as the user asked (Core's combinations review: 7 of the 10 fusions were never offered in 200 simulated runs). A clan now offers a fusion once you are its Friend and the partner clan's Friend too (was Trusted with both), the same step as an ascension. Viper Kiss now fuses Shadow Step and Poisoned Blade (was Backstab and Poisoned Blade, the very pair the merge Venomous Ambush takes), so the two no longer compete for the same skills; it comes from the same two branches, the shadow and the venom, as before. The clan screen's hint says Friend.
 
 ## [1.978.0+1014]
 
