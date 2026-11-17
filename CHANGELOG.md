@@ -9,7 +9,7 @@ History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
 ## [1.984.0+1020]
-- Quests: each quest sits on a nameplate in its clan's colour (the pin in the band, the followed quest outlined) and its story reads in the reading font, like the other story screens.
+- Quests: each quest sits on a nameplate in its clan's colour (the pin in the band, the followed quest outlined) and its story reads in the reading font, like the other story screens. The turn-in dialog's choices weigh like the Journey choice cards (a quiet frame for alignment or politics, the rich metal for a claim, a pledge or a big approval shift).
 
 ## [1.983.0+1019]
 

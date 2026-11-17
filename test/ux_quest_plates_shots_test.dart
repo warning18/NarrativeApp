@@ -83,21 +83,39 @@ void main() {
       }
       await settleApp(tester);
       final plate = find.byKey(const ValueKey('quest_plate_q_ch2_terns_toll'));
+      // The header row only: the middle of an open tile is a quest card.
+      final header = tester.getTopLeft(find.byType(ExpansionTile).first) +
+          const Offset(60, 30);
       for (var k = 0; k < 3 && plate.evaluate().isEmpty; k++) {
-        await tester.tap(find.byType(ExpansionTile).first);
-        await settleApp(tester);
+        await tester.tapAt(header);
+        await tester.pump(const Duration(seconds: 2));
       }
+      expect(plate, findsOneWidget);
       for (var k = 0; k < 10; k++) {
         await tester.pump(const Duration(seconds: 1));
       }
-      await tester.runAsync(() async {
-        final render = boundary.currentContext!.findRenderObject()
-            as RenderRepaintBoundary;
-        final image = await render.toImage(pixelRatio: 2);
-        final bytes = await image.toByteData(format: ui.ImageByteFormat.png);
-        File('$shots/quests-${dark ? 'dark' : 'light'}.png')
-            .writeAsBytesSync(bytes!.buffer.asUint8List());
-      });
+      final theme = dark ? 'dark' : 'light';
+      Future<void> save(String name) => tester.runAsync(() async {
+            final render = boundary.currentContext!.findRenderObject()
+                as RenderRepaintBoundary;
+            final image = await render.toImage(pixelRatio: 2);
+            final bytes =
+                await image.toByteData(format: ui.ImageByteFormat.png);
+            File('$shots/$name-$theme.png')
+                .writeAsBytesSync(bytes!.buffer.asUint8List());
+          });
+      // The list at rest: no dialog over it.
+      if (find.text('Cancel').evaluate().isNotEmpty) {
+        await tester.tap(find.text('Cancel'));
+        await settleApp(tester);
+      }
+      expect(find.text('Cancel'), findsNothing);
+      await save('quests');
+      // Turning Tern's Toll in asks how it is settled: the choices weigh.
+      await tester
+          .tap(find.descendant(of: plate, matching: find.text('Complete')));
+      await settleApp(tester);
+      await save('quests-turn-in');
     }
   });
 }
