@@ -324,12 +324,14 @@ class InventorySlotTile extends StatelessWidget {
     final theme = Theme.of(context);
     final ink = InkColors.of(context);
     final filled = worn != null;
+    // The rarity frame takes its own band of space out of the tile.
+    final framed = filled && tier != null;
     final content = Tooltip(
       message: tip,
       child: Stack(children: [
         Positioned.fill(
           child: Padding(
-            padding: const EdgeInsets.fromLTRB(4, 6, 4, 6),
+            padding: EdgeInsets.fromLTRB(4, framed ? 1 : 6, 4, framed ? 1 : 6),
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
@@ -361,7 +363,7 @@ class InventorySlotTile extends StatelessWidget {
           ),
       ]),
     );
-    if (filled && tier != null) {
+    if (framed) {
       return StoryFrame(
         tier: tier!,
         band: 0.5,
