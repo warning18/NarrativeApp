@@ -87,8 +87,9 @@ class DuoTechnique {
 
 /// Every duo, one per pair that fights well together: the two warriors,
 /// the two rogues, the two clerics, the two dwarves, the two orcs, and the
-/// pairs the Void, the woods and the dawn bring together, and the hunt
-/// (Liora and Vica, the dog every hero has since v1.601). Tobin and Malrik
+/// pairs the Void, the woods and the dawn bring together, the hunt
+/// (Liora and Vica, the dog every hero has since v1.601), and the two pairs
+/// that meet most (Kelda and Maren, Maren and Sable, v1.980). Tobin and Malrik
 /// never share a party (their alignments part them), so neither pair
 /// needs the other.
 const List<DuoTechnique> duoTechniques = [
@@ -213,6 +214,37 @@ const List<DuoTechnique> duoTechniques = [
     descriptionFr:
         'Vica rabat la proie à découvert et Liora l’attend : la cible est '
         'frappée et clouée sur place pour un tour.',
+  ),
+  // v1.980 (the user's call, Core's combinations review): the two pairs
+  // that meet most often, which had no duo. Last, so an older pair keeps
+  // its priority when a companion could join two.
+  DuoTechnique(
+    id: 'hold_and_hallow',
+    first: 'kelda',
+    second: 'maren',
+    effect: DuoEffect.partyWard,
+    nameEn: 'Hold and Hallow',
+    nameFr: 'Tenir et bénir',
+    descriptionEn:
+        'Kelda plants her feet and Maren blesses the ground behind her: '
+        'every party member gains a guard.',
+    descriptionFr:
+        'Kelda tient la ligne et Maren la bénit : chaque membre du groupe '
+        'gagne une garde.',
+  ),
+  DuoTechnique(
+    id: 'gap_in_the_glare',
+    first: 'maren',
+    second: 'sable',
+    effect: DuoEffect.stunBlow,
+    nameEn: 'The Gap in the Glare',
+    nameFr: 'La faille dans l’éclat',
+    descriptionEn:
+        'Maren’s light dazzles and Sable’s knife finds the gap: the target '
+        'is struck and stunned for a turn.',
+    descriptionFr:
+        'La lumière de Maren éblouit et le couteau de Sable trouve la '
+        'faille : la cible est frappée et étourdie pour un tour.',
   ),
 ];
 
