@@ -27,11 +27,14 @@ import '../data/place_plan.dart';
 import '../data/room_plan.dart';
 import '../data/journey_map.dart';
 import '../data/scene_flow.dart';
+import '../data/story_plates.dart'
+    show ChoiceWeight, choiceClanOf, choiceWeightOf;
 import '../data/scene_lock.dart' show isHubScene, pageExitHidden;
 import '../data/journey_relief.dart';
 import '../data/map_charts.dart'
     show ChartGeography, ChartPalette, MapShape, chartOf;
 import '../data/road_chart.dart';
+import '../widgets/clan_offer_gifts.dart' show CardTier;
 import '../data/world_leg_path.dart';
 import '../data/world_roads.dart' show isWorldRoadLeg;
 import '../data/narration_tokens.dart';
