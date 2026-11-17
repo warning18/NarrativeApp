@@ -75,9 +75,11 @@ const double _homeAccordWeight = 1.5;
 /// than a skill of its branches.
 const double _accordPickChance = 0.5;
 
-/// Standing a fusion needs with *both* clans (Trusted), and an ascension
-/// with its one (Friend, a step easier since one clan alone is asked); v1.233.
-const StandingTier _fusionMinTier = StandingTier.trusted;
+/// Standing a fusion needs with *both* clans, and an ascension with its one
+/// (v1.233): Friend for both since v1.979 (was Trusted for a fusion: 7 of the
+/// 10 fusions were never offered in 200 simulated runs; the user's call to
+/// surface them, docs/simulation/combinations-review.md).
+const StandingTier _fusionMinTier = StandingTier.friend;
 const StandingTier _ascensionMinTier = StandingTier.friend;
 
 /// Standing a sub-clan's skill and a secret need with the clan that offers

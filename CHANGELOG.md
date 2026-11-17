@@ -8,6 +8,10 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.979.0+1015]
+
+- Clans: fusions come sooner, as the user asked (Core's combinations review: 7 of the 10 fusions were never offered in 200 simulated runs). A clan now offers a fusion once you are its Friend and the partner clan's Friend too (was Trusted with both), the same step as an ascension. Viper Kiss now fuses Shadow Step and Poisoned Blade (was Backstab and Poisoned Blade, the very pair the merge Venomous Ambush takes), so the two no longer compete for the same skills; it comes from the same two branches, the shadow and the venom, as before. The clan screen's hint says Friend.
+
 ## [1.978.0+1014]
 
 - Story panels: the kit for the story side's new look (UX, the user's pick "the mix" with the deep frames; docs/proposals/story-mix.md). `StoryFrame` dresses any box in Art's rarity frames (nine-sliced, so the corners and each tier's ornaments, the gem, the crown and the leaves, keep their size and only the plain metal stretches); it wears `frame_<tier>_dim.png`, Art's deep re-tone of the frames (every tier two steps down the Apollo ramps, no generation; the five files are in `assets/visuals/cards/`), and the original frames when a dim file is missing. `StoryPlate` and `StoryGem` are the fight blocks' nameplate and gems for the story's state screens, and `storyWeightFrame` maps a choice's weight (`lib/data/story_plates.dart`) to its frame: plain has none, weighty the clan's accent in the quiet frame, major the rich metal. Nothing on a screen changes yet; the screens come one by one.
