@@ -1,0 +1,28 @@
+metric,typical,competent,source
+runs,100,100,"zz_combos batch v1.976 (9d524bae), seeds 1..100, 25 race x profession pairs x 4 goals"
+skill_merges_crafted,0,5,"merged: arcane_convergence 2, wrath_of_dawn 2, bastion_of_stone 1 (competent)"
+fusions_offered,24,8,"offer cards naming a fusion, all runs"
+fusions_never_offered_of_10,7,8,"fusions with 0 offer cards"
+ascensions_offered_taken,172/85,87/16,offer cards
+subclan_skills_offered_taken,255/98,691/58,offer cards
+skill_cards_offered_taken,3858/1053,7303/412,"all skill cards (tree, subclan, ascension, fusion, secret, other)"
+runs_with_a_main_spec,88,66,"one of the 15 main specialisations held at the end"
+final_die_starter,25,23,die rolled at the end of the run
+final_die_shadow,20,16,
+final_die_headsman,15,6,
+final_die_iron,4,13,
+final_die_court,4,15,
+final_die_tally_or_ossuary,0,0,
+tear_herald_party_kelda_maren,43,54,companions seated at fight 7810
+tear_herald_party_maren_sable,22,10,
+tear_herald_party_with_a_duo_pair,14,11,"maren+tobin, malrik+sable, liora+vica"
+tear_herald_owns_light_die,69,36,"owns a die with a Light strike face at fight 7810"
+tear_herald_rolls_elemental_die,55,49,"die in play has any elemental strike face"
+hollow_court_set_3_pieces,0,0,at fight 7810
+hollow_court_set_2_pieces,0,12,
+harborwatch_any_piece,0,0,
+fight_win_pct_cleric,95.4,91.0,"fights won / fought over the run, retries counted"
+fight_win_pct_mage,86.0,91.8,
+fight_win_pct_ranger,96.4,95.6,
+fight_win_pct_rogue,93.0,91.7,
+fight_win_pct_warrior,94.8,99.0,
