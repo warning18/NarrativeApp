@@ -8,6 +8,10 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.981.0+1017]
+
+- Story reading screens: choices and NPCs wear the new look (UX, the user's pick "the mix" with the deep frames; the first of its screens). A choice card shows how much its choice weighs (Core's `choiceWeightOf`, v1.977): a plain choice is the card as it was; a weighty one (alignment, a companion's approval, standing, an item or a quest) wears its clan's accent, a rail and a tint in the quiet frame, gold when no clan is touched; a major one (a claim, a pledge, the Throne, a companion's approval of 5 or more, a banner piece) wears the rich metal, gilded, and gold for a banner piece. A shut way stays plain. An NPC's page is now a page: their face in the quiet frame, the name, the role, the clan and where they are, the words at a reading size, and what they say on a rail in their clan's colour. Nothing about what a choice does changes.
+
 ## [1.978.0+1014]
 
 - Story panels: the kit for the story side's new look (UX, the user's pick "the mix" with the deep frames; docs/proposals/story-mix.md). `StoryFrame` dresses any box in Art's rarity frames (nine-sliced, so the corners and each tier's ornaments, the gem, the crown and the leaves, keep their size and only the plain metal stretches); it wears `frame_<tier>_dim.png`, Art's deep re-tone of the frames (every tier two steps down the Apollo ramps, no generation; the five files are in `assets/visuals/cards/`), and the original frames when a dim file is missing. `StoryPlate` and `StoryGem` are the fight blocks' nameplate and gems for the story's state screens, and `storyWeightFrame` maps a choice's weight (`lib/data/story_plates.dart`) to its frame: plain has none, weighty the clan's accent in the quiet frame, major the rich metal. Nothing on a screen changes yet; the screens come one by one.
