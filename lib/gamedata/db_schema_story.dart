@@ -26,7 +26,7 @@ final DbSchema questsSchema = DbSchema(
       type: FieldType.enumeration,
       enumOptions: _questCategoryOptions,
     ),
-    // v1.978: the clan the quest's plate wears (lib/data/story_plates.dart),
+    // v1.977: the clan the quest's plate wears (lib/data/story_plates.dart),
     // display only; empty: its faction's, else the neutral plate.
     FieldSchema(
       key: 'clan',

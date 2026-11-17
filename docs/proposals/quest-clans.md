@@ -1,6 +1,6 @@
 # Quest plates: proposed clans
 
-The proposed display `clan` for each quest of `assets/gamedata/quests.json` that has no `faction` (39 of 51). The plate colour only (`questClanOf`, `lib/data/story_plates.dart`); the rules keep reading `faction`. **These are proposals for Narrative to correct**: v1.978 ships the `clan` field empty, and Narrative fills or confirms it in its own text PR. Empty means the neutral plate.
+The proposed display `clan` for each quest of `assets/gamedata/quests.json` that has no `faction` (39 of 51). The plate colour only (`questClanOf`, `lib/data/story_plates.dart`); the rules keep reading `faction`. **These are proposals for Narrative to correct**: v1.977 ships the `clan` field empty, and Narrative fills or confirms it in its own text PR. Empty means the neutral plate.
 
 The 12 quests with a `faction` wear it unless given a `clan`.
 

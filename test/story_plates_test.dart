@@ -40,7 +40,7 @@ void main() {
       expect(clans, contains(clan), reason: choice.text);
       expect(choice.politics?.hidden ?? false, isFalse, reason: choice.text);
     }
-    // About a quarter of the story's choices touch a clan (v1.978: 1156
+    // About a quarter of the story's choices touch a clan (v1.977: 1156
     // choices).
     expect(withClan, inInclusiveRange(200, 400));
   });
