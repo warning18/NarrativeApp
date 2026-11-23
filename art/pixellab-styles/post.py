@@ -9,7 +9,7 @@ G=[hx(x) for x in '090A14 202E37 394A50 8B9BA0 EBEDE9'.split()]; RED=hx('A53030'
 P2=np.array([hx(x) for x in '090A14 151D28 202E37 3C5E8B 577277 884B2B DE9E41 E8C170'.split()])
 def snap(c,pal):
     d=((pal-c)**2*np.array([2,4,3])).sum(1); return pal[d.argmin()]
-def style1(im,box=None,maxarea=40):
+def style1(im,box=None,maxarea=40,stretch=True):
     a=np.array(im.convert('RGBA'));rgb=a[...,:3].astype(float);al=a[...,3]
     mx=rgb.max(2);mn=rgb.min(2);sat=(mx-mn)/np.maximum(mx,1)
     red=(sat>0.45)&(rgb[...,0]>rgb[...,1]*1.5)&(rgb[...,0]>rgb[...,2]*1.5)&(rgb[...,0]<230)
@@ -22,8 +22,10 @@ def style1(im,box=None,maxarea=40):
             ys,xs=np.where(m); inside=(xs.mean()>=box[0] and xs.mean()<=box[2] and ys.mean()>=box[1] and ys.mean()<=box[3])
             if inside and m.sum()<=400: keep|=m
         elif m.sum()<=maxarea: keep|=m
-    L=(rgb@np.array([.3,.59,.11]));
-    if (al>0).any(): lo,hi=np.percentile(L[al>0],[2,98]); L=np.clip((L-lo)/max(hi-lo,1),0,1)
+    L=(rgb@np.array([.3,.59,.11]))
+    if not stretch: L=np.clip(L/255*1.0,0,1)
+   
+    if stretch and (al>0).any(): lo,hi=np.percentile(L[al>0],[2,98]); L=np.clip((L-lo)/max(hi-lo,1),0,1)
     out=np.zeros_like(rgb)
     for y in range(a.shape[0]):
         for x in range(a.shape[1]):
