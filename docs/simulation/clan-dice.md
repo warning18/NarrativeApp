@@ -92,3 +92,27 @@ the Headsman's 15 in T, so it was cut back to the faces above.
 (the first try moved them -0 to -3 and +1), but the direction is the same
 everywhere. The simulator ignores keywords (pierce, pain, growth) when it
 values a die, and it never fills the tally's plain faces with skills.
+
+## Second batch: seeds 101..200 (swap off)
+
+The same plan, both policies, before (main 2b9a273d faces) and after
+(de35d632). Each cell is runs ending on the die / times taken, first for
+seeds 1..100, then for 101..200.
+
+| | T before | T after | C before | C after |
+|---|---|---|---|---|
+| cinder | 0/63, 0/50 | 5/63, 6/49 | 1/51, 0/48 | 9/58, 14/52 |
+| ossuary | 0/37, 0/41 | 7/38, 7/40 | 0/6, 0/19 | 0/9, 1/17 |
+| tally | 0/22, 0/28 | 7/22, 7/28 | 0/25, 0/25 | 2/31, 4/32 |
+| Headsman (final only) | 15, 21 | 2, 2 | 6, 14 | 1, 1 |
+| fight win % | 92.9, 93.1 | 92.5, 93.0 | 93.8, 95.4 | 93.1, 94.0 |
+| Tear Herald beaten | 88, 94 | 86, 92 | 91, 91 | 89, 90 |
+
+**Pooled over 200 seeds, before → after:**
+- Fight win: T 93.0 → 92.7, C 94.6 → 93.6.
+- Tear Herald beaten: T 182 → 178, C 182 → 179.
+
+The dip holds on the second batch. For T it is small, 0.3 points and 4
+runs. For C it is 1.0 point, and 1.4 points on seeds 101..200. On these
+seeds cinder is the competent player's final die in 14 runs, and in 8 of
+20 mage runs. The Headsman had 14 on the same seeds (12 of 20 clerics).
