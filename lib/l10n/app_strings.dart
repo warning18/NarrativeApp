@@ -7462,6 +7462,11 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.en: 'resists',
     AppLanguage.fr: '— résistance\u00a0:',
   },
+  'dice_weak_hint': {
+    AppLanguage.en: 'Your picked die is weak against {foe}: aim it there, ×3.',
+    AppLanguage.fr:
+        'Votre dé choisi touche {foe} en point faible\u00a0: visez-le, ×3.',
+  },
   'weak_to_label': {
     AppLanguage.en: 'Weak to',
     AppLanguage.fr: 'Point faible\u00a0:',

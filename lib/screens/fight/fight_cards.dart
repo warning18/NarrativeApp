@@ -29,40 +29,49 @@ extension _FightCards on _FightScreenState {
     return tooltip == null ? chip : Tooltip(message: tooltip, child: chip);
   }
 
-  /// The elements [enemy] is known to be weak to (green, ×2) and to
-  /// resist (grey, ×½) -- see [_knownElementsFor].
-  List<Widget> _elementChips(_EnemyMember enemy) {
-    if (!enemy.isAlive) return const [];
-    final lang = ref.watch(appLanguageProvider);
-    final known = _knownElementsFor(enemy);
-    return [
-      for (final element in known.weak)
-        Tooltip(
-          message:
-              '${trFor(lang, 'weak_to_label')} ${elementLabel(element, lang)}',
-          child: _miniStat(elementIcon(element),
-              '×${weaknessMultiplier.round()}', Palette.goodDeep),
-        ),
-      for (final element in known.resist)
-        Tooltip(
-          message:
-              '${trFor(lang, 'resists_label')} ${elementLabel(element, lang)}',
-          child: _miniStat(elementIcon(element), '×½', Palette.slate),
-        ),
-    ];
+  /// The element of the die the player has picked, or null.
+  String? _pickedDieElement() {
+    final id = _dieLocks.selected;
+    final actor = id == null ? null : _memberById(id);
+    final face = id == null ? null : _currentFaces[id];
+    if (actor == null || face == null) return null;
+    final skills = ref.read(localizedDbProvider(skillsSchema)).value ??
+        const <String, dynamic>{};
+    final e = _elementFor(face, _availableSkillsFor(actor, skills));
+    return e == 'None' ? null : e;
   }
 
-  Widget _miniStat(IconData icon, String value, Color color) {
-    return Row(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        Icon(icon, size: IconSize.inline, color: color),
-        const SizedBox(width: 2),
-        Text(value,
-            style: TextStyle(
-                fontSize: 11, fontWeight: FontWeight.bold, color: color)),
-      ],
-    );
+  /// The first living foe the picked die's element is weak against.
+  _EnemyMember? _weakFoeForPickedDie() {
+    final e = _pickedDieElement();
+    if (e == null) return null;
+    for (final foe in _enemies) {
+      if (foe.isAlive && enemyWeaknesses(foe.data).contains(e)) return foe;
+    }
+    return null;
+  }
+
+  /// The weakness (red, ×3) and resistance (grey, ×½) marks on [enemy]'s
+  /// nameplate. A weak mark is ringed while the picked die has its element.
+  List<FightMark> _elementMarks(_EnemyMember enemy) {
+    final lang = ref.watch(appLanguageProvider);
+    final known = _knownElementsFor(enemy);
+    final picked = _pickedDieElement();
+    return [
+      for (final e in known.weak)
+        FightMark(
+            icon: elementIcon(e),
+            text: '×${weaknessMultiplier.round()}',
+            weak: true,
+            lit: e == picked,
+            tip: '${trFor(lang, 'weak_to_label')} ${elementLabel(e, lang)}'),
+      for (final e in known.resist)
+        FightMark(
+            icon: elementIcon(e),
+            text: '×½',
+            weak: false,
+            tip: '${trFor(lang, 'resists_label')} ${elementLabel(e, lang)}'),
+    ];
   }
 
   /// What the blows aimed at [member] this round would take off, after

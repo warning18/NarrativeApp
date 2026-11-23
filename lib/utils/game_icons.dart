@@ -60,6 +60,10 @@ IconData elementIcon(String? element) {
       return Icons.bolt;
     case 'Void':
       return Icons.blur_on;
+    case 'Light':
+      return Icons.wb_sunny;
+    case 'Ice':
+      return Icons.ac_unit;
     default:
       return Icons.circle_outlined;
   }

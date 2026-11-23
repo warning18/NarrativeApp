@@ -8,6 +8,22 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.996.0+1032]
+
+- Fights: a foe's weakness marks no longer crowd its name. On a nameplate where the name cannot stay readable beside its emblem, marks and rank (a long name, a narrow phone), the marks move to the row under the plate instead of squeezing the name to a few pixels; short names keep them on the plate. Also fixes a plate overflow at 320 dp wide with a boss's rank and three marks. UX (view only).
+
+## [1.995.0+1031]
+
+- Fights: a foe's weaknesses and the resistances the party has learned now sit on its nameplate, right after the name (the user's pick, mark B): a red ×3 with the element's icon, a grey ×½ for a resistance. While a die you picked is of the element a foe is weak to, that mark is ringed and the hint under the dice says so ("Your picked die is weak against the foe: aim it there, ×3"). The marks no longer count in the foe's "+n" chip; its sheet still lists everything. The Light and Ice elements get their own icons. Core's rule for what is known is unchanged. UX (view only).
+
+## [1.994.0+1030]
+
+- Fights: a foe's weaknesses show from the start of the fight, as the user chose (the triple damage of a weakness is there to be aimed at). The loadout picker names them and stars the dice that hit them before the first roll, whatever the party's Perception and whether or not it has met that foe before. Resistances are still learned: read by Perception, known once the foe's kind has been beaten, or found by a hit.
+
+## [1.993.0+1029]
+
+- Dice: the three clan gift dice are worth keeping, as the user asked (Core's combinations review: players took them 121 times in 100 runs and rolled none of them at the end). Each now fights in its clan's style: the Compact's cinder die cuts through a raised guard with an Ember Cut and holds the heat longer; the Penitents' ossuary die cleaves harder, has a strike that hits twice as hard at a cost in health, and mends more; the Crows' tally die is still twelve plain faces, now eight Water strikes (two that grow) and two guards and two mends, all worth 3. Face counts, names and ids are unchanged. Measured on 200 simulated runs: each clan die is now rolled to the end in 1 to 13 runs of 100 (none before), none takes over (at most 7 of 20 runs of one calling), and the Headsman, which they now outclass, ends far fewer runs. Fights won dip by about a point for an expert player (94.6% → 93.6%; 93.0% → 92.8% typical), which the user accepted.
+
 ## [1.992.0+1028]
 - A merge ready to craft is now said where the player looks: a plate at the top of the Skills list (the two skills, the result in its rarity's frame, "Craft at the Skillwright" when it stands, else its cost and, at the camp, the way there), and a dot on the Camp tab while the party is at the camp. English and French.
 

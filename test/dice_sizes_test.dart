@@ -115,6 +115,16 @@ const Map<String, Map<int, _Face>> _retuned = {
   'arcane_die': {
     8: ('Skill', 0, '', 0.6),
   },
+  // The clan dice retune (docs/simulation/clan-dice.md).
+  'ossuary_die': {
+    0: ('Attack', 3, '', 1.1),
+    1: ('Defend', 3, '', 0.7),
+    2: ('Heal', 4, '', 0.6),
+    3: ('Skill', 0, 'final_stand', 0.8),
+    5: ('Skill', 0, '', 0.8),
+    7: ('Defend', 3, '', 0.6),
+    8: ('Heal', 3, '', 0.6),
+  },
 };
 
 /// The faces of each resized die before the sizes (v1.568's dice.json).

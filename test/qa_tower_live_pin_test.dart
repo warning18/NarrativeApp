@@ -47,8 +47,10 @@ void main() {
   // v1.963: the floors without a fight switched on (towerEventsLive 2, the
   // user's option 2: their foes 1.17, floors 25 and 30 .42 and .34): these
   // were 55 / 220 / 9247 and 126 / 320 / 10963.
-  const none = (top: 66, floor20: 240, floorSum: 9609);
-  const all = (top: 144, floor20: 323, floorSum: 11140);
+  // v1.993: the clan gift dice's new faces (the Tower deals them too):
+  // these were 66 / 240 / 9609 and 144 / 323 / 11140.
+  const none = (top: 65, floor20: 240, floorSum: 9623);
+  const all = (top: 144, floor20: 323, floorSum: 11175);
 
   test('the live Tower, no unlocks, is the pinned curve', () {
     final m = _measure(const TowerProgress());
