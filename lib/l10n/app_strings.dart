@@ -4341,7 +4341,7 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.en:
         'The Skillwright is not built yet: {gold} gold, and materials, at the camp.',
     AppLanguage.fr:
-        'L’Atelier des techniques n’est pas encore bâti : {gold} or, et des matériaux, au camp.',
+        'L’Atelier des techniques n’est pas encore bâti\u00a0: {gold} or, et des matériaux, au camp.',
   },
   'merge_ready_go_camp': {
     AppLanguage.en: 'Go to the camp',
