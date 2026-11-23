@@ -18,6 +18,7 @@ import 'item_stats.dart';
 import '../theme/palette.dart';
 import '../theme/icon_sizes.dart';
 import 'clan_offer_gifts.dart' show CardTier;
+import 'whole_word_text.dart';
 import 'pixel_glyph.dart';
 import 'story_panel.dart' show StoryFrame;
 import '../theme/pixel_chip.dart';
@@ -292,52 +293,7 @@ class InventorySortButton extends StatelessWidget {
 /// name of what is worn there or the slot's name. [lit] marks the slot the
 /// piece in view would go to.
 /// The most a slot tile's name grows with the text-size setting.
-const double slotTileMaxTextScale = 1.15;
-
-/// A slot tile's name: it follows the text-size setting, up to the cap, but
-/// never beyond what keeps its longest word whole on one line, so a long word
-/// (Emberproof, Zweihander) does not break inside itself (#1098).
-class _SlotName extends StatelessWidget {
-  const _SlotName(
-      {required this.text, required this.maxLines, required this.style});
-
-  final String text;
-  final int maxLines;
-  final TextStyle? style;
-
-  @override
-  Widget build(BuildContext context) {
-    final user = MediaQuery.textScalerOf(context)
-        .clamp(maxScaleFactor: slotTileMaxTextScale);
-    return LayoutBuilder(builder: (context, box) {
-      var scaler = user;
-      if (box.maxWidth.isFinite) {
-        var widest = 0.0;
-        for (final word in text.split(RegExp(r'\s+'))) {
-          final p = TextPainter(
-            text: TextSpan(text: word, style: style),
-            textScaler: user,
-            textDirection: TextDirection.ltr,
-            maxLines: 1,
-          )..layout();
-          if (p.width > widest) widest = p.width;
-        }
-        // A 3 % margin: scaled text is not exactly proportional.
-        final room = box.maxWidth * 0.97;
-        if (widest > room) {
-          final k = (user.scale(1) * room / widest).clamp(0.8, 1.0);
-          scaler = TextScaler.linear(k);
-        }
-      }
-      return Text(text,
-          textScaler: scaler,
-          maxLines: maxLines,
-          overflow: TextOverflow.ellipsis,
-          textAlign: TextAlign.center,
-          style: style);
-    });
-  }
-}
+const double slotTileMaxTextScale = wholeWordMaxTextScale;
 
 class InventorySlotTile extends StatelessWidget {
   const InventorySlotTile({
@@ -385,7 +341,7 @@ class InventorySlotTile extends StatelessWidget {
               children: [
                 Opacity(opacity: filled ? 1 : 0.5, child: icon),
                 const SizedBox(height: 4),
-                _SlotName(
+                WholeWordText(
                     text: worn ?? slotLabel,
                     maxLines: filled ? 3 : 1,
                     style: theme.textTheme.bodySmall?.copyWith(
