@@ -23,7 +23,7 @@ keywords and the tally's mix of faces change. Face counts stay the same
 
 | Die | Old | New |
 |---|---|---|
-| `cinder_die` (Compact: Fire, the edge that breaks a guard) | Fire Atk 2, 2, 3 (w .9); Def 2 steady (w .9); Tempered (forgeheart, w .6); Def 1 | Fire Atk 2, 2 **pierce**, 3 **pierce** (w .9); Def 2 steady (w .7); Tempered (w **.8**); Def **2** (w **.5**) |
+| `cinder_die` (Compact: Fire, the edge that breaks a guard) | Fire Atk 2, 2, 3 (w .9); Def 2 steady (w .9); Tempered (forgeheart, w .6); Def 1 | Fire Atk 2, 2 **pierce**, 3 (w .9); Def 2 steady (w .7); Tempered (w **.7**); Def **2** (w **.5**) |
 | `ossuary_die` (Penitents: Earth, burdens carried) | Bone Cleaver Atk 2 growth; Strike Atk 3 x2; Grave Guard Def 3 (w .9); Guard Def 3; Marrow Mend Heal 3 (w .7); Mend Heal 3; Last Rites (w .5), Ossuary Calm (w .5), Open Grave (w .7) | Bone Cleaver Atk **3** growth; Strike Atk 3 **pain**, Strike Atk 3; Grave Guard (w **.7**); Guard (w **.6**); Marrow Mend Heal **4** (w **.6**); Mend (w **.6**); Last Rites (w **.8**), Ossuary Calm (w .5), Open Grave (w **.8**) |
 | `tally_die` (Crows: salt water, many hits, the long game) | 12 plain faces of 2: Strike x4, Guard x4, Mend x4 | 12 plain faces of **3**: **Strike x8 (Water, two with growth)**, Guard x2 (w .8), Mend x2 (w .8). Still no Skill face (`dice_sizes_test` pins that). |
 
@@ -31,7 +31,7 @@ keywords and the tally's mix of faces change. Face counts stay the same
 
 | Die | Cost | Old | New |
 |---|---|---|---|
-| cinder | 140 | 5.81 / 7.11 / 8.40 / 9.70 | 6.68 / 8.19 / 9.70 / 11.21 |
+| cinder | 140 | 5.81 / 7.11 / 8.40 / 9.70 | 6.65 / 8.15 / 9.65 / 11.15 |
 | ossuary | 220 | 6.07 / 7.21 / 8.36 / 9.50 | 7.08 / 8.43 / 9.78 / 11.13 |
 | tally | 150 | 3.67 / 4.33 / 5.00 / 5.67 | 7.07 / 8.50 / 9.93 / 11.36 |
 | starter (the die to beat) | 0 | 6.31 / 7.89 / 9.48 / 11.06 | unchanged |
@@ -49,7 +49,12 @@ below the lantern die (the court die for cinder). Resonance (+1 on faces of
 1 to 3) lifts them further in fights for the clan's own loyalists. All
 tally faces are 3, so all twelve get the bonus.
 
-## Results (CD989): final die / clan die taken
+## Results (CD989), first cut (de35d632)
+
+These tables are for the first cut: Forge Strike with pierce and Tempered
+at w .8. The final faces are in "Cinder trimmed" at the end.
+
+### Final die / clan die taken: final die / clan die taken
 
 | | T off | T on | C off | C on |
 |---|---|---|---|---|
@@ -116,3 +121,46 @@ The dip holds on the second batch. For T it is small, 0.3 points and 4
 runs. For C it is 1.0 point, and 1.4 points on seeds 101..200. On these
 seeds cinder is the competent player's final die in 14 runs, and in 8 of
 20 mage runs. The Headsman had 14 on the same seeds (12 of 20 clerics).
+
+## Cinder trimmed (final faces)
+
+The coordinator asked to trim cinder only, to close the competent dip.
+1. **Step 1:** Forge Strike loses pierce. The die value is unchanged (8.19
+   at damage 8), because the bot ignores keywords when it values a die.
+2. **Step 2:** Tempered's weight goes from .8 to .7. Cinder is now 8.15 at
+   damage 8 (6.65 / 8.15 / 9.65 / 11.15).
+
+Ossuary and tally are unchanged. Same plan, swap off, against the same
+before (main 2b9a273d). Each cell is runs ending on the die / times taken,
+first for seeds 1..100, then for 101..200.
+
+| | before | first cut | pierce off | final (also Tempered .7) |
+|---|---|---|---|---|
+| T cinder | 0/63, 0/50 | 5/63, 6/49 | 5/63, 6/49 | 5/63, 5/49 |
+| T ossuary | 0/37, 0/41 | 7/38, 7/40 | 7/38, 7/40 | 7/39, 7/42 |
+| T tally | 0/22, 0/28 | 7/22, 7/28 | 7/22, 7/28 | 7/22, 7/28 |
+| T Headsman (runs ending on it) | 15, 21 | 2, 2 | 2, 2 | 2, 2 |
+| T fight win % | 92.9, 93.1 | 92.5, 93.0 | 92.6, 93.0 | 92.5, 93.0 |
+| T Tear Herald beaten | 88, 94 | 86, 92 | 87, 92 | 86, 93 |
+| C cinder | 1/51, 0/48 | 9/58, 14/52 | 10/58, 17/52 | 6/57, 13/51 |
+| C ossuary | 0/6, 0/19 | 0/9, 1/17 | 0/9, 1/17 | 1/9, 1/17 |
+| C tally | 0/25, 0/25 | 2/31, 4/32 | 2/31, 4/33 | 3/31, 5/33 |
+| C Headsman (runs ending on it) | 6, 14 | 1, 1 | 1, 1 | 1, 1 |
+| C fight win % | 93.8, 95.4 | 93.1, 94.0 | 93.1, 93.9 | 93.2, 94.1 |
+| C Tear Herald beaten | 91, 91 | 89, 90 | 89, 88 | 89, 92 |
+
+**Pooled over 200 seeds:**
+
+| | before | first cut | pierce off | final |
+|---|---|---|---|---|
+| T fight win % | 93.0 | 92.7 | 92.8 | 92.8 |
+| T Tear Herald beaten | 182 | 178 | 179 | 179 |
+| C fight win % | 94.6 | 93.6 | 93.5 | 93.6 |
+| C Tear Herald beaten | 182 | 179 | 177 | 181 |
+
+The competent fight-win dip does **not** close: it is 1.0 point with the
+final faces. Trimming cinder lowers its share (C final die 23 → 19 runs out
+of 200, at most 7 of 20 in one profession), and C Tear Herald wins come
+back to 181 of 182. Fight win does not move, so the dip is not cinder's
+pierce or Tempered. It may come from the clan dice taking the Headsman's
+place in general, or from ossuary and tally, which were not changed here.
