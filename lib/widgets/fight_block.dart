@@ -87,6 +87,9 @@ class FightBlock extends StatelessWidget {
 
   static const double plateHeight = 17;
 
+  /// A plate whose name takes two lines (#1100).
+  static const double plateHeightTwoLines = 26;
+
   Widget _markChip(FightMark m, Color ink) {
     final colour = m.weak ? Palette.hot : Palette.slate;
     final chip = Container(
@@ -144,12 +147,19 @@ class FightBlock extends StatelessWidget {
         child: LayoutBuilder(builder: (context, box) {
           // The marks sit on the plate while the name stays readable beside
           // them; otherwise they drop to the chip row under it.
-          final onPlate = marks.isEmpty ||
-              _nameFitsBeside(box.maxWidth, ranked: rank != FightRank.normal);
+          final ranked = rank != FightRank.normal;
+          // A name that cannot stay readable on one line takes two, and its
+          // marks go under the plate.
+          final twoLines =
+              !_nameFitsBeside(box.maxWidth, ranked: ranked, marks: 0);
+          final onPlate = !twoLines &&
+              (marks.isEmpty ||
+                  _nameFitsBeside(box.maxWidth,
+                      ranked: ranked, marks: marks.length));
           return Column(
             children: [
               Container(
-                height: plateHeight,
+                height: twoLines ? plateHeightTwoLines : plateHeight,
                 margin: const EdgeInsets.fromLTRB(3, 3, 3, 0),
                 padding: const EdgeInsets.symmetric(horizontal: 4),
                 color: plateColor,
@@ -167,23 +177,44 @@ class FightBlock extends StatelessWidget {
                       const SizedBox(width: 3),
                     ],
                     Expanded(
-                      child: FittedBox(
-                        fit: BoxFit.scaleDown,
-                        alignment: Alignment.centerLeft,
-                        child: Text(
-                          name,
-                          maxLines: 1,
-                          style: TextStyle(
-                              fontFamily: InkFonts.display,
-                              fontSize: 13,
-                              height: 1,
-                              color: plateInk),
-                        ),
-                      ),
+                      child: twoLines
+                          ? LayoutBuilder(
+                              builder: (context, line) => FittedBox(
+                                fit: BoxFit.scaleDown,
+                                alignment: Alignment.centerLeft,
+                                child: ConstrainedBox(
+                                  constraints:
+                                      BoxConstraints(maxWidth: line.maxWidth),
+                                  child: Text(
+                                    name,
+                                    maxLines: 3,
+                                    style: TextStyle(
+                                        fontFamily: InkFonts.display,
+                                        fontSize: 11,
+                                        height: 1.02,
+                                        color: plateInk),
+                                  ),
+                                ),
+                              ),
+                            )
+                          : FittedBox(
+                              fit: BoxFit.scaleDown,
+                              alignment: Alignment.centerLeft,
+                              child: Text(
+                                name,
+                                maxLines: 1,
+                                style: TextStyle(
+                                    fontFamily: InkFonts.display,
+                                    fontSize: 13,
+                                    height: 1,
+                                    color: plateInk),
+                              ),
+                            ),
                     ),
                     if (marks.isNotEmpty && onPlate)
                       for (final m in marks) _markChip(m, plateInk),
-                    if (rank != FightRank.normal) _rankMark(plateInk),
+                    // A two-line plate keeps the badge's icon only: the frame says the rest.
+                    if (ranked) _rankMark(plateInk, iconOnly: twoLines),
                   ],
                 ),
               ),
@@ -226,19 +257,21 @@ class FightBlock extends StatelessWidget {
                                 children: [
                                   if (!onPlate)
                                     Flexible(
-                                        flex: 2,
-                                        child: ConstrainedBox(
-                                          constraints: const BoxConstraints(
-                                              maxWidth: 104),
-                                          child: FittedBox(
-                                            fit: BoxFit.scaleDown,
-                                            alignment: Alignment.centerLeft,
-                                            child: Row(children: [
+                                      flex: 2,
+                                      child: ConstrainedBox(
+                                        constraints:
+                                            const BoxConstraints(maxWidth: 104),
+                                        child: FittedBox(
+                                          fit: BoxFit.scaleDown,
+                                          alignment: Alignment.centerLeft,
+                                          child: Row(children: [
+                                            if (!onPlate)
                                               for (final m in marks)
                                                 _markChip(m, plateInk),
-                                            ]),
-                                          ),
-                                        )),
+                                          ]),
+                                        ),
+                                      ),
+                                    ),
                                   Expanded(
                                     child: SingleChildScrollView(
                                       scrollDirection: Axis.horizontal,
@@ -271,10 +304,11 @@ class FightBlock extends StatelessWidget {
     );
   }
 
-  /// Whether the name stays at a readable size (at least 85 % of its 13 sp)
-  /// on a plate [width] wide with its emblem or number, its marks and its
-  /// rank beside it.
-  bool _nameFitsBeside(double width, {required bool ranked}) {
+  /// Whether the name stays at a readable size (at least 85 % of its 13 sp,
+  /// on one line) on a plate [width] wide with its emblem or number, [marks]
+  /// marks and its rank beside it.
+  bool _nameFitsBeside(double width,
+      {required bool ranked, required int marks}) {
     final painter = TextPainter(
       text: TextSpan(
           text: name,
@@ -284,22 +318,24 @@ class FightBlock extends StatelessWidget {
       textDirection: TextDirection.ltr,
     )..layout();
     // Margins 6, padding 8, emblem or number 16, a mark about 33, the rank 48.
-    final room = width - 6 - 8 - 16 - marks.length * 33 - (ranked ? 48 : 0);
+    final room = width - 6 - 8 - 16 - marks * 33 - (ranked ? 48 : 0);
     return room >= painter.width * 0.85;
   }
 
-  Widget _rankMark(Color ink) => Row(
+  Widget _rankMark(Color ink, {bool iconOnly = false}) => Row(
         mainAxisSize: MainAxisSize.min,
         children: [
           Icon(rank == FightRank.boss ? Icons.workspace_premium : Icons.star,
               size: IconSize.inline, color: ink),
-          const SizedBox(width: 1),
-          Text(rank == FightRank.boss ? 'BOSS' : 'ELITE',
-              style: TextStyle(
-                  fontFamily: InkFonts.system,
-                  fontSize: 8,
-                  height: 1,
-                  color: ink)),
+          if (!iconOnly) ...[
+            const SizedBox(width: 1),
+            Text(rank == FightRank.boss ? 'BOSS' : 'ELITE',
+                style: TextStyle(
+                    fontFamily: InkFonts.system,
+                    fontSize: 8,
+                    height: 1,
+                    color: ink)),
+          ],
         ],
       );
 
