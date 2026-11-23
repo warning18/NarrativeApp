@@ -188,14 +188,20 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
               // dropdown (e.g. a reset elsewhere).
               // ignore: deprecated_member_use
               value: mapTheme,
+              // Expanded, with long labels cut short: a French label at a
+              // big text size no longer pushes the field past the screen.
+              isExpanded: true,
               decoration: const InputDecoration(border: OutlineInputBorder()),
               items: [
                 DropdownMenuItem(
-                    value: null, child: Text(tr(ref, 'map_theme_auto_label'))),
+                    value: null,
+                    child: Text(tr(ref, 'map_theme_auto_label'),
+                        overflow: TextOverflow.ellipsis)),
                 ...MapTheme.values.map(
                   (theme) => DropdownMenuItem(
                     value: theme,
-                    child: Text(tr(ref, mapThemeLabelKey(theme))),
+                    child: Text(tr(ref, mapThemeLabelKey(theme)),
+                        overflow: TextOverflow.ellipsis),
                   ),
                 ),
               ],

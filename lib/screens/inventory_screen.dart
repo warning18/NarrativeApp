@@ -714,11 +714,17 @@ class _InventoryBodyState extends ConsumerState<_InventoryBody> {
         caption(tr(ref, 'equipment_section')),
         GridView(
           // A fixed height: a worn piece's name takes up to three lines (v1.989).
-          gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+          gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
             crossAxisCount: 3,
             mainAxisSpacing: 8,
             crossAxisSpacing: 8,
-            mainAxisExtent: 98,
+            // Grows with the name's text size, up to the tile's own cap.
+            mainAxisExtent: 98 +
+                60 *
+                    (MediaQuery.textScalerOf(context)
+                            .clamp(maxScaleFactor: slotTileMaxTextScale)
+                            .scale(1) -
+                        1),
           ),
           shrinkWrap: true,
           physics: const NeverScrollableScrollPhysics(),
