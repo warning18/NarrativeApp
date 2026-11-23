@@ -141,112 +141,151 @@ class FightBlock extends StatelessWidget {
                 g.ornament,
                 Color.lerp(plateColor, Palette.apolloCream, 0.55)!,
                 Palette.apolloOutline),
-        child: Column(
-          children: [
-            Container(
-              height: plateHeight,
-              margin: const EdgeInsets.fromLTRB(3, 3, 3, 0),
-              padding: const EdgeInsets.symmetric(horizontal: 4),
-              color: plateColor,
-              child: Row(
-                children: [
-                  if (g != null) ...[
-                    GroupEmblem(g, size: 13, color: plateInk),
-                    const SizedBox(width: 3),
-                  ] else if (order != null) ...[
-                    Text('$order',
-                        style: TextStyle(
-                            fontSize: 9,
-                            fontWeight: FontWeight.bold,
-                            color: plateInk)),
-                    const SizedBox(width: 3),
-                  ],
-                  Expanded(
-                    child: FittedBox(
-                      fit: BoxFit.scaleDown,
-                      alignment: Alignment.centerLeft,
-                      child: Text(
-                        name,
-                        maxLines: 1,
-                        style: TextStyle(
-                            fontFamily: InkFonts.display,
-                            fontSize: 13,
-                            height: 1,
-                            color: plateInk),
-                      ),
-                    ),
-                  ),
-                  for (final m in marks) _markChip(m, plateInk),
-                  if (rank != FightRank.normal) _rankMark(plateInk),
-                ],
-              ),
-            ),
-            Expanded(
-              child: Padding(
-                padding: const EdgeInsets.fromLTRB(5, 3, 5, 2),
+        child: LayoutBuilder(builder: (context, box) {
+          // The marks sit on the plate while the name stays readable beside
+          // them; otherwise they drop to the chip row under it.
+          final onPlate = marks.isEmpty ||
+              _nameFitsBeside(box.maxWidth, ranked: rank != FightRank.normal);
+          return Column(
+            children: [
+              Container(
+                height: plateHeight,
+                margin: const EdgeInsets.fromLTRB(3, 3, 3, 0),
+                padding: const EdgeInsets.symmetric(horizontal: 4),
+                color: plateColor,
                 child: Row(
                   children: [
-                    Stack(
-                      clipBehavior: Clip.none,
-                      children: [
-                        SizedBox(width: 32, height: 32, child: head),
-                        if (armor != null)
-                          Positioned(
-                            left: -2,
-                            bottom: -12,
-                            child: _gem(context, Icons.shield_outlined,
-                                '$armor', Palette.slate),
-                          ),
-                        if (damage != null)
-                          Positioned(
-                            right: -6,
-                            bottom: -12,
-                            child: _gem(
-                                context, Icons.bolt, '$damage', Palette.hot),
-                          ),
-                      ],
-                    ),
-                    const SizedBox(width: 10),
+                    if (g != null) ...[
+                      GroupEmblem(g, size: 13, color: plateInk),
+                      const SizedBox(width: 3),
+                    ] else if (order != null) ...[
+                      Text('$order',
+                          style: TextStyle(
+                              fontSize: 9,
+                              fontWeight: FontWeight.bold,
+                              color: plateInk)),
+                      const SizedBox(width: 3),
+                    ],
                     Expanded(
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        crossAxisAlignment: CrossAxisAlignment.stretch,
-                        children: [
-                          bar,
-                          const SizedBox(height: 3),
-                          SizedBox(
-                            height: 20,
-                            child: Row(
-                              children: [
-                                Expanded(
-                                  child: SingleChildScrollView(
-                                    scrollDirection: Axis.horizontal,
-                                    child: Row(children: chips),
-                                  ),
-                                ),
-                                if (intent != null)
-                                  Flexible(
-                                    flex: 0,
-                                    child: ConstrainedBox(
-                                      constraints:
-                                          const BoxConstraints(maxWidth: 92),
-                                      child: intent,
-                                    ),
-                                  ),
-                              ],
-                            ),
-                          ),
-                        ],
+                      child: FittedBox(
+                        fit: BoxFit.scaleDown,
+                        alignment: Alignment.centerLeft,
+                        child: Text(
+                          name,
+                          maxLines: 1,
+                          style: TextStyle(
+                              fontFamily: InkFonts.display,
+                              fontSize: 13,
+                              height: 1,
+                              color: plateInk),
+                        ),
                       ),
                     ),
+                    if (marks.isNotEmpty && onPlate)
+                      for (final m in marks) _markChip(m, plateInk),
+                    if (rank != FightRank.normal) _rankMark(plateInk),
                   ],
                 ),
               ),
-            ),
-          ],
-        ),
+              Expanded(
+                child: Padding(
+                  padding: const EdgeInsets.fromLTRB(5, 3, 5, 2),
+                  child: Row(
+                    children: [
+                      Stack(
+                        clipBehavior: Clip.none,
+                        children: [
+                          SizedBox(width: 32, height: 32, child: head),
+                          if (armor != null)
+                            Positioned(
+                              left: -2,
+                              bottom: -12,
+                              child: _gem(context, Icons.shield_outlined,
+                                  '$armor', Palette.slate),
+                            ),
+                          if (damage != null)
+                            Positioned(
+                              right: -6,
+                              bottom: -12,
+                              child: _gem(
+                                  context, Icons.bolt, '$damage', Palette.hot),
+                            ),
+                        ],
+                      ),
+                      const SizedBox(width: 10),
+                      Expanded(
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          crossAxisAlignment: CrossAxisAlignment.stretch,
+                          children: [
+                            bar,
+                            const SizedBox(height: 3),
+                            SizedBox(
+                              height: 20,
+                              child: Row(
+                                children: [
+                                  if (!onPlate)
+                                    Flexible(
+                                        flex: 2,
+                                        child: ConstrainedBox(
+                                          constraints: const BoxConstraints(
+                                              maxWidth: 104),
+                                          child: FittedBox(
+                                            fit: BoxFit.scaleDown,
+                                            alignment: Alignment.centerLeft,
+                                            child: Row(children: [
+                                              for (final m in marks)
+                                                _markChip(m, plateInk),
+                                            ]),
+                                          ),
+                                        )),
+                                  Expanded(
+                                    child: SingleChildScrollView(
+                                      scrollDirection: Axis.horizontal,
+                                      child: Row(children: chips),
+                                    ),
+                                  ),
+                                  if (intent != null)
+                                    Flexible(
+                                      flex: 0,
+                                      child: ConstrainedBox(
+                                        constraints:
+                                            const BoxConstraints(maxWidth: 92),
+                                        child: intent,
+                                      ),
+                                    ),
+                                ],
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ],
+          );
+        }),
       ),
     );
+  }
+
+  /// Whether the name stays at a readable size (at least 85 % of its 13 sp)
+  /// on a plate [width] wide with its emblem or number, its marks and its
+  /// rank beside it.
+  bool _nameFitsBeside(double width, {required bool ranked}) {
+    final painter = TextPainter(
+      text: TextSpan(
+          text: name,
+          style: const TextStyle(
+              fontFamily: InkFonts.display, fontSize: 13, height: 1)),
+      maxLines: 1,
+      textDirection: TextDirection.ltr,
+    )..layout();
+    // Margins 6, padding 8, emblem or number 16, a mark about 33, the rank 48.
+    final room = width - 6 - 8 - 16 - marks.length * 33 - (ranked ? 48 : 0);
+    return room >= painter.width * 0.85;
   }
 
   Widget _rankMark(Color ink) => Row(
