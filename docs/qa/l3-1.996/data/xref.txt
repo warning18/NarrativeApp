@@ -1,0 +1,5 @@
+
+story graph: 479 scenes, 1156 choices: 0 references into the tables that do not resolve
+43 tables, 2178 known ids, 2655 id-like references read: 0 point at no known id, 0 name the wrong kind of thing, 0 records whose own id field differs from the key, 0 text fields with no French twin
+
+== text fields with no French twin
