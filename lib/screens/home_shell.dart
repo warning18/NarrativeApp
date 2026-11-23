@@ -284,7 +284,11 @@ class _HomeShellState extends ConsumerState<HomeShell> {
                     ? dotted(Icons.local_fire_department_outlined,
                         tr(ref, 'nav_camp'),
                         show: badges.camp,
-                        reason: tr(ref, 'badge_house_affordable'))
+                        reason: tr(
+                            ref,
+                            badges.campMerge
+                                ? 'badge_merge_ready'
+                                : 'badge_house_affordable'))
                     : NavigationDestination(
                         icon: const Icon(Icons.sailing_outlined),
                         label: tr(ref, 'nav_ship')),
