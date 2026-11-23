@@ -426,10 +426,11 @@ endings are set in the card room, and the die has been the narrator's thread for
 whole story. Text only; the four endings already carry 20 to 27 callbacks, so this is
 one more.
 
-### P8. Break the Dominion's titles up (impact low to medium, cost low, size S, **quick win**)
+### P8. Break the Dominion's titles up (impact low to medium, cost low, size S; **dropped after building, see note**)
 *Brief.* Introduce Morrow, Oriel and Tallis in three scenes of chapter 3 (Morrow in
 `3005_envoys`, the other two as a rumour in the camp and a letter at the Spire) instead
 of one scene with nine names. Text only; `3005_envoys` stays and is trimmed.
+*Note (wave 1):* on a second read `3005_envoys` already gives each leader one concrete image (a whetstone, oil, a purse), and the three are the outcomes of `dying_lantern_bearer`; splitting them needs new scenes for little gain. Not built.
 
 ### P9. Show the Muster's cap to the player (impact low, cost medium, size M, **needs the user's choice**, needs UX and Core; no pictures needed)
 *Brief.* The Muster has 70 echoes and shows ten; the other sixty exist in the data. A
@@ -438,8 +439,7 @@ priority order) lets every choice be seen once. **Needs UX** (how it shows) and 
 (the list is read from the callbacks). Narrative supplies nothing new.
 
 ### P10. Small fixes folded into the next text PR (impact low, cost very low, size S, **quick win**)
-Unify `La Route des pèlerins` / `Pèlerins` and `Le` / `La Porte-Clef`; add a closing line
-to `7002_banner`'s Open Hand claim so `open_hand_6` is read (or drop the flag).
+Unify `La Route des pèlerins` / `Pèlerins` (done in wave 1). **Corrections found when building:** `open_hand_6` is not a dead flag (it is the remembrance stage, read by `clan_data.dart:37` and `session_politics.dart:420`), and `Le` / `La Porte-Clef` are two different NPCs (`keyholder_wharf`, `keeper_smugglers_vault`) with the same English title, so neither needs a change.
 
 ## 9. Asks and open questions
 
@@ -449,6 +449,7 @@ to `7002_banner`'s Open Hand claim so `open_hand_6` is read (or drop the flag).
   beat?), and the Hollow Shore (do five intrigue decisions in one chapter read as a
   climax or a pile-up?). I have not played these; the numbers above only locate where
   to look.
+- **Also noticed while building (not in the proposals):** `broken_charter`'s Turn (stage 3) fires from the politics event `coal_stops` (trigger: chapter 2), before its Hook (stage 2, chapter 3). The codex shows the highest stage reached, so it can read "Turn" before "Hook". Not changed.
 - **No change was made** to any file except this one.
 
 ## 10. How this review was checked (the three passes)
