@@ -580,6 +580,10 @@
       {
         "itemID": "potion_major",
         "dropRate": 20
+      },
+      {
+        "itemID": "harborwatch_lantern",
+        "dropRate": 40
       }
     ],
     "skillMoves": [
@@ -663,6 +667,10 @@
       {
         "itemID": "antidote",
         "dropRate": 20
+      },
+      {
+        "itemID": "harborwatch_coat",
+        "dropRate": 30
       }
     ],
     "skillMoves": [
@@ -1077,6 +1085,10 @@
       {
         "itemID": "potion_major",
         "dropRate": 20
+      },
+      {
+        "itemID": "hollow_court_blade",
+        "dropRate": 25
       }
     ],
     "skillMoves": [
@@ -1243,6 +1255,10 @@
       {
         "itemID": "material_iron_ore",
         "dropRate": 20
+      },
+      {
+        "itemID": "harborwatch_cutlass",
+        "dropRate": 40
       }
     ],
     "skillMoves": [
@@ -1856,6 +1872,10 @@
       {
         "itemID": "hollow_court_seal",
         "dropRate": 30
+      },
+      {
+        "itemID": "hollow_court_mantle",
+        "dropRate": 35
       }
     ],
     "skillMoves": [
