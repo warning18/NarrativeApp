@@ -176,7 +176,7 @@ so **the last two chapters' decisions show up once, at the end**.
 - Within the scene or the next: nearly all choices (a `reply` line, alignment, standing).
 - Within the chapter: the camp-loop quests and the intrigue Reveals.
 - **Three chapters or more:** 40 flags, the mother's thread (to chapter 4), Hesk,
-  the Dominion succession (`dying_lantern_bearer`: Clue 1, Choice 7), the loyalty
+  the Dominion succession (`dying_lantern_bearer`: Clue in chapter 2, Choice in chapter 8), the loyalty
   scenes (camp to chapter 8).
 - **Never:** the bone die, Vica, and the one dead flag the DAG sets and nothing reads,
   `open_hand_6` (set at `7002_banner`; the other six unread flags are the tutorial's
