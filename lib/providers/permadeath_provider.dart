@@ -21,8 +21,9 @@ class _PermadeathNotifier extends StateNotifier<bool> {
 }
 
 /// Whether losing a fight resets the player to the start of the story
-/// (keeping level/stats/skills, losing items). Off by default; persisted
-/// via [SharedPreferences].
+/// (keeping level, XP, gold and stats; losing items, the skill build back
+/// to the starter skills, signs, standing and titles: see
+/// `applyPermadeath`). Off by default; persisted via [SharedPreferences].
 final permadeathEnabledProvider =
     StateNotifierProvider<_PermadeathNotifier, bool>(
         (ref) => _PermadeathNotifier());
