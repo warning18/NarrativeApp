@@ -1,0 +1,12 @@
+run 1 shard 0 364s
+run 1 shard 1 347s
+run 1 shard 2 344s
+run 1 shard 3 358s
+run 2 shard 0 371s
+run 2 shard 1 346s
+run 2 shard 2 342s
+run 2 shard 3 352s
+run 3 shard 0 369s
+run 3 shard 1 364s
+run 3 shard 2 400s
+run 3 shard 3 348s
