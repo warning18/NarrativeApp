@@ -164,3 +164,12 @@ of 200, at most 7 of 20 in one profession), and C Tear Herald wins come
 back to 181 of 182. Fight win does not move, so the dip is not cinder's
 pierce or Tempered. It may come from the clan dice taking the Headsman's
 place in general, or from ossuary and tally, which were not changed here.
+
+## The tally at ~7.9, measured and dropped
+
+A tally lowered to a die value of 7.87 (weights only) was tried on top of the
+cinder trim, on seeds 1–200. It did not close the competent dip (pooled fight
+win 93.6%, the same as with the tally at 8.5), and the tally fell back to 3
+typical and 1 competent final runs of 200. The user kept the tally at 8.5
+(v1.993); the competent fight-win dip of about 1 point (94.6% → 93.6%) is
+accepted as the price of clan dice that get used.
