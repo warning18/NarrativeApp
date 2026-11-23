@@ -39,10 +39,12 @@ Muster (`7800`) has 70 echoes and shows at most ten, chosen by priority.
 
 **What does not work yet.** Six things, each with a proposal in section 8.
 
-1. **The mystery threads move in lock-step, then come due together.** Six of the eleven
-   intrigues run Clue (ch 1) → Hook (3) → Turn (4) → Reveal (5) → Crisis (6) →
-   **Choice (7)**; eight of the eleven ask their Choice in chapter 7. Chapter 2, the
-   biggest side-quest chapter, has no intrigue stage at all.
+1. **The mystery threads move in lock-step, then come due together, and the codex
+   labels them wrongly.** Six of the eleven intrigues fire Clue (Saltmouth, ch 2) →
+   Hook (3) → Turn (4) → Reveal (5) → Crisis (6) → **Choice (6, the same chapter)**;
+   five of those Choices are in the Hollow Shore's `71xx`/`72xx` scenes. The codex
+   (`intrigues.json`, shown by `clans_politics_screen.dart`) says the Clue is in
+   chapter 1 and the Choice in chapter 7.
 2. **The biggest choices are almost never witnessed by the companions.** Of the 52
    "major" choices, 44 have no companion reaction (all seven throne claims, the 14
    throne-winner choices, ten of the banner-piece choices, nine clan claims and
@@ -51,9 +53,11 @@ Muster (`7800`) has 70 echoes and shows at most ten, chosen by priority.
    companions has two authored scenes (recruit, loyalty); the loyalty choice is paid
    at the Muster (chapter 8) and nowhere between. Vica has one scene and **no
    story-choice line at all**; Vess has 5, Grosh 6.
-4. **The Mire Courts are met late and thinly.** Five NPCs, all in chapter 4, six DAG
-   scenes in all, and a throne claimant in chapter 7; the intrigue that carries them
-   (`the_returned`) hooks in chapter 3, a chapter before the player has met them.
+4. **The Mire Courts and the Grey Vigil are met late.** Each clan has eight NPCs
+   (`npcs.json`, `clan`), but the Mire's are seven in chapter 4 and one in chapter 2,
+   the Vigil's seven in chapter 5 and one in chapter 6; both are throne claimants in
+   chapter 7, and the intrigues that carry them (`the_returned`, `hooded_lantern`)
+   hook in chapter 3, a chapter or two before the player meets the people.
 5. **The bone die is opened and never closed.** Five uses in the prologue, warm in the
    trapdoor scene, the idol in chapter 1; then nothing until the ending, which does
    not mention it.
@@ -105,30 +109,41 @@ The chapter hooks are the strongest part of the pull: each is pointed (a named p
 object or dated clue) and each is paid in the next chapter or the one after. Nothing
 here needs fixing.
 
-### 3.2 The intrigue threads (measured: `intrigues.json`)
+### 3.2 The intrigue threads (measured and verified in two places)
 
-Eleven intrigues, six stages each, each stage tied to a chapter:
+Eleven intrigues, six stages each. The table gives the chapter the codex *labels* for
+each stage (`intrigues.json`, `stages[].chapter`, shown on the Clans and politics
+screen) and the chapter where the stage *fires* (the choices and events whose
+`politics.intrigue` sets it, read from the DAG and `politics_events.json`):
 
-| intrigue | Clue | Hook | Turn | Reveal | Crisis | Choice |
-|---|---|---|---|---|---|---|
-| hooded_lantern, dying_lantern_bearer, double_ledger, the_returned, admiraltys_silence, relic_road | 1 | 3 | 4 | 5 | 6 | **7** |
-| broken_charter | 2 | 3 | 4 | 4 | 5 | **7** |
-| unwatched_hour | 3 | 5 | 5 | 6 | 6 | **7** |
-| lanternbearers_will | 5 | 6 | 6 | 6 | 6 | **6** |
-| taken_names | 7 | 7 | 8 | 8 | 8 | 8 |
-| hosts_price | 8 | 8 | 8 | 8 | 8 | 8 |
+| intrigue | labelled Clue / Hook / Turn / Reveal / Crisis / Choice | fires: Clue / Hook / Turn / Reveal / Crisis / Choice |
+|---|---|---|
+| hooded_lantern | 1 / 3 / 4 / 5 / 6 / 7 | 2 / 3 / 4 / 5 / 6 / **8** (`7002_orders`) |
+| dying_lantern_bearer | 1 / 3 / 4 / 5 / 6 / 7 | 2 / 3 / 4 / 5 / 6 / 8 |
+| double_ledger | 1 / 3 / 4 / 5 / 6 / 7 | 2 / 3 / 4 / 5 / 6 / **6** (`7200_ledger`) |
+| the_returned | 1 / 3 / 4 / 5 / 6 / 7 | 2 / 3 / 4 / 5 / 6 / 6 (`7200_returned`) |
+| admiraltys_silence | 1 / 3 / 4 / 5 / 6 / 7 | 2 / 3 / 4 / 5 / 6 / 6 |
+| relic_road | 1 / 3 / 4 / 5 / 6 / 7 | 2 / 3 / 4 / 5 / 6 / 6 (`7200_fourth_piece`) |
+| broken_charter | 2 / 3 / 4 / 4 / 5 / 7 | 2 / 3 / 4 (event, ch 2) / 4 / 5 / 6 (`7100_charter_choice`) |
+| unwatched_hour | 3 / 5 / 5 / 6 / 6 / 7 | 3 / 5 / 5 / 6 / 6 / 6 (`7200_stitcher`) |
+| lanternbearers_will | 5 / 6 / 6 / 6 / 6 / 6 | 5 / 6 / 6 / 6 / 6 / 6 |
+| taken_names | 7 / 7 / 8 / 8 / 8 / 8 | all 8 |
+| hosts_price | 8 / 8 / 8 / 8 / 8 / 8 | all 8 |
 
-- **Chapter 2 is silent.** The six lock-step intrigues have a Clue in chapter 1 and their
-  Hook in chapter 3. In the chapter with 71 scenes, 14 side quests and the recruit
-  quests, none of the main mystery moves. (`broken_charter` alone has a chapter 2 Clue.)
-- **Eight decisions arrive in the same chapter.** Eight intrigues ask their Choice in
-  chapter 7. With the seven throne claims, the clan pledges, the Throne itself and the
-  rival's fate (`7500`, `7510_*`, `7590_*`), the player's weightiest deciding lands in
-  one chapter after five chapters of setup, and the first thread was opened six
-  chapters earlier. That is long to remember a clue; it is also a lot to decide at
-  once.
-- **The identical cadence blurs the threads.** The same chapter for every stage makes the
-  six threads feel like one beat repeated in six costumes.
+- **The labels are wrong in two places.** The Clue fires in Saltmouth (`2015_*`, chapter
+  2) and is labelled chapter 1; the Choice fires in chapter 6 (or 8) and is labelled
+  chapter 7. Display only, nothing reads it, but the codex tells the player the wrong
+  chapter for the first and the last stage.
+- **Chapter 2 is not silent.** Six Clues fire in the Saltmouth scenes (`2015_informant_*`,
+  `2015_route_sold`, `2015_child_tongue`, `2015_bundle`, `2015_dominion_blades`).
+  (My first draft said the opposite, from the labels.)
+- **Crisis and Choice arrive together.** For six intrigues the Crisis (`7100_*`,
+  `7200_*`) and the Choice are one or two scenes apart in the Hollow Shore, so five
+  decisions of the same size (`7200_ledger`, `7200_returned`, `7200_fourth_piece`,
+  `7200_stitcher`, `7100_charter_choice`) come in one chapter after four chapters of
+  setup, and two more (`7002_orders` and its sibling) in the ending.
+- **The identical cadence blurs the threads.** The same chapter for every stage makes
+  the six threads feel like one beat repeated in six costumes.
 
 ### 3.3 Open threads by chapter
 
@@ -138,14 +153,14 @@ Eleven intrigues, six stages each, each stage tied to a chapter:
 | thread | opened | advanced | paid | verdict |
 |---|---|---|---|---|
 | **Lysa** (the sister) | 0: taken, then rescued or lost | 1: eight scenes echo the choice; 3: `3005_lysa`, her price; 4: `5100_lysa_raid`, `_mask`; 5: `6010_lysa*` (six outcomes) | 8: `lysa_fallen` in the ending | **best-spaced thread**: a beat every one or two chapters |
-| **Aurel Vane** (Inquisitor-General) | 0: `400`, "he knew exactly who I was" | 3: his envoy (`3005_envoys`, `3005_lysa_price`); 5: the will "names neither Vane, nor Morrow, nor Tallis" (`6100_will_scribe`) | 7: 15 scenes (`7520_vane`, `7810`) | **no scene shows him in chapters 4 or 6**; his npc `want` ("the tear for a door and your blood for its key") is stated at chapter 1 and the DAG gives it back only at chapter 7 |
+| **Aurel Vane** (Inquisitor-General) | 0: `400`, "he knew exactly who I was" | 3: his envoy (`3005_envoys`, `3005_lysa_price`); 5: the will "names neither Vane, nor Morrow, nor Tallis" (`6100_will_scribe`) | 7: 15 scenes (`7520_vane`, `7810`), and the politics events `the_throne_filled` and `the_hand_hunted` | **no scene, intrigue stage or politics event shows him in chapters 4 or 6** (checked in `intrigues.json` and `politics_events.json`); his npc `want` ("the tear for a door and your blood for its key") is stated at chapter 1 and the DAG gives it back only at chapter 7 |
 | **A second Vane** | 2: a scarred quartermaster at the Saltmouth shipyards, "this Vane had a ledger and a scar, not a lantern" (`2010`, 18 scenes in all) | | | a deliberate echo, and it works; but it means "Vane" has two faces in the first two chapters (see 7.1) |
 | **The mother's oath / the cloth** | 0: "that is ours" (knocked twice on the floor), her name and the player's on the cloth in the Inquisition's list (`816`) | 4: the player's parents' names in the Hollow Court ledger, "the Unmaking", a date nine years before (`5004`); 5: the cloth's origin (`6002`) | 8: the Open Hand claim, `truth_told` | **paid** by the chapter 4 reveal; the mother herself is not named or seen again |
 | **The Grey Shroud (six pieces)** | 1: "the Grey Shroud" named by the old woman | banner pieces granted in 0, 4, 5, 6; five laid out at `7400` | 8: the whole cloth in the ending, "undo the night the door was made" | **strong** and countable (six) |
 | **The bone die** | 0: five uses, warm in `470` and `816`; 1: `1130`, the sign on the idol | none | none between 2 and 8; no ending scene mentions it | **opened and never closed.** The prologue frames the story as told "at many card tables since"; the ending returns to the card room but not to the die |
 | **The tear** | 0 to 1 (touch it, `1100`) | 5: 26 scenes, 6: 19 | 8: 20 | strong, concentrated where it matters |
 | **Hesk** (the neighbour) | 0: the old man next door, "his house taken with ours" | 2, 4: single mentions; his mother is an npc in chapter 4 | 7: 17 scenes | **long gap, big payoff**: about seven chapters between a mention and its answer |
-| **The Sovereign** (final enemy) | **8**: first named in the DAG at `7810` (and `7003`, `7005_crown`); in `quests.json`, the ch. 8 main quest | the herald "crying a name" at `7800` is the only earlier hint | 8 | **needs play**: unless chapters 6 and 7 foreshadow the Sovereign outside the scenes I read, the antagonist is introduced as the finale begins |
+| **The Sovereign** (final enemy) | **8**: first named in the DAG at `7810` (and `7003`, `7005_crown`); in `quests.json`, the ch. 8 main quest | the herald "crying a name" at `7800` is the only earlier hint | 8 | **verified in the data:** every source that names the Sovereign is a chapter 8 source (`chapters.json` ending hint, the `tear_herald` npc, the boss `void_sovereign`, the quest, the `sovereign_crown` item); the antagonist is introduced as the finale begins |
 | **Vica** (companion) | 1: `1150_vica`, the desert meeting, 2 scenes | none | none | **dropped**: one scene, no recruit quest, no loyalty scene, no story-choice line |
 
 **Flags.** Of the 650 flags that a story choice sets and something reads, 449 (69%)
@@ -197,7 +212,8 @@ beat in the middle (the offering at the idol, which pays a callback from the pro
   fight (46%), but 42 of those are three scenes (`7520_vane`, `7520_morrow`,
   `7520_tallis`) that each offer fourteen *alternative* fights, one per claim the
   player made; the player takes one. The real load of chapter 7 is not fights but
-  **decisions**: eight intrigue choices, seven claims, the pledges, the Throne.
+  **decisions**: the seven claims, the pledges, the Throne. (The intrigue Choices
+  fall in the chapter before, 3.2.)
 - **Chapters 3 to 6, the camp loop.** Before each main quest the player does eight
   activities and one or two quests (`chapters.json`). The authored scenes that carry the
   chapter between those are the arrival scene, the camp scene and the main quest's
@@ -213,7 +229,7 @@ beat in the middle (the offering at the idol, which pays a callback from the pro
 
 - **No scene is an info dump.** The longest are the endings: `7005_dawn` 378 words,
   `7005_seeker` 337, `7005_crown` 322, `7005` 292. All four split at `[EPILOGUE]` into
-  two pages of 114 to 192 words, so a phone shows at most about 190 words at once.
+  two pages of 114 to 200 words (`7005_crown` is the longest page), so a phone shows at most about 200 words at once.
   Chapter 5's `6010_record` (222) is the one non-ending scene over 200.
 - **Onboarding spike.** `3005_envoys` (152 words) introduces three Dominion leaders
   (Grand Master Morrow, Cassian Oriel, Maud Tallis) at once; the three then carry the
@@ -295,10 +311,10 @@ Method: `choiceWeightOf` of `story_plates.dart` applied to all 1 156 choices: 52
 
 - All 80 NPCs in `npcs.json` have a `want` (one sentence). That is the data's best
   practice and the reason the Saltmouth and Spire scenes read as populated.
-- By clan: Inquisition 7, Penitents 6, Mire 5, Dominion 4, Admiralty 4, Compact 4,
-  Vigil 4, Keyholders 3, Crows 3. **No other clan has more than four faces**, so a
-  clan's "voice" is a person only for the Inquisition and the Penitents. The Mire's
-  five NPCs are all in chapter 4.
+- By `clan`: Dominion 10, Crows 8, Penitents 8, Compact 8, Mire 8, Vigil 8, so each of
+  the six clans has a cast. **The casts arrive in different chapters**: the Dominion's
+  in 1 to 3, the Compact's in 2 to 3, the Crows' in 2 to 4, the Penitents' in 3 (seven
+  of eight), the Mire's in 4 (seven of eight), the Vigil's in 5 (seven of eight).
 - **Antagonists.** Vane is a clear villain with a one-line want but is absent from the
   scenes of chapters 4 and 6; the Sovereign is introduced late (3.3); the three Dominion
   leaders arrive in one scene (4.3). The Hollow Court's own villain is the ledger,
@@ -314,10 +330,11 @@ Method: `choiceWeightOf` of `story_plates.dart` applied to all 1 156 choices: 52
   names).
 - **Clans by first DAG scene.** The Inquisition: scene 0. The Compact and the Crows:
   Saltmouth (chapter 2). The Penitents: a mention in chapter 2, then chapter 3. The
-  Vigil and the Choir: chapter 3. The Mire Courts: `5200_clan_mire_1`, in chapter 4.
-  The Open Hand: a mention in chapter 2, then the chapter 4 reveal. So the player
-  has **not met the Mire before chapter 4** and meets the first clan *choice* (the
-  clan cards' claims, chapters 5 to 6) within a chapter or two of each clan.
+  Vigil and the Choir: chapter 3 in a scene, but the Vigil's NPCs only from chapter 5.
+  The Mire Courts: `5200_clan_mire_1`, in chapter 4. The Open Hand: a mention in
+  chapter 2, then the chapter 4 reveal. So the player has **not met the Mire's or the
+  Vigil's people before chapter 4 or 5**, and meets the first clan *choice* (the clan
+  cards' claims, chapters 5 to 6) within a chapter or two of each.
 - **Spikes (new names in one scene):** `3005_envoys` (9: Morrow, Oriel, Tallis and the
   Quarter), `7520_vane` (5), `5100_clan_dominion_1` (5), `5200_house_barkbleeders`
   (5), `3005_clan_compact_1` (5: Emberwife, Tribunal, House). All are clan or house
@@ -349,26 +366,35 @@ Method: `choiceWeightOf` of `story_plates.dart` applied to all 1 156 choices: 52
 
 Ranked by impact for cost. **Needs Core / needs UX** says who has to do their part.
 
-### P1. Re-time the intrigues: fill chapter 2, spread the Choices (impact high, cost low to medium)
-*Brief.* Add a Hook in chapter 2 for two of the six lock-step intrigues (the ones that
-already have a Saltmouth NPC, e.g. `double_ledger`, `admiraltys_silence`), and move the
-Choice of three intrigues earlier: `broken_charter` (Reveal 4 → Choice 5),
-`unwatched_hour` (Choice 6), and one clan intrigue to chapter 6. Eight decisions in
-chapter 7 become five, and chapter 2 gets a main-story beat. Text: about ten stage
-lines in `intrigues.json` (EN, FR). **Needs Core** to confirm that the stage `chapter`
-numbers are not read by the rules for anything else (they are story data, but they set
-when a stage fires) and to re-run the simulator on the intrigues moved.
+### P1. Fix the codex's chapter labels (impact medium, cost very low, **quick win**, size S)
+*Brief.* In `intrigues.json` the Clue of eight intrigues is labelled chapter 1 and fires
+in chapter 2, and the Choice of the lock-step ones is labelled chapter 7 and fires in
+chapter 6 (chapter 8 for the two Lantern-Bearer intrigues). Set each stage's `chapter`
+to where it fires (3.2). Display only: `IntrigueStage.chapter` is read by the Clans
+and politics screen and nowhere else (`lib/data/factions/intrigues.dart:21`,
+`clans_politics_screen.dart:1608`). Mine alone; no Core or UX change.
 
-### P2. Companions react to the biggest choices (impact high, cost medium)
+### P1b. Spread the Hollow Shore's five intrigue decisions (impact high, cost high, **needs the user's choice**, size L)
+*Brief.* Five decisions of the same weight (`7200_ledger`, `7200_returned`,
+`7200_fourth_piece`, `7200_stitcher`, `7100_charter_choice`) land within the chapter
+that also carries the Crisis stages and the clan trials. The alternative is to let two
+of them (the charter, the Admiralty) resolve a chapter earlier, at their Reveal, which
+means moving or duplicating DAG scenes and re-routing flags: a story restructure, not
+a wording change, and it would change what the Muster and the endings echo. **Needs
+the user's choice** (is the pile-up a climax or a glut?), then Core for the simulator
+re-run. I do not recommend it before a play session says the chapter drags.
+
+### P2. Companions react to the biggest choices (impact high, cost medium, size M, **quick win** for text, Core confirms the firing)
 *Brief.* Add story-choice lines for the 44 major choices that have none, grouped into
 about a dozen new keys (the seven throne claims, the throne winner, the banner pieces,
 the clan pledges); and bring the 21 existing keys up to all nine companions (72 of a
 possible 189 lines are written; about 117 missing, **Vica's 21 first**). The text is
 Narrative's (EN, FR; the voices exist and are consistent). The keys match a flag a
-choice already sets (or a `node#index`), so **Core only confirms** that the remark
-fires for the flags at `7500`/`7590`.
+choice already sets or `nodeId#index` (`lib/data/companion_remarks.dart:22`, read by
+`story_choice_flow.dart:671`), so **no code is needed**; a party member with no line
+for a key falls back to a general remark, which is why coverage by companion matters.
 
-### P3. A second beat per companion, in chapter 6 or 7 (impact high, cost medium to high)
+### P3. A second beat per companion, in chapter 6 or 7 (impact high, cost medium to high, size L, **needs the user's choice**)
 *Brief.* Each of the eight gets one short scene (60 to 90 words, a camp scene like
 `loyal_*`, offered at Friendly and above, with one decision whose echo is added to the
 Muster). It closes the long gap between the loyalty choice and the finale and raises
@@ -376,51 +402,91 @@ the stake of keeping the party. Vica gets the same *plus* a recruit scene and a 
 scene, so she stops being the one orphan. **Needs Core** to add the scene ids to the
 camp scene list (`world_map.dart`) and the unlock rule; the text is Narrative's.
 
-### P4. Meet the Mire Courts (and the other late clans) before they matter (impact medium, cost low to medium)
-*Brief.* Add one chapter 2 or 3 scene that names the Mire's people (a Barkbleeder
-cure-seller at the Saltmouth docks, or a Heron's-Wake messenger at the Spire's camp),
-and one NPC in chapters 2 to 3 for each of the Mire, the Vigil and the Compact, so each
-clan has a face before the first claim. Text and `npcs.json` (Narrative); **needs Core**
-only if a new NPC needs a place id.
+### P4. Meet the Mire Courts and the Grey Vigil before they matter (impact medium, cost low to medium, size M, **quick win**)
+*Brief.* The Mire already has one chapter 2 face (`keeper_apothecary_row`, Saltmouth):
+give that keeper a line that names the Courts, and add one Mire scene in chapter 3.
+For the Vigil, move one of its seven chapter 5 NPCs to chapter 3 (or add one at the
+Spire's camp), so each clan has a face before its intrigue hooks. Text and `npcs.json`
+(Narrative); **needs Core** only if an NPC needs a place id.
 
-### P5. Give Vane a presence in chapters 4 and 6 (impact medium, cost low)
+### P5. Give Vane a presence in chapters 4 and 6 (impact medium, cost low, size S, **quick win**)
 *Brief.* One short scene or letter in each of chapters 4 and 6 in which Vane acts (a
 writ, a seal, a message left for the player); his want is stated at chapter 1 and the
 scenes show it again only at chapter 7. Two 80 to 100 word scenes plus a
 `flag_callbacks` line each. Text only.
 
-### P6. Introduce the Sovereign before the finale (impact medium, cost low; **verify in play first**)
-*Brief.* The DAG names the Sovereign only from `7810`. If chapters 6 and 7 do not
-foreshadow it anywhere I did not read, add one line to `7001` (the Hollow Shore's
-rumour) and `7400` (the herald's seal) so the name has been heard once. Text only.
+### P6. Introduce the Sovereign before the finale (impact medium, cost low, size S, **quick win**)
+*Brief.* Every source that names the Sovereign is a chapter 8 source (3.3). Add one
+line to `7001` (the Hollow Shore's rumour) and one to `7400` (the herald's seal) so the
+name has been heard once before `7810`. Text only.
 
-### P7. Close the bone die (impact low to medium, cost very low)
+### P7. Close the bone die (impact low to medium, cost very low, size S, **quick win**)
 *Brief.* One sentence in each of the four `7005*` endings that returns to the die: the
 endings are set in the card room, and the die has been the narrator's thread for the
 whole story. Text only; the four endings already carry 20 to 27 callbacks, so this is
 one more.
 
-### P8. Break the Dominion's titles up (impact low to medium, cost low)
+### P8. Break the Dominion's titles up (impact low to medium, cost low, size S, **quick win**)
 *Brief.* Introduce Morrow, Oriel and Tallis in three scenes of chapter 3 (Morrow in
 `3005_envoys`, the other two as a rumour in the camp and a letter at the Spire) instead
 of one scene with nine names. Text only; `3005_envoys` stays and is trimmed.
 
-### P9. Show the Muster's cap to the player (impact low, cost medium, **needs UX and Core**)
+### P9. Show the Muster's cap to the player (impact low, cost medium, size M, **needs the user's choice**, needs UX and Core; no pictures needed)
 *Brief.* The Muster has 70 echoes and shows ten; the other sixty exist in the data. A
 "what the host remembers" list the player can open from the scene (the full 70, in
 priority order) lets every choice be seen once. **Needs UX** (how it shows) and **Core**
 (the list is read from the callbacks). Narrative supplies nothing new.
 
-### P10. Small fixes folded into the next text PR (impact low, cost very low)
+### P10. Small fixes folded into the next text PR (impact low, cost very low, size S, **quick win**)
 Unify `La Route des pèlerins` / `Pèlerins` and `Le` / `La Porte-Clef`; add a closing line
 to `7002_banner`'s Open Hand claim so `open_hand_6` is read (or drop the flag).
 
 ## 9. Asks and open questions
 
-- **For the manager:** P1 and P3 need Core; P9 needs UX and Core. P2, P4, P5, P6, P7,
+- **For the manager:** P1b and P3 need Core; P9 needs UX and Core. P1, P2, P4, P5, P6, P7,
   P8 and P10 are mine alone and can go in the order of the ranking.
-- **For a play session:** chapters 3 to 6 over eight activities (does each carry a beat?),
-  chapter 7 (do the decisions arrive too fast?), and whether the Sovereign is
-  foreshadowed in chapters 6 and 7. I have not played these; the numbers above only
-  locate where to look.
+- **For a play session:** chapters 3 to 6 over eight activities (does each carry a
+  beat?), and the Hollow Shore (do five intrigue decisions in one chapter read as a
+  climax or a pile-up?). I have not played these; the numbers above only locate where
+  to look.
 - **No change was made** to any file except this one.
+
+## 10. How this review was checked (the three passes)
+
+- **Pass 1, find.** The draft of 23 November: scripts over the DAG, quests, intrigues,
+  remarks, NPCs and flags, plus a read of the hooks, the prologue and the endings.
+- **Pass 2, verify.** Each finding re-checked against the data or the code. What it
+  killed or changed:
+  - "Chapter 7 is a fight chapter" (46% of choices): an artefact of three scenes with
+    fourteen alternative fights each. Removed as a finding (4.2).
+  - "Chapter 2 has no intrigue stage" and "Choices land in chapter 7": the stage
+    `chapter` in `intrigues.json` is a display label; the stages actually fire in
+    chapter 2 (Clue) and chapter 6 (Choice). The finding became the label bug (P1)
+    and the pile-up in chapter 6 (P1b); the first proposal (fill chapter 2) was dropped.
+  - "31 of 52 major choices have no remark": the real figure is 44 (only 8 of the 21
+    remark keys sit on major choices).
+  - "Each clan has 3 to 7 NPCs, the Mire five": by `clan` each has 8 (Dominion 10); the
+    real gap is *when* they arrive (Mire chapter 4, Vigil chapter 5).
+  - "Vane appears in chapter 2 eighteen times": a namesake (a quartermaster).
+  - Scene counts by chapter were first taken from the id's first digit; redone with the
+    real mapping (ids 4xxx and 5xxx are chapter 4, 6xxx chapter 5, and so on) and with
+    the `loyal_*`, `names_*`, `price_*` scenes placed.
+  - Confirmed with evidence: the Sovereign named only in chapter 8 sources, Vane absent
+    from chapters 4 and 6 in the scenes, intrigue stage data and politics events, the
+    bone die absent from chapters 2 to 8, Vica with 0 story-choice lines.
+- **Pass 3, fresh eyes at the seams.** Checked where my findings touch other areas:
+  `IntrigueStage.chapter` (Core's `lib/data/factions/intrigues.dart`) is display only;
+  companion choice remarks need no code (`companion_remarks.dart`); the Muster's cap
+  is priority-ordered on purpose (`story_node.dart:1002`), so it is not a finding;
+  the 7005 endings split in pages at `[EPILOGUE]` (`narration_pages.dart:12`), so
+  their length is not a finding; the French names are consistent (two variants).
+- **Tests, three times in a row.** The area's 29 files (story rules, graph, markup,
+  bold budget, plates, nemesis, payments, enemy refs; quest validation, objectives,
+  rewards, hints, politics, tracking, nemesis, main-quest lock; French data lint,
+  French address, `app_strings` French typography, `qa_story_fr`; companion remarks,
+  remark story, narration pages, text placeholders, chapter eight, choice shape,
+  politics events): 199 tests, **all passed in all three runs, identical results, no
+  flaky test**. Times 64 s (cold compile), 35 s, 32 s.
+- **Self-review.** Each proposal re-read for proportion: P1b is not recommended before
+  a play session; P9 is last because the cap is deliberate; P3 is the only large text
+  job and is marked as the user's choice.
