@@ -4325,6 +4325,32 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.en: 'Two skills you know make a new one.',
     AppLanguage.fr: 'Deux compétences connues en font une nouvelle.',
   },
+  'merge_ready_title': {
+    AppLanguage.en: 'A merge is ready',
+    AppLanguage.fr: 'Une fusion est prête',
+  },
+  'merge_ready_body': {
+    AppLanguage.en: '{a} and {b} become {c}. Both are spent.',
+    AppLanguage.fr: '{a} et {b} deviennent {c}. Les deux sont perdues.',
+  },
+  'merge_ready_more': {
+    AppLanguage.en: '+{n} more',
+    AppLanguage.fr: '+{n} de plus',
+  },
+  'merge_ready_unbuilt': {
+    AppLanguage.en:
+        'The Skillwright is not built yet: {gold} gold, and materials, at the camp.',
+    AppLanguage.fr:
+        'L’Atelier des techniques n’est pas encore bâti\u00a0: {gold} or, et des matériaux, au camp.',
+  },
+  'merge_ready_go_camp': {
+    AppLanguage.en: 'Go to the camp',
+    AppLanguage.fr: 'Aller au camp',
+  },
+  'badge_merge_ready': {
+    AppLanguage.en: 'a skill merge is ready',
+    AppLanguage.fr: 'une fusion de compétences est prête',
+  },
   'skills_group_other': {
     AppLanguage.en: 'Other',
     AppLanguage.fr: 'Autres',
