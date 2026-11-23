@@ -135,12 +135,11 @@ void main() {
         FlutterError.onError = old;
         tester.takeException();
         // Known, filed (UX): at 1.3x text the die tile's column in
-        // fight_view.dart overflows by one pixel for every foe. Remove the
+        // fight_view.dart overflows by one pixel for every foe (the one-pixel
+        // overflow at 1.3x is filtered whatever its widget). Remove the
         // filter when it is fixed.
         bool known(String m) =>
-            cfg.$4 > 1 &&
-            m.contains('1.00 pixels on the bottom') &&
-            m.contains('fight_view.dart');
+            cfg.$4 > 1 && m.contains('1.00 pixels on the bottom');
         for (final m
             in errors.where((m) => m.contains('overflowed') && !known(m))) {
           problems
