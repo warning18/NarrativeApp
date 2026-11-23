@@ -16,6 +16,23 @@ import '../theme/pixel_chip.dart';
 import '../theme/stitched_ink.dart';
 import 'enemy_groups.dart';
 
+/// A weakness (×3, red) or a resistance (×½, grey) on a foe's nameplate:
+/// the element's icon and the factor. [lit] rings the weak mark while the
+/// picked die is of that element (the hint under the dice says the same).
+class FightMark {
+  const FightMark(
+      {required this.icon,
+      required this.text,
+      required this.weak,
+      this.lit = false,
+      this.tip});
+  final IconData icon;
+  final String text;
+  final bool weak;
+  final bool lit;
+  final String? tip;
+}
+
 /// How a fighter ranks: an Elite's frame goes gold, a boss's too, with its mark.
 enum FightRank { normal, elite, boss }
 
@@ -31,6 +48,7 @@ class FightBlock extends StatelessWidget {
     this.order,
     this.rank = FightRank.normal,
     this.group,
+    this.marks = const [],
     this.armor,
     this.damage,
     this.fill,
@@ -47,6 +65,9 @@ class FightBlock extends StatelessWidget {
   /// The enemy's group: its emblem on the nameplate and its corner ornament.
   /// Null for the party.
   final EnemyGroup? group;
+
+  /// Weakness and resistance marks, on the nameplate after the name.
+  final List<FightMark> marks;
 
   /// The head (about 32 dp), the health bar, the status chips and the intent.
   final Widget head;
@@ -65,6 +86,32 @@ class FightBlock extends StatelessWidget {
   final double? borderWidth;
 
   static const double plateHeight = 17;
+
+  Widget _markChip(FightMark m, Color ink) {
+    final colour = m.weak ? Palette.hot : Palette.slate;
+    final chip = Container(
+      key: Key(
+          'fight_mark_${m.weak ? 'weak' : 'resist'}_${m.text}_${m.icon.codePoint}'),
+      margin: const EdgeInsets.only(left: 3),
+      padding: const EdgeInsets.symmetric(horizontal: 3),
+      decoration: BoxDecoration(
+        color: Palette.apolloOutline,
+        border: Border.all(color: colour, width: m.lit ? 2 : 1),
+      ),
+      child: Row(mainAxisSize: MainAxisSize.min, children: [
+        Icon(m.icon, size: 10, color: Palette.apolloCream),
+        const SizedBox(width: 1),
+        Text(m.text,
+            style: TextStyle(
+                fontSize: 9,
+                height: 1,
+                fontWeight: FontWeight.bold,
+                color: m.weak ? Palette.apolloCream : Palette.slate)),
+      ]),
+    );
+    final tip = m.tip;
+    return tip == null ? chip : Tooltip(message: tip, child: chip);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -129,6 +176,7 @@ class FightBlock extends StatelessWidget {
                       ),
                     ),
                   ),
+                  for (final m in marks) _markChip(m, plateInk),
                   if (rank != FightRank.normal) _rankMark(plateInk),
                 ],
               ),

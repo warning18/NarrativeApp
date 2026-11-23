@@ -8,6 +8,10 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.995.0+1031]
+
+- Fights: a foe's weaknesses and the resistances the party has learned now sit on its nameplate, right after the name (the user's pick, mark B): a red ×3 with the element's icon, a grey ×½ for a resistance. While a die you picked is of the element a foe is weak to, that mark is ringed and the hint under the dice says so ("Your picked die is weak against the foe: aim it there, ×3"). The marks no longer count in the foe's "+n" chip; its sheet still lists everything. The Light and Ice elements get their own icons. Core's rule for what is known is unchanged. UX (view only).
+
 ## [1.994.0+1030]
 
 - Fights: a foe's weaknesses show from the start of the fight, as the user chose (the triple damage of a weakness is there to be aimed at). The loadout picker names them and stars the dice that hit them before the first roll, whatever the party's Perception and whether or not it has met that foe before. Resistances are still learned: read by Perception, known once the foe's kind has been beaten, or found by a hit.
