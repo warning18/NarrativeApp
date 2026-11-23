@@ -8,6 +8,10 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.998.0+1034]
+
+- Clans, the Broken Charter: the coal stops (the Emberwives let the Ember Run go cold) only in chapter 4, after the Tribunal's offer to the Scaffolders (the Hook). It came in chapter 2, so the plot card already showed the Hook and the Turn as reached before the player met either. No Hook, no Turn: the rest of the plot already waits for each stage. A new guard checks that no event moves a plot before its stage's chapter or past the stage before it. Core (data).
+
 ## [1.997.0+1033]
 
 - Text size and narrow phones (QA's L3 findings #1098, #1099, #1100). Fights: a long foe name (Cassian Oriel, Regent of the Lantern) now takes two lines on its nameplate instead of shrinking to a few pixels; its BOSS badge keeps just the crown (the gold frame says the rest) and its weakness marks sit in the row under the plate; a die's name no longer pushes its tile one pixel past its box at a big text size. Inventory: a worn piece's name keeps every word whole at a big text size (no more "Emberpro/of"), and the row grows with it. Settings: the map theme drop-down no longer runs off the screen in French at a big text size. UX (view only).

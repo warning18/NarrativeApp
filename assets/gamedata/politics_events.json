@@ -24,7 +24,8 @@
     "name": "The Ember Run goes cold",
     "name_fr": "La Course des Braises refroidit",
     "trigger": {
-      "chapter": 2
+      "chapter": 4,
+      "flag": "intrigue_broken_charter_stage_2"
     },
     "once": true,
     "variants": [
