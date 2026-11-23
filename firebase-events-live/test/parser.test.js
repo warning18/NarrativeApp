@@ -1,0 +1,10 @@
+const assert = require('assert');
+const { parseLine } = require('../parser');
+let e = parseLine('11-23 10:00:00.123  1234  1234 V FA      : Logging event (FE): add_to_cart(_ac), Bundle[{item_id=SKU1, price=9.99, currency=EUR, firebase_screen_class(_sc)=CartActivity}]');
+assert.strictEqual(e.name, 'add_to_cart');
+assert.strictEqual(e.params.price, '9.99');
+assert.strictEqual(e.params.firebase_screen_class, 'CartActivity');
+e = parseLine('11-23 10:00:00.1  1  1 V FA : Logging event: origin=app,name=login,params=Bundle[{method=google, note=a, b=c}]');
+assert.strictEqual(e.name, 'login'); assert.strictEqual(e.params.note, 'a, b=c'.split(', ')[0]);
+assert.strictEqual(parseLine('random line'), null);
+console.log('parser ok');

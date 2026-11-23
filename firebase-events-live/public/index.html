@@ -1,0 +1,85 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Firebase Events Live</title>
+<style>
+:root{--bg:#fff;--fg:#1c1e21;--mut:#6b7280;--card:#f3f4f6;--bd:#d1d5db;--ac:#2563eb}
+@media(prefers-color-scheme:dark){:root{--bg:#111318;--fg:#e5e7eb;--mut:#9ca3af;--card:#1b1f27;--bd:#2d333f;--ac:#60a5fa}}
+*{box-sizing:border-box}body{margin:0;font:14px system-ui,sans-serif;background:var(--bg);color:var(--fg);height:100vh;display:flex;flex-direction:column}
+header{padding:10px 14px;border-bottom:1px solid var(--bd);display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+input,select,button{font:inherit;padding:6px 9px;border:1px solid var(--bd);border-radius:6px;background:var(--bg);color:var(--fg)}
+button{cursor:pointer;background:var(--card)}button.p{background:var(--ac);color:#fff;border-color:var(--ac)}
+main{flex:1;display:flex;min-height:0}
+#phone{width:340px;padding:12px;border-right:1px solid var(--bd);display:flex;flex-direction:column;align-items:center;gap:8px}
+#phone img{max-width:100%;max-height:calc(100vh - 150px);border:6px solid #222;border-radius:22px;background:#000}
+#ev{flex:1;display:flex;flex-direction:column;min-width:0}
+#tools{padding:8px 12px;display:flex;gap:8px;align-items:center;border-bottom:1px solid var(--bd)}
+#list{flex:1;overflow:auto;padding:8px 12px}
+.e{border:1px solid var(--bd);border-radius:8px;margin-bottom:6px;background:var(--card)}
+.e>div:first-child{padding:7px 10px;cursor:pointer;display:flex;gap:10px;align-items:baseline}
+.n{font-weight:600}.t{color:var(--mut);font-size:12px}.u{color:var(--ac);font-size:12px}
+table{width:100%;border-collapse:collapse;display:none}.e.o table{display:table}
+td{padding:3px 10px;border-top:1px solid var(--bd);font:12px ui-monospace,monospace;word-break:break-all}td:first-child{color:var(--mut);width:35%}
+dialog{border:1px solid var(--bd);border-radius:10px;background:var(--bg);color:var(--fg);max-width:480px}
+small{color:var(--mut)}#msg{color:#dc2626}
+@media(max-width:700px){main{flex-direction:column}#phone{width:100%;border:0}}
+</style></head><body>
+<header>
+ <select id="dev"></select><button id="rf" title="Refresh devices">⟳</button>
+ <button id="wifi">Connect over Wi-Fi…</button>
+ <input id="pkg" list="pkgs" placeholder="Target package (com.example.app)" size="30"><datalist id="pkgs"></datalist>
+ <button class="p" id="go">Start capture</button><button id="stop" hidden>Stop</button>
+ <span id="msg"></span>
+</header>
+<main>
+ <aside id="phone"><img id="scr" alt="Device screen" hidden><small id="hint">Pick a device to mirror its screen.</small></aside>
+ <section id="ev">
+  <div id="tools"><input id="q" placeholder="Filter events or parameters…" size="26">
+   <label><input type="checkbox" id="hideAuto"> hide auto events</label>
+   <label><input type="checkbox" id="pause"> pause</label>
+   <span style="flex:1"></span><small id="cnt">0 events</small>
+   <button id="clr">Clear</button><button id="exj">JSON</button><button id="exc">CSV</button></div>
+  <div id="list"><small>Choose a device and a package, then press “Start capture”. Use the app: events appear here live.</small></div>
+ </section>
+</main>
+<dialog id="dlg"><form method="dialog">
+ <h3 style="margin-top:0">Connect over Wi-Fi</h3>
+ <p><small>Phone: Settings → Developer options → <b>Wireless debugging</b> (same Wi-Fi as this computer).</small></p>
+ <p><b>1.</b> “Pair device with pairing code”:<br><input id="pa" placeholder="ip:port" size="18"> <input id="pc" placeholder="6-digit code" size="10"> <button type="button" id="pair">Pair</button></p>
+ <p><b>2.</b> Main Wireless debugging screen (ip:port):<br><input id="ca" placeholder="ip:port" size="18"> <button type="button" id="conn">Connect</button></p>
+ <p id="dm"></p><button>Close</button></form></dialog>
+<script>
+const $=id=>document.getElementById(id);let events=[],serial='',running=false;
+const api=async(p,b)=>{const r=await fetch('/api/'+p,b?{method:'POST',body:JSON.stringify(b)}:{});const j=await r.json();if(j.error)throw new Error(j.error);return j};
+const msg=t=>{$('msg').textContent=t||''};
+async function devices(){try{const d=await api('devices');const ok=d.filter(x=>x.state==='device');
+ $('dev').innerHTML=ok.length?ok.map(x=>`<option value="${x.serial}">${x.model||x.serial} (${x.serial})</option>`).join(''):'<option value="">No device</option>';
+ serial=$('dev').value;msg(d.some(x=>x.state==='unauthorized')?'Accept the USB debugging prompt on the phone.':'');if(serial)pkgs()}catch(e){msg('adb not found or failed: '+e.message)}}
+async function pkgs(){serial=$('dev').value;if(!serial)return;try{const p=await api('packages?serial='+encodeURIComponent(serial));$('pkgs').innerHTML=p.map(x=>`<option value="${x}">`).join('')}catch(e){msg(e.message)}}
+$('dev').onchange=pkgs;$('rf').onclick=devices;
+$('go').onclick=async()=>{try{msg('');await api('start',{serial:$('dev').value,pkg:$('pkg').value.trim()})}catch(e){msg(e.message)}};
+$('stop').onclick=()=>api('stop',{});
+$('wifi').onclick=()=>$('dlg').showModal();
+$('pair').onclick=async()=>{try{$('dm').textContent=(await api('pair',{addr:$('pa').value,code:$('pc').value})).out}catch(e){$('dm').textContent=e.message}};
+$('conn').onclick=async()=>{try{$('dm').textContent=(await api('connect',{addr:$('ca').value})).out;devices()}catch(e){$('dm').textContent=e.message}};
+// screen loop
+async function loop(){const s=$('dev').value;if(s){const img=$('scr');const u=await new Promise(r=>{const i=new Image();i.onload=()=>r(i.src);i.onerror=()=>r(null);i.src='/api/screen?serial='+encodeURIComponent(s)+'&t='+Date.now()});
+ if(u){img.src=u;img.hidden=false;$('hint').hidden=true}}setTimeout(loop,s?250:1500)}
+// events
+function view(){const q=$('q').value.toLowerCase(),h=$('hideAuto').checked;
+ const f=events.filter(e=>!(h&&/^_|^(screen_view|user_engagement|session_start|first_open|app_)/.test(e.name))&&(!q||(e.name+JSON.stringify(e.params)).toLowerCase().includes(q)));
+ $('cnt').textContent=f.length+' events';
+ const open=new Set([...document.querySelectorAll('.e.o')].map(x=>x.dataset.id));
+ $('list').innerHTML=f.slice().reverse().map(e=>`<div class="e${open.has(''+e.id)?' o':''}" data-id="${e.id}"><div><span class="t">${e.time.slice(6)}</span><span class="n">${esc(e.name)}</span>${e.kind==='user_property'?'<span class="u">user property</span>':''}<span class="t">${Object.keys(e.params).length} params</span></div><table>${Object.entries(e.params).map(([k,v])=>`<tr><td>${esc(k)}</td><td>${esc(v)}</td></tr>`).join('')}</table></div>`).join('')||'<small>No events yet.</small>'}
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+$('list').onclick=e=>{const d=e.target.closest('.e');if(d)d.classList.toggle('o')};
+['q','hideAuto'].forEach(i=>$(i).oninput=view);
+$('clr').onclick=()=>{events=[];api('clear',{});view()};
+const dl=(n,t,m)=>{const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([t],{type:m}));a.download=n;a.click()};
+$('exj').onclick=()=>dl('events.json',JSON.stringify(events,null,2),'application/json');
+$('exc').onclick=()=>{const q=s=>'"'+String(s).replace(/"/g,'""')+'"';dl('events.csv','time,event,param,value\n'+events.flatMap(e=>Object.keys(e.params).length?Object.entries(e.params).map(([k,v])=>[e.time,e.name,k,v].map(q).join(',')):[[e.time,e.name,'',''].map(q).join(',')]).join('\n'),'text/csv')};
+const es=new EventSource('/api/stream');
+es.onmessage=m=>{const d=JSON.parse(m.data);
+ if(d.type==='event'){if(!$('pause').checked){events.push(d.event);view()}}
+ else{running=d.running;$('go').hidden=running;$('stop').hidden=!running;if(d.error)msg(d.error)}};
+devices();loop();
+</script></body></html>
