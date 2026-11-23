@@ -23,3 +23,15 @@ Sheets (`docs/art/boards/`): `combat-kits-1x.png`, `combat-kits-2x.png`: the thr
 - At the init strengths used (150 to 170) PixelLab stayed close to my skeletons: the pieces are clean and consistent with the sprites, but they carry little ornament. A bolder pass (strength about 110, as for the card frames) would add rivets, wear and carving, at 1 generation per try.
 - The B palette snap flattens the stage planks to stripes; the Apollo stage keeps its wood.
 - The B dice are the style-test dice (grey bodies, red edges); a die with a red pip needs the game to draw the pips.
+
+## Index (direction, palette, size, nine-slice insets)
+Insets are left / top / right / bottom in art px (1 art px = 1 dp for these pieces; the sprites are 48 px).
+| File (`final/`) | Direction | Palette | Size | Nine-slice insets |
+|---|---|---|---|---|
+| `apollo_stage.png`, `b_stage.png` | 1 One stage | Apollo, B | 180 x 100 | not nine-slice: repeat or stretch it horizontally, keep it 100 high; the ledge line is row 40, the tray starts at row 45 |
+| `apollo_table.png`, `b_table.png` | 2 Table | Apollo, B | 180 x 100 | 9 / 9 / 9 / 9 (the rim); the felt inside stretches |
+| `apollo_cardframe.png`, `b_cardframe.png` | 2 Table | Apollo, B | 56 x 80 | 6 / 6 / 6 / 6 |
+| `apollo_panel.png`, `b_panel.png` | 3 Frame kit | Apollo, B | 48 x 48 | 8 / 8 / 8 / 8 |
+| `apollo_slot.png`, `b_slot.png` | 3 Frame kit | Apollo, B | 32 x 32 | 4 / 4 / 4 / 4 |
+| `apollo_kitcard.png`, `b_kitcard.png` | 3 Frame kit | Apollo, B | 56 x 80 | 6 / 6 / 6 / 6 |
+| `b_hero.png`, `b_foe.png` | all, B | B | 48 x 48 | none (sprites) |
