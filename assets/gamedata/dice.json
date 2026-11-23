@@ -1999,34 +1999,34 @@
         "faceName": "Strike",
         "type": "Attack",
         "value": 3,
-        "weight": 0.9,
+        "weight": 1.0,
         "element": "Water"
       },
       {
         "faceName": "Strike",
         "type": "Attack",
         "value": 3,
-        "weight": 0.9,
+        "weight": 1.0,
         "element": "Water"
       },
       {
         "faceName": "Guard",
         "type": "Defend",
         "value": 3,
-        "weight": 1.0
+        "weight": 0.8
       },
       {
         "faceName": "Strike",
         "type": "Attack",
         "value": 3,
-        "weight": 0.9,
+        "weight": 1.0,
         "element": "Water"
       },
       {
         "faceName": "Strike",
         "type": "Attack",
         "value": 3,
-        "weight": 0.9,
+        "weight": 1.0,
         "element": "Water",
         "keywords": [
           "growth"
@@ -2036,40 +2036,40 @@
         "faceName": "Mend",
         "type": "Heal",
         "value": 3,
-        "weight": 1.0
+        "weight": 0.8
       },
       {
         "faceName": "Strike",
         "type": "Attack",
         "value": 3,
-        "weight": 0.9,
+        "weight": 1.0,
         "element": "Water"
       },
       {
         "faceName": "Strike",
         "type": "Attack",
         "value": 3,
-        "weight": 0.9,
+        "weight": 1.0,
         "element": "Water"
       },
       {
         "faceName": "Guard",
         "type": "Defend",
         "value": 3,
-        "weight": 1.0
+        "weight": 0.8
       },
       {
         "faceName": "Strike",
         "type": "Attack",
         "value": 3,
-        "weight": 0.9,
+        "weight": 1.0,
         "element": "Water"
       },
       {
         "faceName": "Strike",
         "type": "Attack",
         "value": 3,
-        "weight": 0.9,
+        "weight": 1.0,
         "element": "Water",
         "keywords": [
           "growth"
@@ -2079,7 +2079,7 @@
         "faceName": "Mend",
         "type": "Heal",
         "value": 3,
-        "weight": 1.0
+        "weight": 0.8
       }
     ],
     "cost": 150,
