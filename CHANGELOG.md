@@ -8,6 +8,10 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.999.0+1035]
+
+- Settings at a big text size, in French (a follow-up to v1.997): the colour palette names (Horizon crépusculaire, Aurore crépusculaire, Prairie automnale) keep every word whole instead of breaking inside it, and so do the Appearance buttons (Système, Clair, Sombre). The inventory's tile names and the palette names now share one small widget that follows the text-size setting up to 15 % and shrinks only as far as the longest word needs. UX (view only).
+
 ## [1.998.0+1034]
 
 - Clans, the Broken Charter: the coal stops (the Emberwives let the Ember Run go cold) only in chapter 4, after the Tribunal's offer to the Scaffolders (the Hook). It came in chapter 2, so the plot card already showed the Hook and the Turn as reached before the player met either. No Hook, no Turn: the rest of the plot already waits for each stage. A new guard checks that no event moves a plot before its stage's chapter or past the stage before it. Core (data).
