@@ -3,6 +3,7 @@
 // 320 and 360 wide, English and French, at normal and 1.3x text, draws no
 // overflow. The UX pictures (ux_marks_fit_test) draw the nameplate alone;
 // this one goes through FightScreen with the data of enemies.json.
+// (The 1 px die-tile overflow at 1.3x, #1100, was fixed in v1.997.)
 // QA_L3_FIGHT=<folder> also writes a picture of each.
 import 'dart:convert';
 import 'dart:io';
@@ -134,14 +135,7 @@ void main() {
         }
         FlutterError.onError = old;
         tester.takeException();
-        // Known, filed (UX): at 1.3x text the die tile's column in
-        // fight_view.dart overflows by one pixel for every foe (the one-pixel
-        // overflow at 1.3x is filtered whatever its widget). Remove the
-        // filter when it is fixed.
-        bool known(String m) =>
-            cfg.$4 > 1 && m.contains('1.00 pixels on the bottom');
-        for (final m
-            in errors.where((m) => m.contains('overflowed') && !known(m))) {
+        for (final m in errors.where((m) => m.contains('overflowed'))) {
           problems
               .add('${cfg.$1.toInt()} ${cfg.$3.name} x${cfg.$4} ${e.key}: $m');
         }
