@@ -99,7 +99,7 @@ class FightBlock extends StatelessWidget {
         border: Border.all(color: colour, width: m.lit ? 2 : 1),
       ),
       child: Row(mainAxisSize: MainAxisSize.min, children: [
-        Icon(m.icon, size: 10, color: Palette.apolloCream),
+        Icon(m.icon, size: IconSize.inline, color: Palette.apolloCream),
         const SizedBox(width: 1),
         Text(m.text,
             style: TextStyle(
