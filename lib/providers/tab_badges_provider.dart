@@ -3,8 +3,10 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../data/camp_state.dart';
 import '../data/feature_unlocks.dart';
 import '../data/quest_objectives.dart';
+import '../data/skill_craft.dart';
 import '../data/signs.dart';
 import '../data/zone_gating.dart';
+import '../l10n/app_locale.dart' show AppLanguage;
 import '../gamedata/db_schema.dart';
 import 'camp_presence_provider.dart';
 import 'game_db_providers.dart';
@@ -62,16 +64,21 @@ List<String> questsReadyToTurnIn(
 
 /// Which in-game tabs have something waiting: a dot on Character for
 /// unspent points, on Camp for a house the purse covers (while the party
-/// is at the camp), on Other for a quest ready to turn in.
+/// is at the camp) or a skill merge ready (v1.990), on Other for a quest
+/// ready to turn in.
 class _TabBadges {
   const _TabBadges({
     this.character = false,
     this.camp = false,
+    this.campMerge = false,
     this.readyQuestCount = 0,
   });
 
   final bool character;
   final bool camp;
+
+  /// A skill merge is ready (the Camp dot's reason, over a house).
+  final bool campMerge;
   final int readyQuestCount;
 
   bool get other => readyQuestCount > 0;
@@ -83,10 +90,11 @@ class _TabBadges {
       other is _TabBadges &&
       other.character == character &&
       other.camp == camp &&
+      other.campMerge == campMerge &&
       other.readyQuestCount == readyQuestCount;
 
   @override
-  int get hashCode => Object.hash(character, camp, readyQuestCount);
+  int get hashCode => Object.hash(character, camp, campMerge, readyQuestCount);
 }
 
 final tabBadgesProvider = Provider<_TabBadges>((ref) {
@@ -94,9 +102,19 @@ final tabBadgesProvider = Provider<_TabBadges>((ref) {
   final atCamp = ref.watch(campPresenceProvider) == CampPresence.atCamp;
   final houses = ref.watch(gameDbProvider(housesSchema)).value ?? const {};
   final quests = ref.watch(gameDbProvider(questsSchema)).value ?? const {};
+  final merges = ref.watch(gameDbProvider(skillMergesSchema)).value ?? const {};
+  // A merge is ready: two skills known, the result not yet (the language
+  // only names the skills, so any will do here).
+  final mergeReady = craftRecipesFor(
+          merges: merges,
+          unlockedSkillIds: session.unlockedSkillIds,
+          language: AppLanguage.en)
+      .any((recipe) => recipe.ready);
+  final house = affordableHouseIds(session, houses).isNotEmpty;
   return _TabBadges(
     character: hasPointsToSpend(session) || hasSignWaiting(session),
-    camp: atCamp && affordableHouseIds(session, houses).isNotEmpty,
+    camp: atCamp && (house || mergeReady),
+    campMerge: atCamp && mergeReady,
     readyQuestCount: questsReadyToTurnIn(session, quests).length,
   );
 });

@@ -104,8 +104,8 @@
     "faction": "crows",
     "name": "Ledger Knife",
     "name_fr": "Couteau du registre",
-    "gift": "Each hit that is not critical raises the chance of the next. A critical resets it and hits for double.",
-    "gift_fr": "Chaque coup non critique augmente la chance du suivant. Un critique la remet à zéro et frappe au double.",
+    "gift": "Each hit that is not critical raises the chance of the next. A critical resets it and hits for 75% more than a plain hit.",
+    "gift_fr": "Chaque coup non critique augmente la chance du suivant. Un critique la remet à zéro et frappe 75 % plus fort qu’un coup ordinaire.",
     "voice": "Every miss is a line in the ledger. One day the sum comes due.",
     "voice_fr": "Chaque raté est une ligne au registre. Un jour, la somme tombe due."
   },

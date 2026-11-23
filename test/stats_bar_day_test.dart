@@ -66,7 +66,7 @@ void main() {
     expect(find.textContaining('Jour'), findsNothing);
     expect(clock().style?.color, scheme.error);
     expect(clockTip(), contains('Jour 12'));
-    expect(clockTip(), contains('Vos ennemis se rassemblent (+9 %)'));
+    expect(clockTip(), contains('Vos ennemis se rassemblent (+9\u00a0%)'));
     // The rations still show beside it.
     expect(find.byIcon(Icons.restaurant), findsOneWidget);
 

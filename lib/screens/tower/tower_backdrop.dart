@@ -24,6 +24,17 @@ String? towerFloorPlate(int floor) => switch (floor) {
       _ => null,
     };
 
+/// The picture of a floor's event while it is on offer (TowerEventView's
+/// `background`: 'parley', 'merchant' (the shop, the Stair-Chandler's) or
+/// 'bargain' (the Tally-Clerk's alcove)); null for the floor's own. One line per plate, so a plate is swapped
+/// by changing a file name here (the user picks among Art's versions).
+String? towerEventPlate(String background) => switch (background) {
+      'parley' => 'assets/visuals/tower/tower_parley.png',
+      'merchant' => 'assets/visuals/tower/tower_shop.png',
+      'bargain' => 'assets/visuals/tower/tower_bargain.png',
+      _ => null,
+    };
+
 /// The end of a run: the picture of a won run, of a lost one.
 String towerEndPlate({required bool won}) =>
     'assets/visuals/tower/tower_${won ? 'win' : 'lose'}.png';

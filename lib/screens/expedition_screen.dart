@@ -38,6 +38,7 @@ import '../providers/player_session_provider.dart';
 import '../providers/story_providers.dart';
 import '../tutorial/guide_tour.dart';
 import '../tutorial/tutorial_topics.dart';
+import '../widgets/screen_pictures.dart';
 import '../widgets/approval_notice.dart';
 import '../widgets/companion_remark_bubble.dart';
 import '../widgets/ability_roll_dialog.dart';
@@ -1013,33 +1014,42 @@ class _ExpeditionScreenState extends ConsumerState<ExpeditionScreen> {
           child: Scaffold(
             appBar: AppBar(title: Text(zoneName)),
             body: SafeArea(
-              child: Padding(
-                padding: const EdgeInsets.all(20),
-                child: switch (_phase) {
-                  // Each event dealt like a card turning over.
-                  _ExpeditionPhase.event => FlipIn(
-                      flipKey: _index,
-                      child: _buildEvent(context,
-                          shops: shops, enemies: enemies, lang: lang),
-                    ),
-                  // The zone's pay as a reward card (see reward_cards.dart).
-                  _ExpeditionPhase.completed => Center(
-                      child: ConstrainedBox(
-                        constraints: const BoxConstraints(maxWidth: 460),
-                        child: RewardCard(
-                          key: const Key('zone_reward_card'),
-                          data: _rewardCard,
-                          onDone: () => Navigator.of(context).pop(true),
+              child: Column(children: [
+                // The zone's painted band (Art's) above the road; a zone
+                // without one starts at its first line, as before.
+                if (expeditionBandAsset(widget.zoneId) case final band?)
+                  ExpeditionBand(
+                      key: const Key('expedition_band'), asset: band),
+                Expanded(
+                  child: Padding(
+                    padding: const EdgeInsets.all(20),
+                    child: switch (_phase) {
+                      // Each event dealt like a card turning over.
+                      _ExpeditionPhase.event => FlipIn(
+                          flipKey: _index,
+                          child: _buildEvent(context,
+                              shops: shops, enemies: enemies, lang: lang),
                         ),
-                      ),
-                    ),
-                  _ExpeditionPhase.retreated => _buildSummary(
-                      context,
-                      icon: Icons.directions_walk,
-                      title: trFor(lang, 'expedition_ended_title'),
-                    ),
-                },
-              ),
+                      // The zone's pay as a reward card (see reward_cards.dart).
+                      _ExpeditionPhase.completed => Center(
+                          child: ConstrainedBox(
+                            constraints: const BoxConstraints(maxWidth: 460),
+                            child: RewardCard(
+                              key: const Key('zone_reward_card'),
+                              data: _rewardCard,
+                              onDone: () => Navigator.of(context).pop(true),
+                            ),
+                          ),
+                        ),
+                      _ExpeditionPhase.retreated => _buildSummary(
+                          context,
+                          icon: Icons.directions_walk,
+                          title: trFor(lang, 'expedition_ended_title'),
+                        ),
+                    },
+                  ),
+                ),
+              ]),
             ),
           ),
         ),

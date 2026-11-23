@@ -339,6 +339,14 @@ SimCharacter towerHeroOf(TowerRun run, TowerData data) {
   // The die the player chose (the floors' heroes are kept on the calling's
   // own, so a new choice rebuilds nothing).
   if (run.dieChoice case final die?) towerRollDie(hero, die, data);
+  // The bargains taken (floor events PR 4), after the levels so a later
+  // level never gives the cut back: each its point to the calling's damage
+  // stat and its max health cut, as saved.
+  for (final cut in run.bargains.values) {
+    if (cut <= 0) continue;
+    hero.addAbilities({hero.preferredStat: towerBargainPoints});
+    hero.maxHealth = max(1, hero.maxHealth - cut);
+  }
   hero.currentHealth = run.health.clamp(0, hero.maxHealth);
   hero.mana = hero.maxMana;
   // The flask, filled every floor, and the bag the spoils filled.

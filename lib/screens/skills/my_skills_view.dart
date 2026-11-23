@@ -18,6 +18,7 @@ import 'skill_sheet.dart';
 import 'skill_tree_view.dart' show TierPips;
 import 'skills_view_model.dart';
 import '../../theme/icon_sizes.dart';
+import '../../widgets/merge_ready_plate.dart';
 
 /// What the filter row picks by.
 enum _SkillFilter { all, attack, heal, mana, status }
@@ -88,6 +89,8 @@ class _MySkillsViewState extends ConsumerState<MySkillsView> {
               style: theme.textTheme.bodySmall?.copyWith(color: ink.ash)),
           const SizedBox(height: 8),
         ],
+        // A merge ready to craft (v1.990): the player's own list only.
+        if (model.isPlayer) const MergeReadyPlate(),
         SingleChildScrollView(
           scrollDirection: Axis.horizontal,
           child: Row(

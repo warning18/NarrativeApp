@@ -2303,7 +2303,7 @@
     "description_fr": "Une lame surgie de nulle part, enduite d’un mal lent.",
     "battleMessage_fr": "Vous avez disparu avant que la piqûre ne se sente.",
     "fusionOf": [
-      "rogue_backstab",
+      "shadow_step",
       "rogue_poison_blade"
     ]
   },

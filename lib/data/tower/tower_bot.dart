@@ -180,6 +180,19 @@ TowerRun playTowerRun({
   while (!run.isOver) {
     if (run.status == TowerStatus.climbing) {
       var hero = towerHeroOf(run, data);
+      // A parley (floor events PR 3): talked when hurt (on the oath, passed
+      // with no roll). Passed: on to the next floor, its picks taken there.
+      if (towerEventKindOf(run) == TowerEventKind.parley &&
+          run.parley == null) {
+        final floor = run.floor;
+        run = towerChooseParley(run, data,
+            hero.currentHealth < towerBotParleyHealth * hero.maxHealth,
+            hero: hero);
+        if (run.floor != floor) {
+          run = _botStatPicks(run, data);
+          continue;
+        }
+      }
       // A shortcut (floor events PR 2): taken with health to spare.
       if (towerEventKindOf(run) == TowerEventKind.shortcut &&
           run.shortcut == null) {
@@ -227,9 +240,33 @@ TowerRun playTowerRun({
       if (gained != null && !owned.contains(gained)) {
         run = towerBotRollBest(run, data, floors, [gained]);
       }
+      run = _botStore(run, data);
     }
   }
   return run;
+}
+
+/// [run] after the store open on its landing, as the bot shops (floor
+/// events PR 4): at a merchant, the salve under [towerBotSalveHealth] of
+/// its health, then the bundle with [towerBotBundlePotions] potions or
+/// fewer in the bag (each within the marks left); a bargain always taken.
+/// Then it leaves.
+TowerRun _botStore(TowerRun run, TowerData data) {
+  switch (towerStoreKindOf(run)) {
+    case TowerEventKind.merchant:
+      final hero = towerHeroOf(run, data);
+      if (hero.currentHealth < towerBotSalveHealth * hero.maxHealth) {
+        run = towerBuy(run, data, 'salve', hero: hero);
+      }
+      if (run.potions <= towerBotBundlePotions) {
+        run = towerBuy(run, data, 'potions');
+      }
+    case TowerEventKind.bargain:
+      run = towerChooseBargain(run, data, true);
+    default:
+      return run;
+  }
+  return towerLeaveStore(run);
 }
 
 /// [run] with the level-up picks it waits on taken as the bot takes them
@@ -269,6 +306,18 @@ int towerBotFightDraw(TowerRun run) => run.floor <= run.crest
 /// the proposal measured 70, 80 and 90%: at 80% it took 57 to 64% of the
 /// offers and won 91 to 92%).
 const double towerBotShortcutHealth = .80;
+
+/// The health share under which the bot talks at a parley (floor events
+/// PR 3; the proposal measured under 50%, under 70% and always: under 70%
+/// it gets past about 0.3 floors a run, the top within the noise). On the
+/// oath it passes with no roll, under the same share.
+const double towerBotParleyHealth = .70;
+
+/// The health share under which the bot buys a merchant's salve, and the
+/// potions in the bag at or under which it buys the bundle (floor events
+/// PR 4, the proposal's policy).
+const double towerBotSalveHealth = .60;
+const int towerBotBundlePotions = 3;
 
 /// The trial fights the bot gives each die it tries ([towerBotRollBest]).
 const int towerBotDieTrialFights = 4;

@@ -1,0 +1,44 @@
+{
+ "none": {
+  "tally": {
+   "shortcut_taken_won": 1423,
+   "parley_fought": 2029,
+   "parley_floors": 3060,
+   "bargain_signed": 1709,
+   "shortcut_declined": 731,
+   "runs_that_bought": 974,
+   "stores_with_a_purchase": 1216,
+   "bought_salve": 679,
+   "runs_that_spent_marks": 974,
+   "rival_passed": 879,
+   "shortcut_passed": 250,
+   "bought_potions": 918,
+   "rival_failed": 618,
+   "shortcut_taken_lost": 105,
+   "parley_talked_failed": 130,
+   "parley_fought_died": 60,
+   "parley_talked_failed_died": 9
+  }
+ },
+ "all": {
+  "tally": {
+   "shortcut_taken_won": 1732,
+   "parley_fought": 2522,
+   "shortcut_declined": 709,
+   "parley_floors": 3481,
+   "bargain_signed": 2014,
+   "runs_that_bought": 687,
+   "stores_with_a_purchase": 794,
+   "bought_salve": 581,
+   "runs_that_spent_marks": 687,
+   "rival_failed": 780,
+   "rival_passed": 961,
+   "shortcut_taken_lost": 112,
+   "shortcut_passed": 485,
+   "parley_fought_died": 66,
+   "bought_potions": 326,
+   "parley_talked_failed": 46,
+   "parley_talked_failed_died": 3
+  }
+ }
+}

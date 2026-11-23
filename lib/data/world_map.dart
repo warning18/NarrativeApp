@@ -32,7 +32,11 @@ class MapChapter {
 
 const List<MapChapter> mapChapters = [
   MapChapter(
-      1, 'Chapter 1', 'Chapitre 1', Palette.emberDark, Color(0xFFB5531A)),
+      1,
+      'Chapter 1: The Burning City',
+      'Chapitre 1\u00a0: La Ville en flammes',
+      Palette.emberDark,
+      Color(0xFFB5531A)),
   MapChapter(2, 'Chapter 2: Saltmouth', 'Chapitre 2\u00a0: Bouche-de-Sel',
       Color(0xFF3F9C9C), Color(0xFF1F6F6F)),
   MapChapter(

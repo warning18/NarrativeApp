@@ -71,7 +71,8 @@ const _topAll = (min: 0.23, max: 0.37);
 /// The floor events' version the batch and the guards play (TOWER_EVENTS):
 /// the foes' scale and the floors' extras of floor events PR 2 are set for
 /// the climb with them on (docs/proposals/tower-snakes-and-ladders.md).
-final _events = int.tryParse(Platform.environment['TOWER_EVENTS'] ?? '') ?? 1;
+final _events =
+    int.tryParse(Platform.environment['TOWER_EVENTS'] ?? '') ?? towerEventsLive;
 
 /// The first seeds of the in-suite batch (the full batch is TOWER_SEEDS).
 const _guardSeeds = 500;

@@ -93,6 +93,7 @@ import '../widgets/ink_chip.dart';
 import '../widgets/motion.dart';
 import '../widgets/creation_fade_route.dart';
 import '../widgets/prologue_opening.dart';
+import '../widgets/story_scene_band.dart';
 import '../widgets/story_text.dart';
 import '../providers/voice_settings_provider.dart';
 import '../tutorial/guide_tour.dart';
@@ -913,6 +914,15 @@ class _StoryView extends ConsumerWidget {
                                                             node.contextNoteFor(
                                                                 french),
                                                       ),
+                                                    // The place's picture over the scene's words.
+                                                    if (!playState
+                                                            .isInExcursion &&
+                                                        storySceneBandAsset(node
+                                                                .location) !=
+                                                            null)
+                                                      StorySceneBand(
+                                                          location:
+                                                              node.location!),
                                                     storyText,
                                                   ],
                                                 ),

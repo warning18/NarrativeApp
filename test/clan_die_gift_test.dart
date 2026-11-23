@@ -85,7 +85,7 @@ void main() {
     await show(tester, 'court_die', standing('mire', 60, sworn: 'mire'),
         language: AppLanguage.fr);
     expect(shown(tester), contains('Don'));
-    expect(shown(tester), contains("Résonance : +1 aux faces jusqu'à 3"));
+    expect(shown(tester), contains("Résonance\u00a0: +1 aux faces jusqu’à 3"));
   });
 
   testWidgets('an ordinary die has no gift line', (tester) async {

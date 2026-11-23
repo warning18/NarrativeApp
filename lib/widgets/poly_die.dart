@@ -20,10 +20,12 @@ import 'die_skins.dart';
 /// still picture (the rail, the middle of the ring) can draw every size.
 enum DieShape { coin, d4, d6, d8, d10, d12, d20 }
 
-/// The shape of a die with [faces] faces: the real sizes (2, 4, 6, 8, 10, 12,
-/// 20) and, for any other count, the next size up (a d7 reads as a d8).
+/// The shape of a die with [faces] faces: the real sizes (4, 6, 8, 10, 12 and
+/// a d20 kept for the old gambler's die). Any other count reads as the next
+/// size up (a d7 as a d8): a safety net, not a rule the player meets (no die
+/// has a count that is not a real size, and none has two faces, so the coin
+/// is never drawn for a die).
 DieShape dieShapeOf(int faces) {
-  if (faces <= 2) return DieShape.coin;
   if (faces <= 4) return DieShape.d4;
   if (faces <= 6) return DieShape.d6;
   if (faces <= 8) return DieShape.d8;

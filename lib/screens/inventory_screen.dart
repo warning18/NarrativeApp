@@ -540,6 +540,7 @@ class _InventoryBodyState extends ConsumerState<_InventoryBody> {
                 : PixelGlyph(inventorySlotGlyph(slot),
                     size: IconSize.s32, color: ink.ash, opacity: 0.7),
             worn: equippedItem?['itemName']?.toString(),
+            tier: itemTierOf(equippedItem),
             lit: equippedId == null && candidates.isNotEmpty,
             tip: tr(ref, 'choose_item'),
             clearTip: tr(ref, 'unequip'),
@@ -711,11 +712,14 @@ class _InventoryBodyState extends ConsumerState<_InventoryBody> {
       padding: const EdgeInsets.all(16),
       children: [
         caption(tr(ref, 'equipment_section')),
-        GridView.count(
-          crossAxisCount: 3,
-          mainAxisSpacing: 8,
-          crossAxisSpacing: 8,
-          childAspectRatio: 1.25,
+        GridView(
+          // A fixed height: a worn piece's name takes up to three lines (v1.989).
+          gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+            crossAxisCount: 3,
+            mainAxisSpacing: 8,
+            crossAxisSpacing: 8,
+            mainAxisExtent: 98,
+          ),
           shrinkWrap: true,
           physics: const NeverScrollableScrollPhysics(),
           children: slotTiles,

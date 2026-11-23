@@ -54,6 +54,7 @@ class TowerFloor {
     required this.enemyIds,
     this.affixes = const [],
     this.elite = false,
+    this.elitePack = false,
     this.events = 0,
   });
 
@@ -75,6 +76,11 @@ class TowerFloor {
 
   /// A lone ordinary foe made an Elite.
   final bool elite;
+
+  /// A pack fought as an Elite pack (a shortcut's, towerShortcutFloor): its
+  /// [extra] already carries the Elite's multiplier, so nothing else reads
+  /// it but the screens (the Elite chip).
+  final bool elitePack;
 
   /// The floor events' version of the run it is in (TowerRun.events): with
   /// them on, the foes' scale is towerEventsFoeScale and [extra] reads
@@ -137,8 +143,11 @@ List<TowerFloor> towerFloorsFor(int seed, Map<String, dynamic> enemies,
 TowerFloor _floorOf(int seed, int floor, Map<String, dynamic> enemies,
     Set<String> recent, int events) {
   final budget = towerBudgetOf(floor);
-  final extra =
-      events >= 1 ? towerEventsExtras[floor] ?? budget.extra : budget.extra;
+  final extra = events >= towerPeacefulEvents
+      ? towerPeacefulExtras[floor] ?? towerEventsExtras[floor] ?? budget.extra
+      : events >= 1
+          ? towerEventsExtras[floor] ?? budget.extra
+          : budget.extra;
   final random = towerRandom(seed, floor, TowerStream.foes);
   final affixRandom = towerRandom(seed, floor, TowerStream.affix);
   List<EnemyAffix> affixes(bool pack) {

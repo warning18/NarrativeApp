@@ -1,0 +1,18 @@
+{
+ "none": {
+  "shortcut_taken_won": 1282,
+  "shortcut_taken_lost": 122,
+  "shortcut_declined": 819,
+  "rival_failed": 617,
+  "rival_passed": 873,
+  "shortcut_passed": 251
+ },
+ "all": {
+  "shortcut_taken_won": 1575,
+  "shortcut_declined": 816,
+  "rival_failed": 798,
+  "rival_passed": 951,
+  "shortcut_taken_lost": 187,
+  "shortcut_passed": 457
+ }
+}

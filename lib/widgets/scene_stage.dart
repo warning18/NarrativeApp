@@ -9,6 +9,7 @@ import 'package:flutter/material.dart';
 
 import '../theme/stitched_ink.dart';
 import 'fight_sprites.dart';
+import 'hero_sprite.dart';
 import '../theme/icon_sizes.dart';
 
 /// The ids of those who have a standing sprite, for [sceneChoiceMode].
@@ -76,7 +77,8 @@ class SceneStage extends StatelessWidget {
             Positioned(
               left: 18,
               bottom: 22,
-              child: _Figure(set: roninSprite, scale: scale, keyName: 'hero'),
+              child: _Figure(
+                  set: heroSpriteOf(context), scale: scale, keyName: 'hero'),
             ),
             if (foe != null)
               Positioned(

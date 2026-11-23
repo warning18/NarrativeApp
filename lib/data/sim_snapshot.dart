@@ -20,6 +20,21 @@ typedef SimFightWatch = void Function(
   Map<String, dynamic> Function() save,
 );
 
+/// The walk's hook after each fight try, to measure the die: the fight's
+/// [chapter] and [enemyIds], whether an owned die carries an element a foe
+/// is weak to ([matchOwned]), the die swapped to for it ([swappedTo], null
+/// when kept; only with the per-fight swap on), the [die] rolled, the
+/// [rounds] played and whether it was [won]. Read-only.
+typedef SimDieWatch = void Function({
+  required int chapter,
+  required List<String> enemyIds,
+  required bool matchOwned,
+  required String? swappedTo,
+  required String die,
+  required int rounds,
+  required bool won,
+});
+
 /// [character] (with its [growth] and [party]) as a PlayerSession save:
 /// level, stats, health, potions, mana, gear worn, skills and their faces,
 /// the die in play and those owned, spells, signs, perks, specialisations,

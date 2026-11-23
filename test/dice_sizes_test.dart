@@ -62,7 +62,8 @@ const Map<String, int> _sizes = {
   'tempest_die': 12,
   'chorus_die': 12,
   'tearglass_die': 12,
-  'gambler_die': 20,
+  // A d12 since v1.958 (the user's rule: 4, 6, 8, 10 or 12 faces).
+  'gambler_die': 12,
   // The built d12.
   'tally_die': 12,
   // The clans' new dice (clan_dice.dart, v1.676).
@@ -326,7 +327,8 @@ void main() {
       }
       // Vica's die (v1.601) is an eleventh d6; the clans' Lantern and
       // Cinder dice two more, their Court die an eighth d8 (v1.676).
-      expect(bySize, {6: 13, 4: 6, 8: 8, 10: 4, 12: 4, 20: 1});
+      // No d20 since v1.958: the Gambler's Die is a fifth d12.
+      expect(bySize, {6: 13, 4: 6, 8: 8, 10: 4, 12: 5});
     });
 
     test('a grown die keeps its faces where they were, and adds plain ones',
@@ -357,9 +359,9 @@ void main() {
           if (key != 'gambler_die') expect(f['value'], average, reason: key);
         }
       }
-      // The d20 spreads its numbers around its average (2).
+      // The d12 swings round its average (2): every plain face a 1 or a 3.
       final gambler = _facesOf(dice, 'gambler_die').skip(6).toList();
-      expect(gambler.map((f) => f['value']).toSet(), {1, 2, 3});
+      expect(gambler.map((f) => f['value']).toSet(), {1, 3});
       expect(
           gambler.fold<int>(0, (n, f) => n + (f['value'] as int)) /
               gambler.length,
@@ -458,7 +460,7 @@ void main() {
       expect(placed('iron_die'), 2);
       expect(placed('flame_die'), 2);
       expect(placed('tally_die'), 3);
-      // The d20's five are held to the common skill's three.
+      // The d12's three: the common skill's three.
       expect(placed('gambler_die'), 3);
       // A signature skill counts: the iron die's Shield Bash leaves room
       // for one more on a d6, and no third.
@@ -557,6 +559,62 @@ void main() {
       // (dropped) gone.
       expect(session.recruitedAllies.single.diceSkillAssignments,
           {'1': 'fireball'});
+    });
+
+    test('a save of version 2: the Gambler\'s Die keeps faces 0 to 11', () {
+      final session = PlayerSession.fromJson({
+        'saveVersion': 6,
+        diceDataVersionKey: 2,
+        'raceId': 'human',
+        'professionId': 'rogue',
+        'gold': 100,
+        'ownedDiceIds': ['starter_die', 'gambler_die', 'stone_die'],
+        'equippedDiceId': 'gambler_die',
+        'unlockedSkillIds': ['heavy_attack', 'lucky_strike'],
+        'inventoryItemIds': <String>[],
+        'diceSkillAssignments': {
+          'gambler_die': {'3': 'heavy_attack', '15': 'heavy_attack'},
+          // Moved at version 2 already: left as it is.
+          'stone_die': {'1': 'heavy_attack'},
+        },
+        'diceUpgrades': {
+          'gambler_die': {
+            '9': {'hones': 1},
+            '13': {'hones': 1},
+          },
+        },
+      });
+      expect(
+          session.diceSkillAssignments['gambler_die'], {'3': 'heavy_attack'});
+      expect(session.diceSkillAssignments['stone_die'], {'1': 'heavy_attack'});
+      expect(session.upgradesOfDie('gambler_die')!.keys, ['9']);
+      // The Hone on face 13 paid back.
+      expect(session.gold, 100 + honeCost(0).gold);
+      expect(session.toJson()[diceDataVersionKey], 3);
+    });
+
+    test('five copies of a skill on the d20 count as the d12\'s three', () {
+      // A d20 held five copies of a skill (faces ~/ 4); its faces 6 to 10
+      // stay, and a fight or the loadout reads them through
+      // limitedFaceAssignments, as every die is read.
+      final picks = {for (var i = 6; i <= 10; i++) '$i': 'heavy_attack'};
+      final session = PlayerSession.fromJson({
+        'saveVersion': 6,
+        diceDataVersionKey: 2,
+        'raceId': 'human',
+        'professionId': 'rogue',
+        'gold': 0,
+        'ownedDiceIds': ['gambler_die'],
+        'equippedDiceId': 'gambler_die',
+        'unlockedSkillIds': ['heavy_attack'],
+        'inventoryItemIds': <String>[],
+        'diceSkillAssignments': {'gambler_die': picks},
+      });
+      final kept = limitedFaceAssignments(_facesOf(dice, 'gambler_die'),
+          session.diceSkillAssignments['gambler_die']!, skills);
+      expect(maxCopiesOnDie(12), 3);
+      expect(kept.values.where((id) => id == 'heavy_attack').length,
+          lessThanOrEqualTo(3));
     });
 
     test('the move runs once: a migrated save loads as it was saved', () {

@@ -3,10 +3,9 @@
 // chosen, the chosen face's number settling on its front. A bigger die rolls
 // longer (see [dieRollDuration]); a tap on the die skips to the end, and with
 // reduced motion it simply shows the face.
-import 'dart:math' as math;
-
 import 'package:flutter/material.dart';
 
+import 'die_3d.dart';
 import 'die_skins.dart';
 import 'poly_die.dart';
 
@@ -65,9 +64,36 @@ class _RollingDieState extends State<RollingDie>
     super.dispose();
   }
 
+  /// The faces the solid carries, the landed one first: each plaque is the
+  /// number of the face on the die's own stone, in the clan's colour for a
+  /// clan's die.
+  List<DieCubeFace> _facets() {
+    final n = widget.faceCount;
+    final skin = widget.skin;
+    final color = widget.clan?.color ?? skin?.edge ?? Colors.blueGrey;
+    return [
+      for (var i = 0; i < n; i++)
+        DieCubeFace(
+          color: color,
+          glyph: Text('${(widget.face + i) % n + 1}',
+              style: TextStyle(
+                  fontSize: widget.size * 0.3,
+                  fontWeight: FontWeight.w800,
+                  height: 1,
+                  color: Colors.white,
+                  shadows: const [Shadow(blurRadius: 3, color: Colors.black)])),
+        ),
+    ];
+  }
+
   @override
   Widget build(BuildContext context) {
     final size = widget.size;
+    final shape = dieShapeOf(widget.faceCount);
+    final facets = _facets();
+    // A real solid for every shape (the cube for a d6), tumbling the way a
+    // fight's dice do; the flat polygon is never what a roll looks like.
+    final sides = [for (var i = 0; i < 6; i++) facets[i % facets.length]];
     return GestureDetector(
       key: const ValueKey('rolling_die'),
       behavior: HitTestBehavior.opaque,
@@ -80,46 +106,18 @@ class _RollingDieState extends State<RollingDie>
         height: size,
         child: AnimatedBuilder(
           animation: _roll,
-          builder: (context, child) {
-            final t = _roll.value;
-            // A hop that dies away as the die lands, its shadow shrinking.
-            final hop = _roll.isAnimating
-                ? size *
-                    0.3 *
-                    math.pow(math.sin(math.pi * math.min(1, t * 1.6)), 2) *
-                    (1 - t)
-                : 0.0;
-            return Stack(
-              clipBehavior: Clip.none,
-              alignment: Alignment.center,
-              children: [
-                Positioned(
-                  bottom: -size * 0.04,
-                  child: Container(
-                    width: size * (0.8 - 0.25 * (hop / size)),
-                    height: size * 0.12,
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(size),
-                      color: Colors.black.withValues(alpha: 0.25),
-                    ),
-                  ),
-                ),
-                Transform.translate(
-                  offset: Offset(0, -hop),
-                  child: PolyDie(
-                    shape: dieShapeOf(widget.faceCount),
-                    size: size,
-                    skin: widget.skin,
-                    clan: widget.clan,
-                    dieId: widget.dieId,
-                    label: '${widget.face + 1}',
-                    progress: t,
-                    still: true,
-                  ),
-                ),
-              ],
-            );
-          },
+          builder: (context, _) => Die3D(
+            faces: sides,
+            facets: shape == DieShape.d6 ? null : facets,
+            accent: widget.skin?.edge ?? Colors.blueGrey,
+            size: size,
+            shape: shape,
+            skin: widget.skin,
+            artId: widget.dieId,
+            roll: _roll,
+            rolling: _roll.isAnimating,
+            still: widget.still,
+          ),
         ),
       ),
     );

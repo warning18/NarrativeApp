@@ -25,15 +25,14 @@ import '../utils/pixel_icons/game_pixel_icons.dart';
 import '../widgets/face_skill_sheet.dart';
 import '../widgets/detail_dialog.dart';
 import '../widgets/clan_die_gift.dart';
-import '../widgets/die_3d.dart';
 import '../widgets/die_skins.dart';
 import '../widgets/help_hint.dart';
 import '../widgets/poly_die.dart';
+import '../widgets/die_tile.dart';
 import '../widgets/rolling_die.dart';
 import 'skills/die_slot_ring.dart';
 import '../widgets/moments.dart';
 import '../widgets/empty_state.dart';
-import '../theme/palette.dart';
 import '../widgets/ink_loading.dart';
 import '../theme/icon_sizes.dart';
 import '../widgets/pixel_glyph.dart';
@@ -942,68 +941,6 @@ class _FaceSlot extends StatelessWidget {
   }
 }
 
-/// A face of a die as a side of its cube: a skill on it as its own pixel icon
-/// on a pale plaque ringed in what the skill does (the way the fight draws a
-/// skill face), any other face its type's icon over its value.
-DieCubeFace _cubeSide(Map<String, dynamic> face, String? assigned,
-    Map<String, dynamic> skills, double size) {
-  final skillId = faceSkillId(face, assigned);
-  final skill =
-      skillId == null ? null : skills[skillId] as Map<String, dynamic>?;
-  final kind = skillId == null
-      ? faceKind(face['type']?.toString() ?? '')
-      : skillKind(skill);
-  if (skillId != null) {
-    return DieCubeFace(
-      color: kind.color,
-      glyph: Container(
-        width: size * 0.72,
-        height: size * 0.72,
-        alignment: Alignment.center,
-        decoration: BoxDecoration(
-          shape: BoxShape.circle,
-          color: Palette.amber88.withValues(alpha: 0.92),
-          border: Border.all(color: kind.color, width: size * 0.04 + 0.6),
-        ),
-        child: SkillPixelIcon(skillId, size: size * 0.55),
-      ),
-    );
-  }
-  final value = (face['value'] as num?)?.toInt() ?? 0;
-  return DieCubeFace(
-    color: kind.color,
-    glyph: Column(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        Icon(kind.icon,
-            size: value > 0 ? size * 0.4 : size * 0.52, color: kind.color),
-        if (value > 0)
-          Text('$value',
-              style: TextStyle(
-                  fontSize: size * 0.28,
-                  fontWeight: FontWeight.bold,
-                  height: 1,
-                  color: kind.color)),
-      ],
-    ),
-  );
-}
-
-/// The six sides of a die: its faces from [first], repeated when it has fewer
-/// than six.
-List<DieCubeFace> _cubeSides(List<Map<String, dynamic>> faces,
-    Map<String, String> assignments, Map<String, dynamic> skills, double size,
-    {int first = 0}) {
-  return [
-    for (var slot = 0; slot < 6; slot++)
-      () {
-        final index = faces.length >= 6 ? first + slot : slot % faces.length;
-        return _cubeSide(
-            faces[index], assignments[index.toString()], skills, size);
-      }(),
-  ];
-}
-
 /// The dice a player owns, as small cubes to pick from.
 class _DieRail extends StatelessWidget {
   const _DieRail({
@@ -1058,21 +995,10 @@ class _DieRail extends StatelessWidget {
                     children: [
                       Padding(
                         padding: const EdgeInsets.only(bottom: 6),
-                        child: Die3D(
-                          faces: _cubeSides(
-                              smithedFaces(
-                                  (dice[id]['faces'] as List)
-                                      .cast<Map<String, dynamic>>(),
-                                  session.upgradesOfDie(id)),
-                              session.diceSkillAssignments[id] ??
-                                  const <String, String>{},
-                              skills,
-                              26),
-                          accent: dieSkinOf(id).edge,
-                          size: 26,
-                          still: true,
-                          skin: dieSkinOf(id),
-                          shape: dieShapeOf((dice[id]['faces'] as List).length),
+                        child: DieTile(
+                          dieId: id,
+                          faces: (dice[id]['faces'] as List).length,
+                          size: 34,
                         ),
                       ),
                       Text(

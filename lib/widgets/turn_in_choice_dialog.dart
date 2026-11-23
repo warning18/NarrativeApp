@@ -2,11 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../data/politics_events.dart' show politicsHint;
+import '../data/story_plates.dart'
+    show ChoiceWeight, majorApprovalShift, questClanOf;
 import '../data/turn_in_choices.dart';
 import '../l10n/app_locale.dart';
 import '../l10n/app_strings.dart';
 import '../providers/clans_provider.dart';
 import '../theme/icon_sizes.dart';
+import 'story_panel.dart' show storyWeightFrame;
 import '../providers/combat_settings_provider.dart'
     show politicsHintsEnabledProvider;
 
@@ -39,6 +42,8 @@ Future<TurnInChoice?> showTurnInChoiceDialog(
     context: context,
     builder: (context) {
       final theme = Theme.of(context);
+      final clanFaction = clanData.factions[questClanOf(quest)];
+      final clanColor = clanFaction == null ? null : Color(clanFaction.color);
       return AlertDialog(
         title: Text(quest['questName']?.toString() ?? ''),
         content: SingleChildScrollView(
@@ -50,14 +55,11 @@ Future<TurnInChoice?> showTurnInChoiceDialog(
                   style: theme.textTheme.titleSmall),
               const SizedBox(height: 12),
               for (final (i, choice) in choices.indexed) ...[
-                OutlinedButton(
+                _tile(
                   key: Key('turn_in_choice_$i'),
-                  style: OutlinedButton.styleFrom(
-                    alignment: Alignment.centerLeft,
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: 12, vertical: 10),
-                  ),
-                  onPressed: () => Navigator.of(context).pop(choice),
+                  weight: _weightOf(choice, questAlignment),
+                  clan: clanColor,
+                  onTap: () => Navigator.of(context).pop(choice),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
@@ -109,5 +111,57 @@ Future<TurnInChoice?> showTurnInChoiceDialog(
         ],
       );
     },
+  );
+}
+
+/// How much a way of settling a quest weighs, as a story choice's does
+/// (story_plates.dart): a claim, a pledge or a big approval shift is major;
+/// alignment, politics or any approval is weighty; the rest plain.
+ChoiceWeight _weightOf(TurnInChoice choice, int questAlignment) {
+  final politics = choice.politics;
+  final shown = choice.hasPolitics && !politics!.hidden;
+  if ((shown && (politics.claim.isNotEmpty || politics.pledges.isNotEmpty)) ||
+      choice.approvalMods.values.any((v) => v.abs() >= majorApprovalShift)) {
+    return ChoiceWeight.major;
+  }
+  if (shown ||
+      choice.alignmentFor(questAlignment) != 0 ||
+      choice.approvalMods.values.any((v) => v != 0)) {
+    return ChoiceWeight.weighty;
+  }
+  return ChoiceWeight.plain;
+}
+
+/// One way to settle: a plain outlined button, or (weighty, major) the same
+/// card in the weight's frame.
+Widget _tile({
+  required Key key,
+  required ChoiceWeight weight,
+  required Color? clan,
+  required VoidCallback onTap,
+  required Widget child,
+}) {
+  if (weight == ChoiceWeight.plain) {
+    return OutlinedButton(
+      key: key,
+      style: OutlinedButton.styleFrom(
+        alignment: Alignment.centerLeft,
+        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+      ),
+      onPressed: onTap,
+      child: child,
+    );
+  }
+  return storyWeightFrame(
+    weight: weight,
+    clan: clan,
+    child: InkWell(
+      key: key,
+      onTap: onTap,
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+        child: Align(alignment: Alignment.centerLeft, child: child),
+      ),
+    ),
   );
 }

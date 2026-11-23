@@ -32,6 +32,10 @@ import 'race_profession_screen.dart';
 import 'skills/skills_screen.dart';
 import '../theme/palette.dart';
 import '../theme/icon_sizes.dart';
+import '../theme/pixel_chip.dart';
+import '../widgets/clan_offer_gifts.dart' show CardTier;
+import '../widgets/head_avatar.dart';
+import '../widgets/story_panel.dart' show StoryFrame;
 
 class CharacterScreen extends ConsumerWidget {
   const CharacterScreen({super.key, this.embedded = false});
@@ -112,9 +116,12 @@ class _CharacterHeader extends ConsumerWidget {
     Widget vital(String label, String value, Color color) => Expanded(
           child: Container(
             padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(4),
-              border: Border.all(color: ink.seam),
+            decoration: ShapeDecoration(
+              color: theme.colorScheme.surface,
+              shape: PixelChipBorder(
+                  side: BorderSide(color: color, width: 1.5),
+                  step: 2,
+                  steps: 2),
             ),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -146,19 +153,19 @@ class _CharacterHeader extends ConsumerWidget {
                   Stack(
                     clipBehavior: Clip.none,
                     children: [
-                      Container(
-                        width: 56,
-                        height: 56,
-                        alignment: Alignment.center,
-                        decoration: BoxDecoration(
-                          color: theme.colorScheme.surfaceContainer,
-                          borderRadius: BorderRadius.circular(4),
-                          border: Border.all(color: ink.gold, width: 2),
-                        ),
-                        child: Text(
-                          name.characters.first.toUpperCase(),
-                          style: theme.textTheme.headlineMedium
-                              ?.copyWith(color: ink.gold),
+                      SizedBox(
+                        width: 64,
+                        height: 64,
+                        child: StoryFrame(
+                          key: const Key('character_portrait'),
+                          tier: CardTier.rare,
+                          band: 0.5,
+                          padding: EdgeInsets.zero,
+                          fill: theme.colorScheme.surfaceContainer,
+                          // The hero's own head (the letter when none).
+                          child: Center(
+                            child: HeadAvatar(id: 'hero', name: name, size: 44),
+                          ),
                         ),
                       ),
                       const Positioned(
@@ -595,12 +602,10 @@ class _AlignmentBar extends ConsumerWidget {
     final ink = InkColors.of(context);
     const span = alignmentThreshold * 2;
     final position = ((score + span) / (span * 2)).clamp(0.0, 1.0);
-    return Container(
-      padding: const EdgeInsets.all(12),
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(4),
-        border: Border.all(color: ink.seam),
-      ),
+    return StoryFrame(
+      tier: CardTier.common,
+      band: 0.5,
+      fill: theme.colorScheme.surfaceContainer,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [

@@ -32,11 +32,17 @@ const Map<String, double> towerProfessionScale = {
 };
 
 /// The foes' scale for [professionId] (1 for the others), with the
-/// Tower's own [towerFoeScale], or [towerEventsFoeScale] in a run playing
-/// the floor events ([events] 1 or more, TowerRun.events).
+/// Tower's own [towerFoeScale], [towerEventsFoeScale] in a run playing
+/// the floor events ([events] 1 or more, TowerRun.events), or
+/// [towerPeacefulFoeScale] in one playing the floors without a fight too
+/// ([towerPeacefulEvents] or more).
 double towerProfessionScaleOf(String professionId, {int events = 0}) =>
     (towerProfessionScale[professionId] ?? 1.0) *
-    (events >= 1 ? towerEventsFoeScale : towerFoeScale);
+    (events >= towerPeacefulEvents
+        ? towerPeacefulFoeScale
+        : events >= 1
+            ? towerEventsFoeScale
+            : towerFoeScale);
 
 /// Every foe of the Tower, on top of the floors' extras (v1.857): the
 /// level-up's stat picks are the player's, the main game's way, and spread
@@ -57,8 +63,25 @@ const double towerFoeScale = 1.18;
 /// at [towerFoeScale] took the top to 10.2% with no unlocks, 22.1% with
 /// all (seeds 1 to 2000); at 1.14, with [towerEventsExtras], 13.5% and
 /// 25.3% (the events cost the unlocked runs more: no one scale gives back
-/// both 12.6% and 26.8%).
-const double towerEventsFoeScale = 1.14;
+/// both 12.6% and 26.8%). The live curve since v1.944 (events version 1).
+/// 1.16 since a pack's shortcut is an Elite pack (towerShortcutFloor, no
+/// foe added): 13.2% and 24.9%, every ordinary floor under 9%.
+const double towerEventsFoeScale = 1.16;
+
+/// The floor events' version that adds the floors without a fight (floor
+/// events PR 3 and 4, docs/proposals/tower-peaceful-floors-and-stores.md:
+/// the parley, the merchant and the bargain). A run plays them only when
+/// its TowerRun.events is this or more, so switching the setback, the
+/// rival and the shortcut on (towerEventsLive 1) leaves them off.
+const int towerPeacefulEvents = 2;
+
+/// Every foe of the Tower in a run playing the floors without a fight
+/// ([towerPeacefulEvents]): 1.15, set for the whole set (the events, the
+/// parley, the merchant and the bargain: 14.0% and 24.8%, seeds 1 to 2000);
+/// 1.17 since the shortcut's Elite pack (v1.961), which made 1.15 give
+/// 16.1% and 28.2%: with [towerPeacefulExtras], 14.25% and 26.55%, every
+/// ordinary floor under 9% (seeds 1 to 2000).
+const double towerPeacefulFoeScale = 1.17;
 
 /// The floors' extras that differ in a run with the floor events on
 /// (floor -> extra, in place of its [towerBudgets] one): the floor-20 boss
@@ -66,6 +89,14 @@ const double towerEventsFoeScale = 1.14;
 /// 10 to 15%; now 13.5% / 11.9%) and the floor-30 boss .35 (was .34: 17.9%
 /// alone, now 24.6% / 21.3%).
 const Map<int, double> towerEventsExtras = {20: .30, 30: .35};
+
+/// The floors' extras that differ again in a run playing the floors without
+/// a fight ([towerPeacefulEvents] or more; read before [towerEventsExtras]):
+/// the floor-25 warden .42 (was .43) and the floor-30 boss .34 (was .35),
+/// so that at [towerPeacefulFoeScale] they end about as many climbs as in
+/// version 1 (13.8% and 27.5% of those reaching them, against 13.5% and
+/// 26.2%; at .43 and .35, 15.4% and 29.9%). The user's option 2, v1.963.
+const Map<int, double> towerPeacefulExtras = {25: .42, 30: .34};
 
 /// What the unlocks owned give a run (v1.848, the user's call: unlocks give
 /// some power, not options only). Each one owned at the start: this share
@@ -419,9 +450,12 @@ const int towerBagCap = 5;
 /// The floor events' version new runs start with (floor events PR 1,
 /// docs/proposals/tower-snakes-and-ladders.md; TowerRun.events): 1, the
 /// setback, the rival and the shortcut, switched on by the user's call of
-/// 12 November 2026 once UX-2's cards had shipped (v1.944). A run saved
-/// before keeps the version it started with (0 plays as before the events).
-const int towerEventsLive = 1;
+/// 12 November 2026 once UX-2's cards had shipped (v1.944); 2
+/// ([towerPeacefulEvents]: the parley, the merchant and the bargain too)
+/// since the user's call of 12 November 2026 (option 2 of Core's switch
+/// review, v1.963). A run saved before keeps the version it started with
+/// (0 plays as before the events).
+const int towerEventsLive = 2;
 
 /// The share of ordinary floors that hold a rival (floor events PR 1, the
 /// proposal's "Others"): win the floor's fight within [towerRivalRounds]
@@ -462,6 +496,70 @@ const int towerSetbackMaxFall = 3;
 /// the next gate; won, the floor's spoils and card and a card on landing;
 /// lost, the run ends. Only where a skip fits.
 const double towerShortcutShare = .15;
+
+/// The draw of the floors you may get past without fighting, and of the
+/// stores (floor events PR 3, docs/proposals/tower-peaceful-floors-and-stores.md):
+/// one more draw per floor on the board stream, at this index plus the
+/// floor (towerRandom), so no draw of the floor events moves. Only on an
+/// ordinary floor from [towerPeacefulFirstFloor] to the one below the top
+/// that holds no floor event. Its ranges, in this order: a parley under
+/// [towerParleyShare] (0 to .15), a merchant in the next
+/// [towerMerchantShare] (.15 to .20), a bargain in the next
+/// [towerBargainShare] (.20 to .30; floor events PR 4); nothing above.
+/// Only in a run playing [towerPeacefulEvents] or more.
+const int towerPeacefulDraw = 3000;
+
+/// The first floor the draw above may hold one (floor 1 deals the first
+/// oath).
+const int towerPeacefulFirstFloor = 2;
+
+/// The share of those floors that hold a parley (floor events PR 3): before
+/// the fight, a guardian of a clan (drawn from [towerClans]) bars the way.
+/// Talk, the setback's d20 check (its DC, [towerParleyAbilities] by floor),
+/// or pass with no roll when sworn to the guardian's clan: past the floor,
+/// its level and its marks given (by height), its spoils, its card and its
+/// recovery given up. A talk failed, or a fight chosen: the floor's fight.
+const double towerParleyShare = .15;
+
+/// The ability each parley's talk reads, by floor in turn (floor 1
+/// charisma, 2 wisdom, 3 dexterity, 4 charisma...).
+const List<String> towerParleyAbilities = ['charisma', 'wisdom', 'dexterity'];
+
+/// The share of those floors whose landing holds a merchant (floor events
+/// PR 4): on the landing after the floor's win and its card, before the
+/// next fight, a merchant of a clan (drawn from [towerClans]) sells its
+/// stock ([towerSalvePrice], [towerBundlePrice]) for the run's own marks
+/// (TowerRun.marksSpent comes off what the run banks), at half price
+/// (rounded up) to a hero sworn to its clan. It takes no floor of its own.
+const double towerMerchantShare = .05;
+
+/// The share of those floors whose landing holds a bargain (floor events
+/// PR 4): [towerBargainHealthShare] of the max health, for the rest of the
+/// run, for [towerBargainPoints] to the calling's damage stat. Taken or
+/// refused, once.
+const double towerBargainShare = .10;
+
+/// The floors whose landing always holds a merchant (floor events PR 4: a
+/// shop room after each boss below the top). Its clan is drawn on the
+/// floor's own index of the peaceful draw ([towerPeacefulDraw] + floor),
+/// which a gate floor never otherwise reads.
+const Set<int> towerShopFloors = {10, 20};
+
+/// The merchant's salve: its price in marks and the share of the max
+/// health it heals.
+const int towerSalvePrice = 3;
+const double towerSalveShare = .40;
+
+/// The merchant's potion bundle: its price in marks and the potions it puts
+/// in the bag (up to [towerBagCap]).
+const int towerBundlePrice = 4;
+const int towerBundlePotions = 2;
+
+/// The bargain's price, a share of the max health as it stands when it is
+/// taken (at least 1), cut for the rest of the run, and the points it gives
+/// the calling's damage stat.
+const double towerBargainHealthShare = .10;
+const int towerBargainPoints = 1;
 
 /// The rarity steps, lowest first, and each band's odds (floors 1-9,
 /// 11-19, 21-29); a boss or warden floor draws one step up.

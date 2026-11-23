@@ -66,4 +66,25 @@ save('vica', vica.crop((int(vica.width * 0.52), 0, vica.width,
 # not the borrowed High Warden's icon.
 vane = Image.open('assets/visuals/fighters/aurel_vane_idle_west.png')
 save('aurel_vane', head(vane))
+
+
+# The people of the story (their statuses in the user's PixelLab account, the
+# front frames exported by Art in art/npc-heads/<npc id>_south.png): the head
+# of each, cut from the top of the figure like the others, named by NPC id.
+KEEP_X = {'keeper_ossuary_relics': (0.45, 1.0)}
+KEEP_BOX = {'dorran_quill': (22, 12, 38, 29)}
+for path in sorted(glob.glob('art/npc-heads/*_south.png')):
+    name = os.path.basename(path)[:-len('_south.png')]
+    if name in KEEP_BOX:
+        # A bulky figure (the dwarf): the head and beard, by hand.
+        face = Image.open(path).convert('RGBA').crop(KEEP_BOX[name])
+    else:
+        face = head(Image.open(path))
+    if name in KEEP_X and face is not None:
+        # A halberd or a shield beside the head: keep the head itself.
+        lo, hi = KEEP_X[name]
+        face = face.crop((int(face.width * lo), 0, int(face.width * hi),
+                          face.height))
+        face = face.crop(face.getchannel('A').getbbox())
+    save(name, face)
 print('heads:', len(glob.glob(f'{OUT}/*.png')))

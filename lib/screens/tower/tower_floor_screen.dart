@@ -3,6 +3,8 @@
 // and the way to fight it; once it is won, its cards (take one, or none).
 // A run is moved only through lib/data/tower/ and the controller; the fight
 // itself is played by the launcher (tower_providers.dart).
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -54,6 +56,9 @@ class _TowerFloorBody extends ConsumerStatefulWidget {
 class _TowerFloorScreenState extends ConsumerState<_TowerFloorBody> {
   bool _busy = false;
   bool _resumed = false;
+
+  /// The rail, to skip its step on a tap.
+  final _ladder = GlobalKey<TowerLadderState>();
 
   /// The floor whose spoils sheet was taken: its boon or oath comes next.
   int _spoilsTaken = 0;
@@ -124,6 +129,33 @@ class _TowerFloorScreenState extends ConsumerState<_TowerFloorBody> {
     }
   }
 
+  /// The parley's choice: talk (a pass lands on the next floor, its level's
+  /// pick waits there like a rival's) or fight.
+  Future<void> _parley(TowerRun run, TowerData data, bool talk) async {
+    final next = towerChooseParley(run, data, talk);
+    await ref.read(towerProvider.notifier).setRun(next);
+    if (!next.isOver &&
+        next.status == TowerStatus.climbing &&
+        towerPendingPicks(next) > 0 &&
+        mounted) {
+      _resumed = true;
+      await _levelUp(next, data);
+    }
+  }
+
+  /// The merchant's Buy; the stall stays open for the next one.
+  Future<void> _buy(TowerRun run, TowerData data, String id) =>
+      ref.read(towerProvider.notifier).setRun(towerBuy(run, data, id));
+
+  /// The merchant's Leave: the store closes and the fight is next.
+  Future<void> _leaveStore(TowerRun run) =>
+      ref.read(towerProvider.notifier).setRun(towerLeaveStore(run));
+
+  /// The bargain's choice; its hero change shows in the health at once.
+  Future<void> _bargain(TowerRun run, TowerData data, bool accept) => ref
+      .read(towerProvider.notifier)
+      .setRun(towerChooseBargain(run, data, accept));
+
   Future<void> _leave(TowerRun run) async {
     final yes = await showInkConfirm(
       context,
@@ -157,6 +189,16 @@ class _TowerFloorScreenState extends ConsumerState<_TowerFloorBody> {
             event?.landsOn != null
         ? (run.floor, event!.landsOn!)
         : null;
+    // Where the hero's head stands on the rail: on the floor won, it is
+    // already on the next notch (or the stair's landing), so the step is
+    // taken as the cards open, never after a defeat (the run is over then).
+    final headFloor = !choosing
+        ? run.floor
+        : (event?.kind == TowerEventKind.shortcut &&
+                (event?.accepted ?? false) &&
+                event?.landsOn != null)
+            ? event!.landsOn!
+            : min(run.floor + 1, towerTop);
     final jump = stair ??
         (last != null &&
                 last.to == run.floor &&
@@ -184,41 +226,55 @@ class _TowerFloorScreenState extends ConsumerState<_TowerFloorBody> {
       ),
       body: TowerBackdrop(
         floor: run.floor,
+        // The picture of the event on offer (the parley's guardian), until it
+        // is chosen; the floor's own otherwise.
+        asset: event != null && event.accepted == null
+            ? towerEventPlate(event.background)
+            : null,
         child: SafeArea(
-          child: Row(
-            children: [
-              Padding(
-                padding: const EdgeInsets.fromLTRB(8, 4, 4, 8),
-                child: TowerLadder(floor: run.floor, jump: jump),
-              ),
-              Expanded(
-                child: choosing && _spoilsTaken != run.floor
-                    ? TowerSpoilsView(
-                        run: run,
-                        onTake: () => run.offer.isEmpty &&
-                                event?.kind != TowerEventKind.test
-                            ? _pick(run, data, null)
-                            : setState(() => _spoilsTaken = run.floor),
-                      )
-                    : choosing
-                        ? TowerOfferView(
-                            run: run,
-                            data: data,
-                            event: event,
-                            onPick: (i) => _pick(run, data, i),
-                          )
-                        : _FloorIntro(
-                            run: run,
-                            data: data,
-                            event: event,
-                            busy: _busy,
-                            onFight: () => _fight(run, data),
-                            onShortcut: (take) => ref
-                                .read(towerProvider.notifier)
-                                .setRun(towerChooseShortcut(run, data, take)),
-                          ),
-              ),
-            ],
+          child: Listener(
+            // A tap anywhere puts the head on its notch at once.
+            onPointerDown: (_) => _ladder.currentState?.skip(),
+            child: Row(
+              children: [
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(8, 4, 4, 8),
+                  child:
+                      TowerLadder(key: _ladder, floor: headFloor, jump: jump),
+                ),
+                Expanded(
+                  child: choosing && _spoilsTaken != run.floor
+                      ? TowerSpoilsView(
+                          run: run,
+                          onTake: () => run.offer.isEmpty &&
+                                  event?.kind != TowerEventKind.test
+                              ? _pick(run, data, null)
+                              : setState(() => _spoilsTaken = run.floor),
+                        )
+                      : choosing
+                          ? TowerOfferView(
+                              run: run,
+                              data: data,
+                              event: event,
+                              onPick: (i) => _pick(run, data, i),
+                            )
+                          : _FloorIntro(
+                              run: run,
+                              data: data,
+                              event: event,
+                              busy: _busy,
+                              onFight: () => _fight(run, data),
+                              onParley: (talk) => _parley(run, data, talk),
+                              onBuy: (id) => _buy(run, data, id),
+                              onLeaveStore: () => _leaveStore(run),
+                              onBargain: (take) => _bargain(run, data, take),
+                              onShortcut: (take) => ref
+                                  .read(towerProvider.notifier)
+                                  .setRun(towerChooseShortcut(run, data, take)),
+                            ),
+                ),
+              ],
+            ),
           ),
         ),
       ),
@@ -233,6 +289,10 @@ class _FloorIntro extends ConsumerWidget {
     required this.busy,
     required this.onFight,
     this.onShortcut,
+    this.onParley,
+    this.onBuy,
+    this.onLeaveStore,
+    this.onBargain,
     this.event,
   });
 
@@ -246,6 +306,15 @@ class _FloorIntro extends ConsumerWidget {
 
   /// The shortcut's choice (true: the stair); the fight waits for it.
   final void Function(bool take)? onShortcut;
+
+  /// The parley's choice (true: talk); the fight waits for it.
+  final void Function(bool talk)? onParley;
+
+  /// The merchant's Buy and Leave, and the bargain's choice (true takes
+  /// it); the fight waits for the store to close or the bargain to be chosen.
+  final void Function(String id)? onBuy;
+  final VoidCallback? onLeaveStore;
+  final void Function(bool accept)? onBargain;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -295,6 +364,16 @@ class _FloorIntro extends ConsumerWidget {
           if (e.kind == TowerEventKind.shortcut) ...[
             const SizedBox(height: 6),
             TowerEventCard(e, onShortcut: onShortcut),
+          ],
+          if (e.kind == TowerEventKind.parley) ...[
+            const SizedBox(height: 6),
+            TowerEventCard(e, onParley: onParley, foeId: floor.enemyIds.first),
+          ],
+          if (e.kind == TowerEventKind.merchant ||
+              e.kind == TowerEventKind.bargain) ...[
+            const SizedBox(height: 6),
+            TowerEventCard(e,
+                onBuy: onBuy, onLeaveStore: onLeaveStore, onBargain: onBargain),
           ],
         ],
         if (danger) ...[
@@ -352,17 +431,22 @@ class _FloorIntro extends ConsumerWidget {
                     ],
                   ),
                   // The marks wrap under the name: an Elite with an affix is
-                  // too wide for one line on a small phone.
-                  if (id == floor.enemyIds.first &&
-                      (floor.affixes.isNotEmpty || floor.elite))
+                  // too wide for one line on a small phone. A lone Elite wears
+                  // its mark on its panel; a pack made an Elite pack (the
+                  // shortcut's tougher fight) on every foe's.
+                  if ((id == floor.enemyIds.first &&
+                          (floor.affixes.isNotEmpty || floor.elite)) ||
+                      floor.elitePack)
                     Wrap(
                       spacing: 6,
                       runSpacing: 4,
                       children: [
-                        for (final a in floor.affixes)
-                          InkChip(tr(ref, affixLabelKey(a)),
-                              color: ink.blood, dense: true),
-                        if (floor.elite)
+                        if (id == floor.enemyIds.first)
+                          for (final a in floor.affixes)
+                            InkChip(tr(ref, affixLabelKey(a)),
+                                color: ink.blood, dense: true),
+                        if ((id == floor.enemyIds.first && floor.elite) ||
+                            floor.elitePack)
                           InkChip(tr(ref, 'tower_floor_elite'),
                               color: ink.gold, dense: true),
                       ],
@@ -389,7 +473,14 @@ class _FloorIntro extends ConsumerWidget {
         ..._dicePanel(ref),
         const SizedBox(height: 16),
         // A shortcut is chosen first: its card holds the two buttons.
-        if (event?.kind != TowerEventKind.shortcut || event?.accepted != null)
+        // A shortcut or a parley is chosen first, a bargain too, and an open
+        // store is left first: their cards hold the buttons.
+        if ((!(event?.kind == TowerEventKind.shortcut ||
+                    event?.kind == TowerEventKind.parley ||
+                    event?.kind == TowerEventKind.bargain) ||
+                event?.accepted != null) &&
+            !((event?.storeOpen ?? false) &&
+                event?.kind == TowerEventKind.merchant))
           FilledButton(
             key: const Key('tower_fight'),
             onPressed: busy ? null : onFight,

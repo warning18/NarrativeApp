@@ -96,6 +96,11 @@ class _ScenePanel extends ConsumerWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       mainAxisSize: MainAxisSize.min,
       children: [
+        // The place's picture over the scene's words (a detour has none).
+        if (firstPage &&
+            detour == null &&
+            storySceneBandAsset(node.location) != null)
+          StorySceneBand(location: node.location!),
         // A step taken inside this place: what was taken, and that nothing
         // moved (the scene-or-map rule, v1.809).
         if (firstPage && taken != null) ...[

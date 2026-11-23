@@ -1,0 +1,810 @@
+[
+ {
+  "i": 0,
+  "id": "ea17dde3-c503-4863-8349-7893f4e239f3",
+  "group": "Hero",
+  "state": "cleric starter",
+  "size": "48x48px",
+  "view": "side",
+  "directions": "8",
+  "anims": [],
+  "frame": "art/pixellab-npc-inventory/frames/00/pixelart_workbench_0.png"
+ },
+ {
+  "i": 1,
+  "id": "1402e798-01bc-4550-b481-6f4d15a4966f",
+  "group": "Hero",
+  "state": "No armor and no shie",
+  "size": "48x48px",
+  "view": "side",
+  "directions": "8",
+  "anims": [],
+  "frame": "art/pixellab-npc-inventory/frames/01/pixelart_workbench_0.png"
+ },
+ {
+  "i": 2,
+  "id": "d3be186f-092f-4c51-b6d6-36e9339798cc",
+  "group": "Hero",
+  "state": "No weapon cheaper eq",
+  "size": "48x48px",
+  "view": "side",
+  "directions": "8",
+  "anims": [],
+  "frame": "art/pixellab-npc-inventory/frames/02/pixelart_workbench_0.png"
+ },
+ {
+  "i": 3,
+  "id": "ee518ef0-3ef1-4678-9a6b-12e3b1cd5e68",
+  "group": "Hero",
+  "state": "No weapon cheaper eq",
+  "size": "48x48px",
+  "view": "side",
+  "directions": "8",
+  "anims": [],
+  "frame": "art/pixellab-npc-inventory/frames/03/pixelart_workbench_0.png"
+ },
+ {
+  "i": 4,
+  "id": "7b81d4b0-d8be-4c1b-9656-cb21108bc359",
+  "group": "Hero",
+  "state": "orc starter",
+  "size": "48x48px",
+  "view": "side",
+  "directions": "8",
+  "anims": [],
+  "frame": "art/pixellab-npc-inventory/frames/04/pixelart_workbench_0.png"
+ },
+ {
+  "i": 5,
+  "id": "798d283e-d68e-411e-b64e-916ea922bb99",
+  "group": "Hero",
+  "state": "cleric",
+  "size": "48x48px",
+  "view": "side",
+  "directions": "8",
+  "anims": [],
+  "frame": "art/pixellab-npc-inventory/frames/05/pixelart_workbench_0.png"
+ },
+ {
+  "i": 6,
+  "id": "2fb76406-45b7-4616-8c68-c1b5777a2649",
+  "group": "Hero",
+  "state": "dwarf warrior",
+  "size": "48x48px",
+  "view": "side",
+  "directions": "8",
+  "anims": [],
+  "frame": "art/pixellab-npc-inventory/frames/06/pixelart_workbench_0.png"
+ },
+ {
+  "i": 7,
+  "id": "a114d13c-1471-4ea7-86f6-c567c95eafdc",
+  "group": "Paysant woman",
+  "state": "Slighlty different a",
+  "size": "64x64px",
+  "view": "low top-down",
+  "directions": "8",
+  "anims": [],
+  "frame": "art/pixellab-npc-inventory/frames/07/pixelart_workbench_0.png"
+ },
+ {
+  "i": 8,
+  "id": "c04f4956-6ce1-4ea4-8e06-ca7bd5167e56",
+  "group": "Paysant woman",
+  "state": "wearing a banner",
+  "size": "64x64px",
+  "view": "low top-down",
+  "directions": "8",
+  "anims": [],
+  "frame": "art/pixellab-npc-inventory/frames/08/pixelart_workbench_0.png"
+ },
+ {
+  "i": 9,
+  "id": "0956210a-e625-4878-a92a-92b0ae09fcd8",
+  "group": "Hero",
+  "state": "Hero_Mage_Basic",
+  "size": "48x48px",
+  "view": "side",
+  "directions": "8",
+  "anims": [],
+  "frame": "art/pixellab-npc-inventory/frames/09/pixelart_workbench_0.png"
+ },
+ {
+  "i": 10,
+  "id": "a37c22ca-f7ea-4c2d-8687-ce3ea4581bbb",
+  "group": "Hero",
+  "state": "No weapon",
+  "size": "48x48px",
+  "view": "side",
+  "directions": "8",
+  "anims": [],
+  "frame": "art/pixellab-npc-inventory/frames/10/pixelart_workbench_0.png"
+ },
+ {
+  "i": 11,
+  "id": "c12e5b2d-4d22-41b6-9f92-9aa8f3a2ace9",
+  "group": "Hero",
+  "state": "rogue starter",
+  "size": "48x48px",
+  "view": "side",
+  "directions": "8",
+  "anims": [],
+  "frame": "art/pixellab-npc-inventory/frames/11/pixelart_workbench_0.png"
+ },
+ {
+  "i": 12,
+  "id": "9a4b92f1-37b8-49f5-a34d-11b2fe0373e8",
+  "group": "Hero",
+  "state": "Hero_Rogue_Basic",
+  "size": "48x48px",
+  "view": "side",
+  "directions": "8",
+  "anims": [
+   {
+    "name": "Walking",
+    "dirs": 1,
+    "where": "east",
+    "frames": 8
+   }
+  ],
+  "frame": "art/pixellab-npc-inventory/frames/12/pixelart_workbench_0.png"
+ },
+ {
+  "i": 13,
+  "id": "f2222363-dac1-467b-a40e-6754f2b1b21a",
+  "group": "Hero",
+  "state": "Basic_Orc",
+  "size": "48x48px",
+  "view": "side",
+  "directions": "8",
+  "anims": [],
+  "frame": "art/pixellab-npc-inventory/frames/13/pixelart_workbench_0.png"
+ },
+ {
+  "i": 14,
+  "id": "6ba1dc51-69ab-4e8f-a406-866935517e50",
+  "group": "Hero",
+  "state": "Hero_Mage",
+  "size": "48x48px",
+  "view": "side",
+  "directions": "8",
+  "anims": [],
+  "frame": "art/pixellab-npc-inventory/frames/14/pixelart_workbench_0.png"
+ },
+ {
+  "i": 15,
+  "id": "373ff8af-28f5-4dae-8dc2-1cd0595de38b",
+  "group": "Hero",
+  "state": "Hero_Warrior_Basic",
+  "size": "48x48px",
+  "view": "side",
+  "directions": "8",
+  "anims": [],
+  "frame": "art/pixellab-npc-inventory/frames/15/pixelart_workbench_0.png"
+ },
+ {
+  "i": 16,
+  "id": "5a60a95c-1ee2-4646-88fa-69378caad225",
+  "group": "Hero",
+  "state": "Hero_orc_art",
+  "size": "48x48px",
+  "view": "side",
+  "directions": "8",
+  "anims": [],
+  "frame": "art/pixellab-npc-inventory/frames/16/pixelart_workbench_0.png"
+ },
+ {
+  "i": 17,
+  "id": "572e06a3-a9df-4c8d-81bf-e1877a477307",
+  "group": "Male - Peasant",
+  "state": "younger, no beard",
+  "size": "64x64px",
+  "view": "low top-down",
+  "directions": "8",
+  "anims": [
+   {
+    "name": "Walking",
+    "dirs": 2,
+    "where": "west, east",
+    "frames": 8
+   }
+  ],
+  "frame": "art/pixellab-npc-inventory/frames/17/pixelart_workbench_0.png"
+ },
+ {
+  "i": 18,
+  "id": "204739e1-328a-448a-af60-27bb1fc861c3",
+  "group": "Male - Peasant",
+  "state": "Hunter style",
+  "size": "64x64px",
+  "view": "low top-down",
+  "directions": "8",
+  "anims": [],
+  "frame": "art/pixellab-npc-inventory/frames/18/pixelart_workbench_0.png"
+ },
+ {
+  "i": 19,
+  "id": "88712560-05b5-439c-98d8-6de6fecd5dd7",
+  "group": "Paysant woman",
+  "state": "Same but poor",
+  "size": "64x64px",
+  "view": "low top-down",
+  "directions": "8",
+  "anims": [],
+  "frame": "art/pixellab-npc-inventory/frames/19/pixelart_workbench_0.png"
+ },
+ {
+  "i": 20,
+  "id": "a01d2b61-f7d6-493c-afcf-f1be627897a2",
+  "group": "Paysant woman",
+  "state": "Same as warlord a bi",
+  "size": "64x64px",
+  "view": "low top-down",
+  "directions": "8",
+  "anims": [],
+  "frame": "art/pixellab-npc-inventory/frames/20/pixelart_workbench_0.png"
+ },
+ {
+  "i": 21,
+  "id": "29a4c757-c63a-41f6-b696-1ba3e1a8e413",
+  "group": "Paysant woman",
+  "state": "Same but mercenary l",
+  "size": "64x64px",
+  "view": "low top-down",
+  "directions": "8",
+  "anims": [],
+  "frame": "art/pixellab-npc-inventory/frames/21/pixelart_workbench_0.png"
+ },
+ {
+  "i": 22,
+  "id": "648c0483-907b-4467-a753-851219ae17ec",
+  "group": "Paysant woman",
+  "state": "Same but rogue merce",
+  "size": "64x64px",
+  "view": "low top-down",
+  "directions": "8",
+  "anims": [],
+  "frame": "art/pixellab-npc-inventory/frames/22/pixelart_workbench_0.png"
+ },
+ {
+  "i": 23,
+  "id": "73d46587-c3ce-430f-9e32-a845d723b03b",
+  "group": "Male - Peasant",
+  "state": "Same with a sword an",
+  "size": "64x64px",
+  "view": "low top-down",
+  "directions": "8",
+  "anims": [
+   {
+    "name": "Walking",
+    "dirs": 1,
+    "where": "east",
+    "frames": 8
+   }
+  ],
+  "frame": "art/pixellab-npc-inventory/frames/23/pixelart_workbench_0.png"
+ },
+ {
+  "i": 24,
+  "id": "2f50b2a6-be2a-4cb5-8423-7558ac6c4b2d",
+  "group": "Male - Peasant",
+  "state": "Same but winter clot",
+  "size": "64x64px",
+  "view": "low top-down",
+  "directions": "8",
+  "anims": [],
+  "frame": "art/pixellab-npc-inventory/frames/24/pixelart_workbench_0.png"
+ },
+ {
+  "i": 25,
+  "id": "426de908-6705-4d05-ac17-74fcafa00520",
+  "group": "Male - Peasant",
+  "state": "Same with a cape",
+  "size": "64x64px",
+  "view": "low top-down",
+  "directions": "8",
+  "anims": [
+   {
+    "name": "Walking",
+    "dirs": 1,
+    "where": "east",
+    "frames": 8
+   }
+  ],
+  "frame": "art/pixellab-npc-inventory/frames/25/pixelart_workbench_0.png"
+ },
+ {
+  "i": 26,
+  "id": "b1d85982-2a99-4ed6-b59e-03d6c9c14bf7",
+  "group": "Hero",
+  "state": "Same armor but add a",
+  "size": "48x48px",
+  "view": "side",
+  "directions": "8",
+  "anims": [],
+  "frame": "art/pixellab-npc-inventory/frames/26/pixelart_workbench_0.png"
+ },
+ {
+  "i": 27,
+  "id": "706d0ba1-b659-48df-b47e-caede4b5fec4",
+  "group": "Hero",
+  "state": "Same armor but more",
+  "size": "48x48px",
+  "view": "side",
+  "directions": "8",
+  "anims": [],
+  "frame": "art/pixellab-npc-inventory/frames/27/pixelart_workbench_0.png"
+ },
+ {
+  "i": 28,
+  "id": "26b212a1-7338-42ce-8565-e3ae37986fc9",
+  "group": "Hero",
+  "state": "Add cheap medieval a",
+  "size": "48x48px",
+  "view": "side",
+  "directions": "8",
+  "anims": [
+   {
+    "name": "Walking",
+    "dirs": 1,
+    "where": "east",
+    "frames": 8
+   }
+  ],
+  "frame": "art/pixellab-npc-inventory/frames/28/pixelart_workbench_0.png"
+ },
+ {
+  "i": 29,
+  "id": "106a5040-b52c-41f7-8b67-4a45ee9ece02",
+  "group": "Male - Peasant",
+  "state": "Change the spear for",
+  "size": "64x64px",
+  "view": "low top-down",
+  "directions": "8",
+  "anims": [],
+  "frame": "art/pixellab-npc-inventory/frames/29/pixelart_workbench_0.png"
+ },
+ {
+  "i": 30,
+  "id": "0d6d7280-8007-4e3f-a330-718ddae82196",
+  "group": "Male - Peasant",
+  "state": "Add a gambison and a",
+  "size": "64x64px",
+  "view": "low top-down",
+  "directions": "8",
+  "anims": [],
+  "frame": "art/pixellab-npc-inventory/frames/30/pixelart_workbench_0.png"
+ },
+ {
+  "i": 31,
+  "id": "7e072c5f-74bf-4e6b-9f5b-e2d1f6439b81",
+  "group": "Male - Peasant",
+  "state": "Change the helmet st",
+  "size": "64x64px",
+  "view": "low top-down",
+  "directions": "8",
+  "anims": [],
+  "frame": "art/pixellab-npc-inventory/frames/31/pixelart_workbench_0.png"
+ },
+ {
+  "i": 32,
+  "id": "911fb8df-c147-4a59-aa8a-9823dbf018ce",
+  "group": "Male - Peasant",
+  "state": "Mercenary style with",
+  "size": "64x64px",
+  "view": "low top-down",
+  "directions": "8",
+  "anims": [
+   {
+    "name": "Walking",
+    "dirs": 1,
+    "where": "east",
+    "frames": 8
+   }
+  ],
+  "frame": "art/pixellab-npc-inventory/frames/32/pixelart_workbench_0.png"
+ },
+ {
+  "i": 33,
+  "id": "f2c77968-f5e7-43fd-981d-e22fe20f4665",
+  "group": "Male - Peasant",
+  "state": "Mercenary same style",
+  "size": "64x64px",
+  "view": "low top-down",
+  "directions": "8",
+  "anims": [
+   {
+    "name": "Walking",
+    "dirs": 1,
+    "where": "east",
+    "frames": 8
+   }
+  ],
+  "frame": "art/pixellab-npc-inventory/frames/33/pixelart_workbench_0.png"
+ },
+ {
+  "i": 34,
+  "id": "00d674c3-541f-49df-a8c7-5a5a311cfce4",
+  "group": "Young peasant with a straw hat",
+  "state": "Thinner body and tal",
+  "size": "64x64px",
+  "view": "side",
+  "directions": "8",
+  "anims": [],
+  "frame": "art/pixellab-npc-inventory/frames/34/pixelart_workbench_0.png"
+ },
+ {
+  "i": 35,
+  "id": "01245bb8-9855-43e2-81fd-9231dffa9729",
+  "group": "Young peasant with a straw hat",
+  "state": "Same with no book bu",
+  "size": "64x64px",
+  "view": "side",
+  "directions": "8",
+  "anims": [],
+  "frame": "art/pixellab-npc-inventory/frames/35/pixelart_workbench_0.png"
+ },
+ {
+  "i": 36,
+  "id": "04c2d324-7e96-4ff2-91c1-7db8a2c5bd80",
+  "group": "Young peasant with a straw hat",
+  "state": "Fatter with bigger b",
+  "size": "64x64px",
+  "view": "side",
+  "directions": "8",
+  "anims": [],
+  "frame": "art/pixellab-npc-inventory/frames/36/pixelart_workbench_0.png"
+ },
+ {
+  "i": 37,
+  "id": "ada3310d-6460-41cd-9bf4-7a98489bb923",
+  "group": "Young peasant with a straw hat",
+  "state": "Older librarian",
+  "size": "64x64px",
+  "view": "side",
+  "directions": "8",
+  "anims": [],
+  "frame": "art/pixellab-npc-inventory/frames/37/pixelart_workbench_0.png"
+ },
+ {
+  "i": 38,
+  "id": "341c7396-71ec-40f0-9822-8c95dd2fad61",
+  "group": "Young peasant with a straw hat",
+  "state": "Longer bear skinnier",
+  "size": "64x64px",
+  "view": "side",
+  "directions": "8",
+  "anims": [],
+  "frame": "art/pixellab-npc-inventory/frames/38/pixelart_workbench_0.png"
+ },
+ {
+  "i": 39,
+  "id": "739cb771-9597-4b76-aa61-886600cec1d6",
+  "group": "Young peasant with a straw hat",
+  "state": "Medieval style peasa",
+  "size": "64x64px",
+  "view": "side",
+  "directions": "8",
+  "anims": [],
+  "frame": "art/pixellab-npc-inventory/frames/39/pixelart_workbench_0.png"
+ },
+ {
+  "i": 40,
+  "id": "cb48d8ec-0227-41e8-b683-cecf34b0b923",
+  "group": "Young peasant with a straw hat",
+  "state": "Same style but summe",
+  "size": "64x64px",
+  "view": "side",
+  "directions": "8",
+  "anims": [],
+  "frame": "art/pixellab-npc-inventory/frames/40/pixelart_workbench_0.png"
+ },
+ {
+  "i": 41,
+  "id": "23ccb8d9-f824-4317-969b-30e508b50a53",
+  "group": "Young peasant with a straw hat",
+  "state": "Same style but diffe",
+  "size": "64x64px",
+  "view": "side",
+  "directions": "8",
+  "anims": [],
+  "frame": "art/pixellab-npc-inventory/frames/41/pixelart_workbench_0.png"
+ },
+ {
+  "i": 42,
+  "id": "4e7d22a3-efc0-4835-bb59-8fd4f397146d",
+  "group": "Young peasant with a straw hat",
+  "state": "Change clothes for H",
+  "size": "64x64px",
+  "view": "side",
+  "directions": "8",
+  "anims": [],
+  "frame": "art/pixellab-npc-inventory/frames/42/pixelart_workbench_0.png"
+ },
+ {
+  "i": 43,
+  "id": "61124b1b-492e-4826-95f5-ade30e69315b",
+  "group": "Young peasant with a straw hat",
+  "state": "Younger no bear shor",
+  "size": "64x64px",
+  "view": "side",
+  "directions": "8",
+  "anims": [],
+  "frame": "art/pixellab-npc-inventory/frames/43/pixelart_workbench_0.png"
+ },
+ {
+  "i": 44,
+  "id": "f1d8ede3-3964-48be-9d00-b32d3543cd32",
+  "group": "Young peasant with a straw hat",
+  "state": "No hat half long hai",
+  "size": "64x64px",
+  "view": "side",
+  "directions": "8",
+  "anims": [],
+  "frame": "art/pixellab-npc-inventory/frames/44/pixelart_workbench_0.png"
+ },
+ {
+  "i": 45,
+  "id": "8ce82afc-d639-4aba-9d2a-02811cc5e987",
+  "group": "Young peasant with a straw hat",
+  "state": "Different face no ha",
+  "size": "64x64px",
+  "view": "side",
+  "directions": "8",
+  "anims": [],
+  "frame": "art/pixellab-npc-inventory/frames/45/pixelart_workbench_0.png"
+ },
+ {
+  "i": 46,
+  "id": "20e1ac76-6d02-47d2-8adc-39ea4864f51f",
+  "group": "Hero",
+  "state": "Wearing same weapon",
+  "size": "64x64px",
+  "view": "side",
+  "directions": "8",
+  "anims": [
+   {
+    "name": "Walking",
+    "dirs": 1,
+    "where": "east",
+    "frames": 8
+   }
+  ],
+  "frame": "art/pixellab-npc-inventory/frames/46/pixelart_workbench_0.png"
+ },
+ {
+  "i": 47,
+  "id": "21f084cb-8c76-4155-87a6-18a5391f8bae",
+  "group": "Young peasant with a straw hat",
+  "state": "Another passant hat",
+  "size": "64x64px",
+  "view": "side",
+  "directions": "8",
+  "anims": [],
+  "frame": "art/pixellab-npc-inventory/frames/47/pixelart_workbench_0.png"
+ },
+ {
+  "i": 48,
+  "id": "84761a9d-6ae9-4689-9cde-5c9ef4475f3f",
+  "group": "Young peasant with a straw hat",
+  "state": "Other clothes",
+  "size": "64x64px",
+  "view": "side",
+  "directions": "8",
+  "anims": [
+   {
+    "name": "walk",
+    "dirs": 2,
+    "where": "west, east",
+    "frames": 6
+   }
+  ],
+  "frame": "art/pixellab-npc-inventory/frames/48/pixelart_workbench_0.png"
+ },
+ {
+  "i": 49,
+  "id": "54750dc5-3e2c-4b95-86da-acbe56d6fd8b",
+  "group": "Paysant woman",
+  "state": "Same style but other",
+  "size": "64x64px",
+  "view": "low top-down",
+  "directions": "8",
+  "anims": [],
+  "frame": "art/pixellab-npc-inventory/frames/49/pixelart_workbench_0.png"
+ },
+ {
+  "i": 50,
+  "id": "1ec1c71b-df24-4dae-bd82-f6e231d09920",
+  "group": "Paysant woman",
+  "state": "Change face and hair",
+  "size": "64x64px",
+  "view": "low top-down",
+  "directions": "8",
+  "anims": [],
+  "frame": "art/pixellab-npc-inventory/frames/50/pixelart_workbench_0.png"
+ },
+ {
+  "i": 51,
+  "id": "de5e44f4-1c9d-4043-96cf-eed8d324a086",
+  "group": "Hero",
+  "state": "Starter_basic_hero",
+  "size": "48x48px",
+  "view": "side",
+  "directions": "8",
+  "anims": [
+   {
+    "name": "v3:walking",
+    "dirs": 2,
+    "where": "west, east",
+    "frames": 8
+   }
+  ],
+  "frame": "art/pixellab-npc-inventory/frames/51/pixelart_workbench_0.png"
+ },
+ {
+  "i": 52,
+  "id": "d7ac8750-e0ec-480a-bfcd-443081c0237f",
+  "group": "Hero",
+  "state": "Without a weapon and (copy)",
+  "size": "48x48px",
+  "view": "side",
+  "directions": "8",
+  "anims": [
+   {
+    "name": "Walking",
+    "dirs": 1,
+    "where": "east",
+    "frames": 8
+   }
+  ],
+  "frame": "art/pixellab-npc-inventory/frames/52/pixelart_workbench_0.png"
+ },
+ {
+  "i": 53,
+  "id": "4eba9bb8-7770-42ed-9a52-98be9191443c",
+  "group": "Paysant woman",
+  "state": "Idle",
+  "size": "64x64px",
+  "view": "low top-down",
+  "directions": "8",
+  "anims": [],
+  "frame": "art/pixellab-npc-inventory/frames/53/pixelart_workbench_0.png"
+ },
+ {
+  "i": 54,
+  "id": "80271b30-e792-4466-920f-cd7ff9cd9a8c",
+  "group": "Hero",
+  "state": "Without a weapon and",
+  "size": "48x48px",
+  "view": "side",
+  "directions": "8",
+  "anims": [],
+  "frame": "art/pixellab-npc-inventory/frames/54/pixelart_workbench_0.png"
+ },
+ {
+  "i": 55,
+  "id": "c4aa8af9-559f-4865-9f66-b528d5f43711",
+  "group": "Young peasant with a straw hat",
+  "state": "Idle",
+  "size": "52x52px",
+  "view": "side",
+  "directions": "8",
+  "anims": [
+   {
+    "name": "Walking",
+    "dirs": 1,
+    "where": "east",
+    "frames": 8
+   }
+  ],
+  "frame": "art/pixellab-npc-inventory/frames/55/pixelart_workbench_0.png"
+ },
+ {
+  "i": 56,
+  "id": "17503a22-1be9-453a-a14d-012d87f05ded",
+  "group": "Hero",
+  "state": "Idle-Walking (copy 2)",
+  "size": "48x48px",
+  "view": "side",
+  "directions": "8",
+  "anims": [
+   {
+    "name": "taking-punch",
+    "dirs": 1,
+    "where": "south",
+    "frames": 6
+   }
+  ],
+  "frame": "art/pixellab-npc-inventory/frames/56/pixelart_workbench_0.png"
+ },
+ {
+  "i": 57,
+  "id": "02bf8378-07c4-4f30-9f04-36bb8e145508",
+  "group": "Male - Peasant",
+  "state": "Idle",
+  "size": "64x64px",
+  "view": "low top-down",
+  "directions": "8",
+  "anims": [
+   {
+    "name": "Walking",
+    "dirs": 2,
+    "where": "west, east",
+    "frames": 8
+   }
+  ],
+  "frame": "art/pixellab-npc-inventory/frames/57/pixelart_workbench_0.png"
+ },
+ {
+  "i": 58,
+  "id": "3cd4c1e2-a9b9-4b5b-945a-a219c084b7bd",
+  "group": "Hero",
+  "state": "Idle-Walking (copy)",
+  "size": "48x48px",
+  "view": "side",
+  "directions": "8",
+  "anims": [
+   {
+    "name": "custom-Walking forward and triggering",
+    "dirs": 3,
+    "where": "north-east, west, east",
+    "frames": 15
+   }
+  ],
+  "frame": "art/pixellab-npc-inventory/frames/58/pixelart_workbench_0.png"
+ },
+ {
+  "i": 59,
+  "id": "37fe5186-fedf-4ba0-8221-15be6a785cb9",
+  "group": "Hero",
+  "state": "Idle (copy)",
+  "size": "48x48px",
+  "view": "side",
+  "directions": "8",
+  "anims": [
+   {
+    "name": "picking-up",
+    "dirs": 3,
+    "where": "east, west, south",
+    "frames": 5
+   }
+  ],
+  "frame": "art/pixellab-npc-inventory/frames/59/pixelart_workbench_0.png"
+ },
+ {
+  "i": 60,
+  "id": "479eba0d-e447-412a-b023-017702b34652",
+  "group": "Hero",
+  "state": "sleeping",
+  "size": "48x48px",
+  "view": "side",
+  "directions": "8",
+  "anims": [
+   {
+    "name": "Running",
+    "dirs": 1,
+    "where": "east",
+    "frames": 8
+   }
+  ],
+  "frame": "art/pixellab-npc-inventory/frames/60/pixelart_workbench_0.png"
+ },
+ {
+  "i": 61,
+  "id": "cf3fcc5b-ad6d-4f87-b91b-271a0ae4cf01",
+  "group": "Hero",
+  "state": "Idle-Walking",
+  "size": "48x48px",
+  "view": "side",
+  "directions": "8",
+  "anims": [
+   {
+    "name": "Walking",
+    "dirs": 3,
+    "where": "north-west, east, west",
+    "frames": 8
+   }
+  ],
+  "frame": "art/pixellab-npc-inventory/frames/61/pixelart_workbench_0.png"
+ }
+]

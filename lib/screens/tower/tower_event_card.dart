@@ -10,13 +10,24 @@ import '../../data/tower/tower_events.dart';
 import '../../l10n/app_strings.dart';
 import '../../theme/icon_sizes.dart';
 import '../../theme/stitched_ink.dart';
+import '../../widgets/ink_chip.dart';
 import '../../widgets/ink_panel.dart';
+import '../../data/tower/tower_tables.dart' show towerSalveShare;
+import 'tower_peaceful_cards.dart'
+    show TowerBargainCard, TowerMerchantRoom, TowerParleyCard, TowerStallItem;
 
 /// The card of [view]'s event, or nothing when its floor holds none (a floor
 /// met again, or one shown only for its last result).
 class TowerEventCard extends ConsumerWidget {
   const TowerEventCard(this.view,
-      {super.key, this.bagFull = false, this.onShortcut});
+      {super.key,
+      this.bagFull = false,
+      this.onShortcut,
+      this.onParley,
+      this.onBuy,
+      this.onLeaveStore,
+      this.onBargain,
+      this.foeId});
 
   final TowerEventView view;
 
@@ -27,6 +38,19 @@ class TowerEventCard extends ConsumerWidget {
   /// shows its two buttons while the choice is open and this is given.
   final void Function(bool take)? onShortcut;
 
+  /// A parley's choice: true talks, false fights.
+  final void Function(bool talk)? onParley;
+
+  /// The merchant's Buy (the stock's id) and Leave, and the bargain's choice
+  /// (true takes it).
+  final void Function(String id)? onBuy;
+  final VoidCallback? onLeaveStore;
+  final void Function(bool accept)? onBargain;
+
+  /// The floor's first foe, whose figure the parley card shows for a clan
+  /// with no picture of its own.
+  final String? foeId;
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     switch (view.kind) {
@@ -36,14 +60,66 @@ class TowerEventCard extends ConsumerWidget {
         return _RivalCard(view);
       case TowerEventKind.shortcut:
         return _ShortcutCard(view, onShortcut);
+      // The parley: the guardian's card until the choice is made (a failed
+      // talk reads in the result line, a fight chosen needs no card).
+      case TowerEventKind.parley:
+        if (view.accepted != null) return const SizedBox.shrink();
+        return TowerParleyCard(
+          ability: view.ability ?? 'charisma',
+          dc: view.dc ?? 10,
+          modifier: view.modifier ?? 0,
+          chance: view.chance ?? 0,
+          landsOn: view.landsOn ?? view.floor + 1,
+          clanId: view.clanId,
+          oathPass: view.oathPass ?? false,
+          foeId: foeId,
+          onTalk: onParley == null ? null : () => onParley!(true),
+          onFight: onParley == null ? null : () => onParley!(false),
+        );
+      // The merchant's stall while its store is open (Leave closes it; the
+      // next fight does too), and the bargain until it is chosen (a chosen
+      // one reads in the result line).
+      case TowerEventKind.merchant:
+        if (!view.storeOpen) return const SizedBox.shrink();
+        return TowerMerchantRoom(
+          wallet: view.wallet ?? 0,
+          clanId: view.clanId,
+          discount: view.discount ?? false,
+          stock: [
+            for (final item in view.stock ?? const <TowerStockView>[])
+              TowerStallItem(
+                id: item.id,
+                icon: item.kind == TowerStockKind.salve
+                    ? Icons.healing
+                    : Icons.local_drink_outlined,
+                price: item.price,
+                // The salve's text says a share of the health, not points.
+                amount: item.kind == TowerStockKind.salve
+                    ? (towerSalveShare * 100).round()
+                    : item.amount,
+                bought: item.bought,
+                affordable: item.affordable,
+              ),
+          ],
+          onBuy: onBuy,
+          onLeave: onLeaveStore,
+        );
+      case TowerEventKind.bargain:
+        if (view.accepted != null) return const SizedBox.shrink();
+        return TowerBargainCard(
+          maxHealthCost: view.maxHealthCost ?? 0,
+          stat: view.stat ?? 'strength',
+          onAccept: onBargain == null ? null : () => onBargain!(true),
+          onRefuse: onBargain == null ? null : () => onBargain!(false),
+        );
       case null:
         return const SizedBox.shrink();
     }
   }
 }
 
-class _Tag extends StatelessWidget {
-  const _Tag(this.icon, this.text, this.color);
+class TowerEventTag extends StatelessWidget {
+  const TowerEventTag(this.icon, this.text, this.color, {super.key});
 
   final IconData icon;
   final String text;
@@ -62,8 +138,9 @@ class _Tag extends StatelessWidget {
   }
 }
 
-class _Outcome extends StatelessWidget {
-  const _Outcome(this.icon, this.color, this.label, this.text);
+class TowerEventOutcome extends StatelessWidget {
+  const TowerEventOutcome(this.icon, this.color, this.label, this.text,
+      {super.key});
 
   final IconData icon;
   final Color color;
@@ -116,7 +193,8 @@ class _TestCard extends ConsumerWidget {
       key: const Key('tower_event_test'),
       lit: true,
       child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-        _Tag(Icons.trending_down, tr(ref, 'tower_event_setback'), ink.blood),
+        TowerEventTag(
+            Icons.trending_down, tr(ref, 'tower_event_setback'), ink.blood),
         const SizedBox(height: 6),
         Text(sub('tower_event_test_title', {'ability': ability}),
             style: theme.textTheme.titleMedium
@@ -140,13 +218,13 @@ class _TestCard extends ConsumerWidget {
         ]),
         Text(sub('tower_event_chance', {'mod': signed, 'dc': dc}),
             style: theme.textTheme.bodySmall),
-        _Outcome(
+        TowerEventOutcome(
             Icons.check_circle_outline,
             ink.heal,
             tr(ref, 'tower_event_pass'),
             tr(ref, 'tower_event_pass_text_${view.ability}') +
                 (bagFull ? ' ${tr(ref, 'tower_event_pass_full')}' : '')),
-        _Outcome(
+        TowerEventOutcome(
             Icons.south,
             ink.blood,
             tr(ref, 'tower_event_fail'),
@@ -203,7 +281,7 @@ class _ShortcutCard extends ConsumerWidget {
       key: const Key('tower_event_shortcut'),
       lit: true,
       child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-        _Tag(Icons.stairs, tr(ref, 'tower_event_shortcut'), ink.gold),
+        TowerEventTag(Icons.stairs, tr(ref, 'tower_event_shortcut'), ink.gold),
         const SizedBox(height: 6),
         Text(tr(ref, 'tower_event_shortcut_title'),
             style: theme.textTheme.titleMedium
@@ -219,14 +297,29 @@ class _ShortcutCard extends ConsumerWidget {
                     : 'tower_event_shortcut_pack'),
             style: theme.textTheme.bodyMedium
                 ?.copyWith(color: theme.colorScheme.onSurfaceVariant)),
-        _Outcome(
+        // The tougher fight, marked as on the foes' own panels (an Elite, or
+        // a pack made an Elite pack).
+        if ((view.elite ?? false) || (view.elitePack ?? false)) ...[
+          const SizedBox(height: 6),
+          Align(
+            alignment: Alignment.centerLeft,
+            child: InkChip(tr(ref, 'tower_floor_elite'),
+                key: const Key('tower_event_shortcut_elite_chip'),
+                color: ink.gold,
+                dense: true),
+          ),
+        ],
+        TowerEventOutcome(
             Icons.north,
             ink.gold,
             tr(ref, 'tower_event_shortcut_win'),
             sub(skip == 1
                 ? 'tower_event_shortcut_win_one'
                 : 'tower_event_shortcut_win_many')),
-        _Outcome(Icons.south, ink.blood, tr(ref, 'tower_event_shortcut_lose'),
+        TowerEventOutcome(
+            Icons.south,
+            ink.blood,
+            tr(ref, 'tower_event_shortcut_lose'),
             tr(ref, 'tower_event_shortcut_lose_text')),
         if (onChoose != null) ...[
           const SizedBox(height: 12),
@@ -299,7 +392,7 @@ class _RivalCard extends ConsumerWidget {
       key: const Key('tower_event_rival'),
       lit: true,
       child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-        _Tag(Icons.bolt, tr(ref, 'tower_event_rival'), ink.gold),
+        TowerEventTag(Icons.bolt, tr(ref, 'tower_event_rival'), ink.gold),
         const SizedBox(height: 6),
         Text(tr(ref, 'tower_event_rival_title'),
             style: theme.textTheme.titleMedium
@@ -307,13 +400,13 @@ class _RivalCard extends ConsumerWidget {
         Text(sub('tower_event_rival_body', {'n': view.floor + 1}),
             style: theme.textTheme.bodyMedium
                 ?.copyWith(color: theme.colorScheme.onSurfaceVariant)),
-        _Outcome(
+        TowerEventOutcome(
             Icons.timer_outlined,
             ink.gold,
             sub('tower_event_rival_win', {'n': view.rounds ?? 3}),
             sub('tower_event_rival_win_text',
                 {'n': view.landsOn ?? view.floor + 2})),
-        _Outcome(
+        TowerEventOutcome(
             Icons.arrow_forward,
             theme.colorScheme.onSurfaceVariant,
             tr(ref, 'tower_event_rival_slow'),
@@ -341,7 +434,8 @@ class TowerEventResultLine extends ConsumerWidget {
     String sub(String key) => tr(ref, key)
         .replaceAll('{from}', '${result.from}')
         .replaceAll('{to}', '${result.to}')
-        .replaceAll('{skipped}', '${result.from + 1}');
+        .replaceAll('{skipped}', '${result.from + 1}')
+        .replaceAll('{paid}', '${result.paid}');
     final headline = switch ((result.kind, result.passed)) {
       (TowerEventKind.test, false) => sub(result.to == result.from
           ? 'tower_event_fell_same'
@@ -352,6 +446,14 @@ class TowerEventResultLine extends ConsumerWidget {
       (TowerEventKind.rival, false) => sub('tower_event_rival_lost'),
       // A lost shortcut ends the run, so only a won one shows here.
       (TowerEventKind.shortcut, _) => sub('tower_event_shortcut_landed'),
+      (TowerEventKind.parley, false) => sub('tower_event_parley_failed'),
+      // No roll: the guardian knew the oath.
+      (TowerEventKind.parley, true) => sub(result.roll == null
+          ? 'tower_event_parley_sworn'
+          : 'tower_event_parley_passed'),
+      (TowerEventKind.merchant, _) => sub('tower_event_merchant_paid'),
+      (TowerEventKind.bargain, true) => sub('tower_event_bargain_taken'),
+      (TowerEventKind.bargain, false) => sub('tower_event_bargain_refused'),
     };
     final rolled = result.roll == null
         ? null

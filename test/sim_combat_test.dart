@@ -347,4 +347,36 @@ void main() {
           healthLost(mirror: true), greaterThan(2 * healthLost(mirror: false)));
     });
   });
+
+  group('SimCharacter.holdDieAgainst (the per-fight die swap)', () {
+    Map<String, dynamic> foe(String id) => enemies[id] as Map<String, dynamic>;
+    SimCharacter withLantern() {
+      final c = warrior();
+      c.ownedDice['lantern_die'] =
+          ((dice['lantern_die'] as Map)['faces'] as List)
+              .cast<Map<String, dynamic>>();
+      return c;
+    }
+
+    test('a hero facing a Light-weak foe holds the Light die it owns', () {
+      final c = withLantern();
+      final start = c.diceId;
+      expect(c.ownsDieHittingWeakness([foe('tear_herald')], skills), isTrue);
+      final held = c.holdDieAgainst([foe('tear_herald')], skills);
+      expect(held.matchOwned, isTrue);
+      expect(held.swappedTo, 'lantern_die');
+      expect(c.diceId, 'lantern_die');
+      expect(c.diceFaces.where((f) => f['element'] == 'Light'), isNotEmpty);
+      expect(start, isNot('lantern_die'));
+    });
+
+    test('with no weakness to hit, the die in play is kept', () {
+      final c = withLantern();
+      final start = c.diceId;
+      final held = c.holdDieAgainst([foe('slum_thug')], skills);
+      expect(held.matchOwned, isFalse);
+      expect(held.swappedTo, isNull);
+      expect(c.diceId, start);
+    });
+  });
 }

@@ -230,6 +230,7 @@ void main() {
     await tester.tap(find.byKey(const Key('character_view_detail')));
     await tester.pump(const Duration(milliseconds: 300));
     await tester.ensureVisible(find.byKey(const Key('character_skills_all')));
+    await tester.pump();
     await tester.tap(find.byKey(const Key('character_skills_all')));
     for (var i = 0; i < 6; i++) {
       await tester.pump(const Duration(milliseconds: 100));
