@@ -8,6 +8,10 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.996.0+1032]
+
+- Fights: a foe's weakness marks no longer crowd its name. On a nameplate where the name cannot stay readable beside its emblem, marks and rank (a long name, a narrow phone), the marks move to the row under the plate instead of squeezing the name to a few pixels; short names keep them on the plate. Also fixes a plate overflow at 320 dp wide with a boss's rank and three marks. UX (view only).
+
 ## [1.995.0+1031]
 
 - Fights: a foe's weaknesses and the resistances the party has learned now sit on its nameplate, right after the name (the user's pick, mark B): a red ×3 with the element's icon, a grey ×½ for a resistance. While a die you picked is of the element a foe is weak to, that mark is ringed and the hint under the dice says so ("Your picked die is weak against the foe: aim it there, ×3"). The marks no longer count in the foe's "+n" chip; its sheet still lists everything. The Light and Ice elements get their own icons. Core's rule for what is known is unchanged. UX (view only).
