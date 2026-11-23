@@ -10,6 +10,7 @@ import 'dart:ui' as ui;
 import 'package:flutter/material.dart';
 
 import 'fight_sprites.dart';
+import 'hero_sprite.dart';
 
 /// The height of the figure row for a board [width] in logical pixels: 62 on a
 /// phone of 412, 54 at 360, 46 at 320 and below.
@@ -19,13 +20,16 @@ double fightFigureHeight(double width) => width < 340
         ? 54
         : 62;
 
-/// The sprite of a fighter: `hero` is the ronin; [ally] fighters are
-/// companions (drawn mirrored, their art faces west), the rest enemies.
-FightSpriteSet? fightFigureSet(String id, {required bool ally}) => id == 'hero'
-    ? roninSprite
-    : ally
-        ? companionFightSprite(id)
-        : enemyFightSprite(id);
+/// The sprite of a fighter: `hero` is the player's hero ([hero], the ronin
+/// by default); [ally] fighters are companions (drawn mirrored, their art
+/// faces west), the rest enemies.
+FightSpriteSet? fightFigureSet(String id,
+        {required bool ally, FightSpriteSet? hero}) =>
+    id == 'hero'
+        ? hero ?? roninSprite
+        : ally
+            ? companionFightSprite(id)
+            : enemyFightSprite(id);
 
 class FightFigures extends StatefulWidget {
   const FightFigures({
@@ -61,7 +65,7 @@ class _FightFiguresState extends State<FightFigures> {
 
   void _load() {
     for (final id in widget.allies) {
-      final s = fightFigureSet(id, ally: true);
+      final s = fightFigureSet(id, ally: true, hero: heroSpriteOf(context));
       if (s != null) FightSpriteImages.load(s);
     }
     for (final id in widget.foes) {
@@ -71,7 +75,7 @@ class _FightFiguresState extends State<FightFigures> {
   }
 
   Widget _figure(String id, {required bool ally}) {
-    final set = fightFigureSet(id, ally: ally);
+    final set = fightFigureSet(id, ally: ally, hero: heroSpriteOf(context));
     if (set == null) return const SizedBox.shrink();
     return ValueListenableBuilder<int>(
       valueListenable: FightSpriteImages.loaded,

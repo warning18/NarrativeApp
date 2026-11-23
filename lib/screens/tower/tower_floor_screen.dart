@@ -367,7 +367,7 @@ class _FloorIntro extends ConsumerWidget {
           ],
           if (e.kind == TowerEventKind.parley) ...[
             const SizedBox(height: 6),
-            TowerEventCard(e, onParley: onParley),
+            TowerEventCard(e, onParley: onParley, foeId: floor.enemyIds.first),
           ],
           if (e.kind == TowerEventKind.merchant ||
               e.kind == TowerEventKind.bargain) ...[

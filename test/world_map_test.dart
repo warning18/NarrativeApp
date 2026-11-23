@@ -309,7 +309,7 @@ void main() {
     await tester.pump();
     expect(find.descendant(of: panel, matching: find.text('Alster')),
         findsOneWidget);
-    expect(find.text('Chapitre 1'), findsOneWidget);
+    expect(find.text('Chapitre 1\u00a0: La Ville en flammes'), findsOneWidget);
     await tester.runAsync(() => container
         .read(appLanguageProvider.notifier)
         .setLanguage(AppLanguage.en));

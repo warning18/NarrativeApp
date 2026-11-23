@@ -121,14 +121,22 @@ extension _FightCards on _FightScreenState {
   /// [_previewRoll]) the slice about to go is painted [_previewColor] and
   /// the numbers read "now → after / max".
   Widget _buildHpBar(int current, int maxValue,
-      {double height = 14, int pending = 0, bool executeLine = false}) {
+      {double height = 14,
+      int pending = 0,
+      bool executeLine = false,
+      bool foe = false}) {
     final rawRatio = maxValue <= 0 ? 0.0 : current / maxValue;
     final ratio = rawRatio.clamp(0.0, 1.0);
     final after = max(0, current - pending);
     final afterRatio = maxValue <= 0 ? 0.0 : (after / maxValue).clamp(0.0, 1.0);
-    final barColor = ratio > 0.5
-        ? Palette.good
-        : (ratio > 0.25 ? Palette.flame : Palette.alert);
+    // A foe's bar reads red and orange, so it never passes for an ally's green.
+    final barColor = foe
+        ? (ratio > 0.5
+            ? Palette.alert
+            : (ratio > 0.25 ? Palette.hot : Palette.flame))
+        : (ratio > 0.5
+            ? Palette.good
+            : (ratio > 0.25 ? Palette.flame : Palette.alert));
     return ClipRRect(
       borderRadius: BorderRadius.circular(height / 2),
       child: Container(
@@ -296,8 +304,12 @@ extension _FightCards on _FightScreenState {
               size: IconSize.inline, color: colorScheme.onErrorContainer),
           const SizedBox(width: 4),
           Flexible(
-            child: Text(tr(ref, 'intent_unknown_label'),
-                maxLines: 1, overflow: TextOverflow.ellipsis, style: textStyle),
+            child: Text(
+                tr(ref,
+                    compact ? 'intent_unknown_short' : 'intent_unknown_label'),
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+                style: textStyle),
           ),
         ],
       );

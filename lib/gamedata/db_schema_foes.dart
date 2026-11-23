@@ -62,6 +62,15 @@ final DbSchema enemiesSchema = DbSchema(
       type: FieldType.reference,
       referenceSchemaId: 'factions',
     ),
+    // v1.972: the look the enemy's fight block wears when it is not its
+    // faction's (lib/data/enemy_groups.dart); empty for the others.
+    FieldSchema(
+      key: 'group',
+      label: 'Group (its look, over the faction)',
+      type: FieldType.text,
+      help: 'One of ${enemyGroupIds.join(', ')}, or a faction id. The look '
+          'only: the rules read the faction.',
+    ),
     // v1.215: how the enemy answers what the party does (see
     // lib/combat/enemy_response.dart).
     FieldSchema(

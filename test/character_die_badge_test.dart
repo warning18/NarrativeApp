@@ -65,7 +65,8 @@ void main() {
     expect(find.text('+2'), findsOneWidget);
     // On the portrait's lower right corner, over its edge.
     final badge = tester.getRect(find.byKey(const Key('character_die_badge')));
-    final portrait = tester.getRect(find.text('M').first);
+    final portrait =
+        tester.getRect(find.byKey(const Key('character_portrait')));
     expect(badge.center.dx, greaterThan(portrait.center.dx));
     expect(badge.center.dy, greaterThan(portrait.center.dy));
     expect(tester.takeException(), isNull);

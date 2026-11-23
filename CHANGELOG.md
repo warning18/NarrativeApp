@@ -8,6 +8,104 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.992.0+1028]
+- A merge ready to craft is now said where the player looks: a plate at the top of the Skills list (the two skills, the result in its rarity's frame, "Craft at the Skillwright" when it stands, else its cost and, at the camp, the way there), and a dot on the Camp tab while the party is at the camp. English and French.
+
+## [1.991.0+1027]
+
+- Gear: the two gear sets can now be gathered in a normal run, as the user asked (Core's combinations review: no run in 200 completed one). The Harbourwatch kit now drops from Saltmouth's chapter-2 bosses (the cutlass from the dock overseer, the lantern from the smuggler captain, the coat from the plague hound), and the Hollow Court's mantle and blade from its inquisitor and zealot in chapter 4, besides where they were sold or given before. Measured on 100 simulated runs: a whole set is owned in 18 (typical) and 26 (competent) runs, up from none; fights won are unchanged. No item, name or bonus changes.
+
+## [1.989.0+1025]
+- Inventory: a worn piece's name shows whole in its equipment tile (up to three lines, the tiles a little taller), in English and French.
+
+## [1.988.0+1024]
+- Clans: each clan's standing card is a nameplate in the clan's colour with its emblem in the band, the sworn clan outlined in gold, like the other story screens.
+
+## [1.987.0+1023]
+- Inventory: what is worn wears its rarity's deep frame, in the equipment slots and in the bag's worn rows (common to legendary), like the other story screens.
+
+## [1.986.0+1022]
+- Character: the portrait wears the rare deep frame, HP, Mana and Gold are pixel-cornered gems, the abilities (as plates with their value in a gem) and the alignment sit in the quiet deep frame, like the other story screens. The portrait is the hero's own head (the letter only when there is none), and the top bar's narrower buttons now reach 400 dp so "Character" is no longer cut to "Chara..." at 360.
+
+## [1.985.0+1021]
+- Journal: the Now, Scenes and What-changed cards wear the quiet deep frame (the scene you are at, the rich metal), the chapter headings the display face and the scenes the reading font, like the other story screens.
+
+## [1.984.0+1020]
+- Quests: each quest sits on a nameplate in its clan's colour (the pin in the band, the followed quest outlined) and its story reads in the reading font, like the other story screens. The turn-in dialog's choices weigh like the Journey choice cards (a quiet frame for alignment or politics, the rich metal for a claim, a pledge or a big approval shift).
+
+## [1.983.0+1019]
+
+- Chapter title: the card that inks in when a chapter begins wears the new look (UX, the user's pick "the mix" with the deep frames). The chapter's number stands large over its label, the card is held in the quiet deep frame, and the chapter's colour, its title, the note and the news from the coast are as they were. The card still lets taps through and stays as long as before.
+## [1.982.0+1018]
+
+- Journey: in a scene played in the street before a door, the places list names each way by its own words, as its pin on the street does. The Saltmouth market listed "The captain's moorings" twice (both ways stand before that house); it now lists "Walk the stalls before dealing with Vane" and "Lift what you can from an unwatched crate". A way inside a building is still listed by the building's name.
+
+## [1.981.0+1017]
+
+- Story reading screens: choices and NPCs wear the new look (UX, the user's pick "the mix" with the deep frames; the first of its screens). A choice card shows how much its choice weighs (Core's `choiceWeightOf`, v1.977): a plain choice is the card as it was; a weighty one (alignment, a companion's approval, standing, an item or a quest) wears its clan's accent, a rail and a tint in the quiet frame, gold when no clan is touched; a major one (a claim, a pledge, the Throne, a companion's approval of 5 or more, a banner piece) wears the rich metal, gilded, and gold for a banner piece. A shut way stays plain. An NPC's page is now a page: their face in the quiet frame, the name, the role, the clan and where they are, the words at a reading size, and what they say on a rail in their clan's colour. Nothing about what a choice does changes.
+## [1.980.0+1016]
+
+- Fights: two new duo techniques, as the user asked, for the two companion pairs that meet most and had none (Core's combinations review). **Hold and Hallow** (Kelda and Maren): every party member gains a guard. **The Gap in the Glare** (Maren and Sable): the target is struck and stunned for a turn. They work like every duo: both companions in the fight at Friendly approval, each keeping a signature face in the same round; their strength comes from the pair's base damage, as for the others. An older pair keeps its turn when a companion could join two. Measured on 100 simulated runs: parties with a duo pair at the Tear Herald go from 14 to 79 (71 with both companions friendly). Names and lines by Narrative.
+
+## [1.979.0+1015]
+
+- Clans: fusions come sooner, as the user asked (Core's combinations review: 7 of the 10 fusions were never offered in 200 simulated runs). A clan now offers a fusion once you are its Friend and the partner clan's Friend too (was Trusted with both), the same step as an ascension. Viper Kiss now fuses Shadow Step and Poisoned Blade (was Backstab and Poisoned Blade, the very pair the merge Venomous Ambush takes), so the two no longer compete for the same skills; it comes from the same two branches, the shadow and the venom, as before. The clan screen's hint says Friend.
+
+## [1.978.0+1014]
+
+- Story panels: the kit for the story side's new look (UX, the user's pick "the mix" with the deep frames; docs/proposals/story-mix.md). `StoryFrame` dresses any box in Art's rarity frames (nine-sliced, so the corners and each tier's ornaments, the gem, the crown and the leaves, keep their size and only the plain metal stretches); it wears `frame_<tier>_dim.png`, Art's deep re-tone of the frames (every tier two steps down the Apollo ramps, no generation; the five files are in `assets/visuals/cards/`), and the original frames when a dim file is missing. `StoryPlate` and `StoryGem` are the fight blocks' nameplate and gems for the story's state screens, and `storyWeightFrame` maps a choice's weight (`lib/data/story_plates.dart`) to its frame: plain has none, weighty the clan's accent in the quiet frame, major the rich metal. Nothing on a screen changes yet; the screens come one by one.
+
+## [1.977.0+1013]
+
+- Story: what each choice's and quest's plate shows, for UX-2's story redesign (display only; no rule changes). A choice now tells which clan its effects touch (its claim, an offer, a pledge, or the standing it moves most; none when its consequences are hidden) and how much it weighs: plain, weighty (alignment, a companion's approval, politics, an item or a quest) or major (a claim, a pledge, the Throne, a banner piece, an ally lost, or a companion's approval moved by 5 or more). Of the story's 1,156 choices, 259 touch a clan; 622 are plain, 476 weighty and 58 major. Quests get an optional display `clan` (empty for now: Narrative fills it; proposals in docs/proposals/quest-clans.md); a quest without one wears its faction's plate, or the neutral one. The plates themselves come with UX-2's change.
+
+## [1.976.0+1012]
+
+- Clan offer: each clan's card has a backdrop of its own (UX, the user's pick "the clan backdrop", Art's PixelLab pieces). The art zone behind the banner and the gift's plate is the clan's picture in its colours with a faint motif of its banner (the Lantern Dominion, the Salt Crows, the Cinder Compact, the Mire Courts, the Grey Vigil, the Ashen Penitents, and the Wayfarer), in place of the shared tier backdrop; the tier's frame and plate stay as they were, so the rarity still reads from the frame. A clan without a backdrop keeps the tier's. The effect line is back on the card: one gold line under the tags saying what the gift does (a skill's damage, multiplier, healing or mana; a sign's first effect; an object's stats; a title's or a boon's first effect; a perk's words). No rule or number changes.
+
+## [1.975.0+1011]
+
+- Clan offer: the gifts are cards and rows (UX, the user's call "build the clan offer, use tiers and add epic and legendary"). What is new (a skill, a fusion, a sign, an object, a title, a Sworn boon, a first specialisation, the clan's die) is a card in a fanned hand: touch one and it rises in front, with its clan's words on it. What raises something you already have (an ascension, a perk rank, a specialisation's rank II or upgrade) is a row under the hand, headed "Raises what you have". One pick across both, always the three gifts of today's offer; the button names the gift and the clan in full ("Take Iron Stance from The Emberwives of the Cinder Compact"). The frames are Art's PixelLab tiers: common is iron, uncommon bronze, rare silver with a blue gem, epic gilded with purple gems, legendary gold under a crown of rays; a skill wears its own rarity, any other gift its offer rarity. The clan's colour stays on the name band and the banner. The compass, the clan's block and the gift's full words below are unchanged, and no rule or number changes.
+
+## [1.974.0+1010]
+
+- Fight: two fixes to the new blocks (UX, from the manager's look at the real screen). An enemy's health bar reads red, then deep orange, then orange as it falls, so it no longer passes for an ally's green bar (the party's bar is unchanged). The intent in a block says "Unknown" (French "Inconnue") instead of "Intent unknown", which was cut off at 360 dp wide; the full label stays elsewhere. No rule or number changes.
+
+## [1.973.0+1009]
+
+- Fight: a new block for every fighter (UX, the user's pick "C, nameplate and gems", with the per-group look). Every hero, companion and enemy on the board is now a block with a nameplate across the top (the name, the turn number for the party, the rank mark for an Elite or a boss), under it the head with the armour and the damage as two small gems on its corner, the health bar beside it, and the status chips and the intent under the bar. The numbers sit in the same place on every block. An enemy wears its group: the nameplate's colour, the emblem on the plate (the clan's own banner for the Lantern Dominion, the Salt Crows, the Cinder Compact, the Mire Courts, the Grey Vigil and the Ashen Penitents; a pixel mark for the Choir, the Pit, the giants, the Tide-Kin, the dead, the Void, beasts, constructs) and a corner ornament (studs, spikes, rivets or bites). The group is read from the enemy's own `group` when it has one, else its `faction`, else its `kind`; the people of no clan have looks for Core's groups: the Hollow Court, the Turned, the Claimants, the Champions, the Void Cults and the common folk, and one shared look for the rest. An enemy's armour gem is its guard in the fight and is hidden at 0 (it no longer reads "C"). Nothing in the fight's rules, targeting, taps or numbers changes.
+## [1.972.0+1008]
+
+- Enemies: the people who answer to no clan get groups of their own, for the fight's new stats blocks (the user's call; no number changes). The Hollow Court (its zealot and inquisitor), the Turned (the eight companions turned against you), the Claimants (Hesk Morrow, Maud Tallis and Cassian Oriel, the three rival claims of chapter 7), the Champions (the six clans' champions), the Void Cults (the cultist acolyte) and Common Folk (the Sore Loser). The Horn-Taker wears the Lantern Dominion's look. Each group has an English and a French name; the blocks that use them come with UX's next change.
+
+## [1.971.0+1007]
+
+- The dwarf and the orc hero are the user's own states (UX, Art's exports of Hero_basic_dwarf and Hero_basic_orc). A dwarf hero stands as the bare, grey-bearded dwarf and an orc hero as the orc starter in a white shirt, in fights, on the hero's card and head and on the scene stage, instead of the stand-ins of v1.970 (the armoured dwarf and the cloaked orc). They now walk and stand as themselves on roads and journeys too (6 frames each, east and west), where they walked as the ronin before; only a hero who has not made their character yet keeps the ronin. About 12 KB of PNG8 in the app.
+
+## [1.970.0+1006]
+
+- The hero stands and walks as their people or calling (UX, the user's PixelLab Hero states; the user chose the warrior, mage, cleric, ranger and rogue figures). In a fight, on the hero's card and head, on the scene stage and on the road, a hero who has made their character is no longer the ronin: a warrior is Hero_basic_warrior, a mage, a cleric, a ranger (with a bow) and a rogue (hooded) each have their own figure, a dwarf and an orc wear their people's figure (stand-ins until the user's own states exist), and an elf or a voidkin wears their calling's. On roads and journeys the five callings walk (6 frames, the rogue 8 and 9) and stand as their own figure; a dwarf and an orc still walk as the ronin until their walks exist. A hero who has not made their character yet keeps the ronin. About 30 KB of PNG8 in the app.
+
+## [1.969.0+1005]
+
+- Fight sprites: twelve foes stand as figures (UX, the user's PixelLab characters, the Male-Peasant statuses; Narrative matched them). Seven figures, each a still 64 x 64 frame facing the hero (the fight does the lunge and the flash, as for every fighter), drawn at the ronin's pixel size: Hesk Morrow (the red-caped knight), the Inquisition High Warden and Overseer Renn (the pole-arm captain), the Legate's Champion (helmet and staff), Purifier Vell, the Heron Queen's Hand and the Court's zealot (the hooded mercenary), Brine Jack (the spearman), Master Hollis Reck, Brodin Stonehand and the Slum Thug (the axe soldier), Tove the Unheard (the hunter in furs). The foes without a fitting figure keep their portrait card (the smuggler captain, the Court's inquisitor, the Sore Loser, Halvard, the women, the turned companions, the creatures); the same figure never stands twice on one fight screen of a chapter. The same art shows on the Tower's cards and the foes' portraits. About 6 KB of PNG8 in the app.
+
+## [1.968.0+1004]
+
+- Shop pages: the keeper stands in the strip (UX, the user's PixelLab characters, "yes to the shop keeper strip"). For eight shops the keeper's figure, about 100 px tall and turned toward the words, takes the place of the shop's sign at the left of the strip: Orrin Vell (the Weaponsmith), Imra of the Smoke (the Arcane Bazaar), Sister Ysolde (Apothecary Row), Magister Corvane (the Arcane Academy), Hask (the Ossuary), Wickwarden Tallis (the Last Lantern), the Wreck-Wright (the Anchorage Chandlery) and the Crow (the Black Market Docks). The six other shops (the cellar-boy, Hesta Brann, the Keyholder, Dagny Ironhand, Needle, Old Pell) keep their sign until a figure fits. The strip is about 50 px taller on those eight pages; nothing else moves. About 2.5 KB of PNG8 in the app.
+
+## [1.967.0+1003]
+
+- Faces for the people of the story (UX, the user's PixelLab characters, "yes to heads cut from the figures"). Thirteen people now wear a head cut from their own figure where a letter sat (the scene vignette of the journey screens, the NPC page's head slot): the keepers Orrin Vell, Imra of the Smoke, Sister Ysolde, Magister Corvane, Hask, Wickwarden Tallis, the Wreck-Wright and the Crow, and Old Harker, the sign-painter, Joss Harrow, Old Wick and Dorran Quill. Everyone else keeps their letter (the Wharf Keyholder, Tamsin Brask, Hesk Morrow, Hesta Brann, Dagny Ironhand, Old Pell, the cellar-boy, Needle and the others have no figure that fits yet). Shared faces: Corvane and Old Harker are the same face, and Joss Harrow and the sign-painter. `tool/gen_fight_heads.py` cuts them from `art/npc-heads/` (not bundled). The Stair-Chandler carries his PixelLab lantern on his shop card (Art's file, the user's choice). About 3 KB of PNG8 in the app.
+
+## [1.966.0+1002]
+
+- Tower: the people of the floors without a fight have faces (UX, the user's PixelLab characters; they show on new climbs, since the floors without a fight are live from v1.963). The Stair-Chandler stands at the right of his stall's head, the Tally-Clerk beside his bargain, and the parley's guardian is the officer for a Dominion or Vigil floor; for the four other clans (Mire, Crows, Compact, Penitents) the floor's own foe stands there instead (nothing when it has no art). They are drawn at twice their size (about 100 px tall, turned a quarter toward the words), and the foe's figure at the same height. About 4 KB of PNG8 in the app.
+
+## [1.965.0+1001]
+
+- Road crossing, desert: Art's painted layers (UX; the user's "Go for desert", with the calm four-colour sky). The desert road's sky, far mesas, mid dunes and near sand are now pictures scrolling at the code kit's own speeds (0, 0.15, 0.4, 0.8); the sun, the goal, the path, the party, the weather and the dusk tint and stars stay code and lie over them. The goal stands on the mesas' ground with a dark outline. Until the pictures are in, the code kit draws; the fight ground, the life header, the detour scenes, the world view and the other five kits keep their code look. About 4.5 KB of PNG8 in the app.
+
 ## [1.964.0+1000]
 
 - Screen backgrounds (UX, Art's painted pictures, no figures, no layout change). **Life choices**: each memory's header shows a painted band of its place for the six ages (the rope-walk gutter, the alley with ribbons, the snowy street with the blind man's sign, the pier with nets, Old Hesk's house at dusk, the parents' house in snow), under the existing fade; the race's mark at age 8 and the calling's memory at age 12 share the age's band, and a new memory without one keeps the code-drawn scene. **Character choice**: a plate for the people and one for the calling behind the list, the page colour over it at 70%, and a solid foot behind the start button (not on the Tower's climb). **Expeditions**: a band for each of the 20 zones above the road. The character screen's "Still to choose: a people and a calling" line was English-only text in French; it is now three strings (the French lines are the UX's, for Narrative to word). About 190 KB of PNG8 in the app.

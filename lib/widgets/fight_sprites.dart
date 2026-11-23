@@ -72,6 +72,45 @@ const FightSpriteSet roninSprite = FightSpriteSet(
   frames: 8,
 );
 
+/// The hero's figures, by people and calling (the user's PixelLab Hero
+/// states, 48 x 48, facing east, the figure 44 tall with four empty rows under
+/// the feet). A dwarf or an orc wears their people's figure; every other
+/// people wears the calling's (an elf or a voidkin has no figure of their
+/// own yet, so they wear the human's). A hero whose raceId and professionId
+/// match nothing keeps the ronin.
+const Map<String, String> _heroByRace = {
+  'dwarf': 'dwarf',
+  'orc': 'orc',
+};
+
+const Map<String, String> _heroByCalling = {
+  'warrior': 'warrior',
+  'mage': 'mage',
+  'rogue': 'rogue',
+  'cleric': 'cleric',
+  'ranger': 'ranger',
+};
+
+/// Whose walk the side view paints for a hero of [raceId] and
+/// [professionId]: the figure's own name (every figure has a walk), 'ronin'
+/// for a hero who has none (not made yet, or an unknown calling).
+String heroWalkName(String raceId, String professionId) =>
+    _heroByRace[raceId] ?? _heroByCalling[professionId] ?? 'ronin';
+
+/// The figure of a hero of [raceId] and [professionId] (the ids of
+/// races.json and professions.json; '' before the character is made).
+FightSpriteSet heroSpriteFor(String raceId, String professionId) {
+  final name = _heroByRace[raceId] ?? _heroByCalling[professionId];
+  if (name == null) return roninSprite;
+  return FightSpriteSet(
+    id: 'hero_$name',
+    idleAsset: 'assets/visuals/heroes/${name}_idle_east.png',
+    frameWidth: 48,
+    frameHeight: 48,
+    footInset: 4,
+  );
+}
+
 const String _fighters = 'assets/visuals/fighters';
 
 /// The frame size and the empty rows under the feet of the sprites that are
@@ -83,6 +122,13 @@ const Map<String, ({int size, int foot, double scale})> _enemyFrames = {
   'plague_hound': (size: 60, foot: 2, scale: 0.85),
   'iron_golem': (size: 60, foot: 3, scale: 0.9),
   'void_sovereign': (size: 60, foot: 2, scale: 0.9),
+  'hunter': (size: 64, foot: 7, scale: 0.92),
+  'knight_cape': (size: 64, foot: 7, scale: 0.92),
+  'pole_arm': (size: 64, foot: 7, scale: 0.92),
+  'axe_soldier': (size: 64, foot: 7, scale: 0.92),
+  'watchman': (size: 64, foot: 7, scale: 0.92),
+  'hooded_merc': (size: 64, foot: 7, scale: 0.92),
+  'spear_merc': (size: 64, foot: 7, scale: 0.92),
 };
 
 FightSpriteSet _enemySet(String name) {
@@ -119,6 +165,18 @@ const Map<String, String> _enemySprites = {
   'street_bandit': 'street_bandit',
   'iron_golem': 'iron_golem',
   'void_sovereign': 'void_sovereign',
+  'claimant_morrow': 'knight_cape',
+  'inquisition_high_warden': 'pole_arm',
+  'dock_overseer': 'pole_arm',
+  'inquisition_legate': 'watchman',
+  'purifier_vell': 'hooded_merc',
+  'champion_mire': 'hooded_merc',
+  'hollow_court_zealot': 'hooded_merc',
+  'brine_jack': 'spear_merc',
+  'champion_compact': 'axe_soldier',
+  'compact_quarryman_brodin': 'axe_soldier',
+  'slum_thug': 'axe_soldier',
+  'compact_anvil_deaf_tove': 'hunter',
 };
 
 /// The art an enemy stands in the fight with (facing west, toward the

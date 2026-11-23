@@ -37,6 +37,7 @@ import '../providers/climate_provider.dart' show skyHereProvider;
 import '../widgets/companion_remark_bubble.dart' show SpokenLine, spokenRemarks;
 import '../widgets/fight_sprites.dart';
 import '../widgets/side_view/desert_kit.dart';
+import '../widgets/side_view/desert_pictures.dart';
 import '../widgets/side_view/encounter_figure.dart';
 import '../widgets/side_view/cliffs_kit.dart';
 import '../widgets/side_view/fen_kit.dart';
@@ -187,7 +188,7 @@ List<SideLayer> crossingLayers(String terrain, double progress,
     'frost' => frostLayers(progress: progress),
     'fen' => fenLayers(progress: progress),
     'sea_cliffs' => cliffsLayers(progress: progress),
-    _ => desertLayers(progress: progress),
+    _ => desertLayers(progress: progress, painted: true),
   };
   final kit = switch (terrain) {
     'ruins' || 'frost' || 'fen' => terrain,
@@ -378,6 +379,8 @@ class _LandCrossingScreenState extends ConsumerState<LandCrossingScreen>
     super.initState();
     _departureHealth = ref.read(playerSessionProvider).currentHealth;
     if (_drawn.isEmpty) _phase = _Phase.arrived;
+    // The desert road's painted layers (until they are in, the code draws).
+    DesertPictures.preload();
     // A walking companion may say a word as the walk starts.
     WidgetsBinding.instance.addPostFrameCallback((_) => _speakUp());
   }

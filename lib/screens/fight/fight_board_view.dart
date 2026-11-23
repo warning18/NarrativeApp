@@ -308,109 +308,34 @@ extension _FightBoardView on _FightScreenState {
         }
         if (canSelect) _selectedActorId = member.id;
       }),
-      child: Container(
-        padding: const EdgeInsets.fromLTRB(8, 6, 8, 4),
-        decoration: BoxDecoration(
-          color: member.isKnockedOut
-              ? colorScheme.surfaceContainerHighest.withValues(alpha: 0.4)
-              : colorScheme.surface,
-          borderRadius: BorderRadius.circular(12),
-          border: Border.all(
-            color: picked
-                ? Palette.goldDark
-                : healed
-                    ? const Color(0xFFD9457A)
-                    : colorScheme.outlineVariant,
-            width: picked || healed ? 2.5 : 1,
-          ),
-        ),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Row(
-              children: [
-                _headTile(_headIdFor(member), member.displayName, accent,
-                    size: 34, dim: member.isKnockedOut),
-                const SizedBox(width: 8),
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Row(
-                        children: [
-                          if (_orderOf(member) case final order?)
-                            Padding(
-                              padding: const EdgeInsets.only(right: 4),
-                              child: Container(
-                                key: Key('turn_order_${member.id}'),
-                                padding: const EdgeInsets.symmetric(
-                                    horizontal: 4, vertical: 0),
-                                decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(6),
-                                  border:
-                                      Border.all(color: colorScheme.outline),
-                                ),
-                                child: Text('$order',
-                                    style: const TextStyle(
-                                        fontSize: 10,
-                                        fontWeight: FontWeight.bold)),
-                              ),
-                            ),
-                          Expanded(
-                            child: Text(
-                              member.displayName,
-                              maxLines: 1,
-                              overflow: TextOverflow.ellipsis,
-                              style: Theme.of(context)
-                                  .textTheme
-                                  .labelMedium
-                                  ?.copyWith(
-                                      fontWeight: FontWeight.bold,
-                                      color: accent),
-                            ),
-                          ),
-                          if (member.isPlayer) ...[
-                            const Icon(Icons.bolt,
-                                size: IconSize.inline, color: Palette.hot),
-                            Text('$damage',
-                                style: const TextStyle(
-                                    fontSize: 10, fontWeight: FontWeight.w600)),
-                            const SizedBox(width: 4),
-                            const Icon(Icons.shield_outlined,
-                                size: IconSize.inline, color: Palette.slate),
-                            Text('$armor',
-                                style: const TextStyle(
-                                    fontSize: 10, fontWeight: FontWeight.w600)),
-                          ],
-                        ],
-                      ),
-                      const SizedBox(height: 3),
-                      _buildPartyHp(member, items),
-                    ],
-                  ),
-                ),
-              ],
-            ),
-            const SizedBox(height: 3),
-            Expanded(
-              child: SingleChildScrollView(
-                scrollDirection: Axis.horizontal,
-                child: Row(
-                  children: [
-                    ...icons,
-                    if (_canParry(member)) _buildParryChip(member),
-                    if (member.isKnockedOut)
-                      Text(tr(ref, 'knocked_out_label'),
-                          style: TextStyle(
-                              fontSize: 10,
-                              color: colorScheme.error,
-                              fontWeight: FontWeight.bold)),
-                  ],
-                ),
-              ),
-            ),
-          ],
-        ),
+      child: FightBlock(
+        name: member.displayName,
+        order: _orderOf(member),
+        plateColor: accent,
+        fill: member.isKnockedOut
+            ? colorScheme.surfaceContainerHighest.withValues(alpha: 0.4)
+            : colorScheme.surface,
+        borderColor: picked
+            ? Palette.goldDark
+            : healed
+                ? const Color(0xFFD9457A)
+                : null,
+        borderWidth: picked || healed ? 3 : null,
+        head: _headTile(_headIdFor(member), member.displayName, accent,
+            size: 32, dim: member.isKnockedOut),
+        armor: armor,
+        damage: damage,
+        bar: _buildPartyHp(member, items),
+        chips: [
+          ...icons,
+          if (_canParry(member)) _buildParryChip(member),
+          if (member.isKnockedOut)
+            Text(tr(ref, 'knocked_out_label'),
+                style: TextStyle(
+                    fontSize: 10,
+                    color: colorScheme.error,
+                    fontWeight: FontWeight.bold)),
+        ],
       ),
     );
     return _withDamagePopup(
@@ -455,11 +380,7 @@ extension _FightBoardView on _FightScreenState {
         _selectedTargets.containsKey(pickedActor.id);
     final aimedByPicked =
         canRetarget && _selectedTargets[pickedActor.id] == enemy.key;
-    final borderColor = aimedByPicked
-        ? Palette.goldDark
-        : boss || (_isElite && enemy.isAlive)
-            ? Palette.goldDeep
-            : const Color(0xFFFF9A2E).withValues(alpha: 0.75);
+    final group = groupLookOf(enemy.data);
     final who = enemy.displayName;
     final extras = _enemyExtraCount(enemy);
     _fxGroup = [];
@@ -523,77 +444,30 @@ extension _FightBoardView on _FightScreenState {
       child: AnimatedOpacity(
         duration: Duration.zero,
         opacity: enemy.isAlive ? 1 : 0.45,
-        child: Container(
-          padding: const EdgeInsets.fromLTRB(8, 6, 8, 4),
-          decoration: BoxDecoration(
-            color: colorScheme.errorContainer.withValues(alpha: 0.18),
-            borderRadius: BorderRadius.circular(12),
-            border: Border.all(
-                color: borderColor, width: aimedByPicked ? 2.5 : 1.2),
+        child: FightBlock(
+          name: enemy.displayName,
+          plateColor: group.color,
+          group: group,
+          rank: boss
+              ? FightRank.boss
+              : (_isElite && enemy.isAlive)
+                  ? FightRank.elite
+                  : FightRank.normal,
+          fill: colorScheme.errorContainer.withValues(alpha: 0.18),
+          borderColor: aimedByPicked ? Palette.goldDark : null,
+          borderWidth: aimedByPicked ? 3 : null,
+          head: _headTile(enemy.enemyId, enemy.displayName, Palette.hot,
+              size: 32, dim: !enemy.isAlive),
+          armor: enemy.isAlive && enemy.guard > 0 ? enemy.guard : null,
+          bar: Tooltip(
+            message: boss ? '' : tr(ref, 'execute_tick_tip'),
+            child: _buildHpBar(enemy.currentHealth, enemy.maxHealth,
+                pending: enemy.isAlive ? pending : 0,
+                executeLine: enemy.isAlive && !boss,
+                foe: true),
           ),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Row(
-                children: [
-                  _headTile(enemy.enemyId, enemy.displayName, Palette.hot,
-                      size: 34, dim: !enemy.isAlive),
-                  const SizedBox(width: 8),
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          enemy.displayName,
-                          maxLines: 1,
-                          overflow: TextOverflow.ellipsis,
-                          style: Theme.of(context)
-                              .textTheme
-                              .labelMedium
-                              ?.copyWith(
-                                  fontWeight: FontWeight.bold,
-                                  color: boss || _isElite
-                                      ? Palette.amberDeep
-                                      : const Color(0xFFFF9A2E)),
-                        ),
-                        const SizedBox(height: 3),
-                        Tooltip(
-                          message: boss ? '' : tr(ref, 'execute_tick_tip'),
-                          child: _buildHpBar(
-                              enemy.currentHealth, enemy.maxHealth,
-                              pending: enemy.isAlive ? pending : 0,
-                              executeLine: enemy.isAlive && !boss),
-                        ),
-                      ],
-                    ),
-                  ),
-                ],
-              ),
-              const SizedBox(height: 3),
-              Expanded(
-                child: Row(
-                  children: [
-                    Expanded(
-                      child: ClipRect(
-                        child: Wrap(
-                          crossAxisAlignment: WrapCrossAlignment.center,
-                          children: icons,
-                        ),
-                      ),
-                    ),
-                    if (enemy.isAlive)
-                      Flexible(
-                        flex: 0,
-                        child: ConstrainedBox(
-                          constraints: const BoxConstraints(maxWidth: 92),
-                          child: _buildIntentBox(enemy, compact: true),
-                        ),
-                      ),
-                  ],
-                ),
-              ),
-            ],
-          ),
+          chips: icons,
+          intent: enemy.isAlive ? _buildIntentBox(enemy, compact: true) : null,
         ),
       ),
     );

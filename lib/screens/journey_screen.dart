@@ -27,11 +27,14 @@ import '../data/place_plan.dart';
 import '../data/room_plan.dart';
 import '../data/journey_map.dart';
 import '../data/scene_flow.dart';
+import '../data/story_plates.dart'
+    show ChoiceWeight, choiceClanOf, choiceWeightOf;
 import '../data/scene_lock.dart' show isHubScene, pageExitHidden;
 import '../data/journey_relief.dart';
 import '../data/map_charts.dart'
     show ChartGeography, ChartPalette, MapShape, chartOf;
 import '../data/road_chart.dart';
+import '../widgets/clan_offer_gifts.dart' show CardTier;
 import '../data/world_leg_path.dart';
 import '../data/world_roads.dart' show isWorldRoadLeg;
 import '../data/narration_tokens.dart';
@@ -5670,9 +5673,15 @@ class _CityDistrictView extends ConsumerWidget {
         : townRulers[focus];
     final rows = <Widget>[];
     // The name of the place a way hangs at: its building, else the place
-    // it leads to (a way out), else the district; never a choice's text.
+    // it leads to (a way out), else the district. A way at a spot in the
+    // street before the scene's door (way.at, a doorstep scene) is named by
+    // its own words, as its pin is: every such way stands at the same
+    // building, so the building's name would read the same on each row.
     String pinName(int lead) {
       final way = chart.ways.where((w) => w.id == '$lead').firstOrNull;
+      if (way?.at != null && steps[lead].label.isNotEmpty) {
+        return steps[lead].label;
+      }
       final building = way == null ? '' : chart.buildingOf(way)?.name ?? '';
       if (building.isNotEmpty) return building;
       final leads = steps[lead].leadsTo ?? '';

@@ -18,6 +18,7 @@ import '../utils/pixel_icons/game_pixel_icons.dart';
 import 'clan_glance.dart' show ClanMarks;
 import 'pixel_banner.dart';
 import 'sign_widgets.dart';
+import 'story_panel.dart' show StoryPlate;
 import '../theme/palette.dart';
 import '../theme/icon_sizes.dart';
 
@@ -315,36 +316,22 @@ class FactionStandingCard extends ConsumerWidget {
     final notifier = ref.read(playerSessionProvider.notifier);
     int chapter() => ref.read(reachedChapterProvider);
 
-    return Card(
-      key: Key('faction_card_${faction.id}'),
-      margin: const EdgeInsets.symmetric(vertical: 4),
-      shape: sworn
-          ? RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(12),
-              side: BorderSide(
-                  color: standingTierColor(StandingTier.sworn), width: 1.5))
-          : null,
-      child: Padding(
+    final clanColor = Color(faction.color);
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 4),
+      child: StoryPlate(
+        key: Key('faction_card_${faction.id}'),
+        title: faction.nameFor(lang),
+        color: clanColor,
+        frame: sworn ? standingTierColor(StandingTier.sworn) : null,
+        lead: PatronEmblem(patron: faction.patron, size: 18),
         padding: const EdgeInsets.fromLTRB(10, 8, 10, 8),
         child: _WithBanner(
           factionId: faction.id,
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              Row(
-                children: [
-                  PatronEmblem(patron: faction.patron, size: 30),
-                  const SizedBox(width: 8),
-                  Expanded(
-                    child: Text(faction.nameFor(lang),
-                        style: theme.textTheme.titleSmall),
-                  ),
-                  const SizedBox(width: 6),
-                  Flexible(
-                    child: StandingTierLabel(value: value, language: lang),
-                  ),
-                ],
-              ),
+              StandingTierLabel(value: value, language: lang),
               const SizedBox(height: 4),
               StandingMeter(value: value),
               if (subclans.isNotEmpty || sworn) ...[

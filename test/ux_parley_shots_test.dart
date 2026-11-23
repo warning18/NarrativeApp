@@ -18,6 +18,7 @@ import 'package:narrative_data_app/data/tower/tower_events.dart';
 import 'package:narrative_data_app/data/tower/tower_bot.dart';
 import 'package:narrative_data_app/l10n/app_locale.dart';
 import 'package:narrative_data_app/screens/tower/tower_floor_screen.dart';
+import 'package:narrative_data_app/screens/tower/tower_peaceful_cards.dart';
 import 'package:narrative_data_app/screens/tower/tower_providers.dart';
 import 'dart:convert';
 import 'package:narrative_data_app/providers/palette_provider.dart';
@@ -54,6 +55,12 @@ Future<void> _loadFonts() async {
 
 void main() {
   final shots = Platform.environment['UX_SHOTS'];
+  // A scale and a foe size to compare (UX_NPC_SCALE, UX_NPC_FOE).
+  towerNpcScale =
+      int.tryParse(Platform.environment['UX_NPC_SCALE'] ?? '') ?? towerNpcScale;
+  towerParleyFoeSize =
+      double.tryParse(Platform.environment['UX_NPC_FOE'] ?? '') ??
+          towerParleyFoeSize;
   final data = towerDataFromAssets();
   TowerRun base(int seed, int floor,
           {Map<int, TowerReward> taken = const {}}) =>
@@ -75,11 +82,12 @@ void main() {
     return r;
   }
 
-  (int, int) parleyFloor({bool failing = false}) {
+  (int, int) parleyFloor({bool failing = false, Set<String>? clans}) {
     for (var seed = 1; seed < 600; seed++) {
       for (var floor = 4; floor < 29; floor++) {
         final r = settled(base(seed, floor));
         if (towerEventKindOf(r) != TowerEventKind.parley) continue;
+        if (clans != null && !clans.contains(towerParleyClanOf(r))) continue;
         if (!failing) return (seed, floor);
         if (towerChooseParley(r, data, true).parley ?? false) {
           return (seed, floor);
@@ -102,6 +110,7 @@ void main() {
             .buffer
             .asUint8List();
       });
+      Directory(shots!).createSync(recursive: true);
       File('$shots/$name.png').writeAsBytesSync(bytes);
     }
 
@@ -147,6 +156,15 @@ void main() {
       final (seed, floor) = parleyFloor();
       await open(base(seed, floor));
       await shot('parley-offer-$tag');
+      // The officer's picture (Dominion, Vigil) and the floor foe's own
+      // figure (the other clans).
+      final (os, of) = parleyFloor(clans: {'dominion', 'vigil'});
+      await open(base(os, of));
+      await shot('parley-officer-$tag');
+      final (ns, nf) =
+          parleyFloor(clans: {'mire', 'crows', 'compact', 'penitents'});
+      await open(base(ns, nf));
+      await shot('parley-foe-$tag');
       final clan = towerParleyClanOf(settled(base(seed, floor)))!;
       await open(base(seed, floor,
           taken: {0: TowerReward(TowerRewardKind.clanOath, id: clan)}));

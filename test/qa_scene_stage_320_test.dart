@@ -22,7 +22,9 @@ void main() {
       ),
     ));
     final door = tester.getRect(find.byKey(const Key('scene_stage_door')));
-    final name = tester.getRect(find.byKey(const Key('scene_stage_foe')));
+    // The foe's name label (a figure, when the foe has art, shares the key).
+    final name = tester.getRect(find.byWidgetPredicate(
+        (w) => w is Container && w.key == const Key('scene_stage_foe')));
     final stage = tester.getRect(find.byKey(const Key('scene_stage')));
     expect(door.overlaps(name), isFalse);
     expect(stage.contains(door.topLeft) && stage.contains(door.bottomRight),

@@ -1309,6 +1309,7 @@
     "questName": "The Penitent’s Confession",
     "chapter": 5,
     "category": "Side",
+    "clan": "penitents",
     "difficulty": "10",
     "requiredAlignment": "Neutral",
     "objectives": [
@@ -1658,6 +1659,7 @@
     "questName": "The Unpaid Scaffold",
     "chapter": 2,
     "category": "Side",
+    "clan": "compact",
     "difficulty": "3",
     "requiredAlignment": "Neutral",
     "objectives": [
@@ -1752,6 +1754,7 @@
     "questName": "Glass from the Terraces",
     "chapter": 3,
     "category": "Side",
+    "clan": "oni",
     "difficulty": "4",
     "requiredAlignment": "Neutral",
     "objectives": [
@@ -1845,6 +1848,7 @@
     "questName": "The Bark Tithe",
     "chapter": 4,
     "category": "Side",
+    "clan": "mire",
     "difficulty": "6",
     "requiredAlignment": "Neutral",
     "objectives": [
@@ -1939,6 +1943,7 @@
     "questName": "The Candle Count",
     "chapter": 5,
     "category": "Side",
+    "clan": "vigil",
     "difficulty": "7",
     "requiredAlignment": "Neutral",
     "objectives": [
@@ -2037,6 +2042,7 @@
     "questName": "The Hearth-Stone",
     "chapter": 5,
     "category": "Side",
+    "clan": "giants",
     "difficulty": "7",
     "requiredAlignment": "Neutral",
     "objectives": [
@@ -2131,6 +2137,7 @@
     "questName": "Salvage Rights",
     "chapter": 6,
     "category": "Side",
+    "clan": "crows",
     "difficulty": "11",
     "requiredAlignment": "Neutral",
     "objectives": [
@@ -2229,6 +2236,7 @@
     "questName": "The Reed Gate’s Grievance",
     "chapter": 7,
     "category": "Side",
+    "clan": "dominion",
     "difficulty": "13",
     "requiredAlignment": "Neutral",
     "objectives": [
@@ -2303,6 +2311,7 @@
     "questName": "The Herald’s Errand",
     "chapter": 7,
     "category": "Side",
+    "clan": "dominion",
     "difficulty": "13",
     "requiredAlignment": "Neutral",
     "objectives": [
@@ -2449,6 +2458,7 @@
     "questName": "The List of Oaths",
     "chapter": 4,
     "category": "Nemesis",
+    "clan": "dominion",
     "difficulty": "8",
     "requiredAlignment": "Neutral",
     "objectives": [
@@ -2518,6 +2528,7 @@
     "questName": "The Hour Unwatched",
     "chapter": 4,
     "category": "Nemesis",
+    "clan": "vigil",
     "difficulty": "8",
     "requiredAlignment": "Neutral",
     "objectives": [
@@ -2587,6 +2598,7 @@
     "questName": "The Last Hammer",
     "chapter": 4,
     "category": "Nemesis",
+    "clan": "compact",
     "difficulty": "8",
     "requiredAlignment": "Neutral",
     "objectives": [
@@ -2656,6 +2668,7 @@
     "questName": "The Court's Courtesy",
     "chapter": 4,
     "category": "Nemesis",
+    "clan": "mire",
     "difficulty": "8",
     "requiredAlignment": "Neutral",
     "objectives": [
@@ -2725,6 +2738,7 @@
     "questName": "A Debt Called In",
     "chapter": 4,
     "category": "Nemesis",
+    "clan": "crows",
     "difficulty": "8",
     "requiredAlignment": "Neutral",
     "objectives": [
@@ -2794,6 +2808,7 @@
     "questName": "The Weight Set Down",
     "chapter": 4,
     "category": "Nemesis",
+    "clan": "penitents",
     "difficulty": "8",
     "requiredAlignment": "Neutral",
     "objectives": [

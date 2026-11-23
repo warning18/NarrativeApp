@@ -246,7 +246,7 @@ void main() {
   });
 
   group('fusions and ascensions', () {
-    test('a fusion needs both parents and Trusted with both clans', () {
+    test('a fusion needs both parents and Friend with both clans', () {
       expect(
           accordsFor('red', _ctx())
               .where((a) => a.skillId == 'fuse')
@@ -263,10 +263,12 @@ void main() {
       // A parent missing.
       expect(
           fusions('red', _at({'red': 30, 'blue': 30}), known: {'a1'}), isEmpty);
-      // Unknown with one of the clans, or only Friend with it.
+      // Unknown with one of the clans, or only Friendly with it.
       expect(fusions('red', _at({'red': 30})), isEmpty);
       expect(fusions('blue', _at({'red': 30})), isEmpty);
-      expect(fusions('red', _at({'red': 30, 'blue': 22})), isEmpty);
+      expect(fusions('red', _at({'red': 30, 'blue': 15})), isEmpty);
+      // Friend with both is enough (v1.979; was Trusted).
+      expect(fusions('red', _at({'red': 22, 'blue': 22})), ['fuse']);
       // Already known.
       expect(
           fusions('red', _at({'red': 30, 'blue': 30}),
@@ -284,7 +286,7 @@ void main() {
       expect(accordsFor('blue', friend), isEmpty);
       // Friendly is not enough.
       expect(accordsFor('red', _ctx(politics: _at({'red': 15}))), isEmpty);
-      // Both Trusted: the fusion joins it.
+      // Friend with both: the fusion joins it.
       expect(accordsFor('red', _ctx()).map((a) => a.skillId),
           containsAll(['fuse', 'rise']));
     });

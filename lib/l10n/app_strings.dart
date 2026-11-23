@@ -4325,6 +4325,32 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.en: 'Two skills you know make a new one.',
     AppLanguage.fr: 'Deux compétences connues en font une nouvelle.',
   },
+  'merge_ready_title': {
+    AppLanguage.en: 'A merge is ready',
+    AppLanguage.fr: 'Une fusion est prête',
+  },
+  'merge_ready_body': {
+    AppLanguage.en: '{a} and {b} become {c}. Both are spent.',
+    AppLanguage.fr: '{a} et {b} deviennent {c}. Les deux sont perdues.',
+  },
+  'merge_ready_more': {
+    AppLanguage.en: '+{n} more',
+    AppLanguage.fr: '+{n} de plus',
+  },
+  'merge_ready_unbuilt': {
+    AppLanguage.en:
+        'The Skillwright is not built yet: {gold} gold, and materials, at the camp.',
+    AppLanguage.fr:
+        'L’Atelier des techniques n’est pas encore bâti\u00a0: {gold} or, et des matériaux, au camp.',
+  },
+  'merge_ready_go_camp': {
+    AppLanguage.en: 'Go to the camp',
+    AppLanguage.fr: 'Aller au camp',
+  },
+  'badge_merge_ready': {
+    AppLanguage.en: 'a skill merge is ready',
+    AppLanguage.fr: 'une fusion de compétences est prête',
+  },
   'skills_group_other': {
     AppLanguage.en: 'Other',
     AppLanguage.fr: 'Autres',
@@ -6598,6 +6624,10 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.en: 'Intent unknown',
     AppLanguage.fr: 'Intention inconnue',
   },
+  'intent_unknown_short': {
+    AppLanguage.en: 'Unknown',
+    AppLanguage.fr: 'Inconnue',
+  },
   'intent_label': {
     AppLanguage.en: 'Next move',
     AppLanguage.fr: 'Prochain coup'
@@ -7443,6 +7473,32 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   'guard_soaks_suffix': {
     AppLanguage.en: '— the guard soaks',
     AppLanguage.fr: '— la garde absorbe',
+  },
+  // The groups of the enemies of no faction (lib/data/enemy_groups.dart),
+  // the names of their fight blocks' looks.
+  'enemy_group_hollow_court': {
+    AppLanguage.en: 'The Hollow Court',
+    AppLanguage.fr: 'La Cour Creuse',
+  },
+  'enemy_group_turned': {
+    AppLanguage.en: 'The Turned',
+    AppLanguage.fr: 'Les Retournés',
+  },
+  'enemy_group_claimants': {
+    AppLanguage.en: 'The Claimants',
+    AppLanguage.fr: 'Les Prétendants',
+  },
+  'enemy_group_champions': {
+    AppLanguage.en: 'The Champions',
+    AppLanguage.fr: 'Les Champions',
+  },
+  'enemy_group_void_cults': {
+    AppLanguage.en: 'The Void Cults',
+    AppLanguage.fr: 'Les cultes du vide',
+  },
+  'enemy_group_common_folk': {
+    AppLanguage.en: 'Common Folk',
+    AppLanguage.fr: 'Le petit peuple',
   },
   'enemy_recovers_word': {
     AppLanguage.en: 'recovers',
@@ -13765,9 +13821,9 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.fr: 'Toucher pour passer',
   },
   'offer_select_hint': {
-    AppLanguage.en: 'Pick a clan below to see its banner and its gift.',
+    AppLanguage.en: 'Touch a card or a row to read its gift and its clan.',
     AppLanguage.fr:
-        'Choisissez un clan ci-dessous pour voir sa bannière et son don.',
+        'Touchez une carte ou une ligne pour lire son don et son clan.',
   },
   'offer_hint': {
     AppLanguage.en: 'Take one gift: the one you take is a side chosen.',
@@ -13777,6 +13833,18 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   'offer_pending': {
     AppLanguage.en: '{n} waiting',
     AppLanguage.fr: '{n}\u00a0en attente',
+  },
+  'offer_take_named': {
+    AppLanguage.en: 'Take {gift} from {clan}',
+    AppLanguage.fr: 'Prendre {gift} — {clan}',
+  },
+  'offer_raises_header': {
+    AppLanguage.en: 'RAISES WHAT YOU HAVE',
+    AppLanguage.fr: 'AMÉLIORE CE QUE VOUS AVEZ',
+  },
+  'offer_raises_line': {
+    AppLanguage.en: 'Raises something you already have.',
+    AppLanguage.fr: 'Améliore ce que vous avez déjà.',
   },
   'offer_take_button': {
     AppLanguage.en: 'Take this gift',
@@ -14728,9 +14796,9 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   },
   'clans_affinity_cards_hint': {
     AppLanguage.en:
-        'A fusion needs both parent skills and Trusted standing with both clans; either clan offers it, and taking it raises both. An ascension raises a skill you know and needs Friend standing with its clan. A sub-clan skill comes in the sub-clan’s voice once it is your friend; a secret is taught by its clan to those who did the deed.',
+        'A fusion needs both parent skills and Friend standing with both clans; either clan offers it, and taking it raises both. An ascension raises a skill you know and needs Friend standing with its clan. A sub-clan skill comes in the sub-clan’s voice once it is your friend; a secret is taught by its clan to those who did the deed.',
     AppLanguage.fr:
-        'Une fusion demande les deux compétences d’origine et le palier «\u00a0Confiance\u00a0» auprès des deux clans\u00a0; l’un ou l’autre la propose, et la prendre élève les deux. Une ascension élève une compétence que vous connaissez et demande le palier «\u00a0Amitié\u00a0» auprès de son clan. Une compétence de sous-clan arrive avec la voix du sous-clan une fois qu’il est votre ami ; un secret est enseigné par son clan à ceux qui ont accompli l’acte.',
+        'Une fusion demande les deux compétences d’origine et le palier «\u00a0Amitié\u00a0» auprès des deux clans\u00a0; l’un ou l’autre la propose, et la prendre élève les deux. Une ascension élève une compétence que vous connaissez et demande le palier «\u00a0Amitié\u00a0» auprès de son clan. Une compétence de sous-clan arrive avec la voix du sous-clan une fois qu’il est votre ami ; un secret est enseigné par son clan à ceux qui ont accompli l’acte.',
   },
   'clans_tab_throne': {AppLanguage.en: 'Throne', AppLanguage.fr: 'Trône'},
   'clans_tab_throne_room': {
