@@ -8,6 +8,10 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.994.0+1030]
+
+- Fights: a foe's weaknesses show from the start of the fight, as the user chose (the triple damage of a weakness is there to be aimed at). The loadout picker names them and stars the dice that hit them before the first roll, whatever the party's Perception and whether or not it has met that foe before. Resistances are still learned: read by Perception, known once the foe's kind has been beaten, or found by a hit.
+
 ## [1.993.0+1029]
 
 - Dice: the three clan gift dice are worth keeping, as the user asked (Core's combinations review: players took them 121 times in 100 runs and rolled none of them at the end). Each now fights in its clan's style: the Compact's cinder die cuts through a raised guard with an Ember Cut and holds the heat longer; the Penitents' ossuary die cleaves harder, has a strike that hits twice as hard at a cost in health, and mends more; the Crows' tally die is still twelve plain faces, now eight Water strikes (two that grow) and two guards and two mends, all worth 3. Face counts, names and ids are unchanged. Measured on 200 simulated runs: each clan die is now rolled to the end in 1 to 13 runs of 100 (none before), none takes over (at most 7 of 20 runs of one calling), and the Headsman, which they now outclass, ends far fewer runs. Fights won dip by about a point for an expert player (94.6% → 93.6%; 93.0% → 92.8% typical), which the user accepted.
