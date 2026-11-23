@@ -1,5 +1,5 @@
-// The map-theme dropdown of Settings in French at 1.3x text, 320 wide
-// (UX_SHOTS=<folder>), scrolled into view. Picture only.
+// The map-theme dropdown and the palette tiles of Settings in French at 1.3x
+// text, 320 and 360 wide (UX_SHOTS=<folder>), scrolled into view. Pictures only.
 import 'dart:io';
 import 'dart:ui' as ui;
 
@@ -26,37 +26,50 @@ void main() {
             const MethodChannel('flutter_tts'), (call) async => 1);
     await tester.runAsync(loadAppFonts);
     SharedPreferences.setMockInitialValues({'tutorial_enabled': false});
-    usePhone(tester, const Size(320, 568));
-    tester.platformDispatcher.textScaleFactorTestValue = 1.3;
-    addTearDown(tester.platformDispatcher.clearTextScaleFactorTestValue);
-    final key = GlobalKey();
-    await tester.pumpWidget(
-        RepaintBoundary(key: key, child: const ProviderScope(child: MyApp())));
-    await settleApp(tester);
-    await tester.tap(find.byKey(const Key('menu_edit_mode')));
-    await settleApp(tester);
-    final c =
-        ProviderScope.containerOf(tester.element(find.byType(MaterialApp)));
-    await tester.runAsync(
-        () => c.read(appLanguageProvider.notifier).setLanguage(AppLanguage.fr));
-    tester
-        .state<NavigatorState>(find.byType(Navigator).first)
-        .push(MaterialPageRoute<void>(builder: (_) => const SettingsScreen()));
-    await settleApp(tester);
-    final dropdown = find.byWidgetPredicate(
-        (w) => w.runtimeType.toString().startsWith('DropdownButtonFormField'));
-    await tester.scrollUntilVisible(dropdown, 300,
-        scrollable: find.byType(Scrollable).first);
-    await settleApp(tester);
-    expect(tester.takeException(), isNull);
-    await tester.runAsync(() async {
-      final render =
-          key.currentContext!.findRenderObject() as RenderRepaintBoundary;
-      final image = await render.toImage(pixelRatio: 2);
-      final bytes = await image.toByteData(format: ui.ImageByteFormat.png);
-      Directory(shots!).createSync(recursive: true);
-      File('$shots/settings-dropdown-320-fr-1.3.png')
-          .writeAsBytesSync(bytes!.buffer.asUint8List());
-    });
+    for (final width in [320.0, 360.0]) {
+      usePhone(tester, Size(width, width == 320 ? 568 : 740));
+      tester.platformDispatcher.textScaleFactorTestValue = 1.3;
+      addTearDown(tester.platformDispatcher.clearTextScaleFactorTestValue);
+      final key = GlobalKey();
+      await tester.pumpWidget(RepaintBoundary(
+          key: key, child: const ProviderScope(child: MyApp())));
+      await settleApp(tester);
+      await tester.tap(find.byKey(const Key('menu_edit_mode')));
+      await settleApp(tester);
+      final c =
+          ProviderScope.containerOf(tester.element(find.byType(MaterialApp)));
+      await tester.runAsync(() =>
+          c.read(appLanguageProvider.notifier).setLanguage(AppLanguage.fr));
+      tester.state<NavigatorState>(find.byType(Navigator).first).push(
+          MaterialPageRoute<void>(builder: (_) => const SettingsScreen()));
+      await settleApp(tester);
+      final dropdown = find.byWidgetPredicate((w) =>
+          w.runtimeType.toString().startsWith('DropdownButtonFormField'));
+      await tester.scrollUntilVisible(dropdown, 300,
+          scrollable: find.byType(Scrollable).first);
+      await settleApp(tester);
+      expect(tester.takeException(), isNull);
+      await tester.runAsync(() async {
+        final render =
+            key.currentContext!.findRenderObject() as RenderRepaintBoundary;
+        final image = await render.toImage(pixelRatio: 2);
+        final bytes = await image.toByteData(format: ui.ImageByteFormat.png);
+        Directory(shots!).createSync(recursive: true);
+        File('$shots/settings-dropdown-${width.toInt()}-fr-1.3.png')
+            .writeAsBytesSync(bytes!.buffer.asUint8List());
+      });
+      await tester.drag(find.byType(Scrollable).first, const Offset(0, -260));
+      await settleApp(tester);
+      expect(tester.takeException(), isNull);
+      await tester.runAsync(() async {
+        final render =
+            key.currentContext!.findRenderObject() as RenderRepaintBoundary;
+        final image = await render.toImage(pixelRatio: 2);
+        final bytes = await image.toByteData(format: ui.ImageByteFormat.png);
+        File('$shots/settings-palette-${width.toInt()}-fr-1.3.png')
+            .writeAsBytesSync(bytes!.buffer.asUint8List());
+      });
+      await tester.pumpWidget(const SizedBox());
+    }
   });
 }
