@@ -1,0 +1,10 @@
+2. EN/FR pairs on the story graph:
+   no problem
+3. bold runs in the story: 454; words: median 8, longest 26
+   26 words, 5100_tar_hand_book.description: build a cradle in the hold, oak padded with sealed wool, and to cut a 
+   22 words, 5004_altar.description: The cloth was the only thing between them and whatever the Court had b
+   21 words, 7590_dominion.description: The Dominion has never crowned anyone; it hands them a lamp, and watch
+   21 words, 5010_house_herons_wake.description: no light after dusk; no name spoken aloud, for the fen listens for nam
+   21 words, 4999_standard.description: The camp on the coast had food for a week and had been told I would be
+4. American spellings left in the English text (story and gamedata): 1
+   \bharbor: 1, e.g. 'Harbor' in shops.json.anchorage_chandlery.keeperLineTrusted
