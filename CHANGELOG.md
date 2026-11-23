@@ -8,6 +8,10 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.991.0+1027]
+
+- Gear: the two gear sets can now be gathered in a normal run, as the user asked (Core's combinations review: no run in 200 completed one). The Harbourwatch kit now drops from Saltmouth's chapter-2 bosses (the cutlass from the dock overseer, the lantern from the smuggler captain, the coat from the plague hound), and the Hollow Court's mantle and blade from its inquisitor and zealot in chapter 4, besides where they were sold or given before. Measured on 100 simulated runs: a whole set is owned in 18 (typical) and 26 (competent) runs, up from none; fights won are unchanged. No item, name or bonus changes.
+
 ## [1.989.0+1025]
 - Inventory: a worn piece's name shows whole in its equipment tile (up to three lines, the tiles a little taller), in English and French.
 
