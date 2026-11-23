@@ -3087,8 +3087,8 @@
     "alignedArmorBonus": 0,
     "setId": "harborwatch",
     "itemName_fr": "Lanterne de la Garde du port",
-    "description": "Signal lantern of the Saltmouth harbour watch, its glass salvaged by the wreck-wrights of the White Anchorage from a fleet boat the sea gave back. The Admiralty counts every one sold; with the coat and the cutlass it is the full watch, and the watch learned to keep its feet on wet stone.",
-    "description_fr": "Lanterne de signal de la garde du port de Bouche-de-Sel, dont le verre fut récupéré par les charpentiers d’épaves du Mouillage Blanc sur une chaloupe de la flotte que la mer a rendue. L’Amirauté en compte chaque vente ; avec le manteau et le sabre, c’est la garde au complet, et la garde a appris à tenir debout sur la pierre mouillée."
+    "description": "Signal lantern of the Saltmouth harbour watch, lifted from a watch post and passed through smugglers’ hands before it reached the docks. The Admiralty counts every one issued, and this one slipped off the count; with the coat and the cutlass it is the full watch, and the watch learned to keep its feet on wet stone.",
+    "description_fr": "Lanterne de signal de la garde du port de Bouche-de-Sel, prise à un poste de garde et passée entre les mains de contrebandiers avant d’atteindre les quais. L’Amirauté compte chaque lanterne distribuée, et celle-ci a glissé hors du compte ; avec le manteau et le sabre, c’est la garde au complet, et la garde a appris à tenir debout sur la pierre mouillée."
   },
   "hollow_court_blade": {
     "id": "hollow_court_blade",
