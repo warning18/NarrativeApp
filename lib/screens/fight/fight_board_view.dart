@@ -352,7 +352,6 @@ extension _FightBoardView on _FightScreenState {
   /// goals, reactions, squad, affixes, phase): they live in its sheet; the
   /// slot shows how many there are.
   int _enemyExtraCount(_EnemyMember enemy) =>
-      _elementChips(enemy).length +
       _goalMarks(enemy).length +
       _reactionChips(enemy).length +
       enemy.affixes.length +
@@ -456,6 +455,7 @@ extension _FightBoardView on _FightScreenState {
           fill: colorScheme.errorContainer.withValues(alpha: 0.18),
           borderColor: aimedByPicked ? Palette.goldDark : null,
           borderWidth: aimedByPicked ? 3 : null,
+          marks: enemy.isAlive ? _elementMarks(enemy) : const [],
           head: _headTile(enemy.enemyId, enemy.displayName, Palette.hot,
               size: 32, dim: !enemy.isAlive),
           armor: enemy.isAlive && enemy.guard > 0 ? enemy.guard : null,
@@ -515,7 +515,9 @@ extension _FightBoardView on _FightScreenState {
         : _currentFaces.isEmpty
             ? 'roll_hint'
             : _dieLocks.selected != null && canLock
-                ? 'dice_picked_hint'
+                ? (_weakFoeForPickedDie() != null
+                    ? 'dice_weak_hint'
+                    : 'dice_picked_hint')
                 : canLock
                     ? 'dice_pick_hint'
                     : 'confirm_hint';
