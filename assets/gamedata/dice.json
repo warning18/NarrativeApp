@@ -1527,7 +1527,7 @@
       {
         "faceName": "Bone Cleaver",
         "type": "Attack",
-        "value": 2,
+        "value": 3,
         "weight": 1.1,
         "element": "Earth",
         "keywords": [
@@ -1538,21 +1538,21 @@
         "faceName": "Grave Guard",
         "type": "Defend",
         "value": 3,
-        "weight": 0.9,
+        "weight": 0.7,
         "element": "Earth"
       },
       {
         "faceName": "Marrow Mend",
         "type": "Heal",
-        "value": 3,
-        "weight": 0.7
+        "value": 4,
+        "weight": 0.6
       },
       {
         "faceName": "Last Rites",
         "type": "Skill",
         "value": 0,
         "linkedSkillID": "final_stand",
-        "weight": 0.5,
+        "weight": 0.8,
         "element": "Earth"
       },
       {
@@ -1567,7 +1567,7 @@
         "faceName": "Open Grave",
         "type": "Skill",
         "value": 0,
-        "weight": 0.7,
+        "weight": 0.8,
         "element": "Earth"
       },
       {
@@ -1575,19 +1575,22 @@
         "type": "Attack",
         "value": 3,
         "weight": 1.0,
-        "element": "Earth"
+        "element": "Earth",
+        "keywords": [
+          "pain"
+        ]
       },
       {
         "faceName": "Guard",
         "type": "Defend",
         "value": 3,
-        "weight": 1.0
+        "weight": 0.6
       },
       {
         "faceName": "Mend",
         "type": "Heal",
         "value": 3,
-        "weight": 1.0
+        "weight": 0.6
       },
       {
         "faceName": "Strike",
@@ -1995,74 +1998,88 @@
       {
         "faceName": "Strike",
         "type": "Attack",
-        "value": 2,
-        "weight": 1.0
-      },
-      {
-        "faceName": "Guard",
-        "type": "Defend",
-        "value": 2,
-        "weight": 1.0
-      },
-      {
-        "faceName": "Mend",
-        "type": "Heal",
-        "value": 2,
-        "weight": 1.0
+        "value": 3,
+        "weight": 1.0,
+        "element": "Water"
       },
       {
         "faceName": "Strike",
         "type": "Attack",
-        "value": 2,
-        "weight": 1.0
+        "value": 3,
+        "weight": 1.0,
+        "element": "Water"
       },
       {
         "faceName": "Guard",
         "type": "Defend",
-        "value": 2,
-        "weight": 1.0
-      },
-      {
-        "faceName": "Mend",
-        "type": "Heal",
-        "value": 2,
-        "weight": 1.0
+        "value": 3,
+        "weight": 0.8
       },
       {
         "faceName": "Strike",
         "type": "Attack",
-        "value": 2,
-        "weight": 1.0
-      },
-      {
-        "faceName": "Guard",
-        "type": "Defend",
-        "value": 2,
-        "weight": 1.0
-      },
-      {
-        "faceName": "Mend",
-        "type": "Heal",
-        "value": 2,
-        "weight": 1.0
+        "value": 3,
+        "weight": 1.0,
+        "element": "Water"
       },
       {
         "faceName": "Strike",
         "type": "Attack",
-        "value": 2,
-        "weight": 1.0
-      },
-      {
-        "faceName": "Guard",
-        "type": "Defend",
-        "value": 2,
-        "weight": 1.0
+        "value": 3,
+        "weight": 1.0,
+        "element": "Water",
+        "keywords": [
+          "growth"
+        ]
       },
       {
         "faceName": "Mend",
         "type": "Heal",
-        "value": 2,
-        "weight": 1.0
+        "value": 3,
+        "weight": 0.8
+      },
+      {
+        "faceName": "Strike",
+        "type": "Attack",
+        "value": 3,
+        "weight": 1.0,
+        "element": "Water"
+      },
+      {
+        "faceName": "Strike",
+        "type": "Attack",
+        "value": 3,
+        "weight": 1.0,
+        "element": "Water"
+      },
+      {
+        "faceName": "Guard",
+        "type": "Defend",
+        "value": 3,
+        "weight": 0.8
+      },
+      {
+        "faceName": "Strike",
+        "type": "Attack",
+        "value": 3,
+        "weight": 1.0,
+        "element": "Water"
+      },
+      {
+        "faceName": "Strike",
+        "type": "Attack",
+        "value": 3,
+        "weight": 1.0,
+        "element": "Water",
+        "keywords": [
+          "growth"
+        ]
+      },
+      {
+        "faceName": "Mend",
+        "type": "Heal",
+        "value": 3,
+        "weight": 0.8
       }
     ],
     "cost": 150,
@@ -2191,13 +2208,16 @@
         "type": "Attack",
         "value": 2,
         "weight": 1.0,
-        "element": "Fire"
+        "element": "Fire",
+        "keywords": [
+          "pierce"
+        ]
       },
       {
         "faceName": "Banked Coals",
         "type": "Defend",
         "value": 2,
-        "weight": 0.9,
+        "weight": 0.7,
         "keywords": [
           "steady"
         ]
@@ -2207,7 +2227,7 @@
         "type": "Skill",
         "value": 0,
         "linkedSkillID": "dwarf_forgeheart",
-        "weight": 0.6,
+        "weight": 0.8,
         "element": "Fire"
       },
       {
@@ -2215,13 +2235,16 @@
         "type": "Attack",
         "value": 3,
         "weight": 0.9,
-        "element": "Fire"
+        "element": "Fire",
+        "keywords": [
+          "pierce"
+        ]
       },
       {
         "faceName": "Hold the Heat",
         "type": "Defend",
-        "value": 1,
-        "weight": 1.0
+        "value": 2,
+        "weight": 0.5
       }
     ],
     "diceName_fr": "Dé des braises",
