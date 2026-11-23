@@ -176,7 +176,22 @@ class FightBlock extends StatelessWidget {
                       ),
                     ),
                   ),
-                  for (final m in marks) _markChip(m, plateInk),
+                  if (marks.isNotEmpty)
+                    // The marks keep to 66 dp and shrink to fit; the name
+                    // takes the rest of the plate.
+                    ConstrainedBox(
+                      constraints: const BoxConstraints(maxWidth: 66),
+                      child: FittedBox(
+                        fit: BoxFit.scaleDown,
+                        alignment: Alignment.centerRight,
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            for (final m in marks) _markChip(m, plateInk),
+                          ],
+                        ),
+                      ),
+                    ),
                   if (rank != FightRank.normal) _rankMark(plateInk),
                 ],
               ),
