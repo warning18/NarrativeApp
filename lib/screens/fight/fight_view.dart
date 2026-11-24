@@ -911,15 +911,20 @@ extension _FightView on _FightScreenState {
             ),
           ),
           const SizedBox(height: 3),
+          // A fixed height: the name scales down with a big text setting
+          // instead of pushing the tile's column past its box (#1100).
           SizedBox(
             width: cube + 24,
-            child: Text(
-              actor.displayName,
-              maxLines: 1,
-              overflow: TextOverflow.ellipsis,
-              textAlign: TextAlign.center,
-              style: Theme.of(context).textTheme.labelSmall?.copyWith(
-                  color: accent, fontWeight: FontWeight.bold, fontSize: 10),
+            height: 14,
+            child: FittedBox(
+              fit: BoxFit.scaleDown,
+              child: Text(
+                actor.displayName,
+                maxLines: 1,
+                textAlign: TextAlign.center,
+                style: Theme.of(context).textTheme.labelSmall?.copyWith(
+                    color: accent, fontWeight: FontWeight.bold, fontSize: 10),
+              ),
             ),
           ),
           SizedBox(

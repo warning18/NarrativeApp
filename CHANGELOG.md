@@ -8,6 +8,34 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.999.0+1035]
+
+- Settings at a big text size, in French (a follow-up to v1.997): the colour palette names (Horizon crépusculaire, Aurore crépusculaire, Prairie automnale) keep every word whole instead of breaking inside it, and so do the Appearance buttons (Système, Clair, Sombre). The inventory's tile names and the palette names now share one small widget that follows the text-size setting up to 15 % and shrinks only as far as the longest word needs. UX (view only).
+
+## [1.998.0+1034]
+
+- Clans, the Broken Charter: the coal stops (the Emberwives let the Ember Run go cold) only in chapter 4, after the Tribunal's offer to the Scaffolders (the Hook). It came in chapter 2, so the plot card already showed the Hook and the Turn as reached before the player met either. No Hook, no Turn: the rest of the plot already waits for each stage. A new guard checks that no event moves a plot before its stage's chapter or past the stage before it. Core (data).
+
+## [1.997.0+1033]
+
+- Text size and narrow phones (QA's L3 findings #1098, #1099, #1100). Fights: a long foe name (Cassian Oriel, Regent of the Lantern) now takes two lines on its nameplate instead of shrinking to a few pixels; its BOSS badge keeps just the crown (the gold frame says the rest) and its weakness marks sit in the row under the plate; a die's name no longer pushes its tile one pixel past its box at a big text size. Inventory: a worn piece's name keeps every word whole at a big text size (no more "Emberpro/of"), and the row grows with it. Settings: the map theme drop-down no longer runs off the screen in French at a big text size. UX (view only).
+
+## [1.996.0+1032]
+
+- Fights: a foe's weakness marks no longer crowd its name. On a nameplate where the name cannot stay readable beside its emblem, marks and rank (a long name, a narrow phone), the marks move to the row under the plate instead of squeezing the name to a few pixels; short names keep them on the plate. Also fixes a plate overflow at 320 dp wide with a boss's rank and three marks. UX (view only).
+
+## [1.995.0+1031]
+
+- Fights: a foe's weaknesses and the resistances the party has learned now sit on its nameplate, right after the name (the user's pick, mark B): a red ×3 with the element's icon, a grey ×½ for a resistance. While a die you picked is of the element a foe is weak to, that mark is ringed and the hint under the dice says so ("Your picked die is weak against the foe: aim it there, ×3"). The marks no longer count in the foe's "+n" chip; its sheet still lists everything. The Light and Ice elements get their own icons. Core's rule for what is known is unchanged. UX (view only).
+
+## [1.994.0+1030]
+
+- Fights: a foe's weaknesses show from the start of the fight, as the user chose (the triple damage of a weakness is there to be aimed at). The loadout picker names them and stars the dice that hit them before the first roll, whatever the party's Perception and whether or not it has met that foe before. Resistances are still learned: read by Perception, known once the foe's kind has been beaten, or found by a hit.
+
+## [1.993.0+1029]
+
+- Dice: the three clan gift dice are worth keeping, as the user asked (Core's combinations review: players took them 121 times in 100 runs and rolled none of them at the end). Each now fights in its clan's style: the Compact's cinder die cuts through a raised guard with an Ember Cut and holds the heat longer; the Penitents' ossuary die cleaves harder, has a strike that hits twice as hard at a cost in health, and mends more; the Crows' tally die is still twelve plain faces, now eight Water strikes (two that grow) and two guards and two mends, all worth 3. Face counts, names and ids are unchanged. Measured on 200 simulated runs: each clan die is now rolled to the end in 1 to 13 runs of 100 (none before), none takes over (at most 7 of 20 runs of one calling), and the Headsman, which they now outclass, ends far fewer runs. Fights won dip by about a point for an expert player (94.6% → 93.6%; 93.0% → 92.8% typical), which the user accepted.
+
 ## [1.992.0+1028]
 - A merge ready to craft is now said where the player looks: a plate at the top of the Skills list (the two skills, the result in its rarity's frame, "Craft at the Skillwright" when it stands, else its cost and, at the camp, the way there), and a dot on the Camp tab while the party is at the camp. English and French.
 

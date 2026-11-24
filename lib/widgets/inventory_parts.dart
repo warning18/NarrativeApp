@@ -18,6 +18,7 @@ import 'item_stats.dart';
 import '../theme/palette.dart';
 import '../theme/icon_sizes.dart';
 import 'clan_offer_gifts.dart' show CardTier;
+import 'whole_word_text.dart';
 import 'pixel_glyph.dart';
 import 'story_panel.dart' show StoryFrame;
 import '../theme/pixel_chip.dart';
@@ -291,6 +292,9 @@ class InventorySortButton extends StatelessWidget {
 /// A slot as a small tile: its own icon (faded when empty), under it the
 /// name of what is worn there or the slot's name. [lit] marks the slot the
 /// piece in view would go to.
+/// The most a slot tile's name grows with the text-size setting.
+const double slotTileMaxTextScale = wholeWordMaxTextScale;
+
 class InventorySlotTile extends StatelessWidget {
   const InventorySlotTile({
     super.key,
@@ -337,10 +341,9 @@ class InventorySlotTile extends StatelessWidget {
               children: [
                 Opacity(opacity: filled ? 1 : 0.5, child: icon),
                 const SizedBox(height: 4),
-                Text(worn ?? slotLabel,
+                WholeWordText(
+                    text: worn ?? slotLabel,
                     maxLines: filled ? 3 : 1,
-                    overflow: TextOverflow.ellipsis,
-                    textAlign: TextAlign.center,
                     style: theme.textTheme.bodySmall?.copyWith(
                         height: 1.15,
                         color: filled ? null : ink.ash,

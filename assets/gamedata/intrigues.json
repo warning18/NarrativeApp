@@ -18,7 +18,7 @@
     "stages": [
       {
         "stage": "Clue",
-        "chapter": 1,
+        "chapter": 2,
         "text": "A Harbour informant is paid in Inquisition silver for anything the tide brings in from the tear.",
         "text_fr": "Au port, un indicateur est payé en argent de l’Inquisition pour tout ce que la marée rapporte de la déchirure.",
         "npcId": "wharf_informant"
@@ -53,7 +53,7 @@
       },
       {
         "stage": "Choice",
-        "chapter": 7,
+        "chapter": 8,
         "text": "Expose it and the Order turns on the Inquisition, or keep it and carry the Inquisition’s writ.",
         "text_fr": "Le révéler, et l’Ordre se retourne contre l’Inquisition ; ou le taire, et porter le mandat de l’Inquisition."
       }
@@ -122,7 +122,7 @@
     "stages": [
       {
         "stage": "Clue",
-        "chapter": 1,
+        "chapter": 2,
         "text": "A ship brings word that the Lantern-Bearer is failing.",
         "text_fr": "Un navire apporte la nouvelle : le Porte-Lanterne décline.",
         "npcId": "crape_courier"
@@ -157,7 +157,7 @@
       },
       {
         "stage": "Choice",
-        "chapter": 7,
+        "chapter": 8,
         "text": "Whoever you backed takes the Throne, and decides who meets you at the tear.",
         "text_fr": "La personne que vous avez soutenue prend le Trône, et décide de qui vous attendra à la déchirure."
       }
@@ -271,7 +271,7 @@
       },
       {
         "stage": "Choice",
-        "chapter": 7,
+        "chapter": 6,
         "text": "A restored Charter arms the Dominion; a burned one arms whoever the Compact chooses.",
         "text_fr": "Une Charte restaurée arme le Dominion ; une Charte brûlée arme qui le Pacte choisira."
       }
@@ -337,7 +337,7 @@
     "stages": [
       {
         "stage": "Clue",
-        "chapter": 1,
+        "chapter": 2,
         "text": "A Crow sells you a route, and an Inquisition cutter is waiting on it.",
         "text_fr": "Une Corneille vous vend une route, et un cotre de l’Inquisition vous y attend."
       },
@@ -369,7 +369,7 @@
       },
       {
         "stage": "Choice",
-        "chapter": 7,
+        "chapter": 6,
         "text": "The Crows remember who paid: their brigs sail to the last battle, on one side or the other.",
         "text_fr": "Les Corneilles se souviennent de qui a payé : leurs bricks rejoindront la dernière bataille, d’un côté ou de l’autre."
       }
@@ -427,7 +427,7 @@
     "stages": [
       {
         "stage": "Clue",
-        "chapter": 1,
+        "chapter": 2,
         "text": "A child in Fisherman’s Row speaks a language no one taught her.",
         "text_fr": "Dans l’Allée des Pêcheurs, une enfant parle une langue que personne ne lui a apprise."
       },
@@ -457,7 +457,7 @@
       },
       {
         "stage": "Choice",
-        "chapter": 7,
+        "chapter": 6,
         "text": "A Returned child can lead you through the tear, if one is still free.",
         "text_fr": "Un enfant rendu peut vous guider à travers la déchirure, s’il en reste un de libre."
       }
@@ -520,7 +520,7 @@
     "stages": [
       {
         "stage": "Clue",
-        "chapter": 1,
+        "chapter": 2,
         "text": "A drunk White Fleet survivor at the Harbour says: “It wasn’t a storm.”",
         "text_fr": "Au port, un survivant ivre de la Flotte Blanche affirme : « Ce n’était pas une tempête. »"
       },
@@ -552,7 +552,7 @@
       },
       {
         "stage": "Choice",
-        "chapter": 7,
+        "chapter": 6,
         "text": "Bring the relic up, or sink it where no one will find it.",
         "text_fr": "Remonter la relique, ou la couler là où personne ne la trouvera."
       }
@@ -614,7 +614,7 @@
     "stages": [
       {
         "stage": "Clue",
-        "chapter": 1,
+        "chapter": 2,
         "text": "A Penitent asks you to carry a wrapped bundle, no questions asked.",
         "text_fr": "Un Pénitent vous demande de porter un ballot emmailloté, sans poser de questions."
       },
@@ -646,7 +646,7 @@
       },
       {
         "stage": "Choice",
-        "chapter": 7,
+        "chapter": 6,
         "text": "A broken piece can be used by no one, you included.",
         "text_fr": "Une pièce brisée ne peut servir à personne, pas même à vous."
       }
@@ -738,7 +738,7 @@
       },
       {
         "stage": "Choice",
-        "chapter": 7,
+        "chapter": 6,
         "text": "The door she sewed is a way beyond the tear, and it can be closed behind you.",
         "text_fr": "La porte qu’elle a cousue mène au-delà de la déchirure, et peut se refermer derrière vous."
       }
@@ -949,13 +949,13 @@
     "stages": [
       {
         "stage": "Clue",
-        "chapter": 7,
+        "chapter": 8,
         "text": "A clerk from Candlehold arrives at the cove with a satchel of names.",
         "text_fr": "Un clerc de Candlehold arrive à la crique avec une sacoche de noms."
       },
       {
         "stage": "Hook",
-        "chapter": 7,
+        "chapter": 8,
         "text": "The names run in the order the tear took them, with bare stone left after the last.",
         "text_fr": "Les noms suivent l’ordre où la déchirure les a pris, avec de la pierre nue après le dernier."
       },
