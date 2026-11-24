@@ -13872,24 +13872,19 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.fr: 'Retour',
   },
   // A specialisation or a Sworn boon offered alone (Wave 1, proposal 3):
-  // yes, or the usual three cards instead. Narrative may reword.
+  // yes (offer_confirm_accept), or the usual three cards instead.
   'offer_solo_title': {
     AppLanguage.en: 'A gift, offered alone',
     AppLanguage.fr: 'Un don, offert seul',
   },
-  'offer_solo_accept': {
-    AppLanguage.en: 'Accept',
-    AppLanguage.fr: 'Accepter',
-  },
   'offer_solo_decline': {
     AppLanguage.en: 'Not now',
-    AppLanguage.fr: 'Pas maintenant',
+    AppLanguage.fr: 'Plus tard',
   },
   'offer_solo_note': {
-    AppLanguage.en:
-        'Not now brings the usual three gifts instead. This one may come again.',
+    AppLanguage.en: 'Not now is not never. The gift may come again later.',
     AppLanguage.fr:
-        'Pas maintenant amène les trois dons habituels à la place. Celui-ci pourra revenir.',
+        'Pas maintenant n’est pas jamais. Le don peut revenir plus tard.',
   },
   'offer_no_standing': {
     AppLanguage.en: 'No faction: standing doesn’t move.',
