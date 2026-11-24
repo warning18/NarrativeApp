@@ -296,6 +296,92 @@ mixin _SkillsCombatActions on _SessionNotifierBase {
     ];
   }
 
+  /// A fight of [chapter] won, read against the chapter's [goals]
+  /// (chapter_goals.dart, v2.5.0): the goals it meets are kept. Returns the
+  /// ids newly met (none once the chapter's chest was given).
+  Future<List<String>> noteChapterGoals(
+      int chapter, List<ChapterGoal> goals, ChapterFightFacts facts) async {
+    if (state.chapterChestsGiven.contains(chapter)) return const [];
+    final key = '$chapter';
+    final met = state.chapterGoalsMet[key] ?? const <String>[];
+    final fresh = chapterGoalsNewlyMet(goals, met, facts);
+    if (fresh.isEmpty) return const [];
+    state = state.copyWith(chapterGoalsMet: {
+      ...state.chapterGoalsMet,
+      key: [...met, ...fresh],
+    });
+    await _persist();
+    return fresh;
+  }
+
+  /// The goals of [chapter] met so far.
+  List<String> chapterGoalsMetIn(int chapter) =>
+      state.chapterGoalsMet['$chapter'] ?? const [];
+
+  /// The earliest chapter with goals ([chapterGoalTable]) before
+  /// [currentChapter] whose chest is not given yet, or null: the chest the
+  /// story owes as it enters a new chapter (the last one's at the ending,
+  /// with [currentChapter] past it).
+  int? chapterChestDue(int currentChapter) {
+    final due = [
+      for (final c in chapterGoalTable.keys)
+        if (c < currentChapter && !state.chapterChestsGiven.contains(c)) c,
+    ]..sort();
+    return due.isEmpty ? null : due.first;
+  }
+
+  /// [chapter]'s chest opened (chapter_goals.dart, v2.5.0): its tier from
+  /// the goals met, its gold and loot added as a fight's spoils are
+  /// (lootGrantOf: potions as charges, a tome read, a spell learned, the
+  /// rest carried), and the chest marked given. Null when it was given, or
+  /// the chapter has no goals. The screen shows the result (UX's).
+  Future<LootBoxResult?> claimChapterChest(
+    int chapter, {
+    required Map<String, dynamic> items,
+    required Random random,
+    String preferredScalingStat = '',
+    ItemOrigin? origin,
+  }) async {
+    if (state.chapterChestsGiven.contains(chapter) ||
+        !chapterGoalTable.containsKey(chapter)) {
+      return null;
+    }
+    final chest = rollChapterChest(
+      chapter: chapter,
+      met: chapterGoalsMetIn(chapter).length,
+      items: items,
+      random: random,
+      luck: state.luck,
+      preferredScalingStat: preferredScalingStat,
+      ownedItemIds: state.inventoryItemIds,
+    );
+    final grant =
+        lootGrantOf(chest.itemIds, items, knownSpellIds: state.knownSpellIds);
+    state = state.copyWith(
+      gold: state.gold + chest.gold,
+      inventoryItemIds: [...state.inventoryItemIds, ...grant.carried],
+      itemOrigins: withItemOrigins(state.itemOrigins, grant.carried, origin),
+      potionCount: state.potionCount + grant.potions,
+      antidoteCount: state.antidoteCount + grant.antidotes,
+      tomePicks: [...state.tomePicks, ...grant.tomePickIds],
+      pendingOffers: [...state.pendingOffers, ...grant.offers],
+      knownSpellIds: grant.spellsLearned.isEmpty
+          ? null
+          : [...state.knownSpellIds, ...grant.spellsLearned],
+      chapterChestsGiven: [...state.chapterChestsGiven, chapter],
+    );
+    await _persist();
+    return chest;
+  }
+
+  /// [chapter]'s chest given: it comes once, and its goals stop counting.
+  Future<void> markChapterChestGiven(int chapter) async {
+    if (state.chapterChestsGiven.contains(chapter)) return;
+    state = state
+        .copyWith(chapterChestsGiven: [...state.chapterChestsGiven, chapter]);
+    await _persist();
+  }
+
   /// A lost boss fight: one more defeat on the books for each boss in it,
   /// read back as Resolve next time (see party_bonus.dart).
   Future<void> recordBossDefeat(List<String> enemyIds) async {

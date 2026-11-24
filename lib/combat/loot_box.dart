@@ -98,6 +98,7 @@ class LootContext {
     this.conditionBonus = 0,
     this.tierFloor,
     this.tierShift = 0,
+    this.tierCeiling,
     this.preferredScalingStat = '',
     this.alignmentLabel = 'Neutral',
     this.ownedItemIds = const [],
@@ -144,6 +145,10 @@ class LootContext {
   /// Tier steps applied after floors -- negative for a chest a Skittish
   /// enemy fled with part of.
   final int tierShift;
+
+  /// A hard ceiling on the tier, applied last: with [tierFloor] the same,
+  /// the chest is exactly that tier (the chapter chest, chapter_goals.dart).
+  final ChestTier? tierCeiling;
 
   /// The player's profession's `preferredScalingStat`, for the loot
   /// affinity reweight: an item scaling with it weighs more.
@@ -269,7 +274,9 @@ ChestTier? _tierFloorFor(LootContext context) {
 ChestTier finalTierFor(LootContext context, ChestTier rolled) {
   final floor = _tierFloorFor(context);
   final floored = floor == null ? rolled : _maxTier(rolled, floor);
-  return _shiftTier(floored, context.tierShift);
+  final shifted = _shiftTier(floored, context.tierShift);
+  final ceiling = context.tierCeiling;
+  return ceiling != null && shifted.index > ceiling.index ? ceiling : shifted;
 }
 
 /// Slots a chest of [tier] holds (before the Perception extra slot).

@@ -8,6 +8,13 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [2.5.0+1059]
+
+- **The late game: the Void Banner's own slot, and chapter goals with a chest** (Wave 4 briefs 5 and 3, the user's choices). Rules and saves; the screens are UX's next PR.
+  - The Void Banner is worn in a sixth slot, "Banner", so a full gear set can be worn with it; old saves load with the banner in its slot and the body free.
+  - Chapters 4 to 8 each have three optional goals (win in a few rounds, strike a weakness, beat the chapter's boss on the first try, or win a close fight with no potion). Each is met by about a third to two thirds of the simulator's runs; chapter 7's claimant duel is easier (about 9 runs in 10).
+  - Each goal met makes the chapter's chest one tier better, Wooden to Gold; it is owed when the next chapter starts and given once. Missing goals costs nothing.
+
 ## [2.4.0+1058]
 
 - **The Tower, harder above floor 10 and with more picks that count**
