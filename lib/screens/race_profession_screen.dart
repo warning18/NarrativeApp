@@ -28,6 +28,7 @@ import '../widgets/race_profession_cards.dart';
 import '../widgets/ink_sheet.dart';
 import '../widgets/ink_loading.dart';
 import '../theme/icon_sizes.dart';
+import 'tower/tower_look.dart' show TowerPanelStyle;
 
 class RaceProfessionScreen extends ConsumerStatefulWidget {
   const RaceProfessionScreen({super.key, this.locks = const {}, this.onChosen});
@@ -442,10 +443,22 @@ class PresetMark extends StatelessWidget {
     if (file.isEmpty) return generic;
     // A preset whose picture the build does not carry (one added in the
     // Data tab) shows the generic mark rather than breaking the screen.
-    return PixelIcon('assets/visuals/$folder/$file',
+    final mark = PixelIcon('assets/visuals/$folder/$file',
         size: size, fallback: generic);
+    // The Tower's ink: the emblem in the ink greys.
+    return TowerPanelStyle.of(context)
+        ? ColorFiltered(colorFilter: _inkEmblem, child: mark)
+        : mark;
   }
 }
+
+/// An emblem in the ink greys.
+const ColorFilter _inkEmblem = ColorFilter.matrix(<double>[
+  0.45, 0.45, 0.45, 0, 0, //
+  0.45, 0.45, 0.45, 0, 4,
+  0.47, 0.47, 0.47, 0, 8,
+  0, 0, 0, 1, 0,
+]);
 
 /// A bonus as a chip: green when it gives, red when it takes.
 class _BonusChip extends StatelessWidget {

@@ -15,7 +15,7 @@ String? slowFrameHint;
 
 /// A frame is slow when it took longer than this, in milliseconds (one frame
 /// at 60 Hz is 16.7).
-const double slowFrameMs = 17;
+const double _slowFrameMs = 17;
 
 /// How many of the worst frames the report lists.
 const int worstFramesListed = 5;
@@ -114,7 +114,7 @@ class SlowFrameMeter {
     final stat = stats.putIfAbsent(label, SlowFrameStat.new);
     stat.frames++;
     if (totalMs > stat.worstMs) stat.worstMs = totalMs;
-    if (totalMs > slowFrameMs) {
+    if (totalMs > _slowFrameMs) {
       stat.slow++;
       worst.add(SlowFrame(label, totalMs, buildMs, rasterMs));
       worst.sort((a, b) => b.totalMs.compareTo(a.totalMs));
@@ -128,7 +128,7 @@ class SlowFrameMeter {
   /// and the build (the version, the system, the screen).
   String report({required String device}) {
     final buffer = StringBuffer()
-      ..writeln('Slow frames (over ${slowFrameMs.round()} ms) / frames drawn')
+      ..writeln('Slow frames (over ${_slowFrameMs.round()} ms) / frames drawn')
       ..writeln(device)
       ..writeln();
     if (stats.isEmpty) {

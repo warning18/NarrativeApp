@@ -472,7 +472,7 @@
       "That was a human thing to do. I’m still learning those."
     ],
     "lines_fr": [
-      "Le Vide s’est tu, à l’instant. Il n’aime pas ce genre de chose.",
+      "Le Néant s’est tu, à l’instant. Il n’aime pas ce genre de chose.",
       "Personne n’a fait ça pour moi, quand je suis sortie du noir. Je suis contente que quelqu’un le fasse.",
       "C’était humain, ce que vous avez fait. J’apprends encore ce genre de chose."
     ]
@@ -488,7 +488,7 @@
     ],
     "lines_fr": [
       "Ça lui a plu. À la chose dans le noir. Je l’ai sentie sourire.",
-      "Pas besoin du Vide pour faire preuve de cruauté. C’est ce qui m’effraie.",
+      "Pas besoin du Néant pour faire preuve de cruauté. C’est ce qui m’effraie.",
       "S’il vous plaît, ne refaites pas ça là où je peux l’entendre."
     ]
   },
@@ -528,7 +528,7 @@
       "I didn’t help. I want that noted."
     ],
     "lines_fr": [
-      "Le Vide disait que vous tomberiez. Il ment.",
+      "Le Néant disait que vous tomberiez. Il ment.",
       "Élégant. Pour quelqu’un sans néant en soi.",
       "Je n’ai pas aidé. Je tiens à ce que ce soit noté."
     ]
@@ -1108,7 +1108,7 @@
       "The Void does this. Leaves people on a shore. I didn’t think you would."
     ],
     "lines_fr": [
-      "Le Vide fait ça. Il laisse les gens sur un rivage. Je ne pensais pas que vous le feriez."
+      "Le Néant fait ça. Il laisse les gens sur un rivage. Je ne pensais pas que vous le feriez."
     ]
   },
   "choice_skiff_cut_kelda": {
@@ -4879,6 +4879,682 @@
     ],
     "lines_fr": [
       "Les Pénitents dans votre dos. Je sais comment ils sonnent. C’est le plus bruyant des silences."
+    ]
+  },
+  "choice_reckoning_wall_saved_vess": {
+    "remarkID": "choice_reckoning_wall_saved_vess",
+    "companionID": "vess",
+    "trigger": "choice",
+    "choiceKey": "reckoning_wall_saved",
+    "note": "The Reckoning Wall: the auxiliary out-argued",
+    "lines": [
+      "You talked a spear down with words. The void never taught me that. I am taking notes."
+    ],
+    "lines_fr": [
+      "Vous avez fait baisser une lance avec des mots. Le Néant ne m’a jamais appris cela. Je prends des notes."
+    ]
+  },
+  "choice_standard_cut_living_vess": {
+    "remarkID": "choice_standard_cut_living_vess",
+    "companionID": "vess",
+    "trigger": "choice",
+    "choiceKey": "standard_cut_living",
+    "note": "The standard stitched into a living man: cut it free while he lives",
+    "lines": [
+      "I felt the cloth tear from him. I know what that is. I had hoped you would never need to know."
+    ],
+    "lines_fr": [
+      "J’ai senti l’étoffe se déchirer d’avec lui. Je sais ce que c’est. J’espérais que vous n’auriez jamais à le savoir."
+    ]
+  },
+  "choice_4999_standard_2_vess": {
+    "remarkID": "choice_4999_standard_2_vess",
+    "companionID": "vess",
+    "trigger": "choice",
+    "choiceKey": "4999_standard#2",
+    "note": "The standard: the mercy of the blade first",
+    "lines": [
+      "A quick mercy, then the cloth. I would have wanted the same, I think."
+    ],
+    "lines_fr": [
+      "Une miséricorde rapide, puis l’étoffe. J’aurais voulu la même, je crois."
+    ]
+  },
+  "choice_court_woken_vess": {
+    "remarkID": "choice_court_woken_vess",
+    "companionID": "vess",
+    "trigger": "choice",
+    "choiceKey": "court_woken",
+    "note": "The Court’s sleepers in the Shroud’s twin: wake them first",
+    "lines": [
+      "They woke, and for a moment none of them knew what they were. I know that moment. Thank you for waiting through it with them."
+    ],
+    "lines_fr": [
+      "Ils se sont éveillés, et un instant aucun ne savait ce qu’il était. Je connais cet instant. Merci d’avoir attendu avec eux."
+    ]
+  },
+  "choice_court_never_woke_vess": {
+    "remarkID": "choice_court_never_woke_vess",
+    "companionID": "vess",
+    "trigger": "choice",
+    "choiceKey": "court_never_woke",
+    "note": "The Court’s sleepers: cut the Shroud free without waking them",
+    "lines": [
+      "They never knew. I decide not to envy them. I will not manage it."
+    ],
+    "lines_fr": [
+      "Ils n’ont jamais su. Je décide de ne pas les envier. Je n’y arriverai pas."
+    ]
+  },
+  "choice_inquisition_pact_vess": {
+    "remarkID": "choice_inquisition_pact_vess",
+    "companionID": "vess",
+    "trigger": "choice",
+    "choiceKey": "inquisition_pact",
+    "note": "The Hollow Shore: take the legate’s pact",
+    "lines": [
+      "A pact with the white sail. The void is quieter than I expected. I think it is holding its breath."
+    ],
+    "lines_fr": [
+      "Un pacte avec la voile blanche. Le Néant est plus silencieux que je ne m’y attendais. Je crois qu’il retient son souffle."
+    ]
+  },
+  "choice_pact_refused_vess": {
+    "remarkID": "choice_pact_refused_vess",
+    "companionID": "vess",
+    "trigger": "choice",
+    "choiceKey": "pact_refused",
+    "note": "The Hollow Shore: refuse the pact",
+    "lines": [
+      "The void laughed when you refused. I do not think it meant harm. I think it was relieved."
+    ],
+    "lines_fr": [
+      "Le Néant a ri quand vous avez refusé. Je ne crois pas qu’il voulait du mal. Je crois qu’il était soulagé."
+    ]
+  },
+  "choice_sovereign_took_companion_vess": {
+    "remarkID": "choice_sovereign_took_companion_vess",
+    "companionID": "vess",
+    "trigger": "choice",
+    "choiceKey": "sovereign_took_companion",
+    "note": "The tear’s price: one of the crew",
+    "lines": [
+      "It took one of us. I felt the place where they stood go quiet. I would like to say their name."
+    ],
+    "lines_fr": [
+      "Il a pris l’un de nous. J’ai senti le lieu où il se tenait devenir silencieux. J’aimerais dire son nom."
+    ]
+  },
+  "choice_legate_given_vess": {
+    "remarkID": "choice_legate_given_vess",
+    "companionID": "vess",
+    "trigger": "choice",
+    "choiceKey": "legate_given",
+    "note": "The tear’s price: the legate",
+    "lines": [
+      "You gave the legate to the tear. I will not tell you what it sounded like."
+    ],
+    "lines_fr": [
+      "Vous avez donné le légat à la déchirure. Je ne vous dirai pas à quoi cela ressemblait."
+    ]
+  },
+  "choice_sovereign_blood_vess": {
+    "remarkID": "choice_sovereign_blood_vess",
+    "companionID": "vess",
+    "trigger": "choice",
+    "choiceKey": "sovereign_blood",
+    "note": "The tear’s price: your own blood",
+    "lines": [
+      "Your blood, offered. The tear knew who you were at once. It has your name now. I am sorry."
+    ],
+    "lines_fr": [
+      "Votre sang, offert. La déchirure a su aussitôt qui vous étiez. Elle a votre nom, maintenant. Je suis désolée."
+    ]
+  },
+  "choice_flagship_burned_vess": {
+    "remarkID": "choice_flagship_burned_vess",
+    "companionID": "vess",
+    "trigger": "choice",
+    "choiceKey": "flagship_burned",
+    "note": "The flagship’s sail: burn the flagship",
+    "lines": [
+      "Fire is the one thing the void respects. It watched with me."
+    ],
+    "lines_fr": [
+      "Le feu est la seule chose que le Néant respecte. Il a regardé avec moi."
+    ]
+  },
+  "choice_sail_bought_vess": {
+    "remarkID": "choice_sail_bought_vess",
+    "companionID": "vess",
+    "trigger": "choice",
+    "choiceKey": "sail_bought",
+    "note": "The flagship’s sail: pay the riggers",
+    "lines": [
+      "A fair price for a fair sail. I like it when things cost what they cost."
+    ],
+    "lines_fr": [
+      "Un juste prix pour une juste voile. J’aime quand les choses coûtent ce qu’elles coûtent."
+    ]
+  },
+  "choice_greyhithe_names_read_vess": {
+    "remarkID": "choice_greyhithe_names_read_vess",
+    "companionID": "vess",
+    "trigger": "choice",
+    "choiceKey": "greyhithe_names_read",
+    "note": "Greyhithe’s eldest: read her the page",
+    "lines": [
+      "Every name read aloud makes the void a little smaller. I have been counting."
+    ],
+    "lines_fr": [
+      "Chaque nom lu à voix haute rend le Néant un peu plus petit. J’ai compté."
+    ]
+  },
+  "choice_7200_elder_later_1_vess": {
+    "remarkID": "choice_7200_elder_later_1_vess",
+    "companionID": "vess",
+    "trigger": "choice",
+    "choiceKey": "7200_elder_later#1",
+    "note": "Greyhithe’s eldest: tell her the ledger kept no names",
+    "lines": [
+      "You told her the ledger kept nothing from her coast. It was kind. It is also the sort of lie I would have told."
+    ],
+    "lines_fr": [
+      "Vous lui avez dit que le registre ne gardait rien de sa côte. C’était bon. C’est aussi le genre de mensonge que j’aurais dit."
+    ]
+  },
+  "choice_false_lamps_out_vess": {
+    "remarkID": "choice_false_lamps_out_vess",
+    "companionID": "vess",
+    "trigger": "choice",
+    "choiceKey": "false_lamps_out",
+    "note": "The wreckers’ false lamps: pay the headman to put them out",
+    "lines": [
+      "The lamps went out and the ships saw the rocks. The sea remembers who made it dark."
+    ],
+    "lines_fr": [
+      "Les lampes se sont éteintes et les navires ont vu les écueils. La mer se souvient de qui l’a rendue noire."
+    ]
+  },
+  "choice_court_woken_grosh": {
+    "remarkID": "choice_court_woken_grosh",
+    "companionID": "grosh",
+    "trigger": "choice",
+    "choiceKey": "court_woken",
+    "note": "The Court’s sleepers in the Shroud’s twin: wake them first",
+    "lines": [
+      "Sleepers woke. Grosh stood at the door. Nobody ran. Good door."
+    ],
+    "lines_fr": [
+      "Les dormeurs se sont éveillés. Grosh a gardé la porte. Personne n’a couru. Bonne porte."
+    ]
+  },
+  "choice_court_never_woke_grosh": {
+    "remarkID": "choice_court_never_woke_grosh",
+    "companionID": "grosh",
+    "trigger": "choice",
+    "choiceKey": "court_never_woke",
+    "note": "The Court’s sleepers: cut the Shroud free without waking them",
+    "lines": [
+      "Grosh did not like leaving them. Grosh did not like waking them either. Grosh is glad you decided."
+    ],
+    "lines_fr": [
+      "Grosh n’aimait pas les laisser. Grosh n’aimait pas les réveiller non plus. Grosh est content que vous ayez décidé."
+    ]
+  },
+  "choice_pact_refused_grosh": {
+    "remarkID": "choice_pact_refused_grosh",
+    "companionID": "grosh",
+    "trigger": "choice",
+    "choiceKey": "pact_refused",
+    "note": "The Hollow Shore: refuse the pact",
+    "lines": [
+      "Sail refused. Grosh liked the gold. Grosh likes this more."
+    ],
+    "lines_fr": [
+      "Voile refusée. Grosh aimait l’or. Grosh aime ceci davantage."
+    ]
+  },
+  "choice_sovereign_took_companion_grosh": {
+    "remarkID": "choice_sovereign_took_companion_grosh",
+    "companionID": "grosh",
+    "trigger": "choice",
+    "choiceKey": "sovereign_took_companion",
+    "note": "The tear’s price: one of the crew",
+    "lines": [
+      "Tear took one. Grosh hit the tear. It did nothing. Grosh will hit it again."
+    ],
+    "lines_fr": [
+      "La déchirure en a pris un. Grosh a frappé la déchirure. Ça n’a rien fait. Grosh frappera encore."
+    ]
+  },
+  "choice_camp_given_grosh": {
+    "remarkID": "choice_camp_given_grosh",
+    "companionID": "grosh",
+    "trigger": "choice",
+    "choiceKey": "camp_given",
+    "note": "The tear’s price: the camp",
+    "lines": [
+      "Grosh built a wall in that camp. Grosh will build another. Slower. Bigger."
+    ],
+    "lines_fr": [
+      "Grosh a monté un mur dans ce camp. Grosh en montera un autre. Plus lent. Plus grand."
+    ]
+  },
+  "choice_flagship_burned_grosh": {
+    "remarkID": "choice_flagship_burned_grosh",
+    "companionID": "grosh",
+    "trigger": "choice",
+    "choiceKey": "flagship_burned",
+    "note": "The flagship’s sail: burn the flagship",
+    "lines": [
+      "Big fire. Good fire. Grosh warmed his hands."
+    ],
+    "lines_fr": [
+      "Gros feu. Bon feu. Grosh s’est réchauffé les mains."
+    ]
+  },
+  "choice_sail_bought_grosh": {
+    "remarkID": "choice_sail_bought_grosh",
+    "companionID": "grosh",
+    "trigger": "choice",
+    "choiceKey": "sail_bought",
+    "note": "The flagship’s sail: pay the riggers",
+    "lines": [
+      "Riggers paid. Grosh would have paid less and broken a mast."
+    ],
+    "lines_fr": [
+      "Gréeurs payés. Grosh aurait payé moins, et cassé un mât."
+    ]
+  },
+  "choice_greyhithe_names_read_grosh": {
+    "remarkID": "choice_greyhithe_names_read_grosh",
+    "companionID": "grosh",
+    "trigger": "choice",
+    "choiceKey": "greyhithe_names_read",
+    "note": "Greyhithe’s eldest: read her the page",
+    "lines": [
+      "Old woman cried. Grosh stood by her. Grosh does not know what else to do with names."
+    ],
+    "lines_fr": [
+      "La vieille a pleuré. Grosh est resté près d’elle. Grosh ne sait pas quoi faire d’autre avec des noms."
+    ]
+  },
+  "choice_7200_elder_later_1_grosh": {
+    "remarkID": "choice_7200_elder_later_1_grosh",
+    "companionID": "grosh",
+    "trigger": "choice",
+    "choiceKey": "7200_elder_later#1",
+    "note": "Greyhithe’s eldest: tell her the ledger kept no names",
+    "lines": [
+      "You told her a soft lie. Grosh would have told her the same. Grosh has a mother."
+    ],
+    "lines_fr": [
+      "Vous lui avez dit un doux mensonge. Grosh lui aurait dit pareil. Grosh a une mère."
+    ]
+  },
+  "choice_7590_dominion_0_maren": {
+    "remarkID": "choice_7590_dominion_0_maren",
+    "companionID": "maren",
+    "trigger": "choice",
+    "choiceKey": "7590_dominion#0",
+    "note": "The Throne: bear the Lantern, clans keep their banners",
+    "lines": [
+      "The Lantern, borne and not seized, and the clans keep their banners. I did not think I would live to see both."
+    ],
+    "lines_fr": [
+      "La Lanterne, portée et non saisie, et les clans gardent leurs bannières. Je ne pensais pas vivre assez pour voir les deux."
+    ]
+  },
+  "choice_7590_dominion_0_tobin": {
+    "remarkID": "choice_7590_dominion_0_tobin",
+    "companionID": "tobin",
+    "trigger": "choice",
+    "choiceKey": "7590_dominion#0",
+    "note": "The Throne: bear the Lantern, clans keep their banners",
+    "lines": [
+      "A lantern that lights without burning. That one, I would follow."
+    ],
+    "lines_fr": [
+      "Une lanterne qui éclaire sans brûler. Celle-là, je la suivrais."
+    ]
+  },
+  "choice_7590_dominion_1_kelda": {
+    "remarkID": "choice_7590_dominion_1_kelda",
+    "companionID": "kelda",
+    "trigger": "choice",
+    "choiceKey": "7590_dominion#1",
+    "note": "The Throne: bear the Lantern, and make every clan kneel",
+    "lines": [
+      "Every clan on its knees. I have seen what that looks like on a field. It is not a throne room’s finest sight."
+    ],
+    "lines_fr": [
+      "Tous les clans à genoux. J’ai vu ce que cela donne sur un champ de bataille. Ce n’est pas ce qu’une salle du trône offre de plus beau."
+    ]
+  },
+  "choice_7590_dominion_1_malrik": {
+    "remarkID": "choice_7590_dominion_1_malrik",
+    "companionID": "malrik",
+    "trigger": "choice",
+    "choiceKey": "7590_dominion#1",
+    "note": "The Throne: bear the Lantern, and make every clan kneel",
+    "lines": [
+      "Kneeling is efficient. It is also temporary. I will start counting the days."
+    ],
+    "lines_fr": [
+      "S’agenouiller est efficace. C’est aussi temporaire. Je commence à compter les jours."
+    ]
+  },
+  "choice_7590_vigil_0_liora": {
+    "remarkID": "choice_7590_vigil_0_liora",
+    "companionID": "liora",
+    "trigger": "choice",
+    "choiceKey": "7590_vigil#0",
+    "note": "The Throne: sit with open eyes, and strike out the Edict",
+    "lines": [
+      "Open eyes, and the Edict struck out. The Vigil will sleep tonight, for once."
+    ],
+    "lines_fr": [
+      "Les yeux ouverts, et l’Édit rayé. La Veille dormira ce soir, pour une fois."
+    ]
+  },
+  "choice_7590_vigil_0_kelda": {
+    "remarkID": "choice_7590_vigil_0_kelda",
+    "companionID": "kelda",
+    "trigger": "choice",
+    "choiceKey": "7590_vigil#0",
+    "note": "The Throne: sit with open eyes, and strike out the Edict",
+    "lines": [
+      "The wall will keep itself now. I did not think I would ever say that."
+    ],
+    "lines_fr": [
+      "Le mur se gardera tout seul, désormais. Je ne pensais pas le dire un jour."
+    ]
+  },
+  "choice_7590_vigil_1_sable": {
+    "remarkID": "choice_7590_vigil_1_sable",
+    "companionID": "sable",
+    "trigger": "choice",
+    "choiceKey": "7590_vigil#1",
+    "note": "The Throne: sit, and turn the Inquisition’s lists on it",
+    "lines": [
+      "Turn their lists on them. Elegant. Vicious. I wish I had thought of it."
+    ],
+    "lines_fr": [
+      "Retourner leurs listes contre eux. Élégant. Vicieux. J’aurais aimé y penser."
+    ]
+  },
+  "choice_7590_vigil_1_vess": {
+    "remarkID": "choice_7590_vigil_1_vess",
+    "companionID": "vess",
+    "trigger": "choice",
+    "choiceKey": "7590_vigil#1",
+    "note": "The Throne: sit, and turn the Inquisition’s lists on it",
+    "lines": [
+      "The Inquisition counted people on those lists. Now it is counted. I am not sorry."
+    ],
+    "lines_fr": [
+      "L’Inquisition comptait des gens sur ces listes. Maintenant, c’est elle que l’on compte. Je ne le regrette pas."
+    ]
+  },
+  "choice_7590_compact_0_grosh": {
+    "remarkID": "choice_7590_compact_0_grosh",
+    "companionID": "grosh",
+    "trigger": "choice",
+    "choiceKey": "7590_compact#0",
+    "note": "The Throne: tell them why, take the crown from their hands",
+    "lines": [
+      "You told them why, then took the crown. Grosh likes honest thieves."
+    ],
+    "lines_fr": [
+      "Vous leur avez dit pourquoi, puis vous avez pris la couronne. Grosh aime les voleurs honnêtes."
+    ]
+  },
+  "choice_7590_compact_0_kelda": {
+    "remarkID": "choice_7590_compact_0_kelda",
+    "companionID": "kelda",
+    "trigger": "choice",
+    "choiceKey": "7590_compact#0",
+    "note": "The Throne: tell them why, take the crown from their hands",
+    "lines": [
+      "To say it plainly and be crowned anyway. That is a dwarf’s kind of courage."
+    ],
+    "lines_fr": [
+      "Le dire sans détour et être couronné quand même. C’est une bravoure de nain."
+    ]
+  },
+  "choice_7590_compact_1_malrik": {
+    "remarkID": "choice_7590_compact_1_malrik",
+    "companionID": "malrik",
+    "trigger": "choice",
+    "choiceKey": "7590_compact#1",
+    "note": "The Throne: take the crown and bind the Houses by Charter",
+    "lines": [
+      "A Charter binds. The Houses will resent the ink for a hundred years. I admire the ink."
+    ],
+    "lines_fr": [
+      "Une Charte lie. Les Maisons en voudront à l’encre pendant cent ans. J’admire l’encre."
+    ]
+  },
+  "choice_7590_compact_1_tobin": {
+    "remarkID": "choice_7590_compact_1_tobin",
+    "companionID": "tobin",
+    "trigger": "choice",
+    "choiceKey": "7590_compact#1",
+    "note": "The Throne: take the crown and bind the Houses by Charter",
+    "lines": [
+      "A chain written in a fair hand is still a chain. I will hold my tongue, for now."
+    ],
+    "lines_fr": [
+      "Une chaîne écrite d’une belle main reste une chaîne. Je me tairai, pour l’instant."
+    ]
+  },
+  "choice_7590_mire_0_vess": {
+    "remarkID": "choice_7590_mire_0_vess",
+    "companionID": "vess",
+    "trigger": "choice",
+    "choiceKey": "7590_mire#0",
+    "note": "The Throne: accept the fen’s terms unread, and keep them",
+    "lines": [
+      "You signed it unread, and you will keep it. The fen respects that. So do I."
+    ],
+    "lines_fr": [
+      "Vous l’avez signé sans le lire, et vous le tiendrez. Le marais respecte cela. Moi aussi."
+    ]
+  },
+  "choice_7590_mire_0_maren": {
+    "remarkID": "choice_7590_mire_0_maren",
+    "companionID": "maren",
+    "trigger": "choice",
+    "choiceKey": "7590_mire#0",
+    "note": "The Throne: accept the fen’s terms unread, and keep them",
+    "lines": [
+      "To trust what you have not read, and then honour it. It is either faith or folly. Today, faith."
+    ],
+    "lines_fr": [
+      "Faire confiance à ce qu’on n’a pas lu, puis l’honorer. C’est de la foi ou de la folie. Aujourd’hui, de la foi."
+    ]
+  },
+  "choice_7590_mire_1_kelda": {
+    "remarkID": "choice_7590_mire_1_kelda",
+    "companionID": "kelda",
+    "trigger": "choice",
+    "choiceKey": "7590_mire#1",
+    "note": "The Throne: hunt the exorcists who burned Reedholm",
+    "lines": [
+      "Hunt the ones who burned Reedholm. I will carry the torch. I will not like it."
+    ],
+    "lines_fr": [
+      "Chasser ceux qui ont brûlé Reedholm. Je porterai la torche. Je n’y prendrai pas plaisir."
+    ]
+  },
+  "choice_7590_mire_1_vess": {
+    "remarkID": "choice_7590_mire_1_vess",
+    "companionID": "vess",
+    "trigger": "choice",
+    "choiceKey": "7590_mire#1",
+    "note": "The Throne: hunt the exorcists who burned Reedholm",
+    "lines": [
+      "Reedholm burned and the fen remembered. You remembered with it. Thank you."
+    ],
+    "lines_fr": [
+      "Reedholm a brûlé et le marais s’en souvient. Vous vous en souvenez avec lui. Merci."
+    ]
+  },
+  "choice_7590_crows_0_sable": {
+    "remarkID": "choice_7590_crows_0_sable",
+    "companionID": "sable",
+    "trigger": "choice",
+    "choiceKey": "7590_crows#0",
+    "note": "The Throne: choose the peace that pays, and pay for it",
+    "lines": [
+      "Peace that pays. The Crows will call you a fool, and take the money."
+    ],
+    "lines_fr": [
+      "Une paix qui rapporte. Les Corneilles vous traiteront de fou, et prendront l’argent."
+    ]
+  },
+  "choice_7590_crows_0_malrik": {
+    "remarkID": "choice_7590_crows_0_malrik",
+    "companionID": "malrik",
+    "trigger": "choice",
+    "choiceKey": "7590_crows#0",
+    "note": "The Throne: choose the peace that pays, and pay for it",
+    "lines": [
+      "You paid for the peace out of your own purse. I keep a ledger for such people. It is a short one."
+    ],
+    "lines_fr": [
+      "Vous avez payé la paix de votre bourse. Je tiens un registre pour ces gens-là. Il est court."
+    ]
+  },
+  "choice_7590_crows_1_sable": {
+    "remarkID": "choice_7590_crows_1_sable",
+    "companionID": "sable",
+    "trigger": "choice",
+    "choiceKey": "7590_crows#1",
+    "note": "The Throne: choose the war that lasts, and sell it twice",
+    "lines": [
+      "A war that lasts, sold twice. Crow-work, and good. I am not proud of how proud I am."
+    ],
+    "lines_fr": [
+      "Une guerre qui dure, vendue deux fois. Du travail de corneille, et du bon. Je ne suis pas fière de la fierté que j’en tire."
+    ]
+  },
+  "choice_7590_crows_1_grosh": {
+    "remarkID": "choice_7590_crows_1_grosh",
+    "companionID": "grosh",
+    "trigger": "choice",
+    "choiceKey": "7590_crows#1",
+    "note": "The Throne: choose the war that lasts, and sell it twice",
+    "lines": [
+      "More war. Grosh is happy. Grosh will not say Grosh is happy."
+    ],
+    "lines_fr": [
+      "Encore de la guerre. Grosh est content. Grosh ne dira pas que Grosh est content."
+    ]
+  },
+  "choice_7590_penitents_0_maren": {
+    "remarkID": "choice_7590_penitents_0_maren",
+    "companionID": "maren",
+    "trigger": "choice",
+    "choiceKey": "7590_penitents#0",
+    "note": "The Throne: take the burnt crown, and undo what was done",
+    "lines": [
+      "To undo what was done. It cannot be done. I am glad you tried."
+    ],
+    "lines_fr": [
+      "Défaire ce qui a été fait. Cela ne se peut pas. Je suis heureuse que vous ayez essayé."
+    ]
+  },
+  "choice_7590_penitents_0_tobin": {
+    "remarkID": "choice_7590_penitents_0_tobin",
+    "companionID": "tobin",
+    "trigger": "choice",
+    "choiceKey": "7590_penitents#0",
+    "note": "The Throne: take the burnt crown, and undo what was done",
+    "lines": [
+      "The burnt crown, worn to mend. I have waited a long time to see it worn properly."
+    ],
+    "lines_fr": [
+      "La couronne brûlée, portée pour réparer. J’ai longtemps attendu de la voir portée comme il faut."
+    ]
+  },
+  "choice_7590_penitents_1_maren": {
+    "remarkID": "choice_7590_penitents_1_maren",
+    "companionID": "maren",
+    "trigger": "choice",
+    "choiceKey": "7590_penitents#1",
+    "note": "The Throne: take the burnt crown, and burn the Reliquary",
+    "lines": [
+      "You burned the Reliquary. I have prayed in that place since I was a girl. I will not forgive you, and I will thank you."
+    ],
+    "lines_fr": [
+      "Vous avez brûlé le Reliquaire. J’y prie depuis que je suis petite. Je ne vous pardonnerai pas, et je vous remercierai."
+    ]
+  },
+  "choice_7590_penitents_1_tobin": {
+    "remarkID": "choice_7590_penitents_1_tobin",
+    "companionID": "tobin",
+    "trigger": "choice",
+    "choiceKey": "7590_penitents#1",
+    "note": "The Throne: take the burnt crown, and burn the Reliquary",
+    "lines": [
+      "The Reliquary burns. The bones are free. So, at last, is the penance."
+    ],
+    "lines_fr": [
+      "Le Reliquaire brûle. Les os sont libres. La pénitence aussi, enfin."
+    ]
+  },
+  "choice_7590_open_hand_0_liora": {
+    "remarkID": "choice_7590_open_hand_0_liora",
+    "companionID": "liora",
+    "trigger": "choice",
+    "choiceKey": "7590_open_hand#0",
+    "note": "The Throne: lay the Seal on the Throne for every drawer",
+    "lines": [
+      "The Seal on the Throne, for every drawer. The Open Hand is not a clan any longer. It is the coast."
+    ],
+    "lines_fr": [
+      "Le Sceau sur le Trône, pour chaque dessinateur. La Main ouverte n’est plus un clan. C’est la côte."
+    ]
+  },
+  "choice_7590_open_hand_0_maren": {
+    "remarkID": "choice_7590_open_hand_0_maren",
+    "companionID": "maren",
+    "trigger": "choice",
+    "choiceKey": "7590_open_hand#0",
+    "note": "The Throne: lay the Seal on the Throne for every drawer",
+    "lines": [
+      "A hand, open, on a throne. I thought it was only a picture."
+    ],
+    "lines_fr": [
+      "Une main, ouverte, sur un trône. Je croyais que ce n’était qu’une image."
+    ]
+  },
+  "choice_7590_open_hand_1_kelda": {
+    "remarkID": "choice_7590_open_hand_1_kelda",
+    "companionID": "kelda",
+    "trigger": "choice",
+    "choiceKey": "7590_open_hand#1",
+    "note": "The Throne: make the Dominion kneel to the hand it cut",
+    "lines": [
+      "The hand the Dominion cut now asks the Dominion to kneel. I will watch. I will not cheer."
+    ],
+    "lines_fr": [
+      "La main que le Dominion a coupée lui demande maintenant de s’agenouiller. Je regarderai. Je n’applaudirai pas."
+    ]
+  },
+  "choice_7590_open_hand_1_vess": {
+    "remarkID": "choice_7590_open_hand_1_vess",
+    "companionID": "vess",
+    "trigger": "choice",
+    "choiceKey": "7590_open_hand#1",
+    "note": "The Throne: make the Dominion kneel to the hand it cut",
+    "lines": [
+      "They cut your hand and you asked for their knees. I understand. I am not sure I forgive it."
+    ],
+    "lines_fr": [
+      "Ils ont coupé votre main et vous avez demandé leurs genoux. Je comprends. Je ne suis pas sûre de pardonner."
     ]
   }
 }

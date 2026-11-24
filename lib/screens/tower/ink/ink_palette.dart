@@ -23,3 +23,9 @@ const Color inkRed = Color(0xFFC1121A);
 
 /// The ink text of a paper panel.
 const Color inkOnPaper = Color(0xFF0B0C14);
+
+/// The deep red of dried ink, a wax seal, the foot of a blood bar.
+const Color inkRedDeep = Color(0xFF8E141A);
+
+/// The dust and the sand of the weather on a piece.
+const Color inkSand = Color(0xFFB9A27A);

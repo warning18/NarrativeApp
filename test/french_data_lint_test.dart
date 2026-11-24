@@ -44,6 +44,16 @@ bool _spokenToThePlayer(String file, String field) =>
 /// A no-break space before ; : ! ? and », after «.
 final RegExp _nbsp = RegExp('[^ ][:;!?»]|«[^ ]');
 
+/// A plain space before a percent sign (it is a no-break space in French),
+/// and a straight apostrophe between two letters (it is ’).
+final RegExp _plainPercent = RegExp(r'\d %');
+final RegExp _straightApostrophe =
+    RegExp("(?<=[A-Za-zÀ-ÿ])'(?=[A-Za-zÀ-ÿ])", unicode: true);
+
+/// The Void is « le Néant » in French everywhere (80 uses against a stray
+/// « Vide »); the adjective « vide » stays lower case.
+final RegExp _voidWord = RegExp(r'(?<!\p{L})Vide(?!\p{L})', unicode: true);
+
 /// Tutoiement, with accent-aware boundaries (not \b, which stops at every
 /// accented letter: « hôtes » holds a « tes » to it).
 final RegExp _tu = RegExp(
@@ -78,6 +88,9 @@ final RegExp _genderedFriend =
 List<String> _faults(String file, String field, String text) {
   final faults = <String>[];
   if (_nbsp.hasMatch(text)) faults.add('no-break space');
+  if (_plainPercent.hasMatch(text)) faults.add('no-break space before %');
+  if (_straightApostrophe.hasMatch(text)) faults.add('straight apostrophe');
+  if (_voidWord.hasMatch(text)) faults.add('the Void is « Néant »');
   if (!_fieldsNotToThePlayer.contains(field)) {
     var spoken = text;
     for (final phrase in _notAnAddress) {
@@ -136,6 +149,10 @@ void main() {
     const nbsp = ' ';
     expect(_faults('x', 'line_fr', 'Où allez-vous$nbsp?'), isEmpty);
     expect(_faults('x', 'line_fr', 'Où allez-vous ?'), ['no-break space']);
+    expect(_faults('x', 'line_fr', '+3 %'), ['no-break space before %']);
+    expect(_faults('x', 'line_fr', '+3$nbsp%'), isEmpty);
+    expect(_faults('x', 'line_fr', "L'os"), ['straight apostrophe']);
+    expect(_faults('x', 'line_fr', 'Le Vide'), ['the Void is « Néant »']);
     expect(
         _faults('x', 'line_fr', 'Ha$nbsp! Non$nbsp: ici$nbsp; là.'), isEmpty);
     expect(_faults('x', 'line_fr', 'Ha! Non.'), ['no-break space']);
@@ -148,7 +165,7 @@ void main() {
         ['tutoiement']);
     expect(
         _faults('x', 'line_fr', 'Elle me dit, du ton de quelqu’un…'), isEmpty);
-    expect(_faults('x', 'line_fr', 'Le Vide s’est tu.'), isEmpty);
+    expect(_faults('x', 'line_fr', 'Le Néant s’est tu.'), isEmpty);
     expect(
         _faults('companions.json', 'dodgeLineFr', 'Tu n’as saisi que l’ombre.'),
         isEmpty);

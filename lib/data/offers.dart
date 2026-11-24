@@ -106,7 +106,7 @@ const Map<GiftKind, int> _giftKindWeights = {
 /// The deepest skill (its index on a branch) a faction offers at each
 /// tier: the first at Unknown (or Wary), the second at Known, the third
 /// at Trusted, the fourth at Sworn.
-int skillIndexCapFor(StandingTier tier) {
+int _skillIndexCapFor(StandingTier tier) {
   if (tier.isAtLeast(StandingTier.sworn)) return 3;
   if (tier.isAtLeast(StandingTier.trusted)) return 2;
   if (tier.isAtLeast(StandingTier.known)) return 1;
@@ -679,7 +679,7 @@ bool _leanOffersReputation(int lean, Map<String, dynamic> skill) =>
 /// The skills [factionId] can offer now: on each branch it sponsors for
 /// the character, every skill not known whose turn has come (the one
 /// before it on the branch known, its `requiredSkillID` known) and that
-/// lies no deeper than standing allows ([skillIndexCapFor], plus
+/// lies no deeper than standing allows ([_skillIndexCapFor], plus
 /// [tierBonus] for a quest's suitor); then, from a clan that leans one
 /// way, the reputation skills of that side the character's alignment
 /// allows. In the branches' order, no repeats.
@@ -689,7 +689,7 @@ List<String> offerableSkillsFor(
   int tierBonus = 0,
   int deepest = 3,
 }) {
-  final cap = min(deepest, skillIndexCapFor(c.tierOf(factionId)) + tierBonus);
+  final cap = min(deepest, _skillIndexCapFor(c.tierOf(factionId)) + tierBonus);
   final out = <String>[];
   final faction = c.data.faction(factionId);
   for (final branch in _sponsoredBranchesFor(factionId, c)) {

@@ -37,7 +37,7 @@ class KitSeam {
 /// The layers of the land kit [kit] ('desert', 'ruins', 'fen', 'frost',
 /// 'cliffs'); null for a kit the camera does not paint (the sea has its own
 /// scene).
-List<SideLayer>? kitLayersOf(String kit, {double progress = 0.5}) =>
+List<SideLayer>? _kitLayersOf(String kit, {double progress = 0.5}) =>
     switch (kit) {
       'desert' => desertLayers(progress: progress),
       'ruins' => ruinsLayers(progress: progress),
@@ -101,7 +101,7 @@ class WorldCamera {
       {double progress = 0.5, double landmark = 1}) {
     final seam = seamAt(x);
     List<SideLayer>? placed(String kit) {
-      final layers = kitLayersOf(kit, progress: progress);
+      final layers = _kitLayersOf(kit, progress: progress);
       return layers == null
           ? null
           : withSceneAt(layers, kit, x, landmark: landmark);
