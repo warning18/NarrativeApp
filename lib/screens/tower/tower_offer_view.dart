@@ -186,8 +186,10 @@ class _TowerOfferViewState extends ConsumerState<TowerOfferView> {
       );
     }
     if (tarot) {
-      final w =
-          (room - 8 * (widget.run.offer.length - 1)) / widget.run.offer.length;
+      // A lone card (the oath alone) is one of three, centred: not a screen-high
+      // black tarot (#1145).
+      final slots = widget.run.offer.length < 2 ? 3 : widget.run.offer.length;
+      final w = (room - 8 * (slots - 1)) / slots;
       return TowerTarotCard(
         key: key,
         width: w,
@@ -330,6 +332,9 @@ class _TowerOfferViewState extends ConsumerState<TowerOfferView> {
                 children: [
                   if (tarot)
                     Row(
+                      mainAxisAlignment: offer.length < 2
+                          ? MainAxisAlignment.center
+                          : MainAxisAlignment.start,
                       crossAxisAlignment: CrossAxisAlignment.end,
                       children: [
                         for (var i = 0; i < cards.length; i++) ...[
