@@ -619,7 +619,10 @@ class _CityChartViewState extends State<CityChartView>
   Widget build(BuildContext context) {
     final palette = ChartPalette.of(widget.look);
     final text = widget.text;
-    return LayoutBuilder(builder: (context, box) {
+    // On its own layer: a pan, a zoom or a pick rebuilds this view under
+    // its LayoutBuilder, which lays it out and repaints its layer; without
+    // the boundary that layer is the whole screen round the plan.
+    return RepaintBoundary(child: LayoutBuilder(builder: (context, box) {
       _fit(Size(box.maxWidth, box.maxHeight));
       _reportZoom();
       final focus = _focus == null ? null : widget.chart.districtById(_focus!);
@@ -747,7 +750,7 @@ class _CityChartViewState extends State<CityChartView>
             child: _card(palette, text, focus),
           ),
       ]);
-    });
+    }));
   }
 
   Widget _card(
