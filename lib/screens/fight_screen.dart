@@ -133,6 +133,7 @@ import '../widgets/ink_loading.dart';
 import '../theme/icon_sizes.dart';
 import '../widgets/pixel_glyph.dart';
 import 'tower/ink/ink_palette.dart' show inkGrey, inkRed, inkSlate;
+import '../widgets/dice_throw.dart';
 import 'tower/ink/ink_dice.dart' show inkDieSkin;
 import 'tower/tower_backdrop.dart' show towerFightScene;
 import 'tower/ink/ink_kit.dart' show InkSlantPanel, InkSplashPainter;
@@ -631,6 +632,11 @@ class _FightScreenState extends ConsumerState<FightScreen>
 
   late final AnimationController _shakeController;
   late final AnimationController _rollController;
+
+  /// The thrown dice's plan for the roll under way (see dice_throw.dart).
+  DiceThrowPlan? _throwPlan;
+  final GlobalKey _weatherKey = GlobalKey();
+  String _throwKey = '';
 
   /// Reduced motion: the dice are not thrown, they are there.
   bool get _still => MediaQuery.of(context).disableAnimations;

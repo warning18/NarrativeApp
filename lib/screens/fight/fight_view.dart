@@ -749,6 +749,8 @@ extension _FightView on _FightScreenState {
     bool canLock,
     _FacePreview? preview, {
     double cube = 46,
+    Animation<double>? roll,
+    bool hideName = false,
   }) {
     final accent = _accentFor(actor);
     final face = _currentFaces[actor.id];
@@ -768,7 +770,7 @@ extension _FightView on _FightScreenState {
           : _cubeFacesFor(actor, landing, accent, count: actor.dieFaces.length),
       accent: accent,
       size: cube,
-      roll: _rollController,
+      roll: roll ?? _rollController,
       rolling: spinning,
       fx: face == null ? null : dieFxOf(_faceKindOf(face)),
       big: face != null && (face.type == 'Skill' || face.value >= 8),
@@ -923,16 +925,23 @@ extension _FightView on _FightScreenState {
           SizedBox(
             width: cube + 24,
             height: 14,
-            child: FittedBox(
-              fit: BoxFit.scaleDown,
-              child: Text(
-                actor.displayName,
-                maxLines: 1,
-                textAlign: TextAlign.center,
-                style: Theme.of(context).textTheme.labelSmall?.copyWith(
-                    color: accent, fontWeight: FontWeight.bold, fontSize: 10),
-              ),
-            ),
+            // On a board too short for the hint and the dice (the Tower at
+            // 320, French, big text) the name is left out: it is on the
+            // plate above, and the hint needs the room.
+            child: hideName
+                ? null
+                : FittedBox(
+                    fit: BoxFit.scaleDown,
+                    child: Text(
+                      actor.displayName,
+                      maxLines: 1,
+                      textAlign: TextAlign.center,
+                      style: Theme.of(context).textTheme.labelSmall?.copyWith(
+                          color: accent,
+                          fontWeight: FontWeight.bold,
+                          fontSize: 10),
+                    ),
+                  ),
           ),
           SizedBox(
             width: cube + 24,

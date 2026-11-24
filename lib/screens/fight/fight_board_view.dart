@@ -512,6 +512,42 @@ extension _FightBoardView on _FightScreenState {
     );
   }
 
+  /// How tall the hint under the dice is, laid out as it is drawn (at most
+  /// two lines, the board's width less its margins, the text setting's size).
+  double _hintHeight(String text, double width) {
+    final painter = TextPainter(
+      text: TextSpan(text: text, style: Theme.of(context).textTheme.labelSmall),
+      textDirection: TextDirection.ltr,
+      textScaler: MediaQuery.textScalerOf(context),
+      maxLines: 2,
+    )..layout(maxWidth: width);
+    final h = painter.height;
+    painter.dispose();
+    return h;
+  }
+
+  /// The plan of the throw under way, made once per roll from the seats the
+  /// board gives the dice and kept until the next.
+  DiceThrowPlan _throwPlanFor(
+      List<_PartyMember> acting, List<_PartyMember> onBoard, Size size) {
+    final key = '$_rollCount|$_roundsStarted|${size.width.round()}x'
+        '${size.height.round()}|${[for (final a in onBoard) a.id].join(',')}';
+    if (_throwPlan != null && _throwKey == key) return _throwPlan!;
+    final seats = [
+      for (final a in onBoard)
+        DiceThrowSeat(
+            _seatFor(acting.indexOf(a), acting.length, size),
+            _dieSquareFor(a.dieFaces.length,
+                    count: onBoard.length, boardWidth: size.width) *
+                0.5 *
+                dieSolidScale(dieShapeOf(a.dieFaces.length)) *
+                0.95),
+    ];
+    _throwKey = key;
+    return _throwPlan = DiceThrowPlan.build(
+        seats: seats, board: size, seed: _rollCount * 131 + _roundsStarted);
+  }
+
   Widget _buildDiceBoard(
     List<_PartyMember> acting,
     Map<String, dynamic> dice,
@@ -555,6 +591,28 @@ extension _FightBoardView on _FightScreenState {
                         : 1.0;
                     final arc = sin(pi * t) * 46;
                     final launch = Offset(size.width / 2, size.height + 40);
+                    // The throw (v2.2): bounces, a slide, a turn, the dice
+                    // pushing each other aside; on the cheap profile and
+                    // with reduced motion, the plain flight above.
+                    final throwPlan = _rolling &&
+                            !disable &&
+                            !dieCheapSolids &&
+                            onBoard.isNotEmpty
+                        ? _throwPlanFor(acting, onBoard, size)
+                        : null;
+                    final u = _rollController.value;
+                    // At rest, the next throw is planned after the frame, so
+                    // the roll's first frame does not pay for it.
+                    if (!_rolling &&
+                        !disable &&
+                        !dieCheapSolids &&
+                        onBoard.isNotEmpty) {
+                      WidgetsBinding.instance.addPostFrameCallback((_) {
+                        if (mounted && !_rolling) {
+                          _throwPlanFor(acting, onBoard, size);
+                        }
+                      });
+                    }
                     return Stack(
                       clipBehavior: Clip.none,
                       children: [
@@ -586,12 +644,38 @@ extension _FightBoardView on _FightScreenState {
                               ),
                             ),
                           ),
+                        if (throwPlan != null)
+                          for (var k = 0; k < onBoard.length; k++)
+                            Positioned(
+                              left: throwPlan.position(k, u).dx -
+                                  throwPlan.radiusOf(k),
+                              top: throwPlan.position(k, u).dy +
+                                  throwPlan.radiusOf(k) * 0.55,
+                              width: 2 * throwPlan.radiusOf(k),
+                              height: throwPlan.radiusOf(k) * 0.5,
+                              child: IgnorePointer(
+                                child: DecoratedBox(
+                                  decoration: BoxDecoration(
+                                    shape: BoxShape.circle,
+                                    color: Colors.black.withValues(
+                                        alpha: 0.4 *
+                                            (1 -
+                                                throwPlan.lift(k, u) /
+                                                    (diceThrowMaxLift * 2))),
+                                  ),
+                                ),
+                              ),
+                            ),
                         for (final actor in onBoard)
                           () {
                             final i = acting.indexOf(actor);
+                            final k = onBoard.indexOf(actor);
                             final seat = _seatFor(i, acting.length, size);
-                            final pos =
-                                Offset.lerp(launch, seat, t)! - Offset(0, arc);
+                            final lift = throwPlan?.lift(k, u) ?? 0.0;
+                            final pos = throwPlan != null
+                                ? throwPlan.position(k, u) - Offset(0, lift)
+                                : Offset.lerp(launch, seat, t)! -
+                                    Offset(0, arc);
                             final square = _dieSquareFor(actor.dieFaces.length,
                                 count: onBoard.length, boardWidth: size.width);
                             final tileW = max(_tileW, square + 24);
@@ -603,15 +687,31 @@ extension _FightBoardView on _FightScreenState {
                               height: tileH,
                               child: _buildDieTile(actor, dice, skills, items,
                                   canLock, plan.previews[actor.id],
-                                  cube: square),
+                                  cube: square,
+                                  hideName: TowerPanelStyle.of(context) &&
+                                      size.height <
+                                          tileH +
+                                              _hintHeight(tr(ref, hintKey),
+                                                  size.width - 16) +
+                                              16,
+                                  roll: throwPlan == null
+                                      ? null
+                                      : _rollController.drive(CurveTween(
+                                          curve: throwPlan.turnCurve(k)))),
                             );
                           }(),
-                        // The Tower's ink: the dice's tags on the plate.
+                        // The Tower's ink: the dice's tags on the plate, over
+                        // the hint (whatever its height: French and a big text
+                        // setting wrap it to two lines).
                         if (TowerPanelStyle.of(context) && onBoard.isNotEmpty)
                           Positioned(
                             left: 8,
                             right: 8,
-                            bottom: 40,
+                            bottom: max(
+                                40.0,
+                                10 +
+                                    _hintHeight(
+                                        tr(ref, hintKey), size.width - 16)),
                             child: IgnorePointer(
                               child: Row(
                                 mainAxisAlignment:
