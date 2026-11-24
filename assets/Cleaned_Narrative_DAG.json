@@ -2984,6 +2984,12 @@
         "flag": "hold_sealed",
         "en": "The caravan master found his grain wagon full of rats and his grain eaten, and knew exactly whom to thank. He did not say so. He did not need to.",
         "fr": "Le chef de caravane trouva son chariot plein de rats et son grain dévoré, et sut exactement qui remercier. Il ne le dit pas. Il n’en avait pas besoin."
+      },
+      {
+        "flag": "void_banner_bearer",
+        "en": "The courier in crape, low: “If you meet a lantern-bearer who coughs, ask whose seal he carries. Do not ask loudly.”",
+        "fr": "Le courrier en crêpe, à voix basse : « Si vous croisez un porteur de lanterne qui tousse, demandez quel sceau il porte. Pas à voix haute. »",
+        "priority": -1
       }
     ],
     "facing": "crape_courier",
@@ -3032,7 +3038,18 @@
     ],
     "facing": "vane_quartermaster",
     "prompt": "What do you do in the market?",
-    "prompt_fr": "Que faites-vous au marché ?"
+    "prompt_fr": "Que faites-vous au marché ?",
+    "flag_callbacks": [
+      {
+        "flag": "void_banner_bearer",
+        "en": "Vane: “Ask on the wharf who sells lamp-oil by the cask and burns none. Someone is paying to keep a lantern shuttered.”",
+        "fr": "Vane : « Demandez sur le quai qui vend l’huile de lampe au tonneau et n’en brûle pas. Quelqu’un paie pour qu’une lanterne reste voilée. »",
+        "unlessFlags": [
+          "hub_2015_informant"
+        ],
+        "priority": -1
+      }
+    ]
   },
   "2011": {
     "id": "2011",
@@ -3524,6 +3541,51 @@
         "flag": "crow_no_ones",
         "en": "I had told the Crows I was no one’s. They had written it down, in pencil.",
         "fr": "J’avais dit aux Corneilles que je n’étais à personne. Elles l’avaient noté, au crayon."
+      },
+      {
+        "flag": "void_banner_bearer",
+        "en": "Dorran Quill, wiping chalk from his hands: “The Dominion’s men measured my scaffold twice and the harbour once. Ask them why.”",
+        "fr": "Dorran Quill, qui s’essuie les mains pleines de craie : « Les hommes du Dominion ont mesuré mon échafaudage deux fois et le port une seule. Demandez-leur pourquoi. »",
+        "unlessFlags": [
+          "hub_2015_dominion_blades"
+        ],
+        "priority": -1
+      },
+      {
+        "flag": "void_banner_bearer",
+        "en": "Old Harker, to nobody: “Two books for one cargo. Saltmouth only keeps one honestly. Guess which.”",
+        "fr": "Le vieux Harker, à personne : « Deux livres pour une seule cargaison. Saltmouth n’en tient qu’un honnêtement. Devinez lequel. »",
+        "unlessFlags": [
+          "hub_2015_route_sold"
+        ],
+        "priority": -1
+      },
+      {
+        "flag": "void_banner_bearer",
+        "en": "Sister Ysolde: “A child on Tern Row spoke in a voice that was not hers. If you hear it, do not answer in kind.”",
+        "fr": "Sœur Ysolde : « Une enfant de la Rangée des sternes a parlé d’une voix qui n’était pas la sienne. Si vous l’entendez, ne répondez pas sur le même ton. »",
+        "unlessFlags": [
+          "hub_2015_child_tongue"
+        ],
+        "priority": -1
+      },
+      {
+        "flag": "void_banner_bearer",
+        "en": "Nadira: “One man came off a ship the Admiralty swears never sailed. He sleeps behind the net-loft, and he will not sleep long.”",
+        "fr": "Nadira : « Un homme est descendu d’un navire que l’Amirauté jure n’avoir jamais appareillé. Il dort derrière la resserre aux filets, et il ne dormira pas longtemps. »",
+        "unlessFlags": [
+          "hub_2015_survivor"
+        ],
+        "priority": -1
+      },
+      {
+        "flag": "void_banner_bearer",
+        "en": "Old Pell: “My wagons carry cloth and salt. Lately they carry bundles I never packed, and they are heavier on the way in than the way out.”",
+        "fr": "Le vieux Pell : « Mes chariots portent du tissu et du sel. Depuis peu ils portent des ballots que je n’ai pas faits, plus lourds à l’aller qu’au retour. »",
+        "unlessFlags": [
+          "hub_2015_bundle"
+        ],
+        "priority": -1
       }
     ],
     "hub_progress": {
@@ -5118,6 +5180,24 @@
         "flag": "scaffold_split",
         "en": "The breaker’s yard had gone back to work on half wages, the refugees said, which the Ledger called peace and the riggers called Tuesday.",
         "fr": "Le chantier des démolisseurs avait repris à demi-gages, disaient les réfugiés, ce que le Registre appelait la paix et les gréeurs un mardi."
+      },
+      {
+        "flag": "void_banner_bearer",
+        "en": "Sister Inès: “The watch changes at the new moon, and for one hour nobody is looking at the Sigil. Count it, if you can stand to.”",
+        "fr": "Sœur Inès : « La relève se fait à la nouvelle lune, et pendant une heure personne ne regarde le Sceau. Comptez-la, si vous en avez le cœur. »",
+        "unlessFlags": [
+          "hub_3100_new_moon"
+        ],
+        "priority": -1
+      },
+      {
+        "flag": "void_banner_bearer",
+        "en": "Hollis Reck: “A dying man’s will is the only honest document in this town, and the only one nobody has read. Find the scribe.”",
+        "fr": "Hollis Reck : « Le testament d’un mourant est le seul document honnête de cette ville, et le seul que personne n’ait lu. Trouvez le scribe. »",
+        "unlessFlags": [
+          "hub_6100_will_scribe"
+        ],
+        "priority": -1
       }
     ],
     "hub_progress": {
@@ -5284,6 +5364,15 @@
         "flag": "hub_3005_grosh",
         "en": "The sergeant knew Grosh’s name, and spat when she said it, which in the Last Watch is a kind of fondness.",
         "fr": "La sergente connaissait le nom de Grosh, et cracha en le prononçant, ce qui, à la Dernière Veille, est une forme de tendresse."
+      },
+      {
+        "flag": "void_banner_bearer",
+        "en": "Edda Grey, tracing a name with her thumb: “Some of them were not taken. They were counted out. Someone kept the count, and it is not on this wall.”",
+        "fr": "Edda Grey, qui suit un nom du pouce : « Certains n’ont pas été emportés. On les a rayés du compte. Quelqu’un a tenu ce compte, et il n’est pas sur ce mur. »",
+        "unlessFlags": [
+          "intrigue_taken_names_stage_1"
+        ],
+        "priority": -1
       }
     ],
     "prompt": "How do you hold the night?",
@@ -6455,6 +6544,19 @@
         "flag": "siege_burned_them",
         "en": "The smoke from their pyre had hung over the water all morning, where the next ship would see it. That had been the point.",
         "fr": "La fumée de leur bûcher avait plané sur l’eau toute la matinée, là où le prochain navire la verrait. C’était tout l’intérêt."
+      },
+      {
+        "flag": "intrigue_unwatched_hour_stage_1",
+        "en": "The count at the reliquary is short by one. Orsabet knows which one, and has not said.",
+        "fr": "Le compte du reliquaire est court d’un. Orsabet sait lequel, et ne l’a pas dit.",
+        "unlessFlags": [
+          "intrigue_unwatched_hour_stage_2",
+          "intrigue_unwatched_hour_stage_3",
+          "intrigue_unwatched_hour_stage_4",
+          "intrigue_unwatched_hour_stage_5",
+          "intrigue_unwatched_hour_stage_6"
+        ],
+        "priority": -1
       }
     ],
     "settlement": {
@@ -7322,6 +7424,32 @@
         "unlessFlags": [
           "sailed_alone"
         ]
+      },
+      {
+        "flag": "intrigue_hooded_lantern_stage_1",
+        "en": "Vane’s lamp-oil riddle is still open. The shuttered lantern has a master, and he has not left Saltmouth.",
+        "fr": "L’énigme de Vane sur l’huile de lampe reste ouverte. La lanterne voilée a un maître, et il n’a pas quitté Saltmouth.",
+        "unlessFlags": [
+          "intrigue_hooded_lantern_stage_2",
+          "intrigue_hooded_lantern_stage_3",
+          "intrigue_hooded_lantern_stage_4",
+          "intrigue_hooded_lantern_stage_5",
+          "intrigue_hooded_lantern_stage_6"
+        ],
+        "priority": -1
+      },
+      {
+        "flag": "intrigue_dying_lantern_bearer_stage_1",
+        "en": "The envoys at the Ashen Quarter gate still wait on an answer. Someone should give them one.",
+        "fr": "Les envoyés de la porte du Quartier cendré attendent toujours une réponse. Il faudrait bien leur en donner une.",
+        "unlessFlags": [
+          "intrigue_dying_lantern_bearer_stage_2",
+          "intrigue_dying_lantern_bearer_stage_3",
+          "intrigue_dying_lantern_bearer_stage_4",
+          "intrigue_dying_lantern_bearer_stage_5",
+          "intrigue_dying_lantern_bearer_stage_6"
+        ],
+        "priority": -1
       }
     ],
     "settlement": {
@@ -9411,6 +9539,32 @@
         "en": "Lysa never asked what became of the copies. She knew.",
         "fr": "Lysa ne demanda jamais ce que les copies étaient devenues. Elle le savait.",
         "priority": 1
+      },
+      {
+        "flag": "intrigue_lanternbearers_will_stage_1",
+        "en": "The will’s seal is still unbroken. The scribe at Rimewell only needs a reason to hand it over.",
+        "fr": "Le sceau du testament est toujours intact. Le scribe de Rimewell n’attend qu’une raison de le remettre.",
+        "unlessFlags": [
+          "intrigue_lanternbearers_will_stage_2",
+          "intrigue_lanternbearers_will_stage_3",
+          "intrigue_lanternbearers_will_stage_4",
+          "intrigue_lanternbearers_will_stage_5",
+          "intrigue_lanternbearers_will_stage_6"
+        ],
+        "priority": -1
+      },
+      {
+        "flag": "intrigue_taken_names_stage_1",
+        "en": "The Wall of Names was only the first list. A clerk at the end of the road keeps the other.",
+        "fr": "Le Mur des noms n’était que la première liste. Un greffier au bout de la route tient l’autre.",
+        "unlessFlags": [
+          "intrigue_taken_names_stage_2",
+          "intrigue_taken_names_stage_3",
+          "intrigue_taken_names_stage_4",
+          "intrigue_taken_names_stage_5",
+          "intrigue_taken_names_stage_6"
+        ],
+        "priority": -1
       }
     ],
     "settlement": {
@@ -11347,6 +11501,71 @@
         "flag": "oni_horns_returned",
         "en": "Two oni walked down from Akagiri with a keg of red-rice spirit and a bell for the camp. They stayed until the keg was empty, which was not long.",
         "fr": "Deux oni étaient descendus d’Akagiri avec un tonnelet d’alcool de riz rouge et une cloche pour le camp. Ils restèrent jusqu’au fond du tonnelet, ce qui ne fut pas long."
+      },
+      {
+        "flag": "intrigue_broken_charter_stage_1",
+        "en": "The Tribunal’s gold is still counted twice somewhere in the Ashen Quarter. The hall clerks know where.",
+        "fr": "L’or du Tribunal est toujours compté deux fois quelque part dans le Quartier cendré. Les greffiers de la salle savent où.",
+        "unlessFlags": [
+          "intrigue_broken_charter_stage_2",
+          "intrigue_broken_charter_stage_3",
+          "intrigue_broken_charter_stage_4",
+          "intrigue_broken_charter_stage_5",
+          "intrigue_broken_charter_stage_6"
+        ],
+        "priority": -1
+      },
+      {
+        "flag": "intrigue_double_ledger_stage_1",
+        "en": "The black thread in the Ashen Quarter ledgers is still there for whoever pulls it.",
+        "fr": "Le fil noir des registres du Quartier cendré est toujours là pour qui le tire.",
+        "unlessFlags": [
+          "intrigue_double_ledger_stage_2",
+          "intrigue_double_ledger_stage_3",
+          "intrigue_double_ledger_stage_4",
+          "intrigue_double_ledger_stage_5",
+          "intrigue_double_ledger_stage_6"
+        ],
+        "priority": -1
+      },
+      {
+        "flag": "intrigue_the_returned_stage_1",
+        "en": "The Spire’s takings do not match its mourners. Sister Ysolde’s unease has a number.",
+        "fr": "Les recettes de la Flèche ne correspondent pas à ses pleureurs. L’inquiétude de sœur Ysolde a un chiffre.",
+        "unlessFlags": [
+          "intrigue_the_returned_stage_2",
+          "intrigue_the_returned_stage_3",
+          "intrigue_the_returned_stage_4",
+          "intrigue_the_returned_stage_5",
+          "intrigue_the_returned_stage_6"
+        ],
+        "priority": -1
+      },
+      {
+        "flag": "intrigue_admiraltys_silence_stage_1",
+        "en": "The page missing from the Admiralty logbook is still missing. The survivor’s story names the gap.",
+        "fr": "La page qui manque au livre de bord de l’Amirauté manque toujours. Le récit du rescapé nomme le trou.",
+        "unlessFlags": [
+          "intrigue_admiraltys_silence_stage_2",
+          "intrigue_admiraltys_silence_stage_3",
+          "intrigue_admiraltys_silence_stage_4",
+          "intrigue_admiraltys_silence_stage_5",
+          "intrigue_admiraltys_silence_stage_6"
+        ],
+        "priority": -1
+      },
+      {
+        "flag": "intrigue_relic_road_stage_1",
+        "en": "Somebody is breaking shrines to keep a road open. The broken one at the Ashen Quarter is the clearest.",
+        "fr": "Quelqu’un brise des sanctuaires pour garder une route ouverte. Celui du Quartier cendré, brisé, est le plus clair.",
+        "unlessFlags": [
+          "intrigue_relic_road_stage_2",
+          "intrigue_relic_road_stage_3",
+          "intrigue_relic_road_stage_4",
+          "intrigue_relic_road_stage_5",
+          "intrigue_relic_road_stage_6"
+        ],
+        "priority": -1
       }
     ],
     "settlement": {
