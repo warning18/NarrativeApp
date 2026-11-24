@@ -15,8 +15,8 @@ Future<void> settleApp(WidgetTester tester) async {
   final first = _settled[tester] == null;
   _settled[tester] = true;
   for (var i = 0; i < 3; i++) {
-    await tester.runAsync(() =>
-        Future<void>.delayed(Duration(milliseconds: first ? 100 : 30)));
+    await tester.runAsync(
+        () => Future<void>.delayed(Duration(milliseconds: first ? 100 : 30)));
     await tester.pump(const Duration(milliseconds: 100));
   }
 }
