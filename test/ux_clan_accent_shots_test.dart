@@ -34,7 +34,7 @@ void main() {
     InkSprites.reset();
   });
 
-  for (final scene in ['home', 'floor', 'fight']) {
+  for (final scene in ['home', 'floor', 'fight', 'start', 'ladder', 'end']) {
     testWidgets('clan accent base: $scene', skip: shots == null,
         (tester) async {
       await tester.runAsync(loadAppFonts);
@@ -64,8 +64,11 @@ void main() {
           run = towerTakeStatPick(run, data, 0, offer: picks);
         }
       }
+      if (scene == 'end') {
+        run = run.copyWith(floor: 12, status: TowerStatus.dead);
+      }
       SharedPreferences.setMockInitialValues({
-        towerRunPrefsKey: jsonEncode(run.toJson()),
+        if (scene != 'start') towerRunPrefsKey: jsonEncode(run.toJson()),
         'tutorial_enabled': false,
       });
       final key = GlobalKey();
@@ -98,6 +101,11 @@ void main() {
         await settle(18);
         await tester.tap(find.byKey(const Key('tower_card_1')));
         await settle(6);
+      } else if (scene == 'start') {
+        await tapKey('menu_tower');
+      } else if (scene == 'ladder' || scene == 'end') {
+        await tapKey('menu_tower');
+        await tapKey('tower_continue');
       } else if (scene == 'fight') {
         await tapKey('menu_tower');
         await tapKey('tower_continue');
