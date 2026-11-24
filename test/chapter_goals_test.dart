@@ -12,6 +12,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:narrative_data_app/combat/loot_box.dart';
 import 'package:narrative_data_app/data/chapter_goals.dart';
+import 'package:narrative_data_app/l10n/app_locale.dart';
 import 'package:narrative_data_app/providers/player_session_provider.dart';
 
 ChapterFightFacts _won({
@@ -58,6 +59,27 @@ void main() {
         }
       }
     }
+  });
+
+  test('every goal and chest has its words, English and French', () {
+    for (final lang in AppLanguage.values) {
+      for (final MapEntry(key: chapter, value: goals)
+          in chapterGoalTable.entries) {
+        for (final g in goals) {
+          final line = chapterGoalLine(lang, chapter, g);
+          expect(line, isNot(startsWith('chapter_goal_')),
+              reason: '$lang ch$chapter ${g.id}');
+          expect(line, isNot(contains('{n}')));
+        }
+        expect(chapterChestLine(lang, chapter),
+            isNot(startsWith('chapter_chest_')));
+      }
+      for (var met = 0; met <= 3; met++) {
+        expect(chapterChestName(lang, met), isNot(startsWith('chapter_')));
+      }
+    }
+    expect(chapterGoalLine(AppLanguage.en, 5, chapterGoalTable[5]!.first),
+        contains('3'));
   });
 
   group('what a fight won meets', () {

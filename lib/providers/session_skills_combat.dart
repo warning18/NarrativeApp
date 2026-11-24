@@ -321,8 +321,8 @@ mixin _SkillsCombatActions on _SessionNotifierBase {
   /// [chapter]'s chest given: it comes once, and its goals stop counting.
   Future<void> markChapterChestGiven(int chapter) async {
     if (state.chapterChestsGiven.contains(chapter)) return;
-    state = state.copyWith(
-        chapterChestsGiven: [...state.chapterChestsGiven, chapter]);
+    state = state
+        .copyWith(chapterChestsGiven: [...state.chapterChestsGiven, chapter]);
     await _persist();
   }
 

@@ -12,6 +12,8 @@
 import 'dart:math';
 
 import '../combat/loot_box.dart';
+import '../l10n/app_locale.dart' show AppLanguage;
+import '../l10n/app_strings.dart' show hasStringKey, trFor;
 
 /// What a goal asks of one fight won (its words: `chapter_goal_<key>`,
 /// and `chapter_goal_<key>_ch<N>` for a chapter's own line).
@@ -167,4 +169,22 @@ LootBoxResult rollChapterChest({
     items,
     random,
   );
+}
+
+/// [goal]'s line for [chapter] in [language] (Narrative's words): the
+/// chapter's own line when it has one, else the kind's; `{n}` is its value.
+String chapterGoalLine(AppLanguage language, int chapter, ChapterGoal goal) {
+  final own = 'chapter_goal_${goal.kind.key}_ch$chapter';
+  final key = hasStringKey(own) ? own : 'chapter_goal_${goal.kind.key}';
+  return trFor(language, key).replaceAll('{n}', '${goal.value}');
+}
+
+/// The chapter chest's name for [met] goals ("Silver Chapter Chest").
+String chapterChestName(AppLanguage language, int met) =>
+    trFor(language, 'chapter_chest_${chapterChestTier(met).name}');
+
+/// The line as [chapter]'s chest opens.
+String chapterChestLine(AppLanguage language, int chapter) {
+  final own = 'chapter_chest_line_ch$chapter';
+  return trFor(language, hasStringKey(own) ? own : 'chapter_chest_line');
 }
