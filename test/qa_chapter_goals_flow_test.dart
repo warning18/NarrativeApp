@@ -39,7 +39,7 @@ Future<PlayerSessionNotifier> _open() async {
 }
 
 const _won = ChapterFightFacts(
-    won: true, rounds: 1, healthLeft: 1, maxHealth: 100, weaknessStruck: true);
+    won: true, rounds: 1, healthLeft: 1, maxHealth: 100, weaknessHits: 3);
 
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
@@ -67,7 +67,7 @@ void main() {
           rounds: 1,
           healthLeft: 1,
           maxHealth: 100,
-          weaknessStruck: true,
+          weaknessHits: 3,
           enemyIds: [
             for (final g in goals) ...g.bossIds,
           ]);
