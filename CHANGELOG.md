@@ -11,6 +11,9 @@ isn't reconstructable from git history alone.
 ## [1.1008.0+1044]
 
 - The Tower is moving to ink; the rest follows (part 3 of 4: the fight). A Tower fight is drawn in the approved ink layout: the foes and the party each stand in a slanted picture panel on the floor's plate, their chibi in ink and their skewed black nameplates over them, the 30-floor climb strip above, the real dice with the strip of their faces under the board, a red burst and speed lines behind the foe the picked die is aimed at. The dark theme with square buttons (red for the one that goes on), ink health bars (slate for your side, red for the foe), square status tiles and gems in paper white, an ink die and a dark stage floor, and a darker veil on the plate so the text reads. The foe band's tags (an affix, Elite) are paper text on a red block, and a short floor sits at the top of the climb screen again instead of in the middle. The story's fights are unchanged. Look only. UX (view only).
+## [1.1007.0+1043]
+
+- **A specialisation or a clan's oath comes alone.** When an offer would hold a Sworn boon (else a specialisation), that gift comes on its own, with "Accept" or "Not now" ("Plus tard"). Not now deals the usual three cards instead, without that gift, which may come again in a later offer; nothing else moves. Before, it sat beside two cards it almost always beat (taken 82 to 100% of the time). A gift alone is never risky and brings no fourth card. On short phones the clan's banner shows at half size so the card fits 320 x 568. Core (rule, sheet from UX's mock).
 
 ## [1.1005.0+1041]
 
