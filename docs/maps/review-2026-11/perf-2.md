@@ -50,3 +50,33 @@ plan page, the page one "+" in) are the same pixel for pixel.
 - The marks under the fog (towns' houses, trade roads, villages) still take about 2 ms of a paint of the
   ball; they could be kept between paints like the names. Not done: more code than the gain is worth
   before a phone says the ball is slow.
+
+## Third look: the town and city views on v2.3.1 (measured, nothing changed)
+
+Same throw-away test, 30 frames each, a test build on a server.
+
+| View | Nothing touched | Still asking for frames |
+|---|---|---|
+| A room (Alster, the Ashen Quarter) | 0 widgets rebuilt, 0 pieces repainted | no |
+| District (Alster, Saltmouth, the Ashen Quarter) | 0 rebuilt, 1 repainted, about 1 ms | yes |
+| Town (the same three) | 0 rebuilt, 1 repainted, 1 to 1.4 ms | yes |
+| City plan page (Alster) | 0 rebuilt, 1 repainted, 1 ms | yes |
+
+The one piece is the party's ring breathing, on its own layer. A room now rests (Core's fix after the split).
+
+| Move | Each frame |
+|---|---|
+| Town, the glide after "+" | 19 widgets rebuilt, 42 pieces repainted, 4.6 ms |
+| Town, a drag of the plan | 22 rebuilt, 48 repainted, 4.6 ms |
+| City plan page, the glide after "+" | 61 rebuilt, 100 repainted, 6.9 ms |
+| City plan page, after a tap on the plan | 66 rebuilt, 106 repainted, 6.6 ms |
+
+All of it stays inside the plan's own layer (the plan, its pins, names, buttons and card); nothing round it
+repaints. No trap left that I can find.
+
+What could still be done, each with a cost, none built:
+- The ring keeps the screen awake at full frame rate for a 2 second breath. Drawn 20 times a second it
+  would look the same to most eyes and ask for a third of the frames: a visible choice, small.
+- On a move the plan's view rebuilds its pins and names (20 to 60 small widgets). Keeping them between
+  frames would save a millisecond or two; more code than the gain is worth before a phone says the plan
+  drags badly.
