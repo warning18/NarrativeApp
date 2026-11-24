@@ -49,8 +49,11 @@ void main() {
   // were 55 / 220 / 9247 and 126 / 320 / 10963.
   // v1.993: the clan gift dice's new faces (the Tower deals them too):
   // these were 66 / 240 / 9609 and 144 / 323 / 11140.
-  const none = (top: 65, floor20: 240, floorSum: 9623);
-  const all = (top: 144, floor20: 323, floorSum: 11175);
+  // Wave 5 (simulator truth): the bot values a die with its keywords and
+  // its fights play Growth (docs/simulation/sim-truth.md): these were
+  // 65 / 240 / 9623 and 144 / 323 / 11175.
+  const none = (top: 65, floor20: 239, floorSum: 9607);
+  const all = (top: 143, floor20: 323, floorSum: 11169);
 
   test('the live Tower, no unlocks, is the pinned curve', () {
     final m = _measure(const TowerProgress());

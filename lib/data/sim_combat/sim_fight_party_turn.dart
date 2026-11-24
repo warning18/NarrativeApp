@@ -163,12 +163,12 @@ extension _SimFightPartyTurn on _SimFight {
     final caster = c.knownSpells.isNotEmpty;
     final mean = rerollWeakFaces
         ? simDieValue(c.diceFaces, c.diceSkillAssignments, skills,
-            damage: c.baseDamage, caster: caster)
+            damage: c.baseDamage, caster: caster, maxHealth: c.maxHealth)
         : 0.0;
     bool weak(DiceFaceResult f) =>
         rerollWeakFaces &&
         simFaceValue(c.diceFaces, f.faceIndex, c.diceSkillAssignments, skills,
-                damage: c.baseDamage, caster: caster) <
+                damage: c.baseDamage, caster: caster, maxHealth: c.maxHealth) <
             mean;
     do {
       rolls++;
@@ -231,6 +231,14 @@ extension _SimFightPartyTurn on _SimFight {
     if (face.hasKeyword(FaceKeyword.steady) &&
         (attack || face.type == 'Defend' || face.type == 'Heal')) {
       face = face.withValue(face.value + steadyBonus);
+    }
+    // Growth, as on the fight screen: the face gains growthStep for each
+    // time it was played before in this fight.
+    if (face.hasKeyword(FaceKeyword.growth) &&
+        (attack || face.type == 'Defend' || face.type == 'Heal')) {
+      final uses = growthUses[face.faceIndex] ?? 0;
+      if (uses > 0) face = face.withValue(face.value + uses * growthStep);
+      growthUses[face.faceIndex] = uses + 1;
     }
     // The guard, mend and spell signs on the face's number.
     face = switch (face.type) {
