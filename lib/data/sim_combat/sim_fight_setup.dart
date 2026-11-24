@@ -207,7 +207,9 @@ extension _SimFightSetup on _SimFight {
         if (((entry.value as Map<String, dynamic>)['isUnlocked'] as bool? ??
                 false) ||
             c.unlockedSkillIds.contains(entry.key))
-          entry.key: entry.value,
+          // A skill ranked up (the Tower's rank-up cards) plays at its tier.
+          entry.key: applySkillTier(entry.value as Map<String, dynamic>,
+              c.skillTiers[entry.key] ?? 0),
     };
     casts = <String, int>{};
     manaGained = 0;

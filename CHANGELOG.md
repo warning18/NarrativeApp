@@ -15,6 +15,20 @@ isn't reconstructable from git history alone.
   - Chapters 4 to 8 each have three optional goals (win in a few rounds, strike a weakness, beat the chapter's boss on the first try, or win a close fight with no potion). Each is met by about a third to two thirds of the simulator's runs; chapter 7's claimant duel is easier (about 9 runs in 10).
   - Each goal met makes the chapter's chest one tier better, Wooden to Gold; it is owed when the next chapter starts and given once. Missing goals costs nothing.
 
+## [2.4.0+1058]
+
+- **The Tower, harder above floor 10 and with more picks that count**
+  (the user's choices from the Tower roguelike briefs).
+  - Floors 11 to 20 are 8% tougher, floors 21 to 29 and the floor-30
+    boss 6% tougher; the first ten floors are unchanged.
+  - A skill card whose skill would find no free face on your die is now a
+    **Rank up** card: a skill already on the die grows a rank (+25% to its
+    numbers, up to rank 3), and the fight plays it at that rank.
+  - Three more reward floors, 13, 23 and 28 (a skill, a die or a spell).
+  - On 2,000 simulated climbs the top is won by 12.0% of runs with no
+    unlocks (was 14.5%) and 23.7% with all (was 26.8%); the median floor
+    reached falls from 19 to 17.
+
 ## [2.3.1+1057]
 
 - Maps: the names of lands not yet reached read on every look. They were drawn at 60 % of a mid grey or brown (contrast 2.1 to 3.5 against the ground behind them); each look now has its own stronger ink for the lands' names, drawn at 85 % until the land is reached and at full strength after (contrast 4.7 or more on the fog, the land and the sea of Night, Parchment and Shroud). The biggest gain is on Parchment. Where the names sit and their size do not change.

@@ -45,8 +45,10 @@ String towerDieName(WidgetRef ref, String id) {
       .join(' ');
 }
 
-/// The words of [reward] in the reader's language.
-TowerCardText towerCardText(WidgetRef ref, TowerReward reward) {
+/// The words of [reward] in the reader's language. [tier]: a rank-up's
+/// skill's tier now (0 for the base skill, shown as rank 1); the card shows
+/// the step, "rank 1 to 2".
+TowerCardText towerCardText(WidgetRef ref, TowerReward reward, {int tier = 0}) {
   final lang = ref.watch(appLanguageProvider);
   Map<String, dynamic> row(DbSchema schema, String id) =>
       ((ref.watch(localizedDbProvider(schema)).value ?? const {})[id] as Map?)
@@ -66,6 +68,15 @@ TowerCardText towerCardText(WidgetRef ref, TowerReward reward) {
       final r = row(spellsSchema, reward.id);
       return TowerCardText(tr(ref, 'tower_kind_spell'),
           '${r['spellName'] ?? reward.id}', '${r['description'] ?? ''}');
+    case TowerRewardKind.rankUp:
+      return TowerCardText(
+          tr(ref, 'tower_kind_rank_up'),
+          tr(ref, 'tower_rank_up_name')
+              .replaceAll(
+                  '{skill}', skillDisplayName(reward.id, language: lang))
+              .replaceAll('{from}', '${tier + 1}')
+              .replaceAll('{to}', '${tier + 2}'),
+          tr(ref, 'tower_rank_up_text'));
     case TowerRewardKind.clanOath:
       // A clan offers its oath (Core's v1.855; UX-2 dresses the card).
       return TowerCardText(
@@ -144,23 +155,23 @@ class _TowerOfferViewState extends ConsumerState<TowerOfferView> {
           ? SizedBox(width: iconSize, height: iconSize)
           : ClanDisc(faction, size: iconSize);
     } else {
-      final t = towerCardText(ref, reward);
+      final t = towerCardText(ref, reward, tier: _tierOf(reward));
       kind = t.kind;
       name = t.name;
       final isDie = reward.kind == TowerRewardKind.die;
       text = isDie && t.text.isNotEmpty ? 'd${t.text}' : t.text;
+      final skillLike = reward.kind == TowerRewardKind.skill ||
+          reward.kind == TowerRewardKind.rankUp;
       final k = switch (reward.kind) {
-        TowerRewardKind.skill => 'skill',
+        TowerRewardKind.skill || TowerRewardKind.rankUp => 'skill',
         TowerRewardKind.spell => 'spell',
         _ => 'die',
       };
       final row = _row(reward);
-      rarity = reward.kind == TowerRewardKind.skill
-          ? towerRarityIndex('${row['rarity'] ?? ''}')
-          : null;
+      rarity = skillLike ? towerRarityIndex('${row['rarity'] ?? ''}') : null;
       // Art's keys: a skill by its element, a spell by its family (effect).
       art = towerCardVignette(k,
-          variant: reward.kind == TowerRewardKind.skill
+          variant: skillLike
               ? '${row['element'] ?? ''}'
               : reward.kind == TowerRewardKind.spell
                   ? towerSpellFamily('${row['effect'] ?? ''}')
@@ -226,7 +237,7 @@ class _TowerOfferViewState extends ConsumerState<TowerOfferView> {
           tr(ref, 'tower_oath_die').replaceAll('{die}', towerDieName(ref, die)),
       ].join(' ');
     } else {
-      final t = towerCardText(ref, reward);
+      final t = towerCardText(ref, reward, tier: _tierOf(reward));
       name = t.name;
       text = reward.kind == TowerRewardKind.die && t.text.isNotEmpty
           ? 'd${t.text}'
@@ -245,10 +256,16 @@ class _TowerOfferViewState extends ConsumerState<TowerOfferView> {
     );
   }
 
+  /// A rank-up's skill's tier now (0 for any other card): the card names
+  /// the step it gives (v2.4.0).
+  int _tierOf(TowerReward reward) => reward.kind == TowerRewardKind.rankUp
+      ? towerHeroOf(widget.run, widget.data).skillTiers[reward.id] ?? 0
+      : 0;
+
   /// The table row of a skill, a spell or a die (its rarity, its profession).
   Map<String, dynamic> _row(TowerReward r) {
     final schema = switch (r.kind) {
-      TowerRewardKind.skill => skillsSchema,
+      TowerRewardKind.skill || TowerRewardKind.rankUp => skillsSchema,
       TowerRewardKind.spell => spellsSchema,
       _ => diceSchema,
     };
