@@ -8,6 +8,10 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [2.2.2+1055]
+
+- Solid dice, and a label that fits. In a fight the day's weather no longer falls across the dice: it is cut away round each die, in flight and at rest (the dice are opaque; the rain and the snow read through everything else as before), and the glyphs of the solids (d4 to d20) are never faded by the lamp. In the Tower's fight at 320 wide, in French or with big text, the die's tag (name, dN) now stands above the hint under the dice instead of on it, and on a board too short for both the die's own name is left out (the plate above shows it). Also a test fix: the shortcut card's test now sets its preferences mock first (it failed now and then on one shard). Look only. UX (view only).
+
 ## [2.2.0+1053]
 
 - The dice are thrown. In a fight, each die flies in from the bottom edge of the board on an arc, bounces two or three times with damping, slides, and turns over as it slows, a little extra at each bounce; dice that meet push each other aside and never overlap; each ends on its seat on the face the rules picked (the throw is only motion: the faces are decided before it, as before, and no rule changed). It is the same board for the story's fights and the Tower's. With reduced motion, and on a phone that was slow, the dice keep their plain flight. Look only. UX (view only).
