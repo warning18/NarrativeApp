@@ -21,7 +21,7 @@ import '../../providers/game_db_providers.dart';
 import '../../providers/tower_level_up_session.dart';
 import '../level_up_screen.dart';
 import '../../widgets/race_profession_cards.dart' show ClanDisc;
-import 'ink/ink_figure.dart';
+import 'ink/ink_bands.dart';
 import 'ink/ink_kit.dart';
 import 'ink/ink_palette.dart';
 import '../../widgets/fight_sprites.dart';
@@ -414,77 +414,42 @@ class _FloorIntro extends ConsumerWidget {
         InkLabel(tr(ref, 'tower_oaths_label')),
         _SwornRow(run: run),
         InkLabel(tr(ref, 'tower_foes')),
-        for (final id in floor.enemyIds)
+        InkFoeBand(
+          plate: towerFloorPlate(floor.floor) ?? towerBackdropAsset(band),
+          lit: danger,
+          foes: [
+            for (final id in floor.enemyIds)
+              InkBandFoe(id, '${(enemies[id] as Map?)?['enemyName'] ?? id}'),
+          ],
+        ),
+        // The marks wrap under the picture: an Elite with an affix is too
+        // wide for a nameplate. A lone Elite wears its mark, a pack made an
+        // Elite pack (the shortcut's tougher fight) its own.
+        if (floor.affixes.isNotEmpty || floor.elite || floor.elitePack)
           Padding(
-            padding: const EdgeInsets.only(bottom: 6),
-            child: InkPanel(
-              lit: danger,
-              decor: id == floor.enemyIds.first
-                  ? const EnvParts(top: 2)
-                  : EnvParts.none,
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Row(
-                    children: [
-                      Expanded(
-                        child: Text(
-                            '${(enemies[id] as Map?)?['enemyName'] ?? id}',
-                            style: theme.textTheme.titleSmall),
-                      ),
-                      // The foe stands in its panel when it has art (v1.900).
-                      if (id == floor.enemyIds.first) _FoePicture(id),
-                    ],
-                  ),
-                  // The marks wrap under the name: an Elite with an affix is
-                  // too wide for one line on a small phone. A lone Elite wears
-                  // its mark on its panel; a pack made an Elite pack (the
-                  // shortcut's tougher fight) on every foe's.
-                  if ((id == floor.enemyIds.first &&
-                          (floor.affixes.isNotEmpty || floor.elite)) ||
-                      floor.elitePack)
-                    Wrap(
-                      spacing: 6,
-                      runSpacing: 4,
-                      children: [
-                        if (id == floor.enemyIds.first)
-                          for (final a in floor.affixes)
-                            InkChip(tr(ref, affixLabelKey(a)),
-                                color: inkRed, dense: true),
-                        if ((id == floor.enemyIds.first && floor.elite) ||
-                            floor.elitePack)
-                          InkChip(tr(ref, 'tower_floor_elite'),
-                              color: inkPaper, dense: true),
-                      ],
-                    ),
-                ],
-              ),
+            padding: const EdgeInsets.only(top: 12),
+            child: Wrap(
+              spacing: 6,
+              runSpacing: 4,
+              children: [
+                for (final a in floor.affixes)
+                  InkChip(tr(ref, affixLabelKey(a)),
+                      color: inkRed, dense: true),
+                for (var i = 0; i < floor.enemyIds.length; i++)
+                  if ((i == 0 && floor.elite) || floor.elitePack)
+                    InkChip(tr(ref, 'tower_floor_elite'),
+                        color: inkPaper, dense: true),
+              ],
             ),
           ),
-        InkLabel(tr(ref, 'tower_your_health')),
-        InkPanel(
-          decor: const EnvParts(bottom: 2),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Row(children: [
-                _HeroPicture(run),
-                const SizedBox(width: 10),
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      InkBar(value: hp, height: 8),
-                      const SizedBox(height: 4),
-                      Text('${run.health} / ${hero.maxHealth}',
-                          key: const Key('tower_health'),
-                          style: theme.textTheme.bodySmall),
-                    ],
-                  ),
-                ),
-              ]),
-            ],
-          ),
+        const SizedBox(height: 10),
+        InkHeroBand(
+          plate: towerBackdropAsset(band),
+          sprite: heroSpriteFor(run.raceId, run.professionId),
+          health: hp,
+          healthText: '${run.health} / ${hero.maxHealth}',
+          healthKey: const Key('tower_health'),
+          title: tr(ref, 'tower_your_health'),
         ),
         // The bag: shown once the hero owns more than its first die.
         ..._dicePanel(ref),
@@ -565,59 +530,6 @@ class _SwornRow extends ConsumerWidget {
                     ),
               ],
             ),
-    );
-  }
-}
-
-/// The foe in a slanted picture frame, recoloured to ink (v1.1005).
-class _FoePicture extends StatelessWidget {
-  const _FoePicture(this.enemyId);
-
-  final String enemyId;
-
-  @override
-  Widget build(BuildContext context) {
-    final set = enemyFightSprite(enemyId);
-    if (set == null) return const SizedBox.shrink();
-    return InkSlantPanel(
-      key: Key('tower_foe_$enemyId'),
-      size: const Size(72, 60),
-      points: const [
-        Offset(10, 6),
-        Offset(66, 2),
-        Offset(66, 54),
-        Offset(6, 54),
-      ],
-      child: Container(
-          color: inkDeep,
-          alignment: Alignment.bottomCenter,
-          child: InkFigure(set, size: 52)),
-    );
-  }
-}
-
-/// The hero beside its health, in ink: the calling's own figure, facing east.
-class _HeroPicture extends StatelessWidget {
-  const _HeroPicture(this.run);
-
-  final TowerRun run;
-
-  @override
-  Widget build(BuildContext context) {
-    final set = heroSpriteFor(run.raceId, run.professionId);
-    return InkSlantPanel(
-      key: const Key('tower_hero_figure'),
-      size: const Size(60, 52),
-      points: const [
-        Offset(8, 5),
-        Offset(55, 2),
-        Offset(55, 46),
-        Offset(5, 46),
-      ],
-      child: Container(
-          color: inkDeep,
-          alignment: Alignment.bottomCenter,
-          child: InkFigure(set, size: 44)),
     );
   }
 }

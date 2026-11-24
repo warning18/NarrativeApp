@@ -90,7 +90,7 @@ void main() {
         raceId: 'human',
         professionId: 'warrior',
         floor: floor,
-        health: 41,
+        health: 30,
         events: events,
         status: TowerStatus.climbing);
 

@@ -137,14 +137,18 @@ class _TowerDicePanelState extends ConsumerState<TowerDicePanel> {
                 ),
             ],
           ),
-          if (open != null) ...[
+          // The faces of the die shown, one chip each in a single strip: the
+          // opened die's, else the die in play's (v1.1005).
+          if (open ?? widget.dice.where((d) => d.inPlay).firstOrNull
+              case final shown?) ...[
             const SizedBox(height: 10),
-            // The faces of the die, one chip each in a single strip (v1.1005).
             Row(
               key: const Key('tower_die_strip'),
               mainAxisAlignment: MainAxisAlignment.center,
-              children: [for (final f in open.faces) _face(f, theme)],
+              children: [for (final f in shown.faces) _face(f, theme)],
             ),
+          ],
+          if (open != null) ...[
             const SizedBox(height: 10),
             InkButton(
               buttonKey: const Key('tower_die_roll'),
