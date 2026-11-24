@@ -340,7 +340,13 @@ Future<TowerPlay> playTower(
         if (faced.evaluate().isNotEmpty) {
           await shot('floor-$floorsPlayed-lost');
           note('FIGHT $floorsPlayed lost in $rounds rounds. ${seen()}');
-          await tester.tap(faced.first);
+          // The screen can move on by itself while the picture is taken.
+          final again = find.text(t('defeat_continue_button'));
+          if (again.evaluate().isNotEmpty) {
+            await tester.tap(again.first);
+          } else {
+            note('FIGHT $floorsPlayed: the loss screen moved on by itself');
+          }
           await settle(10);
           break;
         }
@@ -451,7 +457,6 @@ Future<TowerPlay> playTower(
     // shortcut or a merchant, so each card is drawn once and the run goes on.
     var eventKey = '';
     for (final k in const [
-      'tower_event_test',
       'tower_parley_talk',
       'tower_bargain_refuse',
       'tower_shortcut_decline',
@@ -469,6 +474,19 @@ Future<TowerPlay> playTower(
       await tapKey(eventKey);
       await settle(10);
       continue;
+    }
+    // A long floor (a small phone, big text): the Fight button is below what
+    // the list has built, so scroll to it before calling the screen stuck.
+    final vertical = find.byWidgetPredicate(
+        (w) => w is Scrollable && w.axisDirection == AxisDirection.down);
+    if (vertical.evaluate().isNotEmpty) {
+      var found = false;
+      for (var i = 0; i < 12 && !found; i++) {
+        await tester.drag(vertical.first, Offset(0, -size.height * 0.4));
+        await tester.pump(const Duration(milliseconds: 150));
+        found = has('tower_fight') || has('tower_end_floor');
+      }
+      if (found) continue;
     }
     note('STUCK at step $step: no known screen. ${seen()}');
     await shot('stuck');
