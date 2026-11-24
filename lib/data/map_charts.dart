@@ -292,6 +292,7 @@ class ChartPalette {
     required this.river,
     required this.fog,
     required this.label,
+    required this.landName,
     required this.place,
     required this.road,
     required this.ahead,
@@ -307,8 +308,16 @@ class ChartPalette {
   final Color river;
   final Color fog;
 
-  /// Region names and uncharted notes.
+  /// Uncharted notes, the small print and the grey of the chart's lines.
   final Color label;
+
+  /// The lands' names: stronger than [label], so a land not yet reached,
+  /// drawn at [unreachedLandName] of this, still reads on the fog, the
+  /// land and the sea of its look (contrast 4.5 at the least).
+  final Color landName;
+
+  /// How strong the name of a land not yet reached is drawn.
+  static const double unreachedLandName = 0.85;
 
   /// Place names.
   final Color place;
@@ -337,6 +346,7 @@ class ChartPalette {
             river: Color(0xFF3F7288),
             fog: Palette.night8,
             label: Color(0xFFA9A3B6),
+            landName: Color(0xFFC9C3D6),
             place: Color(0xFFEDE7DA),
             road: Palette.goldDark,
             ahead: Color(0xFFA9A3B6),
@@ -352,6 +362,7 @@ class ChartPalette {
             river: Color(0xFF8AA196),
             fog: Color(0xFFE6DAB9),
             label: Color(0xFF6E5C3C),
+            landName: Color(0xFF4A3B22),
             place: Color(0xFF3A2E1F),
             road: Palette.red39,
             ahead: Color(0xFF8C7A57),
@@ -367,6 +378,7 @@ class ChartPalette {
             river: Color(0xFF50505A),
             fog: Color(0xFF151518),
             label: Color(0xFFA0A0AA),
+            landName: Color(0xFFC4C4CE),
             place: Color(0xFFE6E6EA),
             road: Color(0xFFE2E2E6),
             ahead: Color(0xFF6E6E76),

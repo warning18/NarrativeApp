@@ -11,6 +11,9 @@ isn't reconstructable from git history alone.
 ## [2.5.3+1062]
 
 - **Tower text fits at 320 dp, French, 1.3x text (#1139).** The stat pick's gain cards keep each stat name whole ("Intelligence", "Perspicacité") by shrinking a word to its card instead of breaking it in two. The Tower's app-bar titles (door, floor, end, marks) and the fight's title shrink to their line instead of ending in "…". No rule or number changes.
+## [2.3.1+1057]
+
+- Maps: the names of lands not yet reached read on every look. They were drawn at 60 % of a mid grey or brown (contrast 2.1 to 3.5 against the ground behind them); each look now has its own stronger ink for the lands' names, drawn at 85 % until the land is reached and at full strength after (contrast 4.7 or more on the fog, the land and the sea of Night, Parchment and Shroud). The biggest gain is on Parchment. Where the names sit and their size do not change.
 
 ## [2.3.0+1056]
 
