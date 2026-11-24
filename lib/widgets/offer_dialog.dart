@@ -359,7 +359,7 @@ class _OfferDialogState extends ConsumerState<OfferDialog> {
   /// while the next one is drawn, rather than a bare spinner in an empty box.
   ClanOffer? _lastOffer;
 
-  Future<void> _take(ClanOffer offer) async {
+  Future<void> _take(ClanOffer offer, {bool confirm = true}) async {
     final factionId = _selected;
     final suitor = factionId == null ? null : offer.suitorOf(factionId);
     if (suitor == null || _busy) return;
@@ -373,48 +373,51 @@ class _OfferDialogState extends ConsumerState<OfferDialog> {
         data: tables.data,
         lang: lang);
     final odds = ref.read(playerSessionProvider.notifier).riskyOdds(tables);
-    final confirmed = await showDialog<bool>(
-      context: context,
-      builder: (dialogContext) => Dialog(
-        insetPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 24),
-        child: SingleChildScrollView(
-          padding: const EdgeInsets.fromLTRB(16, 20, 16, 16),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              SheetHeader(
-                title: trFor(lang, 'offer_confirm_title')
-                    .replaceAll('{gift}', name),
-                caption: trFor(lang, 'offer_confirm_from').replaceAll(
-                    '{who}', _suitorName(suitor, tables.data, lang)),
-                padding: const EdgeInsets.only(bottom: 12),
+    final confirmed = !confirm
+        ? true
+        : await showDialog<bool>(
+            context: context,
+            builder: (dialogContext) => Dialog(
+              insetPadding:
+                  const EdgeInsets.symmetric(horizontal: 20, vertical: 24),
+              child: SingleChildScrollView(
+                padding: const EdgeInsets.fromLTRB(16, 20, 16, 16),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    SheetHeader(
+                      title: trFor(lang, 'offer_confirm_title')
+                          .replaceAll('{gift}', name),
+                      caption: trFor(lang, 'offer_confirm_from').replaceAll(
+                          '{who}', _suitorName(suitor, tables.data, lang)),
+                      padding: const EdgeInsets.only(bottom: 12),
+                    ),
+                    Text(preview.isEmpty
+                        ? trFor(lang, 'offer_no_standing')
+                        : preview.map((p) => p.text).join(' · ')),
+                    if (suitor.risky) ...[
+                      const SizedBox(height: 8),
+                      Text(trFor(lang, 'offer_risky_hint')),
+                      Text(
+                          trFor(lang, 'offer_risky_odds')
+                              .replaceAll('{gift}', '${odds.gift}')
+                              .replaceAll('{price}', '${odds.price}'),
+                          key: const Key('offer_confirm_risky_odds')),
+                    ],
+                    const SizedBox(height: 16),
+                    SheetButtons(
+                      primaryKey: const Key('offer_confirm_accept'),
+                      primaryLabel: trFor(lang, 'offer_confirm_accept'),
+                      onPrimary: () => Navigator.pop(dialogContext, true),
+                      closeLabel: trFor(lang, 'offer_confirm_back'),
+                      onClose: () => Navigator.pop(dialogContext, false),
+                    ),
+                  ],
+                ),
               ),
-              Text(preview.isEmpty
-                  ? trFor(lang, 'offer_no_standing')
-                  : preview.map((p) => p.text).join(' · ')),
-              if (suitor.risky) ...[
-                const SizedBox(height: 8),
-                Text(trFor(lang, 'offer_risky_hint')),
-                Text(
-                    trFor(lang, 'offer_risky_odds')
-                        .replaceAll('{gift}', '${odds.gift}')
-                        .replaceAll('{price}', '${odds.price}'),
-                    key: const Key('offer_confirm_risky_odds')),
-              ],
-              const SizedBox(height: 16),
-              SheetButtons(
-                primaryKey: const Key('offer_confirm_accept'),
-                primaryLabel: trFor(lang, 'offer_confirm_accept'),
-                onPrimary: () => Navigator.pop(dialogContext, true),
-                closeLabel: trFor(lang, 'offer_confirm_back'),
-                onClose: () => Navigator.pop(dialogContext, false),
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
+            ),
+          );
     if (confirmed != true || !mounted) return;
     setState(() => _busy = true);
     final notifier = ref.read(playerSessionProvider.notifier);
@@ -496,6 +499,25 @@ class _OfferDialogState extends ConsumerState<OfferDialog> {
     });
   }
 
+  /// "Not now" on a gift offered alone: the usual cards are dealt instead
+  /// (declineSoloOffer).
+  Future<void> _decline() async {
+    if (_busy) return;
+    setState(() => _busy = true);
+    try {
+      await ref.read(playerSessionProvider.notifier).declineSoloOffer(
+          widget.tables,
+          placeHolder: ref.read(holderHereProvider));
+    } finally {
+      if (mounted) {
+        setState(() {
+          _busy = false;
+          _selected = null;
+        });
+      }
+    }
+  }
+
   /// A companion's word on [kind] (Core's speakUpOnMoment), if any.
   Future<void> _speakUp(RemarkKind kind) async {
     if (!mounted) return;
@@ -546,6 +568,38 @@ class _OfferDialogState extends ConsumerState<OfferDialog> {
     final accent = selected == null
         ? theme.colorScheme.primary
         : _suitorColor(selected, widget.tables.data);
+
+    // A gift alone (Wave 1): taken, or "Not now" for the usual cards.
+    if (offer.solo) {
+      final alone = offer.suitors.first;
+      return PopScope(
+        canPop: false,
+        child: Dialog(
+          key: const Key('offer_solo'),
+          insetPadding:
+              const EdgeInsets.symmetric(horizontal: 12, vertical: 24),
+          clipBehavior: Clip.antiAlias,
+          child: _Drawing(
+            drawing: drawing,
+            child: _SoloOffer(
+              suitor: alone,
+              offer: offer,
+              tables: widget.tables,
+              source: waiting > 1
+                  ? '$source · ${trFor(lang, 'offer_pending').replaceAll('{n}', '$waiting')}'
+                  : source,
+              onAccept: _busy || drawing
+                  ? null
+                  : () {
+                      _selected = alone.factionId;
+                      _take(offer, confirm: false);
+                    },
+              onDecline: _busy || drawing ? null : _decline,
+            ),
+          ),
+        ),
+      );
+    }
 
     // An offer is never left for later (Wave 6): a gift is taken to close it.
     return PopScope(
@@ -707,6 +761,243 @@ class _OfferDialogState extends ConsumerState<OfferDialog> {
           ),
         ),
       ),
+    );
+  }
+}
+
+/// A gift offered alone (Wave 1, UX's one-card sheet): the offer's header,
+/// the clan (its banner, half size when the screen is short, its name, where
+/// you stand, its greeting), the gift at full width, "Accept" and "Not now",
+/// and a line saying the gift may come again.
+class _SoloOffer extends ConsumerWidget {
+  const _SoloOffer({
+    required this.suitor,
+    required this.offer,
+    required this.tables,
+    required this.source,
+    required this.onAccept,
+    required this.onDecline,
+  });
+
+  final Suitor suitor;
+  final ClanOffer offer;
+  final OfferTables tables;
+  final String source;
+  final VoidCallback? onAccept;
+  final VoidCallback? onDecline;
+
+  /// Below this height the banner is drawn at half size (320 x 568 fits).
+  static const double tightHeight = 640;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final theme = Theme.of(context);
+    final lang = ref.watch(appLanguageProvider);
+    final session = ref.watch(playerSessionProvider);
+    final items = ref.watch(localizedDbProvider(itemsSchema)).value ?? const {};
+    final skills =
+        ref.watch(localizedDbProvider(skillsSchema)).value ?? const {};
+    final data = tables.data;
+    final gift = suitor.gift;
+    final color = _suitorColor(suitor, data);
+    final tight = MediaQuery.sizeOf(context).height < tightHeight;
+    final bannerId = clanBannerId(suitor.factionId);
+    final banner = clanCardFlag(bannerId,
+        plain: _PlainFlag(color: color, wayfarer: false));
+    final tier = session.politics.tierOf(suitor.factionId, data);
+    final preview = standingPreviewParts(suitor, offer.ticket,
+        politics: session.politics, data: data, lang: lang);
+    // A short screen (320 x 568) keeps everything in view: tighter gaps.
+    final gap = tight ? 6.0 : 10.0;
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        Container(
+          padding: EdgeInsets.fromLTRB(16, tight ? 8 : 14, 16, tight ? 6 : 10),
+          color: theme.colorScheme.surfaceContainerHighest,
+          child: Row(
+            children: [
+              Icon(Icons.diversity_3, color: theme.colorScheme.primary),
+              const SizedBox(width: 10),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(trFor(lang, 'offer_solo_title'),
+                        key: const Key('offer_title'),
+                        style: theme.textTheme.titleMedium
+                            ?.copyWith(fontWeight: FontWeight.bold)),
+                    Text(source,
+                        style: theme.textTheme.labelMedium?.copyWith(
+                            color: theme.colorScheme.onSurfaceVariant)),
+                  ],
+                ),
+              ),
+            ],
+          ),
+        ),
+        Flexible(
+          child: SingleChildScrollView(
+            padding: EdgeInsets.fromLTRB(10, gap, 10, 4),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                // The clan: its banner, its name and standing, what it says.
+                Container(
+                  key: Key('offer_solo_clan_${suitor.factionId}'),
+                  padding: const EdgeInsets.fromLTRB(10, 8, 10, 10),
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(8),
+                    border: Border.all(color: color.withValues(alpha: 0.6)),
+                    gradient: LinearGradient(
+                      begin: Alignment.topCenter,
+                      end: Alignment.bottomCenter,
+                      colors: [
+                        color.withValues(alpha: 0.26),
+                        color.withValues(alpha: 0.04),
+                      ],
+                    ),
+                  ),
+                  child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      tight
+                          ? SizedBox(
+                              key: const Key('offer_solo_banner_half'),
+                              width: pixelBannerSize.width / 2,
+                              height: pixelBannerSize.height / 2,
+                              child: FittedBox(child: banner),
+                            )
+                          : KeyedSubtree(
+                              key: const Key('offer_solo_banner_full'),
+                              child: banner),
+                      const SizedBox(width: 12),
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(_suitorName(suitor, data, lang),
+                                style: theme.textTheme.titleMedium?.copyWith(
+                                    fontFamily: InkFonts.display,
+                                    color: color)),
+                            const SizedBox(height: 4),
+                            _Tag(
+                                text: trFor(lang, standingTierKey(tier)),
+                                color: color),
+                            const SizedBox(height: 8),
+                            Text('“${_suitorGreeting(suitor, data, lang)}”',
+                                style: theme.textTheme.bodyMedium?.copyWith(
+                                    fontFamily: InkFonts.prose,
+                                    fontStyle: FontStyle.italic,
+                                    height: tight ? 1.2 : 1.35)),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                SizedBox(height: gap),
+                // The gift, alone, at full width.
+                Container(
+                  key: Key('offer_solo_gift_${gift.id}'),
+                  padding: EdgeInsets.all(tight ? 10 : 12),
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(8),
+                    border: Border.all(color: color, width: 2),
+                    color: theme.colorScheme.surfaceContainerLow,
+                  ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Row(
+                        children: [
+                          _giftGlyph(gift, color, size: IconSize.s48),
+                          const SizedBox(width: 10),
+                          Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                    _giftName(gift,
+                                        tables: tables,
+                                        localizedItems: items,
+                                        lang: lang),
+                                    style: theme.textTheme.titleMedium),
+                                const SizedBox(height: 4),
+                                Wrap(
+                                  spacing: 6,
+                                  runSpacing: 4,
+                                  children: [
+                                    _Tag(
+                                        text: trFor(
+                                            lang, _giftTagKey(gift, skills)),
+                                        color: color),
+                                    SignRarityChip(
+                                        rarity: gift.rarity, language: lang),
+                                  ],
+                                ),
+                              ],
+                            ),
+                          ),
+                        ],
+                      ),
+                      SizedBox(height: gap),
+                      Text(
+                          _giftEffect(gift,
+                              tables: tables,
+                              items: items,
+                              skills: skills,
+                              lang: lang),
+                          style: theme.textTheme.bodyMedium
+                              ?.copyWith(height: tight ? 1.25 : 1.4)),
+                      if (preview.isNotEmpty) ...[
+                        SizedBox(height: tight ? 4 : 8),
+                        Text(preview.map((p) => p.text).join(' · '),
+                            key: const Key('offer_solo_standing'),
+                            style: theme.textTheme.labelMedium?.copyWith(
+                                color: theme.colorScheme.onSurfaceVariant)),
+                      ],
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+        Padding(
+          padding: EdgeInsets.fromLTRB(12, tight ? 4 : 6, 12, tight ? 6 : 10),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              FilledButton(
+                key: const Key('offer_solo_accept'),
+                style: FilledButton.styleFrom(
+                    backgroundColor: color,
+                    minimumSize: Size.fromHeight(tight ? 44 : 48)),
+                onPressed: onAccept,
+                child: Text(trFor(lang, 'offer_confirm_accept')),
+              ),
+              SizedBox(height: tight ? 0 : 4),
+              TextButton(
+                key: const Key('offer_solo_decline'),
+                style: TextButton.styleFrom(
+                    minimumSize: Size.fromHeight(tight ? 40 : 44)),
+                onPressed: onDecline,
+                child: Text(trFor(lang, 'offer_solo_decline')),
+              ),
+              Padding(
+                padding: const EdgeInsets.only(top: 2),
+                child: Text(trFor(lang, 'offer_solo_note'),
+                    textAlign: TextAlign.center,
+                    style: theme.textTheme.bodySmall?.copyWith(
+                        color: theme.colorScheme.onSurfaceVariant,
+                        fontStyle: FontStyle.italic)),
+              ),
+            ],
+          ),
+        ),
+      ],
     );
   }
 }
