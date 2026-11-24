@@ -9,11 +9,12 @@ G=[hx(x) for x in '090A14 202E37 394A50 8B9BA0 EBEDE9'.split()]; RED=hx('A53030'
 P2=np.array([hx(x) for x in '090A14 151D28 202E37 3C5E8B 577277 884B2B DE9E41 E8C170'.split()])
 def snap(c,pal):
     d=((pal-c)**2*np.array([2,4,3])).sum(1); return pal[d.argmin()]
-def style1(im,box=None,maxarea=40,stretch=True):
+def style1(im,box=None,maxarea=40,stretch=True,red_ok=True):
     a=np.array(im.convert('RGBA'));rgb=a[...,:3].astype(float);al=a[...,3]
     mx=rgb.max(2);mn=rgb.min(2);sat=(mx-mn)/np.maximum(mx,1)
     red=(sat>0.45)&(rgb[...,0]>rgb[...,1]*1.5)&(rgb[...,0]>rgb[...,2]*1.5)&(rgb[...,0]<230)
     gold=(sat>0.5)&(rgb[...,0]>170)&(rgb[...,1]>120)&(rgb[...,2]<110)
+    if not red_ok: red=red&False
     acc=(red|gold)&(al>0); lab,n=ndimage.label(acc|False)
     keep=np.zeros(acc.shape,bool)
     for i in range(1,n+1):
