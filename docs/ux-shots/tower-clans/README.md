@@ -10,3 +10,6 @@
 - A clan offer in the Tower: which clans, which gift (a skill, a perk or a sign, as in the story), and whether a card can be refused for a mark.
 - Standing in a run: a whole number per clan or a range (the pictures use 0 to 6), what moves it (a fight, a floor, an event, a gift), and the step where the oath is offered.
 - Whether an oath card replaces one of the three cards or comes as a fourth.
+
+## Updated to Core's provisional plan (v2.6.0)
+Standing runs 0 to 6, the oath is at 6, and only gifts taken move it (so the toast in b comes after a gift is taken, not after a fight). A card can be refused for a mark ("Refuse (+1 mark)" in a; "Leave them all (+1 mark)" in c). The oath comes as a fourth card, not replacing one of the three: in c it is a wide card on top, in hand, over the floor's three. The cards use Art's tarot set.
