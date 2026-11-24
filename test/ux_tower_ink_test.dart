@@ -783,12 +783,6 @@ Widget _placeholder(double s, {String label = 'art'}) => Container(
         color: _dark.withValues(alpha: 0.5)),
     child: Text(label, style: _sys(8)));
 
-Widget _kv(String k, String v, {Color vc = _paper}) => Row(children: [
-      Text(k, style: _sys(10)),
-      const Spacer(),
-      Text(v, style: _prose(12, color: vc, bold: true)),
-    ]);
-
 const _towerDice = [
   (
     'Ash die',
@@ -934,6 +928,138 @@ List<Offset> _quad(double x0, double y0, double x1, double y1, double slantL,
 
 // ---- the screens ----------------------------------------------------------
 
+/// Art's wide ink frame (nine-slice, paper inside): the text-heavy screens'
+/// panel. The dark text on it is the ink of the page.
+class _NineW extends CustomPainter {
+  _NineW(this.img, this.scale);
+  final ui.Image img;
+
+  /// The frame is drawn at this share of its size (0.5: half, so the ragged
+  /// border is about 12 dp and the paper keeps the room).
+  final double scale;
+  @override
+  void paint(Canvas canvas, Size s) {
+    // The paper inside Art's frame starts 26, 22, 24, 22 px in from its edges.
+    const l = 26.0, t = 22.0, r = 24.0, bm = 22.0;
+    final p = Paint()
+      ..filterQuality = FilterQuality.none
+      ..isAntiAlias = false;
+    final iw = img.width.toDouble(), ih = img.height.toDouble();
+    final xs = [0.0, l, iw - r, iw];
+    final ys = [0.0, t, ih - bm, ih];
+    final dx = [0.0, l * scale, s.width - r * scale, s.width];
+    final dy = [0.0, t * scale, s.height - bm * scale, s.height];
+    for (var j = 0; j < 3; j++) {
+      for (var i = 0; i < 3; i++) {
+        canvas.drawImageRect(
+            img,
+            Rect.fromLTRB(xs[i], ys[j], xs[i + 1], ys[j + 1]),
+            Rect.fromLTRB(dx[i], dy[j], dx[i + 1], dy[j + 1]),
+            p);
+      }
+    }
+  }
+
+  @override
+  bool shouldRepaint(_NineW old) => false;
+}
+
+const Color _inkText = Color(0xFF0B0C14);
+
+/// A paper panel in Art's wide frame; [title] sits on a slanted tab.
+Widget _paperPanel(double l, double t, double w, double h,
+        {String? title,
+        double inset = 12,
+        Color? wash,
+        List<Widget> kids = const []}) =>
+    Positioned(
+      left: l,
+      top: t,
+      child: SizedBox(
+        width: w,
+        height: h,
+        child: Stack(clipBehavior: Clip.none, children: [
+          Positioned.fill(
+              child: CustomPaint(painter: _NineW(_im['wide']!, 0.5))),
+          if (wash != null)
+            Positioned.fill(
+                child: Padding(
+                    padding: EdgeInsets.all(inset * 0.7),
+                    child: Container(color: wash))),
+          if (title != null)
+            Positioned(
+                left: -2,
+                top: -10,
+                child: Transform(
+                    transform: Matrix4.skewX(-0.2),
+                    child: Container(
+                        padding: const EdgeInsets.fromLTRB(10, 2, 12, 3),
+                        color: _red,
+                        child: Transform(
+                            transform: Matrix4.skewX(0.2),
+                            child: Text(title, style: _brush(12.5)))))),
+          // The frame's red splashes sit in its top-left and bottom-right
+          // corners: the content stays clear of them.
+          Positioned.fill(
+              child: Padding(
+                  padding: const EdgeInsets.only(left: 22, top: 8, bottom: 2),
+                  child: Stack(clipBehavior: Clip.none, children: kids))),
+        ]),
+      ),
+    );
+
+/// A chip on paper: the one chosen red, the rest inked, a locked one faint.
+Widget _paperChip(String text, {bool chosen = false, bool locked = false}) =>
+    Padding(
+      padding: const EdgeInsets.only(right: 6),
+      child: Transform(
+        transform: Matrix4.skewX(-0.2),
+        child: Container(
+          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 7),
+          decoration: BoxDecoration(
+              color: chosen ? _red : Colors.transparent,
+              border: Border.all(
+                  color: chosen
+                      ? _red
+                      : _inkText.withValues(alpha: locked ? 0.3 : 0.9),
+                  width: 1.5)),
+          child: Transform(
+              transform: Matrix4.skewX(0.2),
+              child: Row(mainAxisSize: MainAxisSize.min, children: [
+                if (locked)
+                  Padding(
+                      padding: const EdgeInsets.only(right: 4),
+                      child: Icon(Icons.lock_outline,
+                          size: 11, color: _inkText.withValues(alpha: 0.4))),
+                Text(text,
+                    style: _brush(12,
+                        color: chosen
+                            ? _paper
+                            : _inkText.withValues(alpha: locked ? 0.4 : 1))),
+              ])),
+        ),
+      ),
+    );
+
+/// A button on paper: the one that goes on red, the rest ink.
+Widget _paperBtn(String text,
+        {bool red = false, double w = 120, double h = 28, bool dim = false}) =>
+    Transform(
+      transform: Matrix4.skewX(-0.2),
+      child: Container(
+        width: w,
+        height: h,
+        alignment: Alignment.center,
+        decoration: BoxDecoration(
+            color: red ? _red : _inkText,
+            border: Border.all(color: red ? _red : _inkText)),
+        child: Transform(
+            transform: Matrix4.skewX(0.2),
+            child: Text(text,
+                style: _brush(h > 30 ? 14 : 12, color: dim ? _grey : _paper))),
+      ),
+    );
+
 Widget _sMenu(List<_Foe> foes) => Stack(children: [
       Positioned.fill(child: Container(color: _black)),
       _ground('bg', opacity: 1, top: 0, h: 330),
@@ -963,172 +1089,134 @@ Widget _sMenu(List<_Foe> foes) => Stack(children: [
         (_t('tower_menu'), _t('tower_menu_sub'), false),
         ('Settings', '', false),
       ].indexed)
-        Positioned(
-          left: 18,
-          top: 340 + i * 74.0,
-          child: Transform(
-            transform: Matrix4.skewX(-0.2),
-            child: Container(
-              width: 318,
-              height: 58,
-              padding: const EdgeInsets.symmetric(horizontal: 18),
-              decoration: BoxDecoration(
-                  color: red ? _red : _black,
-                  border: Border(
-                      left: BorderSide(
-                          color: label == _t('tower_menu') ? _red : _paper,
-                          width: 4),
-                      bottom: BorderSide(color: red ? _red : _grey, width: 1),
-                      top: BorderSide(color: _grey.withValues(alpha: 0.35)))),
-              child: Transform(
-                transform: Matrix4.skewX(0.2),
-                child: Row(children: [
-                  if (label == _t('tower_menu')) ...[
-                    const Icon(Icons.castle_outlined, size: 22, color: _paper),
-                    const SizedBox(width: 10),
-                  ],
-                  Expanded(
-                      child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                        Text(label, style: _brush(18)),
-                        if (sub.isNotEmpty)
-                          Text(sub,
-                              style: _sys(9, color: red ? _paper : _grey)),
-                      ])),
-                ]),
-              ),
-            ),
-          ),
-        ),
+        _paperPanel(16, 336 + i * 76.0, 328, 64,
+            inset: 10,
+            wash: red ? _red : null,
+            kids: [
+              if (label == _t('tower_menu'))
+                Positioned(
+                    left: 14,
+                    top: 14,
+                    bottom: 14,
+                    child: Container(width: 4, color: _red)),
+              Positioned(
+                  left: label == _t('tower_menu') ? 32 : 24,
+                  top: 0,
+                  bottom: 0,
+                  right: 24,
+                  child: Row(children: [
+                    if (label == _t('tower_menu')) ...[
+                      const Icon(Icons.castle_outlined,
+                          size: 22, color: _inkText),
+                      const SizedBox(width: 10),
+                    ],
+                    Expanded(
+                        child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                          Text(label,
+                              style:
+                                  _brush(18, color: red ? _paper : _inkText)),
+                          if (sub.isNotEmpty)
+                            Text(sub,
+                                style: _sys(9,
+                                    color: red
+                                        ? _paper
+                                        : const Color(0xFF394A50))),
+                        ])),
+                  ])),
+            ]),
     ]);
 
 Widget _sStart(List<_Foe> foes) => Stack(children: [
       Positioned.fill(child: Container(color: _black)),
       _ground('tower_band1', opacity: 0.22, top: 60, h: 660),
       _tTitle(_t('tower_name'), _t('tower_tagline'), back: true),
-      // marks and best floor
-      _tPanel(14, 84, 332, 64, title: _t('tower_marks_name'), kids: [
+      _paperPanel(14, 90, 332, 66, title: _t('tower_marks_name'), kids: [
         Positioned(
-            left: 14,
-            top: 16,
-            right: 14,
+            left: 22,
+            top: 14,
+            right: 22,
             child: Row(children: [
-              Text('120', style: _brush(28)),
+              Text('120', style: _brush(28, color: _inkText)),
               const SizedBox(width: 6),
-              Text('marks', style: _sys(10)),
+              Text('marks', style: _sys(10, color: const Color(0xFF394A50))),
               const Spacer(),
               Column(
                   crossAxisAlignment: CrossAxisAlignment.end,
                   mainAxisSize: MainAxisSize.min,
                   children: [
                     Text(_t('tower_best', {'n': '14'}),
-                        style: _prose(12, bold: true)),
+                        style: _prose(12, color: _inkText, bold: true)),
                     Text(_t('tower_runs_line', {'r': '9', 'w': '3'}),
-                        style: _sys(9)),
+                        style: _sys(9, color: const Color(0xFF394A50))),
                   ]),
             ])),
       ]),
-      // a run to continue
       _poly(
           const [
-            Offset(8, 168),
-            Offset(352, 160),
-            Offset(352, 272),
-            Offset(8, 272)
+            Offset(8, 176),
+            Offset(352, 168),
+            Offset(352, 282),
+            Offset(8, 282)
           ],
           'tower_band2',
           -80,
           2,
           [
-            _chibi('warrior', 78, 268),
+            _chibi('warrior', 78, 278),
             _at(
                 112,
-                166,
+                176,
                 Container(
                     width: 236,
                     height: 104,
                     color: _black.withValues(alpha: 0.82))),
             _at(
                 120,
-                176,
+                184,
                 Text(_t('tower_floor_of', {'n': '7', 'm': '30'}),
                     style: _brush(18))),
             _at(
                 120,
-                202,
+                210,
                 Text('Edda · Human · Warrior',
                     style: _prose(12, color: _grey))),
-            _at(120, 224, _bar(41, 52, 130)),
-            _at(196, 226, _btn(_t('tower_continue'), red: true, w: 148, h: 30)),
+            _at(120, 232, _bar(41, 52, 130)),
+            _at(196, 238, _btn(_t('tower_continue'), red: true, w: 148, h: 30)),
           ]),
-      // a new climb
-      _tPanel(14, 292, 332, 300, title: 'New climb', kids: [
-        for (final (i, (g, items, picked)) in [
-          (_t('tower_pick_race'), ['Human', 'Elf', 'Dwarf', 'Orc'], 0),
-          (_t('tower_pick_profession'), ['Warrior', 'Rogue', 'Cleric'], 0),
-          (_t('tower_pick_clan'), ['Dominion', 'Salt Crows', 'Vigil'], 0),
+      _paperPanel(14, 316, 332, 280, title: 'New climb', kids: [
+        for (final (i, (g, items)) in [
+          (_t('tower_pick_race'), ['Human', 'Elf', 'Dwarf', 'Orc']),
+          (_t('tower_pick_profession'), ['Warrior', 'Rogue', 'Cleric']),
+          (_t('tower_pick_clan'), ['Dominion', 'Salt Crows', 'Vigil']),
         ].indexed)
           Positioned(
-              left: 12,
-              top: 18 + i * 74.0,
-              right: 12,
+              left: 24,
+              top: 24 + i * 68.0,
+              right: 20,
               child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(g, style: _sys(10)),
+                    Text(g, style: _sys(10, color: const Color(0xFF394A50))),
                     const SizedBox(height: 4),
                     Row(children: [
                       for (final (j, it) in items.indexed)
-                        Padding(
-                          padding: const EdgeInsets.only(right: 6),
-                          child: Transform(
-                            transform: Matrix4.skewX(-0.2),
-                            child: Container(
-                              padding: const EdgeInsets.symmetric(
-                                  horizontal: 12, vertical: 7),
-                              decoration: BoxDecoration(
-                                  color: j == picked ? _red : _black,
-                                  border: Border.all(
-                                      color: j == picked
-                                          ? _red
-                                          : _grey.withValues(
-                                              alpha:
-                                                  j == items.length - 1 && i > 0
-                                                      ? 0.35
-                                                      : 0.9))),
-                              child: Transform(
-                                  transform: Matrix4.skewX(0.2),
-                                  child: Row(
-                                      mainAxisSize: MainAxisSize.min,
-                                      children: [
-                                        if (j == items.length - 1 && i > 0)
-                                          const Padding(
-                                              padding:
-                                                  EdgeInsets.only(right: 4),
-                                              child: Icon(Icons.lock_outline,
-                                                  size: 11, color: _grey)),
-                                        Text(it,
-                                            style: _brush(12,
-                                                color: j == items.length - 1 &&
-                                                        i > 0
-                                                    ? _grey
-                                                    : _paper)),
-                                      ])),
-                            ),
-                          ),
-                        ),
+                        _paperChip(it,
+                            chosen: j == 0,
+                            locked: j == items.length - 1 && i > 0),
                     ]),
                   ])),
         Positioned(
-            left: 12,
-            right: 12,
-            top: 244,
+            left: 24,
+            right: 20,
+            top: 232,
             child: Text(_t('tower_save_note'),
-                style: _prose(11, italic: true, color: _grey))),
+                style:
+                    _prose(11, italic: true, color: const Color(0xFF394A50)))),
       ]),
-      _at(60, 620, _btn(_t('tower_climb'), red: true, w: 240, h: 44)),
+      _at(60, 626, _btn(_t('tower_climb'), red: true, w: 240, h: 44)),
     ]);
 
 /// The calling pick (the main game's race and profession screen, reused).
@@ -1857,53 +1945,72 @@ Widget _sEnd(bool won) => Stack(children: [
                             : _t('tower_death', {'n': '7'}),
                         style: _brush(21)))),
           ]),
-      _tPanel(14, 396, 332, 178,
+      _paperPanel(14, 396, 332, 186,
           title: _t('tower_earned', {'n': won ? '210' : '14'}),
           kids: [
             Positioned(
-                left: 16,
-                top: 20,
-                right: 16,
+                left: 26,
+                top: 22,
+                right: 26,
                 child: Column(children: [
-                  _kv('Floors climbed', won ? '30' : '7'),
-                  const SizedBox(height: 6),
-                  _kv('Bosses beaten', won ? '3' : '0'),
-                  const SizedBox(height: 6),
-                  _kv('Dice rolled', won ? '212' : '41'),
-                  const SizedBox(height: 6),
-                  _kv('Marks earned', won ? '+210' : '+14', vc: _red),
-                  const SizedBox(height: 10),
-                  Container(height: 1, color: _grey.withValues(alpha: 0.4)),
-                  const SizedBox(height: 6),
-                  _kv(_t('tower_marks_name'), won ? '330' : '134'),
+                  for (final (k, v, red) in [
+                    ('Floors climbed', won ? '30' : '7', false),
+                    ('Bosses beaten', won ? '3' : '0', false),
+                    ('Dice rolled', won ? '212' : '41', false),
+                    ('Marks earned', won ? '+210' : '+14', true),
+                  ]) ...[
+                    Row(children: [
+                      Text(k, style: _sys(10, color: const Color(0xFF394A50))),
+                      const Spacer(),
+                      Text(v,
+                          style: _prose(13,
+                              color: red ? _red : _inkText, bold: true)),
+                    ]),
+                    const SizedBox(height: 7),
+                  ],
+                  Container(height: 1, color: _inkText.withValues(alpha: 0.4)),
+                  const SizedBox(height: 7),
+                  Row(children: [
+                    Text(_t('tower_marks_name'),
+                        style: _sys(10, color: const Color(0xFF394A50))),
+                    const Spacer(),
+                    Text(won ? '330' : '134',
+                        style: _prose(13, color: _inkText, bold: true)),
+                  ]),
                 ])),
           ]),
       if (won)
-        _tPanel(14, 594, 332, 58, title: 'Unlocked', kids: [
+        _paperPanel(14, 604, 332, 56, title: 'Unlocked', kids: [
           Positioned(
-              left: 14,
-              top: 16,
-              right: 14,
+              left: 24,
+              top: 18,
+              right: 20,
               child: Text(_t('tower_unlock_tide_die'),
-                  style: _prose(12.5, bold: true))),
+                  style: _prose(12.5, color: _inkText, bold: true))),
         ]),
-      _at(14, 674, _btn(_t('tower_marks_button'), w: 156, h: 40)),
-      _at(190, 674, _btn(_t('tower_climb_again'), red: true, w: 156, h: 40)),
+      _at(14, 686, _btn(_t('tower_marks_button'), w: 156, h: 40)),
+      _at(190, 686, _btn(_t('tower_climb_again'), red: true, w: 156, h: 40)),
     ]);
 
 Widget _sMarks(List<_Foe> foes) => Stack(children: [
       Positioned.fill(child: Container(color: _black)),
       _ground('tower_band3', opacity: 0.18, top: 60, h: 660),
       _tTitle(_t('tower_marks_title'), _t('tower_marks_name'), back: true),
-      _tPanel(14, 84, 332, 58, kids: [
-        Positioned(left: 16, top: 12, child: Text('134', style: _brush(30))),
+      _paperPanel(14, 88, 332, 60, kids: [
         Positioned(
-            left: 80, top: 24, child: Text('marks in hand', style: _sys(10))),
+            left: 26,
+            top: 12,
+            child: Text('134', style: _brush(30, color: _inkText))),
         Positioned(
-            right: 16,
+            left: 92,
+            top: 24,
+            child: Text('marks in hand',
+                style: _sys(10, color: const Color(0xFF394A50)))),
+        Positioned(
+            right: 24,
             top: 22,
             child: Text(_t('tower_best', {'n': '14'}),
-                style: _prose(12, bold: true))),
+                style: _prose(12, color: _inkText, bold: true))),
       ]),
       for (final (gi, (group, rows)) in [
         (
@@ -1928,12 +2035,12 @@ Widget _sMarks(List<_Foe> foes) => Stack(children: [
           ]
         ),
       ].indexed)
-        _tPanel(14, 170 + gi * 168.0, 332, 150, title: group, kids: [
+        _paperPanel(14, 176 + gi * 172.0, 332, 156, title: group, kids: [
           for (final (ri, (name, cost, state)) in rows.indexed)
             Positioned(
-                left: 10,
-                right: 10,
-                top: 18 + ri * 64.0,
+                left: 24,
+                right: 22,
+                top: 22 + ri * 62.0,
                 child: SizedBox(
                   height: 56,
                   child: Stack(children: [
@@ -1942,29 +2049,52 @@ Widget _sMarks(List<_Foe> foes) => Stack(children: [
                             decoration: BoxDecoration(
                                 border: Border(
                                     bottom: BorderSide(
-                                        color:
-                                            _grey.withValues(alpha: 0.3)))))),
+                                        color: _inkText.withValues(
+                                            alpha: 0.25)))))),
                     Positioned(
-                        left: 4,
-                        top: 8,
-                        right: 100,
-                        child: Text(name, style: _brush(13.5))),
+                        left: 0,
+                        top: 6,
+                        right: 96,
+                        child:
+                            Text(name, style: _brush(13.5, color: _inkText))),
                     Positioned(
-                        left: 4,
-                        top: 34,
+                        left: 0,
+                        top: 32,
                         child: Text(_t('tower_marks_cost', {'n': cost}),
-                            style: _sys(9))),
+                            style: _sys(9, color: const Color(0xFF394A50)))),
                     Positioned(
                         right: 0,
                         top: 12,
-                        child: _btn(state,
-                            red: state == 'Buy' && cost == '80',
-                            w: 80,
-                            h: 28,
-                            dim: state == 'Owned')),
+                        child: state == 'Owned'
+                            ? Text('Owned',
+                                style: _brush(12,
+                                    color: _inkText.withValues(alpha: 0.45)))
+                            : _paperBtn(state,
+                                red: cost == '80', w: 76, h: 28)),
                   ]),
                 )),
         ]),
+    ]);
+
+Widget _sCompare(List<_Foe> foes) => Stack(children: [
+      Positioned.fill(child: Container(color: _black)),
+      _at(
+          14,
+          10,
+          Text('tower_band1: the recolour and Art\'s painted ink',
+              style: _brush(20))),
+      _at(
+          14,
+          40,
+          Text(
+              'left: today\'s PixelLab plate mapped to the ink greys (the placeholder in every picture); right: Art\'s redraw snapped to the same greys',
+              style: _sys(9))),
+      _at(0, 70, _pic('tower_band1', scale: 2)),
+      _at(360, 70, _pic('art_band1', scale: 2)),
+      _at(14, 716,
+          Text('recolour (placeholder)', style: _prose(13, italic: true))),
+      _at(374, 716,
+          Text('painted ink sample (Art)', style: _prose(13, italic: true))),
     ]);
 
 void main() {
@@ -1979,6 +2109,9 @@ void main() {
     await tester.runAsync(() async {
       await _load('bg', '$_art/ink_background.png');
       await _load('frame', '$_art/ink_frame.png');
+      await _load('wide', 'docs/ux-shots/tower-ink/art/ink_wideframe.png');
+      await _load(
+          'art_band1', 'docs/ux-shots/tower-ink/art/ink_tower_band1.png');
       await _load('hit', '$_art/ink_hit.png');
       for (final n in [
         'void_sovereign',
@@ -2024,6 +2157,7 @@ void main() {
       ('14-death', (f) => _sEnd(false), 360),
       ('15-victory', (f) => _sEnd(true), 360),
       ('16-marks', _sMarks, 360),
+      ('17-band1-compare', _sCompare, 720),
     ]) {
       _k = width / 360;
       final key = GlobalKey();
