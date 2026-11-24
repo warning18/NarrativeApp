@@ -1,7 +1,7 @@
 # P1c — Intrigue hints: one rule for all ten (draft, revision 2, not built)
 Status: draft only, revised after Core's wiring (`claude/core-intrigue-hints`, b30f7b01) found that five speakers appear in no scene and some were met after the hub. Nothing here is in `assets/`; no key, id or flag is renamed. EN and FR; FR passes the lint rules (NBSP, curly ’, « », vous without gendered participle).
 ## The rule (unchanged, plus one)
-1. **One line, one NPC the player has already met** in a scene (not only in `npcs.json`): the caravan master (2001), the crape courier and his crier, the Crows' tally-boys (2005), Vane and his porters (2010), the Last Watch's sergeant (3005_clan_vigil_1). The line is written as a memory (“X had said…”) so it does not matter that the speaker is not at the host.
+1. **One line, one NPC the player has already met** in a scene (not only in `npcs.json`): the chef de caravane / caravan master (2001), the crape courier and his crier, the Crows' tally-boys (2005), Vane and his porters (2010), the Last Watch's sergeant (3005_clan_vigil_1). The line is written as a memory (“X had said…”) so it does not matter that the speaker is not at the host.
 2. **Timing:** the speaker must be met before the host node; the Clue must be reachable from the host chapter (a chapter-6 Clue is hinted from a chapter-5 camp, not from chapter 3).
 3. **Mechanism** (as Core wired it): `flag_callbacks` on the host, `flag` `void_banner_bearer`, `unlessFlags` the clue's flag, priority −1. The second offer is a reminder at a later camp keyed on `intrigue_<id>_stage_1`, hidden from stage 2.
 4. **No new stage, flag, number or id.** `taken_names` has no Hook (its `names_clerk` errand is stage 1): hint only, no reminder.
@@ -9,11 +9,11 @@ Status: draft only, revised after Core's wiring (`claude/core-intrigue-hints`, b
 ### The Hooded Lantern (`hooded_lantern`)
 - Speaker: the caravan master. Met in: scene 2001 (ch2 arrival). Host: `2010`. Hidden once `hub_2015_informant` is set.
 - EN: The caravan master had said it on the way down, shouldering his pack: “Ask on the wharf who sells lamp-oil by the cask and burns none. Someone here is paying to keep a lantern shuttered.”
-- FR: Le maître de caravane l’avait dit en descendant, en rajustant son paquetage : « Demandez sur le quai qui vend l’huile de lampe au tonneau et n’en brûle pas. Quelqu’un, ici, paie pour qu’une lanterne reste voilée. »
+- FR: Le chef de caravane l’avait dit en descendant, en rajustant son paquetage : « Demandez sur le quai qui vend l’huile de lampe au tonneau et n’en brûle pas. Quelqu’un, ici, paie pour qu’une lanterne reste voilée. »
 - Hook: 3002 (spine).
 - Reminder in `3001_camp` (shown from `intrigue_hooded_lantern_stage_1`, hidden from stage 2):
   - EN: The caravan master’s riddle about the lamp-oil is still open. The shuttered lantern has a master, and he has not left Saltmouth.
-  - FR: L’énigme du maître de caravane sur l’huile de lampe reste ouverte. La lanterne voilée a un maître, et il n’a pas quitté Saltmouth.
+  - FR: L’énigme du chef de caravane sur l’huile de lampe reste ouverte. La lanterne voilée a un maître, et il n’a pas quitté Saltmouth.
 ### The Dying Lantern-Bearer (`dying_lantern_bearer`)
 - Speaker: the Dominion courier in crape. Met in: scene 2005 itself. Host: `2005`. Hidden once `(none: its Clue is automatic)` is set.
 - EN: The courier in crape, low: “If you meet a lantern-bearer who coughs, ask whose seal he carries. Do not ask loudly.”
@@ -57,15 +57,15 @@ Status: draft only, revised after Core's wiring (`claude/core-intrigue-hints`, b
 ### The Relic Road (`relic_road`)
 - Speaker: the caravan master. Met in: scene 2001. Host: `2015`. Hidden once `hub_2015_bundle` is set.
 - EN: The caravan master had grumbled it on the road in: “My wagons carry cloth and salt. Lately they carry bundles I never packed, heavier going in than coming out.”
-- FR: Le maître de caravane l’avait grommelé en chemin : « Mes chariots portent du tissu et du sel. Depuis peu ils portent des ballots que je n’ai pas faits, plus lourds à l’aller qu’au retour. »
+- FR: Le chef de caravane l’avait grommelé en chemin : « Mes chariots portent du tissu et du sel. Depuis peu ils portent des ballots que je n’ai pas faits, plus lourds à l’aller qu’au retour. »
 - Hook: 3005_shrine_break.
 - Reminder in `4999_camp` (shown from `intrigue_relic_road_stage_1`, hidden from stage 2):
   - EN: Somebody is breaking shrines to keep a road open. The broken one at the Ashen Quarter is the clearest.
   - FR: Quelqu’un brise des sanctuaires pour garder une route ouverte. Celui du Quartier cendré, brisé, est le plus clair.
 ### The Unwatched Hour (`unwatched_hour`)
-- Speaker: a sentry at the Quarter’s edge. Met in: introduced by the line itself, at the host (3005 is the Quarter's own hub). Host: `3005`. Hidden once `hub_3100_new_moon` is set.
-- EN: A sentry at the Quarter’s edge, not looking at me: “The watch changes at the new moon, and for one hour nobody looks at the Sigil. Count it, if you can stand to.”
-- FR: Une sentinelle, au bord du Quartier, sans me regarder : « La relève se fait à la nouvelle lune, et pendant une heure personne ne regarde le Sceau. Comptez-la, si vous en avez le cœur. »
+- Speaker: the Last Watch’s sergeant. Met in: scene 3005_clan_vigil_1 itself (“Their sergeant was an orc with one ear”). Host: `3005_clan_vigil_1`. Hidden once `hub_3100_new_moon` is set.
+- EN: Their sergeant, not turning from the rubble: “The watch changes at the new moon, and for one hour nobody looks at the Sigil. Someone ought to count it.”
+- FR: Leur sergente, sans se détourner des gravats : « La relève se fait à la nouvelle lune, et pendant une heure personne ne regarde le Sceau. Quelqu’un devrait la compter. »
 - Hook: 6010_count_short (needs hub_6010_orsabet).
 - Reminder in `6002_camp` (shown from `intrigue_unwatched_hour_stage_1`, hidden from stage 2):
   - EN: The count at the Reliquary is short by one, and somebody there knows which.
@@ -88,5 +88,5 @@ Status: draft only, revised after Core's wiring (`claude/core-intrigue-hints`, b
 - Harker, Ysolde, Pell, Reck, Edda Grey (in no scene) and Inès, Dorran, Nadira (met only through the hub's own choices) are gone as speakers. The `npcs.json` entries stay for the codex.
 - `lanternbearers_will`: hint moved from the ch3 hub to `6002_camp`; needs `hub_3005_envoys`.
 - `taken_names`: speaker is the Watch sergeant in the Wall scene itself; reminder dropped.
-- `unwatched_hour`: the sentry is introduced by the line, at the Quarter hub, because nobody the player has met by then lives there. If that is not wanted, the host moves to the Wall scene (the sergeant) and the hint reads “…the new moon, a sentry told me”.
+- `unwatched_hour`: now the Last Watch's sergeant at the Wall scene (`3005_clan_vigil_1`), not an unmet sentry; the hint only reaches players who visit the Wall, which is fine for a hint. FR uses « chef de caravane » everywhere, as the rest of the story.
 - Reminders no longer name Ysolde, Orsabet, or Vane's riddle unless the speaker was met.

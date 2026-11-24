@@ -380,29 +380,6 @@
  ],
  "callbacks_add": [
   {
-   "node": "1200",
-   "items": [
-    {
-     "flag": "vica_follow",
-     "en": "She did not follow me out of the hollow. She followed me out of the dark, which is not the same.",
-     "fr": "Elle ne me suivit pas hors du creux. Elle me suivit hors du noir, ce qui n’est pas pareil.",
-     "priority": 1
-    },
-    {
-     "flag": "vica_shared",
-     "en": "She ate what was left in the flask, which was nothing, and licked the flask.",
-     "fr": "Elle mangea ce qui restait dans la gourde, c’est-à-dire rien, et lécha la gourde.",
-     "priority": 1
-    },
-    {
-     "flag": "vica_paid",
-     "en": "She sat on the coins until I understood they were hers.",
-     "fr": "Elle s’assit sur les pièces jusqu’à ce que je comprenne qu’elles étaient à elle.",
-     "priority": 1
-    }
-   ]
-  },
-  {
    "node": "7800",
    "items": [
     {
