@@ -15,9 +15,14 @@ extension _TowerPanels on _FightScreenState {
     final figures = !_shortPhone;
     // A tall phone gives the pictures more room, so the figures stand bigger.
     final tall = MediaQuery.sizeOf(context).height >= 740;
-    final foeH = figures ? (tall ? 172.0 : 128.0) : 84.0;
-    final partyH = figures ? (tall ? 148.0 : 132.0) : 80.0;
-    final figureH = tall ? 98.0 : 56.0;
+    // One fighter on a side stands beside its plate, whole, feet on the floor
+    // line; several stand under theirs.
+    final foeLone = _enemies.length == 1;
+    final partyLone = _party.length == 1;
+    final foeH = figures ? (foeLone ? 128.0 : (tall ? 184.0 : 128.0)) : 84.0;
+    final partyH =
+        figures ? (partyLone ? 122.0 : (tall ? 172.0 : 132.0)) : 80.0;
+    final figureH = tall ? 84.0 : 56.0;
     // The foe the picked die is aimed at (its index in the row), if any.
     final aimed = _towerAimedFoe();
     Widget panel(
@@ -64,9 +69,12 @@ extension _TowerPanels on _FightScreenState {
                 ),
               if (figures)
                 Positioned(
-                  left: 8,
-                  right: 8,
-                  bottom: foes ? 18 : 12,
+                  // A lone fighter: a box 176 wide holds its half (84) at the
+                  // panel's edge; several share the whole width.
+                  left: cards.length == 1 && foes ? null : 8,
+                  right: cards.length == 1 && !foes ? null : 8,
+                  width: cards.length == 1 ? 176 : null,
+                  bottom: 22,
                   child: IgnorePointer(
                     child: FightFigures(
                       allies: foes
@@ -82,9 +90,8 @@ extension _TowerPanels on _FightScreenState {
               Positioned(
                 // One fighter's plate leaves its picture room to stand beside
                 // it (the hero left, a lone foe right), as in the approved A.
-                left: 12 + (!foes && figures && tall ? 70 : 0),
-                right: 12 +
-                    (foes && figures && tall && cards.length == 1 ? 70 : 0),
+                left: 12 + (!foes && figures && cards.length == 1 ? 96 : 0),
+                right: 12 + (foes && figures && cards.length == 1 ? 96 : 0),
                 top: foes ? 18 : 10,
                 child: Row(
                   crossAxisAlignment: CrossAxisAlignment.start,
