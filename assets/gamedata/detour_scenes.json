@@ -3510,7 +3510,7 @@
         "id": "shoal",
         "type": "event",
         "text": "A shoal on the Hollow Shore lies so still that it holds the sky, and the sky it holds is not this one: it is darker, with two moons, and a line of ships under it, hulls down, white as bone. Your own reflection stands in the water and does not move when you do.",
-        "text_fr": "Un haut-fond de la Côte Creuse est si immobile qu’il retient le ciel, et le ciel qu’il retient n’est pas celui-ci : il est plus sombre, avec deux lunes, et une ligne de navires dessous, coque en haut, blancs comme des os. Votre reflet se tient dans l’eau et ne bouge pas quand vous bougez.",
+        "text_fr": "Un haut-fond de la Rive Creuse est si immobile qu’il retient le ciel, et le ciel qu’il retient n’est pas celui-ci : il est plus sombre, avec deux lunes, et une ligne de navires dessous, coque en haut, blancs comme des os. Votre reflet se tient dans l’eau et ne bouge pas quand vous bougez.",
         "place": "The shoal",
         "place_fr": "Le haut-fond",
         "choices": [
