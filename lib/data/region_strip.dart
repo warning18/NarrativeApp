@@ -69,7 +69,7 @@ const Map<String, String> stripKitOfBiome = {
 
 /// The room at each open end of a strip, and around a zone's only place
 /// when no road gives its distance to the next zone (in chart units).
-const double stripMargin = 12;
+const double _stripMargin = 12;
 
 /// How far a town's districts spread on either side of the town's x, at
 /// most (chart units); less when its neighbours are nearer.
@@ -160,7 +160,7 @@ class RegionStrips {
       final double start, lead;
       if (prev == null) {
         start = 0;
-        lead = stripMargin;
+        lead = _stripMargin;
       } else {
         final half = _road(chart, prev.landmark, landmarks.first) / 2;
         zones[prev.zone] = zones[prev.zone]!._withEnd(prev.x + half);
@@ -180,7 +180,7 @@ class RegionStrips {
         biome: zone.biome,
         kit: stripKitOfBiome[zone.biome] ?? 'desert',
         start: start,
-        end: at.last + stripMargin,
+        end: at.last + _stripMargin,
         places: places,
       );
       last[kind] = (zone: zoneId, landmark: landmarks.last, x: at.last);

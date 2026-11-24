@@ -926,7 +926,7 @@ const double bossDamageBaseMultiplier = 1.24;
 /// of chapters 5 to 8 had fallen 5 to 12 points under the curve's targets
 /// while chapter 1's and 4's stayed on it (QA's L3 on v1.888, #895). The
 /// last entry holds for any later chapter.
-const List<double> bossDamageByChapter = [
+const List<double> _bossDamageByChapter = [
   bossDamageBaseMultiplier, // 1
   bossDamageBaseMultiplier, // 2
   1.12, // 3
@@ -937,8 +937,8 @@ const List<double> bossDamageByChapter = [
   1.12, // 8
 ];
 
-double bossDamageBaseMultiplierFor(int chapter) => bossDamageByChapter[
-    (max(1, chapter) - 1).clamp(0, bossDamageByChapter.length - 1)];
+double bossDamageBaseMultiplierFor(int chapter) => _bossDamageByChapter[
+    (max(1, chapter) - 1).clamp(0, _bossDamageByChapter.length - 1)];
 
 /// How much harder each New Game+ cycle makes every enemy (health AND
 /// damage, on top of the whole curve): cycle 1 is +10%, cycle 2 +20%. A

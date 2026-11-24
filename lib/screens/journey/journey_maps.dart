@@ -109,6 +109,11 @@ class _JourneyChart extends StatefulWidget {
 @visibleForTesting
 final ValueNotifier<int> debugJourneyMapsTicking = ValueNotifier(0);
 
+/// How many Journey charts have their idle glyphs breathing (tests): their
+/// clock runs only while a round mark that breathes is on the chart.
+@visibleForTesting
+final ValueNotifier<int> debugJourneyIdleGlyphs = ValueNotifier(0);
+
 /// How long the party takes to walk a road [length] logical pixels long
 /// (v1.219): in a place, at a steady stroll (about 130 px a second, from a
 /// second and a half to four and a quarter), so a long street no longer
@@ -307,7 +312,7 @@ class _JourneyChartState extends State<_JourneyChart>
     if (animate == _animate) return;
     _animate = animate;
     if (animate) {
-      _idleGlyphs.repeat();
+      _syncIdleGlyphs();
       final from = widget.arriveFrom;
       if (!_arrivalStarted &&
           from != null &&
@@ -325,8 +330,27 @@ class _JourneyChartState extends State<_JourneyChart>
       });
       _wake();
     } else {
-      _idleGlyphs.stop();
+      _syncIdleGlyphs();
       _rest();
+    }
+  }
+
+  /// Whether a mark on the chart breathes: a round mark (a fight or a
+  /// roll, not a banner pin) that is not locked (see the marks' build).
+  bool get _hasIdleGlyphs => widget.steps
+      .any((s) => !s.locked && journeyPinCatOf(s.kind, s.questTie) == null);
+
+  /// The idle glyphs' clock runs only while the chart animates and a mark
+  /// that breathes is on it: no frames asked for otherwise.
+  void _syncIdleGlyphs() {
+    final run = _animate && _hasIdleGlyphs;
+    if (run == _idleGlyphs.isAnimating) return;
+    if (run) {
+      _idleGlyphs.repeat();
+      debugJourneyIdleGlyphs.value++;
+    } else {
+      _idleGlyphs.stop();
+      debugJourneyIdleGlyphs.value--;
     }
   }
 
@@ -369,6 +393,7 @@ class _JourneyChartState extends State<_JourneyChart>
   @override
   void didUpdateWidget(covariant _JourneyChart old) {
     super.didUpdateWidget(old);
+    if (!identical(old.steps, widget.steps)) _syncIdleGlyphs();
     if (old.townView != widget.townView) {
       final to = widget.townView ? 1.0 : 0.0;
       if (MediaQuery.of(context).disableAnimations) {
@@ -545,6 +570,7 @@ class _JourneyChartState extends State<_JourneyChart>
     _arrival.dispose();
     _town.dispose();
     _flight.dispose();
+    if (_idleGlyphs.isAnimating) debugJourneyIdleGlyphs.value--;
     _idleGlyphs.dispose();
     _scroll?.dispose();
     super.dispose();
@@ -1640,13 +1666,17 @@ class _JourneyChartState extends State<_JourneyChart>
                             ? PixelGlyph(PixelGlyphs.lock,
                                 size: IconSize.s16,
                                 color: isSelected ? palette.land : colour)
-                            : AnimatedBuilder(
-                                animation: _idleGlyphs,
-                                builder: (context, _) => journeyIdleGlyph(
-                                  glyph: step.glyph,
-                                  colour: isSelected ? palette.land : colour,
-                                  t: _idleGlyphs.value * 12,
-                                  phase: i * 0.9,
+                            // Its own layer: a breath repaints the glyph, not
+                            // the chart under it.
+                            : RepaintBoundary(
+                                child: AnimatedBuilder(
+                                  animation: _idleGlyphs,
+                                  builder: (context, _) => journeyIdleGlyph(
+                                    glyph: step.glyph,
+                                    colour: isSelected ? palette.land : colour,
+                                    t: _idleGlyphs.value * 12,
+                                    phase: i * 0.9,
+                                  ),
                                 ),
                               ),
                       ),

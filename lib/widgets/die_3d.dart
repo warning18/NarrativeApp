@@ -87,27 +87,27 @@ const double _perspective = 0.0016;
 
 /// The smallest square a die's facets carry their glyphs in; a smaller die
 /// (the loadout's list tiles) is still a real solid, drawn without them.
-const double dieSolidMinSize = 40;
+const double _dieSolidMinSize = 40;
 
-/// A frame that takes longer than this, [dieSlowFrames] times in a row during
+/// A frame that takes longer than this, [_dieSlowFrames] times in a row during
 /// a roll, marks the phone as slow. Every die is a real solid on every phone
 /// (a flat polygon is never what a roll looks like): a slow phone gets the
 /// solids cheaper (no glyph plaques on the facets, a shorter tumble), for the
 /// dice mounted after, so a die never changes its drawing while it is on
 /// screen (it looked like two different dice, v1.907).
-const Duration dieFrameBudget = Duration(milliseconds: 34);
-const int dieSlowFrames = 12;
+const Duration _dieFrameBudget = Duration(milliseconds: 34);
+const int _dieSlowFrames = 12;
 
 /// Set once a roll was slow; read when a die is mounted, never after.
 bool dieCheapSolids = false;
 int _slowRun = 0;
 
-/// One frame of a roll, judged: [dieSlowFrames] slow ones in a row make the
+/// One frame of a roll, judged: [_dieSlowFrames] slow ones in a row make the
 /// solids cheaper for the dice mounted from now on.
 @visibleForTesting
 void dieJudgeFrame(Duration span) {
-  _slowRun = span > dieFrameBudget ? _slowRun + 1 : 0;
-  if (_slowRun >= dieSlowFrames) dieCheapSolids = true;
+  _slowRun = span > _dieFrameBudget ? _slowRun + 1 : 0;
+  if (_slowRun >= _dieSlowFrames) dieCheapSolids = true;
 }
 
 @visibleForTesting
@@ -433,7 +433,7 @@ class _Die3DState extends State<Die3D> with SingleTickerProviderStateMixin {
                   t: t,
                   // The facets' glyphs need room, and a slow phone does
                   // without them (and turns a little less).
-                  showGlyphs: !_cheap && size >= dieSolidMinSize,
+                  showGlyphs: !_cheap && size >= _dieSolidMinSize,
                   turns: _cheap ? 1.2 : null,
                   unrolled: _unrolled,
                   landed: widget.fx != null && !widget.dim && t >= 1,
