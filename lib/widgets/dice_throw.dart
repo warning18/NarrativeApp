@@ -10,9 +10,12 @@
 // frame costs a lookup. Reduced motion and the cheap-solids profile do not
 // use it (the board keeps its plain flight).
 import 'dart:math' as math;
-import 'dart:ui' show Offset, Size, lerpDouble;
 
 import 'package:flutter/animation.dart';
+import 'package:flutter/foundation.dart' show Listenable;
+import 'package:flutter/rendering.dart' show CustomClipper;
+import 'dart:ui'
+    show Offset, Path, PathOperation, RRect, Radius, Rect, Size, lerpDouble;
 
 /// Where a die ends and how big it is; [fixed] ones (kept through a reroll)
 /// do not move but are in the way.
@@ -376,4 +379,30 @@ class _TurnCurve extends Curve {
 
   @override
   double transformInternal(double t) => plan.turn(i, t);
+}
+
+/// The screen with a round-cornered hole at each die: what is clipped by it
+/// (the day's weather) never crosses a die. [holes] is read each time the
+/// clip is made, and [repaint] re-makes it every frame of a throw.
+class DiceHoles extends CustomClipper<Path> {
+  DiceHoles(this.holes, Listenable repaint) : super(reclip: repaint);
+
+  final List<Rect> Function() holes;
+
+  @override
+  Path getClip(Size size) {
+    var path = Path()..addRect(Offset.zero & size);
+    for (final hole in holes()) {
+      path = Path.combine(
+          PathOperation.difference,
+          path,
+          Path()
+            ..addRRect(
+                RRect.fromRectAndRadius(hole, const Radius.circular(16))));
+    }
+    return path;
+  }
+
+  @override
+  bool shouldReclip(DiceHoles old) => true;
 }

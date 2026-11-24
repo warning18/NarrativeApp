@@ -512,6 +512,20 @@ extension _FightBoardView on _FightScreenState {
     );
   }
 
+  /// How tall the hint under the dice is, laid out as it is drawn (at most
+  /// two lines, the board's width less its margins, the text setting's size).
+  double _hintHeight(String text, double width) {
+    final painter = TextPainter(
+      text: TextSpan(text: text, style: Theme.of(context).textTheme.labelSmall),
+      textDirection: TextDirection.ltr,
+      textScaler: MediaQuery.textScalerOf(context),
+      maxLines: 2,
+    )..layout(maxWidth: width);
+    final h = painter.height;
+    painter.dispose();
+    return h;
+  }
+
   /// The plan of the throw under way, made once per roll from the seats the
   /// board gives the dice and kept until the next.
   DiceThrowPlan _throwPlanFor(
@@ -674,18 +688,30 @@ extension _FightBoardView on _FightScreenState {
                               child: _buildDieTile(actor, dice, skills, items,
                                   canLock, plan.previews[actor.id],
                                   cube: square,
+                                  hideName: TowerPanelStyle.of(context) &&
+                                      size.height <
+                                          tileH +
+                                              _hintHeight(tr(ref, hintKey),
+                                                  size.width - 16) +
+                                              16,
                                   roll: throwPlan == null
                                       ? null
                                       : _rollController.drive(CurveTween(
                                           curve: throwPlan.turnCurve(k)))),
                             );
                           }(),
-                        // The Tower's ink: the dice's tags on the plate.
+                        // The Tower's ink: the dice's tags on the plate, over
+                        // the hint (whatever its height: French and a big text
+                        // setting wrap it to two lines).
                         if (TowerPanelStyle.of(context) && onBoard.isNotEmpty)
                           Positioned(
                             left: 8,
                             right: 8,
-                            bottom: 40,
+                            bottom: max(
+                                40.0,
+                                10 +
+                                    _hintHeight(
+                                        tr(ref, hintKey), size.width - 16)),
                             child: IgnorePointer(
                               child: Row(
                                 mainAxisAlignment:
