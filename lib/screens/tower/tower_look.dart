@@ -93,9 +93,28 @@ class TowerNight extends ConsumerWidget {
 
 /// The Tower's buttons in ink (v1.1005): a flat red block with paper text for
 /// the one that matters, a black block with a paper line for the rest; square.
+/// The Tower's colours for everything that reads [InkColors] (the level up, the
+/// spoils sheet, the offers): paper for the main action and healing, red only
+/// for blood and danger, cold greys for the rest (v1.1010).
+const InkColors towerInkColors = InkColors(
+  gold: inkPaper,
+  blood: inkRed,
+  ember: inkRed,
+  tide: inkGrey,
+  voidColor: inkGrey,
+  heal: inkPaper,
+  seam: inkSlate,
+  ash: inkGrey,
+);
+
 ThemeData _inkButtons(ThemeData t) {
   const square = RoundedRectangleBorder();
   return t.copyWith(
+    extensions: [
+      for (final e in t.extensions.values)
+        if (e is! InkColors) e,
+      towerInkColors,
+    ],
     filledButtonTheme: FilledButtonThemeData(
       style: FilledButton.styleFrom(
         backgroundColor: inkRed,
