@@ -1,9 +1,12 @@
 // The Tower's ink kit (v1.1004): the sprite recolour rule, and its cache.
 import 'dart:typed_data';
 
+import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 import 'package:narrative_data_app/screens/tower/ink/ink_images.dart';
+import 'package:narrative_data_app/screens/tower/ink/ink_kit.dart';
+import 'package:narrative_data_app/screens/tower/ink/ink_palette.dart';
 import 'package:narrative_data_app/screens/tower/ink/ink_sprites.dart';
 
 void main() {
@@ -76,5 +79,45 @@ void main() {
     expect(n, 2);
     await InkImages.preload();
     expect(InkImages.decodes, n, reason: 'a second preload decodes nothing');
+  });
+
+  testWidgets('the ink button is a FilledButton that carries its key, and taps',
+      (tester) async {
+    var taps = 0;
+    await tester.pumpWidget(MaterialApp(
+      theme: ThemeData.dark(),
+      home: Scaffold(
+        body: Center(
+          child: InkButton(
+            buttonKey: const Key('go'),
+            label: 'Climb',
+            primary: true,
+            onPressed: () => taps++,
+          ),
+        ),
+      ),
+    ));
+    // One widget with the key, and it is the FilledButton itself.
+    expect(find.byKey(const Key('go')), findsOneWidget);
+    expect(tester.widget<FilledButton>(find.byKey(const Key('go'))).onPressed,
+        isNotNull);
+    await tester.tap(find.byKey(const Key('go')));
+    expect(taps, 1);
+  });
+
+  testWidgets('the paper panel reads in ink, whatever the theme says',
+      (tester) async {
+    await tester.pumpWidget(MaterialApp(
+      theme: ThemeData.dark(),
+      home: const Scaffold(
+        body: InkPaperPanel(child: Text('Floor 7', key: Key('t'))),
+      ),
+    ));
+    final style = tester
+        .widget<RichText>(find.descendant(
+            of: find.byKey(const Key('t')), matching: find.byType(RichText)))
+        .text
+        .style;
+    expect(style?.color, inkOnPaper);
   });
 }

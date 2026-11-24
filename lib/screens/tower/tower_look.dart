@@ -2,6 +2,7 @@
 // theme (the dark scheme of the app's palette, on the Tower's own screens
 // only), its panels in the double-ink-line and bevel style, the foe standing
 // in its panel when it has art.
+import 'dart:async';
 import 'dart:ui' as ui;
 
 import 'package:flutter/material.dart';
@@ -10,6 +11,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../providers/palette_provider.dart';
 import '../../theme/frame_style.dart';
 import '../../theme/stitched_ink.dart';
+import 'ink/ink_images.dart';
 import 'tower_providers.dart';
 import '../../widgets/fight_sprites.dart';
 
@@ -64,6 +66,8 @@ class TowerNight extends ConsumerWidget {
     // there the Tower wears its plain bevel, so no panel is drawn bare.
     final ready = FrameImages.ready(material, env);
     if (!ready) FrameImages.preload(material, env);
+    // The ink frames (v1.1004), the same way: loaded once, ahead.
+    if (!InkImages.ready) unawaited(InkImages.preload());
     return ValueListenableBuilder<int>(
       valueListenable: FrameImages.loaded,
       builder: (context, _, __) => Theme(

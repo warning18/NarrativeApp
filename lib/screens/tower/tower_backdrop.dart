@@ -1,4 +1,5 @@
-// The Tower floor's backdrop (v1.895): a PixelLab picture of the tower's room
+// The Tower floor's backdrop (v1.895; in the ink greys from v1.1004, the
+// recolours of the same plates): a PixelLab picture of the tower's room
 // for the band the party climbs in (floors 1 to 10, 11 to 20, 21 to 30),
 // cover-fitted behind the floor screen with the page's own colour laid over it,
 // so the text and panels on top read as they always did (the layout is not
@@ -14,13 +15,13 @@ int towerBandOf(int floor) => floor <= 10
 
 /// The picture of [band] (1 to 3).
 String towerBackdropAsset(int band) =>
-    'assets/visuals/tower/tower_band${band.clamp(1, 3)}.png';
+    'assets/visuals/tower_ink/tower_band${band.clamp(1, 3)}.png';
 
 /// The picture of a special floor: the wardens (5, 15, 25) and the bosses (10,
 /// 20, 30) each have their own; null for an ordinary floor.
 String? towerFloorPlate(int floor) => switch (floor) {
-      5 || 15 || 25 => 'assets/visuals/tower/tower_ward$floor.png',
-      10 || 20 || 30 => 'assets/visuals/tower/tower_boss$floor.png',
+      5 || 15 || 25 => 'assets/visuals/tower_ink/tower_ward$floor.png',
+      10 || 20 || 30 => 'assets/visuals/tower_ink/tower_boss$floor.png',
       _ => null,
     };
 
@@ -29,15 +30,15 @@ String? towerFloorPlate(int floor) => switch (floor) {
 /// 'bargain' (the Tally-Clerk's alcove)); null for the floor's own. One line per plate, so a plate is swapped
 /// by changing a file name here (the user picks among Art's versions).
 String? towerEventPlate(String background) => switch (background) {
-      'parley' => 'assets/visuals/tower/tower_parley.png',
-      'merchant' => 'assets/visuals/tower/tower_shop.png',
-      'bargain' => 'assets/visuals/tower/tower_bargain.png',
+      'parley' => 'assets/visuals/tower_ink/tower_parley.png',
+      'merchant' => 'assets/visuals/tower_ink/tower_shop.png',
+      'bargain' => 'assets/visuals/tower_ink/tower_bargain.png',
       _ => null,
     };
 
 /// The end of a run: the picture of a won run, of a lost one.
 String towerEndPlate({required bool won}) =>
-    'assets/visuals/tower/tower_${won ? 'win' : 'lose'}.png';
+    'assets/visuals/tower_ink/tower_${won ? 'win' : 'lose'}.png';
 
 /// How much of the page's colour lies over the picture.
 const double towerBackdropVeil = 0.58;

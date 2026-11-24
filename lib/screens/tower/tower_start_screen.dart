@@ -5,16 +5,18 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../data/tower/tower_run.dart';
 import '../../data/tower/tower_tables.dart';
 import '../../l10n/app_strings.dart';
 import '../../theme/stitched_ink.dart';
 import '../race_profession_screen.dart';
+import 'ink/ink_kit.dart';
+import 'ink/ink_palette.dart';
 import 'tower_backdrop.dart';
 import 'tower_floor_screen.dart';
 import 'tower_look.dart';
 import 'tower_marks_screen.dart';
 import 'tower_providers.dart';
-import '../../widgets/ink_panel.dart';
 
 /// The Tower's door, in the Tower's night theme (its body below).
 class TowerStartScreen extends StatelessWidget {
@@ -81,6 +83,8 @@ class _TowerStartScreenState extends ConsumerState<_TowerStartBody> {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final ink = InkColors.of(context);
+    final paper =
+        theme.textTheme.apply(bodyColor: inkOnPaper, displayColor: inkOnPaper);
     final state = ref.watch(towerProvider).value ?? const TowerState();
     final progress = state.progress;
     final run = state.run;
@@ -95,8 +99,10 @@ class _TowerStartScreenState extends ConsumerState<_TowerStartBody> {
               Text(tr(ref, 'tower_tagline'),
                   style: theme.textTheme.bodyLarge
                       ?.copyWith(fontStyle: FontStyle.italic)),
-              const SizedBox(height: 10),
-              InkPanel(
+              const SizedBox(height: 18),
+              // The marks and the best floor, on paper (Art's wide frame).
+              InkPaperPanel(
+                title: tr(ref, 'tower_marks_name'),
                 child: Row(
                   children: [
                     Expanded(
@@ -106,8 +112,7 @@ class _TowerStartScreenState extends ConsumerState<_TowerStartBody> {
                           Text(
                               '${progress.marks} ${tr(ref, 'tower_marks_name')}',
                               key: const Key('tower_marks_total'),
-                              style: theme.textTheme.titleSmall
-                                  ?.copyWith(color: ink.gold)),
+                              style: paper.titleMedium),
                           Text(
                               [
                                 _fill(tr(ref, 'tower_best'),
@@ -115,37 +120,33 @@ class _TowerStartScreenState extends ConsumerState<_TowerStartBody> {
                                 _fill(tr(ref, 'tower_runs_line'),
                                     {'r': progress.runs, 'w': progress.wins}),
                               ].join(' · '),
-                              style: theme.textTheme.bodySmall),
+                              style: paper.bodySmall),
                         ],
                       ),
                     ),
-                    OutlinedButton(
-                      key: const Key('tower_marks_button'),
+                    InkButton(
+                      buttonKey: const Key('tower_marks_button'),
+                      onPaper: true,
+                      label: tr(ref, 'tower_marks_button'),
                       onPressed: () => Navigator.of(context).push(
                           MaterialPageRoute(
                               builder: (_) => const TowerMarksScreen())),
-                      child: Text(tr(ref, 'tower_marks_button')),
                     ),
                   ],
                 ),
               ),
               if (run != null && !run.isOver) ...[
-                const SizedBox(height: 10),
-                FilledButton(
-                  key: const Key('tower_continue'),
-                  onPressed: () => Navigator.of(context).push(MaterialPageRoute(
-                      builder: (_) => const TowerFloorScreen())),
-                  child: Text(
-                      '${tr(ref, 'tower_continue')} · ${_fill(tr(ref, 'tower_floor_of'), {
-                        'n': run.floor
-                      })}'),
-                ),
+                const SizedBox(height: 14),
+                // A run to go on with: a slanted panel of its band's plate.
+                _continuePanel(run, theme),
               ],
               const SizedBox(height: 14),
-              FilledButton(
-                key: const Key('tower_climb'),
+              InkButton(
+                buttonKey: const Key('tower_climb'),
+                primary: true,
+                height: 46,
+                label: tr(ref, 'tower_climb'),
                 onPressed: _starting ? null : _create,
-                child: Text(tr(ref, 'tower_climb')),
               ),
               const SizedBox(height: 8),
               Text(tr(ref, 'tower_save_note'),
@@ -161,6 +162,56 @@ class _TowerStartScreenState extends ConsumerState<_TowerStartBody> {
       ),
     );
   }
+
+  /// The run to go on with: its band's plate in a slanted panel, the floor it
+  /// stands on, and the button that goes on (red).
+  Widget _continuePanel(TowerRun run, ThemeData theme) => LayoutBuilder(
+        builder: (context, box) {
+          final w = box.maxWidth;
+          const h = 104.0;
+          return InkSlantPanel(
+            size: Size(w, h),
+            points: [
+              const Offset(8, 10),
+              Offset(w - 8, 2),
+              Offset(w - 8, h - 8),
+              const Offset(8, h - 8),
+            ],
+            child: Stack(fit: StackFit.expand, children: [
+              Image.asset(towerBackdropAsset(towerBandOf(run.floor)),
+                  fit: BoxFit.cover, filterQuality: FilterQuality.none),
+              Positioned(
+                left: 20,
+                top: 14,
+                right: 20,
+                bottom: 14,
+                child: ColoredBox(
+                  color: inkBlack.withValues(alpha: 0.82),
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 14),
+                    child: Row(children: [
+                      Expanded(
+                        child: Text(
+                            _fill(tr(ref, 'tower_floor_of'), {'n': run.floor}),
+                            style: theme.textTheme.titleMedium?.copyWith(
+                                fontFamily: InkFonts.display, color: inkPaper)),
+                      ),
+                      InkButton(
+                        buttonKey: const Key('tower_continue'),
+                        primary: true,
+                        label: tr(ref, 'tower_continue'),
+                        onPressed: () => Navigator.of(context).push(
+                            MaterialPageRoute(
+                                builder: (_) => const TowerFloorScreen())),
+                      ),
+                    ]),
+                  ),
+                ),
+              ),
+            ]),
+          );
+        },
+      );
 
   /// One band of the tower as a pane of its own picture: its name and floors.
   Widget _bandPane(int band, ThemeData theme, InkColors ink) => Padding(
