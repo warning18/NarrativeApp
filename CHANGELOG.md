@@ -8,6 +8,10 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [2.2.1+1054]
+
+- **The Journey costs less to draw, no visible change.** The marks' idle glyphs (round marks: fights and rolls off the quests) breathe on their 12-second clock only while one is drawn, so a view of banners only (the prologue's ways, most rooms) asks for no frames; each glyph breathes on its own layer, so a breath repaints the glyph and not the chart. The town plan has its own layer on the Journey: a drag of the plan repaints 512 pieces a frame instead of 640 (Saltmouth, whole town). Maps' perf review (perf-2.md). Core.
+
 ## [2.2.0+1053]
 
 - The dice are thrown. In a fight, each die flies in from the bottom edge of the board on an arc, bounces two or three times with damping, slides, and turns over as it slows, a little extra at each bounce; dice that meet push each other aside and never overlap; each ends on its seat on the face the rules picked (the throw is only motion: the faces are decided before it, as before, and no rule changed). It is the same board for the story's fights and the Tower's. With reduced motion, and on a phone that was slow, the dice keep their plain flight. Look only. UX (view only).
