@@ -11,6 +11,13 @@ isn't reconstructable from git history alone.
 ## [2.2.0+1053]
 
 - The dice are thrown. In a fight, each die flies in from the bottom edge of the board on an arc, bounces two or three times with damping, slides, and turns over as it slows, a little extra at each bounce; dice that meet push each other aside and never overlap; each ends on its seat on the face the rules picked (the throw is only motion: the faces are decided before it, as before, and no rule changed). It is the same board for the story's fights and the Tower's. With reduced motion, and on a phone that was slow, the dice keep their plain flight. Look only. UX (view only).
+## [2.1.2+1049]
+
+- **Simulator truth (Wave 5), no change to the game.** The simulator's bot now values a die's face keywords as its fights play them: Pain twice the blow less the health it costs, Cleave its splash, Pierce what a guard takes, Steady its point, Growth what it gains over a fight (constants measured on 200 runs). Its fights now play Growth, as the fight screen does. A batch can run on several cores (`test/sim_batch_test.dart`: 100 runs in 7.9 s instead of 21.2 s, the same runs). Before and after: fight wins about 1 point higher, the competent player's die trials agree with the values 5 points more often, and the Headsman, valued as it fights, becomes most runs' final die (see `docs/simulation/sim-truth.md`). QA's Tower pin moves by a hair and is re-pinned. Core.
+
+## [2.1.1+1048]
+
+- **Code health: the Journey screen split into smaller files, no behaviour change.** `lib/screens/journey_screen.dart` (6,100 lines) is now the screen and its state, with seven part files beside the three it had in `lib/screens/journey/`: the step and its helpers, moving between views, taking a step, the step's detail, the town view, and the map chart in two files of its own (`journey_maps.dart`, `journey_maps_paint.dart`) for the Maps session. Code moved only: every declaration is the same, 22 methods of the state moved into extensions call `_update` (the folder's existing stand-in for `setState`). Core.
 
 ## [2.1.0+1047]
 
