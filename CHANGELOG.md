@@ -8,6 +8,16 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [2.1.3+1050]
+
+- **Cleanup: dead code and unread strings removed.** Four intro painters
+  nothing draws any more (the burning city, the fire, the white ships and
+  the tavern floor) and the eight private helpers only they used, a
+  floating-shroud widget, an inventory slot-icon function and a debug getter
+  of the city chart are gone, with seven Tower strings (English and French)
+  that no screen reads. Each was checked unused (no caller, no name built at
+  run time). Nothing changes on screen or in a number.
+
 ## [2.0.0+1046]
 
 - The Tower is in ink (part 4 of 4: the end of a floor and the start of a run; the set is complete). The level up, the spoils sheet, the cards after a floor, and the calling pick in the Tower now wear the ink look: paper white for the main action, healing and a gain, deep red only for blood, danger and a loss, cold greys for the rest; square cards with no wood frame, the emblems and the chest in the ink greys, the level up's radar polygon in paper. The parley's and the stall's figures are the same sprites recoloured to ink. It comes from the Tower's own colour set (what reads `InkColors` under the Tower is ink), so the story's screens are unchanged. The Tower moved to ink in four parts (v1.1004, v1.1005, v1.1009 and this one). Look only. UX (view only).
