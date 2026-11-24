@@ -25,3 +25,17 @@ Board `docs/art/boards/tarot-pilot.png` (the pilot above; below it the plate UX 
 - What worked: the dice and the fire read well and are clearly in the ink style; the seals work (`seal_rare_3dots.png` has the better wax edge; `alt_seal_rare_3dots.png` has the clearer three dots).
 - What did not: in the Fire second try and both Heal tries the model drew a tarot card inside the picture; I picked the first Fire and the first Heal (the cleanest), but Heal also has a card-like frame that needs a retry with "no card, no frame".
 - The vignettes are not tied to the Tower plates (no scene to crop): they are made as small paintings, so UX can drop the plate stand-ins.
+
+## Full set delivered (24 November, 18 more generations; 26 in all with the pilot; balance 1788)
+Staged in `art/pixellab-tarot/final/tower_cards/` (PNG8, ink palette: ten Apollo greys and three deep reds, `art/pixellab-ink/tower/snap.py`), named for UX's hook (`lib/screens/tower/tower_card_art.dart`: `towerCardArt`), ready to copy into `assets/visuals/tower_cards/`: I kept them under `art/` because `assets/` is UX's.
+| Hook key | File | Size (px) |
+|---|---|---|
+| `skill:Fire` `skill:Earth` `skill:Wind` `skill:Water` `skill:Ice` `skill:Light` `skill:Electricity` `skill:Void` `skill:None` | `skill_fire.png` `skill_earth.png` `skill_wind.png` `skill_water.png` `skill_ice.png` `skill_light.png` `skill_electricity.png` `skill_void.png` `skill_none.png` | 96 x 64 |
+| `die` | `die.png` | 96 x 64 |
+| `spell:Damage` `spell:Ward` `spell:Heal` `spell:Hex` | `spell_damage.png` `spell_ward.png` `spell_heal.png` `spell_hex.png` | 96 x 64 |
+| `oath` | composed in code from the clan banner on a plate (no file) | |
+| rarity seals (0 common to 4 legendary = 1 to 5 dots) | `seal_1dots.png` to `seal_5dots.png` | 32 x 32 |
+| tarot frame (the inside is transparent, border 11 px) | `frame_tarot.png` | 112 x 160 |
+| "new" stamp | `stamp_new.png` | 48 x 48 |
+Board `docs/art/boards/tarot-cards-all.png`. Raw outputs and jobs in `art/pixellab-tarot/raw/` and `jobs2.json`.
+Notes: the Heal retry ("no card, no frame") worked; the frame came with a picture inside, which I cut out (the inside is transparent); the dots on the 4 and 5 seals are small (the 5 dots are faint at 1x), so UX may draw the dots itself over a blank seal if they must read. Retries not spent: 7 of the 25 cap.
