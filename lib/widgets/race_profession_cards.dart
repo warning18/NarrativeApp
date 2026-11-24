@@ -21,6 +21,8 @@ import '../providers/game_db_providers.dart';
 import '../screens/race_profession_screen.dart' show PresetMark, leadAndRest;
 import '../theme/frame_style.dart';
 import '../theme/pixel_chip.dart';
+import '../screens/tower/ink/ink_palette.dart';
+import '../screens/tower/tower_look.dart' show TowerPanelStyle;
 import '../theme/stitched_ink.dart';
 import 'pixel_banner.dart';
 import 'ink_sheet.dart';
@@ -187,7 +189,11 @@ class StatChips extends ConsumerWidget {
   }
 
   Widget _chip(BuildContext context, String label, int value) {
-    final colour = value > 0 ? Palette.green40 : Palette.red46;
+    // In the Tower's ink: a gain in paper, a loss in red.
+    final inked = TowerPanelStyle.of(context);
+    final colour = inked
+        ? (value > 0 ? inkPaper : inkRed)
+        : (value > 0 ? Palette.green40 : Palette.red46);
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
       decoration: ShapeDecoration(
@@ -254,7 +260,8 @@ class ChoiceCard extends ConsumerWidget {
               : theme.colorScheme.surfaceContainer,
           // The first tier of the frames: the choice of who you are is made
           // at the start, in wood (the pieces load while the menu opens).
-          shape: FrameImages.ready(FrameMaterial.wood, EnvDecor.none)
+          shape: FrameImages.ready(FrameMaterial.wood, EnvDecor.none) &&
+                  !TowerPanelStyle.of(context)
               ? FrameBorder(
                   piece: theme.brightness == Brightness.light
                       ? FramePiece.panelParchment
@@ -263,7 +270,8 @@ class ChoiceCard extends ConsumerWidget {
                   pixel: 2,
                   seed: id.hashCode)
               : RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(10),
+                  borderRadius: BorderRadius.circular(
+                      TowerPanelStyle.of(context) ? 0 : 10),
                   side: BorderSide(
                       color: selected ? ink.gold : ink.seam,
                       width: selected ? 2 : 1),
