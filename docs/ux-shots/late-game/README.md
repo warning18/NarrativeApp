@@ -9,3 +9,8 @@ Proposal, pictures only, at 360 and 320 wide, English and French. Samples: the g
 ## Notes
 - The silver and void chest icons (`assets/icons/chests/silver_*.png`, `void_*.png`) are 16 x 16 while the wooden, iron and gold are 32 x 32: at the chapter chest's size the silver one is visibly coarser than its neighbours. Art would need to redraw them at 32 x 32 if the chapter chest ships.
 - No code is built. The slot needs `equipSlotOptions` to gain "Banner", a glyph, and the grid row in `inventory_screen.dart`; the goals need a card widget and a place on the chapter page.
+
+## Updated to Core's final shapes (v2.5.0)
+- The Void Banner is one item (Relic, attack 2, armour 2, +1 every element), gained from the chapter 1 quest reward; only it uses the Banner slot.
+- The goals are a tick list without counts per goal (the "best so far" lines are gone; the x/3 in the card's corner is the count that sets the chest). Kinds: rounds(n), weakness, no_potion (now a close fight won without a potion: ending under half health) and first_try (only chapter 7's claimant and chapter 8's Sovereign), so the chapter 5 card has rounds, weakness and no_potion.
+- The chest is given once, when the story enters the next chapter, right after its chapter card (chapter 8's at the ending), through the usual spoils sheet: the chest pictures are titled that way.

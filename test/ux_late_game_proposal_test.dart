@@ -148,15 +148,18 @@ class _Goal {
 }
 
 const _goals = [
+  _Goal('Win a fight in 4 rounds or fewer',
+      'Gagner un combat en 4 manches ou moins', '', ''),
   _Goal(
-      'Win a fight in 4 rounds or fewer',
-      'Gagner un combat en 4 manches ou moins',
-      'Best so far: 6 rounds',
-      'Record : 6 manches'),
-  _Goal('Beat the boss on the first try', 'Battre le chef du premier coup',
-      'The boss waits at the end', 'Le chef attend à la fin'),
-  _Goal('Win a fight without a potion', 'Gagner un combat sans potion',
-      'Done at the Salt Gate', 'Fait à la Porte du Sel'),
+      'Win a fight with a die that hits the foe’s weakness',
+      'Gagner un combat avec un dé qui touche la faiblesse de l’ennemi',
+      '',
+      ''),
+  _Goal(
+      'Win a close fight without a potion',
+      'Gagner un combat serré sans potion',
+      'Ending under half health',
+      'En finissant sous la moitié de la santé'),
 ];
 
 Widget _tick(bool done, {bool fresh = false}) => Container(
@@ -280,8 +283,8 @@ Widget _goalsSheet(BuildContext context, double w, bool fr) {
         Expanded(
             child: Text(
                 fr
-                    ? 'Objectif atteint : sans potion · 2/3'
-                    : 'Goal met: no potion · 2/3',
+                    ? 'Objectif atteint : combat serré sans potion · 2/3'
+                    : 'Goal met: a close fight, no potion · 2/3',
                 style: TextStyle(color: theme.colorScheme.onInverseSurface))),
       ]),
     ),
@@ -304,12 +307,15 @@ Widget _chestSheet(BuildContext context, double w, bool fr, int met) {
       ? ['de bois', 'de fer', 'd’argent', 'd’or']
       : ['Wooden', 'Iron', 'Silver', 'Gold'];
   return Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-    Text(fr ? 'Chapitre 5 terminé' : 'Chapter 5 complete',
+    Text(
+        fr
+            ? 'Chapitre 6 · votre coffre du chapitre 5'
+            : 'Chapter 6 · your chapter 5 chest',
         style: theme.textTheme.headlineSmall),
     Text(
         fr
-            ? 'Vos objectifs ouvrent le coffre du chapitre.'
-            : 'Your goals open the chapter chest.',
+            ? 'Remis une fois, juste après la carte du chapitre.'
+            : 'Given once, right after the chapter card.',
         style: theme.textTheme.bodyMedium),
     const SizedBox(height: 12),
     _goalCard(context, fr, [for (var i = 0; i < 3; i++) i < met],
@@ -359,8 +365,8 @@ Widget _chestSheet(BuildContext context, double w, bool fr, int met) {
     const SizedBox(height: 12),
     Text(
         fr
-            ? 'Le coffre du chef reste à part : il s’ouvre après le combat, comme avant.'
-            : 'The boss chest stays apart: it opens after the fight, as before.',
+            ? 'Le coffre du chef reste à part : il s’ouvre après le combat, comme avant. Au chapitre 8, celui-ci vient à la fin.'
+            : 'The boss chest stays apart: it opens after the fight, as before. Chapter 8’s comes at the ending.',
         style: theme.textTheme.bodySmall),
   ]);
 }
