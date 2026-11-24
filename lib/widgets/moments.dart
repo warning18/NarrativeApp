@@ -684,46 +684,6 @@ class StormLayer extends StatelessWidget {
   }
 }
 
-/// The Shroud drifting behind the main menu: grey veils and violet motes.
-class ShroudDrift extends StatelessWidget {
-  const ShroudDrift({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    final ink = InkColors.of(context);
-    return _Looping(paint: (canvas, size, t) {
-      for (var j = 0; j < 4; j++) {
-        final period = 14.0 + j * 4;
-        final p = ((t + j * 5) % period) / period;
-        final cx = -0.4 * size.width + p * 1.8 * size.width;
-        final cy = size.height * (0.2 + j * 0.2);
-        final rect = Rect.fromCenter(
-            center: Offset(cx, cy), width: size.width * 0.9, height: 120);
-        canvas.drawOval(
-          rect,
-          Paint()
-            ..shader = RadialGradient(colors: [
-              ink.ash.withValues(alpha: 0.14 * math.sin(math.pi * p)),
-              ink.ash.withValues(alpha: 0),
-            ]).createShader(rect),
-        );
-      }
-      for (var k = 0; k < 10; k++) {
-        final p = ((t / 7) + k / 10) % 1.0;
-        final x = size.width * ((k * 0.37) % 1.0) + math.sin(t + k) * 12;
-        final y = size.height * (1 - p);
-        canvas.drawCircle(
-          Offset(x, y),
-          2,
-          Paint()
-            ..color =
-                ink.voidColor.withValues(alpha: math.sin(math.pi * p) * 0.6),
-        );
-      }
-    });
-  }
-}
-
 /// The edges of the screen throbbing faintly red: HP is low.
 class LowHealthEdge extends StatelessWidget {
   const LowHealthEdge({super.key});
