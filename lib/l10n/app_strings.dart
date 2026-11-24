@@ -1027,9 +1027,10 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.en: 'Win in {n} rounds or fewer',
     AppLanguage.fr: 'Gagner en {n} tours ou moins',
   },
+  // v2.6.1: {n} weakness hits in one fight (ch4 and ch5 read this line).
   'chapter_goal_weakness': {
-    AppLanguage.en: 'Win using a die on the foe’s weakness',
-    AppLanguage.fr: 'Gagner avec un dé sur le point faible de l’ennemi',
+    AppLanguage.en: 'Strike a weakness {n} times in one fight',
+    AppLanguage.fr: 'Frapper {n} fois un point faible en un seul combat',
   },
   'chapter_goal_first_try': {
     AppLanguage.en: 'Beat the boss on the first try',
@@ -1043,19 +1044,9 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.en: 'Win in {n} rounds, before the flood',
     AppLanguage.fr: 'Gagner en {n} tours, avant la crue',
   },
-  // v2.6.1: {n} weakness hits in one fight (the plain line; Narrative's).
-  'chapter_goal_weakness_ch4': {
-    AppLanguage.en: 'Strike a weakness {n} times in one fight',
-    AppLanguage.fr: 'Frapper {n} fois un point faible en un seul combat',
-  },
   'chapter_goal_rounds_ch5': {
     AppLanguage.en: 'Win in {n} rounds, before the frost sets',
     AppLanguage.fr: 'Gagner en {n} tours, avant que le givre ne prenne',
-  },
-  // v2.6.1: {n} weakness hits in one fight (the plain line; Narrative's).
-  'chapter_goal_weakness_ch5': {
-    AppLanguage.en: 'Strike a weakness {n} times in one fight',
-    AppLanguage.fr: 'Frapper {n} fois un point faible en un seul combat',
   },
   'chapter_goal_rounds_ch6': {
     AppLanguage.en: 'Win in {n} rounds, before the glass wakes',
@@ -1063,16 +1054,17 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   },
   // v2.6.1: {n} weakness hits in one fight (the plain line; Narrative's).
   'chapter_goal_weakness_ch6': {
-    AppLanguage.en: 'Strike a weakness {n} times in one fight',
-    AppLanguage.fr: 'Frapper {n} fois un point faible en un seul combat',
+    AppLanguage.en: 'Turn a weakness against them {n} times in one fight',
+    AppLanguage.fr:
+        'Retourner {n} fois un point faible contre eux en un seul combat',
   },
   'chapter_goal_rounds_ch7': {
     AppLanguage.en: 'Win in {n} rounds, before the Hall burns',
     AppLanguage.fr: 'Gagner en {n} tours, avant que la Salle ne brûle',
   },
   'chapter_goal_weakness_ch7': {
-    AppLanguage.en: 'Hit a claimant’s guard where it is weak',
-    AppLanguage.fr: 'Frapper un prétendant sur son point faible',
+    AppLanguage.en: 'Strike a weakness, whoever stands before you',
+    AppLanguage.fr: 'Frapper un point faible, quel que soit l’adversaire',
   },
   'chapter_goal_first_try_ch7': {
     AppLanguage.en: 'Beat the rival claimant on the first try',
