@@ -44,8 +44,9 @@ String towerDieName(WidgetRef ref, String id) {
       .join(' ');
 }
 
-/// The words of [reward] in the reader's language.
-TowerCardText towerCardText(WidgetRef ref, TowerReward reward) {
+/// The words of [reward] in the reader's language. [tier]: a rank-up's
+/// skill's tier now (the card names the next).
+TowerCardText towerCardText(WidgetRef ref, TowerReward reward, {int tier = 0}) {
   final lang = ref.watch(appLanguageProvider);
   Map<String, dynamic> row(DbSchema schema, String id) =>
       ((ref.watch(localizedDbProvider(schema)).value ?? const {})[id] as Map?)
@@ -65,6 +66,14 @@ TowerCardText towerCardText(WidgetRef ref, TowerReward reward) {
       final r = row(spellsSchema, reward.id);
       return TowerCardText(tr(ref, 'tower_kind_spell'),
           '${r['spellName'] ?? reward.id}', '${r['description'] ?? ''}');
+    case TowerRewardKind.rankUp:
+      return TowerCardText(
+          tr(ref, 'tower_kind_rank_up'),
+          tr(ref, 'tower_rank_up_name')
+              .replaceAll(
+                  '{skill}', skillDisplayName(reward.id, language: lang))
+              .replaceAll('{n}', '${tier + 1}'),
+          tr(ref, 'tower_rank_up_text'));
     case TowerRewardKind.clanOath:
       // A clan offers its oath (Core's v1.855; UX-2 dresses the card).
       return TowerCardText(
@@ -112,6 +121,9 @@ class _TowerOfferViewState extends ConsumerState<TowerOfferView> {
     final theme = Theme.of(context);
     final ink = InkColors.of(context);
     final offer = widget.run.offer;
+    final tiers = offer.any((r) => r.kind == TowerRewardKind.rankUp)
+        ? towerHeroOf(widget.run, widget.data).skillTiers
+        : const <String, int>{};
     return ListView(
       padding: const EdgeInsets.fromLTRB(8, 4, 16, 24),
       children: [
@@ -136,7 +148,8 @@ class _TowerOfferViewState extends ConsumerState<TowerOfferView> {
           Padding(
             padding: const EdgeInsets.only(bottom: 8),
             child: Builder(builder: (context) {
-              final text = towerCardText(ref, offer[i]);
+              final text =
+                  towerCardText(ref, offer[i], tier: tiers[offer[i].id] ?? 0);
               final held = i == _held;
               if (offer[i].kind == TowerRewardKind.clanOath) {
                 return _OathCard(

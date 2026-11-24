@@ -52,8 +52,12 @@ void main() {
   // Wave 5 (simulator truth): the bot values a die with its keywords and
   // its fights play Growth (docs/simulation/sim-truth.md): these were
   // 65 / 240 / 9623 and 144 / 323 / 11175.
-  const none = (top: 65, floor20: 239, floorSum: 9607);
-  const all = (top: 143, floor20: 323, floorSum: 11169);
+  // v2.4.0 (the Tower briefs 1 to 3, docs/simulation/
+  // tower-roguelike-briefs.md): floors 11 to 29 harder (towerClimbScale),
+  // a dead skill card a rank-up, three more boon floors: these were
+  // 65 / 239 / 9607 and 143 / 323 / 11169.
+  const none = (top: 57, floor20: 208, floorSum: 9160);
+  const all = (top: 127, floor20: 309, floorSum: 10750);
 
   test('the live Tower, no unlocks, is the pinned curve', () {
     final m = _measure(const TowerProgress());

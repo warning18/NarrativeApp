@@ -8,6 +8,20 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [2.4.0+1058]
+
+- **The Tower, harder above floor 10 and with more picks that count**
+  (the user's choices from the Tower roguelike briefs).
+  - Floors 11 to 20 are 8% tougher and floors 21 to 29 6% tougher; the
+    first ten floors and the floor-30 boss are unchanged.
+  - A skill card whose skill would find no free face on your die is now a
+    **Rank up** card: a skill already on the die grows a rank (+25% to its
+    numbers, up to rank 3), and the fight plays it at that rank.
+  - Three more reward floors, 13, 23 and 28 (a skill, a die or a spell).
+  - On 2,000 simulated climbs the top is won by 12.9% of runs with no
+    unlocks (was 14.5%) and 25.4% with all (was 26.8%); the median floor
+    reached falls from 19 to 17.
+
 ## [2.1.5+1052]
 
 - Maps, lighter with nothing changed on screen: the ball draws in about 40 % less time (its mesh's heights, the names' layout and the roads' bends were worked out again on every paint and are now kept), and a drag of the town plan repaints the plan only (9 pieces a frame, where each move repainted the whole page, 512). Twelve screens were compared pixel for pixel before and after: the same.

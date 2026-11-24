@@ -228,6 +228,11 @@ class SimCharacter {
   /// `PlayerSession.diceSkillAssignments`). Emptied when the die changes.
   Map<String, String> diceSkillAssignments;
   final Set<String> unlockedSkillIds;
+
+  /// skill id -> its tier (combat_engine's applySkillTier), as the fights
+  /// play it: the Tower's rank-up cards (v2.4.0). The story's simulator
+  /// buys none.
+  final Map<String, int> skillTiers = {};
   final List<SpellSpec> knownSpells;
 
   int potions;
@@ -1055,7 +1060,8 @@ class SimCharacter {
         ..spellsCast.addAll(spellsCast)
         ..spellbooksBought.addAll(spellbooksBought)
         ..alignmentLabel = alignmentLabel
-        ..pickedPoints.addAll(pickedPoints);
+        ..pickedPoints.addAll(pickedPoints)
+        ..skillTiers.addAll(skillTiers);
 }
 
 /// The potion charges the competent player keeps before buying gear, and
