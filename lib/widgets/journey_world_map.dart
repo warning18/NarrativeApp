@@ -290,6 +290,16 @@ class _JourneyWorldMapState extends ConsumerState<JourneyWorldMap>
         SnackBar(key: const Key('town_handover_toast'), content: Text(text)));
   }
 
+  /// Counts the ball's turns and zooms. Only the ball and its weather
+  /// listen (they sit behind a paint boundary), so a drag, a pinch or a
+  /// glide redraws them and leaves the buttons and the screen alone.
+  final ValueNotifier<int> _turned = ValueNotifier<int>(0);
+
+  void _setGlobe(GlobeView g) {
+    _globe = g;
+    _turned.value++;
+  }
+
   /// The move's walk over its clock, and the box the camera frames it in.
   Animation<double>? _moveWalk;
   Size _box = Size.zero;
@@ -338,13 +348,14 @@ class _JourneyWorldMapState extends ConsumerState<JourneyWorldMap>
   @override
   void initState() {
     super.initState();
+    ChartMapPainter.globeShown();
     _queueHandoverCheck();
     _glide.addListener(() {
       final g = _globe;
       if (g == null) return;
       final radius = _glideRadius, turn = _glideTurn;
       if (radius == null && turn == null) return;
-      setState(() => _globe = g.copyWith(
+      _setGlobe(g.copyWith(
           radius: radius?.value, lon0: turn?.$1.value, lat0: turn?.$2.value));
     });
     final move = widget.move, clock = widget.moveClock;
@@ -398,7 +409,7 @@ class _JourneyWorldMapState extends ConsumerState<JourneyWorldMap>
     final centre = Offset.lerp(middle, Offset(x, y), w)!;
     final zoom = 1 + (_landZoom - 1) * w;
     _glide.stop();
-    setState(() => _globe = _geo.globeAt(centre, zoom, _globeCentre(_box)));
+    _setGlobe(_geo.globeAt(centre, zoom, _globeCentre(_box)));
   }
 
   final ValueNotifier<int> _frame = ValueNotifier(0);
@@ -465,6 +476,8 @@ class _JourneyWorldMapState extends ConsumerState<JourneyWorldMap>
     _glide.dispose();
     _frame.dispose();
     _handoverFade.dispose();
+    _turned.dispose();
+    ChartMapPainter.globeGone();
     super.dispose();
   }
 
@@ -535,7 +548,7 @@ class _JourneyWorldMapState extends ConsumerState<JourneyWorldMap>
       next = next.turned(-delta.dx / next.radius, delta.dy / next.radius);
     }
     _dragLast = d.focalPoint;
-    setState(() => _globe = next);
+    _setGlobe(next);
   }
 
   /// The + and − buttons: one rung closer, the ball turning to the party
@@ -664,7 +677,8 @@ class _JourneyWorldMapState extends ConsumerState<JourneyWorldMap>
       final boxSize = Size(box.maxWidth, box.maxHeight);
       _box = boxSize;
       _frameFor(boxSize);
-      ChartMapPainter painter(GlobeView globe) => ChartMapPainter(
+      GlobeView viewNow() => _globe!.copyWith(centre: _globeCentre(boxSize));
+      ChartMapPainter painter() => ChartMapPainter(
             frame: _frame,
             walk: _moveWalk ?? _walk,
             geography: geo,
@@ -697,16 +711,15 @@ class _JourneyWorldMapState extends ConsumerState<JourneyWorldMap>
             townFade: _handoverFade,
             heardOf: widget.heardOf,
             goalId: widget.goalId,
-            globe: globe,
+            globeOf: viewNow,
             sphereScale: _sphereK(boxSize),
             // Names stop short of the button column on the right.
             labelInsetRight: _buttonSize + 12,
-            zoomOf: () => globe.zoom,
-            view: _repaint,
+            zoomOf: () => viewNow().zoom,
+            view: Listenable.merge([_repaint, _turned]),
           );
       // The sphere: the whole box is its sky; a drag turns it, a pinch
       // brings it close, a tap picks a place on it.
-      final globeView = _globe!.copyWith(centre: _globeCentre(boxSize));
       final sphereChart = GestureDetector(
         key: const ValueKey('journey_globe_canvas'),
         behavior: HitTestBehavior.opaque,
@@ -720,23 +733,30 @@ class _JourneyWorldMapState extends ConsumerState<JourneyWorldMap>
         child: SizedBox(
           width: boxSize.width,
           height: boxSize.height,
-          child: Stack(
-            fit: StackFit.expand,
-            children: [
-              CustomPaint(painter: painter(globeView)),
-              if (weatherOn)
-                ChartWeather(
-                  size: boxSize,
-                  geography: geo,
-                  palette: widget.palette,
-                  day: day,
-                  globe: globeView,
-                  sphereScale: _sphereK(boxSize),
-                  showOf: () =>
-                      !weatherWorldOnly ||
-                      globeView.zoom < JourneyWorldMapZoom.land,
-                ),
-            ],
+          // The ball and its sky follow [_turned] themselves: a drag, a
+          // pinch or a glide repaints them and rebuilds nothing (a rebuild
+          // under this LayoutBuilder would lay it out again and repaint
+          // the whole screen).
+          child: RepaintBoundary(
+            child: Stack(
+              fit: StackFit.expand,
+              children: [
+                CustomPaint(painter: painter()),
+                if (weatherOn)
+                  ChartWeather(
+                    size: boxSize,
+                    geography: geo,
+                    palette: widget.palette,
+                    day: day,
+                    globeOf: viewNow,
+                    turned: _turned,
+                    sphereScale: _sphereK(boxSize),
+                    showOf: () =>
+                        !weatherWorldOnly ||
+                        viewNow().zoom < JourneyWorldMapZoom.land,
+                  ),
+              ],
+            ),
           ),
         ),
       );
@@ -774,7 +794,10 @@ class _JourneyWorldMapState extends ConsumerState<JourneyWorldMap>
           Positioned(
             right: 8,
             top: 8,
-            child: Column(
+            // On their own layer: a press's ripple repaints the buttons,
+            // not the screen.
+            child: RepaintBoundary(
+                child: Column(
               children: [
                 button('journey_layers', Icons.layers_outlined,
                     tr(ref, 'journey_calques'), widget.onLayers,
@@ -816,7 +839,7 @@ class _JourneyWorldMapState extends ConsumerState<JourneyWorldMap>
                   _globeZoom(1 / 1.5);
                 }),
               ],
-            ),
+            )),
           ),
           if (calque == ChartCalque.clans)
             Positioned(
