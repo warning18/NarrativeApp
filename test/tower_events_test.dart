@@ -156,8 +156,14 @@ void main() {
     for (var floor = 1; floor <= towerTop; floor++) {
       final a = off[floor - 1], b = on[floor - 1];
       expect(b.enemyIds, a.enemyIds);
-      expect(a.extra, towerBudgetOf(floor).extra);
-      expect(b.extra, towerEventsExtras[floor] ?? a.extra);
+      // Above floor 10 the climb's scale (v2.4.0, towerClimbScale).
+      final scale = towerClimbScale(floor);
+      expect(a.extra, closeTo(scale * towerBudgetOf(floor).extra, 1e-9));
+      expect(
+          b.extra,
+          closeTo(
+              scale * (towerEventsExtras[floor] ?? towerBudgetOf(floor).extra),
+              1e-9));
       expect(a.extraFor('mage'), a.extra * towerProfessionScaleOf('mage'));
       expect(b.extraFor('mage'),
           b.extra * towerProfessionScaleOf('mage', events: 1));

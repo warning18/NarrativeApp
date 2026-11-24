@@ -1022,6 +1022,111 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.en: 'Explored: {done} of {goal}',
     AppLanguage.fr: 'Exploré\u00a0: {done} sur {goal}',
   },
+  // Chapter goals and the chapter chest (Narrative wording; keys per docs/narrative/chapter-goals-wording.md).
+  'chapter_goal_rounds': {
+    AppLanguage.en: 'Win in {n} rounds or fewer',
+    AppLanguage.fr: 'Gagner en {n} tours ou moins',
+  },
+  'chapter_goal_weakness': {
+    AppLanguage.en: 'Win using a die on the foe’s weakness',
+    AppLanguage.fr: 'Gagner avec un dé sur le point faible de l’ennemi',
+  },
+  'chapter_goal_first_try': {
+    AppLanguage.en: 'Beat the boss on the first try',
+    AppLanguage.fr: 'Vaincre le chef du premier coup',
+  },
+  'chapter_goal_no_potion': {
+    AppLanguage.en: 'Win at under half health, no potion',
+    AppLanguage.fr: 'Gagner sous la moitié des PV, sans potion',
+  },
+  'chapter_goal_rounds_ch4': {
+    AppLanguage.en: 'Win in {n} rounds, before the flood',
+    AppLanguage.fr: 'Gagner en {n} tours, avant la crue',
+  },
+  'chapter_goal_weakness_ch4': {
+    AppLanguage.en: 'Turn a robed foe’s weakness against it',
+    AppLanguage.fr: 'Viser le point faible d’un ennemi en robe',
+  },
+  'chapter_goal_rounds_ch5': {
+    AppLanguage.en: 'Win in {n} rounds, before the frost sets',
+    AppLanguage.fr: 'Gagner en {n} tours, avant que le givre ne prenne',
+  },
+  'chapter_goal_weakness_ch5': {
+    AppLanguage.en: 'Crack a Reliquary guard on its weakness',
+    AppLanguage.fr: 'Briser un garde du Reliquaire sur son point faible',
+  },
+  'chapter_goal_rounds_ch6': {
+    AppLanguage.en: 'Win in {n} rounds, before the glass wakes',
+    AppLanguage.fr: 'Gagner en {n} tours, avant l’éveil du verre',
+  },
+  'chapter_goal_weakness_ch6': {
+    AppLanguage.en: 'Use a reflection’s weakness against it',
+    AppLanguage.fr: 'Retourner contre lui le point faible d’un reflet',
+  },
+  'chapter_goal_rounds_ch7': {
+    AppLanguage.en: 'Win in {n} rounds, before the Hall burns',
+    AppLanguage.fr: 'Gagner en {n} tours, avant que la Salle ne brûle',
+  },
+  'chapter_goal_weakness_ch7': {
+    AppLanguage.en: 'Hit a claimant’s guard where it is weak',
+    AppLanguage.fr: 'Frapper un prétendant sur son point faible',
+  },
+  'chapter_goal_first_try_ch7': {
+    AppLanguage.en: 'Beat the rival claimant on the first try',
+    AppLanguage.fr: 'Vaincre le prétendant rival du premier coup',
+  },
+  'chapter_goal_rounds_ch8': {
+    AppLanguage.en: 'Win in {n} rounds; the tear is widening',
+    AppLanguage.fr: 'Gagner en {n} tours\u00a0: la déchirure s’élargit',
+  },
+  'chapter_goal_first_try_ch8': {
+    AppLanguage.en: 'Beat the Sovereign on the first try',
+    AppLanguage.fr: 'Vaincre le Souverain du premier coup',
+  },
+  'chapter_chest_wooden': {
+    AppLanguage.en: 'Wooden Chapter Chest',
+    AppLanguage.fr: 'Coffre de chapitre en bois',
+  },
+  'chapter_chest_iron': {
+    AppLanguage.en: 'Iron Chapter Chest',
+    AppLanguage.fr: 'Coffre de chapitre en fer',
+  },
+  'chapter_chest_silver': {
+    AppLanguage.en: 'Silver Chapter Chest',
+    AppLanguage.fr: 'Coffre de chapitre en argent',
+  },
+  'chapter_chest_gold': {
+    AppLanguage.en: 'Gold Chapter Chest',
+    AppLanguage.fr: 'Coffre de chapitre en or',
+  },
+  'chapter_chest_line': {
+    AppLanguage.en: 'A chest for the chapter’s work, whatever it cost you.',
+    AppLanguage.fr:
+        'Un coffre pour le travail du chapitre, quel qu’en ait été le prix.',
+  },
+  'chapter_chest_line_ch4': {
+    AppLanguage.en: 'The Court’s ledger kept a share for whoever came back.',
+    AppLanguage.fr:
+        'Le registre de la Cour gardait une part pour qui reviendrait.',
+  },
+  'chapter_chest_line_ch5': {
+    AppLanguage.en: 'The Reliquary’s frost gave one thing back.',
+    AppLanguage.fr: 'Le givre du Reliquaire a rendu une chose.',
+  },
+  'chapter_chest_line_ch6': {
+    AppLanguage.en:
+        'The sea kept the White Fleet’s dead and returned its coin.',
+    AppLanguage.fr:
+        'La mer a gardé les morts de la Flotte Blanche et rendu sa monnaie.',
+  },
+  'chapter_chest_line_ch7': {
+    AppLanguage.en: 'The Houses pay their debts, in their own time.',
+    AppLanguage.fr: 'Les Maisons paient leurs dettes, à leur heure.',
+  },
+  'chapter_chest_line_ch8': {
+    AppLanguage.en: 'Whatever the tear took, it left a share.',
+    AppLanguage.fr: 'Ce que la déchirure a pris, elle en a laissé une part.',
+  },
   'main_quest_label': {
     AppLanguage.en: 'Main quest',
     AppLanguage.fr: 'Quête principale',
@@ -2131,6 +2236,26 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.en: 'Spell',
     AppLanguage.fr: 'Sort',
   },
+  // A skill card with no face to land on is a rank-up (v2.4.0): a skill
+  // already on the die grows a rank (the fights' skill tiers).
+  'tower_kind_rank_up': {
+    AppLanguage.en: 'Rank up',
+    AppLanguage.fr: 'Montée en rang',
+  },
+  // The step the card gives: the base skill is rank 1, the last rank 4
+  // ("to": the pixel font has no arrow).
+  'tower_rank_up_name': {
+    AppLanguage.en: '{skill}: rank {from} to {to}',
+    AppLanguage.fr: '{skill}\u00a0: rang {from} à {to}',
+  },
+  'tower_rank_up_text': {
+    AppLanguage.en:
+        'Your die has no free face for a new skill: this one on it grows '
+            'a rank stronger (+25% to its numbers).',
+    AppLanguage.fr:
+        'Votre dé n’a plus de face libre pour une nouvelle compétence\u00a0: '
+            'celle-ci y gagne un rang (+25\u00a0% à ses valeurs).',
+  },
   // A clan offers its oath on the way up (v1.855).
   'tower_oath_title': {
     AppLanguage.en: '{clan} offer you their oath',
@@ -2687,6 +2812,7 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   'forge_slot_Bottom': {AppLanguage.en: 'Legs', AppLanguage.fr: 'Jambes'},
   'forge_slot_Foot': {AppLanguage.en: 'Feet', AppLanguage.fr: 'Pieds'},
   'forge_slot_Weapon': {AppLanguage.en: 'Weapon', AppLanguage.fr: 'Arme'},
+  'forge_slot_Banner': {AppLanguage.en: 'Banner', AppLanguage.fr: 'Bannière'},
   'forge_roll_line': {
     AppLanguage.en: 'Roll d20 {mod}',
     AppLanguage.fr: 'Jet de d20 {mod}',
@@ -14923,6 +15049,9 @@ String trItemType(WidgetRef ref, String raw, {bool short = false}) {
   if (raw == 'Quest' && short) return tr(ref, 'item_type_quest_short');
   return _strings.containsKey(key) ? tr(ref, key) : raw;
 }
+
+/// Whether [key] is in the table (for a line with a fallback).
+bool hasStringKey(String key) => _strings.containsKey(key);
 
 /// Looks up [key] for a known [language] without needing a [WidgetRef] —
 /// for use in callbacks (dialogs, bottom sheets) outside a widget's build.
