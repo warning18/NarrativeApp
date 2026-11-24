@@ -8,6 +8,10 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [2.2.0+1053]
+
+- The dice are thrown. In a fight, each die flies in from the bottom edge of the board on an arc, bounces two or three times with damping, slides, and turns over as it slows, a little extra at each bounce; dice that meet push each other aside and never overlap; each ends on its seat on the face the rules picked (the throw is only motion: the faces are decided before it, as before, and no rule changed). It is the same board for the story's fights and the Tower's. With reduced motion, and on a phone that was slow, the dice keep their plain flight. Look only. UX (view only).
+
 ## [2.1.0+1047]
 
 - The ink buttons, panels and tabs are no two alike, and the Tower is snowing on them. Every ink piece is seeded from its key or label (the same piece looks the same every time): a red from six (rust, dried blood, faded), a paper warm or cold, a tilt of 1 to 3 degrees, a torn tab, a chipped or folded corner, a burn, stains, splatter, a pin; the labels stay AA on every tint. Weather piles up on them while a screen is open: snow, sand, ash and rain with drips, and fog as a veil; heavy after about 30 s in the hardest fall, never over the label. A tap knocks the pile off in a puff, then it builds again; the level is kept in memory through rebuilds and leaving (it melts 1 level per 120 s away); with reduce motion it is a fixed medium cap and nothing moves. One clock per screen. The Tower snows by band (fall 0.4, 0.7, 1.0); the home menu has the variations only; the story's screens are as before (`uiSkyProvider` reads the sky where the party stands, and nothing reads it today). Drawn in code, no Art overlays. UX (view only).
