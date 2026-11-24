@@ -286,7 +286,7 @@ class SimCharacter {
   void rollBestDie(Map<String, dynamic> skills, {double margin = 0.01}) {
     final caster = knownSpells.isNotEmpty;
     final now = simDieValue(diceFaces, diceSkillAssignments, skills,
-            damage: baseDamage, caster: caster) +
+            damage: baseDamage, caster: caster, maxHealth: maxHealth) +
         margin;
     final better = <({
       String id,
@@ -303,7 +303,7 @@ class SimCharacter {
           unlocked: unlockedSkillIds,
           skills: skills);
       final v = simDieValue(faces, placed, skills,
-          damage: baseDamage, caster: caster);
+          damage: baseDamage, caster: caster, maxHealth: maxHealth);
       if (v > now) better.add((id: id, faces: faces, placed: placed, value: v));
     }
     // The worthiest first; the first to pass its trial is rolled.
@@ -331,7 +331,7 @@ class SimCharacter {
     final currentMatches =
         simDieHitsWeakness(diceFaces, diceSkillAssignments, skills, foes);
     var best = simDieValueAgainst(diceFaces, diceSkillAssignments, skills, foes,
-        damage: baseDamage, caster: caster);
+        damage: baseDamage, caster: caster, maxHealth: maxHealth);
     var matchOwned = currentMatches;
     ({
       String id,
@@ -349,7 +349,7 @@ class SimCharacter {
       if (!simDieHitsWeakness(faces, placed, skills, foes)) continue;
       matchOwned = true;
       final v = simDieValueAgainst(faces, placed, skills, foes,
-          damage: baseDamage, caster: caster);
+          damage: baseDamage, caster: caster, maxHealth: maxHealth);
       if (v > best) {
         best = v;
         pick = (id: id, faces: faces, placed: placed);
@@ -772,7 +772,7 @@ class SimCharacter {
       Map<String, dynamic> skills, int purse) {
     final caster = knownSpells.isNotEmpty;
     var best = simDieValue(diceFaces, diceSkillAssignments, skills,
-            damage: baseDamage, caster: caster) +
+            damage: baseDamage, caster: caster, maxHealth: maxHealth) +
         simTypicalDieMargin;
     String? pick;
     for (final raw in (shop['diceStock'] as List?) ?? const []) {
@@ -796,7 +796,8 @@ class SimCharacter {
               skills: skills),
           skills,
           damage: baseDamage,
-          caster: caster);
+          caster: caster,
+          maxHealth: maxHealth);
       if (v > best) {
         best = v;
         pick = id;
@@ -910,7 +911,7 @@ class SimCharacter {
     // The die: the best of the shop's it may roll, if it beats its own.
     final caster = knownSpells.isNotEmpty;
     final dieNow = simDieValue(diceFaces, diceSkillAssignments, skills,
-        damage: baseDamage, caster: caster);
+        damage: baseDamage, caster: caster, maxHealth: maxHealth);
     String? dieId;
     var dieBest = dieNow + 0.1;
     for (final raw in (shop['diceStock'] as List?) ?? const []) {
@@ -931,7 +932,7 @@ class SimCharacter {
           unlocked: unlockedSkillIds,
           skills: skills);
       final v = simDieValue(faces, placed, skills,
-          damage: baseDamage, caster: caster);
+          damage: baseDamage, caster: caster, maxHealth: maxHealth);
       // Bought only when it would be rolled: worth more, and its trial
       // passed.
       if (v > dieBest && _passesTrial(id, faces, placed)) {
