@@ -8,11 +8,13 @@ import 'dart:ui' as ui;
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../data/climate.dart' show WeatherKind;
 import '../../providers/palette_provider.dart';
 import '../../theme/frame_style.dart';
 import '../../theme/stitched_ink.dart';
 import 'ink/ink_images.dart';
 import 'ink/ink_palette.dart';
+import 'ink/ink_weather.dart';
 import 'tower_providers.dart';
 import '../../widgets/fight_sprites.dart';
 
@@ -85,7 +87,16 @@ class TowerNight extends ConsumerWidget {
                     compactScale: 2,
                     seed: floorNow)
                 : null)),
-        child: TowerPanelStyle(child: child),
+        // Snow on the ink pieces, harder with the band: 0.4, 0.7, 1.0.
+        child: WeatherScope(
+            id: 'tower',
+            kind: WeatherKind.snow,
+            fall: floorNow <= 10
+                ? 0.4
+                : floorNow <= 20
+                    ? 0.7
+                    : 1.0,
+            child: TowerPanelStyle(child: child)),
       ),
     );
   }
