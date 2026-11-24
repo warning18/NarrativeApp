@@ -4,6 +4,8 @@
 // slanted picture panel (a picture clipped to a slanted polygon with a black
 // gutter and a paper hairline), and the health bar. Slants only round
 // pictures: the text-heavy screens keep upright paper panels.
+import 'dart:math' as math;
+
 import 'package:flutter/material.dart';
 
 import '../../../theme/stitched_ink.dart';
@@ -265,4 +267,66 @@ class _PolyBorder extends CustomPainter {
 
   @override
   bool shouldRepaint(_PolyBorder old) => old.pts != pts;
+}
+
+/// A small tag in ink: paper text on a red block (a danger: an affix), or on a
+/// black block with a paper line (a plain mark: an Elite).
+class InkTag extends StatelessWidget {
+  const InkTag(this.text, {super.key, this.red = false});
+
+  final String text;
+  final bool red;
+
+  @override
+  Widget build(BuildContext context) => Container(
+        padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 2),
+        decoration: BoxDecoration(
+          color: red ? inkRed : inkBlack,
+          border: Border.all(color: red ? inkRed : inkPaper),
+        ),
+        child: Text(text,
+            style: Theme.of(context)
+                .textTheme
+                .labelSmall
+                ?.copyWith(color: inkPaper, fontWeight: FontWeight.w700)),
+      );
+}
+
+/// The ink splash behind the foe aimed at: a red burst and paper speed lines
+/// running to it. [x] is where the foe stands in the panel (0 to 1), [y] the
+/// height of its middle.
+class InkSplashPainter extends CustomPainter {
+  const InkSplashPainter(this.x, this.y);
+
+  final double x, y;
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    final c = Offset(size.width * x, y.clamp(20, size.height - 10));
+    final burst = Path();
+    const spikes = 11;
+    for (var i = 0; i < spikes * 2; i++) {
+      final a = i * 3.14159265 / spikes;
+      final r = i.isEven ? 34.0 : 17.0;
+      final p = c + Offset(r * _cos(a), r * 0.8 * _sin(a));
+      i == 0 ? burst.moveTo(p.dx, p.dy) : burst.lineTo(p.dx, p.dy);
+    }
+    burst.close();
+    canvas.drawPath(burst, Paint()..color = inkRed.withValues(alpha: 0.9));
+    final line = Paint()
+      ..color = inkPaper.withValues(alpha: 0.55)
+      ..strokeWidth = 1.2;
+    for (var i = 0; i < 16; i++) {
+      final a = i * 6.2831853 / 16 + 0.2;
+      final from = c + Offset(60 * _cos(a), 48 * _sin(a));
+      final to = c + Offset(110 * _cos(a), 88 * _sin(a));
+      canvas.drawLine(from, to, line);
+    }
+  }
+
+  static double _cos(double a) => math.cos(a);
+  static double _sin(double a) => math.sin(a);
+
+  @override
+  bool shouldRepaint(InkSplashPainter old) => old.x != x || old.y != y;
 }

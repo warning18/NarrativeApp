@@ -294,20 +294,35 @@ extension _FightBoardView on _FightScreenState {
     final icons = _partyEffectIcons(member);
     final card = GestureDetector(
       key: Key('party_slot_${member.id}'),
-      onTap: () => _update(() {
-        // With a heal die picked, a tap on a member aims the heal at them.
-        final aimed = _dieLocks.selected;
-        if (aimed != null && _healAimable(aimed)) {
-          _setHealTarget(aimed, member.id);
-          return;
+      onTap: () {
+        // The Tower's lighter nameplates: a tap on the hero opens its sheet
+        // (the numbers, the marks), unless a heal die is waiting to be aimed.
+        final healAim = _dieLocks.selected;
+        final aimingHeal = healAim != null && _healAimable(healAim);
+        if (TowerPanelStyle.of(context) && !aimingHeal) {
+          _showTowerHeroSheet(member, armor, damage, icons);
         }
-        if (_awaitingDecision &&
-            !_rolling &&
-            _currentFaces[member.id] != null) {
-          _dieLocks.selected = member.id;
-        }
-        if (canSelect) _selectedActorId = member.id;
-      }),
+        _update(() {
+          // With a heal die picked, a tap on a member aims the heal at them.
+          final aimed = _dieLocks.selected;
+          if (aimed != null && _healAimable(aimed)) {
+            _setHealTarget(aimed, member.id);
+            return;
+          }
+          if (_awaitingDecision &&
+              !_rolling &&
+              _currentFaces[member.id] != null) {
+            _dieLocks.selected = member.id;
+          }
+          if (canSelect) _selectedActorId = member.id;
+        });
+      },
+      // The Tower's lighter nameplates: the numbers and marks are one tap
+      // away, in the hero's sheet (a long press everywhere, a tap too when
+      // no die is waiting to be aimed).
+      onLongPress: TowerPanelStyle.of(context)
+          ? () => _showTowerHeroSheet(member, armor, damage, icons)
+          : null,
       child: FightBlock(
         name: member.displayName,
         order: _orderOf(member),
@@ -555,20 +570,22 @@ extension _FightBoardView on _FightScreenState {
                         ),
                         // The fighters stand along the top edge of the
                         // stage, under the dice (v1.911).
-                        Positioned(
-                          left: 6,
-                          right: 6,
-                          top: 4,
-                          child: IgnorePointer(
-                            child: FightFigures(
-                              allies: [
-                                for (final m in _party) _headIdFor(m),
-                              ],
-                              foes: [for (final e in _enemies) e.enemyId],
-                              height: fightFigureHeight(size.width),
+                        // (Under the Tower's ink they stand in the panels above.)
+                        if (!TowerPanelStyle.of(context))
+                          Positioned(
+                            left: 6,
+                            right: 6,
+                            top: 4,
+                            child: IgnorePointer(
+                              child: FightFigures(
+                                allies: [
+                                  for (final m in _party) _headIdFor(m),
+                                ],
+                                foes: [for (final e in _enemies) e.enemyId],
+                                height: fightFigureHeight(size.width),
+                              ),
                             ),
                           ),
-                        ),
                         for (final actor in onBoard)
                           () {
                             final i = acting.indexOf(actor);
@@ -589,6 +606,24 @@ extension _FightBoardView on _FightScreenState {
                                   cube: square),
                             );
                           }(),
+                        // The Tower's ink: the dice's tags on the plate.
+                        if (TowerPanelStyle.of(context) && onBoard.isNotEmpty)
+                          Positioned(
+                            left: 8,
+                            right: 8,
+                            bottom: 40,
+                            child: IgnorePointer(
+                              child: Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceEvenly,
+                                children: [
+                                  for (final a in onBoard)
+                                    Flexible(
+                                        child: _buildTowerDieTag(a, skills)),
+                                ],
+                              ),
+                            ),
+                          ),
                         Positioned(
                           left: 8,
                           right: 8,
@@ -619,12 +654,17 @@ extension _FightBoardView on _FightScreenState {
             ),
           ),
         ),
+        if (TowerPanelStyle.of(context) && acting.isNotEmpty)
+          _buildTowerFaceStrip(acting.first),
         if (_momentum >= _momentumNeeded && !_rolling)
           _buildSurgePicker(acting),
         if (plan.combos.isNotEmpty || plan.duos.isNotEmpty)
           _buildComboChips(plan),
         const SizedBox(height: 6),
-        _buildKeptRow(acting, canLock, colorScheme),
+        // The Tower's ink folds "Kept" away: a kept die wears its ring on the
+        // board, the room goes to the pictures above.
+        if (!TowerPanelStyle.of(context))
+          _buildKeptRow(acting, canLock, colorScheme),
       ],
     );
   }
@@ -798,7 +838,10 @@ extension _FightBoardView on _FightScreenState {
       from: _dieKey(id),
       to: to,
       space: _battleSpaceKey,
-      color: color,
+      // The Tower's ink: red for a blow, paper for the rest.
+      color: TowerPanelStyle.of(context)
+          ? (target != null ? inkRed : inkPaper)
+          : color,
       label: label,
     );
   }

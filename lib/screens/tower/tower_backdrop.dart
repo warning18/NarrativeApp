@@ -17,6 +17,15 @@ int towerBandOf(int floor) => floor <= 10
 String towerBackdropAsset(int band) =>
     'assets/visuals/tower_ink/tower_band${band.clamp(1, 3)}.png';
 
+/// The painted scene of the fight on [floor] (Art's ink scenes, 360 x 640:
+/// Lower Stairs, Middle Halls, the Crown), cropped into the foes' and the
+/// hero's panels; and the dice plate of the same band, the ground seen from
+/// above, under the dice (v1.1008).
+String towerFightScene(int floor) =>
+    'assets/visuals/tower_ink/fight_band${towerBandOf(floor)}_scene.png';
+String towerFightDicePlate(int floor) =>
+    'assets/visuals/tower_ink/fight_band${towerBandOf(floor)}_dice.png';
+
 /// The picture of a special floor: the wardens (5, 15, 25) and the bosses (10,
 /// 20, 30) each have their own; null for an ordinary floor.
 String? towerFloorPlate(int floor) => switch (floor) {

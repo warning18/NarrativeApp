@@ -10,6 +10,7 @@ import 'package:flutter/material.dart';
 import 'dart:ui' as ui;
 
 import '../utils/pixel_icons/enemy_icons.dart';
+import '../screens/tower/tower_look.dart' show TowerPanelStyle;
 import 'fight_sprites.dart';
 import 'hero_sprite.dart';
 
@@ -92,6 +93,8 @@ class HeadAvatar extends StatelessWidget {
           ),
     );
     final asset = headAssetOf(id);
+    // The Tower's ink: the portrait in the ink greys, a square frame.
+    final inked = TowerPanelStyle.of(context);
     return Opacity(
       opacity: dim ? 0.45 : 1,
       child: Container(
@@ -101,9 +104,13 @@ class HeadAvatar extends StatelessWidget {
         padding: const EdgeInsets.all(3),
         decoration: BoxDecoration(
           color: scheme.surfaceContainerHighest.withValues(alpha: 0.7),
-          borderRadius: BorderRadius.circular(8),
+          borderRadius: BorderRadius.circular(inked ? 0 : 8),
         ),
-        child: _spriteHead(context, asset, letter),
+        child: inked
+            ? ColorFiltered(
+                colorFilter: _inkPortrait,
+                child: _spriteHead(context, asset, letter))
+            : _spriteHead(context, asset, letter),
       ),
     );
   }
@@ -158,3 +165,11 @@ class _HeadPainter extends CustomPainter {
   bool shouldRepaint(_HeadPainter old) =>
       old.image != image || old.rect != rect;
 }
+
+/// A portrait in the ink greys.
+const ColorFilter _inkPortrait = ColorFilter.matrix(<double>[
+  0.40, 0.40, 0.40, 0, 0, //
+  0.40, 0.40, 0.40, 0, 4,
+  0.42, 0.42, 0.42, 0, 8,
+  0, 0, 0, 1, 0,
+]);

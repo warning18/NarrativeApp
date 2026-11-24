@@ -14,7 +14,7 @@ import '../../theme/icon_sizes.dart';
 import '../../utils/face_style.dart';
 import '../../widgets/ink_panel.dart';
 import '../../widgets/die_3d.dart';
-import '../../widgets/die_skins.dart';
+import 'ink/ink_dice.dart';
 import 'ink/ink_kit.dart';
 import 'ink/ink_palette.dart';
 
@@ -210,9 +210,6 @@ class _TowerDicePanelState extends ConsumerState<TowerDicePanel> {
       );
 }
 
-const _inkSkin = DieSkin('Ink', inkOnPaper, Color(0xFFB7C0C4), DiePattern.none);
-const _inkSkinLit = DieSkin('Ink', inkOnPaper, inkRed, DiePattern.none, inkRed);
-
 /// The die as a real solid in ink (v1.1005), each face its own kind's mark; the
 /// die in play (or resonating) wears the red edge.
 class _InkDie extends StatelessWidget {
@@ -241,7 +238,7 @@ class _InkDie extends StatelessWidget {
       accent: inkGrey,
       size: 48,
       shape: shape,
-      skin: lit ? _inkSkinLit : _inkSkin,
+      skin: lit ? inkDieSkinLit : inkDieSkin,
       still: true,
       element: 'None',
     );

@@ -148,20 +148,27 @@ extension _FightCards on _FightScreenState {
       int pending = 0,
       bool executeLine = false,
       bool foe = false}) {
+    // The Tower's ink: a thin bar with no numbers (they are in the sheet).
+    final thin = TowerPanelStyle.of(context);
+    if (thin) height = 8;
     final rawRatio = maxValue <= 0 ? 0.0 : current / maxValue;
     final ratio = rawRatio.clamp(0.0, 1.0);
     final after = max(0, current - pending);
     final afterRatio = maxValue <= 0 ? 0.0 : (after / maxValue).clamp(0.0, 1.0);
     // A foe's bar reads red and orange, so it never passes for an ally's green.
-    final barColor = foe
-        ? (ratio > 0.5
-            ? Palette.alert
-            : (ratio > 0.25 ? Palette.hot : Palette.flame))
-        : (ratio > 0.5
-            ? Palette.good
-            : (ratio > 0.25 ? Palette.flame : Palette.alert));
+    final inked = TowerPanelStyle.of(context);
+    final barColor = inked
+        // The Tower's ink: a foe red, a friend slate grey, red when low.
+        ? (foe || ratio <= 0.25 || thin ? inkRed : inkSlate)
+        : foe
+            ? (ratio > 0.5
+                ? Palette.alert
+                : (ratio > 0.25 ? Palette.hot : Palette.flame))
+            : (ratio > 0.5
+                ? Palette.good
+                : (ratio > 0.25 ? Palette.flame : Palette.alert));
     return ClipRRect(
-      borderRadius: BorderRadius.circular(height / 2),
+      borderRadius: BorderRadius.circular(inked ? 0 : height / 2),
       child: Container(
         height: height,
         decoration: BoxDecoration(
@@ -196,7 +203,8 @@ extension _FightCards on _FightScreenState {
                       bottom: 0,
                       child: Container(
                         decoration: BoxDecoration(
-                          color: _previewColor.withValues(alpha: 0.9),
+                          color: (inked ? inkGrey : _previewColor)
+                              .withValues(alpha: 0.9),
                           border: Border(
                             left: BorderSide(
                                 color: Colors.white.withValues(alpha: 0.9)),
@@ -218,18 +226,19 @@ extension _FightCards on _FightScreenState {
                 ],
               ),
             ),
-            Text(
-              pending > 0
-                  ? '$current → $after / $maxValue'
-                  : '$current / $maxValue',
-              style: TextStyle(
-                fontWeight: FontWeight.bold,
-                fontSize: height * 0.68,
-                height: 1,
-                shadows: const [Shadow(color: Colors.black54, blurRadius: 2)],
-                color: Colors.white,
+            if (!thin)
+              Text(
+                pending > 0
+                    ? '$current → $after / $maxValue'
+                    : '$current / $maxValue',
+                style: TextStyle(
+                  fontWeight: FontWeight.bold,
+                  fontSize: height * 0.68,
+                  height: 1,
+                  shadows: const [Shadow(color: Colors.black54, blurRadius: 2)],
+                  color: Colors.white,
+                ),
               ),
-            ),
           ],
         ),
       ),

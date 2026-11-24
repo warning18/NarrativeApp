@@ -43,10 +43,15 @@ FrameMaterial towerMaterialOf({required int floor, required bool climbed}) {
 /// and the dialogs it opens, are dark. [floor] overrides the run's floor (the
 /// end screen, where the run is already cleared).
 class TowerNight extends ConsumerWidget {
-  const TowerNight({super.key, required this.child, this.floor});
+  const TowerNight(
+      {super.key, required this.child, this.floor, this.frames = true});
 
   final Widget child;
   final int? floor;
+
+  /// Whether the theme carries the wood, iron and silver frame pieces (the
+  /// fight, in ink, has none).
+  final bool frames;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -73,7 +78,7 @@ class TowerNight extends ConsumerWidget {
       valueListenable: FrameImages.loaded,
       builder: (context, _, __) => Theme(
         data: _inkButtons(buildAppTheme(palette.schemeFor(Brightness.dark),
-            frames: FrameImages.ready(material, env)
+            frames: frames && FrameImages.ready(material, env)
                 ? FrameStyle(
                     material: material,
                     env: env,
@@ -97,6 +102,16 @@ ThemeData _inkButtons(ThemeData t) {
         foregroundColor: inkPaper,
         disabledBackgroundColor: inkSlate,
         disabledForegroundColor: inkGrey,
+        shape: square,
+      ),
+    ),
+    elevatedButtonTheme: ElevatedButtonThemeData(
+      style: ElevatedButton.styleFrom(
+        backgroundColor: inkRed,
+        foregroundColor: inkPaper,
+        disabledBackgroundColor: inkSlate,
+        disabledForegroundColor: inkGrey,
+        elevation: 0,
         shape: square,
       ),
     ),
