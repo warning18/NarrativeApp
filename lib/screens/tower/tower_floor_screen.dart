@@ -3,6 +3,7 @@
 // and the way to fight it; once it is won, its cards (take one, or none).
 // A run is moved only through lib/data/tower/ and the controller; the fight
 // itself is played by the launcher (tower_providers.dart).
+import '../../widgets/fit_title.dart';
 import '../../theme/motion.dart';
 import 'dart:async';
 import 'dart:math';
@@ -208,7 +209,7 @@ class _TowerFloorScreenState extends ConsumerState<_TowerFloorBody> {
     final data = ref.watch(towerDataProvider).value;
     if (run == null || data == null || run.isOver) {
       return Scaffold(
-          appBar: AppBar(title: Text(tr(ref, 'tower_name'))),
+          appBar: AppBar(title: FitTitle(tr(ref, 'tower_name'))),
           body: const InkLoading());
     }
     final choosing = run.status == TowerStatus.choosing;

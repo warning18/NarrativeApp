@@ -329,14 +329,20 @@ class _OfferBanner extends ConsumerWidget {
                                   fontSize: 18,
                                   height: 1.1,
                                   color: trainingStatColor(key, ink))),
-                          Text(
-                            tr(ref, trainingStatLabelKey(key)),
-                            maxLines: 2,
-                            textAlign: TextAlign.center,
-                            overflow: TextOverflow.ellipsis,
-                            style: theme.textTheme.labelSmall
-                                ?.copyWith(height: 1.1),
-                          ),
+                          // Whole words: each word shrinks to the card rather
+                          // than break in two (#1139); no LayoutBuilder, the
+                          // row is an IntrinsicHeight.
+                          for (final word
+                              in tr(ref, trainingStatLabelKey(key)).split(' '))
+                            FittedBox(
+                              fit: BoxFit.scaleDown,
+                              child: Text(
+                                word,
+                                maxLines: 1,
+                                style: theme.textTheme.labelSmall
+                                    ?.copyWith(height: 1.1),
+                              ),
+                            ),
                           // What it does for this hero.
                           for (final (n, effect)
                               in statPickEffects(key, professionId, value)

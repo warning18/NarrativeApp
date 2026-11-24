@@ -480,7 +480,7 @@ extension _FightCards on _FightScreenState {
         ],
       );
     }
-    return Container(
+    final box = Container(
       width: double.infinity,
       padding: EdgeInsets.symmetric(horizontal: 6, vertical: compact ? 2 : 4),
       decoration: BoxDecoration(
@@ -490,6 +490,12 @@ extension _FightCards on _FightScreenState {
       ),
       child: content,
     );
+    // The compact box sits in the plate's 20 dp row: its words keep their size
+    // there (the full intent is a tap away, in the sheet), or at 1.3x text it
+    // overflowed that row by 5 dp (#1141).
+    return compact
+        ? MediaQuery.withClampedTextScaling(maxScaleFactor: 1.0, child: box)
+        : box;
   }
 
   Widget _telegraphChip(IconData icon, String label,

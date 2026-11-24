@@ -1,6 +1,7 @@
 // The end of a run of the Tower (v1.847, the-tower-designs.md screen 6):
 // where it ended, the marks it earned and the total, and the way on (the
 // marks, another climb, the menu).
+import '../../widgets/fit_title.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -52,7 +53,7 @@ class _TowerEndBody extends ConsumerWidget {
     return Scaffold(
       appBar: AppBar(
         automaticallyImplyLeading: false,
-        title: Text(tr(ref, 'tower_name')),
+        title: FitTitle(tr(ref, 'tower_name')),
       ),
       body: TowerBackdrop(
         floor: run.floorReached,
