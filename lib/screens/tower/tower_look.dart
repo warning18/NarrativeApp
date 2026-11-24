@@ -12,6 +12,7 @@ import '../../providers/palette_provider.dart';
 import '../../theme/frame_style.dart';
 import '../../theme/stitched_ink.dart';
 import 'ink/ink_images.dart';
+import 'ink/ink_palette.dart';
 import 'tower_providers.dart';
 import '../../widgets/fight_sprites.dart';
 
@@ -71,18 +72,43 @@ class TowerNight extends ConsumerWidget {
     return ValueListenableBuilder<int>(
       valueListenable: FrameImages.loaded,
       builder: (context, _, __) => Theme(
-        data: buildAppTheme(palette.schemeFor(Brightness.dark),
+        data: _inkButtons(buildAppTheme(palette.schemeFor(Brightness.dark),
             frames: FrameImages.ready(material, env)
                 ? FrameStyle(
                     material: material,
                     env: env,
                     compactScale: 2,
                     seed: floorNow)
-                : null),
+                : null)),
         child: TowerPanelStyle(child: child),
       ),
     );
   }
+}
+
+/// The Tower's buttons in ink (v1.1005): a flat red block with paper text for
+/// the one that matters, a black block with a paper line for the rest; square.
+ThemeData _inkButtons(ThemeData t) {
+  const square = RoundedRectangleBorder();
+  return t.copyWith(
+    filledButtonTheme: FilledButtonThemeData(
+      style: FilledButton.styleFrom(
+        backgroundColor: inkRed,
+        foregroundColor: inkPaper,
+        disabledBackgroundColor: inkSlate,
+        disabledForegroundColor: inkGrey,
+        shape: square,
+      ),
+    ),
+    outlinedButtonTheme: OutlinedButtonThemeData(
+      style: OutlinedButton.styleFrom(
+        backgroundColor: inkBlack,
+        foregroundColor: inkPaper,
+        side: const BorderSide(color: inkPaper),
+        shape: square,
+      ),
+    ),
+  );
 }
 
 /// A double ink line (an outer dark line, a gap, an inner seam) with a bevel

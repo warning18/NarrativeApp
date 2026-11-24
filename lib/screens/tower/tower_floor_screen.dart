@@ -21,7 +21,10 @@ import '../../providers/game_db_providers.dart';
 import '../../providers/tower_level_up_session.dart';
 import '../level_up_screen.dart';
 import '../../widgets/race_profession_cards.dart' show ClanDisc;
-import '../../theme/stitched_ink.dart';
+import 'ink/ink_bands.dart';
+import 'ink/ink_kit.dart';
+import 'ink/ink_palette.dart';
+import '../../widgets/fight_sprites.dart';
 import 'tower_end_screen.dart';
 import 'tower_backdrop.dart';
 import 'tower_dice_panel.dart';
@@ -319,7 +322,6 @@ class _FloorIntro extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final theme = Theme.of(context);
-    final ink = InkColors.of(context);
     final floor = towerFloorOf(run, data);
     final hero = towerHeroOf(run, data);
     final enemies =
@@ -334,160 +336,150 @@ class _FloorIntro extends ConsumerWidget {
         ? 0.0
         : (run.health / hero.maxHealth).clamp(0.0, 1.0);
 
-    return ListView(
-      padding: const EdgeInsets.fromLTRB(8, 4, 16, 24),
-      children: [
-        Text(tr(ref, 'tower_band_$band').toUpperCase(),
-            style: theme.textTheme.labelMedium?.copyWith(
-                letterSpacing: 1.2, color: theme.colorScheme.onSurfaceVariant)),
-        // The floor's number, large and gold (v1.900).
-        Text(tr(ref, 'tower_floor_of').replaceAll('{n}', '${run.floor}'),
-            key: const Key('tower_floor_label'),
-            style: theme.textTheme.headlineMedium?.copyWith(
-                color: ink.gold,
-                shadows: const [Shadow(blurRadius: 8, color: Colors.black)])),
-        Text(tr(ref, 'tower_floor_${run.floor}'),
-            style: theme.textTheme.bodyLarge
-                ?.copyWith(fontStyle: FontStyle.italic)),
-        if (event case final e?) ...[
-          const SizedBox(height: 10),
-          if (e.result case final r? when r.to == run.floor)
-            TowerEventResultLine(r),
-          if (e.revisit) ...[
-            const SizedBox(height: 6),
-            const TowerRevisitLine(),
-          ],
-          if (e.kind == TowerEventKind.rival) ...[
-            const SizedBox(height: 6),
-            TowerEventCard(e),
-          ],
-          if (e.kind == TowerEventKind.shortcut) ...[
-            const SizedBox(height: 6),
-            TowerEventCard(e, onShortcut: onShortcut),
-          ],
-          if (e.kind == TowerEventKind.parley) ...[
-            const SizedBox(height: 6),
-            TowerEventCard(e, onParley: onParley, foeId: floor.enemyIds.first),
-          ],
-          if (e.kind == TowerEventKind.merchant ||
-              e.kind == TowerEventKind.bargain) ...[
-            const SizedBox(height: 6),
-            TowerEventCard(e,
-                onBuy: onBuy, onLeaveStore: onLeaveStore, onBargain: onBargain),
-          ],
-        ],
-        if (danger) ...[
-          const SizedBox(height: 10),
-          Container(
-            key: const Key('tower_danger_band'),
-            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-            decoration: BoxDecoration(
-              color: ink.blood.withValues(alpha: .12),
-              border: Border.all(color: ink.blood),
-              borderRadius: BorderRadius.circular(8),
-            ),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                    tr(
-                            ref,
-                            floor.kind == TowerFloorKind.boss
-                                ? 'tower_floor_boss'
-                                : 'tower_floor_warden')
-                        .replaceAll('{n}', '${run.floor}'),
-                    style: theme.textTheme.labelLarge
-                        ?.copyWith(color: ink.blood, letterSpacing: 1)),
-                if (floor.kind == TowerFloorKind.boss)
-                  Text(tr(ref, 'tower_boss_line_${run.floor}'),
-                      style: theme.textTheme.bodyMedium),
+    // A column in a scroll view, not a lazy list: every part is built, so the
+    // Fight button is on the tree however tall the bands and cards are.
+    return SingleChildScrollView(
+        padding: const EdgeInsets.fromLTRB(8, 4, 16, 24),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            Text(tr(ref, 'tower_band_$band').toUpperCase(),
+                style: theme.textTheme.labelMedium
+                    ?.copyWith(letterSpacing: 1.2, color: inkGrey)),
+            // The floor's number, large and paper white (v1.1005).
+            Text(tr(ref, 'tower_floor_of').replaceAll('{n}', '${run.floor}'),
+                key: const Key('tower_floor_label'),
+                style: theme.textTheme.headlineMedium?.copyWith(
+                    color: inkPaper,
+                    fontWeight: FontWeight.w800,
+                    shadows: const [Shadow(blurRadius: 8, color: inkBlack)])),
+            Text(tr(ref, 'tower_floor_${run.floor}'),
+                style: theme.textTheme.bodyLarge
+                    ?.copyWith(fontStyle: FontStyle.italic, color: inkGrey)),
+            if (event case final e?) ...[
+              const SizedBox(height: 10),
+              if (e.result case final r? when r.to == run.floor)
+                TowerEventResultLine(r),
+              if (e.revisit) ...[
+                const SizedBox(height: 6),
+                const TowerRevisitLine(),
+              ],
+              if (e.kind == TowerEventKind.rival) ...[
+                const SizedBox(height: 6),
+                TowerEventCard(e),
+              ],
+              if (e.kind == TowerEventKind.shortcut) ...[
+                const SizedBox(height: 6),
+                TowerEventCard(e, onShortcut: onShortcut),
+              ],
+              if (e.kind == TowerEventKind.parley) ...[
+                const SizedBox(height: 6),
+                TowerEventCard(e,
+                    onParley: onParley, foeId: floor.enemyIds.first),
+              ],
+              if (e.kind == TowerEventKind.merchant ||
+                  e.kind == TowerEventKind.bargain) ...[
+                const SizedBox(height: 6),
+                TowerEventCard(e,
+                    onBuy: onBuy,
+                    onLeaveStore: onLeaveStore,
+                    onBargain: onBargain),
+              ],
+            ],
+            if (danger) ...[
+              const SizedBox(height: 10),
+              Container(
+                key: const Key('tower_danger_band'),
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                decoration: const BoxDecoration(
+                  color: inkBlack,
+                  border: Border(
+                      left: BorderSide(color: inkRed, width: 4),
+                      top: BorderSide(color: inkRed),
+                      right: BorderSide(color: inkRed),
+                      bottom: BorderSide(color: inkRed)),
+                ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                        tr(
+                                ref,
+                                floor.kind == TowerFloorKind.boss
+                                    ? 'tower_floor_boss'
+                                    : 'tower_floor_warden')
+                            .replaceAll('{n}', '${run.floor}'),
+                        style: theme.textTheme.labelLarge
+                            ?.copyWith(color: inkRed, letterSpacing: 1)),
+                    if (floor.kind == TowerFloorKind.boss)
+                      Text(tr(ref, 'tower_boss_line_${run.floor}'),
+                          style: theme.textTheme.bodyMedium),
+                  ],
+                ),
+              ),
+            ],
+            InkLabel(tr(ref, 'tower_oaths_label')),
+            _SwornRow(run: run),
+            InkLabel(tr(ref, 'tower_foes')),
+            InkFoeBand(
+              plate: towerFloorPlate(floor.floor) ?? towerBackdropAsset(band),
+              lit: danger,
+              foes: [
+                for (final id in floor.enemyIds)
+                  InkBandFoe(
+                      id, '${(enemies[id] as Map?)?['enemyName'] ?? id}'),
               ],
             ),
-          ),
-        ],
-        InkLabel(tr(ref, 'tower_oaths_label')),
-        _SwornRow(run: run),
-        InkLabel(tr(ref, 'tower_foes')),
-        for (final id in floor.enemyIds)
-          Padding(
-            padding: const EdgeInsets.only(bottom: 6),
-            child: InkPanel(
-              lit: danger,
-              decor: id == floor.enemyIds.first
-                  ? const EnvParts(top: 2)
-                  : EnvParts.none,
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Row(
-                    children: [
-                      Expanded(
-                        child: Text(
-                            '${(enemies[id] as Map?)?['enemyName'] ?? id}',
-                            style: theme.textTheme.titleSmall),
-                      ),
-                      // The foe stands in its panel when it has art (v1.900).
-                      if (id == floor.enemyIds.first) TowerFoeFigure(id),
-                    ],
-                  ),
-                  // The marks wrap under the name: an Elite with an affix is
-                  // too wide for one line on a small phone. A lone Elite wears
-                  // its mark on its panel; a pack made an Elite pack (the
-                  // shortcut's tougher fight) on every foe's.
-                  if ((id == floor.enemyIds.first &&
-                          (floor.affixes.isNotEmpty || floor.elite)) ||
-                      floor.elitePack)
-                    Wrap(
-                      spacing: 6,
-                      runSpacing: 4,
-                      children: [
-                        if (id == floor.enemyIds.first)
-                          for (final a in floor.affixes)
-                            InkChip(tr(ref, affixLabelKey(a)),
-                                color: ink.blood, dense: true),
-                        if ((id == floor.enemyIds.first && floor.elite) ||
-                            floor.elitePack)
-                          InkChip(tr(ref, 'tower_floor_elite'),
-                              color: ink.gold, dense: true),
-                      ],
-                    ),
-                ],
+            // The marks wrap under the picture: an Elite with an affix is too
+            // wide for a nameplate. A lone Elite wears its mark, a pack made an
+            // Elite pack (the shortcut's tougher fight) its own.
+            if (floor.affixes.isNotEmpty || floor.elite || floor.elitePack)
+              Padding(
+                padding: const EdgeInsets.only(top: 12),
+                child: Wrap(
+                  spacing: 6,
+                  runSpacing: 4,
+                  children: [
+                    for (final a in floor.affixes)
+                      InkChip(tr(ref, affixLabelKey(a)),
+                          color: inkRed, dense: true),
+                    for (var i = 0; i < floor.enemyIds.length; i++)
+                      if ((i == 0 && floor.elite) || floor.elitePack)
+                        InkChip(tr(ref, 'tower_floor_elite'),
+                            color: inkPaper, dense: true),
+                  ],
+                ),
               ),
+            const SizedBox(height: 10),
+            InkHeroBand(
+              plate: towerBackdropAsset(band),
+              sprite: heroSpriteFor(run.raceId, run.professionId),
+              health: hp,
+              healthText: '${run.health} / ${hero.maxHealth}',
+              healthKey: const Key('tower_health'),
+              title: tr(ref, 'tower_your_health'),
             ),
-          ),
-        InkLabel(tr(ref, 'tower_your_health')),
-        InkPanel(
-          decor: const EnvParts(bottom: 2),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              LinearProgressIndicator(value: hp, color: ink.heal, minHeight: 8),
-              const SizedBox(height: 4),
-              Text('${run.health} / ${hero.maxHealth}',
-                  key: const Key('tower_health'),
-                  style: theme.textTheme.bodySmall),
-            ],
-          ),
-        ),
-        // The bag: shown once the hero owns more than its first die.
-        ..._dicePanel(ref),
-        const SizedBox(height: 16),
-        // A shortcut is chosen first: its card holds the two buttons.
-        // A shortcut or a parley is chosen first, a bargain too, and an open
-        // store is left first: their cards hold the buttons.
-        if ((!(event?.kind == TowerEventKind.shortcut ||
-                    event?.kind == TowerEventKind.parley ||
-                    event?.kind == TowerEventKind.bargain) ||
-                event?.accepted != null) &&
-            !((event?.storeOpen ?? false) &&
-                event?.kind == TowerEventKind.merchant))
-          FilledButton(
-            key: const Key('tower_fight'),
-            onPressed: busy ? null : onFight,
-            child: Text(tr(ref, 'tower_fight')),
-          ),
-      ],
-    );
+            // The bag: shown once the hero owns more than its first die.
+            ..._dicePanel(ref),
+            const SizedBox(height: 16),
+            // A shortcut is chosen first: its card holds the two buttons.
+            // A shortcut or a parley is chosen first, a bargain too, and an open
+            // store is left first: their cards hold the buttons.
+            if ((!(event?.kind == TowerEventKind.shortcut ||
+                        event?.kind == TowerEventKind.parley ||
+                        event?.kind == TowerEventKind.bargain) ||
+                    event?.accepted != null) &&
+                !((event?.storeOpen ?? false) &&
+                    event?.kind == TowerEventKind.merchant))
+              InkButton(
+                buttonKey: const Key('tower_fight'),
+                label: tr(ref, 'tower_fight'),
+                onPressed: busy ? null : onFight,
+                primary: true,
+              ),
+          ],
+        ));
   }
 }
 

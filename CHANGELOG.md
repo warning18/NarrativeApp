@@ -8,6 +8,10 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.1005.0+1041]
+
+- The Tower is moving to ink; the rest follows (part 2 of 4: the climb). The floor screen, its ladder, the foe's and the hero's pictures, the oaths row, the events (setback, rival, shortcut, parley, stall, bargain) and the dice panel are drawn in ink: black panels with a thin grey line and a bar on the left, paper white text, red only for what matters (danger, a loss, the die in play, the one button that goes on). The foe and the hero stand in slanted frames, their chibi recoloured to ink. The dice are real 3D solids in ink with the list of their faces under the open one. The climb's buttons are square, flat red or black. The fights, the spoils, the level up and the calling pick are still in the night look until the next parts. UX (view only).
+
 ## [1.1004.0+1040]
 
 - The Tower is moving to ink; the rest follows (part 1 of 4). The Tower's plates, its door, its marks and unlocks, the end of a run and its button on the main menu are drawn in the ink look the user picked: near-black, cold greys and paper white, deep red only for the one button that goes on, text panels as paper in Art's brush frame, the Tower's own button on the menu in the same frame (nothing else on the menu changes). The Tower's 14 plates are the old ones recoloured into the ink greys. New: the kit the next parts draw with (the paper panel, the skewed button, the slanted picture panel, the chibi sprites recoloured at load time and cached). The climb, the fights, the spoils and the level up are still in the night look until the next parts. UX (view only).
