@@ -8,6 +8,15 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [2.1.4+1051]
+
+- **Cleanup: 36 names that only their own file uses are now private.**
+  Among them the level ladder's colours and sizes, the die's 3D frame
+  budget and glyph limits, the slow-frame report's names, the clan card's
+  size, the keeper's scale and a few helpers of the land crossing, the
+  character start and the offers. The analyzer proves none is used
+  elsewhere. Nothing changes on screen or in a number.
+
 ## [2.1.3+1050]
 
 - **Cleanup: dead code and unread strings removed.** Four intro painters
