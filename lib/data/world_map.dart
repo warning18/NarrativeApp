@@ -183,7 +183,15 @@ final List<Landmark> worldMapLandmarks = [
         'An oasis of white clay huts round a green pool, a salt caravan and a few merchants. Rest, and hear of a city to the south where the Waste meets the sea. Who walks south with you sets your origin: Guardian, Rat or Broken.',
     blurbFr:
         'Une oasis de cases d’argile blanche autour d’une mare verte, une caravane de sel et quelques marchands. Reposez-vous, et entendez parler d’une ville au sud, là où la Désolation rejoint la mer. Qui marche vers le sud avec vous fixe votre origine\u00a0: Gardien, Rat ou Brisé.',
-    scenes: ['1150_vica', '1200', '1210', '1000', '1001', '1002'],
+    scenes: [
+      '1150_vica',
+      '1155_vica_follows',
+      '1200',
+      '1210',
+      '1000',
+      '1001',
+      '1002'
+    ],
   ),
   // Saltmouth (v1.536): one place on the world chart, like Alster. Its
   // districts (the Landward Gate, Tern Row, Smugglers' Wharf, the
@@ -265,6 +273,7 @@ final List<Landmark> worldMapLandmarks = [
       '7400_chain', '7400_chain_later',
       '7800', '7800_council', '7800_lines', '7800_nkem_later', //
       'loyal_kelda',
+      'loyal_vica',
       'loyal_sable',
       'loyal_maren',
       'loyal_liora',
@@ -683,7 +692,10 @@ final List<Landmark> worldMapLandmarks = [
     scenes: [
       '7500', '7510_dominion', '7510_vigil', '7510_compact', '7510_mire', //
       '7510_crows', '7510_penitents', '7510_open_hand', '7510_seen',
-      '7515_rest', '7516_eve', '7517_stair',
+      '7515_rest', '7516_eve', '7517_stair', //
+      'beat2_kelda', 'beat2_sable', 'beat2_maren', 'beat2_liora', //
+      'beat2_vess', 'beat2_grosh', 'beat2_tobin', 'beat2_malrik', //
+      'beat2_vica',
       '7520_vane', '7520_morrow', '7520_tallis', '7590_dominion', //
       '7590_vigil', '7590_compact', '7590_mire', '7590_crows',
       '7590_penitents', '7590_open_hand',

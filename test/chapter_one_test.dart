@@ -81,9 +81,9 @@ void main() {
           orElse: () => fail('$nodeId does not lead to $target'));
 
   test(
-      'chapter 1 has no padding: 52 scenes, all reachable but the parked alley',
+      'chapter 1 has no padding: 53 scenes, all reachable but the parked alley',
       () {
-    expect(chapterOne.length, 52);
+    expect(chapterOne.length, 53);
     final targets = <String>{};
     for (final node in nodes.values) {
       for (final choice in node.choices) {
@@ -419,7 +419,10 @@ void main() {
     // The end of the crossing: Vica finds the lost hero and joins, whatever
     // the hero does (no way to refuse her); the coins really cost 10 gold.
     final vica = nodes['1150_vica']!;
-    expect(vica.choices.map((c) => c.nextId).toSet(), {'1200'});
+    expect(vica.choices.map((c) => c.nextId).toSet(), {'1155_vica_follows'});
+    // Vica follows to the fire (P3), then the Wells.
+    expect(nodes['1155_vica_follows']!.choices.map((c) => c.nextId).toSet(),
+        {'1200'});
     expect(vica.choices, hasLength(3));
     final coins = vica.choices.singleWhere((c) => c.goldMod != 0);
     expect(coins.goldMod, -10);
