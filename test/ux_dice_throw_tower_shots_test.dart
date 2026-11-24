@@ -105,7 +105,8 @@ void main() {
         break;
       }
     }
-    File('${dir.path}/frames_in_order.txt').writeAsStringSync(times.map((t) => t.toStringAsFixed(1)).join(' '));
+    File('${dir.path}/frames_in_order.txt')
+        .writeAsStringSync(times.map((t) => t.toStringAsFixed(1)).join(' '));
     times.sort();
     File('${dir.path}/frame_ms.txt').writeAsStringSync(
         'median ${times[times.length ~/ 2].toStringAsFixed(2)} ms, '
