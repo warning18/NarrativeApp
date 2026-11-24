@@ -10,7 +10,7 @@ isn't reconstructable from git history alone.
 
 ## [2.1.5+1052]
 
-- Maps, lighter with nothing changed on screen: the ball draws in about 40 % less time (its mesh's heights, the names' layout and the roads' bends were worked out again on every paint and are now kept), and the town plan's view has its own layer, so a drag of the plan repaints less of the screen round it. Six screens were compared pixel for pixel before and after: the same.
+- Maps, lighter with nothing changed on screen: the ball draws in about 40 % less time (its mesh's heights, the names' layout and the roads' bends were worked out again on every paint and are now kept), and a drag of the town plan repaints the plan only (9 pieces a frame, where each move repainted the whole page, 512). Twelve screens were compared pixel for pixel before and after: the same.
 
 ## [2.1.1+1048]
 

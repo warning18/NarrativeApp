@@ -29,18 +29,24 @@ the full map) are the same pixel for pixel before and after.
 
 | What | Before | After |
 |---|---|---|
-| Town on the Journey, drag of the plan, pieces repainted a frame | 435 | 359 |
-| City plan page, drag of the plan | 88 | 88 |
+| Town on the Journey, drag of the plan, pieces repainted a frame | 512 | 9 |
 
-The plan view now has its own layer (`lib/widgets/city_chart/city_chart_view.dart`). The gain is small:
-most of what repaints on the Journey comes from the Journey screen itself, which rebuilds two or three
-widgets on each move. That file is being split by Core; to look at after.
+(Counted after Core's split of the Journey screen, v2.1.1; ten moves.)
+
+The cause, found with Core's probe: the plan's view rebuilt itself once per move with an ordinary
+`setState`. A widget rebuilt under a layout builder makes that layout builder lay out again and repaint
+its layer, and the view sits under the page's layout builder: so each move repainted the whole page.
+Now the view has its own layer, and what a pan, a zoom or a pick rebuilds is a builder inside the view's
+own layout builder (`lib/widgets/city_chart/city_chart_view.dart`): the plan's layer is repainted, not
+the screen round it. This is the same trap as the party's ring and the ball in wave 1.
+
+Checked that nothing the player sees changed: six more screens (Alster and Saltmouth: the Town, the city
+plan page, the page one "+" in) are the same pixel for pixel.
 
 ## Left, and whose
 
 - **A room keeps asking for frames**: the idle glyph animation of the Journey's chart
   (`lib/screens/journey_screen.dart`, `_idleGlyphs`). Not a map painter; for Core or UX after the split.
-- **The Journey rebuilds on a drag of the town plan** (above): same file.
 - The marks under the fog (towns' houses, trade roads, villages) still take about 2 ms of a paint of the
   ball; they could be kept between paints like the names. Not done: more code than the gain is worth
   before a phone says the ball is slow.
