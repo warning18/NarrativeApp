@@ -280,7 +280,7 @@ Widget _bar(double v,
     bool skew = false,
     Color track = inkDark,
     double w = 130}) {
-  Widget bar = SizedBox(
+  final Widget bar = SizedBox(
     width: w,
     height: h,
     child: seg
@@ -430,7 +430,7 @@ List<Widget> _sheets() {
       _tile(
           'Text only',
           'dialogs, inline Skip',
-          Text('Skip',
+          const Text('Skip',
               style: TextStyle(
                   fontFamily: InkFonts.system,
                   fontSize: 13,
@@ -702,13 +702,13 @@ List<Widget> _sheets() {
           'Paper row',
           'journal, saves',
           width: 340,
-          SizedBox(
+          const SizedBox(
               width: 322,
               child: InkPaperPanel(
-                  padding: const EdgeInsets.fromLTRB(40, 10, 16, 10),
+                  padding: EdgeInsets.fromLTRB(40, 10, 16, 10),
                   child: Row(children: [
-                    const Icon(Icons.folder_outlined, color: inkOnPaper),
-                    const SizedBox(width: 8),
+                    Icon(Icons.folder_outlined, color: inkOnPaper),
+                    SizedBox(width: 8),
                     Expanded(
                         child: Text('Slot 1 · Edda · Level 7',
                             style: TextStyle(
@@ -737,7 +737,7 @@ List<Widget> _sheets() {
                         child: Image.asset(
                             'assets/visuals/tower_ink/fight_band1_dice.png',
                             fit: BoxFit.cover))),
-                Center(
+                const Center(
                     child: Text('Nothing written yet',
                         style: TextStyle(
                             fontFamily: InkFonts.prose,
@@ -751,7 +751,7 @@ List<Widget> _sheets() {
           Row(mainAxisSize: MainAxisSize.min, children: [
             Container(width: 3, height: 20, color: inkRed),
             const SizedBox(width: 6),
-            Text('Unsworn',
+            const Text('Unsworn',
                 style: TextStyle(
                     fontFamily: InkFonts.prose,
                     fontStyle: FontStyle.italic,
@@ -760,7 +760,7 @@ List<Widget> _sheets() {
       _tile(
           'Quiet line',
           'lists: no saves',
-          Text('No saved game yet',
+          const Text('No saved game yet',
               style: TextStyle(
                   fontFamily: InkFonts.prose,
                   fontStyle: FontStyle.italic,
@@ -857,11 +857,11 @@ List<Widget> _sheets() {
           'Paper header strip',
           'story dialogs, sheets',
           width: 340,
-          SizedBox(
+          const SizedBox(
               width: 322,
               child: InkPaperPanel(
                   title: 'A gift, offered alone',
-                  padding: const EdgeInsets.fromLTRB(40, 22, 20, 10),
+                  padding: EdgeInsets.fromLTRB(40, 22, 20, 10),
                   child: Text('A level reached',
                       style: TextStyle(
                           fontFamily: InkFonts.prose,
