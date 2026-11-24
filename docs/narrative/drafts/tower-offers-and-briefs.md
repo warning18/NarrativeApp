@@ -2,6 +2,8 @@
 Draft only; nothing is in `lib/l10n/app_strings.dart`. Keys are proposals, to sit beside the `tower_oath_*` and `tower_merchant_*` blocks; no existing key is renamed. FR passes the lint rules.
 Notes: the game's Tower currency is *Ash Marks* (`tower_marks_name`), so the shop lines say marks, not coins. `tower_unlock_*` exists for three clans (Crows, Vigil, Compact); a fourth clan needs its three lines (toast, banner, oath line) written in the same pattern. In FR a clan is “la Veille”, “le Pacte”, “les Corneilles” (short forms of factions.json names).
 ## 1. Clan offers
+All six clans of Core’s plan (Dominion, Vigil, Compact, Mire, Crows, Penitents). Offer cards read +2 for the clan, +1 allies, −1 rivals: the oath line is the only clan text on the card, the numbers are Core’s. Core keeps a refusal at +1 mark.
+
 | key | EN | FR | where |
 |---|---|---|---|
 | `tower_offer_frame_title` | The clans come to you | Les clans viennent à vous | header of the offer card |
@@ -15,6 +17,15 @@ Notes: the game's Tower currency is *Ash Marks* (`tower_marks_name`), so the sho
 | `tower_oath_line_crows` | Salt on the rope and a debt on the tide: the Crows will carry you if you carry them. | Du sel sur la corde, une dette sur la marée : les Corneilles vous porteront si vous les portez. | oath card, one line |
 | `tower_oath_line_vigil` | The Vigil keeps the count of the dead. Swear, and yours will be kept too. | La Veille tient le compte des morts. Prêtez serment, et le vôtre sera tenu aussi. | oath card, one line |
 | `tower_oath_line_compact` | The Compact trades in what burns down. Swear, and it will not trade you. | Le Pacte commerce ce qui brûle. Prêtez serment, et il ne vous vendra pas. | oath card, one line |
+| `tower_standing_toast_dominion` | The Dominion thinks more of you. | Le Dominion vous estime davantage. | standing toast |
+| `tower_standing_toast_mire` | The Mire Courts think more of you. | Les Cours du Marais vous estiment davantage. | standing toast |
+| `tower_standing_toast_penitents` | The Penitents think more of you. | Les Pénitents vous estiment davantage. | standing toast |
+| `tower_unlock_banner_dominion` | A door opens: the Dominion thinks you worthy of its oath. | Une porte s’ouvre : le Dominion vous juge digne de son serment. | oath-unlock banner |
+| `tower_unlock_banner_mire` | A door opens: the Mire Courts think you worthy of their oath. | Une porte s’ouvre : les Cours du Marais vous jugent dignes de leur serment. | oath-unlock banner |
+| `tower_unlock_banner_penitents` | A door opens: the Penitents think you worthy of their oath. | Une porte s’ouvre : les Pénitents vous jugent dignes de leur serment. | oath-unlock banner |
+| `tower_oath_line_dominion` | The Dominion keeps the lamps lit and the books closed. Swear, and you are written in both. | Le Dominion garde les lampes allumées et les livres fermés. Prêtez serment, et vous figurerez dans les deux. | oath card, one line |
+| `tower_oath_line_mire` | The Courts of the Mire forgive nothing and forget nothing. Swear, and they will remember you kindly. | Les Cours du Marais ne pardonnent rien et n’oublient rien. Prêtez serment, et elles se souviendront de vous avec bonté. | oath card, one line |
+| `tower_oath_line_penitents` | The Penitents climb on their knees. Swear, and they will make room on the stair. | Les Pénitents montent à genoux. Prêtez serment, et ils vous feront de la place dans l’escalier. | oath card, one line |
 
 ## 2. Heat levels (1–3), name and one line
 | key | EN | FR |
