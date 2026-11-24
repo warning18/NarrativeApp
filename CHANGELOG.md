@@ -8,6 +8,10 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [2.2.1+1054]
+
+- **The Journey costs less to draw, no visible change.** The marks' idle glyphs (round marks: fights and rolls off the quests) breathe on their 12-second clock only while one is drawn, so a view of banners only (the prologue's ways, most rooms) asks for no frames; each glyph breathes on its own layer, so a breath repaints the glyph and not the chart. The town plan has its own layer on the Journey: a drag of the plan repaints 512 pieces a frame instead of 640 (Saltmouth, whole town). Maps' perf review (perf-2.md). Core.
+
 ## [2.1.1+1048]
 
 - **Code health: the Journey screen split into smaller files, no behaviour change.** `lib/screens/journey_screen.dart` (6,100 lines) is now the screen and its state, with seven part files beside the three it had in `lib/screens/journey/`: the step and its helpers, moving between views, taking a step, the step's detail, the town view, and the map chart in two files of its own (`journey_maps.dart`, `journey_maps_paint.dart`) for the Maps session. Code moved only: every declaration is the same, 22 methods of the state moved into extensions call `_update` (the folder's existing stand-in for `setState`). Core.
