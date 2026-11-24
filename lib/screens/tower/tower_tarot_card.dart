@@ -19,7 +19,7 @@ import 'tower_card_art.dart';
 /// about 7), and the content stays inside it.
 const double _frameScale = 1.5;
 const double _frameInset = 6;
-const double _footerBand = 24;
+const double _footerBand = 28;
 
 /// The narrowest a tarot card is drawn, in logical pixels; narrower, or with
 /// text bigger than [towerTarotMaxTextScale], the offer is rows.
@@ -159,7 +159,9 @@ class TowerTarotCard extends StatelessWidget {
         child: Stack(fit: StackFit.expand, children: [
           // The content sits inside the frame's border.
           Padding(
-              padding: const EdgeInsets.all(_frameInset),
+              // The frame's bottom edge is thicker (curls and a line): a little more room.
+              padding: const EdgeInsets.fromLTRB(
+                  _frameInset, _frameInset, _frameInset, _frameInset + 5),
               child: Column(children: [
                 Expanded(
                   flex: 9,
