@@ -7499,11 +7499,47 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   },
   'enemy_group_void_cults': {
     AppLanguage.en: 'The Void Cults',
-    AppLanguage.fr: 'Les cultes du vide',
+    AppLanguage.fr: 'Les cultes du Néant',
   },
   'enemy_group_common_folk': {
     AppLanguage.en: 'Common Folk',
     AppLanguage.fr: 'Le petit peuple',
+  },
+  'enemy_group_choir': {
+    AppLanguage.en: 'The Choir',
+    AppLanguage.fr: 'Le Chœur',
+  },
+  'enemy_group_pit': {
+    AppLanguage.en: 'The Pit',
+    AppLanguage.fr: 'La Fosse',
+  },
+  'enemy_group_giants': {
+    AppLanguage.en: 'The Giants',
+    AppLanguage.fr: 'Les géants',
+  },
+  'enemy_group_tidekin': {
+    AppLanguage.en: 'The Tide-Kin',
+    AppLanguage.fr: 'Les Gens de la Marée',
+  },
+  'enemy_group_undead': {
+    AppLanguage.en: 'The Dead',
+    AppLanguage.fr: 'Les morts',
+  },
+  'enemy_group_void': {
+    AppLanguage.en: 'The Void',
+    AppLanguage.fr: 'Le Néant',
+  },
+  'enemy_group_beast': {
+    AppLanguage.en: 'Beasts',
+    AppLanguage.fr: 'Les bêtes',
+  },
+  'enemy_group_construct': {
+    AppLanguage.en: 'Constructs',
+    AppLanguage.fr: 'Les constructions',
+  },
+  'enemy_group_people': {
+    AppLanguage.en: 'People of no clan',
+    AppLanguage.fr: 'Les sans-clan',
   },
   'enemy_recovers_word': {
     AppLanguage.en: 'recovers',
@@ -13870,6 +13906,20 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   'offer_confirm_back': {
     AppLanguage.en: 'Back',
     AppLanguage.fr: 'Retour',
+  },
+  // A specialisation or a Sworn boon offered alone (Wave 1, proposal 3):
+  // yes (offer_confirm_accept), or the usual three cards instead.
+  'offer_solo_title': {
+    AppLanguage.en: 'A gift, offered alone',
+    AppLanguage.fr: 'Un don, offert seul',
+  },
+  'offer_solo_decline': {
+    AppLanguage.en: 'Not now',
+    AppLanguage.fr: 'Plus tard',
+  },
+  'offer_solo_note': {
+    AppLanguage.en: 'Not now is not never. The gift may come again later.',
+    AppLanguage.fr: 'Plus tard n’est pas jamais. Le don pourra revenir.',
   },
   'offer_no_standing': {
     AppLanguage.en: 'No faction: standing doesn’t move.',

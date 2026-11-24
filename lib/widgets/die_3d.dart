@@ -19,6 +19,8 @@ import 'dart:math' as math;
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 
+import '../screens/tower/ink/ink_palette.dart' show inkPaper, inkRed;
+import '../screens/tower/tower_look.dart' show TowerPanelStyle;
 import '../combat/face_keywords.dart';
 import '../utils/face_style.dart';
 import 'die_poly3d.dart';
@@ -336,33 +338,41 @@ class _Die3DState extends State<Die3D> with SingleTickerProviderStateMixin {
                   animation: _burst,
                   builder: (context, _) => !_burst.isAnimating
                       ? const SizedBox.shrink()
-                      : PixelStrips.ready(_pixelNames(fx))
-                          // The landing in pixel art.
-                          ? CustomPaint(
-                              key: const ValueKey('die_burst'),
-                              painter: PixelStripPainter(
-                                names: _pixelNames(fx),
-                                progress: _burst.value,
-                                scale: (size * 2.6 / 40)
-                                    .round()
-                                    .clamp(1, 4)
-                                    .toDouble(),
-                              ),
-                            )
-                          // Until its strips are in, the drawn one.
-                          : CustomPaint(
-                              key: const ValueKey('die_burst'),
-                              painter: DieBurstPainter(
-                                fx: fx,
-                                t: _burst.value,
-                                big: widget.big,
-                                unit: size,
-                                keywords: widget.keywords,
-                                element: widget.element,
-                                surge: widget.surge,
-                                cursed: widget.cursed,
-                              ),
-                            ),
+                      : ColorFiltered(
+                          // The Tower's ink: a blow's burst red, the rest paper.
+                          colorFilter: TowerPanelStyle.of(context)
+                              ? ColorFilter.mode(
+                                  fx == DieFx.strike ? inkRed : inkPaper,
+                                  BlendMode.srcATop)
+                              : const ColorFilter.mode(
+                                  Colors.transparent, BlendMode.dst),
+                          child: PixelStrips.ready(_pixelNames(fx))
+                              // The landing in pixel art.
+                              ? CustomPaint(
+                                  key: const ValueKey('die_burst'),
+                                  painter: PixelStripPainter(
+                                    names: _pixelNames(fx),
+                                    progress: _burst.value,
+                                    scale: (size * 2.6 / 40)
+                                        .round()
+                                        .clamp(1, 4)
+                                        .toDouble(),
+                                  ),
+                                )
+                              // Until its strips are in, the drawn one.
+                              : CustomPaint(
+                                  key: const ValueKey('die_burst'),
+                                  painter: DieBurstPainter(
+                                    fx: fx,
+                                    t: _burst.value,
+                                    big: widget.big,
+                                    unit: size,
+                                    keywords: widget.keywords,
+                                    element: widget.element,
+                                    surge: widget.surge,
+                                    cursed: widget.cursed,
+                                  ),
+                                )),
                 ),
               ),
             ),

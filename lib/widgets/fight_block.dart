@@ -10,6 +10,8 @@
 // intent) and what a tap does stay with the fight (fight_board_view.dart).
 import 'package:flutter/material.dart';
 
+import '../screens/tower/ink/ink_palette.dart';
+import '../screens/tower/tower_look.dart' show TowerPanelStyle;
 import '../theme/icon_sizes.dart';
 import '../theme/palette.dart';
 import '../theme/pixel_chip.dart';
@@ -48,6 +50,7 @@ class FightBlock extends StatelessWidget {
     this.order,
     this.rank = FightRank.normal,
     this.group,
+    this.groupName,
     this.marks = const [],
     this.armor,
     this.damage,
@@ -65,6 +68,10 @@ class FightBlock extends StatelessWidget {
   /// The enemy's group: its emblem on the nameplate and its corner ornament.
   /// Null for the party.
   final EnemyGroup? group;
+
+  /// The group's name in the player's language, said by the emblem's tooltip
+  /// and its screen-reader label (v1.1003).
+  final String? groupName;
 
   /// Weakness and resistance marks, on the nameplate after the name.
   final List<FightMark> marks;
@@ -87,11 +94,24 @@ class FightBlock extends StatelessWidget {
 
   static const double plateHeight = 17;
 
+  Widget _emblem(EnemyGroup g, Color ink) {
+    final emblem = GroupEmblem(g, size: 13, color: ink);
+    final label = groupName;
+    if (label == null || label.isEmpty) return emblem;
+    return Tooltip(
+      message: label,
+      child: Semantics(label: label, child: emblem),
+    );
+  }
+
   /// A plate whose name takes two lines (#1100).
   static const double plateHeightTwoLines = 26;
 
-  Widget _markChip(FightMark m, Color ink) {
-    final colour = m.weak ? Palette.hot : Palette.slate;
+  Widget _markChip(BuildContext context, FightMark m, Color ink) {
+    final inked = TowerPanelStyle.of(context);
+    final colour = inked
+        ? (m.weak ? inkRed : inkSlate)
+        : (m.weak ? Palette.hot : Palette.slate);
     final chip = Container(
       key: Key(
           'fight_mark_${m.weak ? 'weak' : 'resist'}_${m.text}_${m.icon.codePoint}'),
@@ -120,25 +140,43 @@ class FightBlock extends StatelessWidget {
   Widget build(BuildContext context) {
     final scheme = Theme.of(context).colorScheme;
     final ranked = rank != FightRank.normal;
-    final frame = borderColor ?? (ranked ? Palette.goldDeep : plateColor);
-    final plateInk =
-        ThemeData.estimateBrightnessForColor(plateColor) == Brightness.light
+    // The Tower's fights are in ink (v1.1006): a black block, a paper bar on
+    // its left (red for an Elite or a boss, or the fighter aimed at), a black
+    // nameplate; no colour of the side, no ornament.
+    final inked = TowerPanelStyle.of(context);
+    final frame = inked
+        ? (ranked || borderColor != null ? inkRed : inkPaper)
+        : borderColor ?? (ranked ? Palette.goldDeep : plateColor);
+    final plateInk = inked
+        ? inkPaper
+        : ThemeData.estimateBrightnessForColor(plateColor) == Brightness.light
             ? Palette.apolloOutline
             : Palette.apolloCream;
+    final plate = inked ? inkBlack : plateColor;
     final g = group;
+    if (inked) return _inkPlate(context, frame: frame);
     return DecoratedBox(
       key: Key('fight_block_${name}_${g?.id ?? 'ally'}'),
-      decoration: ShapeDecoration(
-        color: fill ?? scheme.surface,
-        shape: PixelChipBorder(
-          side:
-              BorderSide(color: frame, width: borderWidth ?? (ranked ? 3 : 2)),
-          step: 3,
-          steps: 3,
-        ),
-      ),
+      decoration: inked
+          ? BoxDecoration(
+              color: inkBlack,
+              border: Border(
+                  left: BorderSide(color: frame, width: 4),
+                  top: const BorderSide(color: inkSlate),
+                  right: const BorderSide(color: inkSlate),
+                  bottom: const BorderSide(color: inkSlate)),
+            )
+          : ShapeDecoration(
+              color: fill ?? scheme.surface,
+              shape: PixelChipBorder(
+                side: BorderSide(
+                    color: frame, width: borderWidth ?? (ranked ? 3 : 2)),
+                step: 3,
+                steps: 3,
+              ),
+            ),
       child: CustomPaint(
-        foregroundPainter: g == null
+        foregroundPainter: g == null || inked
             ? null
             : OrnamentPainter(
                 g.ornament,
@@ -162,11 +200,11 @@ class FightBlock extends StatelessWidget {
                 height: twoLines ? plateHeightTwoLines : plateHeight,
                 margin: const EdgeInsets.fromLTRB(3, 3, 3, 0),
                 padding: const EdgeInsets.symmetric(horizontal: 4),
-                color: plateColor,
+                color: plate,
                 child: Row(
                   children: [
                     if (g != null) ...[
-                      GroupEmblem(g, size: 13, color: plateInk),
+                      _emblem(g, plateInk),
                       const SizedBox(width: 3),
                     ] else if (order != null) ...[
                       Text('$order',
@@ -212,7 +250,7 @@ class FightBlock extends StatelessWidget {
                             ),
                     ),
                     if (marks.isNotEmpty && onPlate)
-                      for (final m in marks) _markChip(m, plateInk),
+                      for (final m in marks) _markChip(context, m, plateInk),
                     // A two-line plate keeps the badge's icon only: the frame says the rest.
                     if (ranked) _rankMark(plateInk, iconOnly: twoLines),
                   ],
@@ -226,7 +264,14 @@ class FightBlock extends StatelessWidget {
                       Stack(
                         clipBehavior: Clip.none,
                         children: [
-                          SizedBox(width: 32, height: 32, child: head),
+                          SizedBox(
+                              width: 32,
+                              height: 32,
+                              child: inked
+                                  // The Tower's ink: the portrait in greys.
+                                  ? ColorFiltered(
+                                      colorFilter: _inkHead, child: head)
+                                  : head),
                           if (armor != null)
                             Positioned(
                               left: -2,
@@ -267,7 +312,7 @@ class FightBlock extends StatelessWidget {
                                           child: Row(children: [
                                             if (!onPlate)
                                               for (final m in marks)
-                                                _markChip(m, plateInk),
+                                                _markChip(context, m, plateInk),
                                           ]),
                                         ),
                                       ),
@@ -300,6 +345,81 @@ class FightBlock extends StatelessWidget {
             ],
           );
         }),
+      ),
+    );
+  }
+
+  /// The Tower's version (v1.1008): not a card but a skewed black nameplate
+  /// laid over the figure's picture: the name (its weakness marks and rank
+  /// beside it) and a thin health bar, as in the approved A. The numbers, the
+  /// gems, the status chips and the intent are one tap away, in the fighter's
+  /// sheet. The head is left out: the chibi stands in the panel behind it.
+  Widget _inkPlate(BuildContext context, {required Color frame}) {
+    final ranked = rank != FightRank.normal;
+    final g = group;
+    return Container(
+      key: Key('fight_block_${name}_${g?.id ?? 'ally'}'),
+      child: Transform(
+        transform: Matrix4.skewX(-0.2),
+        child: Container(
+          padding: const EdgeInsets.fromLTRB(8, 3, 8, 4),
+          decoration: BoxDecoration(
+            color: inkBlack.withValues(alpha: 0.92),
+            border: Border(
+                left: BorderSide(color: frame, width: 3),
+                bottom:
+                    BorderSide(color: frame == inkPaper ? inkSlate : frame)),
+          ),
+          child: Transform(
+            transform: Matrix4.skewX(0.2),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                Row(children: [
+                  if (g != null) ...[
+                    _emblem(g, inkPaper),
+                    const SizedBox(width: 3),
+                  ] else if (order != null) ...[
+                    Text('$order',
+                        style: const TextStyle(
+                            fontSize: 9,
+                            fontWeight: FontWeight.bold,
+                            color: inkGrey)),
+                    const SizedBox(width: 3),
+                  ],
+                  Expanded(
+                    child: FittedBox(
+                      fit: BoxFit.scaleDown,
+                      alignment: Alignment.centerLeft,
+                      child: Text(name,
+                          maxLines: 1,
+                          style: const TextStyle(
+                              fontFamily: InkFonts.display,
+                              fontSize: 13,
+                              height: 1,
+                              color: inkPaper)),
+                    ),
+                  ),
+                  for (final m in marks) _markChip(context, m, inkPaper),
+                  if (ranked) _rankMark(inkPaper, iconOnly: true),
+                  // The numbers, the status marks and the intent are one tap
+                  // away (the fighter's sheet): the plate says so.
+                  if (armor != null ||
+                      damage != null ||
+                      chips.isNotEmpty ||
+                      intent != null)
+                    const Padding(
+                        padding: EdgeInsets.only(left: 4),
+                        child: Icon(Icons.info_outline,
+                            size: IconSize.inline, color: inkGrey)),
+                ]),
+                const SizedBox(height: 4),
+                bar,
+              ],
+            ),
+          ),
+        ),
       ),
     );
   }
@@ -343,14 +463,22 @@ class FightBlock extends StatelessWidget {
   /// over it.
   Widget _gem(BuildContext context, IconData icon, String value, Color color) {
     final scheme = Theme.of(context).colorScheme;
+    // Ink: a square gem, paper (red for the damage).
+    final inked = TowerPanelStyle.of(context);
+    if (inked) color = icon == Icons.bolt ? inkRed : inkPaper;
     return Container(
       width: 19,
       height: 19,
-      decoration: ShapeDecoration(
-        color: scheme.surface,
-        shape: PixelChipBorder(
-            side: BorderSide(color: color, width: 1.5), step: 2, steps: 2),
-      ),
+      decoration: inked
+          ? BoxDecoration(
+              color: inkBlack, border: Border.all(color: color, width: 1.5))
+          : ShapeDecoration(
+              color: scheme.surface,
+              shape: PixelChipBorder(
+                  side: BorderSide(color: color, width: 1.5),
+                  step: 2,
+                  steps: 2),
+            ),
       alignment: Alignment.center,
       // A long number (a boss's armour, a big blow) shrinks to the gem.
       child: FittedBox(
@@ -377,3 +505,11 @@ class FightBlock extends StatelessWidget {
     );
   }
 }
+
+/// A portrait in the ink greys.
+const ColorFilter _inkHead = ColorFilter.matrix(<double>[
+  0.40, 0.40, 0.40, 0, 0, //
+  0.40, 0.40, 0.40, 0, 4,
+  0.42, 0.42, 0.42, 0, 8,
+  0, 0, 0, 1, 0,
+]);

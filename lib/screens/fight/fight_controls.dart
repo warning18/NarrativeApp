@@ -296,25 +296,29 @@ extension _FightControls on _FightScreenState {
     required VoidCallback onTap,
   }) {
     final colorScheme = Theme.of(context).colorScheme;
+    // The Tower's ink: a square block, a paper icon.
+    final inked = TowerPanelStyle.of(context);
     return Tooltip(
       message: '$tooltip ($count)',
       child: InkWell(
         onTap: enabled ? onTap : null,
-        borderRadius: BorderRadius.circular(8),
+        borderRadius: BorderRadius.circular(inked ? 0 : 8),
         child: Opacity(
           opacity: enabled ? 1 : 0.4,
           child: Container(
             width: 40,
             height: 40,
             decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(8),
-              border: Border.all(color: colorScheme.outline),
-              color: colorScheme.surface,
+              borderRadius: BorderRadius.circular(inked ? 0 : 8),
+              border: Border.all(color: inked ? inkPaper : colorScheme.outline),
+              color: inked ? inkBlack : colorScheme.surface,
             ),
             child: Stack(
               children: [
                 Center(
-                    child: Icon(icon, size: IconSize.s16, color: Palette.good)),
+                    child: Icon(icon,
+                        size: IconSize.s16,
+                        color: inked ? inkPaper : Palette.good)),
                 Positioned(
                   right: 2,
                   bottom: 1,

@@ -11,7 +11,9 @@ import '../../l10n/app_locale.dart' show appLanguageProvider;
 import '../../l10n/app_strings.dart';
 import '../../providers/clans_provider.dart';
 import '../../theme/icon_sizes.dart';
-import '../../theme/stitched_ink.dart';
+import '../../theme/stitched_ink.dart' show InkFonts;
+import 'ink/ink_kit.dart' show InkBar;
+import 'ink/ink_palette.dart';
 import '../../widgets/ink_chip.dart';
 import '../../widgets/ink_panel.dart';
 import '../../widgets/race_profession_cards.dart' show ClanDisc;
@@ -178,7 +180,6 @@ class TowerParleyCard extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final theme = Theme.of(context);
-    final ink = InkColors.of(context);
     final faction = clanId == null ? null : ref.watch(factionsProvider)[clanId];
     final signed = modifier >= 0 ? '+$modifier' : '$modifier';
     return InkPanel(
@@ -193,7 +194,7 @@ class TowerParleyCard extends ConsumerWidget {
                   : TowerFoeFigure(foeId!, size: towerParleyFoeSize),
           children: [
             TowerEventTag(
-                Icons.forum_outlined, tr(ref, 'tower_parley'), ink.gold),
+                Icons.forum_outlined, tr(ref, 'tower_parley'), inkPaper),
             const SizedBox(height: 6),
             Text(tr(ref, 'tower_parley_title'),
                 style: theme.textTheme.titleMedium
@@ -210,27 +211,24 @@ class TowerParleyCard extends ConsumerWidget {
         const SizedBox(height: 10),
         if (oathPass)
           Row(children: [
-            Icon(Icons.verified_outlined, size: IconSize.s16, color: ink.heal),
+            const Icon(Icons.verified_outlined,
+                size: IconSize.s16, color: inkPaper),
             const SizedBox(width: 8),
             Expanded(
                 child: Text(tr(ref, 'tower_parley_sworn'),
                     key: const Key('tower_parley_sworn'),
                     style:
-                        theme.textTheme.bodyMedium?.copyWith(color: ink.heal))),
+                        theme.textTheme.bodyMedium?.copyWith(color: inkPaper))),
           ])
         else ...[
           Row(children: [
             Text('${(chance * 100).round()}%',
                 key: const Key('tower_parley_chance'),
                 style:
-                    theme.textTheme.headlineSmall?.copyWith(color: ink.gold)),
+                    theme.textTheme.headlineSmall?.copyWith(color: inkPaper)),
             const SizedBox(width: 10),
             Expanded(
-              child: ClipRRect(
-                borderRadius: BorderRadius.circular(2),
-                child: LinearProgressIndicator(
-                    value: chance, minHeight: 8, color: ink.heal),
-              ),
+              child: InkBar(value: chance, height: 8),
             ),
           ]),
           Text(
@@ -239,10 +237,10 @@ class TowerParleyCard extends ConsumerWidget {
               style: theme.textTheme.bodySmall),
           TowerEventOutcome(
               Icons.check_circle_outline,
-              ink.heal,
+              inkPaper,
               tr(ref, 'tower_parley_pass'),
               _sub(ref, 'tower_parley_pass_text', {'n': landsOn})),
-          TowerEventOutcome(Icons.sports_mma, ink.blood,
+          TowerEventOutcome(Icons.sports_mma, inkRed,
               tr(ref, 'tower_parley_fail'), tr(ref, 'tower_parley_fail_text')),
         ],
         const SizedBox(height: 8),
@@ -317,7 +315,6 @@ class TowerMerchantRoom extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final theme = Theme.of(context);
-    final ink = InkColors.of(context);
     final faction = clanId == null ? null : ref.watch(factionsProvider)[clanId];
     return Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
       InkPanel(
@@ -328,7 +325,7 @@ class TowerMerchantRoom extends ConsumerWidget {
             figure: const TowerNpcFigure('chandler'),
             children: [
               TowerEventTag(Icons.storefront_outlined,
-                  tr(ref, 'tower_merchant'), ink.gold),
+                  tr(ref, 'tower_merchant'), inkPaper),
               const SizedBox(height: 6),
               Text(tr(ref, 'tower_merchant_title'),
                   style: theme.textTheme.titleMedium
@@ -340,12 +337,12 @@ class TowerMerchantRoom extends ConsumerWidget {
           ),
           const SizedBox(height: 10),
           InkChip(_sub(ref, 'tower_merchant_wallet', {'n': wallet}),
-              color: ink.gold),
+              color: inkPaper),
           const SizedBox(height: 6),
           // The half price: a muted line for a climber who is not sworn to
           // the clan, the green chip for one who is.
           if (discount)
-            InkChip(tr(ref, 'tower_merchant_sworn'), color: ink.heal)
+            InkChip(tr(ref, 'tower_merchant_sworn'), color: inkPaper)
           else if (faction != null)
             Text(
                 _sub(ref, 'tower_merchant_half_price',
@@ -363,7 +360,7 @@ class TowerMerchantRoom extends ConsumerWidget {
             key: Key('tower_stall_${item.id}'),
             dim: item.bought,
             child: Row(children: [
-              Icon(item.icon, size: IconSize.s32, color: ink.gold),
+              Icon(item.icon, size: IconSize.s32, color: inkPaper),
               const SizedBox(width: 10),
               Expanded(
                 child: Column(
@@ -389,8 +386,8 @@ class TowerMerchantRoom extends ConsumerWidget {
                         {'n': item.price}),
                     style: theme.textTheme.labelLarge?.copyWith(
                         color: item.affordable || item.bought
-                            ? ink.gold
-                            : ink.blood)),
+                            ? inkPaper
+                            : inkRed)),
                 const SizedBox(height: 4),
                 // A Buy you cannot pay for is switched off and dimmed, like a
                 // bought one.
@@ -448,7 +445,6 @@ class TowerBargainCard extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final theme = Theme.of(context);
-    final ink = InkColors.of(context);
     return InkPanel(
       key: const Key('tower_bargain'),
       lit: true,
@@ -456,7 +452,7 @@ class TowerBargainCard extends ConsumerWidget {
         _Head(
           figure: const TowerNpcFigure('clerk'),
           children: [
-            TowerEventTag(Icons.balance, tr(ref, 'tower_bargain'), ink.gold),
+            TowerEventTag(Icons.balance, tr(ref, 'tower_bargain'), inkPaper),
             const SizedBox(height: 6),
             Text(tr(ref, 'tower_bargain_title'),
                 style: theme.textTheme.titleMedium
@@ -468,13 +464,13 @@ class TowerBargainCard extends ConsumerWidget {
         ),
         TowerEventOutcome(
             Icons.north,
-            ink.gold,
+            inkPaper,
             tr(ref, 'tower_bargain_gain'),
             _sub(ref, 'tower_bargain_gain_text',
                 {'stat': tr(ref, '${stat}_label').toLowerCase()})),
         TowerEventOutcome(
             Icons.favorite_border,
-            ink.blood,
+            inkRed,
             tr(ref, 'tower_bargain_cost'),
             _sub(ref, 'tower_bargain_cost_text', {'n': maxHealthCost})),
         if (onAccept != null || onRefuse != null) ...[

@@ -412,10 +412,18 @@ class Suitor {
 /// The offer on the table: drawn once for its [ticket] and kept until a
 /// suitor is taken, so closing the app never loses or redraws it.
 class ClanOffer {
-  const ClanOffer({required this.ticket, required this.suitors});
+  const ClanOffer({
+    required this.ticket,
+    required this.suitors,
+    this.solo = false,
+  });
 
   final OfferTicket ticket;
   final List<Suitor> suitors;
+
+  /// A specialisation or a Sworn boon offered alone (Wave 1): its one
+  /// suitor is taken, or declined for the usual cards ([declinedOffer]).
+  final bool solo;
 
   Suitor? suitorOf(String factionId) =>
       suitors.where((s) => s.factionId == factionId).firstOrNull;
@@ -423,6 +431,7 @@ class ClanOffer {
   Map<String, dynamic> toJson() => {
         'ticket': ticket.toJson(),
         'suitors': [for (final s in suitors) s.toJson()],
+        if (solo) 'solo': true,
       };
 
   static ClanOffer? tryParse(Object? raw) {
@@ -438,6 +447,7 @@ class ClanOffer {
           ? OfferTicket.fromJson(ticket.cast<String, dynamic>())
           : const OfferTicket(source: OfferSource.level),
       suitors: suitors,
+      solo: raw['solo'] == true && suitors.length == 1,
     );
   }
 
@@ -445,12 +455,13 @@ class ClanOffer {
   bool operator ==(Object other) =>
       other is ClanOffer &&
       other.ticket == ticket &&
+      other.solo == solo &&
       other.suitors.length == suitors.length &&
       [for (var i = 0; i < suitors.length; i++) other.suitors[i] == suitors[i]]
           .every((same) => same);
 
   @override
-  int get hashCode => Object.hash(ticket, Object.hashAll(suitors));
+  int get hashCode => Object.hash(ticket, Object.hashAll(suitors), solo);
 }
 
 /// Offers an old save is owed: its unspent skill points, its perk picks
@@ -1083,7 +1094,8 @@ Map<GiftKind, int> _giftKinds(
   final skillOptions = offerableSkillsFor(factionId, c, tierBonus: bonus);
   final accords = accordsFor(factionId, c);
   return {
-    if (swornBoonDue(factionId, c)) GiftKind.sworn: 1,
+    if (swornBoonDue(factionId, c) && !c.isBanned(GiftKind.sworn, factionId))
+      GiftKind.sworn: 1,
     if (offerableSpecsFor(factionId, c).isNotEmpty) GiftKind.spec: 1,
     if (offerableDieFor(factionId, c) != null) GiftKind.die: 1,
     if (skillOptions.isNotEmpty || accords.isNotEmpty)
@@ -1519,6 +1531,10 @@ Suitor? drawHomeSuitor(
 ///   fewer than three factions can come.
 /// Null when nobody at all can come.
 ///
+/// - **Alone** (Wave 1, [solo]): a draw holding a Sworn boon, else a
+///   specialisation, deals that card alone ([ClanOffer.solo]): taken, or
+///   declined for the usual cards ([declinedOffer]). Never risky, no
+///   fourth card.
 /// [riskyRandom] draws the risky card (risky_gifts.dart) instead of
 /// [random] when given: the simulator keeps it apart so the rest of the
 /// draw is the one it would be without the Parley Tent.
@@ -1527,6 +1543,7 @@ ClanOffer? drawOffer(
   OfferContext c,
   Random random, {
   Random? riskyRandom,
+  bool solo = true,
 }) {
   final eligible = eligibleSuitors(c);
   final suitors = <Suitor>[];
@@ -1618,6 +1635,13 @@ ClanOffer? drawOffer(
       ),
     );
   }
+  // A Sworn boon, else a specialisation, comes alone.
+  if (solo) {
+    final alone = soloSuitorOf(suitors);
+    if (alone != null) {
+      return ClanOffer(ticket: ticket, suitors: [alone], solo: true);
+    }
+  }
   // The dead clan: "Your own hand", a fourth card (see ownHandComes).
   final hand = c.data.openHand;
   if (hand != null &&
@@ -1632,6 +1656,51 @@ ClanOffer? drawOffer(
     _makeOneRisky(suitors, c, riskyRandom ?? random, skip: {forced, homeSeat});
   }
   return ClanOffer(ticket: ticket, suitors: suitors);
+}
+
+/// The card of [suitors] that comes alone (Wave 1): the first Sworn boon,
+/// else the first specialisation; null when there is neither.
+Suitor? soloSuitorOf(List<Suitor> suitors) =>
+    suitors.where((s) => s.gift.kind == GiftKind.sworn).firstOrNull ??
+    suitors.where((s) => s.gift.kind == GiftKind.spec).firstOrNull;
+
+/// The usual cards dealt when the gift alone on [offer] is declined ("Not
+/// now"): the same ticket drawn again without that gift and never alone.
+/// The gift is warded for this draw only, so it may come in a later offer.
+/// Should a clan with nothing else to give still bring it, that card goes
+/// to another faction, or is left out. Null when [offer] is not alone or
+/// nobody else can come (the gift stays on the table).
+ClanOffer? declinedOffer(ClanOffer offer, OfferContext c, Random random) {
+  if (!offer.solo || offer.suitors.isEmpty) return null;
+  final gift = offer.suitors.first.gift;
+  bool isDeclined(Suitor s) => s.gift.kind == gift.kind && s.gift.id == gift.id;
+  final warded = c.withBans({...c.bannedGifts, '${gift.kind.name}:${gift.id}'});
+  final next = drawOffer(offer.ticket, warded, random, solo: false);
+  if (next == null) return null;
+  if (!next.suitors.any(isDeclined)) return next;
+  final taken = {for (final s in next.suitors) s.factionId};
+  final suitors = <Suitor>[];
+  for (final s in next.suitors) {
+    if (!isDeclined(s)) {
+      suitors.add(s);
+      continue;
+    }
+    // Another faction takes the place, drawn evenly from those left.
+    final pool = [
+      for (final id in eligibleSuitors(warded))
+        if (!taken.contains(id)) id,
+    ]..shuffle(random);
+    for (final id in pool) {
+      final other = drawSuitor(id, warded, random);
+      if (other != null && !isDeclined(other)) {
+        suitors.add(other);
+        taken.add(id);
+        break;
+      }
+    }
+  }
+  if (suitors.isEmpty) return null;
+  return ClanOffer(ticket: next.ticket, suitors: suitors);
 }
 
 /// Whether [suitor] may be made risky in [c] (risky_gifts.dart's

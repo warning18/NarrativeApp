@@ -3,6 +3,8 @@
 // icon in one colour, a corner number for the turns left or the value, and a
 // pop-in that explains it on a tap. Drawn in code: no image to ship.
 import 'package:flutter/material.dart';
+import '../screens/tower/ink/ink_palette.dart';
+import '../screens/tower/tower_look.dart' show TowerPanelStyle;
 import '../theme/palette.dart';
 
 /// What an icon can stand for.
@@ -385,6 +387,15 @@ class _EffectTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // In the Tower's ink (v1.1006) every tile is a square, paper white; red
+    // only for what is red already (a burn, a bleed, a curse).
+    final inked = TowerPanelStyle.of(context);
+    final color = inked
+        ? (this.color.r > 0.6 && this.color.g < 0.45 && this.color.b < 0.45
+            ? inkRed
+            : inkPaper)
+        : this.color;
+    final radius = inked ? 0.0 : this.radius;
     return SizedBox(
       width: size,
       height: size,
@@ -398,7 +409,11 @@ class _EffectTile extends StatelessWidget {
                 borderRadius: BorderRadius.circular(radius),
                 border: Border.all(color: color.withValues(alpha: 0.65)),
               ),
-              child: child,
+              child: inked
+                  ? ColorFiltered(
+                      colorFilter: ColorFilter.mode(color, BlendMode.srcATop),
+                      child: child)
+                  : child,
             ),
           ),
           if (badge != null)

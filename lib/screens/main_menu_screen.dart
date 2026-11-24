@@ -16,12 +16,14 @@ import '../providers/player_session_provider.dart';
 import '../providers/save_game_provider.dart';
 import '../providers/story_providers.dart';
 import '../widgets/save_slots_sheet.dart';
-import '../widgets/moments.dart';
 import '../widgets/pixel_banner.dart';
 import '../widgets/wind_banner.dart';
 import 'home_shell.dart';
 import 'intro_screen.dart';
 import 'settings_screen.dart';
+import 'tower/ink/ink_menu.dart';
+import 'tower/ink/ink_palette.dart';
+import 'tower/ink/tower_menu_button.dart';
 import 'tower/tower_start_screen.dart';
 import '../widgets/ink_confirm.dart';
 
@@ -118,7 +120,6 @@ class _MainMenuScreenState extends ConsumerState<MainMenuScreen> {
     final ironman = ref.watch(permadeathEnabledProvider);
     final lang = ref.watch(appLanguageProvider);
     final theme = Theme.of(context);
-    final scheme = theme.colorScheme;
     final inProgress = hasGameInProgress(session, story);
 
     final chapter = chapterOfNode(story.currentNodeId);
@@ -141,63 +142,25 @@ class _MainMenuScreenState extends ConsumerState<MainMenuScreen> {
       VoidCallback? onPressed,
       bool primary = false,
     }) {
-      final child = Row(
-        children: [
-          Icon(icon),
-          const SizedBox(width: 16),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Text(label,
-                    style: theme.textTheme.titleMedium?.copyWith(
-                        fontWeight: primary ? FontWeight.w600 : null,
-                        color: primary ? scheme.onPrimary : null)),
-                if (detail != null && detail.isNotEmpty)
-                  Text(
-                    detail,
-                    style: theme.textTheme.bodySmall?.copyWith(
-                      color: primary
-                          ? scheme.onPrimary.withValues(alpha: 0.85)
-                          : scheme.onSurfaceVariant,
-                    ),
-                  ),
-              ],
-            ),
-          ),
-        ],
-      );
-      final style = ButtonStyle(
-        padding: const WidgetStatePropertyAll(
-            EdgeInsets.symmetric(horizontal: 20, vertical: 14)),
-        shape: WidgetStatePropertyAll(
-            RoundedRectangleBorder(borderRadius: BorderRadius.circular(4))),
-      );
-      return Padding(
-        padding: const EdgeInsets.only(bottom: 10),
-        child: primary
-            ? FilledButton(
-                key: key, onPressed: onPressed, style: style, child: child)
-            : OutlinedButton(
-                key: key,
-                onPressed: onPressed,
-                style: style.copyWith(
-                  backgroundColor:
-                      WidgetStatePropertyAll(scheme.surfaceContainer),
-                ),
-                child: child),
+      // In ink (v1.1009): a red block for the one that goes on, the wide paper
+      // frame for the rest (ink_menu.dart).
+      return InkMenuItem(
+        itemKey: key,
+        icon: icon,
+        label: label,
+        detail: detail,
+        onPressed: onPressed,
+        primary: primary,
       );
     }
 
     return Scaffold(
+      backgroundColor: inkBlack,
       body: ColoredBox(
-        color: scheme.surface,
+        color: inkBlack,
         child: SafeArea(
           child: Stack(
             children: [
-              // The Shroud drifting behind the title.
-              const Positioned.fill(child: ShroudDrift()),
               Positioned(
                 top: 4,
                 right: 4,
@@ -237,7 +200,7 @@ class _MainMenuScreenState extends ConsumerState<MainMenuScreen> {
                           textAlign: TextAlign.center,
                           style: theme.textTheme.displaySmall?.copyWith(
                             height: 1,
-                            color: scheme.onSurface,
+                            color: inkPaper,
                           ),
                         ),
                         const SizedBox(height: 8),
@@ -246,7 +209,7 @@ class _MainMenuScreenState extends ConsumerState<MainMenuScreen> {
                           textAlign: TextAlign.center,
                           style: theme.textTheme.bodyLarge?.copyWith(
                             fontStyle: FontStyle.italic,
-                            color: scheme.onSurfaceVariant,
+                            color: inkGrey,
                           ),
                         ),
                         const SizedBox(height: 32),
@@ -315,9 +278,9 @@ class _MainMenuScreenState extends ConsumerState<MainMenuScreen> {
                         ),
                         // The Tower (v1.850): open to everyone, below the other
                         // buttons so the story's keep their places.
-                        item(
-                          key: const Key('menu_tower'),
-                          icon: Icons.fort_outlined,
+                        // In ink (v1.1004): the Tower's own look, this button only.
+                        TowerMenuButton(
+                          buttonKey: const Key('menu_tower'),
                           label: tr(ref, 'tower_menu'),
                           detail: tr(ref, 'tower_menu_sub'),
                           onPressed: () => Navigator.of(context).push(
@@ -330,7 +293,7 @@ class _MainMenuScreenState extends ConsumerState<MainMenuScreen> {
                           'v${AppInfo.version}',
                           textAlign: TextAlign.center,
                           style: theme.textTheme.labelSmall
-                              ?.copyWith(color: scheme.onSurfaceVariant),
+                              ?.copyWith(color: inkGrey),
                         ),
                       ],
                     ),
@@ -414,6 +377,15 @@ class _BannerMark extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return WindBanner(id: titleBannerId, scale: scale);
+    // On the ink ground the dark cloth needs a pale glow to read: a still
+    // radial behind it, the cloth sways inside (v1.1009).
+    return DecoratedBox(
+      key: const Key('menu_banner_glow'),
+      decoration: BoxDecoration(
+        gradient: RadialGradient(
+            radius: 0.62, colors: [inkSlate, inkBlack.withValues(alpha: 0)]),
+      ),
+      child: WindBanner(id: titleBannerId, scale: scale),
+    );
   }
 }
