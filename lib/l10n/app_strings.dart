@@ -13883,8 +13883,7 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   },
   'offer_solo_note': {
     AppLanguage.en: 'Not now is not never. The gift may come again later.',
-    AppLanguage.fr:
-        'Pas maintenant n’est pas jamais. Le don peut revenir plus tard.',
+    AppLanguage.fr: 'Plus tard n’est pas jamais. Le don pourra revenir.',
   },
   'offer_no_standing': {
     AppLanguage.en: 'No faction: standing doesn’t move.',
