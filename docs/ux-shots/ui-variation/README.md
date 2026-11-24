@@ -62,3 +62,45 @@ Art for weather (optional, the code version works as is):
 | Sand drift in 2 to 3 shapes | S |
 | Drip and drop sprites | S |
 | Soot / ember specks sheet | S |
+
+## Accumulation (second round: snow that builds, a tap that knocks it off)
+
+Pictures in `accumulation/`: `snow-accumulation.png`, `sand-accumulation.png`,
+`ash-accumulation.png`, `rain-accumulation.png` (a button and a panel at 0, 10, 30 and 60 s),
+`snow-knock.png` (before, the tap, 0.2 s, 0.5 s, 12 s later) and `snow-accumulation.gif`
+(360 wide, 8 s: 60 s of snow at x7.5 and a tap at 5.6 s). Made by
+`test/ux_weather_accumulation_test.dart`.
+
+What changed from the first round: the cap is a soft irregular drift (a profile thin at the
+ends and thickest toward the windward side, lumps from a few seeded sines, never a repeating
+scallop), a lit top over a shaded under-edge, a few loose flakes on top. Sand is the same drift
+with ripple lines; ash is a dark drift with a few embers.
+
+How it would work (all code):
+
+- Level: 0 to 1 and `level = seconds on screen / secondsToHeavy(fall)`, with
+  `secondsToHeavy = 30 / fall` (fall clamped to 0.3 to 1: 30 s in the hardest fall, 100 s in a
+  light one). The cap height is `12 px x level` at most, so it stops at its maximum and never
+  reaches the label's room (the label sits inside the box, the cap on its top edge).
+- One ticker per screen, not per button: a `WeatherClock` (an InheritedNotifier above the
+  screen, one `Ticker` that advances a `ValueNotifier<double>` for seconds on screen). Every cap
+  is a `CustomPaint(repaint: clock)` so nothing rebuilds. The level is quantised to 1/32 so a
+  cap re-lays its path only about 32 times between nothing and heavy, then not at all. A path
+  is about 140 points: a tenth of a millisecond.
+- A tap: that piece starts a 450 ms `AnimationController` (only alive while it knocks): the cap
+  drops about 20 px fading, a puff of flakes (size by the level it had) flies off, then the
+  piece's own level restarts from zero at the screen's clock (it stores `knockedAt`).
+- Leaving and coming back: a `weatherAccumProvider` (Riverpod, in memory) keeps
+  `(kind, level, savedAt)` per screen; on return `level -= away / 120 s`, floored at 0, so it is
+  roughly where it was and never resets on a rebuild or a frame.
+- Reduce motion (`MediaQuery.disableAnimations`): a fixed medium cap (level 0.5), no growth, no
+  ticker, no falling; a tap does nothing visible.
+- Rain: wetness builds over about 8 s at full fall (the piece darkens, a glossy streak fades
+  in), drips start once it is wet through (wetness above 0.6) and lengthen. In the build only
+  the fill darkens, not the label (here the label dims with the piece; that is the mock).
+- Weight: one ticker per screen, caps repaint only on a quantised level change, so an idle screen
+  in full snow costs nothing after the cap is heavy.
+
+Art for the caps (the code shape stands in until then; sizes as before): 3 to 4 painted snow
+cap profiles in two widths (S), 2 to 3 sand drifts (S), 2 ash drifts (S), a puff sprite strip
+for the knock (S).
