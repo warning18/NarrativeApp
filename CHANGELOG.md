@@ -8,7 +8,7 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
-## [1.1009.0+1045]
+## [1.1008.0+1044]
 
 - The home menu is in ink. The ground is near-black, the title in paper, the tagline in grey; the item that goes on (Continue, or New Game when there is nothing to continue) is a red block leaning like the brush lettering, the others (New Game after Continue, New Game+, Load, Settings, Edit Mode, The Tower) are paper panels in Art's wide frame with dark lettering; a dimmed one (Load with no save) stays dimmed. The waving banner is as it was, with a still pale glow behind it so its dark cloth reads on the ink ground; the drifting Shroud dots behind the title are gone. Same keys, same taps, same order. Look only. UX (view only).
 
