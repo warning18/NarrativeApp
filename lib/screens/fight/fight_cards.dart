@@ -6,8 +6,12 @@ extension _FightCards on _FightScreenState {
 
   /// A small labelled state chip on an enemy card: winding up, staggered,
   /// rallied.
-  Widget _stateChip(IconData icon, String label, Color color,
-      {String? tooltip}) {
+  Widget _stateChip(
+    IconData icon,
+    String label,
+    Color color, {
+    String? tooltip,
+  }) {
     final chip = Container(
       padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 1),
       decoration: BoxDecoration(
@@ -20,9 +24,14 @@ extension _FightCards on _FightScreenState {
         children: [
           Icon(icon, size: IconSize.inline, color: color),
           const SizedBox(width: 2),
-          Text(label,
-              style: TextStyle(
-                  fontSize: 10, fontWeight: FontWeight.w600, color: color)),
+          Text(
+            label,
+            style: TextStyle(
+              fontSize: 10,
+              fontWeight: FontWeight.w600,
+              color: color,
+            ),
+          ),
         ],
       ),
     );
@@ -74,17 +83,19 @@ extension _FightCards on _FightScreenState {
     return [
       for (final e in known.weak)
         FightMark(
-            icon: elementIcon(e),
-            text: '×${weaknessMultiplier.round()}',
-            weak: true,
-            lit: e == picked,
-            tip: '${trFor(lang, 'weak_to_label')} ${elementLabel(e, lang)}'),
+          icon: elementIcon(e),
+          text: '×${weaknessMultiplier.round()}',
+          weak: true,
+          lit: e == picked,
+          tip: '${trFor(lang, 'weak_to_label')} ${elementLabel(e, lang)}',
+        ),
       for (final e in known.resist)
         FightMark(
-            icon: elementIcon(e),
-            text: '×½',
-            weak: false,
-            tip: '${trFor(lang, 'resists_label')} ${elementLabel(e, lang)}'),
+          icon: elementIcon(e),
+          text: '×½',
+          weak: false,
+          tip: '${trFor(lang, 'resists_label')} ${elementLabel(e, lang)}',
+        ),
     ];
   }
 
@@ -116,24 +127,31 @@ extension _FightCards on _FightScreenState {
   /// long press.
   Widget _buildPartyHp(_PartyMember member, Map<String, dynamic> items) {
     final incoming = _incomingOn(member, items);
-    final bar =
-        _buildHpBar(member.currentHealth, member.maxHealth, pending: incoming);
+    final bar = _buildHpBar(
+      member.currentHealth,
+      member.maxHealth,
+      pending: incoming,
+    );
     if (incoming <= 0) return bar;
     final colorScheme = Theme.of(context).colorScheme;
     return Tooltip(
-      message: tr(ref, 'incoming_tip')
-          .replaceAll('{name}', member.displayName)
-          .replaceAll('{n}', '$incoming'),
+      message: tr(
+        ref,
+        'incoming_tip',
+      ).replaceAll('{name}', member.displayName).replaceAll('{n}', '$incoming'),
       child: Row(
         key: Key('incoming_${member.id}'),
         children: [
           Expanded(child: bar),
           const SizedBox(width: 4),
-          Text('−$incoming',
-              style: TextStyle(
-                  fontSize: 11,
-                  fontWeight: FontWeight.w700,
-                  color: colorScheme.error)),
+          Text(
+            '−$incoming',
+            style: TextStyle(
+              fontSize: 11,
+              fontWeight: FontWeight.w700,
+              color: colorScheme.error,
+            ),
+          ),
         ],
       ),
     );
@@ -143,11 +161,14 @@ extension _FightCards on _FightScreenState {
   /// With [pending] damage on the way (the dice aimed at an enemy, see
   /// [_previewRoll]) the slice about to go is painted [_previewColor] and
   /// the numbers read "now → after / max".
-  Widget _buildHpBar(int current, int maxValue,
-      {double height = 14,
-      int pending = 0,
-      bool executeLine = false,
-      bool foe = false}) {
+  Widget _buildHpBar(
+    int current,
+    int maxValue, {
+    double height = 14,
+    int pending = 0,
+    bool executeLine = false,
+    bool foe = false,
+  }) {
     // The Tower's ink: a thin bar with no numbers (they are in the sheet).
     final thin = TowerPanelStyle.of(context);
     if (thin) height = 8;
@@ -203,11 +224,13 @@ extension _FightCards on _FightScreenState {
                       bottom: 0,
                       child: Container(
                         decoration: BoxDecoration(
-                          color: (inked ? inkGrey : _previewColor)
-                              .withValues(alpha: 0.9),
+                          color: (inked ? inkGrey : _previewColor).withValues(
+                            alpha: 0.9,
+                          ),
                           border: Border(
                             left: BorderSide(
-                                color: Colors.white.withValues(alpha: 0.9)),
+                              color: Colors.white.withValues(alpha: 0.9),
+                            ),
                           ),
                         ),
                       ),
@@ -221,7 +244,8 @@ extension _FightCards on _FightScreenState {
                       top: 0,
                       bottom: 0,
                       child: ColoredBox(
-                          color: Colors.white.withValues(alpha: 0.85)),
+                        color: Colors.white.withValues(alpha: 0.85),
+                      ),
                     ),
                 ],
               ),
@@ -247,8 +271,12 @@ extension _FightCards on _FightScreenState {
 
   /// Overlays a floating "-N" on [child] for the combatant that was just
   /// hit -- fading with the screen shake for the party, static for an enemy.
-  Widget _withDamagePopup(Widget child,
-      {required bool show, required int amount, bool fade = false}) {
+  Widget _withDamagePopup(
+    Widget child, {
+    required bool show,
+    required int amount,
+    bool fade = false,
+  }) {
     if (!show) return child;
     final label = Text(
       '-$amount',
@@ -291,24 +319,32 @@ extension _FightCards on _FightScreenState {
         ? _expectedHit(
             enemy,
             ref.read(localizedDbProvider(skillsSchema)).value ?? const {},
-            ref.read(localizedDbProvider(itemsSchema)).value ?? const {})
+            ref.read(localizedDbProvider(itemsSchema)).value ?? const {},
+          )
         : null;
     final textStyle = TextStyle(
-        fontSize: 10,
-        color: colorScheme.onErrorContainer,
-        fontWeight: FontWeight.w600);
+      fontSize: 10,
+      color: colorScheme.onErrorContainer,
+      fontWeight: FontWeight.w600,
+    );
 
     Widget content;
     if (enemy.staggered) {
       content = Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Icon(Icons.sync_problem,
-              size: IconSize.inline, color: colorScheme.onErrorContainer),
+          Icon(
+            Icons.sync_problem,
+            size: IconSize.inline,
+            color: colorScheme.onErrorContainer,
+          ),
           const SizedBox(width: 4),
           Flexible(
-            child: Text(tr(ref, 'intent_staggered_label'),
-                style: textStyle, maxLines: 2),
+            child: Text(
+              tr(ref, 'intent_staggered_label'),
+              style: textStyle,
+              maxLines: 2,
+            ),
           ),
         ],
       );
@@ -319,12 +355,18 @@ extension _FightCards on _FightScreenState {
       content = Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Icon(Icons.warning_amber,
-              size: IconSize.inline, color: colorScheme.onErrorContainer),
+          Icon(
+            Icons.warning_amber,
+            size: IconSize.inline,
+            color: colorScheme.onErrorContainer,
+          ),
           const SizedBox(width: 4),
           Flexible(
-            child: Text(tr(ref, 'intent_charged_label'),
-                style: textStyle, maxLines: 2),
+            child: Text(
+              tr(ref, 'intent_charged_label'),
+              style: textStyle,
+              maxLines: 2,
+            ),
           ),
         ],
       );
@@ -332,16 +374,22 @@ extension _FightCards on _FightScreenState {
       content = Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Icon(Icons.help_outline,
-              size: IconSize.inline, color: colorScheme.onErrorContainer),
+          Icon(
+            Icons.help_outline,
+            size: IconSize.inline,
+            color: colorScheme.onErrorContainer,
+          ),
           const SizedBox(width: 4),
           Flexible(
             child: Text(
-                tr(ref,
-                    compact ? 'intent_unknown_short' : 'intent_unknown_label'),
-                maxLines: 1,
-                overflow: TextOverflow.ellipsis,
-                style: textStyle),
+              tr(
+                ref,
+                compact ? 'intent_unknown_short' : 'intent_unknown_label',
+              ),
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+              style: textStyle,
+            ),
           ),
         ],
       );
@@ -384,47 +432,63 @@ extension _FightCards on _FightScreenState {
         children: [
           Row(
             children: [
-              Icon(showCategory ? categoryIcon : Icons.visibility,
-                  size: IconSize.inline, color: colorScheme.onErrorContainer),
+              Icon(
+                showCategory ? categoryIcon : Icons.visibility,
+                size: IconSize.inline,
+                color: colorScheme.onErrorContainer,
+              ),
               if (swings && tier == TelegraphTier.full && hit != null) ...[
                 const SizedBox(width: 2),
                 // What lands after armor, resist and block, then (dimmed)
                 // what the blow carries before them.
                 Text('${hit.net}', style: textStyle),
                 if (hit.net != hit.raw)
-                  Text('/${hit.raw}',
-                      style: textStyle.copyWith(
-                          fontWeight: FontWeight.w400,
-                          color: colorScheme.onErrorContainer
-                              .withValues(alpha: 0.7))),
+                  Text(
+                    '/${hit.raw}',
+                    style: textStyle.copyWith(
+                      fontWeight: FontWeight.w400,
+                      color: colorScheme.onErrorContainer.withValues(
+                        alpha: 0.7,
+                      ),
+                    ),
+                  ),
                 if (hit.net == 0)
                   Padding(
                     padding: const EdgeInsets.only(left: 2),
-                    child: Icon(Icons.shield,
-                        size: IconSize.inline,
-                        color: colorScheme.onErrorContainer),
+                    child: Icon(
+                      Icons.shield,
+                      size: IconSize.inline,
+                      color: colorScheme.onErrorContainer,
+                    ),
                   ),
               ],
               const SizedBox(width: 3),
-              Icon(Icons.arrow_forward,
-                  size: IconSize.inline, color: colorScheme.onErrorContainer),
+              Icon(
+                Icons.arrow_forward,
+                size: IconSize.inline,
+                color: colorScheme.onErrorContainer,
+              ),
               const SizedBox(width: 3),
               Expanded(
                 child: Text(
-                    hitsParty
-                        ? targetName
-                        : showCategory
-                            ? stanceLabel
-                            : enemy.displayName,
-                    style: textStyle,
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis),
+                  hitsParty
+                      ? targetName
+                      : showCategory
+                          ? stanceLabel
+                          : enemy.displayName,
+                  style: textStyle,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                ),
               ),
               if (swings &&
                   tier == TelegraphTier.full &&
                   pending.move.element != 'None')
-                Icon(elementIcon(pending.move.element),
-                    size: IconSize.inline, color: colorScheme.onErrorContainer),
+                Icon(
+                  elementIcon(pending.move.element),
+                  size: IconSize.inline,
+                  color: colorScheme.onErrorContainer,
+                ),
             ],
           ),
           if (tier == TelegraphTier.full && !compact)
@@ -433,9 +497,10 @@ extension _FightCards on _FightScreenState {
               maxLines: 2,
               overflow: TextOverflow.ellipsis,
               style: TextStyle(
-                  fontSize: 9,
-                  fontStyle: FontStyle.italic,
-                  color: colorScheme.onErrorContainer),
+                fontSize: 9,
+                fontStyle: FontStyle.italic,
+                color: colorScheme.onErrorContainer,
+              ),
             ),
         ],
       );
@@ -464,8 +529,11 @@ extension _FightCards on _FightScreenState {
           Row(
             key: Key('intent_then_${enemy.key}'),
             children: [
-              Icon(Icons.double_arrow,
-                  size: IconSize.inline, color: colorScheme.onErrorContainer),
+              Icon(
+                Icons.double_arrow,
+                size: IconSize.inline,
+                color: colorScheme.onErrorContainer,
+              ),
               const SizedBox(width: 3),
               Expanded(
                 child: Text(
@@ -492,12 +560,15 @@ extension _FightCards on _FightScreenState {
     );
   }
 
-  Widget _telegraphChip(IconData icon, String label,
-      {String? tip,
-      String? badge,
-      Color? color,
-      String subtitle = '',
-      Key? key}) {
+  Widget _telegraphChip(
+    IconData icon,
+    String label, {
+    String? tip,
+    String? badge,
+    Color? color,
+    String subtitle = '',
+    Key? key,
+  }) {
     final scheme = Theme.of(context).colorScheme;
     return FightStatusTile(
       key: key,
@@ -590,8 +661,10 @@ extension _FightCards on _FightScreenState {
                     EnemyPixelIcon(enemy.enemyId, size: IconSize.s48),
                     const SizedBox(width: 12),
                     Expanded(
-                      child: Text(enemy.displayName,
-                          style: theme.textTheme.titleMedium),
+                      child: Text(
+                        enemy.displayName,
+                        style: theme.textTheme.titleMedium,
+                      ),
                     ),
                   ],
                 ),
@@ -642,13 +715,16 @@ extension _FightCards on _FightScreenState {
                             '${enemy.phaseIndex}/${enemy.phases.length} — '
                             '${enemy.currentPhase!.nameFor(lang)}: '
                             '${enemy.currentPhase!.messageFor(lang)}',
-                    style: theme.textTheme.bodySmall
-                        ?.copyWith(color: Palette.arcane),
+                    style: theme.textTheme.bodySmall?.copyWith(
+                      color: Palette.arcane,
+                    ),
                   ),
                 ],
                 const SizedBox(height: 10),
-                Text(trFor(lang, 'intent_label'),
-                    style: theme.textTheme.titleSmall),
+                Text(
+                  trFor(lang, 'intent_label'),
+                  style: theme.textTheme.titleSmall,
+                ),
                 const SizedBox(height: 4),
                 Text(intentText, style: theme.textTheme.bodySmall),
               ],

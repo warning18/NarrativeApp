@@ -33,7 +33,10 @@ final scenePresentationProvider = Provider<ScenePresentation?>((ref) {
   final story = ref.watch(storyDataProvider).value;
   if (stops == null || story == null) return null;
   return ScenePresentation.of(
-      story: story, geography: ref.watch(geographyProvider), stops: stops);
+    story: story,
+    geography: ref.watch(geographyProvider),
+    stops: stops,
+  );
 });
 
 /// The last one-tap return to a town hub (see FlowReturnToHub): the hub's
@@ -42,4 +45,5 @@ final scenePresentationProvider = Provider<ScenePresentation?>((ref) {
 /// `<place>`" notice; whoever shows the notice clears it (null).
 final lastReturnProvider =
     StateProvider<({String hubNodeId, String hubStop, String fromNodeId})?>(
-        (ref) => null);
+  (ref) => null,
+);

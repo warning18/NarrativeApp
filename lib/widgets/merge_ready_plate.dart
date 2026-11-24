@@ -47,14 +47,19 @@ class MergeReadyPlate extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final lang = ref.watch(appLanguageProvider);
     final known = ref.watch(
-        playerSessionProvider.select((s) => s.unlockedSkillIds.toList()));
+      playerSessionProvider.select((s) => s.unlockedSkillIds.toList()),
+    );
     final built = skillCraftOpen(
-        ref.watch(playerSessionProvider.select((s) => s.builtHouseIds)));
+      ref.watch(playerSessionProvider.select((s) => s.builtHouseIds)),
+    );
     final merges = ref.watch(localizedDbProvider(skillMergesSchema)).value ??
         const <String, dynamic>{};
     final ready = [
       for (final recipe in craftRecipesFor(
-          merges: merges, unlockedSkillIds: known, language: lang))
+        merges: merges,
+        unlockedSkillIds: known,
+        language: lang,
+      ))
         if (recipe.ready) recipe,
     ];
     if (ready.isEmpty) return const SizedBox.shrink();
@@ -75,9 +80,10 @@ class MergeReadyPlate extends ConsumerWidget {
           decoration: ShapeDecoration(
             color: theme.colorScheme.surface,
             shape: PixelChipBorder(
-                side: BorderSide(color: ink.seam, width: 1.5),
-                step: 2,
-                steps: 2),
+              side: BorderSide(color: ink.seam, width: 1.5),
+              step: 2,
+              steps: 2,
+            ),
           ),
           alignment: Alignment.center,
           child: SkillPixelIcon(id, size: IconSize.s32 - 6),
@@ -96,46 +102,59 @@ class MergeReadyPlate extends ConsumerWidget {
         key: const Key('merge_ready_plate'),
         title: tr(ref, 'merge_ready_title'),
         color: ink.tide,
-        lead: Icon(Icons.auto_fix_high,
-            size: IconSize.s16, color: storyInkOn(ink.tide)),
+        lead: Icon(
+          Icons.auto_fix_high,
+          size: IconSize.s16,
+          color: storyInkOn(ink.tide),
+        ),
         trail: ready.length > 1
             ? Text(
-                tr(ref, 'merge_ready_more')
-                    .replaceAll('{n}', '${ready.length - 1}'),
+                tr(
+                  ref,
+                  'merge_ready_more',
+                ).replaceAll('{n}', '${ready.length - 1}'),
                 key: const Key('merge_ready_more'),
                 style: TextStyle(
-                    fontFamily: InkFonts.system,
-                    fontSize: 10,
-                    color: storyInkOn(ink.tide)))
+                  fontFamily: InkFonts.system,
+                  fontSize: 10,
+                  color: storyInkOn(ink.tide),
+                ),
+              )
             : null,
         padding: const EdgeInsets.fromLTRB(10, 10, 10, 10),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            Row(children: [
-              icon(a.id),
-              const SizedBox(width: 6),
-              Text('+', style: theme.textTheme.titleMedium),
-              const SizedBox(width: 6),
-              icon(b.id),
-              const SizedBox(width: 8),
-              Icon(Icons.arrow_forward, size: IconSize.s16, color: ink.ash),
-              const SizedBox(width: 8),
-              // The result wears its rarity's frame.
-              StoryFrame(
-                tier: _tierOf((skills[result.id] as Map?)?['rarity']),
-                band: 0.5,
-                padding: EdgeInsets.zero,
-                child: Padding(
-                  padding: const EdgeInsets.all(3),
-                  child: SkillPixelIcon(result.id, size: IconSize.s32 - 6),
+            Row(
+              children: [
+                icon(a.id),
+                const SizedBox(width: 6),
+                Text('+', style: theme.textTheme.titleMedium),
+                const SizedBox(width: 6),
+                icon(b.id),
+                const SizedBox(width: 8),
+                Icon(Icons.arrow_forward, size: IconSize.s16, color: ink.ash),
+                const SizedBox(width: 8),
+                // The result wears its rarity's frame.
+                StoryFrame(
+                  tier: _tierOf((skills[result.id] as Map?)?['rarity']),
+                  band: 0.5,
+                  padding: EdgeInsets.zero,
+                  child: Padding(
+                    padding: const EdgeInsets.all(3),
+                    child: SkillPixelIcon(result.id, size: IconSize.s32 - 6),
+                  ),
                 ),
-              ),
-            ]),
+              ],
+            ),
             const SizedBox(height: 8),
-            Text(body,
-                style: theme.textTheme.bodyMedium
-                    ?.copyWith(fontFamily: InkFonts.prose, height: 1.4)),
+            Text(
+              body,
+              style: theme.textTheme.bodyMedium?.copyWith(
+                fontFamily: InkFonts.prose,
+                height: 1.4,
+              ),
+            ),
             const SizedBox(height: 10),
             if (built)
               FilledButton.icon(
@@ -145,12 +164,15 @@ class MergeReadyPlate extends ConsumerWidget {
                 label: Text(tr(ref, 'craft_skill_button')),
               )
             else ...[
-              Text(tr(ref, 'merge_ready_unbuilt').replaceAll('{gold}', '$cost'),
-                  key: const Key('merge_ready_unbuilt'),
-                  style: theme.textTheme.bodySmall?.copyWith(
-                      fontFamily: InkFonts.prose,
-                      fontStyle: FontStyle.italic,
-                      color: ink.ash)),
+              Text(
+                tr(ref, 'merge_ready_unbuilt').replaceAll('{gold}', '$cost'),
+                key: const Key('merge_ready_unbuilt'),
+                style: theme.textTheme.bodySmall?.copyWith(
+                  fontFamily: InkFonts.prose,
+                  fontStyle: FontStyle.italic,
+                  color: ink.ash,
+                ),
+              ),
               // The camp tab is there to go to while the party is at the camp.
               if (atCamp) ...[
                 const SizedBox(height: 8),
@@ -161,8 +183,10 @@ class MergeReadyPlate extends ConsumerWidget {
                     Navigator.of(context).maybePop();
                     ref.read(homeTabIndexProvider.notifier).state = _campTab;
                   },
-                  icon: const Icon(Icons.local_fire_department_outlined,
-                      size: IconSize.s16),
+                  icon: const Icon(
+                    Icons.local_fire_department_outlined,
+                    size: IconSize.s16,
+                  ),
                   label: Text(tr(ref, 'merge_ready_go_camp')),
                 ),
               ],

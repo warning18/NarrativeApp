@@ -53,8 +53,12 @@ String towerEndPlate({required bool won}) =>
 const double towerBackdropVeil = 0.58;
 
 class TowerBackdrop extends StatelessWidget {
-  const TowerBackdrop(
-      {super.key, required this.floor, required this.child, this.asset});
+  const TowerBackdrop({
+    super.key,
+    required this.floor,
+    required this.child,
+    this.asset,
+  });
 
   final int floor;
 

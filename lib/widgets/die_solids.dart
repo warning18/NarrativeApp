@@ -47,21 +47,24 @@ DieSolid _unit(List<Vec3> v, List<List<int>> f) {
     r = math.max(r, math.sqrt(vdot(p, p)));
   }
   return DieSolid([
-    for (final p in v) [p[0] / r, p[1] / r, p[2] / r]
+    for (final p in v) [p[0] / r, p[1] / r, p[2] / r],
   ], f);
 }
 
-DieSolid _tetra() => _unit([
-      [1, 1, 1],
-      [1, -1, -1],
-      [-1, 1, -1],
-      [-1, -1, 1],
-    ], [
-      [0, 1, 2],
-      [0, 3, 1],
-      [0, 2, 3],
-      [1, 3, 2],
-    ]);
+DieSolid _tetra() => _unit(
+      [
+        [1, 1, 1],
+        [1, -1, -1],
+        [-1, 1, -1],
+        [-1, -1, 1],
+      ],
+      [
+        [0, 1, 2],
+        [0, 3, 1],
+        [0, 2, 3],
+        [1, 3, 2],
+      ],
+    );
 
 DieSolid _octa() {
   final f = <List<int>>[];
@@ -120,22 +123,25 @@ DieSolid _icosa() {
 /// The dual: one facet for each corner of [s], through the centres of the
 /// facets that meet there (the d12 from the d20).
 DieSolid _dual(DieSolid s) {
-  final verts = [
-    for (var i = 0; i < s.faces.length; i++) vnorm(s.centre(i)),
-  ];
+  final verts = [for (var i = 0; i < s.faces.length; i++) vnorm(s.centre(i))];
   final faces = <List<int>>[];
   for (var c = 0; c < s.verts.length; c++) {
     final axis = vnorm(s.verts[c]);
     final around = [
       for (var i = 0; i < s.faces.length; i++)
-        if (s.faces[i].contains(c)) i
+        if (s.faces[i].contains(c)) i,
     ];
-    final a = vnorm(vsub(verts[around.first],
-        [for (final x in axis) x * vdot(verts[around.first], axis)]));
+    final a = vnorm(
+      vsub(verts[around.first], [
+        for (final x in axis) x * vdot(verts[around.first], axis),
+      ]),
+    );
     final b = vcross(axis, a);
-    around.sort((p, q) => math
-        .atan2(vdot(verts[p], b), vdot(verts[p], a))
-        .compareTo(math.atan2(vdot(verts[q], b), vdot(verts[q], a))));
+    around.sort(
+      (p, q) => math
+          .atan2(vdot(verts[p], b), vdot(verts[p], a))
+          .compareTo(math.atan2(vdot(verts[q], b), vdot(verts[q], a))),
+    );
     faces.add(around);
   }
   return _unit(verts, faces);
@@ -144,8 +150,11 @@ DieSolid _dual(DieSolid s) {
 /// The pentagonal trapezohedron: ten kites round two apexes.
 DieSolid _trapezohedron() {
   const a = 0.22;
-  Vec3 ring(int k) =>
-      [math.cos(k * math.pi / 5), math.sin(k * math.pi / 5), k.isEven ? a : -a];
+  Vec3 ring(int k) => [
+        math.cos(k * math.pi / 5),
+        math.sin(k * math.pi / 5),
+        k.isEven ? a : -a,
+      ];
   // The apex height that makes each kite flat: the axis meets the plane
   // through three of the ring's corners.
   final p0 = ring(0);
@@ -159,8 +168,12 @@ DieSolid _trapezohedron() {
   final f = <List<int>>[];
   for (var i = 0; i < 5; i++) {
     f.add([0, 2 + 2 * i, 2 + (2 * i + 1) % 10, 2 + (2 * i + 2) % 10]);
-    f.add(
-        [1, 2 + (2 * i + 3) % 10, 2 + (2 * i + 2) % 10, 2 + (2 * i + 1) % 10]);
+    f.add([
+      1,
+      2 + (2 * i + 3) % 10,
+      2 + (2 * i + 2) % 10,
+      2 + (2 * i + 1) % 10,
+    ]);
   }
   return _unit(v, f);
 }
@@ -173,8 +186,10 @@ DieSolid? dieSolidOf(DieShape shape) => switch (shape) {
       DieShape.d4 => _cache.putIfAbsent(shape, _tetra),
       DieShape.d8 => _cache.putIfAbsent(shape, _octa),
       DieShape.d10 => _cache.putIfAbsent(shape, _trapezohedron),
-      DieShape.d12 =>
-        _cache.putIfAbsent(shape, () => _dual(dieSolidOf(DieShape.d20)!)),
+      DieShape.d12 => _cache.putIfAbsent(
+          shape,
+          () => _dual(dieSolidOf(DieShape.d20)!),
+        ),
       DieShape.d20 => _cache.putIfAbsent(shape, _icosa),
       _ => null,
     };

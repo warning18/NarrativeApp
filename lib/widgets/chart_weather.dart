@@ -67,7 +67,9 @@ class _ChartWeatherState extends State<ChartWeather>
     with SingleTickerProviderStateMixin {
   /// The sky fades in as the chart opens (v1.208), rather than popping.
   late final AnimationController _fade = AnimationController(
-      vsync: this, duration: const Duration(milliseconds: 420));
+    vsync: this,
+    duration: const Duration(milliseconds: 420),
+  );
 
   @override
   void initState() {
@@ -169,8 +171,10 @@ class _ChartWeatherPainter extends CustomPainter {
       final j0 = (shown.top / step).floor(), j1 = (shown.bottom / step).ceil();
       for (var j = j0; j <= j1; j++) {
         for (var i = i0; i <= i1; i++) {
-          final p = Offset((i + 0.5) * step + _jitter(i, j) * step * 0.4,
-              (j + 0.5) * step + _jitter(j, i) * step * 0.4);
+          final p = Offset(
+            (i + 0.5) * step + _jitter(i, j) * step * 0.4,
+            (j + 0.5) * step + _jitter(j, i) * step * 0.4,
+          );
           if (!ChartClimate.bounds.contains(p) || !vis(p)) continue;
           final q = at(p);
           if (g != null && !whole.inflate(step).contains(q)) continue;
@@ -205,34 +209,37 @@ class _ChartWeatherPainter extends CustomPainter {
     // land first, offset toward the lee.
     final sh = step * 1.05;
     canvas.saveLayer(
-        whole,
-        Paint()
-          ..imageFilter = ui.ImageFilter.blur(sigmaX: sigma, sigmaY: sigma));
+      whole,
+      Paint()..imageFilter = ui.ImageFilter.blur(sigmaX: sigma, sigmaY: sigma),
+    );
     for (final (p, q, w) in cells) {
       if (w.cloud < 0.3) continue;
       final f = facing(p);
       canvas.drawRect(
-          Rect.fromCenter(
-              center: q + Offset(step * 0.3, step * 0.4) * f,
-              width: sh * f,
-              height: sh * f),
-          Paint()
-            ..color =
-                dark.withValues(alpha: 0.14 * _smooth(0.3, 0.9, w.cloud)));
+        Rect.fromCenter(
+          center: q + Offset(step * 0.3, step * 0.4) * f,
+          width: sh * f,
+          height: sh * f,
+        ),
+        Paint()
+          ..color = dark.withValues(alpha: 0.14 * _smooth(0.3, 0.9, w.cloud)),
+      );
     }
     canvas.restore();
     canvas.saveLayer(
-        whole,
-        Paint()
-          ..imageFilter = ui.ImageFilter.blur(sigmaX: sigma, sigmaY: sigma));
+      whole,
+      Paint()..imageFilter = ui.ImageFilter.blur(sigmaX: sigma, sigmaY: sigma),
+    );
     for (final (p, q, w) in cells) {
       final f = facing(p);
       final fog = w.kind == WeatherKind.fog;
       final cover = fog ? 0.55 : w.cloud;
       if (cover < 0.2) continue;
       final alpha = fog ? 0.16 : 0.04 + 0.2 * _smooth(0.2, 0.95, cover);
-      canvas.drawRect(Rect.fromCenter(center: q, width: sh * f, height: sh * f),
-          Paint()..color = pale.withValues(alpha: alpha));
+      canvas.drawRect(
+        Rect.fromCenter(center: q, width: sh * f, height: sh * f),
+        Paint()..color = pale.withValues(alpha: alpha),
+      );
     }
     canvas.restore();
     // The banks' edges drawn in ink, as a chart would pen them: the line
@@ -266,12 +273,14 @@ class _ChartWeatherPainter extends CustomPainter {
                 q + o + Offset(wind.dx * 0.6, 1) * (fall - 0.5) * step * f;
             final slant = Offset(wind.dx * 0.25, 0.8) * (0.9 * f);
             canvas.drawLine(
-                a,
-                a + slant,
-                rain
-                  ..strokeWidth = 0.16 * (1 + w.fall)
-                  ..color = rain.color.withValues(
-                      alpha: 0.55 * w.fall * math.sin(math.pi * fall)));
+              a,
+              a + slant,
+              rain
+                ..strokeWidth = 0.16 * (1 + w.fall)
+                ..color = rain.color.withValues(
+                  alpha: 0.55 * w.fall * math.sin(math.pi * fall),
+                ),
+            );
           case WeatherKind.snow:
             final fall = (phase * (0.25 + h1 * 0.2) + h2) % 1.0;
             final sway = math.sin(phase * 0.8 + m) * 0.3;
@@ -279,30 +288,36 @@ class _ChartWeatherPainter extends CustomPainter {
                 o +
                 Offset(sway + wind.dx * 0.2, (fall - 0.5) * step * 1.2) * f;
             canvas.drawCircle(
-                a,
-                0.22 * (1 + w.fall) * f,
-                snow
-                  ..color = Colors.white.withValues(
-                      alpha: 0.7 * w.fall * math.sin(math.pi * fall)));
+              a,
+              0.22 * (1 + w.fall) * f,
+              snow
+                ..color = Colors.white.withValues(
+                  alpha: 0.7 * w.fall * math.sin(math.pi * fall),
+                ),
+            );
           case WeatherKind.dust:
             final run = (phase * (1.2 + h1) + h2) % 1.0;
             final a = q + o + wind * (run - 0.5) * step * 1.4 * f;
             canvas.drawLine(
-                a,
-                a + wind * (0.9 + w.fall) * f,
-                dust
-                  ..strokeWidth = 0.2
-                  ..color = dust.color.withValues(
-                      alpha: 0.5 * w.fall * math.sin(math.pi * run)));
+              a,
+              a + wind * (0.9 + w.fall) * f,
+              dust
+                ..strokeWidth = 0.2
+                ..color = dust.color.withValues(
+                  alpha: 0.5 * w.fall * math.sin(math.pi * run),
+                ),
+            );
           case WeatherKind.ash:
             final run = (phase * (0.5 + h1 * 0.4) + h2) % 1.0;
             final a = q + o + wind * (run - 0.5) * step * 1.1 * f;
             canvas.drawCircle(
-                a,
-                0.18 * f,
-                ash
-                  ..color = ash.color.withValues(
-                      alpha: 0.6 * w.fall * math.sin(math.pi * run)));
+              a,
+              0.18 * f,
+              ash
+                ..color = ash.color.withValues(
+                  alpha: 0.6 * w.fall * math.sin(math.pi * run),
+                ),
+            );
           case WeatherKind.clear || WeatherKind.cloud || WeatherKind.fog:
             break;
         }
@@ -318,15 +333,16 @@ class _ChartWeatherPainter extends CustomPainter {
   /// The ink line round each cloud bank: marching squares over the sky's
   /// cells at half cover, each segment drawn with a slight waver.
   void _cloudEdges(
-      Canvas canvas,
-      ChartClimate climate,
-      double t,
-      double step,
-      Rect shown,
-      GlobeView? g,
-      Offset Function(Offset) at,
-      bool Function(Offset) vis,
-      double Function(Offset) facing) {
+    Canvas canvas,
+    ChartClimate climate,
+    double t,
+    double step,
+    Rect shown,
+    GlobeView? g,
+    Offset Function(Offset) at,
+    bool Function(Offset) vis,
+    double Function(Offset) facing,
+  ) {
     const level = 0.5;
     final i0 = (shown.left / step).floor(), i1 = (shown.right / step).ceil();
     final j0 = (shown.top / step).floor(), j1 = (shown.bottom / step).ceil();
@@ -340,7 +356,11 @@ class _ChartWeatherPainter extends CustomPainter {
       }
     }
     final ink = Paint()
-      ..color = Color.lerp(palette.place, palette.fog, 0.35)!
+      ..color = Color.lerp(
+        palette.place,
+        palette.fog,
+        0.35,
+      )!
           .withValues(alpha: g == null ? 0.42 : 0.3)
       ..style = PaintingStyle.stroke
       ..strokeCap = StrokeCap.round
@@ -361,7 +381,11 @@ class _ChartWeatherPainter extends CustomPainter {
       final path = Path()
         ..moveTo(pa.dx, pa.dy)
         ..quadraticBezierTo(
-            mid.dx + n.dx * waver, mid.dy + n.dy * waver, pb.dx, pb.dy);
+          mid.dx + n.dx * waver,
+          mid.dy + n.dy * waver,
+          pb.dx,
+          pb.dy,
+        );
       canvas.drawPath(path, ink);
     }
 

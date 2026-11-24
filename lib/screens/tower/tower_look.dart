@@ -45,8 +45,12 @@ FrameMaterial towerMaterialOf({required int floor, required bool climbed}) {
 /// and the dialogs it opens, are dark. [floor] overrides the run's floor (the
 /// end screen, where the run is already cleared).
 class TowerNight extends ConsumerWidget {
-  const TowerNight(
-      {super.key, required this.child, this.floor, this.frames = true});
+  const TowerNight({
+    super.key,
+    required this.child,
+    this.floor,
+    this.frames = true,
+  });
 
   final Widget child;
   final int? floor;
@@ -60,8 +64,9 @@ class TowerNight extends ConsumerWidget {
     final palette = ref.watch(appPaletteProvider);
     final state = ref.watch(towerProvider).value;
     final material = towerMaterialOf(
-        floor: floor ?? state?.run?.floor ?? 1,
-        climbed: (state?.progress.wins ?? 0) > 0);
+      floor: floor ?? state?.run?.floor ?? 1,
+      climbed: (state?.progress.wins ?? 0) > 0,
+    );
     // The band's own decorations on the frame: the night rooms, the stone
     // stairs, the void.
     final floorNow = floor ?? state?.run?.floor ?? 1;
@@ -79,24 +84,30 @@ class TowerNight extends ConsumerWidget {
     return ValueListenableBuilder<int>(
       valueListenable: FrameImages.loaded,
       builder: (context, _, __) => Theme(
-        data: _inkButtons(buildAppTheme(palette.schemeFor(Brightness.dark),
+        data: _inkButtons(
+          buildAppTheme(
+            palette.schemeFor(Brightness.dark),
             frames: frames && FrameImages.ready(material, env)
                 ? FrameStyle(
                     material: material,
                     env: env,
                     compactScale: 2,
-                    seed: floorNow)
-                : null)),
+                    seed: floorNow,
+                  )
+                : null,
+          ),
+        ),
         // Snow on the ink pieces, harder with the band: 0.4, 0.7, 1.0.
         child: WeatherScope(
-            id: 'tower',
-            kind: WeatherKind.snow,
-            fall: floorNow <= 10
-                ? 0.4
-                : floorNow <= 20
-                    ? 0.7
-                    : 1.0,
-            child: TowerPanelStyle(child: child)),
+          id: 'tower',
+          kind: WeatherKind.snow,
+          fall: floorNow <= 10
+              ? 0.4
+              : floorNow <= 20
+                  ? 0.7
+                  : 1.0,
+          child: TowerPanelStyle(child: child),
+        ),
       ),
     );
   }
@@ -178,7 +189,8 @@ class TowerFoeFigure extends StatelessWidget {
           child: image == null
               ? null
               : CustomPaint(
-                  painter: _FoePainter(image, set.frameWidth, set.frameHeight)),
+                  painter: _FoePainter(image, set.frameWidth, set.frameHeight),
+                ),
         );
       },
     );
@@ -193,12 +205,13 @@ class _FoePainter extends CustomPainter {
 
   @override
   void paint(Canvas canvas, Size size) => canvas.drawImageRect(
-      image,
-      Rect.fromLTWH(0, 0, w.toDouble(), h.toDouble()),
-      Offset.zero & size,
-      Paint()
-        ..filterQuality = FilterQuality.none
-        ..isAntiAlias = false);
+        image,
+        Rect.fromLTWH(0, 0, w.toDouble(), h.toDouble()),
+        Offset.zero & size,
+        Paint()
+          ..filterQuality = FilterQuality.none
+          ..isAntiAlias = false,
+      );
 
   @override
   bool shouldRepaint(_FoePainter old) => old.image != image;

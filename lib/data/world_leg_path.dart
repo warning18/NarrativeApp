@@ -33,7 +33,13 @@ enum WorldLegKind {
 /// [WorldLegPath.points] it covers, [start] to [end] (both included).
 class WorldLegSegment {
   const WorldLegSegment(
-      this.from, this.to, this.roadId, this.kind, this.start, this.end);
+    this.from,
+    this.to,
+    this.roadId,
+    this.kind,
+    this.start,
+    this.end,
+  );
   final String from;
   final String to;
   final String roadId;
@@ -112,7 +118,12 @@ bool _onLand(ChartGeography chart, Offset p) =>
 /// sea when either end is a place at sea, a crossing when the line leaves
 /// the land on the way, else a road.
 WorldLegKind _kindByTerrain(
-    ChartGeography chart, String fromId, String toId, Offset a, Offset b) {
+  ChartGeography chart,
+  String fromId,
+  String toId,
+  Offset a,
+  Offset b,
+) {
   final atSea = [fromId, toId].any((id) => landmarkById(id)?.atSea ?? false);
   if (atSea) return WorldLegKind.sea;
   if (chart.lands.isEmpty) return WorldLegKind.road;
@@ -159,18 +170,33 @@ WorldLegPath worldLegPath(
   final named = <(int, int, int, String)>[]; // segment, k, n, name
   for (final leg in route.legs) {
     final sea = leg.road.kind == RoadKind.sea;
-    final line = windingRoad(_spot(chart, leg.from), _spot(chart, leg.to),
-        seed: chartSeed('${leg.from}-${leg.to}'),
-        bends: sea ? 2 : 3,
-        amp: sea ? 0.08 : 0.16);
+    final line = windingRoad(
+      _spot(chart, leg.from),
+      _spot(chart, leg.to),
+      seed: chartSeed('${leg.from}-${leg.to}'),
+      bends: sea ? 2 : 3,
+      amp: sea ? 0.08 : 0.16,
+    );
     final start = points.isEmpty ? 0 : points.length - 1;
     points.addAll(points.isEmpty ? line : line.skip(1));
-    segments.add(WorldLegSegment(leg.from, leg.to, leg.road.id,
-        sea ? WorldLegKind.sea : WorldLegKind.road, start, points.length - 1));
+    segments.add(
+      WorldLegSegment(
+        leg.from,
+        leg.to,
+        leg.road.id,
+        sea ? WorldLegKind.sea : WorldLegKind.road,
+        start,
+        points.length - 1,
+      ),
+    );
     final stops = leg.stops;
     for (var k = 0; k < stops.length; k++) {
-      named
-          .add((segments.length - 1, k, stops.length, stops[k].name(language)));
+      named.add((
+        segments.length - 1,
+        k,
+        stops.length,
+        stops[k].name(language),
+      ));
     }
   }
   // Each stop spread evenly along its own road, as chartRouteFor does.

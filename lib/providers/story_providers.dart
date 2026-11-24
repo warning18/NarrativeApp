@@ -175,11 +175,13 @@ List<String>? _idList(String? raw) {
 
 class StoryPlayNotifier extends StateNotifier<StoryPlayState> {
   StoryPlayNotifier(String startId)
-      : super(StoryPlayState(
-          currentNodeId: startId,
-          history: const [],
-          visitedNodeIds: {startId},
-        )) {
+      : super(
+          StoryPlayState(
+            currentNodeId: startId,
+            history: const [],
+            visitedNodeIds: {startId},
+          ),
+        ) {
     _loadAutosave();
   }
 
@@ -243,7 +245,9 @@ class StoryPlayNotifier extends StateNotifier<StoryPlayState> {
     await prefs.setString(_autosaveNodePrefsKey, nodeId);
     await prefs.setString(_autosaveHistoryPrefsKey, json.encode(history));
     await prefs.setString(
-        _autosaveVisitedPrefsKey, json.encode(visitedNodeIds.toList()));
+      _autosaveVisitedPrefsKey,
+      json.encode(visitedNodeIds.toList()),
+    );
   }
 
   void choose(String nextId) {
@@ -332,8 +336,12 @@ class StoryPlayNotifier extends StateNotifier<StoryPlayState> {
     String? origin,
     String? originFr,
   }) {
-    startExcursion(play.nodes, resumeNodeId,
-        origin: origin, originFr: originFr);
+    startExcursion(
+      play.nodes,
+      resumeNodeId,
+      origin: origin,
+      originFr: originFr,
+    );
     _scenePlay = play.nodes.isEmpty ? null : play;
   }
 
@@ -364,11 +372,13 @@ class StoryPlayNotifier extends StateNotifier<StoryPlayState> {
     // set off already took its effects and its time: the save stands where
     // the detour leads, so a game closed mid-detour reopens there and
     // never before the choice, to take it twice (issue #695).
-    _persistAutosave(StoryPlayState(
-      currentNodeId: resumeNodeId,
-      history: [...state.history, state.currentNodeId],
-      visitedNodeIds: {...state.visitedNodeIds, resumeNodeId},
-    ));
+    _persistAutosave(
+      StoryPlayState(
+        currentNodeId: resumeNodeId,
+        history: [...state.history, state.currentNodeId],
+        visitedNodeIds: {...state.visitedNodeIds, resumeNodeId},
+      ),
+    );
   }
 
   /// Leaves the detour at once, back to the scene it set out from -- the

@@ -35,16 +35,19 @@ import 'tower_tables.dart';
 TowerData towerDataFromAssets([String dir = 'assets/gamedata']) =>
     TowerData.fromTables({
       for (final name in TowerData.tableNames)
-        name: jsonDecode(File('$dir/$name.json').readAsStringSync())
-            as Map<String, dynamic>,
+        name: jsonDecode(
+          File('$dir/$name.json').readAsStringSync(),
+        ) as Map<String, dynamic>,
     });
 
 /// The clans' records read from assets/gamedata/factions.json (the
 /// standings of the clans not sworn start where the story's do).
 ClanData towerClanDataFromAssets([String dir = 'assets/gamedata']) =>
     ClanData.fromTables(
-        factions: jsonDecode(File('$dir/factions.json').readAsStringSync())
-            as Map<String, dynamic>);
+      factions: jsonDecode(
+        File('$dir/factions.json').readAsStringSync(),
+      ) as Map<String, dynamic>,
+    );
 
 final ClanData _assetClans = towerClanDataFromAssets();
 
@@ -86,8 +89,9 @@ SimFightOutcome towerBotFight({
     for (final e in enemies) e.value['faction']?.toString() ?? '',
   ];
   final doctrine = doctrineForFight(
-      factions: factions,
-      isBoss: [for (final e in enemies) isBossEnemy(e.key, e.value)]);
+    factions: factions,
+    isBoss: [for (final e in enemies) isBossEnemy(e.key, e.value)],
+  );
   final affixes = rollEncounterAffixes(
     enemyIds: floor.enemyIds,
     isElite: elite,
@@ -104,8 +108,11 @@ SimFightOutcome towerBotFight({
   // A clan's die with its Resonance lit rolls its low faces one more
   // (clan_dice.dart), for this fight.
   final ownFaces = hero.diceFaces;
-  if (resonanceOf(data.dice[hero.diceId] as Map<String, dynamic>?,
-          politics: politics, data: clanData) ==
+  if (resonanceOf(
+        data.dice[hero.diceId] as Map<String, dynamic>?,
+        politics: politics,
+        data: clanData,
+      ) ==
       Resonance.lit) {
     hero.diceFaces = resonantFaces(ownFaces);
   }
@@ -113,7 +120,8 @@ SimFightOutcome towerBotFight({
   // headless fight casts only the skills learned.
   final lent = [
     for (final id in dieSignatureSkillIds(
-        data.dice[hero.diceId] as Map<String, dynamic>?))
+      data.dice[hero.diceId] as Map<String, dynamic>?,
+    ))
       if (id.isNotEmpty && hero.unlockedSkillIds.add(id)) id,
   ];
   final outcome = simulateSimFight(
@@ -185,9 +193,12 @@ TowerRun playTowerRun({
       if (towerEventKindOf(run) == TowerEventKind.parley &&
           run.parley == null) {
         final floor = run.floor;
-        run = towerChooseParley(run, data,
-            hero.currentHealth < towerBotParleyHealth * hero.maxHealth,
-            hero: hero);
+        run = towerChooseParley(
+          run,
+          data,
+          hero.currentHealth < towerBotParleyHealth * hero.maxHealth,
+          hero: hero,
+        );
         if (run.floor != floor) {
           run = _botStatPicks(run, data);
           continue;
@@ -196,8 +207,11 @@ TowerRun playTowerRun({
       // A shortcut (floor events PR 2): taken with health to spare.
       if (towerEventKindOf(run) == TowerEventKind.shortcut &&
           run.shortcut == null) {
-        run = towerChooseShortcut(run, data,
-            hero.currentHealth >= towerBotShortcutHealth * hero.maxHealth);
+        run = towerChooseShortcut(
+          run,
+          data,
+          hero.currentHealth >= towerBotShortcutHealth * hero.maxHealth,
+        );
         hero = towerHeroOf(run, data);
       }
       final floor = run.shortcut ?? false
@@ -211,12 +225,15 @@ TowerRun playTowerRun({
         data: data,
         random: towerRandom(seed, towerBotFightDraw(run), TowerStream.fight),
       );
-      run = towerAfterFight(run, data,
-          won: outcome.won,
-          healthLeft: hero.currentHealth,
-          potionsLeft: hero.potions,
-          maxHealthBefore: maxHealth,
-          rounds: outcome.rounds);
+      run = towerAfterFight(
+        run,
+        data,
+        won: outcome.won,
+        healthLeft: hero.currentHealth,
+        potionsLeft: hero.potions,
+        maxHealthBefore: maxHealth,
+        rounds: outcome.rounds,
+      );
     }
     if (run.status == TowerStatus.choosing) {
       // The level-up first, as the story's bot takes its picks.
@@ -278,13 +295,15 @@ TowerRun _botStatPicks(TowerRun run, TowerData data) {
     final offer = towerStatPickOffer(run, data, hero: hero);
     if (offer.isEmpty) break;
     run = towerTakeStatPick(
-        run,
-        data,
-        statPickForShares(
-            offer,
-            simBuildShares[run.professionId] ?? {hero.preferredStat: 1.0},
-            hero.pickedPoints),
-        offer: offer);
+      run,
+      data,
+      statPickForShares(
+        offer,
+        simBuildShares[run.professionId] ?? {hero.preferredStat: 1.0},
+        hero.pickedPoints,
+      ),
+      offer: offer,
+    );
   }
   return run;
 }
@@ -333,8 +352,12 @@ const int towerBotDiceTried = 3;
 /// Tower's own trial stream; the most wins is rolled, the die in play
 /// keeping a tie. [run] as it is when it is over, saved before the bag, or
 /// has nothing to try.
-TowerRun towerBotRollBest(TowerRun run, TowerData data, List<TowerFloor> floors,
-    Iterable<String> gained) {
+TowerRun towerBotRollBest(
+  TowerRun run,
+  TowerData data,
+  List<TowerFloor> floors,
+  Iterable<String> gained,
+) {
   if (run.isOver || run.dieChoice == null) return run;
   final hero = towerHeroOf(run, data);
   final current = hero.diceId;
@@ -357,8 +380,11 @@ TowerRun towerBotRollBest(TowerRun run, TowerData data, List<TowerFloor> floors,
         floor: floor,
         hero: fighter,
         data: data,
-        random: towerRandom(run.seed, run.floor * towerBotDieTrialFights + i,
-            TowerStream.dieTrial),
+        random: towerRandom(
+          run.seed,
+          run.floor * towerBotDieTrialFights + i,
+          TowerStream.dieTrial,
+        ),
       ).won) {
         wins++;
       }
@@ -392,8 +418,11 @@ int? towerBotChoice(TowerRun run) {
 
 /// A batch of [seeds] runs (QA's balance report): each run's floor
 /// reached, and whether it won.
-List<TowerRun> playTowerBatch(Iterable<int> seeds, TowerData data,
-        {TowerProgress progress = const TowerProgress()}) =>
+List<TowerRun> playTowerBatch(
+  Iterable<int> seeds,
+  TowerData data, {
+  TowerProgress progress = const TowerProgress(),
+}) =>
     [
       for (final seed in seeds)
         playTowerRun(seed: seed, data: data, progress: progress),

@@ -107,8 +107,15 @@ class _EpilogueMapBodyState extends ConsumerState<EpilogueMapBody> {
       if (ruler.isDistrict) continue;
       final at = _chartPoint(geography, chart, ruler.placeId);
       if (at == null) continue;
-      spots.add(_Spot(ruler.placeId, at, Color(ruler.color),
-          Color(ruler.accent), ruler.clanId));
+      spots.add(
+        _Spot(
+          ruler.placeId,
+          at,
+          Color(ruler.color),
+          Color(ruler.accent),
+          ruler.clanId,
+        ),
+      );
     }
     final tints = {
       for (final e in ref.watch(landmarkRulersProvider).entries)
@@ -138,9 +145,13 @@ class _EpilogueMapBodyState extends ConsumerState<EpilogueMapBody> {
     return ListView(
       padding: const EdgeInsets.fromLTRB(12, 10, 12, 20),
       children: [
-        Text(tr(ref, 'epilogue_map_subtitle'),
-            style: theme.textTheme.bodySmall
-                ?.copyWith(color: ink.ash, fontStyle: FontStyle.italic)),
+        Text(
+          tr(ref, 'epilogue_map_subtitle'),
+          style: theme.textTheme.bodySmall?.copyWith(
+            color: ink.ash,
+            fontStyle: FontStyle.italic,
+          ),
+        ),
         const SizedBox(height: 10),
         Semantics(
           label: tr(ref, 'epilogue_map_semantics'),
@@ -177,9 +188,13 @@ class _EpilogueMapBodyState extends ConsumerState<EpilogueMapBody> {
           ],
         ),
         const SizedBox(height: 14),
-        Text(tr(ref, 'epilogue_map_big_towns').toUpperCase(),
-            style: theme.textTheme.labelMedium
-                ?.copyWith(color: ink.ash, letterSpacing: 1.2)),
+        Text(
+          tr(ref, 'epilogue_map_big_towns').toUpperCase(),
+          style: theme.textTheme.labelMedium?.copyWith(
+            color: ink.ash,
+            letterSpacing: 1.2,
+          ),
+        ),
         const SizedBox(height: 6),
         for (var i = 0; i < big.length; i++)
           _TownRow(
@@ -187,12 +202,23 @@ class _EpilogueMapBodyState extends ConsumerState<EpilogueMapBody> {
             town: big[i],
             spot: spots.where((s) => s.townId == big[i].townId).firstOrNull,
             onDistricts: () => _showDistricts(
-                context, big[i], geography, data, rulers, language, colours),
+              context,
+              big[i],
+              geography,
+              data,
+              rulers,
+              language,
+              colours,
+            ),
           ),
         const SizedBox(height: 6),
-        Text(tr(ref, 'epilogue_map_legend'),
-            style: theme.textTheme.bodySmall
-                ?.copyWith(color: ink.ash, fontStyle: FontStyle.italic)),
+        Text(
+          tr(ref, 'epilogue_map_legend'),
+          style: theme.textTheme.bodySmall?.copyWith(
+            color: ink.ash,
+            fontStyle: FontStyle.italic,
+          ),
+        ),
       ],
     );
   }
@@ -226,45 +252,56 @@ class _EpilogueMapBodyState extends ConsumerState<EpilogueMapBody> {
       builder: (context) => SafeArea(
         child: ConstrainedBox(
           constraints: BoxConstraints(
-              maxHeight: MediaQuery.of(context).size.height * 0.7),
+            maxHeight: MediaQuery.of(context).size.height * 0.7,
+          ),
           child: ListView(
             key: const Key('epilogue_districts'),
             shrinkWrap: true,
             padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
             children: [
               Text(
-                  trFor(language, 'epilogue_districts_title')
-                      .replaceAll('{town}', name),
-                  style: theme.textTheme.titleMedium
-                      ?.copyWith(fontFamily: InkFonts.display)),
+                trFor(
+                  language,
+                  'epilogue_districts_title',
+                ).replaceAll('{town}', name),
+                style: theme.textTheme.titleMedium?.copyWith(
+                  fontFamily: InkFonts.display,
+                ),
+              ),
               const SizedBox(height: 8),
               for (final e in town.districts.entries)
                 Padding(
                   padding: const EdgeInsets.symmetric(vertical: 4),
-                  child: Row(children: [
-                    if (e.value.isEmpty)
-                      const SizedBox(width: 18)
-                    else
-                      ClanFlag(factionId: e.value, height: 18),
-                    const SizedBox(width: 10),
-                    Expanded(
-                      child: Text(geography.place(e.key)?.nameFor(fr) ?? e.key,
-                          style: theme.textTheme.bodyMedium),
-                    ),
-                    Text(
-                      e.value.isEmpty
-                          ? trFor(language, 'epilogue_map_none')
-                          : e.value == town.clanId
-                              ? trFor(language, 'epilogue_districts_with_town')
-                              : data.faction(e.value)?.shortFor(language) ??
-                                  e.value,
-                      style: theme.textTheme.labelMedium?.copyWith(
+                  child: Row(
+                    children: [
+                      if (e.value.isEmpty)
+                        const SizedBox(width: 18)
+                      else
+                        ClanFlag(factionId: e.value, height: 18),
+                      const SizedBox(width: 10),
+                      Expanded(
+                        child: Text(
+                          geography.place(e.key)?.nameFor(fr) ?? e.key,
+                          style: theme.textTheme.bodyMedium,
+                        ),
+                      ),
+                      Text(
+                        e.value.isEmpty
+                            ? trFor(language, 'epilogue_map_none')
+                            : e.value == town.clanId
+                                ? trFor(
+                                    language, 'epilogue_districts_with_town')
+                                : data.faction(e.value)?.shortFor(language) ??
+                                    e.value,
+                        style: theme.textTheme.labelMedium?.copyWith(
                           color: e.value == town.clanId ? ink.ash : null,
                           fontWeight: e.value == town.clanId
                               ? FontWeight.w400
-                              : FontWeight.w700),
-                    ),
-                  ]),
+                              : FontWeight.w700,
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
             ],
           ),
@@ -330,67 +367,73 @@ class _MapBox extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final view = _view;
-    return LayoutBuilder(builder: (context, box) {
-      final w = box.maxWidth;
-      final k = w / view.width;
-      final full = Size(worldMapWidth * k, worldMapHeight * k);
-      final h = view.height * k;
-      return ClipRRect(
-        borderRadius: BorderRadius.circular(12),
-        child: Container(
-          width: w,
-          height: h,
-          color: palette.sea,
-          child: OverflowBox(
-            alignment: Alignment.topLeft,
-            minWidth: full.width,
-            maxWidth: full.width,
-            minHeight: full.height,
-            maxHeight: full.height,
-            child: Transform.translate(
-              offset: Offset(-view.left * k, -view.top * k),
-              child: SizedBox(
-                width: full.width,
-                height: full.height,
-                child: Stack(fit: StackFit.expand, children: [
-                  CustomPaint(
-                    painter: ChartMapPainter(
-                      frame: frame,
-                      walk: const AlwaysStoppedAnimation<double>(0),
-                      geography: chart,
-                      palette: palette,
-                      language: language,
-                      discovered: const {},
-                      legs: const [],
-                      ahead: null,
-                      selectedId: '',
-                      here: null,
-                      walking: false,
-                      walkPath: const [],
-                      chapterFilter: 0,
-                      reduceMotion: true,
-                      chapterColor: (_) => palette.road,
-                      fog: ChartFog.none,
-                      clanColours: colours,
-                      townTints: tints,
-                      zoomOf: () => k * 2,
-                    ),
+    return LayoutBuilder(
+      builder: (context, box) {
+        final w = box.maxWidth;
+        final k = w / view.width;
+        final full = Size(worldMapWidth * k, worldMapHeight * k);
+        final h = view.height * k;
+        return ClipRRect(
+          borderRadius: BorderRadius.circular(12),
+          child: Container(
+            width: w,
+            height: h,
+            color: palette.sea,
+            child: OverflowBox(
+              alignment: Alignment.topLeft,
+              minWidth: full.width,
+              maxWidth: full.width,
+              minHeight: full.height,
+              maxHeight: full.height,
+              child: Transform.translate(
+                offset: Offset(-view.left * k, -view.top * k),
+                child: SizedBox(
+                  width: full.width,
+                  height: full.height,
+                  child: Stack(
+                    fit: StackFit.expand,
+                    children: [
+                      CustomPaint(
+                        painter: ChartMapPainter(
+                          frame: frame,
+                          walk: const AlwaysStoppedAnimation<double>(0),
+                          geography: chart,
+                          palette: palette,
+                          language: language,
+                          discovered: const {},
+                          legs: const [],
+                          ahead: null,
+                          selectedId: '',
+                          here: null,
+                          walking: false,
+                          walkPath: const [],
+                          chapterFilter: 0,
+                          reduceMotion: true,
+                          chapterColor: (_) => palette.road,
+                          fog: ChartFog.none,
+                          clanColours: colours,
+                          townTints: tints,
+                          zoomOf: () => k * 2,
+                        ),
+                      ),
+                      CustomPaint(
+                        painter: _OverPainter(
+                          roads: roads,
+                          big: [for (final b in big) b.$2],
+                          all: spots,
+                          k: k,
+                          palette: palette,
+                        ),
+                      ),
+                    ],
                   ),
-                  CustomPaint(
-                    painter: _OverPainter(
-                        roads: roads,
-                        big: [for (final b in big) b.$2],
-                        all: spots,
-                        k: k,
-                        palette: palette),
-                  ),
-                ]),
+                ),
               ),
             ),
           ),
-        ),
-      );
-    });
+        );
+      },
+    );
   }
 }
 
@@ -419,66 +462,79 @@ class _OverPainter extends CustomPainter {
       final from = r.from * k, to = r.to * k;
       if (r.clanId.isNotEmpty) {
         canvas.drawLine(
-            from,
-            to,
-            Paint()
-              ..color = Colors.black.withValues(alpha: 0.6)
-              ..strokeWidth = 5.5
-              ..strokeCap = StrokeCap.round);
+          from,
+          to,
+          Paint()
+            ..color = Colors.black.withValues(alpha: 0.6)
+            ..strokeWidth = 5.5
+            ..strokeCap = StrokeCap.round,
+        );
         canvas.drawLine(
-            from,
-            to,
-            Paint()
-              ..color = r.color
-              ..strokeWidth = 3.2
-              ..strokeCap = StrokeCap.round);
+          from,
+          to,
+          Paint()
+            ..color = r.color
+            ..strokeWidth = 3.2
+            ..strokeCap = StrokeCap.round,
+        );
       } else {
         final length = (to - from).distance;
         final dir = (to - from) / math.max(length, 0.001);
         for (var d = 0.0; d < length; d += 7) {
           canvas.drawLine(
-              from + dir * d,
-              from + dir * math.min(d + 3.5, length),
-              Paint()
-                ..color = palette.coast.withValues(alpha: 0.85)
-                ..strokeWidth = 1.5);
+            from + dir * d,
+            from + dir * math.min(d + 3.5, length),
+            Paint()
+              ..color = palette.coast.withValues(alpha: 0.85)
+              ..strokeWidth = 1.5,
+          );
         }
       }
     }
     for (final s in all) {
       final c = s.at * k;
       canvas.drawCircle(
-          c, 5.6, Paint()..color = Colors.black.withValues(alpha: 0.6));
+        c,
+        5.6,
+        Paint()..color = Colors.black.withValues(alpha: 0.6),
+      );
       canvas.drawCircle(c, 4.2, Paint()..color = s.fill);
       canvas.drawCircle(
-          c,
-          4.2,
-          Paint()
-            ..color = s.accent
-            ..style = PaintingStyle.stroke
-            ..strokeWidth = 1.4);
+        c,
+        4.2,
+        Paint()
+          ..color = s.accent
+          ..style = PaintingStyle.stroke
+          ..strokeWidth = 1.4,
+      );
     }
     for (var i = 0; i < big.length; i++) {
       final c = big[i].at * k;
       canvas.drawCircle(
-          c, 11.5, Paint()..color = Colors.black.withValues(alpha: 0.6));
+        c,
+        11.5,
+        Paint()..color = Colors.black.withValues(alpha: 0.6),
+      );
       canvas.drawCircle(c, 9.5, Paint()..color = big[i].fill);
       canvas.drawCircle(
-          c,
-          9.5,
-          Paint()
-            ..color = big[i].accent
-            ..style = PaintingStyle.stroke
-            ..strokeWidth = 2);
+        c,
+        9.5,
+        Paint()
+          ..color = big[i].accent
+          ..style = PaintingStyle.stroke
+          ..strokeWidth = 2,
+      );
       final tp = TextPainter(
         text: TextSpan(
-            text: '${i + 1}',
-            style: const TextStyle(
-                fontFamily: InkFonts.system,
-                color: Colors.white,
-                fontSize: 11,
-                fontWeight: FontWeight.bold,
-                shadows: [Shadow(blurRadius: 2, color: Colors.black87)])),
+          text: '${i + 1}',
+          style: const TextStyle(
+            fontFamily: InkFonts.system,
+            color: Colors.white,
+            fontSize: 11,
+            fontWeight: FontWeight.bold,
+            shadows: [Shadow(blurRadius: 2, color: Colors.black87)],
+          ),
+        ),
         textDirection: TextDirection.ltr,
       )..layout();
       tp.paint(canvas, c - Offset(tp.width / 2, tp.height / 2));
@@ -512,15 +568,20 @@ class _HolderChip extends StatelessWidget {
           borderRadius: BorderRadius.circular(12),
           border: Border.all(color: color),
         ),
-        child: Row(mainAxisSize: MainAxisSize.min, children: [
-          ClanFlag(factionId: clanId, height: 14),
-          const SizedBox(width: 4),
-          Text('$name $count',
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            ClanFlag(factionId: clanId, height: 14),
+            const SizedBox(width: 4),
+            Text(
+              '$name $count',
               style: Theme.of(context)
                   .textTheme
                   .labelMedium
-                  ?.copyWith(fontWeight: FontWeight.w600)),
-        ]),
+                  ?.copyWith(fontWeight: FontWeight.w600),
+            ),
+          ],
+        ),
       );
 }
 
@@ -568,76 +629,104 @@ class _TownRow extends ConsumerWidget {
         borderRadius: BorderRadius.circular(10),
         border: Border.all(color: ink.seam),
       ),
-      child: Row(children: [
-        Container(
-          width: 26,
-          height: 26,
-          alignment: Alignment.center,
-          decoration: BoxDecoration(
-            shape: BoxShape.circle,
-            color: fill,
-            border: Border.all(color: accent, width: 2),
-          ),
-          child: Text('$number',
+      child: Row(
+        children: [
+          Container(
+            width: 26,
+            height: 26,
+            alignment: Alignment.center,
+            decoration: BoxDecoration(
+              shape: BoxShape.circle,
+              color: fill,
+              border: Border.all(color: accent, width: 2),
+            ),
+            child: Text(
+              '$number',
               style: const TextStyle(
-                  color: Colors.white,
-                  fontSize: 13,
-                  fontWeight: FontWeight.bold,
-                  shadows: [Shadow(blurRadius: 2, color: Colors.black87)])),
-        ),
-        const SizedBox(width: 10),
-        Expanded(
-          child:
-              Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-            Wrap(
-                spacing: 6,
-                runSpacing: 2,
-                crossAxisAlignment: WrapCrossAlignment.center,
-                children: [
-                  Text(fr ? town.nameFr : town.name,
-                      style: theme.textTheme.titleSmall),
-                  if (differing > 0)
-                    InkWell(
-                      key: Key('epilogue_differ_${town.townId}'),
-                      borderRadius: BorderRadius.circular(6),
-                      onTap: onDistricts,
-                      child: Container(
-                        padding: const EdgeInsets.symmetric(
-                            horizontal: 6, vertical: 2),
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(6),
-                          border: Border.all(color: ink.seam),
+                color: Colors.white,
+                fontSize: 13,
+                fontWeight: FontWeight.bold,
+                shadows: [Shadow(blurRadius: 2, color: Colors.black87)],
+              ),
+            ),
+          ),
+          const SizedBox(width: 10),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Wrap(
+                  spacing: 6,
+                  runSpacing: 2,
+                  crossAxisAlignment: WrapCrossAlignment.center,
+                  children: [
+                    Text(
+                      fr ? town.nameFr : town.name,
+                      style: theme.textTheme.titleSmall,
+                    ),
+                    if (differing > 0)
+                      InkWell(
+                        key: Key('epilogue_differ_${town.townId}'),
+                        borderRadius: BorderRadius.circular(6),
+                        onTap: onDistricts,
+                        child: Container(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 6,
+                            vertical: 2,
+                          ),
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(6),
+                            border: Border.all(color: ink.seam),
+                          ),
+                          child: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Text(
+                                differing == 1
+                                    ? tr(ref, 'epilogue_districts_differ_one')
+                                    : tr(
+                                        ref,
+                                        'epilogue_districts_differ_n',
+                                      ).replaceAll('{n}', '$differing'),
+                                style: theme.textTheme.labelSmall?.copyWith(
+                                  color: ink.ash,
+                                ),
+                              ),
+                              Icon(
+                                Icons.chevron_right,
+                                size: IconSize.s16,
+                                color: ink.ash,
+                              ),
+                            ],
+                          ),
                         ),
-                        child: Row(mainAxisSize: MainAxisSize.min, children: [
-                          Text(
-                              differing == 1
-                                  ? tr(ref, 'epilogue_districts_differ_one')
-                                  : tr(ref, 'epilogue_districts_differ_n')
-                                      .replaceAll('{n}', '$differing'),
-                              style: theme.textTheme.labelSmall
-                                  ?.copyWith(color: ink.ash)),
-                          Icon(Icons.chevron_right,
-                              size: IconSize.s16, color: ink.ash),
-                        ]),
+                      ),
+                  ],
+                ),
+                const SizedBox(height: 2),
+                Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    if (!none)
+                      Padding(
+                        padding: const EdgeInsets.only(top: 1, right: 5),
+                        child: ClanFlag(factionId: town.clanId, height: 14),
+                      ),
+                    Expanded(
+                      child: Text(
+                        line,
+                        style: theme.textTheme.bodySmall?.copyWith(
+                          color: none ? ink.ash : null,
+                        ),
                       ),
                     ),
-                ]),
-            const SizedBox(height: 2),
-            Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
-              if (!none)
-                Padding(
-                  padding: const EdgeInsets.only(top: 1, right: 5),
-                  child: ClanFlag(factionId: town.clanId, height: 14),
+                  ],
                 ),
-              Expanded(
-                child: Text(line,
-                    style: theme.textTheme.bodySmall
-                        ?.copyWith(color: none ? ink.ash : null)),
-              ),
-            ]),
-          ]),
-        ),
-      ]),
+              ],
+            ),
+          ),
+        ],
+      ),
     );
   }
 }

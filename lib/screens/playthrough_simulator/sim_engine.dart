@@ -565,7 +565,10 @@ _SimResult _simulate(
     if (forceProfessionId != null &&
         !sim.professions.containsKey(forceProfessionId)) {
       throw ArgumentError.value(
-          forceProfessionId, 'forceProfessionId', 'unknown profession');
+        forceProfessionId,
+        'forceProfessionId',
+        'unknown profession',
+      );
     }
     final raceId = forceRaceId ?? drawnRace;
     final professionId = forceProfessionId ?? drawnProfession;
@@ -598,8 +601,10 @@ _SimResult _simulate(
   var ladderWins = 0;
   if (character != null && sim != null && sim.policy == SimPolicy.competent) {
     final c = character;
-    ({int wins, int health}) tryDie(List<Map<String, dynamic>> faces,
-            Map<String, String> assignments) =>
+    ({int wins, int health}) tryDie(
+      List<Map<String, dynamic>> faces,
+      Map<String, String> assignments,
+    ) =>
         c.restoringAfter(() {
           c.diceFaces = faces;
           c.diceSkillAssignments = assignments;
@@ -721,8 +726,10 @@ _SimResult _simulate(
   final championsBeaten = <String>{};
   // The fight the roads call before it is declared (fightEnemies).
   late ({bool? won, int attempts, Map<String, int> casts}) Function(
-      List<String> enemyIds, int chapter,
-      {Map<String, Map<String, dynamic>> records}) fightOnRoad;
+    List<String> enemyIds,
+    int chapter, {
+    Map<String, Map<String, dynamic>> records,
+  }) fightOnRoad;
   // The nemeses whose trail was followed (nemesis.dart's first beat).
   final trailsFollowed = <String>{};
   var spared = 0, finished = 0, betrayed = 0;
@@ -740,36 +747,46 @@ _SimResult _simulate(
   /// detour by, as it always has; its scene and its foe are in the
   /// transcript). [travels]: a walk between places whatever the scenes
   /// say (the camp's trips); [taken]: a road event holds it.
-  void roadTurn(String fromId, String toId,
-      {bool travels = false, bool taken = false}) {
+  void roadTurn(
+    String fromId,
+    String toId, {
+    bool travels = false,
+    bool taken = false,
+  }) {
     final geo = sim?.geography;
     final chapter = lastKnownChapter;
     if (geo == null || chapter == null) return;
-    final road = detourRoadBetween(story, geo,
-        fromNodeId: fromId,
-        toNodeId: toId,
-        chapter: chapter,
-        travels: travels,
-        watches: travels
-            ? geo.watchesToNode(story.nodeFor(toId), fallback: walkWatches)
-            : 1);
+    final road = detourRoadBetween(
+      story,
+      geo,
+      fromNodeId: fromId,
+      toNodeId: toId,
+      chapter: chapter,
+      travels: travels,
+      watches: travels
+          ? geo.watchesToNode(story.nodeFor(toId), fallback: walkWatches)
+          : 1,
+    );
     if (road == null) return;
     final dice = detourRandomFor(
-        fromNodeId: fromId,
-        toNodeId: toId,
-        historyLength: steps.length,
-        salt: detourSalt);
+      fromNodeId: fromId,
+      toNodeId: toId,
+      historyLength: steps.length,
+      salt: detourSalt,
+    );
     final side = detourRandomFor(
-        fromNodeId: fromId,
-        toNodeId: toId,
-        historyLength: steps.length,
-        salt: detourSalt + 7919);
+      fromNodeId: fromId,
+      toNodeId: toId,
+      historyLength: steps.length,
+      salt: detourSalt + 7919,
+    );
     var hunter = '';
     final landmarkDue = landmarkDueOn(
-        pacing: pacing,
-        road: road,
-        scenes: sim?.detourScenes ?? const {},
-        flags: flags);
+      pacing: pacing,
+      road: road,
+      scenes: sim?.detourScenes ?? const {},
+      flags: flags,
+    );
     if (!taken &&
         !landmarkDue &&
         road.atRest &&
@@ -802,8 +819,10 @@ _SimResult _simulate(
       // The Warding Cairn turns the nemesis's hunters away (road_wards.dart).
       final rolls = character?.rolls;
       if (rolls != null && growth != null) {
-        rolls.wardNemesis(growth.politics.nemesis,
-            wardTargets(growth.politics, growth.tables.clans));
+        rolls.wardNemesis(
+          growth.politics.nemesis,
+          wardTargets(growth.politics, growth.tables.clans),
+        );
       }
       // Sworn, the rivals' hunters (v5.2 step 3b) share the road.
       final rival = event == null && betrayer == null && growth != null
@@ -838,12 +857,16 @@ _SimResult _simulate(
         // when its betrayal is unlikely.
         final id = rival.first.choices.first.triggerEnemyId ?? '';
         final chance = betrayalChance(
-            hunterAlignmentOf(enemies[id] as Map<String, dynamic>?), alignment);
+          hunterAlignmentOf(enemies[id] as Map<String, dynamic>?),
+          alignment,
+        );
         if (chance < _simSpareUnder) {
           spared++;
-          mercyFlags.add(side.nextDouble() < chance
-              ? betrayalFlag(id, betrayalRoads(side))
-              : sparedFlag(id));
+          mercyFlags.add(
+            side.nextDouble() < chance
+                ? betrayalFlag(id, betrayalRoads(side))
+                : sparedFlag(id),
+          );
         } else {
           finished++;
         }
@@ -868,39 +891,49 @@ _SimResult _simulate(
         final record = enemies[champion];
         final result = !trailsFollowed.contains(nemesis)
             ? (won: null, attempts: 0, casts: const <String, int>{})
-            : fightOnRoad([champion], chapter,
+            : fightOnRoad(
+                [champion],
+                chapter,
                 records: {
                   if (record is Map<String, dynamic>)
                     champion: championRecordFor(record, way),
-                });
+                },
+              );
         if (!trailsFollowed.contains(nemesis)) {
           trailsFollowed.add(nemesis);
-          steps.add(_SimStep(
-            nodeId: 'road:${trailFlagOf(nemesis)}',
-            chapter: chapter,
-            mood: null,
-            uiTheme: null,
-            description: 'The nemesis\'s trail',
-            choiceText: 'Follow the trail',
-          ));
+          steps.add(
+            _SimStep(
+              nodeId: 'road:${trailFlagOf(nemesis)}',
+              chapter: chapter,
+              mood: null,
+              uiTheme: null,
+              description: 'The nemesis\'s trail',
+              choiceText: 'Follow the trail',
+            ),
+          );
         } else if (result.won != null) {
-          steps.add(_SimStep(
-            nodeId: 'road:$champion',
-            chapter: chapter,
-            mood: null,
-            uiTheme: null,
-            description: 'The nemesis\'s champion',
-            choiceText: 'The way of $way',
-            enemyId: champion,
-            fightWon: result.won,
-            fightAttempts: result.attempts,
-            spellsCast: result.casts,
-          ));
+          steps.add(
+            _SimStep(
+              nodeId: 'road:$champion',
+              chapter: chapter,
+              mood: null,
+              uiTheme: null,
+              description: 'The nemesis\'s champion',
+              choiceText: 'The way of $way',
+              enemyId: champion,
+              fightWon: result.won,
+              fightAttempts: result.attempts,
+              spellsCast: result.casts,
+            ),
+          );
           if (result.won ?? false) {
             championsBeaten.add(nemesis);
             growth!.politics = breakNemesis(
-                growth.politics, nemesis, growth.tables.clans,
-                chapter: chapter);
+              growth.politics,
+              nemesis,
+              growth.tables.clans,
+              chapter: chapter,
+            );
           }
         }
       }
@@ -915,7 +948,9 @@ _SimResult _simulate(
       taken: taken || hunter.isNotEmpty,
       familiar: () {
         final open = recurringBeatsOpen(
-            flags: {...flags, ...metOnRoads}, chapter: chapter);
+          flags: {...flags, ...metOnRoads},
+          chapter: chapter,
+        );
         if (open.isEmpty || side.nextDouble() >= recurringChance) return false;
         final pick = open[side.nextInt(open.length)];
         metOnRoads.add(markerFor(pick.who, pick.stage));
@@ -952,17 +987,21 @@ _SimResult _simulate(
       'owed' => french ? 'Détour dû (crise)' : 'Detour owed (a crisis)',
       _ => kind,
     };
-    steps.add(_SimStep(
-      nodeId: 'road:$kind${turn.scene == null ? '' : ':${turn.scene!.id}'}',
-      chapter: chapter,
-      mood: null,
-      uiTheme: null,
-      description: '$what${turn.paysOwed ? ' (owed)' : ''}',
-    ));
+    steps.add(
+      _SimStep(
+        nodeId: 'road:$kind${turn.scene == null ? '' : ':${turn.scene!.id}'}',
+        chapter: chapter,
+        mood: null,
+        uiTheme: null,
+        description: '$what${turn.paysOwed ? ' (owed)' : ''}',
+      ),
+    );
   }
 
-  _SimResult finish(
-      {required String endingText, required bool reachedStepCap}) {
+  _SimResult finish({
+    required String endingText,
+    required bool reachedStepCap,
+  }) {
     return _SimResult(
       steps: steps,
       finalGold: gold,
@@ -983,8 +1022,9 @@ _SimResult _simulate(
       spellsCast: Map.unmodifiable(character?.spellsCast ?? const {}),
       manaGained: character?.manaGained ?? 0,
       potionsUsed: character?.potionsUsed ?? 0,
-      spellbooksBought:
-          List.unmodifiable(character?.spellbooksBought ?? const []),
+      spellbooksBought: List.unmodifiable(
+        character?.spellbooksBought ?? const [],
+      ),
       signsTaken: List.unmodifiable(growth?.signsTaken ?? const <String>[]),
       offersTaken: growth?.giftsTaken.values.fold<int>(0, (a, b) => a + b) ?? 0,
       skillsLearned: growth?.skillsLearned ?? 0,
@@ -992,7 +1032,8 @@ _SimResult _simulate(
       checksRolled: checksRolled,
       checksFailed: checksFailed,
       questRecords: List<SimQuestRecord>.unmodifiable(
-          questLog?.records.values ?? const <SimQuestRecord>[]),
+        questLog?.records.values ?? const <SimQuestRecord>[],
+      ),
       questsStuck: questLog?.unmet(flags) ?? const {},
       arrivals: Map.unmodifiable(arrivals),
       housesBuilt: Map.unmodifiable(housesBuilt),
@@ -1049,17 +1090,22 @@ _SimResult _simulate(
             p.roster.containsKey(ally) ||
             p.lost.contains(ally) ||
             p.departed.contains(ally) ||
-            !log.canTake(id,
-                flags: flags,
-                gold: gold,
-                alignmentLabel: _alignmentLabelOf(alignment))) {
+            !log.canTake(
+              id,
+              flags: flags,
+              gold: gold,
+              alignmentLabel: _alignmentLabelOf(alignment),
+            )) {
           continue;
         }
-        p.log.add(SimCompanionEvent(
+        p.log.add(
+          SimCompanionEvent(
             chapter: lastKnownChapter ?? 1,
             kind: 'seek',
             companionId: ally,
-            reason: 'took the way offering $id at $currentId'));
+            reason: 'took the way offering $id at $currentId',
+          ),
+        );
         return c;
       }
     }
@@ -1088,10 +1134,12 @@ _SimResult _simulate(
           if (log != null) {
             final id = c.unlockQuestId ?? '';
             if (id.isNotEmpty &&
-                log.canTake(id,
-                    flags: flags,
-                    gold: gold,
-                    alignmentLabel: _alignmentLabelOf(alignment))) {
+                log.canTake(
+                  id,
+                  flags: flags,
+                  gold: gold,
+                  alignmentLabel: _alignmentLabelOf(alignment),
+                )) {
               score += 6;
             }
             final want = log.wanted(flags);
@@ -1124,14 +1172,17 @@ _SimResult _simulate(
   /// What the character fights with now; in one of the last battles
   /// ([host], v1.196) the Host fights beside them.
   SignEffects signsNow({bool host = false}) =>
-      growth?.effects(alignment,
-          host: host,
-          blessing: growth.tables.clans.factions.isEmpty
-              ? const []
-              : activeBlessingEffects(
-                  blessingFights: blessingFights,
-                  blessingClan: blessingClan,
-                  data: growth.tables.clans)) ??
+      growth?.effects(
+        alignment,
+        host: host,
+        blessing: growth.tables.clans.factions.isEmpty
+            ? const []
+            : activeBlessingEffects(
+                blessingFights: blessingFights,
+                blessingClan: blessingClan,
+                data: growth.tables.clans,
+              ),
+      ) ??
       SignEffects.none;
 
   /// A chapter's hub [node] in [chapter]: the walk buys a blessing at its
@@ -1148,23 +1199,30 @@ _SimResult _simulate(
     // The camp is a town by its city plan, which the walk doesn't load:
     // every camp counts as one here.
     final clanId = templeClanOfPlace(
-        geography.placeOfNode(node)?.id,
-        townRulers(geography, g.politics, data.factions, planIds: [
+      geography.placeOfNode(node)?.id,
+      townRulers(
+        geography,
+        g.politics,
+        data.factions,
+        planIds: [
           for (final p in geography.places.values)
             if (p.level == GeoLevel.location && p.kind == 'camp') p.id,
-        ]),
-        geography);
+        ],
+      ),
+      geography,
+    );
     if (clanId == null) return;
     final offer = templeOfferFor(
-        clanId: clanId,
-        data: data,
-        politics: g.politics,
-        chapter: chapter,
-        day: 0,
-        gold: gold,
-        alignment: alignment,
-        blessingFights: blessingFights,
-        standingChapters: templeStandingChapters);
+      clanId: clanId,
+      data: data,
+      politics: g.politics,
+      chapter: chapter,
+      day: 0,
+      gold: gold,
+      alignment: alignment,
+      blessingFights: blessingFights,
+      standingChapters: templeStandingChapters,
+    );
     if (!offer.canBless || gold < simBlessingGoldFactor * offer.blessingPrice) {
       return;
     }
@@ -1176,30 +1234,41 @@ _SimResult _simulate(
     if (offer.blessingStanding) {
       templeStandingChapters[offer.clanId] = chapter;
       g.politics = applyStandingChange(
-              g.politics, offer.clanId, templeStandingGain, 'temple',
-              data: data, chapter: chapter)
-          .state;
+        g.politics,
+        offer.clanId,
+        templeStandingGain,
+        'temple',
+        data: data,
+        chapter: chapter,
+      ).state;
     }
     if (transcribe) {
-      note('   temple: blessed by ${clanId.isEmpty ? 'the town' : clanId} '
-          'for ${offer.blessingPrice} gold'
-          '${offer.blessingStanding ? ' (+1 standing)' : ''}');
+      note(
+        '   temple: blessed by ${clanId.isEmpty ? 'the town' : clanId} '
+        'for ${offer.blessingPrice} gold'
+        '${offer.blessingStanding ? ' (+1 standing)' : ''}',
+      );
     }
   }
 
   /// A story choice's or a scene's politics (v1.196: the claim, the
   /// pledges, the Throne and the muster with the rest), once under [key],
   /// in the chapter the walk is in.
-  void applyPolitics(StoryPolitics? politics, String key,
-      {String cause = 'sim'}) {
+  void applyPolitics(
+    StoryPolitics? politics,
+    String key, {
+    String cause = 'sim',
+  }) {
     final g = growth;
     if (g == null || politics == null || politics.isEmpty) return;
-    final after = g.applyStoryPolitics(politics,
-        flags: flags,
-        chapter: lastKnownChapter ?? 1,
-        key: key,
-        cause: cause,
-        geography: sim?.geography);
+    final after = g.applyStoryPolitics(
+      politics,
+      flags: flags,
+      chapter: lastKnownChapter ?? 1,
+      key: key,
+      cause: cause,
+      geography: sim?.geography,
+    );
     flags
       ..clear()
       ..addAll(after);
@@ -1212,9 +1281,10 @@ _SimResult _simulate(
     final g = growth;
     if (g == null) return;
     final after = g.runEvents(
-        flags: flags,
-        chapter: lastKnownChapter ?? 1,
-        geography: sim?.geography);
+      flags: flags,
+      chapter: lastKnownChapter ?? 1,
+      geography: sim?.geography,
+    );
     flags
       ..clear()
       ..addAll(after);
@@ -1273,12 +1343,14 @@ _SimResult _simulate(
       final quest = sim?.quests[id];
       if (growth != null && world != null && quest is Map<String, dynamic>) {
         final here = story.nodeFor(currentId);
-        final after = growth.applyQuestInfluence(quest,
-            flags: flags,
-            geography: world,
-            chapter: lastKnownChapter ?? 1,
-            picked: pay.politics,
-            partyDistrict: districtOfNode(world, here)?.id);
+        final after = growth.applyQuestInfluence(
+          quest,
+          flags: flags,
+          geography: world,
+          chapter: lastKnownChapter ?? 1,
+          picked: pay.politics,
+          partyDistrict: districtOfNode(world, here)?.id,
+        );
         flags
           ..clear()
           ..addAll(after);
@@ -1297,38 +1369,47 @@ _SimResult _simulate(
         final ch = lastKnownChapter ?? 1;
         if (pay.allyId.isNotEmpty &&
             sim?.policy != SimPolicy.naive &&
-            p.recruit(pay.allyId,
-                chapter: ch, cause: 'quest $id', alignment: alignment)) {
+            p.recruit(
+              pay.allyId,
+              chapter: ch,
+              cause: 'quest $id',
+              alignment: alignment,
+            )) {
           buildHousesNow();
         }
         p.react(
-            chapter: ch,
-            cause: 'quest $id',
-            alignmentMod: pay.alignment,
-            goldMod: pay.profit,
-            approvalMods: pay.approvalMods,
-            alignment: alignment);
+          chapter: ch,
+          cause: 'quest $id',
+          alignmentMod: pay.alignment,
+          goldMod: pay.profit,
+          approvalMods: pay.approvalMods,
+          alignment: alignment,
+        );
       }
-      steps.add(_SimStep(
-        nodeId: 'quest:$id',
-        chapter: lastKnownChapter,
-        mood: null,
-        uiTheme: null,
-        description:
-            (french ? 'Quête rendue\u00a0: ' : 'Quest done: ') + pay.name,
-        choiceText: pay.turnIn.isEmpty
-            ? (french ? 'Rendre la quête' : 'Hand in')
-            : pay.turnIn,
-        goldMod: pay.gold,
-        alignmentMod: pay.alignment,
-      ));
+      steps.add(
+        _SimStep(
+          nodeId: 'quest:$id',
+          chapter: lastKnownChapter,
+          mood: null,
+          uiTheme: null,
+          description:
+              (french ? 'Quête rendue\u00a0: ' : 'Quest done: ') + pay.name,
+          choiceText: pay.turnIn.isEmpty
+              ? (french ? 'Rendre la quête' : 'Hand in')
+              : pay.turnIn,
+          goldMod: pay.gold,
+          alignmentMod: pay.alignment,
+        ),
+      );
       settle();
       if (pay.nextQuestId.isNotEmpty) {
-        log.accept(pay.nextQuestId,
-            step: atStep,
-            flags: flags,
-            gold: gold,
-            alignmentLabel: _alignmentLabelOf(alignment));
+        log.accept(
+          pay.nextQuestId,
+          step: atStep,
+          flags: flags,
+          gold: gold,
+          alignmentLabel: _alignmentLabelOf(alignment),
+        );
       }
     }
   }
@@ -1349,11 +1430,14 @@ _SimResult _simulate(
     SignEffects signs,
     PerkEffects perks,
     int stolen,
-  }) fightEnemies(List<String> enemyIds, int chapter,
-      {bool once = false,
-      bool host = false,
-      String? forcedStage,
-      Map<String, Map<String, dynamic>> records = const {}}) {
+  }) fightEnemies(
+    List<String> enemyIds,
+    int chapter, {
+    bool once = false,
+    bool host = false,
+    String? forcedStage,
+    Map<String, Map<String, dynamic>> records = const {},
+  }) {
     const none = (
       won: null,
       attempts: 0,
@@ -1398,16 +1482,18 @@ _SimResult _simulate(
         (world == null || (sim.featureLadder && chapter <= 1 && ladderWins < 2)
             ? ContextRule.tide
             : fightGroundAt(
-                    world, world.placeOfNode(story.nodeFor(currentId))?.id,
-                    forcedStage: fightStageFromName(forcedStage),
-                    bossFight: isBossFight(entries))
-                .rule);
+                world,
+                world.placeOfNode(story.nodeFor(currentId))?.id,
+                forcedStage: fightStageFromName(forcedStage),
+                bossFight: isBossFight(entries),
+              ).rule);
     trialGround = ground;
     // The competent player readies itself: its best gear (the pack's
     // loot and rewards counted), the merges worth crafting, its best die.
     growth?.prepareForFight(
-        inventory: questLog?.inventory ?? const <String>{},
-        skillwright: skillCraftOpen(housesBuilt.keys));
+      inventory: questLog?.inventory ?? const <String>{},
+      skillwright: skillCraftOpen(housesBuilt.keys),
+    );
     final casts = <String, int>{};
     final maxAttempts = once ? 1 : _maxFightAttempts;
     // Vica joins at her scene (story_companions.dart), whatever the policy.
@@ -1416,16 +1502,18 @@ _SimResult _simulate(
     // Aligned gear answers to the walk's alignment, as in the game.
     c.alignmentLabel = _alignmentLabelOf(alignment);
     sim.onFight?.call(
-        currentId,
-        chapter,
-        [for (final e in entries) e.key],
-        () => simSessionSave(
-            character: c,
-            growth: growth,
-            party: party,
-            gold: gold,
-            flags: flags,
-            alignment: alignment));
+      currentId,
+      chapter,
+      [for (final e in entries) e.key],
+      () => simSessionSave(
+        character: c,
+        growth: growth,
+        party: party,
+        gold: gold,
+        flags: flags,
+        alignment: alignment,
+      ),
+    );
     for (var attempt = 1; attempt <= maxAttempts; attempt++) {
       final signs = signsNow(host: host);
       final perks = growth?.perks ?? PerkEffects.none;
@@ -1433,8 +1521,11 @@ _SimResult _simulate(
           party?.fightAllies(signs: signs, perks: perks) ?? const <SimAlly>[];
       // The die that hits a foe's weakness, held for this try only
       // ([_SimContext.swapDiePerFight]); the die in play comes back after.
-      final keptDie =
-          (id: c.diceId, faces: c.diceFaces, placed: c.diceSkillAssignments);
+      final keptDie = (
+        id: c.diceId,
+        faces: c.diceFaces,
+        placed: c.diceSkillAssignments,
+      );
       final foes = [for (final e in entries) e.value];
       final held = sim.swapDiePerFight
           ? c.holdDieAgainst(foes, sim.skills)
@@ -1442,14 +1533,17 @@ _SimResult _simulate(
               ? (matchOwned: false, swappedTo: null)
               : (
                   matchOwned: c.ownsDieHittingWeakness(foes, sim.skills),
-                  swappedTo: null
+                  swappedTo: null,
                 ));
       // A clan's die with its Resonance lit rolls its low faces one more
       // (clan_dice.dart), for this fight.
       final ownFaces = c.diceFaces;
       if (growth != null &&
-          resonanceOf(sim.dice[c.diceId] as Map<String, dynamic>?,
-                  politics: growth.politics, data: growth.tables.clans) ==
+          resonanceOf(
+                sim.dice[c.diceId] as Map<String, dynamic>?,
+                politics: growth.politics,
+                data: growth.tables.clans,
+              ) ==
               Resonance.lit) {
         c.diceFaces = resonantFaces(ownFaces);
       }
@@ -1474,13 +1568,14 @@ _SimResult _simulate(
       );
       c.diceFaces = ownFaces;
       sim.onFightDie?.call(
-          chapter: chapter,
-          enemyIds: [for (final e in entries) e.key],
-          matchOwned: held.matchOwned,
-          swappedTo: held.swappedTo,
-          die: c.diceId,
-          rounds: outcome.rounds,
-          won: outcome.won);
+        chapter: chapter,
+        enemyIds: [for (final e in entries) e.key],
+        matchOwned: held.matchOwned,
+        swappedTo: held.swappedTo,
+        die: c.diceId,
+        rounds: outcome.rounds,
+        won: outcome.won,
+      );
       if (held.swappedTo != null) {
         c
           ..diceId = keptDie.id
@@ -1499,11 +1594,14 @@ _SimResult _simulate(
         var xp = 0;
         for (final entry in entries) {
           xp += scaledReward(
-              (entry.value['xpReward'] as num?)?.toInt() ?? 0, c.level);
+            (entry.value['xpReward'] as num?)?.toInt() ?? 0,
+            c.level,
+          );
         }
         final levelBefore = c.level;
         c.gainXp(
-            (xp * chapterRewardMultiplier(chapter) * lostFightXpShare).round());
+          (xp * chapterRewardMultiplier(chapter) * lostFightXpShare).round(),
+        );
         growth?.levelsReached(levelBefore, c.level);
         party?.levelIs(c.level);
       }
@@ -1529,15 +1627,22 @@ _SimResult _simulate(
         var xp = 0;
         for (final entry in entries) {
           xp += scaledReward(
-              (entry.value['xpReward'] as num?)?.toInt() ?? 0, c.level);
+            (entry.value['xpReward'] as num?)?.toInt() ?? 0,
+            c.level,
+          );
         }
         final levelBefore = c.level;
-        c.gainXp(perks.scaleXp(
-            signs.scaleXp((xp * chapterRewardMultiplier(chapter)).round())));
+        c.gainXp(
+          perks.scaleXp(
+            signs.scaleXp((xp * chapterRewardMultiplier(chapter)).round()),
+          ),
+        );
         growth?.levelsReached(levelBefore, c.level);
         party?.levelIs(c.level);
-        if (entries.any((e) =>
-            isBossEnemy(e.key, e.value) || zoneBossEnemyIds.contains(e.key))) {
+        if (entries.any(
+          (e) =>
+              isBossEnemy(e.key, e.value) || zoneBossEnemyIds.contains(e.key),
+        )) {
           growth?.bossBeaten();
         }
         settle();
@@ -1590,14 +1695,16 @@ _SimResult _simulate(
     flags
       ..clear()
       ..addAll(r.flags);
-    steps.add(_SimStep(
-      nodeId: 'road:clan_crisis',
-      chapter: chapter,
-      mood: null,
-      uiTheme: null,
-      description: 'Seat crisis: ${crisis['attacker']} at '
-          '${crisis['place']} (${crisis['clan']}), ${r.how}',
-    ));
+    steps.add(
+      _SimStep(
+        nodeId: 'road:clan_crisis',
+        chapter: chapter,
+        mood: null,
+        uiTheme: null,
+        description: 'Seat crisis: ${crisis['attacker']} at '
+            '${crisis['place']} (${crisis['clan']}), ${r.how}',
+      ),
+    );
   }
 
   /// The chapter's attacks on districts (district_attacks.dart), rolled
@@ -1621,14 +1728,16 @@ _SimResult _simulate(
       ..addAll(after);
     final played = g.siegeOutcomes.values.fold<int>(0, (a, b) => a + b);
     if (played == before) return;
-    steps.add(_SimStep(
-      nodeId: 'road:district_siege',
-      chapter: chapter,
-      mood: null,
-      uiTheme: null,
-      description: 'District sieges: ${played - before} '
-          '(${g.siegeOutcomes})',
-    ));
+    steps.add(
+      _SimStep(
+        nodeId: 'road:district_siege',
+        chapter: chapter,
+        mood: null,
+        uiTheme: null,
+        description: 'District sieges: ${played - before} '
+            '(${g.siegeOutcomes})',
+      ),
+    );
   }
 
   /// [choice]'s own fight (see [fightEnemies]); one of the last battles
@@ -1641,10 +1750,13 @@ _SimResult _simulate(
     PerkEffects perks,
     int stolen,
   }) fight(StoryChoice choice, int chapter) => choice.triggersCombat
-      ? fightEnemies(choice.allTriggerEnemyIds, chapter,
+      ? fightEnemies(
+          choice.allTriggerEnemyIds,
+          chapter,
           once: choice.hasLossBranch,
           host: choice.hostFight,
-          forcedStage: choice.forcedStage)
+          forcedStage: choice.forcedStage,
+        )
       : fightEnemies(const [], chapter);
 
   /// The land route [routeId] crossed from [fromNodeId] (v1.285.0, see
@@ -1674,27 +1786,32 @@ _SimResult _simulate(
         ? const <String>[]
         : rulerPool(events, road.clanId, road.band);
     for (var i = 0; i < 3; i++) {
-      final result = resolveCrossing(road?.route ?? route, events,
-          health: c.currentHealth,
-          maxHealth: c.maxHealth,
-          gold: gold,
-          modifierFor: c.abilityBonus,
-          random: crossingRandom,
-          chapter: lastKnownChapter,
-          rulers: rulers);
+      final result = resolveCrossing(
+        road?.route ?? route,
+        events,
+        health: c.currentHealth,
+        maxHealth: c.maxHealth,
+        gold: gold,
+        modifierFor: c.abilityBonus,
+        random: crossingRandom,
+        chapter: lastKnownChapter,
+        rulers: rulers,
+      );
       c.currentHealth = result.health;
       gold = (gold + result.gold).clamp(0, 1 << 30);
-      steps.add(_SimStep(
-        nodeId: 'crossing:${route.id}',
-        chapter: lastKnownChapter,
-        mood: null,
-        uiTheme: null,
-        description: route.nameFor(french),
-        choiceText: result.arrived
-            ? (french ? 'Traversée' : 'Crossed')
-            : (french ? 'Ramené en arrière' : 'Carried back'),
-        goldMod: result.gold,
-      ));
+      steps.add(
+        _SimStep(
+          nodeId: 'crossing:${route.id}',
+          chapter: lastKnownChapter,
+          mood: null,
+          uiTheme: null,
+          description: route.nameFor(french),
+          choiceText: result.arrived
+              ? (french ? 'Traversée' : 'Crossed')
+              : (french ? 'Ramené en arrière' : 'Carried back'),
+          goldMod: result.gold,
+        ),
+      );
       if (result.arrived) return;
     }
   }
@@ -1722,27 +1839,35 @@ _SimResult _simulate(
     // The Wayfarer's Caravan on the road: its stall is looked at.
     if (kind == RoadEventKind.caravan) pendingShops.add(caravanShopId);
     if (kind != RoadEventKind.hazard) return kind != null;
-    final hazard = roadHazardFor(biome,
-        fromNodeId: fromNodeId, toNodeId: toNodeId, historyLength: at)!;
+    final hazard = roadHazardFor(
+      biome,
+      fromNodeId: fromNodeId,
+      toNodeId: toNodeId,
+      historyLength: at,
+    )!;
     final c = character;
     final pushOn = c == null ||
         hazardPushesOn(health: c.currentHealth, maxHealth: c.maxHealth);
     if (pushOn && c != null) {
-      c.currentHealth =
-          healthAfterHazard(c.currentHealth, hazardWoundFor(chapter));
+      c.currentHealth = healthAfterHazard(
+        c.currentHealth,
+        hazardWoundFor(chapter),
+      );
     }
-    steps.add(_SimStep(
-      nodeId: 'road:${hazard.id}',
-      chapter: lastKnownChapter,
-      mood: null,
-      uiTheme: null,
-      description: french
-          ? 'Danger\u00a0: ${hazard.nameFor(true)}'
-          : 'Hazard: ${hazard.name}',
-      choiceText: pushOn
-          ? (french ? 'Forcer le passage' : 'Push on')
-          : (french ? 'Attendre' : 'Wait it out'),
-    ));
+    steps.add(
+      _SimStep(
+        nodeId: 'road:${hazard.id}',
+        chapter: lastKnownChapter,
+        mood: null,
+        uiTheme: null,
+        description: french
+            ? 'Danger\u00a0: ${hazard.nameFor(true)}'
+            : 'Hazard: ${hazard.name}',
+        choiceText: pushOn
+            ? (french ? 'Forcer le passage' : 'Push on')
+            : (french ? 'Attendre' : 'Wait it out'),
+      ),
+    );
     return true;
   }
 
@@ -1798,15 +1923,17 @@ _SimResult _simulate(
                   1) <=
               chapter;
           if (w.needs.any(
-              (n) => n.kind != WorkNeedKind.material || !n.shopIds.any(open))) {
+            (n) => n.kind != WorkNeedKind.material || !n.shopIds.any(open),
+          )) {
             continue;
           }
           final price = w.needs.fold<int>(
-              0,
-              (sum, n) =>
-                  sum +
-                  (n.need - n.have) *
-                      (((items[n.id] as Map?)?['cost'] as num?)?.toInt() ?? 0));
+            0,
+            (sum, n) =>
+                sum +
+                (n.need - n.have) *
+                    (((items[n.id] as Map?)?['cost'] as num?)?.toInt() ?? 0),
+          );
           if (gold - houseGoldSpent < costOf(w.houseId) + price) continue;
           houseGoldSpent += price;
           for (final n in w.needs) {
@@ -1825,12 +1952,17 @@ _SimResult _simulate(
       final houseShop =
           (houses[id] as Map?)?['unlocksShopId']?.toString() ?? '';
       if (houseShop.isNotEmpty) pendingShops.add(houseShop);
-      party?.housesBuilt(housesBuilt.keys,
-          chapter: chapter, alignment: alignment);
+      party?.housesBuilt(
+        housesBuilt.keys,
+        chapter: chapter,
+        alignment: alignment,
+      );
       character?.rolls?.build(rollPowerOf(houses[id] as Map<String, dynamic>));
       houseGoldSpent += costOf(id);
-      materials = withoutMaterials(materials,
-          materialCountsOf(houses[id] as Map<String, dynamic>, 'materialCost'));
+      materials = withoutMaterials(
+        materials,
+        materialCountsOf(houses[id] as Map<String, dynamic>, 'materialCost'),
+      );
     }
   }
 
@@ -1863,19 +1995,21 @@ _SimResult _simulate(
           ? result.signs.scaleGold(result.perks.scaleGold(reward)) +
               result.stolen
           : 0;
-      steps.add(_SimStep(
-        nodeId: 'zone:$zoneId',
-        chapter: lastKnownChapter,
-        mood: node.mood,
-        uiTheme: node.uiTheme,
-        description: french ? 'Expédition : $name' : 'Expedition: $name',
-        choiceText: french ? 'Combattre' : 'Fight',
-        enemyId: ids.first,
-        goldMod: goldMod,
-        fightWon: result.won,
-        fightAttempts: result.attempts,
-        spellsCast: result.casts,
-      ));
+      steps.add(
+        _SimStep(
+          nodeId: 'zone:$zoneId',
+          chapter: lastKnownChapter,
+          mood: node.mood,
+          uiTheme: node.uiTheme,
+          description: french ? 'Expédition : $name' : 'Expedition: $name',
+          choiceText: french ? 'Combattre' : 'Fight',
+          enemyId: ids.first,
+          goldMod: goldMod,
+          fightWon: result.won,
+          fightAttempts: result.attempts,
+          spellsCast: result.casts,
+        ),
+      );
       combatCount++;
       gold += goldMod;
       return won;
@@ -1889,12 +2023,14 @@ _SimResult _simulate(
       // and materials, and a failed roll's hurt.
       final found = materialCountsOf(zone, 'rewardMaterials');
       for (final w in written) {
-        final built = buildWrittenStep(w,
-            zoneId: zoneId,
-            chapter: zoneChapter,
-            random: random,
-            enemies: enemies,
-            rewardMaterials: found);
+        final built = buildWrittenStep(
+          w,
+          zoneId: zoneId,
+          chapter: zoneChapter,
+          random: random,
+          enemies: enemies,
+          rewardMaterials: found,
+        );
         if (built.node.choices.isEmpty) continue;
         // Before a fight, a careful party (one led by its story: good or
         // evil) takes the way round it, when there is no roll or the roll
@@ -1918,8 +2054,11 @@ _SimResult _simulate(
         var failed = false;
         final ability = choice.checkAbility;
         if (ability != null) {
-          failed = !checkPasses(1 + random.nextInt(20), c.abilityBonus(ability),
-              choice.checkDC ?? 10);
+          failed = !checkPasses(
+            1 + random.nextInt(20),
+            c.abilityBonus(ability),
+            choice.checkDC ?? 10,
+          );
         }
         final foes = choice.avoidFightOnSuccess && !failed
             ? const <String>[]
@@ -1931,15 +2070,19 @@ _SimResult _simulate(
         final hurt = built.outcomeFor(pick).hurtOnFail;
         if (failed) {
           if (hurt > 0) {
-            c.currentHealth =
-                max(1, c.currentHealth - (c.maxHealth * hurt / 100).round());
+            c.currentHealth = max(
+              1,
+              c.currentHealth - (c.maxHealth * hurt / 100).round(),
+            );
           }
           continue;
         }
         gold += choice.goldMod;
         if (choice.healAmount > 0) {
-          c.currentHealth =
-              min(c.maxHealth, c.currentHealth + choice.healAmount);
+          c.currentHealth = min(
+            c.maxHealth,
+            c.currentHealth + choice.healAmount,
+          );
         }
         for (final MapEntry(key: id, value: n)
             in choice.grantMaterials.entries) {
@@ -1952,9 +2095,14 @@ _SimResult _simulate(
       if (enemies[bossId] is Map && !fightAt([bossId])) return;
     } else if (c != null) {
       final pool = SubNodeEngine.filterEnemyPool(
-          enemies: enemies, unlockedEnemyIds: const [], chapter: zoneChapter);
-      final packPool =
-          SubNodeEngine.filterPackPool(enemies: enemies, enemyPool: pool);
+        enemies: enemies,
+        unlockedEnemyIds: const [],
+        chapter: zoneChapter,
+      );
+      final packPool = SubNodeEngine.filterPackPool(
+        enemies: enemies,
+        enemyPool: pool,
+      );
       final events = (zone['expeditionCount'] as num?)?.toInt() ?? 3;
       for (var i = 0; i < events; i++) {
         if (pool.isEmpty || random.nextDouble() >= _expeditionFightShare) {
@@ -1962,8 +2110,10 @@ _SimResult _simulate(
         }
         final pack = packPool.isNotEmpty && random.nextDouble() < 0.3;
         final size = pack
-            ? SubNodeEngine.maxPackSizeFor(zoneChapter,
-                partySize: 1 + (party?.active.length ?? 0))
+            ? SubNodeEngine.maxPackSizeFor(
+                zoneChapter,
+                partySize: 1 + (party?.active.length ?? 0),
+              )
             : 1;
         final from = pack ? packPool : pool;
         if (!fightAt([
@@ -1978,8 +2128,10 @@ _SimResult _simulate(
     final rewardFlag = zone['rewardFlag']?.toString() ?? '';
     if (rewardFlag.isNotEmpty) flags.add(rewardFlag);
     gold += (zone['rewardGold'] as num?)?.toInt() ?? 0;
-    for (final MapEntry(key: id, value: count)
-        in materialCountsOf(zone, 'rewardMaterials').entries) {
+    for (final MapEntry(key: id, value: count) in materialCountsOf(
+      zone,
+      'rewardMaterials',
+    ).entries) {
       for (var i = 0; i < count; i++) {
         materials.add(id);
       }
@@ -2000,13 +2152,15 @@ _SimResult _simulate(
     }
     final node = story.nodeFor(currentId);
     if (node == null) {
-      steps.add(_SimStep(
-        nodeId: currentId,
-        chapter: lastKnownChapter,
-        mood: null,
-        uiTheme: null,
-        description: 'Broken link: node $currentId does not exist.',
-      ));
+      steps.add(
+        _SimStep(
+          nodeId: currentId,
+          chapter: lastKnownChapter,
+          mood: null,
+          uiTheme: null,
+          description: 'Broken link: node $currentId does not exist.',
+        ),
+      );
       return finish(
         endingText: 'Broken link: node $currentId does not exist.',
         reachedStepCap: false,
@@ -2031,7 +2185,9 @@ _SimResult _simulate(
       final reached = lastKnownChapter;
       if (reached != null) {
         arrivals.putIfAbsent(
-            reached, () => (level: character!.level, gold: gold));
+          reached,
+          () => (level: character!.level, gold: gold),
+        );
         growth?.chapterReached(reached, geography: sim?.geography);
         settle();
         buildHouses();
@@ -2040,16 +2196,20 @@ _SimResult _simulate(
         blessAtHub(node, reached);
         if (transcribe) {
           final standings = growth?.politics.standings ?? const {};
-          note('== Chapter $reached: level ${character.level}, '
-              '${character.currentHealth}/${character.maxHealth} HP, '
-              '$gold gold, alone (the walk keeps no companions)');
+          note(
+            '== Chapter $reached: level ${character.level}, '
+            '${character.currentHealth}/${character.maxHealth} HP, '
+            '$gold gold, alone (the walk keeps no companions)',
+          );
           if (standings.isNotEmpty) {
-            note('   standing: ${[
-              for (final e
-                  in standings.entries.toList()
-                    ..sort((a, b) => a.key.compareTo(b.key)))
-                '${e.key} ${e.value.toStringAsFixed(0)}',
-            ].join(', ')}');
+            note(
+              '   standing: ${[
+                for (final e
+                    in standings.entries.toList()
+                      ..sort((a, b) => a.key.compareTo(b.key)))
+                  '${e.key} ${e.value.toStringAsFixed(0)}'
+              ].join(', ')}',
+            );
           }
         }
       }
@@ -2060,13 +2220,15 @@ _SimResult _simulate(
     runEvents();
 
     if (node.choices.isEmpty) {
-      steps.add(_SimStep(
-        nodeId: currentId,
-        chapter: lastKnownChapter,
-        mood: node.mood,
-        uiTheme: node.uiTheme,
-        description: node.descriptionFor(french),
-      ));
+      steps.add(
+        _SimStep(
+          nodeId: currentId,
+          chapter: lastKnownChapter,
+          mood: node.mood,
+          uiTheme: node.uiTheme,
+          description: node.descriptionFor(french),
+        ),
+      );
       return finish(endingText: node.description, reachedStepCap: false);
     }
 
@@ -2115,14 +2277,16 @@ _SimResult _simulate(
         toured.add(next.id);
         tourPlaceId = next.id;
         tourBudget = _placeActivitiesPerVisit;
-        steps.add(_SimStep(
-          nodeId: currentId,
-          chapter: lastKnownChapter,
-          mood: node.mood,
-          uiTheme: node.uiTheme,
-          description: node.descriptionFor(french),
-          choiceText: french ? 'Aller à : $name' : 'Go to $name',
-        ));
+        steps.add(
+          _SimStep(
+            nodeId: currentId,
+            chapter: lastKnownChapter,
+            mood: node.mood,
+            uiTheme: node.uiTheme,
+            description: node.descriptionFor(french),
+            choiceText: french ? 'Aller à : $name' : 'Go to $name',
+          ),
+        );
         final arrival = arrivalNodeFor(next, visited);
         // A road (D2: the camp's trips roll as the story's do); by sea, its
         // landing does (v1.361).
@@ -2156,17 +2320,20 @@ _SimResult _simulate(
       }
     }
     if (tourPlaceId != null && currentId == tourPlaceId) {
-      final open =
-          node.choices.where((c) => !c.isHiddenFor(flags) && gateOpen(c));
+      final open = node.choices.where(
+        (c) => !c.isHiddenFor(flags) && gateOpen(c),
+      );
       if (tourBudget <= 0 || open.isEmpty) {
-        steps.add(_SimStep(
-          nodeId: currentId,
-          chapter: lastKnownChapter,
-          mood: node.mood,
-          uiTheme: node.uiTheme,
-          description: node.descriptionFor(french),
-          choiceText: french ? 'Retour au camp' : 'Back to the camp',
-        ));
+        steps.add(
+          _SimStep(
+            nodeId: currentId,
+            chapter: lastKnownChapter,
+            mood: node.mood,
+            uiTheme: node.uiTheme,
+            description: node.descriptionFor(french),
+            choiceText: french ? 'Retour au camp' : 'Back to the camp',
+          ),
+        );
         tourPlaceId = null;
         // A tour only ever starts from a camp.
         final camp = campId!;
@@ -2182,9 +2349,11 @@ _SimResult _simulate(
     // second beat waits for the first (showIfFlags); a choice behind a
     // politics gate that fails (v1.196) is hidden, or shut with its text.
     final shown = node.choices
-        .where((c) =>
-            !c.isHiddenFor(flags) &&
-            (gateOpen(c) || (c.lockedText ?? '').isNotEmpty))
+        .where(
+          (c) =>
+              !c.isHiddenFor(flags) &&
+              (gateOpen(c) || (c.lockedText ?? '').isNotEmpty),
+        )
         .toList();
     final visible = shown.isNotEmpty ? shown : node.choices;
     final available =
@@ -2231,17 +2400,21 @@ _SimResult _simulate(
     }
     final failTarget = choice.failNextId ?? '';
     if (!checkPassed && failTarget.isNotEmpty) {
-      steps.add(_SimStep(
-        nodeId: currentId,
-        chapter: lastKnownChapter,
-        mood: node.mood,
-        uiTheme: node.uiTheme,
-        description: node.descriptionFor(french),
-        choiceText: choice.textFor(french),
-      ));
+      steps.add(
+        _SimStep(
+          nodeId: currentId,
+          chapter: lastKnownChapter,
+          mood: node.mood,
+          uiTheme: node.uiTheme,
+          description: node.descriptionFor(french),
+          choiceText: choice.textFor(french),
+        ),
+      );
       if (failTarget == 'EXIT' || failTarget == 'END') {
         return finish(
-            endingText: choice.textFor(french), reachedStepCap: false);
+          endingText: choice.textFor(french),
+          reachedStepCap: false,
+        );
       }
       currentId = failTarget;
       visited.add(currentId);
@@ -2261,24 +2434,27 @@ _SimResult _simulate(
         ? fightEnemies(const [], lastKnownChapter ?? 1)
         : fight(choice, lastKnownChapter ?? 1);
     final effectiveGoldMod = choice.goldMod +
-        fightResult.signs.scaleGold(fightResult.perks
-            .scaleGold(sneaked ? 0 : combatGoldReward(choice))) +
+        fightResult.signs.scaleGold(
+          fightResult.perks.scaleGold(sneaked ? 0 : combatGoldReward(choice)),
+        ) +
         fightResult.stolen;
     if (fightResult.won == false && choice.hasLossBranch) {
       // Lost, and the story goes on: the defeat branch, with none of the
       // choice's own effects (they are the winner's).
-      steps.add(_SimStep(
-        nodeId: currentId,
-        chapter: lastKnownChapter,
-        mood: node.mood,
-        uiTheme: node.uiTheme,
-        description: node.descriptionFor(french),
-        choiceText: choice.textFor(french),
-        enemyId: choice.allTriggerEnemyIds.first,
-        fightWon: false,
-        fightAttempts: fightResult.attempts,
-        spellsCast: fightResult.casts,
-      ));
+      steps.add(
+        _SimStep(
+          nodeId: currentId,
+          chapter: lastKnownChapter,
+          mood: node.mood,
+          uiTheme: node.uiTheme,
+          description: node.descriptionFor(french),
+          choiceText: choice.textFor(french),
+          enemyId: choice.allTriggerEnemyIds.first,
+          fightWon: false,
+          fightAttempts: fightResult.attempts,
+          spellsCast: fightResult.casts,
+        ),
+      );
       combatCount++;
       currentId = choice.loseNextId!;
       visited.add(currentId);
@@ -2290,30 +2466,33 @@ _SimResult _simulate(
     // crossLand).
     if (choice.crossesLand) crossLand(choice.landRouteId!, currentId, step);
 
-    steps.add(_SimStep(
-      nodeId: currentId,
-      chapter: lastKnownChapter,
-      mood: node.mood,
-      uiTheme: node.uiTheme,
-      description: node.descriptionFor(french),
-      choiceText: choice.textFor(french),
-      enemyId: choice.allTriggerEnemyIds.isEmpty
-          ? null
-          : choice.allTriggerEnemyIds.first,
-      goldMod: effectiveGoldMod,
-      alignmentMod: choice.alignmentMod,
-      fightWon: fightResult.won,
-      fightAttempts: fightResult.attempts,
-      spellsCast: fightResult.casts,
-    ));
+    steps.add(
+      _SimStep(
+        nodeId: currentId,
+        chapter: lastKnownChapter,
+        mood: node.mood,
+        uiTheme: node.uiTheme,
+        description: node.descriptionFor(french),
+        choiceText: choice.textFor(french),
+        enemyId: choice.allTriggerEnemyIds.isEmpty
+            ? null
+            : choice.allTriggerEnemyIds.first,
+        goldMod: effectiveGoldMod,
+        alignmentMod: choice.alignmentMod,
+        fightWon: fightResult.won,
+        fightAttempts: fightResult.attempts,
+        spellsCast: fightResult.casts,
+      ),
+    );
 
     // A forced price the purse can't make is taken in health (#583).
     final c0 = character;
     if (choice.shortfallWounds && c0 != null) {
       c0.currentHealth = max(
-          1,
-          c0.currentHealth +
-              shortfallWound(gold: gold, goldMod: effectiveGoldMod));
+        1,
+        c0.currentHealth +
+            shortfallWound(gold: gold, goldMod: effectiveGoldMod),
+      );
     }
     gold = (gold + effectiveGoldMod).clamp(0, 1 << 30);
     alignment += choice.alignmentMod;
@@ -2326,19 +2505,27 @@ _SimResult _simulate(
       // Vica joins at her scene, before its choices (story_companions.dart).
       p.joinFromStory(visited, chapter: ch, alignment: alignment);
       // Never a permanent companion (Vica): `*` the first other seated.
-      final lostId = storyLossOf(choice.loseAllyId,
-          active: p.active, companions: p.companions);
+      final lostId = storyLossOf(
+        choice.loseAllyId,
+        active: p.active,
+        companions: p.companions,
+      );
       p.react(
-          chapter: ch,
-          cause: 'choice at $currentId',
-          alignmentMod: choice.alignmentMod,
-          goldMod: choice.goldMod,
-          approvalMods: choice.approvalMods,
-          exclude: lostId,
-          alignment: alignment);
+        chapter: ch,
+        cause: 'choice at $currentId',
+        alignmentMod: choice.alignmentMod,
+        goldMod: choice.goldMod,
+        approvalMods: choice.approvalMods,
+        exclude: lostId,
+        alignment: alignment,
+      );
       if (lostId != null) {
-        p.lose(lostId,
-            chapter: ch, cause: 'taken at $currentId', alignment: alignment);
+        p.lose(
+          lostId,
+          chapter: ch,
+          cause: 'taken at $currentId',
+          alignment: alignment,
+        );
       }
     }
     // The trainer's lesson, on the feature ladder (feature_unlocks.dart).
@@ -2351,8 +2538,10 @@ _SimResult _simulate(
     }
     // What the choice does to the coast, once (v1.196: the claim and the
     // Host among it).
-    applyPolitics(choice.politics,
-        choicePoliticsKey(currentId, node.choices.indexOf(choice)));
+    applyPolitics(
+      choice.politics,
+      choicePoliticsKey(currentId, node.choices.indexOf(choice)),
+    );
     if ((choice.unlockShopId ?? '').isNotEmpty) {
       pendingShops.add(choice.unlockShopId!);
       sceneShops.add(choice.unlockShopId!);
@@ -2407,12 +2596,14 @@ _SimResult _simulate(
       }
       for (final id in [choice.unlockQuestId, choice.questIDToProgress]) {
         if (id != null && id.isNotEmpty) {
-          questLog.accept(id,
-              step: step,
-              flags: flags,
-              gold: gold,
-              alignmentLabel: _alignmentLabelOf(alignment),
-              killsBefore: killsBefore);
+          questLog.accept(
+            id,
+            step: step,
+            flags: flags,
+            gold: gold,
+            alignmentLabel: _alignmentLabelOf(alignment),
+            killsBefore: killsBefore,
+          );
         }
       }
     }
@@ -2421,13 +2612,19 @@ _SimResult _simulate(
       // A choice that sails there (its place has a landing of its own) has
       // no road and no road event, only its landing.
       final sails = choice.travels &&
-          landingPortIdFor(story.nodeFor(choice.travelPlaceId!)?.settlement,
-                  sim?.ports ?? const {}) !=
+          landingPortIdFor(
+                story.nodeFor(choice.travelPlaceId!)?.settlement,
+                sim?.ports ?? const {},
+              ) !=
               null;
       final event = !sails && roadHazard(currentId, choice.nextId, step);
       if (!choice.opensCharacterCreation) {
-        roadTurn(currentId, choice.nextId,
-            travels: choice.travels, taken: event);
+        roadTurn(
+          currentId,
+          choice.nextId,
+          travels: choice.travels,
+          taken: event,
+        );
       }
     }
     if (choice.triggersCombat) combatCount++;
@@ -2474,16 +2671,25 @@ _SimResult _simulate(
   SimPolicy policy = SimPolicy.naive,
 }) {
   Map<String, dynamic> table(String name) => tables[name] ?? const {};
-  final sim = _simContextOf(tables, gameConfig,
-      clash: clash, clashOff: clashOff, policy: policy);
+  final sim = _simContextOf(
+    tables,
+    gameConfig,
+    clash: clash,
+    clashOff: clashOff,
+    policy: policy,
+  );
   final random = Random(seed);
   final tally = <String, ({int runs, int attempts, int won})>{};
   var signsTaken = 0;
   var offersTaken = 0;
   var skillsLearned = 0;
   for (var i = 0; i < runs; i++) {
-    final result =
-        _simulate(story, random, enemies: table('enemies'), sim: sim);
+    final result = _simulate(
+      story,
+      random,
+      enemies: table('enemies'),
+      sim: sim,
+    );
     signsTaken += result.signsTaken.length;
     offersTaken += result.offersTaken;
     skillsLearned += result.skillsLearned;
@@ -2545,8 +2751,10 @@ _SimContext _simContextOf(
       titles: table('titles'),
     ),
     skillTrees: table('skill_trees'),
-    geography:
-        Geography.parse(geography: table('geography'), biomes: table('biomes')),
+    geography: Geography.parse(
+      geography: table('geography'),
+      biomes: table('biomes'),
+    ),
     clash: clash,
     clashOff: clashOff,
     quests: table('quests'),
@@ -2684,17 +2892,20 @@ List<SimRunSummary> simulatePlaythroughs(
   SimDieWatch? onFightDie,
   int firstRun = 0,
 }) {
-  final sim = _simContextOf(tables, gameConfig,
-      clashOff: clashOff,
-      startSpecs: startSpecs,
-      context: context,
-      reinforcement: reinforcement,
-      championFights: championFights,
-      featureLadder: featureLadder,
-      policy: policy,
-      onFight: onFight,
-      swapDiePerFight: swapDiePerFight,
-      onFightDie: onFightDie);
+  final sim = _simContextOf(
+    tables,
+    gameConfig,
+    clashOff: clashOff,
+    startSpecs: startSpecs,
+    context: context,
+    reinforcement: reinforcement,
+    championFights: championFights,
+    featureLadder: featureLadder,
+    policy: policy,
+    onFight: onFight,
+    swapDiePerFight: swapDiePerFight,
+    onFightDie: onFightDie,
+  );
   final enemies = tables['enemies'] ?? const {};
   final out = <SimRunSummary>[];
   for (var i = 0; i < plan.length; i++) {
@@ -2702,16 +2913,19 @@ List<SimRunSummary> simulatePlaythroughs(
     // slices (tool/sim_batch.sh) plays exactly the runs it would in one.
     final run = firstRun + i;
     final random = Random(seed * 100003 + run);
-    final result = _simulate(story, random,
-        enemies: enemies,
-        strategy: plan[i].strategy,
-        maxSteps: maxSteps,
-        sim: sim,
-        forceRaceId: plan[i].raceId,
-        forceProfessionId: plan[i].professionId,
-        coverage: coverage,
-        detourSalt: seed * 100003 + run,
-        transcribe: transcripts);
+    final result = _simulate(
+      story,
+      random,
+      enemies: enemies,
+      strategy: plan[i].strategy,
+      maxSteps: maxSteps,
+      sim: sim,
+      forceRaceId: plan[i].raceId,
+      forceProfessionId: plan[i].professionId,
+      coverage: coverage,
+      detourSalt: seed * 100003 + run,
+      transcribe: transcripts,
+    );
     final byChapter =
         <String, ({int attempts, int won, int fights, int firstTry})>{};
     final fought = <String, int>{};

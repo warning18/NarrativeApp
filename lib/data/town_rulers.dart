@@ -106,8 +106,10 @@ int townColorOf(String clanId, Map<String, Faction> factions) => clanId.isEmpty
 
 /// The towns of [geography], in its order: the locations of a [_townKinds]
 /// kind and the places with a city plan ([planIds]).
-List<String> townIds(Geography geography,
-    {Iterable<String> planIds = const []}) {
+List<String> townIds(
+  Geography geography, {
+  Iterable<String> planIds = const [],
+}) {
   final plans = planIds.toSet();
   return [
     for (final place in geography.places.values)
@@ -129,8 +131,13 @@ Map<String, TownRuler> townRulers(
 }) {
   final own = holdings(geography, politics);
   TownRuler ruler(
-      String placeId, String cityId, String clanId, TownRulerSource source,
-      {bool isDistrict = false, bool mixed = false}) {
+    String placeId,
+    String cityId,
+    String clanId,
+    TownRulerSource source, {
+    bool isDistrict = false,
+    bool mixed = false,
+  }) {
     final color = townColorOf(clanId, factions);
     return TownRuler(
       placeId: placeId,
@@ -167,8 +174,13 @@ Map<String, TownRuler> townRulers(
           isDistrict: true,
         ),
     ];
-    result[townId] = ruler(townId, townId, clanId, source,
-        mixed: districtRulers.any((d) => d.clanId != clanId));
+    result[townId] = ruler(
+      townId,
+      townId,
+      clanId,
+      source,
+      mixed: districtRulers.any((d) => d.clanId != clanId),
+    );
     for (final d in districtRulers) {
       result[d.placeId] = d;
     }

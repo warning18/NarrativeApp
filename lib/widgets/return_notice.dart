@@ -94,7 +94,9 @@ class ReturnNotice extends ConsumerStatefulWidget {
 class _ReturnNoticeState extends ConsumerState<ReturnNotice>
     with SingleTickerProviderStateMixin {
   late final AnimationController _in = AnimationController(
-      vsync: this, duration: const Duration(milliseconds: 260));
+    vsync: this,
+    duration: const Duration(milliseconds: 260),
+  );
 
   @override
   void didChangeDependencies() {
@@ -145,10 +147,13 @@ class _ReturnNoticeState extends ConsumerState<ReturnNotice>
               ),
               const SizedBox(width: 10),
               Expanded(
-                child: Text(text,
-                    key: const Key('return_notice_text'),
-                    style: theme.textTheme.bodyMedium
-                        ?.copyWith(fontFamily: InkFonts.prose)),
+                child: Text(
+                  text,
+                  key: const Key('return_notice_text'),
+                  style: theme.textTheme.bodyMedium?.copyWith(
+                    fontFamily: InkFonts.prose,
+                  ),
+                ),
               ),
             ],
           ),
@@ -158,9 +163,10 @@ class _ReturnNoticeState extends ConsumerState<ReturnNotice>
     return still
         ? FadeTransition(opacity: curve, child: card)
         : SlideTransition(
-            position:
-                Tween<Offset>(begin: const Offset(0, -0.6), end: Offset.zero)
-                    .animate(curve),
+            position: Tween<Offset>(
+              begin: const Offset(0, -0.6),
+              end: Offset.zero,
+            ).animate(curve),
             child: FadeTransition(opacity: curve, child: card),
           );
   }

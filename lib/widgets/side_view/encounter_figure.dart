@@ -54,8 +54,14 @@ class EncounterWalk {
   /// Paints the figure on the ground (scene pixel row 66, the party's), with
   /// [partyX] the place of the party's last figure (the one nearest the
   /// left).
-  void paint(ui.Canvas canvas, Size size, double t, double u,
-      {required double partyX, double baseY = 66}) {
+  void paint(
+    ui.Canvas canvas,
+    Size size,
+    double t,
+    double u, {
+    required double partyX,
+    double baseY = 66,
+  }) {
     final p = progressAt(t);
     final x = xAt(p, partyX);
     final walking = p < 1;
@@ -79,11 +85,19 @@ class EncounterWalk {
       final h = use.frameHeight * scale * use.drawScale;
       final foot = use.footInset * scale * use.drawScale;
       final dst = ui.Rect.fromLTWH(
-          (x - w / 2) * u, (baseY - h + foot + bob) * u, w * u, h * u);
+        (x - w / 2) * u,
+        (baseY - h + foot + bob) * u,
+        w * u,
+        h * u,
+      );
       canvas.drawImageRect(
         image,
         ui.Rect.fromLTWH(
-            0, 0, use.frameWidth.toDouble(), use.frameHeight.toDouble()),
+          0,
+          0,
+          use.frameWidth.toDouble(),
+          use.frameHeight.toDouble(),
+        ),
         dst,
         ui.Paint()
           ..filterQuality = ui.FilterQuality.none

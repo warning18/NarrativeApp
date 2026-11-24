@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+
 import '../theme/palette.dart';
 
 /// A small, deliberately restrained visual accent for one of the story
@@ -61,15 +62,9 @@ const Map<String, UiThemePalette> _uiThemePalettes = {
   // Sun-bleached sand and white clay: the Waste, the wreck and the Wells.
   'desert': UiThemePalette(accent: Color(0xFFC09A5B), lineHeight: 1.6),
   // Cold bone-grey stone, slow and oppressive.
-  'catacombs': UiThemePalette(
-    accent: Color(0xFF6E7C76),
-    lineHeight: 1.68,
-  ),
+  'catacombs': UiThemePalette(accent: Color(0xFF6E7C76), lineHeight: 1.68),
   // Sickly, toxic olive.
-  'sewers': UiThemePalette(
-    accent: Color(0xFF6B7A3A),
-    lineHeight: 1.68,
-  ),
+  'sewers': UiThemePalette(accent: Color(0xFF6B7A3A), lineHeight: 1.68),
   // Warm parchment gold — quiet, reflective closure.
   'origin_ending': UiThemePalette(
     accent: Color(0xFFB89B72),
@@ -77,10 +72,7 @@ const Map<String, UiThemePalette> _uiThemePalettes = {
   ),
   // Soft dusk blue-grey — the calm after, distinct from origin_ending's
   // warmth.
-  'epilogue': UiThemePalette(
-    accent: Color(0xFF7C8CA0),
-    letterSpacing: 0.3,
-  ),
+  'epilogue': UiThemePalette(accent: Color(0xFF7C8CA0), letterSpacing: 0.3),
 };
 
 /// The palette for [uiTheme], or null to leave the reading screen's colors
@@ -120,7 +112,9 @@ class ResolvedUiAccent {
 /// palette, every field is just the scheme's own existing color, so the
 /// card looks exactly as it did before this feature existed.
 ResolvedUiAccent resolveUiAccent(
-    ColorScheme colorScheme, UiThemePalette? palette) {
+  ColorScheme colorScheme,
+  UiThemePalette? palette,
+) {
   if (palette == null) {
     return ResolvedUiAccent(
       text: colorScheme.primary,
@@ -133,7 +127,10 @@ ResolvedUiAccent resolveUiAccent(
     border: Color.lerp(colorScheme.outlineVariant, palette.accent, 0.5)!,
     // Once painted at ~35% opacity as the card's tint; the stitched page
     // no longer paints it.
-    cardTint:
-        Color.lerp(colorScheme.surfaceContainerHighest, palette.accent, 0.16)!,
+    cardTint: Color.lerp(
+      colorScheme.surfaceContainerHighest,
+      palette.accent,
+      0.16,
+    )!,
   );
 }

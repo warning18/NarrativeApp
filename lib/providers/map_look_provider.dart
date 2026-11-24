@@ -34,7 +34,8 @@ class _MapLookNotifier extends StateNotifier<MapLook> {
 }
 
 final mapLookProvider = StateNotifierProvider<_MapLookNotifier, MapLook>(
-    (ref) => _MapLookNotifier());
+  (ref) => _MapLookNotifier(),
+);
 
 const String _mapShapePrefsKey = 'world_map_shape';
 
@@ -65,7 +66,8 @@ class _MapShapeNotifier extends StateNotifier<MapShape> {
 }
 
 final mapShapeProvider = StateNotifierProvider<_MapShapeNotifier, MapShape>(
-    (ref) => _MapShapeNotifier());
+  (ref) => _MapShapeNotifier(),
+);
 
 const String chartCalquePrefsKey = 'world_map_calque';
 
@@ -97,7 +99,8 @@ class _ChartCalqueNotifier extends StateNotifier<ChartCalque> {
 
 final chartCalqueProvider =
     StateNotifierProvider<_ChartCalqueNotifier, ChartCalque>(
-        (ref) => _ChartCalqueNotifier());
+  (ref) => _ChartCalqueNotifier(),
+);
 
 const String chartWeatherPrefsKey = 'world_map_weather';
 
@@ -127,7 +130,8 @@ class _ChartWeatherNotifier extends StateNotifier<bool> {
 }
 
 final chartWeatherProvider = StateNotifierProvider<_ChartWeatherNotifier, bool>(
-    (ref) => _ChartWeatherNotifier());
+  (ref) => _ChartWeatherNotifier(),
+);
 
 const String chartWeatherWorldOnlyPrefsKey = 'world_map_weather_world_only';
 
@@ -157,4 +161,5 @@ class _ChartWeatherWorldOnlyNotifier extends StateNotifier<bool> {
 
 final chartWeatherWorldOnlyProvider =
     StateNotifierProvider<_ChartWeatherWorldOnlyNotifier, bool>(
-        (ref) => _ChartWeatherWorldOnlyNotifier());
+  (ref) => _ChartWeatherWorldOnlyNotifier(),
+);

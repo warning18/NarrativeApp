@@ -29,8 +29,11 @@ import '../theme/icon_sizes.dart';
 /// camp: [restedLine] says the night was had, then the die is rolled and
 /// its face played out. The party's reactions follow once the dialog is
 /// closed.
-Future<void> showCampFateDie(BuildContext context, WidgetRef ref,
-    {required String restedLine}) async {
+Future<void> showCampFateDie(
+  BuildContext context,
+  WidgetRef ref, {
+  required String restedLine,
+}) async {
   final session = ref.read(playerSessionProvider);
   final chapter = ref.read(reachedChapterProvider);
   final story = ref.read(storyDataProvider).value;
@@ -254,21 +257,26 @@ class _CampFateDialogState extends ConsumerState<CampFateDialog> {
     String t(String key) => trFor(lang, key);
     switch (roll.face) {
       case FateFace.windfall:
-        return t(widget.fateContext.provisions * 2 <=
-                widget.fateContext.provisionsMax
-            ? 'fate_windfall_rations'
-            : 'fate_windfall_gold');
+        return t(
+          widget.fateContext.provisions * 2 <= widget.fateContext.provisionsMax
+              ? 'fate_windfall_rations'
+              : 'fate_windfall_gold',
+        );
       case FateFace.visitor:
         return t('fate_visitor_${roll.visitor!.name}');
       case FateFace.rumor:
         return t('fate_rumor').replaceAll(
-            '{place}', _placeName(roll.placeId!, lang == AppLanguage.fr));
+          '{place}',
+          _placeName(roll.placeId!, lang == AppLanguage.fr),
+        );
       case FateFace.quarrel:
         return t('fate_quarrel')
             .replaceAll('{a}', _companionName(roll.quarrelers.first))
             .replaceAll('{b}', _companionName(roll.quarrelers.last))
             .replaceAll(
-                '{topic}', t('fate_quarrel_topic_${roll.quarrelTopic}'));
+              '{topic}',
+              t('fate_quarrel_topic_${roll.quarrelTopic}'),
+            );
       case FateFace.theft:
         return t('fate_theft');
       case FateFace.quiet:
@@ -281,17 +289,21 @@ class _CampFateDialogState extends ConsumerState<CampFateDialog> {
     final chapter = widget.fateContext.chapter;
     return trFor(lang, 'fate_choice_${choice.name}')
         .replaceAll(
-            '{n}',
-            choice == FateChoice.handOver
-                ? '${deserterBounty(chapter)}'
-                : '$pilgrimRations')
+          '{n}',
+          choice == FateChoice.handOver
+              ? '${deserterBounty(chapter)}'
+              : '$pilgrimRations',
+        )
         .replaceAll(
-            '{name}',
-            _companionName(choice == FateChoice.sideWithSecond
+          '{name}',
+          _companionName(
+            choice == FateChoice.sideWithSecond
                 ? roll.quarrelers.last
                 : roll.quarrelers.isEmpty
                     ? ''
-                    : roll.quarrelers.first))
+                    : roll.quarrelers.first,
+          ),
+        )
         .replaceAll('{dc}', '${fateCheckDc(chapter)}');
   }
 
@@ -305,24 +317,26 @@ class _CampFateDialogState extends ConsumerState<CampFateDialog> {
       case FateFace.theft:
         if (outcome.checkPassed ?? false) return t('fate_theft_caught');
         if (outcome.gold < 0) return t('fate_theft_gold');
-        return t(outcome.provisions < 0
-            ? 'fate_theft_rations'
-            : 'fate_theft_nothing');
+        return t(
+          outcome.provisions < 0 ? 'fate_theft_rations' : 'fate_theft_nothing',
+        );
       case FateFace.visitor:
         return _chosen == null ? null : t('fate_result_${_chosen!.name}');
       case FateFace.quarrel:
         final first = _companionName(roll.quarrelers.first);
         final second = _companionName(roll.quarrelers.last);
         return switch (_chosen) {
-          FateChoice.sideWithFirst => t('fate_result_side')
-              .replaceAll('{winner}', first)
-              .replaceAll('{loser}', second),
-          FateChoice.sideWithSecond => t('fate_result_side')
-              .replaceAll('{winner}', second)
-              .replaceAll('{loser}', first),
-          FateChoice.makePeace => t((outcome.checkPassed ?? false)
-              ? 'fate_result_peace'
-              : 'fate_result_no_peace'),
+          FateChoice.sideWithFirst => t(
+              'fate_result_side',
+            ).replaceAll('{winner}', first).replaceAll('{loser}', second),
+          FateChoice.sideWithSecond => t(
+              'fate_result_side',
+            ).replaceAll('{winner}', second).replaceAll('{loser}', first),
+          FateChoice.makePeace => t(
+              (outcome.checkPassed ?? false)
+                  ? 'fate_result_peace'
+                  : 'fate_result_no_peace',
+            ),
           _ => null,
         };
       case FateFace.windfall:
@@ -356,13 +370,16 @@ class _CampFateDialogState extends ConsumerState<CampFateDialog> {
         t('fate_lose_rations').replaceAll('{n}', '${-outcome.provisions}'),
       if (outcome.alignment != 0)
         t('fate_alignment').replaceAll(
-            '{n}',
-            outcome.alignment > 0
-                ? '+${outcome.alignment}'
-                : '${outcome.alignment}'),
+          '{n}',
+          outcome.alignment > 0
+              ? '+${outcome.alignment}'
+              : '${outcome.alignment}',
+        ),
       if (outcome.revealPlaceId != null)
-        t('fate_place_found').replaceAll('{place}',
-            _placeName(outcome.revealPlaceId!, lang == AppLanguage.fr)),
+        t('fate_place_found').replaceAll(
+          '{place}',
+          _placeName(outcome.revealPlaceId!, lang == AppLanguage.fr),
+        ),
     ];
   }
 
@@ -387,17 +404,19 @@ class _CampFateDialogState extends ConsumerState<CampFateDialog> {
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Icon(face.icon,
-              size: IconSize.s32,
-              color: lit ? scheme.onPrimaryContainer : scheme.onSurfaceVariant),
+          Icon(
+            face.icon,
+            size: IconSize.s32,
+            color: lit ? scheme.onPrimaryContainer : scheme.onSurfaceVariant,
+          ),
           const SizedBox(height: 4),
           Text(
             trFor(lang, face.labelKey),
             textAlign: TextAlign.center,
             maxLines: 2,
             style: theme.textTheme.labelSmall?.copyWith(
-                color:
-                    lit ? scheme.onPrimaryContainer : scheme.onSurfaceVariant),
+              color: lit ? scheme.onPrimaryContainer : scheme.onSurfaceVariant,
+            ),
           ),
         ],
       ),
@@ -456,8 +475,10 @@ class _CampFateDialogState extends ConsumerState<CampFateDialog> {
               ),
               if (!showEvent) ...[
                 const SizedBox(height: 8),
-                Text(trFor(lang, 'fate_hint'),
-                    style: theme.textTheme.labelSmall),
+                Text(
+                  trFor(lang, 'fate_hint'),
+                  style: theme.textTheme.labelSmall,
+                ),
               ],
               if (showEvent) ...[
                 const SizedBox(height: 16),
@@ -489,15 +510,20 @@ class _CampFateDialogState extends ConsumerState<CampFateDialog> {
               ],
               if (result != null) ...[
                 const SizedBox(height: 12),
-                Text(result,
-                    style: body?.copyWith(fontStyle: FontStyle.italic)),
+                Text(
+                  result,
+                  style: body?.copyWith(fontStyle: FontStyle.italic),
+                ),
               ],
               if (effects.isNotEmpty) ...[
                 const SizedBox(height: 8),
                 for (final line in effects)
-                  Text(line,
-                      style: theme.textTheme.labelLarge
-                          ?.copyWith(color: theme.colorScheme.primary)),
+                  Text(
+                    line,
+                    style: theme.textTheme.labelLarge?.copyWith(
+                      color: theme.colorScheme.primary,
+                    ),
+                  ),
               ],
             ],
           ),

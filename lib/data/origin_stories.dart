@@ -1085,7 +1085,9 @@ class OriginResult {
 }
 
 OriginResult originResultOf(
-    List<OriginMemory> memories, List<OriginAnswer?> answers) {
+  List<OriginMemory> memories,
+  List<OriginAnswer?> answers,
+) {
   var alignment = 0;
   final abilities = <String, int>{};
   final flags = <String>[];

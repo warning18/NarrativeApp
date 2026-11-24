@@ -71,8 +71,10 @@ class TowerNpcFigure extends StatelessWidget {
           // pixel of ink round it, so the crop shifts by one pixel); until it
           // is ready, or if it fails, nothing stands there.
           child: Transform.translate(
-            offset:
-                Offset(-(_x0 - 1) * k.toDouble(), -(_y0 - 1) * k.toDouble()),
+            offset: Offset(
+              -(_x0 - 1) * k.toDouble(),
+              -(_y0 - 1) * k.toDouble(),
+            ),
             child: FutureBuilder<ui.Image>(
               future: InkSprites.of('assets/visuals/tower/npc/$name.png'),
               builder: (context, snap) => snap.data == null
@@ -83,7 +85,8 @@ class TowerNpcFigure extends StatelessWidget {
                       height: 66.0 * k,
                       fit: BoxFit.fill,
                       filterQuality: FilterQuality.none,
-                      isAntiAlias: false),
+                      isAntiAlias: false,
+                    ),
             ),
           ),
         ),
@@ -103,13 +106,18 @@ class _Head extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final column = Column(
-        crossAxisAlignment: CrossAxisAlignment.start, children: children);
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: children,
+    );
     if (figure == null) return column;
-    return Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
-      Expanded(child: column),
-      const SizedBox(width: 8),
-      figure!,
-    ]);
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Expanded(child: column),
+        const SizedBox(width: 8),
+        figure!,
+      ],
+    );
   }
 }
 
@@ -134,19 +142,27 @@ class _Choice extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Column(children: [
-      SizedBox(
-        width: double.infinity,
-        child:
-            FilledButton(key: firstKey, onPressed: onFirst, child: Text(first)),
-      ),
-      const SizedBox(height: 8),
-      SizedBox(
-        width: double.infinity,
-        child: OutlinedButton(
-            key: secondKey, onPressed: onSecond, child: Text(second)),
-      ),
-    ]);
+    return Column(
+      children: [
+        SizedBox(
+          width: double.infinity,
+          child: FilledButton(
+            key: firstKey,
+            onPressed: onFirst,
+            child: Text(first),
+          ),
+        ),
+        const SizedBox(height: 8),
+        SizedBox(
+          width: double.infinity,
+          child: OutlinedButton(
+            key: secondKey,
+            onPressed: onSecond,
+            child: Text(second),
+          ),
+        ),
+      ],
+    );
   }
 }
 
@@ -195,82 +211,115 @@ class TowerParleyCard extends ConsumerWidget {
     return InkPanel(
       key: const Key('tower_parley'),
       lit: true,
-      child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-        _Head(
-          figure: towerOfficerClans.contains(clanId)
-              ? const TowerNpcFigure('guardian')
-              : foeId == null
-                  ? null
-                  : TowerFoeFigure(foeId!, size: towerParleyFoeSize),
-          children: [
-            TowerEventTag(
-                Icons.forum_outlined, tr(ref, 'tower_parley'), inkPaper),
-            const SizedBox(height: 6),
-            Text(tr(ref, 'tower_parley_title'),
-                style: theme.textTheme.titleMedium
-                    ?.copyWith(fontFamily: InkFonts.display)),
-            Text(tr(ref, 'tower_parley_body'),
-                style: theme.textTheme.bodyMedium
-                    ?.copyWith(color: theme.colorScheme.onSurfaceVariant)),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          _Head(
+            figure: towerOfficerClans.contains(clanId)
+                ? const TowerNpcFigure('guardian')
+                : foeId == null
+                    ? null
+                    : TowerFoeFigure(foeId!, size: towerParleyFoeSize),
+            children: [
+              TowerEventTag(
+                Icons.forum_outlined,
+                tr(ref, 'tower_parley'),
+                inkPaper,
+              ),
+              const SizedBox(height: 6),
+              Text(
+                tr(ref, 'tower_parley_title'),
+                style: theme.textTheme.titleMedium?.copyWith(
+                  fontFamily: InkFonts.display,
+                ),
+              ),
+              Text(
+                tr(ref, 'tower_parley_body'),
+                style: theme.textTheme.bodyMedium?.copyWith(
+                  color: theme.colorScheme.onSurfaceVariant,
+                ),
+              ),
+            ],
+          ),
+          if (faction != null) ...[
+            const SizedBox(height: 8),
+            ClanDisc(faction, size: 28, name: true),
           ],
-        ),
-        if (faction != null) ...[
-          const SizedBox(height: 8),
-          ClanDisc(faction, size: 28, name: true),
-        ],
-        const SizedBox(height: 10),
-        if (oathPass)
-          Row(children: [
-            const Icon(Icons.verified_outlined,
-                size: IconSize.s16, color: inkPaper),
-            const SizedBox(width: 8),
-            Expanded(
-                child: Text(tr(ref, 'tower_parley_sworn'),
+          const SizedBox(height: 10),
+          if (oathPass)
+            Row(
+              children: [
+                const Icon(
+                  Icons.verified_outlined,
+                  size: IconSize.s16,
+                  color: inkPaper,
+                ),
+                const SizedBox(width: 8),
+                Expanded(
+                  child: Text(
+                    tr(ref, 'tower_parley_sworn'),
                     key: const Key('tower_parley_sworn'),
-                    style:
-                        theme.textTheme.bodyMedium?.copyWith(color: inkPaper))),
-          ])
-        else ...[
-          Row(children: [
-            Text('${(chance * 100).round()}%',
-                key: const Key('tower_parley_chance'),
-                style:
-                    theme.textTheme.headlineSmall?.copyWith(color: inkPaper)),
-            const SizedBox(width: 10),
-            Expanded(
-              child: InkBar(value: chance, height: 8),
+                    style: theme.textTheme.bodyMedium?.copyWith(
+                      color: inkPaper,
+                    ),
+                  ),
+                ),
+              ],
+            )
+          else ...[
+            Row(
+              children: [
+                Text(
+                  '${(chance * 100).round()}%',
+                  key: const Key('tower_parley_chance'),
+                  style: theme.textTheme.headlineSmall?.copyWith(
+                    color: inkPaper,
+                  ),
+                ),
+                const SizedBox(width: 10),
+                Expanded(child: InkBar(value: chance, height: 8)),
+              ],
             ),
-          ]),
-          Text(
+            Text(
               '${tr(ref, '${ability}_label')} · '
               '${_sub(ref, 'tower_event_chance', {'mod': signed, 'dc': dc})}',
-              style: theme.textTheme.bodySmall),
-          TowerEventOutcome(
+              style: theme.textTheme.bodySmall,
+            ),
+            TowerEventOutcome(
               Icons.check_circle_outline,
               inkPaper,
               tr(ref, 'tower_parley_pass'),
-              _sub(ref, 'tower_parley_pass_text', {'n': landsOn})),
-          TowerEventOutcome(Icons.sports_mma, inkRed,
-              tr(ref, 'tower_parley_fail'), tr(ref, 'tower_parley_fail_text')),
-        ],
-        const SizedBox(height: 8),
-        Text(tr(ref, 'tower_parley_forgo'),
+              _sub(ref, 'tower_parley_pass_text', {'n': landsOn}),
+            ),
+            TowerEventOutcome(
+              Icons.sports_mma,
+              inkRed,
+              tr(ref, 'tower_parley_fail'),
+              tr(ref, 'tower_parley_fail_text'),
+            ),
+          ],
+          const SizedBox(height: 8),
+          Text(
+            tr(ref, 'tower_parley_forgo'),
             key: const Key('tower_parley_forgo'),
             style: theme.textTheme.bodySmall?.copyWith(
-                fontStyle: FontStyle.italic,
-                color: theme.colorScheme.onSurfaceVariant)),
-        if (onTalk != null || onFight != null) ...[
-          const SizedBox(height: 12),
-          _Choice(
-            firstKey: const Key('tower_parley_talk'),
-            first: tr(ref, 'tower_parley_talk'),
-            onFirst: onTalk,
-            secondKey: const Key('tower_parley_fight'),
-            second: tr(ref, 'tower_parley_fight'),
-            onSecond: onFight,
+              fontStyle: FontStyle.italic,
+              color: theme.colorScheme.onSurfaceVariant,
+            ),
           ),
+          if (onTalk != null || onFight != null) ...[
+            const SizedBox(height: 12),
+            _Choice(
+              firstKey: const Key('tower_parley_talk'),
+              first: tr(ref, 'tower_parley_talk'),
+              onFirst: onTalk,
+              secondKey: const Key('tower_parley_fight'),
+              second: tr(ref, 'tower_parley_fight'),
+              onSecond: onFight,
+            ),
+          ],
         ],
-      ]),
+      ),
     );
   }
 }
@@ -326,112 +375,151 @@ class TowerMerchantRoom extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final theme = Theme.of(context);
     final faction = clanId == null ? null : ref.watch(factionsProvider)[clanId];
-    return Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-      InkPanel(
-        key: const Key('tower_merchant'),
-        lit: true,
-        child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-          _Head(
-            figure: const TowerNpcFigure('chandler'),
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        InkPanel(
+          key: const Key('tower_merchant'),
+          lit: true,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              TowerEventTag(Icons.storefront_outlined,
-                  tr(ref, 'tower_merchant'), inkPaper),
-              const SizedBox(height: 6),
-              Text(tr(ref, 'tower_merchant_title'),
-                  style: theme.textTheme.titleMedium
-                      ?.copyWith(fontFamily: InkFonts.display)),
-              Text(tr(ref, 'tower_merchant_body'),
-                  style: theme.textTheme.bodyMedium
-                      ?.copyWith(color: theme.colorScheme.onSurfaceVariant)),
-            ],
-          ),
-          const SizedBox(height: 10),
-          InkChip(_sub(ref, 'tower_merchant_wallet', {'n': wallet}),
-              color: inkPaper),
-          const SizedBox(height: 6),
-          // The half price: a muted line for a climber who is not sworn to
-          // the clan, the green chip for one who is.
-          if (discount)
-            InkChip(tr(ref, 'tower_merchant_sworn'), color: inkPaper)
-          else if (faction != null)
-            Text(
-                _sub(ref, 'tower_merchant_half_price',
-                    {'clan': faction.shortFor(ref.watch(appLanguageProvider))}),
-                key: const Key('tower_merchant_half_price'),
-                style: theme.textTheme.bodySmall?.copyWith(
-                    fontStyle: FontStyle.italic,
-                    color: theme.colorScheme.onSurfaceVariant)),
-        ]),
-      ),
-      for (final item in stock)
-        Padding(
-          padding: const EdgeInsets.only(top: 8),
-          child: InkPanel(
-            key: Key('tower_stall_${item.id}'),
-            dim: item.bought,
-            child: Row(children: [
-              Icon(item.icon, size: IconSize.s32, color: inkPaper),
-              const SizedBox(width: 10),
-              Expanded(
-                child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(tr(ref, 'tower_merchant_${item.id}'),
-                          style: theme.textTheme.titleSmall),
-                      Text(
-                          _sub(ref, 'tower_merchant_${item.id}_text',
-                              {'n': item.amount}),
-                          style: theme.textTheme.bodySmall?.copyWith(
-                              color: theme.colorScheme.onSurfaceVariant)),
-                    ]),
+              _Head(
+                figure: const TowerNpcFigure('chandler'),
+                children: [
+                  TowerEventTag(
+                    Icons.storefront_outlined,
+                    tr(ref, 'tower_merchant'),
+                    inkPaper,
+                  ),
+                  const SizedBox(height: 6),
+                  Text(
+                    tr(ref, 'tower_merchant_title'),
+                    style: theme.textTheme.titleMedium?.copyWith(
+                      fontFamily: InkFonts.display,
+                    ),
+                  ),
+                  Text(
+                    tr(ref, 'tower_merchant_body'),
+                    style: theme.textTheme.bodyMedium?.copyWith(
+                      color: theme.colorScheme.onSurfaceVariant,
+                    ),
+                  ),
+                ],
               ),
-              const SizedBox(width: 8),
-              Column(crossAxisAlignment: CrossAxisAlignment.end, children: [
+              const SizedBox(height: 10),
+              InkChip(
+                _sub(ref, 'tower_merchant_wallet', {'n': wallet}),
+                color: inkPaper,
+              ),
+              const SizedBox(height: 6),
+              // The half price: a muted line for a climber who is not sworn to
+              // the clan, the green chip for one who is.
+              if (discount)
+                InkChip(tr(ref, 'tower_merchant_sworn'), color: inkPaper)
+              else if (faction != null)
                 Text(
-                    _sub(
-                        ref,
-                        item.price == 1
-                            ? 'tower_merchant_price_one'
-                            : 'tower_merchant_price',
-                        {'n': item.price}),
-                    style: theme.textTheme.labelLarge?.copyWith(
-                        color: item.affordable || item.bought
-                            ? inkPaper
-                            : inkRed)),
-                const SizedBox(height: 4),
-                // A Buy you cannot pay for is switched off and dimmed, like a
-                // bought one.
-                Opacity(
-                  opacity: item.affordable || item.bought ? 1 : .4,
-                  child: FilledButton(
-                    key: Key('tower_stall_buy_${item.id}'),
-                    onPressed: item.bought || !item.affordable || onBuy == null
-                        ? null
-                        : () => onBuy!(item.id),
-                    child: Text(tr(
-                        ref,
-                        item.bought
-                            ? 'tower_merchant_bought'
-                            : 'tower_merchant_buy')),
+                  _sub(ref, 'tower_merchant_half_price', {
+                    'clan': faction.shortFor(ref.watch(appLanguageProvider)),
+                  }),
+                  key: const Key('tower_merchant_half_price'),
+                  style: theme.textTheme.bodySmall?.copyWith(
+                    fontStyle: FontStyle.italic,
+                    color: theme.colorScheme.onSurfaceVariant,
                   ),
                 ),
-              ]),
-            ]),
+            ],
           ),
         ),
-      const SizedBox(height: 12),
-      SizedBox(
-        width: double.infinity,
-        child: OutlinedButton(
-          key: const Key('tower_merchant_leave'),
-          // A solid ground: on the plate's arch the bare frame read weakly.
-          style: OutlinedButton.styleFrom(
-              backgroundColor: theme.colorScheme.surface),
-          onPressed: onLeave,
-          child: Text(tr(ref, 'tower_merchant_leave')),
+        for (final item in stock)
+          Padding(
+            padding: const EdgeInsets.only(top: 8),
+            child: InkPanel(
+              key: Key('tower_stall_${item.id}'),
+              dim: item.bought,
+              child: Row(
+                children: [
+                  Icon(item.icon, size: IconSize.s32, color: inkPaper),
+                  const SizedBox(width: 10),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          tr(ref, 'tower_merchant_${item.id}'),
+                          style: theme.textTheme.titleSmall,
+                        ),
+                        Text(
+                          _sub(ref, 'tower_merchant_${item.id}_text', {
+                            'n': item.amount,
+                          }),
+                          style: theme.textTheme.bodySmall?.copyWith(
+                            color: theme.colorScheme.onSurfaceVariant,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  const SizedBox(width: 8),
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.end,
+                    children: [
+                      Text(
+                        _sub(
+                          ref,
+                          item.price == 1
+                              ? 'tower_merchant_price_one'
+                              : 'tower_merchant_price',
+                          {'n': item.price},
+                        ),
+                        style: theme.textTheme.labelLarge?.copyWith(
+                          color: item.affordable || item.bought
+                              ? inkPaper
+                              : inkRed,
+                        ),
+                      ),
+                      const SizedBox(height: 4),
+                      // A Buy you cannot pay for is switched off and dimmed, like a
+                      // bought one.
+                      Opacity(
+                        opacity: item.affordable || item.bought ? 1 : .4,
+                        child: FilledButton(
+                          key: Key('tower_stall_buy_${item.id}'),
+                          onPressed:
+                              item.bought || !item.affordable || onBuy == null
+                                  ? null
+                                  : () => onBuy!(item.id),
+                          child: Text(
+                            tr(
+                              ref,
+                              item.bought
+                                  ? 'tower_merchant_bought'
+                                  : 'tower_merchant_buy',
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            ),
+          ),
+        const SizedBox(height: 12),
+        SizedBox(
+          width: double.infinity,
+          child: OutlinedButton(
+            key: const Key('tower_merchant_leave'),
+            // A solid ground: on the plate's arch the bare frame read weakly.
+            style: OutlinedButton.styleFrom(
+              backgroundColor: theme.colorScheme.surface,
+            ),
+            onPressed: onLeave,
+            child: Text(tr(ref, 'tower_merchant_leave')),
+          ),
         ),
-      ),
-    ]);
+      ],
+    );
   }
 }
 
@@ -458,43 +546,55 @@ class TowerBargainCard extends ConsumerWidget {
     return InkPanel(
       key: const Key('tower_bargain'),
       lit: true,
-      child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-        _Head(
-          figure: const TowerNpcFigure('clerk'),
-          children: [
-            TowerEventTag(Icons.balance, tr(ref, 'tower_bargain'), inkPaper),
-            const SizedBox(height: 6),
-            Text(tr(ref, 'tower_bargain_title'),
-                style: theme.textTheme.titleMedium
-                    ?.copyWith(fontFamily: InkFonts.display)),
-            Text(tr(ref, 'tower_bargain_body'),
-                style: theme.textTheme.bodyMedium
-                    ?.copyWith(color: theme.colorScheme.onSurfaceVariant)),
-          ],
-        ),
-        TowerEventOutcome(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          _Head(
+            figure: const TowerNpcFigure('clerk'),
+            children: [
+              TowerEventTag(Icons.balance, tr(ref, 'tower_bargain'), inkPaper),
+              const SizedBox(height: 6),
+              Text(
+                tr(ref, 'tower_bargain_title'),
+                style: theme.textTheme.titleMedium?.copyWith(
+                  fontFamily: InkFonts.display,
+                ),
+              ),
+              Text(
+                tr(ref, 'tower_bargain_body'),
+                style: theme.textTheme.bodyMedium?.copyWith(
+                  color: theme.colorScheme.onSurfaceVariant,
+                ),
+              ),
+            ],
+          ),
+          TowerEventOutcome(
             Icons.north,
             inkPaper,
             tr(ref, 'tower_bargain_gain'),
-            _sub(ref, 'tower_bargain_gain_text',
-                {'stat': tr(ref, '${stat}_label').toLowerCase()})),
-        TowerEventOutcome(
+            _sub(ref, 'tower_bargain_gain_text', {
+              'stat': tr(ref, '${stat}_label').toLowerCase(),
+            }),
+          ),
+          TowerEventOutcome(
             Icons.favorite_border,
             inkRed,
             tr(ref, 'tower_bargain_cost'),
-            _sub(ref, 'tower_bargain_cost_text', {'n': maxHealthCost})),
-        if (onAccept != null || onRefuse != null) ...[
-          const SizedBox(height: 12),
-          _Choice(
-            firstKey: const Key('tower_bargain_accept'),
-            first: tr(ref, 'tower_bargain_accept'),
-            onFirst: onAccept,
-            secondKey: const Key('tower_bargain_refuse'),
-            second: tr(ref, 'tower_bargain_refuse'),
-            onSecond: onRefuse,
+            _sub(ref, 'tower_bargain_cost_text', {'n': maxHealthCost}),
           ),
+          if (onAccept != null || onRefuse != null) ...[
+            const SizedBox(height: 12),
+            _Choice(
+              firstKey: const Key('tower_bargain_accept'),
+              first: tr(ref, 'tower_bargain_accept'),
+              onFirst: onAccept,
+              secondKey: const Key('tower_bargain_refuse'),
+              second: tr(ref, 'tower_bargain_refuse'),
+              onSecond: onRefuse,
+            ),
+          ],
         ],
-      ]),
+      ),
     );
   }
 }

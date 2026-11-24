@@ -81,20 +81,27 @@ class SpeechBubble extends StatelessWidget {
             child: Row(
               children: [
                 Expanded(
-                  child: Text(speaker.toUpperCase(),
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
-                      style: theme.textTheme.labelMedium?.copyWith(
-                          fontFamily: InkFonts.system,
-                          letterSpacing: 1.5,
-                          color: ink.gold)),
+                  child: Text(
+                    speaker.toUpperCase(),
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: theme.textTheme.labelMedium?.copyWith(
+                      fontFamily: InkFonts.system,
+                      letterSpacing: 1.5,
+                      color: ink.gold,
+                    ),
+                  ),
                 ),
                 if (counter != null)
                   Padding(
                     padding: EdgeInsets.only(right: onVoice == null ? 8 : 0),
-                    child: Text(counter!,
-                        style: theme.textTheme.labelSmall?.copyWith(
-                            fontFamily: InkFonts.system, color: ink.ash)),
+                    child: Text(
+                      counter!,
+                      style: theme.textTheme.labelSmall?.copyWith(
+                        fontFamily: InkFonts.system,
+                        color: ink.ash,
+                      ),
+                    ),
                   ),
                 if (onVoice != null)
                   IconButton(
@@ -102,9 +109,10 @@ class SpeechBubble extends StatelessWidget {
                     visualDensity: VisualDensity.compact,
                     onPressed: onVoice,
                     icon: Icon(
-                        voice ? Icons.volume_up : Icons.volume_off_outlined,
-                        size: IconSize.s16,
-                        color: voice ? ink.gold : ink.ash),
+                      voice ? Icons.volume_up : Icons.volume_off_outlined,
+                      size: IconSize.s16,
+                      color: voice ? ink.gold : ink.ash,
+                    ),
                   ),
               ],
             ),
@@ -123,7 +131,9 @@ class SpeechBubble extends StatelessWidget {
                   child: Stack(
                     children: [
                       Opacity(
-                          opacity: 0, child: Text(fullText, style: textStyle)),
+                        opacity: 0,
+                        child: Text(fullText, style: textStyle),
+                      ),
                       Text(shown, style: textStyle),
                     ],
                   ),
@@ -174,11 +184,12 @@ class _TailPainter extends CustomPainter {
           ..lineTo(w, h + 1));
     canvas.drawPath(path, Paint()..color = fill);
     canvas.drawPath(
-        path,
-        Paint()
-          ..color = stroke
-          ..style = PaintingStyle.stroke
-          ..strokeWidth = 1.5);
+      path,
+      Paint()
+        ..color = stroke
+        ..style = PaintingStyle.stroke
+        ..strokeWidth = 1.5,
+    );
   }
 
   @override

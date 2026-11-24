@@ -160,7 +160,9 @@ List<TowerReward> towerOfferFor({
                   towerSkillRarities[step].contains(value['rarity']) &&
                   !hero.unlockedSkillIds.contains(key) &&
                   _restrictionAllows(
-                      value['restrictedProfessionID'], hero.professionId) &&
+                    value['restrictedProfessionID'],
+                    hero.professionId,
+                  ) &&
                   _restrictionAllows(value['restrictedRaceID'], hero.raceId) &&
                   _prerequisiteMet(value['requiredSkillID'], hero))
                 key,
@@ -199,8 +201,10 @@ List<TowerReward> towerOfferFor({
   final oathRandom = towerRandom(seed, floor, TowerStream.oath);
   if (!oathDue && oathRandom.nextDouble() >= towerOathChance) return const [];
   return [
-    TowerReward(TowerRewardKind.clanOath,
-        id: free[oathRandom.nextInt(free.length)]),
+    TowerReward(
+      TowerRewardKind.clanOath,
+      id: free[oathRandom.nextInt(free.length)],
+    ),
   ];
 }
 

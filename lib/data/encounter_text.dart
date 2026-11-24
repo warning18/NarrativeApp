@@ -69,6 +69,6 @@ Bilingual? encounterLineFor({
 List<String> _strings(Object? raw) => raw is List
     ? [
         for (final e in raw)
-          if (e.toString().isNotEmpty) e.toString()
+          if (e.toString().isNotEmpty) e.toString(),
       ]
     : const [];

@@ -39,5 +39,6 @@ class TimedSceneClock {
 }
 
 /// The one clock of the timed scene the story is on (see TimedSceneClock).
-final timedSceneClockProvider =
-    Provider<TimedSceneClock>((ref) => TimedSceneClock());
+final timedSceneClockProvider = Provider<TimedSceneClock>(
+  (ref) => TimedSceneClock(),
+);

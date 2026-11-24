@@ -31,10 +31,12 @@ class CharacterDieBadge extends ConsumerWidget {
     if (!isFeatureUnlocked(ref, GameFeature.inventory.id)) {
       return const SizedBox.shrink();
     }
-    final dieId =
-        ref.watch(playerSessionProvider.select((s) => s.equippedDiceId));
-    final owned =
-        ref.watch(playerSessionProvider.select((s) => s.ownedDiceIds));
+    final dieId = ref.watch(
+      playerSessionProvider.select((s) => s.equippedDiceId),
+    );
+    final owned = ref.watch(
+      playerSessionProvider.select((s) => s.ownedDiceIds),
+    );
     final dice = ref.watch(localizedDbProvider(diceSchema)).value;
     final die = dieId == null ? null : dice?[dieId] as Map<String, dynamic>?;
     if (dieId == null || die == null) return const SizedBox.shrink();
@@ -48,43 +50,58 @@ class CharacterDieBadge extends ConsumerWidget {
       child: GestureDetector(
         key: const Key('character_die_badge'),
         behavior: HitTestBehavior.opaque,
-        onTap: () => Navigator.of(context).push(MaterialPageRoute(
-            builder: (_) => DiceLoadoutScreen(initialDieId: dieId))),
+        onTap: () => Navigator.of(context).push(
+          MaterialPageRoute(
+            builder: (_) => DiceLoadoutScreen(initialDieId: dieId),
+          ),
+        ),
         child: SizedBox(
           width: 34,
           height: 34,
-          child: Stack(clipBehavior: Clip.none, children: [
-            Container(
-              width: 34,
-              height: 34,
-              padding: const EdgeInsets.all(2),
-              decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                color: theme.scaffoldBackgroundColor,
-              ),
-              child: InventoryDieTile(
-                  dieId: dieId, faces: faces, size: 28, lit: true),
-            ),
-            if (more > 0)
-              Positioned(
-                left: -10,
-                bottom: -4,
-                child: Container(
-                  key: const Key('character_die_badge_more'),
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 4, vertical: 1),
-                  decoration: BoxDecoration(
-                    color: ink.gold,
-                    borderRadius: BorderRadius.circular(8),
-                  ),
-                  child: Text('+$more',
-                      style: theme.textTheme.labelSmall?.copyWith(
-                          color: theme.scaffoldBackgroundColor,
-                          fontWeight: FontWeight.w700,
-                          height: 1.1)),
+          child: Stack(
+            clipBehavior: Clip.none,
+            children: [
+              Container(
+                width: 34,
+                height: 34,
+                padding: const EdgeInsets.all(2),
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  color: theme.scaffoldBackgroundColor,
+                ),
+                child: InventoryDieTile(
+                  dieId: dieId,
+                  faces: faces,
+                  size: 28,
+                  lit: true,
                 ),
               ),
-          ]),
+              if (more > 0)
+                Positioned(
+                  left: -10,
+                  bottom: -4,
+                  child: Container(
+                    key: const Key('character_die_badge_more'),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 4,
+                      vertical: 1,
+                    ),
+                    decoration: BoxDecoration(
+                      color: ink.gold,
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                    child: Text(
+                      '+$more',
+                      style: theme.textTheme.labelSmall?.copyWith(
+                        color: theme.scaffoldBackgroundColor,
+                        fontWeight: FontWeight.w700,
+                        height: 1.1,
+                      ),
+                    ),
+                  ),
+                ),
+            ],
+          ),
         ),
       ),
     );

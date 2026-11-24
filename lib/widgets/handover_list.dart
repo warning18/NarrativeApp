@@ -31,26 +31,36 @@ class HandoverList extends ConsumerWidget {
     String clan(String id) => id.isEmpty
         ? trFor(language, 'town_handover_no_one')
         : factions[id]?.shortFor(language) ?? id;
-    Widget side(String id) => Row(mainAxisSize: MainAxisSize.min, children: [
-          if (id.isNotEmpty) ...[
-            ClanFlag(factionId: id, height: 16),
-            const SizedBox(width: 4),
+    Widget side(String id) => Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            if (id.isNotEmpty) ...[
+              ClanFlag(factionId: id, height: 16),
+              const SizedBox(width: 4),
+            ],
+            Flexible(
+              child: Text(
+                clan(id),
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+                style: theme.textTheme.labelMedium,
+              ),
+            ),
           ],
-          Flexible(
-              child: Text(clan(id),
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                  style: theme.textTheme.labelMedium)),
-        ]);
+        );
     return Padding(
       key: const Key('handover_list'),
       padding: const EdgeInsets.fromLTRB(20, 4, 20, 8),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(trFor(language, 'town_handover_title').toUpperCase(),
-              style: theme.textTheme.labelMedium
-                  ?.copyWith(letterSpacing: 1.4, color: ink.gold)),
+          Text(
+            trFor(language, 'town_handover_title').toUpperCase(),
+            style: theme.textTheme.labelMedium?.copyWith(
+              letterSpacing: 1.4,
+              color: ink.gold,
+            ),
+          ),
           const SizedBox(height: 4),
           for (final h in changes)
             Padding(
@@ -62,15 +72,21 @@ class HandoverList extends ConsumerWidget {
                 runSpacing: 2,
                 children: [
                   Text(town(h.townId), style: theme.textTheme.bodyMedium),
-                  Row(mainAxisSize: MainAxisSize.min, children: [
-                    side(h.fromClan),
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 6),
-                      child: Icon(Icons.arrow_forward,
-                          size: IconSize.s16, color: ink.ash),
-                    ),
-                    side(h.toClan),
-                  ]),
+                  Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      side(h.fromClan),
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 6),
+                        child: Icon(
+                          Icons.arrow_forward,
+                          size: IconSize.s16,
+                          color: ink.ash,
+                        ),
+                      ),
+                      side(h.toClan),
+                    ],
+                  ),
                 ],
               ),
             ),

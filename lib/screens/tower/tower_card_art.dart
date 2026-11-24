@@ -51,8 +51,11 @@ const Map<String, String> towerCardStandIn = {
 
 /// The vignette of a card of [kind] ('skill', 'die', 'spell' or 'oath') and,
 /// when it has one, its [variant]: a skill's element, a spell's family.
-String towerCardVignette(String kind,
-    {String? variant, Map<String, String> art = towerCardArt}) {
+String towerCardVignette(
+  String kind, {
+  String? variant,
+  Map<String, String> art = towerCardArt,
+}) {
   if (variant != null && variant.isNotEmpty) {
     final own = art['$kind:$variant'];
     if (own != null) return own;

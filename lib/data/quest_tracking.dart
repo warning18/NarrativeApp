@@ -43,7 +43,10 @@ class QuestGoal {
 /// or the last one marked [QuestGoal.ready] when all are met (a quest with
 /// no objectives is ready at once).
 QuestGoal questGoalFor(
-    String questId, Map<String, dynamic> quest, PlayerSession session) {
+  String questId,
+  Map<String, dynamic> quest,
+  PlayerSession session,
+) {
   final statuses = objectiveStatusesFor(questId, quest, session);
   for (final status in statuses) {
     if (!status.met) {
@@ -72,7 +75,9 @@ bool isMainQuest(Map<String, dynamic>? quest) =>
 /// The main quests offered and not taken on yet whose requirements the
 /// party meets: taken on at once.
 List<String> mainQuestsToTake(
-    Map<String, dynamic> quests, PlayerSession session) {
+  Map<String, dynamic> quests,
+  PlayerSession session,
+) {
   return [
     for (final id in session.unlockedQuestIds)
       if (quests[id] case final Map<String, dynamic> quest
@@ -80,12 +85,12 @@ List<String> mainQuestsToTake(
               !session.activeQuestIds.contains(id) &&
               !session.completedQuestIds.contains(id) &&
               session.meetsRequirements(
-                  reqGold: (quest['requiredGold'] as num?)?.toInt() ?? 0,
-                  reqFlags: [
-                    for (final f
-                        in (quest['requiredFlags'] as List?) ?? const [])
-                      f.toString()
-                  ]))
+                reqGold: (quest['requiredGold'] as num?)?.toInt() ?? 0,
+                reqFlags: [
+                  for (final f in (quest['requiredFlags'] as List?) ?? const [])
+                    f.toString(),
+                ],
+              ))
         id,
   ];
 }
@@ -93,7 +98,9 @@ List<String> mainQuestsToTake(
 /// The active quests whose objectives are all met: completed on their own,
 /// with no step of the player's (Wave 6), in the order they were taken.
 List<String> questsReadyToComplete(
-    Map<String, dynamic> quests, PlayerSession session) {
+  Map<String, dynamic> quests,
+  PlayerSession session,
+) {
   return [
     for (final id in session.activeQuestIds)
       if (quests[id] case final Map<String, dynamic> quest
@@ -125,10 +132,14 @@ bool enemyDiscovered(String enemyId, PlayerSession session) =>
 /// way: its `requiredFlag` held (or empty) and the story at its chapter
 /// ([currentChapter]); one with a `rank` (a clan court's) only by its
 /// `requiredFlag`, never by the chapter alone.
-bool npcDiscovered(String npcId, Map<String, dynamic> npc,
-    PlayerSession session, int currentChapter,
-    {Iterable<String> visitedNodeIds = const [],
-    Iterable<String>? unlockedShopIds}) {
+bool npcDiscovered(
+  String npcId,
+  Map<String, dynamic> npc,
+  PlayerSession session,
+  int currentChapter, {
+  Iterable<String> visitedNodeIds = const [],
+  Iterable<String>? unlockedShopIds,
+}) {
   if (session.talkedToNpcIds.contains(npcId)) return true;
   List<String> list(String key) => [
         for (final e in (npc[key] as List?) ?? const [])
@@ -161,8 +172,11 @@ bool npcDiscovered(String npcId, Map<String, dynamic> npc,
 /// The order a play-mode quest list shows [questIds] in: the followed
 /// quest, then quests ready to turn in, then the rest in progress, then
 /// those offered but not taken, then finished ones -- each group by id.
-List<String> questDisplayOrder(Iterable<String> questIds,
-    Map<String, dynamic> quests, PlayerSession session) {
+List<String> questDisplayOrder(
+  Iterable<String> questIds,
+  Map<String, dynamic> quests,
+  PlayerSession session,
+) {
   final followed = followedQuestIdOf(session);
   int rank(String id) {
     if (id == followed) return 0;

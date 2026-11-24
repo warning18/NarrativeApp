@@ -8,8 +8,10 @@ int presetBonus(Map<String, dynamic>? preset, String key) =>
 
 /// A preset's non-zero bonuses as (l10n key, value) pairs: the body first
 /// (HP, damage, armour, gold, luck, charisma), then the abilities.
-List<MapEntry<String, int>> presetBonuses(Map<String, dynamic> preset,
-    {bool withOffers = false}) {
+List<MapEntry<String, int>> presetBonuses(
+  Map<String, dynamic> preset, {
+  bool withOffers = false,
+}) {
   const keys = [
     ('bonusMaxHealth', 'hp_label'),
     ('bonusBaseDamage', 'damage_label'),
@@ -64,8 +66,11 @@ const int _startingDieManaFaceIndex = 1;
   int wisdom,
   int perception,
   int gold,
-}) newCharacterTotals(Map<String, dynamic> defaults, Map<String, dynamic> race,
-    Map<String, dynamic> profession) {
+}) newCharacterTotals(
+  Map<String, dynamic> defaults,
+  Map<String, dynamic> race,
+  Map<String, dynamic> profession,
+) {
   int total(String key, String bonusKey, {int fallback = 0}) =>
       ((defaults[key] as num?)?.toInt() ?? fallback) +
       presetBonus(race, bonusKey) +
@@ -108,7 +113,9 @@ List<String> startingSpellIdsFor(Map<String, dynamic> profession) =>
 /// skill. Nothing from another class: the generic Heavy Blow every open
 /// Skill face falls back to is the only skill everyone shares.
 List<String> starterSkillsFor(
-    Map<String, dynamic> race, Map<String, dynamic> profession) {
+  Map<String, dynamic> race,
+  Map<String, dynamic> profession,
+) {
   final ids = [
     profession['standardSkillID']?.toString() ?? '',
     profession['manaSkillID']?.toString() ?? '',
@@ -125,7 +132,9 @@ List<String> starterSkillsFor(
 /// Heritage Technique face, and a caster's mana skill on the apprentice
 /// die's Channeling face.
 Map<String, String> starterFaceAssignments(
-    Map<String, dynamic> race, Map<String, dynamic> profession) {
+  Map<String, dynamic> race,
+  Map<String, dynamic> profession,
+) {
   final professionSkillId = profession['standardSkillID']?.toString() ?? '';
   final manaSkillId = profession['manaSkillID']?.toString() ?? '';
   final raceSkillId = race['standardSkillID']?.toString() ?? '';

@@ -151,9 +151,7 @@ Map<String, dynamic> resizedDiceSave(Map<String, dynamic> json) {
   // A companion's picks, on their one signature die.
   final allies = json['recruitedAllies'];
   if (allies is List && from < 2) {
-    out['recruitedAllies'] = [
-      for (final ally in allies) _movedAlly(ally),
-    ];
+    out['recruitedAllies'] = [for (final ally in allies) _movedAlly(ally)];
   }
 
   // The Hammersmith's work, moved with its face or paid back.
@@ -165,15 +163,19 @@ Map<String, dynamic> resizedDiceSave(Map<String, dynamic> json) {
         entry.key.toString():
             shrunk.containsKey(_dieOfUpgradesKey(entry.key.toString())) &&
                     entry.value is Map
-                ? _moved(shrunk[_dieOfUpgradesKey(entry.key.toString())]!,
-                    entry.value as Map, (work) {
-                    if (work is! Map) return;
-                    final refund = smithingRefundFor(
-                        FaceUpgrade.fromJson(Map<String, dynamic>.from(work)));
-                    refundGold += refund.gold;
-                    refundIron += refund.iron;
-                    refundTrophies += refund.trophies;
-                  })
+                ? _moved(
+                    shrunk[_dieOfUpgradesKey(entry.key.toString())]!,
+                    entry.value as Map,
+                    (work) {
+                      if (work is! Map) return;
+                      final refund = smithingRefundFor(
+                        FaceUpgrade.fromJson(Map<String, dynamic>.from(work)),
+                      );
+                      refundGold += refund.gold;
+                      refundIron += refund.iron;
+                      refundTrophies += refund.trophies;
+                    },
+                  )
                 : entry.value,
     };
   }

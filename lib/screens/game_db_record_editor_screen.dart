@@ -72,8 +72,9 @@ class _GameDbRecordEditorScreenState
               const <String>[];
           // One entry per line: entries are often sentences, commas and
           // all (dialogue, encounter texts, companion remarks).
-          _textControllers[field.key] =
-              TextEditingController(text: list.join('\n'));
+          _textControllers[field.key] = TextEditingController(
+            text: list.join('\n'),
+          );
         case FieldType.referenceList:
         case FieldType.multiEnum:
           _multiSelectValues[field.key] =
@@ -210,8 +211,10 @@ class _GameDbRecordEditorScreenState
     final newKey =
         (result[widget.schema.primaryKeyField]?.toString() ?? '').trim();
     if (newKey.isEmpty) {
-      setState(() => _error =
-          'The "${widget.schema.primaryKeyField}" field cannot be empty.');
+      setState(
+        () => _error =
+            'The "${widget.schema.primaryKeyField}" field cannot be empty.',
+      );
       return;
     }
 
@@ -252,12 +255,17 @@ class _GameDbRecordEditorScreenState
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(_isNew
-            ? 'New ${widget.schema.label} entry'
-            : (widget.recordKey ?? '')),
+        title: Text(
+          _isNew
+              ? 'New ${widget.schema.label} entry'
+              : (widget.recordKey ?? ''),
+        ),
         actions: [
           IconButton(
-              icon: const Icon(Icons.check), tooltip: 'Save', onPressed: _save),
+            icon: const Icon(Icons.check),
+            tooltip: 'Save',
+            onPressed: _save,
+          ),
         ],
       ),
       body: ListView(
@@ -266,8 +274,10 @@ class _GameDbRecordEditorScreenState
           if (_error != null)
             Padding(
               padding: const EdgeInsets.only(bottom: 12),
-              child: Text(_error!,
-                  style: TextStyle(color: Theme.of(context).colorScheme.error)),
+              child: Text(
+                _error!,
+                style: TextStyle(color: Theme.of(context).colorScheme.error),
+              ),
             ),
           ...widget.schema.fields.map(_buildField),
         ],
@@ -298,13 +308,16 @@ class _GameDbRecordEditorScreenState
             // ignore: deprecated_member_use
             value: dropdownValue,
             decoration: InputDecoration(
-                labelText: field.label,
-                helperText: field.help,
-                helperMaxLines: 8,
-                border: const OutlineInputBorder()),
+              labelText: field.label,
+              helperText: field.help,
+              helperMaxLines: 8,
+              border: const OutlineInputBorder(),
+            ),
             items: options
-                .map((option) =>
-                    DropdownMenuItem(value: option, child: Text(option)))
+                .map(
+                  (option) =>
+                      DropdownMenuItem(value: option, child: Text(option)),
+                )
                 .toList(),
             onChanged: (value) =>
                 setState(() => _enumValues[field.key] = value ?? ''),
@@ -323,14 +336,17 @@ class _GameDbRecordEditorScreenState
             // ignore: deprecated_member_use
             value: dropdownValue,
             decoration: InputDecoration(
-                labelText: field.label,
-                helperText: field.help,
-                helperMaxLines: 8,
-                border: const OutlineInputBorder()),
+              labelText: field.label,
+              helperText: field.help,
+              helperMaxLines: 8,
+              border: const OutlineInputBorder(),
+            ),
             items: [
               const DropdownMenuItem(value: '', child: Text('(none)')),
-              ...options.map((option) =>
-                  DropdownMenuItem(value: option, child: Text(option))),
+              ...options.map(
+                (option) =>
+                    DropdownMenuItem(value: option, child: Text(option)),
+              ),
             ],
             onChanged: (value) =>
                 setState(() => _enumValues[field.key] = value ?? ''),
@@ -338,7 +354,9 @@ class _GameDbRecordEditorScreenState
         );
       case FieldType.referenceList:
         return _buildMultiSelect(
-            field, _referenceOptions(field.referenceSchemaId ?? ''));
+          field,
+          _referenceOptions(field.referenceSchemaId ?? ''),
+        );
       case FieldType.multiEnum:
         return _buildMultiSelect(field, field.enumOptions);
       case FieldType.stringList:
@@ -382,10 +400,11 @@ class _GameDbRecordEditorScreenState
             minLines: 2,
             maxLines: 6,
             decoration: InputDecoration(
-                labelText: field.label,
-                helperText: field.help,
-                helperMaxLines: 8,
-                border: const OutlineInputBorder()),
+              labelText: field.label,
+              helperText: field.help,
+              helperMaxLines: 8,
+              border: const OutlineInputBorder(),
+            ),
           ),
         );
       case FieldType.integer:
@@ -395,10 +414,11 @@ class _GameDbRecordEditorScreenState
             controller: _textControllers[field.key],
             keyboardType: const TextInputType.numberWithOptions(signed: true),
             decoration: InputDecoration(
-                labelText: field.label,
-                helperText: field.help,
-                helperMaxLines: 8,
-                border: const OutlineInputBorder()),
+              labelText: field.label,
+              helperText: field.help,
+              helperMaxLines: 8,
+              border: const OutlineInputBorder(),
+            ),
           ),
         );
       case FieldType.decimal:
@@ -407,12 +427,15 @@ class _GameDbRecordEditorScreenState
           child: TextField(
             controller: _textControllers[field.key],
             keyboardType: const TextInputType.numberWithOptions(
-                signed: true, decimal: true),
+              signed: true,
+              decimal: true,
+            ),
             decoration: InputDecoration(
-                labelText: field.label,
-                helperText: field.help,
-                helperMaxLines: 8,
-                border: const OutlineInputBorder()),
+              labelText: field.label,
+              helperText: field.help,
+              helperMaxLines: 8,
+              border: const OutlineInputBorder(),
+            ),
           ),
         );
       case FieldType.text:
@@ -421,10 +444,11 @@ class _GameDbRecordEditorScreenState
           child: TextField(
             controller: _textControllers[field.key],
             decoration: InputDecoration(
-                labelText: field.label,
-                helperText: field.help,
-                helperMaxLines: 8,
-                border: const OutlineInputBorder()),
+              labelText: field.label,
+              helperText: field.help,
+              helperMaxLines: 8,
+              border: const OutlineInputBorder(),
+            ),
           ),
         );
       case FieldType.image:
@@ -466,10 +490,11 @@ class _GameDbRecordEditorScreenState
       padding: const EdgeInsets.only(bottom: 12),
       child: InputDecorator(
         decoration: InputDecoration(
-            labelText: field.label,
-            helperText: field.help,
-            helperMaxLines: 8,
-            border: const OutlineInputBorder()),
+          labelText: field.label,
+          helperText: field.help,
+          helperMaxLines: 8,
+          border: const OutlineInputBorder(),
+        ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           mainAxisSize: MainAxisSize.min,
@@ -504,8 +529,10 @@ class _GameDbRecordEditorScreenState
                 hint: const Text('Add...'),
                 value: null,
                 items: addable
-                    .map((option) =>
-                        DropdownMenuItem(value: option, child: Text(option)))
+                    .map(
+                      (option) =>
+                          DropdownMenuItem(value: option, child: Text(option)),
+                    )
                     .toList(),
                 onChanged: (value) {
                   if (value == null) return;
@@ -541,8 +568,10 @@ class _ImagePreview extends StatelessWidget {
       ),
       clipBehavior: Clip.antiAlias,
       child: path == null
-          ? Icon(Icons.image_outlined,
-              color: Theme.of(context).colorScheme.outline)
+          ? Icon(
+              Icons.image_outlined,
+              color: Theme.of(context).colorScheme.outline,
+            )
           : Image.asset(
               path,
               fit: BoxFit.cover,

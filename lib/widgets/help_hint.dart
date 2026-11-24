@@ -28,8 +28,9 @@ class HelpTitle extends StatelessWidget {
       constraints: const BoxConstraints(maxWidth: 300),
       padding: const EdgeInsets.all(10),
       margin: const EdgeInsets.symmetric(horizontal: 16),
-      textStyle: theme.textTheme.bodySmall
-          ?.copyWith(color: theme.colorScheme.onSurface),
+      textStyle: theme.textTheme.bodySmall?.copyWith(
+        color: theme.colorScheme.onSurface,
+      ),
       decoration: BoxDecoration(
         color: theme.colorScheme.surfaceContainerHighest,
         borderRadius: BorderRadius.circular(4),
@@ -41,8 +42,8 @@ class HelpTitle extends StatelessWidget {
           Flexible(child: Text(title, style: theme.textTheme.titleMedium)),
           const SizedBox(width: 6),
           ExcludeSemantics(
-              child:
-                  Icon(Icons.info_outline, size: IconSize.s16, color: ink.ash)),
+            child: Icon(Icons.info_outline, size: IconSize.s16, color: ink.ash),
+          ),
         ],
       ),
     );

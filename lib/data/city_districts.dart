@@ -83,8 +83,10 @@ Map<int, GeoPlace> lockedWayDistricts(
       if (value != null &&
           value != own &&
           districtLocked(geo, value, flags, completedQuestIds) &&
-          !offersQuest(story.nodeFor(node.choices[key].nextId),
-              geo.place(value)!.lockQuest))
+          !offersQuest(
+            story.nodeFor(node.choices[key].nextId),
+            geo.place(value)!.lockQuest,
+          ))
         key: geo.place(value)!,
   };
 }
@@ -137,7 +139,10 @@ class SceneDoorstep {
 /// tagged building comes back with its plan id, district, kind and name.
 /// Null for a scene played anywhere else.
 GeoPlace? sceneStreetOf(
-    Geography geo, CityPlanRecord? record, StoryNode? node) {
+  Geography geo,
+  CityPlanRecord? record,
+  StoryNode? node,
+) {
   if (node == null) return null;
   final tagged = node.sceneInStreet ? node.sceneBuilding : null;
   final building = tagged == null ? null : record?.building(tagged);
@@ -235,7 +240,11 @@ Map<int, String?> wayDistricts(Geography geo, StoryData story, StoryNode node) {
 /// The ways of [node] that lead into [districtId] (see [wayDistricts]),
 /// as indices into [StoryNode.choices], in order.
 List<int> waysInDistrict(
-        Geography geo, StoryData story, StoryNode node, String districtId) =>
+  Geography geo,
+  StoryData story,
+  StoryNode node,
+  String districtId,
+) =>
     [
       for (final MapEntry(:key, :value)
           in wayDistricts(geo, story, node).entries)

@@ -123,8 +123,10 @@ class _FightLabScreenState extends ConsumerState<FightLabScreen> {
   /// Runs [battle] as a test: the session is prepared (die, party, health)
   /// before and put back after, keeping what happened only when asked.
   /// [resultKey] words the battle's result for the closing note.
-  Future<void> _asTest<T>(Future<T?> Function() battle,
-      String Function(T? result) resultKey) async {
+  Future<void> _asTest<T>(
+    Future<T?> Function() battle,
+    String Function(T? result) resultKey,
+  ) async {
     if (_running) return;
     setState(() => _running = true);
     final notifier = ref.read(playerSessionProvider.notifier);
@@ -156,24 +158,27 @@ class _FightLabScreenState extends ConsumerState<FightLabScreen> {
         if (known.contains(id)) continue;
         labAllyIds.add(id);
         final companion = companions[id] as Map<String, dynamic>?;
-        fresh.add(AllyState(
-          companionId: id,
-          currentHealth: AllyState.fullHealthSentinel,
-          unlockedSkillIds: companionStarterSkillIds(
-            race: races[companion?['raceId']] as Map<String, dynamic>?,
-            profession: professions[companion?['professionId']]
-                as Map<String, dynamic>?,
-            companion: companion,
-            dice: dice,
+        fresh.add(
+          AllyState(
+            companionId: id,
+            currentHealth: AllyState.fullHealthSentinel,
+            unlockedSkillIds: companionStarterSkillIds(
+              race: races[companion?['raceId']] as Map<String, dynamic>?,
+              profession: professions[companion?['professionId']]
+                  as Map<String, dynamic>?,
+              companion: companion,
+              dice: dice,
+            ),
           ),
-        ));
+        );
       }
       // The companions picked first, then the party the character has,
       // within the most the camp can ever field.
       final houses = ref.read(localizedDbProvider(housesSchema)).value ?? {};
-      final party = <String>{..._companionIds, ...test.activeAllyIds}
-          .take(_mostAllies(houses))
-          .toList();
+      final party = <String>{
+        ..._companionIds,
+        ...test.activeAllyIds,
+      }.take(_mostAllies(houses)).toList();
       test = test.copyWith(
         recruitedAllies: [...test.recruitedAllies, ...fresh],
         activeAllyIds: party,
@@ -188,17 +193,19 @@ class _FightLabScreenState extends ConsumerState<FightLabScreen> {
 
     final after = ref.read(playerSessionProvider);
     if (_keep) {
-      await notifier.loadSession(after.copyWith(
-        equippedDiceId: before.equippedDiceId,
-        ownedDiceIds: {...before.ownedDiceIds, ...after.ownedDiceIds}
-            .where((id) => id != die || before.ownedDiceIds.contains(id))
-            .toList(),
-        activeAllyIds: before.activeAllyIds,
-        recruitedAllies: [
-          for (final a in after.recruitedAllies)
-            if (!labAllyIds.contains(a.companionId)) a,
-        ],
-      ));
+      await notifier.loadSession(
+        after.copyWith(
+          equippedDiceId: before.equippedDiceId,
+          ownedDiceIds: {...before.ownedDiceIds, ...after.ownedDiceIds}
+              .where((id) => id != die || before.ownedDiceIds.contains(id))
+              .toList(),
+          activeAllyIds: before.activeAllyIds,
+          recruitedAllies: [
+            for (final a in after.recruitedAllies)
+              if (!labAllyIds.contains(a.companionId)) a,
+          ],
+        ),
+      );
     } else {
       await notifier.loadSession(before);
       ref.read(lastFightOutcomeProvider.notifier).state = outcomeBefore;
@@ -206,12 +213,14 @@ class _FightLabScreenState extends ConsumerState<FightLabScreen> {
     }
     if (!mounted) return;
     setState(() => _running = false);
-    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-      content: Text(
-        '${tr(ref, resultKey(result))} · '
-        '${tr(ref, _keep ? 'fight_lab_kept' : 'fight_lab_restored')}',
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(
+          '${tr(ref, resultKey(result))} · '
+          '${tr(ref, _keep ? 'fight_lab_kept' : 'fight_lab_restored')}',
+        ),
       ),
-    ));
+    );
   }
 
   Future<void> _runFight(Map<String, dynamic> enemies) => _asTest(
@@ -273,9 +282,10 @@ class _FightLabScreenState extends ConsumerState<FightLabScreen> {
         // The parts picked here, or the boat as she is; either way no more
         // than her slots hold (see partsWithinSlots).
         final installed = partsWithinSlots(
-            ship: ship,
-            parts: parts,
-            installedPartIds: labParts ?? session.shipPartIds);
+          ship: ship,
+          parts: parts,
+          installedPartIds: labParts ?? session.shipPartIds,
+        );
         final sails = battleSailsOf(parts, installed, session.raceId);
         List<ShipCrew> crew() => buildShipCrew(
               session: ref.read(playerSessionProvider),
@@ -314,7 +324,10 @@ class _FightLabScreenState extends ConsumerState<FightLabScreen> {
                 isTest: true,
                 turnSeconds: ref.read(shipTurnTimerProvider)
                     ? shipTurnSeconds(
-                        ship: ship, parts: parts, installedPartIds: installed)
+                        ship: ship,
+                        parts: parts,
+                        installedPartIds: installed,
+                      )
                     : null,
                 habit: habitFromName(data['habit']?.toString()),
                 // A sea beast fights as one here too (see sea_beasts.dart).
@@ -383,7 +396,8 @@ class _FightLabScreenState extends ConsumerState<FightLabScreen> {
                     FilterChip(
                       key: Key('fight_lab_part_$id'),
                       label: Text(
-                          shipPartName(parts[id] as Map<String, dynamic>, fr)),
+                        shipPartName(parts[id] as Map<String, dynamic>, fr),
+                      ),
                       selected: picked.contains(id),
                       onSelected: (on) => setState(() {
                         final next = List<String>.of(picked)..remove(id);
@@ -441,9 +455,9 @@ class _FightLabScreenState extends ConsumerState<FightLabScreen> {
             title: Text(tr(ref, 'fight_lab_effects')),
             subtitle: Text(tr(ref, 'fight_lab_effects_desc')),
             trailing: const Icon(Icons.chevron_right),
-            onTap: () => Navigator.of(context).push(
-              MaterialPageRoute(builder: (_) => const VfxGalleryScreen()),
-            ),
+            onTap: () => Navigator.of(
+              context,
+            ).push(MaterialPageRoute(builder: (_) => const VfxGalleryScreen())),
           ),
           ListTile(
             key: const Key('fight_lab_city'),
@@ -454,7 +468,8 @@ class _FightLabScreenState extends ConsumerState<FightLabScreen> {
             trailing: const Icon(Icons.chevron_right),
             onTap: () => Navigator.of(context).push(
               MaterialPageRoute(
-                  builder: (_) => const CityChartScreen(preview: true)),
+                builder: (_) => const CityChartScreen(preview: true),
+              ),
             ),
           ),
           SwitchListTile(
@@ -470,8 +485,10 @@ class _FightLabScreenState extends ConsumerState<FightLabScreen> {
             value: _fullHealth,
             onChanged: (v) => setState(() => _fullHealth = v),
           ),
-          Text('${tr(ref, 'chapter_label')} $_chapter',
-              style: theme.textTheme.labelLarge),
+          Text(
+            '${tr(ref, 'chapter_label')} $_chapter',
+            style: theme.textTheme.labelLarge,
+          ),
           Slider(
             value: _chapter.toDouble(),
             min: 1,
@@ -502,8 +519,10 @@ class _FightLabScreenState extends ConsumerState<FightLabScreen> {
             ],
           ),
           const SizedBox(height: 12),
-          Text(tr(ref, 'fight_lab_difficulty'),
-              style: theme.textTheme.labelLarge),
+          Text(
+            tr(ref, 'fight_lab_difficulty'),
+            style: theme.textTheme.labelLarge,
+          ),
           Wrap(
             spacing: 8,
             children: [
@@ -557,8 +576,9 @@ class _FightLabScreenState extends ConsumerState<FightLabScreen> {
             key: const Key('fight_lab_anomaly'),
             initialValue: _anomaly,
             isExpanded: true,
-            decoration:
-                InputDecoration(labelText: tr(ref, 'anomaly_lab_label')),
+            decoration: InputDecoration(
+              labelText: tr(ref, 'anomaly_lab_label'),
+            ),
             items: [
               DropdownMenuItem<FieldAnomaly?>(
                 value: null,
@@ -582,7 +602,8 @@ class _FightLabScreenState extends ConsumerState<FightLabScreen> {
               DropdownMenuItem<String?>(
                 value: null,
                 child: Text(
-                    '${tr(ref, 'fight_lab_equipped_die')}: ${dieDisplayName(session.equippedDiceId ?? 'starter_die', language: lang)}'),
+                  '${tr(ref, 'fight_lab_equipped_die')}: ${dieDisplayName(session.equippedDiceId ?? 'starter_die', language: lang)}',
+                ),
               ),
               for (final id in diceIds)
                 DropdownMenuItem<String?>(
@@ -595,14 +616,18 @@ class _FightLabScreenState extends ConsumerState<FightLabScreen> {
           SwitchListTile(
             contentPadding: EdgeInsets.zero,
             title: Text(tr(ref, 'fight_lab_solo')),
-            subtitle: Text(session.activeAllyIds.isEmpty
-                ? tr(ref, 'fight_lab_no_party')
-                : '${tr(ref, 'fight_lab_party')}: ${session.activeAllyIds.length}'),
+            subtitle: Text(
+              session.activeAllyIds.isEmpty
+                  ? tr(ref, 'fight_lab_no_party')
+                  : '${tr(ref, 'fight_lab_party')}: ${session.activeAllyIds.length}',
+            ),
             value: _solo,
             onChanged: (v) => setState(() => _solo = v),
           ),
-          Text(tr(ref, 'fight_lab_companions'),
-              style: theme.textTheme.labelLarge),
+          Text(
+            tr(ref, 'fight_lab_companions'),
+            style: theme.textTheme.labelLarge,
+          ),
           Wrap(
             spacing: 8,
             runSpacing: 4,
@@ -627,8 +652,10 @@ class _FightLabScreenState extends ConsumerState<FightLabScreen> {
           ),
           Padding(
             padding: const EdgeInsets.only(top: 4, bottom: 12),
-            child: Text(tr(ref, 'fight_lab_companions_desc'),
-                style: theme.textTheme.bodySmall),
+            child: Text(
+              tr(ref, 'fight_lab_companions_desc'),
+              style: theme.textTheme.bodySmall,
+            ),
           ),
           FilledButton.icon(
             key: const Key('fight_lab_start_fight'),
@@ -645,8 +672,9 @@ class _FightLabScreenState extends ConsumerState<FightLabScreen> {
               key: ValueKey('ship_${_shipId ?? ''}'),
               initialValue: _shipId ?? shipIds.first,
               isExpanded: true,
-              decoration:
-                  InputDecoration(labelText: tr(ref, 'fight_lab_enemy_ship')),
+              decoration: InputDecoration(
+                labelText: tr(ref, 'fight_lab_enemy_ship'),
+              ),
               items: [
                 for (final id in shipIds)
                   DropdownMenuItem(
@@ -674,7 +702,9 @@ class _FightLabScreenState extends ConsumerState<FightLabScreen> {
             items: [
               for (final w in SeaWaters.values)
                 DropdownMenuItem(
-                    value: w, child: Text(tr(ref, 'sea_waters_${w.name}'))),
+                  value: w,
+                  child: Text(tr(ref, 'sea_waters_${w.name}')),
+                ),
             ],
             onChanged: (v) => setState(() => _waters = v ?? SeaWaters.open),
           ),
@@ -694,7 +724,8 @@ class _FightLabScreenState extends ConsumerState<FightLabScreen> {
                       ship: ship,
                       parts: parts,
                       installedPartIds:
-                          ref.read(playerSessionProvider).shipPartIds)
+                          ref.read(playerSessionProvider).shipPartIds,
+                    )
                   : null;
             }),
           ),
@@ -740,8 +771,9 @@ class _EnemyPickerState extends ConsumerState<_EnemyPicker> {
         final ca = (a.value['minChapter'] as num?)?.toInt() ?? 1;
         final cb = (b.value['minChapter'] as num?)?.toInt() ?? 1;
         if (ca != cb) return ca.compareTo(cb);
-        return (a.value['enemyName']?.toString() ?? a.key)
-            .compareTo(b.value['enemyName']?.toString() ?? b.key);
+        return (a.value['enemyName']?.toString() ?? a.key).compareTo(
+          b.value['enemyName']?.toString() ?? b.key,
+        );
       });
     return Column(
       children: [
@@ -768,8 +800,10 @@ class _EnemyPickerState extends ConsumerState<_EnemyPicker> {
                     '${tr(ref, 'hp_label')} ${e.value['maxHealth']} · '
                     '${tr(ref, 'damage_label')} ${e.value['damage']}',
                   ),
-                  trailing: Text(e.key,
-                      style: Theme.of(context).textTheme.labelSmall),
+                  trailing: Text(
+                    e.key,
+                    style: Theme.of(context).textTheme.labelSmall,
+                  ),
                   onTap: () => Navigator.of(context).pop(e.key),
                 ),
             ],
@@ -801,10 +835,12 @@ class _CompanionPicker extends ConsumerWidget {
           ListTile(
             key: Key('fight_lab_pick_${e.key}'),
             title: Text(e.value['companionName']?.toString() ?? e.key),
-            subtitle: Text([
-              nameOf(races, e.value['raceId'], 'raceName'),
-              nameOf(professions, e.value['professionId'], 'professionName'),
-            ].where((t) => t.isNotEmpty).join(' · ')),
+            subtitle: Text(
+              [
+                nameOf(races, e.value['raceId'], 'raceName'),
+                nameOf(professions, e.value['professionId'], 'professionName'),
+              ].where((t) => t.isNotEmpty).join(' · '),
+            ),
             onTap: () => Navigator.of(context).pop(e.key),
           ),
       ],

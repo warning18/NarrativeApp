@@ -17,7 +17,10 @@ const Map<String, List<String>> placeholderTextFields = {
 /// The numbers record [id] of table [schemaId] offers its texts (see
 /// [placeholderTextFields]); for item_sets, [record] is one bonus tier.
 Map<String, num> _placeholderValuesFor(
-    String schemaId, String id, Map<String, dynamic> record) {
+  String schemaId,
+  String id,
+  Map<String, dynamic> record,
+) {
   switch (schemaId) {
     case 'spells':
       return SpellSpec.fromJson(id, record).placeholders;
@@ -41,7 +44,9 @@ AppLanguage _languageOf(String field) =>
 /// and a table with no placeholders comes back as it is. For showing data:
 /// the data editor keeps the placeholders.
 Map<String, dynamic> withResolvedPlaceholders(
-    String schemaId, Map<String, dynamic> records) {
+  String schemaId,
+  Map<String, dynamic> records,
+) {
   final fields = placeholderTextFields[schemaId];
   if (fields == null) return records;
   var changed = false;
@@ -81,7 +86,9 @@ Map<String, dynamic> withResolvedPlaceholders(
 /// Every placeholder in [records] of table [schemaId] that its record can't
 /// fill, as 'id: {name}' (the content test keeps this empty).
 List<String> unresolvedPlaceholdersIn(
-    String schemaId, Map<String, dynamic> records) {
+  String schemaId,
+  Map<String, dynamic> records,
+) {
   final fields = placeholderTextFields[schemaId] ?? const [];
   final found = <String>[];
   void check(String id, Map<String, dynamic> record) {

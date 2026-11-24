@@ -37,8 +37,13 @@ class _LevelUpStatsState extends ConsumerState<LevelUpStats> {
     final theme = Theme.of(context);
     final ink = InkColors.of(context);
 
-    Widget row(String labelKey, IconData icon, String value, String statKey,
-            String descKey) =>
+    Widget row(
+      String labelKey,
+      IconData icon,
+      String value,
+      String statKey,
+      String descKey,
+    ) =>
         _StatRow(
           label: tr(ref, labelKey),
           icon: icon,
@@ -60,13 +65,19 @@ class _LevelUpStatsState extends ConsumerState<LevelUpStats> {
             children: [
               Icon(icon, size: IconSize.s16, color: ink.gold),
               const SizedBox(height: 2),
-              Text(value,
-                  style: theme.textTheme.titleSmall?.copyWith(
-                      fontFamily: InkFonts.display, color: ink.gold)),
-              Text(label,
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                  style: theme.textTheme.labelSmall?.copyWith(color: ink.ash)),
+              Text(
+                value,
+                style: theme.textTheme.titleSmall?.copyWith(
+                  fontFamily: InkFonts.display,
+                  color: ink.gold,
+                ),
+              ),
+              Text(
+                label,
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+                style: theme.textTheme.labelSmall?.copyWith(color: ink.ash),
+              ),
             ],
           ),
         );
@@ -97,24 +108,37 @@ class _LevelUpStatsState extends ConsumerState<LevelUpStats> {
           ),
           // The corner labels hang below the radar's own box.
           const SizedBox(height: 14),
-          Text(tr(ref, 'stat_radar_hint'),
-              textAlign: TextAlign.center,
-              style: theme.textTheme.bodySmall
-                  ?.copyWith(color: ink.ash, fontStyle: FontStyle.italic)),
+          Text(
+            tr(ref, 'stat_radar_hint'),
+            textAlign: TextAlign.center,
+            style: theme.textTheme.bodySmall?.copyWith(
+              color: ink.ash,
+              fontStyle: FontStyle.italic,
+            ),
+          ),
           const SizedBox(height: 10),
         ],
         Row(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            fighting('level_up_fight_damage', Icons.gavel,
-                '${session.baseDamage}', tr(ref, 'base_damage_label')),
-            fighting('level_up_fight_armor', Icons.shield,
-                '${session.baseArmor}', tr(ref, 'base_armor_label')),
             fighting(
-                'level_up_fight_health',
-                Icons.favorite,
-                '${session.currentHealth}/${session.maxHealth}',
-                tr(ref, 'max_health_label')),
+              'level_up_fight_damage',
+              Icons.gavel,
+              '${session.baseDamage}',
+              tr(ref, 'base_damage_label'),
+            ),
+            fighting(
+              'level_up_fight_armor',
+              Icons.shield,
+              '${session.baseArmor}',
+              tr(ref, 'base_armor_label'),
+            ),
+            fighting(
+              'level_up_fight_health',
+              Icons.favorite,
+              '${session.currentHealth}/${session.maxHealth}',
+              tr(ref, 'max_health_label'),
+            ),
           ],
         ),
       ],
@@ -143,12 +167,17 @@ class _LevelUpStatsState extends ConsumerState<LevelUpStats> {
               child: Row(
                 children: [
                   Expanded(
-                    child: Text(tr(ref, 'level_stats_detail'),
-                        style: theme.textTheme.labelLarge
-                            ?.copyWith(fontFamily: InkFonts.system)),
+                    child: Text(
+                      tr(ref, 'level_stats_detail'),
+                      style: theme.textTheme.labelLarge?.copyWith(
+                        fontFamily: InkFonts.system,
+                      ),
+                    ),
                   ),
-                  Icon(_detail ? Icons.expand_less : Icons.expand_more,
-                      color: _detail ? ink.gold : ink.ash),
+                  Icon(
+                    _detail ? Icons.expand_less : Icons.expand_more,
+                    color: _detail ? ink.gold : ink.ash,
+                  ),
                 ],
               ),
             ),
@@ -157,35 +186,86 @@ class _LevelUpStatsState extends ConsumerState<LevelUpStats> {
         if (_detail) ...[
           const SizedBox(height: 12),
           _Caption(tr(ref, 'level_group_fighting'), first: true),
-          row('base_damage_label', Icons.gavel, '${session.baseDamage}',
-              'damage', 'base_damage_desc'),
-          row('base_armor_label', Icons.shield, '${session.baseArmor}', 'armor',
-              'base_armor_desc'),
           row(
-              'max_health_label',
-              Icons.favorite,
-              '${session.currentHealth} / ${session.maxHealth}',
-              'health',
-              'max_health_desc'),
+            'base_damage_label',
+            Icons.gavel,
+            '${session.baseDamage}',
+            'damage',
+            'base_damage_desc',
+          ),
+          row(
+            'base_armor_label',
+            Icons.shield,
+            '${session.baseArmor}',
+            'armor',
+            'base_armor_desc',
+          ),
+          row(
+            'max_health_label',
+            Icons.favorite,
+            '${session.currentHealth} / ${session.maxHealth}',
+            'health',
+            'max_health_desc',
+          ),
           _Caption(tr(ref, 'level_group_body')),
-          row('strength_label', Icons.fitness_center, '${session.strength}',
-              'strength', 'strength_desc'),
-          row('dexterity_label', Icons.directions_run, '${session.dexterity}',
-              'dexterity', 'dexterity_desc'),
-          row('constitution_label', Icons.health_and_safety,
-              '${session.constitution}', 'constitution', 'constitution_desc'),
+          row(
+            'strength_label',
+            Icons.fitness_center,
+            '${session.strength}',
+            'strength',
+            'strength_desc',
+          ),
+          row(
+            'dexterity_label',
+            Icons.directions_run,
+            '${session.dexterity}',
+            'dexterity',
+            'dexterity_desc',
+          ),
+          row(
+            'constitution_label',
+            Icons.health_and_safety,
+            '${session.constitution}',
+            'constitution',
+            'constitution_desc',
+          ),
           _Caption(tr(ref, 'level_group_mind')),
-          row('intelligence_label', Icons.psychology, '${session.intelligence}',
-              'intelligence', 'intelligence_desc'),
-          row('wisdom_label', Icons.visibility, '${session.wisdom}', 'wisdom',
-              'wisdom_desc'),
-          row('perception_label', Icons.radar, '${session.perception}',
-              'perception', 'perception_desc'),
+          row(
+            'intelligence_label',
+            Icons.psychology,
+            '${session.intelligence}',
+            'intelligence',
+            'intelligence_desc',
+          ),
+          row(
+            'wisdom_label',
+            Icons.visibility,
+            '${session.wisdom}',
+            'wisdom',
+            'wisdom_desc',
+          ),
+          row(
+            'perception_label',
+            Icons.radar,
+            '${session.perception}',
+            'perception',
+            'perception_desc',
+          ),
           _Caption(tr(ref, 'level_group_fortune')),
-          row('luck_label', Icons.auto_awesome, '${session.luck}', 'luck',
-              'luck_desc'),
-          row('charisma_label', Icons.forum, '${session.charisma}', 'charisma',
-              'charisma_desc'),
+          row(
+            'luck_label',
+            Icons.auto_awesome,
+            '${session.luck}',
+            'luck',
+            'luck_desc',
+          ),
+          row(
+            'charisma_label',
+            Icons.forum,
+            '${session.charisma}',
+            'charisma',
+            'charisma_desc',
+          ),
         ],
       ],
     );
@@ -203,11 +283,13 @@ class _Caption extends StatelessWidget {
     final ink = InkColors.of(context);
     return Padding(
       padding: EdgeInsets.only(top: first ? 0 : 18, bottom: 6),
-      child: Text(text.toUpperCase(),
-          style: Theme.of(context)
-              .textTheme
-              .labelSmall
-              ?.copyWith(color: ink.ash, letterSpacing: 1.2)),
+      child: Text(
+        text.toUpperCase(),
+        style: Theme.of(context)
+            .textTheme
+            .labelSmall
+            ?.copyWith(color: ink.ash, letterSpacing: 1.2),
+      ),
     );
   }
 }
@@ -272,13 +354,20 @@ class _StatRow extends StatelessWidget {
                 ),
                 const SizedBox(width: 10),
                 Expanded(
-                  child: Text(label,
-                      style: theme.textTheme.labelLarge
-                          ?.copyWith(fontFamily: InkFonts.system)),
+                  child: Text(
+                    label,
+                    style: theme.textTheme.labelLarge?.copyWith(
+                      fontFamily: InkFonts.system,
+                    ),
+                  ),
                 ),
-                Text(value,
-                    style: theme.textTheme.titleMedium?.copyWith(
-                        fontFamily: InkFonts.display, color: ink.gold)),
+                Text(
+                  value,
+                  style: theme.textTheme.titleMedium?.copyWith(
+                    fontFamily: InkFonts.display,
+                    color: ink.gold,
+                  ),
+                ),
                 if (onSpend != null) ...[
                   const SizedBox(width: 10),
                   FilledButton(

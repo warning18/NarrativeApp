@@ -10,28 +10,40 @@ extension _FightActions on _FightScreenState {
     final lang = ref.read(appLanguageProvider);
     // The heal rule (heal_rules.dart): the shrine and the ground's rule; a
     // potion never tires.
-    final heal =
-        _healOf(player, HealSource.potion, _potionHealAmount + _potionBonus);
+    final heal = _healOf(
+      player,
+      HealSource.potion,
+      _potionHealAmount + _potionBonus,
+    );
     _potionUsed = true;
-    _fx(VfxStyle.heal, _memberCardKey(player.id),
-        text: '+$heal', textKind: VfxTextKind.heal);
+    _fx(
+      VfxStyle.heal,
+      _memberCardKey(player.id),
+      text: '+$heal',
+      textKind: VfxTextKind.heal,
+    );
     _update(() {
       final spilled = <_LogEntry>[];
       // The weak links (step 3c): the Brimming Draught's spill feeds the
       // fire, the Stitch-Thrust's strikes the foe.
       if (healFeedsFire(
-          source: HealSource.potion,
-          watchfire: _core.core == ProfessionCore.watchfire,
-          brimmingDraught: _core.has(Spec.brimmingDraught))) {
+        source: HealSource.potion,
+        watchfire: _core.core == ProfessionCore.watchfire,
+        brimmingDraught: _core.has(Spec.brimmingDraught),
+      )) {
         _core.fire = fireAfterHeal(
-            fire: _core.fire,
-            healing: heal,
-            currentHealth: player.currentHealth,
-            maxHealth: player.maxHealth,
-            beacon: _core.has(Spec.beacon));
+          fire: _core.fire,
+          healing: heal,
+          currentHealth: player.currentHealth,
+          maxHealth: player.maxHealth,
+          beacon: _core.has(Spec.beacon),
+        );
       }
-      _stitchThrust(overheal(heal, player.currentHealth, player.maxHealth),
-          spilled, lang);
+      _stitchThrust(
+        overheal(heal, player.currentHealth, player.maxHealth),
+        spilled,
+        lang,
+      );
       player.currentHealth = min(player.maxHealth, player.currentHealth + heal);
       _log.add(
         _LogEntry(
@@ -80,8 +92,11 @@ extension _FightActions on _FightScreenState {
       constitution: player.constitution,
       intelligence: player.intelligence,
     );
-    final alignedBonus =
-        alignmentGearBonusFor(player.equippedItemIds, items, _alignmentLabel);
+    final alignedBonus = alignmentGearBonusFor(
+      player.equippedItemIds,
+      items,
+      _alignmentLabel,
+    );
     final casterDamage = player.baseDamage +
         equipmentBonusFor(player.equippedItemIds, items, 'attackDamage') +
         scalingBonus.damageBonus +
@@ -91,16 +106,17 @@ extension _FightActions on _FightScreenState {
     // The day's sky and the ground's anomaly dampen or feed the spell's
     // element (v1.208, v1.241).
     final amount = _groundDamage(
-        spellAmountFor(
-          spell,
-          intelligence: player.intelligence,
-          wisdom: player.wisdom,
-          strength: player.strength,
-          level: _playerLevel,
-          casterDamage: casterDamage,
-        ),
-        spell.element,
-        byParty: true);
+      spellAmountFor(
+        spell,
+        intelligence: player.intelligence,
+        wisdom: player.wisdom,
+        strength: player.strength,
+        level: _playerLevel,
+        casterDamage: casterDamage,
+      ),
+      spell.element,
+      byParty: true,
+    );
     // A spell sign lifts what spells deal and heal (not their block).
     return spell.effect == SpellEffectKind.damage ||
             spell.effect == SpellEffectKind.heal
@@ -111,11 +127,12 @@ extension _FightActions on _FightScreenState {
   /// What [spell] costs the player now: its mana, less a spell sign's
   /// saving (never under 1).
   int _spellCost(SpellSpec spell) => max(
-      1,
-      (_core.core == ProfessionCore.ashWell
-              ? ashWellSpellCost(_signs.spellCost(spell.manaCost))
-              : _signs.spellCost(spell.manaCost)) -
-          (_core.has(Spec.tempestToll) ? _core.mods.spellDiscount : 0));
+        1,
+        (_core.core == ProfessionCore.ashWell
+                ? ashWellSpellCost(_signs.spellCost(spell.manaCost))
+                : _signs.spellCost(spell.manaCost)) -
+            (_core.has(Spec.tempestToll) ? _core.mods.spellDiscount : 0),
+      );
 
   /// What a potion heals on top of its own: a perk's and a sign's.
   int get _potionBonus => _perks.potionBonus + _signs.potionBonus;
@@ -194,31 +211,48 @@ extension _FightActions on _FightScreenState {
     ];
     var hitsLanded = 0;
     final spellStyle = styleForSpell(
-        vfx: spell.vfx, element: spell.element, effect: spell.effect.name);
+      vfx: spell.vfx,
+      element: spell.element,
+      effect: spell.effect.name,
+    );
     // A dearer spell plays bigger, and more so the more it does.
     double spellPower({int amount = 0, int maxHealth = 0}) => vfxPowerFor(
-        manaCost: spell.manaCost, amount: amount, targetMaxHealth: maxHealth);
+          manaCost: spell.manaCost,
+          amount: amount,
+          targetMaxHealth: maxHealth,
+        );
     final casterKey = _memberCardKey(player.id);
     var spellFx = 0;
     for (final enemy in enemyTargets) {
       final fxDelay = spellFx++ * 120;
       if (spell.effect != SpellEffectKind.damage) {
-        _fx(spellStyle, _enemyCardKey(enemy.key),
-            source: casterKey,
-            element: spell.element,
-            delayMs: fxDelay,
-            power: spellPower());
+        _fx(
+          spellStyle,
+          _enemyCardKey(enemy.key),
+          source: casterKey,
+          element: spell.element,
+          delayMs: fxDelay,
+          power: spellPower(),
+        );
       }
       if (spell.effect == SpellEffectKind.damage) {
-        final damage =
-            _landHitOnEnemy(enemy, amount, spell.element, entries, lang);
-        _fx(spellStyle, _enemyCardKey(enemy.key),
-            source: casterKey,
-            element: spell.element,
-            delayMs: fxDelay,
-            text: '-$damage',
-            textKind: VfxTextKind.damage,
-            power: spellPower(amount: damage, maxHealth: enemy.maxHealth));
+        final damage = _landHitOnEnemy(
+          enemy,
+          amount,
+          spell.element,
+          entries,
+          lang,
+        );
+        _fx(
+          spellStyle,
+          _enemyCardKey(enemy.key),
+          source: casterKey,
+          element: spell.element,
+          delayMs: fxDelay,
+          text: '-$damage',
+          textKind: VfxTextKind.damage,
+          power: spellPower(amount: damage, maxHealth: enemy.maxHealth),
+        );
         final wasAlive = enemy.isAlive;
         enemy.currentHealth = max(0, enemy.currentHealth - damage);
         // The Tempest Toll: the spell takes back a share as health.
@@ -235,11 +269,16 @@ extension _FightActions on _FightScreenState {
         if (share > 0 && damage > 0) {
           final toll = (damage * share).round();
           if (toll > 0) {
-            player.currentHealth =
-                min(player.maxHealth, player.currentHealth + toll);
-            entries.add(_LogEntry(
+            player.currentHealth = min(
+              player.maxHealth,
+              player.currentHealth + toll,
+            );
+            entries.add(
+              _LogEntry(
                 trFor(lang, 'spec_toll_log').replaceAll('{n}', '$toll'),
-                _LogKind.playerHeal));
+                _LogKind.playerHeal,
+              ),
+            );
           }
         }
         // A spell is one of the round's blows a Mirror can send back.
@@ -251,28 +290,43 @@ extension _FightActions on _FightScreenState {
           if (spell.element != 'None') {
             enemy.elementsHitThisRound.add(spell.element);
             // The Double Kindling: a Fire spell's reaction twice (3c).
-            _reactOnHit(enemy, spell.element, damage, entries, lang,
-                times: spell.element == 'Fire' && _core.has(Spec.doubleKindling)
-                    ? 2
-                    : 1);
+            _reactOnHit(
+              enemy,
+              spell.element,
+              damage,
+              entries,
+              lang,
+              times: spell.element == 'Fire' && _core.has(Spec.doubleKindling)
+                  ? 2
+                  : 1,
+            );
           }
         }
         if (wasAlive && !enemy.isAlive) _lastKillWasCritical = false;
-        entries.add(_LogEntry(
-          '${enemy.displayName} ${trFor(lang, 'takes_damage_word')} $damage '
-          '${trFor(lang, 'damage_word')}.',
-          _LogKind.playerDamage,
-        ));
+        entries.add(
+          _LogEntry(
+            '${enemy.displayName} ${trFor(lang, 'takes_damage_word')} $damage '
+            '${trFor(lang, 'damage_word')}.',
+            _LogKind.playerDamage,
+          ),
+        );
       }
       if (status != null && enemy.isAlive) {
-        _fx(styleForStatus(status.type), _enemyCardKey(enemy.key),
-            delayMs: fxDelay + 350);
+        _fx(
+          styleForStatus(status.type),
+          _enemyCardKey(enemy.key),
+          delayMs: fxDelay + 350,
+        );
         enemy.statusEffects = applyStatusEffect(
-            enemy.statusEffects, _signs.playerInflicted(status));
-        entries.add(_LogEntry(
-          _statusInflictedMessage(status, enemy.displayName, lang),
-          _LogKind.info,
-        ));
+          enemy.statusEffects,
+          _signs.playerInflicted(status),
+        );
+        entries.add(
+          _LogEntry(
+            _statusInflictedMessage(status, enemy.displayName, lang),
+            _LogKind.info,
+          ),
+        );
       }
       // A spell sign's status, on every enemy the spell reaches.
       _rollSignStatuses(_signs.spellStatuses, enemy, entries, lang);
@@ -286,57 +340,78 @@ extension _FightActions on _FightScreenState {
           // rule, and the fatigue, which counts the caster's spells as its
           // heals (not the cleric's: the Watchfire doesn't tire).
           final healing = _healOf(player, HealSource.spell, amount);
-          _fx(spellStyle, memberKey,
-              element: spell.element,
-              delayMs: fxDelay,
-              text: '+$healing',
-              textKind: VfxTextKind.heal,
-              power: spellPower(amount: healing, maxHealth: member.maxHealth));
+          _fx(
+            spellStyle,
+            memberKey,
+            element: spell.element,
+            delayMs: fxDelay,
+            text: '+$healing',
+            textKind: VfxTextKind.heal,
+            power: spellPower(amount: healing, maxHealth: member.maxHealth),
+          );
           // The cleric's Watchfire: a spell's heal past full feeds the
           // fire, as a die's does (profession_cores.dart).
           if (healFeedsFire(
-              source: HealSource.spell,
-              watchfire: _core.core == ProfessionCore.watchfire)) {
+            source: HealSource.spell,
+            watchfire: _core.core == ProfessionCore.watchfire,
+          )) {
             _core.fire = fireAfterHeal(
-                fire: _core.fire,
-                healing: healing,
-                currentHealth: member.currentHealth,
-                maxHealth: member.maxHealth,
-                beacon: _core.has(Spec.beacon));
+              fire: _core.fire,
+              healing: healing,
+              currentHealth: member.currentHealth,
+              maxHealth: member.maxHealth,
+              beacon: _core.has(Spec.beacon),
+            );
           }
-          member.currentHealth =
-              min(member.maxHealth, member.currentHealth + healing);
-          entries.add(_LogEntry(
-            '${member.displayName} ${trFor(lang, 'recovers_word')} $healing '
-            '${trFor(lang, 'hp_label')}.',
-            _LogKind.playerHeal,
-          ));
+          member.currentHealth = min(
+            member.maxHealth,
+            member.currentHealth + healing,
+          );
+          entries.add(
+            _LogEntry(
+              '${member.displayName} ${trFor(lang, 'recovers_word')} $healing '
+              '${trFor(lang, 'hp_label')}.',
+              _LogKind.playerHeal,
+            ),
+          );
         case SpellEffectKind.block:
           var block = amount;
           if (_condition == BattlefieldCondition.highGround) {
             block = (block * highGroundBlockMultiplier).round();
           }
-          _fx(spellStyle, memberKey,
-              element: spell.element,
-              delayMs: fxDelay,
-              text: '+$block',
-              textKind: VfxTextKind.block,
-              power: spellPower(amount: block, maxHealth: member.maxHealth));
+          _fx(
+            spellStyle,
+            memberKey,
+            element: spell.element,
+            delayMs: fxDelay,
+            text: '+$block',
+            textKind: VfxTextKind.block,
+            power: spellPower(amount: block, maxHealth: member.maxHealth),
+          );
           _spellBlock[member.id] = (_spellBlock[member.id] ?? 0) + block;
           member.block += block;
-          entries.add(_LogEntry(
-            '${member.displayName} ${trFor(lang, 'gains_block_word')} $block '
-            '${trFor(lang, 'block_word')}.',
-            _LogKind.playerBlock,
-          ));
+          entries.add(
+            _LogEntry(
+              '${member.displayName} ${trFor(lang, 'gains_block_word')} $block '
+              '${trFor(lang, 'block_word')}.',
+              _LogKind.playerBlock,
+            ),
+          );
         case SpellEffectKind.cleanse:
-          _fx(spellStyle, memberKey,
-              element: spell.element, delayMs: fxDelay, power: spellPower());
+          _fx(
+            spellStyle,
+            memberKey,
+            element: spell.element,
+            delayMs: fxDelay,
+            power: spellPower(),
+          );
           member.statusEffects = [];
-          entries.add(_LogEntry(
-            '${member.displayName} ${trFor(lang, 'cleansed_suffix')}',
-            _LogKind.playerHeal,
-          ));
+          entries.add(
+            _LogEntry(
+              '${member.displayName} ${trFor(lang, 'cleansed_suffix')}',
+              _LogKind.playerHeal,
+            ),
+          );
         case SpellEffectKind.damage:
         case SpellEffectKind.status:
           break;
@@ -349,7 +424,8 @@ extension _FightActions on _FightScreenState {
       _momentum = min(_momentumNeeded, _momentum + hitsLanded);
       if (before < _momentumNeeded && _momentum >= _momentumNeeded) {
         entries.add(
-            _LogEntry(trFor(lang, 'momentum_ready_message'), _LogKind.info));
+          _LogEntry(trFor(lang, 'momentum_ready_message'), _LogKind.info),
+        );
       }
     }
     _noteGoalProgress(entries, lang);
@@ -358,7 +434,8 @@ extension _FightActions on _FightScreenState {
 
     if (scrollItemId != null) {
       unawaited(
-          ref.read(playerSessionProvider.notifier).consumeItem(scrollItemId));
+        ref.read(playerSessionProvider.notifier).consumeItem(scrollItemId),
+      );
     } else {
       // The session takes it when the fight ends (v1.713).
       _mana -= _spellCost(spell);
@@ -376,7 +453,9 @@ extension _FightActions on _FightScreenState {
   }
 
   Future<_EnemyMember?> _pickEnemy(
-      List<_EnemyMember> candidates, SpellSpec spell) {
+    List<_EnemyMember> candidates,
+    SpellSpec spell,
+  ) {
     final lang = ref.read(appLanguageProvider);
     return showInkSheet<_EnemyMember>(
       context: context,
@@ -394,7 +473,8 @@ extension _FightActions on _FightScreenState {
                 leading: EnemyPixelIcon(enemy.enemyId, size: IconSize.s32),
                 title: Text(enemy.displayName),
                 subtitle: Text(
-                    '${trFor(lang, 'hp_label')} ${enemy.currentHealth} / ${enemy.maxHealth}'),
+                  '${trFor(lang, 'hp_label')} ${enemy.currentHealth} / ${enemy.maxHealth}',
+                ),
                 onTap: () => Navigator.of(sheetContext).pop(enemy),
               ),
           ],
@@ -404,7 +484,9 @@ extension _FightActions on _FightScreenState {
   }
 
   Future<_PartyMember?> _pickMember(
-      List<_PartyMember> candidates, SpellSpec spell) {
+    List<_PartyMember> candidates,
+    SpellSpec spell,
+  ) {
     final lang = ref.read(appLanguageProvider);
     return showInkSheet<_PartyMember>(
       context: context,
@@ -427,7 +509,8 @@ extension _FightActions on _FightScreenState {
                 ),
                 title: Text(member.displayName),
                 subtitle: Text(
-                    '${trFor(lang, 'hp_label')} ${member.currentHealth} / ${member.maxHealth}'),
+                  '${trFor(lang, 'hp_label')} ${member.currentHealth} / ${member.maxHealth}',
+                ),
                 onTap: () => Navigator.of(sheetContext).pop(member),
               ),
           ],

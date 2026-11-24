@@ -29,7 +29,8 @@ Map<String, int> _runsCastingCounts(List<_SimResult> results) {
 
 /// Runs, fights won, fights lost and casts per profession id.
 Map<String, ({int runs, int won, int lost, int casts})> _professionTotals(
-    List<_SimResult> results) {
+  List<_SimResult> results,
+) {
   final map = <String, ({int runs, int won, int lost, int casts})>{};
   for (final r in results) {
     if (!r.hasCharacter) continue;
@@ -45,7 +46,10 @@ Map<String, ({int runs, int won, int lost, int casts})> _professionTotals(
 }
 
 String _spellDisplayName(
-        String id, Map<String, SpellSpec> spells, AppLanguage lang) =>
+  String id,
+  Map<String, SpellSpec> spells,
+  AppLanguage lang,
+) =>
     spells[id]?.nameFor(lang) ?? id;
 
 String _professionDisplayName(String id, Map<String, dynamic> professions) =>
@@ -54,7 +58,10 @@ String _professionDisplayName(String id, Map<String, dynamic> professions) =>
 
 /// "Arcane Bolt ×12, Mana Ward ×3" for one run's casts, or null.
 String? _castsSummary(
-    Map<String, int> casts, Map<String, SpellSpec> spells, AppLanguage lang) {
+  Map<String, int> casts,
+  Map<String, SpellSpec> spells,
+  AppLanguage lang,
+) {
   if (casts.isEmpty) return null;
   final entries = casts.entries.toList()
     ..sort((a, b) => b.value.compareTo(a.value));
@@ -86,7 +93,9 @@ Map<String, int> _endingCounts(List<_SimResult> results) {
 /// cross-referenced against [quests] for which quest ids actually grant a
 /// companion (a non-empty `rewardAllyId`). Most-encountered first.
 Map<String, int> _companionEncounterCounts(
-    List<_SimResult> results, Map<String, dynamic> quests) {
+  List<_SimResult> results,
+  Map<String, dynamic> quests,
+) {
   final counts = <String, int>{};
   for (final r in results) {
     final companionsThisRun = <String>{};
@@ -124,8 +133,11 @@ Color _companionColor(String companionId, Map<String, int> allCounts) {
 /// scan-friendly alternative to the plain uncolored [Text] lines this
 /// section used before.
 class _StatLine extends StatelessWidget {
-  const _StatLine(
-      {required this.icon, required this.color, required this.text});
+  const _StatLine({
+    required this.icon,
+    required this.color,
+    required this.text,
+  });
 
   final IconData icon;
   final Color color;
@@ -139,8 +151,10 @@ class _StatLine extends StatelessWidget {
         children: [
           Icon(icon, size: IconSize.s16, color: color),
           const SizedBox(width: 6),
-          Text(text,
-              style: TextStyle(color: color, fontWeight: FontWeight.w600)),
+          Text(
+            text,
+            style: TextStyle(color: color, fontWeight: FontWeight.w600),
+          ),
         ],
       ),
     );
@@ -203,7 +217,9 @@ List<_GroupStat> _chapterBreakdown(List<_SimResult> results) {
 /// location), most-visited first — how much of the story, on average,
 /// reads as "grim" vs "tense", or plays out on the "docks" vs "cathedral".
 List<_GroupStat> _distributionBy(
-    List<_SimResult> results, String? Function(_SimStep) keyOf) {
+  List<_SimResult> results,
+  String? Function(_SimStep) keyOf,
+) {
   final map = <String, _GroupStat>{};
   for (final r in results) {
     for (final s in r.steps) {

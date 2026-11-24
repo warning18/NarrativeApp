@@ -44,10 +44,11 @@ class CliffTownView extends StatelessWidget {
       final left = townCliffWidth + piece.column * townCellWidth;
       final top = unitsHigh - townHarborHeight - piece.top * townRowHeight;
       final rect = Rect.fromLTWH(
-          left,
-          top,
-          piece.footprint.width * townCellWidth,
-          piece.footprint.height * townRowHeight);
+        left,
+        top,
+        piece.footprint.width * townCellWidth,
+        piece.footprint.height * townRowHeight,
+      );
       if (rect.contains(Offset(x, y))) return piece.id;
     }
     return null;
@@ -62,92 +63,100 @@ class CliffTownView extends StatelessWidget {
     ].reduce((a, b) => a > b ? a : b);
     final townUnits = townHarborHeight + (reach + 2) * townRowHeight + 140;
 
-    return LayoutBuilder(builder: (context, constraints) {
-      final scale = constraints.maxWidth / townWidth;
-      // At least as tall as the box it is in: a small town has sky above.
-      final unitsHigh = constraints.maxHeight.isFinite
-          ? [townUnits, constraints.maxHeight / scale]
-              .reduce((a, b) => a > b ? a : b)
-          : townUnits;
-      final height = unitsHigh * scale;
-      Rect? previewRect;
-      if (spot != null) {
-        previewRect = Rect.fromLTWH(
-          (townCliffWidth + spot.$2 * townCellWidth) * scale,
-          height -
-              (townHarborHeight + (spot.$1 + preview!.height) * townRowHeight) *
-                  scale,
-          preview!.width * townCellWidth * scale,
-          preview!.height * townRowHeight * scale,
-        );
-      }
-      // A visible bar: the town scrolls inside the camp page.
-      return Scrollbar(
-        controller: scrollController,
-        thumbVisibility: scrollController != null,
-        child: SingleChildScrollView(
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        final scale = constraints.maxWidth / townWidth;
+        // At least as tall as the box it is in: a small town has sky above.
+        final unitsHigh = constraints.maxHeight.isFinite
+            ? [
+                townUnits,
+                constraints.maxHeight / scale,
+              ].reduce((a, b) => a > b ? a : b)
+            : townUnits;
+        final height = unitsHigh * scale;
+        Rect? previewRect;
+        if (spot != null) {
+          previewRect = Rect.fromLTWH(
+            (townCliffWidth + spot.$2 * townCellWidth) * scale,
+            height -
+                (townHarborHeight +
+                        (spot.$1 + preview!.height) * townRowHeight) *
+                    scale,
+            preview!.width * townCellWidth * scale,
+            preview!.height * townRowHeight * scale,
+          );
+        }
+        // A visible bar: the town scrolls inside the camp page.
+        return Scrollbar(
           controller: scrollController,
-          reverse: true,
-          child: SizedBox(
-            width: constraints.maxWidth,
-            height: height,
-            child: Stack(
-              children: [
-                Positioned.fill(
-                  child: GestureDetector(
-                    key: const Key('cliff_town_hit'),
-                    behavior: HitTestBehavior.opaque,
-                    onTapUp: onPieceTap == null
-                        ? null
-                        : (d) {
-                            final id =
-                                _pieceAt(d.localPosition, scale, unitsHigh);
-                            if (id != null) onPieceTap!(id);
-                          },
-                    child: CustomPaint(
-                      painter: _CliffTownPainter(
-                        town: town,
-                        unitsHigh: unitsHigh,
-                        preview: spot == null
-                            ? null
-                            : TownPiece('', spot.$1, spot.$2, preview!),
-                        highlightIndex: highlightIndex,
+          thumbVisibility: scrollController != null,
+          child: SingleChildScrollView(
+            controller: scrollController,
+            reverse: true,
+            child: SizedBox(
+              width: constraints.maxWidth,
+              height: height,
+              child: Stack(
+                children: [
+                  Positioned.fill(
+                    child: GestureDetector(
+                      key: const Key('cliff_town_hit'),
+                      behavior: HitTestBehavior.opaque,
+                      onTapUp: onPieceTap == null
+                          ? null
+                          : (d) {
+                              final id = _pieceAt(
+                                d.localPosition,
+                                scale,
+                                unitsHigh,
+                              );
+                              if (id != null) onPieceTap!(id);
+                            },
+                      child: CustomPaint(
+                        painter: _CliffTownPainter(
+                          town: town,
+                          unitsHigh: unitsHigh,
+                          preview: spot == null
+                              ? null
+                              : TownPiece('', spot.$1, spot.$2, preview!),
+                          highlightIndex: highlightIndex,
+                        ),
                       ),
                     ),
                   ),
-                ),
-                if (previewRect != null)
-                  Positioned.fromRect(
-                    rect: previewRect,
-                    child: IgnorePointer(
-                      child: Center(
-                        child: FittedBox(
-                          fit: BoxFit.scaleDown,
-                          child: Padding(
-                            padding: const EdgeInsets.all(2),
-                            child: Text(
-                              previewLabel.toUpperCase(),
-                              textAlign: TextAlign.center,
-                              style: const TextStyle(
-                                fontFamily: 'PixelifySans',
-                                fontSize: 10,
-                                height: 1.1,
-                                color: Palette.goldDark,
+                  if (previewRect != null)
+                    Positioned.fromRect(
+                      rect: previewRect,
+                      child: IgnorePointer(
+                        child: Center(
+                          child: FittedBox(
+                            fit: BoxFit.scaleDown,
+                            child: Padding(
+                              padding: const EdgeInsets.all(2),
+                              child: Text(
+                                previewLabel.toUpperCase(),
+                                textAlign: TextAlign.center,
+                                style: const TextStyle(
+                                  fontFamily: 'PixelifySans',
+                                  fontSize: 10,
+                                  height: 1.1,
+                                  color: Palette.goldDark,
+                                ),
                               ),
                             ),
                           ),
                         ),
                       ),
                     ),
-                  ),
-                if (harborAction != null)
-                  Positioned(left: 8, bottom: 8, child: harborAction!),
-              ],
+                  if (harborAction != null)
+                    Positioned(left: 8, bottom: 8, child: harborAction!),
+                ],
+              ),
             ),
           ),
-        ),
-      );
-    });
+        );
+      },
+    );
   }
 }
 
@@ -207,22 +216,30 @@ class _CliffTownPainter extends CustomPainter {
     _canvas.drawPath(path..close(), Paint()..color = color);
   }
 
-  void _line(double x1, double y1, double x2, double y2, Color color,
-          double width) =>
+  void _line(
+    double x1,
+    double y1,
+    double x2,
+    double y2,
+    Color color,
+    double width,
+  ) =>
       _canvas.drawLine(
-          Offset(_ox + x1, _oy + y1),
-          Offset(_ox + x2, _oy + y2),
-          Paint()
-            ..color = color
-            ..strokeWidth = width);
+        Offset(_ox + x1, _oy + y1),
+        Offset(_ox + x2, _oy + y2),
+        Paint()
+          ..color = color
+          ..strokeWidth = width,
+      );
 
   void _outline(double x, double y, double w, double h, Color color) =>
       _canvas.drawRect(
-          Rect.fromLTWH(_ox + x, _oy + y, w, h),
-          Paint()
-            ..color = color
-            ..style = PaintingStyle.stroke
-            ..strokeWidth = 1);
+        Rect.fromLTWH(_ox + x, _oy + y, w, h),
+        Paint()
+          ..color = color
+          ..style = PaintingStyle.stroke
+          ..strokeWidth = 1,
+      );
 
   @override
   void paint(Canvas canvas, Size size) {
@@ -262,8 +279,13 @@ class _CliffTownPainter extends CustomPainter {
       _oy = h - townHarborHeight - piece.top * townRowHeight;
       _piece(piece.id);
       if (i == highlightIndex) {
-        _outline(0, 0, piece.footprint.width * townCellWidth,
-            piece.footprint.height * townRowHeight, _lit);
+        _outline(
+          0,
+          0,
+          piece.footprint.width * townCellWidth,
+          piece.footprint.height * townRowHeight,
+          _lit,
+        );
       }
     }
 
@@ -280,12 +302,18 @@ class _CliffTownPainter extends CustomPainter {
       for (var x = 0.0; x < w; x += 8) {
         canvas.drawLine(Offset(_ox + x, _oy), Offset(_ox + x + 4, _oy), dash);
         canvas.drawLine(
-            Offset(_ox + x, _oy + gh), Offset(_ox + x + 4, _oy + gh), dash);
+          Offset(_ox + x, _oy + gh),
+          Offset(_ox + x + 4, _oy + gh),
+          dash,
+        );
       }
       for (var y = 0.0; y < gh; y += 8) {
         canvas.drawLine(Offset(_ox, _oy + y), Offset(_ox, _oy + y + 4), dash);
         canvas.drawLine(
-            Offset(_ox + w, _oy + y), Offset(_ox + w, _oy + y + 4), dash);
+          Offset(_ox + w, _oy + y),
+          Offset(_ox + w, _oy + y + 4),
+          dash,
+        );
       }
     }
     canvas.restore();
@@ -315,7 +343,7 @@ class _CliffTownPainter extends CustomPainter {
       40,
       32,
       38,
-      30
+      30,
     ];
     for (final right in [false, true]) {
       final path = Path();
@@ -329,11 +357,15 @@ class _CliffTownPainter extends CustomPainter {
       path.close();
       _canvas.save();
       _canvas.clipPath(path);
-      _canvas.drawRect(Rect.fromLTWH(right ? townWidth - 40 : 0, 0, 40, h),
-          Paint()..color = _rock1);
+      _canvas.drawRect(
+        Rect.fromLTWH(right ? townWidth - 40 : 0, 0, 40, h),
+        Paint()..color = _rock1,
+      );
       for (var y = 0.0; y < h; y += 26) {
-        _canvas.drawRect(Rect.fromLTWH(right ? townWidth - 40 : 0, y, 40, 8),
-            Paint()..color = _rock2);
+        _canvas.drawRect(
+          Rect.fromLTWH(right ? townWidth - 40 : 0, y, 40, 8),
+          Paint()..color = _rock2,
+        );
       }
       _canvas.restore();
     }
@@ -362,7 +394,7 @@ class _CliffTownPainter extends CustomPainter {
       (140.0, 4.0),
       (200.0, 20.0),
       (270.0, 4.0),
-      (320.0, 20.0)
+      (320.0, 20.0),
     ]) {
       _rect(x, y, 2, 14, _mortar);
     }
@@ -486,7 +518,7 @@ class _CliffTownPainter extends CustomPainter {
             x + 6,
             57 + len,
             x,
-            61 + len
+            61 + len,
           ], c);
         }
         _rect(54, 72, 16, 20, _dark);

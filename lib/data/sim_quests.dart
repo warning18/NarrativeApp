@@ -97,16 +97,19 @@ class SimQuestLog {
   /// Whether a character with these [flags], [gold] and [alignmentLabel] may
   /// take [questId] on (the game's own checks: not taken or done, its
   /// required flags and gold, its alignment).
-  bool canTake(String questId,
-      {required Set<String> flags,
-      required int gold,
-      required String alignmentLabel}) {
+  bool canTake(
+    String questId, {
+    required Set<String> flags,
+    required int gold,
+    required String alignmentLabel,
+  }) {
     final q = quest(questId);
     if (q == null || active.contains(questId) || completed.contains(questId)) {
       return false;
     }
-    if (((q['requiredFlags'] as List?) ?? const [])
-        .any((f) => !flags.contains(f.toString()))) {
+    if (((q['requiredFlags'] as List?) ?? const []).any(
+      (f) => !flags.contains(f.toString()),
+    )) {
       return false;
     }
     if (((q['requiredGold'] as num?)?.toInt() ?? 0) > gold) return false;
@@ -116,14 +119,20 @@ class SimQuestLog {
   /// Takes [questId] on if the character qualifies. A bounty counts the
   /// kills made after: [killsBefore] when the offer came with the fight
   /// that offers it, else the kills so far.
-  bool accept(String questId,
-      {required int step,
-      required Set<String> flags,
-      required int gold,
-      required String alignmentLabel,
-      Map<String, int>? killsBefore}) {
-    if (!canTake(questId,
-        flags: flags, gold: gold, alignmentLabel: alignmentLabel)) {
+  bool accept(
+    String questId, {
+    required int step,
+    required Set<String> flags,
+    required int gold,
+    required String alignmentLabel,
+    Map<String, int>? killsBefore,
+  }) {
+    if (!canTake(
+      questId,
+      flags: flags,
+      gold: gold,
+      alignmentLabel: alignmentLabel,
+    )) {
       return false;
     }
     final base = killsBefore ?? kills;
@@ -209,8 +218,11 @@ class SimQuestLog {
     return {
       for (final id in active)
         id: [
-          for (final (i, status)
-              in objectiveStatusesFor(id, quest(id)!, session).indexed)
+          for (final (i, status) in objectiveStatusesFor(
+            id,
+            quest(id)!,
+            session,
+          ).indexed)
             if (!status.met)
               '${((quest(id)!['objectives'] as List)[i] as Map)['type']}: '
                   '${status.description}',
@@ -224,10 +236,12 @@ class SimQuestLog {
   /// (evil) or the most gold (gold, the first on a tie), else one at
   /// random; its politics come with the payout for the caller to apply
   /// (v1.463, as quest_turn_in.dart does in the app).
-  SimQuestPayout complete(String questId,
-      {required int step,
-      required SimTurnInBias bias,
-      required Random random}) {
+  SimQuestPayout complete(
+    String questId, {
+    required int step,
+    required SimTurnInBias bias,
+    required Random random,
+  }) {
     final q = quest(questId)!;
     active.remove(questId);
     completed.add(questId);
@@ -239,11 +253,14 @@ class SimQuestLog {
     if (choices.isNotEmpty) {
       picked = switch (bias) {
         SimTurnInBias.good => choices.reduce(
-            (a, b) => b.alignmentFor(align0) > a.alignmentFor(align0) ? b : a),
+            (a, b) => b.alignmentFor(align0) > a.alignmentFor(align0) ? b : a,
+          ),
         SimTurnInBias.evil => choices.reduce(
-            (a, b) => b.alignmentFor(align0) < a.alignmentFor(align0) ? b : a),
-        SimTurnInBias.gold =>
-          choices.reduce((a, b) => b.goldFor(gold0) > a.goldFor(gold0) ? b : a),
+            (a, b) => b.alignmentFor(align0) < a.alignmentFor(align0) ? b : a,
+          ),
+        SimTurnInBias.gold => choices.reduce(
+            (a, b) => b.goldFor(gold0) > a.goldFor(gold0) ? b : a,
+          ),
         SimTurnInBias.any => choices[random.nextInt(choices.length)],
       };
     }

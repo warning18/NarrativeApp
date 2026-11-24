@@ -145,12 +145,14 @@ double _simCompanionValue(
   required Map<String, dynamic> dice,
   required Map<String, dynamic> skills,
 }) {
-  final stats = _allyStats(companion,
-      level: level,
-      approval: approval,
-      races: races,
-      professions: professions,
-      gameConfig: gameConfig);
+  final stats = _allyStats(
+    companion,
+    level: level,
+    approval: approval,
+    races: races,
+    professions: professions,
+    gameConfig: gameConfig,
+  );
   final faces = _facesOf(dice, companion);
   return simDieValue(faces, const {}, skills, damage: stats.damage) +
       stats.maxHealth * 0.1 +
@@ -158,7 +160,9 @@ double _simCompanionValue(
 }
 
 List<Map<String, dynamic>> _facesOf(
-        Map<String, dynamic> dice, Map<String, dynamic>? companion) =>
+  Map<String, dynamic> dice,
+  Map<String, dynamic>? companion,
+) =>
     ((dice[companion?['signatureDiceId']?.toString() ?? '']
             as Map<String, dynamic>?)?['faces'] as List?)
         ?.cast<Map<String, dynamic>>() ??
@@ -249,14 +253,16 @@ class SimParty {
   double valueOf(String id, {int? level}) {
     final record = _record(id);
     if (record == null) return 0;
-    return _simCompanionValue(record,
-        level: level ?? _level,
-        approval: roster[id]?.approval ?? startingApproval,
-        races: races,
-        professions: professions,
-        gameConfig: gameConfig,
-        dice: dice,
-        skills: skills);
+    return _simCompanionValue(
+      record,
+      level: level ?? _level,
+      approval: roster[id]?.approval ?? startingApproval,
+      races: races,
+      professions: professions,
+      gameConfig: gameConfig,
+      dice: dice,
+      skills: skills,
+    );
   }
 
   /// How well [id]'s weights fit the player's [alignment]: their
@@ -274,8 +280,12 @@ class SimParty {
   /// [companionId]'s quest is handed in: they join (recruitAlly's rules)
   /// and sit in a free seat when their house stands; then the competent
   /// player seats the best party. False when they cannot join.
-  bool recruit(String companionId,
-      {required int chapter, required String cause, int alignment = 0}) {
+  bool recruit(
+    String companionId, {
+    required int chapter,
+    required String cause,
+    int alignment = 0,
+  }) {
     if (_record(companionId) == null ||
         roster.containsKey(companionId) ||
         lost.contains(companionId) ||
@@ -283,18 +293,24 @@ class SimParty {
       return false;
     }
     roster[companionId] = SimCompanionState(companionId);
-    log.add(SimCompanionEvent(
+    log.add(
+      SimCompanionEvent(
         chapter: chapter,
         kind: 'recruit',
         companionId: companionId,
-        reason: cause));
+        reason: cause,
+      ),
+    );
     if (houseBuiltFor(companionId) && active.length < capacity) {
       active.add(companionId);
-      log.add(SimCompanionEvent(
+      log.add(
+        SimCompanionEvent(
           chapter: chapter,
           kind: 'pick',
           companionId: companionId,
-          reason: 'a free seat'));
+          reason: 'a free seat',
+        ),
+      );
     }
     arrange(chapter: chapter, alignment: alignment);
     return true;
@@ -344,25 +360,34 @@ class SimParty {
     ];
     for (var i = 0; i < max(seated.length, benched.length); i++) {
       if (i < seated.length && i < benched.length) {
-        log.add(SimCompanionEvent(
+        log.add(
+          SimCompanionEvent(
             chapter: chapter,
             kind: 'swap',
             companionId: seated[i],
             other: benched[i],
             reason: '${valueOf(seated[i]).toStringAsFixed(1)} over '
-                '${valueOf(benched[i]).toStringAsFixed(1)}; ${why[seated[i]]}'));
+                '${valueOf(benched[i]).toStringAsFixed(1)}; ${why[seated[i]]}',
+          ),
+        );
       } else if (i < seated.length) {
-        log.add(SimCompanionEvent(
+        log.add(
+          SimCompanionEvent(
             chapter: chapter,
             kind: 'pick',
             companionId: seated[i],
-            reason: why[seated[i]]!));
+            reason: why[seated[i]]!,
+          ),
+        );
       } else {
-        log.add(SimCompanionEvent(
+        log.add(
+          SimCompanionEvent(
             chapter: chapter,
             kind: 'bench',
             companionId: benched[i],
-            reason: 'no seat: ${valueOf(benched[i]).toStringAsFixed(1)}'));
+            reason: 'no seat: ${valueOf(benched[i]).toStringAsFixed(1)}',
+          ),
+        );
       }
     }
     if (seated.isEmpty && benched.isEmpty) return;
@@ -389,33 +414,45 @@ class SimParty {
     for (final id in [...active]) {
       if (id == exclude) continue;
       final member = roster[id]!;
-      final delta = approvalDeltaFor(_record(id),
-          alignmentMod: alignmentMod,
-          goldMod: goldMod,
-          explicit: explicitApprovalFor(approvalMods, id));
+      final delta = approvalDeltaFor(
+        _record(id),
+        alignmentMod: alignmentMod,
+        goldMod: goldMod,
+        explicit: explicitApprovalFor(approvalMods, id),
+      );
       final after = permanentApprovalFloor(
-          _record(id), approvalAfter(member.approval, delta));
+        _record(id),
+        approvalAfter(member.approval, delta),
+      );
       if (after == member.approval) continue;
       final change = ApprovalChange(
-          companionId: id, before: member.approval, after: after);
+        companionId: id,
+        before: member.approval,
+        after: after,
+      );
       member.approval = after;
       if (change.leaves) {
         leaving.add(id);
       } else if (change.tierChanged &&
           (change.tierAfter == ApprovalTier.devoted ||
               change.tierAfter == ApprovalTier.wary)) {
-        log.add(SimCompanionEvent(
+        log.add(
+          SimCompanionEvent(
             chapter: chapter,
             kind: change.tierAfter.name,
             companionId: id,
-            reason: 'approval $after after $cause'));
+            reason: 'approval $after after $cause',
+          ),
+        );
       }
     }
     for (final id in leaving) {
-      _remove(id,
-          lost: false,
-          chapter: chapter,
-          reason: 'approval ${roster[id]!.approval} after $cause');
+      _remove(
+        id,
+        lost: false,
+        chapter: chapter,
+        reason: 'approval ${roster[id]!.approval} after $cause',
+      );
     }
     if (leaving.isNotEmpty) arrange(chapter: chapter, alignment: alignment);
   }
@@ -423,10 +460,17 @@ class SimParty {
   /// The story's own companions (story_companions.dart: Vica) join once the
   /// walk has [visited] one of their scenes, whatever the policy. Returns
   /// who joined.
-  List<String> joinFromStory(Iterable<String> visited,
-      {required int chapter, int alignment = 0}) {
-    final due = storyRecruitsDue(companions,
-        visited: visited, recruited: roster.keys, gone: [...departed, ...lost]);
+  List<String> joinFromStory(
+    Iterable<String> visited, {
+    required int chapter,
+    int alignment = 0,
+  }) {
+    final due = storyRecruitsDue(
+      companions,
+      visited: visited,
+      recruited: roster.keys,
+      gone: [...departed, ...lost],
+    );
     for (final id in due) {
       recruit(id, chapter: chapter, cause: 'the story', alignment: alignment);
     }
@@ -435,8 +479,12 @@ class SimParty {
 
   /// The story takes [companionId] (a choice's `loseAllyId`; `*` the first
   /// seated) for good; never a permanent one (Vica).
-  void lose(String companionId,
-      {required int chapter, required String cause, int alignment = 0}) {
+  void lose(
+    String companionId, {
+    required int chapter,
+    required String cause,
+    int alignment = 0,
+  }) {
     final id = storyLossOf(companionId, active: active, companions: companions);
     if (id == null || !roster.containsKey(id)) return;
     _remove(id, lost: true, chapter: chapter, reason: cause);
@@ -445,8 +493,12 @@ class SimParty {
 
   /// PlayerSessionNotifier._removeAlly: off the roster for good; a seated
   /// one's seat goes to the bench's highest approval (house built).
-  void _remove(String id,
-      {required bool lost, required int chapter, required String reason}) {
+  void _remove(
+    String id, {
+    required bool lost,
+    required int chapter,
+    required String reason,
+  }) {
     final wasSeated = active.remove(id);
     roster.remove(id);
     (lost ? this.lost : departed).add(id);
@@ -462,17 +514,22 @@ class SimParty {
         active.add(replacement);
       }
     }
-    log.add(SimCompanionEvent(
+    log.add(
+      SimCompanionEvent(
         chapter: chapter,
         kind: lost ? 'lost' : 'leave',
         companionId: id,
-        reason:
-            replacement == null ? reason : '$reason; $replacement steps in'));
+        reason: replacement == null ? reason : '$reason; $replacement steps in',
+      ),
+    );
   }
 
   /// The houses standing now; a new seat or Kelda's Hall rearranges.
-  void housesBuilt(Iterable<String> ids,
-      {required int chapter, int alignment = 0}) {
+  void housesBuilt(
+    Iterable<String> ids, {
+    required int chapter,
+    int alignment = 0,
+  }) {
     final next = ids.toSet();
     if (next.length == builtHouses.length && next.containsAll(builtHouses)) {
       return;
@@ -515,13 +572,18 @@ class SimParty {
               as Map<String, dynamic>? ??
           const {};
       final base = deriveAllyBaseStats(
-          gameConfig: gameConfig, race: race, profession: profession);
-      final raw = _allyStats(record,
-          level: _level,
-          approval: member.approval,
-          races: races,
-          professions: professions,
-          gameConfig: gameConfig);
+        gameConfig: gameConfig,
+        race: race,
+        profession: profession,
+      );
+      final raw = _allyStats(
+        record,
+        level: _level,
+        approval: member.approval,
+        races: races,
+        professions: professions,
+        gameConfig: gameConfig,
+      );
       // The Barracks Annex: a full company comes rested (party_bonus.dart).
       final rested = 100 +
           (active.length >= fullCompanySize
@@ -536,34 +598,44 @@ class SimParty {
       final faces = _facesOf(dice, record);
       final known = {
         ...companionStarterSkillIds(
-            race: race, profession: profession, companion: record, dice: dice),
-        ...dieSignatureSkillIds(
-            dice[record['signatureDiceId']?.toString() ?? '']
-                as Map<String, dynamic>?),
-      };
-      allies.add(SimAlly(
-        id: id,
-        professionId: record['professionId']?.toString() ?? '',
-        maxHealth: liveMax,
-        currentHealth: SignEffects.healthEntering(
-          current: (member.health ?? stats.maxHealth).clamp(0, stats.maxHealth),
-          base: stats.maxHealth,
-          fightMax: liveMax,
+          race: race,
+          profession: profession,
+          companion: record,
+          dice: dice,
         ),
-        damage: signs.scaleAllyDamage(perks.scaleAllyDamage(stats.damage)),
-        armor: stats.armor,
-        dexterity: base.dexterity,
-        luck: base.luck,
-        wisdom: base.wisdom,
-        perception: base.perception,
-        faces: faces,
-        skills: {
-          for (final entry in skills.entries)
-            if (known.contains(entry.key) ||
-                ((entry.value as Map?)?['isUnlocked'] as bool? ?? false))
-              entry.key: entry.value,
-        },
-      ));
+        ...dieSignatureSkillIds(
+          dice[record['signatureDiceId']?.toString() ?? '']
+              as Map<String, dynamic>?,
+        ),
+      };
+      allies.add(
+        SimAlly(
+          id: id,
+          professionId: record['professionId']?.toString() ?? '',
+          maxHealth: liveMax,
+          currentHealth: SignEffects.healthEntering(
+            current: (member.health ?? stats.maxHealth).clamp(
+              0,
+              stats.maxHealth,
+            ),
+            base: stats.maxHealth,
+            fightMax: liveMax,
+          ),
+          damage: signs.scaleAllyDamage(perks.scaleAllyDamage(stats.damage)),
+          armor: stats.armor,
+          dexterity: base.dexterity,
+          luck: base.luck,
+          wisdom: base.wisdom,
+          perception: base.perception,
+          faces: faces,
+          skills: {
+            for (final entry in skills.entries)
+              if (known.contains(entry.key) ||
+                  ((entry.value as Map?)?['isUnlocked'] as bool? ?? false))
+                entry.key: entry.value,
+          },
+        ),
+      );
     }
     return allies;
   }
@@ -572,8 +644,11 @@ class SimParty {
   /// is kept (a knocked-out one back at [simReviveHealthFraction]) plus a
   /// sign's mending; a loss changes nothing. Knock-outs and the skills cast
   /// are counted either way.
-  void afterFight(List<SimAlly> allies,
-      {required bool won, SignEffects signs = SignEffects.none}) {
+  void afterFight(
+    List<SimAlly> allies, {
+    required bool won,
+    SignEffects signs = SignEffects.none,
+  }) {
     for (final ally in allies) {
       if (ally.isKnockedOut) {
         knockouts[ally.id] = (knockouts[ally.id] ?? 0) + 1;
@@ -587,8 +662,10 @@ class SimParty {
       final after = ally.isKnockedOut
           ? (ally.maxHealth * simReviveHealthFraction).round()
           : ally.currentHealth;
-      member.health =
-          min(ally.maxHealth, after + signs.afterFightHeal(ally.maxHealth));
+      member.health = min(
+        ally.maxHealth,
+        after + signs.afterFightHeal(ally.maxHealth),
+      );
     }
   }
 }

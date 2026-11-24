@@ -72,7 +72,10 @@ const int renounceCost = 15;
 /// [factionId]'s sub-clans that are the character's friends: its Houses
 /// on the climb, in the data's order.
 List<SubClan> _friendHousesOf(
-        String factionId, PoliticsState politics, ClanData data) =>
+  String factionId,
+  PoliticsState politics,
+  ClanData data,
+) =>
     [
       for (final s in data.subclansOf(factionId))
         if (politics.markOf(s.id) == SubclanMark.friend) s,
@@ -134,8 +137,12 @@ class Climb {
 }
 
 /// [factionId]'s climb (see [Climb]).
-Climb climbFor(String factionId, PoliticsState politics, Iterable<String> flags,
-        ClanData data) =>
+Climb climbFor(
+  String factionId,
+  PoliticsState politics,
+  Iterable<String> flags,
+  ClanData data,
+) =>
     Climb(
       factionId: factionId,
       houses: _friendHousesOf(factionId, politics, data),
@@ -149,7 +156,10 @@ Climb climbFor(String factionId, PoliticsState politics, Iterable<String> flags,
 /// then standing, then power) among the clans and the lost clan; '' while
 /// no climb has begun.
 String climbFocusFor(
-    PoliticsState politics, Iterable<String> flags, ClanData data) {
+  PoliticsState politics,
+  Iterable<String> flags,
+  ClanData data,
+) {
   if (politics.throneWinner.isNotEmpty) return politics.throneWinner;
   if (politics.claim.isNotEmpty) return politics.claim;
   Climb? best;
@@ -244,8 +254,10 @@ const int _hostDistrictMin = 2;
 /// worse (see [hostFor]).
 List<String> districtHostClans(PoliticsState politics, Geography geography) {
   final counts = <String, int>{};
-  for (final MapEntry(key: placeId, value: holder)
-      in holdings(geography, politics).entries) {
+  for (final MapEntry(key: placeId, value: holder) in holdings(
+    geography,
+    politics,
+  ).entries) {
     if (geography.place(placeId)?.level != GeoLevel.district) continue;
     counts[holder] = (counts[holder] ?? 0) + 1;
   }

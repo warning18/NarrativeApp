@@ -17,8 +17,10 @@ final _unlockedFeaturesProvider = Provider<Set<String>>((ref) {
 final newlyUnlockedProvider = Provider<List<String>>((ref) {
   final session = ref.watch(playerSessionProvider);
   return [
-    for (final f
-        in newlyUnlockedFeatures(session.ladder, session.acknowledgedFeatures))
+    for (final f in newlyUnlockedFeatures(
+      session.ladder,
+      session.acknowledgedFeatures,
+    ))
       f.id,
   ];
 });

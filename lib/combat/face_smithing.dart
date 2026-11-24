@@ -178,15 +178,21 @@ int recastValue(int value, String type, List<Map<String, dynamic>> faces) {
   return best == null || value < best ? value : best;
 }
 
-Map<String, dynamic> _smithedFace(Map<String, dynamic> face,
-    FaceUpgrade? upgrade, List<Map<String, dynamic>> dieFaces) {
+Map<String, dynamic> _smithedFace(
+  Map<String, dynamic> face,
+  FaceUpgrade? upgrade,
+  List<Map<String, dynamic>> dieFaces,
+) {
   if (upgrade == null || upgrade.isEmpty) return face;
   final out = Map<String, dynamic>.from(face);
   final type = out['type']?.toString() ?? '';
   if (upgrade.recastType != null && smithableBasicTypes.contains(type)) {
     out['type'] = upgrade.recastType;
     out['value'] = recastValue(
-        (out['value'] as num?)?.toInt() ?? 0, upgrade.recastType!, dieFaces);
+      (out['value'] as num?)?.toInt() ?? 0,
+      upgrade.recastType!,
+      dieFaces,
+    );
     if (upgrade.recastType != 'Attack') out['element'] = 'None';
   }
   final newType = out['type']?.toString() ?? '';
@@ -243,8 +249,11 @@ SmithingCost smithingCostFor(SmithingWork work, FaceUpgrade current) =>
 /// face a keyword fits (see [keywordFitsFaceType]), a Recast on a basic
 /// face. A fixed signature face of a companion's die (a Skill face) takes
 /// only an inscription.
-bool canSmith(SmithingWork work, Map<String, dynamic> face,
-    [FaceUpgrade current = FaceUpgrade.none]) {
+bool canSmith(
+  SmithingWork work,
+  Map<String, dynamic> face, [
+  FaceUpgrade current = FaceUpgrade.none,
+]) {
   final baseType = face['type']?.toString() ?? '';
   final type =
       current.recastType != null && smithableBasicTypes.contains(baseType)
@@ -266,8 +275,10 @@ bool canSmith(SmithingWork work, Map<String, dynamic> face,
 /// The elements a Temper can give [face] worked as [current]: every one
 /// but the element the face strikes with already, its own (a Fire strike
 /// isn't paid for to strike with Fire) or a Temper's.
-List<String> temperableElements(Map<String, dynamic> face,
-    [FaceUpgrade current = FaceUpgrade.none]) {
+List<String> temperableElements(
+  Map<String, dynamic> face, [
+  FaceUpgrade current = FaceUpgrade.none,
+]) {
   final own = face['element']?.toString() ?? 'None';
   return [
     for (final element in temperElements)
@@ -277,8 +288,10 @@ List<String> temperableElements(Map<String, dynamic> face,
 
 /// The keywords that can be inscribed on [face] worked as [current]: those
 /// that fit its type and that it doesn't carry already.
-List<FaceKeyword> inscribableKeywords(Map<String, dynamic> face,
-    [FaceUpgrade current = FaceUpgrade.none]) {
+List<FaceKeyword> inscribableKeywords(
+  Map<String, dynamic> face, [
+  FaceUpgrade current = FaceUpgrade.none,
+]) {
   final baseType = face['type']?.toString() ?? '';
   final type =
       current.recastType != null && smithableBasicTypes.contains(baseType)
@@ -310,8 +323,9 @@ Map<String, DieUpgrades> parseDiceUpgrades(Object? raw) {
     final parsed = <String, FaceUpgrade>{};
     for (final face in faces.entries) {
       if (face.value is! Map) continue;
-      final upgrade =
-          FaceUpgrade.fromJson(Map<String, dynamic>.from(face.value as Map));
+      final upgrade = FaceUpgrade.fromJson(
+        Map<String, dynamic>.from(face.value as Map),
+      );
       if (!upgrade.isEmpty) parsed[face.key.toString()] = upgrade;
     }
     if (parsed.isNotEmpty) out[entry.key.toString()] = parsed;

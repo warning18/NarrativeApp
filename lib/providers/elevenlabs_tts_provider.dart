@@ -58,7 +58,8 @@ Future<Uint8List> _synthesizeWithElevenLabs({
       .timeout(const Duration(seconds: 60));
   if (response.statusCode != 200) {
     throw ElevenLabsException(
-        elevenLabsErrorMessage(response.body, response.statusCode));
+      elevenLabsErrorMessage(response.body, response.statusCode),
+    );
   }
   if (response.bodyBytes.isEmpty) {
     throw ElevenLabsException('ElevenLabs returned no audio.');
@@ -96,8 +97,11 @@ String bundledNarrationPath(String clipId, AppLanguage language) =>
 
 /// One recording kept on this device (see [NarrationRecordings.localClips]).
 class LocalNarrationClip {
-  const LocalNarrationClip(
-      {required this.clipId, required this.language, required this.mp3});
+  const LocalNarrationClip({
+    required this.clipId,
+    required this.language,
+    required this.mp3,
+  });
 
   final String clipId;
   final AppLanguage language;
@@ -154,20 +158,28 @@ class NarrationRecordings {
       Directory('${(await _voiceDir(voiceId)).path}/${language.name}');
 
   /// Where [text] is (or would be) recorded on this device.
-  Future<File> fileFor(String text,
-      {required String voiceId, required AppLanguage language}) async {
+  Future<File> fileFor(
+    String text, {
+    required String voiceId,
+    required AppLanguage language,
+  }) async {
     final id = clipIdFor(text, voiceId: voiceId);
     return File('${(await _dir(voiceId, language)).path}/$id.mp3');
   }
 
   /// What plays [text] without recording it: this device's recording, or
   /// the one shipped inside the app; null when there is neither.
-  Future<Source?> sourceFor(String text,
-      {required String voiceId, required AppLanguage language}) async {
+  Future<Source?> sourceFor(
+    String text, {
+    required String voiceId,
+    required AppLanguage language,
+  }) async {
     final file = await fileFor(text, voiceId: voiceId, language: language);
     if (await file.exists()) return DeviceFileSource(file.path);
-    final asset =
-        bundledNarrationPath(clipIdFor(text, voiceId: voiceId), language);
+    final asset = bundledNarrationPath(
+      clipIdFor(text, voiceId: voiceId),
+      language,
+    );
     if ((await bundled()).contains(asset)) {
       // AssetSource paths are relative to the assets/ folder.
       return AssetSource(asset.substring('assets/'.length));
@@ -175,12 +187,19 @@ class NarrationRecordings {
     return null;
   }
 
-  Future<bool> has(String text,
-          {required String voiceId, required AppLanguage language}) async =>
+  Future<bool> has(
+    String text, {
+    required String voiceId,
+    required AppLanguage language,
+  }) async =>
       await sourceFor(text, voiceId: voiceId, language: language) != null;
 
-  Future<File> save(String text, Uint8List mp3,
-      {required String voiceId, required AppLanguage language}) async {
+  Future<File> save(
+    String text,
+    Uint8List mp3, {
+    required String voiceId,
+    required AppLanguage language,
+  }) async {
     final file = await fileFor(text, voiceId: voiceId, language: language);
     await file.parent.create(recursive: true);
     // Written under a temporary name first, so a recording cut short (the
@@ -194,24 +213,30 @@ class NarrationRecordings {
 
   /// How many paragraphs are recorded on this device in [voiceId] and
   /// [language].
-  Future<int> count(
-      {required String voiceId, required AppLanguage language}) async {
+  Future<int> count({
+    required String voiceId,
+    required AppLanguage language,
+  }) async {
     final dir = await _dir(voiceId, language);
     if (!await dir.exists()) return 0;
     return dir.list().where((entry) => entry.path.endsWith('.mp3')).length;
   }
 
   /// The folder holding [voiceId]'s recordings in [language].
-  Future<String> folderPath(
-          {required String voiceId, required AppLanguage language}) async =>
+  Future<String> folderPath({
+    required String voiceId,
+    required AppLanguage language,
+  }) async =>
       (await _dir(voiceId, language)).path;
 
   /// How many recordings ship inside the app in [language], every voice
   /// together.
   Future<int> bundledCount(AppLanguage language) async => (await bundled())
-      .where((path) =>
-          path.startsWith('assets/narration/${language.name}/') &&
-          path.endsWith('.mp3'))
+      .where(
+        (path) =>
+            path.startsWith('assets/narration/${language.name}/') &&
+            path.endsWith('.mp3'),
+      )
       .length;
 
   /// Every recording made on this device in [voiceId], both languages.
@@ -223,11 +248,13 @@ class NarrationRecordings {
       await for (final entry in dir.list()) {
         if (entry is! File || !entry.path.endsWith('.mp3')) continue;
         final name = entry.uri.pathSegments.last;
-        clips.add(LocalNarrationClip(
-          clipId: name.substring(0, name.length - '.mp3'.length),
-          language: language,
-          mp3: entry,
-        ));
+        clips.add(
+          LocalNarrationClip(
+            clipId: name.substring(0, name.length - '.mp3'.length),
+            language: language,
+            mp3: entry,
+          ),
+        );
       }
     }
     clips.sort((a, b) => a.mp3.path.compareTo(b.mp3.path));
@@ -281,18 +308,27 @@ class ElevenLabsTtsNotifier extends StateNotifier<VoicePlaybackState> {
 
   /// What plays [text]: its recording on this device or inside the app,
   /// recording it first when there is neither.
-  Future<Source> clipFor(String text,
-      {required ElevenLabsVoiceSettings settings,
-      required AppLanguage language}) async {
+  Future<Source> clipFor(
+    String text, {
+    required ElevenLabsVoiceSettings settings,
+    required AppLanguage language,
+  }) async {
     if (!NarrationRecordings.supported) {
       throw ElevenLabsException(
-          'Recorded voices are not available in the web version.');
+        'Recorded voices are not available in the web version.',
+      );
     }
-    final file = await recordings.fileFor(text,
-        voiceId: settings.voiceId, language: language);
+    final file = await recordings.fileFor(
+      text,
+      voiceId: settings.voiceId,
+      language: language,
+    );
     if (!_recording.containsKey(file.path)) {
-      final existing = await recordings.sourceFor(text,
-          voiceId: settings.voiceId, language: language);
+      final existing = await recordings.sourceFor(
+        text,
+        voiceId: settings.voiceId,
+        language: language,
+      );
       if (existing != null && !_recording.containsKey(file.path)) {
         return existing;
       }
@@ -303,13 +339,21 @@ class ElevenLabsTtsNotifier extends StateNotifier<VoicePlaybackState> {
     if (pending != null) return DeviceFileSource((await pending).path);
     if (!settings.hasApiKey) {
       throw ElevenLabsException(
-          'This scene is not recorded yet and no ElevenLabs API key is set.');
+        'This scene is not recorded yet and no ElevenLabs API key is set.',
+      );
     }
     final recording = () async {
       final mp3 = await _synthesize(
-          text: text, apiKey: settings.apiKey!, voiceId: settings.voiceId);
-      return recordings.save(text, mp3,
-          voiceId: settings.voiceId, language: language);
+        text: text,
+        apiKey: settings.apiKey!,
+        voiceId: settings.voiceId,
+      );
+      return recordings.save(
+        text,
+        mp3,
+        voiceId: settings.voiceId,
+        language: language,
+      );
     }();
     _recording[file.path] = recording;
     try {
@@ -321,22 +365,29 @@ class ElevenLabsTtsNotifier extends StateNotifier<VoicePlaybackState> {
 
   /// Whether every one of [paragraphs] is already recorded, so reading
   /// them needs neither the network nor any ElevenLabs credits.
-  Future<bool> isRecorded(List<String> paragraphs,
-      {required ElevenLabsVoiceSettings settings,
-      required AppLanguage language}) async {
+  Future<bool> isRecorded(
+    List<String> paragraphs, {
+    required ElevenLabsVoiceSettings settings,
+    required AppLanguage language,
+  }) async {
     if (!NarrationRecordings.supported) return false;
     for (final paragraph in paragraphs) {
-      if (!await recordings.has(paragraph,
-          voiceId: settings.voiceId, language: language)) {
+      if (!await recordings.has(
+        paragraph,
+        voiceId: settings.voiceId,
+        language: language,
+      )) {
         return false;
       }
     }
     return true;
   }
 
-  Future<void> speak(List<String> paragraphs,
-      {required ElevenLabsVoiceSettings settings,
-      required AppLanguage language}) async {
+  Future<void> speak(
+    List<String> paragraphs, {
+    required ElevenLabsVoiceSettings settings,
+    required AppLanguage language,
+  }) async {
     await stop();
     if (paragraphs.isEmpty) return;
     final run = ++_run;
@@ -349,8 +400,11 @@ class ElevenLabsTtsNotifier extends StateNotifier<VoicePlaybackState> {
         next = null;
         if (run != _run) return;
         if (i + 1 < paragraphs.length) {
-          next = clipFor(paragraphs[i + 1],
-              settings: settings, language: language);
+          next = clipFor(
+            paragraphs[i + 1],
+            settings: settings,
+            language: language,
+          );
         }
         state = VoicePlaybackState.playing;
         await _playToEnd(clip);
@@ -396,8 +450,11 @@ class ElevenLabsTtsNotifier extends StateNotifier<VoicePlaybackState> {
     for (var i = 0; i < paragraphs.length; i++) {
       if (cancelled?.call() ?? false) break;
       final text = paragraphs[i];
-      if (!await recordings.has(text,
-          voiceId: settings.voiceId, language: language)) {
+      if (!await recordings.has(
+        text,
+        voiceId: settings.voiceId,
+        language: language,
+      )) {
         await clipFor(text, settings: settings, language: language);
         recorded++;
       }
@@ -409,14 +466,18 @@ class ElevenLabsTtsNotifier extends StateNotifier<VoicePlaybackState> {
   /// The paragraphs of [paragraphs] not recorded yet, and how many
   /// characters recording them would send to ElevenLabs.
   Future<({List<String> missing, int characters})> missingFrom(
-      List<String> paragraphs,
-      {required ElevenLabsVoiceSettings settings,
-      required AppLanguage language}) async {
+    List<String> paragraphs, {
+    required ElevenLabsVoiceSettings settings,
+    required AppLanguage language,
+  }) async {
     final missing = <String>[];
     var characters = 0;
     for (final text in paragraphs) {
-      if (!await recordings.has(text,
-          voiceId: settings.voiceId, language: language)) {
+      if (!await recordings.has(
+        text,
+        voiceId: settings.voiceId,
+        language: language,
+      )) {
         missing.add(text);
         characters += text.length;
       }

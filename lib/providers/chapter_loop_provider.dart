@@ -22,9 +22,13 @@ final chapterLoopsProvider = Provider<List<ChapterLoop>>((ref) {
 /// Where the story stands: its scene and the scenes behind it, and nothing
 /// else of the story's state (an excursion queued doesn't move a chapter).
 final _storyPlaceProvider =
-    Provider<({String currentNodeId, List<String> history})>((ref) => ref.watch(
-        storyPlayProvider.select(
-            (p) => (currentNodeId: p.currentNodeId, history: p.history))));
+    Provider<({String currentNodeId, List<String> history})>(
+  (ref) => ref.watch(
+    storyPlayProvider.select(
+      (p) => (currentNodeId: p.currentNodeId, history: p.history),
+    ),
+  ),
+);
 
 /// The open chapter the story is in (see [currentLoop]), if any.
 final currentLoopProvider = Provider<ChapterLoop?>((ref) {
@@ -68,8 +72,10 @@ final reachedChapterProvider = Provider<int>((ref) {
 
 /// The level advice for [chapter] at the party's level (see
 /// [chapterLevelAdvice]), null when that chapter recommends none.
-final _chapterLevelAdviceProvider =
-    Provider.family<ChapterLevelAdvice?, int>((ref, chapter) {
+final _chapterLevelAdviceProvider = Provider.family<ChapterLevelAdvice?, int>((
+  ref,
+  chapter,
+) {
   return chapterLevelAdvice(
     chapter: chapter,
     playerLevel: ref.watch(playerSessionProvider.select((s) => s.level)),
@@ -81,20 +87,25 @@ final _chapterLevelAdviceProvider =
 /// after [reachedChapterProvider]'s.
 final nextChapterLevelAdviceProvider = Provider<ChapterLevelAdvice?>((ref) {
   return ref.watch(
-      _chapterLevelAdviceProvider(ref.watch(reachedChapterProvider) + 1));
+    _chapterLevelAdviceProvider(ref.watch(reachedChapterProvider) + 1),
+  );
 });
 
 /// The condition of the chapter the party has reached (see
 /// chapter_conditions.dart), if it has one.
 final chapterConditionProvider = Provider<ChapterCondition?>((ref) {
   final chapter = ref.watch(reachedChapterProvider);
-  final seed = ref.watch(playerSessionProvider.select((s) => conditionSeedFor(
+  final seed = ref.watch(
+    playerSessionProvider.select(
+      (s) => conditionSeedFor(
         runSeed: s.runSeed,
         characterName: s.characterName,
         raceId: s.raceId,
         professionId: s.professionId,
         cycle: s.newGamePlusCycle,
-      )));
+      ),
+    ),
+  );
   return chapterConditionFor(seed: seed, chapter: chapter);
 });
 
@@ -131,12 +142,14 @@ final chapterProgressProvider = Provider<_ChapterProgress?>((ref) {
   if (loop == null || story == null) return null;
   final flags = ref.watch(playerSessionProvider.select((s) => s.flags));
   final visited = ref.watch(storyPlayProvider.select((p) => p.visitedNodeIds));
-  final completedZoneIds =
-      ref.watch(playerSessionProvider.select((s) => s.completedZoneIds));
+  final completedZoneIds = ref.watch(
+    playerSessionProvider.select((s) => s.completedZoneIds),
+  );
   final zones = ref.watch(gameDbProvider(zonesSchema)).value ?? const {};
   final quests = ref.watch(gameDbProvider(questsSchema)).value ?? const {};
-  final completedQuestIds =
-      ref.watch(playerSessionProvider.select((s) => s.completedQuestIds));
+  final completedQuestIds = ref.watch(
+    playerSessionProvider.select((s) => s.completedQuestIds),
+  );
   return _ChapterProgress(
     loop: loop,
     done: chapterActivityCount(
@@ -146,8 +159,12 @@ final chapterProgressProvider = Provider<_ChapterProgress?>((ref) {
       completedZoneIds: completedZoneIds,
       zones: zones,
     ),
-    missingPlaceIds:
-        missingMainQuestPlaces(loop, story, flags, visitedNodeIds: visited),
+    missingPlaceIds: missingMainQuestPlaces(
+      loop,
+      story,
+      flags,
+      visitedNodeIds: visited,
+    ),
     questsDone: chapterQuestCount(
       chapter: loop.chapter,
       quests: quests,
@@ -176,7 +193,9 @@ final companionLeadsProvider = Provider<Map<String, List<String>>>((ref) {
   final quests = ref.watch(gameDbProvider(questsSchema)).value ?? const {};
   // Only what the leads read: a purse, a potion or the clock changing
   // recomputes nothing (the camp watches this).
-  final session = ref.watch(playerSessionProvider.select((s) => (
+  final session = ref.watch(
+    playerSessionProvider.select(
+      (s) => (
         recruitedAllies: s.recruitedAllies,
         lostAllyIds: s.lostAllyIds,
         departedAllyIds: s.departedAllyIds,
@@ -184,7 +203,9 @@ final companionLeadsProvider = Provider<Map<String, List<String>>>((ref) {
         alignmentScore: s.alignmentScore,
         charisma: s.charisma,
         politics: s.politics,
-      )));
+      ),
+    ),
+  );
   final unavailable = [
     for (final ally in session.recruitedAllies) ally.companionId,
     ...session.lostAllyIds,
@@ -192,21 +213,28 @@ final companionLeadsProvider = Provider<Map<String, List<String>>>((ref) {
   ];
   // A choice behind a politics gate that fails (v1.196) leads nowhere yet.
   final gateWorld = CoastWorld(
-      data: ref.watch(clanDataProvider),
-      chapter: ref.watch(reachedChapterProvider));
+    data: ref.watch(clanDataProvider),
+    chapter: ref.watch(reachedChapterProvider),
+  );
   final leads = <String, List<String>>{};
   for (final place in ref.watch(knownPlacesProvider)) {
-    final allies = placeCompanionLeads(place, story, quests,
-        flags: session.flags,
-        alignmentScore: session.alignmentScore,
-        charisma: session.charisma,
-        unavailableAllyIds: unavailable,
-        gateOpen: (c) =>
-            choicePoliticsGate(c,
-                politics: session.politics,
-                flags: session.flags,
-                world: gateWorld) ==
-            ChoiceGate.open);
+    final allies = placeCompanionLeads(
+      place,
+      story,
+      quests,
+      flags: session.flags,
+      alignmentScore: session.alignmentScore,
+      charisma: session.charisma,
+      unavailableAllyIds: unavailable,
+      gateOpen: (c) =>
+          choicePoliticsGate(
+            c,
+            politics: session.politics,
+            flags: session.flags,
+            world: gateWorld,
+          ) ==
+          ChoiceGate.open,
+    );
     if (allies.isNotEmpty) leads[place.id] = allies;
   }
   return leads;

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+
 import '../theme/icon_sizes.dart';
 
 /// Shows a themed, centered notification card in place of the default
@@ -100,8 +101,9 @@ class _ImmersiveNoticeContentState extends State<_ImmersiveNoticeContent> {
               color: colorScheme.surfaceContainerHighest,
               borderRadius: BorderRadius.circular(16),
               border: Border.all(
-                  color: colorScheme.primary.withValues(alpha: 0.6),
-                  width: 1.5),
+                color: colorScheme.primary.withValues(alpha: 0.6),
+                width: 1.5,
+              ),
               boxShadow: [
                 BoxShadow(
                   color: Colors.black.withValues(alpha: 0.4),
@@ -113,8 +115,11 @@ class _ImmersiveNoticeContentState extends State<_ImmersiveNoticeContent> {
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
-                Icon(widget.icon,
-                    color: colorScheme.primary, size: IconSize.s32),
+                Icon(
+                  widget.icon,
+                  color: colorScheme.primary,
+                  size: IconSize.s32,
+                ),
                 const SizedBox(height: 12),
                 Text(
                   widget.message,

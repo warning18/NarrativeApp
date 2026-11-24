@@ -31,8 +31,11 @@ Future<void> showAbilityRoll(
 }
 
 class _AbilityRoll extends StatefulWidget {
-  const _AbilityRoll(
-      {required this.result, required this.message, required this.linger});
+  const _AbilityRoll({
+    required this.result,
+    required this.message,
+    required this.linger,
+  });
 
   final AbilityCheckResult result;
   final String message;

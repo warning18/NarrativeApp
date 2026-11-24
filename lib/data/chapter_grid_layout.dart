@@ -54,8 +54,11 @@ const Map<int, Set<String>> _chapterRoots = {
 /// [row] is its slot within that column, 0-based and always < the grid's
 /// max-per-column cap.
 class GridSlot {
-  const GridSlot(
-      {required this.chapter, required this.column, required this.row});
+  const GridSlot({
+    required this.chapter,
+    required this.column,
+    required this.row,
+  });
 
   final int chapter;
   final int column;
@@ -70,8 +73,10 @@ class GridSlot {
 /// would otherwise overflow the cap. A node with no path back to its
 /// chapter's root (a back-reference, a disconnected fragment) still gets
 /// placed — appended past the deepest column reached so nothing is lost.
-Map<String, GridSlot> computeChapterGridSlots(StoryData story,
-    {int maxPerColumn = 5}) {
+Map<String, GridSlot> computeChapterGridSlots(
+  StoryData story, {
+  int maxPerColumn = 5,
+}) {
   final byChapter = <int, List<String>>{};
   for (final id in story.nodes.keys) {
     byChapter.putIfAbsent(chapterOfNode(id), () => []).add(id);
@@ -174,8 +179,11 @@ Map<String, GridSlot> computeChapterGridSlots(StoryData story,
       for (var i = 0; i < members.length; i += maxPerColumn) {
         final chunk = members.skip(i).take(maxPerColumn).toList();
         for (var row = 0; row < chunk.length; row++) {
-          slots[chunk[row]] =
-              GridSlot(chapter: chapter, column: column, row: row);
+          slots[chunk[row]] = GridSlot(
+            chapter: chapter,
+            column: column,
+            row: row,
+          );
           placedRow[chunk[row]] = row;
         }
         column += 1;
@@ -224,7 +232,10 @@ ChapterBandLayout computeChapterBandLayout(
     y += rows * rowHeight + chapterGap;
   }
   return ChapterBandLayout(
-      bandStartY: bandStartY, maxColumn: maxColumn, totalHeight: y);
+    bandStartY: bandStartY,
+    maxColumn: maxColumn,
+    totalHeight: y,
+  );
 }
 
 bool _isTravelPlace(StoryNode? node) {

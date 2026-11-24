@@ -15,8 +15,12 @@ List<String> alliesOf(String factionId, PoliticsState state, ClanData data) =>
 List<String> rivalsOf(String factionId, PoliticsState state, ClanData data) =>
     _related(factionId, state, data, (step) => step <= _rivalMaxStep);
 
-List<String> _related(String factionId, PoliticsState state, ClanData data,
-    bool Function(int step) matches) {
+List<String> _related(
+  String factionId,
+  PoliticsState state,
+  ClanData data,
+  bool Function(int step) matches,
+) {
   final others = <String>{
     for (final p in data.relations.pairs)
       if (p.a == factionId) p.b else if (p.b == factionId) p.a,
@@ -185,8 +189,11 @@ StandingResult _commit(
     state: state.copyWith(
       standings: standings,
       swornFactionId: sworn,
-      standingLog:
-          _appendCapped(state.standingLog, entry, maxStandingLogEntries),
+      standingLog: _appendCapped(
+        state.standingLog,
+        entry,
+        maxStandingLogEntries,
+      ),
     ),
     deltas: deltas,
     entry: entry,
@@ -196,10 +203,13 @@ StandingResult _commit(
 /// [state] with [entry] logged (a line that moves no standing: the
 /// patron's gifts, see patron_stats.dart).
 PoliticsState withStandingLogEntry(
-        PoliticsState state, StandingLogEntry entry) =>
+  PoliticsState state,
+  StandingLogEntry entry,
+) =>
     state.copyWith(
-        standingLog:
-            _appendCapped(state.standingLog, entry, maxStandingLogEntries));
+      standingLog:
+          _appendCapped(state.standingLog, entry, maxStandingLogEntries),
+    );
 
 List<T> _appendCapped<T>(List<T> list, T entry, int cap) {
   final next = [...list, entry];
@@ -257,19 +267,25 @@ StandingResult applyStandingChange(
       move(rival, -change * _rivalRippleShare);
     }
   }
-  final banner = _applyBanner(values,
-      sworn: state.swornFactionId,
-      preferred: factionId,
-      state: state,
-      data: data);
-  return _commit(state, before, values,
-      sworn: banner.sworn,
-      swore: banner.swore,
-      released: banner.released,
-      factionId: factionId,
-      cause: cause,
-      chapter: chapter,
-      day: day);
+  final banner = _applyBanner(
+    values,
+    sworn: state.swornFactionId,
+    preferred: factionId,
+    state: state,
+    data: data,
+  );
+  return _commit(
+    state,
+    before,
+    values,
+    sworn: banner.sworn,
+    swore: banner.swore,
+    released: banner.released,
+    factionId: factionId,
+    cause: cause,
+    chapter: chapter,
+    day: day,
+  );
 }
 
 // --- Loyalty's price (v5.2 step 3) ------------------------------------------
@@ -356,20 +372,26 @@ StandingResult applyLoyaltyDrift(
     if (!values.containsKey(key)) continue;
     values[key] = _clampStanding(values[key]! + value);
   }
-  final banner = _applyBanner(values,
-      sworn: state.swornFactionId,
-      preferred: patron,
-      state: state,
-      data: data,
-      chargeRivals: false);
-  return _commit(state, before, values,
-      sworn: banner.sworn,
-      swore: banner.swore,
-      released: banner.released,
-      factionId: patron,
-      cause: 'loyalty:$patron',
-      chapter: chapter,
-      day: day);
+  final banner = _applyBanner(
+    values,
+    sworn: state.swornFactionId,
+    preferred: patron,
+    state: state,
+    data: data,
+    chargeRivals: false,
+  );
+  return _commit(
+    state,
+    before,
+    values,
+    sworn: banner.sworn,
+    swore: banner.swore,
+    released: banner.released,
+    factionId: patron,
+    cause: 'loyalty:$patron',
+    chapter: chapter,
+    day: day,
+  );
 }
 
 /// What [applyStandingChange] would move, faction by faction, without
@@ -403,20 +425,26 @@ StandingResult setStandingValue(
   final before = _allStandings(state, data);
   final values = {...before};
   values[factionId] = _clampStanding(value.toDouble());
-  final banner = _applyBanner(values,
-      sworn: state.swornFactionId,
-      preferred: factionId,
-      state: state,
-      data: data,
-      chargeRivals: false);
-  return _commit(state, before, values,
-      sworn: banner.sworn,
-      swore: banner.swore,
-      released: banner.released,
-      factionId: factionId,
-      cause: cause,
-      chapter: chapter,
-      day: day);
+  final banner = _applyBanner(
+    values,
+    sworn: state.swornFactionId,
+    preferred: factionId,
+    state: state,
+    data: data,
+    chargeRivals: false,
+  );
+  return _commit(
+    state,
+    before,
+    values,
+    sworn: banner.sworn,
+    swore: banner.swore,
+    released: banner.released,
+    factionId: factionId,
+    cause: cause,
+    chapter: chapter,
+    day: day,
+  );
 }
 
 /// A claim taken (v1.196, see throne.dart): standing with [factionId]
@@ -438,21 +466,27 @@ StandingResult raiseToClaim(
   final before = _allStandings(state, data);
   final values = {...before};
   values[factionId] = max(values[factionId]!, swornThreshold.toDouble());
-  final banner = _applyBanner(values,
-      sworn: '',
-      preferred: factionId,
-      state: state,
-      data: data,
-      chargeRivals: false);
+  final banner = _applyBanner(
+    values,
+    sworn: '',
+    preferred: factionId,
+    state: state,
+    data: data,
+    chargeRivals: false,
+  );
   final previous = state.swornFactionId;
-  return _commit(state, before, values,
-      sworn: banner.sworn,
-      swore: banner.sworn != previous ? banner.sworn : '',
-      released: previous.isNotEmpty && previous != banner.sworn ? previous : '',
-      factionId: factionId,
-      cause: cause,
-      chapter: chapter,
-      day: day);
+  return _commit(
+    state,
+    before,
+    values,
+    sworn: banner.sworn,
+    swore: banner.sworn != previous ? banner.sworn : '',
+    released: previous.isNotEmpty && previous != banner.sworn ? previous : '',
+    factionId: factionId,
+    cause: cause,
+    chapter: chapter,
+    day: day,
+  );
 }
 
 /// What [setSubclanMark] did: the [state] after and its log [entry]

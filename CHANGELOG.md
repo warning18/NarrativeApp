@@ -8,6 +8,10 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [2.5.3+1062]
+
+- **Tower text fits at 320 dp, French, 1.3x text (#1139).** The stat pick's gain cards keep each stat name whole ("Intelligence", "Perspicacité") by shrinking a word to its card instead of breaking it in two. The Tower's app-bar titles (door, floor, end, marks) and the fight's title shrink to their line instead of ending in "…". No rule or number changes.
+
 ## [2.3.0+1056]
 
 - The Tower's cards are tarot cards. The three cards a won floor offers (a skill, a die, a spell, or a clan's oath) are drawn as tall cards: Art's painted vignette (a skill by its element, a spell by its family, one for the dice, the clan's own backdrop for an oath), a paper name band, the words on black, Art's frame over it, and a red wax seal whose pips (one to five) are the skill's rarity (a die and a spell have a plain black seal). The card in hand rises with a red frame and its full name and words show under the row at a readable size; Take and Leave them all work as before. When the offer is too narrow or the text too big (under about 88 px a card, or above 1.15x), the same cards are rows with a paper title band, so nothing is shrunk below a readable size. Once the head has climbed to its notch the ladder rail slides away while the cards show, giving them the room (about 106 px a card at 360). The Tower's title now fits at big text in French. The picture on a card comes from one lookup (`tower_card_art.dart`: kind and element or family, then kind, then a stand-in), and the card has clean slots for a tag (new synergy), a footer (a price) and the controls under the pick (reroll, banish) for when Core defines them. Look only; the pick logic is as it was. UX (view only).

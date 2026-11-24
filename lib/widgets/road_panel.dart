@@ -1,4 +1,5 @@
 import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_riverpod/legacy.dart';
@@ -24,8 +25,12 @@ final _restingProvider = StateProvider<bool>((ref) => false);
 /// PlayerSessionNotifier.restNight), said in a notice: [message], and from
 /// chapter 2 the day that begins. A night at the camp ([atCamp]) rolls the
 /// camp's fate die (see camp_fate_dialog.dart), which says it instead.
-Future<void> restTheNight(BuildContext context, WidgetRef ref,
-    {required String message, bool atCamp = false}) async {
+Future<void> restTheNight(
+  BuildContext context,
+  WidgetRef ref, {
+  required String message,
+  bool atCamp = false,
+}) async {
   final resting = ref.read(_restingProvider.notifier);
   if (resting.state) return;
   resting.state = true;
@@ -42,11 +47,13 @@ Future<void> restTheNight(BuildContext context, WidgetRef ref,
       await showCampFateDie(context, ref, restedLine: line);
       return;
     }
-    unawaited(showImmersiveNotice(
-      context,
-      icon: Icons.local_fire_department,
-      message: line,
-    ));
+    unawaited(
+      showImmersiveNotice(
+        context,
+        icon: Icons.local_fire_department,
+        message: line,
+      ),
+    );
   } finally {
     resting.state = false;
   }
@@ -77,8 +84,10 @@ class RoadPanel extends ConsumerWidget {
     // region is going through, and what it does to the road's numbers.
     final condition = ref.watch(chapterConditionProvider);
     final french = ref.watch(appLanguageProvider) == AppLanguage.fr;
-    final price =
-        conditionedPrice(provisionPrice(chapter), condition?.rationPrice ?? 1);
+    final price = conditionedPrice(
+      provisionPrice(chapter),
+      condition?.rationPrice ?? 1,
+    );
     final room = provisionsMax - session.provisions;
     final hire = sellswordPrice(chapter);
     final small = theme.textTheme.bodySmall?.copyWith(color: ink.ash);
@@ -97,17 +106,23 @@ class RoadPanel extends ConsumerWidget {
       children: [
         Padding(
           padding: const EdgeInsets.fromLTRB(16, 8, 16, 0),
-          child: Text(tr(ref, 'road_title').toUpperCase(),
-              style: theme.textTheme.labelSmall?.copyWith(
-                  letterSpacing: 1.2, color: theme.colorScheme.primary)),
+          child: Text(
+            tr(ref, 'road_title').toUpperCase(),
+            style: theme.textTheme.labelSmall?.copyWith(
+              letterSpacing: 1.2,
+              color: theme.colorScheme.primary,
+            ),
+          ),
         ),
         if (condition != null)
           KeyedSubtree(
             key: const ValueKey('road_condition_line'),
             child: line(
               Icons.flag_outlined,
-              tr(ref, 'condition_line')
-                  .replaceAll('{name}', condition.nameFor(french)),
+              tr(
+                ref,
+                'condition_line',
+              ).replaceAll('{name}', condition.nameFor(french)),
               condition.effectFor(french),
               tint: ink.gold,
             ),
@@ -118,10 +133,14 @@ class RoadPanel extends ConsumerWidget {
               .replaceAll('{day}', '${session.day}')
               .replaceAll('{n}', '$daysHere'),
           threat > 0
-              ? tr(ref, 'road_threat_on')
-                  .replaceAll('{p}', '${(threat * 100).round()}')
-              : tr(ref, 'road_threat_off')
-                  .replaceAll('{n}', '${threatGraceDaysFor(chapter)}'),
+              ? tr(
+                  ref,
+                  'road_threat_on',
+                ).replaceAll('{p}', '${(threat * 100).round()}')
+              : tr(
+                  ref,
+                  'road_threat_off',
+                ).replaceAll('{n}', '${threatGraceDaysFor(chapter)}'),
           tint: threat > 0 ? theme.colorScheme.error : ink.gold,
         ),
         line(
@@ -144,15 +163,20 @@ class RoadPanel extends ConsumerWidget {
                     ? () => notifier.buyProvisions(1, price: price)
                     : null,
                 child: Text(
-                    tr(ref, 'road_buy_one').replaceAll('{gold}', '$price')),
+                  tr(ref, 'road_buy_one').replaceAll('{gold}', '$price'),
+                ),
               ),
               OutlinedButton(
                 key: const ValueKey('road_fill_up'),
                 onPressed: market && room > 1 && session.gold >= price * room
                     ? () => notifier.buyProvisions(room, price: price)
                     : null,
-                child: Text(tr(ref, 'road_fill_up')
-                    .replaceAll('{gold}', '${price * room}')),
+                child: Text(
+                  tr(
+                    ref,
+                    'road_fill_up',
+                  ).replaceAll('{gold}', '${price * room}'),
+                ),
               ),
             ],
           ),
@@ -160,8 +184,10 @@ class RoadPanel extends ConsumerWidget {
         line(
           Icons.shield_moon_outlined,
           session.sellswordFights > 0
-              ? tr(ref, 'road_sellsword_hired')
-                  .replaceAll('{n}', '${session.sellswordFights}')
+              ? tr(
+                  ref,
+                  'road_sellsword_hired',
+                ).replaceAll('{n}', '${session.sellswordFights}')
               : tr(ref, 'road_sellsword_line'),
           tr(ref, 'road_sellsword_help')
               .replaceAll('{n}', '$sellswordContractFights')
@@ -179,7 +205,8 @@ class RoadPanel extends ConsumerWidget {
                       ? () => notifier.hireSellsword(price: hire)
                       : null,
               child: Text(
-                  tr(ref, 'road_hire_sellsword').replaceAll('{gold}', '$hire')),
+                tr(ref, 'road_hire_sellsword').replaceAll('{gold}', '$hire'),
+              ),
             ),
           ),
         ),

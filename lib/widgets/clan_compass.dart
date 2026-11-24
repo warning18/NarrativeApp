@@ -23,7 +23,9 @@ typedef CompassBadge = ({String text, Color color});
 /// whose opposites stand furthest apart. For six clans it tries every
 /// order; for more it keeps the file's.
 List<String> compassOrder(
-    List<String> ids, int? Function(String, String) step) {
+  List<String> ids,
+  int? Function(String, String) step,
+) {
   if (ids.length < 3 || ids.length > 7) return ids;
   double score(List<String> order) {
     var total = 0.0;
@@ -51,7 +53,9 @@ List<String> compassOrder(
     }
     for (var i = 0; i < rest.length; i++) {
       permute(
-          [...rest.sublist(0, i), ...rest.sublist(i + 1)], [...head, rest[i]]);
+        [...rest.sublist(0, i), ...rest.sublist(i + 1)],
+        [...head, rest[i]],
+      );
     }
   }
 
@@ -61,8 +65,13 @@ List<String> compassOrder(
 
 /// Where the crests sit on a ring of [size]: the first on top, then
 /// clockwise. The ring leaves room above for a number and below for a name.
-List<Offset> compassPositions(Size size, int n,
-    {double top = 26, double bottom = 38, double side = 34}) {
+List<Offset> compassPositions(
+  Size size,
+  int n, {
+  double top = 26,
+  double bottom = 38,
+  double side = 34,
+}) {
   final rx = size.width / 2 - side;
   final ry = (size.height - top - bottom) / 2;
   final cy = top + ry;
@@ -146,43 +155,45 @@ class ClanCompass extends StatelessWidget {
               radius: 0.8,
             ),
           ),
-          child: LayoutBuilder(builder: (context, box) {
-            final size = Size(box.maxWidth, box.maxHeight);
-            final at = compassPositions(size, order.length);
-            final pos = {for (final (i, id) in order.indexed) id: at[i]};
-            return Stack(
-              clipBehavior: Clip.none,
-              children: [
-                Positioned.fill(
-                  child: CustomPaint(
-                    painter: _LinesPainter(
-                      order: order,
-                      pos: pos,
-                      stepOf: stepOf,
-                      colorOf: _stepColor,
-                      focusId: focusId,
+          child: LayoutBuilder(
+            builder: (context, box) {
+              final size = Size(box.maxWidth, box.maxHeight);
+              final at = compassPositions(size, order.length);
+              final pos = {for (final (i, id) in order.indexed) id: at[i]};
+              return Stack(
+                clipBehavior: Clip.none,
+                children: [
+                  Positioned.fill(
+                    child: CustomPaint(
+                      painter: _LinesPainter(
+                        order: order,
+                        pos: pos,
+                        stepOf: stepOf,
+                        colorOf: _stepColor,
+                        focusId: focusId,
+                      ),
                     ),
                   ),
-                ),
-                for (final id in order)
-                  Positioned(
-                    left: pos[id]!.dx - 30,
-                    top: pos[id]!.dy - 22,
-                    width: 60,
-                    child: _Crest(
-                      key: Key('compass_$id'),
-                      faction: byId[id]!,
-                      language: language,
-                      focus: id == focusId,
-                      ringed: ringedIds.contains(id),
-                      badge: badges[id],
-                      dimmed: focusId != null && id != focusId,
-                      onTap: onTap == null ? null : () => onTap!(id),
+                  for (final id in order)
+                    Positioned(
+                      left: pos[id]!.dx - 30,
+                      top: pos[id]!.dy - 22,
+                      width: 60,
+                      child: _Crest(
+                        key: Key('compass_$id'),
+                        faction: byId[id]!,
+                        language: language,
+                        focus: id == focusId,
+                        ringed: ringedIds.contains(id),
+                        badge: badges[id],
+                        dimmed: focusId != null && id != focusId,
+                        onTap: onTap == null ? null : () => onTap!(id),
+                      ),
                     ),
-                  ),
-              ],
-            );
-          }),
+                ],
+              );
+            },
+          ),
         ),
         if (showLegend && usedSteps.isNotEmpty) ...[
           const SizedBox(height: 4),
@@ -192,13 +203,20 @@ class ClanCompass extends StatelessWidget {
             alignment: WrapAlignment.center,
             children: [
               for (final s in (usedSteps.toList()..sort()).reversed)
-                Row(mainAxisSize: MainAxisSize.min, children: [
-                  Container(width: 14, height: 3, color: _stepColor(s)),
-                  const SizedBox(width: 4),
-                  Text(relations.stepInfo(s)?.nameFor(language) ?? '$s',
-                      style: theme.textTheme.labelSmall
-                          ?.copyWith(color: ink.ash, fontSize: 10)),
-                ]),
+                Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Container(width: 14, height: 3, color: _stepColor(s)),
+                    const SizedBox(width: 4),
+                    Text(
+                      relations.stepInfo(s)?.nameFor(language) ?? '$s',
+                      style: theme.textTheme.labelSmall?.copyWith(
+                        color: ink.ash,
+                        fontSize: 10,
+                      ),
+                    ),
+                  ],
+                ),
             ],
           ),
         ],
@@ -222,8 +240,14 @@ class _LinesPainter extends CustomPainter {
   final Color Function(int) colorOf;
   final String? focusId;
 
-  void _line(Canvas canvas, Offset a, Offset b, Color color, double width,
-      bool dashed) {
+  void _line(
+    Canvas canvas,
+    Offset a,
+    Offset b,
+    Color color,
+    double width,
+    bool dashed,
+  ) {
     final paint = Paint()
       ..color = color
       ..strokeWidth = width
@@ -364,30 +388,38 @@ class _Crest extends StatelessWidget {
                           top: 0,
                           child: Container(
                             padding: const EdgeInsets.symmetric(
-                                horizontal: 4, vertical: 1),
+                              horizontal: 4,
+                              vertical: 1,
+                            ),
                             decoration: BoxDecoration(
                               color: Palette.night8,
                               borderRadius: BorderRadius.circular(6),
                               border: Border.all(color: badge!.color, width: 1),
                             ),
-                            child: Text(badge!.text,
-                                style: TextStyle(
-                                    fontFamily: InkFonts.system,
-                                    fontSize: 10,
-                                    height: 1.1,
-                                    color: badge!.color)),
+                            child: Text(
+                              badge!.text,
+                              style: TextStyle(
+                                fontFamily: InkFonts.system,
+                                fontSize: 10,
+                                height: 1.1,
+                                color: badge!.color,
+                              ),
+                            ),
                           ),
                         ),
                     ],
                   ),
                 ),
-                Text(faction.shortFor(language),
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                    style: theme.textTheme.labelSmall?.copyWith(
-                        color: color,
-                        fontSize: 10,
-                        fontWeight: FontWeight.w600)),
+                Text(
+                  faction.shortFor(language),
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: theme.textTheme.labelSmall?.copyWith(
+                    color: color,
+                    fontSize: 10,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
               ],
             ),
           ),

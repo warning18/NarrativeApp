@@ -9,8 +9,10 @@ import 'fight_sprites.dart';
 
 FightSpriteSet heroSpriteOf(BuildContext context) {
   try {
-    final session = ProviderScope.containerOf(context, listen: false)
-        .read(playerSessionProvider);
+    final session = ProviderScope.containerOf(
+      context,
+      listen: false,
+    ).read(playerSessionProvider);
     return heroSpriteFor(session.raceId, session.professionId);
   } catch (_) {
     return roninSprite;
@@ -20,8 +22,10 @@ FightSpriteSet heroSpriteOf(BuildContext context) {
 /// Whose walk the side view paints (see [heroWalkName]).
 String heroWalkOf(BuildContext context) {
   try {
-    final session = ProviderScope.containerOf(context, listen: false)
-        .read(playerSessionProvider);
+    final session = ProviderScope.containerOf(
+      context,
+      listen: false,
+    ).read(playerSessionProvider);
     return heroWalkName(session.raceId, session.professionId);
   } catch (_) {
     return 'ronin';

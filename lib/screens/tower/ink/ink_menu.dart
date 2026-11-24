@@ -44,28 +44,38 @@ class _InkMenuItemState extends State<InkMenuItem> {
     unawaited(InkImages.preload());
   }
 
-  Widget _lines(Color title, Color sub) => Row(children: [
-        Icon(widget.icon, color: title),
-        const SizedBox(width: 14),
-        Expanded(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Text(widget.label,
+  Widget _lines(Color title, Color sub) => Row(
+        children: [
+          Icon(widget.icon, color: title),
+          const SizedBox(width: 14),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Text(
+                  widget.label,
                   style: TextStyle(
-                      fontFamily: InkFonts.display,
-                      fontSize: 18,
-                      height: 1.1,
-                      color: title)),
-              if (widget.detail case final d? when d.isNotEmpty)
-                Text(d,
+                    fontFamily: InkFonts.display,
+                    fontSize: 18,
+                    height: 1.1,
+                    color: title,
+                  ),
+                ),
+                if (widget.detail case final d? when d.isNotEmpty)
+                  Text(
+                    d,
                     style: TextStyle(
-                        fontFamily: InkFonts.system, fontSize: 10, color: sub)),
-            ],
+                      fontFamily: InkFonts.system,
+                      fontSize: 10,
+                      color: sub,
+                    ),
+                  ),
+              ],
+            ),
           ),
-        ),
-      ]);
+        ],
+      );
 
   @override
   Widget build(BuildContext context) {
@@ -75,25 +85,27 @@ class _InkMenuItemState extends State<InkMenuItem> {
       return Padding(
         padding: const EdgeInsets.only(bottom: 12),
         child: InkWorn(
-            seed: seed,
-            child: Transform(
-              transform: Matrix4.skewX(-inkSkew),
-              child: FilledButton(
-                key: widget.itemKey,
-                onPressed: widget.onPressed,
-                style: FilledButton.styleFrom(
-                  minimumSize: const Size(0, 58),
-                  padding: const EdgeInsets.symmetric(horizontal: 26),
-                  backgroundColor: seed.red,
-                  disabledBackgroundColor: inkDark,
-                  foregroundColor: inkPaper,
-                  shape: const RoundedRectangleBorder(),
-                ),
-                child: Transform(
-                    transform: Matrix4.skewX(inkSkew),
-                    child: _lines(inkPaper, inkPaper.withValues(alpha: 0.85))),
+          seed: seed,
+          child: Transform(
+            transform: Matrix4.skewX(-inkSkew),
+            child: FilledButton(
+              key: widget.itemKey,
+              onPressed: widget.onPressed,
+              style: FilledButton.styleFrom(
+                minimumSize: const Size(0, 58),
+                padding: const EdgeInsets.symmetric(horizontal: 26),
+                backgroundColor: seed.red,
+                disabledBackgroundColor: inkDark,
+                foregroundColor: inkPaper,
+                shape: const RoundedRectangleBorder(),
               ),
-            )),
+              child: Transform(
+                transform: Matrix4.skewX(inkSkew),
+                child: _lines(inkPaper, inkPaper.withValues(alpha: 0.85)),
+              ),
+            ),
+          ),
+        ),
       );
     }
     return Padding(

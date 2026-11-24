@@ -12,6 +12,7 @@ import '../widgets/chart_map_painter.dart';
 import '../widgets/help_hint.dart';
 import '../widgets/chart_weather.dart';
 import '../widgets/geography_widgets.dart';
+
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../data/map_charts.dart';
@@ -41,7 +42,13 @@ const double _maxZoom = 6;
 /// dark and a light app.
 class _Tokens {
   const _Tokens(
-      this.bg, this.panel, this.ink, this.muted, this.line, this.accent);
+    this.bg,
+    this.panel,
+    this.ink,
+    this.muted,
+    this.line,
+    this.accent,
+  );
 
   final Color bg;
   final Color panel;
@@ -74,8 +81,10 @@ class _Tokens {
 /// map.
 MapChapter _mapChapterOf(int number) =>
     mapChapters.where((c) => c.number == number).firstOrNull ??
-    mapChapters.lastWhere((c) => c.number <= number,
-        orElse: () => mapChapters.first);
+    mapChapters.lastWhere(
+      (c) => c.number <= number,
+      orElse: () => mapChapters.first,
+    );
 
 String _lookName(WidgetRef ref, MapLook look) =>
     tr(ref, 'world_map_look_${look.name}');
@@ -104,7 +113,9 @@ class _WorldMapPageState extends ConsumerState<WorldMapPage>
 
   final TransformationController _view = TransformationController();
   late final AnimationController _zoom = AnimationController(
-      vsync: this, duration: const Duration(milliseconds: 280));
+    vsync: this,
+    duration: const Duration(milliseconds: 280),
+  );
   Animation<Matrix4>? _zoomTo;
   Offset? _doubleTapAt;
 
@@ -154,8 +165,10 @@ class _WorldMapPageState extends ConsumerState<WorldMapPage>
   Future<void> _saveSeen(List<Landmark> journey) async {
     if (journey.isEmpty) return;
     final prefs = await SharedPreferences.getInstance();
-    await prefs.setString(worldMapSeenPrefsKey,
-        json.encode({'steps': journey.length, 'last': journey.last.id}));
+    await prefs.setString(
+      worldMapSeenPrefsKey,
+      json.encode({'steps': journey.length, 'last': journey.last.id}),
+    );
   }
 
   @override
@@ -169,7 +182,9 @@ class _WorldMapPageState extends ConsumerState<WorldMapPage>
       _timer = null;
     } else {
       _timer ??= Timer.periodic(
-          const Duration(milliseconds: 220), (_) => _frame.value++);
+        const Duration(milliseconds: 220),
+        (_) => _frame.value++,
+      );
     }
   }
 
@@ -203,8 +218,10 @@ class _WorldMapPageState extends ConsumerState<WorldMapPage>
   /// The point on the map at the middle of the view.
   Offset get _viewCentre {
     final m = _view.value.storage;
-    return Offset((_mapSize.width / 2 - m[12]) / m[0],
-        (_mapSize.height / 2 - m[13]) / m[0]);
+    return Offset(
+      (_mapSize.width / 2 - m[12]) / m[0],
+      (_mapSize.height / 2 - m[13]) / m[0],
+    );
   }
 
   void _animateView(Matrix4 target) {
@@ -212,8 +229,10 @@ class _WorldMapPageState extends ConsumerState<WorldMapPage>
       _view.value = target;
       return;
     }
-    _zoomTo = Matrix4Tween(begin: _view.value, end: target)
-        .animate(CurvedAnimation(parent: _zoom, curve: Curves.easeOutCubic));
+    _zoomTo = Matrix4Tween(
+      begin: _view.value,
+      end: target,
+    ).animate(CurvedAnimation(parent: _zoom, curve: Curves.easeOutCubic));
     _zoom.forward(from: 0);
   }
 
@@ -221,7 +240,8 @@ class _WorldMapPageState extends ConsumerState<WorldMapPage>
     if (_mapSize.isEmpty) return;
     final scale = (_scale * factor).clamp(1.0, _maxZoom);
     _animateView(
-        scale <= 1.001 ? Matrix4.identity() : _viewAt(_viewCentre, scale));
+      scale <= 1.001 ? Matrix4.identity() : _viewAt(_viewCentre, scale),
+    );
   }
 
   Offset _onMap((double, double) point) {
@@ -231,16 +251,19 @@ class _WorldMapPageState extends ConsumerState<WorldMapPage>
 
   void _centreOn(Landmark? here) {
     if (here == null || _mapSize.isEmpty) return;
-    _animateView(_viewAt(
-        _onMap(ChartMapPainter.spotOn(_geo, here)), math.max(_scale, 3)));
+    _animateView(
+      _viewAt(_onMap(ChartMapPainter.spotOn(_geo, here)), math.max(_scale, 3)),
+    );
   }
 
   void _doubleTap() {
     final at = _doubleTapAt;
     if (at == null || _mapSize.isEmpty) return;
-    _animateView(_scale < 2.5
-        ? _viewAt(at, math.min(_scale * 2.5, _maxZoom))
-        : Matrix4.identity());
+    _animateView(
+      _scale < 2.5
+          ? _viewAt(at, math.min(_scale * 2.5, _maxZoom))
+          : Matrix4.identity(),
+    );
   }
 
   // ---- The traveller ---------------------------------------------------
@@ -333,8 +356,11 @@ class _WorldMapPageState extends ConsumerState<WorldMapPage>
     // last showed.
     if (_seenLoaded && !_walkDecided) {
       _walkDecided = true;
-      final start =
-          journeyWalkStart(journey, seenSteps: _seenSteps, seenLast: _seenLast);
+      final start = journeyWalkStart(
+        journey,
+        seenSteps: _seenSteps,
+        seenLast: _seenLast,
+      );
       _saveSeen(journey);
       if (!_reduceMotion && start < journey.length - 1) {
         final legs = journey.sublist(start);
@@ -399,39 +425,42 @@ class _WorldMapPageState extends ConsumerState<WorldMapPage>
                     child: SizedBox(
                       width: _mapSize.width,
                       height: _mapSize.height,
-                      child: Stack(fit: StackFit.expand, children: [
-                        CustomPaint(
-                          painter: ChartMapPainter(
-                            frame: _frame,
-                            walk: _walk,
-                            geography: _geo,
-                            palette: palette,
-                            language: language,
-                            discovered: discovered,
-                            legs: roadLegs(journey, discovered),
-                            ahead:
-                                editing ? null : _nextPlace(here, discovered),
-                            fog: editing ? ChartFog.none : ChartFog.uncharted,
-                            selectedId: selected.id,
-                            here: here,
-                            walking: _walking,
-                            walkPath: _walkPath,
-                            chapterFilter: _chapterFilter,
-                            reduceMotion: _reduceMotion,
-                            chapterColor: chartChapterColor,
-                            zoomOf: () => _scale,
-                            view: _view,
+                      child: Stack(
+                        fit: StackFit.expand,
+                        children: [
+                          CustomPaint(
+                            painter: ChartMapPainter(
+                              frame: _frame,
+                              walk: _walk,
+                              geography: _geo,
+                              palette: palette,
+                              language: language,
+                              discovered: discovered,
+                              legs: roadLegs(journey, discovered),
+                              ahead:
+                                  editing ? null : _nextPlace(here, discovered),
+                              fog: editing ? ChartFog.none : ChartFog.uncharted,
+                              selectedId: selected.id,
+                              here: here,
+                              walking: _walking,
+                              walkPath: _walkPath,
+                              chapterFilter: _chapterFilter,
+                              reduceMotion: _reduceMotion,
+                              chapterColor: chartChapterColor,
+                              zoomOf: () => _scale,
+                              view: _view,
+                            ),
                           ),
-                        ),
-                        // The weather over the chart (v1.204).
-                        if (ref.watch(chartWeatherProvider))
-                          ChartWeather(
-                            size: _mapSize,
-                            geography: _geo,
-                            palette: palette,
-                            day: session.day,
-                          ),
-                      ]),
+                          // The weather over the chart (v1.204).
+                          if (ref.watch(chartWeatherProvider))
+                            ChartWeather(
+                              size: _mapSize,
+                              geography: _geo,
+                              palette: palette,
+                              day: session.day,
+                            ),
+                        ],
+                      ),
                     ),
                   ),
                 ),
@@ -492,13 +521,15 @@ class _WorldMapPageState extends ConsumerState<WorldMapPage>
                             color: option == look
                                 ? tokens.line
                                 : Colors.transparent,
-                            child: Text(_lookName(ref, option),
-                                style: TextStyle(
-                                    fontFamily: _pixelFont,
-                                    fontSize: 14,
-                                    color: option == look
-                                        ? tokens.ink
-                                        : tokens.muted)),
+                            child: Text(
+                              _lookName(ref, option),
+                              style: TextStyle(
+                                fontFamily: _pixelFont,
+                                fontSize: 14,
+                                color:
+                                    option == look ? tokens.ink : tokens.muted,
+                              ),
+                            ),
                           ),
                         ),
                       ),
@@ -540,13 +571,14 @@ class _WorldMapPageState extends ConsumerState<WorldMapPage>
                                 ? tokens.line
                                 : Colors.transparent,
                             child: Text(
-                                tr(ref, 'world_map_shape_${option.name}'),
-                                style: TextStyle(
-                                    fontFamily: _pixelFont,
-                                    fontSize: 14,
-                                    color: option == shape
-                                        ? tokens.ink
-                                        : tokens.muted)),
+                              tr(ref, 'world_map_shape_${option.name}'),
+                              style: TextStyle(
+                                fontFamily: _pixelFont,
+                                fontSize: 14,
+                                color:
+                                    option == shape ? tokens.ink : tokens.muted,
+                              ),
+                            ),
                           ),
                         ),
                       ),
@@ -617,10 +649,11 @@ class _WorldMapPageState extends ConsumerState<WorldMapPage>
     final hint = Text(
       tr(ref, 'world_map_hint'),
       style: TextStyle(
-          fontFamily: _textFont,
-          fontSize: 14,
-          height: 1.45,
-          color: tokens.muted),
+        fontFamily: _textFont,
+        fontSize: 14,
+        height: 1.45,
+        color: tokens.muted,
+      ),
     );
 
     return TutorialTrigger(
@@ -634,7 +667,10 @@ class _WorldMapPageState extends ConsumerState<WorldMapPage>
           title: Text(
             tr(ref, 'world_map_title'),
             style: TextStyle(
-                fontFamily: InkFonts.display, fontSize: 24, color: tokens.ink),
+              fontFamily: InkFonts.display,
+              fontSize: 24,
+              color: tokens.ink,
+            ),
           ),
           actions: const [TourInfoButton(topic: TutorialTopic.map)],
         ),
@@ -642,10 +678,9 @@ class _WorldMapPageState extends ConsumerState<WorldMapPage>
           builder: (context, constraints) {
             if (constraints.maxWidth >= 900) {
               final width = math.min(
-                  (constraints.maxWidth - 48) * 0.62,
-                  (constraints.maxHeight - 230) *
-                      worldMapWidth /
-                      worldMapHeight);
+                (constraints.maxWidth - 48) * 0.62,
+                (constraints.maxHeight - 230) * worldMapWidth / worldMapHeight,
+              );
               return Padding(
                 padding: const EdgeInsets.all(16),
                 child: Row(
@@ -674,8 +709,10 @@ class _WorldMapPageState extends ConsumerState<WorldMapPage>
             }
             // On a phone the map stays put above the text, so pinching and
             // panning it never fights the page's scrolling.
-            final width = math.min(constraints.maxWidth - 32,
-                constraints.maxHeight * 0.55 * worldMapWidth / worldMapHeight);
+            final width = math.min(
+              constraints.maxWidth - 32,
+              constraints.maxHeight * 0.55 * worldMapWidth / worldMapHeight,
+            );
             return Column(
               children: [
                 Padding(
@@ -779,11 +816,13 @@ class _MapControls extends ConsumerWidget {
               child: SizedBox(
                 width: 34,
                 height: 34,
-                child: Icon(icon,
-                    size: IconSize.s16,
-                    color: onTap == null
-                        ? tokens.muted.withValues(alpha: 0.5)
-                        : tokens.ink),
+                child: Icon(
+                  icon,
+                  size: IconSize.s16,
+                  color: onTap == null
+                      ? tokens.muted.withValues(alpha: 0.5)
+                      : tokens.ink,
+                ),
               ),
             ),
           ),
@@ -792,17 +831,33 @@ class _MapControls extends ConsumerWidget {
     return Row(
       mainAxisSize: MainAxisSize.min,
       children: [
-        button('world_map_zoom_in', Icons.add, tr(ref, 'world_map_zoom_in'),
-            onZoomIn),
+        button(
+          'world_map_zoom_in',
+          Icons.add,
+          tr(ref, 'world_map_zoom_in'),
+          onZoomIn,
+        ),
         const SizedBox(width: 6),
-        button('world_map_zoom_out', Icons.remove,
-            tr(ref, 'world_map_zoom_out'), onZoomOut),
+        button(
+          'world_map_zoom_out',
+          Icons.remove,
+          tr(ref, 'world_map_zoom_out'),
+          onZoomOut,
+        ),
         const SizedBox(width: 6),
-        button('world_map_centre', Icons.my_location,
-            tr(ref, 'world_map_centre'), onCentre),
+        button(
+          'world_map_centre',
+          Icons.my_location,
+          tr(ref, 'world_map_centre'),
+          onCentre,
+        ),
         const SizedBox(width: 6),
-        button('world_map_replay', Icons.directions_walk,
-            tr(ref, 'world_map_replay'), onReplay),
+        button(
+          'world_map_replay',
+          Icons.directions_walk,
+          tr(ref, 'world_map_replay'),
+          onReplay,
+        ),
       ],
     );
   }
@@ -841,14 +896,15 @@ class _PixelChip extends StatelessWidget {
           child: Text(
             label,
             style: TextStyle(
-                fontFamily: _pixelFont,
-                fontSize: 15,
-                color: selected
-                    ? (ThemeData.estimateBrightnessForColor(color) ==
-                            Brightness.dark
-                        ? Colors.white
-                        : Palette.amber7)
-                    : tokens.ink),
+              fontFamily: _pixelFont,
+              fontSize: 15,
+              color: selected
+                  ? (ThemeData.estimateBrightnessForColor(color) ==
+                          Brightness.dark
+                      ? Colors.white
+                      : Palette.amber7)
+                  : tokens.ink,
+            ),
           ),
         ),
       ),
@@ -952,15 +1008,20 @@ class _LandmarkPanel extends ConsumerWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(_mapChapterOf(landmark.chapter).title(language),
-              style: pixel(15, color: chapterColor)),
+          Text(
+            _mapChapterOf(landmark.chapter).title(language),
+            style: pixel(15, color: chapterColor),
+          ),
           const SizedBox(height: 4),
-          Text(landmark.name(language),
-              style: TextStyle(
-                  fontFamily: InkFonts.display,
-                  fontSize: 28,
-                  height: 1.1,
-                  color: tokens.ink)),
+          Text(
+            landmark.name(language),
+            style: TextStyle(
+              fontFamily: InkFonts.display,
+              fontSize: 28,
+              height: 1.1,
+              color: tokens.ink,
+            ),
+          ),
           if (isHere)
             Padding(
               padding: const EdgeInsets.only(top: 6),
@@ -969,8 +1030,10 @@ class _LandmarkPanel extends ConsumerWidget {
                 children: [
                   Icon(Icons.place, size: IconSize.s16, color: tokens.accent),
                   const SizedBox(width: 4),
-                  Text(tr(ref, 'world_map_here'),
-                      style: pixel(15, color: tokens.accent)),
+                  Text(
+                    tr(ref, 'world_map_here'),
+                    style: pixel(15, color: tokens.accent),
+                  ),
                 ],
               ),
             ),
@@ -993,8 +1056,10 @@ class _LandmarkPanel extends ConsumerWidget {
             Padding(
               key: const Key('world_map_biome'),
               padding: const EdgeInsets.only(top: 4),
-              child: tag(biome.nameFor(language == AppLanguage.fr),
-                  border: const Color(0xFF4F7A4A)),
+              child: tag(
+                biome.nameFor(language == AppLanguage.fr),
+                border: const Color(0xFF4F7A4A),
+              ),
             ),
           const SizedBox(height: 10),
           Text(
@@ -1006,8 +1071,10 @@ class _LandmarkPanel extends ConsumerWidget {
               color: tokens.ink,
             ),
           ),
-          label('${tr(ref, 'world_map_scenes_read')}: '
-              '$scenesRead / ${landmark.scenes.length}'),
+          label(
+            '${tr(ref, 'world_map_scenes_read')}: '
+            '$scenesRead / ${landmark.scenes.length}',
+          ),
           if (fights.isNotEmpty) ...[
             label(tr(ref, 'world_map_fights')),
             Wrap(

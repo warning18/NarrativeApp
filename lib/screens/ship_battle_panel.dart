@@ -230,7 +230,7 @@ class _ShipBattlePanelState extends ConsumerState<ShipBattlePanel>
   };
   final Map<bool, GlobalKey> _hullKeys = {
     true: GlobalKey(),
-    false: GlobalKey()
+    false: GlobalKey(),
   };
   final GlobalKey _seaKey = GlobalKey();
 
@@ -254,11 +254,17 @@ class _ShipBattlePanelState extends ConsumerState<ShipBattlePanel>
   void initState() {
     super.initState();
     _sink = AnimationController(
-        vsync: this, duration: const Duration(milliseconds: 1300));
+      vsync: this,
+      duration: const Duration(milliseconds: 1300),
+    );
     _seaClock = AnimationController(
-        vsync: this, duration: const Duration(seconds: 600));
+      vsync: this,
+      duration: const Duration(seconds: 600),
+    );
     _aim = AnimationController(
-        vsync: this, duration: const Duration(milliseconds: 900));
+      vsync: this,
+      duration: const Duration(milliseconds: 900),
+    );
     _battle = ShipBattle(
       player: widget.player,
       enemy: widget.enemy,
@@ -315,9 +321,12 @@ class _ShipBattlePanelState extends ConsumerState<ShipBattlePanel>
       if (raws.isEmpty) continue;
       _dieIds[member.id] = dieId;
       final faces = smithedFaces(
-          raws,
-          session.upgradesOfDie(dieId,
-              companionId: member.isPlayer ? null : member.id));
+        raws,
+        session.upgradesOfDie(
+          dieId,
+          companionId: member.isPlayer ? null : member.id,
+        ),
+      );
       var assigned = const <String, String>{};
       if (member.isPlayer) {
         assigned = session.diceSkillAssignments[dieId] ?? assigned;
@@ -339,9 +348,11 @@ class _ShipBattlePanelState extends ConsumerState<ShipBattlePanel>
               language: lang,
             );
             final kind = face.type == 'Skill'
-                ? skillKind(skills[face.linkedSkillID.isEmpty
-                    ? 'heavy_attack'
-                    : face.linkedSkillID] as Map<String, dynamic>?)
+                ? skillKind(
+                    skills[face.linkedSkillID.isEmpty
+                        ? 'heavy_attack'
+                        : face.linkedSkillID] as Map<String, dynamic>?,
+                  )
                 : faceKind(face.type);
             return StationFace(face, kind);
           }(),
@@ -443,7 +454,9 @@ class _ShipBattlePanelState extends ConsumerState<ShipBattlePanel>
     var hint = trFor(lang, hintKey);
     if (hintKey == 'ship_board_hint') {
       hint = hint.replaceAll(
-          '{crew}', _boardingCrewLabel(_boardingCrew(enemies)!));
+        '{crew}',
+        _boardingCrewLabel(_boardingCrew(enemies)!),
+      );
     }
     // Low in the water with a way out: that comes before anything else.
     final runWarning = widget.canFlee &&
@@ -451,89 +464,103 @@ class _ShipBattlePanelState extends ConsumerState<ShipBattlePanel>
         _battle.player.hull < _battle.player.maxHull * _runWarningShare;
     if (runWarning) hint = trFor(lang, 'ship_run_warning');
     if (_busy && !_over) {
-      hint = trFor(lang, 'ship_enemy_turn_label')
-          .replaceAll('{ship}', widget.enemyName);
+      hint = trFor(
+        lang,
+        'ship_enemy_turn_label',
+      ).replaceAll('{ship}', widget.enemyName);
     }
     final ink2 = ink;
     if (_placing) return _buildPlacement(lang, enemies);
     return Stack(
       children: [
         Positioned.fill(
-          child: LayoutBuilder(builder: (context, constraints) {
-            final bar = Padding(
-              padding: const EdgeInsets.fromLTRB(16, 6, 16, 6),
-              child: Column(
+          child: LayoutBuilder(
+            builder: (context, constraints) {
+              final bar = Padding(
+                padding: const EdgeInsets.fromLTRB(16, 6, 16, 6),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    _shipBar(
+                      name: widget.enemyName,
+                      ship: _battle.enemy,
+                      evasion: _battle.enemyEvasion,
+                      color: ink.blood,
+                      habit: widget.habit,
+                    ),
+                    _buildShieldSums(lang),
+                    _buildEnemyStatus(lang),
+                  ],
+                ),
+              );
+              // A tip sits above the dock, off the sea, so it never covers a
+              // room that has to be tapped.
+              final dock = Column(
                 mainAxisSize: MainAxisSize.min,
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
-                  _shipBar(
-                    name: widget.enemyName,
-                    ship: _battle.enemy,
-                    evasion: _battle.enemyEvasion,
-                    color: ink.blood,
-                    habit: widget.habit,
+                  if (tip != null)
+                    Padding(
+                      padding: const EdgeInsets.fromLTRB(8, 6, 8, 0),
+                      child: _buildTip(tip, lang),
+                    ),
+                  _buildDock(
+                    lang,
+                    fr,
+                    enemies,
+                    canBoard,
+                    hint,
+                    warn: runWarning,
                   ),
-                  _buildShieldSums(lang),
-                  _buildEnemyStatus(lang),
                 ],
-              ),
-            );
-            // A tip sits above the dock, off the sea, so it never covers a
-            // room that has to be tapped.
-            final dock = Column(
-              mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                if (tip != null)
-                  Padding(
-                    padding: const EdgeInsets.fromLTRB(8, 6, 8, 0),
-                    child: _buildTip(tip, lang),
-                  ),
-                _buildDock(lang, fr, enemies, canBoard, hint, warn: runWarning),
-              ],
-            );
-            final sea = Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 8),
-              child: ClipRRect(
-                borderRadius: BorderRadius.circular(10),
-                child: _buildBattlefield(lang),
-              ),
-            );
-            // A tall screen gives the sea all the room between the enemy
-            // and the dock. On a short one the enemy's bar and the sea
-            // scroll, the sea at a fixed height, and the dock stays pinned
-            // below them, so End turn is always on screen.
-            if (constraints.maxHeight < 600) {
+              );
+              final sea = Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 8),
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(10),
+                  child: _buildBattlefield(lang),
+                ),
+              );
+              // A tall screen gives the sea all the room between the enemy
+              // and the dock. On a short one the enemy's bar and the sea
+              // scroll, the sea at a fixed height, and the dock stays pinned
+              // below them, so End turn is always on screen.
+              if (constraints.maxHeight < 600) {
+                return Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    Expanded(
+                      child: ListView(
+                        key: const Key('ship_sea_scroll'),
+                        padding: EdgeInsets.zero,
+                        children: [
+                          bar,
+                          SizedBox(height: 340, child: sea),
+                        ],
+                      ),
+                    ),
+                    dock,
+                  ],
+                );
+              }
               return Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
-                  Expanded(
-                    child: ListView(
-                      key: const Key('ship_sea_scroll'),
-                      padding: EdgeInsets.zero,
-                      children: [bar, SizedBox(height: 340, child: sea)],
+                  bar,
+                  // A tall screen has room for the two hulls from the side,
+                  // facing each other as the range says.
+                  if (constraints.maxHeight >= duelStripMinHeight)
+                    Padding(
+                      padding: const EdgeInsets.fromLTRB(8, 0, 8, 6),
+                      child: _buildDuelStrip(),
                     ),
-                  ),
+                  Expanded(child: sea),
                   dock,
                 ],
               );
-            }
-            return Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                bar,
-                // A tall screen has room for the two hulls from the side,
-                // facing each other as the range says.
-                if (constraints.maxHeight >= duelStripMinHeight)
-                  Padding(
-                    padding: const EdgeInsets.fromLTRB(8, 0, 8, 6),
-                    child: _buildDuelStrip(),
-                  ),
-                Expanded(child: sea),
-                dock,
-              ],
-            );
-          }),
+            },
+          ),
         ),
         Positioned.fill(
           child: ShipFxLayer(

@@ -55,23 +55,31 @@ TowerCardText towerCardText(WidgetRef ref, TowerReward reward) {
   String dieName(String id) => towerDieName(ref, id);
   switch (reward.kind) {
     case TowerRewardKind.die:
-      return TowerCardText(tr(ref, 'tower_kind_die'), dieName(reward.id),
-          '${row(diceSchema, reward.id)['numberOfFaces'] ?? ''}');
+      return TowerCardText(
+        tr(ref, 'tower_kind_die'),
+        dieName(reward.id),
+        '${row(diceSchema, reward.id)['numberOfFaces'] ?? ''}',
+      );
     case TowerRewardKind.skill:
       return TowerCardText(
-          tr(ref, 'tower_kind_skill'),
-          skillDisplayName(reward.id, language: lang),
-          '${row(skillsSchema, reward.id)['description'] ?? ''}');
+        tr(ref, 'tower_kind_skill'),
+        skillDisplayName(reward.id, language: lang),
+        '${row(skillsSchema, reward.id)['description'] ?? ''}',
+      );
     case TowerRewardKind.spell:
       final r = row(spellsSchema, reward.id);
-      return TowerCardText(tr(ref, 'tower_kind_spell'),
-          '${r['spellName'] ?? reward.id}', '${r['description'] ?? ''}');
+      return TowerCardText(
+        tr(ref, 'tower_kind_spell'),
+        '${r['spellName'] ?? reward.id}',
+        '${r['description'] ?? ''}',
+      );
     case TowerRewardKind.clanOath:
       // A clan offers its oath (Core's v1.855; UX-2 dresses the card).
       return TowerCardText(
-          tr(ref, 'tower_kind_oath'),
-          ref.watch(factionsProvider)[reward.id]?.shortFor(lang) ?? reward.id,
-          tr(ref, 'tower_oath_text'));
+        tr(ref, 'tower_kind_oath'),
+        ref.watch(factionsProvider)[reward.id]?.shortFor(lang) ?? reward.id,
+        tr(ref, 'tower_oath_text'),
+      );
   }
 }
 
@@ -159,18 +167,23 @@ class _TowerOfferViewState extends ConsumerState<TowerOfferView> {
           ? towerRarityIndex('${row['rarity'] ?? ''}')
           : null;
       // Art's keys: a skill by its element, a spell by its family (effect).
-      art = towerCardVignette(k,
-          variant: reward.kind == TowerRewardKind.skill
-              ? '${row['element'] ?? ''}'
-              : reward.kind == TowerRewardKind.spell
-                  ? towerSpellFamily('${row['effect'] ?? ''}')
-                  : null);
+      art = towerCardVignette(
+        k,
+        variant: reward.kind == TowerRewardKind.skill
+            ? '${row['element'] ?? ''}'
+            : reward.kind == TowerRewardKind.spell
+                ? towerSpellFamily('${row['effect'] ?? ''}')
+                : null,
+      );
       icon = towerCardPicture(
-          towerCardIcon(k, reward.id,
-              faces: isDie ? int.tryParse(t.text) : null),
-          iconSize,
-          fallback: Icon(Icons.casino,
-              size: iconSize, color: InkColors.of(context).gold));
+        towerCardIcon(k, reward.id, faces: isDie ? int.tryParse(t.text) : null),
+        iconSize,
+        fallback: Icon(
+          Icons.casino,
+          size: iconSize,
+          color: InkColors.of(context).gold,
+        ),
+      );
     }
     if (tarot) {
       final w =
@@ -235,13 +248,17 @@ class _TowerOfferViewState extends ConsumerState<TowerOfferView> {
     return Padding(
       key: const Key('tower_card_detail'),
       padding: const EdgeInsets.only(top: 12),
-      child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-        Text(name, style: theme.textTheme.titleSmall),
-        if (text.isNotEmpty)
-          Padding(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(name, style: theme.textTheme.titleSmall),
+          if (text.isNotEmpty)
+            Padding(
               padding: const EdgeInsets.only(top: 2),
-              child: Text(text, style: theme.textTheme.bodySmall)),
-      ]),
+              child: Text(text, style: theme.textTheme.bodySmall),
+            ),
+        ],
+      ),
     );
   }
 
@@ -271,16 +288,23 @@ class _TowerOfferViewState extends ConsumerState<TowerOfferView> {
     return ListView(
       padding: const EdgeInsets.fromLTRB(8, 4, 16, 24),
       children: [
-        Text(tr(ref, 'tower_cleared').replaceAll('{n}', '${widget.run.floor}'),
-            key: const Key('tower_cleared'),
-            style: theme.textTheme.headlineSmall),
-        Text(tr(ref, 'tower_choose_one'),
-            style: theme.textTheme.bodyMedium
-                ?.copyWith(color: theme.colorScheme.onSurfaceVariant)),
+        Text(
+          tr(ref, 'tower_cleared').replaceAll('{n}', '${widget.run.floor}'),
+          key: const Key('tower_cleared'),
+          style: theme.textTheme.headlineSmall,
+        ),
+        Text(
+          tr(ref, 'tower_choose_one'),
+          style: theme.textTheme.bodyMedium?.copyWith(
+            color: theme.colorScheme.onSurfaceVariant,
+          ),
+        ),
         const SizedBox(height: 12),
         if (widget.event?.kind == TowerEventKind.test) ...[
-          TowerEventCard(widget.event!,
-              bagFull: widget.run.potions >= towerBagCap),
+          TowerEventCard(
+            widget.event!,
+            bagFull: widget.run.potions >= towerBagCap,
+          ),
           const SizedBox(height: 12),
         ],
         if (widget.event?.kind == TowerEventKind.shortcut &&
@@ -289,28 +313,37 @@ class _TowerOfferViewState extends ConsumerState<TowerOfferView> {
           const SizedBox(height: 12),
         ],
         if (offer.isNotEmpty)
-          LayoutBuilder(builder: (context, box) {
-            final scale = MediaQuery.textScalerOf(context).scale(10) / 10;
-            final tarot = towerTarotFits(box.maxWidth, scale,
-                count: offer.length < 2 ? 3 : offer.length);
-            final cards = [
-              for (var i = 0; i < offer.length; i++)
-                _card(context, i, tarot, box.maxWidth),
-            ];
-            return Column(
+          LayoutBuilder(
+            builder: (context, box) {
+              final scale = MediaQuery.textScalerOf(context).scale(10) / 10;
+              final tarot = towerTarotFits(
+                box.maxWidth,
+                scale,
+                count: offer.length < 2 ? 3 : offer.length,
+              );
+              final cards = [
+                for (var i = 0; i < offer.length; i++)
+                  _card(context, i, tarot, box.maxWidth),
+              ];
+              return Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   if (tarot)
-                    Row(crossAxisAlignment: CrossAxisAlignment.end, children: [
-                      for (var i = 0; i < cards.length; i++) ...[
-                        if (i > 0) const SizedBox(width: 8),
-                        cards[i],
+                    Row(
+                      crossAxisAlignment: CrossAxisAlignment.end,
+                      children: [
+                        for (var i = 0; i < cards.length; i++) ...[
+                          if (i > 0) const SizedBox(width: 8),
+                          cards[i],
+                        ],
                       ],
-                    ])
+                    )
                   else
                     for (final c in cards)
                       Padding(
-                          padding: const EdgeInsets.only(bottom: 8), child: c),
+                        padding: const EdgeInsets.only(bottom: 8),
+                        child: c,
+                      ),
                   if (tarot && _held < offer.length) _detail(context, _held),
                   if (offer.isNotEmpty && _held < offer.length)
                     Align(
@@ -320,24 +353,30 @@ class _TowerOfferViewState extends ConsumerState<TowerOfferView> {
                         child: FilledButton(
                           key: const Key('tower_take'),
                           onPressed: _done ? null : () => _pick(_held),
-                          child: Text(tr(
+                          child: Text(
+                            tr(
                               ref,
                               offer[_held].kind == TowerRewardKind.clanOath
                                   ? 'tower_swear'
-                                  : 'tower_take')),
+                                  : 'tower_take',
+                            ),
+                          ),
                         ),
                       ),
                     ),
                   if (widget.controls != null) widget.controls!,
-                ]);
-          }),
+                ],
+              );
+            },
+          ),
         const SizedBox(height: 8),
         Center(
           child: TextButton(
             key: const Key('tower_refuse'),
             onPressed: _done ? null : () => _pick(null),
             child: Text(
-                tr(ref, offer.isEmpty ? 'tower_continue' : 'tower_refuse')),
+              tr(ref, offer.isEmpty ? 'tower_continue' : 'tower_refuse'),
+            ),
           ),
         ),
       ],

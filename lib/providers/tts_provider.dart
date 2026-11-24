@@ -19,10 +19,11 @@ class TtsNotifier extends StateNotifier<bool> {
       // podcast, lowering other apps' sound while it speaks.
       _tts.setSharedInstance(true);
       _tts.setIosAudioCategory(
-        IosTextToSpeechAudioCategory.playback,
-        const [IosTextToSpeechAudioCategoryOptions.duckOthers],
-        IosTextToSpeechAudioMode.spokenAudio,
-      );
+          IosTextToSpeechAudioCategory.playback,
+          const [
+            IosTextToSpeechAudioCategoryOptions.duckOthers,
+          ],
+          IosTextToSpeechAudioMode.spokenAudio);
     }
   }
 
@@ -42,5 +43,6 @@ class TtsNotifier extends StateNotifier<bool> {
   }
 }
 
-final ttsProvider =
-    StateNotifierProvider<TtsNotifier, bool>((ref) => TtsNotifier());
+final ttsProvider = StateNotifierProvider<TtsNotifier, bool>(
+  (ref) => TtsNotifier(),
+);

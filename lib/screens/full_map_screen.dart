@@ -145,9 +145,11 @@ class _FullMapScreenState extends ConsumerState<FullMapScreen> {
       }
     }
     Text note(String key, {Color? colour, String? text}) => Text(
-        text ?? tr(ref, key),
-        key: Key(key),
-        style: theme.textTheme.labelMedium?.copyWith(color: colour ?? ink.ash));
+          text ?? tr(ref, key),
+          key: Key(key),
+          style:
+              theme.textTheme.labelMedium?.copyWith(color: colour ?? ink.ash),
+        );
     final reasonLine = heard == null || heard.setsOut
         ? null
         : switch (heard.reason!) {
@@ -170,31 +172,36 @@ class _FullMapScreenState extends ConsumerState<FullMapScreen> {
             children: [
               Text(name, style: theme.textTheme.titleMedium),
               const SizedBox(height: 6),
-              Text(landmark.blurb(language),
-                  maxLines: 5,
-                  overflow: TextOverflow.ellipsis,
-                  style: theme.textTheme.bodySmall),
+              Text(
+                landmark.blurb(language),
+                maxLines: 5,
+                overflow: TextOverflow.ellipsis,
+                style: theme.textTheme.bodySmall,
+              ),
               const SizedBox(height: 10),
               if (here)
                 note('map_here', colour: ink.gold)
               else if (heard != null) ...[
                 if (heard.setsOut) ...[
                   if (heard.byExpedition)
-                    note('map_set_out_expedition',
-                        colour: ink.gold,
-                        text: tr(ref, 'map_set_out_expedition')
-                            .replaceAll('{zone}', zoneName ?? '?')),
+                    note(
+                      'map_set_out_expedition',
+                      colour: ink.gold,
+                      text: tr(
+                        ref,
+                        'map_set_out_expedition',
+                      ).replaceAll('{zone}', zoneName ?? '?'),
+                    ),
                   const SizedBox(height: 4),
                   note('heard_setout_warning'),
-                  if (busy) ...[
-                    const SizedBox(height: 4),
-                    note('map_busy'),
-                  ],
+                  if (busy) ...[const SizedBox(height: 4), note('map_busy')],
                 ] else
-                  note(reasonLine!,
-                      text: tr(ref, reasonLine)
-                          .replaceAll('{n}', '${heard.chapter ?? ''}')
-                          .replaceAll('{zone}', firstZone ?? '?')),
+                  note(
+                    reasonLine!,
+                    text: tr(ref, reasonLine)
+                        .replaceAll('{n}', '${heard.chapter ?? ''}')
+                        .replaceAll('{zone}', firstZone ?? '?'),
+                  ),
                 if (isGoal) ...[
                   const SizedBox(height: 4),
                   note('map_goal_is', colour: ink.gold),
@@ -211,20 +218,26 @@ class _FullMapScreenState extends ConsumerState<FullMapScreen> {
                   TextButton(
                     key: const Key('map_cancel'),
                     onPressed: () => Navigator.of(sheet).pop(),
-                    child: Text(tr(
+                    child: Text(
+                      tr(
                         ref,
                         here || (nodeId == null && heard == null)
                             ? 'close_button'
-                            : 'cancel')),
+                            : 'cancel',
+                      ),
+                    ),
                   ),
                   if (heard != null)
                     TextButton(
                       key: const Key('map_goal_button'),
-                      onPressed: () => Navigator.of(sheet).pop(isGoal
-                          ? _MapSheetChoice.clearGoal
-                          : _MapSheetChoice.markGoal),
+                      onPressed: () => Navigator.of(sheet).pop(
+                        isGoal
+                            ? _MapSheetChoice.clearGoal
+                            : _MapSheetChoice.markGoal,
+                      ),
                       child: Text(
-                          tr(ref, isGoal ? 'map_clear_goal' : 'map_mark_goal')),
+                        tr(ref, isGoal ? 'map_clear_goal' : 'map_mark_goal'),
+                      ),
                     ),
                   if (heard != null && heard.setsOut)
                     FilledButton(
@@ -298,8 +311,10 @@ class _FullMapScreenState extends ConsumerState<FullMapScreen> {
         ? currentLandmark(play.currentNodeId, play.history)
         : currentLandmark(play.currentNodeId, play.history) ??
             landmarkOfScene(play.currentNodeId);
-    final discovered =
-        discoveredLandmarkIds([...play.history, play.currentNodeId]);
+    final discovered = discoveredLandmarkIds([
+      ...play.history,
+      play.currentNodeId,
+    ]);
     final worldDiscovered = editing
         ? {for (final l in worldMapLandmarks) l.id}
         : {...discovered, if (standing != null) standing.id};
@@ -324,8 +339,10 @@ class _FullMapScreenState extends ConsumerState<FullMapScreen> {
       for (final l in worldMapLandmarks)
         if (worldDiscovered.contains(l.id)) l,
     ];
-    final chaptersReached =
-        {for (final l in reachedLandmarks) l.chapter}.toList()..sort();
+    final chaptersReached = {
+      for (final l in reachedLandmarks) l.chapter,
+    }.toList()
+      ..sort();
     return TutorialTrigger(
       topic: TutorialTopic.map,
       child: Scaffold(
@@ -345,8 +362,10 @@ class _FullMapScreenState extends ConsumerState<FullMapScreen> {
                     palette: palette,
                     here: standing,
                     discovered: worldDiscovered,
-                    legs: roadLegs(journeyOf(play.history, play.currentNodeId),
-                        worldDiscovered),
+                    legs: roadLegs(
+                      journeyOf(play.history, play.currentNodeId),
+                      worldDiscovered,
+                    ),
                     ahead: nextPlace,
                     shopPlaces: _shops,
                     campPlaces: _camps,
@@ -388,8 +407,9 @@ class _FullMapScreenState extends ConsumerState<FullMapScreen> {
                     onPick: (n) => setState(() {
                       _chapterFilter = n;
                       if (n != 0) {
-                        _focus =
-                            reachedLandmarks.firstWhere((l) => l.chapter == n);
+                        _focus = reachedLandmarks.firstWhere(
+                          (l) => l.chapter == n,
+                        );
                       }
                     }),
                   ),
@@ -397,15 +417,23 @@ class _FullMapScreenState extends ConsumerState<FullMapScreen> {
               TutorialTarget(
                 id: 'map.controls',
                 child: _MapToolbar(
-                  onLegend: () => showMapLegendSheet(context, ref,
-                      palette: palette, chapterColor: chapterColor),
+                  onLegend: () => showMapLegendSheet(
+                    context,
+                    ref,
+                    palette: palette,
+                    chapterColor: chapterColor,
+                  ),
                   onStory: () => Navigator.of(context).push(
                     MaterialPageRoute(builder: (_) => const JournalScreen()),
                   ),
                   onJourneys: () async {
                     final journey = journeyOf(play.history, play.currentNodeId);
-                    final pick = await showMapJourneysSheet(context, ref,
-                        journey: journey, chapterColor: chapterColor);
+                    final pick = await showMapJourneysSheet(
+                      context,
+                      ref,
+                      journey: journey,
+                      chapterColor: chapterColor,
+                    );
                     if (pick == null || !mounted) return;
                     setState(() {
                       if (pick.replay) {
@@ -458,12 +486,15 @@ class _ChapterChips extends ConsumerWidget {
                   key: Key('world_map_chip_$n'),
                   visualDensity: VisualDensity.compact,
                   selected: selected == n,
-                  selectedColor:
-                      (n == 0 ? ink.gold : colourOf(n)).withValues(alpha: 0.35),
+                  selectedColor: (n == 0 ? ink.gold : colourOf(n)).withValues(
+                    alpha: 0.35,
+                  ),
                   side: BorderSide(color: n == 0 ? ink.gold : colourOf(n)),
-                  label: Text(n == 0
-                      ? tr(ref, 'world_map_all')
-                      : '${tr(ref, 'world_map_chapter_short')} $n'),
+                  label: Text(
+                    n == 0
+                        ? tr(ref, 'world_map_all')
+                        : '${tr(ref, 'world_map_chapter_short')} $n',
+                  ),
                   onSelected: (_) => onPick(n),
                 ),
               ),
@@ -500,10 +531,12 @@ class _MapToolbar extends ConsumerWidget {
                 children: [
                   Icon(icon, size: IconSize.s16),
                   const SizedBox(height: 2),
-                  Text(label,
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
-                      style: Theme.of(context).textTheme.labelSmall),
+                  Text(
+                    label,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: Theme.of(context).textTheme.labelSmall,
+                  ),
                 ],
               ),
             ),
@@ -513,12 +546,24 @@ class _MapToolbar extends ConsumerWidget {
       color: Theme.of(context).colorScheme.surface,
       child: Row(
         children: [
-          button('map_legend', Icons.info_outline, tr(ref, 'map_legend'),
-              onLegend),
-          button('map_story', Icons.menu_book_outlined, tr(ref, 'map_story'),
-              onStory),
-          button('map_journeys', Icons.route_outlined, tr(ref, 'map_journeys'),
-              onJourneys),
+          button(
+            'map_legend',
+            Icons.info_outline,
+            tr(ref, 'map_legend'),
+            onLegend,
+          ),
+          button(
+            'map_story',
+            Icons.menu_book_outlined,
+            tr(ref, 'map_story'),
+            onStory,
+          ),
+          button(
+            'map_journeys',
+            Icons.route_outlined,
+            tr(ref, 'map_journeys'),
+            onJourneys,
+          ),
         ],
       ),
     );

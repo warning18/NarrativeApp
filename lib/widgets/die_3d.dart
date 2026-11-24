@@ -53,12 +53,15 @@ Widget dieUnrolledMark() => Container(
         color: Palette.amber88.withValues(alpha: 0.92),
         border: Border.all(color: Palette.goldDark, width: 2),
       ),
-      child: const Text('?',
-          style: TextStyle(
-              fontSize: 20,
-              fontWeight: FontWeight.bold,
-              height: 1,
-              color: Palette.goldDark)),
+      child: const Text(
+        '?',
+        style: TextStyle(
+          fontSize: 20,
+          fontWeight: FontWeight.bold,
+          height: 1,
+          color: Palette.goldDark,
+        ),
+      ),
     );
 
 /// The burst a face lets go when it lands.
@@ -207,7 +210,9 @@ class Die3D extends StatefulWidget {
 
 class _Die3DState extends State<Die3D> with SingleTickerProviderStateMixin {
   late final AnimationController _burst = AnimationController(
-      vsync: this, duration: const Duration(milliseconds: 900));
+    vsync: this,
+    duration: const Duration(milliseconds: 900),
+  );
 
   /// Whether this solid is drawn cheaper because the phone was too slow
   /// before it was mounted; fixed for its whole life, so it looks the same
@@ -294,10 +299,12 @@ class _Die3DState extends State<Die3D> with SingleTickerProviderStateMixin {
                 child: DecoratedBox(
                   decoration: BoxDecoration(
                     shape: BoxShape.circle,
-                    gradient: RadialGradient(colors: [
-                      skin.glow!.withValues(alpha: 0.32),
-                      skin.glow!.withValues(alpha: 0),
-                    ]),
+                    gradient: RadialGradient(
+                      colors: [
+                        skin.glow!.withValues(alpha: 0.32),
+                        skin.glow!.withValues(alpha: 0),
+                      ],
+                    ),
                   ),
                 ),
               ),
@@ -310,7 +317,9 @@ class _Die3DState extends State<Die3D> with SingleTickerProviderStateMixin {
                   ? math.sin(_burst.value * 38) * (1 - _burst.value) * 3
                   : 0.0;
               return Transform.translate(
-                  offset: Offset(shake, 0), child: child);
+                offset: Offset(shake, 0),
+                child: child,
+              );
             },
             child: Opacity(opacity: widget.dim ? 0.55 : 1, child: cube),
           ),
@@ -343,9 +352,12 @@ class _Die3DState extends State<Die3D> with SingleTickerProviderStateMixin {
                           colorFilter: TowerPanelStyle.of(context)
                               ? ColorFilter.mode(
                                   fx == DieFx.strike ? inkRed : inkPaper,
-                                  BlendMode.srcATop)
+                                  BlendMode.srcATop,
+                                )
                               : const ColorFilter.mode(
-                                  Colors.transparent, BlendMode.dst),
+                                  Colors.transparent,
+                                  BlendMode.dst,
+                                ),
                           child: PixelStrips.ready(_pixelNames(fx))
                               // The landing in pixel art.
                               ? CustomPaint(
@@ -372,7 +384,8 @@ class _Die3DState extends State<Die3D> with SingleTickerProviderStateMixin {
                                     surge: widget.surge,
                                     cursed: widget.cursed,
                                   ),
-                                )),
+                                ),
+                        ),
                 ),
               ),
             ),
@@ -497,7 +510,9 @@ class DieFaceTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final base = Color.alphaBlend(
-        face.color.withValues(alpha: skinned ? 0.24 : 0.34), skin.base);
+      face.color.withValues(alpha: skinned ? 0.24 : 0.34),
+      skin.base,
+    );
     return SizedBox(
       width: size,
       height: size,
@@ -506,7 +521,9 @@ class DieFaceTile extends StatelessWidget {
           color: base,
           borderRadius: BorderRadius.circular(size * 0.16),
           border: Border.all(
-              color: ring ?? skin.edge, width: ring == null ? 1.6 : 2.6),
+            color: ring ?? skin.edge,
+            width: ring == null ? 1.6 : 2.6,
+          ),
         ),
         child: Stack(
           fit: StackFit.expand,
@@ -516,18 +533,22 @@ class DieFaceTile extends StatelessWidget {
               borderRadius: BorderRadius.circular(size * 0.16),
               child: CustomPaint(
                 painter: DiePatternPainter(
-                    skin.pattern,
-                    Color.lerp(skin.edge, skin.base, 0.25)!,
-                    7 + placement.slot),
+                  skin.pattern,
+                  Color.lerp(skin.edge, skin.base, 0.25)!,
+                  7 + placement.slot,
+                ),
               ),
             ),
-            Center(child: FittedBox(fit: BoxFit.scaleDown, child: face.glyph)),
+            Center(
+              child: FittedBox(fit: BoxFit.scaleDown, child: face.glyph),
+            ),
             // The lamp: the faces turned from it go dark.
             DecoratedBox(
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(size * 0.16),
-                color: Colors.black
-                    .withValues(alpha: (1 - placement.light) * 0.62),
+                color: Colors.black.withValues(
+                  alpha: (1 - placement.light) * 0.62,
+                ),
               ),
             ),
           ],
@@ -544,7 +565,12 @@ const Color _faceStone = Color(0xFF211E26);
 /// it is, whether it faces the viewer, and how lit it is.
 class CubeFacePlacement {
   CubeFacePlacement._(
-      this.slot, this.matrix, this.depth, this.visible, this.light);
+    this.slot,
+    this.matrix,
+    this.depth,
+    this.visible,
+    this.light,
+  );
 
   /// Which of the six sides (0 front, 1 right, 2 back, 3 left, 4 top,
   /// 5 bottom, at rest before the turn).
@@ -581,14 +607,21 @@ class CubeFacePlacement {
     // A lamp above, to the left and in front of the cube.
     const lamp = [-0.35, -0.55, -0.76];
     final lit =
-        (normal[0] * lamp[0] + normal[1] * lamp[1] + normal[2] * lamp[2])
-            .clamp(0.0, 1.0);
+        (normal[0] * lamp[0] + normal[1] * lamp[1] + normal[2] * lamp[2]).clamp(
+      0.0,
+      1.0,
+    );
     final matrix = (Matrix4.identity()..setEntry(3, 2, _perspective))
         .multiplied(model)
         .multiplied(orient)
         .multiplied(Matrix4.translationValues(0.0, 0.0, -half));
     return CubeFacePlacement._(
-        slot, matrix, centre[2], facing, 0.45 + 0.55 * lit);
+      slot,
+      matrix,
+      centre[2],
+      facing,
+      0.45 + 0.55 * lit,
+    );
   }
 
   /// [m]'s rotation applied to a vector (x, y, z).
@@ -617,24 +650,28 @@ class _HeldRingPainter extends CustomPainter {
     for (final metric in circle.computeMetrics()) {
       for (var d = 0.0; d < metric.length; d += 9) {
         canvas.drawPath(
-            metric.extractPath(d, math.min(d + 4, metric.length)), ring);
+          metric.extractPath(d, math.min(d + 4, metric.length)),
+          ring,
+        );
       }
     }
     // The lock, at the ring's upper right.
     final at = c + Offset(r * 0.72, -r * 0.72);
     final gold = Paint()..color = Palette.goldDark;
     canvas.drawRRect(
-        RRect.fromRectAndRadius(
-            Rect.fromCenter(
-                center: at + const Offset(0, 3), width: 14, height: 11),
-            const Radius.circular(2.5)),
-        gold);
+      RRect.fromRectAndRadius(
+        Rect.fromCenter(center: at + const Offset(0, 3), width: 14, height: 11),
+        const Radius.circular(2.5),
+      ),
+      gold,
+    );
     canvas.drawArc(
-        Rect.fromCenter(center: at + const Offset(0, -2), width: 9, height: 10),
-        math.pi,
-        math.pi,
-        false,
-        ring..strokeWidth = 2);
+      Rect.fromCenter(center: at + const Offset(0, -2), width: 9, height: 10),
+      math.pi,
+      math.pi,
+      false,
+      ring..strokeWidth = 2,
+    );
   }
 
   @override
@@ -695,10 +732,14 @@ class DieBurstPainter extends CustomPainter {
           final r1 = r0 + u * 0.22 * (1 - out) + 2;
           line
             ..strokeWidth = 2
-            ..color = (i.isEven ? Palette.amber77 : Palette.red55)
-                .withValues(alpha: fade);
-          canvas.drawLine(c + Offset(math.cos(a), math.sin(a)) * r0,
-              c + Offset(math.cos(a), math.sin(a)) * r1, line);
+            ..color = (i.isEven ? Palette.amber77 : Palette.red55).withValues(
+              alpha: fade,
+            );
+          canvas.drawLine(
+            c + Offset(math.cos(a), math.sin(a)) * r0,
+            c + Offset(math.cos(a), math.sin(a)) * r1,
+            line,
+          );
         }
       case DieFx.ward:
         // A hexagonal ward opening and thinning.
@@ -728,7 +769,9 @@ class DieBurstPainter extends CustomPainter {
           final k = ((t - start) / (1 - start)).clamp(0.0, 1.0);
           final p = c +
               Offset(
-                  dx + math.sin(k * 5 + i) * u * 0.08, u * 0.25 - k * u * 1.15);
+                dx + math.sin(k * 5 + i) * u * 0.08,
+                u * 0.25 - k * u * 1.15,
+              );
           final s = u * (0.07 + _hash(i, 5) * 0.07);
           line
             ..strokeWidth = 2.2
@@ -761,11 +804,13 @@ class DieBurstPainter extends CustomPainter {
         // Green bubbles rising out of a thin cloud.
         fill.color = Palette.green45.withValues(alpha: 0.2 * fade);
         canvas.drawOval(
-            Rect.fromCenter(
-                center: c + Offset(0, u * 0.1),
-                width: u * 1.6 * out + u * 0.6,
-                height: u * 0.9),
-            fill);
+          Rect.fromCenter(
+            center: c + Offset(0, u * 0.1),
+            width: u * 1.6 * out + u * 0.6,
+            height: u * 0.9,
+          ),
+          fill,
+        );
         final n = big ? 10 : 7;
         for (var i = 0; i < n; i++) {
           final dx = (_hash(i, 6) - 0.5) * u * 1.0;
@@ -791,8 +836,10 @@ class DieBurstPainter extends CustomPainter {
             final r = u * (0.3 + 0.28 * k) * (0.5 + out * 0.5);
             final jag = (k.isEven ? 1 : -1) * u * 0.12;
             p = c +
-                Offset(math.cos(a) * r - math.sin(a) * jag,
-                    math.sin(a) * r + math.cos(a) * jag);
+                Offset(
+                  math.cos(a) * r - math.sin(a) * jag,
+                  math.sin(a) * r + math.cos(a) * jag,
+                );
             path.lineTo(p.dx, p.dy);
           }
           line
@@ -812,7 +859,10 @@ class DieBurstPainter extends CustomPainter {
           final r = u * (1.0 - 0.8 * out);
           fill.color = const Color(0xFFCE93D8).withValues(alpha: fade);
           canvas.drawCircle(
-              c + Offset(math.cos(a), math.sin(a)) * r, 2.4 * fade + 0.6, fill);
+            c + Offset(math.cos(a), math.sin(a)) * r,
+            2.4 * fade + 0.6,
+            fill,
+          );
         }
       case DieFx.fizzle:
         // Grey dust puffing out and thinning: nothing came of it.
@@ -820,8 +870,11 @@ class DieBurstPainter extends CustomPainter {
           final a = i * math.pi / 3 + _hash(i, 9);
           final r = u * (0.25 + 0.5 * out);
           fill.color = Palette.stone62.withValues(alpha: 0.32 * fade);
-          canvas.drawCircle(c + Offset(math.cos(a), math.sin(a)) * r,
-              u * (0.12 + 0.12 * out), fill);
+          canvas.drawCircle(
+            c + Offset(math.cos(a), math.sin(a)) * r,
+            u * (0.12 + 0.12 * out),
+            fill,
+          );
         }
     }
     _element(canvas, c, u, t, out, fade, line, fill);
@@ -832,30 +885,35 @@ class DieBurstPainter extends CustomPainter {
       // A gold dashed ring turning, and a crown over the die.
       line
         ..strokeWidth = 2.4
-        ..color =
-            Palette.goldDark.withValues(alpha: 0.9 * math.min(1.0, fade * 1.6));
+        ..color = Palette.goldDark.withValues(
+          alpha: 0.9 * math.min(1.0, fade * 1.6),
+        );
       final ring = Path()
         ..addOval(Rect.fromCircle(center: c, radius: u * 0.95));
       for (final metric in ring.computeMetrics()) {
         for (var d = t * 40; d < metric.length; d += 11) {
           canvas.drawPath(
-              metric.extractPath(d, math.min(d + 5, metric.length)), line);
+            metric.extractPath(d, math.min(d + 5, metric.length)),
+            line,
+          );
         }
       }
       final crown = c + Offset(0, -u * 1.05);
       canvas.drawPath(
-          Path()
-            ..moveTo(crown.dx - 9, crown.dy + 6)
-            ..lineTo(crown.dx - 11, crown.dy - 4)
-            ..lineTo(crown.dx - 4, crown.dy + 1)
-            ..lineTo(crown.dx, crown.dy - 7)
-            ..lineTo(crown.dx + 4, crown.dy + 1)
-            ..lineTo(crown.dx + 11, crown.dy - 4)
-            ..lineTo(crown.dx + 9, crown.dy + 6)
-            ..close(),
-          fill
-            ..color =
-                Palette.goldDark.withValues(alpha: math.min(1.0, fade * 1.6)));
+        Path()
+          ..moveTo(crown.dx - 9, crown.dy + 6)
+          ..lineTo(crown.dx - 11, crown.dy - 4)
+          ..lineTo(crown.dx - 4, crown.dy + 1)
+          ..lineTo(crown.dx, crown.dy - 7)
+          ..lineTo(crown.dx + 4, crown.dy + 1)
+          ..lineTo(crown.dx + 11, crown.dy - 4)
+          ..lineTo(crown.dx + 9, crown.dy + 6)
+          ..close(),
+        fill
+          ..color = Palette.goldDark.withValues(
+            alpha: math.min(1.0, fade * 1.6),
+          ),
+      );
     }
     if (cursed) {
       // Chains across the die that fade slowly.
@@ -866,11 +924,17 @@ class DieBurstPainter extends CustomPainter {
         final chain = Path()
           ..moveTo(c.dx - u * .75, c.dy + s * u * .28)
           ..quadraticBezierTo(
-              c.dx, c.dy + s * u * .02, c.dx + u * .75, c.dy + s * u * .28);
+            c.dx,
+            c.dy + s * u * .02,
+            c.dx + u * .75,
+            c.dy + s * u * .28,
+          );
         for (final metric in chain.computeMetrics()) {
           for (var d = 0.0; d < metric.length; d += 11) {
             canvas.drawPath(
-                metric.extractPath(d, math.min(d + 7, metric.length)), line);
+              metric.extractPath(d, math.min(d + 7, metric.length)),
+              line,
+            );
           }
         }
       }
@@ -888,8 +952,16 @@ class DieBurstPainter extends CustomPainter {
   }
 
   /// The element's tint over the burst: a few motes of what it is.
-  void _element(Canvas canvas, Offset c, double u, double t, double out,
-      double fade, Paint line, Paint fill) {
+  void _element(
+    Canvas canvas,
+    Offset c,
+    double u,
+    double t,
+    double out,
+    double fade,
+    Paint line,
+    Paint fill,
+  ) {
     final color = switch (element) {
       'Fire' => const Color(0xFFFF7043),
       'Water' => Palette.cyan64,
@@ -918,23 +990,33 @@ class DieBurstPainter extends CustomPainter {
           final x = (_hash(i, 13) - .5) * u * 1.1;
           final y = -u * .7 + t * u * 1.5 * (.7 + _hash(i, 14) * .5);
           canvas.drawOval(
-              Rect.fromCenter(center: c + Offset(x, y), width: 4, height: 7),
-              fill);
+            Rect.fromCenter(center: c + Offset(x, y), width: 4, height: 7),
+            fill,
+          );
         }
       case 'Wind':
         for (var i = 0; i < 3; i++) {
           final r = u * (.55 + i * .22);
-          canvas.drawArc(Rect.fromCircle(center: c, radius: r), t * 7 + i * 2,
-              1.7, false, line);
+          canvas.drawArc(
+            Rect.fromCircle(center: c, radius: r),
+            t * 7 + i * 2,
+            1.7,
+            false,
+            line,
+          );
         }
       case 'Earth':
         for (var i = 0; i < 6; i++) {
           final x = (_hash(i, 15) - .5) * u * 1.3;
           final up = math.sin(math.pi * t) * u * (.3 + _hash(i, 16) * .5);
           canvas.drawRect(
-              Rect.fromCenter(
-                  center: c + Offset(x, u * .5 - up), width: 5, height: 5),
-              fill);
+            Rect.fromCenter(
+              center: c + Offset(x, u * .5 - up),
+              width: 5,
+              height: 5,
+            ),
+            fill,
+          );
         }
       case 'Electricity':
         if (t < .6) {
@@ -944,8 +1026,10 @@ class DieBurstPainter extends CustomPainter {
             for (var k = 1; k <= 3; k++) {
               final r = u * .45 * k;
               final j = (k.isEven ? 1 : -1) * u * .1;
-              path.lineTo(c.dx + math.cos(a) * r - math.sin(a) * j,
-                  c.dy + math.sin(a) * r + math.cos(a) * j);
+              path.lineTo(
+                c.dx + math.cos(a) * r - math.sin(a) * j,
+                c.dy + math.sin(a) * r + math.cos(a) * j,
+              );
             }
             canvas.drawPath(path, line);
           }
@@ -956,32 +1040,50 @@ class DieBurstPainter extends CustomPainter {
           final base = c + Offset(math.cos(a), math.sin(a)) * u * .75;
           final tip = base + Offset(math.cos(a), math.sin(a)) * u * .35 * out;
           canvas.drawPath(
-              Path()
-                ..moveTo(base.dx - 3, base.dy)
-                ..lineTo(tip.dx, tip.dy)
-                ..lineTo(base.dx + 3, base.dy)
-                ..close(),
-              fill);
+            Path()
+              ..moveTo(base.dx - 3, base.dy)
+              ..lineTo(tip.dx, tip.dy)
+              ..lineTo(base.dx + 3, base.dy)
+              ..close(),
+            fill,
+          );
         }
       case 'Void':
         for (var i = 0; i < 3; i++) {
           final a = i * 2.1 + t * 2;
           final r = u * (.5 + .7 * out);
           canvas.drawArc(
-              Rect.fromCircle(center: c, radius: r), a, .9, false, line);
+            Rect.fromCircle(center: c, radius: r),
+            a,
+            .9,
+            false,
+            line,
+          );
         }
       case 'Light':
         for (var i = 0; i < 8; i++) {
           final a = i * math.pi / 4;
-          canvas.drawLine(c + Offset(math.cos(a), math.sin(a)) * u * .5,
-              c + Offset(math.cos(a), math.sin(a)) * u * (.5 + .7 * out), line);
+          canvas.drawLine(
+            c + Offset(math.cos(a), math.sin(a)) * u * .5,
+            c + Offset(math.cos(a), math.sin(a)) * u * (.5 + .7 * out),
+            line,
+          );
         }
     }
   }
 
   /// A rule word's flourish on landing.
-  void _keyword(Canvas canvas, FaceKeyword keyword, Offset c, double u,
-      double t, double out, double fade, Paint line, Paint fill) {
+  void _keyword(
+    Canvas canvas,
+    FaceKeyword keyword,
+    Offset c,
+    double u,
+    double t,
+    double out,
+    double fade,
+    Paint line,
+    Paint fill,
+  ) {
     switch (keyword) {
       case FaceKeyword.cleave:
         // The blow splits: arcs flung to either side.
@@ -991,12 +1093,16 @@ class DieBurstPainter extends CustomPainter {
         for (final s in [-1.0, 1.0]) {
           final x = c.dx + s * u * (.4 + .9 * out);
           canvas.drawArc(
-              Rect.fromCenter(
-                  center: Offset(x, c.dy), width: u * .5, height: u * 1.1),
-              s > 0 ? -1.1 : math.pi - 1.1,
-              2.2,
-              false,
-              line);
+            Rect.fromCenter(
+              center: Offset(x, c.dy),
+              width: u * .5,
+              height: u * 1.1,
+            ),
+            s > 0 ? -1.1 : math.pi - 1.1,
+            2.2,
+            false,
+            line,
+          );
         }
       case FaceKeyword.pierce:
         // A line driven clean through.
@@ -1011,11 +1117,13 @@ class DieBurstPainter extends CustomPainter {
         // A +1 rising off the die.
         final tp = TextPainter(
           text: TextSpan(
-              text: '+1',
-              style: TextStyle(
-                  color: const Color(0xFFCFEFB8).withValues(alpha: fade),
-                  fontWeight: FontWeight.bold,
-                  fontSize: 15)),
+            text: '+1',
+            style: TextStyle(
+              color: const Color(0xFFCFEFB8).withValues(alpha: fade),
+              fontWeight: FontWeight.bold,
+              fontSize: 15,
+            ),
+          ),
           textDirection: TextDirection.ltr,
         )..layout();
         tp.paint(canvas, c + Offset(u * .45, -u * .75 - out * u * .45));
@@ -1027,7 +1135,10 @@ class DieBurstPainter extends CustomPainter {
             ..strokeWidth = 2.2 * (1 - k) + .4
             ..color = const Color(0xFFB39DFF).withValues(alpha: .8 * (1 - k));
           canvas.drawCircle(
-              c, u * (.5 + .8 * Curves.easeOutCubic.transform(k)), line);
+            c,
+            u * (.5 + .8 * Curves.easeOutCubic.transform(k)),
+            line,
+          );
         }
       case FaceKeyword.pain:
         // A crack across the die and a drop falling.
@@ -1035,22 +1146,32 @@ class DieBurstPainter extends CustomPainter {
           ..strokeWidth = 2.6
           ..color = Palette.red58.withValues(alpha: fade);
         canvas.drawPath(
-            Path()
-              ..moveTo(c.dx - u * .15, c.dy - u * .6)
-              ..lineTo(c.dx + u * .05, c.dy - u * .15)
-              ..lineTo(c.dx - u * .1, c.dy + u * .15)
-              ..lineTo(c.dx + u * .1, c.dy + u * .6),
-            line);
+          Path()
+            ..moveTo(c.dx - u * .15, c.dy - u * .6)
+            ..lineTo(c.dx + u * .05, c.dy - u * .15)
+            ..lineTo(c.dx - u * .1, c.dy + u * .15)
+            ..lineTo(c.dx + u * .1, c.dy + u * .6),
+          line,
+        );
         fill.color = Palette.red58.withValues(alpha: fade);
         final dy = c.dy + u * .6 + out * u * .7;
         canvas.drawPath(
-            Path()
-              ..moveTo(c.dx + u * .3, dy - 6)
-              ..quadraticBezierTo(
-                  c.dx + u * .3 - 5, dy + 2, c.dx + u * .3, dy + 4)
-              ..quadraticBezierTo(
-                  c.dx + u * .3 + 5, dy + 2, c.dx + u * .3, dy - 6),
-            fill);
+          Path()
+            ..moveTo(c.dx + u * .3, dy - 6)
+            ..quadraticBezierTo(
+              c.dx + u * .3 - 5,
+              dy + 2,
+              c.dx + u * .3,
+              dy + 4,
+            )
+            ..quadraticBezierTo(
+              c.dx + u * .3 + 5,
+              dy + 2,
+              c.dx + u * .3,
+              dy - 6,
+            ),
+          fill,
+        );
       case FaceKeyword.steady:
         // An anchor dropped over the die.
         final k = math.sin(math.pi * t.clamp(0.0, 1.0));
@@ -1062,12 +1183,16 @@ class DieBurstPainter extends CustomPainter {
         canvas.drawLine(a + const Offset(0, -5), a + const Offset(0, 11), line);
         canvas.drawLine(a + const Offset(-6, 0), a + const Offset(6, 0), line);
         canvas.drawArc(
-            Rect.fromCenter(
-                center: a + const Offset(0, 6), width: 22, height: 14),
-            0,
-            math.pi,
-            false,
-            line);
+          Rect.fromCenter(
+            center: a + const Offset(0, 6),
+            width: 22,
+            height: 14,
+          ),
+          0,
+          math.pi,
+          false,
+          line,
+        );
     }
   }
 

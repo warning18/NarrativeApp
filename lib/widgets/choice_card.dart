@@ -94,9 +94,11 @@ class ChoiceCard extends StatelessWidget {
                 color: selected ? tone : theme.colorScheme.surface,
                 border: Border.all(color: tone, width: 2),
               ),
-              child: Icon(locked ? Icons.lock_outline : icon,
-                  size: IconSize.s16,
-                  color: selected ? theme.colorScheme.surface : tone),
+              child: Icon(
+                locked ? Icons.lock_outline : icon,
+                size: IconSize.s16,
+                color: selected ? theme.colorScheme.surface : tone,
+              ),
             ),
           const SizedBox(width: 10),
           Expanded(
@@ -106,26 +108,38 @@ class ChoiceCard extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  Text(text,
-                      style: theme.textTheme.bodyMedium?.copyWith(
-                          fontFamily: InkFonts.prose,
-                          fontWeight: FontWeight.w500,
-                          height: 1.25)),
+                  Text(
+                    text,
+                    style: theme.textTheme.bodyMedium?.copyWith(
+                      fontFamily: InkFonts.prose,
+                      fontWeight: FontWeight.w500,
+                      height: 1.25,
+                    ),
+                  ),
                   for (final note in notes)
-                    Text(note,
-                        style: theme.textTheme.labelSmall
-                            ?.copyWith(color: ink.ash)),
+                    Text(
+                      note,
+                      style: theme.textTheme.labelSmall?.copyWith(
+                        color: ink.ash,
+                      ),
+                    ),
                   if (leadsTo != null)
                     Row(
                       mainAxisSize: MainAxisSize.min,
                       children: [
-                        Icon(Icons.arrow_forward,
-                            size: IconSize.inline, color: ink.ash),
+                        Icon(
+                          Icons.arrow_forward,
+                          size: IconSize.inline,
+                          color: ink.ash,
+                        ),
                         const SizedBox(width: 3),
                         Flexible(
-                          child: Text(leadsTo!,
-                              style: theme.textTheme.labelSmall
-                                  ?.copyWith(color: ink.ash)),
+                          child: Text(
+                            leadsTo!,
+                            style: theme.textTheme.labelSmall?.copyWith(
+                              color: ink.ash,
+                            ),
+                          ),
                         ),
                       ],
                     ),
@@ -137,14 +151,16 @@ class ChoiceCard extends StatelessWidget {
             const SizedBox(width: 8),
             FilledButton(
               key: goKey,
-              style:
-                  FilledButton.styleFrom(visualDensity: VisualDensity.compact),
+              style: FilledButton.styleFrom(
+                visualDensity: VisualDensity.compact,
+              ),
               onPressed: busy ? null : onGo,
               child: busy
                   ? const SizedBox(
                       width: 16,
                       height: 16,
-                      child: CircularProgressIndicator(strokeWidth: 2))
+                      child: CircularProgressIndicator(strokeWidth: 2),
+                    )
                   : Text(goLabel),
             ),
           ] else if (tag != null) ...[
@@ -165,10 +181,7 @@ class ChoiceCard extends StatelessWidget {
           child: InkWell(
             onTap: onTap,
             child: selected
-                ? ColoredBox(
-                    color: tone.withValues(alpha: 0.12),
-                    child: row,
-                  )
+                ? ColoredBox(color: tone.withValues(alpha: 0.12), child: row)
                 : row,
           ),
         ),
@@ -177,13 +190,16 @@ class ChoiceCard extends StatelessWidget {
     return Material(
       color: selected
           ? Color.alphaBlend(
-              tone.withValues(alpha: 0.12), theme.colorScheme.surfaceContainer)
+              tone.withValues(alpha: 0.12),
+              theme.colorScheme.surfaceContainer,
+            )
           : theme.colorScheme.surfaceContainer,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(8),
         side: BorderSide(
-            color: selected ? tone : theme.colorScheme.outlineVariant,
-            width: selected ? 2 : 1),
+          color: selected ? tone : theme.colorScheme.outlineVariant,
+          width: selected ? 2 : 1,
+        ),
       ),
       child: InkWell(
         borderRadius: BorderRadius.circular(8),

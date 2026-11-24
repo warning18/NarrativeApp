@@ -94,7 +94,7 @@ class AbilityRadar extends StatelessWidget {
     final shown = inked && color == radarGold ? inkPaper : color;
 
     final now = [
-      for (final k in abilityRadarOrder) (values[k] ?? 0).toDouble()
+      for (final k in abilityRadarOrder) (values[k] ?? 0).toDouble(),
     ];
     final was = before == null
         ? null
@@ -103,10 +103,13 @@ class AbilityRadar extends StatelessWidget {
         ? null
         : [
             for (final k in abilityRadarOrder)
-              (preview![k] ?? values[k] ?? 0).toDouble()
+              (preview![k] ?? values[k] ?? 0).toDouble(),
           ];
-    final highest =
-        [...now, ...?was, ...?after].fold(0.0, (m, v) => v > m ? v : m);
+    final highest = [
+      ...now,
+      ...?was,
+      ...?after,
+    ].fold(0.0, (m, v) => v > m ? v : m);
     final max = chartScaleFor(highest.ceil(), floor: 6, step: 3);
     final axes = [
       for (final (i, k) in abilityRadarOrder.indexed)
@@ -139,17 +142,22 @@ class AbilityRadar extends StatelessWidget {
               width: 18,
               height: 0,
               decoration: BoxDecoration(
-                  border: Border(
-                      top: BorderSide(
-                          color: c,
-                          width: dashed ? 2 : 3,
-                          style:
-                              dashed ? BorderStyle.solid : BorderStyle.solid))),
+                border: Border(
+                  top: BorderSide(
+                    color: c,
+                    width: dashed ? 2 : 3,
+                    style: dashed ? BorderStyle.solid : BorderStyle.solid,
+                  ),
+                ),
+              ),
             ),
             const SizedBox(width: 6),
-            Text(label,
-                style: theme.textTheme.labelMedium
-                    ?.copyWith(color: scheme.onSurface.withValues(alpha: 0.8))),
+            Text(
+              label,
+              style: theme.textTheme.labelMedium?.copyWith(
+                color: scheme.onSurface.withValues(alpha: 0.8),
+              ),
+            ),
           ],
         );
     final still = MediaQuery.maybeDisableAnimationsOf(context) ?? false;
@@ -161,11 +169,12 @@ class AbilityRadar extends StatelessWidget {
           layers: [
             if (was != null)
               RadarLayer(
-                  values: was,
-                  color: _radarCompare,
-                  fill: 0,
-                  dashed: true,
-                  width: 2),
+                values: was,
+                color: _radarCompare,
+                fill: 0,
+                dashed: true,
+                width: 2,
+              ),
             // The pick's shape under the current one, wider: the current
             // outline stays whole over it, and the pick shows where it goes
             // past it.
@@ -173,7 +182,7 @@ class AbilityRadar extends StatelessWidget {
               RadarLayer(
                 values: [
                   for (var i = 0; i < now.length; i++)
-                    now[i] + (after[i] - now[i]) * grown
+                    now[i] + (after[i] - now[i]) * grown,
                 ],
                 color: radarMore,
                 fill: 0.2,
@@ -254,11 +263,14 @@ class _ElementsCardState extends State<ElementsCard> {
       child: Padding(
         padding: const EdgeInsets.all(16),
         child: p.isEmpty
-            ? Text(t('elements_empty'),
+            ? Text(
+                t('elements_empty'),
                 key: const Key('elements_empty'),
                 style: theme.textTheme.bodyLarge?.copyWith(
-                    fontSize: 16,
-                    color: scheme.onSurface.withValues(alpha: 0.8)))
+                  fontSize: 16,
+                  color: scheme.onSurface.withValues(alpha: 0.8),
+                ),
+              )
             : Column(
                 children: [
                   SegmentedButton<int>(
@@ -266,13 +278,21 @@ class _ElementsCardState extends State<ElementsCard> {
                     showSelectedIcon: false,
                     segments: [
                       ButtonSegment(
-                          value: 0, label: Text(t('elements_view_radar'))),
+                        value: 0,
+                        label: Text(t('elements_view_radar')),
+                      ),
                       ButtonSegment(
-                          value: 1, label: Text(t('elements_view_split'))),
+                        value: 1,
+                        label: Text(t('elements_view_split')),
+                      ),
                       ButtonSegment(
-                          value: 2, label: Text(t('elements_view_rose'))),
+                        value: 2,
+                        label: Text(t('elements_view_rose')),
+                      ),
                       ButtonSegment(
-                          value: 3, label: Text(t('elements_view_rows'))),
+                        value: 3,
+                        label: Text(t('elements_view_rows')),
+                      ),
                     ],
                     selected: {_view},
                     onSelectionChanged: (s) => setState(() => _view = s.first),
@@ -292,17 +312,25 @@ class _ElementsCardState extends State<ElementsCard> {
             (_damage, 'elements_damage'),
             (_resist, 'elements_resist'),
           ])
-            Row(mainAxisSize: MainAxisSize.min, children: [
-              Container(
+            Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Container(
                   width: 18,
                   height: 0,
                   decoration: BoxDecoration(
-                      border: Border(top: BorderSide(color: c, width: 3)))),
-              const SizedBox(width: 6),
-              Text(widget.t(key),
+                    border: Border(top: BorderSide(color: c, width: 3)),
+                  ),
+                ),
+                const SizedBox(width: 6),
+                Text(
+                  widget.t(key),
                   style: theme.textTheme.labelMedium?.copyWith(
-                      color: scheme.onSurface.withValues(alpha: 0.8))),
-            ]),
+                    color: scheme.onSurface.withValues(alpha: 0.8),
+                  ),
+                ),
+              ],
+            ),
         ],
       );
 
@@ -333,17 +361,19 @@ class _ElementsCardState extends State<ElementsCard> {
               axes: [
                 for (final e in elementChartOrder)
                   RadarAxis(
-                      label: _name(e),
-                      color: colorOf(e),
-                      value: '${p.damage[e]}/${p.resist[e]}'),
+                    label: _name(e),
+                    color: colorOf(e),
+                    value: '${p.damage[e]}/${p.resist[e]}',
+                  ),
               ],
               layers: [
                 RadarLayer(
-                    values: res,
-                    color: _resist,
-                    fill: 0.18,
-                    dashed: true,
-                    width: 2),
+                  values: res,
+                  color: _resist,
+                  fill: 0.18,
+                  dashed: true,
+                  width: 2,
+                ),
                 RadarLayer(values: dmg, color: _damage, fill: 0.28),
               ],
             ),
@@ -358,8 +388,10 @@ class _ElementsCardState extends State<ElementsCard> {
               (dmg, _damage, 'elements_damage'),
               (res, _resist, 'elements_resist'),
             ]) ...[
-              Text(widget.t(key).toUpperCase(),
-                  style: theme.textTheme.labelMedium?.copyWith(color: color)),
+              Text(
+                widget.t(key).toUpperCase(),
+                style: theme.textTheme.labelMedium?.copyWith(color: color),
+              ),
               RadarChart(
                 size: 300,
                 max: max,
@@ -367,12 +399,13 @@ class _ElementsCardState extends State<ElementsCard> {
                 axes: [
                   for (final (i, e) in elementChartOrder.indexed)
                     RadarAxis(
-                        label: _name(e),
-                        color: colorOf(e),
-                        value: '${values[i].round()}'),
+                      label: _name(e),
+                      color: colorOf(e),
+                      value: '${values[i].round()}',
+                    ),
                 ],
                 layers: [
-                  RadarLayer(values: values, color: color, fill: 0.3, width: 2)
+                  RadarLayer(values: values, color: color, fill: 0.3, width: 2),
                 ],
               ),
             ],
@@ -392,9 +425,10 @@ class _ElementsCardState extends State<ElementsCard> {
               axes: [
                 for (final e in elementChartOrder)
                   RadarAxis(
-                      label: _name(e),
-                      color: colorOf(e),
-                      value: '${p.damage[e]}/${p.resist[e]}'),
+                    label: _name(e),
+                    color: colorOf(e),
+                    value: '${p.damage[e]}/${p.resist[e]}',
+                  ),
               ],
             ),
             _legend(theme, scheme),
@@ -410,16 +444,22 @@ class _ElementsCardState extends State<ElementsCard> {
                 child: Row(
                   children: [
                     Container(
-                        width: 10,
-                        height: 10,
-                        decoration: BoxDecoration(
-                            shape: BoxShape.circle, color: colorOf(e))),
+                      width: 10,
+                      height: 10,
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        color: colorOf(e),
+                      ),
+                    ),
                     const SizedBox(width: 8),
                     SizedBox(
                       width: 92,
-                      child: Text(widget.t('element_name_${e.toLowerCase()}'),
-                          style: theme.textTheme.bodyLarge
-                              ?.copyWith(fontSize: 16)),
+                      child: Text(
+                        widget.t('element_name_${e.toLowerCase()}'),
+                        style: theme.textTheme.bodyLarge?.copyWith(
+                          fontSize: 16,
+                        ),
+                      ),
                     ),
                     Expanded(
                       child: Column(
@@ -432,10 +472,13 @@ class _ElementsCardState extends State<ElementsCard> {
                     ),
                     SizedBox(
                       width: 72,
-                      child: Text('${p.damage[e]} / ${p.resist[e]}',
-                          textAlign: TextAlign.end,
-                          style: theme.textTheme.titleSmall
-                              ?.copyWith(color: scheme.onSurface)),
+                      child: Text(
+                        '${p.damage[e]} / ${p.resist[e]}',
+                        textAlign: TextAlign.end,
+                        style: theme.textTheme.titleSmall?.copyWith(
+                          color: scheme.onSurface,
+                        ),
+                      ),
                     ),
                   ],
                 ),

@@ -58,8 +58,11 @@ mixin _AlliesCampActions on _SessionNotifierBase {
   /// Whether the camp may bench [companionId] ([companions]: the
   /// companions.json table): not Vica when she is the last one seated.
   bool canBench(String companionId, Map<String, dynamic> companions) =>
-      canBenchCompanion(companionId,
-          active: state.activeAllyIds, companions: companions);
+      canBenchCompanion(
+        companionId,
+        active: state.activeAllyIds,
+        companions: companions,
+      );
 
   /// Recruits the story's companions (story_companions.dart) the story has
   /// reached: one of their join scenes is in [visited]. A save already past
@@ -73,10 +76,12 @@ mixin _AlliesCampActions on _SessionNotifierBase {
     Map<String, dynamic> dice = const {},
     Map<String, dynamic> houses = const {},
   }) async {
-    final due = storyRecruitsDue(companions,
-        visited: visited,
-        recruited: [for (final a in state.recruitedAllies) a.companionId],
-        gone: [...state.lostAllyIds, ...state.departedAllyIds]);
+    final due = storyRecruitsDue(
+      companions,
+      visited: visited,
+      recruited: [for (final a in state.recruitedAllies) a.companionId],
+      gone: [...state.lostAllyIds, ...state.departedAllyIds],
+    );
     for (final id in due) {
       final companion = companions[id] as Map<String, dynamic>?;
       await recruitAlly(
@@ -134,8 +139,9 @@ mixin _AlliesCampActions on _SessionNotifierBase {
         !state.builtHouseIds.contains(requiredHouseId)) {
       return;
     }
-    state =
-        state.copyWith(activeAllyIds: [...state.activeAllyIds, companionId]);
+    state = state.copyWith(
+      activeAllyIds: [...state.activeAllyIds, companionId],
+    );
     await _persist();
   }
 
@@ -154,15 +160,18 @@ mixin _AlliesCampActions on _SessionNotifierBase {
   /// A house still locked (see camp_works.dart) is refused too: one whose
   /// tier comes in a chapter after [chapter] ([fromChapter], the tier's
   /// first), or whose companion ([requiredAllyId]) is not recruited.
-  Future<void> buildHouse(String houseId, int cost,
-      {String? unlocksShopId,
-      List<String> requiredFlags = const [],
-      List<String> unlockedByFlags = const [],
-      Map<String, int> materialCost = const {},
-      int fromChapter = 1,
-      int? chapter,
-      String? requiredAllyId,
-      String? rollPower}) async {
+  Future<void> buildHouse(
+    String houseId,
+    int cost, {
+    String? unlocksShopId,
+    List<String> requiredFlags = const [],
+    List<String> unlockedByFlags = const [],
+    Map<String, int> materialCost = const {},
+    int fromChapter = 1,
+    int? chapter,
+    String? requiredAllyId,
+    String? rollPower,
+  }) async {
     if (state.gold < cost || state.builtHouseIds.contains(houseId)) return;
     if (chapter != null && chapter < fromChapter) return;
     if ((requiredAllyId ?? '').isNotEmpty &&
@@ -189,11 +198,13 @@ mixin _AlliesCampActions on _SessionNotifierBase {
     // A roll house (camp_rolls.dart) comes with its charges.
     switch (rollPowerNamed(rollPower) ?? rollPowerHouses[houseId]) {
       case RollPower.reroll:
-        state =
-            state.copyWith(rerollCharges: chargesWhenBuilt(RollPower.reroll));
+        state = state.copyWith(
+          rerollCharges: chargesWhenBuilt(RollPower.reroll),
+        );
       case RollPower.banish:
-        state =
-            state.copyWith(banishCharges: chargesWhenBuilt(RollPower.banish));
+        state = state.copyWith(
+          banishCharges: chargesWhenBuilt(RollPower.banish),
+        );
       case RollPower.raise:
         state = state.copyWith(raiseCharges: chargesWhenBuilt(RollPower.raise));
       case null:
@@ -212,8 +223,11 @@ mixin _AlliesCampActions on _SessionNotifierBase {
   /// (see townAdditionLimit).
   Future<void> buildTownAddition(String type, int cost) async {
     if (state.gold < cost) return;
-    final limit = townAdditionLimitOf(type,
-        pieces: state.townPieces, houseCount: state.builtHouseIds.length);
+    final limit = townAdditionLimitOf(
+      type,
+      pieces: state.townPieces,
+      houseCount: state.builtHouseIds.length,
+    );
     if (limit.atLimit) return;
     state = state.copyWith(
       gold: state.gold - cost,
@@ -286,8 +300,11 @@ mixin _AlliesCampActions on _SessionNotifierBase {
   /// ship_combat.dart's canInstallPart); [replacing] come off to make it,
   /// and wait at the Harbor (see [storedShipPartIds]). A stored part goes
   /// back on for nothing, whatever [cost] says.
-  Future<bool> installShipPart(String partId, int cost,
-      {List<String> replacing = const []}) async {
+  Future<bool> installShipPart(
+    String partId,
+    int cost, {
+    List<String> replacing = const [],
+  }) async {
     final stored = state.storedShipPartIds.contains(partId);
     final price = stored ? 0 : cost;
     if (state.shipPartIds.contains(partId) || state.gold < price) return false;
@@ -315,11 +332,15 @@ mixin _AlliesCampActions on _SessionNotifierBase {
   /// Writes what the crew knows of the sea beast [beastId] (see
   /// sea_beasts.dart), from [update] of what they knew.
   Future<void> updateSeaBeast(
-      String beastId, BeastState Function(BeastState beast) update) async {
-    state = state.copyWith(seaBeasts: {
-      ...state.seaBeasts,
-      beastId: update(state.seaBeasts[beastId] ?? const BeastState()),
-    });
+    String beastId,
+    BeastState Function(BeastState beast) update,
+  ) async {
+    state = state.copyWith(
+      seaBeasts: {
+        ...state.seaBeasts,
+        beastId: update(state.seaBeasts[beastId] ?? const BeastState()),
+      },
+    );
     await _persist();
   }
 
@@ -330,8 +351,9 @@ mixin _AlliesCampActions on _SessionNotifierBase {
         state.storedShipPartIds.contains(partId)) {
       return;
     }
-    state =
-        state.copyWith(storedShipPartIds: [...state.storedShipPartIds, partId]);
+    state = state.copyWith(
+      storedShipPartIds: [...state.storedShipPartIds, partId],
+    );
     await _persist();
   }
 
@@ -341,8 +363,12 @@ mixin _AlliesCampActions on _SessionNotifierBase {
   /// parts the new hull has no slot for: they wait at the Harbor (see
   /// [storedShipPartIds]). [hull] is the hull she is rebuilt with, -1 for
   /// full.
-  Future<bool> rebuildHull(String hullId, int cost,
-      {List<String> toStore = const [], int hull = -1}) async {
+  Future<bool> rebuildHull(
+    String hullId,
+    int cost, {
+    List<String> toStore = const [],
+    int hull = -1,
+  }) async {
     if (state.shipHullId == hullId) return false;
     final owned = state.ownedHullIds.contains(hullId);
     final price = owned ? 0 : cost;
@@ -412,8 +438,9 @@ mixin _AlliesCampActions on _SessionNotifierBase {
     String companionId,
     AllyState Function(AllyState ally) update,
   ) async {
-    final index =
-        state.recruitedAllies.indexWhere((a) => a.companionId == companionId);
+    final index = state.recruitedAllies.indexWhere(
+      (a) => a.companionId == companionId,
+    );
     if (index == -1) return;
     final newAllies = [...state.recruitedAllies];
     newAllies[index] = update(newAllies[index]);
@@ -474,7 +501,10 @@ mixin _AlliesCampActions on _SessionNotifierBase {
   /// flat by faceIndex rather than dice-keyed, since an ally only ever has
   /// their one fixed signature die (see [AllyState.diceSkillAssignments]).
   Future<void> assignSkillToAllyDiceFace(
-      String companionId, int faceIndex, String skillId) async {
+    String companionId,
+    int faceIndex,
+    String skillId,
+  ) async {
     await _updateAlly(companionId, (ally) {
       final updated = Map<String, String>.from(ally.diceSkillAssignments);
       updated[faceIndex.toString()] = skillId;
@@ -498,8 +528,10 @@ mixin _AlliesCampActions on _SessionNotifierBase {
   /// mid-fight damage is never persisted on a loss (mirrors the player not
   /// being HP-punished on a loss either, via the existing full-heal-on-loss
   /// behavior in [applyCombatResult]).
-  Future<void> applyAllyCombatResult(String companionId,
-      {required int hpAfter}) async {
+  Future<void> applyAllyCombatResult(
+    String companionId, {
+    required int hpAfter,
+  }) async {
     await _updateAlly(
       companionId,
       (ally) => ally.copyWith(currentHealth: hpAfter < 0 ? 0 : hpAfter),

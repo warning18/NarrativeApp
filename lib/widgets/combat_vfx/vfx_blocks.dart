@@ -22,17 +22,32 @@ extension _FxBlocks on _Fx {
     );
   }
 
-  void _ring(double t0, double span, double r0, double r1,
-      {double width = 3, Color? color}) {
+  void _ring(
+    double t0,
+    double span,
+    double r0,
+    double r1, {
+    double width = 3,
+    Color? color,
+  }) {
     final lt = _window(t, t0, span);
     if (lt == null) return;
     final r = (r0 + (r1 - r0) * _easeOut(lt)) * scale;
     canvas.drawCircle(
-        c, r, _stroke(color ?? primary, 1 - lt, width * (1 - lt) + 0.5));
+      c,
+      r,
+      _stroke(color ?? primary, 1 - lt, width * (1 - lt) + 0.5),
+    );
   }
 
-  void _sparks(double t0, double span,
-      {int count = 12, double reach = 0.8, Offset? at, Color? color}) {
+  void _sparks(
+    double t0,
+    double span, {
+    int count = 12,
+    double reach = 0.8,
+    Offset? at,
+    Color? color,
+  }) {
     final lt = _window(t, t0, span);
     if (lt == null) return;
     final origin = at ?? c;
@@ -47,8 +62,11 @@ extension _FxBlocks on _Fx {
       canvas.drawLine(
         tail,
         head,
-        _stroke(i.isEven ? (color ?? primary) : secondary, 1 - local,
-            s * 0.035 * q.size),
+        _stroke(
+          i.isEven ? (color ?? primary) : secondary,
+          1 - local,
+          s * 0.035 * q.size,
+        ),
       );
     }
   }
@@ -57,8 +75,13 @@ extension _FxBlocks on _Fx {
   /// [dir] 1 runs top-left to bottom-right, -1 the mirror. [shift] (in
   /// fractions of the target's size) and [fade] draw an afterimage: the
   /// same stroke, set off and fainter.
-  void _slash(double t0, int dir,
-      {double width = 0.07, Offset shift = Offset.zero, double fade = 1}) {
+  void _slash(
+    double t0,
+    int dir, {
+    double width = 0.07,
+    Offset shift = Offset.zero,
+    double fade = 1,
+  }) {
     final lt = _window(t, t0, 0.75);
     if (lt == null) return;
     final reveal = (lt / 0.35).clamp(0.0, 1.0);
@@ -73,7 +96,9 @@ extension _FxBlocks on _Fx {
     final partial = _partial(path, reveal);
     canvas.drawPath(partial, _stroke(primary, opacity, s * width * scale));
     canvas.drawPath(
-        partial, _stroke(Colors.white, opacity, s * width * 0.35 * scale));
+      partial,
+      _stroke(Colors.white, opacity, s * width * 0.35 * scale),
+    );
   }
 
   Path _partial(Path path, double fraction) {
@@ -104,10 +129,20 @@ extension _FxBlocks on _Fx {
     final r = s * 0.55 * scale;
     for (var i = 0; i < 3; i++) {
       final start = lt * pi * 3 + i * (2 * pi / 3);
-      canvas.drawArc(Rect.fromCircle(center: c, radius: r), start, pi * 0.45,
-          false, _stroke(primary, opacity, s * 0.06));
-      canvas.drawArc(Rect.fromCircle(center: c, radius: r * 0.8), start + 0.4,
-          pi * 0.3, false, _stroke(secondary, opacity, s * 0.03));
+      canvas.drawArc(
+        Rect.fromCircle(center: c, radius: r),
+        start,
+        pi * 0.45,
+        false,
+        _stroke(primary, opacity, s * 0.06),
+      );
+      canvas.drawArc(
+        Rect.fromCircle(center: c, radius: r * 0.8),
+        start + 0.4,
+        pi * 0.3,
+        false,
+        _stroke(secondary, opacity, s * 0.03),
+      );
     }
     _sparks(0.3, 0.6, count: 10, reach: 0.9);
   }
@@ -127,7 +162,10 @@ extension _FxBlocks on _Fx {
       final head = Offset.lerp(a, b, reveal)!;
       canvas.drawLine(a, head, _stroke(primary, opacity, s * 0.06 * scale));
       canvas.drawLine(
-          a, head, _stroke(Colors.white, opacity, s * 0.02 * scale));
+        a,
+        head,
+        _stroke(Colors.white, opacity, s * 0.02 * scale),
+      );
     }
   }
 
@@ -161,8 +199,11 @@ extension _FxBlocks on _Fx {
       ..lineTo(pos.dx - normal.dx * s * 0.05, pos.dy - normal.dy * s * 0.05)
       ..close();
     canvas.drawPath(head, _fill(primary, 1));
-    canvas.drawLine(tail, tail - dir * (s * 0.08) + normal * (s * 0.05),
-        _stroke(primary, 1, s * 0.025));
+    canvas.drawLine(
+      tail,
+      tail - dir * (s * 0.08) + normal * (s * 0.05),
+      _stroke(primary, 1, s * 0.025),
+    );
   }
 
   void _volley() {
@@ -177,17 +218,25 @@ extension _FxBlocks on _Fx {
     for (var i = 0; i < arrows; i++) {
       final lane = i - (arrows - 1) / 2;
       final from = Offset(
-          c.dx - s * 1.4 + i * s * 0.22 * 5 / arrows, rect.top - s * 1.3);
+        c.dx - s * 1.4 + i * s * 0.22 * 5 / arrows,
+        rect.top - s * 1.3,
+      );
       final to = Offset(
-          c.dx + lane * s * 0.2 * 5 / arrows, c.dy + (i.isEven ? 0 : s * 0.12));
+        c.dx + lane * s * 0.2 * 5 / arrows,
+        c.dy + (i.isEven ? 0 : s * 0.12),
+      );
       final t0 = i * step;
       _arrow(from, to, t0, 0.4);
       _sparks(t0 + 0.4, 0.35, count: 5, reach: 0.35, at: to);
     }
   }
 
-  void _orb(double t0, double span,
-      {double radius = 0.12, bool trail = false}) {
+  void _orb(
+    double t0,
+    double span, {
+    double radius = 0.12,
+    bool trail = false,
+  }) {
     final lt = _window(t, t0, span);
     if (lt == null) return;
     final from = _from;
@@ -196,8 +245,11 @@ extension _FxBlocks on _Fx {
       for (var i = 0; i < 8; i++) {
         final back = (lt - i * 0.05).clamp(0.0, 1.0);
         final at = Offset.lerp(from, c, _easeInOut(back))!;
-        canvas.drawCircle(at, s * radius * (1 - i / 9) * scale,
-            _fill(i.isEven ? primary : secondary, 0.35 * (1 - i / 8)));
+        canvas.drawCircle(
+          at,
+          s * radius * (1 - i / 9) * scale,
+          _fill(i.isEven ? primary : secondary, 0.35 * (1 - i / 8)),
+        );
       }
     }
     _glowAt(pos, s * radius * 2.4 * scale, primary, 0.6);
@@ -220,12 +272,22 @@ extension _FxBlocks on _Fx {
   void _explosion(double t0, double span, {double reach = 1.0}) {
     final lt = _window(t, t0, span);
     if (lt == null) return;
-    _glowAt(c, s * reach * scale * (0.5 + 0.6 * _easeOut(lt)), secondary,
-        0.7 * (1 - lt));
+    _glowAt(
+      c,
+      s * reach * scale * (0.5 + 0.6 * _easeOut(lt)),
+      secondary,
+      0.7 * (1 - lt),
+    );
     _sparks(t0, span, count: 18, reach: reach);
     _ring(t0, span, s * 0.1, s * reach, width: 5);
-    _rise(t0 + span * 0.2, span * 0.8,
-        count: 12, height: 0.8, width: 0.5, sizeK: 0.08);
+    _rise(
+      t0 + span * 0.2,
+      span * 0.8,
+      count: 12,
+      height: 0.8,
+      width: 0.5,
+      sizeK: 0.08,
+    );
   }
 
   void _meteor() {
@@ -236,11 +298,17 @@ extension _FxBlocks on _Fx {
       for (var i = 0; i < 10; i++) {
         final back = (lt - i * 0.035).clamp(0.0, 1.0);
         final at = Offset.lerp(from, c, back * back)!;
-        canvas.drawCircle(at, s * 0.14 * (1 - i / 11) * scale,
-            _fill(i < 3 ? secondary : primary, 0.6 * (1 - i / 10)));
+        canvas.drawCircle(
+          at,
+          s * 0.14 * (1 - i / 11) * scale,
+          _fill(i < 3 ? secondary : primary, 0.6 * (1 - i / 10)),
+        );
       }
       canvas.drawCircle(
-          pos, s * 0.15 * scale, _fill(const Color(0xFF4E342E), 1));
+        pos,
+        s * 0.15 * scale,
+        _fill(const Color(0xFF4E342E), 1),
+      );
       canvas.drawCircle(pos, s * 0.15 * scale, _stroke(primary, 1, s * 0.03));
     }
     _explosion(0.4, 0.6, reach: 1.4);
@@ -299,7 +367,9 @@ extension _FxBlocks on _Fx {
             fork.lineTo(at.dx, at.dy);
           }
           canvas.drawPath(
-              fork, _stroke(secondary, 0.8 * (1 - lt), s * 0.03 * scale));
+            fork,
+            _stroke(secondary, 0.8 * (1 - lt), s * 0.03 * scale),
+          );
         }
       }
     }
@@ -319,24 +389,28 @@ extension _FxBlocks on _Fx {
     canvas.drawRect(
       beam,
       Paint()
-        ..shader = ui.Gradient.linear(beam.topCenter, beam.bottomCenter, [
-          secondary.withValues(alpha: 0),
-          secondary.withValues(alpha: 0.6 * opacity),
-          primary.withValues(alpha: 0.9 * opacity),
-        ], const [
-          0,
-          0.6,
-          1,
-        ]),
+        ..shader = ui.Gradient.linear(
+          beam.topCenter,
+          beam.bottomCenter,
+          [
+            secondary.withValues(alpha: 0),
+            secondary.withValues(alpha: 0.6 * opacity),
+            primary.withValues(alpha: 0.9 * opacity),
+          ],
+          const [0, 0.6, 1],
+        ),
     );
     _glowAt(c, s * 0.8 * scale, primary, 0.5 * opacity);
   }
 
-  void _rise(double t0, double span,
-      {int count = 16,
-      double height = 1.0,
-      double width = 0.4,
-      double sizeK = 0.1}) {
+  void _rise(
+    double t0,
+    double span, {
+    int count = 16,
+    double height = 1.0,
+    double width = 0.4,
+    double sizeK = 0.1,
+  }) {
     final lt = _window(t, t0, span);
     if (lt == null) return;
     for (var i = 0; i < _n(count); i++) {
@@ -346,8 +420,11 @@ extension _FxBlocks on _Fx {
       final x = c.dx + q.dx * s * width + sin(local * 6 + q.angle) * s * 0.05;
       final y = c.dy + s * 0.35 - local * s * height * q.speed * scale;
       final color = Color.lerp(primary, secondary, local)!;
-      canvas.drawCircle(Offset(x, y), s * sizeK * q.size * (1 - local) * scale,
-          _fill(color, 0.9 * (1 - local)));
+      canvas.drawCircle(
+        Offset(x, y),
+        s * sizeK * q.size * (1 - local) * scale,
+        _fill(color, 0.9 * (1 - local)),
+      );
     }
   }
 
@@ -377,12 +454,17 @@ extension _FxBlocks on _Fx {
     if (lt == null) return;
     for (var i = 0; i < _n(14); i++) {
       final q = p[i];
-      final local =
-          ((lt - q.delay * 0.5) / (1 - q.delay * 0.5)).clamp(0.0, 1.0);
+      final local = ((lt - q.delay * 0.5) / (1 - q.delay * 0.5)).clamp(
+        0.0,
+        1.0,
+      );
       final x = c.dx + q.dx * s * 0.8 * local;
       final y = c.dy - s * 1.3 * q.speed * local + s * 1.8 * local * local;
-      canvas.drawCircle(Offset(x, y), s * 0.045 * q.size * scale,
-          _fill(i.isEven ? primary : secondary, 1 - local));
+      canvas.drawCircle(
+        Offset(x, y),
+        s * 0.045 * q.size * scale,
+        _fill(i.isEven ? primary : secondary, 1 - local),
+      );
     }
   }
 
@@ -391,9 +473,13 @@ extension _FxBlocks on _Fx {
     if (lt == null) return;
     final w = s * 1.4 * _easeOut(lt) * scale;
     canvas.drawOval(
-        Rect.fromCenter(
-            center: c + Offset(0, s * 0.25), width: w, height: w * 0.3),
-        _stroke(primary, 1 - lt, 3));
+      Rect.fromCenter(
+        center: c + Offset(0, s * 0.25),
+        width: w,
+        height: w * 0.3,
+      ),
+      _stroke(primary, 1 - lt, 3),
+    );
   }
 
   void _cloud() {
@@ -402,8 +488,11 @@ extension _FxBlocks on _Fx {
     for (var i = 0; i < 4; i++) {
       final q = p[i];
       final at = c + Offset(q.dx * s * 0.35, q.spin * s * 0.2);
-      canvas.drawCircle(at, s * (0.25 + 0.3 * _easeOut(lt)) * scale,
-          _fill(primary, 0.22 * _fade(lt, 0.15, 0.5)));
+      canvas.drawCircle(
+        at,
+        s * (0.25 + 0.3 * _easeOut(lt)) * scale,
+        _fill(primary, 0.22 * _fade(lt, 0.15, 0.5)),
+      );
     }
   }
 
@@ -419,20 +508,30 @@ extension _FxBlocks on _Fx {
       final r = s * 0.06 * q.size * (0.6 + local) * scale;
       canvas.drawCircle(Offset(x, y), r, _stroke(secondary, 1 - local, 1.5));
       canvas.drawCircle(
-          Offset(x, y), r * 0.7, _fill(primary, 0.5 * (1 - local)));
+        Offset(x, y),
+        r * 0.7,
+        _fill(primary, 0.5 * (1 - local)),
+      );
     }
   }
 
-  void _smoke(
-      {int count = 7, double reach = 0.55, double t0 = 0, double span = 1}) {
+  void _smoke({
+    int count = 7,
+    double reach = 0.55,
+    double t0 = 0,
+    double span = 1,
+  }) {
     final lt = _window(t, t0, span);
     if (lt == null) return;
     for (var i = 0; i < _n(count); i++) {
       final q = p[i];
       final at =
           c + Offset(q.dx * s * reach, q.spin * s * reach * 0.6) * _easeOut(lt);
-      canvas.drawCircle(at, s * (0.15 + 0.3 * _easeOut(lt)) * q.size * scale,
-          _fill(i.isEven ? primary : secondary, 0.45 * (1 - lt)));
+      canvas.drawCircle(
+        at,
+        s * (0.15 + 0.3 * _easeOut(lt)) * q.size * scale,
+        _fill(i.isEven ? primary : secondary, 0.45 * (1 - lt)),
+      );
     }
   }
 
@@ -443,13 +542,21 @@ extension _FxBlocks on _Fx {
       final y = c.dy + (i - 1) * s * 0.28;
       final path = Path()
         ..moveTo(rect.left - s * 0.3, y + s * 0.15)
-        ..cubicTo(c.dx - s * 0.3, y - s * 0.25, c.dx + s * 0.3, y + s * 0.25,
-            rect.right + s * 0.3, y - s * 0.1);
+        ..cubicTo(
+          c.dx - s * 0.3,
+          y - s * 0.25,
+          c.dx + s * 0.3,
+          y + s * 0.25,
+          rect.right + s * 0.3,
+          y - s * 0.1,
+        );
       final metric = path.computeMetrics().first;
       final head = metric.length * _easeOut(lt);
       final tail = max(0.0, head - metric.length * 0.45);
-      canvas.drawPath(metric.extractPath(tail, head),
-          _stroke(i == 1 ? secondary : primary, 1 - lt * 0.6, s * 0.035));
+      canvas.drawPath(
+        metric.extractPath(tail, head),
+        _stroke(i == 1 ? secondary : primary, 1 - lt * 0.6, s * 0.035),
+      );
     }
     _sparks(0.2, 0.7, count: 6, reach: 0.9, color: secondary);
   }
@@ -485,8 +592,9 @@ extension _FxBlocks on _Fx {
       canvas.rotate(q.spin * lt * 6);
       final k = s * 0.07 * q.size * scale;
       canvas.drawRect(
-          Rect.fromCenter(center: Offset.zero, width: k, height: k * 0.8),
-          _fill(i.isEven ? primary : secondary, 1 - lt));
+        Rect.fromCenter(center: Offset.zero, width: k, height: k * 0.8),
+        _fill(i.isEven ? primary : secondary, 1 - lt),
+      );
       canvas.restore();
     }
   }
@@ -518,8 +626,11 @@ extension _FxBlocks on _Fx {
       final radius = s * 0.95 * (1 - _easeInOut(local)) * scale;
       final angle = q.angle + local * pi * 1.6;
       final at = c + Offset(cos(angle), sin(angle)) * radius;
-      canvas.drawCircle(at, s * 0.04 * q.size * scale,
-          _fill(i.isEven ? primary : secondary, _fade(local, 0.15, 0.8)));
+      canvas.drawCircle(
+        at,
+        s * 0.04 * q.size * scale,
+        _fill(i.isEven ? primary : secondary, _fade(local, 0.15, 0.8)),
+      );
     }
   }
 
@@ -530,15 +641,20 @@ extension _FxBlocks on _Fx {
       final ctrl = Offset((c.dx + to.dx) / 2, min(c.dy, to.dy) - s * 0.8);
       for (var i = 0; i < _n(14); i++) {
         final q = p[i];
-        final local =
-            ((lt - q.delay * 1.5) / (1 - q.delay * 1.5)).clamp(0.0, 1.0);
+        final local = ((lt - q.delay * 1.5) / (1 - q.delay * 1.5)).clamp(
+          0.0,
+          1.0,
+        );
         if (local <= 0 || local >= 1) continue;
         final u = _easeInOut(local);
         final a = Offset.lerp(c, ctrl, u)!;
         final b = Offset.lerp(ctrl, to, u)!;
         final at = Offset.lerp(a, b, u)! + Offset(q.dx, q.spin) * (s * 0.08);
-        canvas.drawCircle(at, s * 0.045 * q.size * scale,
-            _fill(i.isEven ? primary : secondary, _fade(local, 0.1, 0.75)));
+        canvas.drawCircle(
+          at,
+          s * 0.045 * q.size * scale,
+          _fill(i.isEven ? primary : secondary, _fade(local, 0.1, 0.75)),
+        );
       }
     }
     _glow(to, s * 0.6, 0.6, 0.4, secondary);
@@ -550,13 +666,21 @@ extension _FxBlocks on _Fx {
       if (lt == null) continue;
       final at = c + Offset((i - 1) * s * 0.4, 0);
       canvas.drawOval(
-          Rect.fromCenter(
-              center: at, width: s * 0.35 * scale, height: s * 0.8 * scale),
-          _fill(const Color(0xFF1A1A2E), 0.55 * (1 - lt)));
+        Rect.fromCenter(
+          center: at,
+          width: s * 0.35 * scale,
+          height: s * 0.8 * scale,
+        ),
+        _fill(const Color(0xFF1A1A2E), 0.55 * (1 - lt)),
+      );
       canvas.drawOval(
-          Rect.fromCenter(
-              center: at, width: s * 0.35 * scale, height: s * 0.8 * scale),
-          _stroke(primary, 0.8 * (1 - lt), 1.5));
+        Rect.fromCenter(
+          center: at,
+          width: s * 0.35 * scale,
+          height: s * 0.8 * scale,
+        ),
+        _stroke(primary, 0.8 * (1 - lt), 1.5),
+      );
     }
     _slash(0.3, 1, width: 0.05);
   }
@@ -592,7 +716,9 @@ extension _FxBlocks on _Fx {
       final local = ((lt - q.delay) / (1 - q.delay)).clamp(0.0, 1.0);
       if (local <= 0 || local >= 1) continue;
       final at = Offset(
-          c.dx + q.dx * s * 0.5, c.dy + s * 0.25 - local * s * 0.8 * q.speed);
+        c.dx + q.dx * s * 0.5,
+        c.dy + s * 0.25 - local * s * 0.8 * q.speed,
+      );
       final k = s * 0.1 * q.size * scale;
       final paint = _stroke(primary, 1 - local, k * 0.45);
       canvas.drawLine(at - Offset(k, 0), at + Offset(k, 0), paint);
@@ -605,8 +731,10 @@ extension _FxBlocks on _Fx {
     if (lt == null) return;
     final opacity = _fade(lt, 0.12, 0.55);
     final grow = 2 + 6 * _easeOut(lt);
-    final shape =
-        RRect.fromRectAndRadius(rect.inflate(grow), const Radius.circular(12));
+    final shape = RRect.fromRectAndRadius(
+      rect.inflate(grow),
+      const Radius.circular(12),
+    );
     canvas.drawRRect(shape, _fill(primary, 0.14 * opacity));
     canvas.drawRRect(shape, _stroke(primary, opacity, stone ? 5 : 4));
     canvas.drawRRect(shape.deflate(3), _stroke(secondary, opacity, 1.5));
@@ -615,22 +743,26 @@ extension _FxBlocks on _Fx {
     final metric = path.computeMetrics().first;
     final at = metric.length * ((lt * 1.2) % 1);
     canvas.drawPath(
-        metric.extractPath(at, min(metric.length, at + metric.length * 0.12)),
-        _stroke(Colors.white, opacity, 3));
+      metric.extractPath(at, min(metric.length, at + metric.length * 0.12)),
+      _stroke(Colors.white, opacity, 3),
+    );
     if (stone) {
       for (var i = 0; i < 8; i++) {
         final q = p[i];
         final angle = q.angle + lt * pi * 1.2;
         final at2 = c +
-            Offset(cos(angle) * (rect.width / 2 + 10),
-                sin(angle) * (rect.height / 2 + 8));
+            Offset(
+              cos(angle) * (rect.width / 2 + 10),
+              sin(angle) * (rect.height / 2 + 8),
+            );
         canvas.save();
         canvas.translate(at2.dx, at2.dy);
         canvas.rotate(angle * 2);
         final k = s * 0.07 * q.size;
         canvas.drawRect(
-            Rect.fromCenter(center: Offset.zero, width: k, height: k),
-            _fill(secondary, opacity));
+          Rect.fromCenter(center: Offset.zero, width: k, height: k),
+          _fill(secondary, opacity),
+        );
         canvas.restore();
       }
     }
@@ -647,8 +779,11 @@ extension _FxBlocks on _Fx {
     for (var i = 0; i < rings; i++) {
       final lt = _window(t, i * 0.45 / rings, 0.6);
       if (lt == null) continue;
-      canvas.drawCircle(origin, s * (0.2 + 1.2 * _easeOut(lt)) * scale,
-          _stroke(i == 1 ? secondary : primary, 1 - lt, 4 * (1 - lt) + 1));
+      canvas.drawCircle(
+        origin,
+        s * (0.2 + 1.2 * _easeOut(lt)) * scale,
+        _stroke(i == 1 ? secondary : primary, 1 - lt, 4 * (1 - lt) + 1),
+      );
     }
   }
 
@@ -691,8 +826,10 @@ extension _FxBlocks on _Fx {
         ..moveTo(x - k, y - k * 0.6)
         ..lineTo(x, y)
         ..lineTo(x + k, y - k * 0.6);
-      canvas.drawPath(path,
-          _stroke(i == 1 ? secondary : primary, _fade(lt, 0.15, 0.5), k * 0.4));
+      canvas.drawPath(
+        path,
+        _stroke(i == 1 ? secondary : primary, _fade(lt, 0.15, 0.5), k * 0.4),
+      );
     }
   }
 
@@ -705,8 +842,11 @@ extension _FxBlocks on _Fx {
       final dir = Offset(cos(angle), sin(angle));
       final inner = c + dir * (s * 0.2);
       final outer = c + dir * (s * (0.3 + 0.9 * _easeOut(lt)) * scale);
-      canvas.drawLine(inner, outer,
-          _stroke(primary, 1 - lt, (i.isEven ? 5 : 3) * (1 - lt) + 1));
+      canvas.drawLine(
+        inner,
+        outer,
+        _stroke(primary, 1 - lt, (i.isEven ? 5 : 3) * (1 - lt) + 1),
+      );
     }
   }
 }

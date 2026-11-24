@@ -20,8 +20,10 @@ bool holdsFightUpright(Size size) => size.shortestSide < tabletShortestSide;
 bool holdFightUpright(BuildContext context) {
   if (!holdsFightUpright(MediaQuery.sizeOf(context))) return false;
   if (_holders++ == 0) {
-    SystemChrome.setPreferredOrientations(
-        const [DeviceOrientation.portraitUp, DeviceOrientation.portraitDown]);
+    SystemChrome.setPreferredOrientations(const [
+      DeviceOrientation.portraitUp,
+      DeviceOrientation.portraitDown,
+    ]);
   }
   return true;
 }

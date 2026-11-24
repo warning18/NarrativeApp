@@ -51,12 +51,16 @@ extension _ShipBattleFlow on _ShipBattlePanelState {
       final keys = {for (final l in _battle.log.sublist(logged)) l.key};
       final strained = keys.contains('ship_log_push_strain') ||
           keys.contains('ship_log_push_strain_fire');
-      _flashText(true, room,
-          trFor(lang, strained ? 'ship_push_strain_flash' : 'ship_push_flash'));
+      _flashText(
+        true,
+        room,
+        trFor(lang, strained ? 'ship_push_strain_flash' : 'ship_push_flash'),
+      );
       if (!_still) {
         _fx.play(
-            room == ShipRoom.bulwark ? ShipFxKind.shield : ShipFxKind.sparkles,
-            _roomKeys[(true, room)]!);
+          room == ShipRoom.bulwark ? ShipFxKind.shield : ShipFxKind.sparkles,
+          _roomKeys[(true, room)]!,
+        );
         if (keys.contains('ship_log_push_strain_fire')) {
           _fx.play(ShipFxKind.ignite, _roomKeys[(true, room)]!, delay: 0.2);
         } else if (strained) {
@@ -107,32 +111,44 @@ extension _ShipBattleFlow on _ShipBattlePanelState {
                         borderRadius: BorderRadius.circular(8),
                         border: Border.all(color: color),
                       ),
-                      child: Icon(_roomIcon(room),
-                          size: IconSize.s16, color: color),
+                      child: Icon(
+                        _roomIcon(room),
+                        size: IconSize.s16,
+                        color: color,
+                      ),
                     ),
                     const SizedBox(width: 10),
                     Expanded(
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text(trFor(lang, 'ship_room_${room.name}_title'),
-                              style: theme.textTheme.titleSmall),
                           Text(
-                            trFor(lang, 'ship_push_${room.name}_hint')
-                                .replaceAll('{n}', '$pushHullPatch'),
-                            style: theme.textTheme.bodySmall
-                                ?.copyWith(color: ink.ash),
+                            trFor(lang, 'ship_room_${room.name}_title'),
+                            style: theme.textTheme.titleSmall,
+                          ),
+                          Text(
+                            trFor(
+                              lang,
+                              'ship_push_${room.name}_hint',
+                            ).replaceAll('{n}', '$pushHullPatch'),
+                            style: theme.textTheme.bodySmall?.copyWith(
+                              color: ink.ash,
+                            ),
                           ),
                         ],
                       ),
                     ),
                     const SizedBox(width: 8),
                     Tooltip(
-                      message: trFor(lang, 'ship_push_strain_hint')
-                          .replaceAll('{n}', '$strain'),
+                      message: trFor(
+                        lang,
+                        'ship_push_strain_hint',
+                      ).replaceAll('{n}', '$strain'),
                       child: Text(
-                        trFor(lang, 'ship_push_strain_label')
-                            .replaceAll('{n}', '$strain'),
+                        trFor(
+                          lang,
+                          'ship_push_strain_label',
+                        ).replaceAll('{n}', '$strain'),
                         key: Key('ship_push_strain_${room.name}'),
                         style: theme.textTheme.labelMedium?.copyWith(
                           color: risky ? ink.blood : ink.ash,
@@ -150,7 +166,8 @@ extension _ShipBattleFlow on _ShipBattlePanelState {
         return SafeArea(
           child: ConstrainedBox(
             constraints: BoxConstraints(
-                maxHeight: MediaQuery.sizeOf(sheetContext).height * 0.8),
+              maxHeight: MediaQuery.sizeOf(sheetContext).height * 0.8,
+            ),
             child: ListView(
               key: const Key('ship_push_sheet'),
               shrinkWrap: true,
@@ -161,16 +178,21 @@ extension _ShipBattleFlow on _ShipBattlePanelState {
                     Icon(Icons.bolt, color: ink.ember, size: IconSize.s32),
                     const SizedBox(width: 8),
                     Expanded(
-                      child: Text(trFor(lang, 'ship_push_title'),
-                          style: const TextStyle(
-                              fontFamily: InkFonts.display, fontSize: 20)),
+                      child: Text(
+                        trFor(lang, 'ship_push_title'),
+                        style: const TextStyle(
+                          fontFamily: InkFonts.display,
+                          fontSize: 20,
+                        ),
+                      ),
                     ),
                   ],
                 ),
                 const SizedBox(height: 4),
-                Text(trFor(lang, 'ship_push_once_label'),
-                    style:
-                        theme.textTheme.labelSmall?.copyWith(color: ink.ash)),
+                Text(
+                  trFor(lang, 'ship_push_once_label'),
+                  style: theme.textTheme.labelSmall?.copyWith(color: ink.ash),
+                ),
                 const SizedBox(height: 6),
                 for (final room in ShipRoom.values) row(room),
               ],
@@ -184,13 +206,18 @@ extension _ShipBattleFlow on _ShipBattlePanelState {
   /// The name of [room] of the Eel or, with [enemy], of the enemy: a
   /// beast's rooms are its fins, jaws, hide and heart. [suffix] picks the
   /// word's form ('' in a sentence, '_title' on a tile, '_hint').
-  String _roomName(AppLanguage lang, ShipRoom room,
-          {required bool enemy, String suffix = ''}) =>
+  String _roomName(
+    AppLanguage lang,
+    ShipRoom room, {
+    required bool enemy,
+    String suffix = '',
+  }) =>
       trFor(
-          lang,
-          widget.beast != null && enemy
-              ? 'beast_room_${room.name}$suffix'
-              : 'ship_room_${room.name}$suffix');
+        lang,
+        widget.beast != null && enemy
+            ? 'beast_room_${room.name}$suffix'
+            : 'ship_room_${room.name}$suffix',
+      );
 
   /// A log line in the player's language. A line about a beast is worded
   /// for one where a beast has its own (`beast_` + the key): its crew
@@ -206,8 +233,10 @@ extension _ShipBattleFlow on _ShipBattlePanelState {
     var text = trFor(lang, key);
     final side = line.side;
     if (side != null) {
-      text = text.replaceAll('{ship}',
-          side == BattleSide.eel ? widget.shipName : widget.enemyName);
+      text = text.replaceAll(
+        '{ship}',
+        side == BattleSide.eel ? widget.shipName : widget.enemyName,
+      );
     }
     final weapon = line.weapon;
     if (weapon != null) {
@@ -215,8 +244,10 @@ extension _ShipBattleFlow on _ShipBattlePanelState {
     }
     final room = line.room;
     if (room != null) {
-      text =
-          text.replaceAll('{room}', _roomName(lang, room, enemy: aboutBeast));
+      text = text.replaceAll(
+        '{room}',
+        _roomName(lang, room, enemy: aboutBeast),
+      );
     }
     final crew = line.crew;
     if (crew != null) text = text.replaceAll('{crew}', crew);
@@ -224,8 +255,10 @@ extension _ShipBattleFlow on _ShipBattlePanelState {
     if (n != null) text = text.replaceAll('{n}', '$n');
     final range = line.range;
     if (range != null) {
-      text =
-          text.replaceAll('{range}', trFor(lang, 'ship_range_${range.name}'));
+      text = text.replaceAll(
+        '{range}',
+        trFor(lang, 'ship_range_${range.name}'),
+      );
     }
     return tidyShipLine(text, lang);
   }
@@ -296,15 +329,20 @@ extension _ShipBattleFlow on _ShipBattlePanelState {
           child: Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Icon(Icons.lightbulb_outline,
-                  size: IconSize.s16,
-                  color: theme.colorScheme.onSecondaryContainer),
+              Icon(
+                Icons.lightbulb_outline,
+                size: IconSize.s16,
+                color: theme.colorScheme.onSecondaryContainer,
+              ),
               const SizedBox(width: 8),
               Expanded(
-                child: Text(text,
-                    style: theme.textTheme.bodySmall?.copyWith(
-                        height: 1.25,
-                        color: theme.colorScheme.onSecondaryContainer)),
+                child: Text(
+                  text,
+                  style: theme.textTheme.bodySmall?.copyWith(
+                    height: 1.25,
+                    color: theme.colorScheme.onSecondaryContainer,
+                  ),
+                ),
               ),
               IconButton(
                 key: const Key('ship_tip_ok'),
@@ -366,8 +404,12 @@ extension _ShipBattleFlow on _ShipBattlePanelState {
     // Time's up: the turn ends as it stands. A ready weapon not fired
     // keeps its charge for the next one.
     final held = _battle.player.weapons.any((w) => w.isReady);
-    _battle.note(BattleLine(held ? 'ship_log_time_up_held' : 'ship_log_time_up',
-        side: BattleSide.eel));
+    _battle.note(
+      BattleLine(
+        held ? 'ship_log_time_up_held' : 'ship_log_time_up',
+        side: BattleSide.eel,
+      ),
+    );
     _endTurn();
   }
 
@@ -389,15 +431,18 @@ extension _ShipBattleFlow on _ShipBattlePanelState {
     final logged = _battle.log.length;
     final outcome = _battle.fire(weaponId, room, aim: aim);
     if (outcome != null && weapon != null) {
-      _playShot(outcome, _battle.log.sublist(logged),
-          fromEel: true,
-          kind: weapon.incendiary || ammo == ShipAmmo.heated
-              ? ShipShotKind.heated
-              : switch (ammo) {
-                  ShipAmmo.chain => ShipShotKind.chain,
-                  ShipAmmo.grape => ShipShotKind.grape,
-                  _ => ShipShotKind.round,
-                });
+      _playShot(
+        outcome,
+        _battle.log.sublist(logged),
+        fromEel: true,
+        kind: weapon.incendiary || ammo == ShipAmmo.heated
+            ? ShipShotKind.heated
+            : switch (ammo) {
+                ShipAmmo.chain => ShipShotKind.chain,
+                ShipAmmo.grape => ShipShotKind.grape,
+                _ => ShipShotKind.round,
+              },
+      );
     }
     _flashLater(outcome, onEel: false);
     _update(() {
@@ -456,9 +501,12 @@ extension _ShipBattleFlow on _ShipBattlePanelState {
       final shot = _battle.fireEnemy(weapon);
       if (!mounted) return;
       if (shot != null) {
-        _playShot(shot, _battle.log.sublist(logged),
-            fromEel: false,
-            kind: weapon.incendiary ? ShipShotKind.heated : ShipShotKind.round);
+        _playShot(
+          shot,
+          _battle.log.sublist(logged),
+          fromEel: false,
+          kind: weapon.incendiary ? ShipShotKind.heated : ShipShotKind.round,
+        );
       }
       _flashLater(shot, onEel: true);
       _update(() {});
@@ -470,7 +518,8 @@ extension _ShipBattleFlow on _ShipBattlePanelState {
       }
     }
     if (!await _maybeRepelBoarders(
-        ref.read(localizedDbProvider(enemiesSchema)).value)) {
+      ref.read(localizedDbProvider(enemiesSchema)).value,
+    )) {
       return;
     }
     if (!mounted) return;
@@ -515,23 +564,26 @@ extension _ShipBattleFlow on _ShipBattlePanelState {
 
   void _report() {
     final end = _battle.end;
-    widget.onFinished(ShipBattleOutcome(
-      won: end == BattleEnd.won || end == BattleEnd.boarded,
-      player: _battle.player,
-      crew: _battle.crew,
-      log: [for (final line in _battle.log) _line(line)],
-      boarded: end == BattleEnd.boarded,
-      escaped: end == BattleEnd.escaped,
-      fled: end == BattleEnd.fled,
-      enemyHull: _battle.enemy.hull,
-    ));
+    widget.onFinished(
+      ShipBattleOutcome(
+        won: end == BattleEnd.won || end == BattleEnd.boarded,
+        player: _battle.player,
+        crew: _battle.crew,
+        log: [for (final line in _battle.log) _line(line)],
+        boarded: end == BattleEnd.boarded,
+        escaped: end == BattleEnd.escaped,
+        fled: end == BattleEnd.fled,
+        enemyHull: _battle.enemy.hull,
+      ),
+    );
   }
 
   // --- Boarding ------------------------------------------------------------
 
   /// The boarding crew's records, or null when any of them is unknown.
   Map<String, Map<String, dynamic>>? _boardingCrew(
-      Map<String, dynamic>? enemies) {
+    Map<String, dynamic>? enemies,
+  ) {
     if (enemies == null || !widget.boarding.canBoard) return null;
     final records = <String, Map<String, dynamic>>{};
     for (final id in widget.boarding.crew) {
@@ -545,8 +597,10 @@ extension _ShipBattleFlow on _ShipBattlePanelState {
   /// Fights the enemy's boarding crew on the dice: won, lost, or run
   /// from (the fight's retreat); null when the fight ended the run
   /// (permadeath).
-  Future<_DeckFight?> _deckFight(Map<String, Map<String, dynamic>> records,
-      {double healthMultiplier = 1.0}) async {
+  Future<_DeckFight?> _deckFight(
+    Map<String, Map<String, dynamic>> records, {
+    double healthMultiplier = 1.0,
+  }) async {
     final ids = widget.boarding.crew;
     ref.read(combatActiveProvider.notifier).state = true;
     final retreated = ref.read(lastFightRetreatedProvider.notifier);
@@ -557,9 +611,7 @@ extension _ShipBattleFlow on _ShipBattlePanelState {
           enemyId: ids.first,
           enemy: records[ids.first]!,
           additionalEnemyIds: ids.skip(1).toList(),
-          additionalEnemies: {
-            for (final id in ids.skip(1)) id: records[id]!,
-          },
+          additionalEnemies: {for (final id in ids.skip(1)) id: records[id]!},
           modifiers: EncounterModifiers(
             chapter: widget.chapter,
             healthMultiplier: healthMultiplier,
@@ -619,9 +671,12 @@ extension _ShipBattleFlow on _ShipBattlePanelState {
     });
     final hooked = _battle.throwGrapples();
     if (hooked && !_still) {
-      _fx.shot(_roomKeys[(true, ShipRoom.bulwark)]!,
-          _roomKeys[(false, ShipRoom.bulwark)]!, ShipShotKind.chain,
-          arrival: const [ShipFxKind.ring]);
+      _fx.shot(
+        _roomKeys[(true, ShipRoom.bulwark)]!,
+        _roomKeys[(false, ShipRoom.bulwark)]!,
+        ShipShotKind.chain,
+        arrival: const [ShipFxKind.ring],
+      );
     }
     if (!hooked) {
       _update(() => _busy = false);
@@ -658,8 +713,10 @@ extension _ShipBattleFlow on _ShipBattlePanelState {
     _update(() {});
     await Future.delayed(const Duration(milliseconds: 500));
     if (!mounted) return false;
-    final result = await _deckFight(records,
-        healthMultiplier: holdManned ? _holdMannedBoarderHealth : 1.0);
+    final result = await _deckFight(
+      records,
+      healthMultiplier: holdManned ? _holdMannedBoarderHealth : 1.0,
+    );
     if (!mounted || result == null) return false;
     if (result == _DeckFight.won) {
       _battle.boardersRepelled();
@@ -694,8 +751,12 @@ extension _ShipBattleFlow on _ShipBattlePanelState {
 
   /// A shot across, from [fromEel]'s guns to the room it was aimed at, and
   /// what it did there: the same for either ship.
-  void _playShot(ShotOutcome outcome, List<BattleLine> lines,
-      {required bool fromEel, required ShipShotKind kind}) {
+  void _playShot(
+    ShotOutcome outcome,
+    List<BattleLine> lines, {
+    required bool fromEel,
+    required ShipShotKind kind,
+  }) {
     if (_still) return;
     final target = !fromEel;
     final keys = lines.map((l) => l.key).toSet();
@@ -709,15 +770,21 @@ extension _ShipBattleFlow on _ShipBattlePanelState {
       if (outcome.helmDamage > 0 || keys.contains('ship_log_rigging_torn'))
         ShipFxKind.fibres,
     ];
-    _fx.shot(_roomKeys[(fromEel, ShipRoom.guns)]!,
-        _roomKeys[(target, outcome.room)]!, kind,
-        arrival: arrival);
+    _fx.shot(
+      _roomKeys[(fromEel, ShipRoom.guns)]!,
+      _roomKeys[(target, outcome.room)]!,
+      kind,
+      arrival: arrival,
+    );
     if (outcome.dodged) {
       _fx.play(ShipFxKind.splash, _hullKeys[target]!, delay: shipShotSeconds);
     }
     if (outcome.leakOpened) {
-      _fx.play(ShipFxKind.bubbles, _roomKeys[(target, ShipRoom.hold)]!,
-          delay: shipShotSeconds);
+      _fx.play(
+        ShipFxKind.bubbles,
+        _roomKeys[(target, ShipRoom.hold)]!,
+        delay: shipShotSeconds,
+      );
     }
   }
 
@@ -730,25 +797,35 @@ extension _ShipBattleFlow on _ShipBattlePanelState {
         case 'ship_event_rogue_wave':
           _fx.play(ShipFxKind.wave, _seaKey);
         case 'ship_event_sea_creature':
-          _fx.play(ShipFxKind.bubbles,
-              _roomKeys[(line.side == BattleSide.eel, ShipRoom.hold)]!);
+          _fx.play(
+            ShipFxKind.bubbles,
+            _roomKeys[(line.side == BattleSide.eel, ShipRoom.hold)]!,
+          );
         case 'ship_event_wreck':
           _fx.play(ShipFxKind.debris, _seaKey);
         case 'ship_log_rammed':
           // The rammer's bow into the other ship's.
           final hit = line.side != BattleSide.eel;
           _fx.play(ShipFxKind.splinters, _roomKeys[(hit, ShipRoom.bulwark)]!);
-          _fx.play(ShipFxKind.splinters, _roomKeys[(!hit, ShipRoom.bulwark)]!,
-              delay: 0.05);
+          _fx.play(
+            ShipFxKind.splinters,
+            _roomKeys[(!hit, ShipRoom.bulwark)]!,
+            delay: 0.05,
+          );
         case 'ship_log_boarders':
-          _fx.shot(_roomKeys[(false, ShipRoom.bulwark)]!,
-              _roomKeys[(true, ShipRoom.bulwark)]!, ShipShotKind.chain,
-              arrival: const [ShipFxKind.ring]);
+          _fx.shot(
+            _roomKeys[(false, ShipRoom.bulwark)]!,
+            _roomKeys[(true, ShipRoom.bulwark)]!,
+            ShipShotKind.chain,
+            arrival: const [ShipFxKind.ring],
+          );
         case 'ship_log_fire_spreads':
           final room = line.room;
           if (room != null) {
-            _fx.play(ShipFxKind.ignite,
-                _roomKeys[(line.side == BattleSide.eel, room)]!);
+            _fx.play(
+              ShipFxKind.ignite,
+              _roomKeys[(line.side == BattleSide.eel, room)]!,
+            );
           }
         case 'ship_log_intent_ram_missed':
           _fx.play(ShipFxKind.splash, _seaKey);
@@ -803,7 +880,7 @@ extension _ShipBattleFlow on _ShipBattlePanelState {
           if ((eel ? _battle.player : _battle.enemy).leaks > 0)
             (
               _roomKeys[(eel, ShipRoom.hold)]!,
-              (eel ? _battle.player : _battle.enemy).leaks
+              (eel ? _battle.player : _battle.enemy).leaks,
             ),
       ],
     );

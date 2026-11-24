@@ -1217,15 +1217,18 @@ class PlayerSession {
       s = s.withSourcedGains(ledgerCurse, faction, {old.stat: old.amount});
     }
     s = s.withSourcedGains(ledgerCurse, faction, {stat: -amount});
-    return s.copyWith(riskCurses: [
-      for (final c in s.riskCurses)
-        if (c.clan != faction) c,
-      RiskCurse(
+    return s.copyWith(
+      riskCurses: [
+        for (final c in s.riskCurses)
+          if (c.clan != faction) c,
+        RiskCurse(
           clan: faction,
           stat: stat,
           amount: amount,
-          untilLevel: level + riskyCurseLevels),
-    ]);
+          untilLevel: level + riskyCurseLevels,
+        ),
+      ],
+    );
   }
 
   /// This session with the curses whose level is reached lifted: their
@@ -1240,10 +1243,12 @@ class PlayerSession {
     for (final c in ended) {
       s = s.withSourcedGains(ledgerCurse, c.clan, {c.stat: c.amount});
     }
-    return s.copyWith(riskCurses: [
-      for (final c in riskCurses)
-        if (level < c.untilLevel) c,
-    ]);
+    return s.copyWith(
+      riskCurses: [
+        for (final c in riskCurses)
+          if (level < c.untilLevel) c,
+      ],
+    );
   }
 
   Map<String, dynamic> toJson() => {
@@ -1366,7 +1371,7 @@ class PlayerSession {
         'contractsChapter': contractsChapter,
         'contractBoards': contractBoards,
         'seaBeasts': {
-          for (final e in seaBeasts.entries) e.key: e.value.toJson(),
+          for (final e in seaBeasts.entries) e.key: e.value.toJson()
         },
         'bossDefeatCounts': bossDefeatCounts,
         'grandfatheredQuestIds': grandfatheredQuestIds,
@@ -1435,12 +1440,14 @@ class PlayerSession {
       // Houses built before the story read them back get their flag here.
       flags: {
         ...?(json['flags'] as List?)?.map((e) => e.toString()),
-        ...?(json['builtHouseIds'] as List?)
-            ?.map((e) => houseFlag(e.toString())),
+        ...?(json['builtHouseIds'] as List?)?.map(
+          (e) => houseFlag(e.toString()),
+        ),
         if (legacyHarbourDue(json)) houseFlag(harborHouseId),
         // Quests taken before the accepted flag was set (v1.639).
-        ...?(json['activeQuestIds'] as List?)
-            ?.map((e) => questAcceptedFlag(e.toString())),
+        ...?(json['activeQuestIds'] as List?)?.map(
+          (e) => questAcceptedFlag(e.toString()),
+        ),
       }.toList(),
       activeQuestIds: (json['activeQuestIds'] as List?)
               ?.map((e) => e.toString())
@@ -1706,14 +1713,17 @@ class PlayerSession {
       seaBeasts: {
         for (final e in ((json['seaBeasts'] as Map?) ?? const {}).entries)
           if (e.value is Map)
-            e.key.toString():
-                BeastState.fromJson(Map<String, dynamic>.from(e.value as Map)),
+            e.key.toString(): BeastState.fromJson(
+              Map<String, dynamic>.from(e.value as Map),
+            ),
       },
       questKillBaselines: (json['questKillBaselines'] as Map?)?.map(
             (quest, kills) => MapEntry(
               quest.toString(),
-              (kills as Map).map((enemy, count) =>
-                  MapEntry(enemy.toString(), (count as num).toInt())),
+              (kills as Map).map(
+                (enemy, count) =>
+                    MapEntry(enemy.toString(), (count as num).toInt()),
+              ),
             ),
           ) ??
           const {},
@@ -1747,9 +1757,7 @@ class PlayerSession {
       // A save from before mana existed wakes up with a full pool, the
       // same as a fresh character.
       mana: (json['mana'] as num?)?.toInt() ??
-          maxManaFor(
-            wisdom: (json['wisdom'] as num?)?.toInt() ?? 0,
-          ),
+          maxManaFor(wisdom: (json['wisdom'] as num?)?.toInt() ?? 0),
       knownSpellIds:
           (json['knownSpellIds'] as List?)?.map((e) => e.toString()).toList() ??
               const [],

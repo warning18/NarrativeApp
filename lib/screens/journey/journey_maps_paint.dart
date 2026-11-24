@@ -8,11 +8,15 @@ part of '../journey_screen.dart';
 /// Where step [centre]'s road leaves the party's mark: on the side it
 /// heads for (as _JourneyPainter draws it).
 Offset _roadStart(Offset here, Offset centre, double width) {
-  final lean =
-      ((centre.dx - here.dx) / width * 1.6).clamp(-math.pi / 3, math.pi / 3);
+  final lean = ((centre.dx - here.dx) / width * 1.6).clamp(
+    -math.pi / 3,
+    math.pi / 3,
+  );
   return here +
-      Offset(math.sin(lean) * _JourneyChartState._hereRadius,
-          -math.cos(lean) * _JourneyChartState._hereRadius);
+      Offset(
+        math.sin(lean) * _JourneyChartState._hereRadius,
+        -math.cos(lean) * _JourneyChartState._hereRadius,
+      );
 }
 
 /// The top [fraction] of the map, as it unrolls.
@@ -33,7 +37,13 @@ Path _roadPath(Offset from, Offset to) {
   return Path()
     ..moveTo(from.dx, from.dy)
     ..cubicTo(
-        from.dx, from.dy - dy * 0.45, to.dx, to.dy + dy * 0.45, to.dx, to.dy);
+      from.dx,
+      from.dy - dy * 0.45,
+      to.dx,
+      to.dy + dy * 0.45,
+      to.dx,
+      to.dy,
+    );
 }
 
 /// The land: contour lines in the look's coast colour, the index line a
@@ -60,8 +70,12 @@ class _ReliefPainter extends CustomPainter {
 
   @override
   void paint(Canvas canvas, Size size) {
-    final area = Rect.fromLTWH(-_margin, -_margin, size.width + _margin * 2,
-        size.height + _margin * 2);
+    final area = Rect.fromLTWH(
+      -_margin,
+      -_margin,
+      size.width + _margin * 2,
+      size.height + _margin * 2,
+    );
     // Hills first: a shade to the south-east of each top.
     final peaks = reliefPeaks(area: area, height: _height);
     for (final peak in peaks) {
@@ -71,10 +85,12 @@ class _ReliefPainter extends CustomPainter {
         centre,
         70,
         Paint()
-          ..shader = RadialGradient(colors: [
-            palette.fog.withValues(alpha: 0.32),
-            palette.fog.withValues(alpha: 0),
-          ]).createShader(shade),
+          ..shader = RadialGradient(
+            colors: [
+              palette.fog.withValues(alpha: 0.32),
+              palette.fog.withValues(alpha: 0),
+            ],
+          ).createShader(shade),
       );
     }
     // The contour lines, a shade stronger on the dark looks, whose coast
@@ -86,11 +102,16 @@ class _ReliefPainter extends CustomPainter {
       final index = l == 2;
       final paint = Paint()
         ..color = contour.withValues(
-            alpha: (index ? 0.6 : 0.34 + l * 0.05) * (dark ? 1.15 : 1))
+          alpha: (index ? 0.6 : 0.34 + l * 0.05) * (dark ? 1.15 : 1),
+        )
         ..strokeWidth = index ? 1.3 : 0.9
         ..strokeCap = StrokeCap.round;
       for (final (a, b) in reliefContour(
-          area: area, level: reliefLevels[l], height: _height, cell: 14)) {
+        area: area,
+        level: reliefLevels[l],
+        height: _height,
+        cell: 14,
+      )) {
         canvas.drawLine(a, b, paint);
       }
     }
@@ -106,18 +127,20 @@ class _ReliefPainter extends CustomPainter {
       final left = peak + const Offset(-7, 5);
       final right = peak + const Offset(7, 5);
       canvas.drawPath(
-          Path()
-            ..moveTo(top.dx, top.dy)
-            ..lineTo(right.dx, right.dy)
-            ..lineTo(peak.dx + 1, right.dy)
-            ..close(),
-          face);
+        Path()
+          ..moveTo(top.dx, top.dy)
+          ..lineTo(right.dx, right.dy)
+          ..lineTo(peak.dx + 1, right.dy)
+          ..close(),
+        face,
+      );
       canvas.drawPath(
-          Path()
-            ..moveTo(left.dx, left.dy)
-            ..lineTo(top.dx, top.dy)
-            ..lineTo(right.dx, right.dy),
-          line);
+        Path()
+          ..moveTo(left.dx, left.dy)
+          ..lineTo(top.dx, top.dy)
+          ..lineTo(right.dx, right.dy),
+        line,
+      );
     }
   }
 
@@ -162,14 +185,8 @@ class _JourneyPainter extends CustomPainter {
   final Offset here;
   final double hereRadius;
   final double stepRadius;
-  final List<
-      ({
-        Offset centre,
-        int row,
-        bool locked,
-        bool selected,
-        bool moves,
-      })> steps;
+  final List<({Offset centre, int row, bool locked, bool selected, bool moves})>
+      steps;
 
   /// The step the party is walking to, and how far along it is.
   final int? walking;
@@ -189,7 +206,7 @@ class _JourneyPainter extends CustomPainter {
             colors: [
               palette.fog,
               palette.fog,
-              palette.fog.withValues(alpha: 0)
+              palette.fog.withValues(alpha: 0),
             ],
             stops: const [0, 0.82, 1],
           ).createShader(fogRect),
@@ -210,8 +227,10 @@ class _JourneyPainter extends CustomPainter {
         start = here + unit * hereRadius;
         end = step.centre - unit * stepRadius;
       } else {
-        final lean = ((step.centre.dx - here.dx) / size.width * 1.6)
-            .clamp(-math.pi / 3, math.pi / 3);
+        final lean = ((step.centre.dx - here.dx) / size.width * 1.6).clamp(
+          -math.pi / 3,
+          math.pi / 3,
+        );
         start = here +
             Offset(math.sin(lean) * hereRadius, -math.cos(lean) * hereRadius);
         end = step.centre.translate(0, stepRadius);
@@ -238,7 +257,8 @@ class _JourneyPainter extends CustomPainter {
                 ? palette.label.withValues(alpha: 0.4 * fade)
                 : palette.ahead.withValues(
                     alpha:
-                        (radial || step.row == 0 ? 1 : 0.75 / step.row) * fade);
+                        (radial || step.row == 0 ? 1 : 0.75 / step.row) * fade,
+                  );
       if (step.selected) {
         canvas.drawPath(path, paint);
       } else {
@@ -265,8 +285,13 @@ class _JourneyPainter extends CustomPainter {
     }
   }
 
-  static void _dashed(Canvas canvas, Path path, Paint paint,
-      {required double dash, required double gap}) {
+  static void _dashed(
+    Canvas canvas,
+    Path path,
+    Paint paint, {
+    required double dash,
+    required double gap,
+  }) {
     for (final metric in path.computeMetrics()) {
       var distance = 0.0;
       while (distance < metric.length) {
@@ -284,15 +309,13 @@ class _JourneyPainter extends CustomPainter {
       old.walking != walking ||
       old.progress != progress ||
       old.reveals.length != reveals.length ||
-      [
-        for (var i = 0; i < reveals.length; i++) old.reveals[i] != reveals[i],
-      ].any((changed) => changed) ||
+      [for (var i = 0; i < reveals.length; i++) old.reveals[i] != reveals[i]]
+          .any((changed) => changed) ||
       old.radial != radial ||
       (old.roads == null) != (roads == null) ||
       old.steps.length != steps.length ||
-      [
-        for (var i = 0; i < steps.length; i++) old.steps[i] != steps[i],
-      ].any((changed) => changed);
+      [for (var i = 0; i < steps.length; i++) old.steps[i] != steps[i]]
+          .any((changed) => changed);
 }
 
 /// The streets growing out of the place as the ball is left (the dive): the

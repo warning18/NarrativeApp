@@ -270,8 +270,13 @@ enum RoadTurnKind {
 
 /// What a road holds, and the pacing after it.
 class RoadTurn {
-  const RoadTurn(this.kind, this.next,
-      {this.scene, this.landmark = false, this.paysOwed = false});
+  const RoadTurn(
+    this.kind,
+    this.next, {
+    this.scene,
+    this.landmark = false,
+    this.paysOwed = false,
+  });
 
   final RoadTurnKind kind;
   final DetourPacing next;
@@ -368,7 +373,9 @@ RoadTurn planRoad({
   p = p.copyWith(roads: p.roads + 1);
   if (taken) {
     return RoadTurn(
-        RoadTurnKind.taken, p.copyWith(cooldown: _detourCooldownRoads));
+      RoadTurnKind.taken,
+      p.copyWith(cooldown: _detourCooldownRoads),
+    );
   }
   RoadTurn detour(DetourScene? scene, {required bool paysOwed}) => RoadTurn(
         RoadTurnKind.detour,
@@ -393,17 +400,23 @@ RoadTurn planRoad({
     return RoadTurn(RoadTurnKind.quiet, p.copyWith(cooldown: p.cooldown - 1));
   }
   if (road.detoursOpen && p.owed) {
-    return detour(_sceneFor(road, scenes, flags, p.met, random),
-        paysOwed: true);
+    return detour(
+      _sceneFor(road, scenes, flags, p.met, random),
+      paysOwed: true,
+    );
   }
   if (familiar != null && familiar()) {
     return RoadTurn(
-        RoadTurnKind.familiar, p.copyWith(cooldown: _detourCooldownRoads));
+      RoadTurnKind.familiar,
+      p.copyWith(cooldown: _detourCooldownRoads),
+    );
   }
   if (!road.detoursOpen) return RoadTurn(RoadTurnKind.quiet, p);
   if (random.nextDouble() < detourChanceFor(p.quiet, road)) {
-    return detour(_sceneFor(road, scenes, flags, p.met, random),
-        paysOwed: false);
+    return detour(
+      _sceneFor(road, scenes, flags, p.met, random),
+      paysOwed: false,
+    );
   }
   return RoadTurn(RoadTurnKind.quiet, p.copyWith(quiet: p.quiet + 1));
 }
@@ -411,8 +424,13 @@ RoadTurn planRoad({
 /// The scene a detour on [road] plays: the chapter's landmark when the
 /// road fits it, else one drawn among those that fit; null for today's
 /// chain.
-DetourScene? _sceneFor(DetourRoad road, Map<String, DetourScene> scenes,
-    Set<String> flags, List<String> met, Random random) {
+DetourScene? _sceneFor(
+  DetourRoad road,
+  Map<String, DetourScene> scenes,
+  Set<String> flags,
+  List<String> met,
+  Random random,
+) {
   final fitting = scenesFitting(scenes, road, flags: flags, met: met);
   final landmarks = fitting.where((s) => s.isLandmark).toList()
     ..sort((a, b) => a.id.compareTo(b.id));
@@ -423,11 +441,12 @@ DetourScene? _sceneFor(DetourRoad road, Map<String, DetourScene> scenes,
 /// The road's own dice: the same road ([fromNodeId] to [toNodeId], taken
 /// [historyLength] steps into the story) rolls the same, so what it holds
 /// is known when it is chosen (as a road event is, see road_events.dart).
-Random detourRandomFor(
-        {required String fromNodeId,
-        required String toNodeId,
-        required int historyLength,
-        int salt = 0}) =>
+Random detourRandomFor({
+  required String fromNodeId,
+  required String toNodeId,
+  required int historyLength,
+  int salt = 0,
+}) =>
     Random(_hash('detour:$fromNodeId>$toNodeId#$historyLength:$salt'));
 
 int _hash(String text) {

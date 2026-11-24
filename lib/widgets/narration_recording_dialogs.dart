@@ -1,4 +1,5 @@
 import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart' show Clipboard, ClipboardData;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -28,48 +29,55 @@ Future<T> _runWithProgress<T>(
   required int total,
   bool cancellable = true,
   required Future<T> Function(
-          void Function(int done) onProgress, bool Function() isCancelled)
-      work,
+    void Function(int done) onProgress,
+    bool Function() isCancelled,
+  ) work,
 }) async {
   final progress = ValueNotifier<int>(0);
   var cancelled = false;
   final navigator = Navigator.of(context);
-  unawaited(showDialog<void>(
-    context: context,
-    barrierDismissible: false,
-    builder: (context) => PopScope(
-      canPop: false,
-      onPopInvokedWithResult: (_, __) {
-        if (cancellable) cancelled = true;
-      },
-      child: AlertDialog(
-        title: Text(title),
-        content: ValueListenableBuilder<int>(
-          valueListenable: progress,
-          builder: (context, done, _) => Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              LinearProgressIndicator(value: total == 0 ? null : done / total),
-              if (total > 0) ...[
-                const SizedBox(height: 12),
-                Text(tr(ref, 'elevenlabs_progress')
-                    .replaceAll('{done}', '$done')
-                    .replaceAll('{total}', '$total')),
+  unawaited(
+    showDialog<void>(
+      context: context,
+      barrierDismissible: false,
+      builder: (context) => PopScope(
+        canPop: false,
+        onPopInvokedWithResult: (_, __) {
+          if (cancellable) cancelled = true;
+        },
+        child: AlertDialog(
+          title: Text(title),
+          content: ValueListenableBuilder<int>(
+            valueListenable: progress,
+            builder: (context, done, _) => Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                LinearProgressIndicator(
+                  value: total == 0 ? null : done / total,
+                ),
+                if (total > 0) ...[
+                  const SizedBox(height: 12),
+                  Text(
+                    tr(ref, 'elevenlabs_progress')
+                        .replaceAll('{done}', '$done')
+                        .replaceAll('{total}', '$total'),
+                  ),
+                ],
               ],
-            ],
-          ),
-        ),
-        actions: [
-          if (cancellable)
-            TextButton(
-              onPressed: () => cancelled = true,
-              child: Text(tr(ref, 'cancel')),
             ),
-        ],
+          ),
+          actions: [
+            if (cancellable)
+              TextButton(
+                onPressed: () => cancelled = true,
+                child: Text(tr(ref, 'cancel')),
+              ),
+          ],
+        ),
       ),
     ),
-  ));
+  );
   try {
     return await work((done) => progress.value = done, () => cancelled);
   } finally {
@@ -97,8 +105,11 @@ Future<int> recordNarration(
   final missing = <AppLanguage, List<String>>{};
   var characters = 0;
   for (final entry in script.entries) {
-    final pending = await notifier.missingFrom(entry.value,
-        settings: voice, language: entry.key);
+    final pending = await notifier.missingFrom(
+      entry.value,
+      settings: voice,
+      language: entry.key,
+    );
     if (pending.missing.isNotEmpty) missing[entry.key] = pending.missing;
     characters += pending.characters;
   }
@@ -113,9 +124,11 @@ Future<int> recordNarration(
       context: context,
       builder: (context) => AlertDialog(
         title: Text(tr(ref, 'elevenlabs_record_button')),
-        content: Text(tr(ref, 'elevenlabs_record_confirm_body')
-            .replaceAll('{count}', '$total')
-            .replaceAll('{chars}', '$characters')),
+        content: Text(
+          tr(ref, 'elevenlabs_record_confirm_body')
+              .replaceAll('{count}', '$total')
+              .replaceAll('{chars}', '$characters'),
+        ),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context, false),
@@ -173,7 +186,9 @@ Future<int> recordNarration(
 /// `assets/narration/<lang>/<clip id>.mp3` with each clip's words beside
 /// it, so a pull request from that branch ships them inside the app.
 Future<void> pushNarrationRecordings(
-    BuildContext context, WidgetRef ref) async {
+  BuildContext context,
+  WidgetRef ref,
+) async {
   final token = ref.read(githubTokenProvider);
   if (token == null || token.isEmpty) {
     _snack(context, tr(ref, 'elevenlabs_push_needs_token'));
@@ -192,20 +207,25 @@ Future<void> pushNarrationRecordings(
       cancellable: false,
       work: (_, __) async {
         final inRepo = await repositoryPathsUnder(
-            token: token, prefix: 'assets/narration/');
+          token: token,
+          prefix: 'assets/narration/',
+        );
         final clips = await recordings.localClips(voice.voiceId);
         return [
           for (final clip in clips)
             if (!inRepo.contains(
-                bundledNarrationPath(clip.clipId, clip.language))) ...[
+              bundledNarrationPath(clip.clipId, clip.language),
+            )) ...[
               GitBinaryFile(
                 path: bundledNarrationPath(clip.clipId, clip.language),
                 read: clip.mp3.readAsBytes,
               ),
               if (clip.text.existsSync())
                 GitBinaryFile(
-                  path: bundledNarrationPath(clip.clipId, clip.language)
-                      .replaceFirst(RegExp(r'\.mp3$'), '.txt'),
+                  path: bundledNarrationPath(
+                    clip.clipId,
+                    clip.language,
+                  ).replaceFirst(RegExp(r'\.mp3$'), '.txt'),
                   read: clip.text.readAsBytes,
                 ),
             ],
@@ -233,9 +253,11 @@ Future<void> pushNarrationRecordings(
     context: context,
     builder: (context) => AlertDialog(
       title: Text(tr(ref, 'elevenlabs_push_button')),
-      content: Text(tr(ref, 'elevenlabs_push_confirm_body')
-          .replaceAll('{count}', '$clipCount')
-          .replaceAll('{branch}', branchName)),
+      content: Text(
+        tr(ref, 'elevenlabs_push_confirm_body')
+            .replaceAll('{count}', '$clipCount')
+            .replaceAll('{branch}', branchName),
+      ),
       actions: [
         TextButton(
           onPressed: () => Navigator.pop(context, false),
@@ -279,7 +301,8 @@ Future<void> pushNarrationRecordings(
     builder: (dialogContext) => AlertDialog(
       title: Text(tr(ref, 'push_success_title')),
       content: SelectableText(
-          '${tr(ref, 'elevenlabs_push_success_body')}\n\n${result.compareUrl}'),
+        '${tr(ref, 'elevenlabs_push_success_body')}\n\n${result.compareUrl}',
+      ),
       actions: [
         TextButton(
           onPressed: () async {

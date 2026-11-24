@@ -847,8 +847,10 @@ int _sceneTurn(String nodeId) {
 /// Every companion line [nodeId] can show, the default for any company
 /// included -- what recording the whole story reads (see
 /// `narrationScript`).
-Iterable<String> allyAcknowledgmentVariantsFor(String nodeId,
-    {required bool french}) {
+Iterable<String> allyAcknowledgmentVariantsFor(
+  String nodeId, {
+  required bool french,
+}) {
   final table = (french ? _acksFr : _acksEn)[nodeId] ??
       (french ? _acksEn : _acksFr)[nodeId];
   return table == null
@@ -864,7 +866,10 @@ String withAllyAcknowledgment(
   required List<String> activeAllyIds,
   required bool french,
 }) {
-  final addition = allyAcknowledgmentFor(nodeId,
-      activeAllyIds: activeAllyIds, french: french);
+  final addition = allyAcknowledgmentFor(
+    nodeId,
+    activeAllyIds: activeAllyIds,
+    french: french,
+  );
   return addition == null ? description : '$description$addition';
 }

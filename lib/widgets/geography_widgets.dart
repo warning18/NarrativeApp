@@ -78,18 +78,18 @@ const List<(List<String>, IconData)> _hazardIcons = [
   (['glass', 'shard', 'tear', 'void', 'mirror'], Icons.blur_on),
   (
     ['ash', 'smoke', 'ember', 'fire', 'lava', 'erupt', 'steam', 'vent'],
-    Icons.volcano
+    Icons.volcano,
   ),
   (['scald', 'cinder', 'sulph'], Icons.volcano),
   (
     ['snow', 'blizzard', 'frost', 'ice', 'cold', 'rime', 'hail', 'whiteout'],
-    Icons.ac_unit
+    Icons.ac_unit,
   ),
   (['fog', 'mist', 'haze', 'murk'], Icons.foggy),
   (['light', 'wisp', 'lantern'], Icons.flare),
   (
     ['flood', 'ford', 'tide', 'river', 'bog', 'mire', 'sink', 'mud', 'quag'],
-    Icons.flood
+    Icons.flood,
   ),
   (['swamp', 'marsh'], Icons.flood),
   (['sand', 'dust', 'wind'], Icons.air),
@@ -97,7 +97,7 @@ const List<(List<String>, IconData)> _hazardIcons = [
   (['heat', 'sun', 'thirst', 'drought', 'glare'], Icons.wb_sunny_outlined),
   (
     ['rock', 'slide', 'fall', 'cliff', 'quake', 'scree', 'crumbl', 'crust'],
-    Icons.landslide
+    Icons.landslide,
   ),
   (['wave', 'sea', 'swell', 'current'], Icons.waves),
 ];
@@ -201,11 +201,7 @@ class GeoBreadcrumb extends StatelessWidget {
         ),
       ),
     );
-    return Semantics(
-      container: true,
-      label: tooltip,
-      child: row,
-    );
+    return Semantics(container: true, label: tooltip, child: row);
   }
 }
 
@@ -217,8 +213,9 @@ Future<void> showThisLand(BuildContext context, String placeId) {
     showDragHandle: true,
     useSafeArea: true,
     builder: (context) => ConstrainedBox(
-      constraints:
-          BoxConstraints(maxHeight: MediaQuery.of(context).size.height * 0.85),
+      constraints: BoxConstraints(
+        maxHeight: MediaQuery.of(context).size.height * 0.85,
+      ),
       child: ThisLandSheet(placeId: placeId),
     ),
   );
@@ -254,11 +251,15 @@ class ThisLandSheet extends ConsumerWidget {
       letterSpacing: 1.2,
       color: ink.gold,
     );
-    final prose = theme.textTheme.bodyMedium
-        ?.copyWith(fontFamily: InkFonts.prose, fontSize: 15, height: 1.4);
+    final prose = theme.textTheme.bodyMedium?.copyWith(
+      fontFamily: InkFonts.prose,
+      fontSize: 15,
+      height: 1.4,
+    );
     final aside = prose?.copyWith(fontStyle: FontStyle.italic, color: ink.ash);
-    final heading =
-        theme.textTheme.titleLarge?.copyWith(fontFamily: InkFonts.display);
+    final heading = theme.textTheme.titleLarge?.copyWith(
+      fontFamily: InkFonts.display,
+    );
     final small = theme.textTheme.bodySmall?.copyWith(color: ink.ash);
 
     Widget section(String title) => Padding(
@@ -271,9 +272,12 @@ class ThisLandSheet extends ConsumerWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(line.nameFor(french),
-                  style: theme.textTheme.bodyMedium
-                      ?.copyWith(fontWeight: FontWeight.w600)),
+              Text(
+                line.nameFor(french),
+                style: theme.textTheme.bodyMedium?.copyWith(
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
               if (line.noteFor(french).isNotEmpty)
                 Text(line.noteFor(french), style: small),
             ],
@@ -290,7 +294,7 @@ class ThisLandSheet extends ConsumerWidget {
     final focus = place.isSpot
         ? [
             for (final p in geo.pathOf(placeId))
-              if (p.isSpot) p
+              if (p.isSpot) p,
           ]
         : const <GeoPlace>[];
     return SingleChildScrollView(
@@ -306,8 +310,10 @@ class ThisLandSheet extends ConsumerWidget {
                 Icon(_geoPlaceIcon(spot), size: IconSize.s16, color: ink.gold),
                 const SizedBox(width: 6),
                 Expanded(
-                  child: Text(_capitalised(spot.nameFor(french)),
-                      style: theme.textTheme.titleSmall),
+                  child: Text(
+                    _capitalised(spot.nameFor(french)),
+                    style: theme.textTheme.titleSmall,
+                  ),
                 ),
               ],
             ),
@@ -322,10 +328,7 @@ class ThisLandSheet extends ConsumerWidget {
           if (focus.isNotEmpty) const Divider(height: 12),
           Text(tr(ref, 'geo_this_land').toUpperCase(), style: caption),
           const SizedBox(height: 4),
-          Text(
-            _capitalised((zone ?? place).nameFor(french)),
-            style: heading,
-          ),
+          Text(_capitalised((zone ?? place).nameFor(french)), style: heading),
           if (biome != null) ...[
             const SizedBox(height: 6),
             _BiomeChip(biome: biome, french: french),
@@ -365,12 +368,17 @@ class ThisLandSheet extends ConsumerWidget {
                   padding: const EdgeInsets.only(bottom: 4),
                   child: Row(
                     children: [
-                      Icon(hazardIcon(hazard),
-                          size: IconSize.s16, color: ink.ember),
+                      Icon(
+                        hazardIcon(hazard),
+                        size: IconSize.s16,
+                        color: ink.ember,
+                      ),
                       const SizedBox(width: 6),
                       Expanded(
-                        child: Text(hazard.nameFor(french),
-                            style: theme.textTheme.bodyMedium),
+                        child: Text(
+                          hazard.nameFor(french),
+                          style: theme.textTheme.bodyMedium,
+                        ),
                       ),
                     ],
                   ),
@@ -379,10 +387,15 @@ class ThisLandSheet extends ConsumerWidget {
           ],
           if (country != null) ...[
             section(tr(ref, 'geo_level_country')),
-            Text(_capitalised(country.nameFor(french)),
-                style: theme.textTheme.titleSmall),
-            Text(rulerLine(country),
-                key: const ValueKey('this_land_ruler'), style: small),
+            Text(
+              _capitalised(country.nameFor(french)),
+              style: theme.textTheme.titleSmall,
+            ),
+            Text(
+              rulerLine(country),
+              key: const ValueKey('this_land_ruler'),
+              style: small,
+            ),
             if (country.blurbFor(french).isNotEmpty) ...[
               const SizedBox(height: 4),
               Text(country.blurbFor(french), style: prose),
@@ -390,8 +403,10 @@ class ThisLandSheet extends ConsumerWidget {
           ],
           if (continent != null) ...[
             section(tr(ref, 'geo_level_continent')),
-            Text(_capitalised(continent.nameFor(french)),
-                style: theme.textTheme.titleSmall),
+            Text(
+              _capitalised(continent.nameFor(french)),
+              style: theme.textTheme.titleSmall,
+            ),
             if (continent.blurbFor(french).isNotEmpty) ...[
               const SizedBox(height: 4),
               Text(continent.blurbFor(french), style: prose),
@@ -429,7 +444,10 @@ class _BiomeChip extends StatelessWidget {
             child: Text(
               biome.nameFor(french),
               style: TextStyle(
-                  fontFamily: InkFonts.system, fontSize: 12, color: ink.heal),
+                fontFamily: InkFonts.system,
+                fontSize: 12,
+                color: ink.heal,
+              ),
             ),
           ),
         ],
@@ -455,12 +473,16 @@ class LandsCodex extends ConsumerWidget {
     final ink = InkColors.of(context);
     final found = story == null
         ? const <String>{}
-        : geo.discoveredPlaces(
-            {...play.visitedNodeIds, play.currentNodeId}, story);
+        : geo.discoveredPlaces({
+            ...play.visitedNodeIds,
+            play.currentNodeId,
+          }, story);
     if (found.isEmpty) {
-      return Text(tr(ref, 'geo_codex_empty'),
-          key: const ValueKey('lands_codex_empty'),
-          style: theme.textTheme.bodyMedium?.copyWith(color: ink.ash));
+      return Text(
+        tr(ref, 'geo_codex_empty'),
+        key: const ValueKey('lands_codex_empty'),
+        style: theme.textTheme.bodyMedium?.copyWith(color: ink.ash),
+      );
     }
     final continents = geo.continents;
     return Column(
@@ -470,7 +492,11 @@ class LandsCodex extends ConsumerWidget {
         for (final continent in continents)
           if (found.contains(continent.id))
             _ContinentEntry(
-                geo: geo, continent: continent, found: found, french: french),
+              geo: geo,
+              continent: continent,
+              found: found,
+              french: french,
+            ),
         if (continents.any((c) => !found.contains(c.id))) const _Unknown(),
       ],
     );
@@ -490,12 +516,14 @@ class _Unknown extends ConsumerWidget {
       child: Semantics(
         label: tr(ref, 'geo_unknown_place'),
         child: ExcludeSemantics(
-          child: Text('…',
-              key: const ValueKey('geo_unknown'),
-              style: Theme.of(context)
-                  .textTheme
-                  .bodyMedium
-                  ?.copyWith(color: InkColors.of(context).ash)),
+          child: Text(
+            '…',
+            key: const ValueKey('geo_unknown'),
+            style: Theme.of(context)
+                .textTheme
+                .bodyMedium
+                ?.copyWith(color: InkColors.of(context).ash),
+          ),
         ),
       ),
     );
@@ -538,16 +566,21 @@ class _ContinentEntry extends ConsumerWidget {
               Icon(Icons.public, size: IconSize.s16, color: ink.gold),
               const SizedBox(width: 6),
               Expanded(
-                child: Text(_capitalised(continent.nameFor(french)),
-                    key: ValueKey('geo_codex_${continent.id}'),
-                    style: theme.textTheme.titleMedium
-                        ?.copyWith(fontFamily: InkFonts.display)),
+                child: Text(
+                  _capitalised(continent.nameFor(french)),
+                  key: ValueKey('geo_codex_${continent.id}'),
+                  style: theme.textTheme.titleMedium?.copyWith(
+                    fontFamily: InkFonts.display,
+                  ),
+                ),
               ),
             ],
           ),
           if (continent.blurbFor(french).isNotEmpty)
-            Text(continent.blurbFor(french),
-                style: theme.textTheme.bodySmall?.copyWith(color: ink.ash)),
+            Text(
+              continent.blurbFor(french),
+              style: theme.textTheme.bodySmall?.copyWith(color: ink.ash),
+            ),
           for (final country in geo.childrenOf(continent.id))
             if (found.contains(country.id))
               Theme(
@@ -557,23 +590,33 @@ class _ContinentEntry extends ConsumerWidget {
                   tilePadding: const EdgeInsets.only(left: 8),
                   childrenPadding: const EdgeInsets.only(left: 8, bottom: 8),
                   expandedCrossAxisAlignment: CrossAxisAlignment.stretch,
-                  leading: Icon(Icons.flag_outlined,
-                      size: IconSize.s16, color: ink.ash),
+                  leading: Icon(
+                    Icons.flag_outlined,
+                    size: IconSize.s16,
+                    color: ink.ash,
+                  ),
                   title: Text(_capitalised(country.nameFor(french))),
-                  subtitle: Text(rulerLine(country),
-                      style:
-                          theme.textTheme.bodySmall?.copyWith(color: ink.ash)),
+                  subtitle: Text(
+                    rulerLine(country),
+                    style: theme.textTheme.bodySmall?.copyWith(color: ink.ash),
+                  ),
                   children: [
                     if (country.blurbFor(french).isNotEmpty)
                       Padding(
                         padding: const EdgeInsets.only(bottom: 8),
-                        child: Text(country.blurbFor(french),
-                            style: theme.textTheme.bodySmall),
+                        child: Text(
+                          country.blurbFor(french),
+                          style: theme.textTheme.bodySmall,
+                        ),
                       ),
                     for (final zone in geo.childrenOf(country.id))
                       if (found.contains(zone.id))
                         _ZoneCard(
-                            geo: geo, zone: zone, found: found, french: french)
+                          geo: geo,
+                          zone: zone,
+                          found: found,
+                          french: french,
+                        )
                       else
                         const _Unknown(indent: 8),
                   ],
@@ -610,12 +653,15 @@ class _ZoneCard extends ConsumerWidget {
     final small = theme.textTheme.bodySmall?.copyWith(color: ink.ash);
     Widget label(String text) => Padding(
           padding: const EdgeInsets.only(top: 8, bottom: 4),
-          child: Text(text.toUpperCase(),
-              style: TextStyle(
-                  fontFamily: InkFonts.system,
-                  fontSize: 10.5,
-                  letterSpacing: 1.1,
-                  color: ink.gold)),
+          child: Text(
+            text.toUpperCase(),
+            style: TextStyle(
+              fontFamily: InkFonts.system,
+              fontSize: 10.5,
+              letterSpacing: 1.1,
+              color: ink.gold,
+            ),
+          ),
         );
     Widget chips(List<GeoLine> lines) => Wrap(
           spacing: 6,
@@ -643,8 +689,10 @@ class _ZoneCard extends ConsumerWidget {
               child: Row(
                 children: [
                   Expanded(
-                    child: Text(_capitalised(zone.nameFor(french)),
-                        style: theme.textTheme.titleSmall),
+                    child: Text(
+                      _capitalised(zone.nameFor(french)),
+                      style: theme.textTheme.titleSmall,
+                    ),
                   ),
                   if (biome != null) _BiomeChip(biome: biome, french: french),
                 ],
@@ -670,28 +718,34 @@ class _ZoneCard extends ConsumerWidget {
                   child: Row(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Icon(_geoPlaceIcon(location),
-                          size: IconSize.s16, color: ink.ash),
+                      Icon(
+                        _geoPlaceIcon(location),
+                        size: IconSize.s16,
+                        color: ink.ash,
+                      ),
                       const SizedBox(width: 6),
                       Expanded(
                         child: Text.rich(
-                          TextSpan(children: [
-                            TextSpan(
-                                text: _capitalised(location.nameFor(french)),
-                                style: theme.textTheme.bodyMedium),
-                            // Its quarters, found or not.
-                            if (geo.childrenOf(location.id).isNotEmpty)
+                          TextSpan(
+                            children: [
                               TextSpan(
-                                text: ' · ${[
-                                  for (final district
-                                      in geo.childrenOf(location.id))
-                                    found.contains(district.id)
-                                        ? district.nameFor(french)
-                                        : '…',
-                                ].join(', ')}',
-                                style: small,
+                                text: _capitalised(location.nameFor(french)),
+                                style: theme.textTheme.bodyMedium,
                               ),
-                          ]),
+                              // Its quarters, found or not.
+                              if (geo.childrenOf(location.id).isNotEmpty)
+                                TextSpan(
+                                  text: ' · ${[
+                                    for (final district
+                                        in geo.childrenOf(location.id))
+                                      found.contains(district.id)
+                                          ? district.nameFor(french)
+                                          : '…'
+                                  ].join(', ')}',
+                                  style: small,
+                                ),
+                            ],
+                          ),
                           key: ValueKey('geo_codex_${location.id}'),
                         ),
                       ),
@@ -822,8 +876,10 @@ class _PlaceTraits extends ConsumerWidget {
               Icon(icon, size: IconSize.inline, color: colour ?? ink.ash),
               const SizedBox(width: 4),
               Flexible(
-                child: Text(text,
-                    style: TextStyle(fontSize: 11, color: colour ?? ink.ash)),
+                child: Text(
+                  text,
+                  style: TextStyle(fontSize: 11, color: colour ?? ink.ash),
+                ),
               ),
             ],
           ),
@@ -854,14 +910,18 @@ class _PlaceTraits extends ConsumerWidget {
           chip(
             Icons.flag_outlined,
             tr(ref, 'place_held_by').replaceAll(
-                '{clan}', clans.faction(holder)?.nameFor(language) ?? holder),
+              '{clan}',
+              clans.faction(holder)?.nameFor(language) ?? holder,
+            ),
           ),
         for (final tag in geoPlaceTags)
           if (tags.contains(tag))
             chip(Icons.label_outline, tr(ref, 'place_tag_$tag')),
         if (watches > 0)
-          chip(Icons.directions_walk,
-              tr(ref, 'place_walk').replaceAll('{n}', '$watches')),
+          chip(
+            Icons.directions_walk,
+            tr(ref, 'place_walk').replaceAll('{n}', '$watches'),
+          ),
       ],
     );
   }

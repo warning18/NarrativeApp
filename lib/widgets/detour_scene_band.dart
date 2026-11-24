@@ -34,7 +34,7 @@ DetourKit? detourKitOf(String? biome) => switch (biome) {
       'fen' => (
           const Color(0xFF2A3F36),
           const Color(0xFF6C8A6E),
-          Icons.grass_outlined
+          Icons.grass_outlined,
         ),
       'frost' => (
           const Color(0xFF6E8FA8),
@@ -49,17 +49,17 @@ DetourKit? detourKitOf(String? biome) => switch (biome) {
       'jungle' => (
           const Color(0xFF1F3A25),
           const Color(0xFF5E9A5A),
-          Icons.park_outlined
+          Icons.park_outlined,
         ),
       'temperate' => (
           const Color(0xFF3B5367),
           const Color(0xFFA7B88F),
-          Icons.landscape_outlined
+          Icons.landscape_outlined,
         ),
       _ => (
           const Color(0xFF2B2438),
           const Color(0xFF7E6E8F),
-          Icons.explore_outlined
+          Icons.explore_outlined,
         ),
     };
 
@@ -105,168 +105,196 @@ class DetourSceneBand extends StatelessWidget {
     final progress = count <= 1 ? 1.0 : (at + 1) / count;
     final art = ClipRRect(
       borderRadius: BorderRadius.circular(8),
-      child: LayoutBuilder(builder: (context, box) {
-        final height = box.maxHeight.isFinite ? box.maxHeight : 190.0;
-        return Stack(
-          fit: StackFit.expand,
-          children: [
-            if (kit != null)
-              SideViewScene(
-                layers: switch (kit) {
-                  DetourKit.desert => withSceneWindow(
-                      desertLayers(progress: progress),
-                      'desert',
-                      (sceneWindowOfId(scene.title) + at) % sceneWindowCount),
-                  DetourKit.ruins => withSceneWindow(
-                      ruinsLayers(progress: progress),
-                      'ruins',
-                      (sceneWindowOfId(scene.title) + at) % sceneWindowCount),
-                },
-                moving: false,
-                height: height,
-              )
-            else
-              DecoratedBox(
-                decoration: BoxDecoration(
-                  gradient: LinearGradient(
-                    begin: Alignment.topCenter,
-                    end: Alignment.bottomCenter,
-                    colors: [top, ground],
-                  ),
-                ),
-                child: Center(
-                  child: Icon(glyph,
-                      size: 96, color: Colors.white.withValues(alpha: 0.14)),
-                ),
-              ),
-            Positioned(
-              left: 8,
-              top: 8,
-              right: 96,
-              child: Align(
-                alignment: Alignment.topLeft,
-                child: Container(
-                  padding: const EdgeInsets.fromLTRB(10, 6, 12, 7),
+      child: LayoutBuilder(
+        builder: (context, box) {
+          final height = box.maxHeight.isFinite ? box.maxHeight : 190.0;
+          return Stack(
+            fit: StackFit.expand,
+            children: [
+              if (kit != null)
+                SideViewScene(
+                  layers: switch (kit) {
+                    DetourKit.desert => withSceneWindow(
+                        desertLayers(progress: progress),
+                        'desert',
+                        (sceneWindowOfId(scene.title) + at) % sceneWindowCount,
+                      ),
+                    DetourKit.ruins => withSceneWindow(
+                        ruinsLayers(progress: progress),
+                        'ruins',
+                        (sceneWindowOfId(scene.title) + at) % sceneWindowCount,
+                      ),
+                  },
+                  moving: false,
+                  height: height,
+                )
+              else
+                DecoratedBox(
                   decoration: BoxDecoration(
-                    color: Palette.night8a.withValues(alpha: 0.82),
-                    borderRadius: BorderRadius.circular(8),
+                    gradient: LinearGradient(
+                      begin: Alignment.topCenter,
+                      end: Alignment.bottomCenter,
+                      colors: [top, ground],
+                    ),
                   ),
-                  child: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Icon(
+                  child: Center(
+                    child: Icon(
+                      glyph,
+                      size: 96,
+                      color: Colors.white.withValues(alpha: 0.14),
+                    ),
+                  ),
+                ),
+              Positioned(
+                left: 8,
+                top: 8,
+                right: 96,
+                child: Align(
+                  alignment: Alignment.topLeft,
+                  child: Container(
+                    padding: const EdgeInsets.fromLTRB(10, 6, 12, 7),
+                    decoration: BoxDecoration(
+                      color: Palette.night8a.withValues(alpha: 0.82),
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Icon(
                           scene.tags.contains(detourLandmarkTag)
                               ? Icons.star_outline
                               : Icons.explore_outlined,
                           size: IconSize.s32,
-                          color: ink.gold),
-                      const SizedBox(width: 8),
-                      Flexible(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            Text(detourLabel.toUpperCase(),
+                          color: ink.gold,
+                        ),
+                        const SizedBox(width: 8),
+                        Flexible(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Text(
+                                detourLabel.toUpperCase(),
                                 style: TextStyle(
-                                    fontFamily: InkFonts.system,
-                                    fontSize: 9.5,
-                                    letterSpacing: 1,
-                                    color: ink.gold)),
-                            Text(title,
+                                  fontFamily: InkFonts.system,
+                                  fontSize: 9.5,
+                                  letterSpacing: 1,
+                                  color: ink.gold,
+                                ),
+                              ),
+                              Text(
+                                title,
                                 key: const Key('journey_detour_title'),
                                 maxLines: 2,
                                 overflow: TextOverflow.ellipsis,
                                 style: const TextStyle(
-                                    fontFamily: InkFonts.display,
-                                    fontSize: 16,
-                                    height: 1.1,
-                                    color: Color(0xFFE9E3D5))),
-                          ],
+                                  fontFamily: InkFonts.display,
+                                  fontSize: 16,
+                                  height: 1.1,
+                                  color: Color(0xFFE9E3D5),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+              // The beat, as dots and as "2 / 3".
+              Positioned(
+                right: 8,
+                top: 8,
+                child: Container(
+                  key: const Key('journey_detour_beat'),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 8,
+                    vertical: 6,
+                  ),
+                  decoration: BoxDecoration(
+                    color: Palette.night8a.withValues(alpha: 0.82),
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          for (var i = 0; i < count; i++)
+                            Container(
+                              margin: const EdgeInsets.symmetric(horizontal: 2),
+                              width: 8,
+                              height: 8,
+                              decoration: BoxDecoration(
+                                shape: BoxShape.circle,
+                                color: i <= at ? ink.gold : Colors.transparent,
+                                border: Border.all(color: ink.gold, width: 1.2),
+                              ),
+                            ),
+                        ],
+                      ),
+                      const SizedBox(height: 3),
+                      Text(
+                        '${at + 1} / $count',
+                        style: const TextStyle(
+                          fontFamily: InkFonts.system,
+                          fontSize: 11,
+                          color: Color(0xFFE9E3D5),
                         ),
                       ),
                     ],
                   ),
                 ),
               ),
-            ),
-            // The beat, as dots and as "2 / 3".
-            Positioned(
-              right: 8,
-              top: 8,
-              child: Container(
-                key: const Key('journey_detour_beat'),
-                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 6),
-                decoration: BoxDecoration(
-                  color: Palette.night8a.withValues(alpha: 0.82),
-                  borderRadius: BorderRadius.circular(8),
-                ),
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        for (var i = 0; i < count; i++)
-                          Container(
-                            margin: const EdgeInsets.symmetric(horizontal: 2),
-                            width: 8,
-                            height: 8,
-                            decoration: BoxDecoration(
-                              shape: BoxShape.circle,
-                              color: i <= at ? ink.gold : Colors.transparent,
-                              border: Border.all(color: ink.gold, width: 1.2),
-                            ),
+              if (place.isNotEmpty)
+                Positioned(
+                  left: 8,
+                  bottom: 8,
+                  right: 8,
+                  child: Align(
+                    alignment: Alignment.bottomLeft,
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 8,
+                        vertical: 4,
+                      ),
+                      decoration: BoxDecoration(
+                        color: Palette.night8a.withValues(alpha: 0.82),
+                        borderRadius: BorderRadius.circular(6),
+                      ),
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          const Icon(
+                            Icons.place_outlined,
+                            size: IconSize.s16,
+                            color: Palette.ashDark,
                           ),
-                      ],
-                    ),
-                    const SizedBox(height: 3),
-                    Text('${at + 1} / $count',
-                        style: const TextStyle(
-                            fontFamily: InkFonts.system,
-                            fontSize: 11,
-                            color: Color(0xFFE9E3D5))),
-                  ],
-                ),
-              ),
-            ),
-            if (place.isNotEmpty)
-              Positioned(
-                left: 8,
-                bottom: 8,
-                right: 8,
-                child: Align(
-                  alignment: Alignment.bottomLeft,
-                  child: Container(
-                    padding:
-                        const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                    decoration: BoxDecoration(
-                      color: Palette.night8a.withValues(alpha: 0.82),
-                      borderRadius: BorderRadius.circular(6),
-                    ),
-                    child: Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        const Icon(Icons.place_outlined,
-                            size: IconSize.s16, color: Palette.ashDark),
-                        const SizedBox(width: 4),
-                        Flexible(
-                          child: Text(place,
+                          const SizedBox(width: 4),
+                          Flexible(
+                            child: Text(
+                              place,
                               key: const Key('journey_detour_place'),
                               maxLines: 1,
                               overflow: TextOverflow.ellipsis,
                               style: const TextStyle(
-                                  fontFamily: InkFonts.system,
-                                  fontSize: 11.5,
-                                  color: Color(0xFFE9E3D5))),
-                        ),
-                      ],
+                                fontFamily: InkFonts.system,
+                                fontSize: 11.5,
+                                color: Color(0xFFE9E3D5),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
                   ),
                 ),
-              ),
-          ],
-        );
-      }),
+            ],
+          );
+        },
+      ),
     );
     if (text.isEmpty && note.isEmpty) {
       return KeyedSubtree(key: const Key('journey_detour_scene'), child: art);
@@ -296,14 +324,22 @@ class DetourSceneBand extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     if (note.isNotEmpty) ...[
-                      Text(note,
-                          style: theme.textTheme.bodySmall?.copyWith(
-                              fontStyle: FontStyle.italic, color: ash)),
+                      Text(
+                        note,
+                        style: theme.textTheme.bodySmall?.copyWith(
+                          fontStyle: FontStyle.italic,
+                          color: ash,
+                        ),
+                      ),
                       const SizedBox(height: 6),
                     ],
-                    Text(text,
-                        style: theme.textTheme.bodyMedium?.copyWith(
-                            fontFamily: InkFonts.prose, height: 1.4)),
+                    Text(
+                      text,
+                      style: theme.textTheme.bodyMedium?.copyWith(
+                        fontFamily: InkFonts.prose,
+                        height: 1.4,
+                      ),
+                    ),
                   ],
                 ),
               ),

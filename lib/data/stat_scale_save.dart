@@ -69,8 +69,10 @@ const List<String> _abilities = [
 /// [json] on the small scale when it predates it ([statScaleDue]), as it
 /// was otherwise. Its saveVersion is left as written, so the other
 /// migrations keyed on it still see the old version.
-Map<String, dynamic> rescaledSave(Map<String, dynamic> json,
-    {int allyFullHealth = 1 << 30}) {
+Map<String, dynamic> rescaledSave(
+  Map<String, dynamic> json, {
+  int allyFullHealth = 1 << 30,
+}) {
   if (!statScaleDue(json)) return json;
   int read(String key, int fallback) =>
       (json[key] as num?)?.toInt() ?? fallback;
@@ -79,8 +81,11 @@ Map<String, dynamic> rescaledSave(Map<String, dynamic> json,
   return {
     ...json,
     'maxHealth': newMax,
-    'currentHealth':
-        rescaleCurrentHealth(read('currentHealth', oldMax), oldMax, newMax),
+    'currentHealth': rescaleCurrentHealth(
+      read('currentHealth', oldMax),
+      oldMax,
+      newMax,
+    ),
     'baseDamage': max(1, rescaleAmount(read('baseDamage', 10))),
     'baseArmor': max(0, rescaleAmount(read('baseArmor', 0))),
     for (final stat in _abilities)
@@ -95,8 +100,10 @@ Map<String, dynamic> rescaledSave(Map<String, dynamic> json,
               ...Map<String, dynamic>.from(raw),
               if (raw['currentHealth'] is num &&
                   (raw['currentHealth'] as num) < allyFullHealth)
-                'currentHealth': max((raw['currentHealth'] as num) > 0 ? 1 : 0,
-                    rescaleAmount((raw['currentHealth'] as num).toInt())),
+                'currentHealth': max(
+                  (raw['currentHealth'] as num) > 0 ? 1 : 0,
+                  rescaleAmount((raw['currentHealth'] as num).toInt()),
+                ),
             }
           else
             raw,

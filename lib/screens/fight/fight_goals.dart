@@ -18,18 +18,24 @@ extension _FightGoals on _FightScreenState {
           enemy.fled = true;
           enemy.currentHealth = 0;
         }
-        entries
-            .add(_LogEntry(trFor(lang, 'goal_won_rout_log'), _LogKind.victory));
+        entries.add(
+          _LogEntry(trFor(lang, 'goal_won_rout_log'), _LogKind.victory),
+        );
       case FightGoalKind.subdue:
         for (final enemy in _enemies) {
           if (!enemy.isAlive || enemy.yielded) continue;
           if (!yieldsNow(enemy.currentHealth, enemy.maxHealth)) continue;
           enemy.yielded = true;
           enemy.currentHealth = 0;
-          entries.add(_LogEntry(
-              trFor(lang, 'goal_yield_log')
-                  .replaceAll('{name}', enemy.displayName),
-              _LogKind.victory));
+          entries.add(
+            _LogEntry(
+              trFor(
+                lang,
+                'goal_yield_log',
+              ).replaceAll('{name}', enemy.displayName),
+              _LogKind.victory,
+            ),
+          );
         }
       case FightGoalKind.hold:
       case FightGoalKind.slay:
@@ -46,29 +52,39 @@ extension _FightGoals on _FightScreenState {
     for (final enemy in _enemies) {
       if (!enemy.isAlive || enemy.damageThisRound <= 0) continue;
       if (!executes(
-          health: enemy.currentHealth,
-          maxHealth: enemy.maxHealth,
-          boss: boss(enemy))) {
+        health: enemy.currentHealth,
+        maxHealth: enemy.maxHealth,
+        boss: boss(enemy),
+      )) {
         continue;
       }
       enemy.currentHealth = 0;
-      entries.add(_LogEntry(
+      entries.add(
+        _LogEntry(
           trFor(lang, 'execute_log').replaceAll('{name}', enemy.displayName),
-          _LogKind.playerDamage));
+          _LogKind.playerDamage,
+        ),
+      );
     }
     void flee(_EnemyMember e) {
       e.fled = true;
       e.currentHealth = 0;
-      entries.add(_LogEntry(
-          '${e.displayName} ${trFor(lang, 'flees_suffix')}', _LogKind.info));
+      entries.add(
+        _LogEntry(
+          '${e.displayName} ${trFor(lang, 'flees_suffix')}',
+          _LogKind.info,
+        ),
+      );
     }
 
     // A boss's escort stands by its boss: no flight in a boss's fight.
     if (_enemies.any(boss)) return;
     if (_goal.kind != FightGoalKind.rout && !_length.packBroken) {
       _length.leaderKey ??= () {
-        final i = packLeaderIndex([for (final e in _enemies) e.maxHealth],
-            [for (final e in _enemies) !boss(e)]);
+        final i = packLeaderIndex(
+          [for (final e in _enemies) e.maxHealth],
+          [for (final e in _enemies) !boss(e)],
+        );
         return i == null ? '' : _enemies[i].key;
       }();
       final leader = _enemyByKey(_length.leaderKey!);
@@ -113,18 +129,24 @@ extension _FightGoals on _FightScreenState {
       return;
     }
     final reward = scaledReward(
-        (enemy.data['goldReward'] as num?)?.toInt() ?? 0, _playerLevel);
+      (enemy.data['goldReward'] as num?)?.toInt() ?? 0,
+      _playerLevel,
+    );
     final hit = plunderPerHit(reward);
     if (hit <= 0) return;
     final before = enemy.stash;
     enemy.stash = plunderStashAfter(before, hit, plunderCap(reward));
     final lifted = enemy.stash - before;
     if (lifted <= 0) return;
-    _log.add(_LogEntry(
-        trFor(lang, 'plunder_hit_log')
-            .replaceAll('{name}', enemy.displayName)
-            .replaceAll('{n}', '$lifted'),
-        _LogKind.enemyDamage));
+    _log.add(
+      _LogEntry(
+        trFor(
+          lang,
+          'plunder_hit_log',
+        ).replaceAll('{name}', enemy.displayName).replaceAll('{n}', '$lifted'),
+        _LogKind.enemyDamage,
+      ),
+    );
   }
 
   /// The goal's name and rules text, with its numbers filled in.
@@ -164,8 +186,9 @@ extension _FightGoals on _FightScreenState {
                 Text(
                   '${tr(ref, 'goal_label')}: ${_goalName()}',
                   style: Theme.of(context).textTheme.titleSmall?.copyWith(
-                      color: colorScheme.onSecondaryContainer,
-                      fontWeight: FontWeight.bold),
+                        color: colorScheme.onSecondaryContainer,
+                        fontWeight: FontWeight.bold,
+                      ),
                 ),
                 Text(
                   _goalText(),
@@ -205,8 +228,9 @@ extension _FightGoals on _FightScreenState {
                 Text(
                   '${tr(ref, 'doctrine_label')}: ${tr(ref, doctrine.nameKey)}',
                   style: Theme.of(context).textTheme.titleSmall?.copyWith(
-                      color: colorScheme.onErrorContainer,
-                      fontWeight: FontWeight.bold),
+                        color: colorScheme.onErrorContainer,
+                        fontWeight: FontWeight.bold,
+                      ),
                 ),
                 Text(
                   tr(ref, doctrine.descriptionKey),
@@ -236,19 +260,26 @@ extension _FightGoals on _FightScreenState {
             tip: _goalText(),
           ),
         if (_doctrine != null)
-          _telegraphChip(Icons.gavel, tr(ref, _doctrine!.nameKey),
-              tip: tr(ref, _doctrine!.descriptionKey)),
+          _telegraphChip(
+            Icons.gavel,
+            tr(ref, _doctrine!.nameKey),
+            tip: tr(ref, _doctrine!.descriptionKey),
+          ),
       ];
 
   /// The marks on an enemy's card: the Rout's captain, a thief's purse.
   List<Widget> _goalMarks(_EnemyMember enemy) => [
         if (enemy.isCaptain && enemy.isAlive)
           _stateChip(
-              Icons.military_tech, tr(ref, 'goal_captain'), Palette.amberDeep),
+            Icons.military_tech,
+            tr(ref, 'goal_captain'),
+            Palette.amberDeep,
+          ),
         if (enemy.stash > 0 && enemy.isAlive)
           _stateChip(
-              Icons.savings_outlined,
-              tr(ref, 'plunder_stash_chip').replaceAll('{n}', '${enemy.stash}'),
-              Palette.earth),
+            Icons.savings_outlined,
+            tr(ref, 'plunder_stash_chip').replaceAll('{n}', '${enemy.stash}'),
+            Palette.earth,
+          ),
       ];
 }

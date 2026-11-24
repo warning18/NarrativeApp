@@ -24,9 +24,12 @@ class PerkList extends ConsumerWidget {
         if ((ranks[perk.name] ?? 0) > 0) perk,
     ];
     if (owned.isEmpty) {
-      return Text(tr(ref, 'perks_none'),
-          style: theme.textTheme.bodySmall
-              ?.copyWith(color: theme.colorScheme.onSurfaceVariant));
+      return Text(
+        tr(ref, 'perks_none'),
+        style: theme.textTheme.bodySmall?.copyWith(
+          color: theme.colorScheme.onSurfaceVariant,
+        ),
+      );
     }
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -38,9 +41,11 @@ class PerkList extends ConsumerWidget {
             contentPadding: EdgeInsets.zero,
             leading: Icon(Icons.stars, color: theme.colorScheme.primary),
             title: Text(tr(ref, perkNameKey(perk))),
-            subtitle: Text(tr(ref, perkDescKey(perk)),
-                maxLines: compact ? 1 : null,
-                overflow: compact ? TextOverflow.ellipsis : null),
+            subtitle: Text(
+              tr(ref, perkDescKey(perk)),
+              maxLines: compact ? 1 : null,
+              overflow: compact ? TextOverflow.ellipsis : null,
+            ),
             onTap: compact
                 ? () => showDetailDialog(
                       context,
@@ -56,9 +61,11 @@ class PerkList extends ConsumerWidget {
                     )
                 : null,
             trailing: perkInfo[perk]!.maxRank > 1
-                ? Text(tr(ref, 'perk_rank')
-                    .replaceAll('{n}', '${ranks[perk.name]}')
-                    .replaceAll('{max}', '${perkInfo[perk]!.maxRank}'))
+                ? Text(
+                    tr(ref, 'perk_rank')
+                        .replaceAll('{n}', '${ranks[perk.name]}')
+                        .replaceAll('{max}', '${perkInfo[perk]!.maxRank}'),
+                  )
                 : null,
           ),
       ],

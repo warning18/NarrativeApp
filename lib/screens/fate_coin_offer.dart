@@ -38,6 +38,7 @@ Future<bool> offerFateCoin(
 }
 
 /// "The coin lands heads, and is spent." in [language].
-String fateCoinLandedLine(FateCoinFace face, AppLanguage language) =>
-    trFor(language, 'fate_coin_landed')
-        .replaceAll('{face}', trFor(language, 'fate_coin_${face.name}'));
+String fateCoinLandedLine(FateCoinFace face, AppLanguage language) => trFor(
+      language,
+      'fate_coin_landed',
+    ).replaceAll('{face}', trFor(language, 'fate_coin_${face.name}'));

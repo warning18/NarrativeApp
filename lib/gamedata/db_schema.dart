@@ -133,7 +133,7 @@ const List<String> _diceTamperOptions = [
   'hex',
   'silence',
   'curse',
-  'mirror'
+  'mirror',
 ];
 
 /// The rule words a die face can carry (v1.182, see face_keywords.dart).
@@ -179,7 +179,7 @@ const List<String> spellScalingOptions = [
   '',
   'intelligence',
   'wisdom',
-  'strength'
+  'strength',
 ];
 
 const List<String> slotTypeOptions = ['Weapon', 'Shield', 'Utility', 'Sail'];

@@ -35,7 +35,10 @@ int sessionCasterDamage(
     intelligence: session.intelligence,
   );
   final aligned = alignmentGearBonusFor(
-      session.equippedItemIds, items, session.alignmentLabel);
+    session.equippedItemIds,
+    items,
+    session.alignmentLabel,
+  );
   final prefix = elementFieldPrefixes[element];
   final elemental = prefix == null
       ? 0
@@ -100,9 +103,11 @@ List<SpellSpec> spellsForProfession(
       if (spells[id] != null) spells[id]!,
   ];
   final rest = spells.values
-      .where((s) =>
-          !knownSpellIds.contains(s.id) &&
-          (s.professionId.isEmpty || s.professionId == professionId))
+      .where(
+        (s) =>
+            !knownSpellIds.contains(s.id) &&
+            (s.professionId.isEmpty || s.professionId == professionId),
+      )
       .toList()
     ..sort((a, b) => a.name.compareTo(b.name));
   return [...known, ...rest];

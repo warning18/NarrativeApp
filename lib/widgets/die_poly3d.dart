@@ -35,7 +35,9 @@ double dieSolidScale(DieShape shape) => switch (shape) {
 /// well with the shared tip and turn; the d4 is turned further, so two of
 /// its faces show (square on it reads as a flat triangle), and the d10 is
 /// rolled so its apex points up: it stands, its front kite the largest face.
-({double tip, double turn, double roll}) dieRestPoseOf(DieShape shape) =>
+({double tip, double turn, double roll}) dieRestPoseOf(
+  DieShape shape,
+) =>
     switch (shape) {
       DieShape.d4 => (
           tip: dieRestTipX + 0.3,
@@ -131,8 +133,10 @@ class PolyDie3D extends StatelessWidget {
       final v = vcross(u, n);
       final pts = [
         for (final k in solid.faces[i])
-          Offset(vdot(vsub(solid.verts[k], c), u) * radius,
-              vdot(vsub(solid.verts[k], c), v) * radius)
+          Offset(
+            vdot(vsub(solid.verts[k], c), u) * radius,
+            vdot(vsub(solid.verts[k], c), v) * radius,
+          ),
       ];
       final r = pts.map((p) => p.distance).reduce(math.max);
       final box = _inradius(pts) * 1.7;
@@ -141,8 +145,24 @@ class PolyDie3D extends StatelessWidget {
           showGlyphs && facing >= _dieGlyphCosLimit && box >= _dieGlyphMinSide
               ? box
               : 0.0;
-      final basis = Matrix4(u[0], u[1], u[2], 0, v[0], v[1], v[2], 0, n[0],
-          n[1], n[2], 0, c[0] * radius, c[1] * radius, c[2] * radius, 1);
+      final basis = Matrix4(
+        u[0],
+        u[1],
+        u[2],
+        0,
+        v[0],
+        v[1],
+        v[2],
+        0,
+        n[0],
+        n[1],
+        n[2],
+        0,
+        c[0] * radius,
+        c[1] * radius,
+        c[2] * radius,
+        1,
+      );
       final matrix = (Matrix4.identity()..setEntry(3, 2, _perspective))
           .multiplied(model)
           .multiplied(basis)
@@ -190,15 +210,35 @@ Matrix4 _rest(DieSolid s) {
   final n = _outward(s, 0, c);
   final u = vnorm(vsub(s.verts[s.faces[0][0]], c));
   final v = vcross(u, n);
-  return Matrix4(u[0], v[0], -n[0], 0, u[1], v[1], -n[1], 0, u[2], v[2], -n[2],
-      0, 0, 0, 0, 1);
+  return Matrix4(
+    u[0],
+    v[0],
+    -n[0],
+    0,
+    u[1],
+    v[1],
+    -n[1],
+    0,
+    u[2],
+    v[2],
+    -n[2],
+    0,
+    0,
+    0,
+    0,
+    1,
+  );
 }
 
 /// Facet [i]'s unit normal, pointing out of the solid.
 Vec3 _outward(DieSolid s, int i, Vec3 c) {
   final f = s.faces[i];
-  var n = vnorm(vcross(
-      vsub(s.verts[f[1]], s.verts[f[0]]), vsub(s.verts[f[2]], s.verts[f[0]])));
+  var n = vnorm(
+    vcross(
+      vsub(s.verts[f[1]], s.verts[f[0]]),
+      vsub(s.verts[f[2]], s.verts[f[0]]),
+    ),
+  );
   if (vdot(n, c) < 0) n = [-n[0], -n[1], -n[2]];
   return n;
 }
@@ -240,8 +280,10 @@ class _Facet extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final fill =
-        Color.alphaBlend(face.color.withValues(alpha: 0.28), skin.base);
+    final fill = Color.alphaBlend(
+      face.color.withValues(alpha: 0.28),
+      skin.base,
+    );
     return SizedBox(
       width: side,
       height: side,
@@ -249,8 +291,14 @@ class _Facet extends StatelessWidget {
         fit: StackFit.expand,
         children: [
           CustomPaint(
-              painter: _FacetPainter(points, fill, skin.edge,
-                  muted ? 1 - light * 0.7 : 1 - light, front)),
+            painter: _FacetPainter(
+              points,
+              fill,
+              skin.edge,
+              muted ? 1 - light * 0.7 : 1 - light,
+              front,
+            ),
+          ),
           if (glyphBox > 0)
             Center(
               // Solid (v2.2.2): a glyph is never faded, the lamp darkens the
@@ -285,28 +333,33 @@ class _FacetPainter extends CustomPainter {
     final path = Path()..addPolygon(points, true);
     canvas.drawPath(path, Paint()..color = fill);
     canvas.drawPath(
-        path, Paint()..color = Colors.black.withValues(alpha: shade * 0.62));
+      path,
+      Paint()..color = Colors.black.withValues(alpha: shade * 0.62),
+    );
     if (front) {
       canvas.drawPath(
-          path,
-          Paint()
-            ..color = Colors.white.withValues(alpha: 0.16)
-            ..style = PaintingStyle.fill);
-      canvas.drawPath(
-          path,
-          Paint()
-            ..color = edge.withValues(alpha: 0.35)
-            ..style = PaintingStyle.stroke
-            ..strokeWidth = 7
-            ..strokeJoin = StrokeJoin.round);
-    }
-    canvas.drawPath(
         path,
         Paint()
-          ..color = front ? Color.lerp(edge, Colors.white, 0.45)! : edge
+          ..color = Colors.white.withValues(alpha: 0.16)
+          ..style = PaintingStyle.fill,
+      );
+      canvas.drawPath(
+        path,
+        Paint()
+          ..color = edge.withValues(alpha: 0.35)
           ..style = PaintingStyle.stroke
-          ..strokeWidth = front ? 3.2 : 1.8
-          ..strokeJoin = StrokeJoin.round);
+          ..strokeWidth = 7
+          ..strokeJoin = StrokeJoin.round,
+      );
+    }
+    canvas.drawPath(
+      path,
+      Paint()
+        ..color = front ? Color.lerp(edge, Colors.white, 0.45)! : edge
+        ..style = PaintingStyle.stroke
+        ..strokeWidth = front ? 3.2 : 1.8
+        ..strokeJoin = StrokeJoin.round,
+    );
   }
 
   @override

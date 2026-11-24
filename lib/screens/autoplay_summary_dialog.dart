@@ -51,10 +51,7 @@ class AutoplaySummaryDialog extends ConsumerWidget {
     final s = summary;
 
     Widget list(List<Widget> rows) => rows.isEmpty
-        ? Padding(
-            padding: const EdgeInsets.all(16),
-            child: Text(t('ptc_none')),
-          )
+        ? Padding(padding: const EdgeInsets.all(16), child: Text(t('ptc_none')))
         : ListView(padding: const EdgeInsets.all(8), children: rows);
     Widget row(String title, [String? subtitle]) => ListTile(
           dense: true,
@@ -70,17 +67,22 @@ class AutoplaySummaryDialog extends ConsumerWidget {
       (
         t('ptc_tab_state'),
         list([
-          row('${t('ptc_level')} ${s.level}',
-              '${s.raceId} · ${s.professionId}'),
+          row(
+            '${t('ptc_level')} ${s.level}',
+            '${s.raceId} · ${s.professionId}',
+          ),
           row('${t('ptc_gold')} ${s.gold}'),
-          row('${t('ptc_chapter')} ${s.chapter}',
-              '${t('ptc_scene')} ${s.nodeId}'),
+          row(
+            '${t('ptc_chapter')} ${s.chapter}',
+            '${t('ptc_scene')} ${s.nodeId}',
+          ),
           header(t('ptc_standings')),
           for (final st in s.standings)
             row(
-                clan(st.factionId),
-                '${trFor(lang, 'standing_tier_${st.tier.name}')} · '
-                '${st.value.round()}'),
+              clan(st.factionId),
+              '${trFor(lang, 'standing_tier_${st.tier.name}')} · '
+              '${st.value.round()}',
+            ),
         ]),
       ),
       (
@@ -104,11 +106,15 @@ class AutoplaySummaryDialog extends ConsumerWidget {
       (
         t('ptc_tab_banners'),
         list([
-          row(t('ptc_carried_banner'),
-              s.carriedBanner.isEmpty ? t('ptc_none') : clan(s.carriedBanner)),
+          row(
+            t('ptc_carried_banner'),
+            s.carriedBanner.isEmpty ? t('ptc_none') : clan(s.carriedBanner),
+          ),
           for (final b in s.banners)
-            row(clan(b.factionId),
-                '${t('ptc_chapter')} ${b.chapter} · ${b.gift}'),
+            row(
+              clan(b.factionId),
+              '${t('ptc_chapter')} ${b.chapter} · ${b.gift}',
+            ),
           if (s.offersWaiting > 0)
             row(t('ptc_offers_waiting'), '${s.offersWaiting}'),
         ]),
@@ -118,10 +124,11 @@ class AutoplaySummaryDialog extends ConsumerWidget {
         list([
           for (final f in s.fights)
             row(
-                f.name,
-                f.won
-                    ? (f.forced ? t('ptc_forced') : t('ptc_won'))
-                    : t('ptc_lost_fight')),
+              f.name,
+              f.won
+                  ? (f.forced ? t('ptc_forced') : t('ptc_won'))
+                  : t('ptc_lost_fight'),
+            ),
         ]),
       ),
       (

@@ -335,7 +335,7 @@ WeaponFamily weaponFamilyOf(String id, String name, int attackDamage) {
     'needle',
     'fang',
     'tooth',
-    'knuckle'
+    'knuckle',
   ])) {
     return WeaponFamily.dagger;
   }
@@ -362,8 +362,11 @@ VfxStyle _styleForWeapon(WeaponFamily family) => switch (family) {
 /// The style of a rolled die face: a plain strike (by the [weapon] in
 /// hand, a slash without one), a raised shield, a heal, mana, a miss, or
 /// the linked skill's own for a Skill face.
-VfxStyle styleForFace(String faceType, Map<String, dynamic>? linkedSkill,
-    {WeaponFamily? weapon}) {
+VfxStyle styleForFace(
+  String faceType,
+  Map<String, dynamic>? linkedSkill, {
+  WeaponFamily? weapon,
+}) {
   switch (faceType) {
     case 'Attack':
       return weapon == null ? VfxStyle.slash : _styleForWeapon(weapon);
@@ -566,7 +569,9 @@ double vfxGrandeur(VfxStyle style) => switch (style) {
 /// [power]: a plain strike covers about half, a legendary spell more than
 /// the whole card.
 double vfxExtentFor(VfxStyle style, double power) => min(
-    1.5, vfxGrandeur(style) * pow(power.clamp(minVfxPower, maxVfxScale), 1.5));
+      1.5,
+      vfxGrandeur(style) * pow(power.clamp(minVfxPower, maxVfxScale), 1.5),
+    );
 
 /// How many more (or fewer) particles a tier throws.
 double vfxCountFactor(VfxTier tier) => switch (tier) {

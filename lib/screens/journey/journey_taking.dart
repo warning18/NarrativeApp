@@ -54,7 +54,9 @@ extension _JourneyTaking on _JourneyViewState {
           step.onCard &&
           !MediaQuery.of(context).disableAnimations) {
         await chart.playBeat(
-            _groupColor(step.tags.group, InkColors.of(context)), _iconOf(step));
+          _groupColor(step.tags.group, InkColors.of(context)),
+          _iconOf(step),
+        );
         if (!mounted || moved()) return;
       }
       // Only a way that carries the party somewhere walks it there; a word
@@ -214,8 +216,11 @@ extension _JourneyTaking on _JourneyViewState {
     }
     final flow = stops.flowOf(from, choice, nextId: play.currentNodeId);
     if (flow case FlowReturnToHub(:final hubNodeId, :final hubStop)) {
-      ref.read(lastReturnProvider.notifier).state =
-          (hubNodeId: hubNodeId, hubStop: hubStop, fromNodeId: fromId);
+      ref.read(lastReturnProvider.notifier).state = (
+        hubNodeId: hubNodeId,
+        hubStop: hubStop,
+        fromNodeId: fromId,
+      );
     }
     return flow;
   }
@@ -260,8 +265,11 @@ extension _JourneyTaking on _JourneyViewState {
     if (from == null) return;
     final span = cityWalkDuration((to - from).distance);
     if (span == Duration.zero) return;
-    void follow() => _cityWalkAt.value =
-        Offset.lerp(from, to, Curves.easeInOut.transform(_cityWalk.value));
+    void follow() => _cityWalkAt.value = Offset.lerp(
+          from,
+          to,
+          Curves.easeInOut.transform(_cityWalk.value),
+        );
     _cityWalk
       ..duration = span
       ..value = 0

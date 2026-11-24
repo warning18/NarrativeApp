@@ -59,8 +59,10 @@ class StandingMeter extends StatefulWidget {
 
 class _StandingMeterState extends State<StandingMeter>
     with SingleTickerProviderStateMixin {
-  late final AnimationController _t =
-      AnimationController(vsync: this, duration: StandingMeter.slide);
+  late final AnimationController _t = AnimationController(
+    vsync: this,
+    duration: StandingMeter.slide,
+  );
   late double _from = widget.value;
 
   /// Where the stretch the last change crossed began.
@@ -143,30 +145,33 @@ class _StandingMeterPainter extends CustomPainter {
   void paint(Canvas canvas, Size size) {
     final top = (size.height - barHeight) / 2;
     final bar = RRect.fromRectAndRadius(
-        Rect.fromLTWH(0, top, size.width, barHeight),
-        Radius.circular(barHeight / 2));
+      Rect.fromLTWH(0, top, size.width, barHeight),
+      Radius.circular(barHeight / 2),
+    );
     canvas.drawRRect(
       bar,
       Paint()
-        ..shader = const LinearGradient(colors: [
-          Palette.red32,
-          Color(0xFF4A4740),
-          Palette.healDark,
-          Palette.goldDark,
-        ], stops: [
-          0,
-          0.5,
-          0.8,
-          1,
-        ]).createShader(bar.outerRect),
+        ..shader = const LinearGradient(
+          colors: [
+            Palette.red32,
+            Color(0xFF4A4740),
+            Palette.healDark,
+            Palette.goldDark,
+          ],
+          stops: [0, 0.5, 0.8, 1],
+        ).createShader(bar.outerRect),
     );
     final from = glowFrom;
     if (from != null && glow > 0) {
       final a = _x(math.min(from, glowTo), size.width);
       final b = _x(math.max(from, glowTo), size.width);
       final colour = glowTo >= from ? Palette.goldDark : Palette.bloodDark;
-      final span =
-          Rect.fromLTRB(a, top - 2, math.max(b, a + 3), top + barHeight + 2);
+      final span = Rect.fromLTRB(
+        a,
+        top - 2,
+        math.max(b, a + 3),
+        top + barHeight + 2,
+      );
       canvas.drawRRect(
         RRect.fromRectAndRadius(span, const Radius.circular(3)),
         Paint()
@@ -218,48 +223,50 @@ class SubclanSquares extends StatelessWidget {
       runSpacing: 4,
       children: [
         for (final s in subclans)
-          Builder(builder: (context) {
-            final mark = politics.markOf(s.id);
-            final color = Color(s.color);
-            final square = Container(
-              key: Key('subclan_square_${s.id}'),
-              width: size,
-              height: size,
-              decoration: BoxDecoration(
-                color: switch (mark) {
-                  SubclanMark.friend => color,
-                  SubclanMark.foe => clanFoeColor,
-                  SubclanMark.none => null,
-                },
-                borderRadius: BorderRadius.circular(2),
-                border: Border.all(
+          Builder(
+            builder: (context) {
+              final mark = politics.markOf(s.id);
+              final color = Color(s.color);
+              final square = Container(
+                key: Key('subclan_square_${s.id}'),
+                width: size,
+                height: size,
+                decoration: BoxDecoration(
                   color: switch (mark) {
                     SubclanMark.friend => color,
                     SubclanMark.foe => clanFoeColor,
-                    SubclanMark.none => outline.withValues(alpha: 0.6),
+                    SubclanMark.none => null,
                   },
+                  borderRadius: BorderRadius.circular(2),
+                  border: Border.all(
+                    color: switch (mark) {
+                      SubclanMark.friend => color,
+                      SubclanMark.foe => clanFoeColor,
+                      SubclanMark.none => outline.withValues(alpha: 0.6),
+                    },
+                  ),
                 ),
-              ),
-              child: mark == SubclanMark.foe
-                  ? Icon(Icons.close, size: size - 4, color: Colors.white)
-                  : null,
-            );
-            final tip = '${s.nameFor(language)} · '
-                '${trFor(language, subclanMarkKey(mark))}';
-            return Tooltip(
-              message: tip,
-              child: onTap == null
-                  ? square
-                  : InkWell(
-                      onTap: () => onTap!(s),
-                      child: Padding(
-                        // A finger-sized target around a small square.
-                        padding: const EdgeInsets.all(4),
-                        child: square,
+                child: mark == SubclanMark.foe
+                    ? Icon(Icons.close, size: size - 4, color: Colors.white)
+                    : null,
+              );
+              final tip = '${s.nameFor(language)} · '
+                  '${trFor(language, subclanMarkKey(mark))}';
+              return Tooltip(
+                message: tip,
+                child: onTap == null
+                    ? square
+                    : InkWell(
+                        onTap: () => onTap!(s),
+                        child: Padding(
+                          // A finger-sized target around a small square.
+                          padding: const EdgeInsets.all(4),
+                          child: square,
+                        ),
                       ),
-                    ),
-            );
-          }),
+              );
+            },
+          ),
       ],
     );
   }
@@ -283,8 +290,9 @@ class StandingTierLabel extends StatelessWidget {
       '${trFor(language, standingTierKey(tier)).toUpperCase()} '
       '${formatStanding(value)}',
       style: Theme.of(context).textTheme.labelLarge?.copyWith(
-          color: standingTierTextColor(context, tier),
-          fontWeight: FontWeight.w700),
+            color: standingTierTextColor(context, tier),
+            fontWeight: FontWeight.w700,
+          ),
     );
   }
 }
@@ -346,8 +354,12 @@ class FactionStandingCard extends ConsumerWidget {
                         language: lang,
                         onTap: editable
                             ? (s) => notifier.setSubclanMark(
-                                s.id, nextSubclanMark(politics.markOf(s.id)),
-                                data: data, cause: 'edit', chapter: chapter())
+                                  s.id,
+                                  nextSubclanMark(politics.markOf(s.id)),
+                                  data: data,
+                                  cause: 'edit',
+                                  chapter: chapter(),
+                                )
                             : null,
                       ),
                     ),
@@ -359,9 +371,11 @@ class FactionStandingCard extends ConsumerWidget {
                             key: Key('faction_sworn_${faction.id}'),
                             mainAxisSize: MainAxisSize.min,
                             children: [
-                              Icon(Icons.military_tech,
-                                  size: IconSize.s16,
-                                  color: standingTierColor(StandingTier.sworn)),
+                              Icon(
+                                Icons.military_tech,
+                                size: IconSize.s16,
+                                color: standingTierColor(StandingTier.sworn),
+                              ),
                               Flexible(
                                 child: Text(
                                   faction.sworn?.nameFor(lang) ??
@@ -369,8 +383,11 @@ class FactionStandingCard extends ConsumerWidget {
                                   maxLines: 2,
                                   overflow: TextOverflow.ellipsis,
                                   style: theme.textTheme.labelSmall?.copyWith(
-                                      color: standingTierTextColor(
-                                          context, StandingTier.sworn)),
+                                    color: standingTierTextColor(
+                                      context,
+                                      StandingTier.sworn,
+                                    ),
+                                  ),
                                 ),
                               ),
                             ],
@@ -385,8 +402,12 @@ class FactionStandingCard extends ConsumerWidget {
                 _StandingSlider(
                   key: Key('faction_slider_${faction.id}'),
                   value: value,
-                  onSet: (v) => notifier.setStandingForEdit(faction.id, v,
-                      data: data, chapter: chapter()),
+                  onSet: (v) => notifier.setStandingForEdit(
+                    faction.id,
+                    v,
+                    data: data,
+                    chapter: chapter(),
+                  ),
                 ),
             ],
           ),
@@ -423,10 +444,11 @@ class _WithBanner extends StatelessWidget {
             discSize: 30,
             plate: true,
             child: PixelBanner(
-                key: Key('clan_banner_$factionId'),
-                id: id,
-                scale: 1,
-                found: found),
+              key: Key('clan_banner_$factionId'),
+              id: id,
+              scale: 1,
+              found: found,
+            ),
           ),
         ),
         Expanded(child: child),
@@ -461,9 +483,12 @@ class _FactionShops extends ConsumerWidget {
         runSpacing: 4,
         crossAxisAlignment: WrapCrossAlignment.center,
         children: [
-          Text(tr(ref, 'clans_shops_label'),
-              style: theme.textTheme.labelSmall
-                  ?.copyWith(color: theme.colorScheme.onSurfaceVariant)),
+          Text(
+            tr(ref, 'clans_shops_label'),
+            style: theme.textTheme.labelSmall?.copyWith(
+              color: theme.colorScheme.onSurfaceVariant,
+            ),
+          ),
           for (final e in own)
             Row(
               mainAxisSize: MainAxisSize.min,
@@ -527,9 +552,10 @@ String _lostClanNameFor(Faction faction, int stage, AppLanguage language) =>
 /// "Remembrance 3/6", or "Not remembered yet".
 String _remembranceLabel(int stage, AppLanguage language) => stage <= 0
     ? trFor(language, 'open_hand_stage_none')
-    : trFor(language, 'open_hand_stage')
-        .replaceAll('{n}', '$stage')
-        .replaceAll('{max}', '$openHandStages');
+    : trFor(
+        language,
+        'open_hand_stage',
+      ).replaceAll('{n}', '$stage').replaceAll('{max}', '$openHandStages');
 
 /// A lost clan (the Open Hand) where the others show a standing: no meter,
 /// its remembrance stage, and whether the banner is raised. [editable]
@@ -568,8 +594,10 @@ class LostClanCard extends ConsumerWidget {
                   LostClanEmblem(faction: faction, stage: stage),
                   const SizedBox(width: 8),
                   Expanded(
-                    child: Text(_lostClanNameFor(faction, stage, lang),
-                        style: theme.textTheme.titleSmall),
+                    child: Text(
+                      _lostClanNameFor(faction, stage, lang),
+                      style: theme.textTheme.titleSmall,
+                    ),
                   ),
                   const SizedBox(width: 6),
                   Flexible(
@@ -578,10 +606,11 @@ class LostClanCard extends ConsumerWidget {
                       key: Key('lost_clan_stage_${faction.id}'),
                       textAlign: TextAlign.end,
                       style: theme.textTheme.labelLarge?.copyWith(
-                          color: stage > 0
-                              ? gold
-                              : theme.colorScheme.onSurfaceVariant,
-                          fontWeight: FontWeight.w700),
+                        color: stage > 0
+                            ? gold
+                            : theme.colorScheme.onSurfaceVariant,
+                        fontWeight: FontWeight.w700,
+                      ),
                     ),
                   ),
                 ],
@@ -589,8 +618,10 @@ class LostClanCard extends ConsumerWidget {
               if (raised)
                 Padding(
                   padding: const EdgeInsets.only(top: 2),
-                  child: Text(trFor(lang, 'open_hand_banner_raised'),
-                      style: theme.textTheme.labelSmall?.copyWith(color: gold)),
+                  child: Text(
+                    trFor(lang, 'open_hand_banner_raised'),
+                    style: theme.textTheme.labelSmall?.copyWith(color: gold),
+                  ),
                 ),
               // Its House (v1.196: the Fishbasket Line), the first rung of
               // its climb; Edit Mode taps its mark round.
@@ -602,18 +633,23 @@ class LostClanCard extends ConsumerWidget {
                   language: lang,
                   onTap: editable
                       ? (s) => notifier.setSubclanMark(
-                          s.id, nextSubclanMark(politics.markOf(s.id)),
-                          data: data,
-                          cause: 'edit',
-                          chapter: ref.read(reachedChapterProvider))
+                            s.id,
+                            nextSubclanMark(politics.markOf(s.id)),
+                            data: data,
+                            cause: 'edit',
+                            chapter: ref.read(reachedChapterProvider),
+                          )
                       : null,
                 ),
               ],
               if (editable) ...[
                 const SizedBox(height: 4),
-                Text(trFor(lang, 'open_hand_edit_hint'),
-                    style: theme.textTheme.labelSmall
-                        ?.copyWith(color: theme.colorScheme.onSurfaceVariant)),
+                Text(
+                  trFor(lang, 'open_hand_edit_hint'),
+                  style: theme.textTheme.labelSmall?.copyWith(
+                    color: theme.colorScheme.onSurfaceVariant,
+                  ),
+                ),
                 const SizedBox(height: 4),
                 Wrap(
                   spacing: 4,
@@ -625,8 +661,10 @@ class LostClanCard extends ConsumerWidget {
                         label: Text('$n'),
                         selected: stage == n,
                         visualDensity: VisualDensity.compact,
-                        onSelected: (_) => notifier.setOpenHandStage(n,
-                            data: ref.read(clanDataProvider)),
+                        onSelected: (_) => notifier.setOpenHandStage(
+                          n,
+                          data: ref.read(clanDataProvider),
+                        ),
                       ),
                   ],
                 ),
@@ -637,8 +675,11 @@ class LostClanCard extends ConsumerWidget {
                   title: Text(trFor(lang, 'open_hand_banner_raised')),
                   subtitle: const Text(bannerRaisedFlag),
                   value: raised,
-                  onChanged: (on) => notifier.setStoryFlag(bannerRaisedFlag, on,
-                      data: ref.read(clanDataProvider)),
+                  onChanged: (on) => notifier.setStoryFlag(
+                    bannerRaisedFlag,
+                    on,
+                    data: ref.read(clanDataProvider),
+                  ),
                 ),
               ],
             ],
@@ -703,9 +744,11 @@ class ClansCodex extends ConsumerWidget {
       for (final id in session.patronsMet)
         if (data.faction(id) case final faction?)
           if (!faction.isLost) faction,
-    ]..sort((a, b) => a.kind.index != b.kind.index
-        ? a.kind.index.compareTo(b.kind.index)
-        : a.nameFor(lang).compareTo(b.nameFor(lang)));
+    ]..sort(
+        (a, b) => a.kind.index != b.kind.index
+            ? a.kind.index.compareTo(b.kind.index)
+            : a.nameFor(lang).compareTo(b.nameFor(lang)),
+      );
     // The dead clan (v1.195): known from its first remembrance, a
     // silhouette until its name is heard.
     final stage = openHandStageFrom(session.flags);
@@ -714,9 +757,12 @@ class ClansCodex extends ConsumerWidget {
         if (stage >= 1 || session.patronsMet.contains(faction.id)) faction,
     ];
     if (met.isEmpty && lost.isEmpty) {
-      return Text(tr(ref, 'patrons_none_met'),
-          style: theme.textTheme.bodySmall
-              ?.copyWith(color: theme.colorScheme.onSurfaceVariant));
+      return Text(
+        tr(ref, 'patrons_none_met'),
+        style: theme.textTheme.bodySmall?.copyWith(
+          color: theme.colorScheme.onSurfaceVariant,
+        ),
+      );
     }
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -734,24 +780,30 @@ class ClansCodex extends ConsumerWidget {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text(_lostClanNameFor(faction, stage, lang),
-                          key: Key('codex_lost_name_${faction.id}'),
-                          style: theme.textTheme.titleSmall),
+                      Text(
+                        _lostClanNameFor(faction, stage, lang),
+                        key: Key('codex_lost_name_${faction.id}'),
+                        style: theme.textTheme.titleSmall,
+                      ),
                       Text(
                         '${tr(ref, 'patron_kind_lost')} · '
                         '${_remembranceLabel(stage, lang)}'
                         '${bannerRaisedIn(session.flags) ? ' · ${tr(ref, 'open_hand_banner_raised')}' : ''}',
                         style: theme.textTheme.labelSmall?.copyWith(
-                            color: standingTierTextColor(
-                                context, StandingTier.sworn)),
+                          color: standingTierTextColor(
+                            context,
+                            StandingTier.sworn,
+                          ),
+                        ),
                       ),
                       Text(
                         stage >= _ownHandNameStage &&
                                 faction.mottoFor(lang).isNotEmpty
                             ? faction.mottoFor(lang)
                             : tr(ref, 'open_hand_unknown_line'),
-                        style: theme.textTheme.bodySmall
-                            ?.copyWith(fontStyle: FontStyle.italic),
+                        style: theme.textTheme.bodySmall?.copyWith(
+                          fontStyle: FontStyle.italic,
+                        ),
                       ),
                     ],
                   ),
@@ -772,8 +824,10 @@ class ClansCodex extends ConsumerWidget {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text(faction.nameFor(lang),
-                          style: theme.textTheme.titleSmall),
+                      Text(
+                        faction.nameFor(lang),
+                        style: theme.textTheme.titleSmall,
+                      ),
                       Wrap(
                         spacing: 6,
                         crossAxisAlignment: WrapCrossAlignment.center,
@@ -782,12 +836,16 @@ class ClansCodex extends ConsumerWidget {
                             '${tr(ref, 'patron_kind_${faction.kind.name}')} · '
                             '${tr(ref, 'patron_favour').replaceAll('{n}', '${session.patronFavour[faction.id] ?? 0}').replaceAll('{l}', '${favourLevelFor(session.patronFavour[faction.id] ?? 0)}')}',
                             style: theme.textTheme.labelSmall?.copyWith(
-                                color: theme.colorScheme.onSurfaceVariant),
+                              color: theme.colorScheme.onSurfaceVariant,
+                            ),
                           ),
                           StandingTierLabel(
-                              value:
-                                  session.politics.standingOf(faction.id, data),
-                              language: lang),
+                            value: session.politics.standingOf(
+                              faction.id,
+                              data,
+                            ),
+                            language: lang,
+                          ),
                         ],
                       ),
                       if ((faction.mottoFor(lang).isNotEmpty
@@ -798,16 +856,20 @@ class ClansCodex extends ConsumerWidget {
                           faction.mottoFor(lang).isNotEmpty
                               ? faction.mottoFor(lang)
                               : faction.introFor(lang),
-                          style: theme.textTheme.bodySmall
-                              ?.copyWith(fontStyle: FontStyle.italic),
+                          style: theme.textTheme.bodySmall?.copyWith(
+                            fontStyle: FontStyle.italic,
+                          ),
                         ),
-                      if (closedThisLife(faction.patron,
-                          patronsThisLife: session.signPatronsThisLife,
-                          patrons: patrons))
+                      if (closedThisLife(
+                        faction.patron,
+                        patronsThisLife: session.signPatronsThisLife,
+                        patrons: patrons,
+                      ))
                         Text(
                           tr(ref, 'patron_closed_life'),
-                          style: theme.textTheme.labelSmall
-                              ?.copyWith(color: theme.colorScheme.error),
+                          style: theme.textTheme.labelSmall?.copyWith(
+                            color: theme.colorScheme.error,
+                          ),
                         ),
                     ],
                   ),

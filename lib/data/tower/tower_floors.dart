@@ -128,8 +128,11 @@ int _healthOf(String id, Map<String, dynamic> enemies) =>
 /// The 30 floors of the run of [seed], against `enemies.json`, for a run
 /// playing the floor events' version [events] (TowerRun.events: their
 /// extras and foes' scale; the foes drawn are the same).
-List<TowerFloor> towerFloorsFor(int seed, Map<String, dynamic> enemies,
-    {int events = 0}) {
+List<TowerFloor> towerFloorsFor(
+  int seed,
+  Map<String, dynamic> enemies, {
+  int events = 0,
+}) {
   final floors = <TowerFloor>[];
   for (var floor = 1; floor <= towerTop; floor++) {
     final recent = {
@@ -140,8 +143,13 @@ List<TowerFloor> towerFloorsFor(int seed, Map<String, dynamic> enemies,
   return floors;
 }
 
-TowerFloor _floorOf(int seed, int floor, Map<String, dynamic> enemies,
-    Set<String> recent, int events) {
+TowerFloor _floorOf(
+  int seed,
+  int floor,
+  Map<String, dynamic> enemies,
+  Set<String> recent,
+  int events,
+) {
   final budget = towerBudgetOf(floor);
   final extra = events >= towerPeacefulEvents
       ? towerPeacefulExtras[floor] ?? towerEventsExtras[floor] ?? budget.extra
@@ -167,22 +175,24 @@ TowerFloor _floorOf(int seed, int floor, Map<String, dynamic> enemies,
   switch (budget.kind) {
     case TowerFloorKind.boss:
       return TowerFloor(
-          floor: floor,
-          kind: budget.kind,
-          chapter: budget.chapter,
-          extra: extra,
-          events: events,
-          enemyIds: [towerBosses[floor]!]);
+        floor: floor,
+        kind: budget.kind,
+        chapter: budget.chapter,
+        extra: extra,
+        events: events,
+        enemyIds: [towerBosses[floor]!],
+      );
     case TowerFloorKind.warden:
       final pool = towerWardens[floor]!;
       return TowerFloor(
-          floor: floor,
-          kind: budget.kind,
-          chapter: budget.chapter,
-          extra: extra,
-          events: events,
-          enemyIds: [pool[random.nextInt(pool.length)]],
-          affixes: affixes(false));
+        floor: floor,
+        kind: budget.kind,
+        chapter: budget.chapter,
+        extra: extra,
+        events: events,
+        enemyIds: [pool[random.nextInt(pool.length)]],
+        affixes: affixes(false),
+      );
     case TowerFloorKind.fight:
       final pool = towerPoolOf(budget.chapter, enemies);
       final fresh = pool.where((id) => !recent.contains(id)).toList();
@@ -204,16 +214,18 @@ TowerFloor _floorOf(int seed, int floor, Map<String, dynamic> enemies,
         ids = [drawFrom[random.nextInt(drawFrom.length)]];
       }
       ids.sort(
-          (a, b) => _healthOf(b, enemies).compareTo(_healthOf(a, enemies)));
+        (a, b) => _healthOf(b, enemies).compareTo(_healthOf(a, enemies)),
+      );
       final elite = !pack && random.nextDouble() < budget.eliteChance;
       return TowerFloor(
-          floor: floor,
-          kind: budget.kind,
-          chapter: budget.chapter,
-          extra: extra,
-          events: events,
-          enemyIds: ids,
-          affixes: affixes(pack),
-          elite: elite);
+        floor: floor,
+        kind: budget.kind,
+        chapter: budget.chapter,
+        extra: extra,
+        events: events,
+        enemyIds: ids,
+        affixes: affixes(pack),
+        elite: elite,
+      );
   }
 }

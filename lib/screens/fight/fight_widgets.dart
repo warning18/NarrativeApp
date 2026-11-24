@@ -94,7 +94,10 @@ class _StatusEffectChip extends StatelessWidget {
           Text(
             '${effect.remainingTurns}',
             style: TextStyle(
-                fontSize: 11, color: color, fontWeight: FontWeight.bold),
+              fontSize: 11,
+              color: color,
+              fontWeight: FontWeight.bold,
+            ),
           ),
         ],
       ),

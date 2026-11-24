@@ -41,19 +41,30 @@ class _FeatureUnlockInfo {
 _FeatureUnlockInfo _featureUnlockInfo(GameFeature feature) => switch (feature) {
       GameFeature.chest => const _FeatureUnlockInfo(Icons.inventory_2_outlined),
       GameFeature.placeRules => const _FeatureUnlockInfo(Icons.rule),
-      GameFeature.conditions =>
-        const _FeatureUnlockInfo(Icons.thunderstorm_outlined),
-      GameFeature.levelUp => const _FeatureUnlockInfo(Icons.trending_up,
-          topic: TutorialTopic.levelUp),
-      GameFeature.quests => const _FeatureUnlockInfo(Icons.assignment_outlined,
-          topic: TutorialTopic.other),
-      GameFeature.inventory => const _FeatureUnlockInfo(Icons.backpack_outlined,
-          topic: TutorialTopic.inventory),
-      GameFeature.skills => const _FeatureUnlockInfo(Icons.auto_awesome,
-          topic: TutorialTopic.skills),
+      GameFeature.conditions => const _FeatureUnlockInfo(
+          Icons.thunderstorm_outlined,
+        ),
+      GameFeature.levelUp => const _FeatureUnlockInfo(
+          Icons.trending_up,
+          topic: TutorialTopic.levelUp,
+        ),
+      GameFeature.quests => const _FeatureUnlockInfo(
+          Icons.assignment_outlined,
+          topic: TutorialTopic.other,
+        ),
+      GameFeature.inventory => const _FeatureUnlockInfo(
+          Icons.backpack_outlined,
+          topic: TutorialTopic.inventory,
+        ),
+      GameFeature.skills => const _FeatureUnlockInfo(
+          Icons.auto_awesome,
+          topic: TutorialTopic.skills,
+        ),
       GameFeature.politics => const _FeatureUnlockInfo(Icons.balance),
-      GameFeature.clans => const _FeatureUnlockInfo(Icons.draw_outlined,
-          topic: TutorialTopic.signs),
+      GameFeature.clans => const _FeatureUnlockInfo(
+          Icons.draw_outlined,
+          topic: TutorialTopic.signs,
+        ),
     };
 
 /// Tells the session the player has found [feature] (its dot goes). Safe to
@@ -92,7 +103,10 @@ bool featureOpen(WidgetRef ref, GameFeature feature) =>
 
 /// A small sheet: what is shut and when it opens, in one line.
 Future<void> _showFeatureLocked(
-    BuildContext context, WidgetRef ref, GameFeature feature) {
+  BuildContext context,
+  WidgetRef ref,
+  GameFeature feature,
+) {
   final info = _featureUnlockInfo(feature);
   final name = tr(ref, 'feature_${feature.id}_name');
   final ink = InkColors.of(context);
@@ -157,13 +171,18 @@ class FeatureLockedTile extends ConsumerWidget {
                 Icon(_featureUnlockInfo(feature).icon, color: ink.ash),
                 const SizedBox(width: 10),
                 Expanded(
-                  child: Text(title ?? tr(ref, 'feature_${feature.id}_name'),
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
-                      style: theme.textTheme.titleSmall),
+                  child: Text(
+                    title ?? tr(ref, 'feature_${feature.id}_name'),
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: theme.textTheme.titleSmall,
+                  ),
                 ),
-                PixelGlyph(PixelGlyphs.lock,
-                    size: IconSize.s16, color: ink.ash),
+                PixelGlyph(
+                  PixelGlyphs.lock,
+                  size: IconSize.s16,
+                  color: ink.ash,
+                ),
               ],
             ),
           ),
@@ -187,7 +206,9 @@ class UnlockDot extends ConsumerStatefulWidget {
 class _UnlockDotState extends ConsumerState<UnlockDot>
     with SingleTickerProviderStateMixin {
   late final AnimationController _ring = AnimationController(
-      vsync: this, duration: const Duration(milliseconds: 1200));
+    vsync: this,
+    duration: const Duration(milliseconds: 1200),
+  );
   bool _started = false;
 
   @override
@@ -222,8 +243,9 @@ class _UnlockDotState extends ConsumerState<UnlockDot>
                 decoration: BoxDecoration(
                   shape: BoxShape.circle,
                   border: Border.all(
-                      color: gold.withValues(alpha: 1 - _ring.value),
-                      width: 1.5),
+                    color: gold.withValues(alpha: 1 - _ring.value),
+                    width: 1.5,
+                  ),
                 ),
               ),
             ),
@@ -359,7 +381,9 @@ class _UnlockCard extends ConsumerStatefulWidget {
 class _UnlockCardState extends ConsumerState<_UnlockCard>
     with SingleTickerProviderStateMixin {
   late final AnimationController _in = AnimationController(
-      vsync: this, duration: const Duration(milliseconds: 280));
+    vsync: this,
+    duration: const Duration(milliseconds: 280),
+  );
 
   @override
   void didChangeDependencies() {
@@ -414,12 +438,18 @@ class _UnlockCardState extends ConsumerState<_UnlockCard>
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                          tr(ref, 'feature_new').replaceAll(
-                              '{name}', tr(ref, 'feature_${feature.id}_name')),
-                          style: theme.textTheme.titleSmall
-                              ?.copyWith(color: ink.gold)),
-                      Text(tr(ref, 'feature_${feature.id}_line'),
-                          style: theme.textTheme.bodySmall),
+                        tr(ref, 'feature_new').replaceAll(
+                          '{name}',
+                          tr(ref, 'feature_${feature.id}_name'),
+                        ),
+                        style: theme.textTheme.titleSmall?.copyWith(
+                          color: ink.gold,
+                        ),
+                      ),
+                      Text(
+                        tr(ref, 'feature_${feature.id}_line'),
+                        style: theme.textTheme.bodySmall,
+                      ),
                     ],
                   ),
                 ),
@@ -440,7 +470,8 @@ class _UnlockCardState extends ConsumerState<_UnlockCard>
                   FilledButton(
                     key: const Key('unlock_show'),
                     style: FilledButton.styleFrom(
-                        visualDensity: VisualDensity.compact),
+                      visualDensity: VisualDensity.compact,
+                    ),
                     onPressed: widget.onShow,
                     child: Text(tr(ref, 'feature_show_me')),
                   )
@@ -448,7 +479,8 @@ class _UnlockCardState extends ConsumerState<_UnlockCard>
                   FilledButton(
                     key: const Key('unlock_show'),
                     style: FilledButton.styleFrom(
-                        visualDensity: VisualDensity.compact),
+                      visualDensity: VisualDensity.compact,
+                    ),
                     onPressed: widget.onLater,
                     child: Text(tr(ref, 'feature_ok')),
                   ),
@@ -466,8 +498,9 @@ class _UnlockCardState extends ConsumerState<_UnlockCard>
               opacity: curve,
               child: SlideTransition(
                 position: Tween<Offset>(
-                        begin: const Offset(0, -0.6), end: Offset.zero)
-                    .animate(curve),
+                  begin: const Offset(0, -0.6),
+                  end: Offset.zero,
+                ).animate(curve),
                 child: card,
               ),
             ),

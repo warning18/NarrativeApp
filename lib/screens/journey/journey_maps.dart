@@ -188,8 +188,10 @@ class _JourneyChartState extends State<_JourneyChart>
   /// Out of a place and along the world chart to the next (v1.181).
   /// The marks' glyphs breathing (see journey_glyph.dart): its own small
   /// clock, so the map itself still rests when nothing moves.
-  late final AnimationController _idleGlyphs =
-      AnimationController(vsync: this, duration: const Duration(seconds: 12));
+  late final AnimationController _idleGlyphs = AnimationController(
+    vsync: this,
+    duration: const Duration(seconds: 12),
+  );
   late final AnimationController _flight = AnimationController(
     vsync: this,
     duration: const Duration(milliseconds: 1900),
@@ -246,7 +248,7 @@ class _JourneyChartState extends State<_JourneyChart>
     if (!_placeMode) {
       return (
         _roadStart(here, centre, width),
-        centre.translate(0, _stepRadius)
+        centre.translate(0, _stepRadius),
       );
     }
     final d = centre - here;
@@ -337,8 +339,9 @@ class _JourneyChartState extends State<_JourneyChart>
 
   /// Whether a mark on the chart breathes: a round mark (a fight or a
   /// roll, not a banner pin) that is not locked (see the marks' build).
-  bool get _hasIdleGlyphs => widget.steps
-      .any((s) => !s.locked && journeyPinCatOf(s.kind, s.questTie) == null);
+  bool get _hasIdleGlyphs => widget.steps.any(
+        (s) => !s.locked && journeyPinCatOf(s.kind, s.questTie) == null,
+      );
 
   /// The idle glyphs' clock runs only while the chart animates and a mark
   /// that breathes is on it: no frames asked for otherwise.
@@ -427,11 +430,13 @@ class _JourneyChartState extends State<_JourneyChart>
       final tangent = road.getTangentForOffset(road.length * _nextPrint);
       if (tangent != null) {
         final normal = Offset(-tangent.vector.dy, tangent.vector.dx);
-        _footprints.add(JourneyFootprint(
-          tangent.position + normal * 4.0 * _printSide.toDouble(),
-          _clock.value,
-          math.atan2(tangent.vector.dy, tangent.vector.dx) + math.pi / 2,
-        ));
+        _footprints.add(
+          JourneyFootprint(
+            tangent.position + normal * 4.0 * _printSide.toDouble(),
+            _clock.value,
+            math.atan2(tangent.vector.dy, tangent.vector.dx) + math.pi / 2,
+          ),
+        );
         _printSide = -_printSide;
       }
       _nextPrint += _printStep;
@@ -479,8 +484,11 @@ class _JourneyChartState extends State<_JourneyChart>
     if (scroll != null &&
         scroll.hasClients &&
         (scroll.offset - _openAt).abs() > 1) {
-      scroll.animateTo(_openAt,
-          duration: _walk.duration!, curve: Curves.easeInOut);
+      scroll.animateTo(
+        _openAt,
+        duration: _walk.duration!,
+        curve: Curves.easeInOut,
+      );
     }
     try {
       await _walk.forward(from: 0).orCancel;
@@ -492,8 +500,9 @@ class _JourneyChartState extends State<_JourneyChart>
       if (place != null && target != null && _animate && mounted) {
         // A road with more to pass takes longer to walk.
         final stops = widget.steps[index].route?.stops.length ?? 0;
-        _flight.duration =
-            Duration(milliseconds: math.min(4500, 1900 + 350 * stops));
+        _flight.duration = Duration(
+          milliseconds: math.min(4500, 1900 + 350 * stops),
+        );
         _flyingLeg = widget.roadMap == null
             ? null
             : widget.roadLeg?.call(widget.steps[index]);
@@ -506,9 +515,11 @@ class _JourneyChartState extends State<_JourneyChart>
         if (setOut) {
           final span = _flight.duration! * crossingSetOutAt;
           await _flight
-              .animateTo(crossingSetOutAt,
-                  duration: span > crossingSetOutMax ? crossingSetOutMax : span,
-                  curve: Curves.easeOut)
+              .animateTo(
+                crossingSetOutAt,
+                duration: span > crossingSetOutMax ? crossingSetOutMax : span,
+                curve: Curves.easeOut,
+              )
               .orCancel;
         } else {
           await _flight.forward(from: 0).orCancel;
@@ -531,9 +542,11 @@ class _JourneyChartState extends State<_JourneyChart>
       try {
         if (_flying != null) {
           await _flight
-              .animateBack(0,
-                  duration: const Duration(milliseconds: 700),
-                  curve: Curves.easeInOut)
+              .animateBack(
+                0,
+                duration: const Duration(milliseconds: 700),
+                curve: Curves.easeInOut,
+              )
               .orCancel;
         }
         final span = _walk.duration ?? const Duration(milliseconds: 950);
@@ -584,22 +597,23 @@ class _JourneyChartState extends State<_JourneyChart>
       borderRadius: BorderRadius.circular(10),
       child: ColoredBox(
         color: palette.land,
-        child: LayoutBuilder(builder: (context, box) {
-          final width = box.maxWidth;
-          final rowSizes = journeyRowSizes(steps.length);
-          final rows = rowSizes.length;
-          late final double present;
-          late final Offset here;
-          late final List<Offset> centres;
-          if (_placeMode) {
-            // In a place: the party in the middle, its ways round it and
-            // the ways out at the edge where they lead; the chapter
-            // behind below.
-            // A little short of the box, so the road behind peeks in at
-            // the foot and says there is more below.
-            // A crowded place (a busy hub's twenty ways) gets a taller
-            // map, so the outer ring has room for every mark.
-            present = math.max(
+        child: LayoutBuilder(
+          builder: (context, box) {
+            final width = box.maxWidth;
+            final rowSizes = journeyRowSizes(steps.length);
+            final rows = rowSizes.length;
+            late final double present;
+            late final Offset here;
+            late final List<Offset> centres;
+            if (_placeMode) {
+              // In a place: the party in the middle, its ways round it and
+              // the ways out at the edge where they lead; the chapter
+              // behind below.
+              // A little short of the box, so the road behind peeks in at
+              // the foot and says there is more below.
+              // A crowded place (a busy hub's twenty ways) gets a taller
+              // map, so the outer ring has room for every mark.
+              present = math.max(
                 box.maxHeight,
                 steps.length > 16
                     ? 560
@@ -607,756 +621,821 @@ class _JourneyChartState extends State<_JourneyChart>
                         ? 400
                         : steps.length > 3
                             ? 300
-                            : 220);
-            final plan = _anchors;
-            if (plan != null) {
-              // On the city's plan (v1.203): the whole city in view, the
-              // party where its district is, the steps into the other
-              // districts where those are, the ways out at the edge and
-              // the ways within this district close round the party.
-              // Close up (v1.224): the map keeps in view the party and the
-              // places its ways lead to, not the whole city.
-              final districtOf = widget.place!.districtOfStep;
-              final focus = journeyFocusFrame(plan.frame, [
-                plan.anchorOf(widget.place!.hereDistrict),
-                for (var i = 0; i < steps.length; i++)
-                  if (steps[i].moves && districtOf[i] != null)
-                    plan.anchorOf(districtOf[i]!),
-              ]);
-              final frame = _town.value == 0
-                  ? focus
-                  : Rect.lerp(focus, plan.frame, _town.value) ?? focus;
-              const side = 22.0, top = 26.0, foot = 74.0;
-              final s = math.min((width - 2 * side) / frame.width,
-                  (present - top - foot) / frame.height);
-              final origin = Offset(width / 2 - frame.center.dx * s,
-                  top + (present - top - foot) / 2 - frame.center.dy * s);
-              _planScale = s;
-              _planOrigin = origin;
-              // The scale that fits the whole plan: the chart's detail
-              // (roofs, names) reads the zoom over it.
-              _planFitted = math.min((width - 2 * side) / plan.frame.width,
-                  (present - top - foot) / plan.frame.height);
-              Offset tf(Offset p) => origin + p * s;
-              here = tf(plan.anchorOf(widget.place!.hereDistrict));
-              final positions = List<Offset>.filled(steps.length, here);
-              // Where the party's badge and the map's button sit: no mark
-              // under them.
-              final obstacles = [
-                Rect.fromLTWH(0, 0, math.min(width * 0.5, 190) + 16, 84),
-                Rect.fromLTWH(width - 64, present - 64, 64, 64),
-              ];
-              final area = Rect.fromLTWH(0, 0, width, present).deflate(28);
-              final taken = <Offset>[];
-              const apart = _stepRadius * 2 + 6;
-              bool clear(Offset p) =>
-                  area.contains(p) &&
-                  (p - here).distance >= _hereRadius + _stepRadius + 4 &&
-                  !obstacles.any((o) => o.overlaps(
-                      Rect.fromCircle(center: p, radius: _stepRadius))) &&
-                  taken.every((t) => (t - p).distance >= apart);
-              // Spots round the party, ring on ring, the nearest first:
-              // a way with no ground of its own takes the first spot that
-              // is clear.
-              final candidates = <Offset>[
-                for (var k = 0; k < 7; k++)
-                  for (var n = 0; n < 18; n++)
-                    here +
-                        Offset(math.cos(n * math.pi / 9 + k * math.pi / 18),
-                                math.sin(n * math.pi / 9 + k * math.pi / 18)) *
-                            (74 + k * 46),
-              ];
-              Offset spotNear(Offset wanted) {
-                Offset? best;
-                var bestD = double.infinity;
-                for (final c in candidates) {
-                  if (!clear(c)) continue;
-                  final d = (c - wanted).distance;
-                  if (d < bestD) {
-                    bestD = d;
-                    best = c;
-                  }
-                }
-                return best ?? wanted;
-              }
-
-              // The districts' marks first, on their buildings; then the
-              // ways out at the edge; then the rest round the party.
-              final later = <int>[];
-              for (var i = 0; i < steps.length; i++) {
-                final district = districtOf[i];
-                if (district == null) {
-                  later.add(i);
-                  continue;
-                }
-                var p = tf(plan.anchorOf(district));
-                if (!clear(p)) p = spotNear(p);
-                positions[i] = p;
-                taken.add(p);
-              }
-              for (final i in later) {
-                // Only a journey out of the city goes to the edge; a way
-                // to another spot of this city stays by the party.
-                final bearing =
-                    steps[i].chartTarget != null ? steps[i].bearing : null;
-                final wanted = bearing != null
-                    ? journeyEdgeSpot(here, bearing, Size(width, present))
-                    : here;
-                final p = clear(wanted) && bearing != null
-                    ? wanted
-                    : spotNear(wanted);
-                positions[i] = p;
-                taken.add(p);
-              }
-              centres = positions;
-            } else {
-              _planScale = null;
-              _planOrigin = null;
-              here = Offset(width / 2, present / 2);
-              centres = journeyPlaceLayout(
-                area: Size(width, present),
-                here: here,
-                bearings: [for (final step in steps) step.bearing],
+                            : 220,
               );
-            }
-            _openAt = 0;
-          } else {
-            final needed = _top + rows * _rowMin + _hereRadius * 2 + _hereBelow;
-            present = math.max(box.maxHeight, needed);
-            final hereY = present - _hereBelow - _hereRadius;
-            here = Offset(width / 2, hereY);
-            final rowGap = rows == 0
-                ? 0.0
-                : ((hereY - _top - _stepRadius) / rows).clamp(_rowMin, _rowMax);
-            Offset centreOf(_Step step) => Offset(
-                step.slot.x * width, hereY - rowGap * (step.slot.row + 1));
-            centres = [for (final step in steps) centreOf(step)];
-            _openAt = math.max(0, present - box.maxHeight);
-            _planScale = null;
-            _planOrigin = null;
-          }
-          _here = here;
-          _centres = centres;
-          // The ways' roads on the city's plan, through its streets.
-          final planRoads = _anchors == null
-              ? null
-              : [for (final c in centres) _road(here, c)];
-          final height = present;
-          _scroll ??= ScrollController(initialScrollOffset: _openAt);
-          // A map made taller or shorter (the scene folded or opened, a
-          // step picked and its details under the map) opens on the party
-          // again, the step picked kept in view.
-          if (_viewport != null && _viewport != box.maxHeight) {
-            var at = _openAt;
-            final picked = widget.selected;
-            if (picked != null && picked < centres.length) {
-              final y = centres[picked].dy;
-              final low = y + _stepRadius + 24 - box.maxHeight;
-              at = at.clamp(low, math.max(low, y - _stepRadius - 12));
-            }
-            WidgetsBinding.instance.addPostFrameCallback((_) {
-              final scroll = _scroll;
-              if (mounted && scroll != null && scroll.hasClients) {
-                scroll.jumpTo(at.clamp(0.0, scroll.position.maxScrollExtent));
-              }
-            });
-          }
-          _viewport = box.maxHeight;
-
-          double labelWidth(_Step step) {
-            if (_placeMode) return math.min(width * 0.34, 124);
-            final n = rowSizes[step.slot.row];
-            return n == 1
-                ? math.min(width * 0.7, 240)
-                : math.min(width / (n + 1) - 6, 180);
-          }
-
-          final placeStyle = TextStyle(
-            fontFamily: InkFonts.prose,
-            fontSize: 12.5,
-            height: 1.25,
-            color: palette.place,
-          );
-          final noteStyle = TextStyle(
-            fontFamily: InkFonts.system,
-            fontSize: 11,
-            height: 1.2,
-            color: palette.label,
-          );
-
-          // Where each way's name goes: under its mark on the road up; in
-          // a place, wherever it leaves the other marks clear (see
-          // journeyLabelSpots). A crowded place names only the way picked
-          // and the ways out; the rest by their marks.
-          final scaler = MediaQuery.textScalerOf(context);
-          final names = <Size?>[
-            for (var i = 0; i < steps.length; i++)
-              if (_placeMode &&
-                  steps.length > 5 &&
-                  widget.selected != i &&
-                  steps[i].leadsTo == null)
-                null
-              else if (_placeMode)
-                // In a place, as much as the words take.
-                _nameSize(steps[i], labelWidth(steps[i]), placeStyle, noteStyle,
-                    scaler,
-                    selected: widget.selected == i || _walking == i)
-              else
-                Size(labelWidth(steps[i]), 0),
-          ];
-          final nameSpots = _placeMode
-              ? journeyLabelSpots(
-                  area: Size(width, present),
-                  centres: centres,
-                  radius: _stepRadius,
-                  labels: names,
-                  avoid: [
-                    Rect.fromCircle(center: here, radius: _hereRadius),
-                    // The "You are here" badge in the corner.
-                    Rect.fromLTWH(8, 8, math.min(width * 0.5, 190), 56),
-                  ],
-                  keep: widget.selected,
-                  keepAll: _anchors != null,
-                )
-              : [
+              final plan = _anchors;
+              if (plan != null) {
+                // On the city's plan (v1.203): the whole city in view, the
+                // party where its district is, the steps into the other
+                // districts where those are, the ways out at the edge and
+                // the ways within this district close round the party.
+                // Close up (v1.224): the map keeps in view the party and the
+                // places its ways lead to, not the whole city.
+                final districtOf = widget.place!.districtOfStep;
+                final focus = journeyFocusFrame(plan.frame, [
+                  plan.anchorOf(widget.place!.hereDistrict),
                   for (var i = 0; i < steps.length; i++)
-                    if (names[i] case final name?)
-                      Rect.fromLTWH(
-                          (centres[i].dx - name.width / 2).clamp(
-                              4.0, math.max(4.0, width - name.width - 4)),
-                          centres[i].dy + _stepRadius + 4,
-                          name.width,
-                          name.height)
-                    else
-                      null,
+                    if (steps[i].moves && districtOf[i] != null)
+                      plan.anchorOf(districtOf[i]!),
+                ]);
+                final frame = _town.value == 0
+                    ? focus
+                    : Rect.lerp(focus, plan.frame, _town.value) ?? focus;
+                const side = 22.0, top = 26.0, foot = 74.0;
+                final s = math.min(
+                  (width - 2 * side) / frame.width,
+                  (present - top - foot) / frame.height,
+                );
+                final origin = Offset(
+                  width / 2 - frame.center.dx * s,
+                  top + (present - top - foot) / 2 - frame.center.dy * s,
+                );
+                _planScale = s;
+                _planOrigin = origin;
+                // The scale that fits the whole plan: the chart's detail
+                // (roofs, names) reads the zoom over it.
+                _planFitted = math.min(
+                  (width - 2 * side) / plan.frame.width,
+                  (present - top - foot) / plan.frame.height,
+                );
+                Offset tf(Offset p) => origin + p * s;
+                here = tf(plan.anchorOf(widget.place!.hereDistrict));
+                final positions = List<Offset>.filled(steps.length, here);
+                // Where the party's badge and the map's button sit: no mark
+                // under them.
+                final obstacles = [
+                  Rect.fromLTWH(0, 0, math.min(width * 0.5, 190) + 16, 84),
+                  Rect.fromLTWH(width - 64, present - 64, 64, 64),
                 ];
-
-          final map = SingleChildScrollView(
-            controller: _scroll,
-            child: SizedBox(
-              width: width,
-              height: height,
-              child: AnimatedBuilder(
-                animation: Listenable.merge([_walk, _arrival, _phase]),
-                builder: (context, _) {
-                  // The walk: the mark goes along its road, and the map
-                  // follows a little behind, so the step taken ends where
-                  // the mark stood.
-                  final walking = _walking;
-                  final t = Curves.easeInOut.transform(_walk.value);
-                  Offset? traveller;
-                  var camera = Offset.zero;
-                  if (walking != null && walking < centres.length) {
-                    final road = _road(here, centres[walking]).computeMetrics();
-                    final metric = road.first;
-                    Offset at(double f) =>
-                        metric.getTangentForOffset(metric.length * f)!.position;
-                    traveller = at(t);
-                    camera = here - at(t * t);
-                  }
-                  // Set down here along no walk: the mark comes by the
-                  // streets from where it stood.
-                  Offset? arriving;
-                  final cameFrom = widget.arriveFrom;
-                  final arrivalPlan = _anchors;
-                  final planScale = _planScale, planOrigin = _planOrigin;
-                  if (cameFrom != null &&
-                      _arrival.isAnimating &&
-                      traveller == null &&
-                      arrivalPlan != null &&
-                      planScale != null &&
-                      planOrigin != null) {
-                    final start =
-                        planOrigin + arrivalPlan.anchorOf(cameFrom) * planScale;
-                    final metric = _road(start, here).computeMetrics().first;
-                    arriving = metric
-                        .getTangentForOffset(metric.length *
-                            Curves.easeInOut.transform(_arrival.value))!
-                        .position;
-                  }
-                  final now = _clock.value;
-                  final walkingKind = walking != null && walking < steps.length
-                      ? steps[walking].kind
-                      : null;
-                  final selectedIndex = walking ?? widget.selected;
-                  Path? selectedRoad;
-                  if (widget.selected != null &&
-                      walking == null &&
-                      widget.selected! < centres.length &&
-                      steps[widget.selected!].moves &&
-                      !steps[widget.selected!].locked) {
-                    if (planRoads != null) {
-                      selectedRoad = _trimmed(planRoads[widget.selected!],
-                          _hereRadius, _stepRadius);
-                    } else {
-                      final (from, to) =
-                          _roadEnds(here, centres[widget.selected!], width);
-                      selectedRoad = _road(from, to);
+                final area = Rect.fromLTWH(0, 0, width, present).deflate(28);
+                final taken = <Offset>[];
+                const apart = _stepRadius * 2 + 6;
+                bool clear(Offset p) =>
+                    area.contains(p) &&
+                    (p - here).distance >= _hereRadius + _stepRadius + 4 &&
+                    !obstacles.any(
+                      (o) => o.overlaps(
+                        Rect.fromCircle(center: p, radius: _stepRadius),
+                      ),
+                    ) &&
+                    taken.every((t) => (t - p).distance >= apart);
+                // Spots round the party, ring on ring, the nearest first:
+                // a way with no ground of its own takes the first spot that
+                // is clear.
+                final candidates = <Offset>[
+                  for (var k = 0; k < 7; k++)
+                    for (var n = 0; n < 18; n++)
+                      here +
+                          Offset(
+                                math.cos(n * math.pi / 9 + k * math.pi / 18),
+                                math.sin(n * math.pi / 9 + k * math.pi / 18),
+                              ) *
+                              (74 + k * 46),
+                ];
+                Offset spotNear(Offset wanted) {
+                  Offset? best;
+                  var bestD = double.infinity;
+                  for (final c in candidates) {
+                    if (!clear(c)) continue;
+                    final d = (c - wanted).distance;
+                    if (d < bestD) {
+                      bestD = d;
+                      best = c;
                     }
                   }
-                  final burning = _animate && widget.burn && now < 1.4;
-                  final burnT = (now / 1.3).clamp(0.0, 1.0);
-                  final panned = Transform.translate(
-                    offset: camera,
-                    child: Stack(
-                      clipBehavior: Clip.none,
-                      children: [
-                        // The land the place lies in (v1.197), faint,
-                        // under its plan.
-                        if (widget.place?.biome case final biome?)
+                  return best ?? wanted;
+                }
+
+                // The districts' marks first, on their buildings; then the
+                // ways out at the edge; then the rest round the party.
+                final later = <int>[];
+                for (var i = 0; i < steps.length; i++) {
+                  final district = districtOf[i];
+                  if (district == null) {
+                    later.add(i);
+                    continue;
+                  }
+                  var p = tf(plan.anchorOf(district));
+                  if (!clear(p)) p = spotNear(p);
+                  positions[i] = p;
+                  taken.add(p);
+                }
+                for (final i in later) {
+                  // Only a journey out of the city goes to the edge; a way
+                  // to another spot of this city stays by the party.
+                  final bearing =
+                      steps[i].chartTarget != null ? steps[i].bearing : null;
+                  final wanted = bearing != null
+                      ? journeyEdgeSpot(here, bearing, Size(width, present))
+                      : here;
+                  final p = clear(wanted) && bearing != null
+                      ? wanted
+                      : spotNear(wanted);
+                  positions[i] = p;
+                  taken.add(p);
+                }
+                centres = positions;
+              } else {
+                _planScale = null;
+                _planOrigin = null;
+                here = Offset(width / 2, present / 2);
+                centres = journeyPlaceLayout(
+                  area: Size(width, present),
+                  here: here,
+                  bearings: [for (final step in steps) step.bearing],
+                );
+              }
+              _openAt = 0;
+            } else {
+              final needed =
+                  _top + rows * _rowMin + _hereRadius * 2 + _hereBelow;
+              present = math.max(box.maxHeight, needed);
+              final hereY = present - _hereBelow - _hereRadius;
+              here = Offset(width / 2, hereY);
+              final rowGap = rows == 0
+                  ? 0.0
+                  : ((hereY - _top - _stepRadius) / rows).clamp(
+                      _rowMin,
+                      _rowMax,
+                    );
+              Offset centreOf(_Step step) => Offset(
+                    step.slot.x * width,
+                    hereY - rowGap * (step.slot.row + 1),
+                  );
+              centres = [for (final step in steps) centreOf(step)];
+              _openAt = math.max(0, present - box.maxHeight);
+              _planScale = null;
+              _planOrigin = null;
+            }
+            _here = here;
+            _centres = centres;
+            // The ways' roads on the city's plan, through its streets.
+            final planRoads = _anchors == null
+                ? null
+                : [for (final c in centres) _road(here, c)];
+            final height = present;
+            _scroll ??= ScrollController(initialScrollOffset: _openAt);
+            // A map made taller or shorter (the scene folded or opened, a
+            // step picked and its details under the map) opens on the party
+            // again, the step picked kept in view.
+            if (_viewport != null && _viewport != box.maxHeight) {
+              var at = _openAt;
+              final picked = widget.selected;
+              if (picked != null && picked < centres.length) {
+                final y = centres[picked].dy;
+                final low = y + _stepRadius + 24 - box.maxHeight;
+                at = at.clamp(low, math.max(low, y - _stepRadius - 12));
+              }
+              WidgetsBinding.instance.addPostFrameCallback((_) {
+                final scroll = _scroll;
+                if (mounted && scroll != null && scroll.hasClients) {
+                  scroll.jumpTo(at.clamp(0.0, scroll.position.maxScrollExtent));
+                }
+              });
+            }
+            _viewport = box.maxHeight;
+
+            double labelWidth(_Step step) {
+              if (_placeMode) return math.min(width * 0.34, 124);
+              final n = rowSizes[step.slot.row];
+              return n == 1
+                  ? math.min(width * 0.7, 240)
+                  : math.min(width / (n + 1) - 6, 180);
+            }
+
+            final placeStyle = TextStyle(
+              fontFamily: InkFonts.prose,
+              fontSize: 12.5,
+              height: 1.25,
+              color: palette.place,
+            );
+            final noteStyle = TextStyle(
+              fontFamily: InkFonts.system,
+              fontSize: 11,
+              height: 1.2,
+              color: palette.label,
+            );
+
+            // Where each way's name goes: under its mark on the road up; in
+            // a place, wherever it leaves the other marks clear (see
+            // journeyLabelSpots). A crowded place names only the way picked
+            // and the ways out; the rest by their marks.
+            final scaler = MediaQuery.textScalerOf(context);
+            final names = <Size?>[
+              for (var i = 0; i < steps.length; i++)
+                if (_placeMode &&
+                    steps.length > 5 &&
+                    widget.selected != i &&
+                    steps[i].leadsTo == null)
+                  null
+                else if (_placeMode)
+                  // In a place, as much as the words take.
+                  _nameSize(
+                    steps[i],
+                    labelWidth(steps[i]),
+                    placeStyle,
+                    noteStyle,
+                    scaler,
+                    selected: widget.selected == i || _walking == i,
+                  )
+                else
+                  Size(labelWidth(steps[i]), 0),
+            ];
+            final nameSpots = _placeMode
+                ? journeyLabelSpots(
+                    area: Size(width, present),
+                    centres: centres,
+                    radius: _stepRadius,
+                    labels: names,
+                    avoid: [
+                      Rect.fromCircle(center: here, radius: _hereRadius),
+                      // The "You are here" badge in the corner.
+                      Rect.fromLTWH(8, 8, math.min(width * 0.5, 190), 56),
+                    ],
+                    keep: widget.selected,
+                    keepAll: _anchors != null,
+                  )
+                : [
+                    for (var i = 0; i < steps.length; i++)
+                      if (names[i] case final name?)
+                        Rect.fromLTWH(
+                          (centres[i].dx - name.width / 2).clamp(
+                            4.0,
+                            math.max(4.0, width - name.width - 4),
+                          ),
+                          centres[i].dy + _stepRadius + 4,
+                          name.width,
+                          name.height,
+                        )
+                      else
+                        null,
+                  ];
+
+            final map = SingleChildScrollView(
+              controller: _scroll,
+              child: SizedBox(
+                width: width,
+                height: height,
+                child: AnimatedBuilder(
+                  animation: Listenable.merge([_walk, _arrival, _phase]),
+                  builder: (context, _) {
+                    // The walk: the mark goes along its road, and the map
+                    // follows a little behind, so the step taken ends where
+                    // the mark stood.
+                    final walking = _walking;
+                    final t = Curves.easeInOut.transform(_walk.value);
+                    Offset? traveller;
+                    var camera = Offset.zero;
+                    if (walking != null && walking < centres.length) {
+                      final road = _road(
+                        here,
+                        centres[walking],
+                      ).computeMetrics();
+                      final metric = road.first;
+                      Offset at(double f) => metric
+                          .getTangentForOffset(metric.length * f)!
+                          .position;
+                      traveller = at(t);
+                      camera = here - at(t * t);
+                    }
+                    // Set down here along no walk: the mark comes by the
+                    // streets from where it stood.
+                    Offset? arriving;
+                    final cameFrom = widget.arriveFrom;
+                    final arrivalPlan = _anchors;
+                    final planScale = _planScale, planOrigin = _planOrigin;
+                    if (cameFrom != null &&
+                        _arrival.isAnimating &&
+                        traveller == null &&
+                        arrivalPlan != null &&
+                        planScale != null &&
+                        planOrigin != null) {
+                      final start = planOrigin +
+                          arrivalPlan.anchorOf(cameFrom) * planScale;
+                      final metric = _road(start, here).computeMetrics().first;
+                      arriving = metric
+                          .getTangentForOffset(
+                            metric.length *
+                                Curves.easeInOut.transform(_arrival.value),
+                          )!
+                          .position;
+                    }
+                    final now = _clock.value;
+                    final walkingKind =
+                        walking != null && walking < steps.length
+                            ? steps[walking].kind
+                            : null;
+                    final selectedIndex = walking ?? widget.selected;
+                    Path? selectedRoad;
+                    if (widget.selected != null &&
+                        walking == null &&
+                        widget.selected! < centres.length &&
+                        steps[widget.selected!].moves &&
+                        !steps[widget.selected!].locked) {
+                      if (planRoads != null) {
+                        selectedRoad = _trimmed(
+                          planRoads[widget.selected!],
+                          _hereRadius,
+                          _stepRadius,
+                        );
+                      } else {
+                        final (from, to) = _roadEnds(
+                          here,
+                          centres[widget.selected!],
+                          width,
+                        );
+                        selectedRoad = _road(from, to);
+                      }
+                    }
+                    final burning = _animate && widget.burn && now < 1.4;
+                    final burnT = (now / 1.3).clamp(0.0, 1.0);
+                    final panned = Transform.translate(
+                      offset: camera,
+                      child: Stack(
+                        clipBehavior: Clip.none,
+                        children: [
+                          // The land the place lies in (v1.197), faint,
+                          // under its plan.
+                          if (widget.place?.biome case final biome?)
+                            Positioned.fill(
+                              child: RepaintBoundary(
+                                child: CustomPaint(
+                                  key: const ValueKey('journey_biome'),
+                                  painter: BiomeBackdropPainter(
+                                    biome: biome,
+                                    land: palette.land,
+                                    seed: widget.place!.seed,
+                                    greyed: widget.greyed,
+                                  ),
+                                ),
+                              ),
+                            ),
+                          if (widget.place?.holderColor case final tint?)
+                            Positioned.fill(
+                              child: IgnorePointer(
+                                child: DecoratedBox(
+                                  key: const ValueKey('journey_holder_tint'),
+                                  decoration: BoxDecoration(
+                                    color: tint.withValues(alpha: 0.10),
+                                    border: Border.all(
+                                      color: tint.withValues(alpha: 0.45),
+                                      width: 3,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ),
                           Positioned.fill(
                             child: RepaintBoundary(
                               child: CustomPaint(
-                                key: const ValueKey('journey_biome'),
-                                painter: BiomeBackdropPainter(
-                                  biome: biome,
-                                  land: palette.land,
-                                  seed: widget.place!.seed,
-                                  greyed: widget.greyed,
+                                key: ValueKey(
+                                  _room != null
+                                      ? 'journey_room'
+                                      : widget.place?.plan != null
+                                          ? 'journey_streets'
+                                          : 'journey_ground',
                                 ),
+                                painter: widget.place == null
+                                    ? _ReliefPainter(
+                                        palette: palette,
+                                        here: here,
+                                        shift: widget.terrainShift,
+                                        seed: widget.terrainSeed,
+                                      )
+                                    : _room != null && _planScale != null
+                                        ? RoomPlanPainter(
+                                            plan: _room!,
+                                            scale: _planScale!,
+                                            origin: _planOrigin!,
+                                            palette: palette,
+                                            ember: widget.ink.ember,
+                                          )
+                                        : widget.place?.chart != null &&
+                                                _planScale != null
+                                            ? CityChartPainter(
+                                                chart: widget.place!.chart!,
+                                                palette: palette,
+                                                scale: _planScale!,
+                                                offset: _planOrigin!,
+                                                fitted: _planFitted,
+                                                explored:
+                                                    widget.place!.explored,
+                                                hereDistrict: widget.place!
+                                                        .hereDistrict.isEmpty
+                                                    ? null
+                                                    : widget
+                                                        .place!.hereDistrict,
+                                                focusDistrict: _planScale! /
+                                                            _planFitted >=
+                                                        cityChartDetailZoom
+                                                    ? widget.place!.hereDistrict
+                                                    : null,
+                                              )
+                                            : widget.place!.loading
+                                                ? null
+                                                : PlacePlanPainter(
+                                                    kind: widget.place!.kind,
+                                                    seed: widget.place!.seed,
+                                                    here: here,
+                                                    spots: centres,
+                                                    palette: palette,
+                                                    ember: widget.ink.ember,
+                                                    glyphs:
+                                                        widget.place!.glyphs,
+                                                    water: widget.place!.water,
+                                                  ),
                               ),
                             ),
                           ),
-                        if (widget.place?.holderColor case final tint?)
                           Positioned.fill(
-                            child: IgnorePointer(
-                              child: DecoratedBox(
-                                key: const ValueKey('journey_holder_tint'),
-                                decoration: BoxDecoration(
-                                  color: tint.withValues(alpha: 0.10),
-                                  border: Border.all(
-                                      color: tint.withValues(alpha: 0.45),
-                                      width: 3),
-                                ),
-                              ),
-                            ),
-                          ),
-                        Positioned.fill(
-                          child: RepaintBoundary(
                             child: CustomPaint(
-                              key: ValueKey(_room != null
-                                  ? 'journey_room'
-                                  : widget.place?.plan != null
-                                      ? 'journey_streets'
-                                      : 'journey_ground'),
-                              painter: widget.place == null
-                                  ? _ReliefPainter(
-                                      palette: palette,
-                                      here: here,
-                                      shift: widget.terrainShift,
-                                      seed: widget.terrainSeed,
-                                    )
-                                  : _room != null && _planScale != null
-                                      ? RoomPlanPainter(
-                                          plan: _room!,
-                                          scale: _planScale!,
-                                          origin: _planOrigin!,
-                                          palette: palette,
-                                          ember: widget.ink.ember,
-                                        )
-                                      : widget.place?.chart != null &&
-                                              _planScale != null
-                                          ? CityChartPainter(
-                                              chart: widget.place!.chart!,
-                                              palette: palette,
-                                              scale: _planScale!,
-                                              offset: _planOrigin!,
-                                              fitted: _planFitted,
-                                              explored: widget.place!.explored,
-                                              hereDistrict: widget.place!
-                                                      .hereDistrict.isEmpty
-                                                  ? null
-                                                  : widget.place!.hereDistrict,
-                                              focusDistrict: _planScale! /
-                                                          _planFitted >=
-                                                      cityChartDetailZoom
-                                                  ? widget.place!.hereDistrict
-                                                  : null,
-                                            )
-                                          : widget.place!.loading
-                                              ? null
-                                              : PlacePlanPainter(
-                                                  kind: widget.place!.kind,
-                                                  seed: widget.place!.seed,
-                                                  here: here,
-                                                  spots: centres,
-                                                  palette: palette,
-                                                  ember: widget.ink.ember,
-                                                  glyphs: widget.place!.glyphs,
-                                                  water: widget.place!.water,
-                                                ),
+                              painter: _JourneyPainter(
+                                palette: palette,
+                                here: here,
+                                hereRadius: _hereRadius,
+                                stepRadius: _stepRadius,
+                                steps: [
+                                  for (var i = 0; i < steps.length; i++)
+                                    (
+                                      centre: centres[i],
+                                      row: steps[i].slot.row,
+                                      locked: steps[i].locked,
+                                      selected:
+                                          widget.selected == i || walking == i,
+                                      moves: steps[i].moves,
+                                    ),
+                                ],
+                                radial: _placeMode,
+                                walking: walking,
+                                progress: t,
+                                roads: planRoads,
+                                reveals: [
+                                  for (var i = 0; i < steps.length; i++)
+                                    _roadReveal(i),
+                                ],
+                              ),
                             ),
                           ),
+                          // What each step holds, the weather, the picked
+                          // road flowing, footprints (see journey_fx.dart).
+                          // Its own layer (v1.209): the clock's ticks
+                          // redraw it alone, not the whole map.
+                          if (_animate)
+                            Positioned.fill(
+                              child: IgnorePointer(
+                                child: RepaintBoundary(
+                                  child: CustomPaint(
+                                    painter: JourneyFxPainter(
+                                      time: _clock,
+                                      steps: [
+                                        for (var i = 0; i < steps.length; i++)
+                                          if (_markReveal(i) >= 1)
+                                            JourneyFxStep(
+                                              centre: centres[i],
+                                              kind: steps[i].kind,
+                                              colour: _colorFor(
+                                                steps[i].kind,
+                                                widget.ink,
+                                                palette,
+                                                greyed: widget.greyed,
+                                              ),
+                                              locked: steps[i].locked,
+                                              row: steps[i].slot.row,
+                                            ),
+                                      ],
+                                      here: traveller ?? here,
+                                      hereRadius: _hereRadius,
+                                      stepRadius: _stepRadius,
+                                      mark: palette.mark,
+                                      fog: palette.fog,
+                                      weather: widget.greyed
+                                          ? JourneyWeather.none
+                                          : widget.weather,
+                                      weatherColour: switch (widget.weather) {
+                                        JourneyWeather.rain => Palette.cyan69,
+                                        JourneyWeather.snow => Palette.paper95,
+                                        JourneyWeather.dust => Palette.orange60,
+                                        _ => palette.place,
+                                      },
+                                      selectedRoad: selectedRoad,
+                                      selected: walking == null &&
+                                              selectedIndex != null &&
+                                              selectedIndex < steps.length &&
+                                              !steps[selectedIndex].locked &&
+                                              _markReveal(selectedIndex) >= 1
+                                          ? selectedIndex
+                                          : null,
+                                      footprints: _footprints,
+                                      footprintColour: palette.place,
+                                      dust: _dust,
+                                      dice: traveller != null &&
+                                              (walkingKind ==
+                                                      JourneyStepKind.check ||
+                                                  walkingKind ==
+                                                      JourneyStepKind.challenge)
+                                          ? traveller.translate(
+                                              _hereRadius * 0.9,
+                                              -_hereRadius -
+                                                  10 +
+                                                  math.sin(now * 14).abs() * -8,
+                                            )
+                                          : null,
+                                      diceColour: widget.ink.tide,
+                                      rattle: _rattle == null ||
+                                              _rattle!.$1 >= centres.length
+                                          ? null
+                                          : (centres[_rattle!.$1], _rattle!.$2),
+                                      rattleColour: widget.ink.blood,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ),
+                          // Where the party stood, while it walks away.
+                          _hereMark(
+                            here,
+                            faded: traveller != null || arriving != null,
+                          ),
+                          // A hub's rings round it, and the beat when one of
+                          // its choices is taken.
+                          if (widget.rings.isNotEmpty &&
+                              traveller == null &&
+                              arriving == null)
+                            ChoiceRingsLayer(
+                              here: here,
+                              innerRadius: _hereRadius,
+                              rings: widget.rings,
+                              lit: widget.ringLit,
+                              plate: palette.land,
+                              onTap: (id) => widget.onRing?.call(id),
+                            ),
+                          // The rings' chips, over their icons but under the marks, which the
+                          // taps must reach first.
+                          if (widget.rings.isNotEmpty &&
+                              traveller == null &&
+                              arriving == null)
+                            ChoiceRingsLayer(
+                              chips: true,
+                              here: here,
+                              innerRadius: _hereRadius,
+                              rings: widget.rings,
+                              lit: widget.ringLit,
+                              plate: palette.land,
+                              onTap: (id) => widget.onRing?.call(id),
+                            ),
+                          ChoiceBeat(
+                            animation: _beat,
+                            here: here,
+                            innerRadius: _hereRadius,
+                            color: _beatColor,
+                            icon: _beatIcon,
+                          ),
+                          Positioned(
+                            left: _placeMode ? 8 : here.dx + _hereRadius + 10,
+                            width: _placeMode
+                                ? math.min(width * 0.5, 190)
+                                : math.max(0, width / 2 - _hereRadius - 16),
+                            top: _placeMode ? 8 : here.dy - 18,
+                            child: Opacity(
+                              opacity: traveller == null ? 1 : 1 - t,
+                              child: DecoratedBox(
+                                // In a place, a badge in the corner: the
+                                // ways ring the mark itself.
+                                decoration: BoxDecoration(
+                                  color: _placeMode
+                                      ? palette.land.withValues(alpha: 0.85)
+                                      : Palette.clear,
+                                  borderRadius: BorderRadius.circular(6),
+                                ),
+                                child: Padding(
+                                  padding: _placeMode
+                                      ? const EdgeInsets.symmetric(
+                                          horizontal: 8,
+                                          vertical: 4,
+                                        )
+                                      : EdgeInsets.zero,
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        widget.youAreHere.toUpperCase(),
+                                        style: noteStyle.copyWith(
+                                          fontSize: 10,
+                                          letterSpacing: 1.2,
+                                        ),
+                                      ),
+                                      Text(
+                                        widget.hereName,
+                                        maxLines: 2,
+                                        overflow: TextOverflow.ellipsis,
+                                        style: TextStyle(
+                                          fontFamily: InkFonts.display,
+                                          fontSize: 16,
+                                          height: 1.1,
+                                          color: palette.place,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
+                          // The ways on: their names, then every mark over
+                          // them. Only the marks take taps, so a tap on one
+                          // is its own step's, whatever name lies near it.
+                          for (var i = 0; i < steps.length; i++)
+                            if (nameSpots[i] case final spot?)
+                              _stepName(
+                                i,
+                                spot,
+                                placeStyle,
+                                noteStyle,
+                                fading: walking != null && walking != i ? t : 0,
+                              ),
+                          for (var i = 0; i < steps.length; i++)
+                            _stepMark(
+                              i,
+                              centres[i],
+                              fading: walking != null && walking != i ? t : 0,
+                            ),
+                          // The party, on the road.
+                          if (traveller != null)
+                            Positioned(
+                              key: const ValueKey('journey_traveller'),
+                              left: traveller.dx - _hereRadius,
+                              top: traveller.dy - _hereRadius,
+                              child: _partyMark(palette),
+                            ),
+                          if (arriving != null)
+                            Positioned(
+                              key: const ValueKey('journey_arriving'),
+                              left: arriving.dx - _hereRadius,
+                              top: arriving.dy - _hereRadius,
+                              child: _partyMark(palette),
+                            ),
+                          // A place the map hadn't shown: its name stamped
+                          // over the mark, ink spreading under it.
+                          if (widget.stamp != null && _animate && now < 4.2)
+                            ..._stampMark(here, now, width),
+                        ],
+                      ),
+                    );
+                    // The city's camera (v1.219): the map zooms in on the
+                    // party while it walks, keeping it toward the middle,
+                    // and out again as it arrives.
+                    var chart = panned as Widget;
+                    if (walking != null &&
+                        walking < centres.length &&
+                        traveller != null &&
+                        _placeMode &&
+                        _animate) {
+                      final z = journeyWalkZoomAt(_walk.value);
+                      if (z > 1.001) {
+                        final focus = traveller + camera;
+                        final k = (z - 1) / (journeyWalkZoom - 1);
+                        final seen = (_scroll?.hasClients ?? false)
+                            ? _scroll!.offset
+                            : _openAt;
+                        final middle = Offset(
+                          width / 2,
+                          seen + box.maxHeight / 2,
+                        );
+                        final target = Offset.lerp(focus, middle, k)!;
+                        var d = target - focus * z;
+                        // Never past the map's edges.
+                        d = Offset(
+                          d.dx.clamp(width * (1 - z), 0.0),
+                          d.dy.clamp(seen + box.maxHeight - z * height, seen),
+                        );
+                        chart = Transform(
+                          key: const ValueKey('journey_walk_camera'),
+                          transform: Matrix4.identity()
+                            ..setEntry(0, 0, z)
+                            ..setEntry(1, 1, z)
+                            ..setEntry(0, 3, d.dx)
+                            ..setEntry(1, 3, d.dy),
+                          child: panned,
+                        );
+                      }
+                    }
+                    if (!burning) return chart;
+                    // A new chapter: its map burns open from the mark.
+                    return Stack(
+                      children: [
+                        ClipPath(
+                          clipper: JourneyBurnClipper(t: burnT, centre: here),
+                          child: chart,
                         ),
                         Positioned.fill(
-                          child: CustomPaint(
-                            painter: _JourneyPainter(
-                              palette: palette,
-                              here: here,
-                              hereRadius: _hereRadius,
-                              stepRadius: _stepRadius,
-                              steps: [
-                                for (var i = 0; i < steps.length; i++)
-                                  (
-                                    centre: centres[i],
-                                    row: steps[i].slot.row,
-                                    locked: steps[i].locked,
-                                    selected:
-                                        widget.selected == i || walking == i,
-                                    moves: steps[i].moves,
-                                  ),
-                              ],
-                              radial: _placeMode,
-                              walking: walking,
-                              progress: t,
-                              roads: planRoads,
-                              reveals: [
-                                for (var i = 0; i < steps.length; i++)
-                                  _roadReveal(i),
-                              ],
-                            ),
-                          ),
-                        ),
-                        // What each step holds, the weather, the picked
-                        // road flowing, footprints (see journey_fx.dart).
-                        // Its own layer (v1.209): the clock's ticks
-                        // redraw it alone, not the whole map.
-                        if (_animate)
-                          Positioned.fill(
-                            child: IgnorePointer(
-                              child: RepaintBoundary(
-                                child: CustomPaint(
-                                  painter: JourneyFxPainter(
-                                    time: _clock,
-                                    steps: [
-                                      for (var i = 0; i < steps.length; i++)
-                                        if (_markReveal(i) >= 1)
-                                          JourneyFxStep(
-                                            centre: centres[i],
-                                            kind: steps[i].kind,
-                                            colour: _colorFor(steps[i].kind,
-                                                widget.ink, palette,
-                                                greyed: widget.greyed),
-                                            locked: steps[i].locked,
-                                            row: steps[i].slot.row,
-                                          ),
-                                    ],
-                                    here: traveller ?? here,
-                                    hereRadius: _hereRadius,
-                                    stepRadius: _stepRadius,
-                                    mark: palette.mark,
-                                    fog: palette.fog,
-                                    weather: widget.greyed
-                                        ? JourneyWeather.none
-                                        : widget.weather,
-                                    weatherColour: switch (widget.weather) {
-                                      JourneyWeather.rain => Palette.cyan69,
-                                      JourneyWeather.snow => Palette.paper95,
-                                      JourneyWeather.dust => Palette.orange60,
-                                      _ => palette.place,
-                                    },
-                                    selectedRoad: selectedRoad,
-                                    selected: walking == null &&
-                                            selectedIndex != null &&
-                                            selectedIndex < steps.length &&
-                                            !steps[selectedIndex].locked &&
-                                            _markReveal(selectedIndex) >= 1
-                                        ? selectedIndex
-                                        : null,
-                                    footprints: _footprints,
-                                    footprintColour: palette.place,
-                                    dust: _dust,
-                                    dice: traveller != null &&
-                                            (walkingKind ==
-                                                    JourneyStepKind.check ||
-                                                walkingKind ==
-                                                    JourneyStepKind.challenge)
-                                        ? traveller.translate(
-                                            _hereRadius * 0.9,
-                                            -_hereRadius -
-                                                10 +
-                                                math.sin(now * 14).abs() * -8)
-                                        : null,
-                                    diceColour: widget.ink.tide,
-                                    rattle: _rattle == null ||
-                                            _rattle!.$1 >= centres.length
-                                        ? null
-                                        : (centres[_rattle!.$1], _rattle!.$2),
-                                    rattleColour: widget.ink.blood,
-                                  ),
-                                ),
-                              ),
-                            ),
-                          ),
-                        // Where the party stood, while it walks away.
-                        _hereMark(here,
-                            faded: traveller != null || arriving != null),
-                        // A hub's rings round it, and the beat when one of
-                        // its choices is taken.
-                        if (widget.rings.isNotEmpty &&
-                            traveller == null &&
-                            arriving == null)
-                          ChoiceRingsLayer(
-                            here: here,
-                            innerRadius: _hereRadius,
-                            rings: widget.rings,
-                            lit: widget.ringLit,
-                            plate: palette.land,
-                            onTap: (id) => widget.onRing?.call(id),
-                          ),
-                        // The rings' chips, over their icons but under the marks, which the
-                        // taps must reach first.
-                        if (widget.rings.isNotEmpty &&
-                            traveller == null &&
-                            arriving == null)
-                          ChoiceRingsLayer(
-                            chips: true,
-                            here: here,
-                            innerRadius: _hereRadius,
-                            rings: widget.rings,
-                            lit: widget.ringLit,
-                            plate: palette.land,
-                            onTap: (id) => widget.onRing?.call(id),
-                          ),
-                        ChoiceBeat(
-                          animation: _beat,
-                          here: here,
-                          innerRadius: _hereRadius,
-                          color: _beatColor,
-                          icon: _beatIcon,
-                        ),
-                        Positioned(
-                          left: _placeMode ? 8 : here.dx + _hereRadius + 10,
-                          width: _placeMode
-                              ? math.min(width * 0.5, 190)
-                              : math.max(0, width / 2 - _hereRadius - 16),
-                          top: _placeMode ? 8 : here.dy - 18,
-                          child: Opacity(
-                            opacity: traveller == null ? 1 : 1 - t,
-                            child: DecoratedBox(
-                              // In a place, a badge in the corner: the
-                              // ways ring the mark itself.
-                              decoration: BoxDecoration(
-                                color: _placeMode
-                                    ? palette.land.withValues(alpha: 0.85)
-                                    : Palette.clear,
-                                borderRadius: BorderRadius.circular(6),
-                              ),
-                              child: Padding(
-                                padding: _placeMode
-                                    ? const EdgeInsets.symmetric(
-                                        horizontal: 8, vertical: 4)
-                                    : EdgeInsets.zero,
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Text(
-                                      widget.youAreHere.toUpperCase(),
-                                      style: noteStyle.copyWith(
-                                          fontSize: 10, letterSpacing: 1.2),
-                                    ),
-                                    Text(
-                                      widget.hereName,
-                                      maxLines: 2,
-                                      overflow: TextOverflow.ellipsis,
-                                      style: TextStyle(
-                                        fontFamily: InkFonts.display,
-                                        fontSize: 16,
-                                        height: 1.1,
-                                        color: palette.place,
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            ),
-                          ),
-                        ),
-                        // The ways on: their names, then every mark over
-                        // them. Only the marks take taps, so a tap on one
-                        // is its own step's, whatever name lies near it.
-                        for (var i = 0; i < steps.length; i++)
-                          if (nameSpots[i] case final spot?)
-                            _stepName(i, spot, placeStyle, noteStyle,
-                                fading:
-                                    walking != null && walking != i ? t : 0),
-                        for (var i = 0; i < steps.length; i++)
-                          _stepMark(i, centres[i],
-                              fading: walking != null && walking != i ? t : 0),
-                        // The party, on the road.
-                        if (traveller != null)
-                          Positioned(
-                            key: const ValueKey('journey_traveller'),
-                            left: traveller.dx - _hereRadius,
-                            top: traveller.dy - _hereRadius,
-                            child: _partyMark(palette),
-                          ),
-                        if (arriving != null)
-                          Positioned(
-                            key: const ValueKey('journey_arriving'),
-                            left: arriving.dx - _hereRadius,
-                            top: arriving.dy - _hereRadius,
-                            child: _partyMark(palette),
-                          ),
-                        // A place the map hadn't shown: its name stamped
-                        // over the mark, ink spreading under it.
-                        if (widget.stamp != null && _animate && now < 4.2)
-                          ..._stampMark(here, now, width),
-                      ],
-                    ),
-                  );
-                  // The city's camera (v1.219): the map zooms in on the
-                  // party while it walks, keeping it toward the middle,
-                  // and out again as it arrives.
-                  var chart = panned as Widget;
-                  if (walking != null &&
-                      walking < centres.length &&
-                      traveller != null &&
-                      _placeMode &&
-                      _animate) {
-                    final z = journeyWalkZoomAt(_walk.value);
-                    if (z > 1.001) {
-                      final focus = traveller + camera;
-                      final k = (z - 1) / (journeyWalkZoom - 1);
-                      final seen = (_scroll?.hasClients ?? false)
-                          ? _scroll!.offset
-                          : _openAt;
-                      final middle =
-                          Offset(width / 2, seen + box.maxHeight / 2);
-                      final target = Offset.lerp(focus, middle, k)!;
-                      var d = target - focus * z;
-                      // Never past the map's edges.
-                      d = Offset(
-                        d.dx.clamp(width * (1 - z), 0.0),
-                        d.dy.clamp(seen + box.maxHeight - z * height, seen),
-                      );
-                      chart = Transform(
-                        key: const ValueKey('journey_walk_camera'),
-                        transform: Matrix4.identity()
-                          ..setEntry(0, 0, z)
-                          ..setEntry(1, 1, z)
-                          ..setEntry(0, 3, d.dx)
-                          ..setEntry(1, 3, d.dy),
-                        child: panned,
-                      );
-                    }
-                  }
-                  if (!burning) return chart;
-                  // A new chapter: its map burns open from the mark.
-                  return Stack(
-                    children: [
-                      ClipPath(
-                        clipper: JourneyBurnClipper(t: burnT, centre: here),
-                        child: chart,
-                      ),
-                      Positioned.fill(
-                        child: IgnorePointer(
-                          child: CustomPaint(
-                            painter: JourneyBurnPainter(
+                          child: IgnorePointer(
+                            child: CustomPaint(
+                              painter: JourneyBurnPainter(
                                 t: burnT,
                                 centre: here,
-                                ember: widget.ink.ember),
+                                ember: widget.ink.ember,
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
+                    );
+                  },
+                ),
+              ),
+            );
+            // Opened from another tab, the map unrolls down from the scene
+            // on a gold rod.
+            final unrolled = AnimatedBuilder(
+              animation: _phase,
+              child: map,
+              builder: (context, child) {
+                final f = _animate
+                    ? Curves.easeInOutCubic.transform(
+                        ((_clock.value - _unrollAt) / 0.55).clamp(0.0, 1.0),
+                      )
+                    : 1.0;
+                if (f >= 1) return child!;
+                final h = box.maxHeight;
+                return Stack(
+                  children: [
+                    ClipRect(clipper: _TopReveal(f), child: child),
+                    Positioned(
+                      left: 0,
+                      right: 0,
+                      top: (h * f - 3).clamp(0.0, h - 6),
+                      height: 6,
+                      child: DecoratedBox(
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(3),
+                          gradient: LinearGradient(
+                            begin: Alignment.topCenter,
+                            end: Alignment.bottomCenter,
+                            colors: [palette.mark, widget.ink.gold],
                           ),
                         ),
                       ),
-                    ],
-                  );
-                },
-              ),
-            ),
-          );
-          // Opened from another tab, the map unrolls down from the scene
-          // on a gold rod.
-          final unrolled = AnimatedBuilder(
-            animation: _phase,
-            child: map,
-            builder: (context, child) {
-              final f = _animate
-                  ? Curves.easeInOutCubic.transform(
-                      ((_clock.value - _unrollAt) / 0.55).clamp(0.0, 1.0))
-                  : 1.0;
-              if (f >= 1) return child!;
-              final h = box.maxHeight;
+                    ),
+                  ],
+                );
+              },
+            );
+            final flying = _flying;
+            final place = widget.place;
+            if (flying == null ||
+                place == null ||
+                flying >= steps.length ||
+                steps[flying].chartTarget == null) {
+              return unrolled;
+            }
+            // On a world road: the World view walks it (v1.548); a tap lands
+            // the party at once, as the transit's does.
+            if (_flyingLeg case final leg?) {
               return Stack(
+                fit: StackFit.expand,
                 children: [
-                  ClipRect(
-                    clipper: _TopReveal(f),
-                    child: child,
-                  ),
-                  Positioned(
-                    left: 0,
-                    right: 0,
-                    top: (h * f - 3).clamp(0.0, h - 6),
-                    height: 6,
-                    child: DecoratedBox(
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(3),
-                        gradient: LinearGradient(
-                          begin: Alignment.topCenter,
-                          end: Alignment.bottomCenter,
-                          colors: [palette.mark, widget.ink.gold],
-                        ),
-                      ),
+                  widget.roadMap!(leg, _flight),
+                  Positioned.fill(
+                    child: GestureDetector(
+                      key: const ValueKey('journey_road_skip'),
+                      behavior: HitTestBehavior.opaque,
+                      onTap: () {
+                        _flight.stop(canceled: false);
+                        _flight.value = 1;
+                      },
                     ),
                   ),
                 ],
               );
-            },
-          );
-          final flying = _flying;
-          final place = widget.place;
-          if (flying == null ||
-              place == null ||
-              flying >= steps.length ||
-              steps[flying].chartTarget == null) {
-            return unrolled;
-          }
-          // On a world road: the World view walks it (v1.548); a tap lands
-          // the party at once, as the transit's does.
-          if (_flyingLeg case final leg?) {
+            }
+            // On the road: the world chart, from here to where it leads.
             return Stack(
-              fit: StackFit.expand,
               children: [
-                widget.roadMap!(leg, _flight),
+                unrolled,
                 Positioned.fill(
-                  child: GestureDetector(
-                    key: const ValueKey('journey_road_skip'),
-                    behavior: HitTestBehavior.opaque,
-                    onTap: () {
-                      _flight.stop(canceled: false);
-                      _flight.value = 1;
-                    },
+                  child: AnimatedBuilder(
+                    animation: _flight,
+                    builder: (context, _) => CustomPaint(
+                      key: const ValueKey('journey_flight'),
+                      painter: RegionFlightPainter(
+                        geography: place.geography,
+                        from: place.chartHere,
+                        to: steps[flying].chartTarget!,
+                        marks: place.marks,
+                        t: _flight.value,
+                        palette: palette,
+                        fromName: widget.hereName,
+                        toName: steps[flying].leadsTo ?? '',
+                        route: steps[flying].route,
+                      ),
+                    ),
                   ),
                 ),
               ],
             );
-          }
-          // On the road: the world chart, from here to where it leads.
-          return Stack(
-            children: [
-              unrolled,
-              Positioned.fill(
-                child: AnimatedBuilder(
-                  animation: _flight,
-                  builder: (context, _) => CustomPaint(
-                    key: const ValueKey('journey_flight'),
-                    painter: RegionFlightPainter(
-                      geography: place.geography,
-                      from: place.chartHere,
-                      to: steps[flying].chartTarget!,
-                      marks: place.marks,
-                      t: _flight.value,
-                      palette: palette,
-                      fromName: widget.hereName,
-                      toName: steps[flying].leadsTo ?? '',
-                      route: steps[flying].route,
-                    ),
-                  ),
-                ),
-              ),
-            ],
-          );
-        }),
+          },
+        ),
       ),
     );
   }
@@ -1399,10 +1478,12 @@ class _JourneyChartState extends State<_JourneyChart>
                 child: DecoratedBox(
                   decoration: BoxDecoration(
                     shape: BoxShape.circle,
-                    gradient: RadialGradient(colors: [
-                      palette.mark.withValues(alpha: 0.5),
-                      palette.mark.withValues(alpha: 0),
-                    ]),
+                    gradient: RadialGradient(
+                      colors: [
+                        palette.mark.withValues(alpha: 0.5),
+                        palette.mark.withValues(alpha: 0),
+                      ],
+                    ),
                   ),
                 ),
               ),
@@ -1421,9 +1502,7 @@ class _JourneyChartState extends State<_JourneyChart>
           border: Border.all(color: palette.land, width: 3),
           boxShadow: [
             BoxShadow(
-              color: palette.mark.withValues(alpha: 0.35),
-              blurRadius: 12,
-            ),
+                color: palette.mark.withValues(alpha: 0.35), blurRadius: 12),
           ],
         ),
         child: Icon(Icons.person_pin, color: palette.land, size: IconSize.s32),
@@ -1441,7 +1520,9 @@ class _JourneyChartState extends State<_JourneyChart>
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
                 border: Border.all(
-                    color: palette.mark.withValues(alpha: 0.5), width: 2),
+                  color: palette.mark.withValues(alpha: 0.5),
+                  width: 2,
+                ),
               ),
             )
           : _partyMark(palette),
@@ -1450,7 +1531,11 @@ class _JourneyChartState extends State<_JourneyChart>
 
   /// One of a step's ways on, a small mark above it in the fog.
   Widget _glimpse(
-      int f, int count, JourneyStepKind kind, ChartPalette palette) {
+    int f,
+    int count,
+    JourneyStepKind kind,
+    ChartPalette palette,
+  ) {
     final angle = count == 1 ? 0.0 : (f / (count - 1) - 0.5) * (math.pi / 2.2);
     const size = 12.0;
     final centre = Offset(
@@ -1460,16 +1545,24 @@ class _JourneyChartState extends State<_JourneyChart>
     return Positioned(
       left: centre.dx - size / 2,
       top: centre.dy - size / 2,
-      child: Icon(_iconFor(kind),
-          size: size, color: palette.label.withValues(alpha: 0.75)),
+      child: Icon(
+        _iconFor(kind),
+        size: size,
+        color: palette.label.withValues(alpha: 0.75),
+      ),
     );
   }
 
   /// How much room step [step]'s name takes on the map, at most [w] wide:
   /// its words (three lines at most) and where it leads, on their plaque.
-  Size _nameSize(_Step step, double w, TextStyle placeStyle,
-      TextStyle noteStyle, TextScaler scaler,
-      {required bool selected}) {
+  Size _nameSize(
+    _Step step,
+    double w,
+    TextStyle placeStyle,
+    TextStyle noteStyle,
+    TextScaler scaler, {
+    required bool selected,
+  }) {
     Size measure(String text, TextStyle style, int lines) {
       final painter = TextPainter(
         text: TextSpan(text: text, style: style),
@@ -1485,27 +1578,39 @@ class _JourneyChartState extends State<_JourneyChart>
     }
 
     final words = measure(
-        step.label,
-        placeStyle.copyWith(
-            fontWeight: selected ? FontWeight.w500 : FontWeight.w400),
-        3);
+      step.label,
+      placeStyle.copyWith(
+        fontWeight: selected ? FontWeight.w500 : FontWeight.w400,
+      ),
+      3,
+    );
     final to = step.leadsTo == null
         ? Size.zero
         : measure(
-            widget.leadsTo.replaceAll('{place}', step.leadsTo!), noteStyle, 1);
+            widget.leadsTo.replaceAll('{place}', step.leadsTo!),
+            noteStyle,
+            1,
+          );
     // The way's tag (a price, a check, a fight) under its words (v1.854).
     final tag = step.tag;
     final tagged = tag == null
         ? Size.zero
         : Size(measure(tag.label, noteStyle, 1).width + 16, 20);
-    return Size(math.max(math.max(words.width, to.width), tagged.width) + 6,
-        words.height + to.height + tagged.height + 2);
+    return Size(
+      math.max(math.max(words.width, to.width), tagged.width) + 6,
+      words.height + to.height + tagged.height + 2,
+    );
   }
 
   /// Step [i]'s name on its plaque, in [spot] (see journeyLabelSpots). It
   /// takes no taps: its mark, drawn over every name, takes them.
-  Widget _stepName(int i, Rect spot, TextStyle placeStyle, TextStyle noteStyle,
-      {required double fading}) {
+  Widget _stepName(
+    int i,
+    Rect spot,
+    TextStyle placeStyle,
+    TextStyle noteStyle, {
+    required double fading,
+  }) {
     final step = widget.steps[i];
     final palette = widget.palette;
     final isSelected = widget.selected == i || _walking == i;
@@ -1530,8 +1635,10 @@ class _JourneyChartState extends State<_JourneyChart>
                     borderRadius: BorderRadius.circular(4),
                   ),
                   child: Padding(
-                    padding:
-                        const EdgeInsets.symmetric(horizontal: 3, vertical: 1),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 3,
+                      vertical: 1,
+                    ),
                     child: Column(
                       children: [
                         Text(
@@ -1540,8 +1647,9 @@ class _JourneyChartState extends State<_JourneyChart>
                           maxLines: 3,
                           overflow: TextOverflow.ellipsis,
                           style: placeStyle.copyWith(
-                            color: palette.place
-                                .withValues(alpha: step.locked ? 0.55 : 1),
+                            color: palette.place.withValues(
+                              alpha: step.locked ? 0.55 : 1,
+                            ),
                             fontWeight:
                                 isSelected ? FontWeight.w500 : FontWeight.w400,
                           ),
@@ -1558,9 +1666,10 @@ class _JourneyChartState extends State<_JourneyChart>
                           Padding(
                             padding: const EdgeInsets.only(top: 2),
                             child: ChoiceTagChip(
-                                key: ValueKey('journey_pin_tag_$i'),
-                                tag: tag,
-                                locked: step.locked),
+                              key: ValueKey('journey_pin_tag_$i'),
+                              tag: tag,
+                              locked: step.locked,
+                            ),
                           ),
                       ],
                     ),
@@ -1663,9 +1772,11 @@ class _JourneyChartState extends State<_JourneyChart>
                       child: Transform.rotate(
                         angle: shake,
                         child: step.locked
-                            ? PixelGlyph(PixelGlyphs.lock,
+                            ? PixelGlyph(
+                                PixelGlyphs.lock,
                                 size: IconSize.s16,
-                                color: isSelected ? palette.land : colour)
+                                color: isSelected ? palette.land : colour,
+                              )
                             // Its own layer: a breath repaints the glyph, not
                             // the chart under it.
                             : RepaintBoundary(
@@ -1686,7 +1797,8 @@ class _JourneyChartState extends State<_JourneyChart>
                   if (step.questTie != null && !step.locked && cat == null)
                     Positioned(
                       key: ValueKey(
-                          'journey_quest_badge_${widget.stepIds?[i] ?? i}'),
+                        'journey_quest_badge_${widget.stepIds?[i] ?? i}',
+                      ),
                       right: -5,
                       top: -5,
                       child: Container(
@@ -1712,8 +1824,12 @@ class _JourneyChartState extends State<_JourneyChart>
                   // kinds of its own ways on.
                   if (!step.locked && pop >= 1)
                     for (var f = 0; f < step.onwardKinds.length; f++)
-                      _glimpse(f, step.onwardKinds.length, step.onwardKinds[f],
-                          palette),
+                      _glimpse(
+                        f,
+                        step.onwardKinds.length,
+                        step.onwardKinds[f],
+                        palette,
+                      ),
                   // What waits on the road there.
                   if (step.event != null)
                     Positioned(
@@ -1721,7 +1837,8 @@ class _JourneyChartState extends State<_JourneyChart>
                       bottom: -4,
                       child: Container(
                         key: ValueKey(
-                            'journey_event_${widget.stepIds?[i] ?? i}'),
+                          'journey_event_${widget.stepIds?[i] ?? i}',
+                        ),
                         width: 18,
                         height: 18,
                         decoration: BoxDecoration(
@@ -1730,9 +1847,10 @@ class _JourneyChartState extends State<_JourneyChart>
                           border: Border.all(color: palette.land, width: 1.5),
                         ),
                         child: Icon(
-                            _eventIcon(step.event!, hazard: step.hazard),
-                            size: IconSize.inline,
-                            color: palette.land),
+                          _eventIcon(step.event!, hazard: step.hazard),
+                          size: IconSize.inline,
+                          color: palette.land,
+                        ),
                       ),
                     ),
                 ],

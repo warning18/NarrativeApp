@@ -47,7 +47,11 @@ class DataSummaryScreen extends ConsumerWidget {
     final balanceIssues =
         (story != null && skills != null && shops != null && enemies != null)
             ? validateBalance(
-                story: story, skills: skills, shops: shops, enemies: enemies)
+                story: story,
+                skills: skills,
+                shops: shops,
+                enemies: enemies,
+              )
             : null;
 
     return Scaffold(
@@ -102,8 +106,10 @@ class DataSummaryScreen extends ConsumerWidget {
           ),
           if (balanceIssues != null && balanceIssues.isNotEmpty) ...[
             const SizedBox(height: 20),
-            Text('Reachability & Balance',
-                style: Theme.of(context).textTheme.titleMedium),
+            Text(
+              'Reachability & Balance',
+              style: Theme.of(context).textTheme.titleMedium,
+            ),
             const SizedBox(height: 4),
             Text(
               'Mandatory fights with no shop access first, dead-end skill chains, '
@@ -126,8 +132,9 @@ class DataSummaryScreen extends ConsumerWidget {
                           padding: const EdgeInsets.symmetric(vertical: 4),
                           child: Text(
                             '• $issue',
-                            style:
-                                TextStyle(color: colorScheme.onErrorContainer),
+                            style: TextStyle(
+                              color: colorScheme.onErrorContainer,
+                            ),
                           ),
                         ),
                       )
@@ -149,7 +156,9 @@ class DataSummaryScreen extends ConsumerWidget {
           const SizedBox(height: 8),
           ...gameDbSchemas.map(
             (schema) => _CollectionRow(
-                schema: schema, records: recordsBySchema[schema]),
+              schema: schema,
+              records: recordsBySchema[schema],
+            ),
           ),
         ],
       ),
@@ -234,8 +243,10 @@ class _CollectionRow extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(schema.label,
-                      style: Theme.of(context).textTheme.titleSmall),
+                  Text(
+                    schema.label,
+                    style: Theme.of(context).textTheme.titleSmall,
+                  ),
                   const SizedBox(height: 2),
                   Text(
                     records == null ? 'Loading…' : '$count records',

@@ -6,8 +6,10 @@
 // class's list.
 
 import '../../widgets/feature_unlock.dart';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+
 import '../../widgets/help_hint.dart';
 
 import '../../gamedata/db_schema.dart';
@@ -61,36 +63,46 @@ class SkillsScreen extends ConsumerWidget {
     Widget body;
     if (skillsAsync.hasError) {
       body = Center(
-          child: Text('${tr(ref, 'failed_to_load_skills')}: '
-              '${skillsAsync.error}'));
+        child: Text(
+          '${tr(ref, 'failed_to_load_skills')}: '
+          '${skillsAsync.error}',
+        ),
+      );
     } else if (model == null) {
       body = const InkLoading();
     } else if (allyId != null) {
       final professions =
           ref.watch(localizedDbProvider(professionsSchema)).value ?? const {};
       final professionId = companion?['professionId']?.toString() ?? '';
-      body = Column(children: [
-        _Purse(model: model),
-        Expanded(
-          child: MySkillsView(
-            model: model,
-            allyId: allyId,
-            note: tr(ref, 'ally_skills_note').replaceAll(
+      body = Column(
+        children: [
+          _Purse(model: model),
+          Expanded(
+            child: MySkillsView(
+              model: model,
+              allyId: allyId,
+              note: tr(ref, 'ally_skills_note').replaceAll(
                 '{class}',
                 (professions[professionId]
                             as Map<String, dynamic>?)?['professionName']
                         ?.toString() ??
-                    professionId),
+                    professionId,
+              ),
+            ),
           ),
-        ),
-      ]);
+        ],
+      );
     } else {
-      body = Column(children: [
-        TutorialTarget(id: 'skills.points', child: _Purse(model: model)),
-        const SizedBox(height: 4),
-        TutorialTarget(
-          id: 'skills.views',
-          child: TabBar(
+      body = Column(
+        children: [
+          TutorialTarget(
+            id: 'skills.points',
+            child: _Purse(model: model),
+          ),
+          const SizedBox(height: 4),
+          TutorialTarget(
+            id: 'skills.views',
+            child: TabBar(
               // Each tab as wide as its name: "Mes compétences 12" does not
               // fit a third of a phone (#651), and a short name wastes one.
               isScrollable: true,
@@ -98,8 +110,9 @@ class SkillsScreen extends ConsumerWidget {
               labelPadding: const EdgeInsets.symmetric(horizontal: 10),
               tabs: [
                 Tab(
-                    key: const Key('skills_tab_tree'),
-                    text: tr(ref, 'skills_tab_tree')),
+                  key: const Key('skills_tab_tree'),
+                  text: tr(ref, 'skills_tab_tree'),
+                ),
                 TutorialTarget(
                   id: 'skills.mine',
                   child: Tab(
@@ -109,27 +122,35 @@ class SkillsScreen extends ConsumerWidget {
                   ),
                 ),
                 Tab(
-                    key: const Key('skills_tab_spells'),
-                    text: tr(ref, 'skills_tab_spells')),
-              ]),
-        ),
-        Expanded(
-          child: TutorialTarget(
-            id: 'skills.list',
-            child: TabBarView(children: [
-              SkillTreeView(model: model),
-              MySkillsView(model: model),
-              const SpellsView(),
-            ]),
+                  key: const Key('skills_tab_spells'),
+                  text: tr(ref, 'skills_tab_spells'),
+                ),
+              ],
+            ),
           ),
-        ),
-      ]);
+          Expanded(
+            child: TutorialTarget(
+              id: 'skills.list',
+              child: TabBarView(
+                children: [
+                  SkillTreeView(model: model),
+                  MySkillsView(model: model),
+                  const SpellsView(),
+                ],
+              ),
+            ),
+          ),
+        ],
+      );
     }
 
     final scaffold = Scaffold(
-      appBar: AppBar(title: Text(title), actions: [
-        if (allyId == null) const TourInfoButton(topic: TutorialTopic.skills),
-      ]),
+      appBar: AppBar(
+        title: Text(title),
+        actions: [
+          if (allyId == null) const TourInfoButton(topic: TutorialTopic.skills),
+        ],
+      ),
       // The tour is the player's screen's; a companion's has none of it.
       body: allyId == null
           ? TutorialTrigger(topic: TutorialTopic.skills, child: body)
@@ -137,7 +158,10 @@ class SkillsScreen extends ConsumerWidget {
     );
     return allyId == null
         ? DefaultTabController(
-            length: 3, initialIndex: initialTab.clamp(0, 2), child: scaffold)
+            length: 3,
+            initialIndex: initialTab.clamp(0, 2),
+            child: scaffold,
+          )
         : scaffold;
   }
 }
@@ -177,8 +201,9 @@ class _Purse extends ConsumerWidget {
               color: lit ? colour.withValues(alpha: 0.08) : null,
             ),
             child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: children),
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: children,
+            ),
           ),
         );
 
@@ -197,14 +222,18 @@ class _Purse extends ConsumerWidget {
                   Text(
                     points == 1
                         ? tr(ref, 'purse_points_one')
-                        : tr(ref, 'purse_points_many')
-                            .replaceAll('{n}', '$points'),
-                    style: theme.textTheme.titleMedium
-                        ?.copyWith(color: points > 0 ? ink.gold : null),
+                        : tr(
+                            ref,
+                            'purse_points_many',
+                          ).replaceAll('{n}', '$points'),
+                    style: theme.textTheme.titleMedium?.copyWith(
+                      color: points > 0 ? ink.gold : null,
+                    ),
                   ),
-                  Text(tr(ref, 'purse_points_note'),
-                      style:
-                          theme.textTheme.labelSmall?.copyWith(color: ink.ash)),
+                  Text(
+                    tr(ref, 'purse_points_note'),
+                    style: theme.textTheme.labelSmall?.copyWith(color: ink.ash),
+                  ),
                 ],
               )
             else
@@ -220,8 +249,9 @@ class _Purse extends ConsumerWidget {
                     padding: const EdgeInsets.fromLTRB(10, 8, 10, 8),
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(8),
-                      border:
-                          Border.all(color: offers > 0 ? ink.gold : ink.seam),
+                      border: Border.all(
+                        color: offers > 0 ? ink.gold : ink.seam,
+                      ),
                       color:
                           offers > 0 ? ink.gold.withValues(alpha: 0.08) : null,
                     ),
@@ -230,12 +260,16 @@ class _Purse extends ConsumerWidget {
                       children: [
                         Text(
                           tr(ref, 'offer_pending').replaceAll('{n}', '$offers'),
-                          style: theme.textTheme.titleMedium
-                              ?.copyWith(color: offers > 0 ? ink.gold : null),
+                          style: theme.textTheme.titleMedium?.copyWith(
+                            color: offers > 0 ? ink.gold : null,
+                          ),
                         ),
-                        Text(tr(ref, 'purse_offers_note'),
-                            style: theme.textTheme.labelSmall
-                                ?.copyWith(color: ink.ash)),
+                        Text(
+                          tr(ref, 'purse_offers_note'),
+                          style: theme.textTheme.labelSmall?.copyWith(
+                            color: ink.ash,
+                          ),
+                        ),
                       ],
                     ),
                   ),
@@ -248,18 +282,26 @@ class _Purse extends ConsumerWidget {
                 colour: ink.voidColor,
                 lit: next != null && model.essence >= next,
                 children: [
-                  Text.rich(TextSpan(children: [
+                  Text.rich(
                     TextSpan(
-                        text: '${model.essence}',
-                        style: theme.textTheme.titleMedium
-                            ?.copyWith(color: ink.voidColor)),
-                    TextSpan(
-                        text: next == null
-                            ? ' ${tr(ref, 'purse_essence')}'
-                            : ' / $next ${tr(ref, 'purse_essence')}',
-                        style: theme.textTheme.labelSmall
-                            ?.copyWith(color: ink.ash)),
-                  ])),
+                      children: [
+                        TextSpan(
+                          text: '${model.essence}',
+                          style: theme.textTheme.titleMedium?.copyWith(
+                            color: ink.voidColor,
+                          ),
+                        ),
+                        TextSpan(
+                          text: next == null
+                              ? ' ${tr(ref, 'purse_essence')}'
+                              : ' / $next ${tr(ref, 'purse_essence')}',
+                          style: theme.textTheme.labelSmall?.copyWith(
+                            color: ink.ash,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
                   if (next != null)
                     Padding(
                       padding: const EdgeInsets.symmetric(vertical: 4),
@@ -273,9 +315,10 @@ class _Purse extends ConsumerWidget {
                         ),
                       ),
                     ),
-                  Text(tr(ref, 'purse_essence_note'),
-                      style:
-                          theme.textTheme.labelSmall?.copyWith(color: ink.ash)),
+                  Text(
+                    tr(ref, 'purse_essence_note'),
+                    style: theme.textTheme.labelSmall?.copyWith(color: ink.ash),
+                  ),
                 ],
               ),
             ],

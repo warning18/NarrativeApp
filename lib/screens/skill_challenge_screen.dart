@@ -2,6 +2,7 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+
 import '../widgets/d20_roll.dart';
 import '../widgets/help_hint.dart';
 
@@ -105,10 +106,10 @@ class _SkillChallengeScreenState extends ConsumerState<SkillChallengeScreen> {
     final latest = revealedRounds.isEmpty ? null : revealedRounds.last;
 
     return Scaffold(
-      appBar:
-          AppBar(title: Text(tr(ref, 'skill_challenge_title')), actions: const [
-        TourInfoButton(topic: TutorialTopic.skillChallenge),
-      ]),
+      appBar: AppBar(
+        title: Text(tr(ref, 'skill_challenge_title')),
+        actions: const [TourInfoButton(topic: TutorialTopic.skillChallenge)],
+      ),
       body: TutorialTrigger(
         topic: TutorialTopic.skillChallenge,
         child: SafeArea(
@@ -119,8 +120,10 @@ class _SkillChallengeScreenState extends ConsumerState<SkillChallengeScreen> {
               children: [
                 Text(
                   abilityLabel.toUpperCase(),
-                  style: theme.textTheme.labelMedium
-                      ?.copyWith(color: ink.ember, letterSpacing: 1.5),
+                  style: theme.textTheme.labelMedium?.copyWith(
+                    color: ink.ember,
+                    letterSpacing: 1.5,
+                  ),
                 ),
                 const SizedBox(height: 6),
                 Text(
@@ -160,8 +163,10 @@ class _SkillChallengeScreenState extends ConsumerState<SkillChallengeScreen> {
                     success: _rolling?.success ?? latest?.success,
                     rollId: _revealed + (_rolling != null ? 1 : 0),
                     // Smaller on a short screen, so the rounds keep room.
-                    size: (MediaQuery.sizeOf(context).height * 0.18)
-                        .clamp(84.0, 150.0),
+                    size: (MediaQuery.sizeOf(context).height * 0.18).clamp(
+                      84.0,
+                      150.0,
+                    ),
                   ),
                 ),
                 const SizedBox(height: 10),
@@ -193,7 +198,8 @@ class _SkillChallengeScreenState extends ConsumerState<SkillChallengeScreen> {
                   FilledButton(
                     onPressed: _begin,
                     style: FilledButton.styleFrom(
-                        minimumSize: const Size.fromHeight(52)),
+                      minimumSize: const Size.fromHeight(52),
+                    ),
                     child: Text(tr(ref, 'skill_challenge_begin')),
                   )
                 else if (_finished)
@@ -203,13 +209,16 @@ class _SkillChallengeScreenState extends ConsumerState<SkillChallengeScreen> {
                       Center(
                         child: Container(
                           padding: const EdgeInsets.symmetric(
-                              horizontal: 14, vertical: 6),
+                            horizontal: 14,
+                            vertical: 6,
+                          ),
                           decoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(3),
                             border: Border.all(
-                                color: _result.success
-                                    ? ink.gold
-                                    : colorScheme.error),
+                              color: _result.success
+                                  ? ink.gold
+                                  : colorScheme.error,
+                            ),
                           ),
                           child: Text(
                             (_result.success
@@ -231,7 +240,8 @@ class _SkillChallengeScreenState extends ConsumerState<SkillChallengeScreen> {
                         onPressed: () =>
                             Navigator.of(context).pop(_result.success),
                         style: FilledButton.styleFrom(
-                            minimumSize: const Size.fromHeight(52)),
+                          minimumSize: const Size.fromHeight(52),
+                        ),
                         child: Text(tr(ref, 'skill_challenge_continue')),
                       ),
                     ],
@@ -270,9 +280,12 @@ class _PipRow extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text('${label.toUpperCase()} · $filled / $total',
-              style: theme.textTheme.labelSmall
-                  ?.copyWith(color: theme.colorScheme.onSurfaceVariant)),
+          Text(
+            '${label.toUpperCase()} · $filled / $total',
+            style: theme.textTheme.labelSmall?.copyWith(
+              color: theme.colorScheme.onSurfaceVariant,
+            ),
+          ),
           const SizedBox(height: 8),
           Wrap(
             spacing: 6,
@@ -286,9 +299,9 @@ class _PipRow extends StatelessWidget {
                     color: i < filled ? color : null,
                     borderRadius: BorderRadius.circular(3),
                     border: Border.all(
-                        color:
-                            i < filled ? color : color.withValues(alpha: 0.5),
-                        width: 1.5),
+                      color: i < filled ? color : color.withValues(alpha: 0.5),
+                      width: 1.5,
+                    ),
                   ),
                 ),
             ],
@@ -321,8 +334,10 @@ class _RoundTile extends StatelessWidget {
       dense: true,
       contentPadding: EdgeInsets.zero,
       leading: Icon(success ? Icons.check : Icons.close, color: color),
-      title:
-          Text('$roundLabel $roundNumber', style: theme.textTheme.labelLarge),
+      title: Text(
+        '$roundLabel $roundNumber',
+        style: theme.textTheme.labelLarge,
+      ),
       trailing: Text(
         '${result.roll} + ${result.modifier} = ${result.total}',
         style: theme.textTheme.labelLarge?.copyWith(color: color),

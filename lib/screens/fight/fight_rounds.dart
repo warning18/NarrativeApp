@@ -6,20 +6,33 @@ extension _FightRounds on _FightScreenState {
   /// What [raw] healing from [actor]'s [face] heals this round: the heal
   /// rule (heal_rules.dart), the same as the simulator's. [count] false:
   /// the round's preview, which counts no heal (fight_dice_rules.dart).
-  int _healDealt(_PartyMember actor, DiceFaceResult face, int raw,
-          {bool count = true}) =>
-      _healOf(actor, HealSource.face, raw,
-          count: count,
-          noHealFaces: actor.isPlayer &&
-              face.type == 'Heal' &&
-              _core.has(Spec.briarGuard) &&
-              _core.mods.noHealFaces);
+  int _healDealt(
+    _PartyMember actor,
+    DiceFaceResult face,
+    int raw, {
+    bool count = true,
+  }) =>
+      _healOf(
+        actor,
+        HealSource.face,
+        raw,
+        count: count,
+        noHealFaces: actor.isPlayer &&
+            face.type == 'Heal' &&
+            _core.has(Spec.briarGuard) &&
+            _core.mods.noHealFaces,
+      );
 
   /// What [raw] healing from [source], given by [actor], heals this round
   /// (heal_rules.dart): the shrine, the ground's rule, and the fatigue
   /// ([count] false: not counted), never the cleric's.
-  int _healOf(_PartyMember actor, HealSource source, int raw,
-          {bool count = true, bool noHealFaces = false}) =>
+  int _healOf(
+    _PartyMember actor,
+    HealSource source,
+    int raw, {
+    bool count = true,
+    bool noHealFaces = false,
+  }) =>
       healDealt(
         source: source,
         raw: raw,
@@ -95,13 +108,17 @@ extension _FightRounds on _FightScreenState {
         ..addAll(rolled);
       if (_core.broadsideFired) {
         _core.broadsideFired = false;
-        _log.add(_LogEntry(
+        _log.add(
+          _LogEntry(
             trFor(ref.read(appLanguageProvider), 'spec_broadside_log'),
-            _LogKind.info));
+            _LogKind.info,
+          ),
+        );
       }
       // A Steady face that just landed stays put (see face_keywords.dart).
       _noteSteadyFaces(
-          rolled.keys.where((id) => !_lockedActorIds.contains(id)).toList());
+        rolled.keys.where((id) => !_lockedActorIds.contains(id)).toList(),
+      );
       _awaitingDecision = false;
     });
     // The dice rest with their faces up for a beat before they can be
@@ -109,7 +126,8 @@ extension _FightRounds on _FightScreenState {
     // quick resolve).
     if (!_quick && !_still) {
       await Future.delayed(
-          diceTimeFor(diceLandBase, ref.read(diceSpeedProvider)));
+        diceTimeFor(diceLandBase, ref.read(diceSpeedProvider)),
+      );
       if (!mounted) return;
     }
     _update(() {
@@ -122,8 +140,12 @@ extension _FightRounds on _FightScreenState {
     if (forced) {
       // No choice left — give the player a beat to see the 3rd faces land
       // before they resolve on their own.
-      await Future.delayed(diceTimeFor(
-          const Duration(milliseconds: 700), ref.read(diceSpeedProvider)));
+      await Future.delayed(
+        diceTimeFor(
+          const Duration(milliseconds: 700),
+          ref.read(diceSpeedProvider),
+        ),
+      );
       if (!mounted) return;
       await _confirmRoll(skills, items);
     }
@@ -197,7 +219,9 @@ extension _FightRounds on _FightScreenState {
   /// the turn straight to them (there's no more per-member turn order to
   /// advance through).
   Future<void> _confirmRoll(
-      Map<String, dynamic> skills, Map<String, dynamic> items) async {
+    Map<String, dynamic> skills,
+    Map<String, dynamic> items,
+  ) async {
     if (_currentFaces.isEmpty || _over) return;
     final lang = ref.read(appLanguageProvider);
 
@@ -240,8 +264,15 @@ extension _FightRounds on _FightScreenState {
       final face = played[actor.id];
       if (face == null) continue;
       final isStrike = face.type == 'Attack' || face.type == 'Skill';
-      results[actor.id] = _resolveFor(actor, face, skills, items, lang,
-          surge: isStrike && actor.id == surgeTo, rollCritical: true);
+      results[actor.id] = _resolveFor(
+        actor,
+        face,
+        skills,
+        items,
+        lang,
+        surge: isStrike && actor.id == surgeTo,
+        rollCritical: true,
+      );
     }
     _applyHeroCore(played, results, skills, items, lang, newEntries);
     final combos = partyCombosFor([for (final r in results.values) _roleOf(r)]);
@@ -303,28 +334,47 @@ extension _FightRounds on _FightScreenState {
           ? _signs.shieldFromOverheal(
               healing: healing,
               currentHealth: healed.currentHealth,
-              maxHealth: healed.maxHealth)
+              maxHealth: healed.maxHealth,
+            )
           : 0;
       // The Stitch-Thrust: healing past full strikes the foe (step 3c).
       if (actor.isPlayer && healing > 0) {
-        _stitchThrust(overheal(healing, healed.currentHealth, healed.maxHealth),
-            newEntries, lang);
+        _stitchThrust(
+          overheal(healing, healed.currentHealth, healed.maxHealth),
+          newEntries,
+          lang,
+        );
       }
-      healed.currentHealth =
-          min(healed.maxHealth, healed.currentHealth + healing);
+      healed.currentHealth = min(
+        healed.maxHealth,
+        healed.currentHealth + healing,
+      );
       if (healed != actor) {
-        _fx(VfxStyle.heal, _memberCardKey(healed.id),
-            delayMs: fxDelay, text: '+$healing', textKind: VfxTextKind.heal);
-        newEntries.add(_LogEntry(
+        _fx(
+          VfxStyle.heal,
+          _memberCardKey(healed.id),
+          delayMs: fxDelay,
+          text: '+$healing',
+          textKind: VfxTextKind.heal,
+        );
+        newEntries.add(
+          _LogEntry(
             trFor(lang, 'heal_target_log')
                 .replaceAll('{name}', actor.displayName)
                 .replaceAll('{target}', healed.displayName)
                 .replaceAll('{n}', '$healing'),
-            _LogKind.playerHeal));
+            _LogKind.playerHeal,
+          ),
+        );
       }
       if (!extras.isNone) {
-        bonusRollsNext +=
-            _applySkillExtrasOnCaster(actor, healing, extras, newEntries, lang);
+        bonusRollsNext += _applySkillExtrasOnCaster(
+          actor,
+          healing,
+          extras,
+          newEntries,
+          lang,
+        );
       }
       // A Shelter passes part of every Heal to the rest of the party.
       if (combos.contains(PartyCombo.shelter) &&
@@ -369,39 +419,58 @@ extension _FightRounds on _FightScreenState {
           _core.has(Spec.longVigil) &&
           _core.mods.defendFeedsFire) {
         _core.fire = min(
-            (actor.maxHealth * watchfireCapShare).round(), _core.fire + block);
+          (actor.maxHealth * watchfireCapShare).round(),
+          _core.fire + block,
+        );
       }
       // A ward (Glacial Ward, Thornwall) wounds whoever strikes it.
       actor.reflect = result.blockAmount > 0 ? extras.reflect : null;
       if (parryEnemy != null) {
         final amount = parryAmount(block);
         parryEnemy.parryBlock += amount;
-        newEntries.add(_LogEntry(
+        newEntries.add(
+          _LogEntry(
             trFor(lang, 'parry_set_log')
                 .replaceAll('{name}', actor.displayName)
                 .replaceAll('{enemy}', parryEnemy.displayName)
                 .replaceAll('{n}', '$amount'),
-            _LogKind.playerBlock));
+            _LogKind.playerBlock,
+          ),
+        );
       }
       if (result.blockAmount > 0 && actor.block > guardianBlock) {
         guardianId = actor.id;
         guardianBlock = actor.block;
       }
-      newEntries
-          .add(_LogEntry('${_actorPrefix(actor)}${result.message}', kind));
+      newEntries.add(
+        _LogEntry('${_actorPrefix(actor)}${result.message}', kind),
+      );
       if (actor.isPlayer) {
         _applySignFaceExtras(
-            actor, face, result, healing, signShield, newEntries, lang);
+          actor,
+          face,
+          result,
+          healing,
+          signShield,
+          newEntries,
+          lang,
+        );
       }
       if (surge) {
-        newEntries.add(_LogEntry(
-            trFor(lang, 'momentum_surge_message'), _LogKind.playerDamage));
+        newEntries.add(
+          _LogEntry(
+            trFor(lang, 'momentum_surge_message'),
+            _LogKind.playerDamage,
+          ),
+        );
       }
       if (braced) {
-        newEntries.add(_LogEntry(
-          '${actor.displayName} ${trFor(lang, 'braced_suffix')} (${actor.block})',
-          _LogKind.playerBlock,
-        ));
+        newEntries.add(
+          _LogEntry(
+            '${actor.displayName} ${trFor(lang, 'braced_suffix')} (${actor.block})',
+            _LogKind.playerBlock,
+          ),
+        );
       }
 
       _EnemyMember? target;
@@ -420,10 +489,12 @@ extension _FightRounds on _FightScreenState {
       }
 
       if (redirected && target != null) {
-        newEntries.add(_LogEntry(
-          '${trFor(lang, 'redirected_hit_prefix')} ${target.displayName}',
-          _LogKind.info,
-        ));
+        newEntries.add(
+          _LogEntry(
+            '${trFor(lang, 'redirected_hit_prefix')} ${target.displayName}',
+            _LogKind.info,
+          ),
+        );
       }
 
       if (target != null) {
@@ -437,10 +508,12 @@ extension _FightRounds on _FightScreenState {
             face.type == 'Attack' &&
             armored &&
             !pierce) {
-          newEntries.add(_LogEntry(
-            '${target.displayName} ${trFor(lang, 'armored_absorbs_suffix')}',
-            _LogKind.info,
-          ));
+          newEntries.add(
+            _LogEntry(
+              '${target.displayName} ${trFor(lang, 'armored_absorbs_suffix')}',
+              _LogKind.info,
+            ),
+          );
         }
         final wasAlive = target.isAlive;
         // A skill of several blows (Gale Cut) lands them one by one: a
@@ -451,18 +524,28 @@ extension _FightRounds on _FightScreenState {
         for (var blow = 1; blow <= blows; blow++) {
           if (blow > 1 && !target.isAlive) break;
           final share = blows > 1 ? (damage / blows).round() : damage;
-          final one = _landHitOnEnemy(target, share, element, newEntries, lang,
-              pierce: pierce, edge: actor.isPlayer);
+          final one = _landHitOnEnemy(
+            target,
+            share,
+            element,
+            newEntries,
+            lang,
+            pierce: pierce,
+            edge: actor.isPlayer,
+          );
           target.currentHealth = max(0, target.currentHealth - one);
           landed += one;
           if (one > 0) blowsLanded++;
           if (blows > 1 && one > 0) {
-            newEntries.add(_LogEntry(
-              trFor(lang, 'skill_blow_lands')
-                  .replaceAll('{i}', '$blow')
-                  .replaceAll('{n}', '$one'),
-              _LogKind.playerDamage,
-            ));
+            newEntries.add(
+              _LogEntry(
+                trFor(
+                  lang,
+                  'skill_blow_lands',
+                ).replaceAll('{i}', '$blow').replaceAll('{n}', '$one'),
+                _LogKind.playerDamage,
+              ),
+            );
           }
         }
         dealt = landed;
@@ -482,13 +565,17 @@ extension _FightRounds on _FightScreenState {
           final drained = actor.gear.lifestealFor(landed);
           if (drained > 0 && actor.currentHealth < actor.maxHealth) {
             drainedFx = drained;
-            actor.currentHealth =
-                min(actor.maxHealth, actor.currentHealth + drained);
-            newEntries.add(_LogEntry(
-              '${actor.displayName} ${trFor(lang, 'lifesteal_suffix')} '
-              '$drained ${trFor(lang, 'hp_label')}.',
-              _LogKind.playerHeal,
-            ));
+            actor.currentHealth = min(
+              actor.maxHealth,
+              actor.currentHealth + drained,
+            );
+            newEntries.add(
+              _LogEntry(
+                '${actor.displayName} ${trFor(lang, 'lifesteal_suffix')} '
+                '$drained ${trFor(lang, 'hp_label')}.',
+                _LogKind.playerHeal,
+              ),
+            );
           }
           if (actor.gear.manaOnHit > 0) manaGained += actor.gear.manaOnHit;
         }
@@ -507,23 +594,31 @@ extension _FightRounds on _FightScreenState {
         final cleave = face.hasKeyword(FaceKeyword.cleave);
         if (damage > 0 && extras.splashShare > 0) {
           // A chain or a volley skill (Chain Lightning, Rain of Arrows).
-          _splashFrom(actor, target, damage, extras.splashShare, element,
-              pierce, newEntries, lang,
-              limit: extras.splashTargets,
-              logKey: extras.splashTargets > 0
-                  ? 'skill_chain_hits'
-                  : 'splash_hits');
+          _splashFrom(
+            actor,
+            target,
+            damage,
+            extras.splashShare,
+            element,
+            pierce,
+            newEntries,
+            lang,
+            limit: extras.splashTargets,
+            logKey:
+                extras.splashTargets > 0 ? 'skill_chain_hits' : 'splash_hits',
+          );
         } else if (damage > 0 &&
             (cleave || combos.contains(PartyCombo.volley))) {
           _splashFrom(
-              actor,
-              target,
-              damage,
-              cleave ? cleaveSplashShare : volleySplashShare,
-              element,
-              pierce,
-              newEntries,
-              lang);
+            actor,
+            target,
+            damage,
+            cleave ? cleaveSplashShare : volleySplashShare,
+            element,
+            pierce,
+            newEntries,
+            lang,
+          );
         }
         final rawInflicted = result.inflictedStatus;
         // The Fen's Terms: a poison the player inflicts runs longer.
@@ -541,12 +636,16 @@ extension _FightRounds on _FightScreenState {
               ? _enemies.where((e) => e.isAlive).toList()
               : [target]) {
             for (final status in laid) {
-              enemy.statusEffects =
-                  applyStatusEffect(enemy.statusEffects, status);
-              newEntries.add(_LogEntry(
-                _statusInflictedMessage(status, enemy.displayName, lang),
-                _LogKind.info,
-              ));
+              enemy.statusEffects = applyStatusEffect(
+                enemy.statusEffects,
+                status,
+              );
+              newEntries.add(
+                _LogEntry(
+                  _statusInflictedMessage(status, enemy.displayName, lang),
+                  _LogKind.info,
+                ),
+              );
             }
           }
         }
@@ -558,7 +657,9 @@ extension _FightRounds on _FightScreenState {
       // Pain: the strike hurt its roller too.
       if (face.hasKeyword(FaceKeyword.pain) && result.damageDealt > 0) {
         final cost = painCost(
-            maxHealth: actor.maxHealth, currentHealth: actor.currentHealth);
+          maxHealth: actor.maxHealth,
+          currentHealth: actor.currentHealth,
+        );
         if (cost > 0) {
           actor.currentHealth -= cost;
           // The Berserker's life paid feeds Fury (specialisations.dart);
@@ -571,16 +672,21 @@ extension _FightRounds on _FightScreenState {
               target.currentHealth = max(0, target.currentHealth - cost);
             }
           }
-          _fx(VfxStyle.drain, _memberCardKey(actor.id),
-              delayMs: fxDelay + 250,
-              text: '-$cost',
-              textKind: VfxTextKind.hurt);
-          newEntries.add(_LogEntry(
-            trFor(lang, 'pain_costs')
-                .replaceAll('{name}', actor.displayName)
-                .replaceAll('{n}', '$cost'),
-            _LogKind.enemyDamage,
-          ));
+          _fx(
+            VfxStyle.drain,
+            _memberCardKey(actor.id),
+            delayMs: fxDelay + 250,
+            text: '-$cost',
+            textKind: VfxTextKind.hurt,
+          );
+          newEntries.add(
+            _LogEntry(
+              trFor(lang, 'pain_costs')
+                  .replaceAll('{name}', actor.displayName)
+                  .replaceAll('{n}', '$cost'),
+              _LogKind.enemyDamage,
+            ),
+          );
         }
       }
       _playFaceEffects(
@@ -624,7 +730,8 @@ extension _FightRounds on _FightScreenState {
       _momentum = min(_momentumNeeded, _momentum + hitsLanded);
       if (before < _momentumNeeded && _momentum >= _momentumNeeded) {
         newEntries.add(
-            _LogEntry(trFor(lang, 'momentum_ready_message'), _LogKind.info));
+          _LogEntry(trFor(lang, 'momentum_ready_message'), _LogKind.info),
+        );
       }
     }
 
@@ -637,8 +744,10 @@ extension _FightRounds on _FightScreenState {
     }
 
     if (lastCritActorId != null) {
-      final banter =
-          _rollBanter(kind: _BanterKind.crit, excludeId: lastCritActorId);
+      final banter = _rollBanter(
+        kind: _BanterKind.crit,
+        excludeId: lastCritActorId,
+      );
       if (banter != null) newEntries.add(banter);
     }
 
@@ -673,12 +782,15 @@ extension _FightRounds on _FightScreenState {
     });
 
     // Give the round's effects time to land before the enemy answers.
-    await Future.delayed(Duration(
+    await Future.delayed(
+      Duration(
         milliseconds: _quick
             ? 60
             : _effectsOn
                 ? max(400, (fxIndex - 1) * _fxStagger + 450)
-                : 400));
+                : 400,
+      ),
+    );
     if (!mounted) return;
     _settlingRound = false;
 
@@ -700,10 +812,12 @@ extension _FightRounds on _FightScreenState {
       if (enemy.currentHealth < enemy.maxHealth * skittishFleeThreshold) {
         enemy.fled = true;
         enemy.currentHealth = 0;
-        entries.add(_LogEntry(
-          '${enemy.displayName} ${trFor(lang, 'flees_suffix')}',
-          _LogKind.info,
-        ));
+        entries.add(
+          _LogEntry(
+            '${enemy.displayName} ${trFor(lang, 'flees_suffix')}',
+            _LogKind.info,
+          ),
+        );
       }
     }
   }
@@ -718,7 +832,9 @@ extension _FightRounds on _FightScreenState {
   /// skipped straight through to the enemies' next turn rather than
   /// stalling on a roll nobody can make.
   void _startPartyRound(
-      Map<String, dynamic> skills, Map<String, dynamic> items) {
+    Map<String, dynamic> skills,
+    Map<String, dynamic> items,
+  ) {
     final lang = ref.read(appLanguageProvider);
     final newEntries = <_LogEntry>[];
     var playerDied = false;
@@ -741,11 +857,14 @@ extension _FightRounds on _FightScreenState {
     // The Tide, risen this round (fight_length.dart).
     final tide = tideLevel(_roundsStarted);
     if (tide > 0) {
-      newEntries.add(_LogEntry(
+      newEntries.add(
+        _LogEntry(
           trFor(lang, tide == 1 ? 'tide_turns_log' : 'tide_rises_log')
               .replaceAll('{party}', '${(tidePartyStep * tide * 100).round()}')
               .replaceAll('{enemies}', '${_tideEnemyPercent(_roundsStarted)}'),
-          _LogKind.info));
+          _LogKind.info,
+        ),
+      );
     }
     // The place's rule (context_rules.dart): its omen, its rise, its toll,
     // the watch.
@@ -753,48 +872,63 @@ extension _FightRounds on _FightScreenState {
     // The ranger sees the next face of the Trail.
     _noteTrailAhead(newEntries, lang);
     if (_silenced) {
-      newEntries.add(_LogEntry(
+      newEntries.add(
+        _LogEntry(
           trFor(lang, writ ? 'writ_log' : 'silence_round_note'),
-          _LogKind.enemyDamage));
+          _LogKind.enemyDamage,
+        ),
+      );
     }
 
     for (final member in _party) {
       if (member.isKnockedOut) continue;
       final poison = poisonDamageFor(member.statusEffects);
       if (poison > 0) {
-        _fx(VfxStyle.poison, _memberCardKey(member.id),
-            text: '-$poison', textKind: VfxTextKind.hurt);
+        _fx(
+          VfxStyle.poison,
+          _memberCardKey(member.id),
+          text: '-$poison',
+          textKind: VfxTextKind.hurt,
+        );
         member.currentHealth = max(0, member.currentHealth - poison);
-        newEntries.add(_LogEntry(
-          member.isPlayer
-              ? '${trFor(lang, 'you_take_damage_prefix')} $poison '
-                  '${trFor(lang, 'damage_word')} ${trFor(lang, 'from_poison_suffix')}.'
-              : '${member.displayName} ${trFor(lang, 'takes_damage_word')} '
-                  '$poison ${trFor(lang, 'damage_word')} ${trFor(lang, 'from_poison_suffix')}.',
-          _LogKind.enemyDamage,
-        ));
+        newEntries.add(
+          _LogEntry(
+            member.isPlayer
+                ? '${trFor(lang, 'you_take_damage_prefix')} $poison '
+                    '${trFor(lang, 'damage_word')} ${trFor(lang, 'from_poison_suffix')}.'
+                : '${member.displayName} ${trFor(lang, 'takes_damage_word')} '
+                    '$poison ${trFor(lang, 'damage_word')} ${trFor(lang, 'from_poison_suffix')}.',
+            _LogKind.enemyDamage,
+          ),
+        );
         if (member.isKnockedOut) {
           if (member.isPlayer) {
             playerDied = true;
           } else {
             _anyKnockedOut = true;
             _lastKnockedOutAllyName = member.displayName;
-            newEntries.add(_LogEntry(
-              '${member.displayName} ${trFor(lang, 'is_knocked_out_suffix')}',
-              _LogKind.defeat,
-            ));
-            final banter =
-                _rollBanter(kind: _BanterKind.ko, excludeId: member.id);
+            newEntries.add(
+              _LogEntry(
+                '${member.displayName} ${trFor(lang, 'is_knocked_out_suffix')}',
+                _LogKind.defeat,
+              ),
+            );
+            final banter = _rollBanter(
+              kind: _BanterKind.ko,
+              excludeId: member.id,
+            );
             if (banter != null) newEntries.add(banter);
           }
         }
       }
       if (!member.isKnockedOut && isStunned(member.statusEffects)) {
         _fx(VfxStyle.stun, _memberCardKey(member.id), delayMs: 200);
-        newEntries.add(_LogEntry(
-          '${member.displayName} ${trFor(lang, 'stunned_skip_turn_suffix')}',
-          _LogKind.info,
-        ));
+        newEntries.add(
+          _LogEntry(
+            '${member.displayName} ${trFor(lang, 'stunned_skip_turn_suffix')}',
+            _LogKind.info,
+          ),
+        );
       }
     }
 
@@ -896,14 +1030,21 @@ extension _FightRounds on _FightScreenState {
     final target = standing.first;
     final dealt = min(_sellswordStrike, target.currentHealth);
     target.currentHealth -= dealt;
-    _fx(VfxStyle.slash, _enemyCardKey(target.key),
-        text: '-$dealt', textKind: VfxTextKind.hurt);
-    entries.add(_LogEntry(
-      trFor(lang, 'sellsword_strikes')
-          .replaceAll('{name}', target.displayName)
-          .replaceAll('{n}', '$dealt'),
-      _LogKind.playerDamage,
-    ));
+    _fx(
+      VfxStyle.slash,
+      _enemyCardKey(target.key),
+      text: '-$dealt',
+      textKind: VfxTextKind.hurt,
+    );
+    entries.add(
+      _LogEntry(
+        trFor(
+          lang,
+          'sellsword_strikes',
+        ).replaceAll('{name}', target.displayName).replaceAll('{n}', '$dealt'),
+        _LogKind.playerDamage,
+      ),
+    );
     return _enemies.every((e) => !e.isAlive);
   }
 }

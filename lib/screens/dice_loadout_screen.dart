@@ -66,8 +66,10 @@ class _DiceLoadoutScreenState extends ConsumerState<DiceLoadoutScreen> {
   DieClan? _clanOf(Map<String, dynamic> die) {
     final id = die['clan']?.toString();
     if (id == null || id.isEmpty) return null;
-    return DieClan(id,
-        Color(ref.watch(clanDataProvider).factions[id]?.color ?? 0xFFB08D3C));
+    return DieClan(
+      id,
+      Color(ref.watch(clanDataProvider).factions[id]?.color ?? 0xFFB08D3C),
+    );
   }
 
   @override
@@ -106,11 +108,15 @@ class _DiceLoadoutScreenState extends ConsumerState<DiceLoadoutScreen> {
                 _buildBody(context, dice, skills, session, companion, ally),
             loading: () => const InkLoading(),
             error: (error, stack) => InkErrorState(
-                message: tr(ref, 'failed_to_load_skills'), detail: error),
+              message: tr(ref, 'failed_to_load_skills'),
+              detail: error,
+            ),
           ),
           loading: () => const InkLoading(),
           error: (error, stack) => InkErrorState(
-              message: tr(ref, 'failed_to_load_dice'), detail: error),
+            message: tr(ref, 'failed_to_load_dice'),
+            detail: error,
+          ),
         ),
       ),
     );
@@ -147,9 +153,10 @@ class _DiceLoadoutScreenState extends ConsumerState<DiceLoadoutScreen> {
     // The die as the Hammersmith left it (see face_smithing.dart), an
     // ally's apart from the player's own copy of the same die.
     final faces = smithedFaces(
-        (selectedDice['faces'] as List?)?.cast<Map<String, dynamic>>() ??
-            const [],
-        session.upgradesOfDie(_selectedDiceId, companionId: ally?.companionId));
+      (selectedDice['faces'] as List?)?.cast<Map<String, dynamic>>() ??
+          const [],
+      session.upgradesOfDie(_selectedDiceId, companionId: ally?.companionId),
+    );
     final assignments = ally != null
         ? ally.diceSkillAssignments
         : session.diceSkillAssignments[_selectedDiceId] ??
@@ -161,17 +168,19 @@ class _DiceLoadoutScreenState extends ConsumerState<DiceLoadoutScreen> {
     // kit only (see allySkillIds); the player's, anything they know.
     final allyOwn = ally == null
         ? null
-        : allySkillIds(skills,
-                professionId: companion?['professionId']?.toString() ?? '',
-                known: ally.unlockedSkillIds)
-            .toSet();
+        : allySkillIds(
+            skills,
+            professionId: companion?['professionId']?.toString() ?? '',
+            known: ally.unlockedSkillIds,
+          ).toSet();
     final unlockedSkillIds = <String>{
       for (final entry in skills.entries)
         if (!isEnemyOnlySkill(entry.value as Map<String, dynamic>?) &&
             (((entry.value as Map<String, dynamic>)['isUnlocked'] as bool? ??
                     false) ||
-                (ally?.unlockedSkillIds ?? session.unlockedSkillIds)
-                    .contains(entry.key)) &&
+                (ally?.unlockedSkillIds ?? session.unlockedSkillIds).contains(
+                  entry.key,
+                )) &&
             (allyOwn == null ||
                 allyOwn.contains(entry.key) ||
                 (entry.value as Map<String, dynamic>)['isUnlocked'] == true))
@@ -180,7 +189,9 @@ class _DiceLoadoutScreenState extends ConsumerState<DiceLoadoutScreen> {
       ..sort();
     final language = ref.watch(appLanguageProvider);
     final totalWeight = faces.fold<double>(
-        0, (sum, f) => sum + ((f['weight'] as num?)?.toDouble() ?? 1.0));
+      0,
+      (sum, f) => sum + ((f['weight'] as num?)?.toDouble() ?? 1.0),
+    );
 
     // What a face allows, from its index: shared by its slot and the cube.
     String? restrictionOf(int index) {
@@ -238,7 +249,10 @@ class _DiceLoadoutScreenState extends ConsumerState<DiceLoadoutScreen> {
         );
       } else if (skillId != null) {
         _showSkillDetail(
-            context, skillId, skills[skillId] as Map<String, dynamic>?);
+          context,
+          skillId,
+          skills[skillId] as Map<String, dynamic>?,
+        );
       }
     }
 
@@ -302,8 +316,9 @@ class _DiceLoadoutScreenState extends ConsumerState<DiceLoadoutScreen> {
                     faceCount: faces.length,
                     face: _faceSel.clamp(0, faces.length - 1),
                     dieId: _selectedDiceId!,
-                    clan:
-                        _clanOf(dice[_selectedDiceId!] as Map<String, dynamic>),
+                    clan: _clanOf(
+                      dice[_selectedDiceId!] as Map<String, dynamic>,
+                    ),
                     still: MediaQuery.of(context).disableAnimations,
                     withSkill: [
                       for (var i = 0; i < faces.length; i++)
@@ -313,52 +328,62 @@ class _DiceLoadoutScreenState extends ConsumerState<DiceLoadoutScreen> {
                     ].length,
                     language: language,
                   ),
-                  slot: (index, side, compact) => Builder(builder: (context) {
-                    final face = faces[index];
-                    final open = isAssignableFace(face);
-                    final pickedSkillId =
-                        open ? assignments[index.toString()] : null;
-                    final overLimit = pickedSkillId != null &&
-                        limited[index.toString()] != pickedSkillId;
-                    final assignedSkillId = overLimit ? null : pickedSkillId;
-                    // A skill set on the face snaps into place.
-                    return SnapIn(
-                      snapKey: assignedSkillId ?? '',
-                      child: _FaceSlot(
-                        key: Key('face_slot_$index'),
-                        face: face,
-                        chance: totalWeight <= 0
-                            ? 0
-                            : ((face['weight'] as num?)?.toDouble() ?? 1.0) /
-                                totalWeight,
-                        showOdds: ref.watch(appModeProvider) == AppMode.edit,
-                        picked: index == _faceSel,
-                        assignedSkillId: assignedSkillId,
-                        overLimitSkillId: overLimit ? pickedSkillId : null,
-                        language: language,
-                        locked: !open,
-                        restrictionElement: restrictionOf(index),
-                        skills: skills,
-                        accepts: (id) => canSetSkillOnFace(
-                            id, index, faces, assignments, skills),
-                        onAccept: (id) {
-                          setState(() => _faceSel = index);
-                          assignTo(index, id);
-                        },
-                        onClear:
-                            pickedSkillId == null ? null : () => clearAt(index),
-                        onTap: () => selectFace(index),
-                        onPick: open ? () => pickFace(index) : null,
-                        compact: compact,
-                        side: side,
-                      ),
-                    );
-                  }),
+                  slot: (index, side, compact) => Builder(
+                    builder: (context) {
+                      final face = faces[index];
+                      final open = isAssignableFace(face);
+                      final pickedSkillId =
+                          open ? assignments[index.toString()] : null;
+                      final overLimit = pickedSkillId != null &&
+                          limited[index.toString()] != pickedSkillId;
+                      final assignedSkillId = overLimit ? null : pickedSkillId;
+                      // A skill set on the face snaps into place.
+                      return SnapIn(
+                        snapKey: assignedSkillId ?? '',
+                        child: _FaceSlot(
+                          key: Key('face_slot_$index'),
+                          face: face,
+                          chance: totalWeight <= 0
+                              ? 0
+                              : ((face['weight'] as num?)?.toDouble() ?? 1.0) /
+                                  totalWeight,
+                          showOdds: ref.watch(appModeProvider) == AppMode.edit,
+                          picked: index == _faceSel,
+                          assignedSkillId: assignedSkillId,
+                          overLimitSkillId: overLimit ? pickedSkillId : null,
+                          language: language,
+                          locked: !open,
+                          restrictionElement: restrictionOf(index),
+                          skills: skills,
+                          accepts: (id) => canSetSkillOnFace(
+                            id,
+                            index,
+                            faces,
+                            assignments,
+                            skills,
+                          ),
+                          onAccept: (id) {
+                            setState(() => _faceSel = index);
+                            assignTo(index, id);
+                          },
+                          onClear: pickedSkillId == null
+                              ? null
+                              : () => clearAt(index),
+                          onTap: () => selectFace(index),
+                          onPick: open ? () => pickFace(index) : null,
+                          compact: compact,
+                          side: side,
+                        ),
+                      );
+                    },
+                  ),
                 ),
               ),
               const Divider(height: 40),
-              Text(tr(ref, 'your_unlocked_skills'),
-                  style: Theme.of(context).textTheme.titleMedium),
+              Text(
+                tr(ref, 'your_unlocked_skills'),
+                style: Theme.of(context).textTheme.titleMedium,
+              ),
               const SizedBox(height: 8),
               if (unlockedSkillIds.isEmpty)
                 Padding(
@@ -373,10 +398,16 @@ class _DiceLoadoutScreenState extends ConsumerState<DiceLoadoutScreen> {
                     runSpacing: 8,
                     children: unlockedSkillIds.map((id) {
                       final skill = skills[id] as Map<String, dynamic>?;
-                      final onDie =
-                          facesCastingSkill(id, faces, assignments, skills);
-                      final name = skillDisplayName(id,
-                          language: ref.watch(appLanguageProvider));
+                      final onDie = facesCastingSkill(
+                        id,
+                        faces,
+                        assignments,
+                        skills,
+                      );
+                      final name = skillDisplayName(
+                        id,
+                        language: ref.watch(appLanguageProvider),
+                      );
                       return _SkillChip(
                         skillId: id,
                         label: onDie == 0
@@ -430,18 +461,23 @@ class _DiceLoadoutScreenState extends ConsumerState<DiceLoadoutScreen> {
     // here (the fight's perks and signs are not replayed).
     final session = ref.read(playerSessionProvider);
     final items = ref.read(localizedDbProvider(itemsSchema)).value ?? const {};
-    final scaling = equipmentScalingBonusFor(session.equippedItemIds, items,
-        strength: session.strength,
-        dexterity: session.dexterity,
-        constitution: session.constitution,
-        intelligence: session.intelligence);
+    final scaling = equipmentScalingBonusFor(
+      session.equippedItemIds,
+      items,
+      strength: session.strength,
+      dexterity: session.dexterity,
+      constitution: session.constitution,
+      intelligence: session.intelligence,
+    );
     final baseDamage = session.baseDamage +
         equipmentBonusFor(session.equippedItemIds, items, 'attackDamage') +
         scaling.damageBonus;
     final tiered = <String, dynamic>{
       for (final e in skills.entries)
         e.key: applySkillTier(
-            e.value as Map<String, dynamic>, session.skillTiers[e.key] ?? 0),
+          e.value as Map<String, dynamic>,
+          session.skillTiers[e.key] ?? 0,
+        ),
     };
     final options = [
       for (final id in choices)
@@ -469,8 +505,10 @@ class _DiceLoadoutScreenState extends ConsumerState<DiceLoadoutScreen> {
             rarityColour: rarity.color,
             change: _faceChangeOf(choice, lang),
             limitLine: (allowed
-                    ? t('skill_faces_count').replaceAll('{n}',
-                        '${choice.usedFaces + (choice.block == FaceChoiceBlock.alreadyThere ? 1 : 0)}')
+                    ? t('skill_faces_count').replaceAll(
+                        '{n}',
+                        '${choice.usedFaces + (choice.block == FaceChoiceBlock.alreadyThere ? 1 : 0)}',
+                      )
                     : t('skill_faces_full'))
                 .replaceAll('{rarity}', t(rarity.labelKey))
                 .replaceAll('{max}', '${choice.maxFaces}'),
@@ -485,7 +523,9 @@ class _DiceLoadoutScreenState extends ConsumerState<DiceLoadoutScreen> {
           .replaceAll('{face}', _basicFaceSummary(face, lang)),
       note: basic
           ? t('channeled_face_note').replaceAll(
-              '{face}', t(basicFaceLabelKey(face['type']?.toString() ?? '')))
+              '{face}',
+              t(basicFaceLabelKey(face['type']?.toString() ?? '')),
+            )
           : null,
       options: options,
       currentId: current,
@@ -496,7 +536,10 @@ class _DiceLoadoutScreenState extends ConsumerState<DiceLoadoutScreen> {
   }
 
   void _showSkillDetail(
-      BuildContext context, String skillId, Map<String, dynamic>? skill) {
+    BuildContext context,
+    String skillId,
+    Map<String, dynamic>? skill,
+  ) {
     final lang = ref.read(appLanguageProvider);
     String t(String key) => trFor(lang, key);
     final element = skill?['element']?.toString();
@@ -513,14 +556,17 @@ class _DiceLoadoutScreenState extends ConsumerState<DiceLoadoutScreen> {
       rows: [
         MapEntry(t('element_label'), element ?? t('none_label')),
         MapEntry(
-            t('skill_rarity_label'),
-            t('skill_max_faces')
-                .replaceAll('{rarity}', t(rarity.labelKey))
-                .replaceAll('{max}', '${maxFacesForSkill(skill)}')),
+          t('skill_rarity_label'),
+          t('skill_max_faces')
+              .replaceAll('{rarity}', t(rarity.labelKey))
+              .replaceAll('{max}', '${maxFacesForSkill(skill)}'),
+        ),
         MapEntry(t('cost_label'), '$cost'),
         MapEntry(t('damage_mod_label'), '${skill?['damageMod'] ?? 0}'),
-        MapEntry(t('damage_multiplier_label'),
-            '${skill?['damageMultiplier'] ?? 1.0}'),
+        MapEntry(
+          t('damage_multiplier_label'),
+          '${skill?['damageMultiplier'] ?? 1.0}',
+        ),
         MapEntry(t('heal_amount'), '${skill?['healAmount'] ?? 0}'),
         if (requiredSkillId.isNotEmpty)
           MapEntry(t('requires_label'), requiredSkillId),
@@ -686,45 +732,52 @@ class _RingCenter extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    return LayoutBuilder(builder: (context, box) {
-      // The die takes what the middle leaves after its two lines of text.
-      final room = math.min(box.maxWidth, box.maxHeight);
-      final size = (room * 0.6).clamp(36.0, 100.0);
-      return Column(
-        key: const Key('die_ring_center'),
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          RollingDie(
-            faceCount: faceCount,
-            face: face,
-            size: size,
-            skin: dieSkinOf(dieId),
-            dieId: dieId,
-            clan: clan,
-            still: still,
-          ),
-          const SizedBox(height: 4),
-          Text('d$faceCount',
-              style: theme.textTheme.labelLarge
-                  ?.copyWith(fontWeight: FontWeight.bold, height: 1)),
-          SizedBox(
-            width: room * 0.84,
-            child: FittedBox(
-              fit: BoxFit.scaleDown,
-              child: Text(
-                trFor(language, 'die_ring_skill_faces')
-                    .replaceAll('{n}', '$withSkill')
-                    .replaceAll('{max}', '$faceCount'),
-                textAlign: TextAlign.center,
-                maxLines: 1,
-                style: theme.textTheme.labelSmall
-                    ?.copyWith(color: theme.colorScheme.onSurfaceVariant),
+    return LayoutBuilder(
+      builder: (context, box) {
+        // The die takes what the middle leaves after its two lines of text.
+        final room = math.min(box.maxWidth, box.maxHeight);
+        final size = (room * 0.6).clamp(36.0, 100.0);
+        return Column(
+          key: const Key('die_ring_center'),
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            RollingDie(
+              faceCount: faceCount,
+              face: face,
+              size: size,
+              skin: dieSkinOf(dieId),
+              dieId: dieId,
+              clan: clan,
+              still: still,
+            ),
+            const SizedBox(height: 4),
+            Text(
+              'd$faceCount',
+              style: theme.textTheme.labelLarge?.copyWith(
+                fontWeight: FontWeight.bold,
+                height: 1,
               ),
             ),
-          ),
-        ],
-      );
-    });
+            SizedBox(
+              width: room * 0.84,
+              child: FittedBox(
+                fit: BoxFit.scaleDown,
+                child: Text(
+                  trFor(language, 'die_ring_skill_faces')
+                      .replaceAll('{n}', '$withSkill')
+                      .replaceAll('{max}', '$faceCount'),
+                  textAlign: TextAlign.center,
+                  maxLines: 1,
+                  style: theme.textTheme.labelSmall?.copyWith(
+                    color: theme.colorScheme.onSurfaceVariant,
+                  ),
+                ),
+              ),
+            ),
+          ],
+        );
+      },
+    );
   }
 }
 
@@ -791,8 +844,11 @@ class _FaceSlot extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final name = faceDisplayName(face,
-        assignedSkillId: assignedSkillId, language: language);
+    final name = faceDisplayName(
+      face,
+      assignedSkillId: assignedSkillId,
+      language: language,
+    );
     final skillId = faceSkillId(face, assignedSkillId);
     final colorScheme = Theme.of(context).colorScheme;
     final textTheme = Theme.of(context).textTheme;
@@ -840,17 +896,22 @@ class _FaceSlot extends StatelessWidget {
                     : Column(
                         mainAxisSize: MainAxisSize.min,
                         children: [
-                          Icon(kind.icon,
-                              size: compact
-                                  ? (value > 0 ? 16 : 22)
-                                  : (value > 0 ? 22 : 30),
-                              color: kind.color),
+                          Icon(
+                            kind.icon,
+                            size: compact
+                                ? (value > 0 ? 16 : 22)
+                                : (value > 0 ? 22 : 30),
+                            color: kind.color,
+                          ),
                           if (value > 0)
-                            Text('$value',
-                                style: textTheme.titleSmall?.copyWith(
-                                    color: kind.color,
-                                    fontWeight: FontWeight.bold,
-                                    height: 1)),
+                            Text(
+                              '$value',
+                              style: textTheme.titleSmall?.copyWith(
+                                color: kind.color,
+                                fontWeight: FontWeight.bold,
+                                height: 1,
+                              ),
+                            ),
                         ],
                       ),
               ),
@@ -872,9 +933,11 @@ class _FaceSlot extends StatelessWidget {
               Align(
                 alignment: Alignment.topRight,
                 child: locked
-                    ? PixelGlyph(PixelGlyphs.lock,
+                    ? PixelGlyph(
+                        PixelGlyphs.lock,
                         size: compact ? IconSize.inline : IconSize.s16,
-                        color: colorScheme.outline)
+                        color: colorScheme.outline,
+                      )
                     : compact
                         ? const SizedBox.shrink()
                         : onClear != null
@@ -883,7 +946,9 @@ class _FaceSlot extends StatelessWidget {
                                 radius: 16,
                                 child: Tooltip(
                                   message: trFor(
-                                      language, 'clear_assigned_skill_tooltip'),
+                                    language,
+                                    'clear_assigned_skill_tooltip',
+                                  ),
                                   child: const Icon(Icons.close,
                                       size: IconSize.s16),
                                 ),
@@ -891,9 +956,11 @@ class _FaceSlot extends StatelessWidget {
                             : InkResponse(
                                 onTap: onPick,
                                 radius: 16,
-                                child: Icon(Icons.edit_outlined,
-                                    size: IconSize.s16,
-                                    color: colorScheme.primary),
+                                child: Icon(
+                                  Icons.edit_outlined,
+                                  size: IconSize.s16,
+                                  color: colorScheme.primary,
+                                ),
                               ),
               ),
               Align(
@@ -903,14 +970,19 @@ class _FaceSlot extends StatelessWidget {
                         message:
                             '${skillDisplayName(overLimitSkillId!, language: language)}: '
                             '${trFor(language, 'face_over_limit_label')}',
-                        child: Icon(Icons.warning_amber_rounded,
-                            size: compact ? IconSize.inline : IconSize.s16,
-                            color: colorScheme.error),
+                        child: Icon(
+                          Icons.warning_amber_rounded,
+                          size: compact ? IconSize.inline : IconSize.s16,
+                          color: colorScheme.error,
+                        ),
                       )
                     : showOdds && !compact
-                        ? Text('${(chance * 100).round()}%',
-                            style: textTheme.labelSmall
-                                ?.copyWith(color: colorScheme.onSurfaceVariant))
+                        ? Text(
+                            '${(chance * 100).round()}%',
+                            style: textTheme.labelSmall?.copyWith(
+                              color: colorScheme.onSurfaceVariant,
+                            ),
+                          )
                         : const SizedBox.shrink(),
               ),
             ],
@@ -983,10 +1055,11 @@ class _DieRail extends StatelessWidget {
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(10),
                     border: Border.all(
-                        color: id == selected
-                            ? scheme.primary
-                            : scheme.outlineVariant,
-                        width: id == selected ? 2 : 1),
+                      color: id == selected
+                          ? scheme.primary
+                          : scheme.outlineVariant,
+                      width: id == selected ? 2 : 1,
+                    ),
                     color: id == selected
                         ? scheme.primary.withValues(alpha: 0.10)
                         : null,
@@ -1059,8 +1132,11 @@ class _DieStage extends StatelessWidget {
     final face = faces[selected];
     final assigned = assignments[selected.toString()];
     final skillId = faceSkillId(face, assigned);
-    final name =
-        faceDisplayName(face, assignedSkillId: assigned, language: language);
+    final name = faceDisplayName(
+      face,
+      assignedSkillId: assigned,
+      language: language,
+    );
     final open = isAssignableFace(face);
     final picked = open ? picks[selected.toString()] : null;
     final overSkill = picked != null && assigned != picked ? picked : null;
@@ -1098,80 +1174,109 @@ class _DieStage extends StatelessWidget {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           mainAxisSize: MainAxisSize.min,
                           children: [
-                            Text(dieDisplayName(dieId, language: language),
-                                style: theme.textTheme.titleMedium),
-                            Text(dieSkinOf(dieId).material,
-                                style: theme.textTheme.labelSmall?.copyWith(
-                                    color: theme.colorScheme.onSurfaceVariant)),
+                            Text(
+                              dieDisplayName(dieId, language: language),
+                              style: theme.textTheme.titleMedium,
+                            ),
+                            Text(
+                              dieSkinOf(dieId).material,
+                              style: theme.textTheme.labelSmall?.copyWith(
+                                color: theme.colorScheme.onSurfaceVariant,
+                              ),
+                            ),
                             ClanDieGift(dieId: dieId),
                             const SizedBox(height: 8),
-                            Text(name,
-                                key: const Key('die_face_name'),
-                                style: theme.textTheme.titleSmall),
+                            Text(
+                              name,
+                              key: const Key('die_face_name'),
+                              style: theme.textTheme.titleSmall,
+                            ),
                             Text(
                               skillId == null
                                   ? _basicFaceSummary(face, language)
                                   : _skillSummary(
                                       skills[skillId] as Map<String, dynamic>?,
-                                      language),
+                                      language,
+                                    ),
                               style: theme.textTheme.bodySmall,
                             ),
                             if (showOdds && totalWeight > 0)
                               Text(
                                 '${(weight / totalWeight * 100).round()}% ${t('face_chance_suffix')}',
                                 style: theme.textTheme.labelSmall?.copyWith(
-                                    color: theme.colorScheme.onSurfaceVariant),
+                                  color: theme.colorScheme.onSurfaceVariant,
+                                ),
                               ),
                             // Its rule words, named in full (a tap on a badge used to).
                             for (final k in faceKeywordsOf(face))
                               Padding(
                                 padding: const EdgeInsets.only(top: 2),
                                 child: Text.rich(
-                                  TextSpan(children: [
-                                    TextSpan(
+                                  TextSpan(
+                                    children: [
+                                      TextSpan(
                                         text: '${t(keywordLabelKey(k))}: ',
                                         style: const TextStyle(
-                                            fontWeight: FontWeight.w700)),
-                                    TextSpan(text: t(keywordDescriptionKey(k))),
-                                  ]),
+                                          fontWeight: FontWeight.w700,
+                                        ),
+                                      ),
+                                      TextSpan(
+                                        text: t(keywordDescriptionKey(k)),
+                                      ),
+                                    ],
+                                  ),
                                   style: theme.textTheme.labelSmall,
                                 ),
                               ),
                             // What kind of face it is, in full: this panel grows with
                             // the text, so the squares below never have to.
                             if (!open)
-                              Text(t('fixed_face_label'),
-                                  style: theme.textTheme.labelSmall)
+                              Text(
+                                t('fixed_face_label'),
+                                style: theme.textTheme.labelSmall,
+                              )
                             else if (assigned != null && isBasicFace(face))
                               Text(
                                 t('channeled_face_badge').replaceAll(
-                                    '{face}',
-                                    t(basicFaceLabelKey(
-                                        face['type']?.toString() ?? ''))),
+                                  '{face}',
+                                  t(
+                                    basicFaceLabelKey(
+                                      face['type']?.toString() ?? '',
+                                    ),
+                                  ),
+                                ),
                                 style: theme.textTheme.labelSmall?.copyWith(
-                                    color: theme.colorScheme.tertiary),
+                                  color: theme.colorScheme.tertiary,
+                                ),
                               )
                             else if (assigned != null)
-                              Text(t('custom_label'),
-                                  style: theme.textTheme.labelSmall?.copyWith(
-                                      color: theme.colorScheme.tertiary)),
+                              Text(
+                                t('custom_label'),
+                                style: theme.textTheme.labelSmall?.copyWith(
+                                  color: theme.colorScheme.tertiary,
+                                ),
+                              ),
                             if (overSkill != null)
                               Text(
                                 '${skillDisplayName(overSkill, language: language)}: '
                                 '${t('face_over_limit_label')}',
-                                style: theme.textTheme.labelSmall
-                                    ?.copyWith(color: theme.colorScheme.error),
+                                style: theme.textTheme.labelSmall?.copyWith(
+                                  color: theme.colorScheme.error,
+                                ),
                               ),
                             if (open && restriction != null)
-                              Text('$restriction ${t('only_suffix')}',
-                                  style: theme.textTheme.labelSmall),
+                              Text(
+                                '$restriction ${t('only_suffix')}',
+                                style: theme.textTheme.labelSmall,
+                              ),
                             const SizedBox(height: 6),
                             Text(
                               open
                                   ? t('die_turn_hint_open')
                                   : t('die_turn_hint'),
-                              style: theme.textTheme.labelSmall
-                                  ?.copyWith(color: theme.colorScheme.primary),
+                              style: theme.textTheme.labelSmall?.copyWith(
+                                color: theme.colorScheme.primary,
+                              ),
                             ),
                           ],
                         ),
@@ -1182,12 +1287,15 @@ class _DieStage extends StatelessWidget {
                       TextButton.icon(
                         key: const Key('die_pick_skill'),
                         style: TextButton.styleFrom(
-                            visualDensity: VisualDensity.compact,
-                            padding: EdgeInsets.zero,
-                            alignment: Alignment.centerLeft),
+                          visualDensity: VisualDensity.compact,
+                          padding: EdgeInsets.zero,
+                          alignment: Alignment.centerLeft,
+                        ),
                         onPressed: () => onActivate(selected),
-                        icon:
-                            const Icon(Icons.edit_outlined, size: IconSize.s16),
+                        icon: const Icon(
+                          Icons.edit_outlined,
+                          size: IconSize.s16,
+                        ),
                         label: Text(t('pick_face_skill_title')),
                       ),
                   ],

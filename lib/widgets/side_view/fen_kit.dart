@@ -39,46 +39,67 @@ abstract final class _FenLook {
 /// The layers, back to front. [progress] brings the goal's lantern nearer.
 List<SideLayer> fenLayers({double progress = 0}) => [
       SideLayer(
-          0,
-          (c, s, scroll, t, u) =>
-              kitSky(c, s, u, bands: _FenLook.sky, ground: _FenLook.far)),
+        0,
+        (c, s, scroll, t, u) =>
+            kitSky(c, s, u, bands: _FenLook.sky, ground: _FenLook.far),
+      ),
       SideLayer(
-          0.05,
-          (c, s, scroll, t, u) => kitDisc(c, s, u,
-              cx: 0.28,
-              cy: 20,
-              disc: _FenLook.moon.withValues(alpha: 0.9),
-              glow: _FenLook.moon.withValues(alpha: 0.18),
-              radius: 3)),
+        0.05,
+        (c, s, scroll, t, u) => kitDisc(
+          c,
+          s,
+          u,
+          cx: 0.28,
+          cy: 20,
+          disc: _FenLook.moon.withValues(alpha: 0.9),
+          glow: _FenLook.moon.withValues(alpha: 0.18),
+          radius: 3,
+        ),
+      ),
       SideLayer(0.12, (c, s, scroll, t, u) {
-        sideHills(c, s, u, scroll,
-            base: 43,
-            amp: 1.2,
-            wave: 0.08,
-            phase: 0.9,
-            fill: _FenLook.far,
-            rim: _FenLook.farRim);
+        sideHills(
+          c,
+          s,
+          u,
+          scroll,
+          base: 43,
+          amp: 1.2,
+          wave: 0.08,
+          phase: 0.9,
+          fill: _FenLook.far,
+          rim: _FenLook.farRim,
+        );
         _deadTrees(c, s, u, scroll);
         _lantern(c, s, u, progress, t);
       }),
       SideLayer(0.3, (c, s, scroll, t, u) {
-        sideHills(c, s, u, scroll,
-            base: 48,
-            amp: 1.6,
-            wave: 0.06,
-            phase: 2.1,
-            fill: _FenLook.bank,
-            rim: _FenLook.bankRim);
+        sideHills(
+          c,
+          s,
+          u,
+          scroll,
+          base: 48,
+          amp: 1.6,
+          wave: 0.06,
+          phase: 2.1,
+          fill: _FenLook.bank,
+          rim: _FenLook.bankRim,
+        );
         _pools(c, s, u, scroll, t);
       }),
       SideLayer(0.8, (c, s, scroll, t, u) {
-        sideHills(c, s, u, scroll,
-            base: 56,
-            amp: 2.2,
-            wave: 0.04,
-            phase: 0.3,
-            fill: _FenLook.near,
-            rim: _FenLook.nearRim);
+        sideHills(
+          c,
+          s,
+          u,
+          scroll,
+          base: 56,
+          amp: 2.2,
+          wave: 0.04,
+          phase: 0.3,
+          fill: _FenLook.near,
+          rim: _FenLook.nearRim,
+        );
         _reeds(c, s, u, scroll);
       }),
       const SideLayer(1.0, _boardwalk),
@@ -99,10 +120,24 @@ void _lantern(Canvas canvas, Size size, double u, double progress, double t) {
   final lamp = math.max(2, (2 * scale).round()).toDouble();
   // A halo of pale pixels around the flame.
   final halo = Paint()..color = _FenLook.lantern.withValues(alpha: 0.25);
-  sidePixels(canvas, u, halo, x + 2 - lamp, base - ph + 1 + bob - lamp,
-      lamp * 3, lamp * 3);
-  sidePixels(canvas, u, Paint()..color = _FenLook.lantern, x + 2,
-      base - ph + 1 + bob, lamp, lamp * 1.5);
+  sidePixels(
+    canvas,
+    u,
+    halo,
+    x + 2 - lamp,
+    base - ph + 1 + bob - lamp,
+    lamp * 3,
+    lamp * 3,
+  );
+  sidePixels(
+    canvas,
+    u,
+    Paint()..color = _FenLook.lantern,
+    x + 2,
+    base - ph + 1 + bob,
+    lamp,
+    lamp * 1.5,
+  );
 }
 
 /// Dead trees and reed heads standing on the far bank.
@@ -152,8 +187,15 @@ void _reeds(Canvas canvas, Size size, double u, double scroll) {
     const y = 60.0;
     final h = 5.0 + (i % 3) * 2;
     for (var k = 0; k < 4; k++) {
-      sidePixels(canvas, u, k.isEven ? reed : dark, px + k * 1.0,
-          y - h + (k % 2) * 2, 1, h - (k % 2) * 2);
+      sidePixels(
+        canvas,
+        u,
+        k.isEven ? reed : dark,
+        px + k * 1.0,
+        y - h + (k % 2) * 2,
+        1,
+        h - (k % 2) * 2,
+      );
     }
     // A seed head on the tallest stalk.
     sidePixels(canvas, u, dark, px + 1, y - h - 1, 1, 2);

@@ -13,8 +13,11 @@ import 'player_session_provider.dart';
 /// French-overlaid: a faction, a sub-clan or a title picks its language
 /// itself (nameFor...), and the rules need the same records whatever the
 /// language. Empty tables until they have loaded.
-final factionsProvider = Provider<Map<String, Faction>>((ref) =>
-    parseFactions(ref.watch(gameDbProvider(factionsSchema)).value ?? const {}));
+final factionsProvider = Provider<Map<String, Faction>>(
+  (ref) => parseFactions(
+    ref.watch(gameDbProvider(factionsSchema)).value ?? const {},
+  ),
+);
 
 final clanDataProvider = Provider<ClanData>((ref) {
   Map<String, dynamic> table(DbSchema schema) =>
@@ -78,17 +81,25 @@ bool sameTables(List<Object?> a, List<Object?> b) {
 
 /// The character's standing, marks and relations (see PoliticsState).
 final politicsProvider = Provider<PoliticsState>(
-    (ref) => ref.watch(playerSessionProvider.select((s) => s.politics)));
+  (ref) => ref.watch(playerSessionProvider.select((s) => s.politics)),
+);
 
 /// The clans with power ranked, now and at the last chapter's turn
 /// (clanPowerRanking, clan_power.dart): the clan power sign's rank and
 /// arrow.
-final clanPowerRankingProvider = Provider<List<ClanPowerRank>>((ref) =>
-    clanPowerRanking(ref.watch(politicsProvider), ref.watch(clanDataProvider)));
+final clanPowerRankingProvider = Provider<List<ClanPowerRank>>(
+  (ref) => clanPowerRanking(
+    ref.watch(politicsProvider),
+    ref.watch(clanDataProvider),
+  ),
+);
 
 /// The clans the Warding Cairn may ward the road against now: those
 /// hunting the character (road_wards.dart's [wardTargets]). Empty: the
 /// `ward_no_target` line.
-final wardTargetsProvider = Provider<List<String>>((ref) => wardTargets(
+final wardTargetsProvider = Provider<List<String>>(
+  (ref) => wardTargets(
     ref.watch(playerSessionProvider.select((s) => s.politics)),
-    ref.watch(clanDataProvider)));
+    ref.watch(clanDataProvider),
+  ),
+);

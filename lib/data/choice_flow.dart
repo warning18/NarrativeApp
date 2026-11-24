@@ -250,8 +250,12 @@ class StoryStops {
     }
     final branch = to != choice.nextId &&
         (to == choice.failNextId || to == choice.loseNextId);
-    final shape =
-        choiceShape(from, choice, story: _story, geography: _geography);
+    final shape = choiceShape(
+      from,
+      choice,
+      story: _story,
+      geography: _geography,
+    );
     return branch || shape.here ? FlowTripThenArrive(b) : FlowMap(b);
   }
 

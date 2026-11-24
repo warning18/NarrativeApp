@@ -22,9 +22,12 @@ import 'street_view/street_view.dart';
 enum OriginPlace { street, frost, fen, sea }
 
 class OriginBackdrop {
-  const OriginBackdrop.street(this.kind, this.name,
-      {this.phase = DayPhase.day, this.sky})
-      : place = OriginPlace.street;
+  const OriginBackdrop.street(
+    this.kind,
+    this.name, {
+    this.phase = DayPhase.day,
+    this.sky,
+  }) : place = OriginPlace.street;
 
   const OriginBackdrop.wild(this.place, {this.phase = DayPhase.day, this.sky})
       : kind = '',
@@ -43,49 +46,85 @@ class OriginBackdrop {
 /// weather its words give.
 const Map<String, OriginBackdrop> originBackdrops = {
   // Age 6: the gutter behind the rope-walk, the rain on the stones.
-  'sparrow': OriginBackdrop.street('warehouse', 'The rope-walk',
-      sky: WeatherKind.rain),
+  'sparrow': OriginBackdrop.street(
+    'warehouse',
+    'The rope-walk',
+    sky: WeatherKind.rain,
+  ),
   // Age 8, by race.
-  'mark_human': OriginBackdrop.street('temple', 'The Inquisition chapel',
-      phase: DayPhase.dusk),
-  'mark_elf':
-      OriginBackdrop.street('shop', 'The market awning', sky: WeatherKind.rain),
-  'mark_dwarf':
-      OriginBackdrop.street('forge', 'The smithy', phase: DayPhase.dusk),
+  'mark_human': OriginBackdrop.street(
+    'temple',
+    'The Inquisition chapel',
+    phase: DayPhase.dusk,
+  ),
+  'mark_elf': OriginBackdrop.street(
+    'shop',
+    'The market awning',
+    sky: WeatherKind.rain,
+  ),
+  'mark_dwarf': OriginBackdrop.street(
+    'forge',
+    'The smithy',
+    phase: DayPhase.dusk,
+  ),
   'mark_orc': OriginBackdrop.street('house', 'The street'),
   'mark_voidkin': OriginBackdrop.wild(OriginPlace.frost),
   // Age 10: the tavern on Tallow Street, a winter evening.
-  'beggar': OriginBackdrop.street('tavern', 'The Blind Beggar',
-      phase: DayPhase.dusk, sky: WeatherKind.snow),
+  'beggar': OriginBackdrop.street(
+    'tavern',
+    'The Blind Beggar',
+    phase: DayPhase.dusk,
+    sky: WeatherKind.snow,
+  ),
   // Age 12, by profession.
   'calling_warrior': OriginBackdrop.wild(OriginPlace.sea),
-  'calling_mage':
-      OriginBackdrop.street('shop', 'The chandler’s', phase: DayPhase.dusk),
-  'calling_rogue':
-      OriginBackdrop.street('den', 'The back alley', phase: DayPhase.night),
+  'calling_mage': OriginBackdrop.street(
+    'shop',
+    'The chandler’s',
+    phase: DayPhase.dusk,
+  ),
+  'calling_rogue': OriginBackdrop.street(
+    'den',
+    'The back alley',
+    phase: DayPhase.night,
+  ),
   'calling_cleric': OriginBackdrop.street(
-      'temple', 'The shrine of the Drowned Saint',
-      phase: DayPhase.night),
+    'temple',
+    'The shrine of the Drowned Saint',
+    phase: DayPhase.night,
+  ),
   'calling_ranger': OriginBackdrop.wild(OriginPlace.fen),
   // Age 14: Old Hesk's house next door, of an evening.
-  'lamp':
-      OriginBackdrop.street('house', 'Old Hesk’s house', phase: DayPhase.dusk),
+  'lamp': OriginBackdrop.street(
+    'house',
+    'Old Hesk’s house',
+    phase: DayPhase.dusk,
+  ),
   // Age 16: the house the parents left, in the winter.
-  'board': OriginBackdrop.street('house', 'Your parents’ house',
-      phase: DayPhase.night, sky: WeatherKind.snow),
+  'board': OriginBackdrop.street(
+    'house',
+    'Your parents’ house',
+    phase: DayPhase.night,
+    sky: WeatherKind.snow,
+  ),
 };
 
 /// A memory without a row (a new one) gets a plain house by day.
-const OriginBackdrop _originBackdropFallback =
-    OriginBackdrop.street('house', 'The house');
+const OriginBackdrop _originBackdropFallback = OriginBackdrop.street(
+  'house',
+  'The house',
+);
 
 OriginBackdrop originBackdropOf(String memoryId) =>
     originBackdrops[memoryId] ?? _originBackdropFallback;
 
 /// The backdrop of [memoryId], filling the height it is given.
 class OriginSceneBackdrop extends StatelessWidget {
-  const OriginSceneBackdrop(
-      {super.key, required this.memoryId, this.height = 210});
+  const OriginSceneBackdrop({
+    super.key,
+    required this.memoryId,
+    this.height = 210,
+  });
 
   final String memoryId;
   final double height;
@@ -96,7 +135,10 @@ class OriginSceneBackdrop extends StatelessWidget {
     // scene drawn in code.
     final band = lifeBandAsset(memoryId);
     if (band != null) {
-      return SizedBox(height: height, child: LifeBand(asset: band));
+      return SizedBox(
+        height: height,
+        child: LifeBand(asset: band),
+      );
     }
     final b = originBackdropOf(memoryId);
     // Each memory keeps its own version of the place.
@@ -125,7 +167,10 @@ class OriginSceneBackdrop extends StatelessWidget {
           ),
         OriginPlace.sea => SideViewScene(
             layers: withSceneWindow(
-                seaLayers(waters: SeaWaters.shallows), 'sea-shallows', version),
+              seaLayers(waters: SeaWaters.shallows),
+              'sea-shallows',
+              version,
+            ),
             moving: false,
             height: height,
           ),

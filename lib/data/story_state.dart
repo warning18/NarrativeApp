@@ -173,8 +173,10 @@ StorySoFarState readStorySoFar(WidgetRef ref) {
       if (p.id != place?.id && p.level.name != 'continent') p.nameFor(french),
     if (country != null && country.ruler.isNotEmpty)
       if (factions[country.ruler] case final ruler?)
-        trFor(lang, 'sofar_now_land')
-            .replaceAll('{land}', french ? ruler.shortFr : ruler.short),
+        trFor(
+          lang,
+          'sofar_now_land',
+        ).replaceAll('{land}', french ? ruler.shortFr : ruler.short),
     if (biome != null) biome.nameFor(french).toLowerCase(),
   ];
 
@@ -194,14 +196,16 @@ StorySoFarState readStorySoFar(WidgetRef ref) {
     if (quest is! Map<String, dynamic>) continue;
     final name = quest['questName']?.toString() ?? id;
     final goal = questGoalFor(id, quest, session);
-    threads.add(StoryThread(
-      id: id,
-      name: name,
-      goal: goal.ready ? trFor(lang, 'quest_goal_ready') : goal.label,
-      main: id == mainId,
-      followed: id == followed,
-      ready: goal.ready,
-    ));
+    threads.add(
+      StoryThread(
+        id: id,
+        name: name,
+        goal: goal.ready ? trFor(lang, 'quest_goal_ready') : goal.label,
+        main: id == mainId,
+        followed: id == followed,
+        ready: goal.ready,
+      ),
+    );
   }
 
   // Who is along.
@@ -217,10 +221,11 @@ StorySoFarState readStorySoFar(WidgetRef ref) {
       if (politics.tierOf(entry.key, clanData) case final tier
           when tier != StandingTier.unknown)
         StoryStanding(
-            entry.key,
-            french ? entry.value.shortFr : entry.value.short,
-            tier,
-            entry.value.patron.color),
+          entry.key,
+          french ? entry.value.shortFr : entry.value.short,
+          tier,
+          entry.value.patron.color,
+        ),
   ];
 
   // The echoes met so far, the latest first.
@@ -236,8 +241,12 @@ StorySoFarState readStorySoFar(WidgetRef ref) {
 
   // Now: the chapter's hint, where the party came from and with whom,
   // and the last choice made.
-  final entries =
-      storySoFar(story, play.history, play.currentNodeId, french: french);
+  final entries = storySoFar(
+    story,
+    play.history,
+    play.currentNodeId,
+    french: french,
+  );
   final recent =
       entries.length <= 3 ? entries : entries.sublist(entries.length - 3);
   JournalEntry? lastChosen;
@@ -256,12 +265,15 @@ StorySoFarState readStorySoFar(WidgetRef ref) {
   if (placeName.isNotEmpty) {
     var where = from.isEmpty
         ? trFor(lang, 'sofar_now_at').replaceAll('{place}', placeName)
-        : trFor(lang, 'sofar_now_came')
-            .replaceAll('{from}', from.first)
-            .replaceAll('{place}', placeName);
+        : trFor(
+            lang,
+            'sofar_now_came',
+          ).replaceAll('{from}', from.first).replaceAll('{place}', placeName);
     if (party.isNotEmpty) {
-      where += trFor(lang, 'sofar_now_with')
-          .replaceAll('{party}', _joined(party, french));
+      where += trFor(
+        lang,
+        'sofar_now_with',
+      ).replaceAll('{party}', _joined(party, french));
     }
     sentences.add('$where.');
   }
@@ -270,7 +282,8 @@ StorySoFarState readStorySoFar(WidgetRef ref) {
   }
   if (lastChosen?.choiceText case final choice?) {
     sentences.add(
-        trFor(lang, 'sofar_now_last').replaceAll('{choice}', personal(choice)));
+      trFor(lang, 'sofar_now_last').replaceAll('{choice}', personal(choice)),
+    );
   }
 
   return StorySoFarState(

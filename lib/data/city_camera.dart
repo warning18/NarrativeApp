@@ -33,13 +33,16 @@ class CityCameraShot {
 
   /// The arrival's shot (map-first.md): the district's frame 25% closer,
   /// centred on the party's mark ([partyAt]).
-  const CityCameraShot.arrival(String districtId,
-      {Offset? partyAt, bool jump = false})
-      : this(
-            districtId: districtId,
-            zoom: _arrivalZoomIn,
-            centre: partyAt,
-            jump: jump);
+  const CityCameraShot.arrival(
+    String districtId, {
+    Offset? partyAt,
+    bool jump = false,
+  }) : this(
+          districtId: districtId,
+          zoom: _arrivalZoomIn,
+          centre: partyAt,
+          jump: jump,
+        );
 
   /// The chart's closest zoom on [centre] (or the district's middle): the
   /// list of places shows.

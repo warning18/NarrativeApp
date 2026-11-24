@@ -277,7 +277,10 @@ Map<String, LandEvent> landEventsFrom(Map<String, dynamic> records) => {
 /// leads into, else of the one it leaves; '' for no one. It follows the
 /// politics, so a road changes hands with the land around it.
 String landRouteRuler(
-    LandRoute route, Geography geography, PoliticsState politics) {
+  LandRoute route,
+  Geography geography,
+  PoliticsState politics,
+) {
   final towns = townRulers(geography, politics, const {});
   final ends = [
     geography.placeOfLandmark(route.to)?.id,
@@ -295,8 +298,12 @@ String landRouteRuler(
 }
 
 /// Who holds one end of a route: its town's ruler, else its holder.
-String _endRuler(String? id, Map<String, TownRuler> towns, Geography geography,
-    PoliticsState politics) {
+String _endRuler(
+  String? id,
+  Map<String, TownRuler> towns,
+  Geography geography,
+  PoliticsState politics,
+) {
   if (id == null) return '';
   final town = towns[id]?.clanId ?? '';
   return town.isNotEmpty ? town : holderOf(id, geography, politics);
@@ -309,12 +316,23 @@ const int clanRoadOneIn = 2;
 /// The clan whose road [route] is (wave 18 step 2): the one holding both
 /// its ends (see [landRouteRuler]'s ends), '' for none.
 String clanRoadOf(
-    LandRoute route, Geography geography, PoliticsState politics) {
+  LandRoute route,
+  Geography geography,
+  PoliticsState politics,
+) {
   final towns = townRulers(geography, politics, const {});
   final to = _endRuler(
-      geography.placeOfLandmark(route.to)?.id, towns, geography, politics);
+    geography.placeOfLandmark(route.to)?.id,
+    towns,
+    geography,
+    politics,
+  );
   final from = _endRuler(
-      geography.placeOfLandmark(route.from)?.id, towns, geography, politics);
+    geography.placeOfLandmark(route.from)?.id,
+    towns,
+    geography,
+    politics,
+  );
   return to.isNotEmpty && to == from ? to : '';
 }
 
@@ -333,10 +351,11 @@ RulerBand clanRoadBandFor(StandingTier tier) =>
 /// [clanRoadOneIn] and its bands are [clanRoadBandFor]'s; a route that
 /// never meets its ruler ([LandRoute.rulerOneIn] 0) still never does.
 ({LandRoute route, String clanId, RulerBand band, bool clanRoad}) crossingRuler(
-    LandRoute route,
-    Geography geography,
-    PoliticsState politics,
-    ClanData data) {
+  LandRoute route,
+  Geography geography,
+  PoliticsState politics,
+  ClanData data,
+) {
   final clanId = landRouteRuler(route, geography, politics);
   final tier = politics.tierOf(clanId, data);
   final own = route.rulerOneIn > 0 &&
@@ -353,7 +372,10 @@ RulerBand clanRoadBandFor(StandingTier tier) =>
 /// The events of [events] a road's [ruler] meets the party with at
 /// [band], in file order: none for '' or a clan with no events on file.
 List<String> rulerPool(
-        Map<String, LandEvent> events, String ruler, RulerBand band) =>
+  Map<String, LandEvent> events,
+  String ruler,
+  RulerBand band,
+) =>
     [
       if (ruler.isNotEmpty)
         for (final e in events.values)
@@ -367,8 +389,12 @@ List<String> rulerPool(
 /// time in [LandRoute.rulerOneIn], each of its events once at most. An
 /// event the route names that is not [known] is never drawn: a route
 /// whose events are all missing meets only its ruler, or nothing.
-List<String> drawCrossing(LandRoute route, Iterable<String> known,
-    {required Random random, List<String> rulers = const []}) {
+List<String> drawCrossing(
+  LandRoute route,
+  Iterable<String> known, {
+  required Random random,
+  List<String> rulers = const [],
+}) {
   final pool = {
     for (final MapEntry(:key, :value) in route.events.entries)
       if (value > 0 && known.contains(key)) key: value,
@@ -429,8 +455,11 @@ int turnBackHealth(int maxHealth, {required int departureHealth}) {
 
 /// Where a crossing's step leaves the party: its [health] after [change],
 /// or [failed] when that runs it out (the crossing is lost).
-({int health, bool failed}) afterLandStep(
-    {required int health, required int maxHealth, required int change}) {
+({int health, bool failed}) afterLandStep({
+  required int health,
+  required int maxHealth,
+  required int change,
+}) {
   final next = health + change;
   if (next <= 0) return (health: 0, failed: true);
   return (health: min(maxHealth, next), failed: false);
@@ -468,7 +497,7 @@ LandChoice pickLandChoice(
 
   final open = [
     for (final c in event.choices)
-      if (c.goldCost <= gold && !c.isFight) c
+      if (c.goldCost <= gold && !c.isFight) c,
   ];
   final options = open.isEmpty ? event.choices : open;
   var best = options.first;
@@ -525,8 +554,12 @@ CrossingResult resolveCrossing(
   List<String> rulers = const [],
 }) {
   final inChapter = chapter ?? route.chapter;
-  final drawn =
-      drawCrossing(route, events.keys, random: random, rulers: rulers);
+  final drawn = drawCrossing(
+    route,
+    events.keys,
+    random: random,
+    rulers: rulers,
+  );
   var hp = health;
   var coin = 0;
   var days = 0;
@@ -536,32 +569,46 @@ CrossingResult resolveCrossing(
     met.add(id);
     days++;
     if (event.choices.isEmpty) continue;
-    final choice = pickLandChoice(event,
-        modifierFor: modifierFor, gold: gold + coin, chapter: inChapter);
+    final choice = pickLandChoice(
+      event,
+      modifierFor: modifierFor,
+      gold: gold + coin,
+      chapter: inChapter,
+    );
     final outcome = choice.isFight
         ? choice.fail
         : !choice.hasCheck
             ? choice.outcome
-            : checkPasses(random.nextInt(20) + 1, modifierFor(choice.check!),
-                    landCheckDc(choice.dc, inChapter))
+            : checkPasses(
+                random.nextInt(20) + 1,
+                modifierFor(choice.check!),
+                landCheckDc(choice.dc, inChapter),
+              )
                 ? choice.success
                 : choice.fail;
     coin += outcome.gold;
     days += outcome.days;
     final step = afterLandStep(
-        health: hp,
-        maxHealth: maxHealth,
-        change: outcome.healthChange(maxHealth));
+      health: hp,
+      maxHealth: maxHealth,
+      change: outcome.healthChange(maxHealth),
+    );
     if (step.failed) {
       return CrossingResult(
-          arrived: false,
-          health: turnBackHealth(maxHealth, departureHealth: health),
-          gold: coin,
-          days: days,
-          events: met);
+        arrived: false,
+        health: turnBackHealth(maxHealth, departureHealth: health),
+        gold: coin,
+        days: days,
+        events: met,
+      );
     }
     hp = step.health;
   }
   return CrossingResult(
-      arrived: true, health: hp, gold: coin, days: days, events: met);
+    arrived: true,
+    health: hp,
+    gold: coin,
+    days: days,
+    events: met,
+  );
 }

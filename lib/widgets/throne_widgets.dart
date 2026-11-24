@@ -24,7 +24,10 @@ Widget _emblem(Faction? faction, Iterable<String> flags, {double size = 24}) {
   if (faction == null) return SizedBox(width: size, height: size);
   return faction.isLost
       ? LostClanEmblem(
-          faction: faction, stage: openHandStageFrom(flags), size: size)
+          faction: faction,
+          stage: openHandStageFrom(flags),
+          size: size,
+        )
       : PatronEmblem(patron: faction.patron, size: size);
 }
 
@@ -48,42 +51,50 @@ class _RungChip extends StatelessWidget {
     final colour = reached
         ? standingTierTextColor(context, StandingTier.sworn)
         : theme.colorScheme.onSurfaceVariant;
-    return LayoutBuilder(builder: (context, constraints) {
-      return Semantics(
-        label: trFor(
-                language, reached ? 'throne_rung_reached' : 'throne_rung_open')
-            .replaceAll('{rung}', label),
-        excludeSemantics: true,
-        child: ConstrainedBox(
-          constraints: BoxConstraints(maxWidth: constraints.maxWidth),
-          child: Container(
-            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(12),
-              border: Border.all(
-                  color: reached ? colour : theme.colorScheme.outlineVariant),
-            ),
-            child: Row(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Icon(reached ? Icons.check_circle : Icons.circle_outlined,
-                    size: IconSize.s16, color: colour),
-                const SizedBox(width: 4),
-                Flexible(
-                  child: Text(
-                    label,
-                    overflow: TextOverflow.ellipsis,
-                    style: theme.textTheme.labelSmall?.copyWith(
-                        color: colour,
-                        fontWeight: reached ? FontWeight.w700 : null),
-                  ),
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        return Semantics(
+          label: trFor(
+            language,
+            reached ? 'throne_rung_reached' : 'throne_rung_open',
+          ).replaceAll('{rung}', label),
+          excludeSemantics: true,
+          child: ConstrainedBox(
+            constraints: BoxConstraints(maxWidth: constraints.maxWidth),
+            child: Container(
+              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(12),
+                border: Border.all(
+                  color: reached ? colour : theme.colorScheme.outlineVariant,
                 ),
-              ],
+              ),
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Icon(
+                    reached ? Icons.check_circle : Icons.circle_outlined,
+                    size: IconSize.s16,
+                    color: colour,
+                  ),
+                  const SizedBox(width: 4),
+                  Flexible(
+                    child: Text(
+                      label,
+                      overflow: TextOverflow.ellipsis,
+                      style: theme.textTheme.labelSmall?.copyWith(
+                        color: colour,
+                        fontWeight: reached ? FontWeight.w700 : null,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
             ),
           ),
-        ),
-      );
-    });
+        );
+      },
+    );
   }
 }
 
@@ -125,8 +136,10 @@ class ClimbRungs extends StatelessWidget {
           // banner raised), or the steps done; the lost clan has none.
           label: lost || climb.claimed || climb.crowned
               ? trFor(language, 'throne_rung_clan_plain')
-              : trFor(language, 'throne_rung_clan')
-                  .replaceAll('{n}', '${climb.steps}'),
+              : trFor(
+                  language,
+                  'throne_rung_clan',
+                ).replaceAll('{n}', '${climb.steps}'),
           reached: climb.claimed || climb.crowned,
           language: language,
         ),
@@ -174,7 +187,10 @@ class ClimbCard extends ConsumerWidget {
           ? RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(12),
               side: BorderSide(
-                  color: standingTierColor(StandingTier.sworn), width: 1.5))
+                color: standingTierColor(StandingTier.sworn),
+                width: 1.5,
+              ),
+            )
           : null,
       child: Padding(
         padding: const EdgeInsets.fromLTRB(10, 8, 10, 8),
@@ -183,26 +199,35 @@ class ClimbCard extends ConsumerWidget {
           children: [
             Row(
               children: [
-                Icon(crowned ? Icons.workspace_premium : Icons.stairs_outlined,
-                    size: IconSize.s16,
-                    color: crowned
-                        ? standingTierColor(StandingTier.sworn)
-                        : theme.colorScheme.onSurfaceVariant),
+                Icon(
+                  crowned ? Icons.workspace_premium : Icons.stairs_outlined,
+                  size: IconSize.s16,
+                  color: crowned
+                      ? standingTierColor(StandingTier.sworn)
+                      : theme.colorScheme.onSurfaceVariant,
+                ),
                 const SizedBox(width: 6),
                 Expanded(
-                  child: Text(trFor(lang, 'throne_climb_title'),
-                      style: theme.textTheme.titleSmall),
+                  child: Text(
+                    trFor(lang, 'throne_climb_title'),
+                    style: theme.textTheme.titleSmall,
+                  ),
                 ),
               ],
             ),
-            Text(trFor(lang, 'throne_climb_hint'),
-                style: theme.textTheme.bodySmall
-                    ?.copyWith(color: theme.colorScheme.onSurfaceVariant)),
+            Text(
+              trFor(lang, 'throne_climb_hint'),
+              style: theme.textTheme.bodySmall?.copyWith(
+                color: theme.colorScheme.onSurfaceVariant,
+              ),
+            ),
             const SizedBox(height: 6),
             if (!claimed && !crowned)
-              Text(trFor(lang, 'throne_no_claim'),
-                  key: const Key('climb_no_claim'),
-                  style: theme.textTheme.bodyMedium),
+              Text(
+                trFor(lang, 'throne_no_claim'),
+                key: const Key('climb_no_claim'),
+                style: theme.textTheme.bodyMedium,
+              ),
             if (focus.isNotEmpty) ...[
               Row(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -214,9 +239,10 @@ class ClimbCard extends ConsumerWidget {
                       headline,
                       key: const Key('climb_headline'),
                       style: theme.textTheme.bodyMedium?.copyWith(
-                          fontWeight: claimed || crowned
-                              ? FontWeight.w700
-                              : FontWeight.normal),
+                        fontWeight: claimed || crowned
+                            ? FontWeight.w700
+                            : FontWeight.normal,
+                      ),
                     ),
                   ),
                 ],
@@ -271,15 +297,21 @@ class HostSheet extends ConsumerWidget {
         ? hostFor(
             politics: politics,
             data: data,
-            signPatrons: session.signPatronsThisLife)
+            signPatrons: session.signPatronsThisLife,
+          )
         : politics.host;
-    final muted = theme.textTheme.bodySmall
-        ?.copyWith(color: theme.colorScheme.onSurfaceVariant);
+    final muted = theme.textTheme.bodySmall?.copyWith(
+      color: theme.colorScheme.onSurfaceVariant,
+    );
     Widget section(String text) => Padding(
           padding: const EdgeInsets.only(top: 12, bottom: 4),
-          child: Text(text.toUpperCase(),
-              style: theme.textTheme.labelSmall?.copyWith(
-                  color: theme.colorScheme.onSurfaceVariant, letterSpacing: 1)),
+          child: Text(
+            text.toUpperCase(),
+            style: theme.textTheme.labelSmall?.copyWith(
+              color: theme.colorScheme.onSurfaceVariant,
+              letterSpacing: 1,
+            ),
+          ),
         );
     String why(String id) {
       final faction = data.faction(id);
@@ -305,16 +337,23 @@ class HostSheet extends ConsumerWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(throneFactionName(id, data, lang),
-                      style: theme.textTheme.titleSmall),
+                  Text(
+                    throneFactionName(id, data, lang),
+                    style: theme.textTheme.titleSmall,
+                  ),
                   if (note != null) Text(note, style: muted),
                   if ((contingent?.lineFor(lang) ?? '').isNotEmpty)
-                    Text(contingent!.lineFor(lang),
-                        style: theme.textTheme.bodySmall
-                            ?.copyWith(fontStyle: FontStyle.italic)),
+                    Text(
+                      contingent!.lineFor(lang),
+                      style: theme.textTheme.bodySmall?.copyWith(
+                        fontStyle: FontStyle.italic,
+                      ),
+                    ),
                   for (final effect in contingent?.effects ?? const [])
-                    Text(signEffectText(effect, lang),
-                        style: theme.textTheme.bodySmall),
+                    Text(
+                      signEffectText(effect, lang),
+                      style: theme.textTheme.bodySmall,
+                    ),
                 ],
               ),
             ),
@@ -332,12 +371,16 @@ class HostSheet extends ConsumerWidget {
         children: [
           Row(
             children: [
-              Icon(Icons.groups_2_outlined,
-                  color: standingTierColor(StandingTier.sworn)),
+              Icon(
+                Icons.groups_2_outlined,
+                color: standingTierColor(StandingTier.sworn),
+              ),
               const SizedBox(width: 8),
               Expanded(
-                child: Text(trFor(lang, 'host_title'),
-                    style: theme.textTheme.titleMedium),
+                child: Text(
+                  trFor(lang, 'host_title'),
+                  style: theme.textTheme.titleMedium,
+                ),
               ),
               Text(
                 trFor(lang, 'host_size').replaceAll('{n}', '${host.size}'),
@@ -347,8 +390,10 @@ class HostSheet extends ConsumerWidget {
             ],
           ),
           const SizedBox(height: 4),
-          Text(trFor(lang, host.mustered ? 'host_intro' : 'host_preview_intro'),
-              style: muted),
+          Text(
+            trFor(lang, host.mustered ? 'host_intro' : 'host_preview_intro'),
+            style: muted,
+          ),
           if (host.mustered)
             Text(
               trFor(lang, 'host_mustered_on')
@@ -378,20 +423,28 @@ class HostSheet extends ConsumerWidget {
                   Chip(
                     key: Key('host_house_$id'),
                     visualDensity: VisualDensity.compact,
-                    avatar: Icon(Icons.shield_outlined,
-                        size: IconSize.s16,
-                        color: Color(data.subclan(id)?.color ?? 0xFFB08D3C)),
-                    label: Text(data.subclan(id)?.nameFor(lang) ?? id,
-                        style: theme.textTheme.labelSmall),
+                    avatar: Icon(
+                      Icons.shield_outlined,
+                      size: IconSize.s16,
+                      color: Color(data.subclan(id)?.color ?? 0xFFB08D3C),
+                    ),
+                    label: Text(
+                      data.subclan(id)?.nameFor(lang) ?? id,
+                      style: theme.textTheme.labelSmall,
+                    ),
                   ),
               ],
             ),
             const SizedBox(height: 4),
-            Text(trFor(lang, 'host_houses_line'),
-                style: theme.textTheme.bodySmall),
+            Text(
+              trFor(lang, 'host_houses_line'),
+              style: theme.textTheme.bodySmall,
+            ),
             for (final effect in houseEffects(host.houses.length))
-              Text(signEffectText(effect, lang),
-                  style: theme.textTheme.bodySmall),
+              Text(
+                signEffectText(effect, lang),
+                style: theme.textTheme.bodySmall,
+              ),
           ],
         ],
       ),

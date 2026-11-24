@@ -98,13 +98,17 @@ String statPatron(PoliticsState state) {
 /// [gains] (stat points by stat, and max health) in [language]:
 /// "+1 Strength, +1 Charisma, +5 max health".
 String _patronGainsText(
-    ({Map<String, int> stats, int maxHealth}) gains, AppLanguage language) {
+  ({Map<String, int> stats, int maxHealth}) gains,
+  AppLanguage language,
+) {
   return [
     for (final MapEntry(:key, :value) in gains.stats.entries)
       '+$value ${trFor(language, '${key}_label')}',
     if (gains.maxHealth > 0)
-      trFor(language, 'patron_max_health')
-          .replaceAll('{n}', '${gains.maxHealth}'),
+      trFor(
+        language,
+        'patron_max_health',
+      ).replaceAll('{n}', '${gains.maxHealth}'),
   ].join(', ');
 }
 
@@ -120,13 +124,14 @@ PoliticsState logPatronGains(
 }) {
   if (gains.stats.isEmpty && gains.maxHealth == 0) return state;
   return withStandingLogEntry(
-      state,
-      StandingLogEntry(
-        chapter: chapter,
-        day: day,
-        cause: patron.isEmpty ? 'patron' : 'patron:$patron',
-        factionId: patron,
-        note: _patronGainsText(gains, AppLanguage.en),
-        noteFr: _patronGainsText(gains, AppLanguage.fr),
-      ));
+    state,
+    StandingLogEntry(
+      chapter: chapter,
+      day: day,
+      cause: patron.isEmpty ? 'patron' : 'patron:$patron',
+      factionId: patron,
+      note: _patronGainsText(gains, AppLanguage.en),
+      noteFr: _patronGainsText(gains, AppLanguage.fr),
+    ),
+  );
 }

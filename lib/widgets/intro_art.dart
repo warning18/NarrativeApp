@@ -25,10 +25,11 @@ class _Grid {
   final Canvas canvas;
   final double u;
   void px(num x, num y, num w, num h, Color c) => canvas.drawRect(
-      Rect.fromLTWH(x * u, y * u, w * u, h * u),
-      Paint()
-        ..color = c
-        ..isAntiAlias = false);
+        Rect.fromLTWH(x * u, y * u, w * u, h * u),
+        Paint()
+          ..color = c
+          ..isAntiAlias = false,
+      );
 }
 
 double _h(int i, int salt) {
@@ -46,14 +47,14 @@ class IntroAsh extends CustomPainter {
     for (var i = 0; i < 70; i++) {
       final ember = _h(i, salt + 40) > 0.93;
       g.px(
-          _h(i, salt) * _cols,
-          _h(i, salt + 1) * _rows,
-          ember ? 1 : 0.9,
-          ember ? 1 : 0.9,
-          ember
-              ? const Color(0xFFF0B050)
-              : const Color(0xFFB8B2BC)
-                  .withValues(alpha: 0.35 + _h(i, 3) * 0.4));
+        _h(i, salt) * _cols,
+        _h(i, salt + 1) * _rows,
+        ember ? 1 : 0.9,
+        ember ? 1 : 0.9,
+        ember
+            ? const Color(0xFFF0B050)
+            : const Color(0xFFB8B2BC).withValues(alpha: 0.35 + _h(i, 3) * 0.4),
+      );
     }
   }
 
@@ -80,8 +81,12 @@ const List<String> introPlates = [
 /// A plate (180 x 320) covering the stage, nearest neighbour, [zoom] times
 /// larger about [anchor] (a slow push in or a pan down between beats).
 class IntroPlate extends StatelessWidget {
-  const IntroPlate(this.plate,
-      {super.key, this.zoom = 1, this.anchor = Alignment.center});
+  const IntroPlate(
+    this.plate, {
+    super.key,
+    this.zoom = 1,
+    this.anchor = Alignment.center,
+  });
 
   /// Index into [introPlates].
   final int plate;
@@ -112,12 +117,14 @@ class IntroFlash extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
     canvas.drawRect(
-        Offset.zero & size,
-        Paint()
-          ..shader = ui.Gradient.linear(
-              Offset.zero,
-              Offset(0, size.height * 0.5),
-              [const Color(0x99FFC070), const Color(0x00FFC070)]));
+      Offset.zero & size,
+      Paint()
+        ..shader = ui.Gradient.linear(
+          Offset.zero,
+          Offset(0, size.height * 0.5),
+          [const Color(0x99FFC070), const Color(0x00FFC070)],
+        ),
+    );
   }
 
   @override
@@ -130,13 +137,17 @@ Widget introDie(double size, {double? roll, int face = 6}) => Die3D(
       faces: [
         for (var i = 0; i < 6; i++)
           DieCubeFace(
-              glyph: Text('${i == 0 ? face : (face % 6) + 1 + i % 5}',
-                  style: TextStyle(
-                      fontFamily: InkFonts.system,
-                      fontSize: size * 0.45,
-                      fontWeight: FontWeight.w600,
-                      color: Palette.orange17)),
-              color: const Color(0xFFE8DDC0)),
+            glyph: Text(
+              '${i == 0 ? face : (face % 6) + 1 + i % 5}',
+              style: TextStyle(
+                fontFamily: InkFonts.system,
+                fontSize: size * 0.45,
+                fontWeight: FontWeight.w600,
+                color: Palette.orange17,
+              ),
+            ),
+            color: const Color(0xFFE8DDC0),
+          ),
       ],
       accent: _gold,
       size: size,
@@ -148,8 +159,12 @@ Widget introDie(double size, {double? roll, int face = 6}) => Die3D(
 
 /// A piece of the Shroud as an ember: dim cloth lit at its edge, with a glow.
 class IntroEmber extends StatelessWidget {
-  const IntroEmber(
-      {super.key, required this.id, required this.height, this.tilt = 0});
+  const IntroEmber({
+    super.key,
+    required this.id,
+    required this.height,
+    this.tilt = 0,
+  });
 
   final String id;
   final double height;
@@ -159,12 +174,15 @@ class IntroEmber extends StatelessWidget {
   Widget build(BuildContext context) => Transform.rotate(
         angle: tilt,
         child: DecoratedBox(
-          decoration: BoxDecoration(boxShadow: [
-            BoxShadow(
+          decoration: BoxDecoration(
+            boxShadow: [
+              BoxShadow(
                 color: _ember.withValues(alpha: 0.75),
                 blurRadius: 10,
-                spreadRadius: 1),
-          ]),
+                spreadRadius: 1,
+              ),
+            ],
+          ),
           child: SizedBox(
             width: height / 2,
             height: height,

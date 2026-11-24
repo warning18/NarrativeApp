@@ -92,7 +92,8 @@ class MercyDialog extends StatelessWidget {
                     ],
                   ),
                   border: Border(
-                      bottom: BorderSide(color: colour.withValues(alpha: 0.8))),
+                    bottom: BorderSide(color: colour.withValues(alpha: 0.8)),
+                  ),
                 ),
                 child: Row(
                   children: [
@@ -107,8 +108,11 @@ class MercyDialog extends StatelessWidget {
                       child: PixelIcon(
                         EnemyIcons.pathFor(enemyId),
                         size: IconSize.s64,
-                        fallback: Icon(Icons.person,
-                            size: IconSize.s48, color: colour),
+                        fallback: Icon(
+                          Icons.person,
+                          size: IconSize.s48,
+                          color: colour,
+                        ),
                       ),
                     ),
                     const SizedBox(width: 14),
@@ -117,18 +121,21 @@ class MercyDialog extends StatelessWidget {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           if (clanName.isNotEmpty)
-                            Text(clanName.toUpperCase(),
-                                style: theme.textTheme.labelSmall?.copyWith(
-                                    color:
-                                        Color.lerp(colour, Colors.white, 0.4),
-                                    fontFamily: InkFonts.system,
-                                    letterSpacing: 1)),
+                            Text(
+                              clanName.toUpperCase(),
+                              style: theme.textTheme.labelSmall?.copyWith(
+                                color: Color.lerp(colour, Colors.white, 0.4),
+                                fontFamily: InkFonts.system,
+                                letterSpacing: 1,
+                              ),
+                            ),
                           const SizedBox(height: 2),
                           Text(
                             t('mercy_title').replaceAll('{name}', name),
                             key: const Key('mercy_title'),
-                            style: theme.textTheme.titleMedium
-                                ?.copyWith(fontFamily: InkFonts.display),
+                            style: theme.textTheme.titleMedium?.copyWith(
+                              fontFamily: InkFonts.display,
+                            ),
                           ),
                         ],
                       ),
@@ -145,28 +152,37 @@ class MercyDialog extends StatelessWidget {
                   padding: const EdgeInsets.fromLTRB(16, 6, 16, 2),
                   child: Container(
                     key: Key('mercy_read_${read!.side}'),
-                    padding:
-                        const EdgeInsets.symmetric(horizontal: 10, vertical: 7),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 10,
+                      vertical: 7,
+                    ),
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(8),
                       color: readColour.withValues(alpha: 0.12),
-                      border:
-                          Border.all(color: readColour.withValues(alpha: 0.7)),
+                      border: Border.all(
+                        color: readColour.withValues(alpha: 0.7),
+                      ),
                     ),
                     child: Row(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Icon(Icons.visibility_outlined,
-                            size: IconSize.s16, color: readColour),
+                        Icon(
+                          Icons.visibility_outlined,
+                          size: IconSize.s16,
+                          color: readColour,
+                        ),
                         const SizedBox(width: 8),
                         Expanded(
                           child: Text(
                             t('mercy_read_${read!.side}') +
-                                t(read!.close
-                                    ? 'mercy_read_close'
-                                    : 'mercy_read_far'),
-                            style: theme.textTheme.bodySmall
-                                ?.copyWith(fontWeight: FontWeight.w600),
+                                t(
+                                  read!.close
+                                      ? 'mercy_read_close'
+                                      : 'mercy_read_far',
+                                ),
+                            style: theme.textTheme.bodySmall?.copyWith(
+                              fontWeight: FontWeight.w600,
+                            ),
                           ),
                         ),
                       ],
@@ -181,33 +197,37 @@ class MercyDialog extends StatelessWidget {
                     FilledButton(
                       key: const Key('mercy_spare'),
                       style: FilledButton.styleFrom(
-                          backgroundColor: ink.heal,
-                          foregroundColor: Colors.black,
-                          padding: const EdgeInsets.symmetric(vertical: 10)),
+                        backgroundColor: ink.heal,
+                        foregroundColor: Colors.black,
+                        padding: const EdgeInsets.symmetric(vertical: 10),
+                      ),
                       onPressed: () => onChoose(true),
                       child: _option(
-                          theme,
-                          t('mercy_spare_button'),
-                          t('mercy_spare_sub')
-                              .replaceAll('{clan}', clanName)
-                              .replaceAll('{n}', '+$spareStanding'),
-                          Colors.black),
+                        theme,
+                        t('mercy_spare_button'),
+                        t('mercy_spare_sub')
+                            .replaceAll('{clan}', clanName)
+                            .replaceAll('{n}', '+$spareStanding'),
+                        Colors.black,
+                      ),
                     ),
                     const SizedBox(height: 8),
                     OutlinedButton(
                       key: const Key('mercy_finish'),
                       style: OutlinedButton.styleFrom(
-                          foregroundColor: ink.blood,
-                          side: BorderSide(color: ink.blood),
-                          padding: const EdgeInsets.symmetric(vertical: 10)),
+                        foregroundColor: ink.blood,
+                        side: BorderSide(color: ink.blood),
+                        padding: const EdgeInsets.symmetric(vertical: 10),
+                      ),
                       onPressed: () => onChoose(false),
                       child: _option(
-                          theme,
-                          t('mercy_finish_button'),
-                          t('mercy_finish_sub')
-                              .replaceAll('{clan}', clanName)
-                              .replaceAll('{n}', '\u2212${-finishStanding}'),
-                          ink.blood),
+                        theme,
+                        t('mercy_finish_button'),
+                        t('mercy_finish_sub')
+                            .replaceAll('{clan}', clanName)
+                            .replaceAll('{n}', '\u2212${-finishStanding}'),
+                        ink.blood,
+                      ),
                     ),
                   ],
                 ),
@@ -223,13 +243,20 @@ class MercyDialog extends StatelessWidget {
       Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Text(title,
-              style: theme.textTheme.titleSmall
-                  ?.copyWith(fontWeight: FontWeight.w700, color: colour)),
-          Text(sub,
-              textAlign: TextAlign.center,
-              style: theme.textTheme.labelSmall
-                  ?.copyWith(color: colour.withValues(alpha: 0.85))),
+          Text(
+            title,
+            style: theme.textTheme.titleSmall?.copyWith(
+              fontWeight: FontWeight.w700,
+              color: colour,
+            ),
+          ),
+          Text(
+            sub,
+            textAlign: TextAlign.center,
+            style: theme.textTheme.labelSmall?.copyWith(
+              color: colour.withValues(alpha: 0.85),
+            ),
+          ),
         ],
       );
 }

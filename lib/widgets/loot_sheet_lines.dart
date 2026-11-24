@@ -27,8 +27,9 @@ List<LootSheetLine> lootSheetLines(
   for (final reward in rewards) {
     // The Knucklebone says its rolls a round: its copy in the bag is not a
     // second line.
-    final rolls =
-        reward.changes.any((c) => c.kind == LootChangeKind.rollsPerRound);
+    final rolls = reward.changes.any(
+      (c) => c.kind == LootChangeKind.rollsPerRound,
+    );
     for (final c in reward.changes) {
       if (c.kind == LootChangeKind.nothing) continue;
       if (rolls && c.kind == LootChangeKind.bagItem) continue;
@@ -39,10 +40,11 @@ List<LootSheetLine> lootSheetLines(
         merged[key] = c;
       } else {
         merged[key] = LootChange(
-            kind: c.kind,
-            subjectId: c.subjectId,
-            before: before.before,
-            after: c.after);
+          kind: c.kind,
+          subjectId: c.subjectId,
+          before: before.before,
+          after: c.after,
+        );
       }
     }
   }
@@ -94,16 +96,22 @@ LootSheetLine _line(
         label: item?['itemName']?.toString() ?? id,
         before: times(c.before),
         after: times(c.after),
-        icon: ItemPixelIcon(id, item?['itemType']?.toString(),
-            size: IconSize.s32),
+        icon: ItemPixelIcon(
+          id,
+          item?['itemType']?.toString(),
+          size: IconSize.s32,
+        ),
       );
     case LootChangeKind.rollsPerRound:
       return LootSheetLine(
         label: t('loot_line_rolls'),
         before: '${c.before}',
         after: '${c.after}',
-        icon: const ItemPixelIcon('charm_fourth_roll', 'Charm',
-            size: IconSize.s32),
+        icon: const ItemPixelIcon(
+          'charm_fourth_roll',
+          'Charm',
+          size: IconSize.s32,
+        ),
       );
     case LootChangeKind.health:
       return LootSheetLine(
@@ -119,8 +127,11 @@ LootSheetLine _line(
         label: '${t('loot_line_spell')} · ${spellName?.call(id) ?? id}',
         before: '—',
         after: t('loot_line_spell_learnt'),
-        icon:
-            Icon(Icons.auto_awesome, size: IconSize.s32, color: ink.voidColor),
+        icon: Icon(
+          Icons.auto_awesome,
+          size: IconSize.s32,
+          color: ink.voidColor,
+        ),
         tone: ink.voidColor,
       );
     case LootChangeKind.statPoints:

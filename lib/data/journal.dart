@@ -63,12 +63,14 @@ List<JournalEntry> storySoFar(
         }
       }
     }
-    entries.add(JournalEntry(
-      nodeId: node.id,
-      chapter: chapterOfNode(node.id),
-      opening: openingLine(stripStoryMarkup(node.descriptionFor(french))),
-      choiceText: taken?.textFor(french),
-    ));
+    entries.add(
+      JournalEntry(
+        nodeId: node.id,
+        chapter: chapterOfNode(node.id),
+        opening: openingLine(stripStoryMarkup(node.descriptionFor(french))),
+        choiceText: taken?.textFor(french),
+      ),
+    );
   }
   return entries;
 }

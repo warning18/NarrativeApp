@@ -65,7 +65,11 @@ class _GameDbListScreenState extends ConsumerState<GameDbListScreen> {
             onPressed: recordsAsync.value == null
                 ? null
                 : () => _showCollectionExportSheet(
-                    context, ref, schema, recordsAsync.value!),
+                      context,
+                      ref,
+                      schema,
+                      recordsAsync.value!,
+                    ),
           ),
           IconButton(
             icon: const Icon(Icons.file_upload_outlined),
@@ -132,11 +136,16 @@ class _GameDbListScreenState extends ConsumerState<GameDbListScreen> {
                         child: DropdownButton<String?>(
                           isExpanded: true,
                           value: _filterValue,
-                          hint: Text(filterField.label,
-                              maxLines: 1, overflow: TextOverflow.ellipsis),
+                          hint: Text(
+                            filterField.label,
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                          ),
                           items: [
                             const DropdownMenuItem<String?>(
-                                value: null, child: Text('All')),
+                              value: null,
+                              child: Text('All'),
+                            ),
                             ...filterField.enumOptions.map(
                               (option) => DropdownMenuItem<String?>(
                                 value: option,
@@ -210,9 +219,11 @@ class _GameDbListScreenState extends ConsumerState<GameDbListScreen> {
                             return ListTile(
                               key: Key('db_raw_$key'),
                               title: Text(key),
-                              subtitle: Text(value is List
-                                  ? 'JSON · ${value.length} entries'
-                                  : 'JSON'),
+                              subtitle: Text(
+                                value is List
+                                    ? 'JSON · ${value.length} entries'
+                                    : 'JSON',
+                              ),
                               trailing: const Icon(Icons.data_object),
                               onTap: () =>
                                   _editRawEntry(context, records, key, value),
@@ -274,19 +285,24 @@ class _GameDbListScreenState extends ConsumerState<GameDbListScreen> {
   }
 
   Future<void> _copyJson(
-      BuildContext context, Map<String, dynamic>? records) async {
+    BuildContext context,
+    Map<String, dynamic>? records,
+  ) async {
     if (records == null) return;
     await Clipboard.setData(
       ClipboardData(text: const JsonEncoder.withIndent('  ').convert(records)),
     );
     if (!context.mounted) return;
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text('JSON copied to clipboard.')),
-    );
+    ScaffoldMessenger.of(
+      context,
+    ).showSnackBar(const SnackBar(content: Text('JSON copied to clipboard.')));
   }
 
   Future<void> _confirmDelete(
-      BuildContext context, WidgetRef ref, String key) async {
+    BuildContext context,
+    WidgetRef ref,
+    String key,
+  ) async {
     final confirmed = await showDialog<bool>(
       context: context,
       builder: (dialogContext) => AlertDialog(
@@ -338,10 +354,15 @@ class _GameDbListScreenState extends ConsumerState<GameDbListScreen> {
       value is Map ? value.cast<String, dynamic>() : const {};
 
   /// Edits an entry that is no record ([value]: a list, a note) as JSON.
-  Future<void> _editRawEntry(BuildContext context, Map<String, dynamic> records,
-      String key, Object? value) async {
+  Future<void> _editRawEntry(
+    BuildContext context,
+    Map<String, dynamic> records,
+    String key,
+    Object? value,
+  ) async {
     final controller = TextEditingController(
-        text: const JsonEncoder.withIndent('  ').convert(value));
+      text: const JsonEncoder.withIndent('  ').convert(value),
+    );
     final edited = await showDialog<Object?>(
       context: context,
       builder: (dialogContext) => AlertDialog(
@@ -366,9 +387,9 @@ class _GameDbListScreenState extends ConsumerState<GameDbListScreen> {
               try {
                 Navigator.pop(dialogContext, [json.decode(controller.text)]);
               } catch (_) {
-                ScaffoldMessenger.of(dialogContext).showSnackBar(
-                  const SnackBar(content: Text('Invalid JSON.')),
-                );
+                ScaffoldMessenger.of(
+                  dialogContext,
+                ).showSnackBar(const SnackBar(content: Text('Invalid JSON.')));
               }
             },
             child: const Text('Save'),
@@ -378,9 +399,10 @@ class _GameDbListScreenState extends ConsumerState<GameDbListScreen> {
     );
     controller.dispose();
     if (edited is List && edited.isNotEmpty) {
-      await ref
-          .read(gameDbProvider(schema).notifier)
-          .replaceAll({...records, key: edited.first});
+      await ref.read(gameDbProvider(schema).notifier).replaceAll({
+        ...records,
+        key: edited.first,
+      });
     }
   }
 
@@ -415,9 +437,9 @@ class _GameDbListScreenState extends ConsumerState<GameDbListScreen> {
                     json.decode(controller.text) as Map<String, dynamic>;
                 Navigator.pop(dialogContext, decoded);
               } catch (_) {
-                ScaffoldMessenger.of(dialogContext).showSnackBar(
-                  const SnackBar(content: Text('Invalid JSON.')),
-                );
+                ScaffoldMessenger.of(
+                  dialogContext,
+                ).showSnackBar(const SnackBar(content: Text('Invalid JSON.')));
               }
             },
             child: const Text('Import'),
@@ -434,8 +456,12 @@ class _GameDbListScreenState extends ConsumerState<GameDbListScreen> {
 
 /// The ways to take one collection away: its records as JSON, as a CSV
 /// table, and its texts (English beside French) as CSV.
-Future<void> _showCollectionExportSheet(BuildContext context, WidgetRef ref,
-    DbSchema schema, Map<String, dynamic> records) {
+Future<void> _showCollectionExportSheet(
+  BuildContext context,
+  WidgetRef ref,
+  DbSchema schema,
+  Map<String, dynamic> records,
+) {
   return showDataExportSheet(
     context,
     ref,

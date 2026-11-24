@@ -12,12 +12,21 @@ part of '../story_player_screen.dart';
 /// with [world], v1.196, its politics gate fails and it shows its locked
 /// text).
 bool isStoryChoiceLocked(
-        StoryChoice choice, StoryData story, PlayerSession session,
-        {bool isExcursion = false,
-        CoastWorld? world,
-        Map<String, GeoPlace> shutWays = const {}}) =>
-    _isChoiceLocked(choice, story, session, isExcursion,
-        world: world, shutWays: shutWays);
+  StoryChoice choice,
+  StoryData story,
+  PlayerSession session, {
+  bool isExcursion = false,
+  CoastWorld? world,
+  Map<String, GeoPlace> shutWays = const {},
+}) =>
+    _isChoiceLocked(
+      choice,
+      story,
+      session,
+      isExcursion,
+      world: world,
+      shutWays: shutWays,
+    );
 
 /// Whether [node]'s page holds the party until one of its ways is taken
 /// (the scene lock, see scene_lock.dart), for the play state now: never on
@@ -25,8 +34,12 @@ bool isStoryChoiceLocked(
 /// ways a map view draws (the Journey's placements, once its map is
 /// built); without it, the same data the chart uses decides
 /// ([mapDrawsEveryWay]).
-bool storySceneLocked(WidgetRef ref, StoryNode node, StoryData story,
-    {bool Function(StoryChoice choice)? mapped}) {
+bool storySceneLocked(
+  WidgetRef ref,
+  StoryNode node,
+  StoryData story, {
+  bool Function(StoryChoice choice)? mapped,
+}) {
   final play = ref.watch(storyPlayProvider);
   if (play.isInExcursion) return false;
   final session = ref.watch(playerSessionProvider);
@@ -36,22 +49,33 @@ bool storySceneLocked(WidgetRef ref, StoryNode node, StoryData story,
   final mainQuestOpen =
       ref.watch(chapterProgressProvider)?.mainQuestOpen ?? true;
   final everyWayMapped = mapped == null &&
-      mapDrawsEveryWay(node,
-          history: play.history,
-          world: geography,
-          cityPlans: ref.watch(cityPlanRecordsProvider).value?.keys.toSet());
+      mapDrawsEveryWay(
+        node,
+        history: play.history,
+        world: geography,
+        cityPlans: ref.watch(cityPlanRecordsProvider).value?.keys.toSet(),
+      );
   return sceneLocked(
     ways: [
       for (final c in node.choices)
         if (!choiceHiddenFor(c, session, world))
           () {
-            final here =
-                choiceShape(node, c, story: story, geography: geography).here;
+            final here = choiceShape(
+              node,
+              c,
+              story: story,
+              geography: geography,
+            ).here;
             return (
               here: here,
               takeable: !(c.mainQuest && !mainQuestOpen) &&
-                  !isStoryChoiceLocked(c, story, session,
-                      world: world, shutWays: shutWays),
+                  !isStoryChoiceLocked(
+                    c,
+                    story,
+                    session,
+                    world: world,
+                    shutWays: shutWays,
+                  ),
               mapped: mapped?.call(c) ?? (everyWayMapped || !here),
             );
           }(),
@@ -98,9 +122,16 @@ bool _paymentShort(StoryChoice choice, int gold, bool isExcursion) =>
     (isExcursion || choice.pays) && !choice.affordableWith(gold);
 
 /// [choice], a payment a purse of [gold] can't make, as it reads shut.
-String _goldShortText(WidgetRef ref, StoryChoice choice, int gold,
-        {required bool french}) =>
-    tr(ref, 'choice_gold_short_lock')
+String _goldShortText(
+  WidgetRef ref,
+  StoryChoice choice,
+  int gold, {
+  required bool french,
+}) =>
+    tr(
+      ref,
+      'choice_gold_short_lock',
+    )
         .replaceAll('{choice}', choice.textFor(french))
         .replaceAll('{gold}', '$gold');
 
@@ -110,8 +141,11 @@ String _goldShortText(WidgetRef ref, StoryChoice choice, int gold,
 /// already sailed where the choice goes (see setOutOnMainQuest), and lands
 /// there with no road to walk.
 Future<void> takeStoryChoice(
-    BuildContext context, WidgetRef ref, StoryChoice choice,
-    {bool travelled = false}) async {
+  BuildContext context,
+  WidgetRef ref,
+  StoryChoice choice, {
+  bool travelled = false,
+}) async {
   final story = await ref.read(storyDataProvider.future);
   if (!context.mounted) return;
   final play = ref.read(storyPlayProvider);
@@ -247,9 +281,13 @@ Future<void> _selectChoice({
   // choice is offered: it says why and waits (see _isChoiceLocked).
   final purse = ref.read(playerSessionProvider);
   if (_paymentShort(choice, purse.gold, isExcursion)) {
-    unawaited(showImmersiveNotice(context,
+    unawaited(
+      showImmersiveNotice(
+        context,
         icon: Icons.lock_outline,
-        message: _goldShortText(ref, choice, purse.gold, french: french)));
+        message: _goldShortText(ref, choice, purse.gold, french: french),
+      ),
+    );
     return;
   }
   // The last fight's aftermath opened this scene, and a companion's remark
@@ -288,17 +326,18 @@ Future<void> _selectChoice({
   if (choice.hasAbilityCheck && !crossingRetry) {
     bool success;
     if (choice.hasSkillChallenge) {
-      final challengeResult =
-          await Navigator.of(context).push<bool>(MaterialPageRoute(
-        builder: (_) => SkillChallengeScreen(
-          promptText: choice.textFor(french),
-          ability: choice.checkAbility!,
-          dc: choice.checkDC ?? 10,
-          successesNeeded: choice.challengeSuccessesNeeded!,
-          maxFailures: choice.challengeMaxFailures!,
-          random: ref.read(storyCheckRandomProvider),
+      final challengeResult = await Navigator.of(context).push<bool>(
+        MaterialPageRoute(
+          builder: (_) => SkillChallengeScreen(
+            promptText: choice.textFor(french),
+            ability: choice.checkAbility!,
+            dc: choice.checkDC ?? 10,
+            successesNeeded: choice.challengeSuccessesNeeded!,
+            maxFailures: choice.challengeMaxFailures!,
+            random: ref.read(storyCheckRandomProvider),
+          ),
         ),
-      ));
+      );
       if (!context.mounted) return;
       success = challengeResult ?? false;
     } else {
@@ -332,10 +371,12 @@ Future<void> _selectChoice({
       isSneak: choice.avoidFightOnSuccess,
     )) {
       ref.read(pendingCheckOutcomeProvider.notifier).state =
-          checkOutcomeLineFor(choice.checkAbility!,
-              success: success,
-              french: french,
-              seed: Random().nextInt(1 << 20));
+          checkOutcomeLineFor(
+        choice.checkAbility!,
+        success: success,
+        french: french,
+        seed: Random().nextInt(1 << 20),
+      );
     }
     shown = !success
         ? RemarkKind.checkFailed
@@ -363,7 +404,8 @@ Future<void> _selectChoice({
     await ref.read(playerSessionProvider.notifier).resetSession();
     if (!context.mounted) return;
     final started = await Navigator.of(context).push<bool>(
-        creationToStoryRoute<bool>((_) => const RaceProfessionScreen()));
+      creationToStoryRoute<bool>((_) => const RaceProfessionScreen()),
+    );
     // Back on the story with a new character, the Story tab's tour plays
     // (see TutorialTrigger in StoryPlayerScreen).
     if (started != true) return;
@@ -385,9 +427,10 @@ Future<void> _selectChoice({
       final cleared = await Navigator.of(context).push<bool>(
         MaterialPageRoute(
           builder: (_) => ExpeditionScreen(
-              zoneId: choice.launchZoneId!,
-              zone: zone,
-              hostFight: choice.hostFight),
+            zoneId: choice.launchZoneId!,
+            zone: zone,
+            hostFight: choice.hostFight,
+          ),
         ),
       );
       ref.read(expeditionActiveProvider.notifier).state = false;
@@ -453,10 +496,15 @@ Future<void> _selectChoice({
         for (final entry in resolvedEnemies.entries)
           if (entry.value == null) entry.key,
       ];
-      FlutterError.reportError(FlutterErrorDetails(
-          exception: StateError('No enemy ${missing.join(', ')} for the '
-              'fight of "${choice.text}"'),
-          library: 'story'));
+      FlutterError.reportError(
+        FlutterErrorDetails(
+          exception: StateError(
+            'No enemy ${missing.join(', ')} for the '
+            'fight of "${choice.text}"',
+          ),
+          library: 'story',
+        ),
+      );
       return;
     }
   }
@@ -465,8 +513,12 @@ Future<void> _selectChoice({
   // story goes on; lost, to its defeat scene. Edit Mode sails past it.
   if (choice.triggersShipBattle && ref.read(appModeProvider) != AppMode.edit) {
     if (!context.mounted) return;
-    final won = await runStoryShipBattle(context, ref, choice.shipBattleId!,
-        chapter: ref.read(reachedChapterProvider));
+    final won = await runStoryShipBattle(
+      context,
+      ref,
+      choice.shipBattleId!,
+      chapter: ref.read(reachedChapterProvider),
+    );
     if (won != true) {
       if (won == false && choice.hasLossBranch && !isExcursion) {
         await _arriveAt(ref, story, choice.loseNextId!);
@@ -518,21 +570,30 @@ Future<void> _selectChoice({
     final strike = choice.flagsToAdd.contains(trainerStrikeFlag);
     if (strike || choice.flagsToAdd.contains(trainerGuardFlag)) {
       await ref.read(playerSessionProvider.notifier).learnTrainerSkill(
-          strike: strike,
-          trees: await loadedGameDb(ref, skillTreesSchema),
-          skills: await loadedGameDb(ref, skillsSchema));
+            strike: strike,
+            trees: await loadedGameDb(ref, skillTreesSchema),
+            skills: await loadedGameDb(ref, skillsSchema),
+          );
     }
     // What the scene put in the pack (see StoryChoice.grantItemId).
     if (choice.grantsItem && context.mounted) {
       final items = ref.read(localizedDbProvider(itemsSchema)).value;
       final item = items?[choice.grantItemId] as Map<String, dynamic>?;
       final lang = ref.read(appLanguageProvider);
-      final line = rewardItemLine(context,
-          itemId: choice.grantItemId!, item: item, lang: lang);
+      final line = rewardItemLine(
+        context,
+        itemId: choice.grantItemId!,
+        item: item,
+        lang: lang,
+      );
       await showRewardCard(
         context,
         itemFoundCard(
-            lang: lang, title: line.title, accent: line.accent, lines: [line]),
+          lang: lang,
+          title: line.title,
+          accent: line.accent,
+          lines: [line],
+        ),
       );
     }
     // And the materials it hands over (see StoryChoice.grantMaterials),
@@ -545,10 +606,12 @@ Future<void> _selectChoice({
             in choice.grantMaterials.entries)
           if (count > 0)
             () {
-              final line = rewardItemLine(context,
-                  itemId: id,
-                  item: items?[id] as Map<String, dynamic>?,
-                  lang: lang);
+              final line = rewardItemLine(
+                context,
+                itemId: id,
+                item: items?[id] as Map<String, dynamic>?,
+                lang: lang,
+              );
               return RewardLine(
                 key: line.key,
                 icon: line.icon,
@@ -565,10 +628,11 @@ Future<void> _selectChoice({
         await showRewardCard(
           context,
           itemFoundCard(
-              lang: lang,
-              title: tr(ref, 'reward_materials_title'),
-              accent: lines.first.accent,
-              lines: lines),
+            lang: lang,
+            title: tr(ref, 'reward_materials_title'),
+            accent: lines.first.accent,
+            lines: lines,
+          ),
         );
       }
     }
@@ -589,16 +653,24 @@ Future<void> _selectChoice({
   if (choice.hasPolitics && !skipRewardEffects && !isExcursion) {
     final index = _storyChoiceIndex(story, currentNodeId, choice);
     if (index >= 0) {
-      await applyStoryPoliticsNow(ref, choice.politics!,
-          nodeId: currentNodeId, key: choicePoliticsKey(currentNodeId, index));
+      await applyStoryPoliticsNow(
+        ref,
+        choice.politics!,
+        nodeId: currentNodeId,
+        key: choicePoliticsKey(currentNodeId, index),
+      );
     }
   } else if (choice.hasPolitics &&
       isExcursion &&
       (isClanCrisisNode(detourNodeId) || isSiegeNode(detourNodeId))) {
     // Your clan's crisis or fall, or a district's siege, met on the road
     // (clan_crisis.dart, district_attacks.dart).
-    await applyStoryPoliticsNow(ref, choice.politics!,
-        nodeId: detourNodeId!, key: '');
+    await applyStoryPoliticsNow(
+      ref,
+      choice.politics!,
+      nodeId: detourNodeId!,
+      key: '',
+    );
   }
   if (choice.hasUnlocks) {
     final enemyIds = resolvedEnemyIds.toSet();
@@ -631,8 +703,11 @@ Future<void> _selectChoice({
           as Map<String, dynamic>?;
       await ref
           .read(playerSessionProvider.notifier)
-          .noteQuestOfferedBeforeFight(newQuestId, killsBeforeFight,
-              quest: questRecord);
+          .noteQuestOfferedBeforeFight(
+            newQuestId,
+            killsBeforeFight,
+            quest: questRecord,
+          );
     }
     if (isExcursion && newShopId.isNotEmpty) {
       // A stall met on the road is only there while the player stands at
@@ -641,8 +716,11 @@ Future<void> _selectChoice({
       final shop = (await loadedGameDb(ref, shopsSchema))[newShopId]
           as Map<String, dynamic>?;
       if (shop != null && context.mounted) {
-        await Navigator.of(context).push(MaterialPageRoute(
-            builder: (_) => ShopDetailScreen(shopId: newShopId, shop: shop)));
+        await Navigator.of(context).push(
+          MaterialPageRoute(
+            builder: (_) => ShopDetailScreen(shopId: newShopId, shop: shop),
+          ),
+        );
         if (!context.mounted) return;
       }
     } else if (newShopId.isNotEmpty || newQuestId.isNotEmpty) {
@@ -679,8 +757,13 @@ Future<void> _selectChoice({
   }
 
   if (isExcursion) {
-    await _noteDetourBeat(ref, detourNodeId, choice,
-        passed: checkPassed, french: french);
+    await _noteDetourBeat(
+      ref,
+      detourNodeId,
+      choice,
+      passed: checkPassed,
+      french: french,
+    );
     playNotifier.advanceExcursion(slippedPast: fightAvoided);
     // Back on the story's road: a plain scene there is read through too.
     if (!ref.read(storyPlayProvider).isInExcursion) {
@@ -696,20 +779,25 @@ Future<void> _selectChoice({
 
   // A way back to the camp goes to the camp the party stands for (see
   // camp_errands.dart).
-  final nextId = storyChoiceTarget(choice,
-      campNodeId: ref.read(currentCampNodeIdProvider));
+  final nextId = storyChoiceTarget(
+    choice,
+    campNodeId: ref.read(currentCampNodeIdProvider),
+  );
   // Landed where the choice goes: the voyage was the way there, with its
   // days and its sea, and no road after it.
   if (travelled) {
     // The landing rolls as a road arriving there would (v1.361): what
     // waits off the quay, the chapter's landmark among it.
-    final started = await startRoadEncounter(ref, story,
-        fromNodeId: currentNodeId,
-        toNodeId: nextId,
-        historyLength: ref.read(storyPlayProvider).history.length,
-        travels: true,
-        origin: choice.text,
-        originFr: choice.textFr);
+    final started = await startRoadEncounter(
+      ref,
+      story,
+      fromNodeId: currentNodeId,
+      toNodeId: nextId,
+      historyLength: ref.read(storyPlayProvider).history.length,
+      travels: true,
+      origin: choice.text,
+      originFr: choice.textFr,
+    );
     if (!context.mounted || started) return;
     await _arriveAt(ref, story, nextId);
     return;
@@ -728,28 +816,40 @@ Future<void> _selectChoice({
   // A walk between places takes the watches of where it goes (a far place
   // can take a day, see GeoPlace.watches).
   final watches = choice.travels
-      ? world.watchesToNode(story.nodeFor(choice.travelPlaceId ?? ''),
-          fallback: walkWatches)
+      ? world.watchesToNode(
+          story.nodeFor(choice.travelPlaceId ?? ''),
+          fallback: walkWatches,
+        )
       : 1;
   if (walks) {
     await walkRoadStep(ref, watches: watches);
     // What waits on this road (see road_events.dart), known before the
     // party set out, takes the place of a detour.
-    final event = await roadEventOn(ref, story,
-        fromNodeId: currentNodeId,
-        toNodeId: nextId,
-        historyLength: historyBefore);
+    final event = await roadEventOn(
+      ref,
+      story,
+      fromNodeId: currentNodeId,
+      toNodeId: nextId,
+      historyLength: historyBefore,
+    );
     if (!context.mounted) return;
     if (event != null) {
-      await startRoadEncounter(ref, story,
-          fromNodeId: currentNodeId,
-          toNodeId: nextId,
-          historyLength: historyBefore,
-          travels: choice.travels,
-          watches: watches,
-          taken: true);
-      playNotifier.startExcursion(event, nextId,
-          origin: choice.text, originFr: choice.textFr);
+      await startRoadEncounter(
+        ref,
+        story,
+        fromNodeId: currentNodeId,
+        toNodeId: nextId,
+        historyLength: historyBefore,
+        travels: choice.travels,
+        watches: watches,
+        taken: true,
+      );
+      playNotifier.startExcursion(
+        event,
+        nextId,
+        origin: choice.text,
+        originFr: choice.textFr,
+      );
       return;
     }
   }
@@ -757,14 +857,17 @@ Future<void> _selectChoice({
   // What else the road holds (see startRoadEncounter): a hunter, a
   // familiar face or a detour, on a change of place at rest.
   if (!choice.opensCharacterCreation) {
-    final started = await startRoadEncounter(ref, story,
-        fromNodeId: currentNodeId,
-        toNodeId: nextId,
-        historyLength: historyBefore,
-        travels: choice.travels,
-        watches: walks ? watches : 1,
-        origin: choice.text,
-        originFr: choice.textFr);
+    final started = await startRoadEncounter(
+      ref,
+      story,
+      fromNodeId: currentNodeId,
+      toNodeId: nextId,
+      historyLength: historyBefore,
+      travels: choice.travels,
+      watches: walks ? watches : 1,
+      origin: choice.text,
+      originFr: choice.textFr,
+    );
     if (!context.mounted) return;
     if (started) return;
   }
@@ -774,7 +877,10 @@ Future<void> _selectChoice({
 /// Remembers [echoes] as read once they are on screen (see
 /// PlayerSessionNotifier.noteEchoes), for the journal's What changed.
 void noteShownEchoes(
-    WidgetRef ref, PlayerSession session, List<SceneEcho> echoes) {
+  WidgetRef ref,
+  PlayerSession session,
+  List<SceneEcho> echoes,
+) {
   final fresh = [
     for (final echo in echoes)
       if (!session.seenEchoKeys.contains(echo.key)) echo.key,
@@ -790,8 +896,13 @@ void noteShownEchoes(
 /// (and its roll's), in place of a roll's plain line. Going in past the
 /// first beat takes the scene's watches (a check or a fight in it: one),
 /// and says so. Nothing for a detour of today's chain.
-Future<void> _noteDetourBeat(WidgetRef ref, String? nodeId, StoryChoice choice,
-    {required bool? passed, required bool french}) async {
+Future<void> _noteDetourBeat(
+  WidgetRef ref,
+  String? nodeId,
+  StoryChoice choice, {
+  required bool? passed,
+  required bool french,
+}) async {
   final play = ref.read(storyPlayProvider.notifier).scenePlay;
   final outcomes = play?.outcomes[nodeId];
   if (play == null || outcomes == null) return;
@@ -854,10 +965,12 @@ Future<List<StoryNode>?> roadEventOn(
     chapter: chapter,
     enemyPool: championPoolFor(enemies, chapter, biome: biome?.id),
     seed: stableHash('$fromNodeId>$toNodeId#$historyLength'),
-    hazard: roadHazardFor(biome,
-        fromNodeId: fromNodeId,
-        toNodeId: toNodeId,
-        historyLength: historyLength),
+    hazard: roadHazardFor(
+      biome,
+      fromNodeId: fromNodeId,
+      toNodeId: toNodeId,
+      historyLength: historyLength,
+    ),
   );
 }
 
@@ -868,7 +981,9 @@ Future<List<StoryNode>?> roadEventOn(
 Future<void> walkRoadStep(WidgetRef ref, {int watches = 1}) async {
   if (ref.read(appModeProvider) == AppMode.edit) return;
   final step = await ref.read(playerSessionProvider.notifier).takeRoadStep(
-      chapter: ref.read(reachedChapterProvider), watches: watches);
+        chapter: ref.read(reachedChapterProvider),
+        watches: watches,
+      );
   if (!step.counted) return;
   final note = [
     if (step.dayEnded)
@@ -915,24 +1030,33 @@ Future<void> _readThrough(WidgetRef ref, StoryData story) async {
     // It stops where the stop changes (a building, a district: see
     // choice_flow.dart).
     final stops = ref.read(storyStopsProvider);
-    final way = passThroughChoiceOf(node, session.flags,
-        hidden: (c) => choiceHiddenFor(c, session, gateWorld),
-        travels: (from, to) =>
-            stops?.changesStop(from, to) ??
-            world.travelsBetween(story, from, to));
+    final way = passThroughChoiceOf(
+      node,
+      session.flags,
+      hidden: (c) => choiceHiddenFor(c, session, gateWorld),
+      travels: (from, to) =>
+          stops?.changesStop(from, to) ?? world.travelsBetween(story, from, to),
+    );
     // A way on the party cannot take yet stays a stop, with its reason.
     if (way == null ||
         isStoryChoiceLocked(way, story, session, world: gateWorld)) {
       break;
     }
-    final parts = composeNarrationParts(node, session, story,
-        french: french, revisit: isRevisit(ref.read(storyPlayProvider)));
-    preludes.add(ScenePrelude(
-      nodeId: node.id,
-      body: parts.text,
-      echoes: parts.echoes,
-      speaker: speakerLabelFor(node.speaker, french: french),
-    ));
+    final parts = composeNarrationParts(
+      node,
+      session,
+      story,
+      french: french,
+      revisit: isRevisit(ref.read(storyPlayProvider)),
+    );
+    preludes.add(
+      ScenePrelude(
+        nodeId: node.id,
+        body: parts.text,
+        echoes: parts.echoes,
+        speaker: speakerLabelFor(node.speaker, french: french),
+      ),
+    );
     if (way.flagsToAdd.isNotEmpty) {
       await ref
           .read(playerSessionProvider.notifier)
@@ -941,8 +1065,12 @@ Future<void> _readThrough(WidgetRef ref, StoryData story) async {
     if (way.hasPolitics) {
       final index = _storyChoiceIndex(story, node.id, way);
       if (index >= 0) {
-        await applyStoryPoliticsNow(ref, way.politics!,
-            nodeId: node.id, key: choicePoliticsKey(node.id, index));
+        await applyStoryPoliticsNow(
+          ref,
+          way.politics!,
+          nodeId: node.id,
+          key: choicePoliticsKey(node.id, index),
+        );
       }
     }
     play.choose(way.nextId);
@@ -963,8 +1091,10 @@ List<String> chapterCardNews(List<CoastNews> news, AppLanguage lang) {
   if (lines.length <= _chapterCardNewsShown) return lines;
   return [
     ...lines.take(_chapterCardNewsShown),
-    trFor(lang, 'coast_news_more')
-        .replaceAll('{n}', '${lines.length - _chapterCardNewsShown}'),
+    trFor(
+      lang,
+      'coast_news_more',
+    ).replaceAll('{n}', '${lines.length - _chapterCardNewsShown}'),
   ];
 }
 
@@ -977,10 +1107,12 @@ int _storyChoiceIndex(StoryData story, String nodeId, StoryChoice choice) {
   final choices = story.nodeFor(nodeId)?.choices ?? const <StoryChoice>[];
   final same = choices.indexWhere((c) => identical(c, choice));
   if (same >= 0) return same;
-  return choices.indexWhere((c) =>
-      c.nextId == choice.nextId &&
-      c.text == choice.text &&
-      c.textFr == choice.textFr);
+  return choices.indexWhere(
+    (c) =>
+        c.nextId == choice.nextId &&
+        c.text == choice.text &&
+        c.textFr == choice.textFr,
+  );
 }
 
 /// The siege to meet on the road from [fromNodeId] to [toNodeId]
@@ -996,10 +1128,15 @@ Future<DistrictSiege?> _siegeOnRoad(
 }) async {
   final session = ref.read(playerSessionProvider.notifier);
   await session.settleExpiredSieges(
-      data: ref.read(clanDataProvider), geography: geo, chapter: chapter);
-  return siegeToMeet(ref.read(playerSessionProvider).politics,
-      fromCity: geo.locationOfNode(story.nodeFor(fromNodeId))?.id ?? '',
-      toCity: geo.locationOfNode(story.nodeFor(toNodeId))?.id ?? '');
+    data: ref.read(clanDataProvider),
+    geography: geo,
+    chapter: chapter,
+  );
+  return siegeToMeet(
+    ref.read(playerSessionProvider).politics,
+    fromCity: geo.locationOfNode(story.nodeFor(fromNodeId))?.id ?? '',
+    toCity: geo.locationOfNode(story.nodeFor(toNodeId))?.id ?? '',
+  );
 }
 
 /// What the road from [fromNodeId] to [toNodeId] holds (see
@@ -1033,12 +1170,15 @@ Future<bool> startRoadEncounter(
   if (ref.read(appModeProvider) == AppMode.edit) return false;
   final chapter = ref.read(reachedChapterProvider);
   final geo = await loadGeography(ref);
-  final road = detourRoadBetween(story, geo,
-      fromNodeId: fromNodeId,
-      toNodeId: toNodeId,
-      chapter: chapter,
-      travels: travels,
-      watches: watches);
+  final road = detourRoadBetween(
+    story,
+    geo,
+    fromNodeId: fromNodeId,
+    toNodeId: toNodeId,
+    chapter: chapter,
+    travels: travels,
+    watches: watches,
+  );
   if (road == null) return false;
   final scenes = await loadDetourScenes(ref);
   final enemies = await loadedGameDb(ref, enemiesSchema);
@@ -1051,10 +1191,11 @@ Future<bool> startRoadEncounter(
   // meets none on the first road after a cold start.
   List<StoryNode>? alignmentEvent;
   final landmarkDue = landmarkDueOn(
-      pacing: session.detourPacing,
-      road: road,
-      scenes: scenes,
-      flags: session.flags.toSet());
+    pacing: session.detourPacing,
+    road: road,
+    scenes: scenes,
+    flags: session.flags.toSet(),
+  );
   if (!taken &&
       !landmarkDue &&
       road.atRest &&
@@ -1069,42 +1210,54 @@ Future<bool> startRoadEncounter(
     // A district of the town under siege (district_attacks.dart): the
     // sieges run out are settled first, then the one of the town the road
     // comes from or goes to is met, before your clan's crisis.
-    final siege = await _siegeOnRoad(ref, story, geo,
-        fromNodeId: fromNodeId, toNodeId: toNodeId, chapter: chapter);
+    final siege = await _siegeOnRoad(
+      ref,
+      story,
+      geo,
+      fromNodeId: fromNodeId,
+      toNodeId: toNodeId,
+      chapter: chapter,
+    );
     if (siege != null) {
       final node = buildSiegeNode(
-          ref.read(playerSessionProvider).politics, siege,
-          data: ref.read(clanDataProvider),
-          geography: geo,
-          enemies: enemies,
-          chapter: chapter,
-          random: dice());
-      if (node != null) alignmentEvent ??= [node];
-    }
-    // Your clan's seat threatened, or fallen (clan_crisis.dart): before
-    // any hunter.
-    alignmentEvent ??= clanCrisisRoadEvent(session.politics,
+        ref.read(playerSessionProvider).politics,
+        siege,
         data: ref.read(clanDataProvider),
         geography: geo,
         enemies: enemies,
         chapter: chapter,
-        gold: session.gold,
-        materials: {
-          for (final id in session.inventoryItemIds)
-            if (id.startsWith('material_')) id: 0,
-        }..updateAll(
-            (id, _) => session.inventoryItemIds.where((i) => i == id).length),
-        random: dice());
+        random: dice(),
+      );
+      if (node != null) alignmentEvent ??= [node];
+    }
+    // Your clan's seat threatened, or fallen (clan_crisis.dart): before
+    // any hunter.
+    alignmentEvent ??= clanCrisisRoadEvent(
+      session.politics,
+      data: ref.read(clanDataProvider),
+      geography: geo,
+      enemies: enemies,
+      chapter: chapter,
+      gold: session.gold,
+      materials: {
+        for (final id in session.inventoryItemIds)
+          if (id.startsWith('material_')) id: 0,
+      }..updateAll(
+          (id, _) => session.inventoryItemIds.where((i) => i == id).length,
+        ),
+      random: dice(),
+    );
     // Your nemesis's trail, then its champion, its quest under way
     // (nemesis.dart).
     alignmentEvent ??= maybeChampionRoad(
-        politics: session.politics,
-        activeQuestIds: session.activeQuestIds,
-        enemies: enemies,
-        chapter: chapter,
-        random: dice(),
-        flags: session.flags,
-        quests: await loadedGameDb(ref, questsSchema));
+      politics: session.politics,
+      activeQuestIds: session.activeQuestIds,
+      enemies: enemies,
+      chapter: chapter,
+      random: dice(),
+      flags: session.flags,
+      quests: await loadedGameDb(ref, questsSchema),
+    );
     alignmentEvent ??= maybeAlignmentEvent(
       alignmentScore: session.alignmentScore,
       activeQuestIds: session.activeQuestIds,
@@ -1129,11 +1282,13 @@ Future<bool> startRoadEncounter(
       warded: wardedClansOf(session.rollBans),
     );
     await sessionNotifier.noteAlignmentRoll(
-        ambushed:
-            alignmentEvent != null && isHunterAmbushChain(alignmentEvent));
+      ambushed: alignmentEvent != null && isHunterAmbushChain(alignmentEvent),
+    );
     // The Warding Cairn's wards count down (road_wards.dart).
     await sessionNotifier.tickRoadWards(
-        data: ref.read(clanDataProvider), chapter: chapter);
+      data: ref.read(clanDataProvider),
+      chapter: chapter,
+    );
   }
   // Someone met on an earlier road, when one may come.
   List<StoryNode>? familiarFace;
@@ -1143,10 +1298,11 @@ Future<bool> startRoadEncounter(
     scenes: scenes,
     flags: session.flags.toSet(),
     random: detourRandomFor(
-        fromNodeId: fromNodeId,
-        toNodeId: toNodeId,
-        historyLength: historyLength,
-        salt: session.runSeed),
+      fromNodeId: fromNodeId,
+      toNodeId: toNodeId,
+      historyLength: historyLength,
+      salt: session.runSeed,
+    ),
     taken: taken || alignmentEvent != null,
     familiar: () {
       familiarFace = maybeRecurringEncounter(
@@ -1154,15 +1310,22 @@ Future<bool> startRoadEncounter(
         chapter: chapter,
         random: dice(),
         enemyPool: SubNodeEngine.filterEnemyPool(
-            enemies: enemies, unlockedEnemyIds: const [], chapter: chapter),
+          enemies: enemies,
+          unlockedEnemyIds: const [],
+          chapter: chapter,
+        ),
       );
       return familiarFace != null;
     },
   );
   await sessionNotifier.setDetourPacing(turn.next);
   if (taken) return false;
-  void start(List<StoryNode> chain) => playNotifier
-      .startExcursion(chain, toNodeId, origin: origin, originFr: originFr);
+  void start(List<StoryNode> chain) => playNotifier.startExcursion(
+        chain,
+        toNodeId,
+        origin: origin,
+        originFr: originFr,
+      );
   switch (turn.kind) {
     case RoadTurnKind.quiet:
     case RoadTurnKind.owed:
@@ -1180,8 +1343,12 @@ Future<bool> startRoadEncounter(
   }
   final scene = turn.scene;
   if (scene != null) {
-    final play = buildDetourScene(scene,
-        chapter: chapter, random: dice(), enemies: enemies);
+    final play = buildDetourScene(
+      scene,
+      chapter: chapter,
+      random: dice(),
+      enemies: enemies,
+    );
     playNotifier.startScene(play, toNodeId, origin: origin, originFr: originFr);
     return play.nodes.isNotEmpty;
   }
@@ -1239,8 +1406,11 @@ Future<List<String>> _resolveEnemyIds(WidgetRef ref, List<String> ids) async {
   final companions =
       ref.read(gameDbProvider(companionsSchema)).value ?? const {};
   // Never Vica, who cannot be taken (story_companions.dart).
-  final allyId =
-      storyLossOf('*', active: session.activeAllyIds, companions: companions);
+  final allyId = storyLossOf(
+    '*',
+    active: session.activeAllyIds,
+    companions: companions,
+  );
   if (allyId != null) {
     notifier.loseAlly(allyId, companions: companions);
     await notifier.applyChoiceEffects(flagsToAdd: const ['companion_turned']);
@@ -1267,8 +1437,13 @@ void _noteRemark(
   List<String> deedKeys = const [],
   RemarkKind? shown,
 }) {
-  ref.read(pendingRemarksProvider.notifier).state = speakUpAbout(ref,
-      reactions: reactions, deed: deed, deedKeys: deedKeys, action: shown);
+  ref.read(pendingRemarksProvider.notifier).state = speakUpAbout(
+    ref,
+    reactions: reactions,
+    deed: deed,
+    deedKeys: deedKeys,
+    action: shown,
+  );
 }
 
 /// Writes the fight that just ended into the next scene's opening line
@@ -1290,8 +1465,12 @@ void _noteFightAftermath(WidgetRef ref, bool french) {
 /// player's flags earned and the sentence for their race or profession,
 /// with every `{name}`/`{race}`/`{profession}` token filled in. Exposed
 /// so the narration tests can read a scene the way the screen does.
-String composeNarration(StoryNode node, PlayerSession session,
-        {required bool french, bool revisit = false}) =>
+String composeNarration(
+  StoryNode node,
+  PlayerSession session, {
+  required bool french,
+  bool revisit = false,
+}) =>
     _composeNarration(node, session, french: french, revisit: revisit);
 
 /// A node's text as [composeNarration] gives it, less the lines earned by
@@ -1299,12 +1478,14 @@ String composeNarration(StoryNode node, PlayerSession session,
 /// with the choice that earned it (see echoes.dart). [pages] is the same
 /// text cut where the writer turns the page (narration_pages.dart, v1.750);
 /// [text] is it whole, the page-break markers removed.
-({
-  String text,
-  List<String> pages,
-  List<SceneEcho> echoes
-}) composeNarrationParts(StoryNode node, PlayerSession session, StoryData story,
-    {required bool french, bool revisit = false}) {
+({String text, List<String> pages, List<SceneEcho> echoes})
+    composeNarrationParts(
+  StoryNode node,
+  PlayerSession session,
+  StoryData story, {
+  required bool french,
+  bool revisit = false,
+}) {
   // The Journey asks for the same scene two or three times a build (its
   // page count, the panel, the opening): the last answer is kept while
   // the node, the session and the story are the same objects (each is
@@ -1319,8 +1500,14 @@ String composeNarration(StoryNode node, PlayerSession session,
     return last.parts;
   }
   final echoes = <SceneEcho>[];
-  final raw = _composeNarration(node, session,
-      french: french, story: story, echoesOut: echoes, revisit: revisit);
+  final raw = _composeNarration(
+    node,
+    session,
+    french: french,
+    story: story,
+    echoesOut: echoes,
+    revisit: revisit,
+  );
   final pages = splitNarrationPages(raw);
   // A scene with no page break reads exactly as before.
   final text = raw.contains(pageBreakMarker) ? pages.join('\n\n') : raw;
@@ -1349,17 +1536,22 @@ String composeNarration(StoryNode node, PlayerSession session,
   ({String text, List<String> pages, List<SceneEcho> echoes}) parts,
 })? _lastParts;
 
-String _composeNarration(StoryNode node, PlayerSession session,
-    {required bool french,
-    StoryData? story,
-    List<SceneEcho>? echoesOut,
-    bool revisit = false}) {
-  final buffer = StringBuffer(withAllyAcknowledgment(
-    node.id,
-    node.descriptionFor(french, revisit: revisit),
-    activeAllyIds: session.activeAllyIds,
-    french: french,
-  ));
+String _composeNarration(
+  StoryNode node,
+  PlayerSession session, {
+  required bool french,
+  StoryData? story,
+  List<SceneEcho>? echoesOut,
+  bool revisit = false,
+}) {
+  final buffer = StringBuffer(
+    withAllyAcknowledgment(
+      node.id,
+      node.descriptionFor(french, revisit: revisit),
+      activeAllyIds: session.activeAllyIds,
+      french: french,
+    ),
+  );
   final progress = node.hubProgressLineFor(session.flags, french);
   final echoed = <FlagCallback>[];
   final callbacks = <String>[];
@@ -1402,12 +1594,14 @@ String _composeNarration(StoryNode node, PlayerSession session,
         french: french,
       );
   for (final callback in echoed) {
-    echoesOut!.add(SceneEcho(
-      nodeId: node.id,
-      flag: callback.flag,
-      line: personal(callback.line.textFor(french)),
-      cause: personal(echoCause(story!, callback.flag)!.textFor(french)),
-    ));
+    echoesOut!.add(
+      SceneEcho(
+        nodeId: node.id,
+        flag: callback.flag,
+        line: personal(callback.line.textFor(french)),
+        cause: personal(echoCause(story!, callback.flag)!.textFor(french)),
+      ),
+    );
   }
   return personal(buffer.toString());
 }

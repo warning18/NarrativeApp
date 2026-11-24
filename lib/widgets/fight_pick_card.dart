@@ -11,10 +11,7 @@ import 'pixel_glyph.dart';
 
 /// One companion who could fight.
 class FightPickOption {
-  const FightPickOption({
-    required this.id,
-    required this.name,
-  });
+  const FightPickOption({required this.id, required this.name});
 
   final String id;
   final String name;
@@ -69,22 +66,28 @@ class FightPickCard extends StatelessWidget {
               trailing: const PixelGlyph(PixelGlyphs.lock, size: IconSize.s16),
             ),
             for (final o in options)
-              Builder(builder: (context) {
-                final on = picked.contains(o.id);
-                final disabled = !on && full;
-                return CheckboxListTile(
-                  key: Key('fight_pick_${o.id}'),
-                  dense: true,
-                  contentPadding: EdgeInsets.zero,
-                  controlAffinity: ListTileControlAffinity.trailing,
-                  secondary: HeadAvatar(
-                      id: o.id, name: o.name, size: 40, dim: disabled),
-                  title: Text(o.name),
-                  value: on,
-                  onChanged:
-                      disabled ? null : (v) => onToggle(o.id, v ?? false),
-                );
-              }),
+              Builder(
+                builder: (context) {
+                  final on = picked.contains(o.id);
+                  final disabled = !on && full;
+                  return CheckboxListTile(
+                    key: Key('fight_pick_${o.id}'),
+                    dense: true,
+                    contentPadding: EdgeInsets.zero,
+                    controlAffinity: ListTileControlAffinity.trailing,
+                    secondary: HeadAvatar(
+                      id: o.id,
+                      name: o.name,
+                      size: 40,
+                      dim: disabled,
+                    ),
+                    title: Text(o.name),
+                    value: on,
+                    onChanged:
+                        disabled ? null : (v) => onToggle(o.id, v ?? false),
+                  );
+                },
+              ),
             SwitchListTile(
               key: const Key('fight_pick_keep'),
               dense: true,

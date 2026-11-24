@@ -40,12 +40,15 @@ enum _NodeKind {
   shop,
   quest,
   companionQuest,
-  generic
+  generic,
 }
 
 class _NodeStyle {
-  const _NodeStyle(
-      {required this.color, required this.icon, required this.radius});
+  const _NodeStyle({
+    required this.color,
+    required this.icon,
+    required this.radius,
+  });
   final Color color;
   final IconData icon;
   final double radius;
@@ -152,10 +155,7 @@ Map<_NodeKind, _NodeStyle> _styles(ColorScheme colorScheme) => {
 /// enforces "5 nodes per column, chapters as separate bands," a constraint
 /// no general-purpose layout algorithm takes as an input.
 class _ChapterGridAlgorithm extends Algorithm {
-  _ChapterGridAlgorithm({
-    required this.slots,
-    required this.bandLayout,
-  });
+  _ChapterGridAlgorithm({required this.slots, required this.bandLayout});
 
   final Map<String, GridSlot> slots;
   final ChapterBandLayout bandLayout;
@@ -295,7 +295,9 @@ class _GraphViewState extends ConsumerState<_GraphView> {
                 GraphView(
                   graph: graph,
                   algorithm: _ChapterGridAlgorithm(
-                      slots: slots, bandLayout: bandLayout),
+                    slots: slots,
+                    bandLayout: bandLayout,
+                  ),
                   paint: Paint()
                     ..color = colorScheme.outline
                     ..strokeWidth = 1.5
@@ -325,20 +327,25 @@ class _GraphViewState extends ConsumerState<_GraphView> {
                     if (isShadowed) {
                       return _NodeTapArea(
                         onTap: () => ScaffoldMessenger.of(context).showSnackBar(
-                            SnackBar(
-                                content:
-                                    Text(tr(ref, 'node_not_yet_discovered')))),
+                          SnackBar(
+                            content: Text(tr(ref, 'node_not_yet_discovered')),
+                          ),
+                        ),
                         onDoubleTap: null,
                         child: Container(
                           width: _nodeBoxWidth,
                           padding: const EdgeInsets.symmetric(
-                              horizontal: 10, vertical: 8),
+                            horizontal: 10,
+                            vertical: 8,
+                          ),
                           decoration: BoxDecoration(
                             color: colorScheme.surfaceContainerHighest
                                 .withValues(alpha: 0.6),
                             borderRadius: BorderRadius.circular(8),
                             border: Border.all(
-                                color: colorScheme.outlineVariant, width: 1),
+                              color: colorScheme.outlineVariant,
+                              width: 1,
+                            ),
                           ),
                           child: Row(
                             mainAxisSize: MainAxisSize.min,
@@ -346,8 +353,9 @@ class _GraphViewState extends ConsumerState<_GraphView> {
                               Icon(
                                 Icons.nights_stay_outlined,
                                 size: IconSize.s16,
-                                color: colorScheme.onSurfaceVariant
-                                    .withValues(alpha: 0.7),
+                                color: colorScheme.onSurfaceVariant.withValues(
+                                  alpha: 0.7,
+                                ),
                               ),
                               const SizedBox(width: 4),
                               Expanded(
@@ -371,7 +379,9 @@ class _GraphViewState extends ConsumerState<_GraphView> {
                     final container = Container(
                       width: _nodeBoxWidth,
                       padding: const EdgeInsets.symmetric(
-                          horizontal: 10, vertical: 8),
+                        horizontal: 10,
+                        vertical: 8,
+                      ),
                       decoration: BoxDecoration(
                         color: isCurrent ? colorScheme.primary : style.color,
                         borderRadius: BorderRadius.circular(style.radius),
@@ -435,8 +445,9 @@ class _GraphViewState extends ConsumerState<_GraphView> {
 
                     if (hidden) {
                       return Opacity(
-                          opacity: 0.18,
-                          child: IgnorePointer(child: withCommentBadge));
+                        opacity: 0.18,
+                        child: IgnorePointer(child: withCommentBadge),
+                      );
                     }
 
                     // A plain GestureDetector's tap recognizer competes with
@@ -460,7 +471,8 @@ class _GraphViewState extends ConsumerState<_GraphView> {
                               _leaveMap(context, ref);
                               messenger.showSnackBar(
                                 SnackBar(
-                                    content: Text(tr(ref, 'node_activated'))),
+                                  content: Text(tr(ref, 'node_activated')),
+                                ),
                               );
                             },
                       child: withCommentBadge,
@@ -521,7 +533,9 @@ class _GraphViewState extends ConsumerState<_GraphView> {
 /// rather than adding a Future-returning method to that shared provider
 /// just for this one caller.
 Future<Map<String, dynamic>> _awaitGameDb(
-    WidgetRef ref, DbSchema schema) async {
+  WidgetRef ref,
+  DbSchema schema,
+) async {
   for (var i = 0; i < 150; i++) {
     final value = ref.read(localizedDbProvider(schema)).value;
     if (value != null) return value;
@@ -540,29 +554,31 @@ Future<void> _runAutoplay(
   final lang = ref.read(appLanguageProvider);
   String t(String key) => trFor(lang, key);
 
-  unawaited(showDialog<void>(
-    context: context,
-    barrierDismissible: false,
-    builder: (_) => Center(
-      child: Card(
-        child: Padding(
-          padding: const EdgeInsets.all(24),
-          child: Row(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              const SizedBox(
-                width: 20,
-                height: 20,
-                child: CircularProgressIndicator(strokeWidth: 2),
-              ),
-              const SizedBox(width: 16),
-              Text(t('autoplay_running')),
-            ],
+  unawaited(
+    showDialog<void>(
+      context: context,
+      barrierDismissible: false,
+      builder: (_) => Center(
+        child: Card(
+          child: Padding(
+            padding: const EdgeInsets.all(24),
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                const SizedBox(
+                  width: 20,
+                  height: 20,
+                  child: CircularProgressIndicator(strokeWidth: 2),
+                ),
+                const SizedBox(width: 16),
+                Text(t('autoplay_running')),
+              ],
+            ),
           ),
         ),
       ),
     ),
-  ));
+  );
 
   final story = await ref.read(storyDataProvider.future);
   final dice = await _awaitGameDb(ref, diceSchema);
@@ -622,8 +638,9 @@ class StoryMapPage extends ConsumerWidget {
 /// Back to the story after a jump or an autoplay from the map: the Story
 /// tab, and the map page closed when the map is one.
 void _leaveMap(BuildContext context, WidgetRef ref) {
-  ref.read(homeTabIndexProvider.notifier).state =
-      storyTabIndex(ref.read(appModeProvider));
+  ref.read(homeTabIndexProvider.notifier).state = storyTabIndex(
+    ref.read(appModeProvider),
+  );
   if (context.findAncestorWidgetOfExactType<StoryMapPage>() != null) {
     Navigator.of(context).pop();
   }
@@ -634,8 +651,11 @@ void _leaveMap(BuildContext context, WidgetRef ref) {
 /// [InteractiveViewer] for the gesture arena — one-finger drag-to-pan
 /// always starts immediately, even when the drag begins on top of a node.
 class _NodeTapArea extends StatefulWidget {
-  const _NodeTapArea(
-      {required this.onTap, this.onDoubleTap, required this.child});
+  const _NodeTapArea({
+    required this.onTap,
+    this.onDoubleTap,
+    required this.child,
+  });
 
   final VoidCallback onTap;
   final VoidCallback? onDoubleTap;
@@ -770,25 +790,31 @@ class _ExportNodesButton extends ConsumerWidget {
       await Clipboard.setData(ClipboardData(text: text));
       if (!context.mounted) return;
       Navigator.of(context).pop();
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(tr(ref, 'export_nodes_copied'))),
-      );
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text(tr(ref, 'export_nodes_copied'))));
     }
 
     Future<void> save(bool full) async {
       final text = await build(full);
       if (!context.mounted) return;
       Navigator.of(context).pop();
-      await exportTextToFile(context, ref, text,
-          full ? 'story_nodes_full.json' : 'story_nodes_light.json');
+      await exportTextToFile(
+        context,
+        ref,
+        text,
+        full ? 'story_nodes_full.json' : 'story_nodes_light.json',
+      );
     }
 
     Widget option(bool full) => ListTile(
           leading: Icon(full ? Icons.data_object : Icons.notes),
           title:
               Text(tr(ref, full ? 'export_nodes_full' : 'export_nodes_light')),
-          subtitle: Text(tr(ref,
-              full ? 'export_nodes_full_desc' : 'export_nodes_light_desc')),
+          subtitle: Text(
+            tr(ref,
+                full ? 'export_nodes_full_desc' : 'export_nodes_light_desc'),
+          ),
           trailing: Row(
             mainAxisSize: MainAxisSize.min,
             children: [
@@ -865,15 +891,20 @@ class _Legend extends ConsumerWidget {
           children: [
             Row(
               children: [
-                Text(tr(ref, 'legend_title'),
-                    style: Theme.of(context).textTheme.labelLarge),
+                Text(
+                  tr(ref, 'legend_title'),
+                  style: Theme.of(context).textTheme.labelLarge,
+                ),
                 const SizedBox(width: 12),
                 InkWell(
                   onTap: onClose,
                   child: Tooltip(
                     message: tr(ref, 'close_legend'),
-                    child: Icon(Icons.close,
-                        size: IconSize.s16, color: colorScheme.outline),
+                    child: Icon(
+                      Icons.close,
+                      size: IconSize.s16,
+                      color: colorScheme.outline,
+                    ),
                   ),
                 ),
               ],
@@ -895,8 +926,9 @@ class _Legend extends ConsumerWidget {
                           height: 14,
                           decoration: BoxDecoration(
                             color: entry.value.color,
-                            borderRadius:
-                                BorderRadius.circular(entry.value.radius / 2),
+                            borderRadius: BorderRadius.circular(
+                              entry.value.radius / 2,
+                            ),
                           ),
                         ),
                         const SizedBox(width: 6),
@@ -929,8 +961,10 @@ class _Legend extends ConsumerWidget {
                   ),
                 ),
                 const SizedBox(width: 6),
-                Text(tr(ref, 'main_story_beat'),
-                    style: Theme.of(context).textTheme.bodySmall),
+                Text(
+                  tr(ref, 'main_story_beat'),
+                  style: Theme.of(context).textTheme.bodySmall,
+                ),
               ],
             ),
             if (showUndiscovered) ...[
@@ -942,18 +976,23 @@ class _Legend extends ConsumerWidget {
                     width: 14,
                     height: 14,
                     decoration: BoxDecoration(
-                      color: colorScheme.surfaceContainerHighest
-                          .withValues(alpha: 0.6),
+                      color: colorScheme.surfaceContainerHighest.withValues(
+                        alpha: 0.6,
+                      ),
                       borderRadius: BorderRadius.circular(4),
                       border: Border.all(color: colorScheme.outlineVariant),
                     ),
-                    child: Icon(Icons.nights_stay_outlined,
-                        size: IconSize.inline,
-                        color: colorScheme.onSurfaceVariant),
+                    child: Icon(
+                      Icons.nights_stay_outlined,
+                      size: IconSize.inline,
+                      color: colorScheme.onSurfaceVariant,
+                    ),
                   ),
                   const SizedBox(width: 6),
-                  Text(tr(ref, 'undiscovered_node_legend'),
-                      style: Theme.of(context).textTheme.bodySmall),
+                  Text(
+                    tr(ref, 'undiscovered_node_legend'),
+                    style: Theme.of(context).textTheme.bodySmall,
+                  ),
                 ],
               ),
             ],
@@ -1009,8 +1048,9 @@ Future<void> _showNodeInfo(
                     const SizedBox(width: 8),
                     if (isMainBeatNode(node.id))
                       Chip(
-                          label: Text(t('main_beat_chip')),
-                          visualDensity: VisualDensity.compact),
+                        label: Text(t('main_beat_chip')),
+                        visualDensity: VisualDensity.compact,
+                      ),
                   ],
                 ),
                 if (node.hasRequirements) ...[
@@ -1050,8 +1090,10 @@ Future<void> _showNodeInfo(
                   ),
                 ],
                 const SizedBox(height: 16),
-                Text(t('choices_label'),
-                    style: Theme.of(innerContext).textTheme.titleMedium),
+                Text(
+                  t('choices_label'),
+                  style: Theme.of(innerContext).textTheme.titleMedium,
+                ),
                 const SizedBox(height: 8),
                 if (node.choices.isEmpty)
                   Text(t('no_choices_ending'))

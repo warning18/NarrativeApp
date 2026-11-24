@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+
 import '../widgets/help_hint.dart';
 
 import '../data/camp_state.dart';
@@ -46,9 +47,10 @@ class PortScreen extends ConsumerWidget {
     return TutorialTrigger(
       topic: TutorialTopic.town,
       child: Scaffold(
-        appBar: AppBar(title: Text(title), actions: const [
-          TourInfoButton(topic: TutorialTopic.town),
-        ]),
+        appBar: AppBar(
+          title: Text(title),
+          actions: const [TourInfoButton(topic: TutorialTopic.town)],
+        ),
         body: ListView(
           padding: const EdgeInsets.all(16),
           children: [PortServices(portId: portId)],
@@ -77,10 +79,7 @@ class PortServices extends ConsumerWidget {
         ref.watch(combatActiveProvider) || ref.watch(expeditionActiveProvider);
 
     if (ports == null || shops == null || zones == null) {
-      return const Padding(
-        padding: EdgeInsets.all(24),
-        child: InkLoading(),
-      );
+      return const Padding(padding: EdgeInsets.all(24), child: InkLoading());
     }
     final port = ports[portId] as Map<String, dynamic>?;
     if (port == null) {
@@ -117,24 +116,31 @@ class PortServices extends ConsumerWidget {
           child: OutlinedButton.icon(
             onPressed: restBlocked
                 ? null
-                : () => restTheNight(context, ref,
-                    message: tr(ref, 'party_rested_message')),
+                : () => restTheNight(
+                      context,
+                      ref,
+                      message: tr(ref, 'party_rested_message'),
+                    ),
             icon: const Icon(Icons.local_fire_department_outlined),
             label: Text(tr(ref, 'rest_button')),
           ),
         ),
         if (shopIds.isNotEmpty) ...[
           const SizedBox(height: 16),
-          Text(tr(ref, 'port_shops_section'),
-              style: Theme.of(context).textTheme.titleMedium),
+          Text(
+            tr(ref, 'port_shops_section'),
+            style: Theme.of(context).textTheme.titleMedium,
+          ),
           const SizedBox(height: 8),
           for (final shopId in shopIds)
             Card(
               child: ListTile(
                 leading: ShopPixelIcon(shopId),
-                title: Text((shops[shopId] as Map<String, dynamic>)['shopName']
-                        ?.toString() ??
-                    shopId),
+                title: Text(
+                  (shops[shopId] as Map<String, dynamic>)['shopName']
+                          ?.toString() ??
+                      shopId,
+                ),
                 subtitle: Text(
                   (shops[shopId] as Map<String, dynamic>)['shopDescription']
                           ?.toString() ??
@@ -154,14 +160,18 @@ class PortServices extends ConsumerWidget {
         ],
         if (placesHere.isNotEmpty) ...[
           const SizedBox(height: 16),
-          Text(tr(ref, 'places_section'),
-              style: Theme.of(context).textTheme.titleMedium),
+          Text(
+            tr(ref, 'places_section'),
+            style: Theme.of(context).textTheme.titleMedium,
+          ),
           const SizedBox(height: 8),
           for (final place in placesHere) PlaceCard(place: place),
         ],
         const Divider(height: 32),
-        Text(tr(ref, 'zones_section'),
-            style: Theme.of(context).textTheme.titleMedium),
+        Text(
+          tr(ref, 'zones_section'),
+          style: Theme.of(context).textTheme.titleMedium,
+        ),
         const SizedBox(height: 8),
         if (zoneIds.isEmpty)
           Padding(
@@ -177,7 +187,11 @@ class PortServices extends ConsumerWidget {
               enemies: enemies,
               enabled: !restBlocked,
               onBegin: () => launchExpedition(
-                  context, ref, zoneId, zones[zoneId] as Map<String, dynamic>),
+                context,
+                ref,
+                zoneId,
+                zones[zoneId] as Map<String, dynamic>,
+              ),
             ),
       ],
     );
@@ -186,8 +200,12 @@ class PortServices extends ConsumerWidget {
 
 /// Opens the expedition into [zoneId], marking one under way while it runs
 /// (so rest and voyages wait for it).
-Future<void> launchExpedition(BuildContext context, WidgetRef ref,
-    String zoneId, Map<String, dynamic> zone) async {
+Future<void> launchExpedition(
+  BuildContext context,
+  WidgetRef ref,
+  String zoneId,
+  Map<String, dynamic> zone,
+) async {
   final expedition = ref.read(expeditionActiveProvider.notifier);
   expedition.state = true;
   await Navigator.of(context).push(

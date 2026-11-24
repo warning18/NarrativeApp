@@ -59,13 +59,14 @@ class PixelChipBorder extends OutlinedBorder {
   void paint(Canvas canvas, Rect rect, {TextDirection? textDirection}) {
     if (side.style == BorderStyle.none || side.width == 0) return;
     canvas.drawPath(
-        _path(rect.deflate(side.width / 2)),
-        Paint()
-          ..style = PaintingStyle.stroke
-          ..strokeWidth = side.width
-          ..strokeJoin = StrokeJoin.miter
-          ..color = side.color
-          ..isAntiAlias = false);
+      _path(rect.deflate(side.width / 2)),
+      Paint()
+        ..style = PaintingStyle.stroke
+        ..strokeWidth = side.width
+        ..strokeJoin = StrokeJoin.miter
+        ..color = side.color
+        ..isAntiAlias = false,
+    );
   }
 
   @override

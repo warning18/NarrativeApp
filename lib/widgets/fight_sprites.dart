@@ -78,10 +78,7 @@ const FightSpriteSet roninSprite = FightSpriteSet(
 /// people wears the calling's (an elf or a voidkin has no figure of their
 /// own yet, so they wear the human's). A hero whose raceId and professionId
 /// match nothing keeps the ronin.
-const Map<String, String> _heroByRace = {
-  'dwarf': 'dwarf',
-  'orc': 'orc',
-};
+const Map<String, String> _heroByRace = {'dwarf': 'dwarf', 'orc': 'orc'};
 
 const Map<String, String> _heroByCalling = {
   'warrior': 'warrior',
@@ -212,8 +209,10 @@ const Map<String, String> _roadEventEnemies = {
 /// table above), with [sprite] null for a placeholder figure when that enemy
 /// has no art yet. Null when the event has no figure at all (a storm, a dry
 /// well, the water seller: nothing in the data says who they are).
-({FightSpriteSet? sprite})? roadEncounterFigure(String eventId,
-    {String? fightEnemyId}) {
+({FightSpriteSet? sprite})? roadEncounterFigure(
+  String eventId, {
+  String? fightEnemyId,
+}) {
   final enemy = fightEnemyId ?? _roadEventEnemies[eventId];
   if (enemy == null) return null;
   return (sprite: enemyFightSprite(enemy));
@@ -251,8 +250,9 @@ abstract final class FightSpriteImages {
       _loading[set.id] ??= () async {
         try {
           final data = await (bundle ?? rootBundle).load(set.idleAsset);
-          final codec =
-              await ui.instantiateImageCodec(data.buffer.asUint8List());
+          final codec = await ui.instantiateImageCodec(
+            data.buffer.asUint8List(),
+          );
           _idle[set.id] = (await codec.getNextFrame()).image;
           loaded.value++;
         } catch (_) {
@@ -307,7 +307,10 @@ abstract final class FightSpriteImages {
     if (creature) {
       final side = bw > bh ? bw : bh;
       rect = ui.Rect.fromCenter(
-          center: ui.Offset(cx, minY + bh / 2), width: side, height: side);
+        center: ui.Offset(cx, minY + bh / 2),
+        width: side,
+        height: side,
+      );
     } else {
       final side = bw > bh * 0.5 ? bw : bh * 0.5;
       rect = ui.Rect.fromLTWH(cx - side / 2, minY.toDouble() - 1, side, side);

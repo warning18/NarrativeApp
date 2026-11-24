@@ -35,14 +35,24 @@ JourneyGlyph journeyGlyphOf(StoryChoice choice, JourneyStepKind kind) {
       return const JourneyGlyph(Icons.flag_outlined, JourneyIdle.sway);
     case JourneyStepKind.expedition:
       final zone = choice.launchZoneId;
-      if (_has(
-          zone, ['cave', 'mine', 'crypt', 'undercroft', 'cellar', 'deep'])) {
+      if (_has(zone, [
+        'cave',
+        'mine',
+        'crypt',
+        'undercroft',
+        'cellar',
+        'deep',
+      ])) {
         return const JourneyGlyph(
-            Icons.landscape_outlined, JourneyIdle.breathe);
+          Icons.landscape_outlined,
+          JourneyIdle.breathe,
+        );
       }
       if (_has(zone, ['ruin', 'temple', 'spire', 'tower', 'vault'])) {
         return const JourneyGlyph(
-            Icons.account_balance_outlined, JourneyIdle.glint);
+          Icons.account_balance_outlined,
+          JourneyIdle.glint,
+        );
       }
       if (_has(zone, ['forest', 'wood', 'grove', 'marsh', 'bog'])) {
         return const JourneyGlyph(Icons.park_outlined, JourneyIdle.sway);
@@ -57,7 +67,9 @@ JourneyGlyph journeyGlyphOf(StoryChoice choice, JourneyStepKind kind) {
     case JourneyStepKind.fight:
       if ((choice.shipBattleId ?? '').isNotEmpty) {
         return const JourneyGlyph(
-            Icons.directions_boat_filled_outlined, JourneyIdle.bob);
+          Icons.directions_boat_filled_outlined,
+          JourneyIdle.bob,
+        );
       }
       final enemy = choice.triggerEnemyId ??
           (choice.triggerEnemyIds.isEmpty
@@ -76,7 +88,7 @@ JourneyGlyph journeyGlyphOf(StoryChoice choice, JourneyStepKind kind) {
         'gull',
         'jaw',
         'drake',
-        'wyrm'
+        'wyrm',
       ])) {
         return const JourneyGlyph(Icons.pets, JourneyIdle.breathe);
       }
@@ -89,7 +101,7 @@ JourneyGlyph journeyGlyphOf(StoryChoice choice, JourneyStepKind kind) {
         'tear',
         'hollow',
         'wisp',
-        'lich'
+        'lich',
       ])) {
         return const JourneyGlyph(Icons.blur_on, JourneyIdle.flicker);
       }
@@ -101,7 +113,7 @@ JourneyGlyph journeyGlyphOf(StoryChoice choice, JourneyStepKind kind) {
         'captain',
         'soldier',
         'warden',
-        'sentinel'
+        'sentinel',
       ])) {
         return const JourneyGlyph(Icons.shield_outlined, JourneyIdle.glint);
       }
@@ -113,36 +125,66 @@ JourneyGlyph journeyGlyphOf(StoryChoice choice, JourneyStepKind kind) {
       return const JourneyGlyph(Icons.casino, JourneyIdle.tilt);
     case JourneyStepKind.check:
       return switch (choice.checkAbility) {
-        'strength' =>
-          const JourneyGlyph(Icons.fitness_center, JourneyIdle.pulse),
-        'dexterity' =>
-          const JourneyGlyph(Icons.sports_gymnastics, JourneyIdle.sway),
-        'constitution' =>
-          const JourneyGlyph(Icons.favorite_border, JourneyIdle.pulse),
-        'intelligence' =>
-          const JourneyGlyph(Icons.psychology_outlined, JourneyIdle.glint),
-        'wisdom' =>
-          const JourneyGlyph(Icons.visibility_outlined, JourneyIdle.breathe),
+        'strength' => const JourneyGlyph(
+            Icons.fitness_center,
+            JourneyIdle.pulse,
+          ),
+        'dexterity' => const JourneyGlyph(
+            Icons.sports_gymnastics,
+            JourneyIdle.sway,
+          ),
+        'constitution' => const JourneyGlyph(
+            Icons.favorite_border,
+            JourneyIdle.pulse,
+          ),
+        'intelligence' => const JourneyGlyph(
+            Icons.psychology_outlined,
+            JourneyIdle.glint,
+          ),
+        'wisdom' => const JourneyGlyph(
+            Icons.visibility_outlined,
+            JourneyIdle.breathe,
+          ),
         'charisma' => const JourneyGlyph(
-            Icons.record_voice_over_outlined, JourneyIdle.sway),
+            Icons.record_voice_over_outlined,
+            JourneyIdle.sway,
+          ),
         'perception' => const JourneyGlyph(Icons.search, JourneyIdle.tilt),
         _ => const JourneyGlyph(Icons.casino_outlined, JourneyIdle.tilt),
       };
     case JourneyStepKind.shop:
       final shop = choice.unlockShopId;
-      if (_has(
-          shop, ['forge', 'smith', 'armor', 'armour', 'weapon', 'hammer'])) {
+      if (_has(shop, [
+        'forge',
+        'smith',
+        'armor',
+        'armour',
+        'weapon',
+        'hammer',
+      ])) {
         return const JourneyGlyph(Icons.hardware_outlined, JourneyIdle.glint);
       }
       if (_has(shop, ['apothec', 'herb', 'potion', 'alchem', 'remed'])) {
         return const JourneyGlyph(Icons.science_outlined, JourneyIdle.bob);
       }
-      if (_has(
-          shop, ['arcane', 'bazaar', 'bazar', 'magic', 'rune', 'occult'])) {
+      if (_has(shop, [
+        'arcane',
+        'bazaar',
+        'bazar',
+        'magic',
+        'rune',
+        'occult',
+      ])) {
         return const JourneyGlyph(Icons.auto_awesome, JourneyIdle.glint);
       }
-      if (_has(
-          shop, ['ship', 'chandler', 'harbor', 'harbour', 'dock', 'wharf'])) {
+      if (_has(shop, [
+        'ship',
+        'chandler',
+        'harbor',
+        'harbour',
+        'dock',
+        'wharf',
+      ])) {
         return const JourneyGlyph(Icons.anchor, JourneyIdle.sway);
       }
       return const JourneyGlyph(Icons.storefront_outlined, JourneyIdle.sway);
@@ -153,7 +195,9 @@ JourneyGlyph journeyGlyphOf(StoryChoice choice, JourneyStepKind kind) {
     case JourneyStepKind.rest:
       return _has(choice.nextId, ['camp', 'fire'])
           ? const JourneyGlyph(
-              Icons.local_fire_department_outlined, JourneyIdle.flicker)
+              Icons.local_fire_department_outlined,
+              JourneyIdle.flicker,
+            )
           : const JourneyGlyph(Icons.bedtime_outlined, JourneyIdle.breathe);
     case JourneyStepKind.road:
       return const JourneyGlyph(Icons.signpost_outlined, JourneyIdle.sway);
@@ -176,9 +220,10 @@ Widget journeyIdleGlyph({
   switch (glyph.idle) {
     case JourneyIdle.sway:
       return Transform.rotate(
-          angle: wave(3) * 0.14,
-          alignment: Alignment.bottomCenter,
-          child: icon());
+        angle: wave(3) * 0.14,
+        alignment: Alignment.bottomCenter,
+        child: icon(),
+      );
     case JourneyIdle.tilt:
       // A slow swing, then a pause.
       final k = ((t + phase) % 6) / 6;
@@ -188,16 +233,20 @@ Widget journeyIdleGlyph({
       return Transform.scale(scale: 1 + wave(2) * 0.08, child: icon());
     case JourneyIdle.breathe:
       return Opacity(
-          opacity: 0.8 + 0.2 * (0.5 + 0.5 * wave(4)),
-          child: Transform.scale(scale: 1 + wave(4) * 0.05, child: icon()));
+        opacity: 0.8 + 0.2 * (0.5 + 0.5 * wave(4)),
+        child: Transform.scale(scale: 1 + wave(4) * 0.05, child: icon()),
+      );
     case JourneyIdle.bob:
       return Transform.translate(
-          offset: Offset(0, wave(3) * 1.6), child: icon());
+        offset: Offset(0, wave(3) * 1.6),
+        child: icon(),
+      );
     case JourneyIdle.flicker:
       final f = 0.5 * wave(1.5) + 0.3 * wave(1, 0.3) + 0.2 * wave(0.75, 0.6);
       return Opacity(
-          opacity: 0.78 + 0.22 * (0.5 + 0.5 * f),
-          child: Transform.scale(scale: 1 + f * 0.07, child: icon()));
+        opacity: 0.78 + 0.22 * (0.5 + 0.5 * f),
+        child: Transform.scale(scale: 1 + f * 0.07, child: icon()),
+      );
     case JourneyIdle.glint:
       // Bright for half a second every four.
       final k = ((t + phase) % 4) / 4;

@@ -53,7 +53,8 @@ extension _FightView on _FightScreenState {
     return Stack(
       children: [
         Positioned.fill(
-            child: IgnorePointer(child: _buildBackdrop(veil: 0.55))),
+          child: IgnorePointer(child: _buildBackdrop(veil: 0.55)),
+        ),
         Positioned.fill(child: _buildWeatherOverlay()),
         _SetupBody(
           figures: FightFigures(
@@ -68,9 +69,10 @@ extension _FightView on _FightScreenState {
               // first time this save meets each (fight_tips.dart).
               FightTipsCard(
                 shown: fightTipIdsFor(
-                    goal: _goal.kind,
-                    doctrineFactionId: _doctrine?.factionId,
-                    condition: condition),
+                  goal: _goal.kind,
+                  doctrineFactionId: _doctrine?.factionId,
+                  condition: condition,
+                ),
                 holdRounds: _goal.rounds,
               ),
               if (!_goal.isSlay) ...[
@@ -160,11 +162,15 @@ extension _FightView on _FightScreenState {
               ],
               if (charmCounts.isNotEmpty) ...[
                 const SizedBox(height: 8),
-                Text(tr(ref, 'charms_label'),
-                    style: Theme.of(context).textTheme.titleSmall),
+                Text(
+                  tr(ref, 'charms_label'),
+                  style: Theme.of(context).textTheme.titleSmall,
+                ),
                 const SizedBox(height: 4),
-                Text(tr(ref, 'charms_hint'),
-                    style: Theme.of(context).textTheme.bodySmall),
+                Text(
+                  tr(ref, 'charms_hint'),
+                  style: Theme.of(context).textTheme.bodySmall,
+                ),
                 const SizedBox(height: 6),
                 Wrap(
                   spacing: 6,
@@ -172,8 +178,11 @@ extension _FightView on _FightScreenState {
                   children: [
                     for (final entry in charmCounts.entries)
                       FilterChip(
-                        avatar: ItemPixelIcon(entry.key, 'Charm',
-                            size: IconSize.s16),
+                        avatar: ItemPixelIcon(
+                          entry.key,
+                          'Charm',
+                          size: IconSize.s16,
+                        ),
                         label: Text(
                           '${(items[entry.key] as Map<String, dynamic>?)?['itemName'] ?? entry.key}'
                           '${entry.value > 1 ? ' x${entry.value}' : ''}',
@@ -223,11 +232,15 @@ extension _FightView on _FightScreenState {
                   ),
                 ],
               ),
-              Text(tr(ref, 'mana_faces_note'),
-                  style: Theme.of(context).textTheme.labelSmall),
+              Text(
+                tr(ref, 'mana_faces_note'),
+                style: Theme.of(context).textTheme.labelSmall,
+              ),
               const SizedBox(height: 24),
-              Text(tr(ref, 'equipped_die_label'),
-                  style: Theme.of(context).textTheme.titleMedium),
+              Text(
+                tr(ref, 'equipped_die_label'),
+                style: Theme.of(context).textTheme.titleMedium,
+              ),
               const SizedBox(height: 8),
               if (equippedDie == null)
                 Card(
@@ -241,8 +254,12 @@ extension _FightView on _FightScreenState {
                 Card(
                   child: ListTile(
                     leading: const Icon(Icons.casino),
-                    title: Text(dieDisplayName(_selectedDiceId!,
-                        language: ref.watch(appLanguageProvider))),
+                    title: Text(
+                      dieDisplayName(
+                        _selectedDiceId!,
+                        language: ref.watch(appLanguageProvider),
+                      ),
+                    ),
                     subtitle: Text('$faceCount ${tr(ref, 'faces_label')}'),
                   ),
                 ),
@@ -269,8 +286,10 @@ extension _FightView on _FightScreenState {
                     label: Text(tr(ref, 'quick_resolve_button')),
                   ),
                 ),
-                Text(tr(ref, 'quick_resolve_hint'),
-                    style: Theme.of(context).textTheme.labelSmall),
+                Text(
+                  tr(ref, 'quick_resolve_hint'),
+                  style: Theme.of(context).textTheme.labelSmall,
+                ),
               ],
             ],
           ),
@@ -305,8 +324,10 @@ extension _FightView on _FightScreenState {
               ),
               // Who this is, before anything is rolled: the fight is
               // against someone, not a stat block.
-              if (enemyDescriptionFor(enemy.data,
-                      ref.watch(appLanguageProvider) == AppLanguage.fr)
+              if (enemyDescriptionFor(
+                enemy.data,
+                ref.watch(appLanguageProvider) == AppLanguage.fr,
+              )
                   case final description?) ...[
                 const SizedBox(height: 2),
                 Text(
@@ -356,7 +377,9 @@ extension _FightView on _FightScreenState {
                     ? '${tr(ref, affixLabelKey(affix))}: ${tr(ref, affixDescriptionKey(affix))}'
                     : tr(ref, affixLabelKey(affix)),
                 style: TextStyle(
-                    fontSize: 11, color: colorScheme.onErrorContainer),
+                  fontSize: 11,
+                  color: colorScheme.onErrorContainer,
+                ),
               ),
             ),
           ),
@@ -386,8 +409,9 @@ extension _FightView on _FightScreenState {
                 Text(
                   tr(ref, conditionLabelKey(condition)),
                   style: Theme.of(context).textTheme.titleSmall?.copyWith(
-                      color: colorScheme.onTertiaryContainer,
-                      fontWeight: FontWeight.bold),
+                        color: colorScheme.onTertiaryContainer,
+                        fontWeight: FontWeight.bold,
+                      ),
                 ),
                 Text(
                   tr(ref, conditionDescriptionKey(condition)),
@@ -425,12 +449,18 @@ extension _FightView on _FightScreenState {
       children: [
         ..._goalChips(),
         if (condition != null)
-          _telegraphChip(Icons.terrain, tr(ref, conditionLabelKey(condition)),
-              tip: tr(ref, conditionDescriptionKey(condition))),
+          _telegraphChip(
+            Icons.terrain,
+            tr(ref, conditionLabelKey(condition)),
+            tip: tr(ref, conditionDescriptionKey(condition)),
+          ),
         if (_sky.effectKey != null)
           _telegraphChip(
-              Icons.cloud_outlined, tr(ref, 'weather_${_sky.kind.name}'),
-              color: Colors.lightBlue.shade200, tip: _skyTip()),
+            Icons.cloud_outlined,
+            tr(ref, 'weather_${_sky.kind.name}'),
+            color: Colors.lightBlue.shade200,
+            tip: _skyTip(),
+          ),
         if (_anomalyChip() case final chip?) chip,
         _telegraphChip(
           ready ? Icons.local_fire_department : Icons.trending_up,
@@ -441,15 +471,26 @@ extension _FightView on _FightScreenState {
         ),
         // Luck nudges left (long-press a die to spend one).
         if (_nudgesLeft > 0)
-          _telegraphChip(Icons.swap_vert, tr(ref, 'nudges_label'),
-              badge: '$_nudgesLeft', tip: tr(ref, 'nudge_hint')),
+          _telegraphChip(
+            Icons.swap_vert,
+            tr(ref, 'nudges_label'),
+            badge: '$_nudgesLeft',
+            tip: tr(ref, 'nudge_hint'),
+          ),
         if (_hexPending)
-          _telegraphChip(Icons.auto_fix_off, tr(ref, 'tamper_hex'),
-              color: Colors.deepPurple.shade200,
-              tip: tr(ref, 'tamper_hex_desc')),
+          _telegraphChip(
+            Icons.auto_fix_off,
+            tr(ref, 'tamper_hex'),
+            color: Colors.deepPurple.shade200,
+            tip: tr(ref, 'tamper_hex_desc'),
+          ),
         if (_silenced || _silencePending)
-          _telegraphChip(Icons.volume_off, tr(ref, 'tamper_silence'),
-              color: Colors.red.shade200, tip: tr(ref, 'tamper_silence_desc')),
+          _telegraphChip(
+            Icons.volume_off,
+            tr(ref, 'tamper_silence'),
+            color: Colors.red.shade200,
+            tip: tr(ref, 'tamper_silence_desc'),
+          ),
         _buildTideMark(),
         _buildRuleMark(),
       ],
@@ -463,11 +504,14 @@ extension _FightView on _FightScreenState {
     PlayerSession session,
   ) {
     final acting = _actingParty;
-    final anyDieAvailable = acting.any((m) =>
-        m.equippedDiceId != null &&
-        (((dice[m.equippedDiceId] as Map<String, dynamic>?)?['faces'] as List?)
-                ?.isNotEmpty ??
-            false));
+    final anyDieAvailable = acting.any(
+      (m) =>
+          m.equippedDiceId != null &&
+          (((dice[m.equippedDiceId] as Map<String, dynamic>?)?['faces']
+                      as List?)
+                  ?.isNotEmpty ??
+              false),
+    );
     final plan = _roundPlan(skills, items, ref.watch(appLanguageProvider));
     final previews = plan.previews;
 
@@ -520,7 +564,9 @@ extension _FightView on _FightScreenState {
           const SizedBox(height: 6),
           if (_spoils != null)
             FightSpoilsStrip(
-                spoils: _spoils!, goldLabel: tr(ref, 'gold_label')),
+              spoils: _spoils!,
+              goldLabel: tr(ref, 'gold_label'),
+            ),
           if (ref.watch(appModeProvider) != AppMode.inGame &&
               !_shortPhone &&
               !TowerPanelStyle.of(context))
@@ -529,7 +575,13 @@ extension _FightView on _FightScreenState {
           TutorialTarget(
             id: 'fight.actions',
             child: _buildBottomBar(
-                acting, anyDieAvailable, dice, skills, items, session),
+              acting,
+              anyDieAvailable,
+              dice,
+              skills,
+              items,
+              session,
+            ),
           ),
         ],
       ),
@@ -573,9 +625,12 @@ extension _FightView on _FightScreenState {
             child: _buildBattleChips(),
           ),
         ),
-        _telegraphChip(Icons.flag_outlined, tr(ref, 'round_label'),
-            badge: '$_roundsStarted',
-            tip: tr(ref, 'round_tip').replaceAll('{n}', '$tideStartRound')),
+        _telegraphChip(
+          Icons.flag_outlined,
+          tr(ref, 'round_label'),
+          badge: '$_roundsStarted',
+          tip: tr(ref, 'round_tip').replaceAll('{n}', '$tideStartRound'),
+        ),
         if (play) _buildLogButton(),
       ],
     );
@@ -613,10 +668,13 @@ extension _FightView on _FightScreenState {
         : '${tr(ref, 'context_${stem}_mark')} ×${status.level}';
     return KeyedSubtree(
       key: Key('place_rule_mark_$stem'),
-      child: _telegraphChip(icon, label,
-          color: colour,
-          badge: status.omen ? '!' : '${status.level}',
-          tip: tip),
+      child: _telegraphChip(
+        icon,
+        label,
+        color: colour,
+        badge: status.omen ? '!' : '${status.level}',
+        tip: tip,
+      ),
     );
   }
 
@@ -632,23 +690,28 @@ extension _FightView on _FightScreenState {
     final Widget chip;
     if (level > 0) {
       chip = _telegraphChip(
-          Icons.waves, tr(ref, 'tide_mark').replaceAll('{n}', '$level'),
-          color: Colors.cyan.shade600,
-          badge: '$level',
-          tip: tr(ref, 'tide_mark_tip')
-              .replaceAll('{party}', pct(tidePartyStep, level))
-              .replaceAll('{enemies}', '${_tideEnemyPercent(_roundsStarted)}'));
+        Icons.waves,
+        tr(ref, 'tide_mark').replaceAll('{n}', '$level'),
+        color: Colors.cyan.shade600,
+        badge: '$level',
+        tip: tr(ref, 'tide_mark_tip')
+            .replaceAll('{party}', pct(tidePartyStep, level))
+            .replaceAll('{enemies}', '${_tideEnemyPercent(_roundsStarted)}'),
+      );
     } else if (tideStartRound - _roundsStarted <= 3 && _roundsStarted > 0) {
       chip = _telegraphChip(
-          Icons.waves,
-          tr(ref, 'tide_soon_mark')
-              .replaceAll('{n}', '${tideStartRound - _roundsStarted}'),
-          color: Colors.blueGrey.shade300,
-          badge: '${tideStartRound - _roundsStarted}',
-          tip: tr(ref, 'tide_soon_tip')
-              .replaceAll('{round}', '$tideStartRound')
-              .replaceAll('{party}', pct(tidePartyStep, 1))
-              .replaceAll('{enemies}', pct(enemyStep, 1)));
+        Icons.waves,
+        tr(
+          ref,
+          'tide_soon_mark',
+        ).replaceAll('{n}', '${tideStartRound - _roundsStarted}'),
+        color: Colors.blueGrey.shade300,
+        badge: '${tideStartRound - _roundsStarted}',
+        tip: tr(ref, 'tide_soon_tip')
+            .replaceAll('{round}', '$tideStartRound')
+            .replaceAll('{party}', pct(tidePartyStep, 1))
+            .replaceAll('{enemies}', pct(enemyStep, 1)),
+      );
     } else {
       return const SizedBox.shrink();
     }
@@ -678,11 +741,14 @@ extension _FightView on _FightScreenState {
               children: [
                 Icon(icon, size: IconSize.s16, color: color),
                 const SizedBox(width: 3),
-                Text(label,
-                    style: TextStyle(
-                        fontSize: 11,
-                        fontWeight: FontWeight.bold,
-                        color: color)),
+                Text(
+                  label,
+                  style: TextStyle(
+                    fontSize: 11,
+                    fontWeight: FontWeight.bold,
+                    color: color,
+                  ),
+                ),
               ],
             ),
           ),
@@ -695,11 +761,19 @@ extension _FightView on _FightScreenState {
         runSpacing: 4,
         children: [
           for (final combo in plan.combos)
-            chip(Icons.groups, trFor(lang, comboLabelKey(combo)),
-                trFor(lang, comboDescriptionKey(combo)), colorScheme.primary),
+            chip(
+              Icons.groups,
+              trFor(lang, comboLabelKey(combo)),
+              trFor(lang, comboDescriptionKey(combo)),
+              colorScheme.primary,
+            ),
           for (final duo in plan.duos)
-            chip(Icons.handshake, duo.nameFor(french),
-                duo.descriptionFor(french), Palette.arcane),
+            chip(
+              Icons.handshake,
+              duo.nameFor(french),
+              duo.descriptionFor(french),
+              Palette.arcane,
+            ),
         ],
       ),
     );
@@ -723,8 +797,10 @@ extension _FightView on _FightScreenState {
           children: [
             const Icon(Icons.auto_awesome, size: IconSize.s16),
             const SizedBox(width: 4),
-            Text(tr(ref, 'surge_pick_label'),
-                style: Theme.of(context).textTheme.labelMedium),
+            Text(
+              tr(ref, 'surge_pick_label'),
+              style: Theme.of(context).textTheme.labelMedium,
+            ),
             for (final actor in strikers)
               Padding(
                 padding: const EdgeInsets.only(left: 6),
@@ -824,7 +900,7 @@ extension _FightView on _FightScreenState {
                           borderRadius: BorderRadius.circular(14),
                           border: Border.all(color: Palette.goldDark, width: 3),
                           boxShadow: const [
-                            BoxShadow(color: Color(0x88F2C14E), blurRadius: 16)
+                            BoxShadow(color: Color(0x88F2C14E), blurRadius: 16),
                           ],
                         ),
                       ),
@@ -835,11 +911,12 @@ extension _FightView on _FightScreenState {
                     top: 2,
                     right: 2,
                     child: Icon(
-                        _steadyActorIds.contains(actor.id)
-                            ? Icons.anchor
-                            : Icons.lock,
-                        size: IconSize.inline,
-                        color: accent),
+                      _steadyActorIds.contains(actor.id)
+                          ? Icons.anchor
+                          : Icons.lock,
+                      size: IconSize.inline,
+                      color: accent,
+                    ),
                   ),
                 // A clan die's Resonance: lit (gold) or asleep (grey).
                 if (actor.isPlayer &&
@@ -849,19 +926,24 @@ extension _FightView on _FightScreenState {
                     left: 2,
                     top: 2,
                     child: Tooltip(
-                      key: Key(_dieResonance == Resonance.lit
-                          ? 'die_resonance_lit'
-                          : 'die_resonance_asleep'),
+                      key: Key(
+                        _dieResonance == Resonance.lit
+                            ? 'die_resonance_lit'
+                            : 'die_resonance_asleep',
+                      ),
                       message: tr(
-                          ref,
-                          _dieResonance == Resonance.lit
-                              ? 'resonance_lit_tip'
-                              : 'resonance_asleep_tip'),
-                      child: Icon(Icons.auto_awesome,
-                          size: IconSize.s16,
-                          color: _dieResonance == Resonance.lit
-                              ? Palette.goldDark
-                              : Colors.white38),
+                        ref,
+                        _dieResonance == Resonance.lit
+                            ? 'resonance_lit_tip'
+                            : 'resonance_asleep_tip',
+                      ),
+                      child: Icon(
+                        Icons.auto_awesome,
+                        size: IconSize.s16,
+                        color: _dieResonance == Resonance.lit
+                            ? Palette.goldDark
+                            : Colors.white38,
+                      ),
                     ),
                   ),
                 // The hero's profession core on the die: Flurry doubles an
@@ -875,7 +957,9 @@ extension _FightView on _FightScreenState {
                     right: 0,
                     bottom: 0,
                     child: DieBadge(
-                        text: '×2', tooltip: tr(ref, 'flurry_tag_tip')),
+                      text: '×2',
+                      tooltip: tr(ref, 'flurry_tag_tip'),
+                    ),
                   ),
                 if (actor.isPlayer &&
                     !spinning &&
@@ -897,14 +981,18 @@ extension _FightView on _FightScreenState {
                             borderRadius: BorderRadius.circular(5),
                             color: Colors.black54,
                             border: Border.all(
-                                color: accent.withValues(alpha: 0.7)),
+                              color: accent.withValues(alpha: 0.7),
+                            ),
                           ),
                           child: Center(
-                              child: _buildFaceGlyph(
-                                  faceFromJson(
-                                      actor.dieFaces[_core.aheadIndex!],
-                                      _core.aheadIndex!),
-                                  size: 14)),
+                            child: _buildFaceGlyph(
+                              faceFromJson(
+                                actor.dieFaces[_core.aheadIndex!],
+                                _core.aheadIndex!,
+                              ),
+                              size: 14,
+                            ),
+                          ),
                         ),
                       ),
                     ),
@@ -937,9 +1025,10 @@ extension _FightView on _FightScreenState {
                       maxLines: 1,
                       textAlign: TextAlign.center,
                       style: Theme.of(context).textTheme.labelSmall?.copyWith(
-                          color: accent,
-                          fontWeight: FontWeight.bold,
-                          fontSize: 10),
+                            color: accent,
+                            fontWeight: FontWeight.bold,
+                            fontSize: 10,
+                          ),
                     ),
                   ),
           ),
@@ -993,22 +1082,30 @@ extension _FightView on _FightScreenState {
       if (before > 0) {
         final tired = fatiguedHeal(preview.healing, before);
         return Tooltip(
-          message: tr(ref, 'heal_fatigue_tip').replaceAll(
-              '{pct}', '${(healFatigueFactor(before) * 100).round()}'),
+          message: tr(
+            ref,
+            'heal_fatigue_tip',
+          ).replaceAll('{pct}', '${(healFatigueFactor(before) * 100).round()}'),
           child: Row(
             key: const Key('fatigued_heal'),
             mainAxisAlignment: MainAxisAlignment.center,
             mainAxisSize: MainAxisSize.min,
             children: [
-              Icon(icon,
-                  size: IconSize.inline, color: color.withValues(alpha: 0.45)),
+              Icon(
+                icon,
+                size: IconSize.inline,
+                color: color.withValues(alpha: 0.45),
+              ),
               const SizedBox(width: 2),
-              Text('+$tired',
-                  style: TextStyle(
-                      fontSize: 10,
-                      fontWeight: FontWeight.bold,
-                      fontStyle: FontStyle.italic,
-                      color: color.withValues(alpha: 0.5))),
+              Text(
+                '+$tired',
+                style: TextStyle(
+                  fontSize: 10,
+                  fontWeight: FontWeight.bold,
+                  fontStyle: FontStyle.italic,
+                  color: color.withValues(alpha: 0.5),
+                ),
+              ),
             ],
           ),
         );
@@ -1029,9 +1126,14 @@ extension _FightView on _FightScreenState {
             children: [
               Icon(icon, size: IconSize.inline, color: color),
               const SizedBox(width: 2),
-              Text(text,
-                  style: TextStyle(
-                      fontSize: 10, fontWeight: FontWeight.bold, color: color)),
+              Text(
+                text,
+                style: TextStyle(
+                  fontSize: 10,
+                  fontWeight: FontWeight.bold,
+                  color: color,
+                ),
+              ),
               const SizedBox(width: 2),
               Icon(Icons.my_location, size: IconSize.inline, color: color),
             ],
@@ -1056,7 +1158,10 @@ extension _FightView on _FightScreenState {
           maxLines: 1,
           overflow: TextOverflow.ellipsis,
           style: TextStyle(
-              fontSize: 10, fontWeight: FontWeight.bold, color: color),
+            fontSize: 10,
+            fontWeight: FontWeight.bold,
+            color: color,
+          ),
         ),
       ],
     );
@@ -1075,15 +1180,20 @@ extension _FightView on _FightScreenState {
   /// table, or the one the die is tumbling to) in front and the die's next
   /// faces round it; a die of fewer than six faces repeats them.
   List<DieCubeFace> _cubeFacesFor(
-      _PartyMember actor, DiceFaceResult? landed, Color accent,
-      {int count = 6}) {
+    _PartyMember actor,
+    DiceFaceResult? landed,
+    Color accent, {
+    int count = 6,
+  }) {
     final raws = actor.dieFaces;
     if (raws.isEmpty) {
       return List.filled(
-          count,
-          DieCubeFace(
-              glyph: Icon(Icons.casino, size: IconSize.s32, color: accent),
-              color: accent));
+        count,
+        DieCubeFace(
+          glyph: Icon(Icons.casino, size: IconSize.s32, color: accent),
+          color: accent,
+        ),
+      );
     }
     final language = ref.read(appLanguageProvider);
     final start = landed?.faceIndex ?? 0;
@@ -1109,10 +1219,10 @@ extension _FightView on _FightScreenState {
           final inkTint =
               _faceKindOf(face) == FaceKind.attack ? inkRed : inkGrey;
           return DieCubeFace(
-              glyph: _cubeGlyph(face),
-              color: TowerPanelStyle.of(context)
-                  ? inkTint
-                  : _faceKindOf(face).color);
+            glyph: _cubeGlyph(face),
+            color:
+                TowerPanelStyle.of(context) ? inkTint : _faceKindOf(face).color,
+          );
         }(),
     ];
   }
@@ -1150,8 +1260,11 @@ extension _FightView on _FightScreenState {
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
-        Icon(_faceTypeIcon(face.type),
-            size: showValue ? size * 0.62 : size, color: color),
+        Icon(
+          _faceTypeIcon(face.type),
+          size: showValue ? size * 0.62 : size,
+          color: color,
+        ),
         if (showValue)
           Text(
             '${face.value}',
@@ -1258,8 +1371,9 @@ extension _FightView on _FightScreenState {
                           ),
                           Text(
                             '${actor.displayName} · ${dieDisplayName(dieId ?? '', language: lang)}',
-                            style: theme.textTheme.bodySmall
-                                ?.copyWith(color: accent),
+                            style: theme.textTheme.bodySmall?.copyWith(
+                              color: accent,
+                            ),
                           ),
                         ],
                       ),
@@ -1273,8 +1387,9 @@ extension _FightView on _FightScreenState {
                   Text(
                     targetLine,
                     style: theme.textTheme.bodyMedium?.copyWith(
-                        color: preview.lethal ? Palette.alert : Palette.hot,
-                        fontWeight: FontWeight.bold),
+                      color: preview.lethal ? Palette.alert : Palette.hot,
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
                 ],
                 if (face.type == 'Skill') ...[
@@ -1283,11 +1398,13 @@ extension _FightView on _FightScreenState {
                     face.isChanneled
                         ? trFor(lang, 'channeled_face_note').replaceAll(
                             '{face}',
-                            trFor(lang, basicFaceLabelKey(face.channeledFrom)))
+                            trFor(lang, basicFaceLabelKey(face.channeledFrom)),
+                          )
                         : '${trFor(lang, 'skill_label')}: '
                             '${skillDisplayName(_effectiveSkillId(face), language: lang)}',
-                    style: theme.textTheme.bodySmall
-                        ?.copyWith(fontStyle: FontStyle.italic),
+                    style: theme.textTheme.bodySmall?.copyWith(
+                      fontStyle: FontStyle.italic,
+                    ),
                   ),
                 ],
                 if (element != 'None') ...[
@@ -1296,8 +1413,10 @@ extension _FightView on _FightScreenState {
                     children: [
                       Icon(elementIcon(element), size: IconSize.s16),
                       const SizedBox(width: 4),
-                      Text('${trFor(lang, 'element_label')}: $element',
-                          style: theme.textTheme.bodySmall),
+                      Text(
+                        '${trFor(lang, 'element_label')}: $element',
+                        style: theme.textTheme.bodySmall,
+                      ),
                     ],
                   ),
                 ],
@@ -1307,8 +1426,11 @@ extension _FightView on _FightScreenState {
                   Row(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Icon(keyword.icon,
-                          size: IconSize.s16, color: keyword.color),
+                      Icon(
+                        keyword.icon,
+                        size: IconSize.s16,
+                        color: keyword.color,
+                      ),
                       const SizedBox(width: 4),
                       Expanded(
                         child: Text(
@@ -1323,14 +1445,19 @@ extension _FightView on _FightScreenState {
                 ],
                 if (cursed) ...[
                   const SizedBox(height: 4),
-                  Text(trFor(lang, 'cursed_face_note'),
-                      style: theme.textTheme.bodySmall
-                          ?.copyWith(color: Palette.danger)),
+                  Text(
+                    trFor(lang, 'cursed_face_note'),
+                    style: theme.textTheme.bodySmall?.copyWith(
+                      color: Palette.danger,
+                    ),
+                  ),
                 ],
                 if (_steadyActorIds.contains(actor.id) && onTable) ...[
                   const SizedBox(height: 4),
-                  Text(trFor(lang, 'steady_kept_note'),
-                      style: theme.textTheme.bodySmall),
+                  Text(
+                    trFor(lang, 'steady_kept_note'),
+                    style: theme.textTheme.bodySmall,
+                  ),
                 ],
                 // A Luck nudge turns the die to its opposite face.
                 if (nudgeTo != null) ...[
@@ -1341,31 +1468,43 @@ extension _FightView on _FightScreenState {
                       _nudge(actor);
                     },
                     icon: const Icon(Icons.swap_vert, size: IconSize.s16),
-                    label: Text(trFor(lang, 'nudge_button')
-                        .replaceAll('{face}', nudgeTo.faceName)
-                        .replaceAll('{n}', '$_nudgesLeft')),
+                    label: Text(
+                      trFor(lang, 'nudge_button')
+                          .replaceAll('{face}', nudgeTo.faceName)
+                          .replaceAll('{n}', '$_nudgesLeft'),
+                    ),
                   ),
                 ],
                 if (faces.isNotEmpty) ...[
                   const SizedBox(height: 14),
-                  Text(trFor(lang, 'die_faces_label'),
-                      style: theme.textTheme.titleSmall),
+                  Text(
+                    trFor(lang, 'die_faces_label'),
+                    style: theme.textTheme.titleSmall,
+                  ),
                   const SizedBox(height: 6),
                   Wrap(
                     spacing: 8,
                     runSpacing: 8,
                     children: [
                       for (var i = 0; i < faces.length; i++)
-                        _buildMiniFace(faces[i], i, i == face.faceIndex, accent,
-                            actor, sheetContext),
+                        _buildMiniFace(
+                          faces[i],
+                          i,
+                          i == face.faceIndex,
+                          accent,
+                          actor,
+                          sheetContext,
+                        ),
                     ],
                   ),
                 ],
                 const SizedBox(height: 12),
                 FaceColorLegend(language: lang),
                 const SizedBox(height: 10),
-                Text(trFor(lang, 'lock_hint'),
-                    style: theme.textTheme.labelSmall),
+                Text(
+                  trFor(lang, 'lock_hint'),
+                  style: theme.textTheme.labelSmall,
+                ),
               ],
             ),
           ),

@@ -172,51 +172,64 @@ class DistrictStandingLine extends ConsumerWidget {
     if (s.locked) {
       return Padding(
         padding: const EdgeInsets.only(top: 2),
-        child: Text(s.lockedText,
-            key: Key('district_locked_text_${s.id}'),
-            maxLines: 2,
-            overflow: TextOverflow.ellipsis,
-            style: theme.textTheme.bodySmall
-                ?.copyWith(color: ink.ash, fontStyle: FontStyle.italic)),
+        child: Text(
+          s.lockedText,
+          key: Key('district_locked_text_${s.id}'),
+          maxLines: 2,
+          overflow: TextOverflow.ellipsis,
+          style: theme.textTheme.bodySmall?.copyWith(
+            color: ink.ash,
+            fontStyle: FontStyle.italic,
+          ),
+        ),
       );
     }
     if (!s.held) return const SizedBox.shrink();
     final influence = s.influence;
     return Padding(
       padding: const EdgeInsets.only(top: 3),
-      child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-        Row(children: [
-          if (s.flipped) ...[
-            const PixelGlyph(PixelGlyphs.star,
-                size: IconSize.inline, color: Palette.goldDark),
-            const SizedBox(width: 3),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              if (s.flipped) ...[
+                const PixelGlyph(
+                  PixelGlyphs.star,
+                  size: IconSize.inline,
+                  color: Palette.goldDark,
+                ),
+                const SizedBox(width: 3),
+              ],
+              Flexible(
+                child: Text(
+                  [
+                    influence == null
+                        ? s.holderName
+                        : '${s.holderName} $influence',
+                    if (s.flipped) tr(ref, 'district_changed_hands'),
+                  ].join(' · '),
+                  key: Key('district_holder_${s.id}'),
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: theme.textTheme.labelSmall?.copyWith(color: ink.ash),
+                ),
+              ),
+            ],
+          ),
+          if (influence != null) ...[
+            const SizedBox(height: 3),
+            _InfluenceBar(
+              key: Key('district_influence_${s.id}'),
+              holder: influence,
+              holderColor: s.holderColor,
+              rival: s.rivalInfluence,
+              rivalColor: s.rivalColor,
+              rivalName: s.rivalName,
+            ),
           ],
-          Flexible(
-            child: Text(
-                [
-                  influence == null
-                      ? s.holderName
-                      : '${s.holderName} $influence',
-                  if (s.flipped) tr(ref, 'district_changed_hands'),
-                ].join(' · '),
-                key: Key('district_holder_${s.id}'),
-                maxLines: 1,
-                overflow: TextOverflow.ellipsis,
-                style: theme.textTheme.labelSmall?.copyWith(color: ink.ash)),
-          ),
-        ]),
-        if (influence != null) ...[
-          const SizedBox(height: 3),
-          _InfluenceBar(
-            key: Key('district_influence_${s.id}'),
-            holder: influence,
-            holderColor: s.holderColor,
-            rival: s.rivalInfluence,
-            rivalColor: s.rivalColor,
-            rivalName: s.rivalName,
-          ),
         ],
-      ]),
+      ),
     );
   }
 }
@@ -246,36 +259,49 @@ class _InfluenceBar extends StatelessWidget {
     final ink = InkColors.of(context);
     final h = holder.clamp(0, maxInfluence);
     final r = rival.clamp(0, maxInfluence - h);
-    return Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-      ClipRRect(
-        borderRadius: BorderRadius.circular(3),
-        child: LayoutBuilder(builder: (context, box) {
-          final w = box.maxWidth;
-          Widget part(double x, double width, Color c) => Positioned(
-              left: x,
-              width: width,
-              top: 0,
-              bottom: 0,
-              child: ColoredBox(color: c));
-          return SizedBox(
-            height: 6,
-            width: w,
-            child: Stack(children: [
-              Positioned.fill(child: ColoredBox(color: ink.seam)),
-              part(0, w * h / maxInfluence, holderColor),
-              if (r > 0)
-                part(w * (maxInfluence - r) / maxInfluence,
-                    w * r / maxInfluence, rivalColor ?? ink.ash),
-            ]),
-          );
-        }),
-      ),
-      if (rival > 0) ...[
-        const SizedBox(height: 2),
-        Text('$rivalName $rival',
-            style: theme.textTheme.labelSmall?.copyWith(color: ink.ash)),
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        ClipRRect(
+          borderRadius: BorderRadius.circular(3),
+          child: LayoutBuilder(
+            builder: (context, box) {
+              final w = box.maxWidth;
+              Widget part(double x, double width, Color c) => Positioned(
+                    left: x,
+                    width: width,
+                    top: 0,
+                    bottom: 0,
+                    child: ColoredBox(color: c),
+                  );
+              return SizedBox(
+                height: 6,
+                width: w,
+                child: Stack(
+                  children: [
+                    Positioned.fill(child: ColoredBox(color: ink.seam)),
+                    part(0, w * h / maxInfluence, holderColor),
+                    if (r > 0)
+                      part(
+                        w * (maxInfluence - r) / maxInfluence,
+                        w * r / maxInfluence,
+                        rivalColor ?? ink.ash,
+                      ),
+                  ],
+                ),
+              );
+            },
+          ),
+        ),
+        if (rival > 0) ...[
+          const SizedBox(height: 2),
+          Text(
+            '$rivalName $rival',
+            style: theme.textTheme.labelSmall?.copyWith(color: ink.ash),
+          ),
+        ],
       ],
-    ]);
+    );
   }
 }
 
@@ -293,16 +319,22 @@ class DistrictLead extends StatelessWidget {
     final ink = InkColors.of(context);
     if (standing.locked) {
       return SizedBox(
-          width: 22,
-          child: Center(
-              child: PixelGlyph(PixelGlyphs.lock,
-                  size: IconSize.s16, color: ink.ash)));
+        width: 22,
+        child: Center(
+          child: PixelGlyph(
+            PixelGlyphs.lock,
+            size: IconSize.s16,
+            color: ink.ash,
+          ),
+        ),
+      );
     }
     if (standing.held && clanBannerId(standing.holderId) != null) {
       return SizedBox(
         width: 22,
-        child:
-            Center(child: ClanFlag(factionId: standing.holderId, height: 26)),
+        child: Center(
+          child: ClanFlag(factionId: standing.holderId, height: 26),
+        ),
       );
     }
     return SizedBox(width: 22, child: Center(child: plain));
@@ -312,8 +344,10 @@ class DistrictLead extends StatelessWidget {
 /// Why a shut district is shut: its rumour (geography.json's `lockedText`)
 /// and the quest that opens it, in a sheet over the plan.
 Future<void> showLockedDistrictSheet(
-    BuildContext context, DistrictStanding standing,
-    {required String name}) {
+  BuildContext context,
+  DistrictStanding standing, {
+  required String name,
+}) {
   return showInkSheet<void>(
     context: context,
     scrollControlled: false,
@@ -343,30 +377,41 @@ class _LockedDistrictSheet extends ConsumerWidget {
       child: Padding(
         padding: const EdgeInsets.fromLTRB(20, 0, 20, 20),
         child: Column(
-            key: Key('district_locked_sheet_${standing.id}'),
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Row(children: [
-                PixelGlyph(PixelGlyphs.lock,
-                    size: IconSize.s16, color: ink.ash),
+          key: Key('district_locked_sheet_${standing.id}'),
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              children: [
+                PixelGlyph(
+                  PixelGlyphs.lock,
+                  size: IconSize.s16,
+                  color: ink.ash,
+                ),
                 const SizedBox(width: 8),
                 Expanded(child: Text(name, style: theme.textTheme.titleMedium)),
-              ]),
-              const SizedBox(height: 10),
-              Text(standing.lockedText,
-                  style: theme.textTheme.bodyMedium
-                      ?.copyWith(fontStyle: FontStyle.italic)),
-              if (questTitle.isNotEmpty) ...[
-                const SizedBox(height: 12),
-                Text(
-                    trFor(ref.watch(appLanguageProvider), 'district_locked_by')
-                        .replaceAll('{quest}', questTitle),
-                    key: Key('district_locked_by_${standing.id}'),
-                    style:
-                        theme.textTheme.labelMedium?.copyWith(color: ink.ash)),
               ],
-            ]),
+            ),
+            const SizedBox(height: 10),
+            Text(
+              standing.lockedText,
+              style: theme.textTheme.bodyMedium?.copyWith(
+                fontStyle: FontStyle.italic,
+              ),
+            ),
+            if (questTitle.isNotEmpty) ...[
+              const SizedBox(height: 12),
+              Text(
+                trFor(
+                  ref.watch(appLanguageProvider),
+                  'district_locked_by',
+                ).replaceAll('{quest}', questTitle),
+                key: Key('district_locked_by_${standing.id}'),
+                style: theme.textTheme.labelMedium?.copyWith(color: ink.ash),
+              ),
+            ],
+          ],
+        ),
       ),
     );
   }

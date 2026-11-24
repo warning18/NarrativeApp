@@ -17,7 +17,8 @@ class GameDataHomeScreen extends ConsumerWidget {
 
   /// Every collection's records, each once it has loaded.
   static Future<Map<String, Map<String, dynamic>>> _allRecords(
-      WidgetRef ref) async {
+    WidgetRef ref,
+  ) async {
     return {
       for (final schema in gameDbSchemas)
         schema.id: await ref.read(gameDbProvider(schema).notifier).whenLoaded(),
@@ -72,7 +73,8 @@ class GameDataHomeScreen extends ConsumerWidget {
             leading: const Icon(Icons.download_outlined),
             title: const Text('Download all data'),
             subtitle: const Text(
-                'Every collection as JSON or CSV, or every text in English and French'),
+              'Every collection as JSON or CSV, or every text in English and French',
+            ),
             trailing: const Icon(Icons.chevron_right),
             onTap: () => _downloadAll(context, ref),
           ),
@@ -82,7 +84,8 @@ class GameDataHomeScreen extends ConsumerWidget {
             leading: const Icon(Icons.insights_outlined),
             title: const Text('Data Summary'),
             subtitle: const Text(
-                'KPIs across all collections: record counts, visual coverage, issues'),
+              'KPIs across all collections: record counts, visual coverage, issues',
+            ),
             trailing: const Icon(Icons.chevron_right),
             onTap: () {
               Navigator.of(context).push(
@@ -109,7 +112,8 @@ class GameDataHomeScreen extends ConsumerWidget {
             leading: const Icon(Icons.map_outlined),
             title: const Text('Main Story'),
             subtitle: const Text(
-                'The fixed chapter beats every playthrough passes through'),
+              'The fixed chapter beats every playthrough passes through',
+            ),
             trailing: const Icon(Icons.chevron_right),
             onTap: () {
               Navigator.of(context).push(
@@ -123,12 +127,14 @@ class GameDataHomeScreen extends ConsumerWidget {
             leading: const Icon(Icons.comment_outlined),
             title: const Text('Review Comments'),
             subtitle: const Text(
-                'Every story node with a reviewer note left in Edit Mode'),
+              'Every story node with a reviewer note left in Edit Mode',
+            ),
             trailing: const Icon(Icons.chevron_right),
             onTap: () {
               Navigator.of(context).push(
                 MaterialPageRoute(
-                    builder: (_) => const StoryCommentsReviewScreen()),
+                  builder: (_) => const StoryCommentsReviewScreen(),
+                ),
               );
             },
           ),
@@ -143,12 +149,14 @@ class GameDataHomeScreen extends ConsumerWidget {
               leading: Icon(gameDbIcon(schema.id)),
               title: Text(schema.label),
               subtitle: Text(
-                  'key: ${schema.primaryKeyField} · ${schema.fields.length} fields'),
+                'key: ${schema.primaryKeyField} · ${schema.fields.length} fields',
+              ),
               trailing: const Icon(Icons.chevron_right),
               onTap: () {
                 Navigator.of(context).push(
                   MaterialPageRoute(
-                      builder: (_) => GameDbListScreen(schema: schema)),
+                    builder: (_) => GameDbListScreen(schema: schema),
+                  ),
                 );
               },
             ),

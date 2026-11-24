@@ -100,8 +100,9 @@ class SpellSpec {
   });
 
   factory SpellSpec.fromJson(String id, Map<String, dynamic> json) {
-    final statusType =
-        statusEffectTypeFromString(json['inflictsStatus']?.toString());
+    final statusType = statusEffectTypeFromString(
+      json['inflictsStatus']?.toString(),
+    );
     final duration = (json['statusDuration'] as num?)?.toInt() ?? 0;
     return SpellSpec(
       id: json['spellID']?.toString() ?? id,
@@ -170,11 +171,12 @@ class SpellSpec {
   /// The description in [language], its placeholders filled (see
   /// [placeholders]).
   String descriptionFor(AppLanguage language) => resolvePlaceholders(
-      language == AppLanguage.fr && descriptionFr.isNotEmpty
-          ? descriptionFr
-          : description,
-      placeholders,
-      language);
+        language == AppLanguage.fr && descriptionFr.isNotEmpty
+            ? descriptionFr
+            : description,
+        placeholders,
+        language,
+      );
 
   /// The numbers a description may name (text_placeholders.dart):
   /// `{amount}`, and the same number as `{damage}`, `{heal}` or `{block}`
@@ -204,7 +206,9 @@ Map<String, SpellSpec> parseSpells(Map<String, dynamic> db) => {
       for (final entry in db.entries)
         if (entry.value is Map<String, dynamic>)
           entry.key: SpellSpec.fromJson(
-              entry.key, entry.value as Map<String, dynamic>),
+            entry.key,
+            entry.value as Map<String, dynamic>,
+          ),
     };
 
 /// A spell's damage / heal / block amount as it lands right now. A Damage
@@ -233,8 +237,10 @@ int spellAmountFor(
   };
   final base = spell.amount + max(0, score) ~/ 4;
   return switch (spell.effect) {
-    SpellEffectKind.damage =>
-      max(0, ((casterDamage + base) * spell.damageMultiplier).round()),
+    SpellEffectKind.damage => max(
+        0,
+        ((casterDamage + base) * spell.damageMultiplier).round(),
+      ),
     SpellEffectKind.heal ||
     SpellEffectKind.block =>
       max(0, scaledMaxHealth(base, level)),

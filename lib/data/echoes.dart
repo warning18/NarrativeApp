@@ -99,8 +99,10 @@ StoryChoice? _originCause(String flag) => _originCauses.putIfAbsent(flag, () {
 /// its line and the choice that earned it, in the player's language with
 /// tokens still to fill; null when the story no longer has it.
 ({String nodeId, String line, String cause})? echoForKey(
-    StoryData story, String key,
-    {required bool french}) {
+  StoryData story,
+  String key, {
+  required bool french,
+}) {
   final (nodeId, flag) = splitEchoKey(key);
   final node = story.nodeFor(nodeId);
   final cause = echoCause(story, flag);

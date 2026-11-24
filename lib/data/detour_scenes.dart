@@ -121,7 +121,8 @@ class DetourScene {
   bool get hasCheckOrFight =>
       beats.any((b) => b.type == 'check' || b.type == 'fight') ||
       beats.any(
-          (b) => b.choices.any((c) => c.check != null || c.fight.isNotEmpty));
+        (b) => b.choices.any((c) => c.check != null || c.fight.isNotEmpty),
+      );
 
   /// The watches the scene takes (see [detourSceneWatches]).
   int get watches => hasCheckOrFight ? detourSceneWatches : 0;
@@ -223,14 +224,16 @@ DetourScenePlay buildDetourScene(
   final nodes = <StoryNode>[];
   final outcomes = <String, List<StepOutcome>>{};
   for (final (i, beat) in scene.beats.indexed) {
-    final step = buildWrittenStep(beat,
-        zoneId: 'detour_${scene.id}',
-        chapter: chapter,
-        random: random,
-        enemies: enemies,
-        discoveryGold: beat.type == 'discovery'
-            ? SubNodeEngine.treasureGoldFor(chapter, 5 + random.nextInt(16))
-            : 0);
+    final step = buildWrittenStep(
+      beat,
+      zoneId: 'detour_${scene.id}',
+      chapter: chapter,
+      random: random,
+      enemies: enemies,
+      discoveryGold: beat.type == 'discovery'
+          ? SubNodeEngine.treasureGoldFor(chapter, 5 + random.nextInt(16))
+          : 0,
+    );
     var node = step.node;
     var stepOutcomes = step.outcomes;
     if (i == 0) {
@@ -257,8 +260,11 @@ DetourScenePlay buildDetourScene(
 
 /// The words a choice's [outcome] says after it ([passed]: how its roll
 /// went; null for no roll), in the reader's language; '' for none.
-String detourOutcomeNote(StepOutcome outcome,
-    {required bool french, bool? passed}) {
+String detourOutcomeNote(
+  StepOutcome outcome, {
+  required bool french,
+  bool? passed,
+}) {
   String pick(String en, String fr) => french && fr.isNotEmpty ? fr : en;
   return [
     pick(outcome.note, outcome.noteFr),

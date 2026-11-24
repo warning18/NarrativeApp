@@ -1,4 +1,5 @@
 import '../widgets/feature_unlock.dart';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -92,8 +93,10 @@ class PlayScreen extends ConsumerWidget {
     final mooredPortId = currentPortIdFor(ports, session.currentPortId);
     final mooredPortName = mooredPortId == null
         ? ''
-        : portNameFor(ports[mooredPortId] as Map<String, dynamic>,
-            ref.watch(appLanguageProvider) == AppLanguage.fr);
+        : portNameFor(
+            ports[mooredPortId] as Map<String, dynamic>,
+            ref.watch(appLanguageProvider) == AppLanguage.fr,
+          );
 
     final unseenQuests = session.unlockedQuestIds
         .where((id) => !session.seenQuestIds.contains(id))
@@ -109,12 +112,15 @@ class PlayScreen extends ConsumerWidget {
     final npcRecords = npcsAsync.value ?? const <String, dynamic>{};
     final peopleKnown = isEditMode
         ? npcRecords.keys.toList()
-        : discoveredNpcIds(npcRecords, session,
+        : discoveredNpcIds(
+            npcRecords,
+            session,
             currentChapter: chapterOfNode(playState.currentNodeId),
             visitedNodeIds: {
-                ...playState.visitedNodeIds,
-                playState.currentNodeId
-              });
+              ...playState.visitedNodeIds,
+              playState.currentNodeId,
+            },
+          );
     final unseenPeople =
         isEditMode ? 0 : unseenNpcCount(peopleKnown, session.seenNpcIds);
 
@@ -129,9 +135,9 @@ class PlayScreen extends ConsumerWidget {
               title: Text(tr(ref, 'fight_lab_title')),
               subtitle: Text(tr(ref, 'fight_lab_card_desc')),
               trailing: const Icon(Icons.chevron_right),
-              onTap: () => Navigator.of(context).push(
-                MaterialPageRoute(builder: (_) => const FightLabScreen()),
-              ),
+              onTap: () => Navigator.of(
+                context,
+              ).push(MaterialPageRoute(builder: (_) => const FightLabScreen())),
             ),
           ),
         if (ref.read(playerSessionProvider.notifier).loadFailed)
@@ -148,9 +154,11 @@ class PlayScreen extends ConsumerWidget {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             Expanded(
-              child: Text(tr(ref, 'player_session'),
-                  style: Theme.of(context).textTheme.titleMedium,
-                  overflow: TextOverflow.ellipsis),
+              child: Text(
+                tr(ref, 'player_session'),
+                style: Theme.of(context).textTheme.titleMedium,
+                overflow: TextOverflow.ellipsis,
+              ),
             ),
             TutorialTarget(
               id: 'other.saves',
@@ -211,7 +219,9 @@ class PlayScreen extends ConsumerWidget {
                       children: [
                         Container(
                           padding: const EdgeInsets.symmetric(
-                              horizontal: 8, vertical: 2),
+                            horizontal: 8,
+                            vertical: 2,
+                          ),
                           decoration: BoxDecoration(
                             color: Theme.of(context).colorScheme.error,
                             borderRadius: BorderRadius.circular(12),
@@ -248,9 +258,8 @@ class PlayScreen extends ConsumerWidget {
                 '${session.activeAllyIds.length} ${tr(ref, 'active_label').toLowerCase()}',
               ),
               trailing: const Icon(Icons.chevron_right),
-              onTap: () => Navigator.of(context).push(
-                MaterialPageRoute(builder: (_) => const CampScreen()),
-              ),
+              onTap: () => Navigator.of(context)
+                  .push(MaterialPageRoute(builder: (_) => const CampScreen())),
             ),
           ),
         if (boatUnlocked && !asOtherTab)
@@ -258,37 +267,43 @@ class PlayScreen extends ConsumerWidget {
             child: ListTile(
               leading: const Icon(Icons.sailing),
               title: Text(tr(ref, 'boat_title')),
-              subtitle:
-                  Text('${tr(ref, 'boat_at_port_prefix')}: $mooredPortName'),
-              trailing: const Icon(Icons.chevron_right),
-              onTap: () => Navigator.of(context).push(
-                MaterialPageRoute(builder: (_) => const ShipScreen()),
+              subtitle: Text(
+                '${tr(ref, 'boat_at_port_prefix')}: $mooredPortName',
               ),
+              trailing: const Icon(Icons.chevron_right),
+              onTap: () => Navigator.of(context)
+                  .push(MaterialPageRoute(builder: (_) => const ShipScreen())),
             ),
           ),
         if (townHubUnlocked)
           Card(
             child: ListTile(
               leading: const Icon(Icons.cottage_outlined),
-              title: Text(town!
-                  .nameFor(ref.watch(appLanguageProvider) == AppLanguage.fr)),
-              subtitle: Text('${session.completedZoneIds.length} '
-                  '${tr(ref, 'zones_cleared_label').toLowerCase()}'),
+              title: Text(
+                town!.nameFor(ref.watch(appLanguageProvider) == AppLanguage.fr),
+              ),
+              subtitle: Text(
+                '${session.completedZoneIds.length} '
+                '${tr(ref, 'zones_cleared_label').toLowerCase()}',
+              ),
               trailing: const Icon(Icons.chevron_right),
               onTap: () => Navigator.of(context).push(
                 MaterialPageRoute(
-                    builder: (_) => PortScreen(portId: townPortId)),
+                  builder: (_) => PortScreen(portId: townPortId),
+                ),
               ),
             ),
           ),
-        _LockedPlacesLine(entries: [
-          if (!campUnlocked && !asOtherTab)
-            (tr(ref, 'camp_title'), tr(ref, 'camp_locked_subtitle')),
-          if (!boatUnlocked && !asOtherTab)
-            (tr(ref, 'boat_title'), tr(ref, 'boat_locked_subtitle')),
-          if (!townHubUnlocked)
-            (tr(ref, 'town_hub_title'), tr(ref, 'town_hub_locked_subtitle')),
-        ]),
+        _LockedPlacesLine(
+          entries: [
+            if (!campUnlocked && !asOtherTab)
+              (tr(ref, 'camp_title'), tr(ref, 'camp_locked_subtitle')),
+            if (!boatUnlocked && !asOtherTab)
+              (tr(ref, 'boat_title'), tr(ref, 'boat_locked_subtitle')),
+            if (!townHubUnlocked)
+              (tr(ref, 'town_hub_title'), tr(ref, 'town_hub_locked_subtitle')),
+          ],
+        ),
         TutorialTarget(
           id: 'other.achievements',
           child: Card(
@@ -428,9 +443,12 @@ class _TutorialList extends ConsumerWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        Text(tr(ref, 'tutorials_section_hint'),
-            style: theme.textTheme.bodyMedium
-                ?.copyWith(color: theme.colorScheme.onSurfaceVariant)),
+        Text(
+          tr(ref, 'tutorials_section_hint'),
+          style: theme.textTheme.bodyMedium?.copyWith(
+            color: theme.colorScheme.onSurfaceVariant,
+          ),
+        ),
         const SizedBox(height: 4),
         for (final topic in TutorialTopic.values)
           // The reader's tour belongs to Edit Mode (v1.201: the game has
@@ -447,14 +465,16 @@ class _TutorialList extends ConsumerWidget {
                 children: [
                   Text(
                     tr(
-                        ref,
-                        settings.hasSeen(topic)
-                            ? 'tut_seen_label'
-                            : 'tut_new_label'),
+                      ref,
+                      settings.hasSeen(topic)
+                          ? 'tut_seen_label'
+                          : 'tut_new_label',
+                    ),
                     style: theme.textTheme.labelSmall?.copyWith(
-                        color: settings.hasSeen(topic)
-                            ? theme.colorScheme.onSurfaceVariant
-                            : theme.colorScheme.primary),
+                      color: settings.hasSeen(topic)
+                          ? theme.colorScheme.onSurfaceVariant
+                          : theme.colorScheme.primary,
+                    ),
                   ),
                   const SizedBox(width: 4),
                   const Icon(Icons.play_arrow_rounded),
@@ -517,8 +537,11 @@ class _CollapsibleSection extends StatelessWidget {
                 child: Row(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    const Icon(Icons.check,
-                        size: IconSize.s16, color: Colors.white),
+                    const Icon(
+                      Icons.check,
+                      size: IconSize.s16,
+                      color: Colors.white,
+                    ),
                     const SizedBox(width: 4),
                     Text(
                       '$readyCount $readyLabel',
@@ -580,10 +603,13 @@ class _QuestList extends ConsumerWidget {
         : questDisplayOrder(
             records.keys.where((id) => questDiscovered(id, session)),
             records,
-            session);
+            session,
+          );
     if (keys.isEmpty) {
-      return Text(tr(ref, 'quests_none_found'),
-          style: Theme.of(context).textTheme.bodyMedium);
+      return Text(
+        tr(ref, 'quests_none_found'),
+        style: Theme.of(context).textTheme.bodyMedium,
+      );
     }
     final followedId = followedQuestIdOf(session);
     final clanData = ref.watch(clanDataProvider);
@@ -611,7 +637,9 @@ class _QuestList extends ConsumerWidget {
             const [];
         final meetsRequirements = isEditMode ||
             session.meetsRequirements(
-                reqGold: requiredGold, reqFlags: requiredFlags);
+              reqGold: requiredGold,
+              reqFlags: requiredFlags,
+            );
         final objectiveStatuses = objectiveStatusesFor(questId, quest, session);
         final objectivesMet =
             isEditMode || allObjectivesMet(questId, quest, session);
@@ -666,8 +694,11 @@ class _QuestList extends ConsumerWidget {
             title: questName,
             color: plateColor,
             frame: isFollowed ? theme.colorScheme.primary : null,
-            lead: Icon(questIcon(category, firstObjectiveType),
-                size: IconSize.s16, color: storyInkOn(plateColor)),
+            lead: Icon(
+              questIcon(category, firstObjectiveType),
+              size: IconSize.s16,
+              color: storyInkOn(plateColor),
+            ),
             trail: isActive && !isEditMode
                 ? InkResponse(
                     onTap: isFollowed
@@ -680,9 +711,10 @@ class _QuestList extends ConsumerWidget {
                           ? tr(ref, 'quests_section_following')
                           : tr(ref, 'quest_follow_button'),
                       child: Icon(
-                          isFollowed ? Icons.push_pin : Icons.push_pin_outlined,
-                          size: IconSize.s16,
-                          color: storyInkOn(plateColor)),
+                        isFollowed ? Icons.push_pin : Icons.push_pin_outlined,
+                        size: IconSize.s16,
+                        color: storyInkOn(plateColor),
+                      ),
                     ),
                   )
                 : null,
@@ -695,8 +727,9 @@ class _QuestList extends ConsumerWidget {
                     padding: EdgeInsets.zero,
                     child: Text(
                       tr(ref, category == 'Main' ? 'quest_main' : 'quest_side'),
-                      style: theme.textTheme.labelSmall
-                          ?.copyWith(color: theme.colorScheme.onSurfaceVariant),
+                      style: theme.textTheme.labelSmall?.copyWith(
+                        color: theme.colorScheme.onSurfaceVariant,
+                      ),
                     ),
                   ),
                 if (dialogue.isNotEmpty) ...[
@@ -714,37 +747,39 @@ class _QuestList extends ConsumerWidget {
                 // so the player knows the goal when choosing.
                 if (!isCompleted && objectiveStatuses.isNotEmpty) ...[
                   const SizedBox(height: 10),
-                  ...objectiveStatuses.map((status) => Padding(
-                        padding: const EdgeInsets.only(top: 2),
-                        child: Row(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Icon(
-                              isActive && status.met
-                                  ? Icons.check_circle
-                                  : Icons.radio_button_unchecked,
-                              size: IconSize.s16,
-                              color: isActive && status.met
-                                  ? Palette.good
-                                  : theme.colorScheme.onSurfaceVariant,
-                            ),
-                            const SizedBox(width: 6),
-                            Expanded(
-                              child: Text(
-                                isActive && status.required > 1
-                                    ? '${status.description} '
-                                        '(${status.current}/${status.required})'
-                                    : status.description,
-                                style: theme.textTheme.bodySmall?.copyWith(
-                                  decoration: isActive && status.met
-                                      ? TextDecoration.lineThrough
-                                      : null,
-                                ),
+                  ...objectiveStatuses.map(
+                    (status) => Padding(
+                      padding: const EdgeInsets.only(top: 2),
+                      child: Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Icon(
+                            isActive && status.met
+                                ? Icons.check_circle
+                                : Icons.radio_button_unchecked,
+                            size: IconSize.s16,
+                            color: isActive && status.met
+                                ? Palette.good
+                                : theme.colorScheme.onSurfaceVariant,
+                          ),
+                          const SizedBox(width: 6),
+                          Expanded(
+                            child: Text(
+                              isActive && status.required > 1
+                                  ? '${status.description} '
+                                      '(${status.current}/${status.required})'
+                                  : status.description,
+                              style: theme.textTheme.bodySmall?.copyWith(
+                                decoration: isActive && status.met
+                                    ? TextDecoration.lineThrough
+                                    : null,
                               ),
                             ),
-                          ],
-                        ),
-                      )),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
                 ],
                 const SizedBox(height: 12),
                 Row(
@@ -787,8 +822,10 @@ class _ShopList extends ConsumerWidget {
         if (isEditMode || session.unlockedShopIds.contains(id)) id,
     ]..sort();
     if (keys.isEmpty) {
-      return Text(tr(ref, 'shops_none_found'),
-          style: Theme.of(context).textTheme.bodyMedium);
+      return Text(
+        tr(ref, 'shops_none_found'),
+        style: Theme.of(context).textTheme.bodyMedium,
+      );
     }
 
     return Column(
@@ -860,8 +897,10 @@ class _EnemyList extends ConsumerWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         if (keys.isEmpty)
-          Text(tr(ref, 'bestiary_none_met'),
-              style: Theme.of(context).textTheme.bodyMedium),
+          Text(
+            tr(ref, 'bestiary_none_met'),
+            style: Theme.of(context).textTheme.bodyMedium,
+          ),
         ..._enemyCards(context, ref, keys, session, isEditMode),
         if (!isEditMode && unmet > 0)
           Padding(
@@ -869,15 +908,21 @@ class _EnemyList extends ConsumerWidget {
             child: Text(
               tr(ref, 'bestiary_unmet_count').replaceAll('{n}', '$unmet'),
               style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                  color: Theme.of(context).colorScheme.onSurfaceVariant),
+                    color: Theme.of(context).colorScheme.onSurfaceVariant,
+                  ),
             ),
           ),
       ],
     );
   }
 
-  List<Widget> _enemyCards(BuildContext context, WidgetRef ref,
-      List<String> keys, PlayerSession session, bool isEditMode) {
+  List<Widget> _enemyCards(
+    BuildContext context,
+    WidgetRef ref,
+    List<String> keys,
+    PlayerSession session,
+    bool isEditMode,
+  ) {
     return [
       ...keys.map((enemyId) {
         final enemy = records[enemyId] as Map<String, dynamic>;
@@ -960,12 +1005,16 @@ class _PeopleList extends ConsumerWidget {
           ),
           for (final npcId in group.value)
             _personTile(
-                context, ref, npcId, records[npcId] as Map<String, dynamic>,
-                session: session,
-                language: language,
-                french: french,
-                geography: geography,
-                clanData: clanData),
+              context,
+              ref,
+              npcId,
+              records[npcId] as Map<String, dynamic>,
+              session: session,
+              language: language,
+              french: french,
+              geography: geography,
+              clanData: clanData,
+            ),
         ],
         if (!isEditMode && unmet > 0)
           Padding(
@@ -995,8 +1044,11 @@ class _PeopleList extends ConsumerWidget {
     final talkedTo = session.talkedToNpcIds.contains(npcId);
     final fresh = !session.seenNpcIds.contains(npcId);
     final role = npcText(npc, 'role', french);
-    final place =
-        npcPlaceName(geography, npc['placeId']?.toString() ?? '', language);
+    final place = npcPlaceName(
+      geography,
+      npc['placeId']?.toString() ?? '',
+      language,
+    );
     final line = [
       if (role.isNotEmpty) role,
       if (place.isNotEmpty) place,
@@ -1006,15 +1058,18 @@ class _PeopleList extends ConsumerWidget {
     return Card(
       child: ListTile(
         key: Key('person_$npcId'),
-        leading: Icon(npcKindIcon(npc['kind']?.toString()),
-            color: talkedTo ? theme.colorScheme.primary : null),
+        leading: Icon(
+          npcKindIcon(npc['kind']?.toString()),
+          color: talkedTo ? theme.colorScheme.primary : null,
+        ),
         title: Row(
           children: [
             Expanded(child: Text(npcName)),
             NpcFactionTag(
-                data: clanData,
-                factionId: npc['faction']?.toString() ?? '',
-                language: language),
+              data: clanData,
+              factionId: npc['faction']?.toString() ?? '',
+              language: language,
+            ),
           ],
         ),
         subtitle: Text(subtitle, maxLines: 2, overflow: TextOverflow.ellipsis),
@@ -1023,10 +1078,12 @@ class _PeopleList extends ConsumerWidget {
           children: [
             // Newly met: a red dot until the section has been opened.
             if (fresh)
-              Icon(Icons.circle,
-                  key: Key('person_new_$npcId'),
-                  size: IconSize.inline,
-                  color: theme.colorScheme.error),
+              Icon(
+                Icons.circle,
+                key: Key('person_new_$npcId'),
+                size: IconSize.inline,
+                color: theme.colorScheme.error,
+              ),
             const Icon(Icons.chevron_right),
           ],
         ),

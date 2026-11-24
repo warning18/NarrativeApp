@@ -10,9 +10,11 @@ import 'geography_provider.dart';
 /// politics, so a place changing hands at a chapter's turn re-tints it.
 /// The cove camp (a town by its city plan only) joins once city_plans.json
 /// has loaded.
-final townRulersProvider = Provider<Map<String, TownRuler>>((ref) => townRulers(
-      ref.watch(geographyProvider),
-      ref.watch(politicsProvider),
-      ref.watch(factionsProvider),
-      planIds: ref.watch(cityPlanRecordsProvider).value?.keys ?? const [],
-    ));
+final townRulersProvider = Provider<Map<String, TownRuler>>(
+  (ref) => townRulers(
+    ref.watch(geographyProvider),
+    ref.watch(politicsProvider),
+    ref.watch(factionsProvider),
+    planIds: ref.watch(cityPlanRecordsProvider).value?.keys ?? const [],
+  ),
+);

@@ -136,7 +136,7 @@ class Relations {
             RelationPair.fromJson(p),
       ],
       history: [
-        for (final h in maps(json['history'])) HistoryEvent.fromJson(h)
+        for (final h in maps(json['history'])) HistoryEvent.fromJson(h),
       ],
     );
   }

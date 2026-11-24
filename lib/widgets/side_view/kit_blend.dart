@@ -36,8 +36,11 @@ double kitBlendCover(double column, double progress) {
 /// scroll goes from 0 to 1. Painted as one layer (give it the scene's raw
 /// scroll: each inner layer takes its own share). At 0 it is just [from], at
 /// 1 just [to].
-SideLayer kitBlend(List<SideLayer> from, List<SideLayer> to,
-    double Function(double) progressAt) {
+SideLayer kitBlend(
+  List<SideLayer> from,
+  List<SideLayer> to,
+  double Function(double) progressAt,
+) {
   return SideLayer(1, (canvas, size, scroll, t, u) {
     void paintAll(List<SideLayer> layers) {
       for (final layer in layers) {

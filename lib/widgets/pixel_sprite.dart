@@ -79,11 +79,16 @@ class PixelStripPainter extends CustomPainter {
       final frames = (image.width / side).round();
       final i = (progress * frames).floor().clamp(0, frames - 1);
       final dst = Rect.fromCenter(
-          center: size.center(Offset.zero),
-          width: side * scale,
-          height: side * scale);
+        center: size.center(Offset.zero),
+        width: side * scale,
+        height: side * scale,
+      );
       canvas.drawImageRect(
-          image, Rect.fromLTWH(i * side, 0, side, side), dst, paint);
+        image,
+        Rect.fromLTWH(i * side, 0, side, side),
+        dst,
+        paint,
+      );
     }
   }
 
@@ -131,8 +136,9 @@ class _PixelSpriteState extends State<PixelSprite>
     with SingleTickerProviderStateMixin {
   late final AnimationController _controller = AnimationController(
     vsync: this,
-    duration:
-        Duration(milliseconds: (widget.frames * 1000 / widget.fps).round()),
+    duration: Duration(
+      milliseconds: (widget.frames * 1000 / widget.fps).round(),
+    ),
   );
   bool _started = false;
 
@@ -149,8 +155,9 @@ class _PixelSpriteState extends State<PixelSprite>
     _started = true;
     if (MediaQuery.maybeOf(context)?.disableAnimations ?? false) {
       if (!widget.loop) {
-        WidgetsBinding.instance
-            .addPostFrameCallback((_) => widget.onDone?.call());
+        WidgetsBinding.instance.addPostFrameCallback(
+          (_) => widget.onDone?.call(),
+        );
       }
       return;
     }
@@ -181,7 +188,10 @@ class _PixelSpriteState extends State<PixelSprite>
           key: ValueKey('pixel_${widget.name}'),
           size: Size.square(widget.frameSize * widget.scale),
           painter: PixelStripPainter(
-              names: [widget.name], progress: progress, scale: widget.scale),
+            names: [widget.name],
+            progress: progress,
+            scale: widget.scale,
+          ),
         );
       },
     );

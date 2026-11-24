@@ -23,7 +23,8 @@ bool _workAffordable(CampWork work) =>
     work.state != WorkState.built &&
     work.state != WorkState.locked &&
     !work.needs.any(
-        (n) => n.kind == WorkNeedKind.gold || n.kind == WorkNeedKind.material);
+      (n) => n.kind == WorkNeedKind.gold || n.kind == WorkNeedKind.material,
+    );
 
 /// Whether [work] passes [filter] (null: all) and [category] (null: all).
 bool workPasses(CampWork work, {BuildFilter? filter, WorkCategory? category}) {
@@ -47,7 +48,7 @@ Map<WorkCategory, List<CampWork>> filteredWorks(
         if (value.any((w) => workPasses(w, filter: filter, category: category)))
           key: [
             for (final w in value)
-              if (workPasses(w, filter: filter, category: category)) w
+              if (workPasses(w, filter: filter, category: category)) w,
           ],
     };
 
@@ -141,12 +142,17 @@ class CampBuildTray extends ConsumerWidget {
     final shownWorks = filteredWorks(works, filter: filter, category: category);
     final shownAdditions = [
       for (final a in additions)
-        if (a.passes(filter)) a
+        if (a.passes(filter)) a,
     ];
     final empty = showAdditions ? shownAdditions.isEmpty : shownWorks.isEmpty;
 
-    Widget tab(String key, String label, String count, bool selected,
-        VoidCallback onTap) {
+    Widget tab(
+      String key,
+      String label,
+      String count,
+      bool selected,
+      VoidCallback onTap,
+    ) {
       return Expanded(
         child: InkWell(
           key: Key(key),
@@ -156,26 +162,32 @@ class CampBuildTray extends ConsumerWidget {
             decoration: BoxDecoration(
               border: Border(
                 bottom: BorderSide(
-                    color: selected ? ink.gold : ink.seam,
-                    width: selected ? 2.5 : 1),
+                  color: selected ? ink.gold : ink.seam,
+                  width: selected ? 2.5 : 1,
+                ),
               ),
             ),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Flexible(
-                  child: Text(label,
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
-                      style: theme.textTheme.titleSmall?.copyWith(
-                          color: selected ? ink.gold : ink.ash,
-                          fontWeight:
-                              selected ? FontWeight.w600 : FontWeight.w400)),
+                  child: Text(
+                    label,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: theme.textTheme.titleSmall?.copyWith(
+                      color: selected ? ink.gold : ink.ash,
+                      fontWeight: selected ? FontWeight.w600 : FontWeight.w400,
+                    ),
+                  ),
                 ),
                 const SizedBox(width: 6),
-                Text(count,
-                    style: theme.textTheme.labelSmall
-                        ?.copyWith(color: selected ? ink.gold : ink.ash)),
+                Text(
+                  count,
+                  style: theme.textTheme.labelSmall?.copyWith(
+                    color: selected ? ink.gold : ink.ash,
+                  ),
+                ),
               ],
             ),
           ),
@@ -183,8 +195,13 @@ class CampBuildTray extends ConsumerWidget {
       );
     }
 
-    Widget chip(String key, String label, bool selected, VoidCallback onTap,
-        {Color? color}) {
+    Widget chip(
+      String key,
+      String label,
+      bool selected,
+      VoidCallback onTap, {
+      Color? color,
+    }) {
       final tone = color ?? ink.gold;
       return Padding(
         padding: const EdgeInsets.only(right: 6),
@@ -194,8 +211,9 @@ class CampBuildTray extends ConsumerWidget {
           selected: selected,
           showCheckmark: false,
           visualDensity: VisualDensity.compact,
-          labelStyle: theme.textTheme.labelMedium
-              ?.copyWith(color: selected ? tone : null),
+          labelStyle: theme.textTheme.labelMedium?.copyWith(
+            color: selected ? tone : null,
+          ),
           selectedColor: tone.withValues(alpha: 0.2),
           side: BorderSide(color: selected ? tone : ink.seam),
           onSelected: (_) => onTap(),
@@ -222,10 +240,11 @@ class CampBuildTray extends ConsumerWidget {
             ),
           if (!showAdditions) ...[
             Container(
-                width: 1,
-                height: 20,
-                margin: const EdgeInsets.only(right: 6),
-                color: ink.seam),
+              width: 1,
+              height: 20,
+              margin: const EdgeInsets.only(right: 6),
+              color: ink.seam,
+            ),
             for (final c in WorkCategory.values)
               chip(
                 'town_category_${c.name}',
@@ -245,17 +264,19 @@ class CampBuildTray extends ConsumerWidget {
         Row(
           children: [
             tab(
-                'town_tab_houses',
-                tr(ref, 'houses_section'),
-                '$housesBuilt/${allWorks.length}',
-                !showAdditions,
-                () => onShowAdditions(false)),
+              'town_tab_houses',
+              tr(ref, 'houses_section'),
+              '$housesBuilt/${allWorks.length}',
+              !showAdditions,
+              () => onShowAdditions(false),
+            ),
             tab(
-                'town_tab_additions',
-                tr(ref, 'town_additions_tab'),
-                '${additions.fold<int>(0, (n, a) => n + a.built)}',
-                showAdditions,
-                () => onShowAdditions(true)),
+              'town_tab_additions',
+              tr(ref, 'town_additions_tab'),
+              '${additions.fold<int>(0, (n, a) => n + a.built)}',
+              showAdditions,
+              () => onShowAdditions(true),
+            ),
           ],
         ),
         const SizedBox(height: 8),
@@ -266,8 +287,9 @@ class CampBuildTray extends ConsumerWidget {
           key: const Key('town_purse'),
           maxLines: 2,
           overflow: TextOverflow.ellipsis,
-          style: theme.textTheme.labelMedium
-              ?.copyWith(color: readyCount > 0 ? ink.gold : ink.ash),
+          style: theme.textTheme.labelMedium?.copyWith(
+            color: readyCount > 0 ? ink.gold : ink.ash,
+          ),
         ),
         const SizedBox(height: 6),
         filters,
@@ -312,9 +334,11 @@ class _Empty extends ConsumerWidget {
       ),
       child: Column(
         children: [
-          Text(tr(ref, 'town_filter_empty'),
-              textAlign: TextAlign.center,
-              style: theme.textTheme.bodyMedium?.copyWith(color: ink.ash)),
+          Text(
+            tr(ref, 'town_filter_empty'),
+            textAlign: TextAlign.center,
+            style: theme.textTheme.bodyMedium?.copyWith(color: ink.ash),
+          ),
           const SizedBox(height: 6),
           TextButton(
             key: const Key('town_filter_clear'),
@@ -348,16 +372,10 @@ class _AdditionCard extends ConsumerWidget {
     final ink = InkColors.of(context);
     final a = status.addition;
     final (String tag, Color tagColour) = status.atLimit
-        ? (
-            tr(ref, 'town_limit_short'),
-            ink.ash,
-          )
+        ? (tr(ref, 'town_limit_short'), ink.ash)
         : status.goldEnough
             ? (tr(ref, 'town_ready'), ink.gold)
-            : (
-                '${tr(ref, 'town_need')} ${a.cost - status.gold} G',
-                ink.ember,
-              );
+            : ('${tr(ref, 'town_need')} ${a.cost - status.gold} G', ink.ember);
     final slot = slotText(status.built, status.limit);
     return Padding(
       padding: const EdgeInsets.only(bottom: 8),
@@ -371,7 +389,8 @@ class _AdditionCard extends ConsumerWidget {
             color: theme.colorScheme.surfaceContainer,
             borderRadius: BorderRadius.circular(4),
             border: Border.all(
-                color: selected ? theme.colorScheme.primary : ink.seam),
+              color: selected ? theme.colorScheme.primary : ink.seam,
+            ),
           ),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -379,11 +398,14 @@ class _AdditionCard extends ConsumerWidget {
               Row(
                 children: [
                   Expanded(
-                    child: Text(tr(ref, '${a.id}_name'),
-                        maxLines: 2,
-                        overflow: TextOverflow.ellipsis,
-                        style: theme.textTheme.bodyMedium
-                            ?.copyWith(fontWeight: FontWeight.w500)),
+                    child: Text(
+                      tr(ref, '${a.id}_name'),
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
+                      style: theme.textTheme.bodyMedium?.copyWith(
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
                   ),
                   if (slot != null) ...[
                     const SizedBox(width: 8),
@@ -400,24 +422,31 @@ class _AdditionCard extends ConsumerWidget {
                 ],
               ),
               const SizedBox(height: 4),
-              Text(tr(ref, '${a.id}_desc'),
-                  maxLines: 2,
-                  overflow: TextOverflow.ellipsis,
-                  style: theme.textTheme.bodySmall
-                      ?.copyWith(color: ink.ash, height: 1.3)),
+              Text(
+                tr(ref, '${a.id}_desc'),
+                maxLines: 2,
+                overflow: TextOverflow.ellipsis,
+                style: theme.textTheme.bodySmall?.copyWith(
+                  color: ink.ash,
+                  height: 1.3,
+                ),
+              ),
               const SizedBox(height: 6),
-              Text('${a.cost} G',
-                  key: Key('town_gold_${a.id}'),
-                  style: theme.textTheme.labelMedium?.copyWith(
-                      color: status.goldEnough ? ink.ash : ink.ember)),
+              Text(
+                '${a.cost} G',
+                key: Key('town_gold_${a.id}'),
+                style: theme.textTheme.labelMedium?.copyWith(
+                  color: status.goldEnough ? ink.ash : ink.ember,
+                ),
+              ),
               if (status.atLimit) ...[
                 const SizedBox(height: 6),
                 Text(
-                    tr(ref, 'town_limit_reached')
-                        .replaceAll('{built}', '${status.built}')
-                        .replaceAll('{limit}', '${status.limit}'),
-                    style:
-                        theme.textTheme.labelMedium?.copyWith(color: ink.ash)),
+                  tr(ref, 'town_limit_reached')
+                      .replaceAll('{built}', '${status.built}')
+                      .replaceAll('{limit}', '${status.limit}'),
+                  style: theme.textTheme.labelMedium?.copyWith(color: ink.ash),
+                ),
               ] else ...[
                 const SizedBox(height: 8),
                 FilledButton(
@@ -427,9 +456,11 @@ class _AdditionCard extends ConsumerWidget {
                     minimumSize: const Size.fromHeight(40),
                     padding: const EdgeInsets.symmetric(horizontal: 8),
                   ),
-                  child: Text(status.goldEnough
-                      ? '${tr(ref, 'build_button')} · ${a.cost} G'
-                      : '${a.cost} G'),
+                  child: Text(
+                    status.goldEnough
+                        ? '${tr(ref, 'build_button')} · ${a.cost} G'
+                        : '${a.cost} G',
+                  ),
                 ),
               ],
             ],
@@ -458,8 +489,10 @@ class SlotChip extends ConsumerWidget {
           border: Border.all(color: ink.seam),
           borderRadius: BorderRadius.circular(3),
         ),
-        child: Text(text,
-            style: theme.textTheme.labelSmall?.copyWith(color: ink.ash)),
+        child: Text(
+          text,
+          style: theme.textTheme.labelSmall?.copyWith(color: ink.ash),
+        ),
       ),
     );
   }

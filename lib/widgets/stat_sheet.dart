@@ -54,12 +54,12 @@ List<_StatSourceLine> _groupStatSources(
       () {
         final mine = [
           for (final r in rows)
-            if (r.lent == lent && r.kind == kind) r
+            if (r.lent == lent && r.kind == kind) r,
         ];
         final names = [
           for (final r in mine)
             if (nameOf(kind, r.id) case final n? when n.isNotEmpty)
-              (n, r.amount)
+              (n, r.amount),
         ];
         final detail = names.isEmpty
             ? ''
@@ -128,9 +128,13 @@ class StatSheet extends ConsumerWidget {
 
     Widget heading(String text) => Padding(
           padding: const EdgeInsets.only(top: 14, bottom: 4),
-          child: Text(text.toUpperCase(),
-              style: theme.textTheme.labelMedium
-                  ?.copyWith(color: ink.gold, letterSpacing: 1.2)),
+          child: Text(
+            text.toUpperCase(),
+            style: theme.textTheme.labelMedium?.copyWith(
+              color: ink.gold,
+              letterSpacing: 1.2,
+            ),
+          ),
         );
 
     Widget line(_StatSourceLine l, {Key? key}) {
@@ -145,21 +149,29 @@ class StatSheet extends ConsumerWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(tr(ref, _statSourceKey(l.kind)),
-                      style: theme.textTheme.bodyMedium),
+                  Text(
+                    tr(ref, _statSourceKey(l.kind)),
+                    style: theme.textTheme.bodyMedium,
+                  ),
                   if (l.detail.isNotEmpty)
-                    Text(l.detail,
-                        style: theme.textTheme.bodySmall
-                            ?.copyWith(color: ink.ash)),
+                    Text(
+                      l.detail,
+                      style: theme.textTheme.bodySmall?.copyWith(
+                        color: ink.ash,
+                      ),
+                    ),
                 ],
               ),
             ),
             const SizedBox(width: 8),
-            Text('${plus ? '+' : ''}${l.amount}',
-                style: TextStyle(
-                    fontFamily: InkFonts.system,
-                    fontSize: 16,
-                    color: plus ? ink.heal : ink.blood)),
+            Text(
+              '${plus ? '+' : ''}${l.amount}',
+              style: TextStyle(
+                fontFamily: InkFonts.system,
+                fontSize: 16,
+                color: plus ? ink.heal : ink.blood,
+              ),
+            ),
           ],
         ),
       );
@@ -176,24 +188,34 @@ class StatSheet extends ConsumerWidget {
             Row(
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                Text('$stored',
-                    key: const Key('stat_sheet_value'),
-                    style: TextStyle(
-                        fontFamily: InkFonts.system,
-                        fontSize: 34,
-                        height: 1.1,
-                        color: ink.gold)),
+                Text(
+                  '$stored',
+                  key: const Key('stat_sheet_value'),
+                  style: TextStyle(
+                    fontFamily: InkFonts.system,
+                    fontSize: 34,
+                    height: 1.1,
+                    color: ink.gold,
+                  ),
+                ),
                 const SizedBox(width: 12),
                 Expanded(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text(tr(ref, '${stat}_label'),
-                          style: theme.textTheme.titleLarge
-                              ?.copyWith(fontFamily: InkFonts.display)),
-                      Text(tr(ref, abilityAbbrevKey(stat)),
-                          style: theme.textTheme.labelMedium
-                              ?.copyWith(color: ink.ash, letterSpacing: 1.2)),
+                      Text(
+                        tr(ref, '${stat}_label'),
+                        style: theme.textTheme.titleLarge?.copyWith(
+                          fontFamily: InkFonts.display,
+                        ),
+                      ),
+                      Text(
+                        tr(ref, abilityAbbrevKey(stat)),
+                        style: theme.textTheme.labelMedium?.copyWith(
+                          color: ink.ash,
+                          letterSpacing: 1.2,
+                        ),
+                      ),
                     ],
                   ),
                 ),
@@ -210,8 +232,10 @@ class StatSheet extends ConsumerWidget {
               ),
             heading(tr(ref, 'stat_sheet_does')),
             Text(
-              tr(ref, 'stat_sheet_per_point')
-                  .replaceAll('{effects}', effects.join(', ')),
+              tr(
+                ref,
+                'stat_sheet_per_point',
+              ).replaceAll('{effects}', effects.join(', ')),
               key: const Key('stat_sheet_effects'),
               style: theme.textTheme.bodyMedium,
             ),
@@ -222,15 +246,21 @@ class StatSheet extends ConsumerWidget {
               Row(
                 children: [
                   Expanded(
-                    child: Text(tr(ref, 'stat_sheet_total'),
-                        style: theme.textTheme.bodyMedium
-                            ?.copyWith(fontWeight: FontWeight.w600)),
+                    child: Text(
+                      tr(ref, 'stat_sheet_total'),
+                      style: theme.textTheme.bodyMedium?.copyWith(
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
                   ),
-                  Text('$stored',
-                      style: TextStyle(
-                          fontFamily: InkFonts.system,
-                          fontSize: 16,
-                          color: ink.gold)),
+                  Text(
+                    '$stored',
+                    style: TextStyle(
+                      fontFamily: InkFonts.system,
+                      fontSize: 16,
+                      color: ink.gold,
+                    ),
+                  ),
                 ],
               ),
             ],

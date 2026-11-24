@@ -144,7 +144,7 @@ List<Offset> journeyPlaceLayout({
   }
   final local = [
     for (var i = 0; i < bearings.length; i++)
-      if (bearings[i] == null) i
+      if (bearings[i] == null) i,
   ];
   if (local.isEmpty) return positions;
   final inner = local.length <= innerCapacity + 1
@@ -167,8 +167,10 @@ List<Offset> journeyPlaceLayout({
     final angles = _spreadAngles(ids.length, exits, turn);
     for (var k = 0; k < ids.length; k++) {
       positions[ids[k]] = here +
-          Offset(math.cos(angles[k]) * reachX * fraction,
-              math.sin(angles[k]) * reachY * fraction);
+          Offset(
+            math.cos(angles[k]) * reachX * fraction,
+            math.sin(angles[k]) * reachY * fraction,
+          );
     }
   }
 
@@ -183,7 +185,7 @@ List<Offset> journeyPlaceLayout({
 List<double?> fanOutBearings(List<double?> bearings, {double spread = 0.35}) {
   final order = [
     for (var i = 0; i < bearings.length; i++)
-      if (bearings[i] != null) i
+      if (bearings[i] != null) i,
   ]..sort((a, b) => _norm(bearings[a]!).compareTo(_norm(bearings[b]!)));
   final out = List<double?>.of(bearings);
   var start = 0;
@@ -234,7 +236,7 @@ List<Rect?> journeyLabelSpots({
 }) {
   final marks = [
     for (final centre in centres)
-      Rect.fromCircle(center: centre, radius: radius + 2)
+      Rect.fromCircle(center: centre, radius: radius + 2),
   ];
   final spots = List<Rect?>.filled(labels.length, null);
   final placed = <Rect>[];
@@ -270,7 +272,7 @@ List<Rect?> journeyLabelSpots({
   for (final i in [
     if (first != null) first,
     for (var i = 0; i < labels.length; i++)
-      if (i != first) i
+      if (i != first) i,
   ]) {
     final size = labels[i];
     if (size == null || i >= centres.length) continue;
@@ -341,14 +343,24 @@ double _norm(double a) => a % (2 * math.pi);
 
 /// Where a ray from [from] at [angle] leaves [area] (see
 /// [journeyPlaceLayout]): a way out of a city's plan (v1.203).
-Offset journeyEdgeSpot(Offset from, double angle, Size area,
-        {double margin = 34, double footMargin = 86}) =>
+Offset journeyEdgeSpot(
+  Offset from,
+  double angle,
+  Size area, {
+  double margin = 34,
+  double footMargin = 86,
+}) =>
     _toEdge(from, angle, area, margin, footMargin);
 
 /// Where a ray from [from] at [angle] leaves [area] shrunk by [margin]
 /// ([footMargin] at the foot, where names go under the marks).
 Offset _toEdge(
-    Offset from, double angle, Size area, double margin, double footMargin) {
+  Offset from,
+  double angle,
+  Size area,
+  double margin,
+  double footMargin,
+) {
   final dx = math.cos(angle), dy = math.sin(angle);
   var t = double.infinity;
   if (dx > 1e-6) t = math.min(t, (area.width - margin - from.dx) / dx);
@@ -406,10 +418,14 @@ Rect journeyFocusFrame(
     right = math.max(right, p.dx);
     bottom = math.max(bottom, p.dy);
   }
-  var width =
-      math.max(right - left + 2 * pad * frame.width, least * frame.width);
-  var height =
-      math.max(bottom - top + 2 * pad * frame.height, least * frame.height);
+  var width = math.max(
+    right - left + 2 * pad * frame.width,
+    least * frame.width,
+  );
+  var height = math.max(
+    bottom - top + 2 * pad * frame.height,
+    least * frame.height,
+  );
   width = math.min(width, frame.width);
   height = math.min(height, frame.height);
   final centre = Offset((left + right) / 2, (top + bottom) / 2);

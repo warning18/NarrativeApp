@@ -3,6 +3,7 @@
 // choice tag chip's own look and the Tower's Material chips, which were three
 // looks for the same thing.
 import 'package:flutter/material.dart';
+
 import '../theme/icon_sizes.dart';
 
 class InkChip extends StatelessWidget {
@@ -27,7 +28,11 @@ class InkChip extends StatelessWidget {
   Widget build(BuildContext context) {
     // 12 px, as the item and calling tags were; the choice tags were 11.
     final style = Theme.of(context).textTheme.labelSmall?.copyWith(
-        color: color, fontSize: 12, height: 1.2, fontWeight: FontWeight.w700);
+          color: color,
+          fontSize: 12,
+          height: 1.2,
+          fontWeight: FontWeight.w700,
+        );
     return Container(
       padding: EdgeInsets.symmetric(horizontal: dense ? 6 : 8, vertical: 2),
       decoration: BoxDecoration(

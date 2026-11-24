@@ -476,8 +476,14 @@ TowerRun towerStart({
           case TowerUnlockKind.startDie || TowerUnlockKind.startItem)
         id,
   ];
-  final hero = towerFreshHero(raceId, professionId, unlocks, data,
-      unlocksOwned: unlocksOwned, bag: true);
+  final hero = towerFreshHero(
+    raceId,
+    professionId,
+    unlocks,
+    data,
+    unlocksOwned: unlocksOwned,
+    bag: true,
+  );
   // The die in play: the calling's own; the start's dice wait in
   // the bag.
   final die = hero.diceId;
@@ -506,8 +512,11 @@ TowerRun towerStart({
 /// shortcut taken (TowerRun.shortcut, floor events PR 2), the tougher
 /// fight of towerShortcutFloor.
 TowerFloor towerFloorOf(TowerRun run, TowerData data) {
-  final floor =
-      towerFloorsFor(run.seed, data.enemies, events: run.events)[run.floor - 1];
+  final floor = towerFloorsFor(
+    run.seed,
+    data.enemies,
+    events: run.events,
+  )[run.floor - 1];
   return (run.shortcut ?? false) &&
           towerEventKindOf(run) == TowerEventKind.shortcut
       ? towerShortcutFloor(floor)
@@ -530,13 +539,16 @@ TowerFloor towerFloorOf(TowerRun run, TowerData data) {
 /// nothing: no level (the height counts it already), no spoils, no card,
 /// no healing. The last event's result is cleared (a rival's floor sets
 /// its own).
-TowerRun towerAfterFight(TowerRun run, TowerData data,
-    {required bool won,
-    required int healthLeft,
-    int? potionsLeft,
-    int? antidotesLeft,
-    int? maxHealthBefore,
-    int? rounds}) {
+TowerRun towerAfterFight(
+  TowerRun run,
+  TowerData data, {
+  required bool won,
+  required int healthLeft,
+  int? potionsLeft,
+  int? antidotesLeft,
+  int? maxHealthBefore,
+  int? rounds,
+}) {
   if (run.status != TowerStatus.climbing) return run;
   // The store on the landing closes with the fight (floor events PR 4).
   if (run.store != null) run = run.copyWith(clearStore: true);
@@ -549,16 +561,18 @@ TowerRun towerAfterFight(TowerRun run, TowerData data,
       : min(run.antidotes, max(0, antidotesLeft));
   if (run.floor >= towerTop) {
     return run.copyWith(
-        status: TowerStatus.won,
-        health: max(1, healthLeft),
-        potions: potions,
-        antidotes: antidotes,
-        clearLastEvent: true);
+      status: TowerStatus.won,
+      health: max(1, healthLeft),
+      potions: potions,
+      antidotes: antidotes,
+      clearLastEvent: true,
+    );
   }
   final leveled = run.copyWith(
-      status: TowerStatus.choosing,
-      lastEvent: rival,
-      clearLastEvent: rival == null);
+    status: TowerStatus.choosing,
+    lastEvent: rival,
+    clearLastEvent: rival == null,
+  );
   if (towerIsRevisit(run)) {
     final hero = towerHeroOf(leveled, data);
     return leveled.copyWith(
@@ -636,18 +650,29 @@ int towerPendingPicks(TowerRun run) {
 /// The stat pick on the table for [run]: the three offers of its next
 /// pending pick (the main game's draw, towerStatPickDraw), or none.
 /// [hero], when given, is [run]'s hero already built (towerHeroOf).
-List<StatPickOffer> towerStatPickOffer(TowerRun run, TowerData data,
-    {SimCharacter? hero}) {
+List<StatPickOffer> towerStatPickOffer(
+  TowerRun run,
+  TowerData data, {
+  SimCharacter? hero,
+}) {
   if (towerPendingPicks(run) <= 0) return const [];
   return towerStatPickDraw(
-      hero ?? towerHeroOf(run, data), run.seed, run.statPicks.length, data);
+    hero ?? towerHeroOf(run, data),
+    run.seed,
+    run.statPicks.length,
+    data,
+  );
 }
 
 /// [run] with offer [index] of its stat pick on the table taken; [run] as
 /// it is when no pick waits or there is no such offer. [offer], when given,
 /// is [run]'s pick on the table already drawn (towerStatPickOffer).
-TowerRun towerTakeStatPick(TowerRun run, TowerData data, int index,
-    {List<StatPickOffer>? offer}) {
+TowerRun towerTakeStatPick(
+  TowerRun run,
+  TowerData data,
+  int index, {
+  List<StatPickOffer>? offer,
+}) {
   offer ??= towerStatPickOffer(run, data);
   if (index < 0 || index >= offer.length) return run;
   return run.copyWith(statPicks: [...run.statPicks, index]);
@@ -665,8 +690,12 @@ TowerRun towerTakeStatPick(TowerRun run, TowerData data, int index,
 /// the floor below the landing); a skip's level-up picks wait on the
 /// landing. Last, a store on the landing opens (floor events PR 4,
 /// towerOpenStore).
-TowerRun towerPick(TowerRun run, TowerData data, int? index,
-    {SimCharacter? hero}) {
+TowerRun towerPick(
+  TowerRun run,
+  TowerData data,
+  int? index, {
+  SimCharacter? hero,
+}) {
   if (run.status != TowerStatus.choosing) return run;
   for (var guard = 0; towerPendingPicks(run) > 0 && guard < 64; guard++) {
     final taken = towerTakeStatPick(run, data, 0);
@@ -676,37 +705,41 @@ TowerRun towerPick(TowerRun run, TowerData data, int? index,
   }
   if (index == null || index < 0 || index >= run.offer.length) {
     return towerOpenStore(
+      run,
+      towerAfterEvent(
         run,
-        towerAfterEvent(
-            run,
-            run.copyWith(
-              status: TowerStatus.climbing,
-              floor: run.floor + 1,
-              refused:
-                  run.offer.isEmpty ? run.refused : {...run.refused, run.floor},
-              offer: const [],
-              clearShortcut: true,
-              clearParley: true,
-            ),
-            data));
+        run.copyWith(
+          status: TowerStatus.climbing,
+          floor: run.floor + 1,
+          refused:
+              run.offer.isEmpty ? run.refused : {...run.refused, run.floor},
+          offer: const [],
+          clearShortcut: true,
+          clearParley: true,
+        ),
+        data,
+      ),
+    );
   }
   final card = run.offer[index];
   hero ??= towerHeroOf(run, data);
   towerApplyReward(hero, card, data, bag: run.dieChoice != null);
   return towerOpenStore(
+    run,
+    towerAfterEvent(
       run,
-      towerAfterEvent(
-          run,
-          run.copyWith(
-            status: TowerStatus.climbing,
-            floor: run.floor + 1,
-            health: hero.currentHealth.clamp(1, hero.maxHealth),
-            taken: {...run.taken, run.floor: card},
-            offer: const [],
-            clearShortcut: true,
-            clearParley: true,
-          ),
-          data));
+      run.copyWith(
+        status: TowerStatus.climbing,
+        floor: run.floor + 1,
+        health: hero.currentHealth.clamp(1, hero.maxHealth),
+        taken: {...run.taken, run.floor: card},
+        offer: const [],
+        clearShortcut: true,
+        clearParley: true,
+      ),
+      data,
+    ),
+  );
 }
 
 /// [run] left by the player: over, its marks earned.

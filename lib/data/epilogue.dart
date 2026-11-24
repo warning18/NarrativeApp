@@ -67,8 +67,11 @@ const Set<String> _byInfluence = {'influence', 'town'};
 
 /// Each of [epilogueTowns] in [geography] at the ending of [politics] (see
 /// the file's notes).
-List<EpilogueTown> epilogueHoldings(PoliticsState politics, Geography geography,
-    {List<String> towns = epilogueTowns}) {
+List<EpilogueTown> epilogueHoldings(
+  PoliticsState politics,
+  Geography geography, {
+  List<String> towns = epilogueTowns,
+}) {
   final now = townRulers(geography, politics, const {});
   final start = townRulers(geography, PoliticsState.empty, const {});
   return [
@@ -96,11 +99,12 @@ EpilogueTown _town(
     how = EpilogueHow.none;
   } else {
     final last = politics.standingLog.lastWhere(
-        (e) =>
-            e.cause == 'territory' &&
-            e.factionId == clanId &&
-            places.contains(e.placeId),
-        orElse: () => const StandingLogEntry(chapter: 0, day: 0, cause: ''));
+      (e) =>
+          e.cause == 'territory' &&
+          e.factionId == clanId &&
+          places.contains(e.placeId),
+      orElse: () => const StandingLogEntry(chapter: 0, day: 0, cause: ''),
+    );
     if (last.cause.isNotEmpty) {
       how = _byInfluence.contains(last.how)
           ? EpilogueHow.influence
@@ -113,12 +117,13 @@ EpilogueTown _town(
   }
   final place = geography.place(townId);
   return EpilogueTown(
-      townId: townId,
-      clanId: clanId,
-      how: how,
-      districts: districts,
-      name: place?.nameFor(false) ?? townId,
-      nameFr: place?.nameFor(true) ?? townId);
+    townId: townId,
+    clanId: clanId,
+    how: how,
+    districts: districts,
+    name: place?.nameFor(false) ?? townId,
+    nameFr: place?.nameFor(true) ?? townId,
+  );
 }
 
 /// The epilogue's line for [town] in [language] (Narrative's), '' for a

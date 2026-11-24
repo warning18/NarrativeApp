@@ -16,15 +16,16 @@ final placePoolsProvider = Provider<PlacePools>((ref) {
 /// detours.json once it has loaded (or failed to): for a detour rolled
 /// right after a cold start.
 Future<PlacePools> loadPlacePools(WidgetRef ref) async => PlacePools.fromJson(
-    await ref.read(gameDbProvider(detoursSchema).notifier).whenLoaded());
+      await ref.read(gameDbProvider(detoursSchema).notifier).whenLoaded(),
+    );
 
 /// detour_scenes.json (detour_scenes.dart) once it has loaded (or failed
 /// to): none when the file is missing, and every detour is today's chain.
 Future<Map<String, DetourScene>> loadDetourScenes(WidgetRef ref) async {
   try {
-    return detourScenesFrom(await ref
-        .read(gameDbProvider(detourScenesSchema).notifier)
-        .whenLoaded());
+    return detourScenesFrom(
+      await ref.read(gameDbProvider(detourScenesSchema).notifier).whenLoaded(),
+    );
   } catch (_) {
     return const {};
   }
@@ -41,9 +42,11 @@ final writtenStepsProvider = Provider<Map<String, List<WrittenStep>>>((ref) {
 /// the file is missing.
 Future<Map<String, List<WrittenStep>>> loadWrittenSteps(WidgetRef ref) async {
   try {
-    return writtenStepsFrom(await ref
-        .read(gameDbRepositoryProvider(expeditionStepsSchema))
-        .loadRecords());
+    return writtenStepsFrom(
+      await ref
+          .read(gameDbRepositoryProvider(expeditionStepsSchema))
+          .loadRecords(),
+    );
   } catch (_) {
     return const {};
   }

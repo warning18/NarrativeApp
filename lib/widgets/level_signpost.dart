@@ -54,18 +54,22 @@ class LevelSignpostRow extends ConsumerWidget {
           showDuration: const Duration(seconds: 8),
           child: Row(
             children: [
-              Icon(Icons.signpost_outlined,
-                  size: IconSize.s16, color: ink.ember),
+              Icon(
+                Icons.signpost_outlined,
+                size: IconSize.s16,
+                color: ink.ember,
+              ),
               const SizedBox(width: 8),
               Expanded(
                 child: Text(
-                    tr(ref, 'level_signpost_row')
-                        .replaceAll('{n}', '${advice.chapter}')
-                        .replaceAll('{level}', '${advice.recommendedLevel}')
-                        .replaceAll('{you}', '${advice.playerLevel}'),
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                    style: theme.textTheme.bodySmall),
+                  tr(ref, 'level_signpost_row')
+                      .replaceAll('{n}', '${advice.chapter}')
+                      .replaceAll('{level}', '${advice.recommendedLevel}')
+                      .replaceAll('{you}', '${advice.playerLevel}'),
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: theme.textTheme.bodySmall,
+                ),
               ),
             ],
           ),
@@ -79,8 +83,11 @@ class LevelSignpostRow extends ConsumerWidget {
 /// the level on a narrow screen; the whole sentence on a tap (and to a
 /// screen reader).
 class LevelSignpostChip extends ConsumerWidget {
-  const LevelSignpostChip(
-      {super.key, required this.palette, this.compact = false});
+  const LevelSignpostChip({
+    super.key,
+    required this.palette,
+    this.compact = false,
+  });
 
   final ChartPalette palette;
   final bool compact;
@@ -117,14 +124,20 @@ class LevelSignpostChip extends ConsumerWidget {
             child: Row(
               mainAxisSize: MainAxisSize.min,
               children: [
-                Icon(Icons.signpost_outlined,
-                    size: IconSize.s16, color: ink.ember),
+                Icon(
+                  Icons.signpost_outlined,
+                  size: IconSize.s16,
+                  color: ink.ember,
+                ),
                 const SizedBox(width: 5),
-                Text(label,
-                    style: TextStyle(
-                        fontFamily: InkFonts.system,
-                        fontSize: 11,
-                        color: palette.place)),
+                Text(
+                  label,
+                  style: TextStyle(
+                    fontFamily: InkFonts.system,
+                    fontSize: 11,
+                    color: palette.place,
+                  ),
+                ),
               ],
             ),
           ),

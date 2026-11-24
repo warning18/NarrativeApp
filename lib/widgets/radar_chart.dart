@@ -5,6 +5,7 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
+
 import '../theme/palette.dart';
 
 /// One axis of a [RadarChart]: its short label, the value shown under it, an
@@ -86,10 +87,12 @@ class RadarChart extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return LayoutBuilder(builder: (context, box) {
-      final fit = box.hasBoundedWidth ? min(size, box.maxWidth) : size;
-      return _build(context, fit);
-    });
+    return LayoutBuilder(
+      builder: (context, box) {
+        final fit = box.hasBoundedWidth ? min(size, box.maxWidth) : size;
+        return _build(context, fit);
+      },
+    );
   }
 
   Widget _build(BuildContext context, double size) {
@@ -123,7 +126,15 @@ class RadarChart extends StatelessWidget {
               ),
               for (var i = 0; i < n; i++)
                 _label(
-                    theme, scheme, axes[i], i, n, center, labelRadius, compact),
+                  theme,
+                  scheme,
+                  axes[i],
+                  i,
+                  n,
+                  center,
+                  labelRadius,
+                  compact,
+                ),
             ],
           ),
         ),
@@ -131,8 +142,16 @@ class RadarChart extends StatelessWidget {
     );
   }
 
-  Widget _label(ThemeData theme, ColorScheme scheme, RadarAxis axis, int i,
-      int n, Offset center, double labelRadius, bool compact) {
+  Widget _label(
+    ThemeData theme,
+    ColorScheme scheme,
+    RadarAxis axis,
+    int i,
+    int n,
+    Offset center,
+    double labelRadius,
+    bool compact,
+  ) {
     final at = radarPoint(center, labelRadius, i, n);
     final a = -pi / 2 + i * 2 * pi / n;
     final align = Offset(-0.5 + cos(a) * 0.5, -0.5 + sin(a) * 0.5);
@@ -148,23 +167,32 @@ class RadarChart extends StatelessWidget {
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              Text(axis.label,
-                  style: theme.textTheme.labelMedium?.copyWith(
-                      fontSize: compact ? 10.5 : 11.5,
-                      letterSpacing: 0.4,
-                      color: axis.color ??
-                          scheme.onSurface.withValues(alpha: 0.8))),
+              Text(
+                axis.label,
+                style: theme.textTheme.labelMedium?.copyWith(
+                  fontSize: compact ? 10.5 : 11.5,
+                  letterSpacing: 0.4,
+                  color: axis.color ?? scheme.onSurface.withValues(alpha: 0.8),
+                ),
+              ),
               if (axis.value != null)
-                Text(axis.value!,
-                    style: theme.textTheme.titleSmall?.copyWith(
-                        fontSize: 16,
-                        fontWeight:
-                            axis.valueColor == null ? null : FontWeight.w700,
-                        color: axis.valueColor ?? scheme.onSurface)),
+                Text(
+                  axis.value!,
+                  style: theme.textTheme.titleSmall?.copyWith(
+                    fontSize: 16,
+                    fontWeight:
+                        axis.valueColor == null ? null : FontWeight.w700,
+                    color: axis.valueColor ?? scheme.onSurface,
+                  ),
+                ),
               if (axis.sub != null)
-                Text(axis.sub!,
-                    style: theme.textTheme.labelSmall?.copyWith(
-                        fontSize: 11, color: axis.subColor ?? Palette.green63)),
+                Text(
+                  axis.sub!,
+                  style: theme.textTheme.labelSmall?.copyWith(
+                    fontSize: 11,
+                    color: axis.subColor ?? Palette.green63,
+                  ),
+                ),
             ],
           ),
         ),
@@ -176,8 +204,11 @@ class RadarChart extends StatelessWidget {
 /// A corner's label, with room to tap when it has an action: 8 px around
 /// it (the label itself is about 30 px).
 class _Tappable extends StatelessWidget {
-  const _Tappable(
-      {required this.onTap, required this.semanticLabel, required this.child});
+  const _Tappable({
+    required this.onTap,
+    required this.semanticLabel,
+    required this.child,
+  });
 
   final VoidCallback? onTap;
   final String semanticLabel;
@@ -248,21 +279,27 @@ class _RadarPainter extends CustomPainter {
         }
       }
       path.close();
-      canvas.drawPath(path,
-          grid..color = gridColor.withValues(alpha: k == rings ? 1 : 0.6));
+      canvas.drawPath(
+        path,
+        grid..color = gridColor.withValues(alpha: k == rings ? 1 : 0.6),
+      );
     }
     for (var i = 0; i < count; i++) {
-      canvas.drawLine(c, radarPoint(c, radius, i, count),
-          grid..color = gridColor.withValues(alpha: 0.7));
+      canvas.drawLine(
+        c,
+        radarPoint(c, radius, i, count),
+        grid..color = gridColor.withValues(alpha: 0.7),
+      );
     }
     for (final layer in layers) {
       final path = _polygon(c, layer.values);
       if (layer.fill > 0) {
         canvas.drawPath(
-            path,
-            Paint()
-              ..style = PaintingStyle.fill
-              ..color = layer.color.withValues(alpha: layer.fill));
+          path,
+          Paint()
+            ..style = PaintingStyle.fill
+            ..color = layer.color.withValues(alpha: layer.fill),
+        );
       }
       final stroke = Paint()
         ..style = PaintingStyle.stroke
@@ -274,7 +311,9 @@ class _RadarPainter extends CustomPainter {
           var d = 0.0;
           while (d < metric.length) {
             canvas.drawPath(
-                metric.extractPath(d, min(d + 6, metric.length)), stroke);
+              metric.extractPath(d, min(d + 6, metric.length)),
+              stroke,
+            );
             d += 10;
           }
         }
@@ -287,8 +326,11 @@ class _RadarPainter extends CustomPainter {
           final v = (i < layer.values.length ? layer.values[i] : 0)
               .clamp(0, max)
               .toDouble();
-          canvas.drawCircle(radarPoint(c, radius * v / max, i, count),
-              layer.dashed ? 2.5 : 3.5, dot);
+          canvas.drawCircle(
+            radarPoint(c, radius * v / max, i, count),
+            layer.dashed ? 2.5 : 3.5,
+            dot,
+          );
         }
       }
     }
@@ -326,10 +368,12 @@ class RoseChart extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return LayoutBuilder(builder: (context, box) {
-      final fit = box.hasBoundedWidth ? min(size, box.maxWidth) : size;
-      return _build(context, fit);
-    });
+    return LayoutBuilder(
+      builder: (context, box) {
+        final fit = box.hasBoundedWidth ? min(size, box.maxWidth) : size;
+        return _build(context, fit);
+      },
+    );
   }
 
   Widget _build(BuildContext context, double size) {
@@ -371,8 +415,15 @@ class RoseChart extends StatelessWidget {
     );
   }
 
-  Widget _roseLabel(ThemeData theme, ColorScheme scheme, RadarAxis axis, int i,
-      int n, Offset center, double labelRadius) {
+  Widget _roseLabel(
+    ThemeData theme,
+    ColorScheme scheme,
+    RadarAxis axis,
+    int i,
+    int n,
+    Offset center,
+    double labelRadius,
+  ) {
     final at = radarPoint(center, labelRadius, i, n);
     final a = -pi / 2 + i * 2 * pi / n;
     return Positioned(
@@ -383,15 +434,22 @@ class RoseChart extends StatelessWidget {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Text(axis.label,
-                style: theme.textTheme.labelMedium?.copyWith(
-                    fontSize: 11.5,
-                    letterSpacing: 0.4,
-                    color: axis.color ?? scheme.onSurface)),
+            Text(
+              axis.label,
+              style: theme.textTheme.labelMedium?.copyWith(
+                fontSize: 11.5,
+                letterSpacing: 0.4,
+                color: axis.color ?? scheme.onSurface,
+              ),
+            ),
             if (axis.value != null)
-              Text(axis.value!,
-                  style: theme.textTheme.titleSmall
-                      ?.copyWith(fontSize: 15, color: scheme.onSurface)),
+              Text(
+                axis.value!,
+                style: theme.textTheme.titleSmall?.copyWith(
+                  fontSize: 15,
+                  color: scheme.onSurface,
+                ),
+              ),
           ],
         ),
       ),
@@ -453,19 +511,24 @@ class _RosePainter extends CustomPainter {
         final reach = hole + (radius - hole) * o / max;
         final path = _wedge(c, a0, a1, hole, reach);
         canvas.drawPath(
-            path, Paint()..color = colors[i].withValues(alpha: 0.75));
+          path,
+          Paint()..color = colors[i].withValues(alpha: 0.75),
+        );
         canvas.drawPath(
-            path,
-            Paint()
-              ..style = PaintingStyle.stroke
-              ..strokeWidth = 1.5
-              ..color = colors[i]);
+          path,
+          Paint()
+            ..style = PaintingStyle.stroke
+            ..strokeWidth = 1.5
+            ..color = colors[i],
+        );
       }
       if (r > 0) {
         final depth = hole * 0.9 * r / max;
         final path = _wedge(c, a0, a1, hole - depth, hole);
         canvas.drawPath(
-            path, Paint()..color = innerColor.withValues(alpha: 0.7));
+          path,
+          Paint()..color = innerColor.withValues(alpha: 0.7),
+        );
       }
     }
     canvas.drawCircle(c, hole * 0.55, Paint()..color = holeColor);

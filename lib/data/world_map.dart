@@ -16,7 +16,12 @@ const int worldMapHeight = 176;
 /// The story's own chapters, as its chapter headings name them.
 class MapChapter {
   const MapChapter(
-      this.number, this.titleEn, this.titleFr, this.dark, this.light);
+    this.number,
+    this.titleEn,
+    this.titleFr,
+    this.dark,
+    this.light,
+  );
 
   final int number;
   final String titleEn;
@@ -32,41 +37,61 @@ class MapChapter {
 
 const List<MapChapter> mapChapters = [
   MapChapter(
-      1,
-      'Chapter 1: The Burning City',
-      'Chapitre 1\u00a0: La Ville en flammes',
-      Palette.emberDark,
-      Color(0xFFB5531A)),
-  MapChapter(2, 'Chapter 2: Saltmouth', 'Chapitre 2\u00a0: Bouche-de-Sel',
-      Color(0xFF3F9C9C), Color(0xFF1F6F6F)),
+    1,
+    'Chapter 1: The Burning City',
+    'Chapitre 1\u00a0: La Ville en flammes',
+    Palette.emberDark,
+    Color(0xFFB5531A),
+  ),
   MapChapter(
-      3,
-      'Chapter 3: The Spire of Judgment',
-      'Chapitre 3\u00a0: La Flèche du Jugement',
-      Color(0xFF9A968C),
-      Palette.stone35a),
-  MapChapter(4, 'Chapter 4: The Hollow Court',
-      'Chapitre 4\u00a0: La Cour Creuse', Color(0xFFD9CFB8), Color(0xFF7A6A48)),
+    2,
+    'Chapter 2: Saltmouth',
+    'Chapitre 2\u00a0: Bouche-de-Sel',
+    Color(0xFF3F9C9C),
+    Color(0xFF1F6F6F),
+  ),
   MapChapter(
-      5,
-      'Chapter 5: The Shroud’s Truth',
-      'Chapitre 5\u00a0: La Vérité du Linceul',
-      Color(0xFF9B6FE0),
-      Color(0xFF6D3FA0)),
-  MapChapter(6, 'Chapter 6: The Hollow Shore',
-      'Chapitre 6\u00a0: La Rive Creuse', Palette.paper89a, Palette.seamDark),
+    3,
+    'Chapter 3: The Spire of Judgment',
+    'Chapitre 3\u00a0: La Flèche du Jugement',
+    Color(0xFF9A968C),
+    Palette.stone35a,
+  ),
   MapChapter(
-      7,
-      'Chapter 7: The Lantern Throne',
-      'Chapitre 7\u00a0: Le Trône de la Lanterne',
-      Palette.goldDark,
-      Color(0xFF8F6B10)),
+    4,
+    'Chapter 4: The Hollow Court',
+    'Chapitre 4\u00a0: La Cour Creuse',
+    Color(0xFFD9CFB8),
+    Color(0xFF7A6A48),
+  ),
   MapChapter(
-      8,
-      'Chapter 8: Beyond the Tear',
-      'Chapitre 8\u00a0: Au-delà de la déchirure',
-      Palette.bloodDark,
-      Palette.red32),
+    5,
+    'Chapter 5: The Shroud’s Truth',
+    'Chapitre 5\u00a0: La Vérité du Linceul',
+    Color(0xFF9B6FE0),
+    Color(0xFF6D3FA0),
+  ),
+  MapChapter(
+    6,
+    'Chapter 6: The Hollow Shore',
+    'Chapitre 6\u00a0: La Rive Creuse',
+    Palette.paper89a,
+    Palette.seamDark,
+  ),
+  MapChapter(
+    7,
+    'Chapter 7: The Lantern Throne',
+    'Chapitre 7\u00a0: Le Trône de la Lanterne',
+    Palette.goldDark,
+    Color(0xFF8F6B10),
+  ),
+  MapChapter(
+    8,
+    'Chapter 8: Beyond the Tear',
+    'Chapitre 8\u00a0: Au-delà de la déchirure',
+    Palette.bloodDark,
+    Palette.red32,
+  ),
 ];
 
 MapChapter mapChapter(int number) =>
@@ -337,11 +362,7 @@ final List<Landmark> worldMapLandmarks = [
       '3100_house_anvil_deaf_failed',
       '3100_new_moon',
     ],
-    fights: [
-      'inquisition_auxiliary',
-      'void_wisp',
-      'street_bandit',
-    ],
+    fights: ['inquisition_auxiliary', 'void_wisp', 'street_bandit'],
   ),
   const Landmark(
     id: 'akagiri',
@@ -357,11 +378,7 @@ final List<Landmark> worldMapLandmarks = [
       '3200_smith', '3200_smith_later', '3200_blade', '3200_springs',
       '3200_house_road_exorcists', '3200_clan_penitents_1',
     ],
-    fights: [
-      'inquisition_soldier',
-      'inquisition_auxiliary',
-      'void_wisp',
-    ],
+    fights: ['inquisition_soldier', 'inquisition_auxiliary', 'void_wisp'],
   ),
   const Landmark(
     id: 'spire',
@@ -602,11 +619,7 @@ final List<Landmark> worldMapLandmarks = [
       '7100_vault_burns',
       '7100_flagship_hold',
     ],
-    fights: [
-      'inquisition_soldier',
-      'white_soldier',
-      'unmade_knight',
-    ],
+    fights: ['inquisition_soldier', 'white_soldier', 'unmade_knight'],
   ),
   const Landmark(
     id: 'greyhithe',
@@ -770,7 +783,9 @@ List<Landmark> journeyOf(List<String> history, String currentNodeId) {
 /// with no journey to go by (a story moved by jumps), the road through
 /// the [discovered] places in story order.
 List<(Landmark, Landmark)> roadLegs(
-    List<Landmark> journey, Set<String> discovered) {
+  List<Landmark> journey,
+  Set<String> discovered,
+) {
   final legs = <(Landmark, Landmark)>[];
   final seen = <String>{};
   void add(Landmark a, Landmark b) {
@@ -803,8 +818,11 @@ const int maxWalkLegs = 8;
 /// look, or a journey the record doesn't match (another game), walks the
 /// last leg. Returns the journey index to start from; the last index
 /// means there is nothing to walk.
-int journeyWalkStart(List<Landmark> journey,
-    {int? seenSteps, String? seenLast}) {
+int journeyWalkStart(
+  List<Landmark> journey, {
+  int? seenSteps,
+  String? seenLast,
+}) {
   if (journey.length < 2) return journey.length - 1;
   var start = journey.length - 2;
   if (seenSteps != null &&

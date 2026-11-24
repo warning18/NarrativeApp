@@ -111,10 +111,7 @@ class ShipForm {
       castles: [
         for (final raw in (record['castles'] as List?) ?? const [])
           if (raw is List && raw.length == 2)
-            (
-              (raw[0] as num).toDouble(),
-              (raw[1] as num).toDouble(),
-            ),
+            ((raw[0] as num).toDouble(), (raw[1] as num).toDouble()),
       ],
       beak: record['beak'] == true,
       flying: record['flying'] == true,
@@ -158,8 +155,16 @@ class ShipForm {
 
   /// The hull's outline for a ship [len] long from [x0], [beam] wide at
   /// [cy], scaled by [scale] across and from [from] to [to] along it.
-  Path outline(double x0, double cy, double len, double beam,
-      {double scale = 1.0, double from = 0.0, double to = 1.0, int n = 48}) {
+  Path outline(
+    double x0,
+    double cy,
+    double len,
+    double beam, {
+    double scale = 1.0,
+    double from = 0.0,
+    double to = 1.0,
+    int n = 48,
+  }) {
     final top = <Offset>[];
     final bottom = <Offset>[];
     for (var i = 0; i <= n; i++) {

@@ -93,8 +93,10 @@ int seatBacking(
       : statPatron(state);
   if (clanId.isEmpty || clanId != main) return 0;
   var held = 0;
-  for (final MapEntry(key: placeId, value: holder)
-      in holdings(geography, state).entries) {
+  for (final MapEntry(key: placeId, value: holder) in holdings(
+    geography,
+    state,
+  ).entries) {
     if (geography.place(placeId)?.level != GeoLevel.district) continue;
     final step =
         holder == clanId ? null : state.relationStep(clanId, holder, data);
@@ -215,9 +217,11 @@ List<ClanPowerRank> clanPowerRanking(PoliticsState state, ClanData data) {
         power: powerOf(state, id, data),
         previousPower: previous(id),
       ),
-  ]..sort((a, b) => a.rank != b.rank
-      ? a.rank.compareTo(b.rank)
-      : ids.indexOf(a.clanId).compareTo(ids.indexOf(b.clanId)));
+  ]..sort(
+      (a, b) => a.rank != b.rank
+          ? a.rank.compareTo(b.rank)
+          : ids.indexOf(a.clanId).compareTo(ids.indexOf(b.clanId)),
+    );
 }
 
 /// [state] with [clanId]'s power moved by [delta] (kept in 0..[maxPower]);
@@ -272,7 +276,10 @@ Map<String, String> holdings(Geography geography, PoliticsState state) => {
 
 /// The places [clanId] holds, in the geography's order.
 List<String> placesOf(
-        String clanId, Geography geography, PoliticsState state) =>
+  String clanId,
+  Geography geography,
+  PoliticsState state,
+) =>
     [
       for (final e in holdings(geography, state).entries)
         if (e.value == clanId) e.key,
@@ -337,18 +344,28 @@ PoliticsState givePlace(
     crisis: state.crisis['place'] == placeId ? const {} : null,
   );
   changes?.add(
-      TerritoryChange(placeId: placeId, from: from, to: to, cause: cause));
+    TerritoryChange(placeId: placeId, from: from, to: to, cause: cause),
+  );
   if (from.isNotEmpty) {
-    next = shiftRelation(next, from, to, -1, 'territory:$placeId',
-            data: data, chapter: chapter, day: day)
-        .state;
+    next = shiftRelation(
+      next,
+      from,
+      to,
+      -1,
+      'territory:$placeId',
+      data: data,
+      chapter: chapter,
+      day: day,
+    ).state;
   }
   final variant = placeId.codeUnits.fold(0, (a, b) => a + b) % 2;
   String told(AppLanguage language) => cause == 'influence'
-      ? _districtFlippedNews(language,
+      ? _districtFlippedNews(
+          language,
           district: place.nameFor(language == AppLanguage.fr),
           to: data.faction(to),
-          from: data.faction(from))
+          from: data.faction(from),
+        )
       : territoryNews(
           language,
           place: place.nameFor(language == AppLanguage.fr),
@@ -359,16 +376,18 @@ PoliticsState givePlace(
           variant: variant,
         );
 
-  next = next.copyWith(news: [
-    ...next.news,
-    CoastNews(
-      eventId: 'territory:$placeId',
-      chapter: chapter,
-      day: day,
-      text: told(AppLanguage.en),
-      textFr: told(AppLanguage.fr),
-    ),
-  ]);
+  next = next.copyWith(
+    news: [
+      ...next.news,
+      CoastNews(
+        eventId: 'territory:$placeId',
+        chapter: chapter,
+        day: day,
+        text: told(AppLanguage.en),
+        textFr: told(AppLanguage.fr),
+      ),
+    ],
+  );
   // The clan log (Narrative's 2e): "Kindly Hill: the Kindly Ones → the
   // Mire Courts."
   String logged(AppLanguage language) {
@@ -379,17 +398,18 @@ PoliticsState givePlace(
   }
 
   next = withStandingLogEntry(
-      next,
-      StandingLogEntry(
-        chapter: chapter,
-        day: day,
-        cause: 'territory',
-        factionId: to,
-        note: logged(AppLanguage.en),
-        noteFr: logged(AppLanguage.fr),
-        placeId: placeId,
-        how: cause,
-      ));
+    next,
+    StandingLogEntry(
+      chapter: chapter,
+      day: day,
+      cause: 'territory',
+      factionId: to,
+      note: logged(AppLanguage.en),
+      noteFr: logged(AppLanguage.fr),
+      placeId: placeId,
+      how: cause,
+    ),
+  );
   // The fallen: the old holder with nothing left falls; the new one rises.
   final fallen = [...next.fallen]..remove(to);
   if (from.isNotEmpty &&
@@ -398,22 +418,28 @@ PoliticsState givePlace(
       !fallen.contains(from)) {
     fallen.add(from);
     next = next.copyWith(
-        power: {...next.power, from: 0}, fellTo: {...next.fellTo, from: to});
-    String fell(AppLanguage language) => fallenNews(language,
-        clan: data.faction(from),
-        winner: data.faction(to),
-        seat: place.nameFor(language == AppLanguage.fr),
-        variant: variant);
-    next = next.copyWith(news: [
-      ...next.news,
-      CoastNews(
-        eventId: 'fallen:$from',
-        chapter: chapter,
-        day: day,
-        text: fell(AppLanguage.en),
-        textFr: fell(AppLanguage.fr),
-      ),
-    ]);
+      power: {...next.power, from: 0},
+      fellTo: {...next.fellTo, from: to},
+    );
+    String fell(AppLanguage language) => fallenNews(
+          language,
+          clan: data.faction(from),
+          winner: data.faction(to),
+          seat: place.nameFor(language == AppLanguage.fr),
+          variant: variant,
+        );
+    next = next.copyWith(
+      news: [
+        ...next.news,
+        CoastNews(
+          eventId: 'fallen:$from',
+          chapter: chapter,
+          day: day,
+          text: fell(AppLanguage.en),
+          textFr: fell(AppLanguage.fr),
+        ),
+      ],
+    );
   }
   next = next.copyWith(fallen: fallen);
   final over = next.news.length - maxCoastNews;
@@ -435,10 +461,12 @@ PoliticsState givePlace(
 }) {
   // The powers as the turn begins: the clan power sign's arrow compares
   // with them (clanPowerRanking).
-  var next = state.copyWith(powerAtTurn: {
-    for (final id in data.factions.keys)
-      if (hasPower(id, data)) id: powerOf(state, id, data),
-  });
+  var next = state.copyWith(
+    powerAtTurn: {
+      for (final id in data.factions.keys)
+        if (hasPower(id, data)) id: powerOf(state, id, data),
+    },
+  );
   // Holdings and neglect.
   final held = holdings(geography, next);
   final powers = <String, int>{};
@@ -481,7 +509,8 @@ PoliticsState givePlace(
     final seat = data.faction(protect)?.seat ?? '';
     if (placeId != seat && places.length > 1) return false;
     next = next.copyWith(
-        crisis: {'clan': protect, 'attacker': taker, 'place': placeId});
+      crisis: {'clan': protect, 'attacker': taker, 'place': placeId},
+    );
     moved
       ..add(protect)
       ..add(taker);
@@ -515,13 +544,17 @@ PoliticsState givePlace(
         continue;
       }
       if (crisisFirst(placeId, holder, id)) break;
-      next = givePlace(next, placeId, id,
-          cause: 'claim',
-          data: data,
-          geography: geography,
-          chapter: chapter,
-          day: day,
-          changes: changes);
+      next = givePlace(
+        next,
+        placeId,
+        id,
+        cause: 'claim',
+        data: data,
+        geography: geography,
+        chapter: chapter,
+        day: day,
+        changes: changes,
+      );
       moved
         ..add(id)
         ..add(holder);
@@ -570,18 +603,26 @@ PoliticsState givePlace(
               chapter > seatWarToChapter ||
               powerOf(next, id, data) - powerOf(next, other, data) <
                   seatLead -
-                      seatBacking(next, id,
-                          data: data, geography: geography))) {
+                      seatBacking(
+                        next,
+                        id,
+                        data: data,
+                        geography: geography,
+                      ))) {
         continue;
       }
       if (crisisFirst(ordered.first, other, id)) break;
-      next = givePlace(next, ordered.first, id,
-          cause: 'war',
-          data: data,
-          geography: geography,
-          chapter: chapter,
-          day: day,
-          changes: changes);
+      next = givePlace(
+        next,
+        ordered.first,
+        id,
+        cause: 'war',
+        data: data,
+        geography: geography,
+        chapter: chapter,
+        day: day,
+        changes: changes,
+      );
       // The spoils of war: the taker gains, the loser (still standing)
       // bleeds.
       next = addPower(next, id, warSpoils, data);
@@ -702,7 +743,11 @@ String fallenNews(
 /// better with it, against them when it hunts them or is their nemesis;
 /// none where no clan holds the place, or stands between.
 Reinforcement reinforcementAt(
-    String? placeId, Geography geography, PoliticsState state, ClanData data) {
+  String? placeId,
+  Geography geography,
+  PoliticsState state,
+  ClanData data,
+) {
   final holder = holderOf(placeId, geography, state);
   if (holder.isEmpty || data.faction(holder) == null) {
     return Reinforcement.none;

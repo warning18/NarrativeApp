@@ -272,7 +272,8 @@ class RemarkMemory {
           ),
         ),
   }..removeWhere(
-      (id, m) => !hasDeedLine(id) && book.linesFor(id, m.kind).isEmpty);
+      (id, m) => !hasDeedLine(id) && book.linesFor(id, m.kind).isEmpty,
+    );
   // Who has something to say: whoever was moved, and whoever has a line
   // written for this choice. A written line comes first, then the
   // strongest feeling, then whoever spoke least recently.
@@ -299,11 +300,15 @@ class RemarkMemory {
     CompanionRemark say(String id) {
       final RemarkKind kind = moved[id]?.kind ?? RemarkKind.approved;
       final written = hasDeedLine(id) ? deedKey : null;
-      final spoken = _spoken(current, id, kind,
-          lineCount: written != null
-              ? book.choiceLinesFor(written, id).length
-              : book.linesFor(id, kind).length,
-          deedKey: written);
+      final spoken = _spoken(
+        current,
+        id,
+        kind,
+        lineCount: written != null
+            ? book.choiceLinesFor(written, id).length
+            : book.linesFor(id, kind).length,
+        deedKey: written,
+      );
       current = spoken.memory;
       return spoken.remark;
     }
@@ -336,19 +341,30 @@ class RemarkMemory {
       if (book.linesFor(id, action).isNotEmpty) id,
   ]..sort(byTurns);
   if (speakers.isEmpty) return (remarks: const [], memory: current);
-  final spoken = _spoken(current, speakers.first, action,
-      lineCount: book.linesFor(speakers.first, action).length);
+  final spoken = _spoken(
+    current,
+    speakers.first,
+    action,
+    lineCount: book.linesFor(speakers.first, action).length,
+  );
   return (remarks: [spoken.remark], memory: spoken.memory);
 }
 
 /// [companionId]'s word to the player on a drink shared at the camp, and
 /// the memory after it; nothing when they have no such line.
 ({CompanionRemark? remark, RemarkMemory memory}) drinkRemark(
-    RemarkBook book, RemarkMemory memory, String companionId) {
+  RemarkBook book,
+  RemarkMemory memory,
+  String companionId,
+) {
   final lines = book.linesFor(companionId, RemarkKind.drink);
   if (lines.isEmpty) return (remark: null, memory: memory);
-  final spoken =
-      _spoken(memory, companionId, RemarkKind.drink, lineCount: lines.length);
+  final spoken = _spoken(
+    memory,
+    companionId,
+    RemarkKind.drink,
+    lineCount: lines.length,
+  );
   return (remark: spoken.remark, memory: spoken.memory);
 }
 
@@ -359,7 +375,10 @@ class RemarkMemory {
 /// walk doesn't pile onto a remark the scene just made. Called once per
 /// walk, so a walk has at most one.
 ({CompanionRemark? remark, RemarkMemory memory}) walkRemark(
-    RemarkBook book, RemarkMemory memory, List<String> walkers) {
+  RemarkBook book,
+  RemarkMemory memory,
+  List<String> walkers,
+) {
   final last = memory.lastRemarkAt;
   if (last != null && memory.choices - last < remarkCooldownChoices) {
     return (remark: null, memory: memory);
@@ -376,8 +395,12 @@ class RemarkMemory {
       return byTurn != 0 ? byTurn : a.compareTo(b);
     });
   final id = speakers[order.first];
-  final spoken = _spoken(memory, id, RemarkKind.walk,
-      lineCount: book.linesFor(id, RemarkKind.walk).length);
+  final spoken = _spoken(
+    memory,
+    id,
+    RemarkKind.walk,
+    lineCount: book.linesFor(id, RemarkKind.walk).length,
+  );
   return (remark: spoken.remark, memory: spoken.memory);
 }
 
@@ -393,8 +416,12 @@ class RemarkMemory {
 /// No cooldown: like a deed the party cares about, the player chose this
 /// moment and it comes rarely, so it is always remarked on. The caller
 /// makes one call per moment, so a moment has at most one remark.
-({CompanionRemark? remark, RemarkMemory memory}) momentRemark(RemarkBook book,
-    RemarkMemory memory, List<String> partyIds, RemarkKind kind) {
+({CompanionRemark? remark, RemarkMemory memory}) momentRemark(
+  RemarkBook book,
+  RemarkMemory memory,
+  List<String> partyIds,
+  RemarkKind kind,
+) {
   int lastSpoke(String id) => memory.lastSpokeAt[id] ?? -1;
   final speakers = [
     for (final id in partyIds)
@@ -412,8 +439,12 @@ class RemarkMemory {
       return bySaid != 0 ? bySaid : a.compareTo(b);
     });
   final id = speakers[order.first];
-  final spoken =
-      _spoken(memory, id, kind, lineCount: book.linesFor(id, kind).length);
+  final spoken = _spoken(
+    memory,
+    id,
+    kind,
+    lineCount: book.linesFor(id, kind).length,
+  );
   return (remark: spoken.remark, memory: spoken.memory);
 }
 
@@ -478,8 +509,10 @@ RemarkKind remarkKindFor(
   Map<String, dynamic>? companion,
   RemarkDeed deed,
 ) {
-  final alignment =
-      approvalDeltaFor(companion, alignmentMod: deed.alignmentMod);
+  final alignment = approvalDeltaFor(
+    companion,
+    alignmentMod: deed.alignmentMod,
+  );
   final profit = approvalDeltaFor(companion, goldMod: deed.goldMod);
   final explicit = explicitApprovalFor(deed.approvalMods, reaction.companionId);
   final up = reaction.delta > 0;
@@ -488,11 +521,11 @@ RemarkKind remarkKindFor(
     (
       weight: profit,
       kind:
-          profit > 0 ? RemarkKind.profitApproved : RemarkKind.profitDisapproved
+          profit > 0 ? RemarkKind.profitApproved : RemarkKind.profitDisapproved,
     ),
     (
       weight: explicit,
-      kind: explicit > 0 ? RemarkKind.approved : RemarkKind.disapproved
+      kind: explicit > 0 ? RemarkKind.approved : RemarkKind.disapproved,
     ),
   ].where((part) => part.weight != 0 && (part.weight > 0) == up).toList();
   if (parts.isEmpty) {
@@ -517,7 +550,11 @@ RemarkKind _alignmentKind(int alignmentMod, int weight) {
 /// sets, then `nodeId#index`, its place among [choices] in [nodeId]'s
 /// scene (for a choice with no flag of its own).
 List<String> deedKeysFor<T>(
-        String nodeId, List<T> choices, T choice, List<String> flags) =>
+  String nodeId,
+  List<T> choices,
+  T choice,
+  List<String> flags,
+) =>
     [
       ...flags,
       if (choices.contains(choice)) '$nodeId#${choices.indexOf(choice)}',
@@ -563,13 +600,19 @@ class RemarkBook {
   final Map<String, Map<String, _Lines>> _choice = {};
 
   /// [companionId]'s lines for [kind]; empty when they have none.
-  List<String> linesFor(String companionId, RemarkKind kind,
-          {bool french = false}) =>
+  List<String> linesFor(
+    String companionId,
+    RemarkKind kind, {
+    bool french = false,
+  }) =>
       _general[companionId]?[kind]?.pick(french) ?? const [];
 
   /// [companionId]'s lines for the story choice named [choiceKey].
-  List<String> choiceLinesFor(String choiceKey, String companionId,
-          {bool french = false}) =>
+  List<String> choiceLinesFor(
+    String choiceKey,
+    String companionId, {
+    bool french = false,
+  }) =>
       _choice[choiceKey]?[companionId]?.pick(french) ?? const [];
 
   /// Whether some companion has a line for the choice named [choiceKey].
@@ -582,8 +625,10 @@ class RemarkBook {
   Iterable<String> get choiceKeys => _choice.keys;
 
   /// Every companion's lines for [choiceKey].
-  Map<String, List<String>> choiceLinesOf(String choiceKey,
-          {bool french = false}) =>
+  Map<String, List<String>> choiceLinesOf(
+    String choiceKey, {
+    bool french = false,
+  }) =>
       {
         for (final id in _choice[choiceKey]?.keys ?? const <String>[])
           id: choiceLinesFor(choiceKey, id, french: french),

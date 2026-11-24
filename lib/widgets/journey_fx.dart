@@ -37,9 +37,14 @@ JourneyWeather journeyWeatherOf(WeatherKind? sky, int chapter) => switch (sky) {
 
 /// A chapter's weather over [size] at [t] seconds (ash, rain or snow),
 /// drawn from time alone: the Journey map, the Story tab and the sea use it.
-void paintJourneyWeather(Canvas canvas, Size size, double t,
-    JourneyWeather weather, Color weatherColour,
-    {int count = 26}) {
+void paintJourneyWeather(
+  Canvas canvas,
+  Size size,
+  double t,
+  JourneyWeather weather,
+  Color weatherColour, {
+  int count = 26,
+}) {
   if (weather == JourneyWeather.none) return;
   final paint = Paint()..color = weatherColour;
   if (weather == JourneyWeather.fog) {
@@ -54,11 +59,13 @@ void paintJourneyWeather(Canvas canvas, Size size, double t,
               size.width;
       bank.color = weatherColour.withValues(alpha: 0.16);
       canvas.drawOval(
-          Rect.fromCenter(
-              center: Offset(x, y),
-              width: size.width * 0.55,
-              height: 26 + _weatherHash(k + 2) * 20),
-          bank);
+        Rect.fromCenter(
+          center: Offset(x, y),
+          width: size.width * 0.55,
+          height: 26 + _weatherHash(k + 2) * 20,
+        ),
+        bank,
+      );
     }
     return;
   }
@@ -71,8 +78,9 @@ void paintJourneyWeather(Canvas canvas, Size size, double t,
           (_weatherHash(k + 7) + math.sin(t * 1.3 + k) * 0.01) * size.height;
       final x = phase * size.width;
       paint
-        ..color =
-            weatherColour.withValues(alpha: math.sin(math.pi * phase) * 0.7)
+        ..color = weatherColour.withValues(
+          alpha: math.sin(math.pi * phase) * 0.7,
+        )
         ..strokeWidth = 1.1
         ..strokeCap = StrokeCap.round;
       canvas.drawLine(Offset(x, y), Offset(x - 7, y + 0.6), paint);
@@ -98,14 +106,18 @@ void paintJourneyWeather(Canvas canvas, Size size, double t,
     paint.color = weatherColour.withValues(alpha: alpha);
     if (weather == JourneyWeather.rain) {
       canvas.drawLine(
-          Offset(x, y),
-          Offset(x - 3, y + 10),
-          paint
-            ..strokeWidth = 1.2
-            ..strokeCap = StrokeCap.round);
+        Offset(x, y),
+        Offset(x - 3, y + 10),
+        paint
+          ..strokeWidth = 1.2
+          ..strokeCap = StrokeCap.round,
+      );
     } else {
       canvas.drawCircle(
-          Offset(x, y), weather == JourneyWeather.snow ? 2 : 1.4, paint);
+        Offset(x, y),
+        weather == JourneyWeather.snow ? 2 : 1.4,
+        paint,
+      );
     }
   }
 }
@@ -237,15 +249,20 @@ class JourneyFxPainter extends CustomPainter {
       final cx = -0.3 * size.width + phase * 1.6 * size.width;
       final cy = top - 30 + j * 26;
       final alpha = math.sin(math.pi * phase) * (farRow ? 0.55 : 0.3);
-      final rect =
-          Rect.fromCenter(center: Offset(cx, cy), width: 260, height: 70);
+      final rect = Rect.fromCenter(
+        center: Offset(cx, cy),
+        width: 260,
+        height: 70,
+      );
       canvas.drawOval(
         rect,
         Paint()
-          ..shader = RadialGradient(colors: [
-            fog.withValues(alpha: alpha),
-            fog.withValues(alpha: 0),
-          ]).createShader(rect),
+          ..shader = RadialGradient(
+            colors: [
+              fog.withValues(alpha: alpha),
+              fog.withValues(alpha: 0),
+            ],
+          ).createShader(rect),
       );
     }
   }
@@ -257,10 +274,12 @@ class JourneyFxPainter extends CustomPainter {
       here,
       hereRadius * 2.4,
       Paint()
-        ..shader = RadialGradient(colors: [
-          mark.withValues(alpha: a),
-          mark.withValues(alpha: 0),
-        ]).createShader(rect),
+        ..shader = RadialGradient(
+          colors: [
+            mark.withValues(alpha: a),
+            mark.withValues(alpha: 0),
+          ],
+        ).createShader(rect),
     );
   }
 
@@ -281,21 +300,26 @@ class JourneyFxPainter extends CustomPainter {
           c,
           r,
           Paint()
-            ..shader = RadialGradient(colors: [
-              col.withValues(alpha: 0.28 + 0.3 * pulse(0.12)),
-              col.withValues(alpha: 0),
-            ]).createShader(rect),
+            ..shader = RadialGradient(
+              colors: [
+                col.withValues(alpha: 0.28 + 0.3 * pulse(0.12)),
+                col.withValues(alpha: 0),
+              ],
+            ).createShader(rect),
         );
         for (var k = 0; k < 4; k++) {
           final p = ((t / 2) + k / 4 + _hash(seed + k) * 0.1) % 1.0;
           final pos = c +
-              Offset((_hash(seed + k + 3) - 0.5) * 30 + p * 6,
-                  -stepRadius - p * 46);
+              Offset(
+                (_hash(seed + k + 3) - 0.5) * 30 + p * 6,
+                -stepRadius - p * 46,
+              );
           canvas.drawRect(
             Rect.fromCenter(center: pos, width: 3, height: 3),
             Paint()
-              ..color =
-                  Palette.emberDark.withValues(alpha: math.sin(math.pi * p)),
+              ..color = Palette.emberDark.withValues(
+                alpha: math.sin(math.pi * p),
+              ),
           );
         }
       case JourneyStepKind.shop:
@@ -307,25 +331,35 @@ class JourneyFxPainter extends CustomPainter {
           final q = (p - 0.6) / 0.25;
           final s = math.sin(math.pi * q) * 7;
           final pos = c + Offset(k == 0 ? 17 : -18, k == 0 ? -19 : 12);
-          _star(canvas, pos, s, col.withValues(alpha: math.sin(math.pi * q)),
-              q * math.pi / 2);
+          _star(
+            canvas,
+            pos,
+            s,
+            col.withValues(alpha: math.sin(math.pi * q)),
+            q * math.pi / 2,
+          );
         }
       case JourneyStepKind.rest:
         // Fireflies round it.
         for (var k = 0; k < 4; k++) {
           final a = t * (0.6 + k * 0.13) + k * 1.7;
           final pos = c +
-              Offset(math.cos(a) * (stepRadius + 10 + k * 3),
-                  math.sin(a * 1.3) * (stepRadius + 6));
+              Offset(
+                math.cos(a) * (stepRadius + 10 + k * 3),
+                math.sin(a * 1.3) * (stepRadius + 6),
+              );
           final glow = 0.4 + 0.6 * (0.5 + 0.5 * math.sin(t * 3 + k * 2));
           canvas.drawCircle(
-              pos,
-              4,
-              Paint()
-                ..color =
-                    const Color(0xFFD8F5A0).withValues(alpha: glow * 0.35));
-          canvas.drawCircle(pos, 1.8,
-              Paint()..color = const Color(0xFFD8F5A0).withValues(alpha: glow));
+            pos,
+            4,
+            Paint()
+              ..color = const Color(0xFFD8F5A0).withValues(alpha: glow * 0.35),
+          );
+          canvas.drawCircle(
+            pos,
+            1.8,
+            Paint()..color = const Color(0xFFD8F5A0).withValues(alpha: glow),
+          );
         }
       case JourneyStepKind.check:
       case JourneyStepKind.challenge:
@@ -336,19 +370,27 @@ class JourneyFxPainter extends CustomPainter {
           final q = (p - 0.55) / 0.25;
           final ang = k * 2.1;
           final pos = c +
-              Offset(math.cos(ang) * (stepRadius + 6),
-                  math.sin(ang) * (stepRadius + 6));
-          _star(canvas, pos, math.sin(math.pi * q) * 6,
-              col.withValues(alpha: math.sin(math.pi * q)), q);
+              Offset(
+                math.cos(ang) * (stepRadius + 6),
+                math.sin(ang) * (stepRadius + 6),
+              );
+          _star(
+            canvas,
+            pos,
+            math.sin(math.pi * q) * 6,
+            col.withValues(alpha: math.sin(math.pi * q)),
+            q,
+          );
         }
       case JourneyStepKind.travel:
         // Rings of water spreading.
         for (var k = 0; k < 3; k++) {
           final p = ((t / 2.4) + k / 3) % 1.0;
           final rect = Rect.fromCenter(
-              center: c.translate(0, stepRadius * 0.6),
-              width: stepRadius * (1.4 + p * 2.2),
-              height: stepRadius * (0.5 + p * 0.7));
+            center: c.translate(0, stepRadius * 0.6),
+            width: stepRadius * (1.4 + p * 2.2),
+            height: stepRadius * (0.5 + p * 0.7),
+          );
           canvas.drawOval(
             rect,
             Paint()
@@ -368,7 +410,10 @@ class JourneyFxPainter extends CustomPainter {
             ..shader = LinearGradient(
               begin: Alignment.bottomCenter,
               end: Alignment.topCenter,
-              colors: [col.withValues(alpha: a), col.withValues(alpha: 0)],
+              colors: [
+                col.withValues(alpha: a),
+                col.withValues(alpha: 0),
+              ],
             ).createShader(rect),
         );
       case JourneyStepKind.ending:
@@ -376,13 +421,21 @@ class JourneyFxPainter extends CustomPainter {
         for (var k = 0; k < 5; k++) {
           final p = ((t / 3) + k / 5) % 1.0;
           final pos = c +
-              Offset((_hash(seed + k) - 0.5) * 26 + math.sin(p * 6 + k) * 6,
-                  -stepRadius * 0.6 - p * 60);
+              Offset(
+                (_hash(seed + k) - 0.5) * 26 + math.sin(p * 6 + k) * 6,
+                -stepRadius * 0.6 - p * 60,
+              );
           final alpha = math.sin(math.pi * p);
           canvas.drawCircle(
-              pos, 5, Paint()..color = col.withValues(alpha: alpha * 0.25));
+            pos,
+            5,
+            Paint()..color = col.withValues(alpha: alpha * 0.25),
+          );
           canvas.drawCircle(
-              pos, 2.4, Paint()..color = col.withValues(alpha: alpha));
+            pos,
+            2.4,
+            Paint()..color = col.withValues(alpha: alpha),
+          );
         }
       case JourneyStepKind.road:
         break;
@@ -435,7 +488,9 @@ class JourneyFxPainter extends CustomPainter {
       canvas.rotate(f.angle);
       canvas.drawRRect(
         RRect.fromRectAndRadius(
-            const Rect.fromLTWH(-2, -3, 4, 6), const Radius.circular(2)),
+          const Rect.fromLTWH(-2, -3, 4, 6),
+          const Radius.circular(2),
+        ),
         Paint()..color = footprintColour.withValues(alpha: alpha),
       );
       canvas.restore();
@@ -466,14 +521,17 @@ class JourneyFxPainter extends CustomPainter {
     canvas.translate(at.dx, at.dy);
     canvas.rotate(t * 9);
     final rect = RRect.fromRectAndRadius(
-        const Rect.fromLTWH(-8, -8, 16, 16), const Radius.circular(3));
+      const Rect.fromLTWH(-8, -8, 16, 16),
+      const Radius.circular(3),
+    );
     canvas.drawRRect(rect, Paint()..color = fog);
     canvas.drawRRect(
-        rect,
-        Paint()
-          ..style = PaintingStyle.stroke
-          ..strokeWidth = 2
-          ..color = diceColour);
+      rect,
+      Paint()
+        ..style = PaintingStyle.stroke
+        ..strokeWidth = 2
+        ..color = diceColour,
+    );
     final pip = Paint()..color = diceColour;
     canvas.drawCircle(const Offset(-3, -3), 1.6, pip);
     canvas.drawCircle(const Offset(3, 3), 1.6, pip);
@@ -497,7 +555,12 @@ class JourneyFxPainter extends CustomPainter {
   }
 
   static void _star(
-      Canvas canvas, Offset at, double size, Color colour, double turn) {
+    Canvas canvas,
+    Offset at,
+    double size,
+    Color colour,
+    double turn,
+  ) {
     if (size <= 0.1) return;
     final path = Path();
     for (var k = 0; k < 8; k++) {
@@ -565,11 +628,12 @@ class JourneyFxPainter extends CustomPainter {
 /// shake and a red vignette over [child], driven by [controller] (380 ms,
 /// see [fightJoltDuration]). Rests at 0 and 1, where it is just [child].
 class FightJolt extends StatelessWidget {
-  const FightJolt(
-      {super.key,
-      required this.controller,
-      required this.colour,
-      required this.child});
+  const FightJolt({
+    super.key,
+    required this.controller,
+    required this.colour,
+    required this.child,
+  });
 
   final AnimationController controller;
   final Color colour;
@@ -633,7 +697,7 @@ class JourneyJoltPainter extends CustomPainter {
           radius: 0.8,
           colors: [
             colour.withValues(alpha: 0),
-            colour.withValues(alpha: alpha)
+            colour.withValues(alpha: alpha),
           ],
           stops: const [0.55, 1],
         ).createShader(rect),
@@ -648,8 +712,11 @@ class JourneyJoltPainter extends CustomPainter {
 /// The new chapter's map burning open from the party's mark: [t] 0 to 1,
 /// an ember ring at the edge of what shows.
 class JourneyBurnPainter extends CustomPainter {
-  const JourneyBurnPainter(
-      {required this.t, required this.centre, required this.ember});
+  const JourneyBurnPainter({
+    required this.t,
+    required this.centre,
+    required this.ember,
+  });
 
   final double t;
   final Offset centre;
@@ -702,8 +769,12 @@ class JourneyBurnClipper extends CustomClipper<Path> {
 
   @override
   Path getClip(Size size) => Path()
-    ..addOval(Rect.fromCircle(
-        center: centre, radius: JourneyBurnPainter.radiusFor(t, size, centre)));
+    ..addOval(
+      Rect.fromCircle(
+        center: centre,
+        radius: JourneyBurnPainter.radiusFor(t, size, centre),
+      ),
+    );
 
   @override
   bool shouldReclip(JourneyBurnClipper old) =>

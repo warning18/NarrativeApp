@@ -94,13 +94,24 @@ PoliticsState bendTheKnee(
   if (fallen.isEmpty || winner.isEmpty || winner == fallen) return state;
   final carried = state.standingOf(fallen, data);
   var next = setStandingValue(
-          state, fallen, min(carried, kneelFallenStanding), 'kneel:$winner',
-          data: data, chapter: chapter, day: day)
-      .state;
+    state,
+    fallen,
+    min(carried, kneelFallenStanding),
+    'kneel:$winner',
+    data: data,
+    chapter: chapter,
+    day: day,
+  ).state;
   if (next.standingOf(winner, data) < carried) {
-    next = setStandingValue(next, winner, carried, 'kneel:$winner',
-            data: data, chapter: chapter, day: day)
-        .state;
+    next = setStandingValue(
+      next,
+      winner,
+      carried,
+      'kneel:$winner',
+      data: data,
+      chapter: chapter,
+      day: day,
+    ).state;
   }
   return next.copyWith(fallenOf: '', fallenWinner: '');
 }
@@ -116,8 +127,10 @@ PoliticsState stayOfFallen(PoliticsState state, String clan) => state.copyWith(
 /// [state] with the fallen clan's hold on the character let go when it is
 /// over: a banner raised ([bannerRaised]: the clan pledges to the Host) or
 /// the clan risen again. Unchanged otherwise.
-PoliticsState settleFallenLoyalty(PoliticsState state,
-    {required bool bannerRaised}) {
+PoliticsState settleFallenLoyalty(
+  PoliticsState state, {
+  required bool bannerRaised,
+}) {
   final clan = state.fallenOf;
   if (clan.isEmpty) return state;
   if (!bannerRaised && state.fallen.contains(clan)) return state;
@@ -160,12 +173,18 @@ StoryNode? buildCrisisNode(
       .replaceAll('{gold}', '${_crisisGoldPerChapter * max(1, chapter)}');
   // The attacker's hunter, or any of its fighters met on the roads.
   final pool = rivalHunterPool(
-      enemies: enemies, clanId: attacker, chapter: max(chapter, 3));
+    enemies: enemies,
+    clanId: attacker,
+    chapter: max(chapter, 3),
+  );
   final defender = pool.isEmpty ? null : pool[random.nextInt(pool.length)];
   final int price = _crisisGoldPerChapter * (chapter < 1 ? 1 : chapter);
   // A lesser place the attacker takes when paid off, if the clan has one.
-  final lesser =
-      placesOf(clan, geography, state).where((p) => p != placeId).toList();
+  final lesser = placesOf(
+    clan,
+    geography,
+    state,
+  ).where((p) => p != placeId).toList();
   return StoryNode(
     id: '$clanCrisisNodePrefix${clan}_${random.nextInt(1 << 30)}',
     description: fill(_crisisBodyEn, false),
@@ -241,7 +260,9 @@ StoryNode? buildFallNode(
       .replaceAll('{clan}', _name(data, fall.clan, fr))
       .replaceAll('{winner}', _name(data, fall.winner, fr))
       .replaceAll(
-          '{seat}', seat?.nameFor(fr) ?? (fr ? 'son siège' : 'its seat'));
+        '{seat}',
+        seat?.nameFor(fr) ?? (fr ? 'son siège' : 'its seat'),
+      );
   return StoryNode(
     id: '$clanCrisisNodePrefix${fall.clan}_fall_${random.nextInt(1 << 30)}',
     description: fill(_fallBodyEn, false),
@@ -279,17 +300,24 @@ List<StoryNode>? clanCrisisRoadEvent(
   required Random random,
   Map<String, int> materials = const {},
 }) {
-  final crisis = buildCrisisNode(state,
-      data: data,
-      geography: geography,
-      enemies: enemies,
-      chapter: chapter,
-      gold: gold,
-      random: random,
-      materials: materials);
+  final crisis = buildCrisisNode(
+    state,
+    data: data,
+    geography: geography,
+    enemies: enemies,
+    chapter: chapter,
+    gold: gold,
+    random: random,
+    materials: materials,
+  );
   if (crisis != null) return [crisis];
-  final fall = buildFallNode(state,
-      data: data, geography: geography, gold: gold, random: random);
+  final fall = buildFallNode(
+    state,
+    data: data,
+    geography: geography,
+    gold: gold,
+    random: random,
+  );
   return fall == null ? null : [fall];
 }
 

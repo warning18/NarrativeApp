@@ -7,10 +7,11 @@ import '../data/training.dart';
 
 /// The training paths a level-up offers (training_paths.json, see
 /// training.dart), by id.
-final trainingPathsProvider =
-    FutureProvider<Map<String, TrainingPath>>((ref) async {
+final trainingPathsProvider = FutureProvider<Map<String, TrainingPath>>((
+  ref,
+) async {
   final raw = jsonDecode(
-          await rootBundle.loadString('assets/gamedata/training_paths.json'))
-      as Map<String, dynamic>;
+    await rootBundle.loadString('assets/gamedata/training_paths.json'),
+  ) as Map<String, dynamic>;
   return trainingPathsFrom(raw);
 });

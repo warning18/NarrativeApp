@@ -58,7 +58,9 @@ extension _FxTiers on _Fx {
     if (lt == null || frame.flashed) return;
     frame.flashed = true;
     canvas.drawRect(
-        Offset.zero & layer, _fill(primary, opacity * (1 - _easeOut(lt))));
+      Offset.zero & layer,
+      _fill(primary, opacity * (1 - _easeOut(lt))),
+    );
   }
 
   /// A flat ring running out along the ground under the target.
@@ -68,11 +70,14 @@ extension _FxTiers on _Fx {
     final e = _easeOut(lt);
     final ground = Offset(c.dx, rect.bottom - s * 0.08);
     final w = s * (0.4 + 1.5 * e) * scale;
-    canvas.drawOval(Rect.fromCenter(center: ground, width: w, height: w * 0.22),
-        _stroke(secondary, 1 - lt, 5 * (1 - lt) + 1));
     canvas.drawOval(
-        Rect.fromCenter(center: ground, width: w * 0.7, height: w * 0.14),
-        _fill(primary, 0.25 * (1 - lt)));
+      Rect.fromCenter(center: ground, width: w, height: w * 0.22),
+      _stroke(secondary, 1 - lt, 5 * (1 - lt) + 1),
+    );
+    canvas.drawOval(
+      Rect.fromCenter(center: ground, width: w * 0.7, height: w * 0.14),
+      _fill(primary, 0.25 * (1 - lt)),
+    );
   }
 
   /// Long thin rays thrown out from the target.
@@ -87,8 +92,11 @@ extension _FxTiers on _Fx {
       final reach = s * (0.45 + 0.75 * q.speed * _easeOut(lt));
       final inner = c + dir * (reach * 0.55);
       final outer = c + dir * reach;
-      canvas.drawLine(inner, outer,
-          _stroke(i.isEven ? Colors.white : secondary, 0.6 * (1 - lt), 1.5));
+      canvas.drawLine(
+        inner,
+        outer,
+        _stroke(i.isEven ? Colors.white : secondary, 0.6 * (1 - lt), 1.5),
+      );
     }
   }
 
@@ -105,7 +113,10 @@ extension _FxTiers on _Fx {
       final r = s * 0.035 * q.size * scale;
       _glowAt(Offset(x, y), r * 3, secondary, 0.4 * _fade(local, 0.2, 0.6));
       canvas.drawCircle(
-          Offset(x, y), r, _fill(Colors.white, 0.8 * _fade(local, 0.2, 0.6)));
+        Offset(x, y),
+        r,
+        _fill(Colors.white, 0.8 * _fade(local, 0.2, 0.6)),
+      );
     }
   }
 
@@ -116,19 +127,24 @@ extension _FxTiers on _Fx {
     final opacity = _fade(lt, 0.2, 0.5) * 0.45;
     final w = s * 0.7 * scale * (0.6 + 0.4 * sin(pi * lt));
     final column = Rect.fromLTRB(
-        c.dx - w / 2, rect.top - s * 1.2, c.dx + w / 2, rect.bottom);
+      c.dx - w / 2,
+      rect.top - s * 1.2,
+      c.dx + w / 2,
+      rect.bottom,
+    );
     canvas.drawRect(
       column,
       Paint()
-        ..shader = ui.Gradient.linear(column.topCenter, column.bottomCenter, [
-          secondary.withValues(alpha: 0),
-          primary.withValues(alpha: opacity),
-          Colors.white.withValues(alpha: opacity),
-        ], const [
-          0,
-          0.7,
-          1
-        ]),
+        ..shader = ui.Gradient.linear(
+          column.topCenter,
+          column.bottomCenter,
+          [
+            secondary.withValues(alpha: 0),
+            primary.withValues(alpha: opacity),
+            Colors.white.withValues(alpha: opacity),
+          ],
+          const [0, 0.7, 1],
+        ),
     );
   }
 
@@ -141,13 +157,18 @@ extension _FxTiers on _Fx {
       final local = ((lt - q.delay) / (1 - q.delay)).clamp(0.0, 1.0);
       if (local <= 0 || local >= 1) continue;
       final at = c +
-          Offset(q.dx * s * 0.6 * scale + sin(local * 7 + q.angle) * s * 0.05,
-              q.spin * s * 0.25 - local * s * 0.8 * q.speed);
+          Offset(
+            q.dx * s * 0.6 * scale + sin(local * 7 + q.angle) * s * 0.05,
+            q.spin * s * 0.25 - local * s * 0.8 * q.speed,
+          );
       final flicker = 0.6 + 0.4 * sin(local * 30 + q.angle * 5);
       final r = s * 0.025 * q.size;
       _glowAt(at, r * 4, primary, 0.35 * (1 - local));
       canvas.drawCircle(
-          at, r, _fill(i.isEven ? secondary : primary, flicker * (1 - local)));
+        at,
+        r,
+        _fill(i.isEven ? secondary : primary, flicker * (1 - local)),
+      );
     }
   }
 
@@ -189,7 +210,9 @@ extension _FxTiers on _Fx {
       }
       canvas.drawPath(path, _stroke(primary, 0.6 * opacity, s * 0.04));
       canvas.drawPath(
-          path, _stroke(const Color(0xFF2B1D14), 0.85 * opacity, s * 0.018));
+        path,
+        _stroke(const Color(0xFF2B1D14), 0.85 * opacity, s * 0.018),
+      );
     }
   }
 
@@ -232,8 +255,10 @@ extension _FxTiers on _Fx {
       final q = p[i + 56 < p.length ? i + 56 : i];
       final local = ((lt - q.delay) / (1 - q.delay)).clamp(0.0, 1.0);
       if (local <= 0 || local >= 1) continue;
-      final at = Offset(c.dx + q.dx * s * 0.8,
-          rect.top - s * 0.2 + local * (rect.height + s * 0.2));
+      final at = Offset(
+        c.dx + q.dx * s * 0.8,
+        rect.top - s * 0.2 + local * (rect.height + s * 0.2),
+      );
       final r = s * 0.06 * q.size * scale;
       final spin = q.spin * local * 4;
       final paint = _stroke(Colors.white, _fade(local, 0.15, 0.7), 1.3);

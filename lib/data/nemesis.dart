@@ -46,8 +46,12 @@ bool _turnedAgainst(PoliticsState state, String clanId, ClanData data) =>
 /// hysteresis: the strongest main clan of power [_nemesisMinPower] or more
 /// stood Hostile or Hunted with, not fallen, not cooling down; '' for
 /// none.
-String nemesisCandidate(PoliticsState state, ClanData data,
-    {int chapter = 0, Set<String> exclude = const {}}) {
+String nemesisCandidate(
+  PoliticsState state,
+  ClanData data, {
+  int chapter = 0,
+  Set<String> exclude = const {},
+}) {
   var best = '';
   var bestPower = -1;
   for (final id in data.factions.keys) {
@@ -117,8 +121,13 @@ PoliticsState updateNemesis(
   if (forced.isNotEmpty) {
     return state.nemesis == forced
         ? state
-        : _told(state.copyWith(nemesis: forced), 'nemesis:$forced',
-            nemesisRiseNews(data.faction(forced)), chapter, day);
+        : _told(
+            state.copyWith(nemesis: forced),
+            'nemesis:$forced',
+            nemesisRiseNews(data.faction(forced)),
+            chapter,
+            day,
+          );
   }
   var next = state;
   final held = state.nemesis;
@@ -134,23 +143,47 @@ PoliticsState updateNemesis(
         ? null
         : _storyNemesisTurn(state, data, chapter: chapter, day: day);
     if (story != null) return story;
-    next = _told(next.copyWith(nemesis: ''), 'nemesis_end:$held',
-        nemesisEndNews(data.faction(held)), chapter, day);
-    final rising =
-        nemesisCandidate(next, data, chapter: chapter, exclude: sided);
+    next = _told(
+      next.copyWith(nemesis: ''),
+      'nemesis_end:$held',
+      nemesisEndNews(data.faction(held)),
+      chapter,
+      day,
+    );
+    final rising = nemesisCandidate(
+      next,
+      data,
+      chapter: chapter,
+      exclude: sided,
+    );
     if (rising.isEmpty || rising == held) return next;
-    return _told(next.copyWith(nemesis: rising), 'nemesis:$rising',
-        nemesisRiseNews(data.faction(rising)), chapter, day);
+    return _told(
+      next.copyWith(nemesis: rising),
+      'nemesis:$rising',
+      nemesisRiseNews(data.faction(rising)),
+      chapter,
+      day,
+    );
   }
   if (held.isNotEmpty) {
     if (!sided.contains(held) && !_nemesisEnds(state, held, data)) return state;
-    next = _told(next.copyWith(nemesis: ''), 'nemesis_end:$held',
-        nemesisEndNews(data.faction(held)), chapter, day);
+    next = _told(
+      next.copyWith(nemesis: ''),
+      'nemesis_end:$held',
+      nemesisEndNews(data.faction(held)),
+      chapter,
+      day,
+    );
   }
   final rising = nemesisCandidate(next, data, chapter: chapter, exclude: sided);
   if (rising.isEmpty || rising == held) return next;
-  return _told(next.copyWith(nemesis: rising), 'nemesis:$rising',
-      nemesisRiseNews(data.faction(rising)), chapter, day);
+  return _told(
+    next.copyWith(nemesis: rising),
+    'nemesis:$rising',
+    nemesisRiseNews(data.faction(rising)),
+    chapter,
+    day,
+  );
 }
 
 /// Why the nemesis hunts the character, for its panel: the story's own
@@ -173,8 +206,12 @@ PoliticsState updateNemesis(
 /// fallen); else [state] with it kept, made an earned one (the character
 /// turned Hostile against it: from there the ordinary rules), or replaced
 /// by a [nemesisCandidate] the character has crossed harder.
-PoliticsState? _storyNemesisTurn(PoliticsState state, ClanData data,
-    {required int chapter, required int day}) {
+PoliticsState? _storyNemesisTurn(
+  PoliticsState state,
+  ClanData data, {
+  required int chapter,
+  required int day,
+}) {
   final held = state.nemesis;
   if (state.fallen.contains(held) ||
       state.tierOf(held, data).isAtLeast(StandingTier.friendly)) {
@@ -189,8 +226,13 @@ PoliticsState? _storyNemesisTurn(PoliticsState state, ClanData data,
       state.standingOf(rival, data) >= state.standingOf(held, data)) {
     return state;
   }
-  return _told(state.copyWith(nemesis: rival), 'nemesis:$rival',
-      nemesisRiseNews(data.faction(rival)), chapter, day);
+  return _told(
+    state.copyWith(nemesis: rival),
+    'nemesis:$rival',
+    nemesisRiseNews(data.faction(rival)),
+    chapter,
+    day,
+  );
 }
 
 /// [state] with the nemesis [clanId] broken (its quest won): a tier of
@@ -210,15 +252,25 @@ PoliticsState breakNemesis(
       clanId: chapter + nemesisBreakChapters,
     },
   );
-  return _told(next, 'nemesis_broken:$clanId',
-      nemesisBrokenNews(data.faction(clanId)), chapter, day);
+  return _told(
+    next,
+    'nemesis_broken:$clanId',
+    nemesisBrokenNews(data.faction(clanId)),
+    chapter,
+    day,
+  );
 }
 
 /// A tier of [power]: 25, never more than there is.
 int _min25(int power) => power < risingPower ? power : risingPower;
 
-PoliticsState _told(PoliticsState state, String id,
-    ({String en, String fr}) text, int chapter, int day) {
+PoliticsState _told(
+  PoliticsState state,
+  String id,
+  ({String en, String fr}) text,
+  int chapter,
+  int day,
+) {
   final news = [
     ...state.news,
     CoastNews(
@@ -230,9 +282,10 @@ PoliticsState _told(PoliticsState state, String id,
     ),
   ];
   return state.copyWith(
-      news: news.length <= maxCoastNews
-          ? news
-          : news.sublist(news.length - maxCoastNews));
+    news: news.length <= maxCoastNews
+        ? news
+        : news.sublist(news.length - maxCoastNews),
+  );
 }
 
 /// The news of [clan] making the character its nemesis.
@@ -306,7 +359,10 @@ String _text(Map<String, dynamic> record, String key, [String fallback = '']) {
 /// The trail's road scene: the quest's first objective as the way on, one
 /// choice that follows it ([trailFlagOf]); null when [quests] lacks it.
 StoryNode? _buildTrailNode(
-    String clanId, Map<String, dynamic> quests, Random random) {
+  String clanId,
+  Map<String, dynamic> quests,
+  Random random,
+) {
   final quest = quests[nemesisQuestIdOf(clanId)];
   if (quest is! Map<String, dynamic>) return null;
   final objectives = (quest['objectives'] as List?) ?? const [];
@@ -337,7 +393,10 @@ StoryNode? _buildTrailNode(
 /// sets its flag; Mercy, won, earns [mercyStanding]); with none written,
 /// one plain "Face" choice. Null when [enemies] lacks it.
 StoryNode? _buildChampionNode(
-    String clanId, Map<String, dynamic> enemies, Random random) {
+  String clanId,
+  Map<String, dynamic> enemies,
+  Random random,
+) {
   final id = championIdOf(clanId);
   final enemy = enemies[id];
   if (enemy is! Map<String, dynamic>) return null;
@@ -351,20 +410,27 @@ StoryNode? _buildChampionNode(
           : '${fallback.replaceAll('{name}', who)} $cry'.trim();
   final ways = [
     for (final way in championWays)
-      if (_text(enemy, 'way${way[0].toUpperCase()}${way.substring(1)}')
-          .isNotEmpty)
+      if (_text(
+        enemy,
+        'way${way[0].toUpperCase()}${way.substring(1)}',
+      ).isNotEmpty)
         way,
   ];
   String wayKey(String way) => 'way${way[0].toUpperCase()}${way.substring(1)}';
   return StoryNode(
     id: '$clanCrisisNodePrefix${id}_${random.nextInt(1 << 30)}',
-    description: scene(_text(enemy, 'arrival'), '{name} bars the road.', name,
-        _text(enemy, 'battleCry')),
+    description: scene(
+      _text(enemy, 'arrival'),
+      '{name} bars the road.',
+      name,
+      _text(enemy, 'battleCry'),
+    ),
     descriptionFr: scene(
-        _text(enemy, 'arrival_fr'),
-        '{name} vous barre la route.',
-        nameFr,
-        _text(enemy, 'battleCry_fr', _text(enemy, 'battleCry'))),
+      _text(enemy, 'arrival_fr'),
+      '{name} vous barre la route.',
+      nameFr,
+      _text(enemy, 'battleCry_fr', _text(enemy, 'battleCry')),
+    ),
     choices: [
       if (ways.isEmpty)
         StoryChoice(
@@ -393,14 +459,18 @@ StoryNode? _buildChampionNode(
 /// `nemesis_<way>`) folded into its health and damage, for the playthrough
 /// simulator, which plays no encounter modifiers.
 Map<String, dynamic> championRecordFor(
-    Map<String, dynamic> record, String way) {
+  Map<String, dynamic> record,
+  String way,
+) {
   final edge = EncounterModifiers.nemesisWayEdges['nemesis_$way'];
   if (edge == null) return record;
   num of(String key) => (record[key] as num?) ?? 0;
   return {
     ...record,
-    'maxHealth':
-        max(1, (of('maxHealth') * edge.health * edge.difficulty).round()),
+    'maxHealth': max(
+      1,
+      (of('maxHealth') * edge.health * edge.difficulty).round(),
+    ),
     'damage': (of('damage') * damageShareOf(edge.difficulty)).round(),
   };
 }

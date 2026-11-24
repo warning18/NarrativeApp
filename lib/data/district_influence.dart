@@ -56,8 +56,12 @@ String heldFlag(String districtId, String clanId) =>
 String districtFlippedFlag(String districtId) => 'flipped_$districtId';
 
 /// [clanId]'s influence in [districtId] now (see the notes above).
-int influenceIn(PoliticsState state, Geography geography, String districtId,
-    String clanId) {
+int influenceIn(
+  PoliticsState state,
+  Geography geography,
+  String districtId,
+  String clanId,
+) {
   final moved = state.influence[districtId];
   if (moved != null) return moved[clanId] ?? 0;
   return clanId.isNotEmpty && holderOf(districtId, geography, state) == clanId
@@ -155,18 +159,28 @@ InfluenceResult addInfluence(
   if (clanId != holder &&
       districtId != seat &&
       row[clanId]! >= (row[holder] ?? 0) + flipMargin) {
-    next = givePlace(next, districtId, clanId,
-        cause: 'influence',
-        data: data,
-        geography: geography,
-        chapter: chapter,
-        day: day,
-        changes: changes);
+    next = givePlace(
+      next,
+      districtId,
+      clanId,
+      cause: 'influence',
+      data: data,
+      geography: geography,
+      chapter: chapter,
+      day: day,
+      changes: changes,
+    );
     final flag = districtFlippedFlag(districtId);
     if (changes.isNotEmpty && !after.contains(flag)) after.add(flag);
     final city = geography.locationOf(districtId)?.id ?? '';
-    final taken = townTurn(next, city,
-        data: data, geography: geography, chapter: chapter, day: day);
+    final taken = townTurn(
+      next,
+      city,
+      data: data,
+      geography: geography,
+      chapter: chapter,
+      day: day,
+    );
     next = taken.state;
     town = taken.takenBy;
   }
@@ -204,12 +218,16 @@ InfluenceResult addInfluence(
   final ruler = state.control[cityId] ?? '';
   for (final MapEntry(:key, :value) in counts.entries) {
     if (value >= threshold && key != ruler) {
-      final next = givePlace(state, cityId, key,
-          cause: 'town',
-          data: data,
-          geography: geography,
-          chapter: chapter,
-          day: day);
+      final next = givePlace(
+        state,
+        cityId,
+        key,
+        cause: 'town',
+        data: data,
+        geography: geography,
+        chapter: chapter,
+        day: day,
+      );
       return (state: next, takenBy: key);
     }
   }
@@ -246,19 +264,27 @@ InfluenceResult applyQuestInfluence(
   if (clan.isEmpty || data.faction(clan) == null || district.isEmpty) {
     return nothing;
   }
-  return addInfluence(state, district, clan, _questInfluenceAmount(quest),
-      flags: flags,
-      data: data,
-      geography: geography,
-      chapter: chapter,
-      day: day);
+  return addInfluence(
+    state,
+    district,
+    clan,
+    _questInfluenceAmount(quest),
+    flags: flags,
+    data: data,
+    geography: geography,
+    chapter: chapter,
+    day: day,
+  );
 }
 
 /// [flags] with a `held_<district>_<clan>` flag for every district of
 /// [geography] with a holder now (holderOf), and none other: a flag for a
 /// district held by someone else, or by no one, goes.
 List<String> syncHeldFlags(
-    List<String> flags, Geography geography, PoliticsState state) {
+  List<String> flags,
+  Geography geography,
+  PoliticsState state,
+) {
   final districts = [
     for (final place in geography.places.values)
       if (place.level == GeoLevel.district) place.id,

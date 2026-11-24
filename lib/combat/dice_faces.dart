@@ -32,8 +32,10 @@ bool isEnemyOnlySkill(Map<String, dynamic>? skill) =>
 
 /// A skill's name for the player: its French name in French (see
 /// [skillNamesFr]), otherwise built from its id.
-String skillDisplayName(String skillId,
-    {AppLanguage language = AppLanguage.en}) {
+String skillDisplayName(
+  String skillId, {
+  AppLanguage language = AppLanguage.en,
+}) {
   if (language == AppLanguage.fr) {
     final french = skillNamesFr[skillId];
     if (french != null) return french;
@@ -159,8 +161,10 @@ Map<String, String> limitedFaceAssignments(
     final picked = assignments[i.toString()]!;
     final used = counts[picked] ?? 0;
     if (used >=
-        maxFacesForSkill(skills[picked] as Map<String, dynamic>?,
-            faceCount: faces.length)) {
+        maxFacesForSkill(
+          skills[picked] as Map<String, dynamic>?,
+          faceCount: faces.length,
+        )) {
       continue;
     }
     counts[picked] = used + 1;
@@ -208,10 +212,17 @@ bool canSetSkillOnFace(
       !isAssignableFace(faces[faceIndex])) {
     return false;
   }
-  return facesCastingSkill(skillId, faces, assignments, skills,
-          exceptIndex: faceIndex) <
-      maxFacesForSkill(skills[skillId] as Map<String, dynamic>?,
-          faceCount: faces.length);
+  return facesCastingSkill(
+        skillId,
+        faces,
+        assignments,
+        skills,
+        exceptIndex: faceIndex,
+      ) <
+      maxFacesForSkill(
+        skills[skillId] as Map<String, dynamic>?,
+        faceCount: faces.length,
+      );
 }
 
 /// Whether a skill on [face] works at [channeledPower].
@@ -257,8 +268,9 @@ String faceDisplayName(
 String rolledFaceName(DiceFaceResult face, AppLanguage language) {
   if (face.type == 'Skill') {
     return skillDisplayName(
-        face.linkedSkillID.isEmpty ? 'heavy_attack' : face.linkedSkillID,
-        language: language);
+      face.linkedSkillID.isEmpty ? 'heavy_attack' : face.linkedSkillID,
+      language: language,
+    );
   }
   return trFor(language, basicFaceLabelKey(face.type));
 }
@@ -303,8 +315,11 @@ List<String> dieRaceIds(Map<String, dynamic>? die) => _idList(die, 'races');
 /// Whether a character of [professionId] and [raceId] may buy and roll
 /// [die]: a Mage's apprentice die is no use to a Warrior, a dwarf's stone
 /// die no use to an elf.
-bool dieUsableBy(Map<String, dynamic>? die,
-    {required String professionId, required String raceId}) {
+bool dieUsableBy(
+  Map<String, dynamic>? die, {
+  required String professionId,
+  required String raceId,
+}) {
   final professions = dieProfessionIds(die);
   final races = dieRaceIds(die);
   return (professions.isEmpty || professions.contains(professionId)) &&
@@ -313,8 +328,11 @@ bool dieUsableBy(Map<String, dynamic>? die,
 
 /// "Mage, Cleric": who [die] is made for, named from the localized
 /// professions and races tables; '' for a die anyone can use.
-String dieMadeForLabel(Map<String, dynamic>? die,
-    Map<String, dynamic> professions, Map<String, dynamic> races) {
+String dieMadeForLabel(
+  Map<String, dynamic>? die,
+  Map<String, dynamic> professions,
+  Map<String, dynamic> races,
+) {
   final names = [
     for (final id in dieProfessionIds(die))
       (professions[id] as Map<String, dynamic>?)?['professionName']

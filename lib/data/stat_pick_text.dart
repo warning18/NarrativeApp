@@ -3,6 +3,7 @@
 // rogue, "+1 DEX: +2% dodge" for a warrior. Pure: the numbers come from
 // stat_rules.dart and shop_pricing.dart, the words from app_strings.dart.
 import 'package:flutter/foundation.dart' show visibleForTesting;
+
 import '../combat/stat_rules.dart';
 import '../l10n/app_locale.dart';
 import '../l10n/app_strings.dart';
@@ -30,7 +31,10 @@ typedef StatEffect = ({_StatEffectKind kind, num amount});
 /// What [amount] points of [stat] do for a hero of [professionId], in the
 /// order a card lists them.
 List<StatEffect> statPickEffects(
-    String stat, String? professionId, int amount) {
+  String stat,
+  String? professionId,
+  int amount,
+) {
   final damage = damageStatOf(professionId) == stat;
   return switch (stat) {
     'strength' => [
@@ -68,7 +72,7 @@ List<StatEffect> statPickEffects(
     'charisma' => [
         (
           kind: _StatEffectKind.shopPrices,
-          amount: amount * charismaDiscountPerPoint * 100
+          amount: amount * charismaDiscountPerPoint * 100,
         ),
       ],
     _ => const [],
@@ -114,7 +118,11 @@ String statEffectText(StatEffect effect, AppLanguage language) {
 /// of [professionId]: "+1 DEX: +1 damage, +2% dodge".
 @visibleForTesting
 String statPickEffect(
-    String stat, String? professionId, int amount, AppLanguage language) {
+  String stat,
+  String? professionId,
+  int amount,
+  AppLanguage language,
+) {
   final effects = statPickEffects(stat, professionId, amount);
   final head = '+$amount ${trFor(language, _statAbbrevKey(stat))}';
   if (effects.isEmpty) return head;

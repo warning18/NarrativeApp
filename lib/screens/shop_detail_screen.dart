@@ -1,6 +1,8 @@
 import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+
 import '../widgets/help_hint.dart';
 
 import '../combat/gear_effects.dart';
@@ -65,7 +67,8 @@ class _ShopDetailScreenState extends ConsumerState<ShopDetailScreen> {
     // Spells are only needed to describe and gate spellbooks; a table
     // that hasn't loaded yet just means those tiles say nothing extra.
     final spells = parseSpells(
-        ref.watch(localizedDbProvider(spellsSchema)).value ?? const {});
+      ref.watch(localizedDbProvider(spellsSchema)).value ?? const {},
+    );
     final professions = professionsAsync.value ?? const <String, dynamic>{};
     final races = ref.watch(localizedDbProvider(racesSchema)).value ??
         const <String, dynamic>{};
@@ -83,22 +86,32 @@ class _ShopDetailScreenState extends ConsumerState<ShopDetailScreen> {
     // faction that holds the place it is in, when the place names one
     // (v1.242, see place_traits.dart).
     final geography = ref.watch(geographyProvider);
-    final here = geography.placeOfNode(ref
-        .watch(storyDataProvider)
-        .value
-        ?.nodeFor(ref.watch(storyPlayProvider).currentNodeId));
-    final faction = clans.faction(shopFactionHere(shopFactionId(widget.shop),
-        holderOf(here?.id, geography, ref.watch(politicsProvider))));
+    final here = geography.placeOfNode(
+      ref
+          .watch(storyDataProvider)
+          .value
+          ?.nodeFor(ref.watch(storyPlayProvider).currentNodeId),
+    );
+    final faction = clans.faction(
+      shopFactionHere(
+        shopFactionId(widget.shop),
+        holderOf(here?.id, geography, ref.watch(politicsProvider)),
+      ),
+    );
     final tier = faction == null
         ? null
         : ref.watch(politicsProvider).tierOf(faction.id, clans);
     final refuses = shopRefusesTrade(tier);
     final itemSets = parseItemSets(
-        ref.watch(localizedDbProvider(itemSetsSchema)).value ?? {});
+      ref.watch(localizedDbProvider(itemSetsSchema)).value ?? {},
+    );
     // The shelf: the stock, or a wandering shop's draw for the chapter
     // (v1.197, see shop_stock.dart).
-    final stock = shopStockWithAhead(widget.shop,
-        chapter: chapter, items: itemsAsync.value ?? const {});
+    final stock = shopStockWithAhead(
+      widget.shop,
+      chapter: chapter,
+      items: itemsAsync.value ?? const {},
+    );
     final diceStock = (widget.shop['diceStock'] as List?)
             ?.map((e) => e.toString())
             .toList() ??
@@ -111,9 +124,10 @@ class _ShopDetailScreenState extends ConsumerState<ShopDetailScreen> {
           )
         : const <String, int>{};
 
-    final forges = recipesAt(widget.shopId,
-            ref.watch(localizedDbProvider(itemsSchema)).value ?? const {})
-        .isNotEmpty;
+    final forges = recipesAt(
+      widget.shopId,
+      ref.watch(localizedDbProvider(itemsSchema)).value ?? const {},
+    ).isNotEmpty;
     return TutorialTrigger(
       topic: TutorialTopic.shop,
       child: Scaffold(
@@ -151,12 +165,14 @@ class _ShopDetailScreenState extends ConsumerState<ShopDetailScreen> {
               }
 
               // Potions and scrolls restock each chapter; gear doesn't.
-              String stockKey(String itemId) =>
-                  stockKeyFor(widget.shopId, itemId,
-                      itemType:
-                          (items[itemId] as Map<String, dynamic>?)?['itemType']
-                              ?.toString(),
-                      chapter: chapter);
+              String stockKey(String itemId) => stockKeyFor(
+                    widget.shopId,
+                    itemId,
+                    itemType:
+                        (items[itemId] as Map<String, dynamic>?)?['itemType']
+                            ?.toString(),
+                    chapter: chapter,
+                  );
 
               int remainingFor(String itemId) {
                 final limit = stockQuantities[itemId] ?? 1;
@@ -173,20 +189,25 @@ class _ShopDetailScreenState extends ConsumerState<ShopDetailScreen> {
               // Listed price, less the buyer's Charisma discount, at the
               // faction's rate.
               int costFor(String itemId) => conditionedPrice(
-                  factionPriceFor(
+                    factionPriceFor(
                           shopPriceFor(
-                              ((items[itemId] as Map<String, dynamic>?)?['cost']
-                                          as num?)
-                                      ?.toInt() ??
-                                  0,
-                              session.charisma),
-                          tier) ??
-                      0,
-                  priceFactor);
+                            ((items[itemId] as Map<String, dynamic>?)?['cost']
+                                        as num?)
+                                    ?.toInt() ??
+                                0,
+                            session.charisma,
+                          ),
+                          tier,
+                        ) ??
+                        0,
+                    priceFactor,
+                  );
 
               final availableTypes = stock
-                  .map((id) => (items[id] as Map<String, dynamic>?)?['itemType']
-                      ?.toString())
+                  .map(
+                    (id) => (items[id] as Map<String, dynamic>?)?['itemType']
+                        ?.toString(),
+                  )
                   .whereType<String>()
                   .toSet()
                   .toList()
@@ -209,7 +230,8 @@ class _ShopDetailScreenState extends ConsumerState<ShopDetailScreen> {
                   sortedStock.sort((a, b) => costFor(b).compareTo(costFor(a)));
                 case _ShopSort.stockLeft:
                   sortedStock.sort(
-                      (a, b) => remainingFor(b).compareTo(remainingFor(a)));
+                    (a, b) => remainingFor(b).compareTo(remainingFor(a)),
+                  );
               }
 
               return Column(
@@ -221,13 +243,17 @@ class _ShopDetailScreenState extends ConsumerState<ShopDetailScreen> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           _KeeperStrip(
-                              shopId: widget.shopId,
-                              shop: widget.shop,
-                              tier: tier,
-                              language: lang),
+                            shopId: widget.shopId,
+                            shop: widget.shop,
+                            tier: tier,
+                            language: lang,
+                          ),
                           if (faction != null && tier != null)
                             _FactionPriceLine(
-                                faction: faction, tier: tier, language: lang),
+                              faction: faction,
+                              tier: tier,
+                              language: lang,
+                            ),
                           if (condition != null && priceFactor != 1)
                             Padding(
                               padding: const EdgeInsets.only(bottom: 4),
@@ -248,11 +274,15 @@ class _ShopDetailScreenState extends ConsumerState<ShopDetailScreen> {
                                     child: Text(
                                       tr(ref, 'condition_shop_line')
                                           .replaceAll(
-                                              '{name}',
-                                              condition.nameFor(
-                                                  lang == AppLanguage.fr))
-                                          .replaceAll('{p}',
-                                              percentChange(priceFactor)),
+                                            '{name}',
+                                            condition.nameFor(
+                                              lang == AppLanguage.fr,
+                                            ),
+                                          )
+                                          .replaceAll(
+                                            '{p}',
+                                            percentChange(priceFactor),
+                                          ),
                                       style:
                                           Theme.of(context).textTheme.bodySmall,
                                     ),
@@ -322,10 +352,13 @@ class _ShopDetailScreenState extends ConsumerState<ShopDetailScreen> {
                                     (type) => Padding(
                                       padding: const EdgeInsets.only(right: 6),
                                       child: ChoiceChip(
-                                        avatar: Icon(itemTypeIcon(type),
-                                            size: IconSize.s16),
+                                        avatar: Icon(
+                                          itemTypeIcon(type),
+                                          size: IconSize.s16,
+                                        ),
                                         label: Text(
-                                            trItemType(ref, type, short: true)),
+                                          trItemType(ref, type, short: true),
+                                        ),
                                         selected: _typeFilter == type,
                                         onSelected: (_) =>
                                             setState(() => _typeFilter = type),
@@ -343,9 +376,10 @@ class _ShopDetailScreenState extends ConsumerState<ShopDetailScreen> {
                                 .textTheme
                                 .labelSmall
                                 ?.copyWith(
-                                    color: Theme.of(context)
-                                        .colorScheme
-                                        .onSurfaceVariant),
+                                  color: Theme.of(context)
+                                      .colorScheme
+                                      .onSurfaceVariant,
+                                ),
                           ),
                           const Divider(height: 20),
                         ],
@@ -359,7 +393,8 @@ class _ShopDetailScreenState extends ConsumerState<ShopDetailScreen> {
                           Padding(
                             padding: const EdgeInsets.symmetric(vertical: 24),
                             child: Center(
-                                child: Text(tr(ref, 'shop_filtered_empty'))),
+                              child: Text(tr(ref, 'shop_filtered_empty')),
+                            ),
                           ),
                         ...sortedStock.map((itemId) {
                           final item = items[itemId] as Map<String, dynamic>?;
@@ -386,9 +421,11 @@ class _ShopDetailScreenState extends ConsumerState<ShopDetailScreen> {
                             if (session.knownSpellIds.contains(spell.id)) {
                               spellNote = tr(ref, 'spell_known_label');
                               spellLocked = true;
-                            } else if (!canLearnSpell(spell,
-                                professionId: session.professionId,
-                                knownSpellIds: session.knownSpellIds)) {
+                            } else if (!canLearnSpell(
+                              spell,
+                              professionId: session.professionId,
+                              knownSpellIds: session.knownSpellIds,
+                            )) {
                               final professionName =
                                   (professions[spell.professionId] as Map<
                                           String, dynamic>?)?['professionName']
@@ -410,7 +447,11 @@ class _ShopDetailScreenState extends ConsumerState<ShopDetailScreen> {
                           // What the player wears in this item's slot, so the
                           // row can show at a glance whether it is an upgrade.
                           final wornId = equippedCounterpart(
-                              itemId, item, session.equippedItemIds, items);
+                            itemId,
+                            item,
+                            session.equippedItemIds,
+                            items,
+                          );
                           final worn = wornId == null
                               ? null
                               : items[wornId] as Map<String, dynamic>?;
@@ -423,8 +464,10 @@ class _ShopDetailScreenState extends ConsumerState<ShopDetailScreen> {
                             constitution: session.constitution,
                             intelligence: session.intelligence,
                           );
-                          final meetsAlignment =
-                              meetsItemAlignment(item, session.alignmentLabel);
+                          final meetsAlignment = meetsItemAlignment(
+                            item,
+                            session.alignmentLabel,
+                          );
                           final canWear = isEquippable &&
                               (equipSlot ?? '').isNotEmpty &&
                               meetsStats &&
@@ -432,8 +475,9 @@ class _ShopDetailScreenState extends ConsumerState<ShopDetailScreen> {
                           final unmetRequirement = meetsStats
                               ? null
                               : requirementSummary(item, lang);
-                          final wearing =
-                              session.equippedItemIds.contains(itemId);
+                          final wearing = session.equippedItemIds.contains(
+                            itemId,
+                          );
                           final set = setForItem(itemId, item, itemSets);
                           final canBuy =
                               canAfford && !soldOut && !spellLocked && !refuses;
@@ -442,34 +486,44 @@ class _ShopDetailScreenState extends ConsumerState<ShopDetailScreen> {
                             await ref
                                 .read(playerSessionProvider.notifier)
                                 .buyItem(
-                                    widget.shopId, itemId, cost, stockLimit,
-                                    item: item,
-                                    stockKey: stockKey(itemId),
-                                    origin: itemOriginHere(ref));
+                                  widget.shopId,
+                                  itemId,
+                                  cost,
+                                  stockLimit,
+                                  item: item,
+                                  stockKey: stockKey(itemId),
+                                  origin: itemOriginHere(ref),
+                                );
                             if (!context.mounted) return;
                             _coinsOut(context);
-                            unawaited(showImmersiveNotice(
-                              context,
-                              icon: spell != null
-                                  ? Icons.auto_stories
-                                  : Icons.shopping_bag_outlined,
-                              message: spell != null
-                                  ? '${trFor(lang, 'spell_learned_prefix')} '
-                                      '${spell.nameFor(lang)}'
-                                  : itemType == 'Tome'
-                                      ? '${trFor(lang, 'tome_read_prefix')} $itemName. '
-                                          '${consumableNote(itemId, item, lang) ?? ''}'
-                                      : '${trFor(lang, 'bought_prefix')} $itemName '
-                                          '${trFor(lang, 'for_label')} $cost ${trFor(lang, 'gold_label')}',
-                              actionLabel:
-                                  canWear ? trFor(lang, 'equip_button') : null,
-                              onAction: canWear
-                                  ? () => ref
-                                      .read(playerSessionProvider.notifier)
-                                      .equipItem(itemId,
-                                          slot: equipSlot, items: items)
-                                  : null,
-                            ));
+                            unawaited(
+                              showImmersiveNotice(
+                                context,
+                                icon: spell != null
+                                    ? Icons.auto_stories
+                                    : Icons.shopping_bag_outlined,
+                                message: spell != null
+                                    ? '${trFor(lang, 'spell_learned_prefix')} '
+                                        '${spell.nameFor(lang)}'
+                                    : itemType == 'Tome'
+                                        ? '${trFor(lang, 'tome_read_prefix')} $itemName. '
+                                            '${consumableNote(itemId, item, lang) ?? ''}'
+                                        : '${trFor(lang, 'bought_prefix')} $itemName '
+                                            '${trFor(lang, 'for_label')} $cost ${trFor(lang, 'gold_label')}',
+                                actionLabel: canWear
+                                    ? trFor(lang, 'equip_button')
+                                    : null,
+                                onAction: canWear
+                                    ? () => ref
+                                        .read(playerSessionProvider.notifier)
+                                        .equipItem(
+                                          itemId,
+                                          slot: equipSlot,
+                                          items: items,
+                                        )
+                                    : null,
+                              ),
+                            );
                           }
 
                           final description =
@@ -506,8 +560,11 @@ class _ShopDetailScreenState extends ConsumerState<ShopDetailScreen> {
                           final theme = Theme.of(context);
                           final notes = [
                             if (useNote != null) useNote,
-                            ...itemTraitNotes(item, lang,
-                                unmetRequirement: unmetRequirement),
+                            ...itemTraitNotes(
+                              item,
+                              lang,
+                              unmetRequirement: unmetRequirement,
+                            ),
                           ];
                           return Card(
                             child: InkWell(
@@ -515,8 +572,12 @@ class _ShopDetailScreenState extends ConsumerState<ShopDetailScreen> {
                               onTap: openDetails,
                               onLongPress: openDetails,
                               child: Padding(
-                                padding:
-                                    const EdgeInsets.fromLTRB(12, 10, 8, 10),
+                                padding: const EdgeInsets.fromLTRB(
+                                  12,
+                                  10,
+                                  8,
+                                  10,
+                                ),
                                 child: Row(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
@@ -533,15 +594,19 @@ class _ShopDetailScreenState extends ConsumerState<ShopDetailScreen> {
                                           Row(
                                             children: [
                                               Flexible(
-                                                child: Text(itemName,
-                                                    style: theme
-                                                        .textTheme.titleSmall),
+                                                child: Text(
+                                                  itemName,
+                                                  style: theme
+                                                      .textTheme.titleSmall,
+                                                ),
                                               ),
                                               if (wearing) ...[
                                                 const SizedBox(width: 6),
-                                                const Icon(Icons.check_circle,
-                                                    size: IconSize.s16,
-                                                    color: Palette.goodStrong),
+                                                const Icon(
+                                                  Icons.check_circle,
+                                                  size: IconSize.s16,
+                                                  color: Palette.goodStrong,
+                                                ),
                                               ],
                                             ],
                                           ),
@@ -569,9 +634,12 @@ class _ShopDetailScreenState extends ConsumerState<ShopDetailScreen> {
                                               overflow: TextOverflow.ellipsis,
                                               style: theme.textTheme.labelSmall
                                                   ?.copyWith(
-                                                color: note.startsWith(trFor(
-                                                        lang,
-                                                        'stat_requirement_label'))
+                                                color: note.startsWith(
+                                                  trFor(
+                                                    lang,
+                                                    'stat_requirement_label',
+                                                  ),
+                                                )
                                                     ? theme.colorScheme.error
                                                     : theme.colorScheme
                                                         .onSurfaceVariant,
@@ -579,12 +647,14 @@ class _ShopDetailScreenState extends ConsumerState<ShopDetailScreen> {
                                             ),
                                           if (!meetsAlignment)
                                             Text(
-                                              trFor(lang,
-                                                  'shop_alignment_locked'),
+                                              trFor(
+                                                lang,
+                                                'shop_alignment_locked',
+                                              ),
                                               style: theme.textTheme.labelSmall
                                                   ?.copyWith(
-                                                      color: theme
-                                                          .colorScheme.error),
+                                                color: theme.colorScheme.error,
+                                              ),
                                             ),
                                           if (spellNote != null)
                                             Text(
@@ -609,35 +679,45 @@ class _ShopDetailScreenState extends ConsumerState<ShopDetailScreen> {
                         }),
                         if (diceStock.isNotEmpty) ...[
                           if (sortedStock.isNotEmpty) const Divider(height: 32),
-                          Text(tr(ref, 'dice_label'),
-                              style: Theme.of(context).textTheme.titleMedium),
+                          Text(
+                            tr(ref, 'dice_label'),
+                            style: Theme.of(context).textTheme.titleMedium,
+                          ),
                           const SizedBox(height: 8),
                           ...diceStock.map((diceId) {
                             final theme = Theme.of(context);
                             final die = dice[diceId] as Map<String, dynamic>?;
                             final cost = conditionedPrice(
-                                factionPriceFor(
-                                        shopPriceFor(
-                                            (die?['cost'] as num?)?.toInt() ??
-                                                0,
-                                            session.charisma),
-                                        tier) ??
-                                    0,
-                                priceFactor);
+                              factionPriceFor(
+                                    shopPriceFor(
+                                      (die?['cost'] as num?)?.toInt() ?? 0,
+                                      session.charisma,
+                                    ),
+                                    tier,
+                                  ) ??
+                                  0,
+                              priceFactor,
+                            );
                             final owned = session.ownedDiceIds.contains(diceId);
                             final canAfford = session.gold >= cost;
                             // A die made for another class or race is shown
                             // but can't be bought.
-                            final usable = dieUsableBy(die,
-                                professionId: session.professionId,
-                                raceId: session.raceId);
-                            final madeFor =
-                                dieMadeForLabel(die, professions, races);
+                            final usable = dieUsableBy(
+                              die,
+                              professionId: session.professionId,
+                              raceId: session.raceId,
+                            );
+                            final madeFor = dieMadeForLabel(
+                              die,
+                              professions,
+                              races,
+                            );
                             return Card(
                               child: ListTile(
                                 leading: const Icon(Icons.casino),
                                 title: Text(
-                                    dieDisplayName(diceId, language: lang)),
+                                  dieDisplayName(diceId, language: lang),
+                                ),
                                 subtitle: Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
@@ -650,17 +730,20 @@ class _ShopDetailScreenState extends ConsumerState<ShopDetailScreen> {
                                         '${trFor(lang, 'die_made_for_prefix')} $madeFor',
                                         style: theme.textTheme.labelSmall
                                             ?.copyWith(
-                                                color: usable
-                                                    ? theme.colorScheme
-                                                        .onSurfaceVariant
-                                                    : theme.colorScheme.error),
+                                          color: usable
+                                              ? theme
+                                                  .colorScheme.onSurfaceVariant
+                                              : theme.colorScheme.error,
+                                        ),
                                       ),
                                   ],
                                 ),
                                 isThreeLine: true,
                                 trailing: owned
-                                    ? const Icon(Icons.check_circle,
-                                        color: Palette.good)
+                                    ? const Icon(
+                                        Icons.check_circle,
+                                        color: Palette.good,
+                                      )
                                     : ElevatedButton(
                                         onPressed: !canAfford ||
                                                 !usable ||
@@ -668,19 +751,23 @@ class _ShopDetailScreenState extends ConsumerState<ShopDetailScreen> {
                                             ? null
                                             : () async {
                                                 await ref
-                                                    .read(playerSessionProvider
-                                                        .notifier)
+                                                    .read(
+                                                      playerSessionProvider
+                                                          .notifier,
+                                                    )
                                                     .buyDice(diceId, cost);
                                                 if (!context.mounted) return;
                                                 _coinsOut(context);
-                                                unawaited(showImmersiveNotice(
-                                                  context,
-                                                  icon: Icons.casino,
-                                                  message:
-                                                      '${trFor(lang, 'bought_prefix')} ${dieDisplayName(diceId, language: lang)} '
-                                                      '${trFor(lang, 'for_label')} $cost '
-                                                      '${trFor(lang, 'gold_label')}',
-                                                ));
+                                                unawaited(
+                                                  showImmersiveNotice(
+                                                    context,
+                                                    icon: Icons.casino,
+                                                    message:
+                                                        '${trFor(lang, 'bought_prefix')} ${dieDisplayName(diceId, language: lang)} '
+                                                        '${trFor(lang, 'for_label')} $cost '
+                                                        '${trFor(lang, 'gold_label')}',
+                                                  ),
+                                                );
                                               },
                                         child: Text(tr(ref, 'buy_button')),
                                       ),
@@ -696,11 +783,15 @@ class _ShopDetailScreenState extends ConsumerState<ShopDetailScreen> {
             },
             loading: () => const InkLoading(),
             error: (error, stack) => InkErrorState(
-                message: tr(ref, 'failed_to_load_dice'), detail: error),
+              message: tr(ref, 'failed_to_load_dice'),
+              detail: error,
+            ),
           ),
           loading: () => const InkLoading(),
           error: (error, stack) => InkErrorState(
-              message: tr(ref, 'failed_to_load_items'), detail: error),
+            message: tr(ref, 'failed_to_load_items'),
+            detail: error,
+          ),
         ),
         bottomNavigationBar: SafeArea(
           minimum: const EdgeInsets.fromLTRB(16, 8, 16, 12),
@@ -755,16 +846,22 @@ class _KeeperStrip extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 if (line != null)
-                  Text('“$line”',
-                      key: const ValueKey('shop_keeper_line'),
-                      style: theme.textTheme.bodySmall
-                          ?.copyWith(fontStyle: FontStyle.italic)),
+                  Text(
+                    '“$line”',
+                    key: const ValueKey('shop_keeper_line'),
+                    style: theme.textTheme.bodySmall?.copyWith(
+                      fontStyle: FontStyle.italic,
+                    ),
+                  ),
                 if (name != null)
-                  Text(name.toUpperCase(),
-                      key: const ValueKey('shop_keeper_name'),
-                      style: theme.textTheme.labelSmall?.copyWith(
-                          color: theme.colorScheme.primary,
-                          letterSpacing: 0.8)),
+                  Text(
+                    name.toUpperCase(),
+                    key: const ValueKey('shop_keeper_name'),
+                    style: theme.textTheme.labelSmall?.copyWith(
+                      color: theme.colorScheme.primary,
+                      letterSpacing: 0.8,
+                    ),
+                  ),
               ],
             ),
           ),
@@ -823,8 +920,9 @@ class _FactionPriceLine extends StatelessWidget {
             child: Text(
               text,
               style: theme.textTheme.bodySmall?.copyWith(
-                  color: factor == null ? theme.colorScheme.error : null,
-                  fontWeight: factor == null ? FontWeight.w600 : null),
+                color: factor == null ? theme.colorScheme.error : null,
+                fontWeight: factor == null ? FontWeight.w600 : null,
+              ),
             ),
           ),
         ],
@@ -837,7 +935,9 @@ class _FactionPriceLine extends StatelessWidget {
 /// in the top bar.
 void _coinsOut(BuildContext context) {
   final size = MediaQuery.sizeOf(context);
-  showCoinFlight(context,
-      from: Offset(size.width - 48, MediaQuery.paddingOf(context).top + 24),
-      to: size.center(Offset.zero));
+  showCoinFlight(
+    context,
+    from: Offset(size.width - 48, MediaQuery.paddingOf(context).top + 24),
+    to: size.center(Offset.zero),
+  );
 }

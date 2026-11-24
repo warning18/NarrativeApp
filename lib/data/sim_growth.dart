@@ -151,11 +151,12 @@ class SimGrowth {
   /// The trainer's lesson (890_trainer): its strike or guard learned.
   void learnTrainerSkill({required bool strike}) {
     final id = trainerSkillFor(
-        professionId: character.professionId,
-        strike: strike,
-        trees: tables.skillTrees,
-        skills: tables.skills,
-        known: character.unlockedSkillIds);
+      professionId: character.professionId,
+      strike: strike,
+      trees: tables.skillTrees,
+      skills: tables.skills,
+      known: character.unlockedSkillIds,
+    );
     if (id != null) _learn(id);
   }
 
@@ -198,10 +199,13 @@ class SimGrowth {
   /// offers' draw: seeded from the character and the moment the tent opens
   /// (never from the walk's own stream).
   Random? _riskyRandom;
-  Random _riskySeeded() => Random('${character.professionId}${character.raceId}'
-          .codeUnits
-          .fold<int>(0, (a, b) => a * 31 + b & 0x3fffffff) ^
-      (character.level * 7919 + gold));
+  Random _riskySeeded() => Random(
+        '${character.professionId}${character.raceId}'.codeUnits.fold<int>(
+                  0,
+                  (a, b) => a * 31 + b & 0x3fffffff,
+                ) ^
+            (character.level * 7919 + gold),
+      );
   int skillsLearned = 0;
 
   PerkEffects get perks => perkEffectsFor(perkRanks);
@@ -218,13 +222,20 @@ class SimGrowth {
   /// What the signs, the title and the boon add up to at [alignment]; in
   /// one of the last battles ([host], v1.196) the Host's effects too;
   /// [blessing]: a temple's blessing carried (temple.dart).
-  SignEffects effects(int alignment,
-      {bool host = false, List<SignEffect> blessing = const []}) {
+  SignEffects effects(
+    int alignment, {
+    bool host = false,
+    List<SignEffect> blessing = const [],
+  }) {
     final extra = [...clanEffects, if (host) ...hostEffectsNow, ...blessing];
     return tables.signs.isEmpty && extra.isEmpty
         ? SignEffects.none
-        : signEffectsFor(character.heldSigns, tables.signs,
-            alignment: alignment, extra: extra);
+        : signEffectsFor(
+            character.heldSigns,
+            tables.signs,
+            alignment: alignment,
+            extra: extra,
+          );
   }
 
   // --- The climb and the Host (v1.196, see throne.dart) ---------------------
@@ -232,7 +243,10 @@ class SimGrowth {
   /// The Host the last battles field now (the one mustered, else the one
   /// the character would muster).
   Host get host => fieldedHost(
-      politics: politics, data: tables.clans, signPatrons: patronsThisLife);
+        politics: politics,
+        data: tables.clans,
+        signPatrons: patronsThisLife,
+      );
 
   /// What [host] adds to a fight.
   List<SignEffect> get hostEffectsNow => hostEffects(host, tables.clans);
@@ -253,12 +267,16 @@ class SimGrowth {
     String cause = 'sim',
     Geography? geography,
   }) {
-    return _take(coast.applyStoryPolitics(story,
+    return _take(
+      coast.applyStoryPolitics(
+        story,
         cause: cause,
         key: key,
         politics: politics,
         flags: flags.toList(),
-        world: _world(chapter, geography)));
+        world: _world(chapter, geography),
+      ),
+    );
   }
 
   /// [quest] (a quests.json record) turned in with [flags] held in
@@ -273,23 +291,27 @@ class SimGrowth {
     StoryPolitics? picked,
     String? partyDistrict,
   }) {
-    final result = influence.applyQuestInfluence(politics, quest,
-        flags: flags.toList(),
-        data: tables.clans,
-        geography: geography,
-        picked: picked,
-        partyDistrict: partyDistrict,
-        chapter: max(1, chapter));
+    final result = influence.applyQuestInfluence(
+      politics,
+      quest,
+      flags: flags.toList(),
+      data: tables.clans,
+      geography: geography,
+      picked: picked,
+      partyDistrict: partyDistrict,
+      chapter: max(1, chapter),
+    );
     politics = result.state;
     return result.flags;
   }
 
   CoastWorld _world(int chapter, Geography? geography) => CoastWorld(
-      data: tables.clans,
-      events: tables.events,
-      chapter: max(1, chapter),
-      signPatrons: patronsThisLife,
-      geography: geography);
+        data: tables.clans,
+        events: tables.events,
+        chapter: max(1, chapter),
+        signPatrons: patronsThisLife,
+        geography: geography,
+      );
 
   /// The politics events due with [flags] held in [chapter] fired, as the
   /// app fires them on a chapter change and a day's tick (runDueEvents,
@@ -302,10 +324,13 @@ class SimGrowth {
     Geography? geography,
   }) {
     if (tables.events.isEmpty) return flags.toList();
-    return _take(runDueEvents(
+    return _take(
+      runDueEvents(
         politics: politics,
         flags: flags.toList(),
-        world: _world(chapter, geography)));
+        world: _world(chapter, geography),
+      ),
+    );
   }
 
   /// [change] taken: the politics, the titles it gave and those earned
@@ -316,8 +341,12 @@ class SimGrowth {
       for (final id in change.titles)
         if (!titles.contains(id)) id,
     ];
-    final earned = titlesEarned([...titles, ...gained], politics, tables.clans,
-        flags: change.flags);
+    final earned = titlesEarned(
+      [...titles, ...gained],
+      politics,
+      tables.clans,
+      flags: change.flags,
+    );
     titles = earned.held;
     final crowned = [
       for (final id in change.titles)
@@ -326,19 +355,30 @@ class SimGrowth {
     activeTitle = crowned.isNotEmpty
         ? crowned.first
         : activeTitleAfter(
-            activeTitle, titles, [...gained, ...earned.gained], tables.clans);
+            activeTitle,
+            titles,
+            [
+              ...gained,
+              ...earned.gained,
+            ],
+            tables.clans);
     return change.flags;
   }
 
   /// Whether [choice]'s politics gate lets it be taken with [flags] held
   /// in [chapter] (see choicePoliticsGate: one locked is not taken
   /// either).
-  bool gateOpen(StoryChoice choice,
-          {required Iterable<String> flags, required int chapter}) =>
-      politicsIfHolds(choice.politicsIf,
-          politics: politics,
-          flags: flags,
-          world: CoastWorld(data: tables.clans, chapter: max(1, chapter)));
+  bool gateOpen(
+    StoryChoice choice, {
+    required Iterable<String> flags,
+    required int chapter,
+  }) =>
+      politicsIfHolds(
+        choice.politicsIf,
+        politics: politics,
+        flags: flags,
+        world: CoastWorld(data: tables.clans, chapter: max(1, chapter)),
+      );
 
   /// Levels from [before] to [after] reached.
   void levelsReached(int before, int after) {
@@ -382,17 +422,22 @@ class SimGrowth {
       return;
     }
     chapterOffersThrough = chapter;
-    politics =
-        applyLoyaltyDrift(politics, data: tables.clans, chapter: chapter).state;
+    politics = applyLoyaltyDrift(
+      politics,
+      data: tables.clans,
+      chapter: chapter,
+    ).state;
     if (geography != null) {
       // As in the app, a change that would take your main clan's seat or
       // last place waits as a crisis (clan_crisis.dart), which the walk
       // then plays ([playCrisis]).
-      final turn = territoryTurn(politics,
-          data: tables.clans,
-          geography: geography,
-          chapter: chapter,
-          protect: mainClanOf(politics));
+      final turn = territoryTurn(
+        politics,
+        data: tables.clans,
+        geography: geography,
+        chapter: chapter,
+        protect: mainClanOf(politics),
+      );
       politics = updateNemesis(turn.state, tables.clans, chapter: chapter);
       territoryChanges.addAll(turn.changes);
       if (politics.nemesis.isNotEmpty) nemeses.add(politics.nemesis);
@@ -422,13 +467,15 @@ class SimGrowth {
     required Random random,
     required bool Function(String enemyId) defend,
   }) {
-    final node = buildCrisisNode(politics,
-        data: tables.clans,
-        geography: geography,
-        enemies: enemies,
-        chapter: chapter,
-        gold: gold,
-        random: random);
+    final node = buildCrisisNode(
+      politics,
+      data: tables.clans,
+      geography: geography,
+      enemies: enemies,
+      chapter: chapter,
+      gold: gold,
+      random: random,
+    );
     if (node == null) {
       return (gold: gold, flags: flags.toList(), how: '');
     }
@@ -446,8 +493,13 @@ class SimGrowth {
     final how = choice?.politics?.settleCrisis ?? '';
     if (choice == null) return (gold: gold, flags: flags.toList(), how: '');
     _crisis(how);
-    final after = applyStoryPolitics(choice.politics!,
-        flags: flags, chapter: chapter, cause: 'crisis', geography: geography);
+    final after = applyStoryPolitics(
+      choice.politics!,
+      flags: flags,
+      chapter: chapter,
+      cause: 'crisis',
+      geography: geography,
+    );
     return (gold: gold + choice.goldMod, flags: after, how: how);
   }
 
@@ -472,12 +524,14 @@ class SimGrowth {
     required bool Function(String enemyId) defend,
   }) {
     var after = flags.toList();
-    final rolled = rollDistrictAttacks(politics,
-        data: tables.clans,
-        geography: geography,
-        day: 0,
-        chapter: chapter,
-        random: random);
+    final rolled = rollDistrictAttacks(
+      politics,
+      data: tables.clans,
+      geography: geography,
+      day: 0,
+      chapter: chapter,
+      random: random,
+    );
     politics = rolled.state;
     final main = mainClanOf(politics);
     for (final siege in rolled.begun) {
@@ -488,34 +542,44 @@ class SimGrowth {
           siege.holder == main || (step != null && step >= maxRelationStep);
       final healthy = character.currentHealth * 2 > character.maxHealth;
       if (ours && healthy) {
-        final node = buildSiegeNode(politics, siege,
-            data: tables.clans,
-            geography: geography,
-            enemies: enemies,
-            chapter: chapter,
-            random: random);
+        final node = buildSiegeNode(
+          politics,
+          siege,
+          data: tables.clans,
+          geography: geography,
+          enemies: enemies,
+          chapter: chapter,
+          random: random,
+        );
         final hold =
             node?.choices.where((c) => c.triggerEnemyId != null).firstOrNull;
         if (hold != null && defend(hold.triggerEnemyId!)) {
-          after = applyStoryPolitics(hold.politics!,
-              flags: after,
-              chapter: chapter,
-              cause: 'siege',
-              geography: geography);
+          after = applyStoryPolitics(
+            hold.politics!,
+            flags: after,
+            chapter: chapter,
+            cause: 'siege',
+            geography: geography,
+          );
           _siege('defended');
           continue;
         }
         if (hold != null) _siege('defence_lost');
       }
-      politics = settleSiegeAway(politics, siege,
-          data: tables.clans,
-          geography: geography,
-          random: random,
-          chapter: chapter,
-          changes: territoryChanges);
-      _siege(holderOf(siege.districtId, geography, politics) == siege.attacker
-          ? 'taken'
-          : 'held');
+      politics = settleSiegeAway(
+        politics,
+        siege,
+        data: tables.clans,
+        geography: geography,
+        random: random,
+        chapter: chapter,
+        changes: territoryChanges,
+      );
+      _siege(
+        holderOf(siege.districtId, geography, politics) == siege.attacker
+            ? 'taken'
+            : 'held',
+      );
     }
     return after;
   }
@@ -645,8 +709,12 @@ class SimGrowth {
     while (pending.isNotEmpty) {
       final ticket = pending.first;
       final context = _context(next, flags);
-      var offer = drawOffer(ticket, context, random,
-          riskyRandom: riskyGifts ? _riskyRandom ??= _riskySeeded() : null);
+      var offer = drawOffer(
+        ticket,
+        context,
+        random,
+        riskyRandom: riskyGifts ? _riskyRandom ??= _riskySeeded() : null,
+      );
       if (offer == null) return next;
       final favourBest = random.nextDouble() < _simFavourBestChance;
       // Keeping to the patron and its allies (a card of another clan only
@@ -689,7 +757,8 @@ class SimGrowth {
         final usual = declinedOffer(offer, context, random);
         if (usual != null) {
           final pick = choose(
-              ClanOffer(ticket: ticket, suitors: [alone, ...usual.suitors]));
+            ClanOffer(ticket: ticket, suitors: [alone, ...usual.suitors]),
+          );
           if (pick != null && !identical(pick, alone)) offer = usual;
         }
       }
@@ -699,11 +768,13 @@ class SimGrowth {
       if (rolls != null) {
         rolls.freshDraw(RollBanOn.offer);
         if (rolls.built.isNotEmpty) {
-          final worked = rolls.workOffer(offer,
-              context: context,
-              choose: choose,
-              fills: fillsEmptyFace,
-              redraw: () => drawOffer(ticket, context, rolls.random));
+          final worked = rolls.workOffer(
+            offer,
+            context: context,
+            choose: choose,
+            fills: fillsEmptyFace,
+            redraw: () => drawOffer(ticket, context, rolls.random),
+          );
           offer = worked.offer;
           chosen = worked.suitor;
         }
@@ -711,15 +782,17 @@ class SimGrowth {
       final suitor = chosen;
       if (suitor == null) return next;
       pending.removeAt(0);
-      offerPicks.add(SimOfferPick(
-        chapter: chapter,
-        source: ticket.detail.isEmpty
-            ? ticket.source.name
-            : '${ticket.source.name}:${ticket.detail}',
-        offered: [for (final s in offer.suitors) _label(s)],
-        taken: _label(suitor),
-        reason: why,
-      ));
+      offerPicks.add(
+        SimOfferPick(
+          chapter: chapter,
+          source: ticket.detail.isEmpty
+              ? ticket.source.name
+              : '${ticket.source.name}:${ticket.detail}',
+          offered: [for (final s in offer.suitors) _label(s)],
+          taken: _label(suitor),
+          reason: why,
+        ),
+      );
       for (final s in offer.suitors) {
         if (!patronsMet.contains(s.factionId)) patronsMet.add(s.factionId);
       }
@@ -734,15 +807,19 @@ class SimGrowth {
           maxHealth: character.maxHealth,
           currentHealth: character.currentHealth,
           curseStat: riskyCurseStatFor(
-              tables.clans.faction(suitor.factionId), character.professionId),
+            tables.clans.faction(suitor.factionId),
+            character.professionId,
+          ),
         );
         _count(risk.outcome.name);
         switch (risk.outcome) {
           case RiskyOutcome.gift:
             next = _applyGift(suitor, next);
           case RiskyOutcome.health:
-            character.currentHealth =
-                max(1, character.currentHealth - risk.amount);
+            character.currentHealth = max(
+              1,
+              character.currentHealth - risk.amount,
+            );
           case RiskyOutcome.gold:
             gold = max(0, gold - risk.amount);
           case RiskyOutcome.curse:
@@ -753,23 +830,34 @@ class SimGrowth {
               _curses.remove(old);
             }
             character.addAbilities({risk.stat: -risk.amount});
-            _curses.add(RiskCurse(
+            _curses.add(
+              RiskCurse(
                 clan: suitor.factionId,
                 stat: risk.stat,
                 amount: risk.amount,
-                untilLevel: character.level + riskyCurseLevels));
+                untilLevel: character.level + riskyCurseLevels,
+              ),
+            );
         }
       } else {
         next = _applyGift(suitor, next);
       }
-      final taken = acceptPolitics(suitor, ticket,
-          politics: politics, data: tables.clans);
+      final taken = acceptPolitics(
+        suitor,
+        ticket,
+        politics: politics,
+        data: tables.clans,
+      );
       politics = taken.politics;
       next += taken.alignment;
       final earned = titlesEarned(titles, politics, tables.clans);
       titles = earned.held;
-      activeTitle =
-          activeTitleAfter(activeTitle, titles, earned.gained, tables.clans);
+      activeTitle = activeTitleAfter(
+        activeTitle,
+        titles,
+        earned.gained,
+        tables.clans,
+      );
       giftsTaken[suitor.gift.kind] = (giftsTaken[suitor.gift.kind] ?? 0) + 1;
     }
     return next;
@@ -784,35 +872,44 @@ class SimGrowth {
   double _dieValueWith(Iterable<String> unlocked) {
     final c = character;
     return simDieValue(
-        c.diceFaces,
-        simSkillAssignments(
-            faces: c.diceFaces,
-            current: c.diceSkillAssignments,
-            unlocked: unlocked,
-            skills: tables.skills),
-        tables.skills,
-        damage: c.baseDamage,
-        caster: c.knownSpells.isNotEmpty);
+      c.diceFaces,
+      simSkillAssignments(
+        faces: c.diceFaces,
+        current: c.diceSkillAssignments,
+        unlocked: unlocked,
+        skills: tables.skills,
+      ),
+      tables.skills,
+      damage: c.baseDamage,
+      caster: c.knownSpells.isNotEmpty,
+    );
   }
 
-  bool _canWear(Map<String, dynamic> item) => meetsItemStatRequirement(item,
-      strength: character.strength,
-      dexterity: character.dexterity,
-      constitution: character.constitution,
-      intelligence: character.intelligence);
+  bool _canWear(Map<String, dynamic> item) => meetsItemStatRequirement(
+        item,
+        strength: character.strength,
+        dexterity: character.dexterity,
+        constitution: character.constitution,
+        intelligence: character.intelligence,
+      );
 
   /// The best loadout's worth (simLoadoutValue) with [extra] owned too.
   double _bestGearValue([Iterable<String> extra = const []]) {
     final c = character;
     final best = simBestLoadout(
-        worn: c.equippedBySlot,
-        owned: {...c.ownedItemIds, ...extra},
-        items: tables.items,
-        sets: tables.itemSets,
-        canWear: _canWear,
-        caster: c.knownSpells.isNotEmpty);
-    return simLoadoutValue(best.values, tables.items, tables.itemSets,
-        caster: c.knownSpells.isNotEmpty);
+      worn: c.equippedBySlot,
+      owned: {...c.ownedItemIds, ...extra},
+      items: tables.items,
+      sets: tables.itemSets,
+      canWear: _canWear,
+      caster: c.knownSpells.isNotEmpty,
+    );
+    return simLoadoutValue(
+      best.values,
+      tables.items,
+      tables.itemSets,
+      caster: c.knownSpells.isNotEmpty,
+    );
   }
 
   /// What [gift] adds to the build's power, the competent player's
@@ -842,9 +939,11 @@ class SimGrowth {
         if (spellId != null) {
           final spell = tables.spells[spellId];
           return spell != null &&
-                  canLearnSpell(spell,
-                      professionId: c.professionId,
-                      knownSpellIds: [for (final s in c.knownSpells) s.id])
+                  canLearnSpell(
+                    spell,
+                    professionId: c.professionId,
+                    knownSpellIds: [for (final s in c.knownSpells) s.id],
+                  )
               ? 15
               : 0;
         }
@@ -864,18 +963,24 @@ class SimGrowth {
                 : faces;
         final caster = c.knownSpells.isNotEmpty;
         final now = simDieValue(
-            c.diceFaces, c.diceSkillAssignments, tables.skills,
-            damage: c.baseDamage, caster: caster);
+          c.diceFaces,
+          c.diceSkillAssignments,
+          tables.skills,
+          damage: c.baseDamage,
+          caster: caster,
+        );
         final worth = simDieValue(
-            rolled,
-            simSkillAssignments(
-                faces: rolled,
-                current: const {},
-                unlocked: c.unlockedSkillIds,
-                skills: tables.skills),
-            tables.skills,
-            damage: c.baseDamage,
-            caster: caster);
+          rolled,
+          simSkillAssignments(
+            faces: rolled,
+            current: const {},
+            unlocked: c.unlockedSkillIds,
+            skills: tables.skills,
+          ),
+          tables.skills,
+          damage: c.baseDamage,
+          caster: caster,
+        );
         return max(1.0, (worth - now) * 10);
       case GiftKind.sign:
         final sign = tables.signs[gift.id];
@@ -908,7 +1013,9 @@ class SimGrowth {
   /// tie (within a point) to the clan it stands closest to. Every offer is
   /// taken: when every banner would hurt, the best of them all.
   ({Suitor? suitor, String reason}) competentSuitor(
-      ClanOffer offer, OfferTicket ticket) {
+    ClanOffer offer,
+    OfferTicket ticket,
+  ) {
     if (offer.suitors.isEmpty) return (suitor: null, reason: '');
     final data = tables.clans;
     final main = mainClanOf(politics);
@@ -916,8 +1023,12 @@ class SimGrowth {
         main.isEmpty ? <String>{} : {main, ...alliesOf(main, politics, data)};
     String? turnsHostile(Suitor s) {
       if (needed.isEmpty || s.isWayfarer) return null;
-      final after =
-          acceptPolitics(s, ticket, politics: politics, data: data).politics;
+      final after = acceptPolitics(
+        s,
+        ticket,
+        politics: politics,
+        data: data,
+      ).politics;
       for (final id in needed.toList()..sort()) {
         if (politics.tierOf(id, data).isAtLeast(StandingTier.resented) &&
             !after.tierOf(id, data).isAtLeast(StandingTier.resented)) {
@@ -942,7 +1053,7 @@ class SimGrowth {
     if (!healthy && pool.any((s) => !s.risky)) {
       pool = [
         for (final s in pool)
-          if (!s.risky) s
+          if (!s.risky) s,
       ];
     }
     double power(Suitor s) => giftPower(s.gift) * (s.risky ? 0.6 : 1);
@@ -979,12 +1090,13 @@ class SimGrowth {
       }
     }
     final best = simBestLoadout(
-        worn: c.equippedBySlot,
-        owned: c.ownedItemIds,
-        items: tables.items,
-        sets: tables.itemSets,
-        canWear: _canWear,
-        caster: c.knownSpells.isNotEmpty);
+      worn: c.equippedBySlot,
+      owned: c.ownedItemIds,
+      items: tables.items,
+      sets: tables.itemSets,
+      canWear: _canWear,
+      caster: c.knownSpells.isNotEmpty,
+    );
     c.equippedBySlot
       ..clear()
       ..addAll(best);
@@ -1008,13 +1120,14 @@ class SimGrowth {
     if (skillwright && tables.merges.isNotEmpty) {
       while (true) {
         final merge = simMergeWorthIt(
-            merges: tables.merges,
-            unlocked: c.unlockedSkillIds,
-            faces: c.diceFaces,
-            current: c.diceSkillAssignments,
-            skills: tables.skills,
-            damage: c.baseDamage,
-            caster: c.knownSpells.isNotEmpty);
+          merges: tables.merges,
+          unlocked: c.unlockedSkillIds,
+          faces: c.diceFaces,
+          current: c.diceSkillAssignments,
+          skills: tables.skills,
+          damage: c.baseDamage,
+          caster: c.knownSpells.isNotEmpty,
+        );
         if (merge == null) break;
         c.unlockedSkillIds
           ..removeAll(merge.inputs)
@@ -1067,8 +1180,12 @@ class SimGrowth {
       case GiftKind.sign:
         final sign = tables.signs[gift.id];
         if (sign == null) return alignment;
-        character.heldSigns =
-            takeSign(character.heldSigns, sign, gift.rarity, tables.signs).held;
+        character.heldSigns = takeSign(
+          character.heldSigns,
+          sign,
+          gift.rarity,
+          tables.signs,
+        ).held;
         favour[suitor.factionId] = (favour[suitor.factionId] ?? 0) + 1;
         for (final id in {suitor.factionId, sign.patronId}) {
           if (!patronsThisLife.contains(id)) patronsThisLife.add(id);
@@ -1122,9 +1239,11 @@ class SimGrowth {
     if (spellId != null) {
       final spell = tables.spells[spellId];
       if (spell != null &&
-          canLearnSpell(spell,
-              professionId: c.professionId,
-              knownSpellIds: [for (final s in c.knownSpells) s.id])) {
+          canLearnSpell(
+            spell,
+            professionId: c.professionId,
+            knownSpellIds: [for (final s in c.knownSpells) s.id],
+          )) {
         c.knownSpells.add(spell);
       }
       return;

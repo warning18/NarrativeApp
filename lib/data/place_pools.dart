@@ -143,13 +143,18 @@ class PlacePools {
     final fallback = flavorFor(theme);
     if (isEmpty) return fallback;
     (List<String>, List<String>) kind(
-        String kind, List<String> en, List<String> fr) {
-      final lines = linesFor(kind,
-          chain: chain,
-          biomeId: biomeId,
-          theme: theme,
-          chapter: chapter,
-          mood: mood);
+      String kind,
+      List<String> en,
+      List<String> fr,
+    ) {
+      final lines = linesFor(
+        kind,
+        chain: chain,
+        biomeId: biomeId,
+        theme: theme,
+        chapter: chapter,
+        mood: mood,
+      );
       if (lines.isEmpty) return (en, fr);
       return (
         [for (final line in lines) line.en],

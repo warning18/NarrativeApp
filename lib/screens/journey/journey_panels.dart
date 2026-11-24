@@ -64,14 +64,20 @@ class _ScenePanel extends ConsumerWidget {
     // Plain scenes read on the way here open this one (see
     // scene_flow.dart); lines an earlier choice earned close it.
     final speaker = speakerLabelFor(node.speaker, french: french);
-    final parts = composeNarrationParts(node, session, story,
-        french: french, revisit: isRevisit(ref.watch(storyPlayProvider)));
+    final parts = composeNarrationParts(
+      node,
+      session,
+      story,
+      french: french,
+      revisit: isRevisit(ref.watch(storyPlayProvider)),
+    );
     // A scene in pages shows the page being read (v1.750): what led here
     // opens its first page, the echoes close its last.
     final page = scenePageOf(
-        ref.watch(scenePageProvider),
-        scenePageKey(ref.watch(storyPlayProvider), node.id),
-        parts.pages.length);
+      ref.watch(scenePageProvider),
+      scenePageKey(ref.watch(storyPlayProvider), node.id),
+      parts.pages.length,
+    );
     final firstPage = page == 0;
     final lastPage = page >= parts.pages.length - 1;
     final text = parts.pages.length > 1 ? parts.pages[page] : parts.text;
@@ -88,10 +94,7 @@ class _ScenePanel extends ConsumerWidget {
       fontSize: reading ? 17 : 15,
       height: reading ? 1.55 : 1.45,
     );
-    final aside = prose?.copyWith(
-      fontStyle: FontStyle.italic,
-      color: ink.ash,
-    );
+    final aside = prose?.copyWith(fontStyle: FontStyle.italic, color: ink.ash);
     final body = Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       mainAxisSize: MainAxisSize.min,
@@ -115,12 +118,13 @@ class _ScenePanel extends ConsumerWidget {
           ),
           Text(
             tr(ref, 'journey_still_in').replaceAll(
-                '{place}',
-                ref
-                        .watch(geographyProvider)
-                        .places[taken.placeId]
-                        ?.nameFor(french) ??
-                    ''),
+              '{place}',
+              ref
+                      .watch(geographyProvider)
+                      .places[taken.placeId]
+                      ?.nameFor(french) ??
+                  '',
+            ),
             key: const ValueKey('journey_still_line'),
             style: theme.textTheme.labelSmall?.copyWith(color: ink.ash),
           ),
@@ -160,8 +164,10 @@ class _ScenePanel extends ConsumerWidget {
             EchoLine(
               key: ValueKey('journey_prelude_echo_${echo.key}'),
               echo: echo,
-              caption:
-                  tr(ref, 'echo_because').replaceAll('{choice}', echo.cause),
+              caption: tr(
+                ref,
+                'echo_because',
+              ).replaceAll('{choice}', echo.cause),
               colour: ink.gold,
               style: prose ?? const TextStyle(),
             ),
@@ -197,8 +203,10 @@ class _ScenePanel extends ConsumerWidget {
             EchoLine(
               key: ValueKey('journey_echo_${echo.key}'),
               echo: echo,
-              caption:
-                  tr(ref, 'echo_because').replaceAll('{choice}', echo.cause),
+              caption: tr(
+                ref,
+                'echo_because',
+              ).replaceAll('{choice}', echo.cause),
               colour: ink.gold,
               style: prose ?? const TextStyle(),
             ),
@@ -256,11 +264,15 @@ class _ScenePanel extends ConsumerWidget {
                           child: reading
                               ? ConstrainedBox(
                                   constraints: BoxConstraints(
-                                      minHeight:
-                                          math.max(0, viewport.maxHeight - 40)),
+                                    minHeight: math.max(
+                                      0,
+                                      viewport.maxHeight - 40,
+                                    ),
+                                  ),
                                   child: Align(
-                                      alignment: Alignment.topLeft,
-                                      child: body),
+                                    alignment: Alignment.topLeft,
+                                    child: body,
+                                  ),
                                 )
                               : body,
                         ),
@@ -279,10 +291,9 @@ class _ScenePanel extends ConsumerWidget {
                     icon: const Icon(Icons.map_outlined, size: IconSize.s16),
                     // A locked page's map waits (v1.553): greyed.
                     tooltip: tr(
-                        ref,
-                        locked
-                            ? 'journey_choose_first'
-                            : 'journey_reading_exit'),
+                      ref,
+                      locked ? 'journey_choose_first' : 'journey_reading_exit',
+                    ),
                     visualDensity: VisualDensity.compact,
                     onPressed: locked ? null : () => onReading(false),
                   )
@@ -391,14 +402,19 @@ class _LookedAtPanel extends ConsumerWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           mainAxisSize: MainAxisSize.min,
           children: [
-            Text(landmark.name(language),
-                style: theme.textTheme.titleMedium
-                    ?.copyWith(fontFamily: InkFonts.display)),
+            Text(
+              landmark.name(language),
+              style: theme.textTheme.titleMedium?.copyWith(
+                fontFamily: InkFonts.display,
+              ),
+            ),
             const SizedBox(height: 4),
             Text(
               landmark.blurb(language),
-              style: theme.textTheme.bodySmall
-                  ?.copyWith(fontFamily: InkFonts.prose, height: 1.4),
+              style: theme.textTheme.bodySmall?.copyWith(
+                fontFamily: InkFonts.prose,
+                height: 1.4,
+              ),
             ),
           ],
         ),
@@ -422,13 +438,19 @@ class _EndedPanel extends ConsumerWidget {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Text(title,
-                textAlign: TextAlign.center,
-                style: theme.textTheme.titleLarge
-                    ?.copyWith(fontFamily: InkFonts.display)),
+            Text(
+              title,
+              textAlign: TextAlign.center,
+              style: theme.textTheme.titleLarge?.copyWith(
+                fontFamily: InkFonts.display,
+              ),
+            ),
             const SizedBox(height: 8),
-            Text(message,
-                textAlign: TextAlign.center, style: theme.textTheme.bodyMedium),
+            Text(
+              message,
+              textAlign: TextAlign.center,
+              style: theme.textTheme.bodyMedium,
+            ),
             const SizedBox(height: 16),
             FilledButton.tonalIcon(
               key: const ValueKey('journey_open_story'),

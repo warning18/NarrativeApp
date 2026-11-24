@@ -41,30 +41,35 @@ class SkillTreeView extends ConsumerWidget {
       children: [
         // The rules, in a line; the full text a tap away.
         Text.rich(
-          TextSpan(children: [
-            TextSpan(text: '${tr(ref, 'skills_rules_short')} · '),
-            WidgetSpan(
-              alignment: PlaceholderAlignment.baseline,
-              baseline: TextBaseline.alphabetic,
-              child: GestureDetector(
-                key: const Key('skills_how'),
-                onTap: () => showDetailDialog(
-                  context,
-                  title: tr(ref, 'skills_how_it_works'),
-                  description: mastered == null
-                      ? tr(ref, 'skill_tree_intro')
-                      : '${tr(ref, 'skill_tree_intro')}\n\n'
-                          '${tr(ref, 'skill_tree_mastered').replaceAll('{branch}', mastered)}',
-                  closeLabel: tr(ref, 'close_button'),
-                ),
-                child: Text(tr(ref, 'skills_how_it_works'),
+          TextSpan(
+            children: [
+              TextSpan(text: '${tr(ref, 'skills_rules_short')} · '),
+              WidgetSpan(
+                alignment: PlaceholderAlignment.baseline,
+                baseline: TextBaseline.alphabetic,
+                child: GestureDetector(
+                  key: const Key('skills_how'),
+                  onTap: () => showDetailDialog(
+                    context,
+                    title: tr(ref, 'skills_how_it_works'),
+                    description: mastered == null
+                        ? tr(ref, 'skill_tree_intro')
+                        : '${tr(ref, 'skill_tree_intro')}\n\n'
+                            '${tr(ref, 'skill_tree_mastered').replaceAll('{branch}', mastered)}',
+                    closeLabel: tr(ref, 'close_button'),
+                  ),
+                  child: Text(
+                    tr(ref, 'skills_how_it_works'),
                     style: theme.textTheme.bodySmall?.copyWith(
-                        color: ink.tide,
-                        decoration: TextDecoration.underline,
-                        decorationColor: ink.tide)),
+                      color: ink.tide,
+                      decoration: TextDecoration.underline,
+                      decorationColor: ink.tide,
+                    ),
+                  ),
+                ),
               ),
-            ),
-          ]),
+            ],
+          ),
           style: theme.textTheme.bodySmall?.copyWith(color: ink.ash),
         ),
         const SizedBox(height: 14),
@@ -73,14 +78,17 @@ class SkillTreeView extends ConsumerWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               for (final branch in model.classBranches)
-                Expanded(child: _BranchColumn(model: model, branch: branch)),
+                Expanded(
+                  child: _BranchColumn(model: model, branch: branch),
+                ),
             ],
           ),
         for (final branch in model.heritageBranches) ...[
           const Divider(height: 28),
           _SectionTitle(
-              title: branch.name,
-              count: '${model.knownOn(branch)}/${branch.skillIds.length}'),
+            title: branch.name,
+            count: '${model.knownOn(branch)}/${branch.skillIds.length}',
+          ),
           const SizedBox(height: 8),
           Row(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -118,14 +126,20 @@ class _SectionTitle extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    return Text.rich(TextSpan(children: [
-      TextSpan(text: title, style: theme.textTheme.titleSmall),
-      if (count != null)
-        TextSpan(
-            text: '  $count',
-            style: theme.textTheme.labelSmall
-                ?.copyWith(color: InkColors.of(context).ash)),
-    ]));
+    return Text.rich(
+      TextSpan(
+        children: [
+          TextSpan(text: title, style: theme.textTheme.titleSmall),
+          if (count != null)
+            TextSpan(
+              text: '  $count',
+              style: theme.textTheme.labelSmall?.copyWith(
+                color: InkColors.of(context).ash,
+              ),
+            ),
+        ],
+      ),
+    );
   }
 }
 
@@ -142,7 +156,7 @@ class _BranchColumn extends ConsumerWidget {
     final isMastered = branch.id == model.masteredBranchId;
     final ids = [
       for (final id in branch.skillIds)
-        if (model[id] != null) id
+        if (model[id] != null) id,
     ];
     return Column(
       children: [
@@ -154,8 +168,9 @@ class _BranchColumn extends ConsumerWidget {
             branch.name,
             key: Key('branch_${branch.id}'),
             maxLines: 1,
-            style: theme.textTheme.titleSmall
-                ?.copyWith(color: isMastered ? ink.gold : null),
+            style: theme.textTheme.titleSmall?.copyWith(
+              color: isMastered ? ink.gold : null,
+            ),
           ),
         ),
         Text(
@@ -172,8 +187,11 @@ class _BranchColumn extends ConsumerWidget {
             textAlign: TextAlign.center,
             maxLines: 2,
             overflow: TextOverflow.ellipsis,
-            style: theme.textTheme.labelSmall
-                ?.copyWith(color: ink.ash, fontSize: 10.5, height: 1.2),
+            style: theme.textTheme.labelSmall?.copyWith(
+              color: ink.ash,
+              fontSize: 10.5,
+              height: 1.2,
+            ),
           ),
         ),
         const SizedBox(height: 6),
@@ -255,8 +273,9 @@ class SkillNode extends ConsumerWidget {
                     boxShadow: entry.readyNow
                         ? [
                             BoxShadow(
-                                color: ink.gold.withValues(alpha: 0.35),
-                                blurRadius: 10)
+                              color: ink.gold.withValues(alpha: 0.35),
+                              blurRadius: 10,
+                            ),
                           ]
                         : null,
                   ),
@@ -290,10 +309,15 @@ class SkillNode extends ConsumerWidget {
                       color: theme.scaffoldBackgroundColor,
                     ),
                     child: locked
-                        ? const PixelGlyph(PixelGlyphs.lock8,
-                            size: IconSize.s16)
-                        : Icon(kind.icon,
-                            size: IconSize.inline, color: kind.color),
+                        ? const PixelGlyph(
+                            PixelGlyphs.lock8,
+                            size: IconSize.s16,
+                          )
+                        : Icon(
+                            kind.icon,
+                            size: IconSize.inline,
+                            color: kind.color,
+                          ),
                   ),
                 ),
               ],
@@ -307,8 +331,9 @@ class SkillNode extends ConsumerWidget {
                 child: Text(
                   skillDisplayName(id, language: lang),
                   maxLines: 1,
-                  style: theme.textTheme.labelSmall
-                      ?.copyWith(color: locked ? ink.ash : null),
+                  style: theme.textTheme.labelSmall?.copyWith(
+                    color: locked ? ink.ash : null,
+                  ),
                 ),
               ),
             ),
@@ -354,8 +379,9 @@ class _SponsorLabel extends ConsumerWidget {
         key: Key('tree_sponsor_${entry.id}'),
         maxLines: 1,
         style: theme.textTheme.labelSmall?.copyWith(
-            color: faction == null || locked ? ink.ash : Color(faction.color),
-            fontWeight: FontWeight.w600),
+          color: faction == null || locked ? ink.ash : Color(faction.color),
+          fontWeight: FontWeight.w600,
+        ),
       ),
     );
   }
@@ -425,10 +451,12 @@ class _MasteryNode extends ConsumerWidget {
                   color: isMastered ? ink.gold.withValues(alpha: 0.2) : null,
                   border: Border.all(color: colour, width: 2),
                 ),
-                child: PixelGlyph(closed ? PixelGlyphs.block : PixelGlyphs.star,
-                    color: isMastered || ready ? ink.gold : ink.ash,
-                    opacity: isMastered || ready ? 1 : 0.55,
-                    size: IconSize.s32),
+                child: PixelGlyph(
+                  closed ? PixelGlyphs.block : PixelGlyphs.star,
+                  color: isMastered || ready ? ink.gold : ink.ash,
+                  opacity: isMastered || ready ? 1 : 0.55,
+                  size: IconSize.s32,
+                ),
               ),
               const SizedBox(height: 3),
               // "Mastery" over its cost, shrunk to the column when French
@@ -444,7 +472,8 @@ class _MasteryNode extends ConsumerWidget {
                   key: Key('mastery_text_${branch.id}'),
                   textAlign: TextAlign.center,
                   style: theme.textTheme.labelSmall?.copyWith(
-                      color: isMastered || ready ? ink.gold : ink.ash),
+                    color: isMastered || ready ? ink.gold : ink.ash,
+                  ),
                 ),
               ),
             ],

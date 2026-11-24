@@ -92,7 +92,13 @@ class VfxBurst {
 /// One particle's fixed traits, drawn when a burst is made.
 class VfxParticle {
   const VfxParticle(
-      this.angle, this.speed, this.size, this.delay, this.spin, this.dx);
+    this.angle,
+    this.speed,
+    this.size,
+    this.delay,
+    this.spin,
+    this.dx,
+  );
   final double angle;
   final double speed;
   final double size;
@@ -121,8 +127,12 @@ List<VfxParticle> _makeParticles(int seed) {
 
 /// A cue for a portrait: do [cue] after [delay].
 class VfxCue {
-  const VfxCue(this.target, this.cue,
-      {this.delay = Duration.zero, this.dir = const Offset(-1, 0)});
+  const VfxCue(
+    this.target,
+    this.cue, {
+    this.delay = Duration.zero,
+    this.dir = const Offset(-1, 0),
+  });
 
   final GlobalKey target;
   final PortraitCue cue;
@@ -174,10 +184,20 @@ class CombatVfxController extends ChangeNotifier {
 
   /// Cues the portrait on [target] to [cue] after [delayMs] ([dir] points
   /// to whom a lunge strikes).
-  void cue(GlobalKey target, PortraitCue cue,
-      {int delayMs = 0, Offset dir = const Offset(-1, 0)}) {
-    _emitCue(VfxCue(target, cue,
-        delay: Duration(milliseconds: max(0, delayMs)), dir: dir));
+  void cue(
+    GlobalKey target,
+    PortraitCue cue, {
+    int delayMs = 0,
+    Offset dir = const Offset(-1, 0),
+  }) {
+    _emitCue(
+      VfxCue(
+        target,
+        cue,
+        delay: Duration(milliseconds: max(0, delayMs)),
+        dir: dir,
+      ),
+    );
   }
 
   void _emitCue(VfxCue cue) {
@@ -211,22 +231,24 @@ class CombatVfxController extends ChangeNotifier {
   }) {
     final palette = paletteFor(style, element);
     PixelVfxTints.request(style, palette);
-    _queue.add(VfxBurst(
-      style: style,
-      palette: palette,
-      target: target,
-      source: source,
-      targetFallback: globalRectOf(target),
-      sourceFallback: source == null ? null : globalRectOf(source),
-      delay: Duration(milliseconds: max(0, delayMs)),
-      text: text,
-      textKind: textKind,
-      big: big,
-      power: power ?? (big ? 1.35 : 1.0),
-      hit: hit ?? _isBlow(style, textKind),
-      accent: accent,
-      seed: _seed++ * 7919,
-    ));
+    _queue.add(
+      VfxBurst(
+        style: style,
+        palette: palette,
+        target: target,
+        source: source,
+        targetFallback: globalRectOf(target),
+        sourceFallback: source == null ? null : globalRectOf(source),
+        delay: Duration(milliseconds: max(0, delayMs)),
+        text: text,
+        textKind: textKind,
+        big: big,
+        power: power ?? (big ? 1.35 : 1.0),
+        hit: hit ?? _isBlow(style, textKind),
+        accent: accent,
+        seed: _seed++ * 7919,
+      ),
+    );
     notifyListeners();
   }
 
@@ -293,7 +315,9 @@ class VfxRecoil extends StatefulWidget {
 class _VfxRecoilState extends State<VfxRecoil>
     with SingleTickerProviderStateMixin {
   late final AnimationController _anim = AnimationController(
-      vsync: this, duration: const Duration(milliseconds: 320));
+    vsync: this,
+    duration: const Duration(milliseconds: 320),
+  );
   VfxImpact? _impact;
 
   @override
@@ -466,12 +490,14 @@ class _CombatVfxLayerState extends State<CombatVfxLayer>
           systemVfxStyles.contains(burst.style)) {
         continue;
       }
-      widget.controller._reportImpact(VfxImpact(
-        target: burst.target,
-        tier: burst.tier,
-        hit: burst.hit,
-        palette: burst.palette,
-      ));
+      widget.controller._reportImpact(
+        VfxImpact(
+          target: burst.target,
+          tier: burst.tier,
+          hit: burst.hit,
+          palette: burst.palette,
+        ),
+      );
       if (burst.tier == VfxTier.mighty &&
           burst.hit &&
           !widget.reducedMotion &&
@@ -482,7 +508,8 @@ class _CombatVfxLayerState extends State<CombatVfxLayer>
       }
     }
     _active.removeWhere(
-        (b) => now > b.startAt! + Duration(milliseconds: b.lifeMs));
+      (b) => now > b.startAt! + Duration(milliseconds: b.lifeMs),
+    );
     _clock.value = now;
     if (_active.isEmpty) _ticker.stop();
   }
@@ -551,12 +578,23 @@ class _VfxPainter extends CustomPainter {
           : resolve(burst.source!, burst.sourceFallback);
       final t = elapsedMs / burst.durationMs;
       if (!reducedMotion && t <= 1) {
-        _Fx(canvas, size, burst, target, source, t.clamp(0.0, 1.0), frame)
-            .paint();
+        _Fx(
+          canvas,
+          size,
+          burst,
+          target,
+          source,
+          t.clamp(0.0, 1.0),
+          frame,
+        ).paint();
       }
       if (burst.text != null) {
         _paintText(
-            canvas, burst, target, (elapsedMs / burst.lifeMs).clamp(0.0, 1.0));
+          canvas,
+          burst,
+          target,
+          (elapsedMs / burst.lifeMs).clamp(0.0, 1.0),
+        );
       }
     }
   }

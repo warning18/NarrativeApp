@@ -110,8 +110,9 @@ extension _SimFightEnemyTurn on _SimFight {
   SimFightOutcome? _enemyTurn() {
     final ctx = this.ctx;
     // A Pack Leader standing as the turn opens drives the rest harder.
-    final leaderStanding =
-        ens.any((e) => e.isAlive && e.has(EnemyAffix.packLeader));
+    final leaderStanding = ens.any(
+      (e) => e.isAlive && e.has(EnemyAffix.packLeader),
+    );
     // --- enemy turn ---
     if (on('squad')) {
       for (var i = 0; i < ens.length; i++) {
@@ -145,8 +146,10 @@ extension _SimFightEnemyTurn on _SimFight {
         e.health = max(0, e.health - ePoison);
         // The Moss Choir: the Rot heals the rogue a share of what it takes.
         if (mods.rotHealShare > 0 && has(Spec.feverBlade)) {
-          c.currentHealth = min(c.maxHealth,
-              c.currentHealth + (ePoison * mods.rotHealShare).round());
+          c.currentHealth = min(
+            c.maxHealth,
+            c.currentHealth + (ePoison * mods.rotHealShare).round(),
+          );
         }
         if (!e.isAlive) continue;
         phasesEntered += e.advancePhases();
@@ -212,8 +215,11 @@ extension _SimFightEnemyTurn on _SimFight {
               case DiceTamper.silence:
                 silencePending = true;
               case DiceTamper.curse:
-                final index =
-                    curseTargetFace(c.diceFaces.length, cursedFaces, random);
+                final index = curseTargetFace(
+                  c.diceFaces.length,
+                  cursedFaces,
+                  random,
+                );
                 if (index == null) break;
                 if (emberCharges > 0) {
                   emberCharges--;
@@ -243,16 +249,18 @@ extension _SimFightEnemyTurn on _SimFight {
         final keeper = guardian;
         if (heroGuards) {
           if (guardianTakesBlow(
-              guardianStanding: !c.isKnockedOut,
-              guardianBlock: block,
-              aimedAtGuardian: struck == null)) {
+            guardianStanding: !c.isKnockedOut,
+            guardianBlock: block,
+            aimedAtGuardian: struck == null,
+          )) {
             struck = null;
           }
         } else if (keeper != null &&
             guardianTakesBlow(
-                guardianStanding: !keeper.isKnockedOut,
-                guardianBlock: keeper.block,
-                aimedAtGuardian: identical(struck, keeper))) {
+              guardianStanding: !keeper.isKnockedOut,
+              guardianBlock: keeper.block,
+              aimedAtGuardian: identical(struck, keeper),
+            )) {
           struck = keeper;
         }
       }
@@ -321,8 +329,11 @@ extension _SimFightEnemyTurn on _SimFight {
       if (struck != null) {
         final a = struck;
         final dodged = random.nextDouble() * 100 <
-            dodgeChanceFor(a.dexterity,
-                perception: a.perception, professionId: a.professionId);
+            dodgeChanceFor(
+              a.dexterity,
+              perception: a.perception,
+              professionId: a.professionId,
+            );
         final taken = dodged ? 0 : max(0, moveDamage - a.block - a.armor);
         a.block = 0;
         a.currentHealth = max(0, a.currentHealth - taken);
@@ -330,7 +341,9 @@ extension _SimFightEnemyTurn on _SimFight {
             (e.has(EnemyAffix.venomous) ? venomousPoison : null);
         if (!dodged && inflicted != null && !a.isKnockedOut) {
           a.statusEffects = applyStatusEffect(
-              a.statusEffects, applyWisdomResistance(inflicted, a.wisdom));
+            a.statusEffects,
+            applyWisdomResistance(inflicted, a.wisdom),
+          );
         }
         e.statusEffects = tickStatusEffects(e.statusEffects);
         continue;
@@ -338,8 +351,11 @@ extension _SimFightEnemyTurn on _SimFight {
       final parry = on('parry') ? e.parryBlock : 0;
       // The Briar Guard can't dodge (the draw is made all the same).
       final dodged = random.nextDouble() * 100 <
-              dodgeChanceFor(c.dexterity,
-                      perception: c.perception, professionId: c.professionId) +
+              dodgeChanceFor(
+                    c.dexterity,
+                    perception: c.perception,
+                    professionId: c.professionId,
+                  ) +
                   gear.dodgeChance &&
           !has(Spec.briarGuard);
       var taken = dodged
@@ -354,8 +370,11 @@ extension _SimFightEnemyTurn on _SimFight {
                   c.elementalResist(items, move.element),
             );
       // A warrior's Perception blocks half a blow now and then.
-      final blockChance =
-          blockChanceWith(c.professionId, c.perception, gear.blockChance);
+      final blockChance = blockChanceWith(
+        c.professionId,
+        c.perception,
+        gear.blockChance,
+      );
       if (taken > 0 &&
           blockChance > 0 &&
           random.nextDouble() * 100 < blockChance) {

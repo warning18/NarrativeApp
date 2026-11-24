@@ -173,9 +173,13 @@ class CityChartView extends StatefulWidget {
 class _CityChartViewState extends State<CityChartView>
     with TickerProviderStateMixin {
   late final AnimationController _move = AnimationController(
-      vsync: this, duration: const Duration(milliseconds: 420));
-  late final AnimationController _breath =
-      AnimationController(vsync: this, duration: const Duration(seconds: 2));
+    vsync: this,
+    duration: const Duration(milliseconds: 420),
+  );
+  late final AnimationController _breath = AnimationController(
+    vsync: this,
+    duration: const Duration(seconds: 2),
+  );
 
   // The view: canvas = _offset + plan point * _scale.
   double _scale = 1;
@@ -341,17 +345,22 @@ class _CityChartViewState extends State<CityChartView>
   /// The scale and offset that frame [box] in [size] with room for what
   /// hangs over it: the banners above their buildings (38 px) and the
   /// names under them.
-  (double, Offset) _framed(Rect box, Size size,
-      {double top = 48,
-      double bottom = 30,
-      double side = 16,
-      double usable = 1}) {
+  (double, Offset) _framed(
+    Rect box,
+    Size size, {
+    double top = 48,
+    double bottom = 30,
+    double side = 16,
+    double usable = 1,
+  }) {
     // [usable]: the share of the height above whatever covers the foot (a
     // district's card sits below the frame, from 0.42 of the height down
     // to the middle).
     final height = size.height * usable;
-    final s = math.min((size.width - 2 * side) / box.width,
-        (height - top - bottom) / box.height);
+    final s = math.min(
+      (size.width - 2 * side) / box.width,
+      (height - top - bottom) / box.height,
+    );
     final centre = Offset(size.width / 2, top + (height - top - bottom) / 2);
     return (s, centre - box.center * s);
   }
@@ -367,8 +376,10 @@ class _CityChartViewState extends State<CityChartView>
         WidgetsBinding.instance.addPostFrameCallback((_) => _takeShot());
       }
       _scale = _fitted;
-      _offset = Offset((size.width - b.width * _fitted) / 2,
-          (size.height - b.height * _fitted) / 2);
+      _offset = Offset(
+        (size.width - b.width * _fitted) / 2,
+        (size.height - b.height * _fitted) / 2,
+      );
       final d = widget.focus == null
           ? null
           : widget.chart.districtById(widget.focus!);
@@ -422,7 +433,8 @@ class _CityChartViewState extends State<CityChartView>
     final scale = (_scale * 1.6).clamp(_minScale, _maxScale);
     _animateTo(scale, _clamped(centre - party * scale, scale));
     _redraw(
-        () => _focus = scale / _fitted >= cityChartDetailZoom ? _focus : null);
+      () => _focus = scale / _fitted >= cityChartDetailZoom ? _focus : null,
+    );
   }
 
   /// Zooms about the screen point [focal] by [factor].
@@ -431,15 +443,19 @@ class _CityChartViewState extends State<CityChartView>
     final plan = (focal - _offset) / _scale;
     _animateTo(scale, focal - plan * scale);
     _redraw(
-        () => _focus = scale / _fitted >= cityChartDetailZoom ? _focus : null);
+      () => _focus = scale / _fitted >= cityChartDetailZoom ? _focus : null,
+    );
   }
 
   void _showWhole() {
     final b = widget.chart.bounds;
     _animateTo(
-        _fitted,
-        Offset((_size.width - b.width * _fitted) / 2,
-            (_size.height - b.height * _fitted) / 2));
+      _fitted,
+      Offset(
+        (_size.width - b.width * _fitted) / 2,
+        (_size.height - b.height * _fitted) / 2,
+      ),
+    );
     _redraw(() {
       _focus = null;
       _pickedWay = null;
@@ -461,10 +477,11 @@ class _CityChartViewState extends State<CityChartView>
   bool _known(String id) =>
       widget.explored == null || widget.explored!.contains(id);
 
-  CityChartPainter _painter(
-          {double pulse = 0,
-          Animation<double>? beat,
-          CityChartLayer layer = CityChartLayer.all}) =>
+  CityChartPainter _painter({
+    double pulse = 0,
+    Animation<double>? beat,
+    CityChartLayer layer = CityChartLayer.all,
+  }) =>
       CityChartPainter(
         layer: layer,
         chart: widget.chart,
@@ -505,10 +522,11 @@ class _CityChartViewState extends State<CityChartView>
       for (final n in painter.nameSpots(size: _size))
         (
           Rect.fromLTWH(
-              _offset.dx + n.box.left * _scale,
-              _offset.dy + n.box.top * _scale,
-              n.box.width * _scale,
-              n.box.height * _scale),
+            _offset.dx + n.box.left * _scale,
+            _offset.dy + n.box.top * _scale,
+            n.box.width * _scale,
+            n.box.height * _scale,
+          ),
           n.building.name,
         ),
     ];
@@ -632,15 +650,24 @@ class _CityChartViewState extends State<CityChartView>
     // below ([_redraw]), inside this view's own LayoutBuilder and paint
     // boundary: the plan's layer is repainted, not the screen round it
     // (a setState here would count under the page's LayoutBuilder).
-    return RepaintBoundary(child: LayoutBuilder(builder: (context, box) {
-      return ListenableBuilder(
-          listenable: _redrawn,
-          builder: (context, _) => _content(context, box, palette, text));
-    }));
+    return RepaintBoundary(
+      child: LayoutBuilder(
+        builder: (context, box) {
+          return ListenableBuilder(
+            listenable: _redrawn,
+            builder: (context, _) => _content(context, box, palette, text),
+          );
+        },
+      ),
+    );
   }
 
-  Widget _content(BuildContext context, BoxConstraints box,
-      ChartPalette palette, CityChartText text) {
+  Widget _content(
+    BuildContext context,
+    BoxConstraints box,
+    ChartPalette palette,
+    CityChartText text,
+  ) {
     {
       _fit(Size(box.maxWidth, box.maxHeight));
       _reportZoom();
@@ -653,189 +680,215 @@ class _CityChartViewState extends State<CityChartView>
           if (mounted) widget.onFocus?.call(now);
         });
       }
-      return Stack(children: [
-        Positioned.fill(
-          child: Listener(
-            onPointerSignal: (e) {
-              if (e is PointerScrollEvent) {
-                _zoomAbout(e.localPosition, e.scrollDelta.dy < 0 ? 1.25 : 0.8);
-              }
-            },
-            child: GestureDetector(
-              key: const Key('city_chart'),
-              behavior: HitTestBehavior.opaque,
-              onScaleStart: (d) {
-                _move.stop();
-                _startScale = _scale;
-                _startFocal = d.localFocalPoint;
-                _startOffset = _offset;
-              },
-              onScaleUpdate: (d) {
-                final scale =
-                    (_startScale * d.scale).clamp(_minScale, _maxScale);
-                final plan = (_startFocal - _startOffset) / _startScale;
-                _redraw(() {
-                  _scale = scale;
-                  _offset = _clamped(d.localFocalPoint - plan * scale, scale);
-                  if (scale / _fitted < cityChartDetailZoom) _focus = null;
-                });
-              },
-              onTapUp: (d) {
-                // A second tap close by, soon after, zooms in further.
-                final now = DateTime.now();
-                final last = _lastTap;
-                if (last != null &&
-                    now.difference(last.$1).inMilliseconds < 300 &&
-                    (last.$2 - d.localPosition).distance < 40) {
-                  _lastTap = null;
-                  _zoomAbout(d.localPosition, 2.0);
-                  return;
+      return Stack(
+        children: [
+          Positioned.fill(
+            child: Listener(
+              onPointerSignal: (e) {
+                if (e is PointerScrollEvent) {
+                  _zoomAbout(
+                    e.localPosition,
+                    e.scrollDelta.dy < 0 ? 1.25 : 0.8,
+                  );
                 }
-                _lastTap = (now, d.localPosition);
-                _tap(d.localPosition);
               },
-              // The plan is drawn once and kept; only the party's ring is
-              // redrawn as it breathes.
-              child: Stack(fit: StackFit.expand, children: [
-                RepaintBoundary(
-                  child: CustomPaint(
-                    key: const Key('city_chart_plan'),
-                    painter: _painter(layer: CityChartLayer.base),
-                    size: Size.infinite,
-                  ),
-                ),
-                RepaintBoundary(
-                  // The painter follows the breath itself: no widget
-                  // is rebuilt on a beat.
-                  child: CustomPaint(
-                    key: const Key('city_chart_party'),
-                    painter:
-                        _painter(beat: _breath, layer: CityChartLayer.party),
-                    size: Size.infinite,
-                  ),
-                ),
-              ]),
-            ),
-          ),
-        ),
-        // The way back to the whole city, and the zoom buttons.
-        if (widget.controls)
-          Positioned(
-            left: 12,
-            top: 12,
-            child: AnimatedOpacity(
-              duration: Motion.base,
-              opacity: zoomed ? 1 : 0,
-              child: IgnorePointer(
-                ignoring: !zoomed,
-                child: _chip(
-                  key: const Key('city_chart_whole'),
-                  palette: palette,
-                  icon: Icons.zoom_out_map,
-                  label: text.wholeCity,
-                  onTap: _showWhole,
+              child: GestureDetector(
+                key: const Key('city_chart'),
+                behavior: HitTestBehavior.opaque,
+                onScaleStart: (d) {
+                  _move.stop();
+                  _startScale = _scale;
+                  _startFocal = d.localFocalPoint;
+                  _startOffset = _offset;
+                },
+                onScaleUpdate: (d) {
+                  final scale = (_startScale * d.scale).clamp(
+                    _minScale,
+                    _maxScale,
+                  );
+                  final plan = (_startFocal - _startOffset) / _startScale;
+                  _redraw(() {
+                    _scale = scale;
+                    _offset = _clamped(d.localFocalPoint - plan * scale, scale);
+                    if (scale / _fitted < cityChartDetailZoom) _focus = null;
+                  });
+                },
+                onTapUp: (d) {
+                  // A second tap close by, soon after, zooms in further.
+                  final now = DateTime.now();
+                  final last = _lastTap;
+                  if (last != null &&
+                      now.difference(last.$1).inMilliseconds < 300 &&
+                      (last.$2 - d.localPosition).distance < 40) {
+                    _lastTap = null;
+                    _zoomAbout(d.localPosition, 2.0);
+                    return;
+                  }
+                  _lastTap = (now, d.localPosition);
+                  _tap(d.localPosition);
+                },
+                // The plan is drawn once and kept; only the party's ring is
+                // redrawn as it breathes.
+                child: Stack(
+                  fit: StackFit.expand,
+                  children: [
+                    RepaintBoundary(
+                      child: CustomPaint(
+                        key: const Key('city_chart_plan'),
+                        painter: _painter(layer: CityChartLayer.base),
+                        size: Size.infinite,
+                      ),
+                    ),
+                    RepaintBoundary(
+                      // The painter follows the breath itself: no widget
+                      // is rebuilt on a beat.
+                      child: CustomPaint(
+                        key: const Key('city_chart_party'),
+                        painter: _painter(
+                          beat: _breath,
+                          layer: CityChartLayer.party,
+                        ),
+                        size: Size.infinite,
+                      ),
+                    ),
+                  ],
                 ),
               ),
             ),
           ),
-        if (widget.controls)
-          Positioned(
-            right: 12,
-            top: 12,
-            child: Column(children: [
-              _round(
-                key: const Key('city_chart_zoom_in'),
-                palette: palette,
-                icon: Icons.add,
-                tooltip: text.zoomIn,
-                onTap: _zoomInOnParty,
+          // The way back to the whole city, and the zoom buttons.
+          if (widget.controls)
+            Positioned(
+              left: 12,
+              top: 12,
+              child: AnimatedOpacity(
+                duration: Motion.base,
+                opacity: zoomed ? 1 : 0,
+                child: IgnorePointer(
+                  ignoring: !zoomed,
+                  child: _chip(
+                    key: const Key('city_chart_whole'),
+                    palette: palette,
+                    icon: Icons.zoom_out_map,
+                    label: text.wholeCity,
+                    onTap: _showWhole,
+                  ),
+                ),
               ),
-              const SizedBox(height: 8),
-              _round(
-                key: const Key('city_chart_zoom_out'),
-                palette: palette,
-                icon: Icons.remove,
-                tooltip: text.zoomOut,
-                onTap: () => _zoomAbout(_size.center(Offset.zero), 0.625),
+            ),
+          if (widget.controls)
+            Positioned(
+              right: 12,
+              top: 12,
+              child: Column(
+                children: [
+                  _round(
+                    key: const Key('city_chart_zoom_in'),
+                    palette: palette,
+                    icon: Icons.add,
+                    tooltip: text.zoomIn,
+                    onTap: _zoomInOnParty,
+                  ),
+                  const SizedBox(height: 8),
+                  _round(
+                    key: const Key('city_chart_zoom_out'),
+                    palette: palette,
+                    icon: Icons.remove,
+                    tooltip: text.zoomOut,
+                    onTap: () => _zoomAbout(_size.center(Offset.zero), 0.625),
+                  ),
+                ],
               ),
-            ]),
-          ),
-        if (widget.cards &&
-            (_pickedWay != null || _pickedFog != null || focus != null))
-          Positioned(
-            left: 12,
-            right: 12,
-            bottom: 12,
-            child: _card(palette, text, focus),
-          ),
-      ]);
+            ),
+          if (widget.cards &&
+              (_pickedWay != null || _pickedFog != null || focus != null))
+            Positioned(
+              left: 12,
+              right: 12,
+              bottom: 12,
+              child: _card(palette, text, focus),
+            ),
+        ],
+      );
     }
   }
 
   Widget _card(
-      ChartPalette palette, CityChartText text, CityChartDistrict? focus) {
+    ChartPalette palette,
+    CityChartText text,
+    CityChartDistrict? focus,
+  ) {
     final way = _pickedWay;
     final fog = _pickedFog;
     final chart = widget.chart;
     final d = way != null ? chart.districts[way.district] : fog ?? focus!;
     final here = way != null && way.id == widget.hereWayId;
     return Container(
-      key: Key(way != null
-          ? 'city_chart_way_card'
-          : fog != null
-              ? 'city_chart_fog_card'
-              : 'city_chart_district_card'),
+      key: Key(
+        way != null
+            ? 'city_chart_way_card'
+            : fog != null
+                ? 'city_chart_fog_card'
+                : 'city_chart_district_card',
+      ),
       padding: const EdgeInsets.all(12),
       decoration: BoxDecoration(
         color: palette.fog.withValues(alpha: 0.94),
         borderRadius: BorderRadius.circular(12),
         border: Border.all(color: d.colour, width: 1.5),
       ),
-      child: Row(children: [
-        Expanded(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Text(
-                way != null ? way.name : (fog != null ? '?' : d.name),
-                style: TextStyle(
+      child: Row(
+        children: [
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Text(
+                  way != null ? way.name : (fog != null ? '?' : d.name),
+                  style: TextStyle(
                     color: palette.place,
                     fontSize: 15,
-                    fontWeight: FontWeight.w700),
+                    fontWeight: FontWeight.w700,
+                  ),
+                ),
+                const SizedBox(height: 2),
+                Text(
+                  way != null
+                      ? '${d.name} · ${text.kinds[way.kind]}${here ? ' · ${text.here}' : ''}'
+                      : fog != null
+                          ? text.unexplored
+                          : text.ways(chart.waysIn(d.id).length),
+                  style: TextStyle(color: palette.label, fontSize: 12.5),
+                ),
+              ],
+            ),
+          ),
+          if (way == null &&
+              fog == null &&
+              widget.onWalk != null &&
+              d.id != widget.hereDistrict)
+            FilledButton(
+              key: const Key('city_chart_walk'),
+              style: FilledButton.styleFrom(
+                backgroundColor: d.colour,
+                foregroundColor: palette.fog,
               ),
-              const SizedBox(height: 2),
-              Text(
-                way != null
-                    ? '${d.name} · ${text.kinds[way.kind]}${here ? ' · ${text.here}' : ''}'
-                    : fog != null
-                        ? text.unexplored
-                        : text.ways(chart.waysIn(d.id).length),
-                style: TextStyle(color: palette.label, fontSize: 12.5),
+              onPressed: () => widget.onWalk!(d),
+              child: Text(text.walk),
+            ),
+          if (way != null && widget.onWay != null && !here)
+            FilledButton(
+              key: const Key('city_chart_go'),
+              style: FilledButton.styleFrom(
+                backgroundColor: d.colour,
+                foregroundColor: palette.fog,
               ),
-            ],
-          ),
-        ),
-        if (way == null &&
-            fog == null &&
-            widget.onWalk != null &&
-            d.id != widget.hereDistrict)
-          FilledButton(
-            key: const Key('city_chart_walk'),
-            style: FilledButton.styleFrom(
-                backgroundColor: d.colour, foregroundColor: palette.fog),
-            onPressed: () => widget.onWalk!(d),
-            child: Text(text.walk),
-          ),
-        if (way != null && widget.onWay != null && !here)
-          FilledButton(
-            key: const Key('city_chart_go'),
-            style: FilledButton.styleFrom(
-                backgroundColor: d.colour, foregroundColor: palette.fog),
-            onPressed: () => widget.onWay!(way),
-            child: Text(text.go),
-          ),
-      ]),
+              onPressed: () => widget.onWay!(way),
+              child: Text(text.go),
+            ),
+        ],
+      ),
     );
   }
 
@@ -855,12 +908,15 @@ class _CityChartViewState extends State<CityChartView>
           onTap: onTap,
           child: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-            child: Row(mainAxisSize: MainAxisSize.min, children: [
-              Icon(icon, size: IconSize.s16, color: palette.place),
-              const SizedBox(width: 6),
-              Text(label,
-                  style: TextStyle(color: palette.place, fontSize: 12.5)),
-            ]),
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Icon(icon, size: IconSize.s16, color: palette.place),
+                const SizedBox(width: 6),
+                Text(label,
+                    style: TextStyle(color: palette.place, fontSize: 12.5)),
+              ],
+            ),
           ),
         ),
       );
@@ -878,14 +934,16 @@ class _CityChartViewState extends State<CityChartView>
           // The same button as on the Journey's maps: square, a thumb wide.
           color: palette.land.withValues(alpha: 0.9),
           shape: RoundedRectangleBorder(
-              side: BorderSide(color: palette.coast, width: 2)),
+            side: BorderSide(color: palette.coast, width: 2),
+          ),
           child: InkWell(
             key: key,
             onTap: onTap,
             child: SizedBox(
-                width: 44,
-                height: 44,
-                child: Icon(icon, size: IconSize.s16, color: palette.place)),
+              width: 44,
+              height: 44,
+              child: Icon(icon, size: IconSize.s16, color: palette.place),
+            ),
           ),
         ),
       );

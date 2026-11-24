@@ -83,31 +83,36 @@ class SeaLook {
             shallow: Color(0xFF17435A),
             wave: Color(0xFF2B6583),
             foam: Color(0xFFD7EEF4),
-            accent: Color(0xFF7FC3D8)),
+            accent: Color(0xFF7FC3D8),
+          ),
         SeaWaters.shallows => const SeaLook(
             deep: Color(0xFF136466),
             shallow: Color(0xFF2A9C93),
             wave: Color(0xFF5CC6B6),
             foam: Color(0xFFF2FBF6),
-            accent: Color(0xFFE3CF94)),
+            accent: Color(0xFFE3CF94),
+          ),
         SeaWaters.drowned => const SeaLook(
             deep: Color(0xFF14261D),
             shallow: Color(0xFF26402F),
             wave: Color(0xFF3E6247),
             foam: Color(0xFFBFD6B8),
-            accent: Color(0xFF6E8F4E)),
+            accent: Color(0xFF6E8F4E),
+          ),
         SeaWaters.abyss => const SeaLook(
             deep: Color(0xFF0A0812),
             shallow: Color(0xFF1C1432),
             wave: Palette.purple28,
             foam: Color(0xFFCBB8FF),
-            accent: Palette.purple71),
+            accent: Palette.purple71,
+          ),
         SeaWaters.ashen => const SeaLook(
             deep: Color(0xFF1E2426),
             shallow: Color(0xFF394346),
             wave: Color(0xFF5C696B),
             foam: Palette.paper88,
-            accent: Color(0xFFB9B1A4)),
+            accent: Color(0xFFB9B1A4),
+          ),
       };
 }
 
@@ -177,7 +182,12 @@ class SeaSurfacePainter extends CustomPainter {
   /// Long swells: wide sine bands rolling slowly down the screen, foam
   /// dashes where they crest.
   void _swells(
-      Canvas canvas, Size size, SeaLook look, double rough, double drift) {
+    Canvas canvas,
+    Size size,
+    SeaLook look,
+    double rough,
+    double drift,
+  ) {
     final line = Paint()
       ..style = PaintingStyle.stroke
       ..strokeCap = StrokeCap.round
@@ -207,7 +217,10 @@ class SeaSurfacePainter extends CustomPainter {
         final yy =
             y + math.sin(x / 70 + t * 0.6 * (1 + drift) + row) * 6 * rough - 3;
         canvas.drawLine(
-            Offset(x, yy), Offset(x + 10 + 6 * _hash(k, row), yy), foam);
+          Offset(x, yy),
+          Offset(x + 10 + 6 * _hash(k, row), yy),
+          foam,
+        );
       }
     }
   }
@@ -215,7 +228,12 @@ class SeaSurfacePainter extends CustomPainter {
   /// Shallows: the sun's net on the sand below, sandbars along the edges
   /// with foam lapping them, a few rocks.
   void _shallows(
-      Canvas canvas, Size size, SeaLook look, double rough, double drift) {
+    Canvas canvas,
+    Size size,
+    SeaLook look,
+    double rough,
+    double drift,
+  ) {
     final net = Paint()
       ..style = PaintingStyle.stroke
       ..color = look.foam.withValues(alpha: 0.10)
@@ -258,9 +276,14 @@ class SeaSurfacePainter extends CustomPainter {
       (size.width * 0.06, size.height * 0.16),
     ]) {
       canvas.drawCircle(
-          Offset(cx, cy), 10 + math.sin(t * 2 + cx) * 2 * rough, lap);
+        Offset(cx, cy),
+        10 + math.sin(t * 2 + cx) * 2 * rough,
+        lap,
+      );
       canvas.drawOval(
-          Rect.fromCenter(center: Offset(cx, cy), width: 16, height: 11), rock);
+        Rect.fromCenter(center: Offset(cx, cy), width: 16, height: 11),
+        rock,
+      );
     }
   }
 
@@ -284,7 +307,9 @@ class SeaSurfacePainter extends CustomPainter {
       final x = (i * 97 + t * 5) % (size.width + 120) - 60;
       final y = size.height * (0.1 + 0.2 * i);
       canvas.drawOval(
-          Rect.fromCenter(center: Offset(x, y), width: 110, height: 30), murk);
+        Rect.fromCenter(center: Offset(x, y), width: 110, height: 30),
+        murk,
+      );
     }
     final kelp = Paint()
       ..style = PaintingStyle.stroke
@@ -340,7 +365,12 @@ class SeaSurfacePainter extends CustomPainter {
 
   /// The ashen chop: rows of short, steep waves, grey scum between them.
   void _chop(
-      Canvas canvas, Size size, SeaLook look, double rough, double drift) {
+    Canvas canvas,
+    Size size,
+    SeaLook look,
+    double rough,
+    double drift,
+  ) {
     final chop = Paint()
       ..style = PaintingStyle.stroke
       ..strokeCap = StrokeCap.round
@@ -359,14 +389,18 @@ class SeaSurfacePainter extends CustomPainter {
         final col = (x / dx).floor();
         final h = (4 + 3 * math.sin(t * 2.4 + row * 1.7 + col)) * rough;
         canvas.drawPath(
-            Path()
-              ..moveTo(x - 7, y)
-              ..lineTo(x, y - h)
-              ..lineTo(x + 7, y),
-            chop);
+          Path()
+            ..moveTo(x - 7, y)
+            ..lineTo(x, y - h)
+            ..lineTo(x + 7, y),
+          chop,
+        );
         if (h > 5.5) {
           canvas.drawLine(
-              Offset(x - 2, y - h + 1), Offset(x + 2, y - h + 1), crest);
+            Offset(x - 2, y - h + 1),
+            Offset(x + 2, y - h + 1),
+            crest,
+          );
         }
       }
     }
@@ -375,7 +409,9 @@ class SeaSurfacePainter extends CustomPainter {
       final x = (_hash(i, 3) * size.width + t * 4) % (size.width + 60) - 30;
       final y = _hash(i, 4) * size.height;
       canvas.drawOval(
-          Rect.fromCenter(center: Offset(x, y), width: 46, height: 12), scum);
+        Rect.fromCenter(center: Offset(x, y), width: 46, height: 12),
+        scum,
+      );
     }
   }
 
@@ -391,11 +427,12 @@ class SeaSurfacePainter extends CustomPainter {
       final y = _hash(i, 2) * size.height;
       paint.color = look.foam.withValues(alpha: 0.55 * (1 - life));
       canvas.drawArc(
-          Rect.fromCenter(center: Offset(x, y), width: 18, height: 8),
-          math.pi,
-          math.pi * 0.8,
-          false,
-          paint);
+        Rect.fromCenter(center: Offset(x, y), width: 18, height: 8),
+        math.pi,
+        math.pi * 0.8,
+        false,
+        paint,
+      );
     }
   }
 
@@ -410,7 +447,10 @@ class SeaSurfacePainter extends CustomPainter {
         ..strokeWidth = 1.5;
       final c = Offset(_hash(i, 6) * size.width, _hash(i, 7) * size.height);
       canvas.drawLine(
-          c - Offset(3 * a + 1, 0), c + Offset(3 * a + 1, 0), paint);
+        c - Offset(3 * a + 1, 0),
+        c + Offset(3 * a + 1, 0),
+        paint,
+      );
       canvas.drawLine(c - Offset(0, 2 * a), c + Offset(0, 2 * a), paint);
     }
   }
@@ -473,8 +513,14 @@ class _SeaDepthsPainter extends CustomPainter {
         _angler(canvas, size);
         _school(canvas, size, const Color(0xFF6B4FB0), count: 5, seed: 14);
       case SeaWaters.ashen:
-        _rocks(canvas, size, const Color(0xFF4A4F50), 6,
-            seed: 7, barnacles: true);
+        _rocks(
+          canvas,
+          size,
+          const Color(0xFF4A4F50),
+          6,
+          seed: 7,
+          barnacles: true,
+        );
         _grass(canvas, size, const Color(0xFF6B6A5E), 6, seed: 8);
         _school(canvas, size, const Color(0xFF2C3133), count: 7, seed: 9);
         _school(canvas, size, const Color(0xFF8C8A80), count: 5, seed: 13);
@@ -483,24 +529,36 @@ class _SeaDepthsPainter extends CustomPainter {
 
   /// A fish [length] long at [at], heading [dir] (radians), its tail
   /// beating with [t].
-  void _fish(Canvas canvas, Offset at, double dir, double length, Color colour,
-      {double alpha = 0.75, int phase = 0}) {
+  void _fish(
+    Canvas canvas,
+    Offset at,
+    double dir,
+    double length,
+    Color colour, {
+    double alpha = 0.75,
+    int phase = 0,
+  }) {
     canvas.save();
     canvas.translate(at.dx, at.dy);
     canvas.rotate(dir);
     final body = Paint()..color = colour.withValues(alpha: alpha);
     canvas.drawOval(
-        Rect.fromCenter(
-            center: Offset.zero, width: length, height: length * 0.42),
-        body);
+      Rect.fromCenter(
+        center: Offset.zero,
+        width: length,
+        height: length * 0.42,
+      ),
+      body,
+    );
     final beat = math.sin(t * 9 + phase) * length * 0.12;
     canvas.drawPath(
-        Path()
-          ..moveTo(-length * 0.42, 0)
-          ..lineTo(-length * 0.75, -length * 0.24 + beat)
-          ..lineTo(-length * 0.75, length * 0.24 + beat)
-          ..close(),
-        body);
+      Path()
+        ..moveTo(-length * 0.42, 0)
+        ..lineTo(-length * 0.75, -length * 0.24 + beat)
+        ..lineTo(-length * 0.75, length * 0.24 + beat)
+        ..close(),
+      body,
+    );
     canvas.restore();
   }
 
@@ -519,13 +577,19 @@ class _SeaDepthsPainter extends CustomPainter {
   }
 
   /// A school: a handful of small fish swimming together.
-  void _school(Canvas canvas, Size size, Color colour,
-      {required int count, required int seed}) {
+  void _school(
+    Canvas canvas,
+    Size size,
+    Color colour, {
+    required int count,
+    required int seed,
+  }) {
     final (lead, dir) = _swim(size, seed, 22, salt: seed);
     for (var k = 0; k < count; k++) {
       final off = Offset(
-          -math.cos(dir) * (k % 3) * 11 + (_hash(k, seed) - 0.5) * 14,
-          (k ~/ 3 - 1) * 9 + (_hash(k, seed + 1) - 0.5) * 6);
+        -math.cos(dir) * (k % 3) * 11 + (_hash(k, seed) - 0.5) * 14,
+        (k ~/ 3 - 1) * 9 + (_hash(k, seed + 1) - 0.5) * 6,
+      );
       _fish(canvas, lead + off, dir, 12, colour, alpha: 0.7, phase: k);
     }
   }
@@ -545,19 +609,27 @@ class _SeaDepthsPainter extends CustomPainter {
       ..color = Colors.black.withValues(alpha: 0.22)
       ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 8);
     canvas.drawOval(
-        Rect.fromCenter(center: Offset(x, y), width: 150, height: 42), paint);
+      Rect.fromCenter(center: Offset(x, y), width: 150, height: 42),
+      paint,
+    );
     canvas.drawPath(
-        Path()
-          ..moveTo(x - 70, y)
-          ..lineTo(x - 108, y - 22 + math.sin(t) * 5)
-          ..lineTo(x - 108, y + 22 + math.sin(t) * 5)
-          ..close(),
-        paint);
+      Path()
+        ..moveTo(x - 70, y)
+        ..lineTo(x - 108, y - 22 + math.sin(t) * 5)
+        ..lineTo(x - 108, y + 22 + math.sin(t) * 5)
+        ..close(),
+      paint,
+    );
   }
 
   /// Jellyfish pulsing upward, trailing their strands.
-  void _jellies(Canvas canvas, Size size, Color colour, int count,
-      {required bool glow}) {
+  void _jellies(
+    Canvas canvas,
+    Size size,
+    Color colour,
+    int count, {
+    required bool glow,
+  }) {
     for (var i = 0; i < count; i++) {
       final life = (t * 0.03 + _hash(i, 60)) % 1;
       final x =
@@ -568,29 +640,41 @@ class _SeaDepthsPainter extends CustomPainter {
         ..color = colour.withValues(alpha: glow ? 0.55 : 0.35)
         ..maskFilter = glow ? const MaskFilter.blur(BlurStyle.normal, 3) : null;
       canvas.drawArc(
-          Rect.fromCenter(center: Offset(x, y), width: 24 * pulse, height: 18),
-          math.pi,
-          math.pi,
-          true,
-          bell);
+        Rect.fromCenter(center: Offset(x, y), width: 24 * pulse, height: 18),
+        math.pi,
+        math.pi,
+        true,
+        bell,
+      );
       final strand = Paint()
         ..style = PaintingStyle.stroke
         ..strokeWidth = 1
         ..color = colour.withValues(alpha: 0.35);
       for (var k = -1; k <= 1; k++) {
         canvas.drawPath(
-            Path()
-              ..moveTo(x + k * 5, y)
-              ..quadraticBezierTo(x + k * 5 + math.sin(t * 2 + k) * 4, y + 10,
-                  x + k * 4, y + 20),
-            strand);
+          Path()
+            ..moveTo(x + k * 5, y)
+            ..quadraticBezierTo(
+              x + k * 5 + math.sin(t * 2 + k) * 4,
+              y + 10,
+              x + k * 4,
+              y + 20,
+            ),
+          strand,
+        );
       }
     }
   }
 
   /// Rocks on the bed, some crusted white with barnacles.
-  void _rocks(Canvas canvas, Size size, Color colour, int count,
-      {required int seed, bool barnacles = false}) {
+  void _rocks(
+    Canvas canvas,
+    Size size,
+    Color colour,
+    int count, {
+    required int seed,
+    bool barnacles = false,
+  }) {
     for (var i = 0; i < count; i++) {
       final edge = i.isEven;
       final x = edge
@@ -602,28 +686,40 @@ class _SeaDepthsPainter extends CustomPainter {
       final rock = Paint()..color = colour.withValues(alpha: 0.7);
       final r = Rect.fromCenter(center: Offset(x, y), width: w, height: h);
       canvas.drawRRect(
-          RRect.fromRectAndRadius(r, Radius.circular(h * 0.45)), rock);
+        RRect.fromRectAndRadius(r, Radius.circular(h * 0.45)),
+        rock,
+      );
       canvas.drawRRect(
-          RRect.fromRectAndRadius(
-              r.deflate(h * 0.18).shift(Offset(-w * 0.08, -h * 0.1)),
-              Radius.circular(h * 0.3)),
-          Paint()..color = Colors.white.withValues(alpha: 0.06));
+        RRect.fromRectAndRadius(
+          r.deflate(h * 0.18).shift(Offset(-w * 0.08, -h * 0.1)),
+          Radius.circular(h * 0.3),
+        ),
+        Paint()..color = Colors.white.withValues(alpha: 0.06),
+      );
       if (barnacles) {
         final dot = Paint()..color = const Color(0xFFD9D4C7);
         for (var k = 0; k < 5; k++) {
           canvas.drawCircle(
-              Offset(r.left + r.width * _hash(k, i + seed),
-                  r.top + r.height * _hash(k, i + seed + 9)),
-              1.4,
-              dot);
+            Offset(
+              r.left + r.width * _hash(k, i + seed),
+              r.top + r.height * _hash(k, i + seed + 9),
+            ),
+            1.4,
+            dot,
+          );
         }
       }
     }
   }
 
   /// Seagrass or weed in tufts, swaying.
-  void _grass(Canvas canvas, Size size, Color colour, int tufts,
-      {required int seed}) {
+  void _grass(
+    Canvas canvas,
+    Size size,
+    Color colour,
+    int tufts, {
+    required int seed,
+  }) {
     final blade = Paint()
       ..style = PaintingStyle.stroke
       ..strokeCap = StrokeCap.round
@@ -631,19 +727,25 @@ class _SeaDepthsPainter extends CustomPainter {
       ..color = colour.withValues(alpha: 0.7);
     for (var i = 0; i < tufts; i++) {
       final base = Offset(
-          size.width *
-              (i.isEven
-                  ? 0.02 + 0.12 * _hash(i, seed)
-                  : 0.86 + 0.12 * _hash(i, seed)),
-          size.height * (0.06 + 0.88 * _hash(i, seed + 1)));
+        size.width *
+            (i.isEven
+                ? 0.02 + 0.12 * _hash(i, seed)
+                : 0.86 + 0.12 * _hash(i, seed)),
+        size.height * (0.06 + 0.88 * _hash(i, seed + 1)),
+      );
       for (var k = 0; k < 4; k++) {
         final lean = (k - 1.5) * 4 + math.sin(t * 1.2 + i + k) * 4;
         canvas.drawPath(
-            Path()
-              ..moveTo(base.dx + k * 2, base.dy)
-              ..quadraticBezierTo(base.dx + k * 2 + lean, base.dy - 9,
-                  base.dx + k * 2 + lean * 1.6, base.dy - 24 - 6 * _hash(k, i)),
-            blade);
+          Path()
+            ..moveTo(base.dx + k * 2, base.dy)
+            ..quadraticBezierTo(
+              base.dx + k * 2 + lean,
+              base.dy - 9,
+              base.dx + k * 2 + lean * 1.6,
+              base.dy - 24 - 6 * _hash(k, i),
+            ),
+          blade,
+        );
       }
     }
   }
@@ -660,12 +762,13 @@ class _SeaDepthsPainter extends CustomPainter {
       path.lineTo(p.dx, p.dy);
     }
     canvas.drawPath(
-        path,
-        Paint()
-          ..style = PaintingStyle.stroke
-          ..strokeCap = StrokeCap.round
-          ..strokeWidth = 4.5
-          ..color = colour.withValues(alpha: 0.7));
+      path,
+      Paint()
+        ..style = PaintingStyle.stroke
+        ..strokeCap = StrokeCap.round
+        ..strokeWidth = 4.5
+        ..color = colour.withValues(alpha: 0.7),
+    );
   }
 
   /// Black spires rising from the deep.
@@ -702,12 +805,13 @@ class _SeaDepthsPainter extends CustomPainter {
         Offset(math.cos(dir), math.sin(dir)) * 20 +
         Offset(0, -8 + math.sin(t * 2) * 2);
     canvas.drawCircle(
-        lure,
-        5,
-        Paint()
-          ..color = const Color(0xFFE8D6FF)
-              .withValues(alpha: 0.5 + 0.4 * math.sin(t * 3))
-          ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 4));
+      lure,
+      5,
+      Paint()
+        ..color = const Color(0xFFE8D6FF)
+            .withValues(alpha: 0.5 + 0.4 * math.sin(t * 3))
+        ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 4),
+    );
     canvas.drawCircle(lure, 1.8, Paint()..color = const Color(0xFFF5EEFF));
   }
 
@@ -806,12 +910,16 @@ class SeaWeatherPainter extends CustomPainter {
         for (var i = 0; i < 10; i++) {
           final life = (t * 0.6 + _hash(i, 1)) % 1;
           if (life > 0.35) continue;
-          final base =
-              Offset(_hash(i, 2) * size.width, _hash(i, 3) * size.height);
+          final base = Offset(
+            _hash(i, 2) * size.width,
+            _hash(i, 3) * size.height,
+          );
           for (var k = 0; k < 4; k++) {
             final p = base +
-                Offset(life * 40 + k * 3,
-                    -math.sin(life / 0.35 * math.pi) * (6 + k * 2));
+                Offset(
+                  life * 40 + k * 3,
+                  -math.sin(life / 0.35 * math.pi) * (6 + k * 2),
+                );
             paint
               ..style = PaintingStyle.fill
               ..color = look.foam.withValues(alpha: 0.6 * (1 - life / 0.35));
@@ -831,19 +939,22 @@ class SeaWeatherPainter extends CustomPainter {
     final shadow = Paint()..color = Colors.black.withValues(alpha: 0.18);
     for (var i = 0; i < 3; i++) {
       final a = t * (0.25 + 0.07 * i) + i * 2.1;
-      final c = Offset(size.width * (0.3 + 0.2 * i) + math.cos(a) * 60,
-          size.height * (0.3 + 0.15 * i) + math.sin(a) * 34);
+      final c = Offset(
+        size.width * (0.3 + 0.2 * i) + math.cos(a) * 60,
+        size.height * (0.3 + 0.15 * i) + math.sin(a) * 34,
+      );
       final flap = math.sin(t * 7 + i) * 3;
       canvas.drawOval(
-          Rect.fromCenter(
-              center: c + const Offset(14, 22), width: 12, height: 3),
-          shadow);
+        Rect.fromCenter(center: c + const Offset(14, 22), width: 12, height: 3),
+        shadow,
+      );
       canvas.drawPath(
-          Path()
-            ..moveTo(c.dx - 7, c.dy + flap)
-            ..quadraticBezierTo(c.dx - 3, c.dy - 3, c.dx, c.dy)
-            ..quadraticBezierTo(c.dx + 3, c.dy - 3, c.dx + 7, c.dy + flap),
-          paint);
+        Path()
+          ..moveTo(c.dx - 7, c.dy + flap)
+          ..quadraticBezierTo(c.dx - 3, c.dy - 3, c.dx, c.dy)
+          ..quadraticBezierTo(c.dx + 3, c.dy - 3, c.dx + 7, c.dy + flap),
+        paint,
+      );
     }
   }
 
@@ -887,20 +998,23 @@ class SeaWeatherPainter extends CustomPainter {
       final life = (t * 2.2 + _hash(i, 6)) % 1;
       ring.color = look.foam.withValues(alpha: 0.4 * (1 - life));
       canvas.drawOval(
-          Rect.fromCenter(
-              center:
-                  Offset(_hash(i, 7) * size.width, _hash(i, 8) * size.height),
-              width: 3 + life * 12,
-              height: 1.5 + life * 5),
-          ring);
+        Rect.fromCenter(
+          center: Offset(_hash(i, 7) * size.width, _hash(i, 8) * size.height),
+          width: 3 + life * 12,
+          height: 1.5 + life * 5,
+        ),
+        ring,
+      );
     }
     // Lightning on its own clock: a flash every few seconds, half a beat
     // in, so a still sea (reduced motion, t at 0) is never caught in one.
     final beat = (t + 3.15) % 6.3;
     if (beat < 0.22) {
       final a = beat < 0.07 ? 0.34 : (0.22 - beat) / 0.15 * 0.18;
-      canvas.drawRect(Offset.zero & size,
-          Paint()..color = Colors.white.withValues(alpha: a));
+      canvas.drawRect(
+        Offset.zero & size,
+        Paint()..color = Colors.white.withValues(alpha: a),
+      );
     }
   }
 
@@ -919,7 +1033,9 @@ class SeaWeatherPainter extends CustomPainter {
       paint.color =
           const Color(0xFFDDE3E6).withValues(alpha: overEnemy ? 0.30 : 0.16);
       canvas.drawOval(
-          Rect.fromCenter(center: Offset(x, y), width: 240, height: 56), paint);
+        Rect.fromCenter(center: Offset(x, y), width: 240, height: 56),
+        paint,
+      );
     }
   }
 
@@ -1062,83 +1178,91 @@ class TopShipLook {
         );
 
   static const rustyEel = TopShipLook(
-      id: 'rusty_eel',
-      length: 1,
-      beam: 0.24,
-      hull: Palette.orange30,
-      deck: Color(0xFF9A7148),
-      sail: Color(0xFFD8C8A2),
-      trim: Palette.red44);
+    id: 'rusty_eel',
+    length: 1,
+    beam: 0.24,
+    hull: Palette.orange30,
+    deck: Color(0xFF9A7148),
+    sail: Color(0xFFD8C8A2),
+    trim: Palette.red44,
+  );
   static const raiderSkiff = TopShipLook(
-      id: 'raider_skiff',
-      length: 0.86,
-      beam: 0.22,
-      hull: Palette.orange25,
-      deck: Color(0xFF86613F),
-      sail: Color(0xFFB8A27A),
-      trim: Color(0xFF7A2E22));
+    id: 'raider_skiff',
+    length: 0.86,
+    beam: 0.22,
+    hull: Palette.orange25,
+    deck: Color(0xFF86613F),
+    sail: Color(0xFFB8A27A),
+    trim: Color(0xFF7A2E22),
+  );
   static const corsairBrig = TopShipLook(
-      id: 'corsair_brig',
-      length: 1,
-      beam: 0.25,
-      hull: Color(0xFF2E2A2C),
-      deck: Palette.stone35,
-      sail: Color(0xFF3A3336),
-      trim: Palette.red46,
-      masts: 2);
+    id: 'corsair_brig',
+    length: 1,
+    beam: 0.25,
+    hull: Color(0xFF2E2A2C),
+    deck: Palette.stone35,
+    sail: Color(0xFF3A3336),
+    trim: Palette.red46,
+    masts: 2,
+  );
   static const inquisitionCutter = TopShipLook(
-      id: 'inquisition_cutter',
-      length: 0.94,
-      beam: 0.2,
-      hull: Color(0xFFE0D8C8),
-      deck: Palette.orange58,
-      sail: Color(0xFFF4EFE4),
-      trim: Palette.red41,
-      masts: 2);
+    id: 'inquisition_cutter',
+    length: 0.94,
+    beam: 0.2,
+    hull: Color(0xFFE0D8C8),
+    deck: Palette.orange58,
+    sail: Color(0xFFF4EFE4),
+    trim: Palette.red41,
+    masts: 2,
+  );
   static const voidBarge = TopShipLook(
-      id: 'void_barge',
-      length: 1,
-      beam: 0.3,
-      hull: Color(0xFF2A2140),
-      deck: Color(0xFF4A3E66),
-      sail: Color(0xFF6B4FB0),
-      trim: Palette.purple71,
-      sails: false,
-      glow: Palette.purple71);
+    id: 'void_barge',
+    length: 1,
+    beam: 0.3,
+    hull: Color(0xFF2A2140),
+    deck: Color(0xFF4A3E66),
+    sail: Color(0xFF6B4FB0),
+    trim: Palette.purple71,
+    sails: false,
+    glow: Palette.purple71,
+  );
 
   // The beasts (see sea_beasts.dart; ids are enemy_ships.json keys): the
   // designs' bodies are sprites, so only the size and the room tints
   // matter here.
   static const brinejaw = TopShipLook(
-      id: 'brinejaw',
-      length: 1,
-      beam: 0.3,
-      hull: Color(0xFF1E2B26),
-      deck: Color(0xFF2A4238),
-      sail: Color(0xFFC9C2A8),
-      trim: Color(0xFFC9C2A8),
-      sails: false,
-      beast: TopBeast.wyrm);
+    id: 'brinejaw',
+    length: 1,
+    beam: 0.3,
+    hull: Color(0xFF1E2B26),
+    deck: Color(0xFF2A4238),
+    sail: Color(0xFFC9C2A8),
+    trim: Color(0xFFC9C2A8),
+    sails: false,
+    beast: TopBeast.wyrm,
+  );
   static const paleLeviathan = TopShipLook(
-      id: 'pale_leviathan',
-      length: 1,
-      beam: 0.3,
-      hull: Color(0xFF2C3A44),
-      deck: Color(0xFF4A5A66),
-      sail: Color(0xFFB7B09A),
-      trim: Color(0xFFB7B09A),
-      sails: false,
-      beast: TopBeast.leviathan);
+    id: 'pale_leviathan',
+    length: 1,
+    beam: 0.3,
+    hull: Color(0xFF2C3A44),
+    deck: Color(0xFF4A5A66),
+    sail: Color(0xFFB7B09A),
+    trim: Color(0xFFB7B09A),
+    sails: false,
+    beast: TopBeast.leviathan,
+  );
   static const tideKraken = TopShipLook(
-      id: 'tide_kraken',
-      length: 1,
-      beam: 0.3,
-      hull: Color(0xFF4A2A36),
-      deck: Color(0xFF6A3A4A),
-      sail: Color(0xFFD9B0B8),
-      trim: Color(0xFFD9B0B8),
-      sails: false,
-      beast: TopBeast.kraken);
+    id: 'tide_kraken',
+    length: 1,
+    beam: 0.3,
+    hull: Color(0xFF4A2A36),
+    deck: Color(0xFF6A3A4A),
+    sail: Color(0xFFD9B0B8),
+    trim: Color(0xFFD9B0B8),
+    sails: false,
+    beast: TopBeast.kraken,
+  );
 
   static const enemies = [
     raiderSkiff,
@@ -1193,13 +1317,20 @@ double topShipBoxHeight(double length, TopShipLook look) =>
 Rect topShipHullBand(Size box, TopShipLook look) {
   final beam = box.width * look.beam;
   return Rect.fromCenter(
-      center: box.center(Offset.zero), width: box.width, height: beam);
+    center: box.center(Offset.zero),
+    width: box.width,
+    height: beam,
+  );
 }
 
 /// [room]'s tap zone in a ship's box, mirrored (bow to the left) when
 /// [flip].
-Rect topShipRoomRect(ShipRoom room, Size box, TopShipLook look,
-    {required bool flip}) {
+Rect topShipRoomRect(
+  ShipRoom room,
+  Size box,
+  TopShipLook look, {
+  required bool flip,
+}) {
   final band = topShipHullBand(box, look);
   final (a, b) = (look.beast == null ? _roomSpan : _beastSpan)[room]!;
   // A ship shorter than the box has its rooms along her own length, which
@@ -1208,8 +1339,12 @@ Rect topShipRoomRect(ShipRoom room, Size box, TopShipLook look,
   final start = (1 - k) / 2;
   final left = start + k * (flip ? 1 - b : a);
   final inset = room == ShipRoom.bulwark ? band.height * 0.08 : 0.0;
-  return Rect.fromLTRB(box.width * left, band.top + inset,
-      box.width * (left + k * (b - a)), band.bottom - inset);
+  return Rect.fromLTRB(
+    box.width * left,
+    band.top + inset,
+    box.width * (left + k * (b - a)),
+    band.bottom - inset,
+  );
 }
 
 /// One ship from above: its wake, hull, deck and rooms' furniture
@@ -1306,9 +1441,10 @@ class TopShipPainter extends CustomPainter {
     if (look.glow != null) {
       canvas.drawOval(
         Rect.fromCenter(
-            center: Offset(x0 + len / 2, cy),
-            width: len * 1.1,
-            height: beam * 2.2),
+          center: Offset(x0 + len / 2, cy),
+          width: len * 1.1,
+          height: beam * 2.2,
+        ),
         Paint()
           ..color = look.glow!.withValues(alpha: 0.18 + 0.08 * math.sin(t * 2))
           ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 14),
@@ -1321,28 +1457,55 @@ class TopShipPainter extends CustomPainter {
       hull = Path()
         ..moveTo(x0 + len * 0.02, cy - beam * 0.36)
         ..quadraticBezierTo(
-            x0 - len * 0.01, cy, x0 + len * 0.02, cy + beam * 0.36)
+          x0 - len * 0.01,
+          cy,
+          x0 + len * 0.02,
+          cy + beam * 0.36,
+        )
         ..lineTo(x0 + len * 0.55, cy + beam / 2)
         ..quadraticBezierTo(x0 + len * 0.86, cy + beam * 0.42, x0 + len, cy)
         ..quadraticBezierTo(
-            x0 + len * 0.86, cy - beam * 0.42, x0 + len * 0.55, cy - beam / 2)
+          x0 + len * 0.86,
+          cy - beam * 0.42,
+          x0 + len * 0.55,
+          cy - beam / 2,
+        )
         ..close();
       deck = Path()
         ..moveTo(x0 + len * 0.045, cy - beam * 0.27)
         ..quadraticBezierTo(
-            x0 + len * 0.025, cy, x0 + len * 0.045, cy + beam * 0.27)
+          x0 + len * 0.025,
+          cy,
+          x0 + len * 0.045,
+          cy + beam * 0.27,
+        )
         ..lineTo(x0 + len * 0.55, cy + beam * 0.38)
         ..quadraticBezierTo(
-            x0 + len * 0.82, cy + beam * 0.3, x0 + len * 0.94, cy)
+          x0 + len * 0.82,
+          cy + beam * 0.3,
+          x0 + len * 0.94,
+          cy,
+        )
         ..quadraticBezierTo(
-            x0 + len * 0.82, cy - beam * 0.3, x0 + len * 0.55, cy - beam * 0.38)
+          x0 + len * 0.82,
+          cy - beam * 0.3,
+          x0 + len * 0.55,
+          cy - beam * 0.38,
+        )
         ..close();
     } else if (form.kind == HullKind.twin) {
       (hull, deck) = twinHull(form, x0, cy, len, beam);
     } else {
       hull = form.outline(x0, cy, len, beam);
-      deck =
-          form.outline(x0, cy, len, beam, scale: 0.78, from: 0.035, to: 0.965);
+      deck = form.outline(
+        x0,
+        cy,
+        len,
+        beam,
+        scale: 0.78,
+        from: 0.035,
+        to: 0.965,
+      );
     }
     // A shadow on the water (far below, for a flying boat), then the hull
     // and the deck inside its rail.
@@ -1351,9 +1514,9 @@ class TopShipPainter extends CustomPainter {
     } else {
       // (Drawn darker as pixel art, which cuts a soft shadow away.)
       canvas.drawPath(
-          hull.shift(const Offset(3, 4)),
-          Paint()
-            ..color = Colors.black.withValues(alpha: pixel > 0 ? 0.5 : 0.28));
+        hull.shift(const Offset(3, 4)),
+        Paint()..color = Colors.black.withValues(alpha: pixel > 0 ? 0.5 : 0.28),
+      );
     }
     canvas.drawPath(hull, Paint()..color = look.hull);
     canvas.drawPath(deck, Paint()..color = look.deck);
@@ -1370,43 +1533,50 @@ class TopShipPainter extends CustomPainter {
     for (final room in ShipRoom.values) {
       final r = _roomOnDeck(room, size, band);
       canvas.drawRect(
-          r,
-          Paint()
-            ..color = down.contains(room)
-                ? Colors.black.withValues(alpha: 0.5)
-                : roomColors[room]!.withValues(alpha: 0.16));
+        r,
+        Paint()
+          ..color = down.contains(room)
+              ? Colors.black.withValues(alpha: 0.5)
+              : roomColors[room]!.withValues(alpha: 0.16),
+      );
       if (burning.contains(room)) {
         canvas.drawRect(
-            r,
-            Paint()
-              ..color = Palette.orange59.withValues(
-                  alpha: 0.18 + 0.1 * math.sin(t * 9 + room.index)));
+          r,
+          Paint()
+            ..color = Palette.orange59.withValues(
+              alpha: 0.18 + 0.1 * math.sin(t * 9 + room.index),
+            ),
+        );
       }
     }
     if (battered) {
       final hole = Paint()..color = Colors.black.withValues(alpha: 0.55);
       for (final (fx, fy) in [(0.36, 0.2), (0.62, -0.18), (0.8, 0.1)]) {
         canvas.drawOval(
-            Rect.fromCenter(
-                center: Offset(x0 + len * fx, cy + beam * fy),
-                width: beam * 0.22,
-                height: beam * 0.15),
-            hole);
+          Rect.fromCenter(
+            center: Offset(x0 + len * fx, cy + beam * fy),
+            width: beam * 0.22,
+            height: beam * 0.15,
+          ),
+          hole,
+        );
       }
     }
     canvas.restore();
     canvas.drawPath(
-        hull,
-        Paint()
-          ..style = PaintingStyle.stroke
-          ..strokeWidth = 2
-          ..color = Colors.black.withValues(alpha: 0.55));
+      hull,
+      Paint()
+        ..style = PaintingStyle.stroke
+        ..strokeWidth = 2
+        ..color = Colors.black.withValues(alpha: 0.55),
+    );
     canvas.drawPath(
-        deck,
-        Paint()
-          ..style = PaintingStyle.stroke
-          ..strokeWidth = 1.2
-          ..color = look.trim.withValues(alpha: 0.7));
+      deck,
+      Paint()
+        ..style = PaintingStyle.stroke
+        ..strokeWidth = 1.2
+        ..color = look.trim.withValues(alpha: 0.7),
+    );
 
     if (form != null) {
       paintCastles(canvas, form, x0, cy, len, beam, look.hull, look.trim);
@@ -1418,15 +1588,16 @@ class TopShipPainter extends CustomPainter {
     if (dress != null) {
       // What the utility brings aboard goes under the helm and the hatch.
       paintGear(
-          canvas,
-          dress!.gear,
-          _roomOnDeck(ShipRoom.helm, size, band),
-          _roomOnDeck(ShipRoom.hold, size, band),
-          _roomOnDeck(ShipRoom.guns, size, band),
-          cy,
-          beam,
-          side,
-          t);
+        canvas,
+        dress!.gear,
+        _roomOnDeck(ShipRoom.helm, size, band),
+        _roomOnDeck(ShipRoom.hold, size, band),
+        _roomOnDeck(ShipRoom.guns, size, band),
+        cy,
+        beam,
+        side,
+        t,
+      );
     }
     _helm(canvas, _roomOnDeck(ShipRoom.helm, size, band));
     _hatch(canvas, _roomOnDeck(ShipRoom.hold, size, band));
@@ -1434,7 +1605,12 @@ class TopShipPainter extends CustomPainter {
     _bulwark(canvas, _roomOnDeck(ShipRoom.bulwark, size, band), cy, beam);
     if (dress != null && dress!.figurehead != 'none') {
       paintFigurehead(
-          canvas, Offset(x0 + len * 0.985, cy), beam * 0.42, dress!, t);
+        canvas,
+        Offset(x0 + len * 0.985, cy),
+        beam * 0.42,
+        dress!,
+        t,
+      );
     }
     if (look.sails || (look.form?.flying ?? false)) {
       _sails(canvas, x0, len, cy, beam);
@@ -1452,24 +1628,39 @@ class TopShipPainter extends CustomPainter {
   /// knocked out. Below half its hull
   /// it shows wounds. While the sprite loads, a shadow on the water.
   void _beast(
-      Canvas canvas, Size size, Rect band, double x0, double len, double cy) {
+    Canvas canvas,
+    Size size,
+    Rect band,
+    double x0,
+    double len,
+    double cy,
+  ) {
     final image = SeaBeastSprites.of(look.beast!);
     final room = Rect.fromCenter(
-        center: Offset(x0 + len / 2, cy), width: len, height: size.height);
+      center: Offset(x0 + len / 2, cy),
+      width: len,
+      height: size.height,
+    );
     if (image == null) {
-      canvas.drawOval(room.deflate(room.height * 0.2),
-          Paint()..color = Colors.black.withValues(alpha: 0.3));
+      canvas.drawOval(
+        room.deflate(room.height * 0.2),
+        Paint()..color = Colors.black.withValues(alpha: 0.3),
+      );
       return;
     }
-    final fitted = applyBoxFit(BoxFit.contain,
-        Size(image.width.toDouble(), image.height.toDouble()), room.size);
+    final fitted = applyBoxFit(
+      BoxFit.contain,
+      Size(image.width.toDouble(), image.height.toDouble()),
+      room.size,
+    );
     final dst = Alignment.center.inscribe(fitted.destination, room);
     canvas.saveLayer(dst, Paint());
     canvas.drawImageRect(
-        image,
-        Offset.zero & Size(image.width.toDouble(), image.height.toDouble()),
-        dst,
-        Paint()..filterQuality = FilterQuality.medium);
+      image,
+      Offset.zero & Size(image.width.toDouble(), image.height.toDouble()),
+      dst,
+      Paint()..filterQuality = FilterQuality.medium,
+    );
     // A room knocked out darkens its part of the body, one on fire
     // glows, over the sprite's own pixels only.
     final over = Paint()..blendMode = BlendMode.srcATop;
@@ -1477,14 +1668,18 @@ class TopShipPainter extends CustomPainter {
       final zone = _roomOnDeck(r, size, band);
       if (down.contains(r)) {
         canvas.drawRect(
-            zone, over..color = Colors.black.withValues(alpha: 0.5));
+          zone,
+          over..color = Colors.black.withValues(alpha: 0.5),
+        );
       }
       if (burning.contains(r)) {
         canvas.drawRect(
-            zone,
-            over
-              ..color = Palette.orange59
-                  .withValues(alpha: 0.18 + 0.1 * math.sin(t * 9 + r.index)));
+          zone,
+          over
+            ..color = Palette.orange59.withValues(
+              alpha: 0.18 + 0.1 * math.sin(t * 9 + r.index),
+            ),
+        );
       }
     }
     canvas.restore();
@@ -1499,7 +1694,10 @@ class TopShipPainter extends CustomPainter {
         final a = Offset(x0 + len * fx, cy + band.height * fy);
         canvas.drawLine(a, a + const Offset(9, 15), gash);
         canvas.drawLine(
-            a + const Offset(3, -4), a + const Offset(12, 10), gash);
+          a + const Offset(3, -4),
+          a + const Offset(12, 10),
+          gash,
+        );
       }
     }
   }
@@ -1520,25 +1718,34 @@ class TopShipPainter extends CustomPainter {
       final wobble = math.sin(t * 2 + i) * 2;
       paint
         ..strokeWidth = (3.0 - i * 0.7) * (pixel > 0 ? 1.6 : 1)
-        ..color =
-            foam.withValues(alpha: (0.32 - i * 0.08) * (pixel > 0 ? 1.8 : 1));
+        ..color = foam.withValues(
+          alpha: (0.32 - i * 0.08) * (pixel > 0 ? 1.8 : 1),
+        );
       for (final s in [-1.0, 1.0]) {
         canvas.drawPath(
-            Path()
-              ..moveTo(x0 + 4, cy + s * beam * 0.3)
-              ..quadraticBezierTo(x0 - reach * 0.5, cy + s * (spread + wobble),
-                  x0 - reach, cy + s * (spread * 1.4 + wobble)),
-            paint);
+          Path()
+            ..moveTo(x0 + 4, cy + s * beam * 0.3)
+            ..quadraticBezierTo(
+              x0 - reach * 0.5,
+              cy + s * (spread + wobble),
+              x0 - reach,
+              cy + s * (spread * 1.4 + wobble),
+            ),
+          paint,
+        );
       }
     }
     // Churn right behind the stern.
     for (var i = 0; i < 6; i++) {
       final life = (t * 1.2 + i / 6) % 1;
       canvas.drawCircle(
-          Offset(x0 - 4 - life * reach * 0.7,
-              cy + math.sin(i * 2.3 + t) * beam * 0.12),
-          2.5 * (1 - life) + 0.5,
-          Paint()..color = foam.withValues(alpha: 0.5 * (1 - life)));
+        Offset(
+          x0 - 4 - life * reach * 0.7,
+          cy + math.sin(i * 2.3 + t) * beam * 0.12,
+        ),
+        2.5 * (1 - life) + 0.5,
+        Paint()..color = foam.withValues(alpha: 0.5 * (1 - life)),
+      );
     }
   }
 
@@ -1559,20 +1766,25 @@ class TopShipPainter extends CustomPainter {
 
   void _hatch(Canvas canvas, Rect r) {
     final hatch = Rect.fromCenter(
-        center: r.center, width: r.width * 0.56, height: r.height * 0.42);
+      center: r.center,
+      width: r.width * 0.56,
+      height: r.height * 0.42,
+    );
     canvas.drawRect(hatch, Paint()..color = const Color(0xFF231710));
     if (water > 0) {
       final w = hatch.deflate(2);
       final level = w.height * water.clamp(0.0, 1.0);
       canvas.drawRect(
-          Rect.fromLTRB(w.left, w.bottom - level, w.right, w.bottom),
-          Paint()..color = const Color(0xFF4AA3C0).withValues(alpha: 0.85));
+        Rect.fromLTRB(w.left, w.bottom - level, w.right, w.bottom),
+        Paint()..color = const Color(0xFF4AA3C0).withValues(alpha: 0.85),
+      );
       canvas.drawLine(
-          Offset(w.left, w.bottom - level + math.sin(t * 4) * 0.8),
-          Offset(w.right, w.bottom - level - math.sin(t * 4) * 0.8),
-          Paint()
-            ..color = foam.withValues(alpha: 0.8)
-            ..strokeWidth = 1);
+        Offset(w.left, w.bottom - level + math.sin(t * 4) * 0.8),
+        Offset(w.right, w.bottom - level - math.sin(t * 4) * 0.8),
+        Paint()
+          ..color = foam.withValues(alpha: 0.8)
+          ..strokeWidth = 1,
+      );
     }
     final grate = Paint()
       ..color = const Color(0xFFA07A4E)
@@ -1582,11 +1794,12 @@ class TopShipPainter extends CustomPainter {
       canvas.drawLine(Offset(x, hatch.top), Offset(x, hatch.bottom), grate);
     }
     canvas.drawRect(
-        hatch,
-        Paint()
-          ..style = PaintingStyle.stroke
-          ..color = const Color(0xFFA07A4E)
-          ..strokeWidth = 1.2);
+      hatch,
+      Paint()
+        ..style = PaintingStyle.stroke
+        ..color = const Color(0xFFA07A4E)
+        ..strokeWidth = 1.2,
+    );
   }
 
   void _guns(Canvas canvas, Rect r, double cy, double beam, double towards) {
@@ -1603,12 +1816,20 @@ class TopShipPainter extends CustomPainter {
       final x = r.left + r.width * (0.2 + 0.3 * k);
       final y0 = cy + towards * beam * 0.12;
       final y1 = cy + towards * beam * 0.5;
-      final body =
-          Rect.fromLTRB(x - 3, math.min(y0, y1), x + 3, math.max(y0, y1));
+      final body = Rect.fromLTRB(
+        x - 3,
+        math.min(y0, y1),
+        x + 3,
+        math.max(y0, y1),
+      );
       canvas.drawRRect(
-          RRect.fromRectAndRadius(body, const Radius.circular(2)), barrel);
+        RRect.fromRectAndRadius(body, const Radius.circular(2)),
+        barrel,
+      );
       canvas.drawRRect(
-          RRect.fromRectAndRadius(body, const Radius.circular(2)), ring);
+        RRect.fromRectAndRadius(body, const Radius.circular(2)),
+        ring,
+      );
     }
   }
 
@@ -1623,23 +1844,33 @@ class TopShipPainter extends CustomPainter {
         ..style = PaintingStyle.stroke
         ..strokeWidth = 2.5;
       for (final s in [-1.0, 1.0]) {
-        canvas.drawLine(Offset(r.left + 4, cy + s * beam * 0.34),
-            Offset(r.right - 2, cy + s * beam * 0.18), plate);
+        canvas.drawLine(
+          Offset(r.left + 4, cy + s * beam * 0.34),
+          Offset(r.right - 2, cy + s * beam * 0.18),
+          plate,
+        );
       }
     }
     // The bowsprit.
     canvas.drawLine(
-        Offset(r.right - r.width * 0.2, cy),
-        Offset(r.right + r.width * 0.45, cy),
-        Paint()
-          ..color = Palette.orange16
-          ..strokeWidth = 2.5);
+      Offset(r.right - r.width * 0.2, cy),
+      Offset(r.right + r.width * 0.45, cy),
+      Paint()
+        ..color = Palette.orange16
+        ..strokeWidth = 2.5,
+    );
   }
 
   /// The masts of a hull drawn from its form: each as it is rigged, the
   /// headsails, the painted sails' sigils, the flag at the mainmast.
-  void _formSails(Canvas canvas, ShipForm form, double x0, double len,
-      double cy, double beam) {
+  void _formSails(
+    Canvas canvas,
+    ShipForm form,
+    double x0,
+    double len,
+    double cy,
+    double beam,
+  ) {
     final billow = 0.5 + 0.5 * math.sin(t * 1.3);
     if (form.flying) {
       paintSkyRig(canvas, form, x0, cy, len, beam, t, look.sail, look.trim);
@@ -1656,23 +1887,35 @@ class TopShipPainter extends CustomPainter {
     for (final mast in masts) {
       final x = x0 + len * mast.at;
       final cloth = look.sail;
-      paintMastSail(canvas, mast, x, cy, len, beam, cloth, look.trim, billow,
-          battered, Palette.orange16);
+      paintMastSail(
+        canvas,
+        mast,
+        x,
+        cy,
+        len,
+        beam,
+        cloth,
+        look.trim,
+        billow,
+        battered,
+        Palette.orange16,
+      );
       final worked = dress;
       if (worked != null) {
         final belly = beam * 0.34 * mast.size;
         final span = beam * 1.28 * mast.size;
         if (mast.kind == SailKind.square) {
           paintCloth(
-              canvas,
-              Path()
-                ..moveTo(x, cy - span / 2)
-                ..quadraticBezierTo(x + belly, cy, x, cy + span / 2)
-                ..quadraticBezierTo(x + belly * 0.35, cy, x, cy - span / 2)
-                ..close(),
-              Rect.fromLTRB(x, cy - span / 2, x + belly, cy + span / 2),
-              worked.clothPattern,
-              worked.clothPatternColor ?? look.trim);
+            canvas,
+            Path()
+              ..moveTo(x, cy - span / 2)
+              ..quadraticBezierTo(x + belly, cy, x, cy + span / 2)
+              ..quadraticBezierTo(x + belly * 0.35, cy, x, cy - span / 2)
+              ..close(),
+            Rect.fromLTRB(x, cy - span / 2, x + belly, cy + span / 2),
+            worked.clothPattern,
+            worked.clothPatternColor ?? look.trim,
+          );
         }
         final sigil = sigilOf[mast];
         if (sigil != null) {
@@ -1682,24 +1925,36 @@ class TopShipPainter extends CustomPainter {
                   ? Offset(x - len * 0.12 * mast.size, cy + beam * 0.12)
                   : Offset(x + len * 0.06, cy - beam * 0.2);
           paintSigil(
-              canvas, at, math.min(beam * 0.3, belly * 0.95 + 4), sigil, t);
+            canvas,
+            at,
+            math.min(beam * 0.3, belly * 0.95 + 4),
+            sigil,
+            t,
+          );
         }
       }
     }
     if (dress != null && masts.isNotEmpty) {
       // The flag at the mainmast head, streaming aft.
       final main = bySize.first;
-      paintEnsign(canvas, Offset(x0 + len * main.at, cy), beam * 0.5, dress!,
-          look.trim, t);
+      paintEnsign(
+        canvas,
+        Offset(x0 + len * main.at, cy),
+        beam * 0.5,
+        dress!,
+        look.trim,
+        t,
+      );
     }
     if (look.id == TopShipLook.rustyEel.id && refit >= 1 && masts.isNotEmpty) {
       canvas.drawCircle(
-          Offset(x0 + len * bySize.first.at, cy),
-          6,
-          Paint()
-            ..style = PaintingStyle.stroke
-            ..strokeWidth = 2
-            ..color = const Color(0xFFA07A4E));
+        Offset(x0 + len * bySize.first.at, cy),
+        6,
+        Paint()
+          ..style = PaintingStyle.stroke
+          ..strokeWidth = 2
+          ..color = const Color(0xFFA07A4E),
+      );
     }
   }
 
@@ -1721,60 +1976,80 @@ class TopShipPainter extends CustomPainter {
         ..quadraticBezierTo(x + belly, cy, x, cy + span / 2)
         ..quadraticBezierTo(x + belly * 0.35, cy, x, cy - span / 2)
         ..close();
-      canvas.drawPath(sail.shift(const Offset(5, 7)),
-          Paint()..color = Colors.black.withValues(alpha: 0.2));
-      canvas.drawPath(sail,
-          Paint()..color = look.sail.withValues(alpha: battered ? 0.7 : 0.92));
+      canvas.drawPath(
+        sail.shift(const Offset(5, 7)),
+        Paint()..color = Colors.black.withValues(alpha: 0.2),
+      );
+      canvas.drawPath(
+        sail,
+        Paint()..color = look.sail.withValues(alpha: battered ? 0.7 : 0.92),
+      );
       final worked = dress;
       if (worked != null) {
         paintCloth(
-            canvas,
-            sail,
-            Rect.fromLTRB(x, cy - span / 2, x + belly, cy + span / 2),
-            worked.clothPattern,
-            worked.clothPatternColor ?? look.trim);
+          canvas,
+          sail,
+          Rect.fromLTRB(x, cy - span / 2, x + belly, cy + span / 2),
+          worked.clothPattern,
+          worked.clothPatternColor ?? look.trim,
+        );
         // The painted sail's sigil, on the mainsail.
         if (i == spots.length - 1 && worked.sigil != null) {
-          paintSigil(canvas, Offset(x + belly * 0.4, cy),
-              math.min(beam * 0.3, belly * 0.95), worked.sigil!, t);
+          paintSigil(
+            canvas,
+            Offset(x + belly * 0.4, cy),
+            math.min(beam * 0.3, belly * 0.95),
+            worked.sigil!,
+            t,
+          );
         }
       }
       canvas.drawPath(
-          sail,
-          Paint()
-            ..style = PaintingStyle.stroke
-            ..strokeWidth = 1
-            ..color = (dress?.clothEdge ?? look.trim).withValues(alpha: 0.8));
+        sail,
+        Paint()
+          ..style = PaintingStyle.stroke
+          ..strokeWidth = 1
+          ..color = (dress?.clothEdge ?? look.trim).withValues(alpha: 0.8),
+      );
       if (battered) {
         canvas.drawLine(
-            Offset(x + belly * 0.3, cy - span * 0.2),
-            Offset(x + belly * 0.5, cy + span * 0.05),
-            Paint()
-              ..color = Colors.black.withValues(alpha: 0.6)
-              ..strokeWidth = 2);
+          Offset(x + belly * 0.3, cy - span * 0.2),
+          Offset(x + belly * 0.5, cy + span * 0.05),
+          Paint()
+            ..color = Colors.black.withValues(alpha: 0.6)
+            ..strokeWidth = 2,
+        );
       }
       canvas.drawLine(
-          Offset(x, cy - span / 2 - 2),
-          Offset(x, cy + span / 2 + 2),
-          Paint()
-            ..color = Palette.orange16
-            ..strokeWidth = 2.5);
+        Offset(x, cy - span / 2 - 2),
+        Offset(x, cy + span / 2 + 2),
+        Paint()
+          ..color = Palette.orange16
+          ..strokeWidth = 2.5,
+      );
       canvas.drawCircle(Offset(x, cy), 3.5, Paint()..color = Palette.orange11);
     }
     if (dress != null) {
       // The flag at the masthead, streaming aft.
-      paintEnsign(canvas, Offset(x0 + len * spots.last, cy), beam * 0.5, dress!,
-          look.trim, t);
+      paintEnsign(
+        canvas,
+        Offset(x0 + len * spots.last, cy),
+        beam * 0.5,
+        dress!,
+        look.trim,
+        t,
+      );
     }
     if (look.id == TopShipLook.rustyEel.id && refit >= 1) {
       // The crow's nest on the mainmast.
       canvas.drawCircle(
-          Offset(x0 + len * spots.last, cy),
-          6,
-          Paint()
-            ..style = PaintingStyle.stroke
-            ..strokeWidth = 2
-            ..color = const Color(0xFFA07A4E));
+        Offset(x0 + len * spots.last, cy),
+        6,
+        Paint()
+          ..style = PaintingStyle.stroke
+          ..strokeWidth = 2
+          ..color = const Color(0xFFA07A4E),
+      );
     }
   }
 
@@ -1788,7 +2063,10 @@ class TopShipPainter extends CustomPainter {
     for (var k = 0; k < 6; k++) {
       final a = k * math.pi / 3 - t * 0.5;
       canvas.drawCircle(
-          c + Offset(math.cos(a), math.sin(a)) * beam * 0.3, 2, paint);
+        c + Offset(math.cos(a), math.sin(a)) * beam * 0.3,
+        2,
+        paint,
+      );
     }
   }
 
@@ -1801,25 +2079,32 @@ class TopShipPainter extends CustomPainter {
       final far = band.height * 0.42 + i * 9;
       final path = Path()
         ..moveTo(size.width * 0.1, edge + side * near)
-        ..quadraticBezierTo(size.width * 0.5, edge + side * far,
-            size.width * 0.9, edge + side * near);
+        ..quadraticBezierTo(
+          size.width * 0.5,
+          edge + side * far,
+          size.width * 0.9,
+          edge + side * near,
+        );
       if (up) {
         canvas.drawPath(
-            path,
-            Paint()
-              ..style = PaintingStyle.stroke
-              ..strokeWidth = 7
-              ..color = shield.withValues(alpha: 0.18)
-              ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 3));
-      }
-      canvas.drawPath(
           path,
           Paint()
             ..style = PaintingStyle.stroke
-            ..strokeCap = StrokeCap.round
-            ..strokeWidth = up ? 3 : 1.5
-            ..color = shield.withValues(
-                alpha: up ? 0.85 + 0.15 * math.sin(t * 2.5 + i) : 0.22));
+            ..strokeWidth = 7
+            ..color = shield.withValues(alpha: 0.18)
+            ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 3),
+        );
+      }
+      canvas.drawPath(
+        path,
+        Paint()
+          ..style = PaintingStyle.stroke
+          ..strokeCap = StrokeCap.round
+          ..strokeWidth = up ? 3 : 1.5
+          ..color = shield.withValues(
+            alpha: up ? 0.85 + 0.15 * math.sin(t * 2.5 + i) : 0.22,
+          ),
+      );
     }
   }
 

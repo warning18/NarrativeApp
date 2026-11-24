@@ -37,8 +37,10 @@ class _ClanGlance {
 }
 
 /// [clanId]'s glance now, or null for a faction not on file.
-final _clanGlanceProvider =
-    Provider.family<_ClanGlance?, String>((ref, clanId) {
+final _clanGlanceProvider = Provider.family<_ClanGlance?, String>((
+  ref,
+  clanId,
+) {
   final data = ref.watch(clanDataProvider);
   if (data.faction(clanId) == null) return null;
   final politics = ref.watch(politicsProvider);
@@ -72,39 +74,41 @@ class PowerCloth extends StatelessWidget {
   Widget build(BuildContext context) {
     final share = powerClothShare(tier);
     final level = 1 - share;
-    return LayoutBuilder(builder: (context, box) {
-      final h = box.maxHeight.isFinite ? box.maxHeight : 0.0;
-      return Stack(
-        key: Key('power_cloth_${tier.name}'),
-        clipBehavior: Clip.none,
-        children: [
-          share >= 1
-              ? child
-              : ShaderMask(
-                  blendMode: BlendMode.srcATop,
-                  shaderCallback: (rect) => LinearGradient(
-                    begin: Alignment.topCenter,
-                    end: Alignment.bottomCenter,
-                    colors: const [
-                      _empty,
-                      _empty,
-                      Palette.clear,
-                      Palette.clear
-                    ],
-                    stops: [0, level, level + 0.0001, 1],
-                  ).createShader(rect),
-                  child: child,
-                ),
-          if (share < 1 && h > 0)
-            Positioned(
-              left: 0,
-              right: 0,
-              top: h * level,
-              child: Container(height: h < 60 ? 1 : 1.6, color: _hairline),
-            ),
-        ],
-      );
-    });
+    return LayoutBuilder(
+      builder: (context, box) {
+        final h = box.maxHeight.isFinite ? box.maxHeight : 0.0;
+        return Stack(
+          key: Key('power_cloth_${tier.name}'),
+          clipBehavior: Clip.none,
+          children: [
+            share >= 1
+                ? child
+                : ShaderMask(
+                    blendMode: BlendMode.srcATop,
+                    shaderCallback: (rect) => LinearGradient(
+                      begin: Alignment.topCenter,
+                      end: Alignment.bottomCenter,
+                      colors: const [
+                        _empty,
+                        _empty,
+                        Palette.clear,
+                        Palette.clear,
+                      ],
+                      stops: [0, level, level + 0.0001, 1],
+                    ).createShader(rect),
+                    child: child,
+                  ),
+            if (share < 1 && h > 0)
+              Positioned(
+                left: 0,
+                right: 0,
+                top: h * level,
+                child: Container(height: h < 60 ? 1 : 1.6, color: _hairline),
+              ),
+          ],
+        );
+      },
+    );
   }
 }
 

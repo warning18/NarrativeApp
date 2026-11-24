@@ -20,10 +20,19 @@ const int pixelStageColumns = 120;
 /// [stage] painted on [size] as pixel art. [stars] twinkle in the sky (none by
 /// day, a few at dusk, many at night); the rest of the hour is the fight's
 /// own veil (paintFightBackdrop).
-void paintPixelStage(Canvas canvas, Size size, FightStage stage,
-    {int stars = 0}) {
-  final p = _P(canvas, size, size.width / pixelStageColumns,
-      FightScenery.of(stage), stars);
+void paintPixelStage(
+  Canvas canvas,
+  Size size,
+  FightStage stage, {
+  int stars = 0,
+}) {
+  final p = _P(
+    canvas,
+    size,
+    size.width / pixelStageColumns,
+    FightScenery.of(stage),
+    stars,
+  );
   canvas.save();
   canvas.clipRect(Offset.zero & size);
   switch (stage) {
@@ -193,13 +202,14 @@ class _P {
   Color mix(Color a, Color b, double t) => Color.lerp(a, b, t)!;
 
   void r(Color color, num x, num y, num w, num h) => sidePixels(
-      c,
-      u,
-      Paint()..color = color,
-      x.toDouble(),
-      y.toDouble(),
-      w.toDouble(),
-      h.toDouble());
+        c,
+        u,
+        Paint()..color = color,
+        x.toDouble(),
+        y.toDouble(),
+        w.toDouble(),
+        h.toDouble(),
+      );
 
   double rnd(int i, [int salt = 0]) {
     final x = math.sin(i * 12.9898 + salt * 78.233) * 43758.5453;
@@ -214,23 +224,46 @@ class _P {
     ];
     kitSky(c, size, u, bands: bands, ground: l.ground, horizon: hz);
     for (var i = 0; i < stars; i++) {
-      r(Colors.white.withValues(alpha: 0.4 + 0.5 * rnd(i, 3)), rnd(i, 1) * cols,
-          2 + rnd(i, 2) * (hz * 0.7), 1, 1);
+      r(
+        Colors.white.withValues(alpha: 0.4 + 0.5 * rnd(i, 3)),
+        rnd(i, 1) * cols,
+        2 + rnd(i, 2) * (hz * 0.7),
+        1,
+        1,
+      );
     }
   }
 
-  void disc(double cx, double cy, Color colour) => kitDisc(c, size, u,
-      cx: cx, cy: cy, disc: colour, glow: mix(l.skyLow, colour, 0.5));
+  void disc(double cx, double cy, Color colour) => kitDisc(
+        c,
+        size,
+        u,
+        cx: cx,
+        cy: cy,
+        disc: colour,
+        glow: mix(l.skyLow, colour, 0.5),
+      );
 
-  void hills(int base, double amp, double wave, double phaseShift, Color fill,
-      double rimMix) {
-    sideHills(c, size, u, 0,
-        base: base.toDouble(),
-        amp: amp,
-        wave: wave,
-        phase: phaseShift,
-        fill: fill,
-        rim: mix(fill, l.light, rimMix));
+  void hills(
+    int base,
+    double amp,
+    double wave,
+    double phaseShift,
+    Color fill,
+    double rimMix,
+  ) {
+    sideHills(
+      c,
+      size,
+      u,
+      0,
+      base: base.toDouble(),
+      amp: amp,
+      wave: wave,
+      phase: phaseShift,
+      fill: fill,
+      rim: mix(fill, l.light, rimMix),
+    );
   }
 
   /// The ground from [y0] to the bottom in dithered bands, dark at the front.
@@ -248,7 +281,7 @@ class _P {
       for (var x = 0; x < cols; x++) {
         const bayer = [
           [0, 2],
-          [3, 1]
+          [3, 1],
         ];
         paint.color = f * 4 > bayer[y % 2][x % 2] ? hi : lo;
         c.drawRect(Rect.fromLTWH(x * u, y * u, u + 0.5, u + 0.5), paint);
@@ -256,8 +289,14 @@ class _P {
     }
   }
 
-  void speckle(int y0, int y1, Color colour, int n, int seed,
-      {bool lit = false}) {
+  void speckle(
+    int y0,
+    int y1,
+    Color colour,
+    int n,
+    int seed, {
+    bool lit = false,
+  }) {
     final paint = Paint();
     for (var i = 0; i < n; i++) {
       final x = rnd(i, seed) * cols;
@@ -267,8 +306,14 @@ class _P {
     }
   }
 
-  void tri(double cx, int top, int base, double halfW, Color fill,
-      {Color? rim}) {
+  void tri(
+    double cx,
+    int top,
+    int base,
+    double halfW,
+    Color fill, {
+    Color? rim,
+  }) {
     for (var y = top; y <= base; y++) {
       final half = halfW * (y - top) / math.max(1, base - top);
       r(fill, cx - half, y.toDouble(), half * 2 + 1, 1);
@@ -341,8 +386,13 @@ class _P {
       final cx = 16 + k * 20.0;
       for (var dy = 0; dy < 8; dy++) {
         final half = math.sqrt(math.max(0, 64 - (7 - dy) * (7 - dy) * 1.3));
-        r(const Color(0xFF3E6F90), cx - half * 0.55, y + 12 - dy.toDouble(),
-            half * 1.1, 1);
+        r(
+          const Color(0xFF3E6F90),
+          cx - half * 0.55,
+          y + 12 - dy.toDouble(),
+          half * 1.1,
+          1,
+        );
       }
     }
   }
@@ -387,8 +437,13 @@ class _P {
       final half = 28 * math.sqrt(math.max(0, 1 - (dy / 6) * (dy / 6)));
       r(water, 58 - half, y + dy.toDouble(), half * 2, 1);
       if (dy == -3) {
-        r(const Color(0xFF8BD2D2), 58 - half * 0.8, y + dy.toDouble(),
-            half * 1.6, 1);
+        r(
+          const Color(0xFF8BD2D2),
+          58 - half * 0.8,
+          y + dy.toDouble(),
+          half * 1.6,
+          1,
+        );
       }
     }
   }
@@ -403,13 +458,14 @@ class _P {
     for (var i = -3; i <= 3; i++) {
       for (var s = 1; s < 11; s++) {
         r(
-            l.dark,
-            top + i * s * 0.9,
-            y -
-                (6 - i.abs() * 1.4) * s / 10 * 3 +
-                s * s * 0.07 * (1 + i.abs() * 0.3),
-            2,
-            2);
+          l.dark,
+          top + i * s * 0.9,
+          y -
+              (6 - i.abs() * 1.4) * s / 10 * 3 +
+              s * s * 0.07 * (1 + i.abs() * 0.3),
+          2,
+          2,
+        );
       }
     }
   }
@@ -430,10 +486,20 @@ class _P {
   void ruts(int y0) {
     for (var y = y0; y < rows; y++) {
       final t = (y - y0) * 0.5;
-      r(mix(l.ground, l.dark, 0.55), cols / 2 - 1 - t, y.toDouble(),
-          1 + t * 0.2, 1);
-      r(mix(l.ground, l.dark, 0.55), cols / 2 + t * 0.8, y.toDouble(),
-          1 + t * 0.2, 1);
+      r(
+        mix(l.ground, l.dark, 0.55),
+        cols / 2 - 1 - t,
+        y.toDouble(),
+        1 + t * 0.2,
+        1,
+      );
+      r(
+        mix(l.ground, l.dark, 0.55),
+        cols / 2 + t * 0.8,
+        y.toDouble(),
+        1 + t * 0.2,
+        1,
+      );
     }
   }
 
@@ -454,7 +520,7 @@ class _P {
       mix(deep, l.light, 0.15),
       deep,
       mix(deep, l.dark, 0.4),
-      mix(deep, l.dark, 0.7)
+      mix(deep, l.dark, 0.7),
     ];
     final end = shallow ? y0 + 16 : rows;
     for (var y = y0; y < end; y++) {
@@ -466,7 +532,7 @@ class _P {
       for (var x = 0; x < cols; x++) {
         const bayer = [
           [0, 2],
-          [3, 1]
+          [3, 1],
         ];
         paint.color = f * 4 > bayer[y % 2][x % 2] ? hi : lo;
         c.drawRect(Rect.fromLTWH(x * u, y * u, u + 0.5, u + 0.5), paint);
@@ -474,8 +540,13 @@ class _P {
     }
     for (var i = 0; i < (shallow ? 6 : 26); i++) {
       final y = y0 + 3 + (i * 9) % (end - y0 - 4);
-      r(mix(l.light, l.skyLow, 0.3), rnd(i, 4) * cols, y.toDouble(),
-          4 + (i % 3) * 2, 1);
+      r(
+        mix(l.light, l.skyLow, 0.3),
+        rnd(i, 4) * cols,
+        y.toDouble(),
+        4 + (i % 3) * 2,
+        1,
+      );
     }
   }
 
@@ -545,8 +616,13 @@ class _P {
     for (var y = 12; y < 50; y++) {
       for (var x = 36; x < 46; x++) {
         if ((x + y).isEven && rnd(x * 7 + y, 9) < 0.7 - (50 - y) * 0.012) {
-          r(mix(l.skyLow, Colors.white, 0.2), x + math.sin(y * 0.2) * 2,
-              y.toDouble(), 1, 1);
+          r(
+            mix(l.skyLow, Colors.white, 0.2),
+            x + math.sin(y * 0.2) * 2,
+            y.toDouble(),
+            1,
+            1,
+          );
         }
       }
     }
@@ -575,7 +651,7 @@ class _P {
 
   void hall() {
     final bands = [
-      for (final t in const [0.0, 0.5, 1.0]) mix(l.skyTop, l.skyLow, t)
+      for (final t in const [0.0, 0.5, 1.0]) mix(l.skyTop, l.skyLow, t),
     ];
     kitSky(c, size, u, bands: bands, ground: l.ground, horizon: hz + 14);
     for (var k = 0; k < 4; k++) {
@@ -587,8 +663,13 @@ class _P {
       for (var dy = 0; dy < 10; dy++) {
         final half = 10 *
             math.sqrt(math.max(0, 1 - ((10 - dy) / 10) * ((10 - dy) / 10)));
-        r(mix(l.far, l.dark, 0.4), x + 4 + 15 - half, 24 + dy.toDouble(),
-            half * 2, 1);
+        r(
+          mix(l.far, l.dark, 0.4),
+          x + 4 + 15 - half,
+          24 + dy.toDouble(),
+          half * 2,
+          1,
+        );
       }
     }
     ground(hz + 14);
@@ -599,8 +680,13 @@ class _P {
       }
     }
     for (var k = 1; k < 9; k++) {
-      r(line, 0, hz + 14 + math.pow(k / 9, 1.8) * (rows - hz - 14),
-          cols.toDouble(), 1);
+      r(
+        line,
+        0,
+        hz + 14 + math.pow(k / 9, 1.8) * (rows - hz - 14),
+        cols.toDouble(),
+        1,
+      );
     }
   }
 
@@ -612,8 +698,13 @@ class _P {
       final w = 7 + k * 1.6;
       for (var dy = -2; dy <= 2; dy++) {
         final half = w * math.sqrt(math.max(0, 1 - (dy / 3) * (dy / 3)));
-        r(mix(l.mid, l.light, dy == -2 ? 0.55 : 0.3), cx - half, cy + dy,
-            half * 2, 1);
+        r(
+          mix(l.mid, l.light, dy == -2 ? 0.55 : 0.3),
+          cx - half,
+          cy + dy,
+          half * 2,
+          1,
+        );
       }
     }
   }
@@ -635,8 +726,13 @@ class _P {
       final base = hz;
       final top = base - hs[i];
       tri(xs[i], top, base, hs[i] * 0.95, l.far, rim: mix(l.far, l.light, 0.3));
-      tri(xs[i], top, top + (hs[i] * 0.3).round(), hs[i] * 0.95 * 0.3,
-          Colors.white);
+      tri(
+        xs[i],
+        top,
+        top + (hs[i] * 0.3).round(),
+        hs[i] * 0.95 * 0.3,
+        Colors.white,
+      );
     }
   }
 
@@ -743,8 +839,13 @@ class _P {
       r(fill, col.toDouble(), top, 1, bottom - top);
       r(mix(fill, l.light, 0.35), col.toDouble(), top, 1, 1);
       if (x % 5 == 1) {
-        r(mix(fill, l.dark, 0.4), col.toDouble(), top + 4, 1,
-            (bottom - top) * 0.7);
+        r(
+          mix(fill, l.dark, 0.4),
+          col.toDouble(),
+          top + 4,
+          1,
+          (bottom - top) * 0.7,
+        );
       }
     }
   }
@@ -764,8 +865,13 @@ class _P {
               for (var dx = -7; dx <= 7; dx++) {
                 final d = dx * dx + dy * dy;
                 if (d < 49 && (dx + dy).isEven) {
-                  r(warm.withValues(alpha: 0.5 * (1 - d / 49)), x + dx,
-                      y - 13 + dy, 1, 1);
+                  r(
+                    warm.withValues(alpha: 0.5 * (1 - d / 49)),
+                    x + dx,
+                    y - 13 + dy,
+                    1,
+                    1,
+                  );
                 }
               }
             }
@@ -780,8 +886,13 @@ class _P {
               for (var dx = -6; dx <= 6; dx++) {
                 final d = dx * dx + dy * dy;
                 if (d < 36 && (dx + dy).isEven) {
-                  r(warm.withValues(alpha: 0.4 * (1 - d / 36)), x + 5 + dx,
-                      63 + dy, 1, 1);
+                  r(
+                    warm.withValues(alpha: 0.4 * (1 - d / 36)),
+                    x + 5 + dx,
+                    63 + dy,
+                    1,
+                    1,
+                  );
                 }
               }
             }
@@ -797,10 +908,19 @@ class _P {
 
 /// The lamps and torches of [stage], over the veil of the dark so they shine
 /// through it.
-void paintPixelLights(Canvas canvas, Size size, FightStage stage,
-    {required bool lit}) {
+void paintPixelLights(
+  Canvas canvas,
+  Size size,
+  FightStage stage, {
+  required bool lit,
+}) {
   final p = _P(
-      canvas, size, size.width / pixelStageColumns, FightScenery.of(stage), 0);
+    canvas,
+    size,
+    size.width / pixelStageColumns,
+    FightScenery.of(stage),
+    0,
+  );
   canvas.save();
   canvas.clipRect(Offset.zero & size);
   p.lights(stage, lit: lit);

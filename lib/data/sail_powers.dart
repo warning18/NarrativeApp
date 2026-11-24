@@ -125,7 +125,8 @@ int sailStrength(String medium, String raceId) =>
 List<SeaEvent> applyFlight(List<SeaEvent> events) {
   final kept = events
       .where(
-          (e) => e.kind != SeaEventKind.storm && e.kind != SeaEventKind.raider)
+        (e) => e.kind != SeaEventKind.storm && e.kind != SeaEventKind.raider,
+      )
       .toList();
   if (kept.isEmpty && events.isNotEmpty) return [events.last];
   return kept;

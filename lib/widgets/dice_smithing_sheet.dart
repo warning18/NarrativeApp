@@ -1,4 +1,5 @@
 import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -78,8 +79,10 @@ class _DiceSmithingSheetState extends ConsumerState<_DiceSmithingSheet> {
                 ?.toString(),
           ),
     ];
-    final owner =
-        owners.firstWhere((o) => o.id == _owner, orElse: () => owners.first);
+    final owner = owners.firstWhere(
+      (o) => o.id == _owner,
+      orElse: () => owners.first,
+    );
     final dieId = owner.dieId;
     // A companion's die is worked apart from the player's own copy of it.
     final companionId = owner.id == 'player' ? null : owner.id;
@@ -112,8 +115,10 @@ class _DiceSmithingSheetState extends ConsumerState<_DiceSmithingSheet> {
           child: Row(
             children: [
               Expanded(
-                child: Text(trFor(lang, 'smith_title'),
-                    style: theme.textTheme.titleMedium),
+                child: Text(
+                  trFor(lang, 'smith_title'),
+                  style: theme.textTheme.titleMedium,
+                ),
               ),
               const GoldBadge(),
             ],
@@ -121,8 +126,10 @@ class _DiceSmithingSheetState extends ConsumerState<_DiceSmithingSheet> {
         ),
         Padding(
           padding: const EdgeInsets.fromLTRB(16, 0, 16, 4),
-          child:
-              Text(trFor(lang, 'smith_hint'), style: theme.textTheme.bodySmall),
+          child: Text(
+            trFor(lang, 'smith_hint'),
+            style: theme.textTheme.bodySmall,
+          ),
         ),
         Padding(
           padding: const EdgeInsets.fromLTRB(16, 0, 16, 8),
@@ -158,19 +165,28 @@ class _DiceSmithingSheetState extends ConsumerState<_DiceSmithingSheet> {
             padding: const EdgeInsets.fromLTRB(16, 8, 16, 16),
             children: [
               if (dieId != null)
-                Text(dieDisplayName(dieId, language: lang),
-                    style: theme.textTheme.titleSmall),
+                Text(
+                  dieDisplayName(dieId, language: lang),
+                  style: theme.textTheme.titleSmall,
+                ),
               const SizedBox(height: 6),
-              Text(trFor(lang, 'smith_pick_face'),
-                  style: theme.textTheme.bodySmall),
+              Text(
+                trFor(lang, 'smith_pick_face'),
+                style: theme.textTheme.bodySmall,
+              ),
               const SizedBox(height: 8),
               Wrap(
                 spacing: 8,
                 runSpacing: 8,
                 children: [
                   for (var i = 0; i < faces.length; i++)
-                    _faceTile(faces[i], i, assignments, lang,
-                        worked: !(upgrades[i.toString()]?.isEmpty ?? true)),
+                    _faceTile(
+                      faces[i],
+                      i,
+                      assignments,
+                      lang,
+                      worked: !(upgrades[i.toString()]?.isEmpty ?? true),
+                    ),
                 ],
               ),
               if (_faceIndex != null &&
@@ -194,14 +210,21 @@ class _DiceSmithingSheetState extends ConsumerState<_DiceSmithingSheet> {
     );
   }
 
-  Widget _faceTile(Map<String, dynamic> face, int index,
-      Map<String, String> assignments, AppLanguage lang,
-      {required bool worked}) {
+  Widget _faceTile(
+    Map<String, dynamic> face,
+    int index,
+    Map<String, String> assignments,
+    AppLanguage lang, {
+    required bool worked,
+  }) {
     final colorScheme = Theme.of(context).colorScheme;
     final type = face['type']?.toString() ?? '';
     final kind = faceKind(type);
-    final name = faceDisplayName(face,
-        assignedSkillId: assignments[index.toString()], language: lang);
+    final name = faceDisplayName(
+      face,
+      assignedSkillId: assignments[index.toString()],
+      language: lang,
+    );
     final value = (face['value'] as num?)?.toInt() ?? 0;
     final element = face['element']?.toString() ?? 'None';
     final selected = _faceIndex == index;
@@ -228,9 +251,13 @@ class _DiceSmithingSheetState extends ConsumerState<_DiceSmithingSheet> {
                 Icon(kind.icon, size: IconSize.s16, color: kind.color),
                 if (type != 'Skill' && value > 0) ...[
                   const SizedBox(width: 3),
-                  Text('$value',
-                      style: TextStyle(
-                          fontWeight: FontWeight.bold, color: kind.color)),
+                  Text(
+                    '$value',
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      color: kind.color,
+                    ),
+                  ),
                 ],
                 if (element != 'None') ...[
                   const SizedBox(width: 3),
@@ -239,11 +266,13 @@ class _DiceSmithingSheetState extends ConsumerState<_DiceSmithingSheet> {
               ],
             ),
             const SizedBox(height: 2),
-            Text(name,
-                maxLines: 2,
-                textAlign: TextAlign.center,
-                overflow: TextOverflow.ellipsis,
-                style: const TextStyle(fontSize: 10)),
+            Text(
+              name,
+              maxLines: 2,
+              textAlign: TextAlign.center,
+              overflow: TextOverflow.ellipsis,
+              style: const TextStyle(fontSize: 10),
+            ),
             const SizedBox(height: 2),
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
@@ -284,8 +313,12 @@ class _DiceSmithingSheetState extends ConsumerState<_DiceSmithingSheet> {
             '${trFor(lang, 'smith_trophy_label')} ×${cost.trophies}',
         ].join(' · ');
 
-    Future<void> work(SmithingWork kind,
-        {String? element, FaceKeyword? keyword, String? recastType}) async {
+    Future<void> work(
+      SmithingWork kind, {
+      String? element,
+      FaceKeyword? keyword,
+      String? recastType,
+    }) async {
       final done = await notifier.smithFace(
         dieId: dieId,
         companionId: companionId,
@@ -297,12 +330,16 @@ class _DiceSmithingSheetState extends ConsumerState<_DiceSmithingSheet> {
         recastType: recastType,
       );
       if (!done || !mounted) return;
-      unawaited(showImmersiveNotice(
-        context,
-        icon: Icons.hardware,
-        message: trFor(lang, 'smith_done')
-            .replaceAll('{work}', trFor(lang, smithingWorkLabelKey(kind))),
-      ));
+      unawaited(
+        showImmersiveNotice(
+          context,
+          icon: Icons.hardware,
+          message: trFor(
+            lang,
+            'smith_done',
+          ).replaceAll('{work}', trFor(lang, smithingWorkLabelKey(kind))),
+        ),
+      );
     }
 
     final baseType = face['type']?.toString() ?? '';
@@ -353,39 +390,48 @@ class _DiceSmithingSheetState extends ConsumerState<_DiceSmithingSheet> {
           ],
       };
       if (picks.isEmpty) continue;
-      options.add(Card(
-        child: Padding(
-          padding: const EdgeInsets.all(10),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(trFor(lang, smithingWorkLabelKey(kind)),
-                  style: theme.textTheme.titleSmall),
-              Text(trFor(lang, smithingWorkDescriptionKey(kind)),
-                  style: theme.textTheme.bodySmall),
-              const SizedBox(height: 4),
-              Text('${trFor(lang, 'smith_cost_label')}: ${costLine(cost)}',
+      options.add(
+        Card(
+          child: Padding(
+            padding: const EdgeInsets.all(10),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  trFor(lang, smithingWorkLabelKey(kind)),
+                  style: theme.textTheme.titleSmall,
+                ),
+                Text(
+                  trFor(lang, smithingWorkDescriptionKey(kind)),
+                  style: theme.textTheme.bodySmall,
+                ),
+                const SizedBox(height: 4),
+                Text(
+                  '${trFor(lang, 'smith_cost_label')}: ${costLine(cost)}',
                   style: theme.textTheme.labelSmall?.copyWith(
-                      color: affordable ? null : theme.colorScheme.error)),
-              const SizedBox(height: 6),
-              Wrap(
-                spacing: 6,
-                runSpacing: 6,
-                children: [
-                  for (final pick in picks)
-                    Tooltip(
-                      message: pick.tip ?? pick.label,
-                      child: FilledButton.tonal(
-                        onPressed: affordable ? pick.onTap : null,
-                        child: Text(pick.label),
+                    color: affordable ? null : theme.colorScheme.error,
+                  ),
+                ),
+                const SizedBox(height: 6),
+                Wrap(
+                  spacing: 6,
+                  runSpacing: 6,
+                  children: [
+                    for (final pick in picks)
+                      Tooltip(
+                        message: pick.tip ?? pick.label,
+                        child: FilledButton.tonal(
+                          onPressed: affordable ? pick.onTap : null,
+                          child: Text(pick.label),
+                        ),
                       ),
-                    ),
-                ],
-              ),
-            ],
+                  ],
+                ),
+              ],
+            ),
           ),
         ),
-      ));
+      );
     }
     if (options.isEmpty) {
       return [

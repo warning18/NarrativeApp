@@ -7,9 +7,14 @@ extension _ShipBattleDock on _ShipBattlePanelState {
   /// The player's side of the turn, always in reach at the bottom: the
   /// clock, the hint (or the aim bar), the weapons, the shot, the crew and
   /// the end of the turn.
-  Widget _buildDock(AppLanguage lang, bool fr, Map<String, dynamic>? enemies,
-      bool canBoard, String hint,
-      {bool warn = false}) {
+  Widget _buildDock(
+    AppLanguage lang,
+    bool fr,
+    Map<String, dynamic>? enemies,
+    bool canBoard,
+    String hint, {
+    bool warn = false,
+  }) {
     final theme = Theme.of(context);
     final ink = InkColors.of(context);
     final total = max(1, widget.turnSeconds ?? 1);
@@ -65,9 +70,10 @@ extension _ShipBattleDock on _ShipBattlePanelState {
                                     '${_battle.log.isEmpty ? hint : _battle.log.reversed.take(2).map(_line).join('\n')}',
                             key: Key(warn ? 'ship_hint' : 'ship_log'),
                             style: theme.textTheme.labelSmall?.copyWith(
-                                color: (_busy && !_over) || warn
-                                    ? ink.blood
-                                    : ink.ash),
+                              color: (_busy && !_over) || warn
+                                  ? ink.blood
+                                  : ink.ash,
+                            ),
                             maxLines: 2,
                             overflow: TextOverflow.ellipsis,
                           ),
@@ -79,9 +85,14 @@ extension _ShipBattleDock on _ShipBattlePanelState {
                         visualDensity: VisualDensity.compact,
                         padding: EdgeInsets.zero,
                         constraints: const BoxConstraints.tightFor(
-                            width: 30, height: 26),
-                        icon: Icon(Icons.history,
-                            size: IconSize.s16, color: ink.ash),
+                          width: 30,
+                          height: 26,
+                        ),
+                        icon: Icon(
+                          Icons.history,
+                          size: IconSize.s16,
+                          color: ink.ash,
+                        ),
                         onPressed: _battle.log.isEmpty ? null : _openLog,
                       ),
                       if (timed) ...[
@@ -101,8 +112,10 @@ extension _ShipBattleDock on _ShipBattlePanelState {
                       onPressed: _battle.crew.isEmpty
                           ? null
                           : () => _openCrewSheet(enemies),
-                      icon: const Icon(Icons.groups_2_outlined,
-                          size: IconSize.s16),
+                      icon: const Icon(
+                        Icons.groups_2_outlined,
+                        size: IconSize.s16,
+                      ),
                     ),
                     const SizedBox(width: 8),
                     // Push a room past its limit, once a turn.
@@ -111,9 +124,11 @@ extension _ShipBattleDock on _ShipBattlePanelState {
                         key: const Key('ship_push_button'),
                         tooltip: trFor(lang, 'ship_push_button'),
                         onPressed: _canPushNow ? _openPushSheet : null,
-                        icon: Icon(Icons.bolt,
-                            size: IconSize.s16,
-                            color: _canPushNow ? ink.ember : null),
+                        icon: Icon(
+                          Icons.bolt,
+                          size: IconSize.s16,
+                          color: _canPushNow ? ink.ember : null,
+                        ),
                       ),
                       const SizedBox(width: 8),
                     ],
@@ -125,14 +140,18 @@ extension _ShipBattleDock on _ShipBattlePanelState {
                         child: OutlinedButton.icon(
                           key: const Key('ship_board_button'),
                           style: OutlinedButton.styleFrom(
-                              minimumSize: const Size(0, 44),
-                              padding:
-                                  const EdgeInsets.symmetric(horizontal: 10)),
+                            minimumSize: const Size(0, 44),
+                            padding: const EdgeInsets.symmetric(horizontal: 10),
+                          ),
                           onPressed: () => _boardThem(enemies),
-                          icon: const Icon(Icons.sports_kabaddi,
-                              size: IconSize.s16),
-                          label: Text(trFor(lang, 'ship_board_button'),
-                              overflow: TextOverflow.ellipsis),
+                          icon: const Icon(
+                            Icons.sports_kabaddi,
+                            size: IconSize.s16,
+                          ),
+                          label: Text(
+                            trFor(lang, 'ship_board_button'),
+                            overflow: TextOverflow.ellipsis,
+                          ),
                         ),
                       ),
                       const SizedBox(width: 8),
@@ -142,12 +161,15 @@ extension _ShipBattleDock on _ShipBattlePanelState {
                     FilledButton.icon(
                       key: const Key('ship_end_turn'),
                       style: FilledButton.styleFrom(
-                          minimumSize: const Size(0, 44),
-                          padding: const EdgeInsets.symmetric(horizontal: 16)),
+                        minimumSize: const Size(0, 44),
+                        padding: const EdgeInsets.symmetric(horizontal: 16),
+                      ),
                       onPressed:
                           _busy || _over ? null : () => _endTurn(manual: true),
-                      icon: const Icon(Icons.hourglass_bottom,
-                          size: IconSize.s16),
+                      icon: const Icon(
+                        Icons.hourglass_bottom,
+                        size: IconSize.s16,
+                      ),
                       label: Text(trFor(lang, 'ship_end_turn_button')),
                     ),
                   ],
@@ -178,18 +200,25 @@ extension _ShipBattleDock on _ShipBattlePanelState {
         Text(
           trFor(lang, 'ship_turn_seconds').replaceAll('{n}', '$_secondsLeft'),
           style: theme.textTheme.labelMedium?.copyWith(
-              color: color, fontFeatures: const [FontFeature.tabularFigures()]),
+            color: color,
+            fontFeatures: const [FontFeature.tabularFigures()],
+          ),
         ),
         const SizedBox(width: 6),
         Tooltip(
-          message: trFor(lang, 'ship_quick_orders_hint')
-              .replaceAll('{n}', '$quickOrdersEvasion'),
+          message: trFor(
+            lang,
+            'ship_quick_orders_hint',
+          ).replaceAll('{n}', '$quickOrdersEvasion'),
           child: Row(
             key: const Key('ship_quick_orders'),
             mainAxisSize: MainAxisSize.min,
             children: [
-              Icon(Icons.bolt,
-                  size: IconSize.s16, color: quick ? ink.ember : ink.ash),
+              Icon(
+                Icons.bolt,
+                size: IconSize.s16,
+                color: quick ? ink.ember : ink.ash,
+              ),
               Text(
                 '+$quickOrdersEvasion%',
                 style: theme.textTheme.labelSmall?.copyWith(
@@ -274,50 +303,74 @@ extension _ShipBattleDock on _ShipBattlePanelState {
         _battle.weather != SeaWeather.squall;
     return Tooltip(
       message: trFor(lang, 'ship_weather_${_battle.weather.name}_hint'),
-      child: _seaChip(Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Icon(_weatherIcon(_battle.weather),
-              size: IconSize.s16, color: _weatherColor(ink, _battle.weather)),
-          const SizedBox(width: 4),
-          Text(trFor(lang, 'ship_weather_${_battle.weather.name}'),
-              style: small?.copyWith(color: Colors.white)),
-          const SizedBox(width: 6),
-          if (squallComing)
-            Tooltip(
-              message: trFor(lang, 'ship_weather_squall_coming_hint'),
-              child: Row(
-                key: const Key('ship_squall_coming'),
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Text('${trFor(lang, 'ship_weather_squall_coming')} ',
-                      style: small?.copyWith(
-                          color: ink.ember, fontWeight: FontWeight.bold)),
-                  Icon(_weatherIcon(SeaWeather.squall),
-                      size: IconSize.s16, color: ink.ember),
-                ],
-              ),
-            )
-          else ...[
-            Text('${trFor(lang, 'ship_weather_next_label')} ',
-                style: small?.copyWith(color: ink.ash)),
-            Tooltip(
-              message: trFor(lang, 'ship_weather_${_battle.nextWeather.name}'),
-              child: Icon(_weatherIcon(_battle.nextWeather),
-                  size: IconSize.s16, color: ink.ash),
+      child: _seaChip(
+        Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Icon(
+              _weatherIcon(_battle.weather),
+              size: IconSize.s16,
+              color: _weatherColor(ink, _battle.weather),
             ),
-          ],
-          if (_battle.wreck) ...[
+            const SizedBox(width: 4),
+            Text(
+              trFor(lang, 'ship_weather_${_battle.weather.name}'),
+              style: small?.copyWith(color: Colors.white),
+            ),
             const SizedBox(width: 6),
-            Tooltip(
-              message: trFor(lang, 'ship_wreck_hint'),
-              child: Icon(Icons.sailing_outlined,
+            if (squallComing)
+              Tooltip(
+                message: trFor(lang, 'ship_weather_squall_coming_hint'),
+                child: Row(
+                  key: const Key('ship_squall_coming'),
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Text(
+                      '${trFor(lang, 'ship_weather_squall_coming')} ',
+                      style: small?.copyWith(
+                        color: ink.ember,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    Icon(
+                      _weatherIcon(SeaWeather.squall),
+                      size: IconSize.s16,
+                      color: ink.ember,
+                    ),
+                  ],
+                ),
+              )
+            else ...[
+              Text(
+                '${trFor(lang, 'ship_weather_next_label')} ',
+                style: small?.copyWith(color: ink.ash),
+              ),
+              Tooltip(
+                message: trFor(
+                  lang,
+                  'ship_weather_${_battle.nextWeather.name}',
+                ),
+                child: Icon(
+                  _weatherIcon(_battle.nextWeather),
                   size: IconSize.s16,
-                  color: _roomColor(context, ShipRoom.hold)),
-            ),
+                  color: ink.ash,
+                ),
+              ),
+            ],
+            if (_battle.wreck) ...[
+              const SizedBox(width: 6),
+              Tooltip(
+                message: trFor(lang, 'ship_wreck_hint'),
+                child: Icon(
+                  Icons.sailing_outlined,
+                  size: IconSize.s16,
+                  color: _roomColor(context, ShipRoom.hold),
+                ),
+              ),
+            ],
           ],
-        ],
-      )),
+        ),
+      ),
     );
   }
 
@@ -338,7 +391,8 @@ extension _ShipBattleDock on _ShipBattlePanelState {
         child: Material(
           color: Colors.black.withValues(alpha: 0.55),
           shape: CircleBorder(
-              side: BorderSide(color: on ? ink.gold : ink.seam, width: 1.5)),
+            side: BorderSide(color: on ? ink.gold : ink.seam, width: 1.5),
+          ),
           child: InkWell(
             key: key,
             customBorder: const CircleBorder(),
@@ -346,8 +400,11 @@ extension _ShipBattleDock on _ShipBattlePanelState {
             child: SizedBox(
               width: 42,
               height: 42,
-              child: Icon(icon,
-                  size: IconSize.s32, color: on ? ink.gold : ink.ash),
+              child: Icon(
+                icon,
+                size: IconSize.s32,
+                color: on ? ink.gold : ink.ash,
+              ),
             ),
           ),
         ),
@@ -415,17 +472,25 @@ extension _ShipBattleDock on _ShipBattlePanelState {
       if (b.sailIn > 0)
         _statusChip(
           Icons.sailing,
-          trFor(lang, 'ship_sail_coming_label')
-              .replaceAll('{n}', '${b.sailIn}'),
+          trFor(
+            lang,
+            'ship_sail_coming_label',
+          ).replaceAll('{n}', '${b.sailIn}'),
           ink.ember,
           'ship_sail_coming',
-          tooltip: trFor(lang, 'ship_sail_coming_hint')
-              .replaceAll('{n}', '${b.sailIn}'),
+          tooltip: trFor(
+            lang,
+            'ship_sail_coming_hint',
+          ).replaceAll('{n}', '${b.sailIn}'),
         ),
       if (b.consortArrived)
-        _statusChip(Icons.sailing, trFor(lang, 'ship_consort_label'), ink.blood,
-            'ship_consort',
-            tooltip: trFor(lang, 'ship_consort_hint')),
+        _statusChip(
+          Icons.sailing,
+          trFor(lang, 'ship_consort_label'),
+          ink.blood,
+          'ship_consort',
+          tooltip: trFor(lang, 'ship_consort_hint'),
+        ),
       if (widget.beast != null) ..._beastChips(lang),
     ];
     if (chips.isEmpty) return const SizedBox.shrink();
@@ -441,8 +506,13 @@ extension _ShipBattleDock on _ShipBattlePanelState {
   }
 
   /// One small mark in the enemy's status line: an icon and a few words.
-  Widget _statusChip(IconData icon, String text, Color color, String key,
-      {String? tooltip}) {
+  Widget _statusChip(
+    IconData icon,
+    String text,
+    Color color,
+    String key, {
+    String? tooltip,
+  }) {
     final small = Theme.of(context).textTheme.labelSmall;
     final chip = Row(
       key: Key(key),
@@ -451,10 +521,12 @@ extension _ShipBattleDock on _ShipBattlePanelState {
         Icon(icon, size: IconSize.s16, color: color),
         const SizedBox(width: 3),
         Flexible(
-          child: Text(text,
-              style: small?.copyWith(color: color),
-              maxLines: 1,
-              overflow: TextOverflow.ellipsis),
+          child: Text(
+            text,
+            style: small?.copyWith(color: color),
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
+          ),
         ),
       ],
     );
@@ -473,10 +545,11 @@ extension _ShipBattleDock on _ShipBattlePanelState {
     String words(String key) {
       final beastKey = 'beast_$key';
       return trFor(
-          lang,
-          widget.beast != null && trFor(AppLanguage.en, beastKey) != beastKey
-              ? beastKey
-              : key);
+        lang,
+        widget.beast != null && trFor(AppLanguage.en, beastKey) != beastKey
+            ? beastKey
+            : key,
+      );
     }
 
     final label = seen
@@ -499,8 +572,11 @@ extension _ShipBattleDock on _ShipBattlePanelState {
         child: Row(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Icon(seen ? _intentIcon(intent) : Icons.question_mark,
-                size: IconSize.inline, color: color),
+            Icon(
+              seen ? _intentIcon(intent) : Icons.question_mark,
+              size: IconSize.inline,
+              color: color,
+            ),
             const SizedBox(width: 3),
             Flexible(
               child: Text(
@@ -530,39 +606,47 @@ extension _ShipBattleDock on _ShipBattlePanelState {
     final heartDown = b.enemy.room(ShipRoom.hold).isDown;
     return [
       if (b.beastTurning)
-        _statusChip(Icons.keyboard_double_arrow_down,
-            trFor(lang, 'beast_status_turning'), ink.blood, 'beast_turning'),
+        _statusChip(
+          Icons.keyboard_double_arrow_down,
+          trFor(lang, 'beast_status_turning'),
+          ink.blood,
+          'beast_turning',
+        ),
       if (b.tethered)
         _statusChip(
-            Icons.link,
-            trFor(lang, 'beast_status_tethered')
-                .replaceAll('{n}', '${b.tether}'),
-            ink.gold,
-            'beast_tethered'),
+          Icons.link,
+          trFor(lang, 'beast_status_tethered').replaceAll('{n}', '${b.tether}'),
+          ink.gold,
+          'beast_tethered',
+        ),
       if (dive != null)
         _statusChip(
-            Icons.waves,
-            dive == 0
-                ? trFor(lang, 'beast_status_dives_now')
-                : trFor(lang, 'beast_status_dives_in')
-                    .replaceAll('{n}', '$dive'),
-            dive == 0 ? ink.blood : ink.tide,
-            'beast_dive'),
+          Icons.waves,
+          dive == 0
+              ? trFor(lang, 'beast_status_dives_now')
+              : trFor(lang, 'beast_status_dives_in').replaceAll('{n}', '$dive'),
+          dive == 0 ? ink.blood : ink.tide,
+          'beast_dive',
+        ),
       if (beast.regen > 0)
         _statusChip(
-            heartDown ? Icons.heart_broken : Icons.favorite,
-            heartDown || b.tethered
-                ? trFor(lang, 'beast_status_regen_stopped')
-                : trFor(lang, 'beast_status_regen')
-                    .replaceAll('{n}', '${beast.regen}'),
-            heartDown || b.tethered ? ink.ash : ink.blood,
-            'beast_regen'),
+          heartDown ? Icons.heart_broken : Icons.favorite,
+          heartDown || b.tethered
+              ? trFor(lang, 'beast_status_regen_stopped')
+              : trFor(
+                  lang,
+                  'beast_status_regen',
+                ).replaceAll('{n}', '${beast.regen}'),
+          heartDown || b.tethered ? ink.ash : ink.blood,
+          'beast_regen',
+        ),
       if (beast.edge > 0)
         _statusChip(
-            Icons.visibility,
-            trFor(lang, 'beast_status_edge').replaceAll('{n}', '${beast.edge}'),
-            ink.tide,
-            'beast_edge'),
+          Icons.visibility,
+          trFor(lang, 'beast_status_edge').replaceAll('{n}', '${beast.edge}'),
+          ink.tide,
+          'beast_edge',
+        ),
     ];
   }
 
@@ -583,9 +667,10 @@ extension _ShipBattleDock on _ShipBattlePanelState {
     final aimed = b.shotsToLand(weapon.id, ShipRoom.bulwark) ?? plain;
     var text = weapon.piercing
         ? trFor(lang, 'ship_sums_pierce').replaceAll('{n}', '$layers')
-        : trFor(lang, layers == 1 ? 'ship_sums_one' : 'ship_sums')
-            .replaceAll('{n}', '$layers')
-            .replaceAll('{m}', '$plain');
+        : trFor(
+            lang,
+            layers == 1 ? 'ship_sums_one' : 'ship_sums',
+          ).replaceAll('{n}', '$layers').replaceAll('{m}', '$plain');
     if (!weapon.piercing && aimed < plain) {
       text += trFor(lang, 'ship_sums_bulwark').replaceAll('{k}', '$aimed');
     }
@@ -594,23 +679,30 @@ extension _ShipBattleDock on _ShipBattlePanelState {
       child: Row(
         children: [
           Flexible(
-            child: Text(text,
-                key: const Key('ship_shield_sums'),
-                style: style?.copyWith(
-                    color: _roomColor(context, ShipRoom.bulwark)),
-                maxLines: 1,
-                overflow: TextOverflow.ellipsis),
+            child: Text(
+              text,
+              key: const Key('ship_shield_sums'),
+              style: style?.copyWith(
+                color: _roomColor(context, ShipRoom.bulwark),
+              ),
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+            ),
           ),
           if (b.salvoReady) ...[
             const SizedBox(width: 8),
             Icon(Icons.bolt, size: IconSize.inline, color: ink.gold),
             Flexible(
-              child: Text(trFor(lang, 'ship_sums_salvo'),
-                  key: const Key('ship_salvo_ready'),
-                  style: style?.copyWith(
-                      color: ink.gold, fontWeight: FontWeight.bold),
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis),
+              child: Text(
+                trFor(lang, 'ship_sums_salvo'),
+                key: const Key('ship_salvo_ready'),
+                style: style?.copyWith(
+                  color: ink.gold,
+                  fontWeight: FontWeight.bold,
+                ),
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+              ),
             ),
           ],
         ],
@@ -643,11 +735,16 @@ extension _ShipBattleDock on _ShipBattlePanelState {
         Row(
           children: [
             Flexible(
-              child: Text(name,
-                  style: TextStyle(
-                      fontFamily: InkFonts.display, fontSize: 18, color: color),
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis),
+              child: Text(
+                name,
+                style: TextStyle(
+                  fontFamily: InkFonts.display,
+                  fontSize: 18,
+                  color: color,
+                ),
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+              ),
             ),
             if (showHabit) ...[
               const SizedBox(width: 8),
@@ -656,8 +753,10 @@ extension _ShipBattleDock on _ShipBattlePanelState {
                   message: trFor(lang, 'ship_habit_${habit.name}_hint'),
                   child: Container(
                     key: const Key('ship_enemy_habit'),
-                    padding:
-                        const EdgeInsets.symmetric(horizontal: 6, vertical: 1),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 6,
+                      vertical: 1,
+                    ),
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(8),
                       border: Border.all(color: ink.ember),
@@ -665,8 +764,11 @@ extension _ShipBattleDock on _ShipBattlePanelState {
                     child: Row(
                       mainAxisSize: MainAxisSize.min,
                       children: [
-                        Icon(_habitIcon(habit),
-                            size: IconSize.inline, color: ink.ember),
+                        Icon(
+                          _habitIcon(habit),
+                          size: IconSize.inline,
+                          color: ink.ember,
+                        ),
                         const SizedBox(width: 3),
                         Flexible(
                           child: Text(
@@ -692,10 +794,12 @@ extension _ShipBattleDock on _ShipBattlePanelState {
             const SizedBox(width: 6),
             // Heavy with water: each open leak costs evasion (v1.190).
             if (heavy > 0) ...[
-              Icon(Icons.water_drop,
-                  key: Key('ship_heavy_${eel ? 'eel' : 'enemy'}'),
-                  size: IconSize.inline,
-                  color: ink.blood),
+              Icon(
+                Icons.water_drop,
+                key: Key('ship_heavy_${eel ? 'eel' : 'enemy'}'),
+                size: IconSize.inline,
+                color: ink.blood,
+              ),
               Text(
                 trFor(lang, 'ship_heavy_label').replaceAll('{n}', '$heavy'),
                 style: small?.copyWith(color: ink.blood),
@@ -737,9 +841,12 @@ extension _ShipBattleDock on _ShipBattlePanelState {
             Stack(
               clipBehavior: Clip.none,
               children: [
-                Text('${ship.hull}/${ship.maxHull}',
-                    style: small?.copyWith(
-                        fontFeatures: const [FontFeature.tabularFigures()])),
+                Text(
+                  '${ship.hull}/${ship.maxHull}',
+                  style: small?.copyWith(
+                    fontFeatures: const [FontFeature.tabularFigures()],
+                  ),
+                ),
                 // The hull a shot just took, rising off the count.
                 if (pop != null)
                   Positioned(

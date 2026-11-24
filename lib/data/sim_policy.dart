@@ -244,8 +244,15 @@ double simDieValue(
   for (var i = 0; i < faces.length; i++) {
     final w = (faces[i]['weight'] as num?)?.toDouble() ?? 1.0;
     total += w *
-        simFaceValue(faces, i, assignments, skills,
-            damage: damage, caster: caster, maxHealth: maxHealth);
+        simFaceValue(
+          faces,
+          i,
+          assignments,
+          skills,
+          damage: damage,
+          caster: caster,
+          maxHealth: maxHealth,
+        );
     weights += w;
   }
   return weights <= 0 ? 0 : total / weights;
@@ -328,7 +335,8 @@ double simFaceValue(
             assignments['$i'] ?? (linked.isEmpty ? 'heavy_attack' : linked);
         if (_isManaSkill(skills, id)) return caster ? 2.0 : 0.0;
         return strike(
-            damage + simSkillScore(skills[id] as Map<String, dynamic>?));
+          damage + simSkillScore(skills[id] as Map<String, dynamic>?),
+        );
       }(),
     _ => 0.0,
   };
@@ -351,8 +359,12 @@ double _simGrowthMean(List<Map<String, dynamic>> faces, int i) {
 
 /// The element face [i] of [faces] strikes with, its skill's own first
 /// (faceHitElement); null for a face that strikes nothing.
-String? _simFaceElement(List<Map<String, dynamic>> faces, int i,
-    Map<String, String> assignments, Map<String, dynamic> skills) {
+String? _simFaceElement(
+  List<Map<String, dynamic>> faces,
+  int i,
+  Map<String, String> assignments,
+  Map<String, dynamic> skills,
+) {
   final face = faces[i];
   final type = face['type']?.toString() ?? '';
   if (type != 'Attack' && type != 'Skill') return null;
@@ -374,10 +386,11 @@ double _simElementFactor(String element, List<Map<String, dynamic>> foes) {
 /// Whether a striking face of [faces] carries an element one of [foes] is
 /// weak to (the die the fight setup screen stars).
 bool simDieHitsWeakness(
-    List<Map<String, dynamic>> faces,
-    Map<String, String> assignments,
-    Map<String, dynamic> skills,
-    List<Map<String, dynamic>> foes) {
+  List<Map<String, dynamic>> faces,
+  Map<String, String> assignments,
+  Map<String, dynamic> skills,
+  List<Map<String, dynamic>> foes,
+) {
   for (var i = 0; i < faces.length; i++) {
     final element = _simFaceElement(faces, i, assignments, skills);
     if (element == null) continue;
@@ -407,8 +420,15 @@ double simDieValueAgainst(
         : _simElementFactor(element, foes);
     total += w *
         factor *
-        simFaceValue(faces, i, assignments, skills,
-            damage: damage, caster: caster, maxHealth: maxHealth);
+        simFaceValue(
+          faces,
+          i,
+          assignments,
+          skills,
+          damage: damage,
+          caster: caster,
+          maxHealth: maxHealth,
+        );
     weights += w;
   }
   return weights <= 0 ? 0 : total / weights;
@@ -416,8 +436,11 @@ double simDieValueAgainst(
 
 /// Whether [die] (a dice.json record) is one the character may roll: no
 /// profession or race listed, or its own among them.
-bool simCanUseDie(Map<String, dynamic> die,
-    {required String professionId, required String raceId}) {
+bool simCanUseDie(
+  Map<String, dynamic> die, {
+  required String professionId,
+  required String raceId,
+}) {
   final professions = [
     for (final p in (die['professions'] as List?) ?? const []) p.toString(),
   ];
@@ -443,12 +466,17 @@ bool simCanUseDie(Map<String, dynamic> die,
   bool caster = false,
 }) {
   double valueWith(Set<String> known) => simDieValue(
-      faces,
-      simSkillAssignments(
-          faces: faces, current: current, unlocked: known, skills: skills),
-      skills,
-      damage: damage,
-      caster: caster);
+        faces,
+        simSkillAssignments(
+          faces: faces,
+          current: current,
+          unlocked: known,
+          skills: skills,
+        ),
+        skills,
+        damage: damage,
+        caster: caster,
+      );
   final now = valueWith(unlocked);
   ({List<String> inputs, String result})? best;
   var bestValue = now + 0.01;

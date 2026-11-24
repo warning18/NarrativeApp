@@ -29,7 +29,10 @@ import '../theme/icon_sizes.dart';
 /// Takes on [questId] (it becomes the followed quest when none is) and
 /// says so.
 Future<void> acceptQuestWithNotice(
-    BuildContext context, WidgetRef ref, String questId) async {
+  BuildContext context,
+  WidgetRef ref,
+  String questId,
+) async {
   final quest = (ref.read(localizedDbProvider(questsSchema)).value ??
       const {})[questId] as Map<String, dynamic>?;
   await ref
@@ -37,12 +40,14 @@ Future<void> acceptQuestWithNotice(
       .acceptQuest(questId, quest: quest);
   if (!context.mounted) return;
   final lang = ref.read(appLanguageProvider);
-  unawaited(showImmersiveNotice(
-    context,
-    icon: Icons.assignment_turned_in_outlined,
-    message: '${trFor(lang, 'quest_accepted_prefix')}: '
-        '${quest?['questName']?.toString() ?? questId}',
-  ));
+  unawaited(
+    showImmersiveNotice(
+      context,
+      icon: Icons.assignment_turned_in_outlined,
+      message: '${trFor(lang, 'quest_accepted_prefix')}: '
+          '${quest?['questName']?.toString() ?? questId}',
+    ),
+  );
 }
 
 /// Turns in [questId], whose objectives are all met: pays its rewards
@@ -51,7 +56,10 @@ Future<void> acceptQuestWithNotice(
 /// shows the level-up dialog when the XP brought a level. Shared by the
 /// Quests list and the quest tracker above the story.
 Future<void> turnInQuest(
-    BuildContext context, WidgetRef ref, String questId) async {
+  BuildContext context,
+  WidgetRef ref,
+  String questId,
+) async {
   Map<String, dynamic> db(DbSchema schema) =>
       ref.read(localizedDbProvider(schema)).value ?? const {};
   final quest = db(questsSchema)[questId] as Map<String, dynamic>?;
@@ -67,8 +75,12 @@ Future<void> turnInQuest(
   final choices = turnInChoicesOf(quest);
   TurnInChoice? picked;
   if (choices.isNotEmpty) {
-    picked = await showTurnInChoiceDialog(context, ref,
-        quest: quest, choices: choices);
+    picked = await showTurnInChoiceDialog(
+      context,
+      ref,
+      quest: quest,
+      choices: choices,
+    );
     if (picked == null || !context.mounted) return;
   }
   final questGold = (quest['rewardGold'] as num?)?.toInt() ?? 0;
@@ -85,8 +97,11 @@ Future<void> turnInQuest(
   if (rewardDiceId != null && rewardDiceId.isNotEmpty) {
     final die = db(diceSchema)[rewardDiceId] as Map<String, dynamic>?;
     final player = ref.read(playerSessionProvider);
-    if (!dieUsableBy(die,
-        professionId: player.professionId, raceId: player.raceId)) {
+    if (!dieUsableBy(
+      die,
+      professionId: player.professionId,
+      raceId: player.raceId,
+    )) {
       tradedDieCost = (die?['cost'] as num?)?.toInt() ?? 0;
       rewardGold += tradedDieCost;
       tradedDieName = dieDisplayName(rewardDiceId, language: lang);
@@ -127,8 +142,11 @@ Future<void> turnInQuest(
   }
   // Its influence in the town's district (wave 18): a district changing
   // hands gets a companion's word.
-  final swayed =
-      await applyQuestInfluenceNow(ref, quest, picked: picked?.politics);
+  final swayed = await applyQuestInfluenceNow(
+    ref,
+    quest,
+    picked: picked?.politics,
+  );
   if (!context.mounted) return;
   final flipRemark = swayed.flipped == null
       ? null
@@ -166,8 +184,9 @@ Future<void> turnInQuest(
     goldMod: deed.goldMod,
     approvalMods: deed.approvalMods,
   );
-  final newAchievements =
-      await notifier.checkAchievements(totalCompanionCount: companions.length);
+  final newAchievements = await notifier.checkAchievements(
+    totalCompanionCount: companions.length,
+  );
   if (!context.mounted) return;
   final achievements = db(achievementsSchema);
   final achievementNames = [
@@ -181,8 +200,12 @@ Future<void> turnInQuest(
   final ink = InkColors.of(context);
   final found = <RewardLine>[
     if (rewardItemId != null && rewardItemId.isNotEmpty)
-      rewardItemLine(context,
-          itemId: rewardItemId, item: rewardItem, lang: lang),
+      rewardItemLine(
+        context,
+        itemId: rewardItemId,
+        item: rewardItem,
+        lang: lang,
+      ),
     if (rewardDiceId != null && rewardDiceId.isNotEmpty)
       RewardLine(
         key: Key('reward_die_$rewardDiceId'),
@@ -207,12 +230,16 @@ Future<void> turnInQuest(
       RewardNote(picked.resultText),
     if (tradedDieName != null)
       RewardNote(
-          trFor(lang, 'reward_die_traded').replaceAll('{die}', tradedDieName),
-          chip: '+$tradedDieCost G'),
+        trFor(lang, 'reward_die_traded').replaceAll('{die}', tradedDieName),
+        chip: '+$tradedDieCost G',
+      ),
     if (grantsBannerPieceId != null && grantsBannerPieceId.isNotEmpty)
       RewardNote(trFor(lang, 'banner_piece_found_prefix')),
     for (final line in approvalReactionLines(
-        reactions, companions, (key) => trFor(lang, key)))
+      reactions,
+      companions,
+      (key) => trFor(lang, key),
+    ))
       RewardNote(line),
   ];
   final card = questRewardCard(
@@ -240,8 +267,13 @@ Future<void> turnInQuest(
   // The quest sealed, and each achievement announced up top.
   showQuestSeal(context);
   if (achievementNames.isNotEmpty) {
-    unawaited(announceAchievements(context, achievementNames,
-        trFor(lang, 'achievement_unlocked_prefix').toUpperCase()));
+    unawaited(
+      announceAchievements(
+        context,
+        achievementNames,
+        trFor(lang, 'achievement_unlocked_prefix').toUpperCase(),
+      ),
+    );
   }
   await showRewardCard(context, card);
   if (!context.mounted) return;
@@ -251,7 +283,12 @@ Future<void> turnInQuest(
   ]);
   if (!context.mounted) return;
   if (leveledUp) {
-    unawaited(showLevelUpDialog(context, ref,
-        newLevel: ref.read(playerSessionProvider).level));
+    unawaited(
+      showLevelUpDialog(
+        context,
+        ref,
+        newLevel: ref.read(playerSessionProvider).level,
+      ),
+    );
   }
 }

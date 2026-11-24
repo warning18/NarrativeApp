@@ -17,7 +17,7 @@ const List<String> shipLookCategories = [
   'hull',
   'sail',
   'figurehead',
-  'ensign'
+  'ensign',
 ];
 
 /// What each category's `pattern` may be, in the editor's picker.
@@ -50,9 +50,8 @@ const Map<String, List<String>> shipLookPatterns = {
 };
 
 /// Every pattern any category uses, once, for the data editor's field.
-List<String> get allShipLookPatterns => {
-      for (final patterns in shipLookPatterns.values) ...patterns,
-    }.toList();
+List<String> get allShipLookPatterns =>
+    {for (final patterns in shipLookPatterns.values) ...patterns}.toList();
 
 /// One look off its ship_looks.json record.
 class ShipLook {
@@ -118,7 +117,9 @@ Map<String, ShipLook> shipLooksFrom(Map<String, dynamic> records) => {
       for (final entry in records.entries)
         if (entry.value is Map<String, dynamic>)
           entry.key: ShipLook.fromRecord(
-              entry.key, entry.value as Map<String, dynamic>),
+            entry.key,
+            entry.value as Map<String, dynamic>,
+          ),
     };
 
 /// The default look of [category]: the one the data marks, else the first.

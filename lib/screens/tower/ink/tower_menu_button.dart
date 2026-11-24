@@ -42,48 +42,58 @@ class _TowerMenuButtonState extends State<TowerMenuButton> {
       padding: const EdgeInsets.only(bottom: 10),
       child: InkPaperPanel(
         padding: const EdgeInsets.fromLTRB(36, 12, 18, 12),
-        child: Stack(children: [
-          Positioned.fill(
-            child: Align(
-              alignment: Alignment.centerLeft,
-              child: Container(width: 4, height: 34, color: inkRed),
+        child: Stack(
+          children: [
+            Positioned.fill(
+              child: Align(
+                alignment: Alignment.centerLeft,
+                child: Container(width: 4, height: 34, color: inkRed),
+              ),
             ),
-          ),
-          Material(
-            type: MaterialType.transparency,
-            child: InkWell(
-              key: widget.buttonKey,
-              onTap: widget.onPressed,
-              child: Padding(
-                padding: const EdgeInsets.fromLTRB(14, 4, 4, 4),
-                child: Row(children: [
-                  const Icon(Icons.fort_outlined, color: inkOnPaper),
-                  const SizedBox(width: 14),
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Text(widget.label,
-                            style: const TextStyle(
+            Material(
+              type: MaterialType.transparency,
+              child: InkWell(
+                key: widget.buttonKey,
+                onTap: widget.onPressed,
+                child: Padding(
+                  padding: const EdgeInsets.fromLTRB(14, 4, 4, 4),
+                  child: Row(
+                    children: [
+                      const Icon(Icons.fort_outlined, color: inkOnPaper),
+                      const SizedBox(width: 14),
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Text(
+                              widget.label,
+                              style: const TextStyle(
                                 fontFamily: InkFonts.display,
                                 fontSize: 18,
                                 height: 1.1,
-                                color: inkOnPaper)),
-                        if (widget.detail.isNotEmpty)
-                          Text(widget.detail,
-                              style: const TextStyle(
+                                color: inkOnPaper,
+                              ),
+                            ),
+                            if (widget.detail.isNotEmpty)
+                              Text(
+                                widget.detail,
+                                style: const TextStyle(
                                   fontFamily: InkFonts.system,
                                   fontSize: 10,
-                                  color: inkSlate)),
-                      ],
-                    ),
+                                  color: inkSlate,
+                                ),
+                              ),
+                          ],
+                        ),
+                      ),
+                    ],
                   ),
-                ]),
+                ),
               ),
             ),
-          ),
-        ]),
+          ],
+        ),
       ),
     );
   }

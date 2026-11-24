@@ -59,15 +59,18 @@ Future<bool?> runStoryShipBattle(
   final sails = battleSailsOf(parts, session.shipPartIds, session.raceId);
   // The character's sea signs (see signs.dart), the title worn and the
   // Sworn boon with them (see offers.dart).
-  final signs = signEffectsFor(session.heldSigns, parseSigns(signsDb),
-      alignment: session.alignmentScore,
-      extra: clanEffectsFor(
-        activeTitleId: session.activeTitleId,
-        heldTitleIds: session.heldTitleIds,
-        swornBoonIds: session.swornBoonIds,
-        swornFactionId: session.politics.swornFactionId,
-        data: clans,
-      ));
+  final signs = signEffectsFor(
+    session.heldSigns,
+    parseSigns(signsDb),
+    alignment: session.alignmentScore,
+    extra: clanEffectsFor(
+      activeTitleId: session.activeTitleId,
+      heldTitleIds: session.heldTitleIds,
+      swornBoonIds: session.swornBoonIds,
+      swornFactionId: session.politics.swornFactionId,
+      data: clans,
+    ),
+  );
   List<ShipCrew> crew() => buildShipCrew(
         session: ref.read(playerSessionProvider),
         companions: companions,
@@ -116,7 +119,8 @@ Future<bool?> runStoryShipBattle(
                 ? shipTurnSeconds(
                     ship: ship,
                     parts: parts,
-                    installedPartIds: session.shipPartIds)
+                    installedPartIds: session.shipPartIds,
+                  )
                 : null,
             habit: habitFromName(data['habit']?.toString()),
             // The story sees this fight through.
@@ -147,15 +151,19 @@ Future<bool?> runStoryShipBattle(
                     ? outcome.player.maxHull
                     : session.shipHull,
                 hullAfter: outcome.player.hull,
-                maxHull: outcome.player.maxHull)
+                maxHull: outcome.player.maxHull,
+              )
             : null,
       );
     } else {
-      await notifier.applyAllyCombatResult(member.id,
-          hpAfter: max(1, member.health));
+      await notifier.applyAllyCombatResult(
+        member.id,
+        hpAfter: max(1, member.health),
+      );
     }
   }
   await notifier.setShipHull(
-      won ? outcome.player.hull : limpHomeHull(outcome.player.maxHull));
+    won ? outcome.player.hull : limpHomeHull(outcome.player.maxHull),
+  );
   return won;
 }

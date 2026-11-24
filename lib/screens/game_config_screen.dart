@@ -58,9 +58,8 @@ class _GameConfigScreenState extends State<GameConfigScreen> {
     final prefs = await SharedPreferences.getInstance();
     await prefs.setString(gameConfigPrefsKey, json.encode(values));
     if (!mounted) return;
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text('Saved.')),
-    );
+    ScaffoldMessenger.of(context)
+        .showSnackBar(const SnackBar(content: Text('Saved.')));
   }
 
   Future<void> _confirmReset() async {
@@ -98,7 +97,10 @@ class _GameConfigScreenState extends State<GameConfigScreen> {
         title: const Text('New Game Defaults'),
         actions: [
           IconButton(
-              icon: const Icon(Icons.check), tooltip: 'Save', onPressed: _save),
+            icon: const Icon(Icons.check),
+            tooltip: 'Save',
+            onPressed: _save,
+          ),
           IconButton(
             icon: const Icon(Icons.restore),
             tooltip: 'Reset to defaults',
@@ -116,8 +118,9 @@ class _GameConfigScreenState extends State<GameConfigScreen> {
                       padding: const EdgeInsets.only(bottom: 12),
                       child: TextField(
                         controller: _controllers[field.key],
-                        keyboardType:
-                            const TextInputType.numberWithOptions(signed: true),
+                        keyboardType: const TextInputType.numberWithOptions(
+                          signed: true,
+                        ),
                         decoration: InputDecoration(
                           labelText: field.label,
                           border: const OutlineInputBorder(),

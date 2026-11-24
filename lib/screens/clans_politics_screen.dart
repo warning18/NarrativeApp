@@ -77,28 +77,35 @@ class ClansPoliticsScreen extends ConsumerWidget {
             labelPadding: const EdgeInsets.symmetric(horizontal: 10),
             tabs: [
               Tab(
-                  key: const Key('clans_tab_throne_room'),
-                  text: tr(ref, 'clans_tab_throne_room')),
+                key: const Key('clans_tab_throne_room'),
+                text: tr(ref, 'clans_tab_throne_room'),
+              ),
               Tab(
-                  key: const Key('clans_tab_standing'),
-                  text: tr(ref, 'clans_tab_standing')),
+                key: const Key('clans_tab_standing'),
+                text: tr(ref, 'clans_tab_standing'),
+              ),
               Tab(
-                  key: const Key('clans_tab_politics'),
-                  text: tr(ref, 'clans_tab_politics')),
+                key: const Key('clans_tab_politics'),
+                text: tr(ref, 'clans_tab_politics'),
+              ),
               Tab(
-                  key: const Key('clans_tab_evolution'),
-                  text: tr(ref, 'clans_tab_evolution')),
+                key: const Key('clans_tab_evolution'),
+                text: tr(ref, 'clans_tab_evolution'),
+              ),
               Tab(
-                  key: const Key('clans_tab_intrigues'),
-                  text: tr(ref, 'clans_tab_intrigues')),
+                key: const Key('clans_tab_intrigues'),
+                text: tr(ref, 'clans_tab_intrigues'),
+              ),
               if (!play)
                 Tab(
-                    key: const Key('clans_tab_affinity'),
-                    text: tr(ref, 'clans_tab_affinity')),
+                  key: const Key('clans_tab_affinity'),
+                  text: tr(ref, 'clans_tab_affinity'),
+                ),
               if (!play)
                 Tab(
-                    key: const Key('clans_tab_throne'),
-                    text: tr(ref, 'clans_tab_throne')),
+                  key: const Key('clans_tab_throne'),
+                  text: tr(ref, 'clans_tab_throne'),
+                ),
             ],
           ),
         ),
@@ -123,8 +130,9 @@ Widget _sectionLabel(BuildContext context, String text) => Padding(
       child: Text(
         text.toUpperCase(),
         style: Theme.of(context).textTheme.labelSmall?.copyWith(
-            color: Theme.of(context).colorScheme.onSurfaceVariant,
-            letterSpacing: 1),
+              color: Theme.of(context).colorScheme.onSurfaceVariant,
+              letterSpacing: 1,
+            ),
       ),
     );
 
@@ -147,9 +155,12 @@ class _StandingTab extends ConsumerWidget {
       key: const Key('clans_standing_list'),
       padding: const EdgeInsets.fromLTRB(12, 8, 12, 24),
       children: [
-        Text(tr(ref, 'clans_edit_hint'),
-            style: theme.textTheme.bodySmall
-                ?.copyWith(color: theme.colorScheme.onSurfaceVariant)),
+        Text(
+          tr(ref, 'clans_edit_hint'),
+          style: theme.textTheme.bodySmall?.copyWith(
+            color: theme.colorScheme.onSurfaceVariant,
+          ),
+        ),
         const ClanCompassCard(),
         for (final faction in data.clans)
           FactionStandingCard(faction: faction, editable: true),
@@ -233,9 +244,12 @@ class _PlayStanding extends ConsumerWidget {
       key: const Key('clans_standing_list'),
       padding: const EdgeInsets.fromLTRB(12, 8, 12, 24),
       children: [
-        Text(tr(ref, 'clans_section_hint'),
-            style: theme.textTheme.bodySmall
-                ?.copyWith(color: theme.colorScheme.onSurfaceVariant)),
+        Text(
+          tr(ref, 'clans_section_hint'),
+          style: theme.textTheme.bodySmall?.copyWith(
+            color: theme.colorScheme.onSurfaceVariant,
+          ),
+        ),
         // The climb (v1.201: here, now the Character tab's Clans card is
         // gone).
         const ClimbCard(),
@@ -290,8 +304,9 @@ class _OtherworldPanel extends ConsumerWidget {
     final pitCeiling = pit?.maxAlignment ?? -10;
     final span = max(30, max(choirFloor.abs(), pitCeiling.abs()) * 3);
     double at(int score) => ((score + span) / (span * 2)).clamp(0.0, 1.0);
-    final small = theme.textTheme.labelSmall
-        ?.copyWith(color: theme.colorScheme.onSurfaceVariant);
+    final small = theme.textTheme.labelSmall?.copyWith(
+      color: theme.colorScheme.onSurfaceVariant,
+    );
 
     return Card(
       key: const Key('clans_otherworld'),
@@ -327,45 +342,53 @@ class _OtherworldPanel extends ConsumerWidget {
               ],
             ),
             const SizedBox(height: 8),
-            LayoutBuilder(builder: (context, constraints) {
-              final w = constraints.maxWidth;
-              return SizedBox(
-                height: 16,
-                child: Stack(
-                  children: [
-                    Positioned.fill(
-                      top: 5,
-                      bottom: 5,
-                      child: DecoratedBox(
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(3),
-                          gradient: LinearGradient(colors: [
-                            Color(pit?.color ?? 0xFFA94BB4),
-                            theme.colorScheme.surfaceContainerHighest,
-                            Color(choir?.color ?? 0xFFAD8A10),
-                          ]),
+            LayoutBuilder(
+              builder: (context, constraints) {
+                final w = constraints.maxWidth;
+                return SizedBox(
+                  height: 16,
+                  child: Stack(
+                    children: [
+                      Positioned.fill(
+                        top: 5,
+                        bottom: 5,
+                        child: DecoratedBox(
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(3),
+                            gradient: LinearGradient(
+                              colors: [
+                                Color(pit?.color ?? 0xFFA94BB4),
+                                theme.colorScheme.surfaceContainerHighest,
+                                Color(choir?.color ?? 0xFFAD8A10),
+                              ],
+                            ),
+                          ),
                         ),
                       ),
-                    ),
-                    for (final mark in [pitCeiling, 0, choirFloor])
+                      for (final mark in [pitCeiling, 0, choirFloor])
+                        Positioned(
+                          left: w * at(mark) - 0.5,
+                          top: 3,
+                          bottom: 3,
+                          child: Container(
+                            width: 1,
+                            color: theme.colorScheme.outline,
+                          ),
+                        ),
                       Positioned(
-                        left: w * at(mark) - 0.5,
-                        top: 3,
-                        bottom: 3,
+                        left: (w * at(alignment) - 2).clamp(0, w - 4),
+                        top: 0,
+                        bottom: 0,
                         child: Container(
-                            width: 1, color: theme.colorScheme.outline),
+                          width: 4,
+                          color: theme.colorScheme.onSurface,
+                        ),
                       ),
-                    Positioned(
-                      left: (w * at(alignment) - 2).clamp(0, w - 4),
-                      top: 0,
-                      bottom: 0,
-                      child: Container(
-                          width: 4, color: theme.colorScheme.onSurface),
-                    ),
-                  ],
-                ),
-              );
-            }),
+                    ],
+                  ),
+                );
+              },
+            ),
             const SizedBox(height: 6),
             Text(
               tr(ref, 'clans_vows_state')
@@ -383,7 +406,9 @@ class _OtherworldPanel extends ConsumerWidget {
               claim == null
                   ? tr(ref, 'clans_otherworld_open')
                   : tr(ref, 'clans_otherworld_claim').replaceAll(
-                      '{name}', patrons[claim]?.nameFor(lang) ?? claim),
+                      '{name}',
+                      patrons[claim]?.nameFor(lang) ?? claim,
+                    ),
               style: small,
             ),
           ],
@@ -431,10 +456,7 @@ class _PoliticsTabState extends ConsumerState<_PoliticsTab> {
     final chapter = (_chapter ?? last).clamp(1, last);
     final now = chapter >= latest;
     final steps = now
-        ? {
-            ...data.relations.baseSteps,
-            ...politics.relationSteps,
-          }
+        ? {...data.relations.baseSteps, ...politics.relationSteps}
         : relationsAtChapter(politics, chapter, data);
     return ListView(
       key: const Key('clans_politics_list'),
@@ -458,11 +480,18 @@ class _PoliticsTabState extends ConsumerState<_PoliticsTab> {
             onChanged: (v) => setState(() => _chapter = v.round()),
           ),
         _RelationsMatrix(
-            steps: steps, data: data, language: lang, play: widget.play),
+          steps: steps,
+          data: data,
+          language: lang,
+          play: widget.play,
+        ),
         const SizedBox(height: 4),
-        Text(tr(ref, 'clans_matrix_hint'),
-            style: theme.textTheme.labelSmall
-                ?.copyWith(color: theme.colorScheme.onSurfaceVariant)),
+        Text(
+          tr(ref, 'clans_matrix_hint'),
+          style: theme.textTheme.labelSmall?.copyWith(
+            color: theme.colorScheme.onSurfaceVariant,
+          ),
+        ),
         _sectionLabel(context, tr(ref, 'clans_history_title')),
         for (final event in data.relations.history)
           _HistoryRow(event: event, language: lang),
@@ -499,7 +528,8 @@ class _RelationsMatrix extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     return LayoutBuilder(
-        builder: (context, box) => _table(context, ref, box.maxWidth));
+      builder: (context, box) => _table(context, ref, box.maxWidth),
+    );
   }
 
   /// The table, its cells as wide as the phone allows (50 to 60 px): six
@@ -526,8 +556,11 @@ class _RelationsMatrix extends ConsumerWidget {
           width: cellW,
           height: 44,
           child: Center(
-              child: Text('—',
-                  style: TextStyle(color: theme.colorScheme.outline))),
+            child: Text(
+              '—',
+              style: TextStyle(color: theme.colorScheme.outline),
+            ),
+          ),
         );
       }
       final step = steps[relationKey(a.id, b.id)];
@@ -553,8 +586,10 @@ class _RelationsMatrix extends ConsumerWidget {
               textAlign: TextAlign.center,
               maxLines: 2,
               overflow: TextOverflow.ellipsis,
-              style: theme.textTheme.labelSmall
-                  ?.copyWith(fontSize: 10, fontWeight: FontWeight.w600),
+              style: theme.textTheme.labelSmall?.copyWith(
+                fontSize: 10,
+                fontWeight: FontWeight.w600,
+              ),
             ),
           ),
         ),
@@ -567,24 +602,28 @@ class _RelationsMatrix extends ConsumerWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Row(children: [
-            const SizedBox(width: _header, height: _header),
-            for (final f in clans) head(f),
-          ]),
+          Row(
+            children: [
+              const SizedBox(width: _header, height: _header),
+              for (final f in clans) head(f),
+            ],
+          ),
           for (final a in clans)
-            Row(children: [
-              SizedBox(
-                width: _header,
-                height: 44,
-                child: Center(
-                  child: Tooltip(
-                    message: a.nameFor(language),
-                    child: PatronEmblem(patron: a.patron, size: 26),
+            Row(
+              children: [
+                SizedBox(
+                  width: _header,
+                  height: 44,
+                  child: Center(
+                    child: Tooltip(
+                      message: a.nameFor(language),
+                      child: PatronEmblem(patron: a.patron, size: 26),
+                    ),
                   ),
                 ),
-              ),
-              for (final b in clans) cell(a, b),
-            ]),
+                for (final b in clans) cell(a, b),
+              ],
+            ),
         ],
       ),
     );
@@ -593,96 +632,114 @@ class _RelationsMatrix extends ConsumerWidget {
   /// The pair's step, why they stand there, how they moved, and Edit
   /// Mode's shift by a step.
   Future<void> _showPair(
-      BuildContext context, WidgetRef ref, Faction a, Faction b) async {
+    BuildContext context,
+    WidgetRef ref,
+    Faction a,
+    Faction b,
+  ) async {
     final lang = language;
     await showDialog<void>(
       context: context,
-      builder: (dialogContext) => Consumer(builder: (context, ref, _) {
-        final politics = ref.watch(politicsProvider);
-        final step = politics.relationStep(a.id, b.id, data);
-        final info = step == null ? null : data.relations.stepInfo(step);
-        final reason = data.relations.pair(a.id, b.id)?.reasonFor(lang) ?? '';
-        final moves = [
-          for (final e in politics.relationsLog)
-            if (e.key == relationKey(a.id, b.id)) e,
-        ];
-        String stepName(int s) =>
-            data.relations.stepInfo(s)?.nameFor(lang) ?? '$s';
-        final theme = Theme.of(context);
-        final notifier = ref.read(playerSessionProvider.notifier);
-        // Logged at the chapter reached, or the latest one a pair moved
-        // in: the snapshots replay in order.
-        Future<void> shift(int by) => notifier.shiftRelation(a.id, b.id, by,
-            data: data,
-            cause: 'edit',
-            chapter: [
-              max(1, ref.read(reachedChapterProvider)),
-              ...politics.relationSnapshots.keys,
-            ].reduce(max));
-        return AlertDialog(
-          title: Text(trFor(lang, 'clans_pair_title')
-              .replaceAll('{a}', a.nameFor(lang))
-              .replaceAll('{b}', b.nameFor(lang))),
-          content: SingleChildScrollView(
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  info?.nameFor(lang) ?? '—',
-                  key: const Key('relation_dialog_step'),
-                  style: theme.textTheme.titleMedium?.copyWith(
+      builder: (dialogContext) => Consumer(
+        builder: (context, ref, _) {
+          final politics = ref.watch(politicsProvider);
+          final step = politics.relationStep(a.id, b.id, data);
+          final info = step == null ? null : data.relations.stepInfo(step);
+          final reason = data.relations.pair(a.id, b.id)?.reasonFor(lang) ?? '';
+          final moves = [
+            for (final e in politics.relationsLog)
+              if (e.key == relationKey(a.id, b.id)) e,
+          ];
+          String stepName(int s) =>
+              data.relations.stepInfo(s)?.nameFor(lang) ?? '$s';
+          final theme = Theme.of(context);
+          final notifier = ref.read(playerSessionProvider.notifier);
+          // Logged at the chapter reached, or the latest one a pair moved
+          // in: the snapshots replay in order.
+          Future<void> shift(int by) => notifier.shiftRelation(
+                a.id,
+                b.id,
+                by,
+                data: data,
+                cause: 'edit',
+                chapter: [
+                  max(1, ref.read(reachedChapterProvider)),
+                  ...politics.relationSnapshots.keys,
+                ].reduce(max),
+              );
+          return AlertDialog(
+            title: Text(
+              trFor(lang, 'clans_pair_title')
+                  .replaceAll('{a}', a.nameFor(lang))
+                  .replaceAll('{b}', b.nameFor(lang)),
+            ),
+            content: SingleChildScrollView(
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    info?.nameFor(lang) ?? '—',
+                    key: const Key('relation_dialog_step'),
+                    style: theme.textTheme.titleMedium?.copyWith(
                       color: Color(info?.color ?? 0xFFA8A194),
-                      fontWeight: FontWeight.w700),
-                ),
-                if (reason.isNotEmpty)
-                  Padding(
-                    padding: const EdgeInsets.only(top: 4),
-                    child: Text(reason,
-                        style: theme.textTheme.bodyMedium
-                            ?.copyWith(fontStyle: FontStyle.italic)),
-                  ),
-                for (final e in moves.reversed)
-                  Padding(
-                    padding: const EdgeInsets.only(top: 4),
-                    child: Text(
-                      trFor(lang, 'clans_pair_moved')
-                          .replaceAll('{c}', '${e.chapter}')
-                          .replaceAll('{d}', '${e.day}')
-                          .replaceAll('{from}', stepName(e.from))
-                          .replaceAll('{to}', stepName(e.to))
-                          .replaceAll(
-                              '{cause}', standingCauseLabel(e.cause, lang)),
-                      style: theme.textTheme.bodySmall,
+                      fontWeight: FontWeight.w700,
                     ),
                   ),
-              ],
-            ),
-          ),
-          actions: [
-            if (!play) ...[
-              TextButton(
-                key: const Key('relation_shift_down'),
-                onPressed: step == null || step <= minRelationStep
-                    ? null
-                    : () => shift(-1),
-                child: Text(trFor(lang, 'clans_shift_down')),
+                  if (reason.isNotEmpty)
+                    Padding(
+                      padding: const EdgeInsets.only(top: 4),
+                      child: Text(
+                        reason,
+                        style: theme.textTheme.bodyMedium?.copyWith(
+                          fontStyle: FontStyle.italic,
+                        ),
+                      ),
+                    ),
+                  for (final e in moves.reversed)
+                    Padding(
+                      padding: const EdgeInsets.only(top: 4),
+                      child: Text(
+                        trFor(lang, 'clans_pair_moved')
+                            .replaceAll('{c}', '${e.chapter}')
+                            .replaceAll('{d}', '${e.day}')
+                            .replaceAll('{from}', stepName(e.from))
+                            .replaceAll('{to}', stepName(e.to))
+                            .replaceAll(
+                              '{cause}',
+                              standingCauseLabel(e.cause, lang),
+                            ),
+                        style: theme.textTheme.bodySmall,
+                      ),
+                    ),
+                ],
               ),
+            ),
+            actions: [
+              if (!play) ...[
+                TextButton(
+                  key: const Key('relation_shift_down'),
+                  onPressed: step == null || step <= minRelationStep
+                      ? null
+                      : () => shift(-1),
+                  child: Text(trFor(lang, 'clans_shift_down')),
+                ),
+                TextButton(
+                  key: const Key('relation_shift_up'),
+                  onPressed: step == null || step >= maxRelationStep
+                      ? null
+                      : () => shift(1),
+                  child: Text(trFor(lang, 'clans_shift_up')),
+                ),
+              ],
               TextButton(
-                key: const Key('relation_shift_up'),
-                onPressed: step == null || step >= maxRelationStep
-                    ? null
-                    : () => shift(1),
-                child: Text(trFor(lang, 'clans_shift_up')),
+                onPressed: () => Navigator.of(dialogContext).pop(),
+                child: Text(trFor(lang, 'close_button')),
               ),
             ],
-            TextButton(
-              onPressed: () => Navigator.of(dialogContext).pop(),
-              child: Text(trFor(lang, 'close_button')),
-            ),
-          ],
-        );
-      }),
+          );
+        },
+      ),
     );
   }
 }
@@ -704,10 +761,13 @@ class _HistoryRow extends StatelessWidget {
             width: 76,
             child: Padding(
               padding: const EdgeInsets.only(top: 2, right: 6),
-              child: Text(event.yearFor(language),
-                  textAlign: TextAlign.end,
-                  style: theme.textTheme.labelSmall
-                      ?.copyWith(fontWeight: FontWeight.w700)),
+              child: Text(
+                event.yearFor(language),
+                textAlign: TextAlign.end,
+                style: theme.textTheme.labelSmall?.copyWith(
+                  fontWeight: FontWeight.w700,
+                ),
+              ),
             ),
           ),
           Container(width: 2, color: theme.colorScheme.outlineVariant),
@@ -718,11 +778,15 @@ class _HistoryRow extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(event.nameFor(language),
-                      style: theme.textTheme.titleSmall),
+                  Text(
+                    event.nameFor(language),
+                    style: theme.textTheme.titleSmall,
+                  ),
                   if (event.textFor(language).isNotEmpty)
-                    Text(event.textFor(language),
-                        style: theme.textTheme.bodySmall),
+                    Text(
+                      event.textFor(language),
+                      style: theme.textTheme.bodySmall,
+                    ),
                 ],
               ),
             ),
@@ -754,9 +818,10 @@ class _EvolutionTab extends ConsumerWidget {
     final ticks = [
       trFor(lang, 'clans_chart_start'),
       for (final e in moving)
-        trFor(lang, 'clans_chart_tick')
-            .replaceAll('{c}', '${e.chapter}')
-            .replaceAll('{d}', '${e.day}'),
+        trFor(
+          lang,
+          'clans_chart_tick',
+        ).replaceAll('{c}', '${e.chapter}').replaceAll('{d}', '${e.day}'),
     ];
     String name(String id) => data.faction(id)?.nameFor(lang) ?? id;
     String sub(String id) => data.subclan(id)?.nameFor(lang) ?? id;
@@ -765,8 +830,12 @@ class _EvolutionTab extends ConsumerWidget {
     final items = ref.watch(localizedDbProvider(itemsSchema)).value ?? const {};
     final events = ref.watch(politicsEventsProvider);
     String? describe(String kind, String detail) => switch (kind) {
-          'offer' => offerGiftLabel(detail,
-              tables: tables, localizedItems: items, lang: lang),
+          'offer' => offerGiftLabel(
+              detail,
+              tables: tables,
+              localizedItems: items,
+              lang: lang,
+            ),
           // An event's line names it (v1.195).
           'event' => eventCauseName(detail, events, lang),
           // The claim given up names its faction (v1.196).
@@ -788,12 +857,11 @@ class _EvolutionTab extends ConsumerWidget {
             key: const Key('clans_chart'),
             painter: _StandingChartPainter(
               history: history,
-              lines: [
-                for (final c in clans) (id: c.id, color: Color(c.color)),
-              ],
+              lines: [for (final c in clans) (id: c.id, color: Color(c.color))],
               ticks: ticks,
-              labelStyle: theme.textTheme.labelSmall!
-                  .copyWith(color: theme.colorScheme.onSurfaceVariant),
+              labelStyle: theme.textTheme.labelSmall!.copyWith(
+                color: theme.colorScheme.onSurfaceVariant,
+              ),
               axis: theme.colorScheme.outlineVariant,
             ),
             size: Size.infinite,
@@ -817,8 +885,10 @@ class _EvolutionTab extends ConsumerWidget {
         ),
         _sectionLabel(context, tr(ref, 'clans_log_title')),
         if (politics.standingLog.isEmpty)
-          Text(tr(ref, 'clans_evolution_empty'),
-              style: theme.textTheme.bodySmall),
+          Text(
+            tr(ref, 'clans_evolution_empty'),
+            style: theme.textTheme.bodySmall,
+          ),
         for (final e in politics.standingLog.reversed)
           _LogTile(
             entry: e,
@@ -875,8 +945,10 @@ class _LogTile extends StatelessWidget {
           '${factionName(id)} ${formatStandingDelta(d, language: lang)}',
           style: theme.textTheme.labelSmall?.copyWith(
             fontWeight: main ? FontWeight.w700 : null,
-            color: readableOn(context,
-                d > 0 ? standingTierColor(StandingTier.trusted) : clanFoeColor),
+            color: readableOn(
+              context,
+              d > 0 ? standingTierColor(StandingTier.trusted) : clanFoeColor,
+            ),
           ),
         );
     final colon = lang == AppLanguage.fr ? '\u00a0:' : ':';
@@ -889,15 +961,17 @@ class _LogTile extends StatelessWidget {
             children: [
               Expanded(
                 child: Text(
-                    standingCauseLabel(entry.cause, lang, describe: describe),
-                    style: theme.textTheme.bodyMedium),
+                  standingCauseLabel(entry.cause, lang, describe: describe),
+                  style: theme.textTheme.bodyMedium,
+                ),
               ),
               Text(
                 trFor(lang, 'clans_log_when')
                     .replaceAll('{c}', '${entry.chapter}')
                     .replaceAll('{d}', '${entry.day}'),
-                style: theme.textTheme.labelSmall
-                    ?.copyWith(color: theme.colorScheme.onSurfaceVariant),
+                style: theme.textTheme.labelSmall?.copyWith(
+                  color: theme.colorScheme.onSurfaceVariant,
+                ),
               ),
             ],
           ),
@@ -912,31 +986,40 @@ class _LogTile extends StatelessWidget {
               if (entry.deltas.isEmpty &&
                   entry.subclanId.isEmpty &&
                   entry.factionId.isNotEmpty)
-                Text(factionName(entry.factionId),
-                    style: theme.textTheme.labelSmall
-                        ?.copyWith(fontWeight: FontWeight.w700)),
+                Text(
+                  factionName(entry.factionId),
+                  style: theme.textTheme.labelSmall?.copyWith(
+                    fontWeight: FontWeight.w700,
+                  ),
+                ),
               for (final e in entry.rippleDeltas.entries) delta(e.key, e.value),
               if (entry.subclanId.isNotEmpty && entry.mark != null)
                 Text(
                   '${subclanName(entry.subclanId)}$colon '
                   '${trFor(lang, subclanMarkKey(entry.mark!))}',
                   style: theme.textTheme.labelSmall?.copyWith(
-                      color: entry.mark == SubclanMark.foe
-                          ? readableOn(context, clanFoeColor)
-                          : null),
+                    color: entry.mark == SubclanMark.foe
+                        ? readableOn(context, clanFoeColor)
+                        : null,
+                  ),
                 ),
               if (entry.swore.isNotEmpty)
                 Text(
-                  trFor(lang, 'clans_log_swore')
-                      .replaceAll('{name}', factionName(entry.swore)),
+                  trFor(
+                    lang,
+                    'clans_log_swore',
+                  ).replaceAll('{name}', factionName(entry.swore)),
                   style: theme.textTheme.labelSmall?.copyWith(
-                      color: standingTierTextColor(context, StandingTier.sworn),
-                      fontWeight: FontWeight.w700),
+                    color: standingTierTextColor(context, StandingTier.sworn),
+                    fontWeight: FontWeight.w700,
+                  ),
                 ),
               if (entry.released.isNotEmpty)
                 Text(
-                  trFor(lang, 'clans_log_released')
-                      .replaceAll('{name}', factionName(entry.released)),
+                  trFor(
+                    lang,
+                    'clans_log_released',
+                  ).replaceAll('{name}', factionName(entry.released)),
                   style: theme.textTheme.labelSmall,
                 ),
             ],
@@ -945,8 +1028,9 @@ class _LogTile extends StatelessWidget {
           if (entry.noteFor(lang).isNotEmpty)
             Text(
               entry.noteFor(lang),
-              style: theme.textTheme.bodySmall
-                  ?.copyWith(fontStyle: FontStyle.italic),
+              style: theme.textTheme.bodySmall?.copyWith(
+                fontStyle: FontStyle.italic,
+              ),
             ),
         ],
       ),
@@ -964,8 +1048,10 @@ class _EventsList extends ConsumerWidget {
     if (event.triggers.isEmpty) return trFor(lang, 'clans_event_by_story');
     String one(EventTrigger t) => [
           if (t.chapter != null)
-            trFor(lang, 'clans_event_trigger_chapter')
-                .replaceAll('{n}', '${t.chapter}'),
+            trFor(
+              lang,
+              'clans_event_trigger_chapter',
+            ).replaceAll('{n}', '${t.chapter}'),
           if (t.day != null)
             trFor(lang, 'clans_event_trigger_day')
                 .replaceAll('{n}', '${t.day}'),
@@ -982,8 +1068,10 @@ class _EventsList extends ConsumerWidget {
     final lang = ref.watch(appLanguageProvider);
     final theme = Theme.of(context);
     if (events.isEmpty) {
-      return Text(tr(ref, 'clans_events_none'),
-          style: theme.textTheme.bodySmall);
+      return Text(
+        tr(ref, 'clans_events_none'),
+        style: theme.textTheme.bodySmall,
+      );
     }
     return Column(
       key: const Key('clans_events_list'),
@@ -1001,12 +1089,15 @@ class _EventsList extends ConsumerWidget {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text(event.nameFor(lang),
-                            style: theme.textTheme.titleSmall),
+                        Text(
+                          event.nameFor(lang),
+                          style: theme.textTheme.titleSmall,
+                        ),
                         Text(
                           _trigger(event, lang),
                           style: theme.textTheme.labelSmall?.copyWith(
-                              color: theme.colorScheme.onSurfaceVariant),
+                            color: theme.colorScheme.onSurfaceVariant,
+                          ),
                         ),
                         Text(
                           switch (politics.firedEvents[event.id]) {
@@ -1018,11 +1109,14 @@ class _EventsList extends ConsumerWidget {
                           },
                           key: Key('politics_event_state_${event.id}'),
                           style: theme.textTheme.labelSmall?.copyWith(
-                              color: politics.hasFired(event.id)
-                                  ? standingTierTextColor(
-                                      context, StandingTier.sworn)
-                                  : null,
-                              fontWeight: FontWeight.w600),
+                            color: politics.hasFired(event.id)
+                                ? standingTierTextColor(
+                                    context,
+                                    StandingTier.sworn,
+                                  )
+                                : null,
+                            fontWeight: FontWeight.w600,
+                          ),
                         ),
                       ],
                     ),
@@ -1031,8 +1125,10 @@ class _EventsList extends ConsumerWidget {
                     key: Key('politics_event_fire_${event.id}'),
                     onPressed: () async {
                       final messenger = ScaffoldMessenger.of(context);
-                      final done = trFor(lang, 'clans_event_fired_notice')
-                          .replaceAll('{name}', event.nameFor(lang));
+                      final done = trFor(
+                        lang,
+                        'clans_event_fired_notice',
+                      ).replaceAll('{name}', event.nameFor(lang));
                       await fireCoastEventNow(ref, event.id);
                       messenger.showSnackBar(SnackBar(content: Text(done)));
                     },
@@ -1069,8 +1165,12 @@ class _StandingChartPainter extends CustomPainter {
 
   @override
   void paint(Canvas canvas, Size size) {
-    final chart =
-        Rect.fromLTRB(_left, 4, size.width - 4, size.height - _bottom);
+    final chart = Rect.fromLTRB(
+      _left,
+      4,
+      size.width - 4,
+      size.height - _bottom,
+    );
     double y(num v) =>
         chart.bottom -
         (v.clamp(minStanding, maxStanding) - minStanding) /
@@ -1080,18 +1180,27 @@ class _StandingChartPainter extends CustomPainter {
       final info = standingTiers[tier]!;
       final top = y(min(maxStanding, info.max + 0.5));
       final bottom = y(max(minStanding, info.min - 0.5));
-      canvas.drawRect(Rect.fromLTRB(chart.left, top, chart.right, bottom),
-          Paint()..color = Color(info.color).withValues(alpha: 0.12));
+      canvas.drawRect(
+        Rect.fromLTRB(chart.left, top, chart.right, bottom),
+        Paint()..color = Color(info.color).withValues(alpha: 0.12),
+      );
     }
     final axisPaint = Paint()
       ..color = axis
       ..strokeWidth = 1;
     canvas.drawLine(
-        Offset(chart.left, y(0)), Offset(chart.right, y(0)), axisPaint);
+      Offset(chart.left, y(0)),
+      Offset(chart.right, y(0)),
+      axisPaint,
+    );
     canvas.drawLine(chart.topLeft, chart.bottomLeft, axisPaint);
     for (final v in [100, 0, -100]) {
-      _text(canvas, formatStanding(v), Offset(0, y(v) - 6),
-          maxWidth: _left - 4);
+      _text(
+        canvas,
+        formatStanding(v),
+        Offset(0, y(v) - 6),
+        maxWidth: _left - 4,
+      );
     }
     final n = history.length;
     double x(int i) =>
@@ -1129,13 +1238,23 @@ class _StandingChartPainter extends CustomPainter {
     };
     for (final i in shown) {
       final left = (x(i) - 28).clamp(0.0, max(0.0, size.width - 56)).toDouble();
-      _text(canvas, ticks[i], Offset(left, chart.bottom + 3),
-          maxWidth: 56, center: true);
+      _text(
+        canvas,
+        ticks[i],
+        Offset(left, chart.bottom + 3),
+        maxWidth: 56,
+        center: true,
+      );
     }
   }
 
-  void _text(Canvas canvas, String text, Offset at,
-      {required double maxWidth, bool center = false}) {
+  void _text(
+    Canvas canvas,
+    String text,
+    Offset at, {
+    required double maxWidth,
+    bool center = false,
+  }) {
     final painter = TextPainter(
       text: TextSpan(text: text, style: labelStyle.copyWith(fontSize: 9)),
       textDirection: TextDirection.ltr,
@@ -1177,21 +1296,24 @@ class _AffinityTab extends ConsumerWidget {
     final raceIds = races.keys.toList();
     final professionIds = professions.keys.toList();
     final matrix = buildAffinityMatrix(
-        data: data,
-        skillTrees: trees,
-        raceIds: raceIds,
-        professionIds: professionIds);
+      data: data,
+      skillTrees: trees,
+      raceIds: raceIds,
+      professionIds: professionIds,
+    );
     String nameOf(Map<String, dynamic> table, String key, String id) =>
         (table[id] as Map?)?[key]?.toString() ?? id;
     Widget head(String text) => SizedBox(
           width: _cellW,
           height: _head,
           child: Center(
-            child: Text(text,
-                textAlign: TextAlign.center,
-                maxLines: 2,
-                overflow: TextOverflow.ellipsis,
-                style: theme.textTheme.labelSmall?.copyWith(fontSize: 9.5)),
+            child: Text(
+              text,
+              textAlign: TextAlign.center,
+              maxLines: 2,
+              overflow: TextOverflow.ellipsis,
+              style: theme.textTheme.labelSmall?.copyWith(fontSize: 9.5),
+            ),
           ),
         );
     Widget cell(Faction clan, String column, int level, int of) {
@@ -1208,18 +1330,21 @@ class _AffinityTab extends ConsumerWidget {
             height: 38,
             alignment: Alignment.center,
             decoration: BoxDecoration(
-              color:
-                  color.withValues(alpha: level == 0 ? 0 : 0.12 * level + 0.08),
+              color: color.withValues(
+                alpha: level == 0 ? 0 : 0.12 * level + 0.08,
+              ),
               border: Border.all(
-                  color: level == 0
-                      ? theme.colorScheme.outlineVariant
-                      : color.withValues(alpha: 0.8)),
+                color: level == 0
+                    ? theme.colorScheme.outlineVariant
+                    : color.withValues(alpha: 0.8),
+              ),
               borderRadius: BorderRadius.circular(4),
             ),
             child: Text(
               level == 0 ? '·' : (of == 1 ? '●' : '$level/$of'),
               style: theme.textTheme.labelMedium?.copyWith(
-                  fontWeight: level == 0 ? FontWeight.normal : FontWeight.bold),
+                fontWeight: level == 0 ? FontWeight.normal : FontWeight.bold,
+              ),
             ),
           ),
         ),
@@ -1236,9 +1361,12 @@ class _AffinityTab extends ConsumerWidget {
       key: const Key('clans_affinity_list'),
       padding: const EdgeInsets.fromLTRB(12, 8, 12, 24),
       children: [
-        Text(tr(ref, 'clans_affinity_hint'),
-            style: theme.textTheme.bodySmall
-                ?.copyWith(color: theme.colorScheme.onSurfaceVariant)),
+        Text(
+          tr(ref, 'clans_affinity_hint'),
+          style: theme.textTheme.bodySmall?.copyWith(
+            color: theme.colorScheme.onSurfaceVariant,
+          ),
+        ),
         const SizedBox(height: 8),
         SingleChildScrollView(
           key: const Key('clans_affinity_matrix'),
@@ -1246,46 +1374,56 @@ class _AffinityTab extends ConsumerWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Row(children: [
-                const SizedBox(width: 36, height: _head),
-                for (final id in raceIds) head(nameOf(races, 'raceName', id)),
-                const SizedBox(width: 8),
-                for (final id in professionIds)
-                  head(nameOf(professions, 'professionName', id)),
-              ]),
-              for (final clan in clans)
-                Row(children: [
-                  SizedBox(
-                    width: 36,
-                    height: 38,
-                    child: Center(
-                      child: Tooltip(
-                        message: clan.nameFor(lang),
-                        child: PatronEmblem(patron: clan.patron, size: 26),
-                      ),
-                    ),
-                  ),
-                  for (final id in raceIds)
-                    cell(clan, id, matrix.raceLevel(clan.id, id), 1),
+              Row(
+                children: [
+                  const SizedBox(width: 36, height: _head),
+                  for (final id in raceIds) head(nameOf(races, 'raceName', id)),
                   const SizedBox(width: 8),
                   for (final id in professionIds)
-                    cell(clan, id, matrix.professionLevel(clan.id, id), 3),
-                ]),
+                    head(nameOf(professions, 'professionName', id)),
+                ],
+              ),
+              for (final clan in clans)
+                Row(
+                  children: [
+                    SizedBox(
+                      width: 36,
+                      height: 38,
+                      child: Center(
+                        child: Tooltip(
+                          message: clan.nameFor(lang),
+                          child: PatronEmblem(patron: clan.patron, size: 26),
+                        ),
+                      ),
+                    ),
+                    for (final id in raceIds)
+                      cell(clan, id, matrix.raceLevel(clan.id, id), 1),
+                    const SizedBox(width: 8),
+                    for (final id in professionIds)
+                      cell(clan, id, matrix.professionLevel(clan.id, id), 3),
+                  ],
+                ),
             ],
           ),
         ),
         if (issues.isNotEmpty) ...[
           _sectionLabel(context, tr(ref, 'clans_affinity_issues')),
           for (final issue in issues)
-            Text(issue,
-                key: const Key('clans_affinity_issue'),
-                style: theme.textTheme.bodySmall
-                    ?.copyWith(color: theme.colorScheme.error)),
+            Text(
+              issue,
+              key: const Key('clans_affinity_issue'),
+              style: theme.textTheme.bodySmall?.copyWith(
+                color: theme.colorScheme.error,
+              ),
+            ),
         ],
         _sectionLabel(context, tr(ref, 'clans_affinity_cards')),
-        Text(tr(ref, 'clans_affinity_cards_hint'),
-            style: theme.textTheme.bodySmall
-                ?.copyWith(color: theme.colorScheme.onSurfaceVariant)),
+        Text(
+          tr(ref, 'clans_affinity_cards_hint'),
+          style: theme.textTheme.bodySmall?.copyWith(
+            color: theme.colorScheme.onSurfaceVariant,
+          ),
+        ),
         const SizedBox(height: 4),
         for (final card in cards)
           ListTile(
@@ -1293,20 +1431,22 @@ class _AffinityTab extends ConsumerWidget {
             dense: true,
             contentPadding: EdgeInsets.zero,
             title: Text(skillDisplayName(card.skillId, language: lang)),
-            subtitle: Text([
-              tr(ref, 'offer_gift_${card.kind.name}'),
-              nameOf(professions, 'professionName', card.professionId),
-              if (card.parents.isNotEmpty)
-                card.parents
-                    .map((p) => skillDisplayName(p, language: lang))
-                    .join(' + '),
-              if (card.kind == ClanCardKind.subclan)
-                data.subclan(card.detail)?.nameFor(lang) ?? card.detail,
-              if (card.kind == ClanCardKind.secret) card.detail,
-              card.clanIds
-                  .map((id) => data.faction(id)?.shortFor(lang) ?? id)
-                  .join(' × '),
-            ].join(' · ')),
+            subtitle: Text(
+              [
+                tr(ref, 'offer_gift_${card.kind.name}'),
+                nameOf(professions, 'professionName', card.professionId),
+                if (card.parents.isNotEmpty)
+                  card.parents
+                      .map((p) => skillDisplayName(p, language: lang))
+                      .join(' + '),
+                if (card.kind == ClanCardKind.subclan)
+                  data.subclan(card.detail)?.nameFor(lang) ?? card.detail,
+                if (card.kind == ClanCardKind.secret) card.detail,
+                card.clanIds
+                    .map((id) => data.faction(id)?.shortFor(lang) ?? id)
+                    .join(' × '),
+              ].join(' · '),
+            ),
           ),
       ],
     );
@@ -1314,7 +1454,11 @@ class _AffinityTab extends ConsumerWidget {
 
   /// The branches [clan] sponsors for [column] (a people or a class).
   void _showBranches(
-      BuildContext context, WidgetRef ref, Faction clan, String column) {
+    BuildContext context,
+    WidgetRef ref,
+    Faction clan,
+    String column,
+  ) {
     final trees = ref.read(gameDbProvider(skillTreesSchema)).value ?? const {};
     final lines = [
       for (final id in clan.sponsors)
@@ -1329,8 +1473,9 @@ class _AffinityTab extends ConsumerWidget {
         content: Text(lines.join('\n')),
         actions: [
           TextButton(
-              onPressed: () => Navigator.of(dialogContext).pop(),
-              child: Text(tr(ref, 'close_button'))),
+            onPressed: () => Navigator.of(dialogContext).pop(),
+            child: Text(tr(ref, 'close_button')),
+          ),
         ],
       ),
     );
@@ -1375,9 +1520,10 @@ class _IntriguesTab extends ConsumerWidget {
         child: Padding(
           padding: const EdgeInsets.all(32),
           child: Text(
-              tr(ref, play ? 'clans_intrigues_none_play' : 'clans_none'),
-              key: const Key('clans_intrigues_empty'),
-              textAlign: TextAlign.center),
+            tr(ref, play ? 'clans_intrigues_none_play' : 'clans_none'),
+            key: const Key('clans_intrigues_empty'),
+            textAlign: TextAlign.center,
+          ),
         ),
       );
     }
@@ -1435,15 +1581,21 @@ class _IntrigueCard extends StatelessWidget {
         key: key,
         mainAxisSize: MainAxisSize.min,
         children: [
-          Icon(Icons.person_outline,
-              size: IconSize.s16, color: theme.colorScheme.onSurfaceVariant),
+          Icon(
+            Icons.person_outline,
+            size: IconSize.s16,
+            color: theme.colorScheme.onSurfaceVariant,
+          ),
           const SizedBox(width: 4),
           Flexible(
-            child: Text(name,
-                overflow: TextOverflow.ellipsis,
-                style: theme.textTheme.labelSmall?.copyWith(
-                    color: theme.colorScheme.onSurfaceVariant,
-                    fontStyle: FontStyle.italic)),
+            child: Text(
+              name,
+              overflow: TextOverflow.ellipsis,
+              style: theme.textTheme.labelSmall?.copyWith(
+                color: theme.colorScheme.onSurfaceVariant,
+                fontStyle: FontStyle.italic,
+              ),
+            ),
           ),
         ],
       ),
@@ -1482,7 +1634,9 @@ class _IntrigueCard extends StatelessWidget {
     }
     if (e.titleId.isNotEmpty) {
       return trFor(lang, 'intrigue_title_effect').replaceAll(
-          '{name}', data.titles[e.titleId]?.nameFor(lang) ?? e.titleId);
+        '{name}',
+        data.titles[e.titleId]?.nameFor(lang) ?? e.titleId,
+      );
     }
     if (e.noteFor(lang).isNotEmpty) return e.noteFor(lang);
     return [
@@ -1500,8 +1654,10 @@ class _IntrigueCard extends StatelessWidget {
     final stageName = stage >= 1 && stage <= intrigue.stages.length
         ? trFor(lang, intrigue.stages[stage - 1].key)
         : stage >= 1
-            ? trFor(lang,
-                'intrigue_stage_${intrigueStageNames[stage - 1].toLowerCase()}')
+            ? trFor(
+                lang,
+                'intrigue_stage_${intrigueStageNames[stage - 1].toLowerCase()}',
+              )
             : '';
     return Card(
       key: Key('intrigue_${intrigue.id}'),
@@ -1514,9 +1670,12 @@ class _IntrigueCard extends StatelessWidget {
             Text(intrigue.nameFor(lang), style: theme.textTheme.titleSmall),
             if (intrigue.premiseFor(lang).isNotEmpty &&
                 (!play || stage >= 4 || outcome != null))
-              Text(intrigue.premiseFor(lang),
-                  style: theme.textTheme.bodySmall
-                      ?.copyWith(fontStyle: FontStyle.italic)),
+              Text(
+                intrigue.premiseFor(lang),
+                style: theme.textTheme.bodySmall?.copyWith(
+                  fontStyle: FontStyle.italic,
+                ),
+              ),
             const SizedBox(height: 6),
             Wrap(
               spacing: 6,
@@ -1524,23 +1683,30 @@ class _IntrigueCard extends StatelessWidget {
               children: [
                 for (final id in intrigue.factionIds)
                   Container(
-                    padding:
-                        const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 6,
+                      vertical: 2,
+                    ),
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(10),
                       border: Border.all(
-                          color: Color(data.faction(id)?.color ?? 0xFF888888)),
+                        color: Color(data.faction(id)?.color ?? 0xFF888888),
+                      ),
                     ),
                     child: Row(
                       mainAxisSize: MainAxisSize.min,
                       children: [
                         PatronEmblem(
-                            patron: data.faction(id)?.patron, size: 14),
+                          patron: data.faction(id)?.patron,
+                          size: 14,
+                        ),
                         const SizedBox(width: 4),
                         Flexible(
-                          child: Text(data.faction(id)?.nameFor(lang) ?? id,
-                              overflow: TextOverflow.ellipsis,
-                              style: theme.textTheme.labelSmall),
+                          child: Text(
+                            data.faction(id)?.nameFor(lang) ?? id,
+                            overflow: TextOverflow.ellipsis,
+                            style: theme.textTheme.labelSmall,
+                          ),
                         ),
                       ],
                     ),
@@ -1565,10 +1731,13 @@ class _IntrigueCard extends StatelessWidget {
                         ),
                         const SizedBox(width: 3),
                         Flexible(
-                          child: Text(data.subclan(id)?.nameFor(lang) ?? id,
-                              overflow: TextOverflow.ellipsis,
-                              style: theme.textTheme.labelSmall?.copyWith(
-                                  color: theme.colorScheme.onSurfaceVariant)),
+                          child: Text(
+                            data.subclan(id)?.nameFor(lang) ?? id,
+                            overflow: TextOverflow.ellipsis,
+                            style: theme.textTheme.labelSmall?.copyWith(
+                              color: theme.colorScheme.onSurfaceVariant,
+                            ),
+                          ),
                         ),
                       ],
                     ),
@@ -1584,8 +1753,8 @@ class _IntrigueCard extends StatelessWidget {
                       .replaceAll('{stage}', stageName),
               key: Key('intrigue_stage_${intrigue.id}'),
               style: theme.textTheme.labelLarge?.copyWith(
-                  color:
-                      stage == 0 ? theme.colorScheme.onSurfaceVariant : gold),
+                color: stage == 0 ? theme.colorScheme.onSurfaceVariant : gold,
+              ),
             ),
             for (var i = 0; i < intrigue.stages.length; i++)
               if (play && i == stage && outcome == null)
@@ -1599,18 +1768,23 @@ class _IntrigueCard extends StatelessWidget {
                   ),
                   child: Row(
                     children: [
-                      PixelGlyph(PixelGlyphs.lock,
-                          size: IconSize.s16,
-                          color: theme.colorScheme.onSurfaceVariant),
+                      PixelGlyph(
+                        PixelGlyphs.lock,
+                        size: IconSize.s16,
+                        color: theme.colorScheme.onSurfaceVariant,
+                      ),
                       const SizedBox(width: 6),
                       Expanded(
                         child: Text(
                           intrigue.stages[i].chapter.isEmpty
                               ? trFor(lang, 'clans_intrigue_next_unknown')
-                              : trFor(lang, 'clans_intrigue_next').replaceAll(
-                                  '{c}', intrigue.stages[i].chapter),
+                              : trFor(
+                                  lang,
+                                  'clans_intrigue_next',
+                                ).replaceAll('{c}', intrigue.stages[i].chapter),
                           style: theme.textTheme.labelSmall?.copyWith(
-                              color: theme.colorScheme.onSurfaceVariant),
+                            color: theme.colorScheme.onSurfaceVariant,
+                          ),
                         ),
                       ),
                     ],
@@ -1639,8 +1813,10 @@ class _IntrigueCard extends StatelessWidget {
                         [
                           trFor(lang, intrigue.stages[i].key),
                           if (intrigue.stages[i].chapter.isNotEmpty)
-                            trFor(lang, 'clans_intrigue_chapter')
-                                .replaceAll('{c}', intrigue.stages[i].chapter),
+                            trFor(
+                              lang,
+                              'clans_intrigue_chapter',
+                            ).replaceAll('{c}', intrigue.stages[i].chapter),
                         ].join(' · '),
                         style: theme.textTheme.labelSmall?.copyWith(
                           fontWeight: FontWeight.w700,
@@ -1649,46 +1825,60 @@ class _IntrigueCard extends StatelessWidget {
                               : null,
                         ),
                       ),
-                      Text(intrigue.stages[i].textFor(lang),
-                          style: theme.textTheme.bodySmall?.copyWith(
-                              color: i + 1 > stage
-                                  ? theme.colorScheme.onSurfaceVariant
-                                  : null)),
+                      Text(
+                        intrigue.stages[i].textFor(lang),
+                        style: theme.textTheme.bodySmall?.copyWith(
+                          color: i + 1 > stage
+                              ? theme.colorScheme.onSurfaceVariant
+                              : null,
+                        ),
+                      ),
                       if (i < stage ? _faceName(intrigue.stages[i].npcId) : null
                           case final name?)
-                        _face(theme, name,
-                            Key('intrigue_face_${intrigue.id}_${i + 1}')),
+                        _face(
+                          theme,
+                          name,
+                          Key('intrigue_face_${intrigue.id}_${i + 1}'),
+                        ),
                     ],
                   ),
                 ),
             if (intrigue.outcomes.isNotEmpty && (!play || outcome != null)) ...[
               const SizedBox(height: 8),
-              Text(trFor(lang, 'clans_intrigue_outcomes').toUpperCase(),
-                  style: theme.textTheme.labelSmall?.copyWith(
-                      color: theme.colorScheme.onSurfaceVariant,
-                      letterSpacing: 1)),
+              Text(
+                trFor(lang, 'clans_intrigue_outcomes').toUpperCase(),
+                style: theme.textTheme.labelSmall?.copyWith(
+                  color: theme.colorScheme.onSurfaceVariant,
+                  letterSpacing: 1,
+                ),
+              ),
               for (var i = 0; i < intrigue.outcomes.length; i++)
                 if (!play || outcome == i)
                   Padding(
                     padding: const EdgeInsets.only(top: 4),
                     child: Text.rich(
-                      TextSpan(children: [
-                        TextSpan(
-                          text: intrigue.outcomes[i].nameFor(lang),
-                          style: TextStyle(
-                              fontWeight: FontWeight.w700,
-                              color: outcome == i ? gold : null),
-                        ),
-                        if (outcome == i)
+                      TextSpan(
+                        children: [
                           TextSpan(
+                            text: intrigue.outcomes[i].nameFor(lang),
+                            style: TextStyle(
+                              fontWeight: FontWeight.w700,
+                              color: outcome == i ? gold : null,
+                            ),
+                          ),
+                          if (outcome == i)
+                            TextSpan(
                               text:
                                   ' (${trFor(lang, 'clans_intrigue_chosen')})',
-                              style: TextStyle(color: gold)),
-                        if (intrigue.outcomes[i].effects.isNotEmpty)
-                          TextSpan(
+                              style: TextStyle(color: gold),
+                            ),
+                          if (intrigue.outcomes[i].effects.isNotEmpty)
+                            TextSpan(
                               text:
-                                  ' · ${intrigue.outcomes[i].effects.map(_effectText).where((t) => t.isNotEmpty).join(' · ')}'),
-                      ]),
+                                  ' · ${intrigue.outcomes[i].effects.map(_effectText).where((t) => t.isNotEmpty).join(' · ')}',
+                            ),
+                        ],
+                      ),
                       style: theme.textTheme.bodySmall,
                     ),
                   ),

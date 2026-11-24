@@ -18,9 +18,11 @@ typedef RegionHolders = List<(String, double)>;
 RegionHolders _rank(Map<String, int> counts, List<String> order) {
   if (counts.isEmpty) return const [];
   final clans = counts.keys.toList()
-    ..sort((a, b) => counts[a] != counts[b]
-        ? counts[b]!.compareTo(counts[a]!)
-        : order.indexOf(a).compareTo(order.indexOf(b)));
+    ..sort(
+      (a, b) => counts[a] != counts[b]
+          ? counts[b]!.compareTo(counts[a]!)
+          : order.indexOf(a).compareTo(order.indexOf(b)),
+    );
   final top = counts[clans.first]!;
   return [for (final c in clans) (c, counts[c]! / top)];
 }
@@ -30,7 +32,10 @@ RegionHolders _rank(Map<String, int> counts, List<String> order) {
 /// location (the city or town it is in) stands in on [chart]. A place
 /// whose location [chart] doesn't show counts nowhere.
 List<RegionHolders> chartZoneHolders(
-    ChartGeography chart, Geography geography, PoliticsState politics) {
+  ChartGeography chart,
+  Geography geography,
+  PoliticsState politics,
+) {
   final held = holdings(geography, politics);
   final order = held.values.toSet().toList();
   final counts = [for (final _ in chart.zones) <String, int>{}];

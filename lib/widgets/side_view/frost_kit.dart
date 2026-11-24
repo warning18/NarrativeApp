@@ -41,53 +41,80 @@ abstract final class _FrostLook {
 /// The layers, back to front. [progress] brings the goal's shelter nearer.
 List<SideLayer> frostLayers({double progress = 0}) => [
       SideLayer(
-          0,
-          (c, s, scroll, t, u) =>
-              kitSky(c, s, u, bands: _FrostLook.sky, ground: _FrostLook.peak)),
+        0,
+        (c, s, scroll, t, u) =>
+            kitSky(c, s, u, bands: _FrostLook.sky, ground: _FrostLook.peak),
+      ),
       SideLayer(
-          0.05,
-          (c, s, scroll, t, u) => kitDisc(c, s, u,
-              cx: 0.72,
-              cy: 40,
-              disc: _FrostLook.sun.withValues(alpha: 0.9),
-              glow: _FrostLook.sun.withValues(alpha: 0.22),
-              radius: 3)),
+        0.05,
+        (c, s, scroll, t, u) => kitDisc(
+          c,
+          s,
+          u,
+          cx: 0.72,
+          cy: 40,
+          disc: _FrostLook.sun.withValues(alpha: 0.9),
+          glow: _FrostLook.sun.withValues(alpha: 0.22),
+          radius: 3,
+        ),
+      ),
       SideLayer(0.12, (c, s, scroll, t, u) {
-        sideHills(c, s, u, scroll,
-            base: 36,
-            amp: 7,
-            wave: 0.07,
-            phase: 0.4,
-            fill: _FrostLook.peak,
-            rim: _FrostLook.peakRim);
+        sideHills(
+          c,
+          s,
+          u,
+          scroll,
+          base: 36,
+          amp: 7,
+          wave: 0.07,
+          phase: 0.4,
+          fill: _FrostLook.peak,
+          rim: _FrostLook.peakRim,
+        );
         _shelter(c, s, u, progress);
       }),
       SideLayer(0.3, (c, s, scroll, t, u) {
-        sideHills(c, s, u, scroll,
-            base: 46,
-            amp: 2.4,
-            wave: 0.05,
-            phase: 1.9,
-            fill: _FrostLook.ridge,
-            rim: _FrostLook.ridgeRim);
+        sideHills(
+          c,
+          s,
+          u,
+          scroll,
+          base: 46,
+          amp: 2.4,
+          wave: 0.05,
+          phase: 1.9,
+          fill: _FrostLook.ridge,
+          rim: _FrostLook.ridgeRim,
+        );
         _pines(c, s, u, scroll);
       }),
       SideLayer(0.8, (c, s, scroll, t, u) {
-        sideHills(c, s, u, scroll,
-            base: 55,
-            amp: 3,
-            wave: 0.04,
-            phase: 2.8,
-            fill: _FrostLook.near,
-            rim: _FrostLook.nearRim);
+        sideHills(
+          c,
+          s,
+          u,
+          scroll,
+          base: 55,
+          amp: 3,
+          wave: 0.04,
+          phase: 2.8,
+          fill: _FrostLook.near,
+          rim: _FrostLook.nearRim,
+        );
         _rocks(c, s, u, scroll);
       }),
       SideLayer(
-          1.0,
-          (c, s, scroll, t, u) => kitPath(c, s, scroll, u,
-              body: _FrostLook.path,
-              light: _FrostLook.pathLight,
-              dark: _FrostLook.pathDark)),
+        1.0,
+        (c, s, scroll, t, u) => kitPath(
+          c,
+          s,
+          scroll,
+          u,
+          body: _FrostLook.path,
+          light: _FrostLook.pathLight,
+          dark: _FrostLook.pathDark,
+        ),
+      ),
     ];
 
 /// The goal: a low shelter with a snowed roof, a lit window and a thread of
@@ -100,14 +127,35 @@ void _shelter(Canvas canvas, Size size, double u, double progress) {
   final bw = (12 * scale).round().toDouble();
   final bh = (7 * scale).round().toDouble();
   const base = 44.0;
-  sidePixels(canvas, u, Paint()..color = _FrostLook.trunk, x - bw / 2,
-      base - bh, bw, bh);
+  sidePixels(
+    canvas,
+    u,
+    Paint()..color = _FrostLook.trunk,
+    x - bw / 2,
+    base - bh,
+    bw,
+    bh,
+  );
   // The snowed roof, a step wider than the walls.
-  sidePixels(canvas, u, Paint()..color = _FrostLook.pineSnow, x - bw / 2 - 1,
-      base - bh - 2, bw + 2, 2);
+  sidePixels(
+    canvas,
+    u,
+    Paint()..color = _FrostLook.pineSnow,
+    x - bw / 2 - 1,
+    base - bh - 2,
+    bw + 2,
+    2,
+  );
   final win = math.max(2, (2 * scale).round()).toDouble();
-  sidePixels(canvas, u, Paint()..color = _FrostLook.window, x - win / 2,
-      base - bh * 0.7, win, win);
+  sidePixels(
+    canvas,
+    u,
+    Paint()..color = _FrostLook.window,
+    x - win / 2,
+    base - bh * 0.7,
+    win,
+    win,
+  );
   // Smoke: three grey pixels leaning away.
   final smoke = Paint()..color = _FrostLook.smoke;
   for (var i = 0; i < 3; i++) {
@@ -163,7 +211,14 @@ void _rocks(Canvas canvas, Size size, double u, double scroll) {
     } else {
       sidePixels(canvas, u, snow, px, y - 2, 8, 2);
       sidePixels(
-          canvas, u, Paint()..color = _FrostLook.nearRim, px + 1, y - 3, 4, 1);
+        canvas,
+        u,
+        Paint()..color = _FrostLook.nearRim,
+        px + 1,
+        y - 3,
+        4,
+        1,
+      );
     }
   }
 }

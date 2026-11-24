@@ -14,8 +14,10 @@ const String _repo = 'NarrativeApp';
 const String _releasesApiUrl =
     'https://api.github.com/repos/$_owner/$_repo/releases/latest';
 
-Map<String, String> _authHeaders(String? githubToken,
-    {String accept = 'application/vnd.github+json'}) {
+Map<String, String> _authHeaders(
+  String? githubToken, {
+  String accept = 'application/vnd.github+json',
+}) {
   return {
     'Accept': accept,
     if (githubToken != null && githubToken.isNotEmpty)
@@ -37,7 +39,9 @@ String? get updateFileExtension => switch (defaultTargetPlatform) {
 /// The first of a release's [assets] (as the GitHub API lists them) whose
 /// name ends with [extension], or null.
 Map<String, dynamic>? pickUpdateAsset(
-    List<Map<String, dynamic>> assets, String extension) {
+  List<Map<String, dynamic>> assets,
+  String extension,
+) {
   for (final asset in assets) {
     final name = asset['name']?.toString().toLowerCase() ?? '';
     if (name.endsWith(extension.toLowerCase())) return asset;
@@ -46,11 +50,12 @@ Map<String, dynamic>? pickUpdateAsset(
 }
 
 class UpdateInfo {
-  const UpdateInfo(
-      {required this.version,
-      required this.downloadUrl,
-      required this.assetId,
-      this.fileName = 'narrative_app_update.apk'});
+  const UpdateInfo({
+    required this.version,
+    required this.downloadUrl,
+    required this.assetId,
+    this.fileName = 'narrative_app_update.apk',
+  });
 
   final String version;
 
@@ -101,8 +106,10 @@ bool isNewerVersion(String remote, String local) {
 /// repo (this one is) — without it, GitHub's API returns a 404 for an
 /// anonymous request exactly as if the repo didn't exist, which otherwise
 /// just looks like a generic "couldn't check for updates" failure.
-Future<UpdateInfo?> checkForUpdate(
-    {String? githubToken, String fileExtension = '.apk'}) async {
+Future<UpdateInfo?> checkForUpdate({
+  String? githubToken,
+  String fileExtension = '.apk',
+}) async {
   final response = await http
       .get(Uri.parse(_releasesApiUrl), headers: _authHeaders(githubToken))
       .timeout(const Duration(seconds: 15));
@@ -148,11 +155,13 @@ Future<String> downloadUpdate(
 }) async {
   final uri = githubToken != null && githubToken.isNotEmpty
       ? Uri.parse(
-          'https://api.github.com/repos/$_owner/$_repo/releases/assets/${info.assetId}')
+          'https://api.github.com/repos/$_owner/$_repo/releases/assets/${info.assetId}',
+        )
       : Uri.parse(info.downloadUrl);
   final request = http.Request('GET', uri)
-    ..headers
-        .addAll(_authHeaders(githubToken, accept: 'application/octet-stream'));
+    ..headers.addAll(
+      _authHeaders(githubToken, accept: 'application/octet-stream'),
+    );
   final response = await http.Client().send(request);
   if (response.statusCode != 200) {
     throw Exception('Download failed with status ${response.statusCode}');

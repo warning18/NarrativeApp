@@ -26,4 +26,5 @@ class _ThemeModeNotifier extends StateNotifier<ThemeMode> {
 /// Light / dark / follow-system theme preference; persisted via
 /// [SharedPreferences]. Defaults to following the device setting.
 final themeModeProvider = StateNotifierProvider<_ThemeModeNotifier, ThemeMode>(
-    (ref) => _ThemeModeNotifier());
+  (ref) => _ThemeModeNotifier(),
+);

@@ -32,8 +32,9 @@ class ShipScreen extends ConsumerWidget {
     final fr = ref.watch(appLanguageProvider) == AppLanguage.fr;
     final presence = ref.watch(campPresenceProvider);
     final ports = ref.watch(localizedDbProvider(portsSchema)).value;
-    final savedPortId =
-        ref.watch(playerSessionProvider.select((s) => s.currentPortId));
+    final savedPortId = ref.watch(
+      playerSessionProvider.select((s) => s.currentPortId),
+    );
     final mooredId =
         ports == null ? null : currentPortIdFor(ports, savedPortId);
     final moored =
@@ -59,12 +60,14 @@ class ShipScreen extends ConsumerWidget {
             padding: const EdgeInsets.only(bottom: 8),
             child: Text(
               tr(
-                  ref,
-                  presence == CampPresence.sailedOut
-                      ? 'ship_sailed_out_note'
-                      : 'ship_away_note'),
-              style: theme.textTheme.bodyMedium
-                  ?.copyWith(color: theme.colorScheme.onSurfaceVariant),
+                ref,
+                presence == CampPresence.sailedOut
+                    ? 'ship_sailed_out_note'
+                    : 'ship_away_note',
+              ),
+              style: theme.textTheme.bodyMedium?.copyWith(
+                color: theme.colorScheme.onSurfaceVariant,
+              ),
             ),
           ),
         if (sailedOut && homeId != null && homePort != null)
@@ -74,8 +77,12 @@ class ShipScreen extends ConsumerWidget {
               key: const Key('ship_sail_home'),
               onPressed: busy
                   ? null
-                  : () =>
-                      sailTo(context, ref, toPortId: homeId, toPort: homePort),
+                  : () => sailTo(
+                        context,
+                        ref,
+                        toPortId: homeId,
+                        toPort: homePort,
+                      ),
               icon: const Icon(Icons.local_fire_department_outlined),
               label: Text(tr(ref, 'sail_home_title')),
             ),
@@ -84,8 +91,10 @@ class ShipScreen extends ConsumerWidget {
         if (ashore) ...[
           const SizedBox(height: 16),
           Text(
-            tr(ref, 'ship_ashore_section')
-                .replaceAll('{port}', portNameFor(moored, fr)),
+            tr(
+              ref,
+              'ship_ashore_section',
+            ).replaceAll('{port}', portNameFor(moored, fr)),
             style: theme.textTheme.titleMedium,
           ),
           const SizedBox(height: 8),

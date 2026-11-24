@@ -19,38 +19,54 @@ import 'story_providers.dart';
 /// politics_events.json (v1.195, see politics_events.dart), loaded the way
 /// every gamedata table is, read raw: an event picks its language itself.
 /// Empty until it has loaded.
-final politicsEventsProvider = Provider<Map<String, PoliticsEvent>>((ref) =>
-    parsePoliticsEvents(
-        ref.watch(gameDbProvider(politicsEventsSchema)).value ?? const {}));
+final politicsEventsProvider = Provider<Map<String, PoliticsEvent>>(
+  (ref) => parsePoliticsEvents(
+    ref.watch(gameDbProvider(politicsEventsSchema)).value ?? const {},
+  ),
+);
 
 /// The politics events once the table has loaded: for code that acts on
 /// them and may be the first to ask.
 Future<Map<String, PoliticsEvent>> _loadPoliticsEvents(WidgetRef ref) async =>
-    parsePoliticsEvents(await ref
-        .read(gameDbProvider(politicsEventsSchema).notifier)
-        .whenLoaded());
+    parsePoliticsEvents(
+      await ref
+          .read(gameDbProvider(politicsEventsSchema).notifier)
+          .whenLoaded(),
+    );
 
 Future<Map<String, dynamic>> _companions(WidgetRef ref) =>
     ref.read(gameDbProvider(companionsSchema).notifier).whenLoaded();
 
 /// The coast a choice's politics gate is read in now (v1.196, see
 /// choicePoliticsGate): the clan data and the chapter reached.
-final coastGateWorldProvider = Provider<CoastWorld>((ref) => CoastWorld(
-      data: ref.watch(clanDataProvider),
-      chapter: ref.watch(reachedChapterProvider),
-    ));
+final coastGateWorldProvider = Provider<CoastWorld>(
+  (ref) => CoastWorld(
+    data: ref.watch(clanDataProvider),
+    chapter: ref.watch(reachedChapterProvider),
+  ),
+);
 
 /// How [choice] stands behind its politics gate for [session] in [world]
 /// (see choicePoliticsGate).
 ChoiceGate choiceGateFor(
-        StoryChoice choice, PlayerSession session, CoastWorld world) =>
-    choicePoliticsGate(choice,
-        politics: session.politics, flags: session.flags, world: world);
+  StoryChoice choice,
+  PlayerSession session,
+  CoastWorld world,
+) =>
+    choicePoliticsGate(
+      choice,
+      politics: session.politics,
+      flags: session.flags,
+      world: world,
+    );
 
 /// Whether [choice] is out of sight for [session]: its flags hide it, or
 /// its politics gate fails and it has no locked text to show instead.
 bool choiceHiddenFor(
-        StoryChoice choice, PlayerSession session, CoastWorld world) =>
+  StoryChoice choice,
+  PlayerSession session,
+  CoastWorld world,
+) =>
     choice.isHiddenFor(session.flags) ||
     choiceGateFor(choice, session, world) == ChoiceGate.hidden;
 
@@ -116,11 +132,17 @@ Future<InfluenceResult> applyQuestInfluenceNow(
 /// Edit Mode's Throne tab (v1.196): [politics] (a claim, a pledge, the
 /// Throne, the muster) applied now, every time.
 Future<CoastChange> applyThroneEditNow(
-    WidgetRef ref, StoryPolitics politics) async {
+  WidgetRef ref,
+  StoryPolitics politics,
+) async {
   final data = await loadClanData(ref);
   final events = await _loadPoliticsEvents(ref);
-  return ref.read(playerSessionProvider.notifier).applyThroneEdit(politics,
-      data: data, events: events, chapter: ref.read(reachedChapterProvider));
+  return ref.read(playerSessionProvider.notifier).applyThroneEdit(
+        politics,
+        data: data,
+        events: events,
+        chapter: ref.read(reachedChapterProvider),
+      );
 }
 
 /// The politics scene [nodeId] carries on entry (StoryNode.politicsOnEnter),
@@ -134,13 +156,18 @@ Future<void> applyEnterPolitics(WidgetRef ref, String nodeId) async {
   final node = ref.read(storyDataProvider).value?.nodeFor(nodeId);
   final politics = node?.politicsOnEnter;
   if (politics == null || politics.isEmpty) return;
-  if (ref.read(playerSessionProvider).politics.applied(
-        enterPoliticsKey(nodeId),
-      )) {
+  if (ref
+      .read(playerSessionProvider)
+      .politics
+      .applied(enterPoliticsKey(nodeId))) {
     return;
   }
-  await applyStoryPoliticsNow(ref, politics,
-      nodeId: nodeId, key: enterPoliticsKey(nodeId));
+  await applyStoryPoliticsNow(
+    ref,
+    politics,
+    nodeId: nodeId,
+    key: enterPoliticsKey(nodeId),
+  );
 }
 
 /// Fires the politics events due in [chapter] (the chapter reached when

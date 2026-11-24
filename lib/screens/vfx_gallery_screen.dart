@@ -135,8 +135,12 @@ class _VfxGalleryScreenState extends ConsumerState<VfxGalleryScreen> {
     final skillIds = [
       for (final entry in skills.entries)
         if (!isEnemyOnlySkill(entry.value as Map<String, dynamic>?)) entry.key,
-    ]..sort((a, b) => skillDisplayName(a, language: lang)
-        .compareTo(skillDisplayName(b, language: lang)));
+    ]..sort(
+        (a, b) => skillDisplayName(
+          a,
+          language: lang,
+        ).compareTo(skillDisplayName(b, language: lang)),
+      );
     final skill = skills[_skillId] as Map<String, dynamic>?;
     return Scaffold(
       appBar: AppBar(title: Text(tr(ref, 'vfx_gallery_title'))),
@@ -163,8 +167,9 @@ class _VfxGalleryScreenState extends ConsumerState<VfxGalleryScreen> {
                           controller: _vfx,
                           anchor: _hero,
                           child: _StandIn(
-                              icon: Icons.person,
-                              label: tr(ref, 'vfx_gallery_hero')),
+                            icon: Icons.person,
+                            label: tr(ref, 'vfx_gallery_hero'),
+                          ),
                         ),
                       ),
                     ),
@@ -179,8 +184,9 @@ class _VfxGalleryScreenState extends ConsumerState<VfxGalleryScreen> {
                           controller: _vfx,
                           anchor: _foe,
                           child: _StandIn(
-                              icon: Icons.pest_control,
-                              label: tr(ref, 'vfx_gallery_foe')),
+                            icon: Icons.pest_control,
+                            label: tr(ref, 'vfx_gallery_foe'),
+                          ),
                         ),
                       ),
                     ),
@@ -198,25 +204,32 @@ class _VfxGalleryScreenState extends ConsumerState<VfxGalleryScreen> {
             child: ListView(
               padding: const EdgeInsets.fromLTRB(16, 12, 16, 32),
               children: [
-                Text(tr(ref, 'vfx_gallery_intro'),
-                    style: theme.textTheme.bodySmall),
+                Text(
+                  tr(ref, 'vfx_gallery_intro'),
+                  style: theme.textTheme.bodySmall,
+                ),
                 const SizedBox(height: 12),
                 // A real skill, at the power a fight would give it.
                 DropdownButtonFormField<String?>(
                   key: const Key('vfx_gallery_skill'),
                   initialValue: _skillId,
                   isExpanded: true,
-                  decoration:
-                      InputDecoration(labelText: tr(ref, 'vfx_gallery_skill')),
+                  decoration: InputDecoration(
+                    labelText: tr(ref, 'vfx_gallery_skill'),
+                  ),
                   items: [
                     DropdownMenuItem<String?>(
-                        value: null,
-                        child: Text(tr(ref, 'vfx_gallery_no_skill'))),
+                      value: null,
+                      child: Text(tr(ref, 'vfx_gallery_no_skill')),
+                    ),
                     for (final id in skillIds)
                       DropdownMenuItem<String?>(
-                          value: id,
-                          child: Text(skillDisplayName(id, language: lang),
-                              overflow: TextOverflow.ellipsis)),
+                        value: id,
+                        child: Text(
+                          skillDisplayName(id, language: lang),
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                      ),
                   ],
                   onChanged: (id) => _pickSkill(id, skills),
                 ),
@@ -245,8 +258,10 @@ class _VfxGalleryScreenState extends ConsumerState<VfxGalleryScreen> {
                       ),
                     ],
                   ),
-                  Text(tr(ref, 'vfx_gallery_share'),
-                      style: theme.textTheme.labelLarge),
+                  Text(
+                    tr(ref, 'vfx_gallery_share'),
+                    style: theme.textTheme.labelLarge,
+                  ),
                   Wrap(
                     spacing: 6,
                     children: [
@@ -272,8 +287,10 @@ class _VfxGalleryScreenState extends ConsumerState<VfxGalleryScreen> {
                   ),
                 ],
                 const Divider(height: 28),
-                Text(tr(ref, 'vfx_gallery_power'),
-                    style: theme.textTheme.labelLarge),
+                Text(
+                  tr(ref, 'vfx_gallery_power'),
+                  style: theme.textTheme.labelLarge,
+                ),
                 const SizedBox(height: 6),
                 SegmentedButton<VfxTier>(
                   segments: [
@@ -317,8 +334,10 @@ class _VfxGalleryScreenState extends ConsumerState<VfxGalleryScreen> {
                   ],
                 ),
                 const SizedBox(height: 16),
-                Text(tr(ref, 'vfx_gallery_element'),
-                    style: theme.textTheme.labelLarge),
+                Text(
+                  tr(ref, 'vfx_gallery_element'),
+                  style: theme.textTheme.labelLarge,
+                ),
                 const SizedBox(height: 6),
                 Wrap(
                   spacing: 6,
@@ -327,8 +346,9 @@ class _VfxGalleryScreenState extends ConsumerState<VfxGalleryScreen> {
                     for (final element in vfxElementNames)
                       ChoiceChip(
                         avatar: CircleAvatar(
-                          backgroundColor:
-                              Color(paletteForElement(element).primary),
+                          backgroundColor: Color(
+                            paletteForElement(element).primary,
+                          ),
                           radius: 6,
                         ),
                         label: Text(element),
@@ -338,8 +358,10 @@ class _VfxGalleryScreenState extends ConsumerState<VfxGalleryScreen> {
                   ],
                 ),
                 const SizedBox(height: 16),
-                Text(tr(ref, 'vfx_gallery_style'),
-                    style: theme.textTheme.labelLarge),
+                Text(
+                  tr(ref, 'vfx_gallery_style'),
+                  style: theme.textTheme.labelLarge,
+                ),
                 const SizedBox(height: 6),
                 Wrap(
                   spacing: 6,
@@ -386,8 +408,10 @@ class _StandIn extends StatelessWidget {
         children: [
           Icon(icon, color: const Color(0xFFBDB6CC), size: IconSize.s32),
           const SizedBox(height: 4),
-          Text(label,
-              style: const TextStyle(color: Color(0xFFBDB6CC), fontSize: 12)),
+          Text(
+            label,
+            style: const TextStyle(color: Color(0xFFBDB6CC), fontSize: 12),
+          ),
         ],
       ),
     );

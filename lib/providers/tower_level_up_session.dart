@@ -46,9 +46,11 @@ class TowerLevelUpSession {
               // A pick taken clears the table and counts its path.
               if (session.statPickOffer.isNotEmpty) return;
               final offer = towerStatPickOffer(_run, data);
-              final index = offer.indexWhere((o) =>
-                  (session.trainingTaken[o.pathId] ?? 0) >
-                  (taken[o.pathId] ?? 0));
+              final index = offer.indexWhere(
+                (o) =>
+                    (session.trainingTaken[o.pathId] ?? 0) >
+                    (taken[o.pathId] ?? 0),
+              );
               if (index < 0) return;
               _run = towerTakeStatPick(_run, data, index);
               taken = {...session.trainingTaken};

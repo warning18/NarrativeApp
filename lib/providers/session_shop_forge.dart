@@ -25,12 +25,18 @@ mixin _ShopForgeActions on _SessionNotifierBase {
   /// picks with them, and the Hammersmith's work on them is paid back
   /// (smithingRefundFor). The tally die is equipped when one of the two
   /// was. False, and nothing done, when [canWeaveDice] says no.
-  Future<bool> weaveDice(String first, String second,
-      {required Map<String, dynamic> dice}) async {
-    if (!canWeaveDice(first, second,
-        owned: state.ownedDiceIds,
-        builtHouseIds: state.builtHouseIds,
-        dice: dice)) {
+  Future<bool> weaveDice(
+    String first,
+    String second, {
+    required Map<String, dynamic> dice,
+  }) async {
+    if (!canWeaveDice(
+      first,
+      second,
+      owned: state.ownedDiceIds,
+      builtHouseIds: state.builtHouseIds,
+      dice: dice,
+    )) {
       return false;
     }
     final spent = {first, second};
@@ -120,7 +126,10 @@ mixin _ShopForgeActions on _SessionNotifierBase {
         gold: state.gold - cost,
         statPoints: state.statPoints + tome.statPoints,
         tomePicks: PlayerSessionNotifier._withTomePicks(
-            state.tomePicks, itemId, tome.statPoints),
+          state.tomePicks,
+          itemId,
+          tome.statPoints,
+        ),
         pendingOffers: [...state.pendingOffers, ...tome.offers],
         shopPurchaseCounts: {...state.shopPurchaseCounts, key: purchased + 1},
       );
@@ -146,8 +155,11 @@ mixin _ShopForgeActions on _SessionNotifierBase {
   /// Sells one copy of [itemId] for [price]. Only a copy nobody wears can
   /// go; one sold where it is stocked goes back on that shop's shelf
   /// ([shopId]). Returns false when there is no free copy to sell.
-  Future<bool> sellItem(String itemId,
-      {required int price, String? shopId}) async {
+  Future<bool> sellItem(
+    String itemId, {
+    required int price,
+    String? shopId,
+  }) async {
     if (state.freeCopiesOf(itemId, wearerId: '') <= 0) return false;
     final remaining = [...state.inventoryItemIds]..remove(itemId);
     final counts = {...state.shopPurchaseCounts};
@@ -189,8 +201,11 @@ mixin _ShopForgeActions on _SessionNotifierBase {
     if (item == null) return false;
     final gold = (item['craftGold'] as num?)?.toInt() ?? 0;
     if (state.gold < gold) return false;
-    return craftMaterialsFor(item).entries.every((m) =>
-        state.inventoryItemIds.where((id) => id == m.key).length >= m.value);
+    return craftMaterialsFor(item).entries.every(
+          (m) =>
+              state.inventoryItemIds.where((id) => id == m.key).length >=
+              m.value,
+        );
   }
 
   /// Forges [itemId] from [item]'s recipe (docs/proposals/forge-roll.md):
@@ -200,10 +215,13 @@ mixin _ShopForgeActions on _SessionNotifierBase {
   /// (forgedVariantId: `<itemId>@fine`, the plain id for Sound). A flawed
   /// roll costs nothing more. Returns the roll, or null if something is
   /// missing.
-  Future<ForgeRoll?> craftItem(String itemId, Map<String, dynamic>? item,
-      {ItemOrigin? origin,
-      Random? random,
-      List<ForgeModifier>? modifiers}) async {
+  Future<ForgeRoll?> craftItem(
+    String itemId,
+    Map<String, dynamic>? item, {
+    ItemOrigin? origin,
+    Random? random,
+    List<ForgeModifier>? modifiers,
+  }) async {
     if (!canCraft(item)) return null;
     final roll = rollForge(
       random: random ?? Random(),
@@ -230,13 +248,19 @@ mixin _ShopForgeActions on _SessionNotifierBase {
   /// more on [random] with the same modifiers, and the piece in the pack
   /// takes the new tier's id. Returns the new roll, or null when the pack
   /// holds no coin or no such piece.
-  Future<ForgeRoll?> reforgeWithFateCoin(String pieceId, ForgeRoll roll,
-      {Random? random}) async {
+  Future<ForgeRoll?> reforgeWithFateCoin(
+    String pieceId,
+    ForgeRoll roll, {
+    Random? random,
+  }) async {
     final left = withFateCoinSpent(state.inventoryItemIds);
     if (left == null || !left.contains(pieceId)) return null;
     final again = reforgedRoll(roll, random ?? Random());
     state = _withPieceReforged(
-        state.copyWith(inventoryItemIds: left), pieceId, again.tier);
+      state.copyWith(inventoryItemIds: left),
+      pieceId,
+      again.tier,
+    );
     await _persist();
     return again;
   }
@@ -250,16 +274,20 @@ mixin _ShopForgeActions on _SessionNotifierBase {
   /// spent, the forge's d20 rolled once more on [random] with the same
   /// modifiers, and the piece in the pack takes the new tier's id. Returns
   /// the new roll, or null with no charge or no such piece.
-  Future<ForgeRoll?> rerollForge(String pieceId, ForgeRoll roll,
-      {Random? random}) async {
+  Future<ForgeRoll?> rerollForge(
+    String pieceId,
+    ForgeRoll roll, {
+    Random? random,
+  }) async {
     if (!canRerollForge || !state.inventoryItemIds.contains(pieceId)) {
       return null;
     }
     final again = rerolledForge(roll, random ?? Random());
     state = _withPieceReforged(
-        state.copyWith(rerollCharges: state.rerollCharges - 1),
-        pieceId,
-        again.tier);
+      state.copyWith(rerollCharges: state.rerollCharges - 1),
+      pieceId,
+      again.tier,
+    );
     await _persist();
     return again;
   }
@@ -267,14 +295,21 @@ mixin _ShopForgeActions on _SessionNotifierBase {
   /// [s] with the piece [pieceId] in its pack swapped for the same base
   /// forged at [tier] (its origin kept).
   PlayerSession _withPieceReforged(
-      PlayerSession s, String pieceId, ForgeTier tier) {
+    PlayerSession s,
+    String pieceId,
+    ForgeTier tier,
+  ) {
     final pack = [...s.inventoryItemIds];
     final newId = forgedVariantId(baseItemIdOf(pieceId), tier);
     pack[pack.indexOf(pieceId)] = newId;
     return s.copyWith(
       inventoryItemIds: pack,
-      itemOrigins:
-          withItemOrigins(s.itemOrigins, [newId], s.itemOrigins[pieceId]),
+      itemOrigins: withItemOrigins(
+          s.itemOrigins,
+          [
+            newId,
+          ],
+          s.itemOrigins[pieceId]),
     );
   }
 
@@ -386,7 +421,10 @@ mixin _ShopForgeActions on _SessionNotifierBase {
       inventoryItemIds: remaining,
       statPoints: state.statPoints + tome.statPoints,
       tomePicks: PlayerSessionNotifier._withTomePicks(
-          state.tomePicks, itemId, tome.statPoints),
+        state.tomePicks,
+        itemId,
+        tome.statPoints,
+      ),
       pendingOffers: [...state.pendingOffers, ...tome.offers],
     );
     await _persist();

@@ -64,8 +64,10 @@ class _InkLoadingState extends ConsumerState<InkLoading> {
             alignment: Alignment.center,
             children: [
               SizedBox.expand(child: CircularProgressIndicator(strokeWidth: 3)),
-              PixelIcon('assets/icons/items/material_lantern_brass.png',
-                  size: IconSize.s32),
+              PixelIcon(
+                'assets/icons/items/material_lantern_brass.png',
+                size: IconSize.s32,
+              ),
             ],
           ),
         ),
@@ -74,10 +76,13 @@ class _InkLoadingState extends ConsumerState<InkLoading> {
         AnimatedOpacity(
           duration: Motion.slow,
           opacity: _slow ? 1 : 0,
-          child: Text(tr(ref, widget.wordKey),
-              textAlign: TextAlign.center,
-              style: theme.textTheme.bodySmall
-                  ?.copyWith(color: theme.colorScheme.onSurfaceVariant)),
+          child: Text(
+            tr(ref, widget.wordKey),
+            textAlign: TextAlign.center,
+            style: theme.textTheme.bodySmall?.copyWith(
+              color: theme.colorScheme.onSurfaceVariant,
+            ),
+          ),
         ),
       ],
     );

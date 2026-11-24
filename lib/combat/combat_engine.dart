@@ -217,13 +217,17 @@ double criticalChanceFor(int luck) => min(critCap, 5 + luck * critPerLuck);
 /// rogue ([professionId]) a smaller share of their [perception], capped at
 /// [dodgeCap] since a dodge blocks 100% of the incoming hit rather than
 /// just adding a bonus.
-double dodgeChanceFor(int dexterity,
-        {int perception = 0, String? professionId}) =>
+double dodgeChanceFor(
+  int dexterity, {
+  int perception = 0,
+  String? professionId,
+}) =>
     min(
-        dodgeCap,
-        5 +
-            dexterity * dodgePerDexterity +
-            perceptionDodgeBonus(professionId, perception));
+      dodgeCap,
+      5 +
+          dexterity * dodgePerDexterity +
+          perceptionDodgeBonus(professionId, perception),
+    );
 
 /// A critical hit multiplies the face's already-computed damage by this
 /// much -- shared by every damaging face type so a crit means the same
@@ -234,8 +238,12 @@ const double _criticalDamageMultiplier = 1.5;
 /// critical hit is worth (specialisations.dart).
 const double criticalDamageMultiplier = _criticalDamageMultiplier;
 
-int _withCritical(int damage, int luck, Random? random,
-    [double critChanceBonus = 0]) {
+int _withCritical(
+  int damage,
+  int luck,
+  Random? random, [
+  double critChanceBonus = 0,
+]) {
   if (damage <= 0 || random == null) return damage;
   // A flat gear bonus (a set's or a unique's, see gear_effects.dart) sits
   // on top of the Luck curve and shares its cap plus a little headroom.
@@ -261,7 +269,9 @@ const double alignedSkillMultiplier = 1.25;
 const double opposedSkillMultiplier = 0.75;
 
 double alignmentSkillMultiplier(
-    Map<String, dynamic>? skill, String alignmentLabel) {
+  Map<String, dynamic>? skill,
+  String alignmentLabel,
+) {
   final skillAlignment = skill?['alignment']?.toString() ?? '';
   if (skillAlignment.isEmpty || alignmentLabel == 'Neutral') return 1.0;
   if (skillAlignment == alignmentLabel) return alignedSkillMultiplier;
@@ -352,8 +362,10 @@ PlayerActionResult resolvePlayerFace(
       }
       final damageMod = (skill['damageMod'] as num?)?.toInt() ?? 0;
       final multiplier = (skill['damageMultiplier'] as num?)?.toDouble() ?? 1.0;
-      final alignmentMultiplier =
-          alignmentSkillMultiplier(skill, alignmentLabel);
+      final alignmentMultiplier = alignmentSkillMultiplier(
+        skill,
+        alignmentLabel,
+      );
       final baseHealAmount = (skill['healAmount'] as num?)?.toInt() ?? 0;
       var healAmount = baseHealAmount > 0
           ? ((baseHealAmount + wisdomHealBonus) * alignmentMultiplier).round()
@@ -563,8 +575,9 @@ EnemyMoveResult resolveEnemyMove({
         matches = healthPercent <= healthThreshold &&
             random.nextDouble() * 100 <= chance;
       case 'OnHitByElement':
-        matches = elementsHitThisRound
-            .contains(move['requiredElement']?.toString() ?? '');
+        matches = elementsHitThisRound.contains(
+          move['requiredElement']?.toString() ?? '',
+        );
       default:
         matches = false;
     }
@@ -585,7 +598,8 @@ EnemyMoveResult resolveEnemyMove({
                     ((skill['chargeMultiplier'] as num?)?.toDouble() ??
                         defaultChargeMultiplier))
                 .round(),
-            activeEffects),
+            activeEffects,
+          ),
         _ => 0,
       };
       // A player skill an enemy borrows says "you" to the player; its
@@ -630,8 +644,9 @@ EnemyMoveResult resolveEnemyMove({
   }
 
   return EnemyMoveResult(
-      damage: applyWeaken(baseDamage, activeEffects),
-      message: '$enemyName ${t('attacks_suffix')}');
+    damage: applyWeaken(baseDamage, activeEffects),
+    message: '$enemyName ${t('attacks_suffix')}',
+  );
 }
 
 /// Enemies excluded from both the Elite-promotion roll (see
@@ -896,13 +911,19 @@ const List<double> enemyDamageFloorByChapter = [
 
 /// A regular enemy's health floor in [chapter] (the last entry holds for
 /// every later chapter; a chapter below 1 reads as chapter 1).
-double enemyHealthBaseMultiplier(int chapter) => enemyHealthFloorByChapter[
-    (max(1, chapter) - 1).clamp(0, enemyHealthFloorByChapter.length - 1)];
+double enemyHealthBaseMultiplier(int chapter) =>
+    enemyHealthFloorByChapter[(max(1, chapter) - 1).clamp(
+      0,
+      enemyHealthFloorByChapter.length - 1,
+    )];
 
 /// A regular enemy's damage floor in [chapter], as
 /// [enemyHealthBaseMultiplier].
-double enemyDamageBaseMultiplier(int chapter) => enemyDamageFloorByChapter[
-    (max(1, chapter) - 1).clamp(0, enemyDamageFloorByChapter.length - 1)];
+double enemyDamageBaseMultiplier(int chapter) =>
+    enemyDamageFloorByChapter[(max(1, chapter) - 1).clamp(
+      0,
+      enemyDamageFloorByChapter.length - 1,
+    )];
 
 /// A boss's own, lighter floor (any enemy with `phases`, see [BossPhase],
 /// or a solo-only unique): most of its difficulty comes from its phases,
@@ -937,8 +958,11 @@ const List<double> _bossDamageByChapter = [
   1.12, // 8
 ];
 
-double bossDamageBaseMultiplierFor(int chapter) => _bossDamageByChapter[
-    (max(1, chapter) - 1).clamp(0, _bossDamageByChapter.length - 1)];
+double bossDamageBaseMultiplierFor(int chapter) =>
+    _bossDamageByChapter[(max(1, chapter) - 1).clamp(
+      0,
+      _bossDamageByChapter.length - 1,
+    )];
 
 /// How much harder each New Game+ cycle makes every enemy (health AND
 /// damage, on top of the whole curve): cycle 1 is +10%, cycle 2 +20%. A
@@ -1143,7 +1167,8 @@ List<BossPhase> parseBossPhases(Map<String, dynamic> enemy) {
       .map((m) => BossPhase.fromJson(m.cast<String, dynamic>()))
       .toList();
   return [...raw]..sort(
-      (a, b) => b.healthThresholdPercent.compareTo(a.healthThresholdPercent));
+      (a, b) => b.healthThresholdPercent.compareTo(a.healthThresholdPercent),
+    );
 }
 
 /// How many of [phases] an enemy at [currentHealth] of [maxHealth] has
@@ -1151,7 +1176,10 @@ List<BossPhase> parseBossPhases(Map<String, dynamic> enemy) {
 /// against the index it last applied and plays every phase in between
 /// (a single big hit can cross two thresholds at once).
 int bossPhaseIndexFor(
-    List<BossPhase> phases, int currentHealth, int maxHealth) {
+  List<BossPhase> phases,
+  int currentHealth,
+  int maxHealth,
+) {
   if (phases.isEmpty || maxHealth <= 0) return 0;
   if (currentHealth <= 0) return 0;
   final percent = currentHealth / maxHealth * 100;
@@ -1166,16 +1194,15 @@ int bossPhaseIndexFor(
 /// list extended (or replaced) by the phase's own. Pure -- returns a copy,
 /// never mutates the shared gamedata record.
 Map<String, dynamic> enemyDataInPhase(
-    Map<String, dynamic> enemy, BossPhase phase) {
+  Map<String, dynamic> enemy,
+  BossPhase phase,
+) {
   if (phase.addMoves.isEmpty) return enemy;
   final current =
       (enemy['skillMoves'] as List?)?.cast<Map<String, dynamic>>() ?? const [];
   return {
     ...enemy,
-    'skillMoves': [
-      if (!phase.replaceMoves) ...current,
-      ...phase.addMoves,
-    ],
+    'skillMoves': [if (!phase.replaceMoves) ...current, ...phase.addMoves],
   };
 }
 
@@ -1184,5 +1211,7 @@ Map<String, dynamic> enemyDataInPhase(
 int healthAfterPhaseHeal(BossPhase phase, int currentHealth, int maxHealth) {
   if (phase.healPercent <= 0) return currentHealth;
   return min(
-      maxHealth, currentHealth + (maxHealth * phase.healPercent / 100).round());
+    maxHealth,
+    currentHealth + (maxHealth * phase.healPercent / 100).round(),
+  );
 }

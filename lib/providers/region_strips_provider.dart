@@ -12,5 +12,8 @@ final regionStripsProvider = FutureProvider<RegionStrips>((ref) async {
   final geo = ref.watch(geographyProvider);
   final story = await ref.watch(storyDataProvider.future);
   return RegionStrips.build(
-      geo: geo, chart: chartOf(MapShape.story), story: story);
+    geo: geo,
+    chart: chartOf(MapShape.story),
+    story: story,
+  );
 });

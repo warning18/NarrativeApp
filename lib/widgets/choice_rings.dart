@@ -81,12 +81,13 @@ class ChoiceRingsLayer extends StatelessWidget {
                     painter: _RingsPainter(
                       here: here,
                       radii: [
-                        for (var i = 0; i < rings.length; i++) radiusOf(i)
+                        for (var i = 0; i < rings.length; i++) radiusOf(i),
                       ],
                       colors: [
                         for (final r in rings)
                           r.color.withValues(
-                              alpha: lit == null || lit == r.id ? 0.85 : 0.25),
+                            alpha: lit == null || lit == r.id ? 0.85 : 0.25,
+                          ),
                       ],
                     ),
                   ),
@@ -134,13 +135,19 @@ class ChoiceRingsLayer extends StatelessWidget {
                   ),
                   child: Center(
                     child: more
-                        ? Text('+${ring.count - shown}',
+                        ? Text(
+                            '+${ring.count - shown}',
                             style: TextStyle(
-                                fontFamily: InkFonts.system,
-                                fontSize: 11,
-                                color: ring.color))
-                        : Icon(ring.icons[k],
-                            size: IconSize.s16, color: ring.color),
+                              fontFamily: InkFonts.system,
+                              fontSize: 11,
+                              color: ring.color,
+                            ),
+                          )
+                        : Icon(
+                            ring.icons[k],
+                            size: IconSize.s16,
+                            color: ring.color,
+                          ),
                   ),
                 ),
               ),
@@ -176,8 +183,11 @@ class ChoiceRingsLayer extends StatelessWidget {
 }
 
 class _RingsPainter extends CustomPainter {
-  _RingsPainter(
-      {required this.here, required this.radii, required this.colors});
+  _RingsPainter({
+    required this.here,
+    required this.radii,
+    required this.colors,
+  });
 
   final Offset here;
   final List<double> radii;
@@ -195,8 +205,13 @@ class _RingsPainter extends CustomPainter {
       final dashes = (circumference / 9).floor();
       for (var d = 0; d < dashes; d++) {
         final a0 = d * 2 * math.pi / dashes;
-        canvas.drawArc(Rect.fromCircle(center: here, radius: radii[i]), a0,
-            2 * math.pi / dashes * 0.45, false, paint);
+        canvas.drawArc(
+          Rect.fromCircle(center: here, radius: radii[i]),
+          a0,
+          2 * math.pi / dashes * 0.45,
+          false,
+          paint,
+        );
       }
     }
   }
@@ -244,17 +259,22 @@ class ChoiceGroupChip extends StatelessWidget {
             borderRadius: BorderRadius.circular(14),
             color: lit
                 ? color
-                : Color.alphaBlend(color.withValues(alpha: 0.14),
-                    plate ?? theme.colorScheme.surface),
+                : Color.alphaBlend(
+                    color.withValues(alpha: 0.14),
+                    plate ?? theme.colorScheme.surface,
+                  ),
             border: Border.all(color: color, width: 1.6),
           ),
-          child: Text('$label · $count',
-              maxLines: 1,
-              style: TextStyle(
-                  fontFamily: InkFonts.system,
-                  fontSize: 11,
-                  fontWeight: FontWeight.w600,
-                  color: lit ? theme.colorScheme.surface : color)),
+          child: Text(
+            '$label · $count',
+            maxLines: 1,
+            style: TextStyle(
+              fontFamily: InkFonts.system,
+              fontSize: 11,
+              fontWeight: FontWeight.w600,
+              color: lit ? theme.colorScheme.surface : color,
+            ),
+          ),
         ),
       ),
     );
@@ -302,8 +322,9 @@ class ChoiceBeat extends StatelessWidget {
                     decoration: BoxDecoration(
                       shape: BoxShape.circle,
                       border: Border.all(
-                          color: color.withValues(alpha: 0.9 * (1 - t)),
-                          width: 4 * (1 - t) + 1),
+                        color: color.withValues(alpha: 0.9 * (1 - t)),
+                        width: 4 * (1 - t) + 1,
+                      ),
                     ),
                   ),
                 ),

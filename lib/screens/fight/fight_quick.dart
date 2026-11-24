@@ -49,10 +49,14 @@ extension _FightQuick on _FightScreenState {
       final share =
           player.maxHealth <= 0 ? 0.0 : player.currentHealth / player.maxHealth;
       if (quickResolveShouldStop(
-          playerHealthShare: share,
-          anyAllyDown: _party.any((m) => !m.isPlayer && m.isKnockedOut))) {
-        _update(() => _log.add(
-            _LogEntry(trFor(lang, 'quick_resolve_paused'), _LogKind.info)));
+        playerHealthShare: share,
+        anyAllyDown: _party.any((m) => !m.isPlayer && m.isKnockedOut),
+      )) {
+        _update(
+          () => _log.add(
+            _LogEntry(trFor(lang, 'quick_resolve_paused'), _LogKind.info),
+          ),
+        );
         break;
       }
       if (_rolling) {
@@ -81,9 +85,10 @@ extension _FightQuick on _FightScreenState {
       child: Row(
         children: [
           const SizedBox(
-              width: 16,
-              height: 16,
-              child: CircularProgressIndicator(strokeWidth: 2)),
+            width: 16,
+            height: 16,
+            child: CircularProgressIndicator(strokeWidth: 2),
+          ),
           const SizedBox(width: 10),
           Expanded(child: Text(tr(ref, 'quick_resolve_running'))),
           OutlinedButton.icon(
@@ -116,13 +121,19 @@ extension _FightQuick on _FightScreenState {
       _selectedDiceId = dieId;
       player.equippedDiceId = dieId;
       player.diceSkillAssignments = limitedFaceAssignments(
-          faces, session.diceSkillAssignments[dieId] ?? const {}, skills);
+        faces,
+        session.diceSkillAssignments[dieId] ?? const {},
+        skills,
+      );
       player.unlockedSkillIds = [
         ...session.unlockedSkillIds,
         ...dieSignatureSkillIds(dice[dieId] as Map<String, dynamic>?),
       ];
       player.dieFaces = _resonating(
-          smithedFaces(faces, session.upgradesOfDie(dieId)), dieId, session);
+        smithedFaces(faces, session.upgradesOfDie(dieId)),
+        dieId,
+        session,
+      );
     });
   }
 
@@ -146,10 +157,14 @@ extension _FightQuick on _FightScreenState {
               ?.cast<Map<String, dynamic>>() ??
           const <Map<String, dynamic>>[];
       return dieElements(
+        faces,
+        limitedFaceAssignments(
           faces,
-          limitedFaceAssignments(
-              faces, session.diceSkillAssignments[dieId] ?? const {}, skills),
-          skills);
+          session.diceSkillAssignments[dieId] ?? const {},
+          skills,
+        ),
+        skills,
+      );
     }
 
     final current = elementsOf(_selectedDiceId ?? '');
@@ -160,8 +175,10 @@ extension _FightQuick on _FightScreenState {
       key: const Key('loadout_picker'),
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(tr(ref, 'loadout_title'),
-            style: Theme.of(context).textTheme.labelLarge),
+        Text(
+          tr(ref, 'loadout_title'),
+          style: Theme.of(context).textTheme.labelLarge,
+        ),
         const SizedBox(height: 4),
         Wrap(
           spacing: 6,
@@ -172,8 +189,9 @@ extension _FightQuick on _FightScreenState {
                 ChoiceChip(
                   key: Key('loadout_die_$dieId'),
                   label: Text(
-                      '${weaknessesHit(elementsOf(dieId), weak).isNotEmpty ? '★ ' : ''}'
-                      '${dieDisplayName(dieId, language: lang)}'),
+                    '${weaknessesHit(elementsOf(dieId), weak).isNotEmpty ? '★ ' : ''}'
+                    '${dieDisplayName(dieId, language: lang)}',
+                  ),
                   selected: _selectedDiceId == dieId,
                   onSelected: _started || _selectedDiceId == dieId
                       ? null

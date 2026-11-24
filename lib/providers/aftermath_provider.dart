@@ -30,8 +30,9 @@ final pendingCheckOutcomeProvider = StateProvider<String?>((ref) => null);
 
 /// The plain scenes read on the way to this one (see scene_flow.dart):
 /// they open it, above its own text, and the next choice retires them.
-final pendingPreludeProvider =
-    StateProvider<List<ScenePrelude>>((ref) => const []);
+final pendingPreludeProvider = StateProvider<List<ScenePrelude>>(
+  (ref) => const [],
+);
 
 /// What the last step on the road cost (a day gone, hunger, rations
 /// running low; see journey_rules.dart): the next scene opens with it, and

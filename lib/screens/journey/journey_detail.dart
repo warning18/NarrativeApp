@@ -48,23 +48,34 @@ class _StepDetail extends ConsumerWidget {
         : enemyRoster(ids, enemies);
     final colour = step.locked
         ? ink.ash
-        : _colorFor(step.kind, ink, ChartPalette.of(ref.watch(mapLookProvider)),
-            greyed: false);
+        : _colorFor(
+            step.kind,
+            ink,
+            ChartPalette.of(ref.watch(mapLookProvider)),
+            greyed: false,
+          );
     final tags = [
       if (choice.hasAbilityCheck)
         InkChip(
-            '${tr(ref, '${choice.checkAbility}_label')} '
-            'DC ${choice.checkDC ?? 10}',
-            color: ink.tide),
+          '${tr(ref, '${choice.checkAbility}_label')} '
+          'DC ${choice.checkDC ?? 10}',
+          color: ink.tide,
+        ),
       if (choice.goldMod != 0)
-        InkChip('${signed(choice.goldMod)} ${tr(ref, 'gold_label')}',
-            color: ink.gold),
+        InkChip(
+          '${signed(choice.goldMod)} ${tr(ref, 'gold_label')}',
+          color: ink.gold,
+        ),
       if (choice.healAmount != 0)
-        InkChip('${signed(choice.healAmount)} ${tr(ref, 'hp_label')}',
-            color: choice.healAmount > 0 ? ink.heal : ink.blood),
+        InkChip(
+          '${signed(choice.healAmount)} ${tr(ref, 'hp_label')}',
+          color: choice.healAmount > 0 ? ink.heal : ink.blood,
+        ),
       if (choice.alignmentMod != 0)
-        InkChip('${tr(ref, 'alignment_label')} ${signed(choice.alignmentMod)}',
-            color: ink.voidColor),
+        InkChip(
+          '${tr(ref, 'alignment_label')} ${signed(choice.alignmentMod)}',
+          color: ink.voidColor,
+        ),
     ];
     return DecoratedBox(
       decoration: BoxDecoration(
@@ -106,47 +117,63 @@ class _StepDetail extends ConsumerWidget {
                       Padding(
                         padding: const EdgeInsets.only(top: 3, bottom: 1),
                         child: ChoiceTagChip(
-                            key: const ValueKey('journey_detail_tag'),
-                            tag: tag,
-                            locked: step.locked),
+                          key: const ValueKey('journey_detail_tag'),
+                          tag: tag,
+                          locked: step.locked,
+                        ),
                       ),
                     if (roster != null && !step.locked)
                       Text(
-                        tr(ref, 'choice_fight_roster')
-                            .replaceAll('{roster}', roster),
+                        tr(
+                          ref,
+                          'choice_fight_roster',
+                        ).replaceAll('{roster}', roster),
                         style: theme.textTheme.labelSmall,
                       ),
                     if (step.leadsTo != null)
                       Text(
-                        tr(ref, 'journey_leads_to')
-                            .replaceAll('{place}', step.leadsTo!),
-                        style: theme.textTheme.labelSmall
-                            ?.copyWith(color: ink.ash),
+                        tr(
+                          ref,
+                          'journey_leads_to',
+                        ).replaceAll('{place}', step.leadsTo!),
+                        style: theme.textTheme.labelSmall?.copyWith(
+                          color: ink.ash,
+                        ),
                       ),
                     // The road it takes, by the stops it passes (v1.256).
                     if (step.route != null && step.route!.stops.isNotEmpty)
                       Text(
-                        tr(ref, 'journey_by_road').replaceAll('{stops}',
-                            step.route!.stops.map((s) => s.name).join(' · ')),
-                        style: theme.textTheme.labelSmall
-                            ?.copyWith(color: ink.ash),
+                        tr(ref, 'journey_by_road').replaceAll(
+                          '{stops}',
+                          step.route!.stops.map((s) => s.name).join(' · '),
+                        ),
+                        style: theme.textTheme.labelSmall?.copyWith(
+                          color: ink.ash,
+                        ),
                       ),
                     if (step.event != null)
                       Padding(
                         padding: const EdgeInsets.only(top: 2),
                         child: Row(
                           children: [
-                            Icon(_eventIcon(step.event!, hazard: step.hazard),
-                                size: IconSize.s16,
-                                color: _eventColour(step.event!, ink)),
+                            Icon(
+                              _eventIcon(step.event!, hazard: step.hazard),
+                              size: IconSize.s16,
+                              color: _eventColour(step.event!, ink),
+                            ),
                             const SizedBox(width: 4),
                             Expanded(
                               child: Text(
-                                tr(ref, 'journey_event_${step.event!.name}')
-                                    .replaceAll('{hazard}',
-                                        step.hazard?.nameFor(french) ?? ''),
+                                tr(
+                                  ref,
+                                  'journey_event_${step.event!.name}',
+                                ).replaceAll(
+                                  '{hazard}',
+                                  step.hazard?.nameFor(french) ?? '',
+                                ),
                                 style: theme.textTheme.labelSmall?.copyWith(
-                                    color: _eventColour(step.event!, ink)),
+                                  color: _eventColour(step.event!, ink),
+                                ),
                               ),
                             ),
                           ],
@@ -190,10 +217,12 @@ void openStoryReader(BuildContext context, WidgetRef ref) {
     ref.read(homeTabIndexProvider.notifier).state = 0;
     return;
   }
-  Navigator.of(context).push(MaterialPageRoute<void>(
-    builder: (context) => Scaffold(
-      appBar: AppBar(title: Text(tr(ref, 'title_story'))),
-      body: const StoryPlayerScreen(),
+  Navigator.of(context).push(
+    MaterialPageRoute<void>(
+      builder: (context) => Scaffold(
+        appBar: AppBar(title: Text(tr(ref, 'title_story'))),
+        body: const StoryPlayerScreen(),
+      ),
     ),
-  ));
+  );
 }

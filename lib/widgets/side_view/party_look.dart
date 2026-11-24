@@ -55,45 +55,57 @@ class PartyLook {
 const Map<String, PartyLook> _looks = {
   // Dwarves: ruddy, bearded. Kelda in a plain helm, Brother Tobin in a cowl.
   'kelda': PartyLook(
-      skin: Color(0xFFE0A183),
-      hair: Color(0xFF8A3B1E),
-      headgear: PartyHeadgear.helm,
-      gear: Color(0xFF7C8591),
-      beard: true),
+    skin: Color(0xFFE0A183),
+    hair: Color(0xFF8A3B1E),
+    headgear: PartyHeadgear.helm,
+    gear: Color(0xFF7C8591),
+    beard: true,
+  ),
   'tobin': PartyLook(
-      skin: Color(0xFFD9A582),
-      hair: Color(0xFF9A9A9A),
-      headgear: PartyHeadgear.hood,
-      gear: Color(0xFF6B5B45),
-      beard: true),
+    skin: Color(0xFFD9A582),
+    hair: Color(0xFF9A9A9A),
+    headgear: PartyHeadgear.hood,
+    gear: Color(0xFF6B5B45),
+    beard: true,
+  ),
   // Humans: Sable hooded in black, Sister Maren veiled in white.
   'sable': PartyLook(
-      skin: Color(0xFFD9B08C),
-      hair: Color(0xFF1E1A1A),
-      headgear: PartyHeadgear.hood,
-      gear: Color(0xFF2B2630)),
+    skin: Color(0xFFD9B08C),
+    hair: Color(0xFF1E1A1A),
+    headgear: PartyHeadgear.hood,
+    gear: Color(0xFF2B2630),
+  ),
   'maren': PartyLook(
-      skin: Color(0xFFEBC9A5),
-      hair: Color(0xFF6B4A32),
-      headgear: PartyHeadgear.veil,
-      gear: Palette.amber88a),
+    skin: Color(0xFFEBC9A5),
+    hair: Color(0xFF6B4A32),
+    headgear: PartyHeadgear.veil,
+    gear: Palette.amber88a,
+  ),
   // The elf: fair, long gold hair, pointed ears.
-  'liora':
-      PartyLook(skin: Color(0xFFF0D2B4), hair: Color(0xFFE3C26B), ears: true),
+  'liora': PartyLook(
+    skin: Color(0xFFF0D2B4),
+    hair: Color(0xFFE3C26B),
+    ears: true,
+  ),
   // The voidkin: grey-violet, white hair under a dark hood.
   'vess': PartyLook(
-      skin: Color(0xFF9A8CC4),
-      hair: Color(0xFFEDEBF5),
-      headgear: PartyHeadgear.hood,
-      gear: Color(0xFF3B2F5E)),
+    skin: Color(0xFF9A8CC4),
+    hair: Color(0xFFEDEBF5),
+    headgear: PartyHeadgear.hood,
+    gear: Color(0xFF3B2F5E),
+  ),
   // The orcs: green, tusked. Grosh bare-headed, Malrik hooded.
-  'grosh':
-      PartyLook(skin: Color(0xFF7FA06A), hair: Color(0xFF1E1A1A), tusks: true),
+  'grosh': PartyLook(
+    skin: Color(0xFF7FA06A),
+    hair: Color(0xFF1E1A1A),
+    tusks: true,
+  ),
   'malrik': PartyLook(
-      skin: Color(0xFF6E8F5A),
-      headgear: PartyHeadgear.hood,
-      gear: Color(0xFF3C4A2E),
-      tusks: true),
+    skin: Color(0xFF6E8F5A),
+    headgear: PartyHeadgear.hood,
+    gear: Color(0xFF3C4A2E),
+    tusks: true,
+  ),
 };
 
 /// The look of the companion [id]: the table's, else one made from the id
@@ -127,8 +139,14 @@ PartyLook partyLookFor(String id) {
 /// Paints [look]'s face as a 3 by 3 block with its top-left at scene pixel
 /// ([x], [y]): the headgear on the row above (a hood and a veil come down
 /// the sides), the hair, the marks of the face, facing the bow.
-void paintPartyHead(Canvas canvas, double u, double x, double y, PartyLook look,
-    {Color? cloak}) {
+void paintPartyHead(
+  Canvas canvas,
+  double u,
+  double x,
+  double y,
+  PartyLook look, {
+  Color? cloak,
+}) {
   final paint = Paint();
   void dot(double dx, double dy, Color c, {double w = 1, double h = 1}) {
     paint.color = c;

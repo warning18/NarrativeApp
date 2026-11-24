@@ -93,8 +93,13 @@ List<PrologueSentence> prologueSentences(String text) {
     var first = true;
     void add(int to) {
       if (to <= from) return;
-      out.add(PrologueSentence(all.substring(from, to), bold.sublist(from, to),
-          opensParagraph: first));
+      out.add(
+        PrologueSentence(
+          all.substring(from, to),
+          bold.sublist(from, to),
+          opensParagraph: first,
+        ),
+      );
       first = false;
     }
 
@@ -109,7 +114,8 @@ List<PrologueSentence> prologueSentences(String text) {
 
 /// When each sentence starts and ends, in seconds, and the whole length.
 ({List<double> starts, List<double> ends, double total}) prologueSchedule(
-    List<PrologueSentence> sentences) {
+  List<PrologueSentence> sentences,
+) {
   final starts = <double>[];
   final ends = <double>[];
   var t = 0.0;
@@ -256,97 +262,104 @@ class _PrologueOpeningState extends State<PrologueOpening>
 
   @override
   Widget build(BuildContext context) {
-    return LayoutBuilder(builder: (context, box) {
-      final height = box.maxHeight.isFinite ? box.maxHeight : 600.0;
-      final settledText = (height * 0.5).clamp(120.0, 360.0);
-      final foldedHeight =
-          settledText.clamp(80.0, (height - 120).clamp(80.0, height));
-      return AnimatedBuilder(
-        animation: _clock,
-        builder: (context, _) {
-          final s = _now;
-          final total = _plan.total;
-          if (s >= total && !_toldSent) {
-            _toldSent = true;
-            WidgetsBinding.instance.addPostFrameCallback((_) {
-              if (mounted) widget.onTold?.call();
-            });
-          }
-          final settle = ((s - total) / _settleSeconds).clamp(0.0, 1.0);
-          final fold =
-              Curves.easeInOut.transform((settle / 0.45).clamp(0.0, 1.0));
-          // The choice comes once the text has folded out of its way.
-          final show =
-              Curves.easeOut.transform(((settle - 0.35) / 0.4).clamp(0.0, 1.0));
-          final done = s >= total;
-          final textHeight = height + (foldedHeight - height) * fold;
-          return Stack(
-            children: [
-              Positioned.fill(
-                child: IgnorePointer(
-                  child: Center(
-                    child: Opacity(
-                      key: const Key('prologue_sigil'),
-                      opacity: _sigilOpacity(s),
-                      child: ColorFiltered(
-                        colorFilter: const ColorFilter.matrix(<double>[
-                          0.33, 0.33, 0.33, 0, 40, //
-                          0.33, 0.33, 0.33, 0, 40,
-                          0.33, 0.33, 0.33, 0, 40,
-                          0, 0, 0, 1, 0,
-                        ]),
-                        child: Image.asset(
-                          prologueSigilAsset,
-                          height: height * 0.62,
-                          fit: BoxFit.contain,
-                          filterQuality: FilterQuality.none,
-                          isAntiAlias: false,
-                          errorBuilder: (_, __, ___) => const SizedBox.shrink(),
+    return LayoutBuilder(
+      builder: (context, box) {
+        final height = box.maxHeight.isFinite ? box.maxHeight : 600.0;
+        final settledText = (height * 0.5).clamp(120.0, 360.0);
+        final foldedHeight = settledText.clamp(
+          80.0,
+          (height - 120).clamp(80.0, height),
+        );
+        return AnimatedBuilder(
+          animation: _clock,
+          builder: (context, _) {
+            final s = _now;
+            final total = _plan.total;
+            if (s >= total && !_toldSent) {
+              _toldSent = true;
+              WidgetsBinding.instance.addPostFrameCallback((_) {
+                if (mounted) widget.onTold?.call();
+              });
+            }
+            final settle = ((s - total) / _settleSeconds).clamp(0.0, 1.0);
+            final fold = Curves.easeInOut.transform(
+              (settle / 0.45).clamp(0.0, 1.0),
+            );
+            // The choice comes once the text has folded out of its way.
+            final show = Curves.easeOut.transform(
+              ((settle - 0.35) / 0.4).clamp(0.0, 1.0),
+            );
+            final done = s >= total;
+            final textHeight = height + (foldedHeight - height) * fold;
+            return Stack(
+              children: [
+                Positioned.fill(
+                  child: IgnorePointer(
+                    child: Center(
+                      child: Opacity(
+                        key: const Key('prologue_sigil'),
+                        opacity: _sigilOpacity(s),
+                        child: ColorFiltered(
+                          colorFilter: const ColorFilter.matrix(<double>[
+                            0.33, 0.33, 0.33, 0, 40, //
+                            0.33, 0.33, 0.33, 0, 40,
+                            0.33, 0.33, 0.33, 0, 40,
+                            0, 0, 0, 1, 0,
+                          ]),
+                          child: Image.asset(
+                            prologueSigilAsset,
+                            height: height * 0.62,
+                            fit: BoxFit.contain,
+                            filterQuality: FilterQuality.none,
+                            isAntiAlias: false,
+                            errorBuilder: (_, __, ___) =>
+                                const SizedBox.shrink(),
+                          ),
                         ),
                       ),
                     ),
                   ),
                 ),
-              ),
-              Positioned(
-                top: 0,
-                left: 0,
-                right: 0,
-                height: textHeight,
-                child: GestureDetector(
-                  key: const Key('prologue_text'),
-                  behavior: HitTestBehavior.opaque,
-                  onTap: _tap,
-                  child: _ToldText(
-                    sentences: _sentences,
-                    plan: _plan,
-                    seconds: s,
-                    fold: fold,
-                    still: _reduced,
-                  ),
-                ),
-              ),
-              Positioned(
-                left: 0,
-                right: 0,
-                bottom: 0,
-                child: IgnorePointer(
-                  ignoring: !done,
-                  child: Opacity(
-                    key: const Key('prologue_choices'),
-                    opacity: _reduced ? (done ? 1 : 0) : show,
-                    child: ConstrainedBox(
-                      constraints: BoxConstraints(maxHeight: height * 0.4),
-                      child: SingleChildScrollView(child: widget.choices),
+                Positioned(
+                  top: 0,
+                  left: 0,
+                  right: 0,
+                  height: textHeight,
+                  child: GestureDetector(
+                    key: const Key('prologue_text'),
+                    behavior: HitTestBehavior.opaque,
+                    onTap: _tap,
+                    child: _ToldText(
+                      sentences: _sentences,
+                      plan: _plan,
+                      seconds: s,
+                      fold: fold,
+                      still: _reduced,
                     ),
                   ),
                 ),
-              ),
-            ],
-          );
-        },
-      );
-    });
+                Positioned(
+                  left: 0,
+                  right: 0,
+                  bottom: 0,
+                  child: IgnorePointer(
+                    ignoring: !done,
+                    child: Opacity(
+                      key: const Key('prologue_choices'),
+                      opacity: _reduced ? (done ? 1 : 0) : show,
+                      child: ConstrainedBox(
+                        constraints: BoxConstraints(maxHeight: height * 0.4),
+                        child: SingleChildScrollView(child: widget.choices),
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            );
+          },
+        );
+      },
+    );
   }
 }
 
@@ -401,30 +414,40 @@ class _ToldText extends StatelessWidget {
                   ? 0.36
                   : 0.24;
       final opacity = still ? 1.0 : dim + (1 - dim) * fold;
-      children.add(Padding(
-        padding: EdgeInsets.only(top: i == 0 ? 0 : (s.opensParagraph ? 18 : 8)),
-        child: Opacity(
-          opacity: opacity,
-          child: Text.rich(
-            key: Key('prologue_sentence_$i'),
-            TextSpan(children: [
-              for (final run in s.runs(shown))
-                TextSpan(
-                    text: run.text,
-                    style: run.bold
-                        ? TextStyle(
-                            fontWeight: FontWeight.w700, color: ink.gold)
-                        : null),
-              // The rest keeps its room, unseen, so the lines do not move.
-              if (shown < s.length)
-                TextSpan(
-                    text: s.text.substring(shown),
-                    style: const TextStyle(color: Colors.transparent)),
-            ]),
-            style: base,
+      children.add(
+        Padding(
+          padding: EdgeInsets.only(
+            top: i == 0 ? 0 : (s.opensParagraph ? 18 : 8),
+          ),
+          child: Opacity(
+            opacity: opacity,
+            child: Text.rich(
+              key: Key('prologue_sentence_$i'),
+              TextSpan(
+                children: [
+                  for (final run in s.runs(shown))
+                    TextSpan(
+                      text: run.text,
+                      style: run.bold
+                          ? TextStyle(
+                              fontWeight: FontWeight.w700,
+                              color: ink.gold,
+                            )
+                          : null,
+                    ),
+                  // The rest keeps its room, unseen, so the lines do not move.
+                  if (shown < s.length)
+                    TextSpan(
+                      text: s.text.substring(shown),
+                      style: const TextStyle(color: Colors.transparent),
+                    ),
+                ],
+              ),
+              style: base,
+            ),
           ),
         ),
-      ));
+      );
     }
     return ShaderMask(
       blendMode: BlendMode.dstIn,
@@ -434,19 +457,21 @@ class _ToldText extends StatelessWidget {
         colors: [Palette.alpha00Paper100, Palette.white],
         stops: [0, 0.14],
       ).createShader(rect),
-      child: LayoutBuilder(builder: (context, box) {
-        return SingleChildScrollView(
-          reverse: true,
-          child: ConstrainedBox(
-            constraints: BoxConstraints(minHeight: box.maxHeight),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: children,
+      child: LayoutBuilder(
+        builder: (context, box) {
+          return SingleChildScrollView(
+            reverse: true,
+            child: ConstrainedBox(
+              constraints: BoxConstraints(minHeight: box.maxHeight),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: children,
+              ),
             ),
-          ),
-        );
-      }),
+          );
+        },
+      ),
     );
   }
 }

@@ -35,7 +35,9 @@ class _BountyBoardState extends ConsumerState<BountyBoard>
     with SingleTickerProviderStateMixin {
   /// The notes pin up one after another: 0 to 1 over the board.
   late final AnimationController _pinUp = AnimationController(
-      vsync: this, duration: const Duration(milliseconds: 900));
+    vsync: this,
+    duration: const Duration(milliseconds: 900),
+  );
 
   /// The board the notes last pinned up for (its first note's id).
   String? _pinnedFor;
@@ -74,7 +76,10 @@ class _BountyBoardState extends ConsumerState<BountyBoard>
     final huntPool = SubNodeEngine.filterPackPool(
       enemies: enemies,
       enemyPool: SubNodeEngine.filterEnemyPool(
-          enemies: enemies, unlockedEnemyIds: const [], chapter: chapter),
+        enemies: enemies,
+        unlockedEnemyIds: const [],
+        chapter: chapter,
+      ),
     ).toSet().toList()
       ..sort();
     final board = repostBoard(
@@ -103,10 +108,14 @@ class _BountyBoardState extends ConsumerState<BountyBoard>
     }
     await ref.read(playerSessionProvider.notifier).claimContract(contract.id);
     if (!mounted) return;
-    ScaffoldMessenger.maybeOf(context)?.showSnackBar(SnackBar(
-      content: Text('${tr(ref, 'contract_claimed')} '
-          '${_rewardLine(contract)}'),
-    ));
+    ScaffoldMessenger.maybeOf(context)?.showSnackBar(
+      SnackBar(
+        content: Text(
+          '${tr(ref, 'contract_claimed')} '
+          '${_rewardLine(contract)}',
+        ),
+      ),
+    );
     await _postIfNeeded();
   }
 
@@ -147,9 +156,12 @@ class _BountyBoardState extends ConsumerState<BountyBoard>
     final enemies = ref.watch(localizedDbProvider(enemiesSchema)).value ??
         const <String, dynamic>{};
     if (contracts.isEmpty && _paid.isEmpty) {
-      return Text(tr(ref, 'contracts_posting'),
-          style: theme.textTheme.bodyMedium
-              ?.copyWith(color: theme.colorScheme.onSurfaceVariant));
+      return Text(
+        tr(ref, 'contracts_posting'),
+        style: theme.textTheme.bodyMedium?.copyWith(
+          color: theme.colorScheme.onSurfaceVariant,
+        ),
+      );
     }
     // A new board pins its notes up one after another.
     final boardKey = contracts.isEmpty ? null : contracts.first.id;
@@ -172,24 +184,33 @@ class _BountyBoardState extends ConsumerState<BountyBoard>
     final paid = _paid.values.toList()
       ..sort((a, b) => a.index.compareTo(b.index));
     for (final p in paid) {
-      notes.insert(
-          min(p.index, notes.length), (contract: p.contract, paid: true));
+      notes.insert(min(p.index, notes.length), (
+        contract: p.contract,
+        paid: true,
+      ));
     }
     final waiting = contracts.where((c) => c.done).length;
     final header = (waiting > 0
             ? tr(ref, 'board_header_claim')
             : tr(ref, 'board_header_open'))
         .replaceAll('{n}', '${session.contractsChapter}')
-        .replaceAll('{k}', waiting > 0 ? '$waiting' : '${contracts.length}');
+        .replaceAll(
+          '{k}',
+          waiting > 0 ? '$waiting' : '${contracts.length}',
+        );
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
         Padding(
           padding: const EdgeInsets.only(bottom: 8),
-          child: Text(header,
-              key: const Key('board_header'),
-              style: theme.textTheme.labelLarge?.copyWith(
-                  color: waiting > 0 ? _sealRed : ink.ash, letterSpacing: 0.4)),
+          child: Text(
+            header,
+            key: const Key('board_header'),
+            style: theme.textTheme.labelLarge?.copyWith(
+              color: waiting > 0 ? _sealRed : ink.ash,
+              letterSpacing: 0.4,
+            ),
+          ),
         ),
         _Wood(
           child: Column(
@@ -205,7 +226,9 @@ class _BountyBoardState extends ConsumerState<BountyBoard>
                     return Opacity(
                       opacity: t.clamp(0.0, 1.0),
                       child: Transform.translate(
-                          offset: Offset(0, -14 * (1 - e)), child: child),
+                        offset: Offset(0, -14 * (1 - e)),
+                        child: child,
+                      ),
                     );
                   },
                   child: _NoteSlot(
@@ -236,9 +259,12 @@ class _BountyBoardState extends ConsumerState<BountyBoard>
         ),
         Padding(
           padding: const EdgeInsets.only(top: 8),
-          child: Text(tr(ref, 'contracts_hint'),
-              style: theme.textTheme.bodySmall
-                  ?.copyWith(color: theme.colorScheme.onSurfaceVariant)),
+          child: Text(
+            tr(ref, 'contracts_hint'),
+            style: theme.textTheme.bodySmall?.copyWith(
+              color: theme.colorScheme.onSurfaceVariant,
+            ),
+          ),
         ),
       ],
     );
@@ -290,9 +316,15 @@ class _PlankPainter extends CustomPainter {
     }
     for (var y = 20.0; y < size.height; y += 60) {
       canvas.drawLine(
-          Offset(size.width * 0.1, y), Offset(size.width * 0.55, y), grain);
-      canvas.drawLine(Offset(size.width * 0.45, y + 24),
-          Offset(size.width * 0.9, y + 24), grain);
+        Offset(size.width * 0.1, y),
+        Offset(size.width * 0.55, y),
+        grain,
+      );
+      canvas.drawLine(
+        Offset(size.width * 0.45, y + 24),
+        Offset(size.width * 0.9, y + 24),
+        grain,
+      );
     }
   }
 
@@ -323,7 +355,9 @@ class _NoteSlot extends StatefulWidget {
 class _NoteSlotState extends State<_NoteSlot>
     with SingleTickerProviderStateMixin {
   late final AnimationController _c = AnimationController(
-      vsync: this, duration: const Duration(milliseconds: 1000));
+    vsync: this,
+    duration: const Duration(milliseconds: 1000),
+  );
 
   @override
   void initState() {
@@ -397,13 +431,16 @@ class _PaidStamp extends ConsumerWidget {
           borderRadius: BorderRadius.circular(4),
           color: _parchment.withValues(alpha: 0.6),
         ),
-        child: Text(tr(ref, 'contract_paid'),
-            style: const TextStyle(
-                fontFamily: InkFonts.system,
-                fontSize: 30,
-                height: 1.1,
-                letterSpacing: 3,
-                color: _sealRed)),
+        child: Text(
+          tr(ref, 'contract_paid'),
+          style: const TextStyle(
+            fontFamily: InkFonts.system,
+            fontSize: 30,
+            height: 1.1,
+            letterSpacing: 3,
+            color: _sealRed,
+          ),
+        ),
       );
 }
 
@@ -447,16 +484,22 @@ class _Note extends StatelessWidget {
               borderRadius: BorderRadius.circular(10),
               border: Border.all(color: _noteBrown.withValues(alpha: 0.7)),
             ),
-            child: Row(mainAxisSize: MainAxisSize.min, children: [
-              Icon(i, size: IconSize.s16, color: _noteBrown),
-              const SizedBox(width: 3),
-              Text(text,
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Icon(i, size: IconSize.s16, color: _noteBrown),
+                const SizedBox(width: 3),
+                Text(
+                  text,
                   style: const TextStyle(
-                      fontFamily: InkFonts.system,
-                      fontSize: 12,
-                      height: 1.1,
-                      color: _noteInk)),
-            ]),
+                    fontFamily: InkFonts.system,
+                    fontSize: 12,
+                    height: 1.1,
+                    color: _noteInk,
+                  ),
+                ),
+              ],
+            ),
           ),
         );
     return Container(
@@ -466,75 +509,106 @@ class _Note extends StatelessWidget {
         borderRadius: BorderRadius.circular(3),
         boxShadow: const [
           BoxShadow(
-              color: Color(0x66000000), blurRadius: 4, offset: Offset(1, 3)),
+            color: Color(0x66000000),
+            blurRadius: 4,
+            offset: Offset(1, 3),
+          ),
         ],
       ),
-      child: Stack(clipBehavior: Clip.none, children: [
-        // The nail.
-        const Positioned(
-          top: -10,
-          left: 0,
-          right: 0,
-          child: Center(
-              child:
-                  CircleAvatar(radius: 4, backgroundColor: Color(0xFF3A3A3F))),
-        ),
-        Row(crossAxisAlignment: CrossAxisAlignment.center, children: [
-          // The kind, as a stamp ring.
-          Container(
-            width: 40,
-            height: 40,
-            decoration: BoxDecoration(
-              shape: BoxShape.circle,
-              border: Border.all(color: ring.withValues(alpha: 0.85), width: 2),
+      child: Stack(
+        clipBehavior: Clip.none,
+        children: [
+          // The nail.
+          const Positioned(
+            top: -10,
+            left: 0,
+            right: 0,
+            child: Center(
+              child: CircleAvatar(
+                radius: 4,
+                backgroundColor: Color(0xFF3A3A3F),
+              ),
             ),
-            child: Icon(icon, size: IconSize.s16, color: ring),
           ),
-          const SizedBox(width: 12),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(goal,
-                    style: theme.textTheme.bodyLarge?.copyWith(
-                        color: _noteInk, fontSize: 16, height: 1.25)),
-                const SizedBox(height: 6),
-                Row(children: [
-                  // How far along, as pips.
-                  for (var k = 0; k < contract.required && k < 12; k++)
-                    Container(
-                      width: 9,
-                      height: 9,
-                      margin: const EdgeInsets.only(right: 3),
-                      decoration: BoxDecoration(
-                        shape: BoxShape.circle,
-                        color:
-                            k < contract.progress ? ring : Colors.transparent,
-                        border: Border.all(color: ring, width: 1.5),
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              // The kind, as a stamp ring.
+              Container(
+                width: 40,
+                height: 40,
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  border: Border.all(
+                    color: ring.withValues(alpha: 0.85),
+                    width: 2,
+                  ),
+                ),
+                child: Icon(icon, size: IconSize.s16, color: ring),
+              ),
+              const SizedBox(width: 12),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      goal,
+                      style: theme.textTheme.bodyLarge?.copyWith(
+                        color: _noteInk,
+                        fontSize: 16,
+                        height: 1.25,
                       ),
                     ),
-                  const SizedBox(width: 4),
-                  Text(progressText,
-                      style: const TextStyle(
-                          fontFamily: InkFonts.system,
-                          fontSize: 12,
-                          color: _noteInk)),
-                ]),
-                const SizedBox(height: 6),
-                Wrap(spacing: 6, runSpacing: 4, children: [
-                  chip(Icons.monetization_on_outlined, gold, goldLabel),
-                  chip(Icons.auto_awesome, essence, essenceLabel),
-                ]),
-              ],
-            ),
+                    const SizedBox(height: 6),
+                    Row(
+                      children: [
+                        // How far along, as pips.
+                        for (var k = 0; k < contract.required && k < 12; k++)
+                          Container(
+                            width: 9,
+                            height: 9,
+                            margin: const EdgeInsets.only(right: 3),
+                            decoration: BoxDecoration(
+                              shape: BoxShape.circle,
+                              color: k < contract.progress
+                                  ? ring
+                                  : Colors.transparent,
+                              border: Border.all(color: ring, width: 1.5),
+                            ),
+                          ),
+                        const SizedBox(width: 4),
+                        Text(
+                          progressText,
+                          style: const TextStyle(
+                            fontFamily: InkFonts.system,
+                            fontSize: 12,
+                            color: _noteInk,
+                          ),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 6),
+                    Wrap(
+                      spacing: 6,
+                      runSpacing: 4,
+                      children: [
+                        chip(Icons.monetization_on_outlined, gold, goldLabel),
+                        chip(Icons.auto_awesome, essence, essenceLabel),
+                      ],
+                    ),
+                  ],
+                ),
+              ),
+              const SizedBox(width: 6),
+              _Seal(
+                key: Key('contract_claim_${contract.id}'),
+                label: claimLabel,
+                onTap: onClaim,
+              ),
+            ],
           ),
-          const SizedBox(width: 6),
-          _Seal(
-              key: Key('contract_claim_${contract.id}'),
-              label: claimLabel,
-              onTap: onClaim),
-        ]),
-      ]),
+        ],
+      ),
     );
   }
 }
@@ -560,39 +634,49 @@ class _Seal extends StatelessWidget {
         child: SizedBox(
           width: 58,
           height: 64,
-          child: Column(mainAxisAlignment: MainAxisAlignment.center, children: [
-            Container(
-              width: 42,
-              height: 42,
-              decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                color: on ? _sealRed : const Color(0xFFA79C86),
-                border: Border.all(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Container(
+                width: 42,
+                height: 42,
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  color: on ? _sealRed : const Color(0xFFA79C86),
+                  border: Border.all(
                     color:
                         on ? const Color(0xFF8E2A1F) : const Color(0xFF8D8269),
-                    width: 2),
-                boxShadow: on
-                    ? [
-                        BoxShadow(
+                    width: 2,
+                  ),
+                  boxShadow: on
+                      ? [
+                          BoxShadow(
                             color: _sealRed.withValues(alpha: 0.55),
                             blurRadius: 10,
-                            spreadRadius: 1),
-                      ]
-                    : null,
-              ),
-              child: Icon(on ? Icons.check : Icons.hourglass_empty,
+                            spreadRadius: 1,
+                          ),
+                        ]
+                      : null,
+                ),
+                child: Icon(
+                  on ? Icons.check : Icons.hourglass_empty,
                   size: IconSize.s16,
-                  color: on ? _parchment : const Color(0xFF6F664F)),
-            ),
-            const SizedBox(height: 2),
-            Text(label,
+                  color: on ? _parchment : const Color(0xFF6F664F),
+                ),
+              ),
+              const SizedBox(height: 2),
+              Text(
+                label,
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,
                 style: TextStyle(
-                    fontFamily: InkFonts.system,
-                    fontSize: 10,
-                    color: on ? _sealRed : const Color(0xFF6F664F))),
-          ]),
+                  fontFamily: InkFonts.system,
+                  fontSize: 10,
+                  color: on ? _sealRed : const Color(0xFF6F664F),
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );

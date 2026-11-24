@@ -8,8 +8,10 @@ extension _FightSetup on _FightScreenState {
   /// chest's loot window.
   int get _chapter =>
       widget.modifiers.chapter ??
-      storyChapterOf(ref.read(storyPlayProvider).currentNodeId,
-          ref.read(storyDataProvider).value);
+      storyChapterOf(
+        ref.read(storyPlayProvider).currentNodeId,
+        ref.read(storyDataProvider).value,
+      );
 
   /// Builds [_enemies] — a solo fight rolls Elite (see [_eliteChance]); a
   /// pack (`widget.additionalEnemyIds` non-empty) never does. A pack member
@@ -43,7 +45,10 @@ extension _FightSetup on _FightScreenState {
         (lesson || !session.featureOpen(GameFeature.conditions)
             ? null
             : rollBattlefieldCondition(
-                enemyCount: entries.length, random: _random, light: _light));
+                enemyCount: entries.length,
+                random: _random,
+                light: _light,
+              ));
     // The day's sky over the party (v1.208): none for a lesson or a test.
     _sky = lesson || modifiers.isTest || modifiers.tower
         ? WeatherEffects.of(null)
@@ -57,9 +62,10 @@ extension _FightSetup on _FightScreenState {
     ];
     _doctrine = lesson || modifiers.isTest
         ? null
-        : doctrineForFight(factions: factions, isBoss: [
-            for (final e in entries) isBossEnemy(e.key, e.value),
-          ]);
+        : doctrineForFight(
+            factions: factions,
+            isBoss: [for (final e in entries) isBossEnemy(e.key, e.value)],
+          );
     final affixes = lesson
         ? [for (final _ in entries) <EnemyAffix>[]]
         : rollEncounterAffixes(
@@ -188,9 +194,13 @@ extension _FightSetup on _FightScreenState {
       displayName = titledName;
     }
     var maxHealth = enemyScaledMaxHealth(
-        (raw['maxHealth'] as num?)?.toInt() ?? 1, _playerLevel);
-    var damage =
-        scaledDamage((raw['damage'] as num?)?.toInt() ?? 0, _playerLevel);
+      (raw['maxHealth'] as num?)?.toInt() ?? 1,
+      _playerLevel,
+    );
+    var damage = scaledDamage(
+      (raw['damage'] as num?)?.toInt() ?? 0,
+      _playerLevel,
+    );
     // The difficulty curve (the flat floor, the chapter, a zone's tier and
     // the New Game+ cycle) scales every enemy before the Elite/pack
     // multipliers, so those keep their tuned ratios.
@@ -246,8 +256,9 @@ extension _FightSetup on _FightScreenState {
       maxHealth: maxHealth,
       damage: damage,
       guile: (raw['guile'] as num?)?.toInt() ?? 0,
-      hasReactiveMoves:
-          moves.any((m) => m['condition']?.toString() == 'OnHitByElement'),
+      hasReactiveMoves: moves.any(
+        (m) => m['condition']?.toString() == 'OnHitByElement',
+      ),
       currentHealth: maxHealth,
       affixes: affixes,
       faction: raw['faction']?.toString() ?? '',
@@ -289,8 +300,12 @@ extension _FightSetup on _FightScreenState {
     // alignment the party walks in with, with the title worn and the
     // Sworn boon (see offers.dart's clanEffectsFor).
     _signDefs = parseSigns(signsDb);
-    _signs = signEffectsFor(session.heldSigns, _signDefs,
-        alignment: session.alignmentScore, extra: clanEffects);
+    _signs = signEffectsFor(
+      session.heldSigns,
+      _signDefs,
+      alignment: session.alignmentScore,
+      extra: clanEffects,
+    );
     _writCharges = _signs.writFace;
     _edgeCharges = _signs.compactEdge;
     _emberCharges = _signs.emberFace;
@@ -327,13 +342,15 @@ extension _FightSetup on _FightScreenState {
     // player's own, or a companion's signature die, worked apart even when
     // the player owns the same die.
     List<Map<String, dynamic>> smithed(String? diceId, {String? companionId}) =>
-        smithedFaces(facesOf(diceId),
-            session.upgradesOfDie(diceId, companionId: companionId));
+        smithedFaces(
+          facesOf(diceId),
+          session.upgradesOfDie(diceId, companionId: companionId),
+        );
     final playerDiceAssignments = limitedFaceAssignments(
-        facesOf(_selectedDiceId),
-        session.diceSkillAssignments[_selectedDiceId] ??
-            const <String, String>{},
-        skills);
+      facesOf(_selectedDiceId),
+      session.diceSkillAssignments[_selectedDiceId] ?? const <String, String>{},
+      skills,
+    );
     final playerLabel = session.characterName.isNotEmpty
         ? session.characterName
         : trFor(ref.read(appLanguageProvider), 'you_label');
@@ -342,14 +359,16 @@ extension _FightSetup on _FightScreenState {
     final baseMaxHealth = _partyBonus.scaleMaxHealth(session.maxHealth);
     final playerMaxHealth = _signs.maxHealthFor(baseMaxHealth);
     final enteringHealth = SignEffects.healthEntering(
-      current: _partyBonus.scaleCurrentHealth(session.currentHealth > 0
-          ? session.currentHealth
-          : session.maxHealth),
+      current: _partyBonus.scaleCurrentHealth(
+        session.currentHealth > 0 ? session.currentHealth : session.maxHealth,
+      ),
       base: baseMaxHealth,
       fightMax: playerMaxHealth,
     );
-    final playerHealth =
-        _signs.afterStartCurse(enteringHealth, playerMaxHealth);
+    final playerHealth = _signs.afterStartCurse(
+      enteringHealth,
+      playerMaxHealth,
+    );
     _signStartCurseTaken = enteringHealth - playerHealth;
     final player = _PartyMember(
       id: 'player',
@@ -359,20 +378,25 @@ extension _FightSetup on _FightScreenState {
       // A sign that lends the damage stat lends its damage too
       // (stat_rules.dart).
       baseDamage: _partyBonus.scaleDamage(
-          session.baseDamage + _signs.stat(damageStatOf(session.professionId))),
+        session.baseDamage + _signs.stat(damageStatOf(session.professionId)),
+      ),
       armor: session.baseArmor,
       currentHealth: playerHealth,
       equippedItemIds: session.equippedItemIds,
       unlockedSkillIds: [
         ...session.unlockedSkillIds,
         ...dieSignatureSkillIds(
-            dice[_selectedDiceId ?? ''] as Map<String, dynamic>?),
+          dice[_selectedDiceId ?? ''] as Map<String, dynamic>?,
+        ),
       ],
       diceSkillAssignments: playerDiceAssignments,
       equippedDiceId: _selectedDiceId,
       // A mastered branch's skills fight a tier above their own.
       skillTiers: effectiveSkillTiers(
-          session.skillTiers, skillTrees, session.masteredBranchId),
+        session.skillTiers,
+        skillTrees,
+        session.masteredBranchId,
+      ),
       strength: session.strength + _signs.stat('strength'),
       dexterity: session.dexterity + _signs.stat('dexterity'),
       constitution: session.constitution + _signs.stat('constitution'),
@@ -381,8 +405,9 @@ extension _FightSetup on _FightScreenState {
       luck: session.luck + _signs.stat('luck'),
       perception: session.perception + _signs.stat('perception'),
       professionId: session.professionId,
-      gear: _signs.over(_perks
-          .over(gearEffectsFor(session.equippedItemIds, items, itemSets))),
+      gear: _signs.over(
+        _perks.over(gearEffectsFor(session.equippedItemIds, items, itemSets)),
+      ),
       dieFaces: _resonating(smithed(_selectedDiceId), _selectedDiceId, session),
     );
 
@@ -393,8 +418,9 @@ extension _FightSetup on _FightScreenState {
       final allyState = session.recruitedAllies.firstWhere(
         (a) => a.companionId == companionId,
         orElse: () => AllyState(
-            companionId: companionId,
-            currentHealth: AllyState.fullHealthSentinel),
+          companionId: companionId,
+          currentHealth: AllyState.fullHealthSentinel,
+        ),
       );
       final race = races[companion['raceId']?.toString() ?? '']
               as Map<String, dynamic>? ??
@@ -404,11 +430,15 @@ extension _FightSetup on _FightScreenState {
                   as Map<String, dynamic>? ??
               const {};
       final base = deriveAllyBaseStats(
-          gameConfig: gameConfig, race: race, profession: profession);
+        gameConfig: gameConfig,
+        race: race,
+        profession: profession,
+      );
       // A devoted companion fights harder, a wary one holds back.
       final tier = approvalTierFor(allyState.approval);
-      final allyHealth = _partyBonus
-              .scaleMaxHealth(scaledMaxHealth(base.maxHealth, _playerLevel)) *
+      final allyHealth = _partyBonus.scaleMaxHealth(
+            scaledMaxHealth(base.maxHealth, _playerLevel),
+          ) *
           approvalHealthPercent(tier) ~/
           100;
       // The Barracks Annex: a full company comes rested (party_bonus.dart).
@@ -416,18 +446,25 @@ extension _FightSetup on _FightScreenState {
           ? _partyBonus.scaleCompanionMaxHealth(allyHealth)
           : allyHealth;
       // A banner sign raises the whole party's health in the fight.
-      final liveMaxHealth =
-          _signs.maxHealthFor(baseAllyHealth, partyWide: true);
+      final liveMaxHealth = _signs.maxHealthFor(
+        baseAllyHealth,
+        partyWide: true,
+      );
       return _PartyMember(
         id: companionId,
         displayName: companion['companionName']?.toString() ?? companionId,
         isPlayer: false,
         maxHealth: liveMaxHealth,
         // A leader's allies (a perk, a sign) hit a little harder too.
-        baseDamage: _signs.scaleAllyDamage(_perks.scaleAllyDamage(_partyBonus
-                .scaleDamage(scaledDamage(base.baseDamage, _playerLevel)) *
-            approvalDamagePercent(tier) ~/
-            100)),
+        baseDamage: _signs.scaleAllyDamage(
+          _perks.scaleAllyDamage(
+            _partyBonus.scaleDamage(
+                  scaledDamage(base.baseDamage, _playerLevel),
+                ) *
+                approvalDamagePercent(tier) ~/
+                100,
+          ),
+        ),
         armor: base.baseArmor,
         currentHealth: SignEffects.healthEntering(
           current: _partyBonus
@@ -440,13 +477,15 @@ extension _FightSetup on _FightScreenState {
         unlockedSkillIds: [
           ...allyState.unlockedSkillIds,
           ...dieSignatureSkillIds(
-              dice[companion['signatureDiceId']?.toString() ?? '']
-                  as Map<String, dynamic>?),
+            dice[companion['signatureDiceId']?.toString() ?? '']
+                as Map<String, dynamic>?,
+          ),
         ],
         diceSkillAssignments: limitedFaceAssignments(
-            facesOf(companion['signatureDiceId']?.toString()),
-            allyState.diceSkillAssignments,
-            skills),
+          facesOf(companion['signatureDiceId']?.toString()),
+          allyState.diceSkillAssignments,
+          skills,
+        ),
         equippedDiceId: companion['signatureDiceId']?.toString(),
         strength: base.strength,
         dexterity: base.dexterity,
@@ -457,8 +496,10 @@ extension _FightSetup on _FightScreenState {
         perception: base.perception,
         professionId: companion['professionId']?.toString() ?? '',
         gear: gearEffectsFor(allyState.equippedItemIds, items, itemSets),
-        dieFaces: smithed(companion['signatureDiceId']?.toString(),
-            companionId: companionId),
+        dieFaces: smithed(
+          companion['signatureDiceId']?.toString(),
+          companionId: companionId,
+        ),
         approval: allyState.approval,
       );
     }
@@ -476,8 +517,11 @@ extension _FightSetup on _FightScreenState {
   void _fieldParty(List<String>? pick) {
     final build = _allyMember;
     if (_started || build == null || _party.isEmpty) return;
-    final lineup = fightLineup(ref.read(playerSessionProvider),
-        pick: pick, companions: _companions);
+    final lineup = fightLineup(
+      ref.read(playerSessionProvider),
+      pick: pick,
+      companions: _companions,
+    );
     _party = [
       _party.first,
       for (final id in lineup)
@@ -550,16 +594,23 @@ extension _FightSetup on _FightScreenState {
     final session = ref.read(playerSessionProvider);
     for (final id in session.activeAllyIds) {
       if (!fielded.contains(id)) {
-        await notifier.setAllyActive(id, false,
-            partyCapacity: basePartyCapacity, companions: _companions);
+        await notifier.setAllyActive(
+          id,
+          false,
+          partyCapacity: basePartyCapacity,
+          companions: _companions,
+        );
       }
     }
     for (final id in fielded) {
-      await notifier.setAllyActive(id, true,
-          partyCapacity: basePartyCapacity,
-          requiredHouseId:
-              (_companions[id] as Map?)?['requiredHouseId']?.toString(),
-          companions: _companions);
+      await notifier.setAllyActive(
+        id,
+        true,
+        partyCapacity: basePartyCapacity,
+        requiredHouseId:
+            (_companions[id] as Map?)?['requiredHouseId']?.toString(),
+        companions: _companions,
+      );
     }
   }
 
@@ -567,10 +618,16 @@ extension _FightSetup on _FightScreenState {
   /// die with its Resonance lit counts its low faces one more
   /// (clan_dice.dart); [_dieResonance] says how it stands, for the tray.
   List<Map<String, dynamic>> _resonating(
-      List<Map<String, dynamic>> faces, String? dieId, PlayerSession session) {
+    List<Map<String, dynamic>> faces,
+    String? dieId,
+    PlayerSession session,
+  ) {
     final dice = ref.read(gameDbProvider(diceSchema)).value ?? const {};
-    _dieResonance = resonanceOf(dice[dieId ?? ''] as Map<String, dynamic>?,
-        politics: session.politics, data: ref.read(clanDataProvider));
+    _dieResonance = resonanceOf(
+      dice[dieId ?? ''] as Map<String, dynamic>?,
+      politics: session.politics,
+      data: ref.read(clanDataProvider),
+    );
     return _dieResonance == Resonance.lit ? resonantFaces(faces) : faces;
   }
 
@@ -598,13 +655,15 @@ extension _FightSetup on _FightScreenState {
     final signLines = _openSignsForFight(lang);
     // Luck nudges (v1.182): the party's luckiest member sets how many.
     _nudgesLeft = nudgesForLuck(
-        _party.fold<int>(0, (best, m) => m.luck > best ? m.luck : best));
+      _party.fold<int>(0, (best, m) => m.luck > best ? m.luck : best),
+    );
     final hpSuffix = _enemies.length == 1
         ? ' ${trFor(lang, 'has_label')} ${_enemies.first.maxHealth} ${trFor(lang, 'hp_label')}'
         : '';
     final condition = _condition;
     final banter = _rollBanter(
-        kind: _enemies.length > 1 ? _BanterKind.pack : _BanterKind.fightStart);
+      kind: _enemies.length > 1 ? _BanterKind.pack : _BanterKind.fightStart,
+    );
     _update(() {
       _started = true;
       _roundsStarted = 1;
@@ -617,17 +676,21 @@ extension _FightSetup on _FightScreenState {
       );
       _log.addAll(_specStandingNotes(lang));
       if (condition != null) {
-        _log.add(_LogEntry(
-          '${trFor(lang, conditionLabelKey(condition))}: '
-          '${trFor(lang, conditionDescriptionKey(condition))}',
-          _LogKind.info,
-        ));
+        _log.add(
+          _LogEntry(
+            '${trFor(lang, conditionLabelKey(condition))}: '
+            '${trFor(lang, conditionDescriptionKey(condition))}',
+            _LogKind.info,
+          ),
+        );
       }
       if (_sky.effectKey case final key?) {
-        _log.add(_LogEntry(
-          '${trFor(lang, 'weather_${_sky.kind.name}')}: ${trFor(lang, key)}',
-          _LogKind.info,
-        ));
+        _log.add(
+          _LogEntry(
+            '${trFor(lang, 'weather_${_sky.kind.name}')}: ${trFor(lang, key)}',
+            _LogKind.info,
+          ),
+        );
       }
       // The ground's first word: an anomaly set for the second round is
       // announced now (an ambush starts its first round in the enemies' turn
@@ -638,15 +701,23 @@ extension _FightSetup on _FightScreenState {
       for (final id in _armedCharmIds) {
         final name =
             (items[id] as Map<String, dynamic>?)?['itemName']?.toString() ?? id;
-        _log.add(_LogEntry(
-            '${trFor(lang, 'charm_used_prefix')} $name', _LogKind.playerHeal));
+        _log.add(
+          _LogEntry(
+            '${trFor(lang, 'charm_used_prefix')} $name',
+            _LogKind.playerHeal,
+          ),
+        );
       }
       if (threatened) {
-        _log.add(_LogEntry(
-          trFor(lang, 'threat_fight_note')
-              .replaceAll('{p}', '${(_threat * 100).round()}'),
-          _LogKind.info,
-        ));
+        _log.add(
+          _LogEntry(
+            trFor(
+              lang,
+              'threat_fight_note',
+            ).replaceAll('{p}', '${(_threat * 100).round()}'),
+            _LogKind.info,
+          ),
+        );
       }
       _log.addAll(signLines);
       if (banter != null) _log.add(banter);
@@ -685,9 +756,12 @@ extension _FightSetup on _FightScreenState {
         if (houses > 1)
           trFor(lang, 'host_fight_houses').replaceAll('{n}', '$houses'),
       ];
-      lines.add(_LogEntry(
+      lines.add(
+        _LogEntry(
           trFor(lang, 'host_fight_log').replaceAll('{names}', names.join(', ')),
-          _LogKind.info));
+          _LogKind.info,
+        ),
+      );
     }
     if (_signs.isEmpty) return lines;
     if (_signs.silentVows > 0) {
@@ -698,15 +772,23 @@ extension _FightSetup on _FightScreenState {
         .heldSigns
         .fold<int>(0, (most, h) => max(most, h.pactFightsLeft));
     if (pactFights > 0) {
-      lines.add(_LogEntry(
+      lines.add(
+        _LogEntry(
           trFor(lang, 'sign_log_pact').replaceAll('{n}', '$pactFights'),
-          _LogKind.enemyDamage));
+          _LogKind.enemyDamage,
+        ),
+      );
     }
     if (_signStartCurseTaken > 0) {
-      lines.add(_LogEntry(
-          trFor(lang, 'sign_log_start_curse')
-              .replaceAll('{n}', '$_signStartCurseTaken'),
-          _LogKind.enemyDamage));
+      lines.add(
+        _LogEntry(
+          trFor(
+            lang,
+            'sign_log_start_curse',
+          ).replaceAll('{n}', '$_signStartCurseTaken'),
+          _LogKind.enemyDamage,
+        ),
+      );
     }
     final startBlock = _signs.partyStartBlock;
     if (startBlock > 0) {
@@ -715,15 +797,19 @@ extension _FightSetup on _FightScreenState {
         member.block += startBlock;
         _spellBlock[member.id] = (_spellBlock[member.id] ?? 0) + startBlock;
       }
-      lines.add(_LogEntry(
+      lines.add(
+        _LogEntry(
           trFor(lang, 'sign_log_start_block').replaceAll('{n}', '$startBlock'),
-          _LogKind.playerBlock));
+          _LogKind.playerBlock,
+        ),
+      );
     }
     if (_signs.startMomentum > 0) {
       _momentum = min(_momentumNeeded, _signs.startMomentum);
       if (_momentum >= _momentumNeeded) {
         lines.add(
-            _LogEntry(trFor(lang, 'momentum_ready_message'), _LogKind.info));
+          _LogEntry(trFor(lang, 'momentum_ready_message'), _LogKind.info),
+        );
       }
     }
     return lines;

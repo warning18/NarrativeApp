@@ -101,8 +101,10 @@ int plunderStashAfter(int stash, int hit, int cap) =>
 
 /// The gold missing from the spoils: what every thief that was not
 /// defeated carries off. The winnings never go below zero.
-int plunderLoss(
-    {required int goldGain, required Iterable<int> escapedStashes}) {
+int plunderLoss({
+  required int goldGain,
+  required Iterable<int> escapedStashes,
+}) {
   final lost = escapedStashes.fold<int>(0, (a, b) => a + b);
   return lost > goldGain ? goldGain : lost;
 }

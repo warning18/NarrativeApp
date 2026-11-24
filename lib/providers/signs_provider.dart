@@ -15,10 +15,12 @@ import 'player_session_provider.dart';
 /// (nameFor, greetingsFor...), and the session's notifier needs the same
 /// records whatever the language.
 final patronsProvider = Provider<Map<String, Patron>>(
-    (ref) => patronsFromFactions(ref.watch(factionsProvider)));
+  (ref) => patronsFromFactions(ref.watch(factionsProvider)),
+);
 
-final signDefsProvider = Provider<Map<String, SignDef>>((ref) =>
-    parseSigns(ref.watch(gameDbProvider(signsSchema)).value ?? const {}));
+final signDefsProvider = Provider<Map<String, SignDef>>(
+  (ref) => parseSigns(ref.watch(gameDbProvider(signsSchema)).value ?? const {}),
+);
 
 /// What the character's held signs add up to right now (see
 /// signEffectsFor), with the title worn and the Sworn boon (see
@@ -26,8 +28,13 @@ final signDefsProvider = Provider<Map<String, SignDef>>((ref) =>
 /// as they start.
 final signEffectsProvider = Provider<SignEffects>((ref) {
   final held = ref.watch(playerSessionProvider.select((s) => s.heldSigns));
-  final alignment =
-      ref.watch(playerSessionProvider.select((s) => s.alignmentScore));
-  return signEffectsFor(held, ref.watch(signDefsProvider),
-      alignment: alignment, extra: ref.watch(clanEffectsProvider));
+  final alignment = ref.watch(
+    playerSessionProvider.select((s) => s.alignmentScore),
+  );
+  return signEffectsFor(
+    held,
+    ref.watch(signDefsProvider),
+    alignment: alignment,
+    extra: ref.watch(clanEffectsProvider),
+  );
 });

@@ -25,7 +25,12 @@ class SideLayer {
 
   final double speed;
   final void Function(
-      Canvas canvas, Size size, double scroll, double t, double unit) paint;
+    Canvas canvas,
+    Size size,
+    double scroll,
+    double t,
+    double unit,
+  ) paint;
 }
 
 /// The weather's particles over a scene (the game's `WeatherKind`, plus the
@@ -88,8 +93,10 @@ class SideViewScene extends StatefulWidget {
 
 class _SideViewSceneState extends State<SideViewScene>
     with SingleTickerProviderStateMixin {
-  late final AnimationController _clock =
-      AnimationController(vsync: this, duration: const Duration(seconds: 3600));
+  late final AnimationController _clock = AnimationController(
+    vsync: this,
+    duration: const Duration(seconds: 3600),
+  );
   double _scroll = 0;
   double _lastT = 0;
   bool _started = false;
@@ -184,15 +191,24 @@ class _ScenePainter extends CustomPainter {
 
 /// A rectangle on the scene's pixel grid: [x] and [y] in scene pixels from
 /// the box's left and top, snapped to whole pixels.
-void sidePixels(Canvas canvas, double unit, Paint paint, double x, double y,
-    double w, double h) {
+void sidePixels(
+  Canvas canvas,
+  double unit,
+  Paint paint,
+  double x,
+  double y,
+  double w,
+  double h,
+) {
   canvas.drawRect(
-      Rect.fromLTWH(
-          x.floorToDouble() * unit,
-          y.floorToDouble() * unit,
-          math.max(1, w.roundToDouble()) * unit,
-          math.max(1, h.roundToDouble()) * unit),
-      paint);
+    Rect.fromLTWH(
+      x.floorToDouble() * unit,
+      y.floorToDouble() * unit,
+      math.max(1, w.roundToDouble()) * unit,
+      math.max(1, h.roundToDouble()) * unit,
+    ),
+    paint,
+  );
 }
 
 /// Hills of the far ground as columns, one scene pixel wide: the top at
@@ -221,11 +237,14 @@ void sideHills(
         amp * 0.45 * math.sin(wx * 2.3 + phase * 1.7);
     final top = h.roundToDouble();
     canvas.drawRect(
-        Rect.fromLTWH(i * unit, top * unit, unit + 0.5, size.height),
-        fillPaint);
+      Rect.fromLTWH(i * unit, top * unit, unit + 0.5, size.height),
+      fillPaint,
+    );
     if (rim != null) {
       canvas.drawRect(
-          Rect.fromLTWH(i * unit, top * unit, unit + 0.5, unit), rimPaint);
+        Rect.fromLTWH(i * unit, top * unit, unit + 0.5, unit),
+        rimPaint,
+      );
     }
   }
 }
@@ -237,21 +256,33 @@ double _rand(int seed) {
 
 /// The weather over the scene: [intensity] 0 to 1.
 /// The weather's particles over [size] on a grid of [unit]: also the fight's.
-void paintSideParticles(Canvas canvas, Size size, SideParticles kind,
-        double intensity, double t, double unit) =>
+void paintSideParticles(
+  Canvas canvas,
+  Size size,
+  SideParticles kind,
+  double intensity,
+  double t,
+  double unit,
+) =>
     _paintSideParticles(canvas, size, kind, intensity, t, unit);
 
-void _paintSideParticles(Canvas canvas, Size size, SideParticles kind,
-    double intensity, double t, double unit) {
+void _paintSideParticles(
+  Canvas canvas,
+  Size size,
+  SideParticles kind,
+  double intensity,
+  double t,
+  double unit,
+) {
   if (kind == SideParticles.none || intensity <= 0) return;
   final w = size.width, h = size.height;
   switch (kind) {
     case SideParticles.dust:
       canvas.drawRect(
-          Rect.fromLTWH(0, 0, w, h),
-          Paint()
-            ..color =
-                const Color(0xFFD9A25E).withValues(alpha: 0.22 * intensity));
+        Rect.fromLTWH(0, 0, w, h),
+        Paint()
+          ..color = const Color(0xFFD9A25E).withValues(alpha: 0.22 * intensity),
+      );
       final paint = Paint();
       final n = (70 * intensity).round();
       for (var i = 0; i < n; i++) {
@@ -262,9 +293,14 @@ void _paintSideParticles(Canvas canvas, Size size, SideParticles kind,
         paint.color = const Color(0xFFF0CE94)
             .withValues(alpha: 0.35 + 0.4 * _rand(i + 3));
         canvas.drawRect(
-            Rect.fromLTWH((x / unit).floorToDouble() * unit,
-                (y / unit).floorToDouble() * unit, len * unit * 0.6, unit),
-            paint);
+          Rect.fromLTWH(
+            (x / unit).floorToDouble() * unit,
+            (y / unit).floorToDouble() * unit,
+            len * unit * 0.6,
+            unit,
+          ),
+          paint,
+        );
       }
     case SideParticles.shimmer:
       final paint = Paint()
@@ -275,9 +311,14 @@ void _paintSideParticles(Canvas canvas, Size size, SideParticles kind,
         final wob = math.sin(t * 1.6 + i * 1.3) * unit * 3;
         final x0 = ((_rand(i + 5) * w) + wob) % w;
         canvas.drawRect(
-            Rect.fromLTWH(x0, (y / unit).floorToDouble() * unit,
-                w * (0.18 + 0.2 * _rand(i + 9)), unit * 0.8),
-            paint);
+          Rect.fromLTWH(
+            x0,
+            (y / unit).floorToDouble() * unit,
+            w * (0.18 + 0.2 * _rand(i + 9)),
+            unit * 0.8,
+          ),
+          paint,
+        );
       }
     case SideParticles.rain:
       final paint = Paint()
@@ -288,9 +329,14 @@ void _paintSideParticles(Canvas canvas, Size size, SideParticles kind,
         final x = (_rand(i + 5) * w - t * 40) % w;
         final y = ((_rand(i + 17) * h) + t * speed) % h;
         canvas.drawRect(
-            Rect.fromLTWH((x / unit).floorToDouble() * unit,
-                (y / unit).floorToDouble() * unit, unit, unit * 3),
-            paint);
+          Rect.fromLTWH(
+            (x / unit).floorToDouble() * unit,
+            (y / unit).floorToDouble() * unit,
+            unit,
+            unit * 3,
+          ),
+          paint,
+        );
       }
     case SideParticles.snow:
       final paint = Paint()
@@ -300,9 +346,14 @@ void _paintSideParticles(Canvas canvas, Size size, SideParticles kind,
         final x = ((_rand(i + 5) * w) + math.sin(t + i) * 6 - t * 14) % w;
         final y = ((_rand(i + 17) * h) + t * (30 + _rand(i) * 30)) % h;
         canvas.drawRect(
-            Rect.fromLTWH((x / unit).floorToDouble() * unit,
-                (y / unit).floorToDouble() * unit, unit, unit),
-            paint);
+          Rect.fromLTWH(
+            (x / unit).floorToDouble() * unit,
+            (y / unit).floorToDouble() * unit,
+            unit,
+            unit,
+          ),
+          paint,
+        );
       }
     case SideParticles.ash:
       final paint = Paint()
@@ -313,19 +364,25 @@ void _paintSideParticles(Canvas canvas, Size size, SideParticles kind,
             ((_rand(i + 5) * w) + math.sin(t * 0.7 + i) * 10 - t * 20) % w;
         final y = ((_rand(i + 17) * h) + t * (14 + _rand(i) * 20)) % h;
         canvas.drawRect(
-            Rect.fromLTWH((x / unit).floorToDouble() * unit,
-                (y / unit).floorToDouble() * unit, unit, unit),
-            paint);
+          Rect.fromLTWH(
+            (x / unit).floorToDouble() * unit,
+            (y / unit).floorToDouble() * unit,
+            unit,
+            unit,
+          ),
+          paint,
+        );
       }
     case SideParticles.fog:
       for (var i = 0; i < 4; i++) {
         final y = h * (0.35 + i * 0.16);
         final x = ((t * (6 + i * 3)) % (w * 1.4)) - w * 0.2;
         canvas.drawRect(
-            Rect.fromLTWH(x - w * 0.4, y, w * 1.2, h * 0.14),
-            Paint()
-              ..color =
-                  const Color(0xFFDDE3E1).withValues(alpha: 0.18 * intensity));
+          Rect.fromLTWH(x - w * 0.4, y, w * 1.2, h * 0.14),
+          Paint()
+            ..color =
+                const Color(0xFFDDE3E1).withValues(alpha: 0.18 * intensity),
+        );
       }
     case SideParticles.motes:
       final paint = Paint();
@@ -336,9 +393,14 @@ void _paintSideParticles(Canvas canvas, Size size, SideParticles kind,
         final twinkle = 0.3 + 0.7 * (0.5 + 0.5 * math.sin(t * 2 + i * 1.7));
         paint.color = const Color(0xFFFFF3B8).withValues(alpha: twinkle * 0.8);
         canvas.drawRect(
-            Rect.fromLTWH((x / unit).floorToDouble() * unit,
-                (y / unit).floorToDouble() * unit, unit, unit),
-            paint);
+          Rect.fromLTWH(
+            (x / unit).floorToDouble() * unit,
+            (y / unit).floorToDouble() * unit,
+            unit,
+            unit,
+          ),
+          paint,
+        );
       }
     case SideParticles.none:
       break;

@@ -13,23 +13,27 @@ import 'story_providers.dart';
 final partyAtCampProvider = Provider<bool>((ref) {
   final play = ref.watch(storyPlayProvider);
   final story = ref.watch(storyDataProvider).value;
-  return partyAtCamp(story?.nodeFor(play.currentNodeId),
-      inExcursion: play.isInExcursion);
+  return partyAtCamp(
+    story?.nodeFor(play.currentNodeId),
+    inExcursion: play.isInExcursion,
+  );
 });
 
 /// Where the party stands relative to its camp (see [CampPresence]).
 final campPresenceProvider = Provider<CampPresence>((ref) {
   final chapter = ref.watch(reachedChapterProvider);
   final ports = ref.watch(gameDbProvider(portsSchema)).value ?? const {};
-  final savedPortId =
-      ref.watch(playerSessionProvider.select((s) => s.currentPortId));
+  final savedPortId = ref.watch(
+    playerSessionProvider.select((s) => s.currentPortId),
+  );
   return campPresenceFor(
     chapter: chapter,
     atCampScene: ref.watch(partyAtCampProvider),
     ports: ports,
     savedPortId: savedPortId,
     campFounded: ref.watch(
-        playerSessionProvider.select((s) => s.flags.contains(campFoundedFlag))),
+      playerSessionProvider.select((s) => s.flags.contains(campFoundedFlag)),
+    ),
   );
 });
 

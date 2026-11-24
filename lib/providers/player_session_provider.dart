@@ -146,41 +146,43 @@ class PlayerSessionNotifier extends _SessionNotifierBase
         _SkillsCombatActions {
   PlayerSessionNotifier()
       : _detached = false,
-        super(const PlayerSession(
-          level: 1,
-          currentXP: 0,
-          gold: 0,
-          alignmentScore: 0,
-          maxHealth: 20,
-          currentHealth: 20,
-          baseDamage: 2,
-          baseArmor: 0,
-          luck: 0,
-          charisma: 0,
-          strength: 0,
-          dexterity: 0,
-          constitution: 0,
-          intelligence: 0,
-          wisdom: 0,
-          perception: 0,
-          potionCount: 0,
-          statPoints: 0,
-          maxSkillSlots: 3,
-          flags: [],
-          activeQuestIds: [],
-          completedQuestIds: [],
-          inventoryItemIds: [],
-          equippedItemIds: [],
-          unlockedSkillIds: [],
-          unlockedShopIds: [],
-          unlockedQuestIds: [],
-          unlockedEnemyIds: [],
-          diceSkillAssignments: {},
-          raceId: '',
-          professionId: '',
-          ownedDiceIds: [],
-          equippedDiceId: null,
-        )) {
+        super(
+          const PlayerSession(
+            level: 1,
+            currentXP: 0,
+            gold: 0,
+            alignmentScore: 0,
+            maxHealth: 20,
+            currentHealth: 20,
+            baseDamage: 2,
+            baseArmor: 0,
+            luck: 0,
+            charisma: 0,
+            strength: 0,
+            dexterity: 0,
+            constitution: 0,
+            intelligence: 0,
+            wisdom: 0,
+            perception: 0,
+            potionCount: 0,
+            statPoints: 0,
+            maxSkillSlots: 3,
+            flags: [],
+            activeQuestIds: [],
+            completedQuestIds: [],
+            inventoryItemIds: [],
+            equippedItemIds: [],
+            unlockedSkillIds: [],
+            unlockedShopIds: [],
+            unlockedQuestIds: [],
+            unlockedEnemyIds: [],
+            diceSkillAssignments: {},
+            raceId: '',
+            professionId: '',
+            ownedDiceIds: [],
+            equippedDiceId: null,
+          ),
+        ) {
     _load();
   }
 
@@ -230,8 +232,9 @@ class PlayerSessionNotifier extends _SessionNotifierBase
     final saved = prefs.getString(_playerSessionPrefsKey);
     if (saved != null) {
       try {
-        state =
-            PlayerSession.fromJson(json.decode(saved) as Map<String, dynamic>);
+        state = PlayerSession.fromJson(
+          json.decode(saved) as Map<String, dynamic>,
+        );
         _loaded.complete();
         return;
       } catch (_) {
@@ -248,7 +251,8 @@ class PlayerSessionNotifier extends _SessionNotifierBase
   /// that can be read, the shipped one otherwise (issue #693: a broken
   /// override must not stop a session or a character from being made).
   static Future<Map<String, dynamic>> _newGameDefaults(
-      SharedPreferences prefs) async {
+    SharedPreferences prefs,
+  ) async {
     final saved = prefs.getString(_newGameDefaultsPrefsKey);
     if (saved != null) {
       try {
@@ -263,8 +267,10 @@ class PlayerSessionNotifier extends _SessionNotifierBase
   /// [PlayerSession.legacyGold]) through the reset -- the reset that
   /// precedes character creation must not lose what the previous cycle
   /// handed down; an Edit-Mode "start from nothing" reset passes false.
-  Future<void> _resetToDefaults(SharedPreferences prefs,
-      {bool keepLegacy = true}) async {
+  Future<void> _resetToDefaults(
+    SharedPreferences prefs, {
+    bool keepLegacy = true,
+  }) async {
     final previous = state;
     final defaults = await _newGameDefaults(prefs);
     final maxHealth = (defaults['maxHealth'] as num?)?.toInt() ?? 20;
@@ -306,9 +312,7 @@ class PlayerSessionNotifier extends _SessionNotifierBase
       ownedDiceIds: const [],
       equippedDiceId: null,
       antidoteCount: (defaults['antidoteCount'] as num?)?.toInt() ?? 0,
-      mana: maxManaFor(
-        wisdom: (defaults['wisdom'] as num?)?.toInt() ?? 0,
-      ),
+      mana: maxManaFor(wisdom: (defaults['wisdom'] as num?)?.toInt() ?? 0),
       newGamePlusCycle: keepLegacy ? previous.newGamePlusCycle : 0,
       legacyGold: keepLegacy ? previous.legacyGold : 0,
       legacyDiceIds: keepLegacy ? previous.legacyDiceIds : const [],
@@ -400,8 +404,10 @@ class PlayerSessionNotifier extends _SessionNotifierBase
       unlockedShopIds: const [],
       unlockedQuestIds: const [],
       unlockedEnemyIds: const [],
-      diceSkillAssignments:
-          _starterAssignmentsByDie(starterAssignments, startingDiceId),
+      diceSkillAssignments: _starterAssignmentsByDie(
+        starterAssignments,
+        startingDiceId,
+      ),
       raceId: raceId,
       professionId: professionId,
       ownedDiceIds: [startingDiceId, ...legacyDice],
@@ -439,8 +445,10 @@ class PlayerSessionNotifier extends _SessionNotifierBase
       newGamePlusCycle: state.newGamePlusCycle + 1,
       legacyGold: (state.gold * newGamePlusGoldShare).round(),
       legacyDiceIds: {...state.legacyDiceIds, ...state.ownedDiceIds}.toList(),
-      legacySpellIds:
-          {...state.legacySpellIds, ...state.knownSpellIds}.toList(),
+      legacySpellIds: {
+        ...state.legacySpellIds,
+        ...state.knownSpellIds,
+      }.toList(),
     );
     await _persist();
   }
@@ -451,9 +459,7 @@ class PlayerSessionNotifier extends _SessionNotifierBase
     Map<String, String> starterAssignments,
     String startingDiceId,
   ) =>
-      {
-        if (starterAssignments.isNotEmpty) startingDiceId: starterAssignments,
-      };
+      {if (starterAssignments.isNotEmpty) startingDiceId: starterAssignments};
 
   /// Sets the character's name — called once from the lock-in dialog right
   /// after character creation (see RaceProfessionScreen), before the
@@ -536,8 +542,11 @@ class PlayerSessionNotifier extends _SessionNotifierBase
     // choice must not leave `*` to take whoever steps into their seat.
     // Never a permanent companion (story_companions.dart): `*` takes the
     // first other one seated.
-    final lostId = storyLossOf(loseAllyId,
-        active: state.activeAllyIds, companions: companions);
+    final lostId = storyLossOf(
+      loseAllyId,
+      active: state.activeAllyIds,
+      companions: companions,
+    );
     final reactions = _reactToDeed(
       companions: companions,
       alignmentMod: alignmentMod,
@@ -673,11 +682,17 @@ class PlayerSessionNotifier extends _SessionNotifierBase
       );
       // Vica (a permanent companion) never falls far enough to walk out.
       final after = permanentApprovalFloor(
-          companions[ally.companionId] as Map<String, dynamic>?,
-          approvalAfter(ally.approval, delta));
+        companions[ally.companionId] as Map<String, dynamic>?,
+        approvalAfter(ally.approval, delta),
+      );
       if (after == ally.approval) continue;
-      reactions.add(ApprovalChange(
-          companionId: ally.companionId, before: ally.approval, after: after));
+      reactions.add(
+        ApprovalChange(
+          companionId: ally.companionId,
+          before: ally.approval,
+          after: after,
+        ),
+      );
       allies[i] = ally.copyWith(approval: after);
     }
     if (reactions.isEmpty) return reactions;
@@ -689,8 +704,11 @@ class PlayerSessionNotifier extends _SessionNotifierBase
         companionId: reaction.companionId,
         before: reaction.before,
         after: reaction.after,
-        replacedBy: _removeAlly(reaction.companionId,
-            lost: false, companions: companions),
+        replacedBy: _removeAlly(
+          reaction.companionId,
+          lost: false,
+          companions: companions,
+        ),
       );
     }
     return reactions;
@@ -769,7 +787,8 @@ class PlayerSessionNotifier extends _SessionNotifierBase
         a.companionId == companionId
             ? a.copyWith(
                 approval: approvalAfter(a.approval, giftApproval),
-                giftChapter: chapter)
+                giftChapter: chapter,
+              )
             : a,
     ];
     state = state.copyWith(gold: state.gold - cost, recruitedAllies: allies);
@@ -837,7 +856,10 @@ class PlayerSessionNotifier extends _SessionNotifierBase
   /// [tomePicks] with [itemId] once per pick a tome of it grants
   /// ([picks]), for the ledger (see [PlayerSession.tomePicks]).
   static List<String> _withTomePicks(
-          List<String> tomePicks, String itemId, int picks) =>
+    List<String> tomePicks,
+    String itemId,
+    int picks,
+  ) =>
       picks <= 0
           ? tomePicks
           : [...tomePicks, for (var i = 0; i < picks; i++) itemId];
@@ -848,7 +870,9 @@ class PlayerSessionNotifier extends _SessionNotifierBase
   /// v1.194); every other Tome grants a stat point. Null for anything that
   /// isn't a Tome.
   static ({int statPoints, List<OfferTicket> offers})? tomeGrantFor(
-      String itemId, Map<String, dynamic>? item) {
+    String itemId,
+    Map<String, dynamic>? item,
+  ) {
     if (item?['itemType']?.toString() != 'Tome') return null;
     if (itemId == 'tome_of_mastery') {
       return (
@@ -961,21 +985,27 @@ CampRolls campRollsOf(PlayerSession s, {Set<RollPower>? powers}) {
 /// The roll houses' charges and bans for the choice sheets (camp_rolls.dart).
 final campRollsProvider = Provider<CampRolls>((ref) {
   // Only what the roll houses read (P4): other changes leave the sheets be.
-  ref.watch(playerSessionProvider.select((s) => (
+  ref.watch(
+    playerSessionProvider.select(
+      (s) => (
         built: s.builtHouseIds,
         reroll: s.rerollCharges,
         banish: s.banishCharges,
         raise: s.raiseCharges,
         progress: s.raiseProgress,
         bans: s.rollBans,
-      )));
+      ),
+    ),
+  );
   return campRollsOf(ref.read(playerSessionProvider));
 });
 
 /// The wards on the road running now, each clan with its roads left
 /// (road_wards.dart), for the Journey's mark (`ward_mark`).
-final roadWardsProvider = Provider<List<RoadWard>>((ref) =>
-    roadWardsOf(ref.watch(playerSessionProvider.select((s) => s.rollBans))));
+final roadWardsProvider = Provider<List<RoadWard>>(
+  (ref) =>
+      roadWardsOf(ref.watch(playerSessionProvider.select((s) => s.rollBans))),
+);
 
 final playerSessionProvider =
     StateNotifierProvider<PlayerSessionNotifier, PlayerSession>((ref) {

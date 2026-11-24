@@ -22,8 +22,10 @@ import '../theme/icon_sizes.dart';
 /// What the player chose to do with the spoils before closing the chest:
 /// gear to put on at once and healing potions to drink on the spot.
 class SpoilsChoices {
-  const SpoilsChoices(
-      {this.equipItemIds = const [], this.drinkItemIds = const []});
+  const SpoilsChoices({
+    this.equipItemIds = const [],
+    this.drinkItemIds = const [],
+  });
   final List<String> equipItemIds;
   final List<String> drinkItemIds;
   static const none = SpoilsChoices();
@@ -209,8 +211,9 @@ class _SpoilsChestDialogState extends State<SpoilsChestDialog>
       if (!mounted) return;
       for (final open in [false, true]) {
         precacheImage(
-            AssetImage(_chestAssetPath(widget.result.tier, open: open)),
-            context);
+          AssetImage(_chestAssetPath(widget.result.tier, open: open)),
+          context,
+        );
       }
     });
     _shake.addStatusListener((status) {
@@ -277,7 +280,8 @@ class _SpoilsChestDialogState extends State<SpoilsChestDialog>
       setState(() => _cycle = tiers[(start + i) % tiers.length]);
       final t = i / steps;
       await Future<void>.delayed(
-          Duration(milliseconds: (55 + 365 * t * t * t).round()));
+        Duration(milliseconds: (55 + 365 * t * t * t).round()),
+      );
     }
     _spinning = false;
   }
@@ -336,8 +340,10 @@ class _SpoilsChestDialogState extends State<SpoilsChestDialog>
               ),
               child: Text(
                 _t(chestTierLabelKey(result.tier)),
-                style: theme.textTheme.labelMedium
-                    ?.copyWith(color: tierColor, fontWeight: FontWeight.bold),
+                style: theme.textTheme.labelMedium?.copyWith(
+                  color: tierColor,
+                  fontWeight: FontWeight.bold,
+                ),
               ),
             ),
         ],
@@ -422,8 +428,9 @@ class _SpoilsChestDialogState extends State<SpoilsChestDialog>
                   Text(
                     _t('chest_extra_slot_note'),
                     textAlign: TextAlign.center,
-                    style: theme.textTheme.bodySmall
-                        ?.copyWith(color: theme.colorScheme.tertiary),
+                    style: theme.textTheme.bodySmall?.copyWith(
+                      color: theme.colorScheme.tertiary,
+                    ),
                   ),
                 ],
               ],
@@ -443,14 +450,18 @@ class _SpoilsChestDialogState extends State<SpoilsChestDialog>
           ),
         FilledButton(
           onPressed: _allRevealed
-              ? () => Navigator.of(context).pop(SpoilsChoices(
-                    equipItemIds: [
-                      for (final i in _equipSlots) widget.result.itemIds[i - 1],
-                    ],
-                    drinkItemIds: [
-                      for (final i in _drinkSlots) widget.result.itemIds[i - 1],
-                    ],
-                  ))
+              ? () => Navigator.of(context).pop(
+                    SpoilsChoices(
+                      equipItemIds: [
+                        for (final i in _equipSlots)
+                          widget.result.itemIds[i - 1],
+                      ],
+                      drinkItemIds: [
+                        for (final i in _drinkSlots)
+                          widget.result.itemIds[i - 1],
+                      ],
+                    ),
+                  )
               : null,
           child: Text(_t('chest_take_button')),
         ),
@@ -500,39 +511,45 @@ class _SpoilsChestDialogState extends State<SpoilsChestDialog>
       final wornId = _wornFor(slot);
       final worn =
           wornId == null ? null : widget.items[wornId] as Map<String, dynamic>?;
-      rewards.add(LootReward(
-        id: '$slot',
-        name: item?['itemName']?.toString() ?? itemId,
-        text: text,
-        icon: ItemPixelIcon(itemId, type, size: IconSize.s32),
-        canUseNow: action != null,
-        useLabel: action?.$1,
-        useEnabled: action?.$3 != null,
-        // A piece of gear says what it changes against the one worn (the
-        // stats with their difference, and what it replaces), as the old
-        // list under the slots did; a tap reads it in full.
-        detail: isGear(item)
-            ? Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  ItemStatChips(
-                    item: item,
-                    equipped: worn,
-                    language: widget.language,
-                    compact: true,
-                  ),
-                  if (worn != null)
-                    Text(
+      rewards.add(
+        LootReward(
+          id: '$slot',
+          name: item?['itemName']?.toString() ?? itemId,
+          text: text,
+          icon: ItemPixelIcon(itemId, type, size: IconSize.s32),
+          canUseNow: action != null,
+          useLabel: action?.$1,
+          useEnabled: action?.$3 != null,
+          // A piece of gear says what it changes against the one worn (the
+          // stats with their difference, and what it replaces), as the old
+          // list under the slots did; a tap reads it in full.
+          detail: isGear(item)
+              ? Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    ItemStatChips(
+                      item: item,
+                      equipped: worn,
+                      language: widget.language,
+                      compact: true,
+                    ),
+                    if (worn != null)
+                      Text(
                         _t('loot_replaces').replaceAll(
-                            '{name}', worn['itemName']?.toString() ?? wornId!),
+                          '{name}',
+                          worn['itemName']?.toString() ?? wornId!,
+                        ),
                         key: Key('loot_replaces_$slot'),
                         style: theme.textTheme.labelSmall?.copyWith(
-                            color: theme.colorScheme.onSurfaceVariant)),
-                ],
-              )
-            : null,
-        onTap: () => _showDetails(slot),
-      ));
+                          color: theme.colorScheme.onSurfaceVariant,
+                        ),
+                      ),
+                  ],
+                )
+              : null,
+          onTap: () => _showDetails(slot),
+        ),
+      );
     }
     final height = MediaQuery.sizeOf(context).height -
         MediaQuery.paddingOf(context).top -
@@ -554,7 +571,7 @@ class _SpoilsChestDialogState extends State<SpoilsChestDialog>
           changes: lines,
           rewards: rewards,
           useNow: {
-            for (final i in {..._equipSlots, ..._drinkSlots}) '$i'
+            for (final i in {..._equipSlots, ..._drinkSlots}) '$i',
           },
           onUseNow: (id, on) {
             final action = _actionFor(int.parse(id));
@@ -562,12 +579,14 @@ class _SpoilsChestDialogState extends State<SpoilsChestDialog>
               action.$3!();
             }
           },
-          onTake: () => Navigator.of(context).pop(SpoilsChoices(
-            equipItemIds: [
-              for (final i in _equipSlots) result.itemIds[i - 1],
-            ],
-            drinkItemIds: drinks,
-          )),
+          onTake: () => Navigator.of(context).pop(
+            SpoilsChoices(
+              equipItemIds: [
+                for (final i in _equipSlots) result.itemIds[i - 1],
+              ],
+              drinkItemIds: drinks,
+            ),
+          ),
           footer: _buildFortune(theme),
         ),
       ),
@@ -591,8 +610,10 @@ class _SpoilsChestDialogState extends State<SpoilsChestDialog>
     final cycle = _cycle;
     Widget art = ColorFiltered(
       colorFilter: grey,
-      child:
-          PixelIcon(_chestAssetPath(ChestTier.wooden, open: false), size: 112),
+      child: PixelIcon(
+        _chestAssetPath(ChestTier.wooden, open: false),
+        size: 112,
+      ),
     );
     if (cycle != null) {
       final tint = Color.lerp(_chestTierColor(cycle), Colors.white, 0.12)!;
@@ -611,14 +632,20 @@ class _SpoilsChestDialogState extends State<SpoilsChestDialog>
     Widget face;
     String label;
     if (index == 0) {
-      face = const Icon(Icons.monetization_on,
-          size: IconSize.s32, color: Palette.goldDeep);
+      face = const Icon(
+        Icons.monetization_on,
+        size: IconSize.s32,
+        color: Palette.goldDeep,
+      );
       label = '+${widget.result.gold} ${_t('gold_label')}';
     } else {
       final itemId = widget.result.itemIds[index - 1];
       final item = widget.items[itemId] as Map<String, dynamic>?;
-      face = ItemPixelIcon(itemId, item?['itemType']?.toString(),
-          size: IconSize.s32);
+      face = ItemPixelIcon(
+        itemId,
+        item?['itemType']?.toString(),
+        size: IconSize.s32,
+      );
       label = item?['itemName']?.toString() ?? itemId;
     }
     return GestureDetector(
@@ -636,7 +663,8 @@ class _SpoilsChestDialogState extends State<SpoilsChestDialog>
               ? tierColor.withValues(alpha: 0.12)
               : theme.colorScheme.surfaceContainerHighest,
           border: Border.all(
-              color: revealed ? tierColor : theme.colorScheme.outlineVariant),
+            color: revealed ? tierColor : theme.colorScheme.outlineVariant,
+          ),
           borderRadius: BorderRadius.circular(10),
         ),
         child: revealed
@@ -655,8 +683,11 @@ class _SpoilsChestDialogState extends State<SpoilsChestDialog>
                 ],
               )
             : Center(
-                child: Icon(Icons.help_outline,
-                    size: IconSize.s32, color: theme.colorScheme.outline),
+                child: Icon(
+                  Icons.help_outline,
+                  size: IconSize.s32,
+                  color: theme.colorScheme.outline,
+                ),
               ),
       ),
     );
@@ -696,7 +727,11 @@ class _SpoilsChestDialogState extends State<SpoilsChestDialog>
       }
     }
     return equippedCounterpart(
-        _itemIdAt(slot), item, widget.equippedItemIds, widget.items);
+      _itemIdAt(slot),
+      item,
+      widget.equippedItemIds,
+      widget.items,
+    );
   }
 
   void _toggleEquip(int slot) {
@@ -705,7 +740,8 @@ class _SpoilsChestDialogState extends State<SpoilsChestDialog>
         final equipSlot = _itemAt(slot)?['equipSlot']?.toString();
         // One piece per body slot: picking a second one replaces the first.
         _equipSlots.removeWhere(
-            (other) => _itemAt(other)?['equipSlot']?.toString() == equipSlot);
+          (other) => _itemAt(other)?['equipSlot']?.toString() == equipSlot,
+        );
         _equipSlots.add(slot);
       }
     });
@@ -724,7 +760,7 @@ class _SpoilsChestDialogState extends State<SpoilsChestDialog>
       return (
         _t('equip_button'),
         _equipSlots.contains(slot),
-        () => _toggleEquip(slot)
+        () => _toggleEquip(slot),
       );
     }
     if (_isHealingPotion(slot)) {

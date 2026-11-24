@@ -16,8 +16,10 @@ const Color _plateGold = Palette.goldDark;
 const Color _plateDown = Color(0xFF8FA3B8);
 
 /// [clanId]'s [ClanPowerRank] now, or null for a faction with no power.
-final _clanRankProvider =
-    Provider.family<ClanPowerRank?, String>((ref, clanId) {
+final _clanRankProvider = Provider.family<ClanPowerRank?, String>((
+  ref,
+  clanId,
+) {
   for (final r in ref.watch(clanPowerRankingProvider)) {
     if (r.clanId == clanId) return r;
   }
@@ -75,17 +77,24 @@ class ClanRankPlate extends ConsumerWidget {
         child: Row(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Text('#${r.rank}',
-                style: TextStyle(
-                    color: _plateGold,
-                    fontSize: size,
-                    height: 1.2,
-                    fontWeight: FontWeight.w800)),
+            Text(
+              '#${r.rank}',
+              style: TextStyle(
+                color: _plateGold,
+                fontSize: size,
+                height: 1.2,
+                fontWeight: FontWeight.w800,
+              ),
+            ),
             SizedBox(width: size * 0.25),
-            Text(_rankArrow(change),
-                key: Key('clan_rank_arrow_$clanId'),
-                style: TextStyle(
-                    color: _arrowColor(change), fontSize: size * 0.85)),
+            Text(
+              _rankArrow(change),
+              key: Key('clan_rank_arrow_$clanId'),
+              style: TextStyle(
+                color: _arrowColor(change),
+                fontSize: size * 0.85,
+              ),
+            ),
           ],
         ),
       ),
@@ -120,12 +129,14 @@ class ClanRankLine extends ConsumerWidget {
           const SizedBox(width: 8),
           Expanded(
             child: Text(
-                trFor(lang, 'rank_of_total')
-                        .replaceAll('{rank}', '${r.rank}')
-                        .replaceAll('{total}', '$total') +
-                    move,
-                style: theme.textTheme.labelMedium
-                    ?.copyWith(color: theme.colorScheme.onSurfaceVariant)),
+              trFor(lang, 'rank_of_total')
+                      .replaceAll('{rank}', '${r.rank}')
+                      .replaceAll('{total}', '$total') +
+                  move,
+              style: theme.textTheme.labelMedium?.copyWith(
+                color: theme.colorScheme.onSurfaceVariant,
+              ),
+            ),
           ),
         ],
       ),

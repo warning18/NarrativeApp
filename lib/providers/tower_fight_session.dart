@@ -79,10 +79,13 @@ class TowerFightSession {
   /// rival's floor, floor events PR 1); null, not counted (FightScreen does
   /// not say yet: no skip).
   TowerRun after(TowerRun run, {required bool won, int? rounds}) =>
-      towerAfterFight(run, data,
-          won: won,
-          healthLeft: healthLeft,
-          potionsLeft: potionsLeft,
-          antidotesLeft: antidotesLeft,
-          rounds: rounds);
+      towerAfterFight(
+        run,
+        data,
+        won: won,
+        healthLeft: healthLeft,
+        potionsLeft: potionsLeft,
+        antidotesLeft: antidotesLeft,
+        rounds: rounds,
+      );
 }

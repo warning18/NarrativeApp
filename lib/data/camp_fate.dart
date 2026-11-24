@@ -233,7 +233,7 @@ List<FateChoice> fateChoicesFor(FateRoll roll) => switch (roll.face) {
       FateFace.visitor => switch (roll.visitor!) {
           FateVisitor.pilgrims => const [
               FateChoice.shareRations,
-              FateChoice.sendOn,
+              FateChoice.sendOn
             ],
           FateVisitor.deserter => const [
               FateChoice.hideDeserter,
@@ -241,7 +241,7 @@ List<FateChoice> fateChoicesFor(FateRoll roll) => switch (roll.face) {
             ],
           FateVisitor.storyteller => const [
               FateChoice.listen,
-              FateChoice.sendAway,
+              FateChoice.sendAway
             ],
         },
       FateFace.quarrel => const [
@@ -309,8 +309,11 @@ FateOutcome fateOutcome(
     case FateFace.windfall:
       if (context.provisions * 2 <= context.provisionsMax) {
         return FateOutcome(
-            provisions: min(
-                windfallRations, context.provisionsMax - context.provisions));
+          provisions: min(
+            windfallRations,
+            context.provisionsMax - context.provisions,
+          ),
+        );
       }
       return FateOutcome(gold: windfallGold(chapter));
     case FateFace.rumor:
@@ -327,23 +330,31 @@ FateOutcome fateOutcome(
         return FateOutcome(gold: -taken, checkRoll: total, checkPassed: false);
       }
       return FateOutcome(
-          provisions: -min(theftRations, context.provisions),
-          checkRoll: total,
-          checkPassed: false);
+        provisions: -min(theftRations, context.provisions),
+        checkRoll: total,
+        checkPassed: false,
+      );
     case FateFace.visitor:
       return switch (choice) {
         FateChoice.shareRations => const FateOutcome(
-            provisions: -pilgrimRations, alignment: pilgrimShareAlignment),
-        FateChoice.sendOn =>
-          const FateOutcome(alignment: pilgrimRefuseAlignment),
-        FateChoice.hideDeserter =>
-          const FateOutcome(alignment: _deserterHideAlignment),
+            provisions: -pilgrimRations,
+            alignment: pilgrimShareAlignment,
+          ),
+        FateChoice.sendOn => const FateOutcome(
+            alignment: pilgrimRefuseAlignment,
+          ),
+        FateChoice.hideDeserter => const FateOutcome(
+            alignment: _deserterHideAlignment,
+          ),
         FateChoice.handOver => FateOutcome(
             gold: deserterBounty(chapter),
-            alignment: deserterHandOverAlignment),
-        FateChoice.listen => FateOutcome(approval: {
-            for (final id in context.companionIds) id: storytellerApproval,
-          }),
+            alignment: deserterHandOverAlignment,
+          ),
+        FateChoice.listen => FateOutcome(
+            approval: {
+              for (final id in context.companionIds) id: storytellerApproval,
+            },
+          ),
         _ => const FateOutcome(),
       };
     case FateFace.quarrel:
@@ -351,15 +362,19 @@ FateOutcome fateOutcome(
       final second = roll.quarrelers.last;
       switch (choice) {
         case FateChoice.sideWithFirst:
-          return FateOutcome(approval: {
-            first: quarrelSideApproval,
-            second: -quarrelSideApproval,
-          });
+          return FateOutcome(
+            approval: {
+              first: quarrelSideApproval,
+              second: -quarrelSideApproval,
+            },
+          );
         case FateChoice.sideWithSecond:
-          return FateOutcome(approval: {
-            first: -quarrelSideApproval,
-            second: quarrelSideApproval,
-          });
+          return FateOutcome(
+            approval: {
+              first: -quarrelSideApproval,
+              second: quarrelSideApproval,
+            },
+          );
         case FateChoice.makePeace:
           final total = checkTotal ?? 0;
           final peace = passed(total);

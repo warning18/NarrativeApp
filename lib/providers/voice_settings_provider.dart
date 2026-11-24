@@ -46,8 +46,12 @@ class ElevenLabsVoiceSettings {
 class _ElevenLabsVoiceSettingsNotifier
     extends StateNotifier<ElevenLabsVoiceSettings> {
   _ElevenLabsVoiceSettingsNotifier()
-      : super(const ElevenLabsVoiceSettings(
-            enabled: false, voiceId: defaultElevenLabsVoiceId)) {
+      : super(
+          const ElevenLabsVoiceSettings(
+            enabled: false,
+            voiceId: defaultElevenLabsVoiceId,
+          ),
+        ) {
     _load();
   }
 
@@ -72,7 +76,8 @@ class _ElevenLabsVoiceSettingsNotifier
   Future<void> setVoiceId(String voiceId) async {
     final trimmed = voiceId.trim();
     state = state.copyWith(
-        voiceId: trimmed.isEmpty ? defaultElevenLabsVoiceId : trimmed);
+      voiceId: trimmed.isEmpty ? defaultElevenLabsVoiceId : trimmed,
+    );
     final prefs = await SharedPreferences.getInstance();
     if (trimmed.isEmpty) {
       await prefs.remove(_elevenLabsVoiceIdPrefsKey);
@@ -102,9 +107,8 @@ class _ElevenLabsVoiceSettingsNotifier
 /// stored on the device (see `elevenLabsTtsProvider`), so after that it
 /// plays offline. Off by default; persisted via [SharedPreferences].
 final elevenLabsVoiceSettingsProvider = StateNotifierProvider<
-    _ElevenLabsVoiceSettingsNotifier, ElevenLabsVoiceSettings>(
-  (ref) => _ElevenLabsVoiceSettingsNotifier(),
-);
+    _ElevenLabsVoiceSettingsNotifier,
+    ElevenLabsVoiceSettings>((ref) => _ElevenLabsVoiceSettingsNotifier());
 
 class _AutoReadAloudNotifier extends StateNotifier<bool> {
   _AutoReadAloudNotifier() : super(false) {
@@ -130,4 +134,5 @@ class _AutoReadAloudNotifier extends StateNotifier<bool> {
 /// [SharedPreferences].
 final autoReadAloudProvider =
     StateNotifierProvider<_AutoReadAloudNotifier, bool>(
-        (ref) => _AutoReadAloudNotifier());
+  (ref) => _AutoReadAloudNotifier(),
+);

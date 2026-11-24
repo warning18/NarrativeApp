@@ -1,4 +1,5 @@
 import 'package:flutter/foundation.dart' show visibleForTesting;
+
 import '../l10n/app_locale.dart';
 import '../l10n/app_strings.dart';
 import '../models/story_node.dart';
@@ -141,14 +142,19 @@ class EventTrigger {
     final type = _text(raw['type']).toLowerCase();
     final value = raw['value'];
     final trigger = EventTrigger(
-      chapter: _optionalInt(raw['chapter'] ??
-          raw['chapterAtLeast'] ??
-          (type == 'chapter' ? value : null)),
+      chapter: _optionalInt(
+        raw['chapter'] ??
+            raw['chapterAtLeast'] ??
+            (type == 'chapter' ? value : null),
+      ),
       day: _optionalInt(
-          raw['day'] ?? raw['dayAtLeast'] ?? (type == 'day' ? value : null)),
-      chapterDay: _optionalInt(raw['chapterDay'] ??
-          raw['dayInChapter'] ??
-          (type == 'chapterday' ? value : null)),
+        raw['day'] ?? raw['dayAtLeast'] ?? (type == 'day' ? value : null),
+      ),
+      chapterDay: _optionalInt(
+        raw['chapterDay'] ??
+            raw['dayInChapter'] ??
+            (type == 'chapterday' ? value : null),
+      ),
       flags: [
         ..._strings(raw['flags']),
         ..._strings(raw['flag']),
@@ -236,8 +242,11 @@ class EventConditions {
 
   /// Whether [held] (a claim or the Throne's faction, '' for none) is one
   /// of [wanted] (ids, `any`, `none`).
-  static bool _oneOf(List<String> wanted, String held) => wanted.any((w) =>
-      w == 'any' ? held.isNotEmpty : (w == 'none' ? held.isEmpty : w == held));
+  static bool _oneOf(List<String> wanted, String held) => wanted.any(
+        (w) => w == 'any'
+            ? held.isNotEmpty
+            : (w == 'none' ? held.isEmpty : w == held),
+      );
 
   factory EventConditions.fromJson(Map<String, dynamic> json) =>
       EventConditions(
@@ -589,15 +598,27 @@ class _Coast {
   }
 
   void standing(String factionId, num delta, String cause) {
-    politics = applyStandingChange(politics, factionId, delta, cause,
-            data: data, chapter: world.chapter, day: world.day)
-        .state;
+    politics = applyStandingChange(
+      politics,
+      factionId,
+      delta,
+      cause,
+      data: data,
+      chapter: world.chapter,
+      day: world.day,
+    ).state;
   }
 
   void mark(String subclanId, SubclanMark mark, String cause) {
-    politics = setSubclanMark(politics, subclanId, mark, cause,
-            data: data, chapter: world.chapter, day: world.day)
-        .state;
+    politics = setSubclanMark(
+      politics,
+      subclanId,
+      mark,
+      cause,
+      data: data,
+      chapter: world.chapter,
+      day: world.day,
+    ).state;
   }
 
   void apply(StoryPolitics p, String cause, int depth) {
@@ -610,8 +631,13 @@ class _Coast {
     // brings it [questPower].
     final mine = cause.startsWith('story:') || cause.startsWith('quest:');
     for (final e in p.power.entries) {
-      politics =
-          addPower(politics, e.key, e.value, data, helped: e.value > 0 && mine);
+      politics = addPower(
+        politics,
+        e.key,
+        e.value,
+        data,
+        helped: e.value > 0 && mine,
+      );
     }
     if (cause.contains('quest:')) {
       for (final e in p.standing.entries) {
@@ -629,35 +655,56 @@ class _Coast {
       politics = applySiegeChoice(politics, p.settleSiege);
     }
     if (p.bendKnee.isNotEmpty) {
-      politics = bendTheKnee(politics, p.bendKnee, data,
-          chapter: world.chapter, day: world.day);
+      politics = bendTheKnee(
+        politics,
+        p.bendKnee,
+        data,
+        chapter: world.chapter,
+        day: world.day,
+      );
     }
     if (p.stayFallen.isNotEmpty) {
       politics = stayOfFallen(politics, p.stayFallen);
     }
     if (p.breakNemesis.isNotEmpty) {
-      politics = breakNemesis(politics, p.breakNemesis, data,
-          chapter: world.chapter, day: world.day);
+      politics = breakNemesis(
+        politics,
+        p.breakNemesis,
+        data,
+        chapter: world.chapter,
+        day: world.day,
+      );
     }
     for (final e in p.control.entries) {
       final geography = world.geography;
       politics = geography?.place(e.key) == null
           ? politics.copyWith(control: {...politics.control, e.key: e.value})
-          : givePlace(politics, e.key, e.value,
+          : givePlace(
+              politics,
+              e.key,
+              e.value,
               cause: 'event',
               data: data,
               geography: geography!,
               chapter: world.chapter,
-              day: world.day);
+              day: world.day,
+            );
     }
     for (final e in p.marks.entries) {
       final m = subclanMarkNamed(e.value);
       if (m != null) mark(e.key, m, cause);
     }
     for (final r in p.relations) {
-      politics = shiftRelation(politics, r.a, r.b, r.steps, cause,
-              data: data, chapter: world.chapter, day: world.day)
-          .state;
+      politics = shiftRelation(
+        politics,
+        r.a,
+        r.b,
+        r.steps,
+        cause,
+        data: data,
+        chapter: world.chapter,
+        day: world.day,
+      ).state;
     }
     p.flags.forEach(addFlag);
     openHandFlagsUpTo(p.remembrance).forEach(addFlag);
@@ -705,9 +752,15 @@ class _Coast {
     if (previous != id) {
       if (previous.isNotEmpty) {
         final renounce = 'renounce:$previous';
-        final renounced = setStandingValue(politics, previous,
-            politics.standingOf(previous, data) - renounceCost, renounce,
-            data: data, chapter: world.chapter, day: world.day);
+        final renounced = setStandingValue(
+          politics,
+          previous,
+          politics.standingOf(previous, data) - renounceCost,
+          renounce,
+          data: data,
+          chapter: world.chapter,
+          day: world.day,
+        );
         politics = renounced.state;
         if (!renounced.changed) log(renounce, previous);
       }
@@ -721,8 +774,14 @@ class _Coast {
     };
     flags.removeWhere(others.contains);
     addFlag(claimFlag(id));
-    final raised = raiseToClaim(politics, id, 'claim',
-        data: data, chapter: world.chapter, day: world.day);
+    final raised = raiseToClaim(
+      politics,
+      id,
+      'claim',
+      data: data,
+      chapter: world.chapter,
+      day: world.day,
+    );
     politics = raised.state;
     if (!raised.changed && previous != id) log('claim', id);
   }
@@ -761,11 +820,11 @@ class _Coast {
   /// place of an earlier muster's.
   void muster() {
     final host = hostFor(
-            politics: politics,
-            data: data,
-            signPatrons: world.signPatrons,
-            geography: world.geography)
-        .musteredOn(world.chapter, world.day);
+      politics: politics,
+      data: data,
+      signPatrons: world.signPatrons,
+      geography: world.geography,
+    ).musteredOn(world.chapter, world.day);
     politics = politics.copyWith(host: host);
     flags.removeWhere((f) => isMusterFlag(f, data.factions.keys));
     hostFlagsFor(host).forEach(addFlag);
@@ -808,8 +867,9 @@ class _Coast {
       mark(e.subclanId, e.mark!, cause);
     }
     if (e.companionId.isNotEmpty && e.change.isNotEmpty) {
-      companions
-          .add(CompanionTurn(companionId: e.companionId, change: e.change));
+      companions.add(
+        CompanionTurn(companionId: e.companionId, change: e.change),
+      );
     }
     if (e.titleId.isNotEmpty &&
         data.titles.containsKey(e.titleId) &&
@@ -876,8 +936,9 @@ class _Coast {
         textFr: variant.newsFr,
       );
       news.add(told);
-      politics =
-          politics.copyWith(news: _capped(politics.news, told, maxCoastNews));
+      politics = politics.copyWith(
+        news: _capped(politics.news, told, maxCoastNews),
+      );
     }
     if (variant != null) apply(variant.effects, cause, depth);
   }
@@ -938,8 +999,9 @@ CoastChange applyStoryPolitics(
     return coast.result(applied: false);
   }
   if (key.isNotEmpty) {
-    coast.politics = coast.politics
-        .copyWith(appliedKeys: [...coast.politics.appliedKeys, key]);
+    coast.politics = coast.politics.copyWith(
+      appliedKeys: [...coast.politics.appliedKeys, key],
+    );
   }
   coast.apply(p, cause, 0);
   return coast.result(applied: true);
@@ -1016,8 +1078,12 @@ bool eventDue(
 /// Vigil)" -- the claim given up read off [politics] -- "Joins your
 /// cause: …", "The Throne: …". Empty when [p] is hidden or moves none of
 /// it.
-String politicsHint(StoryPolitics? p, ClanData data, AppLanguage language,
-    {PoliticsState politics = PoliticsState.empty}) {
+String politicsHint(
+  StoryPolitics? p,
+  ClanData data,
+  AppLanguage language, {
+  PoliticsState politics = PoliticsState.empty,
+}) {
   if (p == null || !p.hasHint) return '';
   String name(String id) => throneFactionName(id, data, language);
   final previous = politics.claim;
@@ -1028,20 +1094,26 @@ String politicsHint(StoryPolitics? p, ClanData data, AppLanguage language,
           '${formatStandingDelta(e.value, language: language)}',
     for (final e in p.marks.entries)
       if (subclanMarkNamed(e.value) case final mark?)
-        trFor(language, 'politics_hint_mark_${mark.name}').replaceAll(
-            '{name}', data.subclan(e.key)?.nameFor(language) ?? e.key),
+        trFor(
+          language,
+          'politics_hint_mark_${mark.name}',
+        ).replaceAll('{name}', data.subclan(e.key)?.nameFor(language) ?? e.key),
     if (p.claim.isNotEmpty)
       previous.isNotEmpty && previous != p.claim
           ? trFor(language, 'throne_hint_claim_renounce')
               .replaceAll('{name}', name(p.claim))
               .replaceAll('{old}', midSentenceName(name(previous)))
-          : trFor(language, 'throne_hint_claim')
-              .replaceAll('{name}', name(p.claim)),
+          : trFor(
+              language,
+              'throne_hint_claim',
+            ).replaceAll('{name}', name(p.claim)),
     for (final id in p.pledges)
       trFor(language, 'throne_hint_pledge').replaceAll('{name}', name(id)),
     if (p.throneWinner.isNotEmpty)
-      trFor(language, 'throne_hint_throne')
-          .replaceAll('{name}', name(p.throneWinner)),
+      trFor(
+        language,
+        'throne_hint_throne',
+      ).replaceAll('{name}', name(p.throneWinner)),
   ];
   return parts.join(' · ');
 }
@@ -1073,8 +1145,12 @@ ChoiceGate choicePoliticsGate(
   required Iterable<String> flags,
   required CoastWorld world,
 }) {
-  if (politicsIfHolds(choice.politicsIf,
-      politics: politics, flags: flags, world: world)) {
+  if (politicsIfHolds(
+    choice.politicsIf,
+    politics: politics,
+    flags: flags,
+    world: world,
+  )) {
     return ChoiceGate.open;
   }
   return (choice.lockedText ?? '').trim().isNotEmpty ||
@@ -1087,5 +1163,8 @@ ChoiceGate choicePoliticsGate(
 /// standingCauseLabel's `describe`): the event's name, null for one
 /// [events] doesn't know.
 String? eventCauseName(
-        String id, Map<String, PoliticsEvent> events, AppLanguage language) =>
+  String id,
+  Map<String, PoliticsEvent> events,
+  AppLanguage language,
+) =>
     events[id]?.nameFor(language);

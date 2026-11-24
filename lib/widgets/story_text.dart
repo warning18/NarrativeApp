@@ -129,8 +129,11 @@ class _StoryTextState extends ConsumerState<StoryText>
   Widget build(BuildContext context) {
     final french = ref.watch(appLanguageProvider) == AppLanguage.fr;
     final names = ref.watch(storyNameMatcherProvider(french));
-    final paragraphs = parseStoryText(widget.text,
-        names: names, firstSentenceBold: widget.firstSentenceBold);
+    final paragraphs = parseStoryText(
+      widget.text,
+      names: names,
+      firstSentenceBold: widget.firstSentenceBold,
+    );
     final total = storyTextLength(paragraphs);
     _start(total);
     ref.listen<int>(storyTextSkipProvider, (_, __) => _skip());
@@ -154,9 +157,12 @@ class _StoryTextState extends ConsumerState<StoryText>
           if (visible > 0) {
             out.add(TextSpan(text: r.text.substring(0, visible), style: style));
           }
-          out.add(TextSpan(
+          out.add(
+            TextSpan(
               text: r.text.substring(visible),
-              style: style.copyWith(color: Colors.transparent)));
+              style: style.copyWith(color: Colors.transparent),
+            ),
+          );
         }
         at += r.text.length;
       }

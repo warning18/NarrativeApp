@@ -23,8 +23,13 @@ class RoadStop {
 
 /// A road between two landmarks, with its stops in order from [a] to [b].
 class WorldRoad {
-  const WorldRoad(this.id, this.a, this.b, this.stops,
-      {this.kind = RoadKind.land});
+  const WorldRoad(
+    this.id,
+    this.a,
+    this.b,
+    this.stops, {
+    this.kind = RoadKind.land,
+  });
 
   final String id;
 
@@ -75,63 +80,132 @@ class RoadRoute {
   bool get isEmpty => legs.isEmpty;
 }
 
-const _harbourChain =
-    RoadStop('harbour_chain', 'The Harbour Chain', 'La chaîne du port');
-const _paintedSails =
-    RoadStop('painted_sails', 'The Painted Sails', 'Les voiles peintes');
-const _duneCairn =
-    RoadStop('dune_cairn', 'The Dune Cairn', 'Le cairn des dunes');
+const _harbourChain = RoadStop(
+  'harbour_chain',
+  'The Harbour Chain',
+  'La chaîne du port',
+);
+const _paintedSails = RoadStop(
+  'painted_sails',
+  'The Painted Sails',
+  'Les voiles peintes',
+);
+const _duneCairn = RoadStop(
+  'dune_cairn',
+  'The Dune Cairn',
+  'Le cairn des dunes',
+);
 const _dryWadi = RoadStop('dry_wadi', 'The Dry Wadi', 'L’oued à sec');
-const _caravanFord =
-    RoadStop('caravan_ford', 'The Caravan Ford', 'Le gué des caravanes');
-const _saltMarker =
-    RoadStop('salt_marker', 'The Salt Marker', 'La borne de sel');
+const _caravanFord = RoadStop(
+  'caravan_ford',
+  'The Caravan Ford',
+  'Le gué des caravanes',
+);
+const _saltMarker = RoadStop(
+  'salt_marker',
+  'The Salt Marker',
+  'La borne de sel',
+);
 const _lastLight = RoadStop('last_light', 'The Last Light', 'Le dernier feu');
 const _openWater = RoadStop('open_water', 'The Open Water', 'Le large');
-const _landfallRock =
-    RoadStop('landfall_rock', 'Landfall Rock', 'Le rocher de l’arrivée');
-const _coveSteps =
-    RoadStop('cove_steps', 'The Cove Path', 'Le sentier de la crique');
+const _landfallRock = RoadStop(
+  'landfall_rock',
+  'Landfall Rock',
+  'Le rocher de l’arrivée',
+);
+const _coveSteps = RoadStop(
+  'cove_steps',
+  'The Cove Path',
+  'Le sentier de la crique',
+);
 const _ashGate = RoadStop('ash_gate', 'The Ash Gate', 'La porte des Cendres');
-const _cinderRoad =
-    RoadStop('cinder_road', 'The Cinder Road', 'La route des braises');
-const _cloisterRoofs =
-    RoadStop('cloister_roofs', 'The Cloister Roofs', 'Les toits du cloître');
+const _cinderRoad = RoadStop(
+  'cinder_road',
+  'The Cinder Road',
+  'La route des braises',
+);
+const _cloisterRoofs = RoadStop(
+  'cloister_roofs',
+  'The Cloister Roofs',
+  'Les toits du cloître',
+);
 const _smugglersTrail = RoadStop(
-    'smugglers_trail', 'The Smugglers’ Trail', 'Le sentier des contrebandiers');
+  'smugglers_trail',
+  'The Smugglers’ Trail',
+  'Le sentier des contrebandiers',
+);
 const _dryWeir = RoadStop('dry_weir', 'The Dry Weir', 'Le déversoir à sec');
 const _redGate = RoadStop('red_gate', 'The Red Gate', 'La porte rouge');
 const _greySands = RoadStop('grey_sands', 'The Grey Sands', 'Les sables gris');
-const _musterField =
-    RoadStop('muster_field', 'The Muster Field', 'Le champ de rassemblement');
-const _inkedSteps =
-    RoadStop('inked_steps', 'The Inked Steps', 'Les marches d’encre');
-const _hillTrack =
-    RoadStop('hill_track', 'The Hill Track', 'Le chemin de la colline');
-const _drownedCauseway =
-    RoadStop('drowned_causeway', 'The Drowned Causeway', 'La chaussée noyée');
+const _musterField = RoadStop(
+  'muster_field',
+  'The Muster Field',
+  'Le champ de rassemblement',
+);
+const _inkedSteps = RoadStop(
+  'inked_steps',
+  'The Inked Steps',
+  'Les marches d’encre',
+);
+const _hillTrack = RoadStop(
+  'hill_track',
+  'The Hill Track',
+  'Le chemin de la colline',
+);
+const _drownedCauseway = RoadStop(
+  'drowned_causeway',
+  'The Drowned Causeway',
+  'La chaussée noyée',
+);
 const _tideFlats = RoadStop('tide_flats', 'The Tide Flats', 'Les vasières');
-const _silentBell =
-    RoadStop('silent_bell', 'The Silent Bell', 'La cloche muette');
-const _pilgrimsMile =
-    RoadStop('pilgrims_mile', 'The Pilgrims’ Mile', 'Le mille des pèlerins');
-const _tearStair =
-    RoadStop('tear_stair', 'The Tear Stair', 'L’escalier de la déchirure');
-const _longWayBack =
-    RoadStop('long_way_back', 'The Long Way Back', 'Le long retour');
+const _silentBell = RoadStop(
+  'silent_bell',
+  'The Silent Bell',
+  'La cloche muette',
+);
+const _pilgrimsMile = RoadStop(
+  'pilgrims_mile',
+  'The Pilgrims’ Mile',
+  'Le mille des pèlerins',
+);
+const _tearStair = RoadStop(
+  'tear_stair',
+  'The Tear Stair',
+  'L’escalier de la déchirure',
+);
+const _longWayBack = RoadStop(
+  'long_way_back',
+  'The Long Way Back',
+  'Le long retour',
+);
 const _frostPass = RoadStop('frost_pass', 'The Frost Pass', 'Le col du givre');
-const _giantsStair =
-    RoadStop('giants_stair', 'The Giants’ Stair', 'L’escalier des géants');
+const _giantsStair = RoadStop(
+  'giants_stair',
+  'The Giants’ Stair',
+  'L’escalier des géants',
+);
 const _mootRoad = RoadStop('moot_road', 'The Moot Road', 'La route du Moot');
 const _whiteQuay = RoadStop('white_quay', 'The White Quay', 'Le quai blanc');
-const _hollowBeach =
-    RoadStop('hollow_beach', 'The Hollow Beach', 'La plage creuse');
-const _glassShoals =
-    RoadStop('glass_shoals', 'The Glass Shoals', 'Les hauts-fonds de verre');
-const _hullsReach =
-    RoadStop('hulls_reach', 'The Hulls’ Reach', 'Le chenal des coques');
+const _hollowBeach = RoadStop(
+  'hollow_beach',
+  'The Hollow Beach',
+  'La plage creuse',
+);
+const _glassShoals = RoadStop(
+  'glass_shoals',
+  'The Glass Shoals',
+  'Les hauts-fonds de verre',
+);
+const _hullsReach = RoadStop(
+  'hulls_reach',
+  'The Hulls’ Reach',
+  'Le chenal des coques',
+);
 const _lanternCrossing = RoadStop(
-    'lantern_crossing', 'The Lantern Crossing', 'La traversée de la Lanterne');
+  'lantern_crossing',
+  'The Lantern Crossing',
+  'La traversée de la Lanterne',
+);
 const _lastMile = RoadStop('last_mile', 'The Last Mile', 'Le dernier mille');
 
 /// Every road of the world. Each branch of the story that moves the party
@@ -142,17 +216,39 @@ const List<WorldRoad> worldRoads = [
   // Alster, where the roads start (v1.534: one place, its districts walked
   // on its own plan, see city_plans.json), and the way out through the
   // Waste: the Lark lifts off the High Quay.
-  WorldRoad('alster_crash', 'alster', 'crash', [_harbourChain, _paintedSails],
+  WorldRoad(
+      'alster_crash',
+      'alster',
+      'crash',
+      [
+        _harbourChain,
+        _paintedSails,
+      ],
       kind: RoadKind.sea),
   WorldRoad('crash_sleeper', 'crash', 'sleeper', [_duneCairn]),
   WorldRoad('sleeper_wells', 'sleeper', 'wells', [_dryWadi]),
-  WorldRoad(
-      'wells_saltmouth', 'wells', 'saltmouth', [_caravanFord, _saltMarker]),
+  WorldRoad('wells_saltmouth', 'wells', 'saltmouth', [
+    _caravanFord,
+    _saltMarker,
+  ]),
   // Saltmouth (v1.536: one place, its districts walked on its own plan, see
   // city_plans.json) and the crossing: the Rusty Eel leaves the yard.
-  WorldRoad('saltmouth_storm', 'saltmouth', 'storm', [_lastLight],
+  WorldRoad(
+      'saltmouth_storm',
+      'saltmouth',
+      'storm',
+      [
+        _lastLight,
+      ],
       kind: RoadKind.sea),
-  WorldRoad('storm_camp', 'storm', 'camp', [_openWater, _landfallRock],
+  WorldRoad(
+      'storm_camp',
+      'storm',
+      'camp',
+      [
+        _openWater,
+        _landfallRock,
+      ],
       kind: RoadKind.sea),
   // The Ashen Coast, from the camp.
   WorldRoad('camp_quarter', 'camp', 'quarter', [_coveSteps, _ashGate]),
@@ -179,17 +275,29 @@ const List<WorldRoad> worldRoads = [
   WorldRoad('greyhithe_anchorage', 'greyhithe', 'anchorage', [_whiteQuay]),
   WorldRoad('greyhithe_shore', 'greyhithe', 'shore', [_hollowBeach]),
   // By sea from the camp.
-  WorldRoad('anchorage_wreck', 'anchorage', 'wreck', [_glassShoals],
+  WorldRoad(
+      'anchorage_wreck',
+      'anchorage',
+      'wreck',
+      [
+        _glassShoals,
+      ],
       kind: RoadKind.sea),
   WorldRoad('camp_wreck', 'camp', 'wreck', [_hullsReach], kind: RoadKind.sea),
-  WorldRoad('camp_candlehold', 'camp', 'candlehold', [_lanternCrossing],
+  WorldRoad(
+      'camp_candlehold',
+      'camp',
+      'candlehold',
+      [
+        _lanternCrossing,
+      ],
       kind: RoadKind.sea),
 ];
 
 /// The roads that end at [landmarkId].
 List<WorldRoad> roadsAt(String landmarkId) => [
       for (final r in worldRoads)
-        if (r.joins(landmarkId)) r
+        if (r.joins(landmarkId)) r,
     ];
 
 /// The road that joins [a] and [b] directly, if there is one.

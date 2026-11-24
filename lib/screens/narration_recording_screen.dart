@@ -64,7 +64,9 @@ class _NarrationRecordingScreenState
       };
 
   Future<Map<String, _Coverage>> _coverageFor(
-      List<StoryNode> nodes, int version) {
+    List<StoryNode> nodes,
+    int version,
+  ) {
     final voice = ref.read(elevenLabsVoiceSettingsProvider);
     final key = '$version|${voice.voiceId}|$_variations|'
         '${_languages.map((l) => l.name).join(',')}';
@@ -79,8 +81,11 @@ class _NarrationRecordingScreenState
           for (final paragraphs in _scriptFor([node]).entries) {
             for (final text in paragraphs.value) {
               total++;
-              if (await recordings.has(text,
-                  voiceId: voice.voiceId, language: paragraphs.key)) {
+              if (await recordings.has(
+                text,
+                voiceId: voice.voiceId,
+                language: paragraphs.key,
+              )) {
                 recorded++;
               }
             }
@@ -112,8 +117,12 @@ class _NarrationRecordingScreenState
       ? tr(ref, 'narration_chapter_prologue')
       : tr(ref, 'narration_chapter_n').replaceAll('{n}', '$chapter');
 
-  Widget _chips<T>(Iterable<T> values, Set<T> picked, String Function(T) label,
-      {bool keepOne = false}) {
+  Widget _chips<T>(
+    Iterable<T> values,
+    Set<T> picked,
+    String Function(T) label, {
+    bool keepOne = false,
+  }) {
     return Wrap(
       spacing: 8,
       runSpacing: 4,
@@ -171,29 +180,46 @@ class _NarrationRecordingScreenState
                     return ListView(
                       padding: const EdgeInsets.all(16),
                       children: [
-                        Text(tr(ref, 'narration_recording_desc'),
-                            style: theme.textTheme.bodySmall),
+                        Text(
+                          tr(ref, 'narration_recording_desc'),
+                          style: theme.textTheme.bodySmall,
+                        ),
                         if (!voice.hasApiKey) ...[
                           const SizedBox(height: 8),
-                          Text(tr(ref, 'elevenlabs_needs_key'),
-                              style: theme.textTheme.bodySmall
-                                  ?.copyWith(color: theme.colorScheme.error)),
+                          Text(
+                            tr(ref, 'elevenlabs_needs_key'),
+                            style: theme.textTheme.bodySmall?.copyWith(
+                              color: theme.colorScheme.error,
+                            ),
+                          ),
                         ],
                         const SizedBox(height: 12),
-                        Text(tr(ref, 'narration_filter_kind'),
-                            style: theme.textTheme.labelLarge),
-                        _chips(NarrationCategory.values, _categories,
-                            _categoryLabel),
+                        Text(
+                          tr(ref, 'narration_filter_kind'),
+                          style: theme.textTheme.labelLarge,
+                        ),
+                        _chips(
+                          NarrationCategory.values,
+                          _categories,
+                          _categoryLabel,
+                        ),
                         const SizedBox(height: 8),
-                        Text(tr(ref, 'narration_filter_chapter'),
-                            style: theme.textTheme.labelLarge),
+                        Text(
+                          tr(ref, 'narration_filter_chapter'),
+                          style: theme.textTheme.labelLarge,
+                        ),
                         _chips(_allChapters, _chapters, _chapterLabel),
                         const SizedBox(height: 8),
-                        Text(tr(ref, 'narration_filter_language'),
-                            style: theme.textTheme.labelLarge),
-                        _chips(AppLanguage.values, _languages,
-                            (l) => tr(ref, 'narration_language_${l.name}'),
-                            keepOne: true),
+                        Text(
+                          tr(ref, 'narration_filter_language'),
+                          style: theme.textTheme.labelLarge,
+                        ),
+                        _chips(
+                          AppLanguage.values,
+                          _languages,
+                          (l) => tr(ref, 'narration_language_${l.name}'),
+                          keepOne: true,
+                        ),
                         SwitchListTile(
                           contentPadding: EdgeInsets.zero,
                           title: Text(tr(ref, 'narration_variations_title')),
@@ -205,19 +231,24 @@ class _NarrationRecordingScreenState
                           children: [
                             Expanded(
                               child: Text(
-                                tr(ref, 'narration_scenes_shown')
-                                    .replaceAll('{count}', '${shown.length}'),
+                                tr(
+                                  ref,
+                                  'narration_scenes_shown',
+                                ).replaceAll('{count}', '${shown.length}'),
                                 style: theme.textTheme.labelLarge,
                               ),
                             ),
                             TextButton(
-                              onPressed: () => setState(() =>
-                                  _selected.addAll(shown.map((n) => n.id))),
+                              onPressed: () => setState(
+                                () => _selected.addAll(shown.map((n) => n.id)),
+                              ),
                               child: Text(tr(ref, 'narration_select_all')),
                             ),
                             TextButton(
-                              onPressed: () => setState(() =>
-                                  _selected.removeAll(shown.map((n) => n.id))),
+                              onPressed: () => setState(
+                                () =>
+                                    _selected.removeAll(shown.map((n) => n.id)),
+                              ),
                               child: Text(tr(ref, 'narration_select_none')),
                             ),
                           ],
@@ -230,9 +261,11 @@ class _NarrationRecordingScreenState
                             category: _categoryLabel(narrationCategoryOf(node)),
                             coverage: coverage[node.id],
                             selected: _selected.contains(node.id),
-                            onChanged: (on) => setState(() => on
-                                ? _selected.add(node.id)
-                                : _selected.remove(node.id)),
+                            onChanged: (on) => setState(
+                              () => on
+                                  ? _selected.add(node.id)
+                                  : _selected.remove(node.id),
+                            ),
                           ),
                       ],
                     );
@@ -249,8 +282,12 @@ class _NarrationRecordingScreenState
                         : () =>
                             recordNarration(context, ref, _scriptFor(picked)),
                     icon: const Icon(Icons.mic_none),
-                    label: Text(tr(ref, 'narration_record_selected')
-                        .replaceAll('{count}', '${picked.length}')),
+                    label: Text(
+                      tr(
+                        ref,
+                        'narration_record_selected',
+                      ).replaceAll('{count}', '${picked.length}'),
+                    ),
                   ),
                 ),
               ),
@@ -309,10 +346,14 @@ class _NodeTile extends StatelessWidget {
           : Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Icon(done ? Icons.mic : Icons.mic_none,
-                    color: done ? theme.colorScheme.primary : null),
-                Text('${coverage!.recorded}/${coverage!.total}',
-                    style: theme.textTheme.labelSmall),
+                Icon(
+                  done ? Icons.mic : Icons.mic_none,
+                  color: done ? theme.colorScheme.primary : null,
+                ),
+                Text(
+                  '${coverage!.recorded}/${coverage!.total}',
+                  style: theme.textTheme.labelSmall,
+                ),
               ],
             ),
     );

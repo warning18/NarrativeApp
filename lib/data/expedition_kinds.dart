@@ -61,8 +61,11 @@ bool deliveryOnTime({required int daysUsed, required int deadline}) =>
     daysUsed <= deadline;
 
 /// What a delivery pays: the zone's [rewardGold] on time, half late.
-int deliveryPayFor(int rewardGold,
-        {required int daysUsed, required int deadline}) =>
+int deliveryPayFor(
+  int rewardGold, {
+  required int daysUsed,
+  required int deadline,
+}) =>
     deliveryOnTime(daysUsed: daysUsed, deadline: deadline)
         ? rewardGold
         : (rewardGold / 2).round();
@@ -118,8 +121,11 @@ class StepOutcome {
 
   /// The written notes for a choice whose roll [failed] (or that had
   /// none, [checked] false), in French when [french]; empty for none.
-  String notesFor(
-      {required bool failed, required bool checked, required bool french}) {
+  String notesFor({
+    required bool failed,
+    required bool checked,
+    required bool french,
+  }) {
     String pick(String en, String fr) => french && fr.isNotEmpty ? fr : en;
     return [
       if (checked)
@@ -130,8 +136,10 @@ class StepOutcome {
 
   /// The load change, extra days and hurt for a choice whose roll
   /// [failed] and in which the party [fought].
-  ({int cargo, int days, int hurt}) resolve(
-          {required bool failed, required bool fought}) =>
+  ({int cargo, int days, int hurt}) resolve({
+    required bool failed,
+    required bool fought,
+  }) =>
       (
         cargo: cargo + (failed ? failCargo : 0) + (fought ? fightCargo : 0),
         days: days + (failed ? failDays : 0),
@@ -252,8 +260,13 @@ StoryChoice? _fight(String text, String textFr, List<String> foes) =>
             triggerEnemyId: foes.first,
           );
 
-StoryChoice? _sneak(String text, String textFr, String ability, int dc,
-        List<String> foes) =>
+StoryChoice? _sneak(
+  String text,
+  String textFr,
+  String ability,
+  int dc,
+  List<String> foes,
+) =>
     foes.isEmpty
         ? null
         : StoryChoice(
@@ -267,8 +280,13 @@ StoryChoice? _sneak(String text, String textFr, String ability, int dc,
             avoidFightOnSuccess: true,
           );
 
-StoryChoice _roll(String text, String textFr, String ability, int dc,
-        {int goldMod = 0}) =>
+StoryChoice _roll(
+  String text,
+  String textFr,
+  String ability,
+  int dc, {
+  int goldMod = 0,
+}) =>
     StoryChoice(
       text: text,
       textFr: textFr,
@@ -278,8 +296,12 @@ StoryChoice _roll(String text, String textFr, String ability, int dc,
       goldMod: goldMod,
     );
 
-StoryChoice _plain(String text, String textFr,
-        {int goldMod = 0, int alignmentMod = 0}) =>
+StoryChoice _plain(
+  String text,
+  String textFr, {
+  int goldMod = 0,
+  int alignmentMod = 0,
+}) =>
     StoryChoice(
       text: text,
       textFr: textFr,
@@ -310,17 +332,23 @@ final List<_Scene> _escortScenes = [
     ],
     [
       _Option(
-          (ch, foes) => _fight('Hold the line at the wagons',
-              'Tenir la ligne aux chariots', foes()),
-          const StepOutcome(fightCargo: -10)),
+        (ch, foes) => _fight(
+          'Hold the line at the wagons',
+          'Tenir la ligne aux chariots',
+          foes(),
+        ),
+        const StepOutcome(fightCargo: -10),
+      ),
       _Option(
-          (ch, foes) => _sneak(
-              'Whip the mules to a gallop (Dexterity)',
-              'Lancer les mules au galop (Dextérité)',
-              'dexterity',
-              _dc(ch),
-              foes()),
-          const StepOutcome(cargo: -5, fightCargo: -10)),
+        (ch, foes) => _sneak(
+          'Whip the mules to a gallop (Dexterity)',
+          'Lancer les mules au galop (Dextérité)',
+          'dexterity',
+          _dc(ch),
+          foes(),
+        ),
+        const StepOutcome(cargo: -5, fightCargo: -10),
+      ),
     ],
   ),
   _Scene(
@@ -333,13 +361,21 @@ final List<_Scene> _escortScenes = [
     ],
     [
       _Option(
-          (ch, foes) => _roll('Lift it and splint the axle (Strength)',
-              'Soulever et éclisser l’essieu (Force)', 'strength', _dc(ch)),
-          const StepOutcome(failCargo: -15)),
+        (ch, foes) => _roll(
+          'Lift it and splint the axle (Strength)',
+          'Soulever et éclisser l’essieu (Force)',
+          'strength',
+          _dc(ch),
+        ),
+        const StepOutcome(failCargo: -15),
+      ),
       _Option(
-          (ch, foes) => _plain('Unload and mend it properly (a day)',
-              'Décharger et réparer pour de bon (un jour)'),
-          const StepOutcome(days: 1)),
+        (ch, foes) => _plain(
+          'Unload and mend it properly (a day)',
+          'Décharger et réparer pour de bon (un jour)',
+        ),
+        const StepOutcome(days: 1),
+      ),
     ],
   ),
   _Scene(
@@ -352,13 +388,21 @@ final List<_Scene> _escortScenes = [
     ],
     [
       _Option(
-          (ch, foes) => _roll('Find the shallows (Wisdom)',
-              'Trouver les hauts-fonds (Sagesse)', 'wisdom', _dc(ch)),
-          const StepOutcome(failCargo: -20)),
+        (ch, foes) => _roll(
+          'Find the shallows (Wisdom)',
+          'Trouver les hauts-fonds (Sagesse)',
+          'wisdom',
+          _dc(ch),
+        ),
+        const StepOutcome(failCargo: -20),
+      ),
       _Option(
-          (ch, foes) => _plain('Wait for the water to fall (a day)',
-              'Attendre la décrue (un jour)'),
-          const StepOutcome(days: 1)),
+        (ch, foes) => _plain(
+          'Wait for the water to fall (a day)',
+          'Attendre la décrue (un jour)',
+        ),
+        const StepOutcome(days: 1),
+      ),
     ],
   ),
   _Scene(
@@ -370,16 +414,27 @@ final List<_Scene> _escortScenes = [
       'Une chaîne en travers de la route, une cabane, et quatre hommes qui ont décidé que la route était à eux. Ils fixent un prix par chariot.',
     ],
     [
-      _Option((ch, foes) => _plain('Pay the toll (${_tollFor(ch)} gold)',
+      _Option(
+        (ch, foes) => _plain(
+          'Pay the toll (${_tollFor(ch)} gold)',
           'Payer le péage (${_tollFor(ch)} or)',
-          goldMod: -_tollFor(ch))),
+          goldMod: -_tollFor(ch),
+        ),
+      ),
       _Option(
-          (ch, foes) => _sneak('Talk them out of it (Charisma)',
-              'Les en dissuader (Charisme)', 'charisma', _dc(ch), foes()),
-          const StepOutcome(fightCargo: -10)),
+        (ch, foes) => _sneak(
+          'Talk them out of it (Charisma)',
+          'Les en dissuader (Charisme)',
+          'charisma',
+          _dc(ch),
+          foes(),
+        ),
+        const StepOutcome(fightCargo: -10),
+      ),
       _Option(
-          (ch, foes) => _fight('Break the chain', 'Briser la chaîne', foes()),
-          const StepOutcome(fightCargo: -10)),
+        (ch, foes) => _fight('Break the chain', 'Briser la chaîne', foes()),
+        const StepOutcome(fightCargo: -10),
+      ),
     ],
   ),
   _Scene(
@@ -392,15 +447,19 @@ final List<_Scene> _escortScenes = [
     ],
     [
       _Option(
-          (ch, foes) => _roll(
-              'Follow them to their camp (Perception)',
-              'Les suivre jusqu’à leur camp (Perception)',
-              'perception',
-              _dc(ch),
-              goldMod: _thiefCacheFor(ch)),
-          const StepOutcome(failCargo: -15)),
-      _Option((ch, foes) => _plain('Raise the alarm', 'Donner l’alarme'),
-          const StepOutcome(cargo: -5)),
+        (ch, foes) => _roll(
+          'Follow them to their camp (Perception)',
+          'Les suivre jusqu’à leur camp (Perception)',
+          'perception',
+          _dc(ch),
+          goldMod: _thiefCacheFor(ch),
+        ),
+        const StepOutcome(failCargo: -15),
+      ),
+      _Option(
+        (ch, foes) => _plain('Raise the alarm', 'Donner l’alarme'),
+        const StepOutcome(cargo: -5),
+      ),
     ],
   ),
   _Scene(
@@ -413,16 +472,21 @@ final List<_Scene> _escortScenes = [
     ],
     [
       _Option(
-          (ch, foes) => _roll(
-              'Run them down on foot (Constitution)',
-              'Les rattraper à la course (Constitution)',
-              'constitution',
-              _dc(ch)),
-          const StepOutcome(failCargo: -15, hurtOnFail: 10)),
+        (ch, foes) => _roll(
+          'Run them down on foot (Constitution)',
+          'Les rattraper à la course (Constitution)',
+          'constitution',
+          _dc(ch),
+        ),
+        const StepOutcome(failCargo: -15, hurtOnFail: 10),
+      ),
       _Option(
-          (ch, foes) => _plain('Let them tire, then follow (a day)',
-              'Les laisser s’épuiser, puis suivre (un jour)'),
-          const StepOutcome(days: 1)),
+        (ch, foes) => _plain(
+          'Let them tire, then follow (a day)',
+          'Les laisser s’épuiser, puis suivre (un jour)',
+        ),
+        const StepOutcome(days: 1),
+      ),
     ],
   ),
   _Scene(
@@ -435,13 +499,20 @@ final List<_Scene> _escortScenes = [
     ],
     [
       _Option(
-          (ch, foes) => _plain('Make room for them (a crate left)',
-              'Leur faire de la place (une caisse laissée)',
-              alignmentMod: 2),
-          const StepOutcome(cargo: -5)),
-      _Option((ch, foes) => _plain(
-          'Keep the wagons moving', 'Garder le convoi en marche',
-          alignmentMod: -1)),
+        (ch, foes) => _plain(
+          'Make room for them (a crate left)',
+          'Leur faire de la place (une caisse laissée)',
+          alignmentMod: 2,
+        ),
+        const StepOutcome(cargo: -5),
+      ),
+      _Option(
+        (ch, foes) => _plain(
+          'Keep the wagons moving',
+          'Garder le convoi en marche',
+          alignmentMod: -1,
+        ),
+      ),
     ],
   ),
 ];
@@ -457,16 +528,21 @@ final List<_Scene> _deliveryScenes = [
     ],
     [
       _Option(
-          (ch, foes) => _roll(
-              'Take the marsh path (Constitution)',
-              'Prendre le sentier du marais (Constitution)',
-              'constitution',
-              _dc(ch)),
-          const StepOutcome(failDays: 1, hurtOnFail: 5)),
+        (ch, foes) => _roll(
+          'Take the marsh path (Constitution)',
+          'Prendre le sentier du marais (Constitution)',
+          'constitution',
+          _dc(ch),
+        ),
+        const StepOutcome(failDays: 1, hurtOnFail: 5),
+      ),
       _Option(
-          (ch, foes) => _plain('Keep to the high road (a day)',
-              'Rester sur la grand-route (un jour)'),
-          const StepOutcome(days: 1)),
+        (ch, foes) => _plain(
+          'Keep to the high road (a day)',
+          'Rester sur la grand-route (un jour)',
+        ),
+        const StepOutcome(days: 1),
+      ),
     ],
   ),
   _Scene(
@@ -479,17 +555,26 @@ final List<_Scene> _deliveryScenes = [
     ],
     [
       _Option(
-          (ch, foes) => _roll('Talk your way through (Charisma)',
-              'Passer au bagout (Charisme)', 'charisma', _dc(ch)),
-          const StepOutcome(failDays: 1)),
-      _Option((ch, foes) => _plain(
+        (ch, foes) => _roll(
+          'Talk your way through (Charisma)',
+          'Passer au bagout (Charisme)',
+          'charisma',
+          _dc(ch),
+        ),
+        const StepOutcome(failDays: 1),
+      ),
+      _Option(
+        (ch, foes) => _plain(
           'Pay them to look away (${_tollFor(ch)} gold)',
           'Les payer pour qu’ils regardent ailleurs (${_tollFor(ch)} or)',
-          goldMod: -_tollFor(ch))),
+          goldMod: -_tollFor(ch),
+        ),
+      ),
       _Option(
-          (ch, foes) =>
-              _plain('Wait your turn (a day)', 'Attendre votre tour (un jour)'),
-          const StepOutcome(days: 1)),
+        (ch, foes) =>
+            _plain('Wait your turn (a day)', 'Attendre votre tour (un jour)'),
+        const StepOutcome(days: 1),
+      ),
     ],
   ),
   _Scene(
@@ -501,10 +586,22 @@ final List<_Scene> _deliveryScenes = [
       'Quelqu’un garde la même distance derrière vous depuis l’aube. Maintenant la route se resserre entre deux talus, et ils se rapprochent.',
     ],
     [
-      _Option((ch, foes) => _fight(
-          'Turn and face them', 'Vous retourner et les affronter', foes())),
-      _Option((ch, foes) => _sneak('Lose them in the woods (Dexterity)',
-          'Les semer dans les bois (Dextérité)', 'dexterity', _dc(ch), foes())),
+      _Option(
+        (ch, foes) => _fight(
+          'Turn and face them',
+          'Vous retourner et les affronter',
+          foes(),
+        ),
+      ),
+      _Option(
+        (ch, foes) => _sneak(
+          'Lose them in the woods (Dexterity)',
+          'Les semer dans les bois (Dextérité)',
+          'dexterity',
+          _dc(ch),
+          foes(),
+        ),
+      ),
     ],
   ),
   _Scene(
@@ -517,16 +614,21 @@ final List<_Scene> _deliveryScenes = [
     ],
     [
       _Option(
-          (ch, foes) => _roll(
-              'Climb down and across (Strength)',
-              'Descendre et traverser (Force)',
-              'strength',
-              _dc(ch, harder: true)),
-          const StepOutcome(failDays: 1, hurtOnFail: 10)),
+        (ch, foes) => _roll(
+          'Climb down and across (Strength)',
+          'Descendre et traverser (Force)',
+          'strength',
+          _dc(ch, harder: true),
+        ),
+        const StepOutcome(failDays: 1, hurtOnFail: 10),
+      ),
       _Option(
-          (ch, foes) => _plain('Go round by the mill (a day)',
-              'Faire le détour par le moulin (un jour)'),
-          const StepOutcome(days: 1)),
+        (ch, foes) => _plain(
+          'Go round by the mill (a day)',
+          'Faire le détour par le moulin (un jour)',
+        ),
+        const StepOutcome(days: 1),
+      ),
     ],
   ),
   _Scene(
@@ -539,13 +641,17 @@ final List<_Scene> _deliveryScenes = [
     ],
     [
       _Option(
-          (ch, foes) => _plain(
-              'Pay the guide (${_guideFeeFor(ch)} gold, saves a day)',
-              'Payer le guide (${_guideFeeFor(ch)} or, un jour gagné)',
-              goldMod: -_guideFeeFor(ch)),
-          const StepOutcome(days: -1)),
-      _Option((ch, foes) =>
-          _plain('Find your own way', 'Trouver votre propre chemin')),
+        (ch, foes) => _plain(
+          'Pay the guide (${_guideFeeFor(ch)} gold, saves a day)',
+          'Payer le guide (${_guideFeeFor(ch)} or, un jour gagné)',
+          goldMod: -_guideFeeFor(ch),
+        ),
+        const StepOutcome(days: -1),
+      ),
+      _Option(
+        (ch, foes) =>
+            _plain('Find your own way', 'Trouver votre propre chemin'),
+      ),
     ],
   ),
   _Scene(
@@ -558,13 +664,21 @@ final List<_Scene> _deliveryScenes = [
     ],
     [
       _Option(
-          (ch, foes) => _roll('Read the weather and push on (Wisdom)',
-              'Lire le ciel et continuer (Sagesse)', 'wisdom', _dc(ch)),
-          const StepOutcome(failDays: 1, hurtOnFail: 10)),
+        (ch, foes) => _roll(
+          'Read the weather and push on (Wisdom)',
+          'Lire le ciel et continuer (Sagesse)',
+          'wisdom',
+          _dc(ch),
+        ),
+        const StepOutcome(failDays: 1, hurtOnFail: 10),
+      ),
       _Option(
-          (ch, foes) => _plain('Shelter until it passes (a day)',
-              'Vous abriter jusqu’à ce qu’il passe (un jour)'),
-          const StepOutcome(days: 1)),
+        (ch, foes) => _plain(
+          'Shelter until it passes (a day)',
+          'Vous abriter jusqu’à ce qu’il passe (un jour)',
+        ),
+        const StepOutcome(days: 1),
+      ),
     ],
   ),
   _Scene(
@@ -577,13 +691,20 @@ final List<_Scene> _deliveryScenes = [
     ],
     [
       _Option(
-          (ch, foes) => _plain(
-              'Carry it for him (a day)', 'La porter pour lui (un jour)',
-              alignmentMod: 2),
-          const StepOutcome(days: 1)),
-      _Option((ch, foes) => _plain(
-          'Tell him you cannot', 'Lui dire que vous ne pouvez pas',
-          alignmentMod: -1)),
+        (ch, foes) => _plain(
+          'Carry it for him (a day)',
+          'La porter pour lui (un jour)',
+          alignmentMod: 2,
+        ),
+        const StepOutcome(days: 1),
+      ),
+      _Option(
+        (ch, foes) => _plain(
+          'Tell him you cannot',
+          'Lui dire que vous ne pouvez pas',
+          alignmentMod: -1,
+        ),
+      ),
     ],
   ),
 ];

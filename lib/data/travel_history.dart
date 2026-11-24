@@ -117,11 +117,13 @@ TravelHistory travelHistoryOf({
   for (final nodeId in [...history, currentNodeId]) {
     final landmark = landmarkOfScene(nodeId);
     if (landmark == null || !reached.add(landmark.id)) continue;
-    stops.add(TravelStop(
-      landmarkId: landmark.id,
-      chapter: landmark.chapter,
-      firstNodeId: nodeId,
-    ));
+    stops.add(
+      TravelStop(
+        landmarkId: landmark.id,
+        chapter: landmark.chapter,
+        firstNodeId: nodeId,
+      ),
+    );
   }
 
   final legs = <TravelLeg>[

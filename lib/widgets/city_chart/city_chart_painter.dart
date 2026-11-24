@@ -173,14 +173,21 @@ class CityChartPainter extends CustomPainter {
         canvas.translate(x, y);
         canvas.rotate((rng.nextDouble() - 0.5) * 0.9);
         canvas.drawRect(
-            Rect.fromLTWH(
-                0, 0, 26 + rng.nextDouble() * 34, 10 + rng.nextDouble() * 12),
-            field);
+          Rect.fromLTWH(
+            0,
+            0,
+            26 + rng.nextDouble() * 34,
+            10 + rng.nextDouble() * 12,
+          ),
+          field,
+        );
         canvas.restore();
       }
     }
     canvas.drawRect(
-        const Rect.fromLTWH(-4000, -4000, 4000, 9000), fill..color = p.sea);
+      const Rect.fromLTWH(-4000, -4000, 4000, 9000),
+      fill..color = p.sea,
+    );
     canvas.drawPath(chart.sea, fill..color = p.sea);
     final wave = stroke
       ..strokeWidth = 1.1
@@ -189,12 +196,13 @@ class CityChartPainter extends CustomPainter {
       final y = k * 40.0 + 6;
       final x = 5 + rng.nextDouble() * 35;
       canvas.drawPath(
-          Path()
-            ..moveTo(x, y)
-            ..relativeQuadraticBezierTo(10, -6, 20, 0)
-            ..relativeQuadraticBezierTo(10, 6, 20, 0)
-            ..relativeQuadraticBezierTo(10, -6, 20, 0),
-          wave);
+        Path()
+          ..moveTo(x, y)
+          ..relativeQuadraticBezierTo(10, -6, 20, 0)
+          ..relativeQuadraticBezierTo(10, 6, 20, 0)
+          ..relativeQuadraticBezierTo(10, -6, 20, 0),
+        wave,
+      );
     }
     canvas.drawPath(chart.ground, fill..color = ground);
 
@@ -203,23 +211,25 @@ class CityChartPainter extends CustomPainter {
       final dim = focusDistrict != null && focusDistrict != d.id ? 0.4 : 1.0;
       final ruler = locked.contains(d.id) ? null : rulers[d.id];
       canvas.drawPath(
-          d.blocks,
-          fill
-            ..color = (ruler?.fill ?? d.colour).withValues(
-                alpha:
-                    ((dark ? 0.13 : 0.16) + (ruler == null ? 0 : 0.07)) * dim +
-                        0.02));
+        d.blocks,
+        fill
+          ..color = (ruler?.fill ?? d.colour).withValues(
+            alpha: ((dark ? 0.13 : 0.16) + (ruler == null ? 0 : 0.07)) * dim +
+                0.02,
+          ),
+      );
       // The ruling clan's outline: a stronger border than the wash alone, so
       // two clans of near colours (Vigil and Giants, Compact and Oni) read
       // apart by their edges and by the name the card gives.
       if (ruler != null && _known(d.id)) {
         canvas.drawPath(
-            d.blocks,
-            Paint()
-              ..style = PaintingStyle.stroke
-              ..strokeJoin = StrokeJoin.round
-              ..strokeWidth = math.max(1.4, 2.4 / scale)
-              ..color = ruler.accent.withValues(alpha: 0.85 * dim));
+          d.blocks,
+          Paint()
+            ..style = PaintingStyle.stroke
+            ..strokeJoin = StrokeJoin.round
+            ..strokeWidth = math.max(1.4, 2.4 / scale)
+            ..color = ruler.accent.withValues(alpha: 0.85 * dim),
+        );
       }
     }
 
@@ -229,7 +239,9 @@ class CityChartPainter extends CustomPainter {
       if (!locked.contains(d.id)) continue;
       final dim = focusDistrict != null && focusDistrict != d.id ? 0.4 : 1.0;
       canvas.drawPath(
-          d.blocks, Paint()..color = palette.fog.withValues(alpha: 0.55 * dim));
+        d.blocks,
+        Paint()..color = palette.fog.withValues(alpha: 0.55 * dim),
+      );
       canvas.save();
       canvas.clipPath(d.blocks);
       final b = d.blocks.getBounds();
@@ -239,16 +251,20 @@ class CityChartPainter extends CustomPainter {
       final gap = 7 / scale;
       for (var x = b.left - b.height; x < b.right; x += gap) {
         canvas.drawLine(
-            Offset(x, b.bottom), Offset(x + b.height, b.top), hatch);
+          Offset(x, b.bottom),
+          Offset(x + b.height, b.top),
+          hatch,
+        );
       }
       canvas.restore();
       _dashed(
-          canvas,
-          d.blocks,
-          Paint()
-            ..style = PaintingStyle.stroke
-            ..strokeWidth = math.max(1.2, 2 / scale)
-            ..color = palette.label.withValues(alpha: 0.75 * dim));
+        canvas,
+        d.blocks,
+        Paint()
+          ..style = PaintingStyle.stroke
+          ..strokeWidth = math.max(1.2, 2 / scale)
+          ..color = palette.label.withValues(alpha: 0.75 * dim),
+      );
     }
 
     // Avenues and squares, then the water and its bridges.
@@ -266,84 +282,96 @@ class CityChartPainter extends CustomPainter {
       ..strokeJoin = StrokeJoin.round;
     for (final r in chart.roads) {
       canvas.drawPath(
-          r.path,
-          line
-            ..strokeWidth = r.width + 1.6
-            ..color = edge);
+        r.path,
+        line
+          ..strokeWidth = r.width + 1.6
+          ..color = edge,
+      );
     }
     for (final r in chart.roads) {
       canvas.drawPath(
-          r.path,
-          line
-            ..strokeWidth = r.width
-            ..color = street);
+        r.path,
+        line
+          ..strokeWidth = r.width
+          ..color = street,
+      );
     }
     // Rivers and canals.
     for (final r in chart.waterways) {
       canvas.drawPath(
-          r.path,
-          line
-            ..strokeWidth = r.width + 2.4
-            ..color = p.coast);
+        r.path,
+        line
+          ..strokeWidth = r.width + 2.4
+          ..color = p.coast,
+      );
     }
     for (final r in chart.waterways) {
       canvas.drawPath(
-          r.path,
-          line
-            ..strokeWidth = r.width
-            ..color = p.river);
+        r.path,
+        line
+          ..strokeWidth = r.width
+          ..color = p.river,
+      );
     }
     final isles = chart.islands;
     if (isles != null) {
       canvas.drawPath(isles, fill..color = ground);
       canvas.drawPath(
-          isles,
-          stroke
-            ..strokeWidth = 1.2
-            ..color = p.coast);
+        isles,
+        stroke
+          ..strokeWidth = 1.2
+          ..color = p.coast,
+      );
     }
     canvas.drawPath(chart.water, fill..color = p.river);
     canvas.drawPath(
-        chart.water,
-        stroke
-          ..strokeWidth = 1.2
-          ..color = p.coast);
+      chart.water,
+      stroke
+        ..strokeWidth = 1.2
+        ..color = p.coast,
+    );
     canvas.drawPath(chart.bridges, fill..color = p.coast);
 
     // The lots: every house.
     for (final d in chart.districts) {
       final dim = focusDistrict != null && focusDistrict != d.id ? 0.55 : 1.0;
       canvas.drawPath(
-          d.lots, fill..color = _mix(p.roofs, d.colour, 0.10 * dim + 0.01));
+        d.lots,
+        fill..color = _mix(p.roofs, d.colour, 0.10 * dim + 0.01),
+      );
       if (zoom >= 0.9) {
         canvas.drawPath(
-            d.lots,
-            stroke
-              ..strokeWidth = zoom >= 1.6 ? 0.5 : 0.4
-              ..color = edge);
+          d.lots,
+          stroke
+            ..strokeWidth = zoom >= 1.6 ? 0.5 : 0.4
+            ..color = edge,
+        );
       }
       if (zoom >= 1.5) {
         canvas.drawPath(
-            d.ridges,
-            stroke
-              ..strokeWidth = 0.5
-              ..color = edge.withValues(alpha: 0.8));
+          d.ridges,
+          stroke
+            ..strokeWidth = 0.5
+            ..color = edge.withValues(alpha: 0.8),
+        );
       }
     }
 
     // The arena.
     canvas.drawPath(chart.arena, fill..color = _mix(p.roofs, p.coast, 0.3));
     canvas.drawPath(
-        chart.arena,
-        stroke
-          ..strokeWidth = 1.2
-          ..color = p.coast);
+      chart.arena,
+      stroke
+        ..strokeWidth = 1.2
+        ..color = p.coast,
+    );
     canvas.drawPath(chart.arenaInner, fill..color = _mix(p.land, p.coast, 0.5));
     canvas.drawPath(
-        chart.arenaInner,
-        stroke
-          ..strokeWidth = 0.8
-          ..color = p.coast);
+      chart.arenaInner,
+      stroke
+        ..strokeWidth = 0.8
+        ..color = p.coast,
+    );
 
     // The buildings the story stands at.
     for (final b in chart.buildings) {
@@ -351,17 +379,19 @@ class CityChartPainter extends CustomPainter {
       final d = chart.districts[b.district];
       canvas.drawPath(b.shape, fill..color = _mix(p.roofs, d.colour, 0.55));
       canvas.drawPath(
-          b.shape,
-          stroke
-            ..strokeWidth = 1.0
-            ..color = d.colour);
+        b.shape,
+        stroke
+          ..strokeWidth = 1.0
+          ..color = d.colour,
+      );
       if (!b.round && zoom >= 1.5) {
         canvas.drawLine(
-            b.ridge.$1,
-            b.ridge.$2,
-            stroke
-              ..strokeWidth = 0.7
-              ..color = d.colour.withValues(alpha: 0.8));
+          b.ridge.$1,
+          b.ridge.$2,
+          stroke
+            ..strokeWidth = 0.7
+            ..color = d.colour.withValues(alpha: 0.8),
+        );
       }
     }
 
@@ -371,33 +401,40 @@ class CityChartPainter extends CustomPainter {
     for (final d in chart.districts) {
       if (_known(d.id)) continue;
       canvas.drawPath(
-          d.blocks, fill..color = p.fog.withValues(alpha: fogAlpha));
+        d.blocks,
+        fill..color = p.fog.withValues(alpha: fogAlpha),
+      );
       // Its buildings stand a little beyond its blocks: fogged too.
       for (final b in chart.buildings) {
         if (chart.districts[b.district].id != d.id) continue;
         canvas.drawPath(
-            b.shape, fill..color = p.fog.withValues(alpha: fogAlpha));
+          b.shape,
+          fill..color = p.fog.withValues(alpha: fogAlpha),
+        );
         canvas.drawPath(
-            b.shape,
-            stroke
-              ..strokeWidth = 7
-              ..color = p.fog.withValues(alpha: fogAlpha));
+          b.shape,
+          stroke
+            ..strokeWidth = 7
+            ..color = p.fog.withValues(alpha: fogAlpha),
+        );
       }
       _dashed(
-          canvas,
-          d.blocks,
-          Paint()
-            ..style = PaintingStyle.stroke
-            ..strokeWidth = 1.6
-            ..color = d.colour);
+        canvas,
+        d.blocks,
+        Paint()
+          ..style = PaintingStyle.stroke
+          ..strokeWidth = 1.6
+          ..color = d.colour,
+      );
     }
 
     // The wall.
     canvas.drawPath(
-        chart.wall,
-        stroke
-          ..strokeWidth = 4
-          ..color = p.coast);
+      chart.wall,
+      stroke
+        ..strokeWidth = 4
+        ..color = p.coast,
+    );
     fill.color = p.coast;
     for (final t in chart.towers) {
       canvas.drawRect(Rect.fromCenter(center: t, width: 10, height: 10), fill);
@@ -441,9 +478,9 @@ class CityChartPainter extends CustomPainter {
       if (!(night ? i % 3 != 0 : i % 3 == 0)) continue;
       if (!_known(chart.districts[b.district].id)) continue;
       canvas.drawRect(
-          Rect.fromCenter(
-              center: b.at.translate(0, 1), width: 3.6, height: 4.4),
-          lit);
+        Rect.fromCenter(center: b.at.translate(0, 1), width: 3.6, height: 4.4),
+        lit,
+      );
     }
   }
 
@@ -452,8 +489,10 @@ class CityChartPainter extends CustomPainter {
     fill.color = chart.districts.isEmpty
         ? p.road
         : chart.districts
-            .firstWhere((d) => d.id == 'alleys',
-                orElse: () => chart.districts.first)
+            .firstWhere(
+              (d) => d.id == 'alleys',
+              orElse: () => chart.districts.first,
+            )
             .colour
             .withValues(alpha: 0.18);
     for (final l in chart.lanterns) {
@@ -473,17 +512,20 @@ class CityChartPainter extends CustomPainter {
       canvas.translate(at.dx, at.dy);
       canvas.rotate(angle * math.pi / 180);
       canvas.drawOval(
-          Rect.fromCenter(center: Offset.zero, width: 12, height: 3.6), fill);
+        Rect.fromCenter(center: Offset.zero, width: 12, height: 3.6),
+        fill,
+      );
       canvas.restore();
     }
     for (final t in chart.trees) {
       canvas.drawCircle(t, 5, fill..color = _mix(p.land, p.river, 0.5));
       canvas.drawCircle(
-          t,
-          5,
-          stroke
-            ..strokeWidth = 0.6
-            ..color = p.coast);
+        t,
+        5,
+        stroke
+          ..strokeWidth = 0.6
+          ..color = p.coast,
+      );
     }
     fill.color = p.coast;
     for (final r in chart.piers) {
@@ -496,27 +538,34 @@ class CityChartPainter extends CustomPainter {
     final p = palette;
     canvas.drawCircle(c, 11, Paint()..color = p.fog.withValues(alpha: 0.9));
     canvas.drawCircle(
-        c,
-        11,
-        Paint()
-          ..style = PaintingStyle.stroke
-          ..strokeWidth = 1.2
-          ..color = p.label.withValues(alpha: 0.8));
+      c,
+      11,
+      Paint()
+        ..style = PaintingStyle.stroke
+        ..strokeWidth = 1.2
+        ..color = p.label.withValues(alpha: 0.8),
+    );
     canvas.drawArc(
-        Rect.fromCenter(center: c + const Offset(0, -2), width: 7, height: 9),
-        math.pi,
-        math.pi,
-        false,
-        Paint()
-          ..style = PaintingStyle.stroke
-          ..strokeWidth = 1.8
-          ..color = p.label);
+      Rect.fromCenter(center: c + const Offset(0, -2), width: 7, height: 9),
+      math.pi,
+      math.pi,
+      false,
+      Paint()
+        ..style = PaintingStyle.stroke
+        ..strokeWidth = 1.8
+        ..color = p.label,
+    );
     canvas.drawRRect(
-        RRect.fromRectAndRadius(
-            Rect.fromCenter(
-                center: c + const Offset(0, 2.5), width: 10, height: 7.5),
-            const Radius.circular(1.5)),
-        Paint()..color = p.label);
+      RRect.fromRectAndRadius(
+        Rect.fromCenter(
+          center: c + const Offset(0, 2.5),
+          width: 10,
+          height: 7.5,
+        ),
+        const Radius.circular(1.5),
+      ),
+      Paint()..color = p.label,
+    );
   }
 
   /// The holder's crest (wave 18): its flag in a ring; the ring is filled
@@ -533,58 +582,64 @@ class CityChartPainter extends CustomPainter {
         ..color = h.accent.withValues(alpha: 0.28);
       canvas.drawCircle(c, 11, track);
       canvas.drawArc(
-          Rect.fromCircle(center: c, radius: 11),
+        Rect.fromCircle(center: c, radius: 11),
+        -math.pi / 2,
+        2 * math.pi * hold.clamp(0.0, 1.0),
+        false,
+        Paint()
+          ..style = PaintingStyle.stroke
+          ..strokeWidth = 3
+          ..strokeCap = StrokeCap.butt
+          ..color = h.fill,
+      );
+      if (h.rival > 0 && h.rivalFill != null) {
+        canvas.drawArc(
+          Rect.fromCircle(center: c, radius: 7.2),
           -math.pi / 2,
-          2 * math.pi * hold.clamp(0.0, 1.0),
+          2 * math.pi * h.rival.clamp(0.0, 1.0),
           false,
           Paint()
             ..style = PaintingStyle.stroke
-            ..strokeWidth = 3
-            ..strokeCap = StrokeCap.butt
-            ..color = h.fill);
-      if (h.rival > 0 && h.rivalFill != null) {
-        canvas.drawArc(
-            Rect.fromCircle(center: c, radius: 7.2),
-            -math.pi / 2,
-            2 * math.pi * h.rival.clamp(0.0, 1.0),
-            false,
-            Paint()
-              ..style = PaintingStyle.stroke
-              ..strokeWidth = 2
-              ..color = h.rivalFill!);
+            ..strokeWidth = 2
+            ..color = h.rivalFill!,
+        );
       }
       if (h.flipAt > 0 && h.flipAt < 1) {
         final a = -math.pi / 2 + 2 * math.pi * h.flipAt;
         canvas.drawLine(
-            c + Offset(math.cos(a), math.sin(a)) * 5.2,
-            c + Offset(math.cos(a), math.sin(a)) * 9.4,
-            Paint()
-              ..strokeWidth = 1.4
-              ..color = p.label);
+          c + Offset(math.cos(a), math.sin(a)) * 5.2,
+          c + Offset(math.cos(a), math.sin(a)) * 9.4,
+          Paint()
+            ..strokeWidth = 1.4
+            ..color = p.label,
+        );
       }
     } else {
       canvas.drawCircle(
-          c,
-          11,
-          Paint()
-            ..style = PaintingStyle.stroke
-            ..strokeWidth = 2
-            ..color = h.accent.withValues(alpha: 0.8));
+        c,
+        11,
+        Paint()
+          ..style = PaintingStyle.stroke
+          ..strokeWidth = 2
+          ..color = h.accent.withValues(alpha: 0.8),
+      );
     }
     // The flag: a pole and a pennant in the holder's colours.
     canvas.drawLine(
-        c + const Offset(-2.5, -5),
-        c + const Offset(-2.5, 5.5),
-        Paint()
-          ..strokeWidth = 1.4
-          ..color = h.accent);
+      c + const Offset(-2.5, -5),
+      c + const Offset(-2.5, 5.5),
+      Paint()
+        ..strokeWidth = 1.4
+        ..color = h.accent,
+    );
     canvas.drawPath(
-        Path()
-          ..moveTo(c.dx - 2.5, c.dy - 5)
-          ..lineTo(c.dx + 5, c.dy - 2)
-          ..lineTo(c.dx - 2.5, c.dy + 1)
-          ..close(),
-        Paint()..color = h.fill);
+      Path()
+        ..moveTo(c.dx - 2.5, c.dy - 5)
+        ..lineTo(c.dx + 5, c.dy - 2)
+        ..lineTo(c.dx - 2.5, c.dy + 1)
+        ..close(),
+      Paint()..color = h.fill,
+    );
     if (h.flipped) {
       // A district that changed hands: a small gold star at the ring.
       final st = c + const Offset(10, -10);
@@ -609,17 +664,24 @@ class CityChartPainter extends CustomPainter {
     }
   }
 
-  TextPainter _text(String s, double px, Color c,
-      {FontWeight w = FontWeight.w600, String family = InkFonts.prose}) {
+  TextPainter _text(
+    String s,
+    double px,
+    Color c, {
+    FontWeight w = FontWeight.w600,
+    String family = InkFonts.prose,
+  }) {
     final tp = TextPainter(
       text: TextSpan(
-          text: s,
-          style: TextStyle(
-              fontFamily: family,
-              fontSize: px,
-              color: c,
-              fontWeight: w,
-              letterSpacing: 0.2)),
+        text: s,
+        style: TextStyle(
+          fontFamily: family,
+          fontSize: px,
+          color: c,
+          fontWeight: w,
+          letterSpacing: 0.2,
+        ),
+      ),
       textDirection: TextDirection.ltr,
       maxLines: 1,
     )..layout();
@@ -642,7 +704,10 @@ class CityChartPainter extends CustomPainter {
         final tp = _text(d.name, 12.5, p.place, family: InkFonts.display);
         final w = (tp.width + 14) * inv, h = (tp.height + 8) * inv;
         Rect at(double dy) => Rect.fromCenter(
-            center: d.centre + Offset(0, dy * inv), width: w, height: h);
+              center: d.centre + Offset(0, dy * inv),
+              width: w,
+              height: h,
+            );
         final step = tp.height + 10;
         for (final dy in [
           0.0,
@@ -664,8 +729,13 @@ class CityChartPainter extends CustomPainter {
       canvas.translate(d.centre.dx, d.centre.dy + shift * inv);
       canvas.scale(inv);
       if (!known) {
-        final q = _text('?', 26, d.colour,
-            w: FontWeight.w800, family: InkFonts.display);
+        final q = _text(
+          '?',
+          26,
+          d.colour,
+          w: FontWeight.w800,
+          family: InkFonts.display,
+        );
         q.paint(canvas, Offset(-q.width / 2, -q.height / 2));
         canvas.restore();
         continue;
@@ -673,18 +743,21 @@ class CityChartPainter extends CustomPainter {
       if (focusDistrict == null) {
         final tp = _text(d.name, 12.5, p.place, family: InkFonts.display);
         final r = RRect.fromRectAndRadius(
-            Rect.fromCenter(
-                center: Offset.zero,
-                width: tp.width + 14,
-                height: tp.height + 8),
-            const Radius.circular(8));
+          Rect.fromCenter(
+            center: Offset.zero,
+            width: tp.width + 14,
+            height: tp.height + 8,
+          ),
+          const Radius.circular(8),
+        );
         canvas.drawRRect(r, Paint()..color = p.fog.withValues(alpha: 0.78));
         canvas.drawRRect(
-            r,
-            Paint()
-              ..style = PaintingStyle.stroke
-              ..strokeWidth = 1.2
-              ..color = d.colour);
+          r,
+          Paint()
+            ..style = PaintingStyle.stroke
+            ..strokeWidth = 1.2
+            ..color = d.colour,
+        );
         tp.paint(canvas, Offset(-tp.width / 2, -tp.height / 2));
         // Over its name: the padlock of a shut district, or the holder's
         // crest (wave 18).
@@ -705,11 +778,17 @@ class CityChartPainter extends CustomPainter {
       canvas.translate(spot.building.at.dx, spot.building.at.dy);
       canvas.scale(inv);
       canvas.drawRRect(
-          RRect.fromRectAndRadius(
-              Rect.fromLTWH(spot.at.dx - 3, spot.at.dy - 1, spot.text.width + 6,
-                  spot.text.height + 2),
-              const Radius.circular(4)),
-          Paint()..color = p.fog.withValues(alpha: 0.7));
+        RRect.fromRectAndRadius(
+          Rect.fromLTWH(
+            spot.at.dx - 3,
+            spot.at.dy - 1,
+            spot.text.width + 6,
+            spot.text.height + 2,
+          ),
+          const Radius.circular(4),
+        ),
+        Paint()..color = p.fog.withValues(alpha: 0.7),
+      );
       spot.text.paint(canvas, spot.at);
       canvas.restore();
     }
@@ -736,13 +815,18 @@ class CityChartPainter extends CustomPainter {
             () {
               final at = pinAt(w);
               return Rect.fromLTWH(
-                  at.dx - 13 * inv, at.dy - 35 * inv, 26 * inv, 38 * inv);
+                at.dx - 13 * inv,
+                at.dy - 35 * inv,
+                26 * inv,
+                38 * inv,
+              );
             }(),
     ];
     for (final sv in services) {
       if (serviceShown(sv)) {
         named.add(
-            Rect.fromCenter(center: sv.at, width: 24 * inv, height: 24 * inv));
+          Rect.fromCenter(center: sv.at, width: 24 * inv, height: 24 * inv),
+        );
       }
     }
     // The picked way's building goes first.
@@ -755,9 +839,12 @@ class CityChartPainter extends CustomPainter {
       ...chart.buildings.where((b) => b.key != pickedKey),
     ];
     // What the view shows, in the chart's own units.
-    final shown = Rect.fromLTWH(-offset.dx / scale, -offset.dy / scale,
-            view.width / scale, view.height / scale)
-        .deflate(4 * inv);
+    final shown = Rect.fromLTWH(
+      -offset.dx / scale,
+      -offset.dy / scale,
+      view.width / scale,
+      view.height / scale,
+    ).deflate(4 * inv);
     for (final b in buildings) {
       if (!buildingNames || b.quiet || !b.story || b.name.isEmpty) continue;
       final d = chart.districts[b.district];
@@ -765,21 +852,27 @@ class CityChartPainter extends CustomPainter {
       if (!_known(d.id)) continue;
       final tp = TextPainter(
         text: TextSpan(
-            text: b.name,
-            style: TextStyle(
-                fontFamily: InkFonts.prose,
-                fontSize: 11,
-                color: p.place,
-                fontWeight: FontWeight.w500,
-                letterSpacing: 0.2)),
+          text: b.name,
+          style: TextStyle(
+            fontFamily: InkFonts.prose,
+            fontSize: 11,
+            color: p.place,
+            fontWeight: FontWeight.w500,
+            letterSpacing: 0.2,
+          ),
+        ),
         textAlign: TextAlign.center,
         textDirection: TextDirection.ltr,
         maxLines: 2,
         ellipsis: '…',
       )..layout(maxWidth: 124);
       final w = tp.width + 6, h = tp.height + 2;
-      Rect box(Offset c) => Rect.fromLTWH(b.at.dx + (c.dx - 3) * inv,
-          b.at.dy + (c.dy - 1) * inv, w * inv, h * inv);
+      Rect box(Offset c) => Rect.fromLTWH(
+            b.at.dx + (c.dx - 3) * inv,
+            b.at.dy + (c.dy - 1) * inv,
+            w * inv,
+            h * inv,
+          );
       final picked = b.key == pickedKey;
       Offset? spot;
       Offset? inView;
@@ -843,34 +936,43 @@ class CityChartPainter extends CustomPainter {
       canvas.translate(s.at.dx, s.at.dy);
       canvas.scale(inv);
       final box = RRect.fromRectAndRadius(
-          Rect.fromCenter(
-              center: Offset.zero,
-              width: serviceRadius * 2,
-              height: serviceRadius * 2),
-          const Radius.circular(5));
+        Rect.fromCenter(
+          center: Offset.zero,
+          width: serviceRadius * 2,
+          height: serviceRadius * 2,
+        ),
+        const Radius.circular(5),
+      );
       // An open service glows at dusk and night.
       if (s.opens && (phase == DayPhase.dusk || phase == DayPhase.night)) {
         canvas.drawCircle(
-            Offset.zero,
-            serviceRadius + 9,
-            Paint()
-              ..color = Palette.orange74
-                  .withValues(alpha: phase == DayPhase.night ? 0.38 : 0.22));
+          Offset.zero,
+          serviceRadius + 9,
+          Paint()
+            ..color = Palette.orange74.withValues(
+              alpha: phase == DayPhase.night ? 0.38 : 0.22,
+            ),
+        );
       }
       canvas.drawRRect(
-          box.shift(const Offset(0, 1.5)), Paint()..color = Colors.black26);
-      canvas.drawRRect(box,
-          Paint()..color = s.opens ? p.fog : p.fog.withValues(alpha: 0.75));
+        box.shift(const Offset(0, 1.5)),
+        Paint()..color = Colors.black26,
+      );
       canvas.drawRRect(
-          box,
-          Paint()
-            ..style = PaintingStyle.stroke
-            ..strokeWidth = picked ? 2.4 : 1.4
-            ..color = picked
-                ? p.mark
-                : s.opens
-                    ? p.label
-                    : p.label.withValues(alpha: 0.45));
+        box,
+        Paint()..color = s.opens ? p.fog : p.fog.withValues(alpha: 0.75),
+      );
+      canvas.drawRRect(
+        box,
+        Paint()
+          ..style = PaintingStyle.stroke
+          ..strokeWidth = picked ? 2.4 : 1.4
+          ..color = picked
+              ? p.mark
+              : s.opens
+                  ? p.label
+                  : p.label.withValues(alpha: 0.45),
+      );
       if (s.kind == 'notice_board') {
         _noticeBoardGlyph(canvas, s.opens);
       } else {
@@ -885,10 +987,12 @@ class CityChartPainter extends CustomPainter {
   void _noticeBoardGlyph(Canvas canvas, bool opens) {
     final a = opens ? 1.0 : 0.5;
     canvas.drawRRect(
-        RRect.fromRectAndRadius(
-            Rect.fromCenter(center: Offset.zero, width: 17, height: 14),
-            const Radius.circular(1.5)),
-        Paint()..color = Palette.orange35a.withValues(alpha: a));
+      RRect.fromRectAndRadius(
+        Rect.fromCenter(center: Offset.zero, width: 17, height: 14),
+        const Radius.circular(1.5),
+      ),
+      Paint()..color = Palette.orange35a.withValues(alpha: a),
+    );
     final note = Paint()..color = Palette.amber84a.withValues(alpha: a);
     canvas.drawRect(const Rect.fromLTWH(-7, -5.5, 6, 5), note);
     canvas.drawRect(const Rect.fromLTWH(0, -5, 6, 4), note);
@@ -901,16 +1005,21 @@ class CityChartPainter extends CustomPainter {
     const centre = Offset(serviceRadius - 1, -serviceRadius + 1);
     canvas.drawCircle(centre, 7.5, Paint()..color = Colors.black45);
     canvas.drawCircle(
-        centre, 6.5, Paint()..color = s.urgent ? Palette.red46 : p.label);
+      centre,
+      6.5,
+      Paint()..color = s.urgent ? Palette.red46 : p.label,
+    );
     final tp = TextPainter(
       text: TextSpan(
-          text: s.badge > 9 ? '9+' : '${s.badge}',
-          style: TextStyle(
-              fontFamily: 'PixelifySans',
-              fontSize: 9,
-              height: 1,
-              fontWeight: FontWeight.w700,
-              color: s.urgent ? Colors.white : p.fog)),
+        text: s.badge > 9 ? '9+' : '${s.badge}',
+        style: TextStyle(
+          fontFamily: 'PixelifySans',
+          fontSize: 9,
+          height: 1,
+          fontWeight: FontWeight.w700,
+          color: s.urgent ? Colors.white : p.fog,
+        ),
+      ),
       textDirection: TextDirection.ltr,
     )..layout();
     tp.paint(canvas, centre - Offset(tp.width / 2, tp.height / 2));
@@ -921,13 +1030,15 @@ class CityChartPainter extends CustomPainter {
     final icon = serviceIcon(s.kind);
     final tp = TextPainter(
       text: TextSpan(
-          text: String.fromCharCode(icon.codePoint),
-          style: TextStyle(
-              fontFamily: icon.fontFamily,
-              package: icon.fontPackage,
-              fontSize: 15,
-              height: 1,
-              color: s.opens ? p.label : p.label.withValues(alpha: 0.5))),
+        text: String.fromCharCode(icon.codePoint),
+        style: TextStyle(
+          fontFamily: icon.fontFamily,
+          package: icon.fontPackage,
+          fontSize: 15,
+          height: 1,
+          color: s.opens ? p.label : p.label.withValues(alpha: 0.5),
+        ),
+      ),
       textDirection: TextDirection.ltr,
     )..layout();
     tp.paint(canvas, Offset(-tp.width / 2, -tp.height / 2));
@@ -967,12 +1078,13 @@ class CityChartPainter extends CustomPainter {
     final pulse = _pulse;
     final r = 14 + 4 * pulse;
     canvas.drawCircle(
-        Offset.zero,
-        r,
-        Paint()
-          ..style = PaintingStyle.stroke
-          ..strokeWidth = 2
-          ..color = palette.mark.withValues(alpha: 1 - 0.5 * pulse));
+      Offset.zero,
+      r,
+      Paint()
+        ..style = PaintingStyle.stroke
+        ..strokeWidth = 2
+        ..color = palette.mark.withValues(alpha: 1 - 0.5 * pulse),
+    );
     canvas.drawCircle(Offset.zero, 4, Paint()..color = palette.mark);
     canvas.restore();
   }
@@ -1005,19 +1117,27 @@ class CityChartPainter extends CustomPainter {
         canvas.restore();
         continue;
       }
-      paintWayPin(canvas, w.kind, d.colour, p,
-          selected: selected, goal: w.id == goalWayId);
+      paintWayPin(
+        canvas,
+        w.kind,
+        d.colour,
+        p,
+        selected: selected,
+        goal: w.id == goalWayId,
+      );
       final n = numbers[w.id];
       if (n != null) {
         canvas.drawCircle(const Offset(9, -9), 6.5, Paint()..color = p.mark);
         final tp = TextPainter(
           text: TextSpan(
-              text: '$n',
-              style: TextStyle(
-                  fontFamily: InkFonts.system,
-                  fontSize: 9,
-                  height: 1,
-                  color: p.fog)),
+            text: '$n',
+            style: TextStyle(
+              fontFamily: InkFonts.system,
+              fontSize: 9,
+              height: 1,
+              color: p.fog,
+            ),
+          ),
           textDirection: TextDirection.ltr,
         )..layout();
         tp.paint(canvas, Offset(9 - tp.width / 2, -9 - tp.height / 2));
@@ -1029,18 +1149,27 @@ class CityChartPainter extends CustomPainter {
   /// A pin: a disc in the district's colour with the sign of what the way
   /// is, a small flag on it when it is the goal the player set.
   static void paintWayPin(
-      Canvas canvas, CityWayKind kind, Color colour, ChartPalette p,
-      {bool selected = false, bool goal = false}) {
+    Canvas canvas,
+    CityWayKind kind,
+    Color colour,
+    ChartPalette p, {
+    bool selected = false,
+    bool goal = false,
+  }) {
     canvas.drawCircle(
-        const Offset(0, 1.5), pinRadius, Paint()..color = Colors.black26);
+      const Offset(0, 1.5),
+      pinRadius,
+      Paint()..color = Colors.black26,
+    );
     canvas.drawCircle(Offset.zero, pinRadius, Paint()..color = p.fog);
     canvas.drawCircle(
-        Offset.zero,
-        pinRadius,
-        Paint()
-          ..style = PaintingStyle.stroke
-          ..strokeWidth = selected ? 3 : 1.8
-          ..color = selected ? p.mark : colour);
+      Offset.zero,
+      pinRadius,
+      Paint()
+        ..style = PaintingStyle.stroke
+        ..strokeWidth = selected ? 3 : 1.8
+        ..color = selected ? p.mark : colour,
+    );
     final ink = Paint()
       ..style = PaintingStyle.stroke
       ..strokeWidth = 1.8
@@ -1050,33 +1179,37 @@ class CityChartPainter extends CustomPainter {
       case CityWayKind.quest:
         // A diamond with a dot: a thing to be done.
         canvas.drawPath(
-            Path()
-              ..moveTo(0, -5.5)
-              ..lineTo(4.5, 0)
-              ..lineTo(0, 5.5)
-              ..lineTo(-4.5, 0)
-              ..close(),
-            ink);
+          Path()
+            ..moveTo(0, -5.5)
+            ..lineTo(4.5, 0)
+            ..lineTo(0, 5.5)
+            ..lineTo(-4.5, 0)
+            ..close(),
+          ink,
+        );
       case CityWayKind.fight:
         canvas.drawLine(const Offset(-4.5, -4.5), const Offset(4.5, 4.5), ink);
         canvas.drawLine(const Offset(4.5, -4.5), const Offset(-4.5, 4.5), ink);
       case CityWayKind.check:
         canvas.drawRRect(
-            RRect.fromRectAndRadius(
-                Rect.fromCenter(center: Offset.zero, width: 9, height: 9),
-                const Radius.circular(2)),
-            ink);
+          RRect.fromRectAndRadius(
+            Rect.fromCenter(center: Offset.zero, width: 9, height: 9),
+            const Radius.circular(2),
+          ),
+          ink,
+        );
         canvas.drawCircle(Offset.zero, 0.9, Paint()..color = p.place);
       case CityWayKind.shop:
         canvas.drawCircle(Offset.zero, 4.5, ink);
         canvas.drawLine(const Offset(0, -2), const Offset(0, 2), ink);
       case CityWayKind.road:
         canvas.drawPath(
-            Path()
-              ..moveTo(-3, -4.5)
-              ..lineTo(3, 0)
-              ..lineTo(-3, 4.5),
-            ink);
+          Path()
+            ..moveTo(-3, -4.5)
+            ..lineTo(3, 0)
+            ..lineTo(-3, 4.5),
+          ink,
+        );
     }
     if (goal) _paintGoalFlag(canvas, p, Offset.zero);
   }
@@ -1087,18 +1220,20 @@ class CityChartPainter extends CustomPainter {
     canvas.save();
     canvas.translate(shift.dx, shift.dy);
     canvas.drawLine(
-        const Offset(5, -8),
-        const Offset(5, -19),
-        Paint()
-          ..color = p.mark
-          ..strokeWidth = 1.6);
+      const Offset(5, -8),
+      const Offset(5, -19),
+      Paint()
+        ..color = p.mark
+        ..strokeWidth = 1.6,
+    );
     canvas.drawPath(
-        Path()
-          ..moveTo(5, -19)
-          ..lineTo(13, -16)
-          ..lineTo(5, -13)
-          ..close(),
-        Paint()..color = p.mark);
+      Path()
+        ..moveTo(5, -19)
+        ..lineTo(13, -16)
+        ..lineTo(5, -13)
+        ..close(),
+      Paint()..color = p.mark,
+    );
     canvas.restore();
   }
 

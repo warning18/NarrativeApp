@@ -39,24 +39,32 @@ final storyRecruitsProvider = Provider<void>((ref) {
     // loadState), and Vica must not join a hero who never met her.
     final play = ref.read(storyPlayProvider);
     final visited = walkedScenes(play.history, play.currentNodeId);
-    final due = storyRecruitsDue(companions,
-        visited: visited,
-        recruited: [for (final a in session.recruitedAllies) a.companionId],
-        gone: [...session.lostAllyIds, ...session.departedAllyIds]);
+    final due = storyRecruitsDue(
+      companions,
+      visited: visited,
+      recruited: [for (final a in session.recruitedAllies) a.companionId],
+      gone: [...session.lostAllyIds, ...session.departedAllyIds],
+    );
     if (due.isEmpty) return;
     busy = true;
-    unawaited(notifier
-        .recruitStoryCompanions(visited,
+    unawaited(
+      notifier
+          .recruitStoryCompanions(
+            visited,
             companions: companions,
             races: races,
             professions: professions,
             dice: dice,
-            houses: houses)
-        .whenComplete(() => busy = false));
+            houses: houses,
+          )
+          .whenComplete(() => busy = false),
+    );
   }
 
-  ref.listen(storyPlayProvider.select((p) => p.currentNodeId),
-      (previous, next) => check());
+  ref.listen(
+    storyPlayProvider.select((p) => p.currentNodeId),
+    (previous, next) => check(),
+  );
   // A save already past her scene: once the tables are in.
   Future.microtask(check);
 });

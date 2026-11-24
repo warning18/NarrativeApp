@@ -59,22 +59,22 @@ List<Color> streetSkyBands(DayPhase phase, WeatherKind? sky) {
     DayPhase.day => const [
         Color(0xFF8FB6D6),
         Color(0xFFB6D0E2),
-        Color(0xFFE6E3D2)
+        Color(0xFFE6E3D2),
       ],
     DayPhase.dawn => const [
         Color(0xFF8D9CC4),
         Color(0xFFE2A48E),
-        Color(0xFFF5D3A0)
+        Color(0xFFF5D3A0),
       ],
     DayPhase.dusk => const [
         Color(0xFF47507F),
         Color(0xFF9A5E7E),
-        Color(0xFFE59A62)
+        Color(0xFFE59A62),
       ],
     DayPhase.night => const [
         Palette.blue12,
         Color(0xFF16204A),
-        Color(0xFF2A3562)
+        Color(0xFF2A3562),
       ],
   };
   final grey = switch (sky) {
@@ -87,11 +87,12 @@ List<Color> streetSkyBands(DayPhase phase, WeatherKind? sky) {
   return [
     for (final c in bands)
       Color.lerp(
-          c,
-          phase == DayPhase.night
-              ? const Color(0xFF1B1E2C)
-              : const Color(0xFF8A8F99),
-          grey)!
+        c,
+        phase == DayPhase.night
+            ? const Color(0xFF1B1E2C)
+            : const Color(0xFF8A8F99),
+        grey,
+      )!,
   ];
 }
 
@@ -106,18 +107,23 @@ List<SideLayer> streetLayers({
   return withHourStars([
     // The sky.
     SideLayer(0, (canvas, size, scroll, t, u) {
-      kitSky(canvas, size, u,
-          bands: streetSkyBands(phase, sky),
-          ground: const Color(0xFF4B463F),
-          horizon: streetKerb.toInt());
+      kitSky(
+        canvas,
+        size,
+        u,
+        bands: streetSkyBands(phase, sky),
+        ground: const Color(0xFF4B463F),
+        horizon: streetKerb.toInt(),
+      );
     }),
     // The rooftops behind: a ragged row of houses in the haze.
     SideLayer(0, (canvas, size, scroll, t, u) {
       final cols = size.width / u;
       final haze = Color.lerp(
-          const Color(0xFF6B6F7C),
-          phase == DayPhase.night ? const Color(0xFF10142A) : Colors.white,
-          0.25)!;
+        const Color(0xFF6B6F7C),
+        phase == DayPhase.night ? const Color(0xFF10142A) : Colors.white,
+        0.25,
+      )!;
       final paint = Paint()..color = haze;
       var x = -2.0;
       var i = 0;
@@ -159,8 +165,15 @@ List<SideLayer> streetLayers({
         paint.color = Colors.white.withValues(alpha: 0.6);
         sidePixels(canvas, u, paint, 0, streetKerb, cols, 1);
         for (var i = 0; i < cols / 4; i++) {
-          sidePixels(canvas, u, paint, _hash(i, 3) * cols,
-              streetKerb + 2 + _hash(i, 4) * 18, 2, 1);
+          sidePixels(
+            canvas,
+            u,
+            paint,
+            _hash(i, 3) * cols,
+            streetKerb + 2 + _hash(i, 4) * 18,
+            2,
+            1,
+          );
         }
       }
       if (wet) {
@@ -179,17 +192,19 @@ List<SideLayer> streetLayers({
       paintFacade(canvas, u, style, box, snow: snowy);
       // Its shadow on the street.
       canvas.drawRect(
-          Rect.fromLTWH(
-              box.left * u, (streetKerb + 1) * u, box.width * u, 3 * u),
-          Paint()..color = Colors.black.withValues(alpha: 0.2));
+        Rect.fromLTWH(box.left * u, (streetKerb + 1) * u, box.width * u, 3 * u),
+        Paint()..color = Colors.black.withValues(alpha: 0.2),
+      );
     }),
   ], phase);
 }
 
 /// The overlay: the hour's wash, then the lights over it, so they are not
 /// dimmed with the evening. A pool of window light lies on the street.
-SideLayer _streetOverlay(
-    {required FacadeStyle style, required DayPhase phase}) {
+SideLayer _streetOverlay({
+  required FacadeStyle style,
+  required DayPhase phase,
+}) {
   final wash = hourWash(phase);
   final lit = phase == DayPhase.dusk || phase == DayPhase.night;
   return SideLayer(0, (canvas, size, scroll, t, u) {
@@ -198,15 +213,24 @@ SideLayer _streetOverlay(
     final box = facadeBoxFor(style, size.width / u, streetKerb);
     // The pool of light before the door.
     canvas.drawOval(
-        Rect.fromCenter(
-            center: Offset(box.doorX * u, (streetKerb + 6) * u),
-            width: box.width * 0.9 * u,
-            height: 9 * u),
-        Paint()
-          ..color = Palette.orange74
-              .withValues(alpha: phase == DayPhase.night ? 0.2 : 0.12));
-    paintFacadeLights(canvas, u, style, box, t,
-        strength: phase == DayPhase.night ? 1 : 0.7);
+      Rect.fromCenter(
+        center: Offset(box.doorX * u, (streetKerb + 6) * u),
+        width: box.width * 0.9 * u,
+        height: 9 * u,
+      ),
+      Paint()
+        ..color = Palette.orange74.withValues(
+          alpha: phase == DayPhase.night ? 0.2 : 0.12,
+        ),
+    );
+    paintFacadeLights(
+      canvas,
+      u,
+      style,
+      box,
+      t,
+      strength: phase == DayPhase.night ? 1 : 0.7,
+    );
   });
 }
 
@@ -280,93 +304,102 @@ class StreetViewScene extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final style = facadeStyleOf(kind, name);
-    return LayoutBuilder(builder: (context, box) {
-      final height = box.maxHeight.isFinite ? box.maxHeight : 260.0;
-      final width = box.maxWidth.isFinite ? box.maxWidth : 360.0;
-      final stack = Stack(
-        fit: StackFit.expand,
-        children: [
-          SideViewScene(
-            key: const ValueKey('journey_street_scene'),
-            // Each building keeps its own version of the street.
-            layers: withSceneWindow(
+    return LayoutBuilder(
+      builder: (context, box) {
+        final height = box.maxHeight.isFinite ? box.maxHeight : 260.0;
+        final width = box.maxWidth.isFinite ? box.maxWidth : 360.0;
+        final stack = Stack(
+          fit: StackFit.expand,
+          children: [
+            SideViewScene(
+              key: const ValueKey('journey_street_scene'),
+              // Each building keeps its own version of the street.
+              layers: withSceneWindow(
                 streetLayers(style: style, phase: phase, sky: sky),
                 'street-${style.name}',
-                sceneWindowOfId('$kind|$name')),
-            actors: party ? _streetParty(style: style) : null,
-            overlay: _streetOverlay(style: style, phase: phase),
-            particles: streetParticles(sky),
-            intensity: sky == WeatherKind.fog ? 0.7 : 0.8,
-            moving: false,
-            height: height,
-          ),
-          for (final (k, pin) in pins.indexed)
-            Builder(builder: (context) {
-              final at = pinAt(k, pins.length);
-              final inRow = pins.length <= 4
-                  ? pins.length
-                  : (k < (pins.length / 2).ceil()
-                      ? (pins.length / 2).ceil()
-                      : pins.length - (pins.length / 2).ceil());
-              final cell = math.min(84.0, width / inRow - 2);
-              return Positioned(
-                left: (at.dx * width - cell / 2).clamp(0.0, width - cell),
-                // A pin with a tag stands a line higher, its tag in view.
-                top: (at.dy * height - (pin.tag == null ? 34 : 64))
-                    .clamp(0.0, height - (pin.tag == null ? 56 : 90)),
-                width: cell,
-                child: GestureDetector(
-                  key: ValueKey('street_pin_${pin.index}'),
-                  behavior: HitTestBehavior.opaque,
-                  onTap: onPick == null ? null : () => onPick!(pin.index),
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      pin.child,
-                      const SizedBox(height: 2),
-                      DecoratedBox(
-                        decoration: BoxDecoration(
-                          color: Colors.black.withValues(alpha: 0.5),
-                          borderRadius: BorderRadius.circular(4),
-                        ),
-                        child: Padding(
-                          padding: const EdgeInsets.symmetric(
-                              horizontal: 4, vertical: 1),
-                          child: Text(
-                            pin.label,
-                            maxLines: 2,
-                            overflow: TextOverflow.ellipsis,
-                            textAlign: TextAlign.center,
-                            style: Theme.of(context)
-                                .textTheme
-                                .labelSmall
-                                ?.copyWith(
-                                  color: pin.locked
-                                      ? Colors.white60
-                                      : Colors.white,
-                                  height: 1.1,
-                                ),
+                sceneWindowOfId('$kind|$name'),
+              ),
+              actors: party ? _streetParty(style: style) : null,
+              overlay: _streetOverlay(style: style, phase: phase),
+              particles: streetParticles(sky),
+              intensity: sky == WeatherKind.fog ? 0.7 : 0.8,
+              moving: false,
+              height: height,
+            ),
+            for (final (k, pin) in pins.indexed)
+              Builder(
+                builder: (context) {
+                  final at = pinAt(k, pins.length);
+                  final inRow = pins.length <= 4
+                      ? pins.length
+                      : (k < (pins.length / 2).ceil()
+                          ? (pins.length / 2).ceil()
+                          : pins.length - (pins.length / 2).ceil());
+                  final cell = math.min(84.0, width / inRow - 2);
+                  return Positioned(
+                    left: (at.dx * width - cell / 2).clamp(0.0, width - cell),
+                    // A pin with a tag stands a line higher, its tag in view.
+                    top: (at.dy * height - (pin.tag == null ? 34 : 64)).clamp(
+                      0.0,
+                      height - (pin.tag == null ? 56 : 90),
+                    ),
+                    width: cell,
+                    child: GestureDetector(
+                      key: ValueKey('street_pin_${pin.index}'),
+                      behavior: HitTestBehavior.opaque,
+                      onTap: onPick == null ? null : () => onPick!(pin.index),
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          pin.child,
+                          const SizedBox(height: 2),
+                          DecoratedBox(
+                            decoration: BoxDecoration(
+                              color: Colors.black.withValues(alpha: 0.5),
+                              borderRadius: BorderRadius.circular(4),
+                            ),
+                            child: Padding(
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 4,
+                                vertical: 1,
+                              ),
+                              child: Text(
+                                pin.label,
+                                maxLines: 2,
+                                overflow: TextOverflow.ellipsis,
+                                textAlign: TextAlign.center,
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .labelSmall
+                                    ?.copyWith(
+                                      color: pin.locked
+                                          ? Colors.white60
+                                          : Colors.white,
+                                      height: 1.1,
+                                    ),
+                              ),
+                            ),
                           ),
-                        ),
+                          if (pin.tag case final tag?) ...[
+                            const SizedBox(height: 2),
+                            DecoratedBox(
+                              decoration: BoxDecoration(
+                                color: Colors.black.withValues(alpha: 0.6),
+                                borderRadius: BorderRadius.circular(10),
+                              ),
+                              child: tag,
+                            ),
+                          ],
+                        ],
                       ),
-                      if (pin.tag case final tag?) ...[
-                        const SizedBox(height: 2),
-                        DecoratedBox(
-                          decoration: BoxDecoration(
-                            color: Colors.black.withValues(alpha: 0.6),
-                            borderRadius: BorderRadius.circular(10),
-                          ),
-                          child: tag,
-                        ),
-                      ],
-                    ],
-                  ),
-                ),
-              );
-            }),
-        ],
-      );
-      return SizedBox(width: width, height: height, child: stack);
-    });
+                    ),
+                  );
+                },
+              ),
+          ],
+        );
+        return SizedBox(width: width, height: height, child: stack);
+      },
+    );
   }
 }

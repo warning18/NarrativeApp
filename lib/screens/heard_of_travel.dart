@@ -14,7 +14,10 @@ import 'port_screen.dart' show launchExpedition;
 /// the expedition that finds it, sailed to first when it sets out from
 /// another port. Only for a [HeardOfPlace.setsOut] place.
 Future<void> setOutToHeardOf(
-    BuildContext context, WidgetRef ref, HeardOfPlace place) async {
+  BuildContext context,
+  WidgetRef ref,
+  HeardOfPlace place,
+) async {
   if (!place.setsOut) return;
   final expeditionId = place.expeditionId;
   if (expeditionId == null) {

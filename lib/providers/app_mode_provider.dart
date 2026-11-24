@@ -30,5 +30,6 @@ class AppModeNotifier extends StateNotifier<AppMode> {
   }
 }
 
-final appModeProvider =
-    StateNotifierProvider<AppModeNotifier, AppMode>((ref) => AppModeNotifier());
+final appModeProvider = StateNotifierProvider<AppModeNotifier, AppMode>(
+  (ref) => AppModeNotifier(),
+);

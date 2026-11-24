@@ -1,4 +1,5 @@
 import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -37,7 +38,9 @@ import '../theme/icon_sizes.dart';
 /// The port a trip to [settlement] ends at: its landing, or null for the
 /// camp's own shore.
 String? _destinationPortIdFor(
-        Settlement? settlement, Map<String, dynamic> ports) =>
+  Settlement? settlement,
+  Map<String, dynamic> ports,
+) =>
     landingPortIdFor(settlement, ports);
 
 /// Whether a trip to [destinationPortId] (null: the camp's shore) is a
@@ -86,8 +89,12 @@ Future<bool> sailParty(
   if (there == null) return true;
   if (!context.mounted) return false;
   // The days at sea pass on the voyage screen, one a day as sailed.
-  return sailTo(context, ref,
-      toPortId: there, toPort: ports[there] as Map<String, dynamic>);
+  return sailTo(
+    context,
+    ref,
+    toPortId: there,
+    toPort: ports[there] as Map<String, dynamic>,
+  );
 }
 
 /// Travels to [targetNodeId] ([destinationPortId] its port, null for the
@@ -106,34 +113,45 @@ Future<void> _travelTo(
   required String origin,
 }) async {
   final ports = ref.read(localizedDbProvider(portsSchema)).value ?? const {};
-  final walk = _isWalkFrom(destinationPortId,
-      ports: ports, savedPortId: ref.read(playerSessionProvider).currentPortId);
+  final walk = _isWalkFrom(
+    destinationPortId,
+    ports: ports,
+    savedPortId: ref.read(playerSessionProvider).currentPortId,
+  );
   final play = ref.read(storyPlayProvider.notifier);
   if (walk) {
     // The watches of where the walk goes (a far place can take a day, see
     // GeoPlace.watches).
     final story = await ref.read(storyDataProvider.future);
     final world = await loadGeography(ref);
-    final watches =
-        world.watchesToNode(story.nodeFor(targetNodeId), fallback: walkWatches);
+    final watches = world.watchesToNode(
+      story.nodeFor(targetNodeId),
+      fallback: walkWatches,
+    );
     await walkRoadStep(ref, watches: watches);
     if (!context.mounted) return;
     // A road event on the way (see road_events.dart), else what the road
     // may hold.
     final from = ref.read(storyPlayProvider);
-    final event = await roadEventOn(ref, story,
-        fromNodeId: from.currentNodeId,
-        toNodeId: targetNodeId,
-        historyLength: from.history.length);
+    final event = await roadEventOn(
+      ref,
+      story,
+      fromNodeId: from.currentNodeId,
+      toNodeId: targetNodeId,
+      historyLength: from.history.length,
+    );
     if (!context.mounted) return;
-    final started = await startRoadEncounter(ref, story,
-        fromNodeId: from.currentNodeId,
-        toNodeId: targetNodeId,
-        historyLength: from.history.length,
-        travels: true,
-        watches: watches,
-        taken: event != null,
-        origin: origin);
+    final started = await startRoadEncounter(
+      ref,
+      story,
+      fromNodeId: from.currentNodeId,
+      toNodeId: targetNodeId,
+      historyLength: from.history.length,
+      travels: true,
+      watches: watches,
+      taken: event != null,
+      origin: origin,
+    );
     if (!context.mounted) return;
     if (event != null) {
       play.startExcursion(event, targetNodeId, origin: origin);
@@ -141,22 +159,29 @@ Future<void> _travelTo(
     }
     if (started) return;
     unawaited(
-        showImmersiveNotice(context, icon: Icons.hiking, message: walkNotice));
+      showImmersiveNotice(context, icon: Icons.hiking, message: walkNotice),
+    );
     play.choose(targetNodeId);
     return;
   }
-  final arrived =
-      await sailParty(context, ref, destinationPortId: destinationPortId);
+  final arrived = await sailParty(
+    context,
+    ref,
+    destinationPortId: destinationPortId,
+  );
   if (!arrived || !context.mounted) return;
   // The landing rolls as a road arriving there would (v1.361).
   final story = await ref.read(storyDataProvider.future);
   final from = ref.read(storyPlayProvider);
-  final started = await startRoadEncounter(ref, story,
-      fromNodeId: from.currentNodeId,
-      toNodeId: targetNodeId,
-      historyLength: from.history.length,
-      travels: true,
-      origin: origin);
+  final started = await startRoadEncounter(
+    ref,
+    story,
+    fromNodeId: from.currentNodeId,
+    toNodeId: targetNodeId,
+    historyLength: from.history.length,
+    travels: true,
+    origin: origin,
+  );
   if (started) return;
   play.choose(targetNodeId);
 }
@@ -164,7 +189,10 @@ Future<void> _travelTo(
 /// Travels to [place]: its arrival scene the first time, the place itself
 /// after.
 Future<void> travelToPlace(
-    BuildContext context, WidgetRef ref, StoryNode place) async {
+  BuildContext context,
+  WidgetRef ref,
+  StoryNode place,
+) async {
   final settlement = place.settlement;
   if (settlement == null) return;
   final ports = ref.read(localizedDbProvider(portsSchema)).value ?? const {};
@@ -173,8 +201,10 @@ Future<void> travelToPlace(
   await _travelTo(
     context,
     ref,
-    targetNodeId:
-        arrivalNodeFor(place, ref.read(storyPlayProvider).visitedNodeIds),
+    targetNodeId: arrivalNodeFor(
+      place,
+      ref.read(storyPlayProvider).visitedNodeIds,
+    ),
     destinationPortId: _destinationPortIdFor(settlement, ports),
     walkNotice: tr(ref, 'travel_walked_to').replaceAll('{place}', name),
     origin: tr(ref, 'travel_road_to').replaceAll('{place}', name),
@@ -203,18 +233,26 @@ Future<void> returnToCamp(BuildContext context, WidgetRef ref) async {
 /// (see takeStoryChoice); by sea, the voyage lands the party there, with
 /// no road left to walk but a long land road from the landing.
 Future<void> setOutOnMainQuest(
-    BuildContext context, WidgetRef ref, StoryChoice choice) async {
+  BuildContext context,
+  WidgetRef ref,
+  StoryChoice choice,
+) async {
   var sailed = false;
   if (choice.travels) {
     final story = ref.read(storyDataProvider).value;
     final place = story?.nodeFor(choice.travelPlaceId!);
     final ports = ref.read(localizedDbProvider(portsSchema)).value ?? const {};
     final destinationPortId = _destinationPortIdFor(place?.settlement, ports);
-    if (!_isWalkFrom(destinationPortId,
-        ports: ports,
-        savedPortId: ref.read(playerSessionProvider).currentPortId)) {
-      final arrived =
-          await sailParty(context, ref, destinationPortId: destinationPortId);
+    if (!_isWalkFrom(
+      destinationPortId,
+      ports: ports,
+      savedPortId: ref.read(playerSessionProvider).currentPortId,
+    )) {
+      final arrived = await sailParty(
+        context,
+        ref,
+        destinationPortId: destinationPortId,
+      );
       if (!arrived || !context.mounted) return;
       sailed = true;
     }
@@ -240,8 +278,9 @@ class CampReturnButton extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final ports = ref.watch(localizedDbProvider(portsSchema)).value ?? const {};
-    final savedPortId =
-        ref.watch(playerSessionProvider.select((s) => s.currentPortId));
+    final savedPortId = ref.watch(
+      playerSessionProvider.select((s) => s.currentPortId),
+    );
     final busy =
         ref.watch(combatActiveProvider) || ref.watch(expeditionActiveProvider);
     return FilledButton.tonalIcon(
@@ -251,8 +290,10 @@ class CampReturnButton extends ConsumerWidget {
         alignment: Alignment.centerLeft,
       ),
       onPressed: busy ? null : () => returnToCamp(context, ref),
-      icon:
-          const Icon(Icons.local_fire_department_outlined, size: IconSize.s16),
+      icon: const Icon(
+        Icons.local_fire_department_outlined,
+        size: IconSize.s16,
+      ),
       label: Text(
         '${tr(ref, 'camp_return_button')} · '
         '${_routeLabelTo(ref, null, ports: ports, savedPortId: savedPortId)}',
@@ -301,8 +342,12 @@ class PlaceCard extends ConsumerWidget {
     final progress = placeProgress(place, session.flags);
     final companionHere =
         ref.watch(companionLeadsProvider).containsKey(place.id);
-    final route = _routeLabelTo(ref, _destinationPortIdFor(settlement, ports),
-        ports: ports, savedPortId: session.currentPortId);
+    final route = _routeLabelTo(
+      ref,
+      _destinationPortIdFor(settlement, ports),
+      ports: ports,
+      savedPortId: session.currentPortId,
+    );
     final theme = Theme.of(context);
     final blurb = settlement.blurbFor(fr);
     final landmark = landmarkOfScene(place.id) ??
@@ -331,14 +376,20 @@ class PlaceCard extends ConsumerWidget {
               Row(
                 key: Key('place_companion_${place.id}'),
                 children: [
-                  Icon(Icons.person_add_alt_1_outlined,
-                      size: IconSize.s16, color: theme.colorScheme.tertiary),
+                  Icon(
+                    Icons.person_add_alt_1_outlined,
+                    size: IconSize.s16,
+                    color: theme.colorScheme.tertiary,
+                  ),
                   const SizedBox(width: 4),
                   Flexible(
-                    child: Text(tr(ref, 'place_companion_label'),
-                        overflow: TextOverflow.ellipsis,
-                        style: theme.textTheme.labelMedium
-                            ?.copyWith(color: theme.colorScheme.tertiary)),
+                    child: Text(
+                      tr(ref, 'place_companion_label'),
+                      overflow: TextOverflow.ellipsis,
+                      style: theme.textTheme.labelMedium?.copyWith(
+                        color: theme.colorScheme.tertiary,
+                      ),
+                    ),
                   ),
                 ],
               ),
@@ -359,7 +410,8 @@ class PlaceCard extends ConsumerWidget {
                 constraints: const BoxConstraints(minWidth: 36, minHeight: 36),
                 onPressed: () => Navigator.of(context).push(
                   MaterialPageRoute(
-                      builder: (_) => FullMapScreen(focusId: landmark.id)),
+                    builder: (_) => FullMapScreen(focusId: landmark.id),
+                  ),
                 ),
               ),
             FilledButton.tonal(
@@ -399,8 +451,9 @@ class CampAwayView extends ConsumerWidget {
     final node =
         ref.watch(storyDataProvider).value?.nodeFor(play.currentNodeId);
     final flags = ref.watch(playerSessionProvider.select((s) => s.flags));
-    final savedPortId =
-        ref.watch(playerSessionProvider.select((s) => s.currentPortId));
+    final savedPortId = ref.watch(
+      playerSessionProvider.select((s) => s.currentPortId),
+    );
     final ports = ref.watch(localizedDbProvider(portsSchema)).value ?? const {};
     final place =
         canReturnToCampFrom(node, inExcursion: play.isInExcursion, flags: flags)
@@ -415,8 +468,10 @@ class CampAwayView extends ConsumerWidget {
             const Icon(Icons.local_fire_department_outlined),
             const SizedBox(width: 8),
             Expanded(
-              child: Text(tr(ref, 'camp_away_title'),
-                  style: theme.textTheme.titleLarge),
+              child: Text(
+                tr(ref, 'camp_away_title'),
+                style: theme.textTheme.titleLarge,
+              ),
             ),
           ],
         ),
@@ -427,9 +482,14 @@ class CampAwayView extends ConsumerWidget {
               : tr(ref, 'camp_away_town_body')
                   .replaceAll('{place}', place.nameFor(fr))
                   .replaceAll(
-                      '{route}',
-                      _routeLabelTo(ref, null,
-                          ports: ports, savedPortId: savedPortId)),
+                    '{route}',
+                    _routeLabelTo(
+                      ref,
+                      null,
+                      ports: ports,
+                      savedPortId: savedPortId,
+                    ),
+                  ),
           style: theme.textTheme.bodyMedium,
         ),
         if (place != null) ...[

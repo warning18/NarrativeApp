@@ -202,8 +202,10 @@ class RegionStrips {
         final districts = [
           for (final p in geo.childrenOf(towns[i].key))
             if (p.level == GeoLevel.district) p.id,
-        ]..sort((a, b) =>
-            (firstScene[a] ?? _never).compareTo(firstScene[b] ?? _never));
+        ]..sort(
+            (a, b) =>
+                (firstScene[a] ?? _never).compareTo(firstScene[b] ?? _never),
+          );
         for (var k = 0; k < districts.length; k++) {
           strip.places[districts[k]] = districts.length == 1
               ? at
@@ -286,8 +288,12 @@ class RegionStrips {
         for (var k = 0; k < n; k++) {
           final x = a.x + (b.x - a.x) * (k + 1) / (n + 1);
           final zone = _zones[_zoneAt(a, b, x)]!;
-          out[road.stops[k].id] =
-              StripPosition(a.strip, zone.zoneId, x, zone.kit);
+          out[road.stops[k].id] = StripPosition(
+            a.strip,
+            zone.zoneId,
+            x,
+            zone.kit,
+          );
         }
         continue;
       }

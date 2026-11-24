@@ -80,20 +80,25 @@ final companionViewsProvider = Provider<List<CompanionView>?>((ref) {
         professions[record['professionId']] as Map<String, dynamic>? ??
             const {};
     final base = deriveAllyBaseStats(
-        gameConfig: config, race: race, profession: profession);
+      gameConfig: config,
+      race: race,
+      profession: profession,
+    );
     final maxHp = scaledMaxHealth(base.maxHealth, session.level);
-    views.add(CompanionView(
-      id: ally.companionId,
-      record: record,
-      ally: ally,
-      name: (record['companionName'] ?? ally.companionId).toString(),
-      raceName: (race['raceName'] ?? '').toString(),
-      professionName: (profession['professionName'] ?? '').toString(),
-      professionRecord: profession,
-      hp: ally.currentHealth.clamp(0, maxHp),
-      maxHp: maxHp,
-      active: session.activeAllyIds.contains(ally.companionId),
-    ));
+    views.add(
+      CompanionView(
+        id: ally.companionId,
+        record: record,
+        ally: ally,
+        name: (record['companionName'] ?? ally.companionId).toString(),
+        raceName: (race['raceName'] ?? '').toString(),
+        professionName: (profession['professionName'] ?? '').toString(),
+        professionRecord: profession,
+        hp: ally.currentHealth.clamp(0, maxHp),
+        maxHp: maxHp,
+        active: session.activeAllyIds.contains(ally.companionId),
+      ),
+    );
   }
   int seatOrder(CompanionView v) {
     final i = session.activeAllyIds.indexOf(v.id);
@@ -140,8 +145,12 @@ String _dogPortraitAsset(String alignment) => switch (alignment) {
 /// A round portrait ringed in the approval tier's colour: the class mark, or
 /// the guide dog's own sprite.
 class CompanionPortrait extends ConsumerWidget {
-  const CompanionPortrait(this.view,
-      {super.key, this.size = 44, this.dim = false});
+  const CompanionPortrait(
+    this.view, {
+    super.key,
+    this.size = 44,
+    this.dim = false,
+  });
   final CompanionView view;
   final double size;
   final bool dim;
@@ -161,8 +170,9 @@ class CompanionPortrait extends ConsumerWidget {
         ),
       );
     }
-    final alignment =
-        ref.watch(playerSessionProvider.select((s) => s.alignmentLabel));
+    final alignment = ref.watch(
+      playerSessionProvider.select((s) => s.alignmentLabel),
+    );
     return Opacity(
       opacity: dim ? 0.55 : 1,
       child: Container(
@@ -177,19 +187,24 @@ class CompanionPortrait extends ConsumerWidget {
         ),
         child: view.isGuideDog
             ? ClipOval(
-                child: Image.asset(_dogPortraitAsset(alignment),
-                    width: size * 0.82,
-                    height: size * 0.82,
-                    fit: BoxFit.contain,
-                    filterQuality: FilterQuality.none,
-                    errorBuilder: (_, __, ___) => PresetMark(
-                        folder: 'professions',
-                        preset: view.professionRecord,
-                        size: size * 0.62)))
+                child: Image.asset(
+                  _dogPortraitAsset(alignment),
+                  width: size * 0.82,
+                  height: size * 0.82,
+                  fit: BoxFit.contain,
+                  filterQuality: FilterQuality.none,
+                  errorBuilder: (_, __, ___) => PresetMark(
+                    folder: 'professions',
+                    preset: view.professionRecord,
+                    size: size * 0.62,
+                  ),
+                ),
+              )
             : PresetMark(
                 folder: 'professions',
                 preset: view.professionRecord,
-                size: size * 0.62),
+                size: size * 0.62,
+              ),
       ),
     );
   }
@@ -197,8 +212,12 @@ class CompanionPortrait extends ConsumerWidget {
 
 /// A slim health bar: [hp] of [max].
 class HealthBar extends StatelessWidget {
-  const HealthBar(
-      {super.key, required this.hp, required this.max, this.height = 5});
+  const HealthBar({
+    super.key,
+    required this.hp,
+    required this.max,
+    this.height = 5,
+  });
   final int hp;
   final int max;
   final double height;
@@ -238,18 +257,23 @@ class TierChip extends ConsumerWidget {
           border: Border.all(color: colour.withValues(alpha: 0.7)),
           borderRadius: BorderRadius.circular(10),
         ),
-        child: Row(mainAxisSize: MainAxisSize.min, children: [
-          if (tier == ApprovalTier.devoted) ...[
-            const ApprovalHeart(size: 11),
-            const SizedBox(width: 3),
-          ],
-          Text(tr(ref, approvalTierKey(tier)),
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            if (tier == ApprovalTier.devoted) ...[
+              const ApprovalHeart(size: 11),
+              const SizedBox(width: 3),
+            ],
+            Text(
+              tr(ref, approvalTierKey(tier)),
               key: textKey,
               style: Theme.of(context)
                   .textTheme
                   .labelSmall
-                  ?.copyWith(color: colour, fontWeight: FontWeight.w700)),
-        ]),
+                  ?.copyWith(color: colour, fontWeight: FontWeight.w700),
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -269,81 +293,107 @@ class ApprovalMeter extends ConsumerWidget {
     final colour = tierColorOf(context, approvalTierFor(approval));
     String tierWord(ApprovalTier t) =>
         tr(ref, approvalTierKey(t)).toLowerCase();
-    return Column(children: [
-      LayoutBuilder(builder: (context, c) {
-        final w = c.maxWidth;
-        return SizedBox(
-          height: 18,
-          child: Stack(alignment: Alignment.centerLeft, children: [
-            Container(
-              height: 6,
-              decoration: BoxDecoration(
-                  color: ink.seam, borderRadius: BorderRadius.circular(3)),
-            ),
-            Container(
-              width: w * at(approval),
-              height: 6,
-              decoration: BoxDecoration(
-                  color: colour, borderRadius: BorderRadius.circular(3)),
-            ),
-            for (final v in [
-              leavingApproval,
-              waryApproval,
-              friendlyApproval,
-              devotedApproval
-            ])
-              Positioned(
-                left: w * at(v) - 1,
-                child: Container(width: 2, height: 14, color: ink.ash),
+    return Column(
+      children: [
+        LayoutBuilder(
+          builder: (context, c) {
+            final w = c.maxWidth;
+            return SizedBox(
+              height: 18,
+              child: Stack(
+                alignment: Alignment.centerLeft,
+                children: [
+                  Container(
+                    height: 6,
+                    decoration: BoxDecoration(
+                      color: ink.seam,
+                      borderRadius: BorderRadius.circular(3),
+                    ),
+                  ),
+                  Container(
+                    width: w * at(approval),
+                    height: 6,
+                    decoration: BoxDecoration(
+                      color: colour,
+                      borderRadius: BorderRadius.circular(3),
+                    ),
+                  ),
+                  for (final v in [
+                    leavingApproval,
+                    waryApproval,
+                    friendlyApproval,
+                    devotedApproval,
+                  ])
+                    Positioned(
+                      left: w * at(v) - 1,
+                      child: Container(width: 2, height: 14, color: ink.ash),
+                    ),
+                  Positioned(
+                    left: w * at(approval) - 7,
+                    child: Container(
+                      width: 14,
+                      height: 14,
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        color: colour,
+                        border: Border.all(
+                          color: Theme.of(context).scaffoldBackgroundColor,
+                          width: 2,
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
               ),
-            Positioned(
-              left: w * at(approval) - 7,
-              child: Container(
-                width: 14,
-                height: 14,
-                decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  color: colour,
-                  border: Border.all(
-                      color: Theme.of(context).scaffoldBackgroundColor,
-                      width: 2),
-                ),
-              ),
-            ),
-          ]),
-        );
-      }),
-      // The words under the ticks: the two close together lean apart (friendly
-      // ends at its tick, devoted starts at its), so they never meet.
-      LayoutBuilder(builder: (context, c) {
-        final w = c.maxWidth;
-        final style =
-            theme.textTheme.labelSmall?.copyWith(color: ink.ash, fontSize: 10);
-        Widget word(int v, String label, {int lean = 0}) {
-          final x = w * at(v);
-          final text = Text(label, style: style);
-          return switch (lean) {
-            < 0 => Positioned(right: w - x, child: text),
-            > 0 => Positioned(left: x, child: text),
-            _ => Positioned(
-                left: x - 40,
-                width: 80,
-                child: Center(child: text),
-              ),
-          };
-        }
+            );
+          },
+        ),
+        // The words under the ticks: the two close together lean apart (friendly
+        // ends at its tick, devoted starts at its), so they never meet.
+        LayoutBuilder(
+          builder: (context, c) {
+            final w = c.maxWidth;
+            final style = theme.textTheme.labelSmall?.copyWith(
+              color: ink.ash,
+              fontSize: 10,
+            );
+            Widget word(int v, String label, {int lean = 0}) {
+              final x = w * at(v);
+              final text = Text(label, style: style);
+              return switch (lean) {
+                < 0 => Positioned(right: w - x, child: text),
+                > 0 => Positioned(left: x, child: text),
+                _ => Positioned(
+                    left: x - 40,
+                    width: 80,
+                    child: Center(child: text),
+                  ),
+              };
+            }
 
-        return SizedBox(
-          height: 16,
-          child: Stack(children: [
-            word(leavingApproval, tr(ref, 'companion_leaves_mark')),
-            word(waryApproval, tierWord(ApprovalTier.wary)),
-            word(friendlyApproval, tierWord(ApprovalTier.friendly), lean: -1),
-            word(devotedApproval, tierWord(ApprovalTier.devoted), lean: 1),
-          ]),
-        );
-      }),
-    ]);
+            return SizedBox(
+              height: 16,
+              child: Stack(
+                children: [
+                  word(leavingApproval, tr(ref, 'companion_leaves_mark')),
+                  word(waryApproval, tierWord(ApprovalTier.wary)),
+                  word(
+                    friendlyApproval,
+                    tierWord(ApprovalTier.friendly),
+                    lean: -1,
+                  ),
+                  word(
+                    devotedApproval,
+                    tierWord(ApprovalTier.devoted),
+                    lean: 1,
+                  ),
+                ],
+              ),
+            );
+          },
+        ),
+      ],
+    );
   }
 }
 
@@ -365,9 +415,10 @@ class _FigurePainter extends CustomPainter {
     final feet = size.height - use.footInset * scale;
     canvas.drawOval(
       Rect.fromCenter(
-          center: Offset(size.width / 2, feet - 1),
-          width: size.width * 0.62,
-          height: size.height * 0.14),
+        center: Offset(size.width / 2, feet - 1),
+        width: size.width * 0.62,
+        height: size.height * 0.14,
+      ),
       Paint()..color = ground.withValues(alpha: 0.45),
     );
     final image = FightSpriteImages.idleOf(set);
@@ -378,9 +429,17 @@ class _FigurePainter extends CustomPainter {
     canvas.drawImageRect(
       image,
       Rect.fromLTWH(
-          0, 0, use.frameWidth.toDouble(), use.frameHeight.toDouble()),
+        0,
+        0,
+        use.frameWidth.toDouble(),
+        use.frameHeight.toDouble(),
+      ),
       Rect.fromLTWH(
-          -use.frameWidth * scale / 2, 0, use.frameWidth * scale, size.height),
+        -use.frameWidth * scale / 2,
+        0,
+        use.frameWidth * scale,
+        size.height,
+      ),
       Paint()
         ..filterQuality = FilterQuality.none
         ..isAntiAlias = false,

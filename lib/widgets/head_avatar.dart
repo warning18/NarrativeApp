@@ -84,12 +84,17 @@ class HeadAvatar extends StatelessWidget {
             height: size * 0.74,
             alignment: Alignment.center,
             decoration: BoxDecoration(
-                shape: BoxShape.circle, color: accent ?? scheme.primary),
-            child: Text(initial,
-                style: TextStyle(
-                    color: Colors.white,
-                    fontSize: size * 0.4,
-                    fontWeight: FontWeight.bold)),
+              shape: BoxShape.circle,
+              color: accent ?? scheme.primary,
+            ),
+            child: Text(
+              initial,
+              style: TextStyle(
+                color: Colors.white,
+                fontSize: size * 0.4,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
           ),
     );
     final asset = headAssetOf(id);
@@ -109,7 +114,8 @@ class HeadAvatar extends StatelessWidget {
         child: inked
             ? ColorFiltered(
                 colorFilter: _inkPortrait,
-                child: _spriteHead(context, asset, letter))
+                child: _spriteHead(context, asset, letter),
+              )
             : _spriteHead(context, asset, letter),
       ),
     );
@@ -154,12 +160,13 @@ class _HeadPainter extends CustomPainter {
 
   @override
   void paint(Canvas canvas, Size size) => canvas.drawImageRect(
-      image,
-      rect,
-      Offset.zero & size,
-      Paint()
-        ..filterQuality = FilterQuality.none
-        ..isAntiAlias = false);
+        image,
+        rect,
+        Offset.zero & size,
+        Paint()
+          ..filterQuality = FilterQuality.none
+          ..isAntiAlias = false,
+      );
 
   @override
   bool shouldRepaint(_HeadPainter old) =>

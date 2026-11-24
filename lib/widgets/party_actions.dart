@@ -26,31 +26,38 @@ Future<void> setAllyInParty(
   required String requiredHouseId,
 }) async {
   final notifier = ref.read(playerSessionProvider.notifier);
-  await notifier.setAllyActive(companionId, active,
-      partyCapacity: partyCapacity,
-      requiredHouseId: requiredHouseId,
-      companions:
-          ref.read(localizedDbProvider(companionsSchema)).value ?? const {});
+  await notifier.setAllyActive(
+    companionId,
+    active,
+    partyCapacity: partyCapacity,
+    requiredHouseId: requiredHouseId,
+    companions:
+        ref.read(localizedDbProvider(companionsSchema)).value ?? const {},
+  );
   if (!active) return;
   final earned = await notifier.checkAchievements();
   if (earned.isEmpty || !context.mounted) return;
   final achievements =
       ref.read(localizedDbProvider(achievementsSchema)).value ?? const {};
-  unawaited(announceAchievements(
+  unawaited(
+    announceAchievements(
+        context,
+        [
+          for (final id in earned)
+            (achievements[id] as Map<String, dynamic>?)?['achievementName']
+                    ?.toString() ??
+                id,
+        ],
+        tr(ref, 'achievement_unlocked_prefix').toUpperCase()),
+  );
+  unawaited(
+    showImmersiveNotice(
       context,
-      [
-        for (final id in earned)
-          (achievements[id] as Map<String, dynamic>?)?['achievementName']
-                  ?.toString() ??
-              id
-      ],
-      tr(ref, 'achievement_unlocked_prefix').toUpperCase()));
-  unawaited(showImmersiveNotice(
-    context,
-    icon: Icons.emoji_events_outlined,
-    message:
-        '${tr(ref, 'achievement_unlocked_prefix')}: ${earned.map((id) => (achievements[id] as Map<String, dynamic>?)?['achievementName']?.toString() ?? id).join(', ')}',
-  ));
+      icon: Icons.emoji_events_outlined,
+      message:
+          '${tr(ref, 'achievement_unlocked_prefix')}: ${earned.map((id) => (achievements[id] as Map<String, dynamic>?)?['achievementName']?.toString() ?? id).join(', ')}',
+    ),
+  );
 }
 
 /// Whether [companionId] can join the party now, and if not, why.

@@ -25,7 +25,9 @@ List<String> unlockedByFlagsOf(Map<String, dynamic> record) =>
 /// The required flags of [record] still missing from [flags]: none once
 /// they are all set, or once any one of its `unlockedByFlags` is.
 List<String> missingRequiredFlags(
-    Map<String, dynamic> record, Iterable<String> flags) {
+  Map<String, dynamic> record,
+  Iterable<String> flags,
+) {
   final have = flags.toSet();
   if (unlockedByFlagsOf(record).any(have.contains)) return const [];
   return [

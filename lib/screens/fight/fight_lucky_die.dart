@@ -38,31 +38,45 @@ extension _FightLuckyDie on _FightScreenState {
       foe.currentHealth = max(0, foe.currentHealth - strike);
       _lastDamagedEnemyKey = foe.key;
       _lastEnemyDamageTaken = strike;
-      _log.add(_LogEntry(
-        trFor(lang, 'lucky_die_opening_blow')
-            .replaceAll('{enemy}', foe.displayName)
-            .replaceAll('{n}', '$blow'),
-        _LogKind.enemyDamage,
-      ));
-      _log.add(_LogEntry(
-        trFor(lang, 'lucky_die_reveal')
-            .replaceAll('{enemy}', foe.displayName)
-            .replaceAll('{n}', '$strike'),
-        _LogKind.phase,
-      ));
+      _log.add(
+        _LogEntry(
+          trFor(
+            lang,
+            'lucky_die_opening_blow',
+          ).replaceAll('{enemy}', foe.displayName).replaceAll('{n}', '$blow'),
+          _LogKind.enemyDamage,
+        ),
+      );
+      _log.add(
+        _LogEntry(
+          trFor(
+            lang,
+            'lucky_die_reveal',
+          ).replaceAll('{enemy}', foe.displayName).replaceAll('{n}', '$strike'),
+          _LogKind.phase,
+        ),
+      );
       _log.add(_LogEntry(trFor(lang, 'lucky_die_roll_it'), _LogKind.info));
     });
     if (blow > 0) {
       _triggerShake();
-      _fx(VfxStyle.impact, _memberCardKey(player.id),
-          delayMs: 250, text: '-$blow', textKind: VfxTextKind.hurt);
+      _fx(
+        VfxStyle.impact,
+        _memberCardKey(player.id),
+        delayMs: 250,
+        text: '-$blow',
+        textKind: VfxTextKind.hurt,
+      );
     }
-    _fx(VfxStyle.radiance, _enemyCardKey(foe.key),
-        source: _memberCardKey(player.id),
-        delayMs: 900,
-        text: '-$strike',
-        textKind: VfxTextKind.damage,
-        big: true);
+    _fx(
+      VfxStyle.radiance,
+      _enemyCardKey(foe.key),
+      source: _memberCardKey(player.id),
+      delayMs: 900,
+      text: '-$strike',
+      textKind: VfxTextKind.damage,
+      big: true,
+    );
     if (_enemies.every((e) => !e.isAlive)) {
       _finishFight(won: true);
       return true;

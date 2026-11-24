@@ -85,11 +85,12 @@ class PlacePlanPainter extends CustomPainter {
         final x = rng.nextDouble() * size.width;
         final y = rng.nextDouble() * size.height;
         canvas.drawPath(
-            Path()
-              ..moveTo(x, y)
-              ..quadraticBezierTo(x + 7, y - 5, x + 14, y)
-              ..quadraticBezierTo(x + 21, y + 5, x + 28, y),
-            wave);
+          Path()
+            ..moveTo(x, y)
+            ..quadraticBezierTo(x + 7, y - 5, x + 14, y)
+            ..quadraticBezierTo(x + 21, y + 5, x + 28, y),
+          wave,
+        );
       }
       return;
     }
@@ -103,36 +104,46 @@ class PlacePlanPainter extends CustomPainter {
       final x = here.dx - 70 + (rng.nextDouble() - 0.5) * 20;
       final river = Path()
         ..moveTo(x, -10)
-        ..cubicTo(x + 30, size.height * 0.3, x - 30, size.height * 0.6, x + 10,
-            size.height + 10);
+        ..cubicTo(
+          x + 30,
+          size.height * 0.3,
+          x - 30,
+          size.height * 0.6,
+          x + 10,
+          size.height + 10,
+        );
       riverPath = river;
       canvas.drawPath(
-          river,
-          Paint()
-            ..color = palette.fog.withValues(alpha: 0.5)
-            ..style = PaintingStyle.stroke
-            ..strokeWidth = 28
-            ..strokeCap = StrokeCap.round);
+        river,
+        Paint()
+          ..color = palette.fog.withValues(alpha: 0.5)
+          ..style = PaintingStyle.stroke
+          ..strokeWidth = 28
+          ..strokeCap = StrokeCap.round,
+      );
       canvas.drawPath(
-          river,
-          Paint()
-            ..color = palette.river
-            ..style = PaintingStyle.stroke
-            ..strokeWidth = 18
-            ..strokeCap = StrokeCap.round);
+        river,
+        Paint()
+          ..color = palette.river
+          ..style = PaintingStyle.stroke
+          ..strokeWidth = 18
+          ..strokeCap = StrokeCap.round,
+      );
       // The banks, and ripples down the stream.
       canvas.drawPath(
-          river,
-          Paint()
-            ..color = palette.coast.withValues(alpha: 0.7)
-            ..style = PaintingStyle.stroke
-            ..strokeWidth = 21);
+        river,
+        Paint()
+          ..color = palette.coast.withValues(alpha: 0.7)
+          ..style = PaintingStyle.stroke
+          ..strokeWidth = 21,
+      );
       canvas.drawPath(
-          river,
-          Paint()
-            ..color = palette.river
-            ..style = PaintingStyle.stroke
-            ..strokeWidth = 18);
+        river,
+        Paint()
+          ..color = palette.river
+          ..style = PaintingStyle.stroke
+          ..strokeWidth = 18,
+      );
       final ripple = Paint()
         ..color = Colors.white.withValues(alpha: 0.18)
         ..strokeWidth = 1.2
@@ -144,15 +155,24 @@ class PlacePlanPainter extends CustomPainter {
               ((rng.nextDouble() - 0.5) * 9);
           final at = tangent.position + side;
           canvas.drawLine(
-              at - tangent.vector * 3, at + tangent.vector * 3, ripple);
+            at - tangent.vector * 3,
+            at + tangent.vector * 3,
+            ripple,
+          );
         }
       }
     } else if (water == 'shore') {
       final edge = Path()
         ..moveTo(0, -10)
         ..lineTo(size.width * 0.18, -10)
-        ..cubicTo(size.width * 0.24, size.height * 0.3, size.width * 0.12,
-            size.height * 0.6, size.width * 0.2, size.height + 10)
+        ..cubicTo(
+          size.width * 0.24,
+          size.height * 0.3,
+          size.width * 0.12,
+          size.height * 0.6,
+          size.width * 0.2,
+          size.height + 10,
+        )
         ..lineTo(0, size.height + 10)
         ..close();
       canvas.drawPath(edge, Paint()..color = palette.sea);
@@ -160,12 +180,17 @@ class PlacePlanPainter extends CustomPainter {
       canvas.save();
       canvas.clipPath(edge);
       canvas.drawPath(
-          edge,
-          Paint()
-            ..color = Color.lerp(palette.sea, palette.seaLine, 0.9)!
-                .withValues(alpha: 0.7)
-            ..style = PaintingStyle.stroke
-            ..strokeWidth = 16);
+        edge,
+        Paint()
+          ..color = Color.lerp(
+            palette.sea,
+            palette.seaLine,
+            0.9,
+          )!
+              .withValues(alpha: 0.7)
+          ..style = PaintingStyle.stroke
+          ..strokeWidth = 16,
+      );
       final surf = Paint()
         ..color = Colors.white.withValues(alpha: 0.22)
         ..style = PaintingStyle.stroke
@@ -173,19 +198,21 @@ class PlacePlanPainter extends CustomPainter {
       for (var y = 10.0; y < size.height; y += 26) {
         final x = size.width * 0.05 + rng.nextDouble() * size.width * 0.08;
         canvas.drawPath(
-            Path()
-              ..moveTo(x - 8, y)
-              ..quadraticBezierTo(x - 4, y - 3, x, y)
-              ..quadraticBezierTo(x + 4, y + 3, x + 8, y),
-            surf);
+          Path()
+            ..moveTo(x - 8, y)
+            ..quadraticBezierTo(x - 4, y - 3, x, y)
+            ..quadraticBezierTo(x + 4, y + 3, x + 8, y),
+          surf,
+        );
       }
       canvas.restore();
       canvas.drawPath(
-          edge,
-          Paint()
-            ..color = palette.coast
-            ..style = PaintingStyle.stroke
-            ..strokeWidth = 1.5);
+        edge,
+        Paint()
+          ..color = palette.coast
+          ..style = PaintingStyle.stroke
+          ..strokeWidth = 1.5,
+      );
       // A quay out into the water, with a boat or two tied at it.
       final quayY = here.dy + 20 + (rng.nextDouble() - 0.5) * 40;
       final quayX = size.width * 0.2;
@@ -194,21 +221,36 @@ class PlacePlanPainter extends CustomPainter {
         ..strokeWidth = 4
         ..strokeCap = StrokeCap.square;
       canvas.drawLine(
-          Offset(quayX + 6, quayY), Offset(quayX - 34, quayY), timber);
+        Offset(quayX + 6, quayY),
+        Offset(quayX - 34, quayY),
+        timber,
+      );
       for (var x = quayX - 30; x < quayX + 4; x += 9) {
-        canvas.drawLine(Offset(x, quayY - 3), Offset(x, quayY + 3),
-            timber..strokeWidth = 1.2);
+        canvas.drawLine(
+          Offset(x, quayY - 3),
+          Offset(x, quayY + 3),
+          timber..strokeWidth = 1.2,
+        );
       }
       for (final (dx, dy) in [(-22.0, 10.0), (-12.0, -11.0)]) {
         final hull = Path()
           ..moveTo(quayX + dx - 9, quayY + dy)
           ..quadraticBezierTo(
-              quayX + dx, quayY + dy + 6, quayX + dx + 9, quayY + dy)
+            quayX + dx,
+            quayY + dy + 6,
+            quayX + dx + 9,
+            quayY + dy,
+          )
           ..close();
-        canvas.drawPath(hull,
-            Paint()..color = Color.lerp(palette.roofs, palette.place, 0.3)!);
-        canvas.drawLine(Offset(quayX + dx, quayY + dy),
-            Offset(quayX + dx, quayY + dy - 9), timber..strokeWidth = 1.2);
+        canvas.drawPath(
+          hull,
+          Paint()..color = Color.lerp(palette.roofs, palette.place, 0.3)!,
+        );
+        canvas.drawLine(
+          Offset(quayX + dx, quayY + dy),
+          Offset(quayX + dx, quayY + dy - 9),
+          timber..strokeWidth = 1.2,
+        );
       }
     }
 
@@ -288,58 +330,77 @@ class PlacePlanPainter extends CustomPainter {
       canvas.translate(c.dx, c.dy);
       canvas.rotate(angle);
       final local = Rect.fromCenter(center: Offset.zero, width: w, height: h);
-      canvas.drawRect(local.shift(const Offset(2, 2)),
-          Paint()..color = dark.withValues(alpha: 0.35));
-      canvas.drawRect(local,
-          Paint()..color = Color.lerp(palette.roofs, palette.place, 0.14)!);
+      canvas.drawRect(
+        local.shift(const Offset(2, 2)),
+        Paint()..color = dark.withValues(alpha: 0.35),
+      );
+      canvas.drawRect(
+        local,
+        Paint()..color = Color.lerp(palette.roofs, palette.place, 0.14)!,
+      );
       final along = w >= h;
       final shade = along
           ? Rect.fromLTRB(local.left, 0, local.right, local.bottom)
           : Rect.fromLTRB(0, local.top, local.right, local.bottom);
       canvas.drawRect(shade, Paint()..color = dark.withValues(alpha: 0.22));
       canvas.drawLine(
-          along ? Offset(local.left, 0) : Offset(0, local.top),
-          along ? Offset(local.right, 0) : Offset(0, local.bottom),
-          Paint()
-            ..color = palette.place.withValues(alpha: 0.45)
-            ..strokeWidth = 1);
+        along ? Offset(local.left, 0) : Offset(0, local.top),
+        along ? Offset(local.right, 0) : Offset(0, local.bottom),
+        Paint()
+          ..color = palette.place.withValues(alpha: 0.45)
+          ..strokeWidth = 1,
+      );
       canvas.drawRect(
-          local,
-          Paint()
-            ..color = Color.lerp(palette.coast, palette.place, 0.3)!
-            ..style = PaintingStyle.stroke
-            ..strokeWidth = 1);
+        local,
+        Paint()
+          ..color = Color.lerp(palette.coast, palette.place, 0.3)!
+          ..style = PaintingStyle.stroke
+          ..strokeWidth = 1,
+      );
       if (rng.nextDouble() < 0.4) {
         canvas.drawRect(
-            Rect.fromCenter(
-                center: Offset(local.right - 4, local.top + 3),
-                width: 3,
-                height: 3),
-            Paint()..color = palette.coast);
+          Rect.fromCenter(
+            center: Offset(local.right - 4, local.top + 3),
+            width: 3,
+            height: 3,
+          ),
+          Paint()..color = palette.coast,
+        );
       }
       canvas.restore();
     }
 
     void tree(Offset c, double r) {
       canvas.drawLine(
-          c,
-          c.translate(0, r + 3),
-          Paint()
-            ..color = dark.withValues(alpha: 0.8)
-            ..strokeWidth = 1.5);
-      canvas.drawCircle(c.translate(1.5, 1.5), r,
-          Paint()..color = dark.withValues(alpha: 0.4));
-      canvas.drawCircle(c, r,
-          Paint()..color = Color.lerp(palette.roofs, palette.river, 0.35)!);
+        c,
+        c.translate(0, r + 3),
+        Paint()
+          ..color = dark.withValues(alpha: 0.8)
+          ..strokeWidth = 1.5,
+      );
       canvas.drawCircle(
-          c,
-          r,
-          Paint()
-            ..color = Color.lerp(palette.coast, palette.place, 0.25)!
-            ..style = PaintingStyle.stroke
-            ..strokeWidth = 1);
-      canvas.drawCircle(c.translate(-r * 0.3, -r * 0.3), r * 0.35,
-          Paint()..color = palette.place.withValues(alpha: 0.12));
+        c.translate(1.5, 1.5),
+        r,
+        Paint()..color = dark.withValues(alpha: 0.4),
+      );
+      canvas.drawCircle(
+        c,
+        r,
+        Paint()..color = Color.lerp(palette.roofs, palette.river, 0.35)!,
+      );
+      canvas.drawCircle(
+        c,
+        r,
+        Paint()
+          ..color = Color.lerp(palette.coast, palette.place, 0.25)!
+          ..style = PaintingStyle.stroke
+          ..strokeWidth = 1,
+      );
+      canvas.drawCircle(
+        c.translate(-r * 0.3, -r * 0.3),
+        r * 0.35,
+        Paint()..color = palette.place.withValues(alpha: 0.12),
+      );
     }
 
     switch (kind) {
@@ -347,9 +408,10 @@ class PlacePlanPainter extends CustomPainter {
         // What is left of the wall, round the town, a tower at each
         // break.
         final wall = Rect.fromCenter(
-            center: here,
-            width: math.min(size.width - 8, reach * 2.1),
-            height: math.min(size.height - 8, reach * 2.3));
+          center: here,
+          width: math.min(size.width - 8, reach * 2.1),
+          height: math.min(size.height - 8, reach * 2.3),
+        );
         final wallPaint = Paint()
           ..color = palette.coast.withValues(alpha: 0.7)
           ..style = PaintingStyle.stroke
@@ -365,7 +427,9 @@ class PlacePlanPainter extends CustomPainter {
             for (final at in [d, end]) {
               final p = metric.getTangentForOffset(at)!.position;
               canvas.drawRect(
-                  Rect.fromCenter(center: p, width: 8, height: 8), tower);
+                Rect.fromCenter(center: p, width: 8, height: 8),
+                tower,
+              );
             }
             d += run + 8 + rng.nextDouble() * 16;
           }
@@ -408,41 +472,55 @@ class PlacePlanPainter extends CustomPainter {
           final w = 16 + rng.nextDouble() * 18;
           final h = 12 + rng.nextDouble() * 12;
           final c = Offset(
-              rng.nextDouble() * size.width, rng.nextDouble() * size.height);
+            rng.nextDouble() * size.width,
+            rng.nextDouble() * size.height,
+          );
           if (!room(c, w, h)) continue;
           house(c, w, h, (rng.nextDouble() - 0.5) * 0.3);
         }
         // Trees in the yards left, and the square, cobbled, with its well.
         for (var i = 0; i < 40; i++) {
           final c = Offset(
-              rng.nextDouble() * size.width, rng.nextDouble() * size.height);
+            rng.nextDouble() * size.width,
+            rng.nextDouble() * size.height,
+          );
           if (!clear(c, 6) || built.any((b) => b.inflate(4).contains(c))) {
             continue;
           }
           tree(c, 4 + rng.nextDouble() * 3);
         }
         canvas.drawCircle(
-            here, 40, Paint()..color = palette.coast.withValues(alpha: 0.22));
+          here,
+          40,
+          Paint()..color = palette.coast.withValues(alpha: 0.22),
+        );
         final cobble = Paint()..color = palette.coast.withValues(alpha: 0.55);
         for (var i = 0; i < 90; i++) {
           final a = rng.nextDouble() * math.pi * 2;
           final r = 10 + rng.nextDouble() * 28;
           canvas.drawCircle(
-              here + Offset(math.cos(a) * r, math.sin(a) * r), 1.3, cobble);
+            here + Offset(math.cos(a) * r, math.sin(a) * r),
+            1.3,
+            cobble,
+          );
         }
         canvas.drawCircle(here, 6, Paint()..color = palette.river);
         canvas.drawCircle(
-            here,
-            6,
-            Paint()
-              ..color = Color.lerp(palette.coast, palette.place, 0.3)!
-              ..style = PaintingStyle.stroke
-              ..strokeWidth = 2);
+          here,
+          6,
+          Paint()
+            ..color = Color.lerp(palette.coast, palette.place, 0.3)!
+            ..style = PaintingStyle.stroke
+            ..strokeWidth = 2,
+        );
       case PlaceKind.camp:
         // Tents round the fire, a glow at its heart; a palisade of stakes
         // part way round, crates by the tents.
         canvas.drawCircle(
-            here, 46, Paint()..color = ember.withValues(alpha: 0.10));
+          here,
+          46,
+          Paint()..color = ember.withValues(alpha: 0.10),
+        );
         final stake = Paint()
           ..color = palette.coast.withValues(alpha: 0.9)
           ..strokeWidth = 2
@@ -456,33 +534,40 @@ class PlacePlanPainter extends CustomPainter {
         }
         for (var i = 0; i < 26; i++) {
           final c = Offset(
-              rng.nextDouble() * size.width, rng.nextDouble() * size.height);
+            rng.nextDouble() * size.width,
+            rng.nextDouble() * size.height,
+          );
           if (!clear(c, 14)) continue;
           final s = 10 + rng.nextDouble() * 7;
           canvas.drawPath(
-              Path()
-                ..moveTo(c.dx - s, c.dy + s * 0.7)
-                ..lineTo(c.dx, c.dy - s * 0.8)
-                ..lineTo(c.dx + s, c.dy + s * 0.7)
-                ..close(),
-              Paint()..color = Color.lerp(palette.roofs, palette.place, 0.14)!);
+            Path()
+              ..moveTo(c.dx - s, c.dy + s * 0.7)
+              ..lineTo(c.dx, c.dy - s * 0.8)
+              ..lineTo(c.dx + s, c.dy + s * 0.7)
+              ..close(),
+            Paint()..color = Color.lerp(palette.roofs, palette.place, 0.14)!,
+          );
           canvas.drawPath(
-              Path()
-                ..moveTo(c.dx, c.dy - s * 0.8)
-                ..lineTo(c.dx + s, c.dy + s * 0.7)
-                ..lineTo(c.dx, c.dy + s * 0.7)
-                ..close(),
-              Paint()..color = dark.withValues(alpha: 0.25));
+            Path()
+              ..moveTo(c.dx, c.dy - s * 0.8)
+              ..lineTo(c.dx + s, c.dy + s * 0.7)
+              ..lineTo(c.dx, c.dy + s * 0.7)
+              ..close(),
+            Paint()..color = dark.withValues(alpha: 0.25),
+          );
           canvas.drawLine(
-              Offset(c.dx, c.dy - s * 0.8),
-              Offset(c.dx, c.dy + s * 0.7),
-              Paint()
-                ..color = palette.coast
-                ..strokeWidth = 1);
+            Offset(c.dx, c.dy - s * 0.8),
+            Offset(c.dx, c.dy + s * 0.7),
+            Paint()
+              ..color = palette.coast
+              ..strokeWidth = 1,
+          );
           if (rng.nextDouble() < 0.5) {
             final crate = c + Offset(s + 6, s * 0.4);
-            canvas.drawRect(Rect.fromCenter(center: crate, width: 6, height: 6),
-                Paint()..color = palette.coast.withValues(alpha: 0.8));
+            canvas.drawRect(
+              Rect.fromCenter(center: crate, width: 6, height: 6),
+              Paint()..color = palette.coast.withValues(alpha: 0.8),
+            );
           }
         }
         // The fire: logs and a flame.
@@ -491,97 +576,125 @@ class PlacePlanPainter extends CustomPainter {
           ..strokeWidth = 2.5
           ..strokeCap = StrokeCap.round;
         canvas.drawLine(
-            here + const Offset(-7, 4), here + const Offset(7, -2), log);
+          here + const Offset(-7, 4),
+          here + const Offset(7, -2),
+          log,
+        );
         canvas.drawLine(
-            here + const Offset(-7, -2), here + const Offset(7, 4), log);
+          here + const Offset(-7, -2),
+          here + const Offset(7, 4),
+          log,
+        );
         canvas.drawPath(
-            Path()
-              ..moveTo(here.dx - 4, here.dy)
-              ..quadraticBezierTo(
-                  here.dx - 2, here.dy - 9, here.dx, here.dy - 12)
-              ..quadraticBezierTo(
-                  here.dx + 3, here.dy - 7, here.dx + 4, here.dy)
-              ..close(),
-            Paint()..color = ember.withValues(alpha: 0.85));
+          Path()
+            ..moveTo(here.dx - 4, here.dy)
+            ..quadraticBezierTo(here.dx - 2, here.dy - 9, here.dx, here.dy - 12)
+            ..quadraticBezierTo(here.dx + 3, here.dy - 7, here.dx + 4, here.dy)
+            ..close(),
+          Paint()..color = ember.withValues(alpha: 0.85),
+        );
       case PlaceKind.site:
         // Broken stones and rubble: standing columns, fallen ones, the
         // stump of an arch, and grass through it all.
         for (var i = 0; i < 40; i++) {
           final c = Offset(
-              rng.nextDouble() * size.width, rng.nextDouble() * size.height);
+            rng.nextDouble() * size.width,
+            rng.nextDouble() * size.height,
+          );
           if (!clear(c, 8)) continue;
           final tall = rng.nextBool();
           final rect = Rect.fromCenter(
-              center: c,
-              width: tall ? 6 : 12,
-              height: tall ? 14 + rng.nextDouble() * 10 : 6);
+            center: c,
+            width: tall ? 6 : 12,
+            height: tall ? 14 + rng.nextDouble() * 10 : 6,
+          );
           canvas.save();
           canvas.translate(c.dx, c.dy);
           canvas.rotate(tall ? 0 : (rng.nextDouble() - 0.5) * 1.2);
           canvas.translate(-c.dx, -c.dy);
-          canvas.drawRect(rect.shift(const Offset(2, 2)),
-              Paint()..color = dark.withValues(alpha: 0.35));
-          canvas.drawRect(rect,
-              Paint()..color = Color.lerp(palette.roofs, palette.place, 0.14)!);
           canvas.drawRect(
-              rect,
-              Paint()
-                ..color = Color.lerp(palette.coast, palette.place, 0.3)!
-                ..style = PaintingStyle.stroke
-                ..strokeWidth = 1);
+            rect.shift(const Offset(2, 2)),
+            Paint()..color = dark.withValues(alpha: 0.35),
+          );
+          canvas.drawRect(
+            rect,
+            Paint()..color = Color.lerp(palette.roofs, palette.place, 0.14)!,
+          );
+          canvas.drawRect(
+            rect,
+            Paint()
+              ..color = Color.lerp(palette.coast, palette.place, 0.3)!
+              ..style = PaintingStyle.stroke
+              ..strokeWidth = 1,
+          );
           if (tall) {
             canvas.drawRect(
-                Rect.fromLTWH(rect.left - 1.5, rect.top - 2, rect.width + 3, 3),
-                Paint()..color = palette.coast);
+              Rect.fromLTWH(rect.left - 1.5, rect.top - 2, rect.width + 3, 3),
+              Paint()..color = palette.coast,
+            );
           }
           canvas.restore();
           for (var j = 0; j < 3; j++) {
             canvas.drawCircle(
-                c +
-                    Offset(
-                        rng.nextDouble() * 20 - 10, rng.nextDouble() * 16 + 6),
-                1.5,
-                Paint()..color = palette.coast.withValues(alpha: 0.6));
+              c + Offset(rng.nextDouble() * 20 - 10, rng.nextDouble() * 16 + 6),
+              1.5,
+              Paint()..color = palette.coast.withValues(alpha: 0.6),
+            );
           }
         }
         final arch = here + Offset(reach * 0.5, -reach * 0.3);
         if (clear(arch, 16)) {
           canvas.drawPath(
-              Path()
-                ..moveTo(arch.dx - 14, arch.dy + 12)
-                ..lineTo(arch.dx - 14, arch.dy - 4)
-                ..arcToPoint(Offset(arch.dx + 2, arch.dy - 12),
-                    radius: const Radius.circular(14)),
-              Paint()
-                ..color = palette.coast
-                ..style = PaintingStyle.stroke
-                ..strokeWidth = 4
-                ..strokeCap = StrokeCap.round);
+            Path()
+              ..moveTo(arch.dx - 14, arch.dy + 12)
+              ..lineTo(arch.dx - 14, arch.dy - 4)
+              ..arcToPoint(
+                Offset(arch.dx + 2, arch.dy - 12),
+                radius: const Radius.circular(14),
+              ),
+            Paint()
+              ..color = palette.coast
+              ..style = PaintingStyle.stroke
+              ..strokeWidth = 4
+              ..strokeCap = StrokeCap.round,
+          );
         }
         final grass = Paint()
           ..color = palette.coast.withValues(alpha: 0.5)
           ..strokeWidth = 1;
         for (var i = 0; i < 60; i++) {
           final c = Offset(
-              rng.nextDouble() * size.width, rng.nextDouble() * size.height);
+            rng.nextDouble() * size.width,
+            rng.nextDouble() * size.height,
+          );
           if (!clear(c, 2)) continue;
           canvas.drawLine(c, c + const Offset(0, -4), grass);
           canvas.drawLine(
-              c + const Offset(-2, 1), c + const Offset(-3, -3), grass);
+            c + const Offset(-2, 1),
+            c + const Offset(-3, -3),
+            grass,
+          );
           canvas.drawLine(
-              c + const Offset(2, 1), c + const Offset(3, -3), grass);
+            c + const Offset(2, 1),
+            c + const Offset(3, -3),
+            grass,
+          );
         }
       case PlaceKind.wild:
         // Trees in clumps, rocks between, and the undergrowth.
         for (var i = 0; i < 70; i++) {
           final c = Offset(
-              rng.nextDouble() * size.width, rng.nextDouble() * size.height);
+            rng.nextDouble() * size.width,
+            rng.nextDouble() * size.height,
+          );
           if (!clear(c, 7)) continue;
           tree(c, 4 + rng.nextDouble() * 3);
         }
         for (var i = 0; i < 14; i++) {
           final c = Offset(
-              rng.nextDouble() * size.width, rng.nextDouble() * size.height);
+            rng.nextDouble() * size.width,
+            rng.nextDouble() * size.height,
+          );
           if (!clear(c, 6)) continue;
           final rock = Path()
             ..moveTo(c.dx - 6, c.dy + 3)
@@ -591,18 +704,23 @@ class PlacePlanPainter extends CustomPainter {
             ..lineTo(c.dx + 3, c.dy + 4)
             ..close();
           canvas.drawPath(
-              rock, Paint()..color = palette.coast.withValues(alpha: 0.8));
+            rock,
+            Paint()..color = palette.coast.withValues(alpha: 0.8),
+          );
           canvas.drawPath(
-              rock,
-              Paint()
-                ..color = dark.withValues(alpha: 0.6)
-                ..style = PaintingStyle.stroke
-                ..strokeWidth = 1);
+            rock,
+            Paint()
+              ..color = dark.withValues(alpha: 0.6)
+              ..style = PaintingStyle.stroke
+              ..strokeWidth = 1,
+          );
         }
         final scrub = Paint()..color = palette.coast.withValues(alpha: 0.35);
         for (var i = 0; i < 120; i++) {
           final c = Offset(
-              rng.nextDouble() * size.width, rng.nextDouble() * size.height);
+            rng.nextDouble() * size.width,
+            rng.nextDouble() * size.height,
+          );
           if (!clear(c, 1)) continue;
           canvas.drawCircle(c, 1.2, scrub);
         }
@@ -629,61 +747,83 @@ class PlacePlanPainter extends CustomPainter {
     switch (glyph) {
       case 'bridge':
         canvas.drawLine(
-            Offset(x - 14, y), Offset(x + 14, y), line..strokeWidth = 3);
+          Offset(x - 14, y),
+          Offset(x + 14, y),
+          line..strokeWidth = 3,
+        );
         canvas.drawPath(
-            Path()
-              ..moveTo(x - 12, y + 3)
-              ..quadraticBezierTo(x - 6, y - 3, x, y + 3)
-              ..quadraticBezierTo(x + 6, y - 3, x + 12, y + 3),
-            line..strokeWidth = 1.2);
+          Path()
+            ..moveTo(x - 12, y + 3)
+            ..quadraticBezierTo(x - 6, y - 3, x, y + 3)
+            ..quadraticBezierTo(x + 6, y - 3, x + 12, y + 3),
+          line..strokeWidth = 1.2,
+        );
       case 'keep':
         canvas.drawRect(
-            Rect.fromCenter(center: p, width: 18, height: 18), fill);
+          Rect.fromCenter(center: p, width: 18, height: 18),
+          fill,
+        );
         canvas.drawRect(
-            Rect.fromCenter(center: p, width: 18, height: 18), line);
+          Rect.fromCenter(center: p, width: 18, height: 18),
+          line,
+        );
         final top = y - 9;
         canvas.drawPath(
-            Path()
-              ..moveTo(x - 9, top)
-              ..lineTo(x - 9, top - 4)
-              ..lineTo(x - 5, top - 4)
-              ..lineTo(x - 5, top)
-              ..lineTo(x - 1, top)
-              ..lineTo(x - 1, top - 4)
-              ..lineTo(x + 3, top - 4)
-              ..lineTo(x + 3, top)
-              ..lineTo(x + 7, top)
-              ..lineTo(x + 7, top - 4)
-              ..lineTo(x + 9, top - 4),
-            line..strokeWidth = 1.2);
+          Path()
+            ..moveTo(x - 9, top)
+            ..lineTo(x - 9, top - 4)
+            ..lineTo(x - 5, top - 4)
+            ..lineTo(x - 5, top)
+            ..lineTo(x - 1, top)
+            ..lineTo(x - 1, top - 4)
+            ..lineTo(x + 3, top - 4)
+            ..lineTo(x + 3, top)
+            ..lineTo(x + 7, top)
+            ..lineTo(x + 7, top - 4)
+            ..lineTo(x + 9, top - 4),
+          line..strokeWidth = 1.2,
+        );
       case 'quay':
         canvas.drawLine(
-            Offset(x - 14, y), Offset(x + 14, y), line..strokeWidth = 1.8);
+          Offset(x - 14, y),
+          Offset(x + 14, y),
+          line..strokeWidth = 1.8,
+        );
         canvas.drawLine(Offset(x - 8, y), Offset(x - 8, y + 8), line);
         canvas.drawLine(Offset(x + 8, y), Offset(x + 8, y + 8), line);
         canvas.drawPath(
-            Path()
-              ..moveTo(x + 2, y - 14)
-              ..lineTo(x + 10, y - 4)
-              ..lineTo(x - 6, y - 4)
-              ..close(),
-            Paint()..color = palette.place.withValues(alpha: 0.8));
+          Path()
+            ..moveTo(x + 2, y - 14)
+            ..lineTo(x + 10, y - 4)
+            ..lineTo(x - 6, y - 4)
+            ..close(),
+          Paint()..color = palette.place.withValues(alpha: 0.8),
+        );
       case 'wharf':
-        canvas.drawLine(Offset(x - 12, y - 6), Offset(x + 12, y - 6),
-            line..strokeWidth = 1.8);
+        canvas.drawLine(
+          Offset(x - 12, y - 6),
+          Offset(x + 12, y - 6),
+          line..strokeWidth = 1.8,
+        );
         canvas.drawLine(Offset(x - 12, y + 6), Offset(x + 12, y + 6), line);
-        canvas.drawLine(Offset(x - 6, y - 12), Offset(x - 6, y + 12),
-            line..strokeWidth = 1);
+        canvas.drawLine(
+          Offset(x - 6, y - 12),
+          Offset(x - 6, y + 12),
+          line..strokeWidth = 1,
+        );
         canvas.drawLine(Offset(x + 6, y - 12), Offset(x + 6, y + 12), line);
       case 'gate':
         canvas.drawPath(
-            Path()
-              ..moveTo(x - 10, y + 8)
-              ..lineTo(x - 10, y - 4)
-              ..arcToPoint(Offset(x + 10, y - 4),
-                  radius: const Radius.circular(10))
-              ..lineTo(x + 10, y + 8),
-            line..strokeWidth = 2);
+          Path()
+            ..moveTo(x - 10, y + 8)
+            ..lineTo(x - 10, y - 4)
+            ..arcToPoint(
+              Offset(x + 10, y - 4),
+              radius: const Radius.circular(10),
+            )
+            ..lineTo(x + 10, y + 8),
+          line..strokeWidth = 2,
+        );
         canvas.drawLine(Offset(x - 14, y + 8), Offset(x + 14, y + 8), line);
       case 'temple':
         final path = Path()
@@ -699,45 +839,52 @@ class PlacePlanPainter extends CustomPainter {
         canvas.drawLine(Offset(x - 3, y - 11), Offset(x + 3, y - 11), line);
       case 'void':
         canvas.drawPath(
-            Path()
-              ..moveTo(x, y - 14)
-              ..lineTo(x + 5, y - 5)
-              ..lineTo(x + 3, y + 4)
-              ..lineTo(x, y + 12)
-              ..lineTo(x - 3, y + 4)
-              ..lineTo(x - 5, y - 5)
-              ..close(),
-            Paint()..color = palette.voidColor.withValues(alpha: 0.9));
+          Path()
+            ..moveTo(x, y - 14)
+            ..lineTo(x + 5, y - 5)
+            ..lineTo(x + 3, y + 4)
+            ..lineTo(x, y + 12)
+            ..lineTo(x - 3, y + 4)
+            ..lineTo(x - 5, y - 5)
+            ..close(),
+          Paint()..color = palette.voidColor.withValues(alpha: 0.9),
+        );
       case 'hall':
         canvas.drawRect(Rect.fromLTWH(x - 14, y - 2, 28, 10), fill);
         canvas.drawRect(Rect.fromLTWH(x - 14, y - 2, 28, 10), line);
         canvas.drawPath(
-            Path()
-              ..moveTo(x, y - 16)
-              ..lineTo(x + 4, y - 10)
-              ..lineTo(x - 4, y - 10)
-              ..close(),
-            Paint()..color = palette.mark);
+          Path()
+            ..moveTo(x, y - 16)
+            ..lineTo(x + 4, y - 10)
+            ..lineTo(x - 4, y - 10)
+            ..close(),
+          Paint()..color = palette.mark,
+        );
         canvas.drawCircle(Offset(x, y - 12), 2, Paint()..color = ember);
       case 'market':
         canvas.drawPath(
-            Path()
-              ..moveTo(x - 12, y - 4)
-              ..lineTo(x + 12, y - 4)
-              ..lineTo(x + 9, y + 2)
-              ..lineTo(x - 9, y + 2)
-              ..close(),
-            Paint()..color = palette.place.withValues(alpha: 0.8));
+          Path()
+            ..moveTo(x - 12, y - 4)
+            ..lineTo(x + 12, y - 4)
+            ..lineTo(x + 9, y + 2)
+            ..lineTo(x - 9, y + 2)
+            ..close(),
+          Paint()..color = palette.place.withValues(alpha: 0.8),
+        );
         canvas.drawLine(Offset(x - 9, y + 2), Offset(x - 9, y + 10), line);
         canvas.drawLine(Offset(x + 9, y + 2), Offset(x + 9, y + 10), line);
       case 'yard':
         canvas.drawPath(
-            Path()
-              ..moveTo(x - 14, y + 6)
-              ..quadraticBezierTo(x, y - 12, x + 14, y + 6),
-            line..strokeWidth = 2);
+          Path()
+            ..moveTo(x - 14, y + 6)
+            ..quadraticBezierTo(x, y - 12, x + 14, y + 6),
+          line..strokeWidth = 2,
+        );
         canvas.drawLine(
-            Offset(x - 8, y), Offset(x - 8, y - 10), line..strokeWidth = 1.5);
+          Offset(x - 8, y),
+          Offset(x - 8, y - 10),
+          line..strokeWidth = 1.5,
+        );
         canvas.drawLine(Offset(x + 8, y), Offset(x + 8, y - 10), line);
       case 'cellar':
         canvas.drawRect(Rect.fromLTWH(x - 10, y - 4, 20, 12), fill);
@@ -745,8 +892,11 @@ class PlacePlanPainter extends CustomPainter {
         canvas.drawLine(Offset(x - 4, y), Offset(x + 4, y), line);
       case 'field':
         for (var i = -1; i <= 1; i++) {
-          canvas.drawLine(Offset(x - 12, y + i * 5.0),
-              Offset(x + 12, y + i * 5.0), line..strokeWidth = 1);
+          canvas.drawLine(
+            Offset(x - 12, y + i * 5.0),
+            Offset(x + 12, y + i * 5.0),
+            line..strokeWidth = 1,
+          );
         }
       case 'slum':
         final roofs = Paint()..color = palette.place.withValues(alpha: 0.8);
@@ -766,9 +916,8 @@ class PlacePlanPainter extends CustomPainter {
       old.here != here ||
       old.palette != palette ||
       old.spots.length != spots.length ||
-      [
-        for (var i = 0; i < spots.length; i++) old.spots[i] != spots[i],
-      ].any((changed) => changed);
+      [for (var i = 0; i < spots.length; i++) old.spots[i] != spots[i]]
+          .any((changed) => changed);
 }
 
 /// A landmark on the chart, for [RegionFlightPainter]: where, its name,
@@ -824,7 +973,9 @@ class RegionFlightPainter extends CustomPainter {
     final reach = corners == null
         ? (to - from).distance
         : math.max(
-            corners.$2.dx - corners.$1.dx, corners.$2.dy - corners.$1.dy);
+            corners.$2.dx - corners.$1.dx,
+            corners.$2.dy - corners.$1.dy,
+          );
     final mid =
         corners == null ? (from + to) / 2 : (corners.$1 + corners.$2) / 2;
     final follows = route != null && reach > _followFrom;
@@ -833,8 +984,12 @@ class RegionFlightPainter extends CustomPainter {
     final roadPath = route == null
         ? (Path()
           ..moveTo(from.dx, from.dy)
-          ..quadraticBezierTo(from.dx + d.dx / 2 - d.dy * 0.14,
-              from.dy + d.dy / 2 + d.dx * 0.14, to.dx, to.dy))
+          ..quadraticBezierTo(
+            from.dx + d.dx / 2 - d.dy * 0.14,
+            from.dy + d.dy / 2 + d.dx * 0.14,
+            to.dx,
+            to.dy,
+          ))
         : _smooth(route.points, closed: false);
     final metric = roadPath.computeMetrics().first;
     final party = metric.getTangentForOffset(metric.length * walk)!.position;
@@ -857,68 +1012,83 @@ class RegionFlightPainter extends CustomPainter {
     canvas.translate(-centre.dx, -centre.dy);
     for (final land in geography.lands) {
       canvas.drawPath(
-          _smooth(land, closed: true), Paint()..color = palette.land);
+        _smooth(land, closed: true),
+        Paint()..color = palette.land,
+      );
       canvas.drawPath(
-          _smooth(land, closed: true),
-          Paint()
-            ..color = palette.coast
-            ..style = PaintingStyle.stroke
-            ..strokeWidth = 1.2 / scale);
+        _smooth(land, closed: true),
+        Paint()
+          ..color = palette.coast
+          ..style = PaintingStyle.stroke
+          ..strokeWidth = 1.2 / scale,
+      );
     }
     for (final river in geography.rivers) {
       canvas.drawPath(
-          _smooth(river, closed: false),
-          Paint()
-            ..color = palette.river
-            ..style = PaintingStyle.stroke
-            ..strokeWidth = 2.2 / scale);
+        _smooth(river, closed: false),
+        Paint()
+          ..color = palette.river
+          ..style = PaintingStyle.stroke
+          ..strokeWidth = 2.2 / scale,
+      );
     }
     // The road, walked so far in the party's colour.
     canvas.drawPath(
-        roadPath,
-        Paint()
-          ..color = palette.ahead
-          ..style = PaintingStyle.stroke
-          ..strokeWidth = 2 / scale);
+      roadPath,
+      Paint()
+        ..color = palette.ahead
+        ..style = PaintingStyle.stroke
+        ..strokeWidth = 2 / scale,
+    );
     canvas.drawPath(
-        metric.extractPath(0, metric.length * walk),
-        Paint()
-          ..color = palette.mark
-          ..style = PaintingStyle.stroke
-          ..strokeCap = StrokeCap.round
-          ..strokeWidth = 3 / scale);
+      metric.extractPath(0, metric.length * walk),
+      Paint()
+        ..color = palette.mark
+        ..style = PaintingStyle.stroke
+        ..strokeCap = StrokeCap.round
+        ..strokeWidth = 3 / scale,
+    );
     // The stops on the way, the ones passed in the party's colour.
     for (final stop in route?.stops ?? const <ChartRouteStop>[]) {
       final passed = stop.along <= walk;
-      canvas.drawCircle(stop.at, 2.4 / scale,
-          Paint()..color = passed ? palette.mark : palette.land);
       canvas.drawCircle(
-          stop.at,
-          2.4 / scale,
-          Paint()
-            ..color = passed ? palette.mark : palette.label
-            ..style = PaintingStyle.stroke
-            ..strokeWidth = 1.2 / scale);
+        stop.at,
+        2.4 / scale,
+        Paint()..color = passed ? palette.mark : palette.land,
+      );
+      canvas.drawCircle(
+        stop.at,
+        2.4 / scale,
+        Paint()
+          ..color = passed ? palette.mark : palette.label
+          ..style = PaintingStyle.stroke
+          ..strokeWidth = 1.2 / scale,
+      );
     }
     for (final mark in marks) {
       canvas.drawCircle(
-          mark.at, 3.2 / scale * 1.4, Paint()..color = palette.land);
+        mark.at,
+        3.2 / scale * 1.4,
+        Paint()..color = palette.land,
+      );
       canvas.drawCircle(
-          mark.at,
-          3.2 / scale * 1.4,
-          Paint()
-            ..color = mark.known ? palette.place : palette.label
-            ..style = PaintingStyle.stroke
-            ..strokeWidth = 1.6 / scale);
+        mark.at,
+        3.2 / scale * 1.4,
+        Paint()
+          ..color = mark.known ? palette.place : palette.label
+          ..style = PaintingStyle.stroke
+          ..strokeWidth = 1.6 / scale,
+      );
     }
     canvas.drawCircle(party, 7 / scale, Paint()..color = palette.mark);
     canvas.drawCircle(
-        party,
-        7 / scale,
-        Paint()
-          ..color = palette.land
-          ..style = PaintingStyle.stroke
-          ..strokeWidth = 2 / scale);
+      party,
+      7 / scale,
+      Paint()
+        ..color = palette.land
+        ..style = PaintingStyle.stroke
+        ..strokeWidth = 2 / scale,
+    );
     canvas.restore();
 
     // The two names, on screen.
@@ -929,10 +1099,11 @@ class RegionFlightPainter extends CustomPainter {
         text: TextSpan(
           text: text,
           style: TextStyle(
-              color: colour,
-              fontSize: fontSize,
-              fontFamily: 'PixelifySans',
-              shadows: [Shadow(color: palette.land, blurRadius: 4)]),
+            color: colour,
+            fontSize: fontSize,
+            fontFamily: 'PixelifySans',
+            shadows: [Shadow(color: palette.land, blurRadius: 4)],
+          ),
         ),
         textDirection: TextDirection.ltr,
       )..layout(maxWidth: 160);
@@ -959,8 +1130,11 @@ class RegionFlightPainter extends CustomPainter {
         continue;
       }
       name(
-          stop.name, stop.at, stop.along <= walk ? palette.mark : palette.label,
-          fontSize: 11);
+        stop.name,
+        stop.at,
+        stop.along <= walk ? palette.mark : palette.label,
+        fontSize: 11,
+      );
     }
   }
 

@@ -25,8 +25,11 @@ double fightFigureHeight(double width) => width < 340
 /// The sprite of a fighter: `hero` is the player's hero ([hero], the ronin
 /// by default); [ally] fighters are companions (drawn mirrored, their art
 /// faces west), the rest enemies.
-FightSpriteSet? fightFigureSet(String id,
-        {required bool ally, FightSpriteSet? hero}) =>
+FightSpriteSet? fightFigureSet(
+  String id, {
+  required bool ally,
+  FightSpriteSet? hero,
+}) =>
     id == 'hero'
         ? hero ?? roninSprite
         : ally
@@ -98,8 +101,13 @@ class _FightFiguresState extends State<FightFigures> {
                   future: InkSprites.of(use.idleAsset),
                   builder: (context, snap) => snap.data == null
                       ? const SizedBox.shrink()
-                      : _stand(w, h, use, ally,
-                          _InkFigurePainter(snap.data!, use, k)),
+                      : _stand(
+                          w,
+                          h,
+                          use,
+                          ally,
+                          _InkFigurePainter(snap.data!, use, k),
+                        ),
                 )
               : image == null
                   ? null
@@ -110,7 +118,12 @@ class _FightFiguresState extends State<FightFigures> {
   }
 
   Widget _stand(
-          double w, double h, FightSpriteSet use, bool ally, CustomPainter p) =>
+    double w,
+    double h,
+    FightSpriteSet use,
+    bool ally,
+    CustomPainter p,
+  ) =>
       OverflowBox(
         alignment: Alignment.bottomCenter,
         minWidth: w,

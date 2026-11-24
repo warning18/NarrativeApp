@@ -148,22 +148,29 @@ List<SideLayer> seaLayers({
   return [
     SideLayer(0, (c, s, scroll, t, u) => _sky(c, s, u, sky)),
     SideLayer(
-        0.05, (c, s, scroll, t, u) => _farShore(c, s, u, scroll, look, waters)),
+      0.05,
+      (c, s, scroll, t, u) => _farShore(c, s, u, scroll, look, waters),
+    ),
     SideLayer(0, (c, s, scroll, t, u) => _water(c, s, u, look)),
     SideLayer(
-        0.30,
-        (c, s, scroll, t, u) =>
-            _waves(c, s, u, scroll, t, look, row: 43, amp: rough ? 2.4 : 1.2)),
-    SideLayer(0.12,
-        (c, s, scroll, t, u) => _carried(c, s, u, scroll, t, look, waters)),
+      0.30,
+      (c, s, scroll, t, u) =>
+          _waves(c, s, u, scroll, t, look, row: 43, amp: rough ? 2.4 : 1.2),
+    ),
     SideLayer(
-        0.60,
-        (c, s, scroll, t, u) =>
-            _waves(c, s, u, scroll, t, look, row: 51, amp: rough ? 3.2 : 1.8)),
+      0.12,
+      (c, s, scroll, t, u) => _carried(c, s, u, scroll, t, look, waters),
+    ),
     SideLayer(
-        1.0,
-        (c, s, scroll, t, u) =>
-            _waves(c, s, u, scroll, t, look, row: 61, amp: rough ? 4 : 2.4)),
+      0.60,
+      (c, s, scroll, t, u) =>
+          _waves(c, s, u, scroll, t, look, row: 51, amp: rough ? 3.2 : 1.8),
+    ),
+    SideLayer(
+      1.0,
+      (c, s, scroll, t, u) =>
+          _waves(c, s, u, scroll, t, look, row: 61, amp: rough ? 4 : 2.4),
+    ),
   ];
 }
 
@@ -183,8 +190,14 @@ void _sky(Canvas canvas, Size size, double u, List<Color> stops) {
 }
 
 /// What stands on the horizon, repeating along it.
-void _farShore(Canvas canvas, Size size, double u, double scroll, SeaLook look,
-    SeaWaters waters) {
+void _farShore(
+  Canvas canvas,
+  Size size,
+  double u,
+  double scroll,
+  SeaLook look,
+  SeaWaters waters,
+) {
   final w = size.width / u;
   final span = w * 1.9;
   final offset = scroll / u;
@@ -213,18 +226,26 @@ void _farShore(Canvas canvas, Size size, double u, double scroll, SeaLook look,
         final h = 6 + (_rand(i + 3) * 8).floorToDouble();
         sidePixels(canvas, u, dark, px, _horizon - h, 4, h);
         sidePixels(canvas, u, rim, px, _horizon - h, 4, 1);
-        sidePixels(canvas, u, Paint()..color = look.shallow, px + 2,
-            _horizon - h, 2, 1);
+        sidePixels(
+          canvas,
+          u,
+          Paint()..color = look.shallow,
+          px + 2,
+          _horizon - h,
+          2,
+          1,
+        );
       case SeaWaters.abyss:
         // Nothing stands: a faint glow on the horizon.
         sidePixels(
-            canvas,
-            u,
-            Paint()..color = look.accent.withValues(alpha: .25),
-            px,
-            _horizon - 1,
-            14,
-            1);
+          canvas,
+          u,
+          Paint()..color = look.accent.withValues(alpha: .25),
+          px,
+          _horizon - 1,
+          14,
+          1,
+        );
       case SeaWaters.ashen:
         // The ashen cliffs, with embers.
         final h = 5 + (_rand(i + 9) * 9).floorToDouble();
@@ -245,15 +266,24 @@ void _water(Canvas canvas, Size size, double u, SeaLook look) {
     paint.color = Color.lerp(look.shallow, look.deep, (y - _horizon) / rows)!;
     canvas.drawRect(Rect.fromLTWH(0, y * u, size.width, u * 2 + 0.5), paint);
   }
-  canvas.drawRect(Rect.fromLTWH(0, _horizon * u, size.width, u),
-      Paint()..color = Color.lerp(look.wave, look.foam, 0.4)!);
+  canvas.drawRect(
+    Rect.fromLTWH(0, _horizon * u, size.width, u),
+    Paint()..color = Color.lerp(look.wave, look.foam, 0.4)!,
+  );
 }
 
 /// A band of waves around [row]: a line in the wave colour that rises and
 /// falls with the water, and foam on the crests.
 void _waves(
-    Canvas canvas, Size size, double u, double scroll, double t, SeaLook look,
-    {required int row, required double amp}) {
+  Canvas canvas,
+  Size size,
+  double u,
+  double scroll,
+  double t,
+  SeaLook look, {
+  required int row,
+  required double amp,
+}) {
   final cols = (size.width / u).ceil() + 1;
   final offset = scroll / u;
   final line = Paint()..color = look.wave;
@@ -263,18 +293,29 @@ void _waves(
     final s = math.sin(wx + t * 0.9) + 0.5 * math.sin(wx * 2.3 - t * 0.6);
     final y = row + amp * s / 1.5;
     canvas.drawRect(
-        Rect.fromLTWH(i * u, y.roundToDouble() * u, u + 0.5, u), line);
+      Rect.fromLTWH(i * u, y.roundToDouble() * u, u + 0.5, u),
+      line,
+    );
     if (s > 1.2) {
       canvas.drawRect(
-          Rect.fromLTWH(i * u, (y.roundToDouble() - 1) * u, u + 0.5, u), foam);
+        Rect.fromLTWH(i * u, (y.roundToDouble() - 1) * u, u + 0.5, u),
+        foam,
+      );
     }
   }
 }
 
 /// What the waters carry: sandbars in the shallows, kelp in the drowned
 /// waters, slow rings and motes of light over the abyss.
-void _carried(Canvas canvas, Size size, double u, double scroll, double t,
-    SeaLook look, SeaWaters waters) {
+void _carried(
+  Canvas canvas,
+  Size size,
+  double u,
+  double scroll,
+  double t,
+  SeaLook look,
+  SeaWaters waters,
+) {
   final w = size.width / u;
   final span = w * 1.7;
   final offset = scroll / u;
@@ -292,8 +333,15 @@ void _carried(Canvas canvas, Size size, double u, double scroll, double t,
         final h = 7 + (_rand(i + 4) * 8).floorToDouble();
         for (var k = 0; k < h; k++) {
           final sway = (math.sin(t * 0.8 + i + k * 0.4) * 1.2).roundToDouble();
-          sidePixels(canvas, u, paint, px + sway,
-              (sideViewRows - 1 - k).toDouble(), 1, 1);
+          sidePixels(
+            canvas,
+            u,
+            paint,
+            px + sway,
+            (sideViewRows - 1 - k).toDouble(),
+            1,
+            1,
+          );
         }
       }
     case SeaWaters.abyss:
@@ -305,11 +353,13 @@ void _carried(Canvas canvas, Size size, double u, double scroll, double t,
         final phase = (t * 0.12 + i / 3) % 1.0;
         final px = ((i * span / 3 + 20 - offset) % span + span) % span - 10;
         canvas.drawOval(
-            Rect.fromCenter(
-                center: Offset(px * u, (58 + i * 4) * u),
-                width: (6 + phase * 26) * u,
-                height: (2 + phase * 7) * u),
-            ring..color = look.accent.withValues(alpha: 0.4 * (1 - phase)));
+          Rect.fromCenter(
+            center: Offset(px * u, (58 + i * 4) * u),
+            width: (6 + phase * 26) * u,
+            height: (2 + phase * 7) * u,
+          ),
+          ring..color = look.accent.withValues(alpha: 0.4 * (1 - phase)),
+        );
       }
       final mote = Paint();
       for (var i = 0; i < 14; i++) {
@@ -333,7 +383,7 @@ final ShipForm _defaultForm = ShipForm.fromRecord('rusty_eel', const {
   'beam': 0.24,
   'outline': {'u0': 0.5, 'a': 2.2, 'b': 1.7, 'tipw': 0.3, 'bowtip': 0.0},
   'sailPlan': [
-    {'kind': 'square', 'at': 0.5, 'size': 1.0}
+    {'kind': 'square', 'at': 0.5, 'size': 1.0},
   ],
   'jibs': 1,
 });
@@ -365,48 +415,67 @@ SideLayer _seaActors({
       final base = 53 - lift + bob.roundToDouble() + sink;
       if (lift > 0) {
         canvas.drawOval(
-            Rect.fromCenter(
-                center: Offset((shipX + len / 2) * u, 61 * u),
-                width: len * u,
-                height: 3 * u),
-            Paint()..color = Colors.black.withValues(alpha: 0.25));
+          Rect.fromCenter(
+            center: Offset((shipX + len / 2) * u, 61 * u),
+            width: len * u,
+            height: 3 * u,
+          ),
+          Paint()..color = Colors.black.withValues(alpha: 0.25),
+        );
       }
       _drawMeeting(canvas, size, u, t, meeting, rough,
           arrive: arrival?.value ?? 1);
       // An entrance card shows only what she is about to meet.
       if (!showShip) return;
-      paintSideShip(canvas, u,
-          x: shipX,
-          base: base,
-          form: form,
-          dress: dress,
-          t: t,
-          rough: rough,
-          condition: condition,
-          crew: crew,
-          lamp: phase == DayPhase.dusk || phase == DayPhase.night);
+      paintSideShip(
+        canvas,
+        u,
+        x: shipX,
+        base: base,
+        form: form,
+        dress: dress,
+        t: t,
+        rough: rough,
+        condition: condition,
+        crew: crew,
+        lamp: phase == DayPhase.dusk || phase == DayPhase.night,
+      );
       // The wake: foam along the waterline.
       if (lift == 0) {
         final foam = Paint()..color = Colors.white.withValues(alpha: 0.55);
         for (var k = 0; k < 6; k++) {
           sidePixels(
-              canvas,
-              u,
-              foam,
-              shipX - 2 - k * 3 + math.sin(t * 2 + k) * 1.5,
-              53 + bob.roundToDouble() + 2 + sink,
-              3,
-              1);
+            canvas,
+            u,
+            foam,
+            shipX - 2 - k * 3 + math.sin(t * 2 + k) * 1.5,
+            53 + bob.roundToDouble() + 2 + sink,
+            3,
+            1,
+          );
         }
         sidePixels(
-            canvas, u, foam, shipX + len - 3, 55 + bob.roundToDouble(), 4, 1);
+          canvas,
+          u,
+          foam,
+          shipX + len - 3,
+          55 + bob.roundToDouble(),
+          4,
+          1,
+        );
       }
     });
 
 /// What the day meets, on the right of the box (the ship is on the left).
-void _drawMeeting(Canvas canvas, Size size, double u, double t,
-    SeaMeeting meeting, bool rough,
-    {double arrive = 1}) {
+void _drawMeeting(
+  Canvas canvas,
+  Size size,
+  double u,
+  double t,
+  SeaMeeting meeting,
+  bool rough, {
+  double arrive = 1,
+}) {
   final w = size.width / u;
   final bob = math.sin(t * 1.3 + 1.7).roundToDouble();
   // What she meets comes in from the right edge, as the land's encounters
@@ -423,8 +492,16 @@ void _drawMeeting(Canvas canvas, Size size, double u, double t,
   if (sliding) canvas.restore();
 }
 
-void _paintMeeting(Canvas canvas, Size size, double u, double t,
-    SeaMeeting meeting, bool rough, double w, double bob) {
+void _paintMeeting(
+  Canvas canvas,
+  Size size,
+  double u,
+  double t,
+  SeaMeeting meeting,
+  bool rough,
+  double w,
+  double bob,
+) {
   switch (meeting.kind) {
     case SeaMeetingKind.none:
       // A pair of gulls crossing.
@@ -442,19 +519,25 @@ void _paintMeeting(Canvas canvas, Size size, double u, double t,
       final len = sideShipLength(enemy.form);
       final cx = (w * 0.76).floorToDouble();
       if (enemy.glow != null) {
-        canvas.drawCircle(Offset(cx * u, (50 + bob) * u), 24 * u,
-            Paint()..color = enemy.glow!.withValues(alpha: 0.12));
+        canvas.drawCircle(
+          Offset(cx * u, (50 + bob) * u),
+          24 * u,
+          Paint()..color = enemy.glow!.withValues(alpha: 0.12),
+        );
       }
       canvas.save();
       canvas.translate(2 * cx * u, 0);
       canvas.scale(-1, 1);
-      paintSideShip(canvas, u,
-          x: cx - len / 2,
-          base: 53 + bob,
-          form: enemy.form,
-          dress: enemy.dress,
-          t: t,
-          rough: rough);
+      paintSideShip(
+        canvas,
+        u,
+        x: cx - len / 2,
+        base: 53 + bob,
+        form: enemy.form,
+        dress: enemy.dress,
+        t: t,
+        rough: rough,
+      );
       canvas.restore();
     case SeaMeetingKind.derelict:
       _derelict(canvas, u, (w * 0.66).floorToDouble(), 54 + bob);
@@ -497,27 +580,54 @@ void _derelict(Canvas canvas, double u, double x, double base) {
 void _sighting(Canvas canvas, Size size, double u, double t, double w) {
   final lx = (w * 0.78).floorToDouble();
   final pulse = 0.6 + 0.4 * math.sin(t * 1.4);
-  canvas.drawCircle(Offset(lx * u, (_horizon - 1) * u), 7 * u,
-      Paint()..color = Palette.amber77.withValues(alpha: 0.18 * pulse));
+  canvas.drawCircle(
+    Offset(lx * u, (_horizon - 1) * u),
+    7 * u,
+    Paint()..color = Palette.amber77.withValues(alpha: 0.18 * pulse),
+  );
   sidePixels(
-      canvas, u, Paint()..color = Palette.amber83, lx - 1, _horizon - 2, 2, 2);
+    canvas,
+    u,
+    Paint()..color = Palette.amber83,
+    lx - 1,
+    _horizon - 2,
+    2,
+    2,
+  );
   final path = Paint()..color = Palette.amber77.withValues(alpha: 0.32);
   for (var k = 0; k < 8; k++) {
-    sidePixels(canvas, u, path, lx - 1 - (k % 2), _horizon + 2 + k * 3,
-        2 + (k % 2) * 2, 1);
+    sidePixels(
+      canvas,
+      u,
+      path,
+      lx - 1 - (k % 2),
+      _horizon + 2 + k * 3,
+      2 + (k % 2) * 2,
+      1,
+    );
   }
   final shadow = Paint()..color = Colors.black.withValues(alpha: 0.28);
   final sx = ((t * 3) % (w + 60)) - 40;
   canvas.drawOval(
-      Rect.fromCenter(
-          center: Offset((sx + 20) * u, 63 * u), width: 46 * u, height: 4 * u),
-      shadow);
+    Rect.fromCenter(
+      center: Offset((sx + 20) * u, 63 * u),
+      width: 46 * u,
+      height: 4 * u,
+    ),
+    shadow,
+  );
 }
 
 /// A sea beast, by its enemy_ships.json id: a fin, a long pale back with an
 /// eye, or arms over the water.
 void _beast(
-    Canvas canvas, double u, double x, double base, String? id, double t) {
+  Canvas canvas,
+  double u,
+  double x,
+  double base,
+  String? id,
+  double t,
+) {
   final foam = Paint()..color = Colors.white.withValues(alpha: 0.55);
   switch (id) {
     case 'pale_leviathan':
@@ -529,10 +639,24 @@ void _beast(
         sidePixels(canvas, u, back, x + i, base - h, 1, h + 1);
         sidePixels(canvas, u, shade, x + i, base - 1, 1, 1);
       }
-      sidePixels(canvas, u, Paint()..color = const Color(0xFF1B1E24), x + 6,
-          base - 5, 3, 3);
-      sidePixels(canvas, u, Paint()..color = const Color(0xFFE0B040), x + 7,
-          base - 4, 1, 1);
+      sidePixels(
+        canvas,
+        u,
+        Paint()..color = const Color(0xFF1B1E24),
+        x + 6,
+        base - 5,
+        3,
+        3,
+      );
+      sidePixels(
+        canvas,
+        u,
+        Paint()..color = const Color(0xFFE0B040),
+        x + 7,
+        base - 4,
+        1,
+        1,
+      );
     case 'tide_kraken':
       final arm = Paint()..color = const Color(0xFF4A2A52);
       final sucker = Paint()..color = const Color(0xFFB89AC0);
@@ -585,17 +709,34 @@ void _harbour(Canvas canvas, double u, double w, double t) {
     }
     if (tower) {
       final glow = 0.7 + 0.3 * math.sin(t * 2.2);
-      canvas.drawCircle(Offset((x + 3) * u, (52 - bh - 4) * u), 7 * u,
-          Paint()..color = Palette.orange65a.withValues(alpha: 0.22 * glow));
-      sidePixels(canvas, u, Paint()..color = Palette.amber83, x + 2,
-          52 - bh - 5, 2, 2);
+      canvas.drawCircle(
+        Offset((x + 3) * u, (52 - bh - 4) * u),
+        7 * u,
+        Paint()..color = Palette.orange65a.withValues(alpha: 0.22 * glow),
+      );
+      sidePixels(
+        canvas,
+        u,
+        Paint()..color = Palette.amber83,
+        x + 2,
+        52 - bh - 5,
+        2,
+        2,
+      );
     }
     x += bw + 3;
     i++;
   }
   // A mooring post.
   sidePixels(
-      canvas, u, Paint()..color = const Color(0xFF2E2016), x0 - 3, 49, 2, 5);
+    canvas,
+    u,
+    Paint()..color = const Color(0xFF2E2016),
+    x0 - 3,
+    49,
+    2,
+    5,
+  );
 }
 
 /// The length in scene pixels of the ship the scene draws for [form] (the
@@ -666,8 +807,11 @@ class _SeaSideSceneState extends State<SeaSideScene>
   /// on every launch (the sea strip's own x comes with the camera).
   late final int _version = sceneWindowOfId('sea-${widget.waters.name}');
 
-  late final AnimationController _arrival =
-      AnimationController(vsync: this, duration: seaArrivalTime, value: 1);
+  late final AnimationController _arrival = AnimationController(
+    vsync: this,
+    duration: seaArrivalTime,
+    value: 1,
+  );
   bool _started = false;
 
   bool get _arrives =>
@@ -710,23 +854,26 @@ class _SeaSideSceneState extends State<SeaSideScene>
           SideViewScene(
             key: const Key('sea_scene'),
             layers: withHourStars(
-                withSceneWindow(
-                    seaLayers(waters: widget.waters, weather: widget.weather),
-                    'sea-${widget.waters.name}',
-                    _version),
-                widget.phase),
+              withSceneWindow(
+                seaLayers(waters: widget.waters, weather: widget.weather),
+                'sea-${widget.waters.name}',
+                _version,
+              ),
+              widget.phase,
+            ),
             overlay: hourWash(widget.phase),
             actors: _seaActors(
-                flying: widget.flying,
-                weather: widget.weather,
-                meeting: widget.meeting,
-                ship: widget.ship,
-                dress: widget.dress,
-                condition: widget.condition,
-                crew: widget.crew,
-                arrival: _arrival,
-                phase: widget.phase,
-                showShip: widget.showShip),
+              flying: widget.flying,
+              weather: widget.weather,
+              meeting: widget.meeting,
+              ship: widget.ship,
+              dress: widget.dress,
+              condition: widget.condition,
+              crew: widget.crew,
+              arrival: _arrival,
+              phase: widget.phase,
+              showShip: widget.showShip,
+            ),
             particles: seaParticles(widget.waters, widget.weather),
             intensity: widget.weather == SeaWeather.squall ? 0.9 : 0.6,
             pace: widget.weather == SeaWeather.tailwind ? 56 : 30,
@@ -831,20 +978,25 @@ SideLayer _duelActors({
           53 - lift + eelBob.roundToDouble() + sideShipSink(condition);
       if (lift > 0) {
         canvas.drawOval(
-            Rect.fromCenter(
-                center: Offset(eelCx * u, 61 * u),
-                width: len * u,
-                height: 3 * u),
-            Paint()..color = Colors.black.withValues(alpha: 0.25));
+          Rect.fromCenter(
+            center: Offset(eelCx * u, 61 * u),
+            width: len * u,
+            height: 3 * u,
+          ),
+          Paint()..color = Colors.black.withValues(alpha: 0.25),
+        );
       }
-      paintSideShip(canvas, u,
-          x: eelCx - len / 2,
-          base: eelBase,
-          form: form,
-          dress: dress,
-          t: t,
-          rough: rough,
-          condition: condition);
+      paintSideShip(
+        canvas,
+        u,
+        x: eelCx - len / 2,
+        base: eelBase,
+        form: form,
+        dress: dress,
+        t: t,
+        rough: rough,
+        condition: condition,
+      );
       if (enemyIsBeast) {
         _beast(
             canvas, u, enemyCx - 20, 55 + foeBob.roundToDouble(), enemyId, t);
@@ -853,20 +1005,26 @@ SideLayer _duelActors({
         final elen = sideShipLength(enemy.form);
         final base = 53 + foeBob.roundToDouble() + sideShipSink(enemyCondition);
         if (enemy.glow != null) {
-          canvas.drawCircle(Offset(enemyCx * u, (50 + foeBob) * u), 24 * u,
-              Paint()..color = enemy.glow!.withValues(alpha: 0.12));
+          canvas.drawCircle(
+            Offset(enemyCx * u, (50 + foeBob) * u),
+            24 * u,
+            Paint()..color = enemy.glow!.withValues(alpha: 0.12),
+          );
         }
         canvas.save();
         canvas.translate(2 * enemyCx * u, 0);
         canvas.scale(-1, 1);
-        paintSideShip(canvas, u,
-            x: enemyCx - elen / 2,
-            base: base,
-            form: enemy.form,
-            dress: enemy.dress,
-            t: t,
-            rough: rough,
-            condition: enemyCondition);
+        paintSideShip(
+          canvas,
+          u,
+          x: enemyCx - elen / 2,
+          base: base,
+          form: enemy.form,
+          dress: enemy.dress,
+          t: t,
+          rough: rough,
+          condition: enemyCondition,
+        );
         canvas.restore();
       }
       // The foam at each waterline.
@@ -874,13 +1032,14 @@ SideLayer _duelActors({
       for (final cx in [eelCx, enemyCx]) {
         for (var k = 0; k < 4; k++) {
           sidePixels(
-              canvas,
-              u,
-              foam,
-              cx - len / 2 - 2 - k * 3 + math.sin(t * 2 + k) * 1.2,
-              55 + eelBob.roundToDouble(),
-              3,
-              1);
+            canvas,
+            u,
+            foam,
+            cx - len / 2 - 2 - k * 3 + math.sin(t * 2 + k) * 1.2,
+            55 + eelBob.roundToDouble(),
+            3,
+            1,
+          );
         }
       }
     });

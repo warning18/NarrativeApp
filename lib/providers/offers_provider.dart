@@ -71,7 +71,9 @@ Future<OfferTables> loadOfferTables(WidgetRef ref) async {
     data: inputs[0] as ClanData,
     signs: parseSigns(inputs[1] as Map<String, dynamic>),
     skills: withResolvedPlaceholders(
-        skillsSchema.id, inputs[2] as Map<String, dynamic>),
+      skillsSchema.id,
+      inputs[2] as Map<String, dynamic>,
+    ),
     skillTrees: inputs[3] as Map<String, dynamic>,
     items: inputs[4] as Map<String, dynamic>,
     spells: parseSpells(inputs[5] as Map<String, dynamic>),
@@ -90,12 +92,16 @@ Future<OfferTables> loadOfferTables(WidgetRef ref) async {
 final clanEffectsProvider = Provider<List<SignEffect>>((ref) {
   // Only the four fields it reads (P4): any other change to the session
   // leaves the effects, and the signs built on them, as they were.
-  final read = ref.watch(playerSessionProvider.select((s) => (
+  final read = ref.watch(
+    playerSessionProvider.select(
+      (s) => (
         activeTitleId: s.activeTitleId,
         heldTitleIds: s.heldTitleIds,
         swornBoonIds: s.swornBoonIds,
         swornFactionId: s.politics.swornFactionId,
-      )));
+      ),
+    ),
+  );
   return clanEffectsFor(
     activeTitleId: read.activeTitleId,
     heldTitleIds: read.heldTitleIds,

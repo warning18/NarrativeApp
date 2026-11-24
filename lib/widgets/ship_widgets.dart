@@ -1,4 +1,5 @@
 import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -29,8 +30,10 @@ const String _playerShipId = 'rusty_eel';
 
 /// The hull the Eel is built on ([hullId], the Rusty Eel's own sloop until
 /// she is rebuilt), or the first on file.
-Map<String, dynamic>? playerShipRecord(Map<String, dynamic> ships,
-    [String hullId = _playerShipId]) {
+Map<String, dynamic>? playerShipRecord(
+  Map<String, dynamic> ships, [
+  String hullId = _playerShipId,
+]) {
   final id = ships.containsKey(hullId)
       ? hullId
       : (ships.containsKey(_playerShipId)
@@ -92,8 +95,10 @@ class ShipStatusCard extends ConsumerWidget {
       hullPercent: signs.shipHullPercent,
       gunPercent: signs.shipGunPercent + specGunPercent(session.specIds),
     );
-    final repairCost =
-        repairCostFor(hull: playerShip.hull, maxHull: playerShip.maxHull);
+    final repairCost = repairCostFor(
+      hull: playerShip.hull,
+      maxHull: playerShip.maxHull,
+    );
     final currentPortId = currentPortIdFor(ports, session.currentPortId);
     final currentPort = currentPortId == null
         ? null
@@ -127,17 +132,21 @@ class ShipStatusCard extends ConsumerWidget {
                   crossAxisAlignment: CrossAxisAlignment.end,
                   children: [
                     Expanded(
-                      child: Text(ship['shipName']?.toString() ?? _playerShipId,
-                          style: theme.textTheme.titleMedium
-                              ?.copyWith(fontFamily: InkFonts.display)),
+                      child: Text(
+                        ship['shipName']?.toString() ?? _playerShipId,
+                        style: theme.textTheme.titleMedium?.copyWith(
+                          fontFamily: InkFonts.display,
+                        ),
+                      ),
                     ),
                     if (currentPort != null)
                       Flexible(
                         child: Text(
                           '${tr(ref, 'boat_at_port_prefix')} ${portNameFor(currentPort, fr)}',
                           textAlign: TextAlign.end,
-                          style: theme.textTheme.bodySmall
-                              ?.copyWith(color: ink.ash),
+                          style: theme.textTheme.bodySmall?.copyWith(
+                            color: ink.ash,
+                          ),
                         ),
                       ),
                   ],
@@ -147,10 +156,13 @@ class ShipStatusCard extends ConsumerWidget {
                 if (playerShip.maxLayers > 0) ...[
                   const SizedBox(height: 4),
                   Text(
-                    tr(ref, 'ship_shield_line')
-                        .replaceAll('{n}', '${playerShip.maxLayers}'),
-                    style: theme.textTheme.bodySmall
-                        ?.copyWith(color: ink.voidColor),
+                    tr(
+                      ref,
+                      'ship_shield_line',
+                    ).replaceAll('{n}', '${playerShip.maxLayers}'),
+                    style: theme.textTheme.bodySmall?.copyWith(
+                      color: ink.voidColor,
+                    ),
                   ),
                 ],
                 const SizedBox(height: 8),
@@ -165,13 +177,16 @@ class ShipStatusCard extends ConsumerWidget {
                           message: installedNames(slot),
                           child: Container(
                             padding: const EdgeInsets.symmetric(
-                                horizontal: 8, vertical: 3),
+                              horizontal: 8,
+                              vertical: 3,
+                            ),
                             decoration: BoxDecoration(
                               borderRadius: BorderRadius.circular(8),
                               border: Border.all(
-                                  color: slotsUsed(parts, installed, slot) > 0
-                                      ? ink.tide
-                                      : ink.seam),
+                                color: slotsUsed(parts, installed, slot) > 0
+                                    ? ink.tide
+                                    : ink.seam,
+                              ),
                             ),
                             child: Text(
                               '${shipSlotLabel(ref, slot)} '
@@ -193,16 +208,20 @@ class ShipStatusCard extends ConsumerWidget {
                                   .read(playerSessionProvider.notifier)
                                   .repairShip(repairCost);
                               if (!ok || !context.mounted) return;
-                              unawaited(showImmersiveNotice(
-                                context,
-                                icon: Icons.build_outlined,
-                                message: tr(ref, 'ship_sound_label'),
-                              ));
+                              unawaited(
+                                showImmersiveNotice(
+                                  context,
+                                  icon: Icons.build_outlined,
+                                  message: tr(ref, 'ship_sound_label'),
+                                ),
+                              );
                             },
                   icon: const Icon(Icons.build_outlined),
-                  label: Text(repairCost == 0
-                      ? tr(ref, 'ship_sound_label')
-                      : '${tr(ref, 'repair_ship_button')} ($repairCost ${tr(ref, 'gold_label')})'),
+                  label: Text(
+                    repairCost == 0
+                        ? tr(ref, 'ship_sound_label')
+                        : '${tr(ref, 'repair_ship_button')} ($repairCost ${tr(ref, 'gold_label')})',
+                  ),
                 ),
               ],
             ),
@@ -228,13 +247,17 @@ Future<bool> sailTo(
   final session = ref.read(playerSessionProvider);
   if (toPortId != homePortId(ports) &&
       voyageWaitsOnHarbour(
-          flags: session.flags,
-          builtHouseIds: session.builtHouseIds,
-          gold: session.gold,
-          inventory: session.inventoryItemIds,
-          houses: ref.read(gameDbProvider(housesSchema)).value ?? const {})) {
-    await showImmersiveNotice(context,
-        icon: Icons.anchor, message: tr(ref, 'harbour_needed_to_sail'));
+        flags: session.flags,
+        builtHouseIds: session.builtHouseIds,
+        gold: session.gold,
+        inventory: session.inventoryItemIds,
+        houses: ref.read(gameDbProvider(housesSchema)).value ?? const {},
+      )) {
+    await showImmersiveNotice(
+      context,
+      icon: Icons.anchor,
+      message: tr(ref, 'harbour_needed_to_sail'),
+    );
     return false;
   }
   if (!context.mounted) return false;
@@ -280,10 +303,16 @@ class PortChart extends ConsumerWidget {
     final portIds = ports.keys
         .where((id) => ports[id] is Map<String, dynamic>)
         .where((id) => id != currentPortId)
-        .where((id) =>
-            homeOnChart || !portIsHome(ports[id] as Map<String, dynamic>))
-        .where((id) => portUnlocked(ports[id] as Map<String, dynamic>,
-            chapter: chapter, flags: session.flags))
+        .where(
+          (id) => homeOnChart || !portIsHome(ports[id] as Map<String, dynamic>),
+        )
+        .where(
+          (id) => portUnlocked(
+            ports[id] as Map<String, dynamic>,
+            chapter: chapter,
+            flags: session.flags,
+          ),
+        )
         .toList()
       ..sort((a, b) {
         final pa = ports[a] as Map<String, dynamic>;
@@ -343,8 +372,9 @@ class _PortCard extends ConsumerWidget {
     return Card(
       child: ListTile(
         key: Key('chart_$portId'),
-        leading:
-            Icon(home ? Icons.local_fire_department_outlined : Icons.anchor),
+        leading: Icon(
+          home ? Icons.local_fire_department_outlined : Icons.anchor,
+        ),
         title: Text(home ? tr(ref, 'sail_home_title') : portNameFor(port, fr)),
         subtitle: Text(details),
         trailing: ElevatedButton(
@@ -430,7 +460,10 @@ class ShipAtSea extends ConsumerWidget {
             const Positioned.fill(
               child: CustomPaint(
                 painter: SeaSurfacePainter(
-                    waters: SeaWaters.open, weather: SeaWeather.calm, t: 1.3),
+                  waters: SeaWaters.open,
+                  weather: SeaWeather.calm,
+                  t: 1.3,
+                ),
               ),
             ),
             // Centred alone; to the left when she meets something.
@@ -456,14 +489,14 @@ class ShipAtSea extends ConsumerWidget {
                       battered: ship.hull * 2 < ship.maxHull,
                       down: {
                         for (final r in ShipRoom.values)
-                          if (ship.room(r).isDown) r
+                          if (ship.room(r).isDown) r,
                       },
                       burning: const {},
                       water: 0,
                       shield: Palette.cyan75,
                       foam: Palette.cyan93,
                       roomColors: {
-                        for (final r in ShipRoom.values) r: Palette.stone67
+                        for (final r in ShipRoom.values) r: Palette.stone67,
                       },
                       refit: ShipCutaway.refitOf(ship),
                       speed: 0.4,

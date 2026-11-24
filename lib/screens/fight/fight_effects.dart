@@ -40,8 +40,11 @@ extension _FightEffects on _FightScreenState {
       }
     }
     if (best == null) return null;
-    final family = weaponFamilyOf(best['id']?.toString() ?? '',
-        best['itemName']?.toString() ?? '', bestDamage);
+    final family = weaponFamilyOf(
+      best['id']?.toString() ?? '',
+      best['itemName']?.toString() ?? '',
+      bestDamage,
+    );
     return (family, best['rarity']?.toString().toLowerCase() ?? 'common');
   }
 
@@ -92,8 +95,11 @@ extension _FightEffects on _FightScreenState {
         _vfx.cue(actorKey, PortraitCue.lunge, delayMs: delayMs);
       }
       if (dealt > 0) {
-        final power =
-            powerFor(dealt, target.maxHealth, critical: result.isCritical);
+        final power = powerFor(
+          dealt,
+          target.maxHealth,
+          critical: result.isCritical,
+        );
         final hitStyle = support ? VfxStyle.slash : style;
         _vfx.play(
           style: hitStyle,
@@ -108,7 +114,10 @@ extension _FightEffects on _FightScreenState {
         );
         if (result.isCritical) {
           _vfx.play(
-              style: VfxStyle.crit, target: targetKey, delayMs: delayMs + 250);
+            style: VfxStyle.crit,
+            target: targetKey,
+            delayMs: delayMs + 250,
+          );
         }
       } else {
         _vfx.play(style: VfxStyle.miss, target: targetKey, delayMs: delayMs);
@@ -222,11 +231,14 @@ extension _FightEffects on _FightScreenState {
     // The enemy lunges at whom it strikes, as the blow sets off.
     final from = globalRectOf(_enemyCardKey(enemy.key));
     final to = globalRectOf(targetKey);
-    _vfx.cue(_enemyCardKey(enemy.key), PortraitCue.lunge,
-        delayMs: delayMs,
-        dir: from == null || to == null
-            ? const Offset(-1, 0)
-            : to.center - from.center);
+    _vfx.cue(
+      _enemyCardKey(enemy.key),
+      PortraitCue.lunge,
+      delayMs: delayMs,
+      dir: from == null || to == null
+          ? const Offset(-1, 0)
+          : to.center - from.center,
+    );
     if (dodged) {
       _vfx.play(
         style: VfxStyle.miss,

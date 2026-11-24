@@ -66,7 +66,9 @@ const int resolvePercentPerStack = 5;
 /// dealt this run, capped. Regular enemies never appear in
 /// [bossDefeatCounts], so a pack of them reads 0.
 int resolveStacksFor(
-    Map<String, int> bossDefeatCounts, Iterable<String> enemyIds) {
+  Map<String, int> bossDefeatCounts,
+  Iterable<String> enemyIds,
+) {
   var most = 0;
   for (final id in enemyIds) {
     most = max(most, bossDefeatCounts[id] ?? 0);
@@ -77,7 +79,9 @@ int resolveStacksFor(
 /// The percent bonuses the built camp works add up to: the party's health
 /// and damage, and the companions' own health.
 ({int health, int damage, int companionHealth}) houseBonusesFor(
-    Iterable<String> builtHouseIds, Map<String, dynamic> houses) {
+  Iterable<String> builtHouseIds,
+  Map<String, dynamic> houses,
+) {
   var health = 0;
   var damage = 0;
   var companionHealth = 0;

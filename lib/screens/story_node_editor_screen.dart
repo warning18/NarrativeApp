@@ -39,26 +39,36 @@ class _StoryNodeEditorScreenState extends ConsumerState<StoryNodeEditorScreen> {
   @override
   void initState() {
     super.initState();
-    _descriptionController =
-        TextEditingController(text: widget.node.description);
-    _descriptionFrController =
-        TextEditingController(text: widget.node.descriptionFr ?? '');
-    _reqGoldController =
-        TextEditingController(text: widget.node.reqGold.toString());
+    _descriptionController = TextEditingController(
+      text: widget.node.description,
+    );
+    _descriptionFrController = TextEditingController(
+      text: widget.node.descriptionFr ?? '',
+    );
+    _reqGoldController = TextEditingController(
+      text: widget.node.reqGold.toString(),
+    );
     _reqAlignmentController = TextEditingController(
-        text: widget.node.reqAlignmentScore?.toString() ?? '');
+      text: widget.node.reqAlignmentScore?.toString() ?? '',
+    );
     _reqAlignmentMaxController = TextEditingController(
-        text: widget.node.reqAlignmentMax?.toString() ?? '');
-    _reqFlagsController =
-        TextEditingController(text: widget.node.reqFlags.join(', '));
-    _reqCharismaController =
-        TextEditingController(text: widget.node.reqCharisma.toString());
-    _authoringCommentController =
-        TextEditingController(text: widget.node.authoringComment ?? '');
+      text: widget.node.reqAlignmentMax?.toString() ?? '',
+    );
+    _reqFlagsController = TextEditingController(
+      text: widget.node.reqFlags.join(', '),
+    );
+    _reqCharismaController = TextEditingController(
+      text: widget.node.reqCharisma.toString(),
+    );
+    _authoringCommentController = TextEditingController(
+      text: widget.node.authoringComment ?? '',
+    );
     _politicsOnEnterController = TextEditingController(
-        text: politicsEditorText(widget.node.politicsOnEnter));
-    _locationController =
-        TextEditingController(text: widget.node.location ?? '');
+      text: politicsEditorText(widget.node.politicsOnEnter),
+    );
+    _locationController = TextEditingController(
+      text: widget.node.location ?? '',
+    );
     _choices = widget.node.choices.map(_ChoiceEditState.new).toList();
   }
 
@@ -123,9 +133,13 @@ class _StoryNodeEditorScreenState extends ConsumerState<StoryNodeEditorScreen> {
       pageTurn: widget.node.pageTurn,
       scene: widget.node.scene,
       politicsOnEnter: politicsFromEditorText(
-          _politicsOnEnterController.text, widget.node.politicsOnEnter),
+        _politicsOnEnterController.text,
+        widget.node.politicsOnEnter,
+      ),
       location: locationFromEditorText(
-          _locationController.text, widget.node.location),
+        _locationController.text,
+        widget.node.location,
+      ),
       spot: widget.node.spot,
       facing: widget.node.facing,
       prompt: widget.node.prompt,
@@ -144,7 +158,8 @@ class _StoryNodeEditorScreenState extends ConsumerState<StoryNodeEditorScreen> {
     setState(() => _saving = false);
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
-          content: Text(trFor(ref.read(appLanguageProvider), 'node_saved'))),
+        content: Text(trFor(ref.read(appLanguageProvider), 'node_saved')),
+      ),
     );
     Navigator.of(context).pop();
   }
@@ -250,8 +265,9 @@ class _StoryNodeEditorScreenState extends ConsumerState<StoryNodeEditorScreen> {
               const SizedBox(height: 12),
               TextField(
                 controller: _reqAlignmentController,
-                keyboardType:
-                    const TextInputType.numberWithOptions(signed: true),
+                keyboardType: const TextInputType.numberWithOptions(
+                  signed: true,
+                ),
                 decoration: InputDecoration(
                   labelText: t('required_alignment'),
                   border: const OutlineInputBorder(),
@@ -260,8 +276,9 @@ class _StoryNodeEditorScreenState extends ConsumerState<StoryNodeEditorScreen> {
               const SizedBox(height: 12),
               TextField(
                 controller: _reqAlignmentMaxController,
-                keyboardType:
-                    const TextInputType.numberWithOptions(signed: true),
+                keyboardType: const TextInputType.numberWithOptions(
+                  signed: true,
+                ),
                 decoration: InputDecoration(
                   labelText: t('required_alignment_max'),
                   border: const OutlineInputBorder(),
@@ -294,8 +311,10 @@ class _StoryNodeEditorScreenState extends ConsumerState<StoryNodeEditorScreen> {
             help: t('politics_editor_help'),
           ),
           const SizedBox(height: 12),
-          Text(t('choices_label'),
-              style: Theme.of(context).textTheme.titleMedium),
+          Text(
+            t('choices_label'),
+            style: Theme.of(context).textTheme.titleMedium,
+          ),
           const SizedBox(height: 8),
           for (var i = 0; i < _choices.length; i++)
             _ChoiceCard(
@@ -351,7 +370,9 @@ String politicsIfEditorText(Map<String, dynamic> gate) =>
 /// The gate the editor's JSON field [text] says: none when it is empty;
 /// [original] kept, as it was, when it is no JSON object.
 Map<String, dynamic> politicsIfFromEditorText(
-    String text, Map<String, dynamic> original) {
+  String text,
+  Map<String, dynamic> original,
+) {
   if (text.trim().isEmpty) return const {};
   try {
     final raw = jsonDecode(text);
@@ -407,58 +428,81 @@ class _ChoiceEditState {
         textController = TextEditingController(text: choice.text),
         textFrController = TextEditingController(text: choice.textFr ?? ''),
         nextId = choice.nextId,
-        goldModController =
-            TextEditingController(text: choice.goldMod.toString()),
-        alignmentModController =
-            TextEditingController(text: choice.alignmentMod.toString()),
-        healAmountController =
-            TextEditingController(text: choice.healAmount.toString()),
-        flagsToAddController =
-            TextEditingController(text: choice.flagsToAdd.join(', ')),
-        hideIfFlagsController =
-            TextEditingController(text: choice.hideIfFlags.join(', ')),
-        launchZoneIdController =
-            TextEditingController(text: choice.launchZoneId ?? ''),
-        questIDToProgressController =
-            TextEditingController(text: choice.questIDToProgress ?? ''),
-        grantsBannerPieceIdController =
-            TextEditingController(text: choice.grantsBannerPieceId ?? ''),
-        grantItemIdController =
-            TextEditingController(text: choice.grantItemId ?? ''),
-        loseAllyIdController =
-            TextEditingController(text: choice.loseAllyId ?? ''),
-        lockedTextController =
-            TextEditingController(text: choice.lockedText ?? ''),
-        lockedTextFrController =
-            TextEditingController(text: choice.lockedTextFr ?? ''),
-        triggerEnemyIdController =
-            TextEditingController(text: choice.triggerEnemyId ?? ''),
-        triggerEnemyIdsController =
-            TextEditingController(text: choice.triggerEnemyIds.join(', ')),
-        unlockShopIdController =
-            TextEditingController(text: choice.unlockShopId ?? ''),
-        unlockQuestIdController =
-            TextEditingController(text: choice.unlockQuestId ?? ''),
+        goldModController = TextEditingController(
+          text: choice.goldMod.toString(),
+        ),
+        alignmentModController = TextEditingController(
+          text: choice.alignmentMod.toString(),
+        ),
+        healAmountController = TextEditingController(
+          text: choice.healAmount.toString(),
+        ),
+        flagsToAddController = TextEditingController(
+          text: choice.flagsToAdd.join(', '),
+        ),
+        hideIfFlagsController = TextEditingController(
+          text: choice.hideIfFlags.join(', '),
+        ),
+        launchZoneIdController = TextEditingController(
+          text: choice.launchZoneId ?? '',
+        ),
+        questIDToProgressController = TextEditingController(
+          text: choice.questIDToProgress ?? '',
+        ),
+        grantsBannerPieceIdController = TextEditingController(
+          text: choice.grantsBannerPieceId ?? '',
+        ),
+        grantItemIdController = TextEditingController(
+          text: choice.grantItemId ?? '',
+        ),
+        loseAllyIdController = TextEditingController(
+          text: choice.loseAllyId ?? '',
+        ),
+        lockedTextController = TextEditingController(
+          text: choice.lockedText ?? '',
+        ),
+        lockedTextFrController = TextEditingController(
+          text: choice.lockedTextFr ?? '',
+        ),
+        triggerEnemyIdController = TextEditingController(
+          text: choice.triggerEnemyId ?? '',
+        ),
+        triggerEnemyIdsController = TextEditingController(
+          text: choice.triggerEnemyIds.join(', '),
+        ),
+        unlockShopIdController = TextEditingController(
+          text: choice.unlockShopId ?? '',
+        ),
+        unlockQuestIdController = TextEditingController(
+          text: choice.unlockQuestId ?? '',
+        ),
         opensCharacterCreation = choice.opensCharacterCreation,
         checkAbility = choice.checkAbility,
-        checkDCController =
-            TextEditingController(text: choice.checkDC?.toString() ?? ''),
+        checkDCController = TextEditingController(
+          text: choice.checkDC?.toString() ?? '',
+        ),
         failNextId = choice.failNextId,
         loseNextId = choice.loseNextId,
         failNoteController = TextEditingController(text: choice.failNote ?? ''),
-        failNoteFrController =
-            TextEditingController(text: choice.failNoteFr ?? ''),
+        failNoteFrController = TextEditingController(
+          text: choice.failNoteFr ?? '',
+        ),
         loseNoteController = TextEditingController(text: choice.loseNote ?? ''),
-        loseNoteFrController =
-            TextEditingController(text: choice.loseNoteFr ?? ''),
+        loseNoteFrController = TextEditingController(
+          text: choice.loseNoteFr ?? '',
+        ),
         challengeSuccessesNeededController = TextEditingController(
-            text: choice.challengeSuccessesNeeded?.toString() ?? ''),
+          text: choice.challengeSuccessesNeeded?.toString() ?? '',
+        ),
         challengeMaxFailuresController = TextEditingController(
-            text: choice.challengeMaxFailures?.toString() ?? ''),
-        politicsController =
-            TextEditingController(text: politicsEditorText(choice.politics)),
+          text: choice.challengeMaxFailures?.toString() ?? '',
+        ),
+        politicsController = TextEditingController(
+          text: politicsEditorText(choice.politics),
+        ),
         politicsIfController = TextEditingController(
-            text: politicsIfEditorText(choice.politicsIf)),
+          text: politicsIfEditorText(choice.politicsIf),
+        ),
         hostFight = choice.hostFight;
 
   _ChoiceEditState.blank() : this(const StoryChoice(text: '', nextId: 'EXIT'));
@@ -627,17 +671,21 @@ class _ChoiceEditState {
         loseNoteFr: loseNoteFrController.text.trim().isEmpty
             ? null
             : loseNoteFrController.text.trim(),
-        challengeSuccessesNeeded:
-            int.tryParse(challengeSuccessesNeededController.text.trim()),
-        challengeMaxFailures:
-            int.tryParse(challengeMaxFailuresController.text.trim()),
+        challengeSuccessesNeeded: int.tryParse(
+          challengeSuccessesNeededController.text.trim(),
+        ),
+        challengeMaxFailures: int.tryParse(
+          challengeMaxFailuresController.text.trim(),
+        ),
         huntName: _original.huntName,
         huntAffixes: _original.huntAffixes,
         chestFloor: _original.chestFloor,
         isHunterAmbush: _original.isHunterAmbush,
         showIfFlags: _original.showIfFlags,
         politicsIf: politicsIfFromEditorText(
-            politicsIfController.text, _original.politicsIf),
+          politicsIfController.text,
+          _original.politicsIf,
+        ),
         hostFight: hostFight,
         mainQuest: _original.mainQuest,
         pays: _original.pays,
@@ -661,8 +709,10 @@ class _ChoiceEditState {
         noHeal: _original.noHeal,
         tutorialFight: _original.tutorialFight,
         luckyDieReveal: _original.luckyDieReveal,
-        politics:
-            politicsFromEditorText(politicsController.text, _original.politics),
+        politics: politicsFromEditorText(
+          politicsController.text,
+          _original.politics,
+        ),
       );
 }
 
@@ -743,43 +793,54 @@ class _ChoiceCardState extends State<_ChoiceCard> {
                 border: const OutlineInputBorder(),
               ),
               items: options
-                  .map((id) => DropdownMenuItem(
+                  .map(
+                    (id) => DropdownMenuItem(
                       value: id,
-                      child: Text(id, overflow: TextOverflow.ellipsis)))
+                      child: Text(id, overflow: TextOverflow.ellipsis),
+                    ),
+                  )
                   .toList(),
               onChanged: (value) =>
                   setState(() => state.nextId = value ?? state.nextId),
             ),
             ExpansionTile(
               tilePadding: EdgeInsets.zero,
-              title: Text(t('advanced_options'),
-                  style: Theme.of(context).textTheme.bodySmall),
+              title: Text(
+                t('advanced_options'),
+                style: Theme.of(context).textTheme.bodySmall,
+              ),
               children: [
                 TextField(
                   controller: state.goldModController,
-                  keyboardType:
-                      const TextInputType.numberWithOptions(signed: true),
+                  keyboardType: const TextInputType.numberWithOptions(
+                    signed: true,
+                  ),
                   decoration: InputDecoration(
-                      labelText: t('gold_mod'),
-                      border: const OutlineInputBorder()),
+                    labelText: t('gold_mod'),
+                    border: const OutlineInputBorder(),
+                  ),
                 ),
                 const SizedBox(height: 8),
                 TextField(
                   controller: state.alignmentModController,
-                  keyboardType:
-                      const TextInputType.numberWithOptions(signed: true),
+                  keyboardType: const TextInputType.numberWithOptions(
+                    signed: true,
+                  ),
                   decoration: InputDecoration(
-                      labelText: t('alignment_mod'),
-                      border: const OutlineInputBorder()),
+                    labelText: t('alignment_mod'),
+                    border: const OutlineInputBorder(),
+                  ),
                 ),
                 const SizedBox(height: 8),
                 TextField(
                   controller: state.healAmountController,
-                  keyboardType:
-                      const TextInputType.numberWithOptions(signed: true),
+                  keyboardType: const TextInputType.numberWithOptions(
+                    signed: true,
+                  ),
                   decoration: InputDecoration(
-                      labelText: t('heal_amount'),
-                      border: const OutlineInputBorder()),
+                    labelText: t('heal_amount'),
+                    border: const OutlineInputBorder(),
+                  ),
                 ),
                 const SizedBox(height: 8),
                 TextField(
@@ -809,36 +870,41 @@ class _ChoiceCardState extends State<_ChoiceCard> {
                 TextField(
                   controller: state.questIDToProgressController,
                   decoration: InputDecoration(
-                      labelText: t('quest_id_to_progress'),
-                      border: const OutlineInputBorder()),
+                    labelText: t('quest_id_to_progress'),
+                    border: const OutlineInputBorder(),
+                  ),
                 ),
                 const SizedBox(height: 8),
                 TextField(
                   controller: state.grantsBannerPieceIdController,
                   decoration: InputDecoration(
-                      labelText: t('grants_banner_piece_id'),
-                      border: const OutlineInputBorder()),
+                    labelText: t('grants_banner_piece_id'),
+                    border: const OutlineInputBorder(),
+                  ),
                 ),
                 const SizedBox(height: 8),
                 TextField(
                   controller: state.grantItemIdController,
                   decoration: InputDecoration(
-                      labelText: t('grant_item_id'),
-                      border: const OutlineInputBorder()),
+                    labelText: t('grant_item_id'),
+                    border: const OutlineInputBorder(),
+                  ),
                 ),
                 const SizedBox(height: 8),
                 TextField(
                   controller: state.loseAllyIdController,
                   decoration: InputDecoration(
-                      labelText: t('lose_ally_id'),
-                      border: const OutlineInputBorder()),
+                    labelText: t('lose_ally_id'),
+                    border: const OutlineInputBorder(),
+                  ),
                 ),
                 const SizedBox(height: 8),
                 TextField(
                   controller: state.triggerEnemyIdController,
                   decoration: InputDecoration(
-                      labelText: t('trigger_enemy_id'),
-                      border: const OutlineInputBorder()),
+                    labelText: t('trigger_enemy_id'),
+                    border: const OutlineInputBorder(),
+                  ),
                 ),
                 const SizedBox(height: 8),
                 TextField(
@@ -853,15 +919,17 @@ class _ChoiceCardState extends State<_ChoiceCard> {
                 TextField(
                   controller: state.unlockShopIdController,
                   decoration: InputDecoration(
-                      labelText: t('unlock_shop_id'),
-                      border: const OutlineInputBorder()),
+                    labelText: t('unlock_shop_id'),
+                    border: const OutlineInputBorder(),
+                  ),
                 ),
                 const SizedBox(height: 8),
                 TextField(
                   controller: state.unlockQuestIdController,
                   decoration: InputDecoration(
-                      labelText: t('unlock_quest_id'),
-                      border: const OutlineInputBorder()),
+                    labelText: t('unlock_quest_id'),
+                    border: const OutlineInputBorder(),
+                  ),
                 ),
                 const SizedBox(height: 8),
                 TextField(
@@ -887,8 +955,10 @@ class _ChoiceCardState extends State<_ChoiceCard> {
                       setState(() => state.opensCharacterCreation = value),
                 ),
                 const Divider(),
-                Text(t('ability_check_section'),
-                    style: Theme.of(context).textTheme.bodySmall),
+                Text(
+                  t('ability_check_section'),
+                  style: Theme.of(context).textTheme.bodySmall,
+                ),
                 const SizedBox(height: 8),
                 DropdownButtonFormField<String>(
                   // ignore: deprecated_member_use
@@ -901,10 +971,14 @@ class _ChoiceCardState extends State<_ChoiceCard> {
                   ),
                   items: [
                     DropdownMenuItem(
-                        value: null, child: Text(t('none_option'))),
+                      value: null,
+                      child: Text(t('none_option')),
+                    ),
                     for (final ability in abilityScoreKeys)
                       DropdownMenuItem(
-                          value: ability, child: Text(t('${ability}_label'))),
+                        value: ability,
+                        child: Text(t('${ability}_label')),
+                      ),
                   ],
                   onChanged: (value) =>
                       setState(() => state.checkAbility = value),
@@ -931,10 +1005,15 @@ class _ChoiceCardState extends State<_ChoiceCard> {
                   ),
                   items: [
                     DropdownMenuItem(
-                        value: null, child: Text(t('none_option'))),
-                    ...options.map((id) => DropdownMenuItem(
+                      value: null,
+                      child: Text(t('none_option')),
+                    ),
+                    ...options.map(
+                      (id) => DropdownMenuItem(
                         value: id,
-                        child: Text(id, overflow: TextOverflow.ellipsis))),
+                        child: Text(id, overflow: TextOverflow.ellipsis),
+                      ),
+                    ),
                   ],
                   onChanged: (value) =>
                       setState(() => state.failNextId = value),
@@ -952,10 +1031,15 @@ class _ChoiceCardState extends State<_ChoiceCard> {
                   ),
                   items: [
                     DropdownMenuItem(
-                        value: null, child: Text(t('none_option'))),
-                    ...options.map((id) => DropdownMenuItem(
+                      value: null,
+                      child: Text(t('none_option')),
+                    ),
+                    ...options.map(
+                      (id) => DropdownMenuItem(
                         value: id,
-                        child: Text(id, overflow: TextOverflow.ellipsis))),
+                        child: Text(id, overflow: TextOverflow.ellipsis),
+                      ),
+                    ),
                   ],
                   onChanged: (value) =>
                       setState(() => state.loseNextId = value),
@@ -1001,8 +1085,10 @@ class _ChoiceCardState extends State<_ChoiceCard> {
                     ),
                   ],
                 ),
-                Text(t('challenge_hint'),
-                    style: Theme.of(context).textTheme.bodySmall),
+                Text(
+                  t('challenge_hint'),
+                  style: Theme.of(context).textTheme.bodySmall,
+                ),
                 const Divider(),
                 _PoliticsField(
                   controller: state.politicsController,

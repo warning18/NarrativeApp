@@ -171,8 +171,10 @@ class _TowerDicePanelState extends ConsumerState<TowerDicePanel> {
       child: Container(
         margin: const EdgeInsets.symmetric(horizontal: 1.5),
         padding: const EdgeInsets.symmetric(horizontal: 3, vertical: 3),
-        decoration:
-            BoxDecoration(border: Border.all(color: inkGrey), color: inkDeep),
+        decoration: BoxDecoration(
+          border: Border.all(color: inkGrey),
+          color: inkDeep,
+        ),
         child: FittedBox(
           fit: BoxFit.scaleDown,
           child: Row(
@@ -225,9 +227,13 @@ class _InkDie extends StatelessWidget {
       final f = die.faces[i % n];
       final kind = faceKind('${f['type']}');
       return DieCubeFace(
-          glyph: Icon(kind.icon,
-              size: IconSize.s16, color: lit ? inkPaper : inkGrey),
-          color: lit && i == 0 ? inkRed : inkGrey);
+        glyph: Icon(
+          kind.icon,
+          size: IconSize.s16,
+          color: lit ? inkPaper : inkGrey,
+        ),
+        color: lit && i == 0 ? inkRed : inkGrey,
+      );
     }
 
     final shape = dieShapeOf(n);

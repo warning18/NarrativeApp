@@ -259,15 +259,19 @@ class SimCharacter {
   /// skills at [assignments], fought measurably better than the die in
   /// play. Null, the worth (simDieValue) alone decides.
   bool Function(
-          List<Map<String, dynamic>> faces, Map<String, String> assignments)?
-      dieTrial;
+    List<Map<String, dynamic>> faces,
+    Map<String, String> assignments,
+  )? dieTrial;
 
   /// Whether die [id], worth more than the one in play (simDieValue), also
   /// passes its [dieTrial]: the worth leaves out the profession's core, the
   /// elements and the specialisations, and so overrates some dice. A die
   /// that failed is not tried again before the next level.
-  bool _passesTrial(String id, List<Map<String, dynamic>> faces,
-      Map<String, String> assignments) {
+  bool _passesTrial(
+    String id,
+    List<Map<String, dynamic>> faces,
+    Map<String, String> assignments,
+  ) {
     final trial = dieTrial;
     if (trial == null) return true;
     if (_dieFailedAt[id] == level) return false;
@@ -285,25 +289,38 @@ class SimCharacter {
   /// player has none).
   void rollBestDie(Map<String, dynamic> skills, {double margin = 0.01}) {
     final caster = knownSpells.isNotEmpty;
-    final now = simDieValue(diceFaces, diceSkillAssignments, skills,
-            damage: baseDamage, caster: caster, maxHealth: maxHealth) +
+    final now = simDieValue(
+          diceFaces,
+          diceSkillAssignments,
+          skills,
+          damage: baseDamage,
+          caster: caster,
+          maxHealth: maxHealth,
+        ) +
         margin;
     final better = <({
       String id,
       List<Map<String, dynamic>> faces,
       Map<String, String> placed,
-      double value
+      double value,
     })>[];
     for (final id in ownedDice.keys.toList()..sort()) {
       if (id == diceId) continue;
       final faces = ownedDice[id]!;
       final placed = simSkillAssignments(
-          faces: faces,
-          current: const {},
-          unlocked: unlockedSkillIds,
-          skills: skills);
-      final v = simDieValue(faces, placed, skills,
-          damage: baseDamage, caster: caster, maxHealth: maxHealth);
+        faces: faces,
+        current: const {},
+        unlocked: unlockedSkillIds,
+        skills: skills,
+      );
+      final v = simDieValue(
+        faces,
+        placed,
+        skills,
+        damage: baseDamage,
+        caster: caster,
+        maxHealth: maxHealth,
+      );
       if (v > now) better.add((id: id, faces: faces, placed: placed, value: v));
     }
     // The worthiest first; the first to pass its trial is rolled.
@@ -325,13 +342,26 @@ class SimCharacter {
   /// whether an owned die matches a weakness, and the die swapped to (null:
   /// the die in play is kept, as when no owned die matches).
   ({bool matchOwned, String? swappedTo}) holdDieAgainst(
-      List<Map<String, dynamic>> foes, Map<String, dynamic> skills) {
+    List<Map<String, dynamic>> foes,
+    Map<String, dynamic> skills,
+  ) {
     if (foes.isEmpty) return (matchOwned: false, swappedTo: null);
     final caster = knownSpells.isNotEmpty;
-    final currentMatches =
-        simDieHitsWeakness(diceFaces, diceSkillAssignments, skills, foes);
-    var best = simDieValueAgainst(diceFaces, diceSkillAssignments, skills, foes,
-        damage: baseDamage, caster: caster, maxHealth: maxHealth);
+    final currentMatches = simDieHitsWeakness(
+      diceFaces,
+      diceSkillAssignments,
+      skills,
+      foes,
+    );
+    var best = simDieValueAgainst(
+      diceFaces,
+      diceSkillAssignments,
+      skills,
+      foes,
+      damage: baseDamage,
+      caster: caster,
+      maxHealth: maxHealth,
+    );
     var matchOwned = currentMatches;
     ({
       String id,
@@ -342,14 +372,22 @@ class SimCharacter {
       if (id == diceId) continue;
       final faces = ownedDice[id]!;
       final placed = simSkillAssignments(
-          faces: faces,
-          current: const {},
-          unlocked: unlockedSkillIds,
-          skills: skills);
+        faces: faces,
+        current: const {},
+        unlocked: unlockedSkillIds,
+        skills: skills,
+      );
       if (!simDieHitsWeakness(faces, placed, skills, foes)) continue;
       matchOwned = true;
-      final v = simDieValueAgainst(faces, placed, skills, foes,
-          damage: baseDamage, caster: caster, maxHealth: maxHealth);
+      final v = simDieValueAgainst(
+        faces,
+        placed,
+        skills,
+        foes,
+        damage: baseDamage,
+        caster: caster,
+        maxHealth: maxHealth,
+      );
       if (v > best) {
         best = v;
         pick = (id: id, faces: faces, placed: placed);
@@ -365,17 +403,20 @@ class SimCharacter {
   /// Whether the die in play or an owned one carries an element one of
   /// [foes] is weak to (to measure [holdDieAgainst]; nothing changes).
   bool ownsDieHittingWeakness(
-      List<Map<String, dynamic>> foes, Map<String, dynamic> skills) {
+    List<Map<String, dynamic>> foes,
+    Map<String, dynamic> skills,
+  ) {
     if (simDieHitsWeakness(diceFaces, diceSkillAssignments, skills, foes)) {
       return true;
     }
     for (final e in ownedDice.entries) {
       if (e.key == diceId) continue;
       final placed = simSkillAssignments(
-          faces: e.value,
-          current: const {},
-          unlocked: unlockedSkillIds,
-          skills: skills);
+        faces: e.value,
+        current: const {},
+        unlocked: unlockedSkillIds,
+        skills: skills,
+      );
       if (simDieHitsWeakness(e.value, placed, skills, foes)) return true;
     }
     return false;
@@ -627,22 +668,24 @@ class SimCharacter {
         if (roll.built.isNotEmpty) {
           final main =
               shares.entries.reduce((a, b) => b.value > a.value ? b : a).key;
-          offer = roll.workStatPick(offer,
-              wanted: shares.keys.toSet(),
-              mainStat: main,
+          offer = roll.workStatPick(
+            offer,
+            wanted: shares.keys.toSet(),
+            mainStat: main,
+            paths: trainingPaths,
+            choose: choose,
+            redraw: (tier) => drawStatPick(
               paths: trainingPaths,
-              choose: choose,
-              redraw: (tier) => drawStatPick(
-                    paths: trainingPaths,
-                    random: roll.random,
-                    professionId: professionId,
-                    raceId: raceId,
-                    luck: luck,
-                    taken: trainingTaken,
-                    stats: stats,
-                    tier: tier,
-                    bannedPaths: roll.banned(RollBanOn.pick),
-                  ));
+              random: roll.random,
+              professionId: professionId,
+              raceId: raceId,
+              luck: luck,
+              taken: trainingTaken,
+              stats: stats,
+              tier: tier,
+              bannedPaths: roll.banned(RollBanOn.pick),
+            ),
+          );
         }
       }
       final pick = offer[choose(offer)];
@@ -670,8 +713,15 @@ class SimCharacter {
     Map<String, ItemSet> itemSets = const {},
   }) {
     if (policy == SimPolicy.competent) {
-      return _visitShopCompetent(shop, items, dice, spells, gold,
-          skills: skills, itemSets: itemSets);
+      return _visitShopCompetent(
+        shop,
+        items,
+        dice,
+        spells,
+        gold,
+        skills: skills,
+        itemSets: itemSets,
+      );
     }
     int scoreOf(String? itemId) {
       final item = items[itemId] as Map<String, dynamic>?;
@@ -681,8 +731,12 @@ class SimCharacter {
     }
 
     // 1. Spellbooks: the profession's own, still unknown.
-    final (:stock, :quantities, purse: afterBooks) =
-        _openShop(shop, items, spells, gold);
+    final (:stock, :quantities, purse: afterBooks) = _openShop(
+      shop,
+      items,
+      spells,
+      gold,
+    );
     var purse = afterBooks;
 
     // 2. Potions: up to two charges per entry (an antidote is skipped --
@@ -768,11 +822,21 @@ class SimCharacter {
   /// may roll and afford, when its average roll (simDieValue, its skills
   /// placed as the walk places them) beats the one in play by
   /// [simTypicalDieMargin]. Bought and rolled; returns the gold left.
-  int _buyTypicalDie(Map<String, dynamic> shop, Map<String, dynamic> dice,
-      Map<String, dynamic> skills, int purse) {
+  int _buyTypicalDie(
+    Map<String, dynamic> shop,
+    Map<String, dynamic> dice,
+    Map<String, dynamic> skills,
+    int purse,
+  ) {
     final caster = knownSpells.isNotEmpty;
-    var best = simDieValue(diceFaces, diceSkillAssignments, skills,
-            damage: baseDamage, caster: caster, maxHealth: maxHealth) +
+    var best = simDieValue(
+          diceFaces,
+          diceSkillAssignments,
+          skills,
+          damage: baseDamage,
+          caster: caster,
+          maxHealth: maxHealth,
+        ) +
         simTypicalDieMargin;
     String? pick;
     for (final raw in (shop['diceStock'] as List?) ?? const []) {
@@ -788,16 +852,18 @@ class SimCharacter {
         continue;
       }
       final v = simDieValue(
-          faces,
-          simSkillAssignments(
-              faces: faces,
-              current: const {},
-              unlocked: unlockedSkillIds,
-              skills: skills),
-          skills,
-          damage: baseDamage,
-          caster: caster,
-          maxHealth: maxHealth);
+        faces,
+        simSkillAssignments(
+          faces: faces,
+          current: const {},
+          unlocked: unlockedSkillIds,
+          skills: skills,
+        ),
+        skills,
+        damage: baseDamage,
+        caster: caster,
+        maxHealth: maxHealth,
+      );
       if (v > best) {
         best = v;
         pick = id;
@@ -817,8 +883,12 @@ class SimCharacter {
     List<MapEntry<String, Map<String, dynamic>>> stock,
     Map<String, int> quantities,
     int purse,
-  }) _openShop(Map<String, dynamic> shop, Map<String, dynamic> items,
-      Map<String, SpellSpec> spells, int gold) {
+  }) _openShop(
+    Map<String, dynamic> shop,
+    Map<String, dynamic> items,
+    Map<String, SpellSpec> spells,
+    int gold,
+  ) {
     final quantities = (shop['stockQuantities'] as Map?)?.map(
           (k, v) => MapEntry(k.toString(), (v as num?)?.toInt() ?? 1),
         ) ??
@@ -885,8 +955,12 @@ class SimCharacter {
     required Map<String, dynamic> skills,
     required Map<String, ItemSet> itemSets,
   }) {
-    final (:stock, :quantities, purse: afterBooks) =
-        _openShop(shop, items, spells, gold);
+    final (:stock, :quantities, purse: afterBooks) = _openShop(
+      shop,
+      items,
+      spells,
+      gold,
+    );
     var purse = afterBooks;
 
     void buyPotions(int upTo) {
@@ -910,8 +984,14 @@ class SimCharacter {
 
     // The die: the best of the shop's it may roll, if it beats its own.
     final caster = knownSpells.isNotEmpty;
-    final dieNow = simDieValue(diceFaces, diceSkillAssignments, skills,
-        damage: baseDamage, caster: caster, maxHealth: maxHealth);
+    final dieNow = simDieValue(
+      diceFaces,
+      diceSkillAssignments,
+      skills,
+      damage: baseDamage,
+      caster: caster,
+      maxHealth: maxHealth,
+    );
     String? dieId;
     var dieBest = dieNow + 0.1;
     for (final raw in (shop['diceStock'] as List?) ?? const []) {
@@ -927,12 +1007,19 @@ class SimCharacter {
         continue;
       }
       final placed = simSkillAssignments(
-          faces: faces,
-          current: const {},
-          unlocked: unlockedSkillIds,
-          skills: skills);
-      final v = simDieValue(faces, placed, skills,
-          damage: baseDamage, caster: caster, maxHealth: maxHealth);
+        faces: faces,
+        current: const {},
+        unlocked: unlockedSkillIds,
+        skills: skills,
+      );
+      final v = simDieValue(
+        faces,
+        placed,
+        skills,
+        damage: baseDamage,
+        caster: caster,
+        maxHealth: maxHealth,
+      );
       // Bought only when it would be rolled: worth more, and its trial
       // passed.
       if (v > dieBest && _passesTrial(id, faces, placed)) {
@@ -956,12 +1043,13 @@ class SimCharacter {
           intelligence: intelligence,
         );
     Map<String, String> bestWith(Iterable<String> extra) => simBestLoadout(
-        worn: equippedBySlot,
-        owned: {...ownedItemIds, ...extra},
-        items: items,
-        sets: itemSets,
-        canWear: canWear,
-        caster: caster);
+          worn: equippedBySlot,
+          owned: {...ownedItemIds, ...extra},
+          items: items,
+          sets: itemSets,
+          canWear: canWear,
+          caster: caster,
+        );
     double valueOf(Map<String, String> loadout) =>
         simLoadoutValue(loadout.values, items, itemSets, caster: caster);
     while (true) {
@@ -1194,7 +1282,10 @@ _SimEnemy? _focusTarget(List<_SimEnemy> ens) {
 /// lands it: a Curse on the face ([cursed] holds the cursed face indexes),
 /// then a Silence over the round.
 DiceFaceResult _tamperedFace(
-    DiceFaceResult face, Set<int> cursed, bool silenced) {
+  DiceFaceResult face,
+  Set<int> cursed,
+  bool silenced,
+) {
   var landed = cursed.contains(face.faceIndex) ? cursedFace(face) : face;
   if (silenced && landed.type == 'Skill') landed = silencedFace(landed);
   return landed;
@@ -1203,8 +1294,13 @@ DiceFaceResult _tamperedFace(
 /// Whether the hero's [raw] roll lands Steady -- the die a Hex leaves
 /// alone: the face with its skill, the strike signs' keywords on an Attack
 /// face, then the tampering.
-bool _landsSteady(SimCharacter c, DiceFaceResult raw, SignEffects s,
-    Set<int> cursed, bool silenced) {
+bool _landsSteady(
+  SimCharacter c,
+  DiceFaceResult raw,
+  SignEffects s,
+  Set<int> cursed,
+  bool silenced,
+) {
   var face = applyFaceAssignment(
     raw,
     c.diceFaces[raw.faceIndex],

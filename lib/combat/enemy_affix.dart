@@ -36,7 +36,10 @@ const double _affixChancePackMember = 0.15;
 /// The Poison a [EnemyAffix.venomous] enemy's plain attack carries (one
 /// with no status of its own).
 const StatusEffect venomousPoison = StatusEffect(
-    type: StatusEffectType.poison, remainingTurns: 2, magnitude: 1);
+  type: StatusEffectType.poison,
+  remainingTurns: 2,
+  magnitude: 1,
+);
 
 /// Flat damage an [EnemyAffix.armored] enemy ignores from each Attack face
 /// (never below 1 damage dealt).
@@ -48,8 +51,11 @@ const int armoredFlatReduction = 1;
 /// fight's confirm and its roll preview both go through here, so the
 /// number shown on a die before the confirm is the number the confirm
 /// deals.
-int strikeDamageAfterAffixes(int damage, String faceType,
-    {required bool armored}) {
+int strikeDamageAfterAffixes(
+  int damage,
+  String faceType, {
+  required bool armored,
+}) {
   if (damage <= 0 || !armored || faceType != 'Attack') return damage;
   return max(1, damage - armoredFlatReduction);
 }

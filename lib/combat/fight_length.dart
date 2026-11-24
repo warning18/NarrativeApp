@@ -77,8 +77,13 @@ double tideEnemyMultiplier(int round, {bool bossFight = false, int? cap}) =>
 /// [damage] grown by the Tide in [round], for the party's blows or the
 /// enemies' ([bossFight]: a boss is in the fight; [enemyCap]: the level
 /// the enemies' Tide stops at, see [fightTideCap]).
-int tideDamage(int damage, int round,
-    {required bool byParty, bool bossFight = false, int? enemyCap}) {
+int tideDamage(
+  int damage,
+  int round, {
+  required bool byParty,
+  bool bossFight = false,
+  int? enemyCap,
+}) {
   if (damage <= 0 || tideLevel(round) == 0) return damage;
   final factor = byParty
       ? _tidePartyMultiplier(round)
@@ -94,7 +99,9 @@ bool healsOnce(Map<String, dynamic> record) => record['healsOnce'] == true;
 /// [skills] mends (`healAmount` above 0). What a [healsOnce] enemy keeps
 /// once its heal is spent.
 Map<String, dynamic> withoutHealMoves(
-    Map<String, dynamic> record, Map<String, dynamic> skills) {
+  Map<String, dynamic> record,
+  Map<String, dynamic> skills,
+) {
   final moves = (record['skillMoves'] as List?) ?? const [];
   bool heals(Object? move) {
     final id = move is Map ? move['skillID']?.toString() : null;
@@ -106,7 +113,7 @@ Map<String, dynamic> withoutHealMoves(
     ...record,
     'skillMoves': [
       for (final m in moves)
-        if (!heals(m)) m
+        if (!heals(m)) m,
     ],
   };
 }
@@ -132,8 +139,11 @@ const double executeShare = 0.10;
 
 /// Whether a foe at [health] of [maxHealth], struck this round, falls. A
 /// boss never does: its last phase is the fight's.
-bool executes(
-        {required int health, required int maxHealth, bool boss = false}) =>
+bool executes({
+  required int health,
+  required int maxHealth,
+  bool boss = false,
+}) =>
     !boss && health > 0 && health < maxHealth * executeShare;
 
 /// Under this share of its health, a foe that isn't a boss may flee, at

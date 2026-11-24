@@ -26,8 +26,10 @@ List<String> joinNodeIdsOf(Map<String, dynamic>? record) => [
 /// ([current]). Not the story's visited set, which a loaded save inherits
 /// from the run before it (v1.608: Vica joined a save from before her
 /// scene).
-Set<String> walkedScenes(List<String> history, String current) =>
-    {...history, current};
+Set<String> walkedScenes(List<String> history, String current) => {
+      ...history,
+      current,
+    };
 
 /// The story's companions due once the story has reached [visited]: those
 /// of [companions] given by the story, one of whose join scenes is in

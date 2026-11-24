@@ -3,7 +3,10 @@ part of 'player_session_provider.dart';
 
 mixin _SkillsCombatActions on _SessionNotifierBase {
   Future<void> assignSkillToDiceFace(
-      String diceId, int faceIndex, String skillId) async {
+    String diceId,
+    int faceIndex,
+    String skillId,
+  ) async {
     final updated = <String, Map<String, String>>{
       for (final entry in state.diceSkillAssignments.entries)
         entry.key: Map<String, String>.from(entry.value),
@@ -32,8 +35,10 @@ mixin _SkillsCombatActions on _SessionNotifierBase {
   /// fight a tier higher (see skill_tree.dart). No-op when a branch is
   /// already mastered or the essence is short; the caller checks the
   /// branch is complete.
-  Future<void> masterBranch(String branchId,
-      {int cost = branchMasteryEssenceCost}) async {
+  Future<void> masterBranch(
+    String branchId, {
+    int cost = branchMasteryEssenceCost,
+  }) async {
     if (state.masteredBranchId.isNotEmpty || state.skillEssence < cost) return;
     state = state.copyWith(
       masteredBranchId: branchId,
@@ -83,10 +88,7 @@ mixin _SkillsCombatActions on _SessionNotifierBase {
     ];
     final newTiers = {...state.skillTiers}
       ..removeWhere((id, _) => inputSkillIds.contains(id));
-    state = state.copyWith(
-      unlockedSkillIds: newUnlocked,
-      skillTiers: newTiers,
-    );
+    state = state.copyWith(unlockedSkillIds: newUnlocked, skillTiers: newTiers);
     await _persist();
   }
 
@@ -178,7 +180,8 @@ mixin _SkillsCombatActions on _SessionNotifierBase {
   Future<void> consumeItem(String itemId) async {
     if (!state.inventoryItemIds.contains(itemId)) return;
     state = state.copyWith(
-        inventoryItemIds: [...state.inventoryItemIds]..remove(itemId));
+      inventoryItemIds: [...state.inventoryItemIds]..remove(itemId),
+    );
     await _persist();
   }
 
@@ -261,8 +264,12 @@ mixin _SkillsCombatActions on _SessionNotifierBase {
         'perception': s.perception,
       };
       final level = s.level - levels + i + 1;
-      final gains = patronLevelGains(s.politics,
-          level: level, stats: stats, openHand: bannerRaisedIn(s.flags));
+      final gains = patronLevelGains(
+        s.politics,
+        level: level,
+        stats: stats,
+        openHand: bannerRaisedIn(s.flags),
+      );
       if (gains.stats.isEmpty && gains.maxHealth == 0) continue;
       // The ledger tells the patron's own gift from the open hand's point.
       final patron = statPatron(s.politics);
@@ -271,12 +278,21 @@ mixin _SkillsCombatActions on _SessionNotifierBase {
         for (final e in gains.stats.entries)
           e.key: e.value - (own.stats[e.key] ?? 0),
       }..removeWhere((_, v) => v == 0);
-      s = s.withSourcedGains(ledgerPatron, patron, own.stats,
-          maxHealth: gains.maxHealth);
+      s = s.withSourcedGains(
+        ledgerPatron,
+        patron,
+        own.stats,
+        maxHealth: gains.maxHealth,
+      );
       s = s.withSourcedGains(ledgerPatron, openHandSourceId, openHand);
       s = s.copyWith(
-        politics: logPatronGains(s.politics, statPatron(s.politics), gains,
-            chapter: _politicsChapter(null), day: s.day),
+        politics: logPatronGains(
+          s.politics,
+          statPatron(s.politics),
+          gains,
+          chapter: _politicsChapter(null),
+          day: s.day,
+        ),
       );
     }
     return s;
@@ -339,8 +355,11 @@ mixin _SkillsCombatActions on _SessionNotifierBase {
     // a looted tome is read on the spot (see [tomeGrantFor]); everything
     // else is carried in the inventory (lootGrantOf, which the spoils
     // sheet's lootChanges reads too).
-    final grant =
-        lootGrantOf(itemsGained, items, knownSpellIds: state.knownSpellIds);
+    final grant = lootGrantOf(
+      itemsGained,
+      items,
+      knownSpellIds: state.knownSpellIds,
+    );
     final carried = grant.carried;
     final spellsLearned = grant.spellsLearned;
     final tomePicks = [...state.tomePicks, ...grant.tomePickIds];
@@ -368,10 +387,7 @@ mixin _SkillsCombatActions on _SessionNotifierBase {
         : (enemyId == null || enemyId.isEmpty ? const <String>[] : [enemyId]);
     var newKillCounts = state.enemyKillCounts;
     for (final id in idsToCredit) {
-      newKillCounts = {
-        ...newKillCounts,
-        id: (newKillCounts[id] ?? 0) + 1,
-      };
+      newKillCounts = {...newKillCounts, id: (newKillCounts[id] ?? 0) + 1};
     }
 
     state = state.copyWith(
@@ -500,7 +516,9 @@ mixin _SkillsCombatActions on _SessionNotifierBase {
       activeTitleId: '',
       swornBoonIds: const [],
       diceSkillAssignments: PlayerSessionNotifier._starterAssignmentsByDie(
-          starterAssignments, startingDiceIdFor(profession)),
+        starterAssignments,
+        startingDiceIdFor(profession),
+      ),
       knownSpellIds: startingSpellIdsFor(profession),
       mana: state.maxMana,
       heldSigns: const [],

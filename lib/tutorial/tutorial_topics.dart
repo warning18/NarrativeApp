@@ -17,136 +17,186 @@ class TutorialStep {
 /// player reaches it (see TutorialTrigger) and can be played again from
 /// the Tutorials list in the Other tab.
 enum TutorialTopic {
-  story(Icons.menu_book, homeTab: 0, steps: [
-    TutorialStep('tut_story_1'),
-    TutorialStep('tut_story_2', target: 'home.chapter'),
-    TutorialStep('tut_story_3', target: 'story.stats'),
-    TutorialStep('tut_story_4', target: 'story.text'),
-    TutorialStep('tut_story_5', target: 'story.choices'),
-    TutorialStep('tut_story_7', target: 'home.map'),
-    TutorialStep('tut_story_8', target: 'home.nav'),
-  ]),
+  story(
+    Icons.menu_book,
+    homeTab: 0,
+    steps: [
+      TutorialStep('tut_story_1'),
+      TutorialStep('tut_story_2', target: 'home.chapter'),
+      TutorialStep('tut_story_3', target: 'story.stats'),
+      TutorialStep('tut_story_4', target: 'story.text'),
+      TutorialStep('tut_story_5', target: 'story.choices'),
+      TutorialStep('tut_story_7', target: 'home.map'),
+      TutorialStep('tut_story_8', target: 'home.nav'),
+    ],
+  ),
   // The Journey tab (home tab 4, see journeyTabIndex): the story on a map.
-  journey(Icons.alt_route, homeTab: 4, steps: [
-    TutorialStep('tut_journey_1'),
-    TutorialStep('tut_journey_2', target: 'journey.scene'),
-    TutorialStep('tut_journey_3', target: 'journey.chart', optional: true),
-    TutorialStep('tut_journey_4', target: 'journey.pick', optional: true),
-    TutorialStep('tut_journey_5', target: 'home.nav'),
-  ]),
-  character(Icons.person_outline, homeTab: 1, steps: [
-    TutorialStep('tut_character_1', target: 'character.header'),
-    TutorialStep('tut_character_2', target: 'character.alignment'),
-    TutorialStep('tut_character_3', target: 'character.abilities'),
-    TutorialStep('tut_character_4', target: 'character.pages'),
-  ]),
-  camp(Icons.local_fire_department_outlined, homeTab: 2, steps: [
-    // Before it is built, the harbour comes first (see harbour.dart).
-    TutorialStep('tut_camp_harbour', target: 'camp.harbour', optional: true),
-    TutorialStep('tut_camp_0', target: 'camp.next', optional: true),
-    TutorialStep('tut_camp_6', target: 'camp.road'),
-    TutorialStep('tut_camp_1', target: 'camp.town'),
-    TutorialStep('tut_camp_2', target: 'camp.tray', optional: true),
-    TutorialStep('tut_camp_3', target: 'camp.boat', optional: true),
-    TutorialStep('tut_camp_4', target: 'camp.roster'),
-    TutorialStep('tut_camp_5', target: 'camp.sail'),
-  ]),
-  other(Icons.more_horiz, homeTab: 3, steps: [
-    TutorialStep('tut_other_1', target: 'other.saves'),
-    TutorialStep('tut_other_2', target: 'other.achievements'),
-    TutorialStep('tut_other_3', target: 'other.sections'),
-    TutorialStep('tut_other_4', target: 'other.tutorials'),
-  ]),
-  map(Icons.map_outlined, steps: [
-    TutorialStep('tut_map_1', target: 'map.chart'),
-    TutorialStep('tut_map_2', target: 'map.controls'),
-    TutorialStep('tut_map_3', target: 'map.chapters'),
-  ]),
-  skills(Icons.auto_awesome, steps: [
-    TutorialStep('tut_skills_1', target: 'skills.points'),
-    TutorialStep('tut_skills_5', target: 'skills.views'),
-    TutorialStep('tut_skills_2', target: 'skills.list'),
-    TutorialStep('tut_skills_3', target: 'skills.mine'),
-  ]),
-  dice(Icons.casino_outlined, steps: [
-    TutorialStep('tut_dice_1', target: 'dice.choice', optional: true),
-    TutorialStep('tut_dice_2', target: 'dice.faces'),
-    TutorialStep('tut_dice_3', target: 'dice.skills', optional: true),
-  ]),
-  inventory(Icons.backpack_outlined, steps: [
-    TutorialStep('tut_inventory_1', target: 'inventory.body'),
-    TutorialStep('tut_inventory_2', target: 'inventory.compare'),
-  ]),
-  levelUp(Icons.trending_up, steps: [
-    TutorialStep('tut_levelUp_1', target: 'levelUp.points'),
-    TutorialStep('tut_levelUp_2', target: 'levelUp.stats'),
-  ]),
+  journey(
+    Icons.alt_route,
+    homeTab: 4,
+    steps: [
+      TutorialStep('tut_journey_1'),
+      TutorialStep('tut_journey_2', target: 'journey.scene'),
+      TutorialStep('tut_journey_3', target: 'journey.chart', optional: true),
+      TutorialStep('tut_journey_4', target: 'journey.pick', optional: true),
+      TutorialStep('tut_journey_5', target: 'home.nav'),
+    ],
+  ),
+  character(
+    Icons.person_outline,
+    homeTab: 1,
+    steps: [
+      TutorialStep('tut_character_1', target: 'character.header'),
+      TutorialStep('tut_character_2', target: 'character.alignment'),
+      TutorialStep('tut_character_3', target: 'character.abilities'),
+      TutorialStep('tut_character_4', target: 'character.pages'),
+    ],
+  ),
+  camp(
+    Icons.local_fire_department_outlined,
+    homeTab: 2,
+    steps: [
+      // Before it is built, the harbour comes first (see harbour.dart).
+      TutorialStep('tut_camp_harbour', target: 'camp.harbour', optional: true),
+      TutorialStep('tut_camp_0', target: 'camp.next', optional: true),
+      TutorialStep('tut_camp_6', target: 'camp.road'),
+      TutorialStep('tut_camp_1', target: 'camp.town'),
+      TutorialStep('tut_camp_2', target: 'camp.tray', optional: true),
+      TutorialStep('tut_camp_3', target: 'camp.boat', optional: true),
+      TutorialStep('tut_camp_4', target: 'camp.roster'),
+      TutorialStep('tut_camp_5', target: 'camp.sail'),
+    ],
+  ),
+  other(
+    Icons.more_horiz,
+    homeTab: 3,
+    steps: [
+      TutorialStep('tut_other_1', target: 'other.saves'),
+      TutorialStep('tut_other_2', target: 'other.achievements'),
+      TutorialStep('tut_other_3', target: 'other.sections'),
+      TutorialStep('tut_other_4', target: 'other.tutorials'),
+    ],
+  ),
+  map(
+    Icons.map_outlined,
+    steps: [
+      TutorialStep('tut_map_1', target: 'map.chart'),
+      TutorialStep('tut_map_2', target: 'map.controls'),
+      TutorialStep('tut_map_3', target: 'map.chapters'),
+    ],
+  ),
+  skills(
+    Icons.auto_awesome,
+    steps: [
+      TutorialStep('tut_skills_1', target: 'skills.points'),
+      TutorialStep('tut_skills_5', target: 'skills.views'),
+      TutorialStep('tut_skills_2', target: 'skills.list'),
+      TutorialStep('tut_skills_3', target: 'skills.mine'),
+    ],
+  ),
+  dice(
+    Icons.casino_outlined,
+    steps: [
+      TutorialStep('tut_dice_1', target: 'dice.choice', optional: true),
+      TutorialStep('tut_dice_2', target: 'dice.faces'),
+      TutorialStep('tut_dice_3', target: 'dice.skills', optional: true),
+    ],
+  ),
+  inventory(
+    Icons.backpack_outlined,
+    steps: [
+      TutorialStep('tut_inventory_1', target: 'inventory.body'),
+      TutorialStep('tut_inventory_2', target: 'inventory.compare'),
+    ],
+  ),
+  levelUp(
+    Icons.trending_up,
+    steps: [
+      TutorialStep('tut_levelUp_1', target: 'levelUp.points'),
+      TutorialStep('tut_levelUp_2', target: 'levelUp.stats'),
+    ],
+  ),
   // The first offer from the clans (see offer_dialog.dart; the topic was
   // the first sign offer's until v1.194): who comes, the cards and the
   // standing they move, and what becomes of signs.
-  signs(Icons.draw_outlined, steps: [
-    TutorialStep('tut_signs_1', target: 'signs.patron'),
-    TutorialStep('tut_signs_2', target: 'signs.cards'),
-    TutorialStep('tut_signs_3'),
-  ]),
-  fight(Icons.sports_martial_arts, steps: [
-    TutorialStep('tut_fight_1'),
-    TutorialStep('tut_fight_2', target: 'fight.dice'),
-    TutorialStep('tut_fight_3', target: 'fight.enemies'),
-    TutorialStep('tut_fight_4', target: 'fight.party'),
-    TutorialStep('tut_fight_5', target: 'fight.actions'),
-    TutorialStep('tut_fight_6', target: 'fight.top'),
-  ]),
-  skillChallenge(Icons.casino, steps: [
-    TutorialStep('tut_skillChallenge_1', target: 'challenge.die'),
-    TutorialStep('tut_skillChallenge_2', target: 'challenge.track'),
-  ]),
+  signs(
+    Icons.draw_outlined,
+    steps: [
+      TutorialStep('tut_signs_1', target: 'signs.patron'),
+      TutorialStep('tut_signs_2', target: 'signs.cards'),
+      TutorialStep('tut_signs_3'),
+    ],
+  ),
+  fight(
+    Icons.sports_martial_arts,
+    steps: [
+      TutorialStep('tut_fight_1'),
+      TutorialStep('tut_fight_2', target: 'fight.dice'),
+      TutorialStep('tut_fight_3', target: 'fight.enemies'),
+      TutorialStep('tut_fight_4', target: 'fight.party'),
+      TutorialStep('tut_fight_5', target: 'fight.actions'),
+      TutorialStep('tut_fight_6', target: 'fight.top'),
+    ],
+  ),
+  skillChallenge(
+    Icons.casino,
+    steps: [
+      TutorialStep('tut_skillChallenge_1', target: 'challenge.die'),
+      TutorialStep('tut_skillChallenge_2', target: 'challenge.track'),
+    ],
+  ),
   // The Harbour, where the Rusty Eel is refitted.
-  boat(Icons.anchor, steps: [
-    TutorialStep('tut_boat_1'),
-    TutorialStep('tut_boat_2'),
-  ]),
-  voyage(Icons.directions_boat_outlined, steps: [
-    TutorialStep('tut_voyage_1'),
-    TutorialStep('tut_voyage_2', target: 'voyage.hull'),
-    TutorialStep('tut_voyage_3', target: 'voyage.choices'),
-    TutorialStep('tut_voyage_4', target: 'voyage.choices'),
-  ]),
+  boat(
+    Icons.anchor,
+    steps: [TutorialStep('tut_boat_1'), TutorialStep('tut_boat_2')],
+  ),
+  voyage(
+    Icons.directions_boat_outlined,
+    steps: [
+      TutorialStep('tut_voyage_1'),
+      TutorialStep('tut_voyage_2', target: 'voyage.hull'),
+      TutorialStep('tut_voyage_3', target: 'voyage.choices'),
+      TutorialStep('tut_voyage_4', target: 'voyage.choices'),
+    ],
+  ),
   // Never played on its own: a ship battle teaches itself with one-time
   // tips as each rule comes up (see ShipBattlePanel). Played from the
   // Tutorials list, it sums the rules up and brings those tips back for
   // the next battle (see playTutorial).
-  shipBattle(Icons.sailing, steps: [
-    TutorialStep('tut_shipBattle_1'),
-    TutorialStep('tut_shipBattle_2'),
-    TutorialStep('tut_shipBattle_3'),
-    TutorialStep('tut_shipBattle_4'),
-    TutorialStep('tut_shipBattle_5'),
-    TutorialStep('tut_shipBattle_6'),
-  ]),
+  shipBattle(
+    Icons.sailing,
+    steps: [
+      TutorialStep('tut_shipBattle_1'),
+      TutorialStep('tut_shipBattle_2'),
+      TutorialStep('tut_shipBattle_3'),
+      TutorialStep('tut_shipBattle_4'),
+      TutorialStep('tut_shipBattle_5'),
+      TutorialStep('tut_shipBattle_6'),
+    ],
+  ),
   // A land crossing (land_crossing.dart): first met leaving the wreck of
   // the Lark.
-  landCrossing(Icons.hiking, steps: [
-    TutorialStep('tut_landCrossing_1'),
-    TutorialStep('tut_landCrossing_2', target: 'crossing.health'),
-  ]),
-  expedition(Icons.explore_outlined, steps: [
-    TutorialStep('tut_expedition_1'),
-    TutorialStep('tut_expedition_2'),
-  ]),
-  town(Icons.cottage_outlined, steps: [
-    TutorialStep('tut_town_1'),
-  ]),
-  shop(Icons.storefront_outlined, steps: [
-    TutorialStep('tut_shop_1'),
-    TutorialStep('tut_shop_2'),
-  ]),
-  journal(Icons.auto_stories_outlined, steps: [
-    TutorialStep('tut_journal_1'),
-  ]),
-  achievements(Icons.emoji_events_outlined, steps: [
-    TutorialStep('tut_achievements_1'),
-  ]);
+  landCrossing(
+    Icons.hiking,
+    steps: [
+      TutorialStep('tut_landCrossing_1'),
+      TutorialStep('tut_landCrossing_2', target: 'crossing.health'),
+    ],
+  ),
+  expedition(
+    Icons.explore_outlined,
+    steps: [TutorialStep('tut_expedition_1'), TutorialStep('tut_expedition_2')],
+  ),
+  town(Icons.cottage_outlined, steps: [TutorialStep('tut_town_1')]),
+  shop(
+    Icons.storefront_outlined,
+    steps: [TutorialStep('tut_shop_1'), TutorialStep('tut_shop_2')],
+  ),
+  journal(Icons.auto_stories_outlined, steps: [TutorialStep('tut_journal_1')]),
+  achievements(
+    Icons.emoji_events_outlined,
+    steps: [TutorialStep('tut_achievements_1')],
+  );
 
   const TutorialTopic(this.icon, {required this.steps, this.homeTab});
 

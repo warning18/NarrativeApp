@@ -36,16 +36,20 @@ class BiomeBackdropPainter extends CustomPainter {
 
   @override
   void paint(Canvas canvas, Size size) {
-    final area = Rect.fromLTWH(-_margin, -_margin, size.width + _margin * 2,
-        size.height + _margin * 2);
+    final area = Rect.fromLTWH(
+      -_margin,
+      -_margin,
+      size.width + _margin * 2,
+      size.height + _margin * 2,
+    );
     final dark = land.computeLuminance() < 0.2;
     final palette = biome.palette;
     // The wash: the biome's ground laid thin over the look's land.
     canvas.drawRect(
-        area,
-        Paint()
-          ..color =
-              _tone(palette.ground).withValues(alpha: dark ? 0.10 : 0.16));
+      area,
+      Paint()
+        ..color = _tone(palette.ground).withValues(alpha: dark ? 0.10 : 0.16),
+    );
     final ink = _BackdropInk(
       line: _tone(dark ? palette.accent : palette.detail)
           .withValues(alpha: dark ? 0.20 : 0.30),
@@ -89,8 +93,9 @@ class BiomeBackdropPainter extends CustomPainter {
     ..strokeJoin = StrokeJoin.round;
 
   static Offset _at(Rect area, math.Random rng) => Offset(
-      area.left + rng.nextDouble() * area.width,
-      area.top + rng.nextDouble() * area.height);
+        area.left + rng.nextDouble() * area.width,
+        area.top + rng.nextDouble() * area.height,
+      );
 
   static int _count(Rect area, double per) =>
       math.max(4, (area.width * area.height / per).round());
@@ -127,17 +132,19 @@ class BiomeBackdropPainter extends CustomPainter {
         final length = 70 + rng.nextDouble() * 90;
         final rise = 8 + rng.nextDouble() * 10;
         final dy = y + (rng.nextDouble() - 0.5) * 14;
-        final crest =
-            Offset(x + length * (0.35 + rng.nextDouble() * 0.3), dy - rise);
+        final crest = Offset(
+          x + length * (0.35 + rng.nextDouble() * 0.3),
+          dy - rise,
+        );
         final top = Path()
           ..moveTo(x, dy)
           ..quadraticBezierTo(crest.dx, crest.dy, x + length, dy);
         canvas.drawPath(
-            Path.from(top)
-              ..quadraticBezierTo(
-                  crest.dx + length * 0.1, dy - rise * 0.2, x, dy)
-              ..close(),
-            lee);
+          Path.from(top)
+            ..quadraticBezierTo(crest.dx + length * 0.1, dy - rise * 0.2, x, dy)
+            ..close(),
+          lee,
+        );
         canvas.drawPath(top, ridge);
         x += length + 10 + rng.nextDouble() * 40;
       }
@@ -191,11 +198,12 @@ class BiomeBackdropPainter extends CustomPainter {
         final w = 14 + rng.nextDouble() * 10;
         final dy = y + (rng.nextDouble() - 0.5) * 6;
         canvas.drawPath(
-            Path()
-              ..moveTo(x, dy)
-              ..quadraticBezierTo(x + w / 4, dy - 4, x + w / 2, dy)
-              ..quadraticBezierTo(x + w * 3 / 4, dy + 4, x + w, dy),
-            crest);
+          Path()
+            ..moveTo(x, dy)
+            ..quadraticBezierTo(x + w / 4, dy - 4, x + w / 2, dy)
+            ..quadraticBezierTo(x + w * 3 / 4, dy + 4, x + w, dy),
+          crest,
+        );
         x += w + 18 + rng.nextDouble() * 30;
       }
     }
@@ -210,11 +218,18 @@ class BiomeBackdropPainter extends CustomPainter {
       final b = a + Offset(length, length * 0.35);
       final bend = (rng.nextDouble() - 0.5) * 24;
       canvas.drawPath(
-          Path()
-            ..moveTo(a.dx, a.dy)
-            ..cubicTo(a.dx + length * 0.3, a.dy + bend, b.dx - length * 0.3,
-                b.dy - bend, b.dx, b.dy),
-          drift);
+        Path()
+          ..moveTo(a.dx, a.dy)
+          ..cubicTo(
+            a.dx + length * 0.3,
+            a.dy + bend,
+            b.dx - length * 0.3,
+            b.dy - bend,
+            b.dx,
+            b.dy,
+          ),
+        drift,
+      );
     }
     final speck = Paint()..color = ink.line;
     for (var i = 0; i < _count(area, 500); i++) {
@@ -284,11 +299,13 @@ class BiomeBackdropPainter extends CustomPainter {
     for (var i = 0; i < _count(area, 16000); i++) {
       final c = _at(area, rng);
       canvas.drawOval(
-          Rect.fromCenter(
-              center: c,
-              width: 30 + rng.nextDouble() * 40,
-              height: 10 + rng.nextDouble() * 12),
-          pool);
+        Rect.fromCenter(
+          center: c,
+          width: 30 + rng.nextDouble() * 40,
+          height: 10 + rng.nextDouble() * 12,
+        ),
+        pool,
+      );
     }
     final reed = _stroke(ink.line, 1);
     for (var i = 0; i < _count(area, 2200); i++) {
@@ -299,11 +316,16 @@ class BiomeBackdropPainter extends CustomPainter {
         final h = 8 + rng.nextDouble() * 9;
         final foot = base.translate(s * 1.6 - stems * 0.8, 0);
         canvas.drawPath(
-            Path()
-              ..moveTo(foot.dx, foot.dy)
-              ..quadraticBezierTo(foot.dx + lean * 0.3, foot.dy - h * 0.6,
-                  foot.dx + lean, foot.dy - h),
-            reed);
+          Path()
+            ..moveTo(foot.dx, foot.dy)
+            ..quadraticBezierTo(
+              foot.dx + lean * 0.3,
+              foot.dy - h * 0.6,
+              foot.dx + lean,
+              foot.dy - h,
+            ),
+          reed,
+        );
       }
     }
   }
@@ -318,16 +340,29 @@ class BiomeBackdropPainter extends CustomPainter {
       final h = 8 + rng.nextDouble() * 8;
       final mound = Path()
         ..moveTo(c.dx - w / 2, c.dy)
-        ..cubicTo(c.dx - w / 4, c.dy - h * 1.4, c.dx + w / 5, c.dy - h * 1.2,
-            c.dx + w / 2, c.dy)
+        ..cubicTo(
+          c.dx - w / 4,
+          c.dy - h * 1.4,
+          c.dx + w / 5,
+          c.dy - h * 1.2,
+          c.dx + w / 2,
+          c.dy,
+        )
         ..close();
       canvas.drawPath(mound, drift);
       canvas.drawPath(
-          Path()
-            ..moveTo(c.dx - w / 2, c.dy)
-            ..cubicTo(c.dx - w / 4, c.dy - h * 1.4, c.dx + w / 5,
-                c.dy - h * 1.2, c.dx + w / 2, c.dy),
-          rim);
+        Path()
+          ..moveTo(c.dx - w / 2, c.dy)
+          ..cubicTo(
+            c.dx - w / 4,
+            c.dy - h * 1.4,
+            c.dx + w / 5,
+            c.dy - h * 1.2,
+            c.dx + w / 2,
+            c.dy,
+          ),
+        rim,
+      );
     }
     final flake = Paint()..color = ink.light;
     for (var i = 0; i < _count(area, 700); i++) {
@@ -348,8 +383,9 @@ class BiomeBackdropPainter extends CustomPainter {
           for (var k = 0; k < 3; k++)
             c +
                 Offset.fromDirection(
-                    turn + k * 2.1 + (rng.nextDouble() - 0.5) * 0.6,
-                    r * (k == 0 ? 1 : 0.45 + rng.nextDouble() * 0.3)),
+                  turn + k * 2.1 + (rng.nextDouble() - 0.5) * 0.6,
+                  r * (k == 0 ? 1 : 0.45 + rng.nextDouble() * 0.3),
+                ),
         ], true);
       canvas.drawPath(shard, fill);
       canvas.drawPath(shard, edge);

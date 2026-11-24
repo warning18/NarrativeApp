@@ -88,7 +88,9 @@ String personalizeNarration(
       .replaceAll('{name}', displayName)
       .replaceAll('{race}', _raceNounFor(raceId, french: french))
       .replaceAll(
-          '{profession}', _professionNounFor(professionId, french: french))
+        '{profession}',
+        _professionNounFor(professionId, french: french),
+      )
       .replaceAll('{companion}', companion)
       .replaceAll('{sigil}', powerMediumFor(raceId, french: french));
 }
@@ -106,17 +108,17 @@ const Map<String, ({String en, String fr})> _speakerLabels = {
   'Penitent': (en: 'The Penitent Inquisitor', fr: "L'Inquisiteur pénitent"),
   'Lantern-keeper': (
     en: 'The Lantern-keeper',
-    fr: 'La Gardienne de la Lanterne'
+    fr: 'La Gardienne de la Lanterne',
   ),
   'Legate': (en: 'The Legate', fr: 'Le Légat'),
   'Ghrem': (en: 'Ghrem Stonebrow', fr: 'Ghrem Stonebrow'),
   'Headman': (
     en: 'The headman of Wrack’s End',
-    fr: 'Le chef de Bout-du-Varech'
+    fr: 'Le chef de Bout-du-Varech',
   ),
   'Helmsman': (
     en: 'The flagship’s helmsman',
-    fr: 'Le timonier du vaisseau amiral'
+    fr: 'Le timonier du vaisseau amiral',
   ),
   'Widow': (en: 'The smith’s widow', fr: 'La veuve du forgeron'),
   'Eldest': (en: 'The eldest of Greyhithe', fr: 'L’aînée de Grisegrève'),

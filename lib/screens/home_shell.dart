@@ -162,8 +162,10 @@ class _HomeShellState extends ConsumerState<HomeShell> {
     // The coast moves with the days (v1.195): each new day of the story
     // fires the politics events it brings (see politics_events.dart); their
     // news waits at the camp and in the journal.
-    ref.listen<int>(playerSessionProvider.select((s) => s.day),
-        (previous, next) {
+    ref.listen<int>(playerSessionProvider.select((s) => s.day), (
+      previous,
+      next,
+    ) {
       if (previous == null || next <= previous) return;
       if (!ref.read(playerSessionProvider.notifier).isLoaded ||
           !ref.read(storyDataProvider).hasValue) {
@@ -173,8 +175,10 @@ class _HomeShellState extends ConsumerState<HomeShell> {
     });
     // A scene entered however the story got there (a walk from the camp, a
     // jump) moves the coast once, by its politics on entry.
-    ref.listen<String>(storyPlayProvider.select((s) => s.currentNodeId),
-        (previous, next) {
+    ref.listen<String>(storyPlayProvider.select((s) => s.currentNodeId), (
+      previous,
+      next,
+    ) {
       if (previous == null || previous == next) return;
       if (!ref.read(playerSessionProvider.notifier).isLoaded) return;
       applyEnterPolitics(ref, next);
@@ -258,42 +262,61 @@ class _HomeShellState extends ConsumerState<HomeShell> {
     final List<NavigationDestination> destinations = isEditMode
         ? [
             NavigationDestination(
-                icon: const Icon(Icons.menu_book), label: tr(ref, 'nav_story')),
+              icon: const Icon(Icons.menu_book),
+              label: tr(ref, 'nav_story'),
+            ),
             NavigationDestination(
-                icon: const Icon(Icons.alt_route),
-                label: tr(ref, 'nav_journey')),
+              icon: const Icon(Icons.alt_route),
+              label: tr(ref, 'nav_journey'),
+            ),
             NavigationDestination(
-                icon: const Icon(Icons.videogame_asset),
-                label: tr(ref, 'nav_play')),
+              icon: const Icon(Icons.videogame_asset),
+              label: tr(ref, 'nav_play'),
+            ),
             NavigationDestination(
-                icon: const Icon(Icons.storage), label: tr(ref, 'nav_data')),
+              icon: const Icon(Icons.storage),
+              label: tr(ref, 'nav_data'),
+            ),
           ]
         : [
             for (final tab in visibleTabs)
               switch (tab) {
                 0 => NavigationDestination(
                     icon: const Icon(Icons.menu_book),
-                    label: tr(ref, 'nav_story')),
+                    label: tr(ref, 'nav_story'),
+                  ),
                 journeyTabIndex => NavigationDestination(
                     icon: const Icon(Icons.alt_route),
-                    label: tr(ref, 'nav_journey')),
-                1 => dotted(Icons.person_outline, tr(ref, 'nav_character'),
+                    label: tr(ref, 'nav_journey'),
+                  ),
+                1 => dotted(
+                    Icons.person_outline,
+                    tr(ref, 'nav_character'),
                     show: badges.character,
-                    reason: tr(ref, 'badge_points_waiting')),
+                    reason: tr(ref, 'badge_points_waiting'),
+                  ),
                 2 => atCampTab
-                    ? dotted(Icons.local_fire_department_outlined,
+                    ? dotted(
+                        Icons.local_fire_department_outlined,
                         tr(ref, 'nav_camp'),
                         show: badges.camp,
                         reason: tr(
-                            ref,
-                            badges.campMerge
-                                ? 'badge_merge_ready'
-                                : 'badge_house_affordable'))
+                          ref,
+                          badges.campMerge
+                              ? 'badge_merge_ready'
+                              : 'badge_house_affordable',
+                        ),
+                      )
                     : NavigationDestination(
                         icon: const Icon(Icons.sailing_outlined),
-                        label: tr(ref, 'nav_ship')),
-                _ => dotted(Icons.more_horiz, tr(ref, 'nav_other'),
-                    show: badges.other, reason: tr(ref, 'badge_quest_ready')),
+                        label: tr(ref, 'nav_ship'),
+                      ),
+                _ => dotted(
+                    Icons.more_horiz,
+                    tr(ref, 'nav_other'),
+                    show: badges.other,
+                    reason: tr(ref, 'badge_quest_ready'),
+                  ),
               },
           ];
 
@@ -304,18 +327,23 @@ class _HomeShellState extends ConsumerState<HomeShell> {
         window.width >= _wideShellWidth && window.height >= _wideShellHeight;
     // The clans' offers open on their own while one waits (never later).
     final pages = OfferAutopilot(
-        child: Stack(
-      fit: StackFit.expand,
-      children: [
-        IndexedStack(index: index, children: screens),
-        // The screen's edges throb red while the hero's health is low.
-        if (ref.watch(playerSessionProvider.select((s) =>
-            s.characterName.isNotEmpty &&
-            s.maxHealth > 0 &&
-            s.currentHealth * 10 <= s.maxHealth * 3)))
-          const LowHealthEdge(),
-      ],
-    ));
+      child: Stack(
+        fit: StackFit.expand,
+        children: [
+          IndexedStack(index: index, children: screens),
+          // The screen's edges throb red while the hero's health is low.
+          if (ref.watch(
+            playerSessionProvider.select(
+              (s) =>
+                  s.characterName.isNotEmpty &&
+                  s.maxHealth > 0 &&
+                  s.currentHealth * 10 <= s.maxHealth * 3,
+            ),
+          ))
+            const LowHealthEdge(),
+        ],
+      ),
+    );
     final rail = TutorialTarget(
       id: 'home.nav',
       child: NavigationRail(
@@ -342,7 +370,8 @@ class _HomeShellState extends ConsumerState<HomeShell> {
         ? IconButton.styleFrom(
             minimumSize: const Size(36, 40),
             padding: EdgeInsets.zero,
-            tapTargetSize: MaterialTapTargetSize.shrinkWrap)
+            tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+          )
         : null;
     return Scaffold(
       appBar: AppBar(
@@ -360,7 +389,9 @@ class _HomeShellState extends ConsumerState<HomeShell> {
             : null,
         title: !isEditMode && (index == 0 || index == journeyTabIndex)
             ? TutorialTarget(
-                id: 'home.chapter', child: _ChapterTitle(fallback: titles[0]))
+                id: 'home.chapter',
+                child: _ChapterTitle(fallback: titles[0]),
+              )
             : Text(titles[index]),
         actions: [
           // Edit Mode maps the story's scenes and paths; play mode shows
@@ -375,9 +406,9 @@ class _HomeShellState extends ConsumerState<HomeShell> {
               child: IconButton(
                 style: barButton,
                 key: const Key('home_full_map'),
-                icon: Icon(isEditMode
-                    ? Icons.account_tree_outlined
-                    : Icons.map_outlined),
+                icon: Icon(
+                  isEditMode ? Icons.account_tree_outlined : Icons.map_outlined,
+                ),
                 tooltip: tr(ref, isEditMode ? 'title_map' : 'world_map_title'),
                 onPressed: () => Navigator.of(context).push(
                   MaterialPageRoute(
@@ -396,9 +427,9 @@ class _HomeShellState extends ConsumerState<HomeShell> {
               key: const Key('home_world_map'),
               icon: const Icon(Icons.map_outlined),
               tooltip: tr(ref, 'world_map_title'),
-              onPressed: () => Navigator.of(context).push(
-                MaterialPageRoute(builder: (_) => const WorldMapPage()),
-              ),
+              onPressed: () => Navigator.of(
+                context,
+              ).push(MaterialPageRoute(builder: (_) => const WorldMapPage())),
             ),
           // Clans & Politics (v1.193): standing, relations, their history
           // and the intrigues. In the story (v1.196) the same place opens
@@ -413,14 +444,18 @@ class _HomeShellState extends ConsumerState<HomeShell> {
                 children: [
                   Badge(
                     isLabelVisible: !isEditMode &&
-                        ref.watch(politicsProvider
-                            .select((p) => p.unreadNews.isNotEmpty)),
+                        ref.watch(
+                          politicsProvider.select(
+                            (p) => p.unreadNews.isNotEmpty,
+                          ),
+                        ),
                     child: const Icon(Icons.balance),
                   ),
                   const Positioned(
-                      right: -9,
-                      top: -9,
-                      child: UnlockDot(feature: GameFeature.politics)),
+                    right: -9,
+                    top: -9,
+                    child: UnlockDot(feature: GameFeature.politics),
+                  ),
                 ],
               ),
               tooltip: tr(ref, isEditMode ? 'clans_title' : 'clans_title_play'),
@@ -428,7 +463,8 @@ class _HomeShellState extends ConsumerState<HomeShell> {
                 acknowledgeOnOpen(ref, GameFeature.politics);
                 Navigator.of(context).push(
                   MaterialPageRoute(
-                      builder: (_) => ClansPoliticsScreen(play: !isEditMode)),
+                    builder: (_) => ClansPoliticsScreen(play: !isEditMode),
+                  ),
                 );
               },
             ),
@@ -450,20 +486,22 @@ class _HomeShellState extends ConsumerState<HomeShell> {
             icon: const Icon(Icons.settings),
             tooltip: tr(ref, 'settings'),
             onPressed: () {
-              Navigator.of(context).push(
-                MaterialPageRoute(builder: (_) => const SettingsScreen()),
-              );
+              Navigator.of(
+                context,
+              ).push(MaterialPageRoute(builder: (_) => const SettingsScreen()));
             },
           ),
         ],
       ),
       body: FeatureUnlockHost(
         child: wide
-            ? Row(children: [
-                rail,
-                const VerticalDivider(width: 1),
-                Expanded(child: pages)
-              ])
+            ? Row(
+                children: [
+                  rail,
+                  const VerticalDivider(width: 1),
+                  Expanded(child: pages),
+                ],
+              )
             : pages,
       ),
       bottomNavigationBar: wide
@@ -517,16 +555,20 @@ class _CampTab extends ConsumerWidget {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            PixelGlyph(PixelGlyphs.lock,
-                size: IconSize.s48, color: theme.colorScheme.onSurfaceVariant),
+            PixelGlyph(
+              PixelGlyphs.lock,
+              size: IconSize.s48,
+              color: theme.colorScheme.onSurfaceVariant,
+            ),
             const SizedBox(height: 12),
             Text(tr(ref, 'camp_title'), style: theme.textTheme.titleLarge),
             const SizedBox(height: 8),
             Text(
               tr(ref, 'camp_tab_locked_body'),
               textAlign: TextAlign.center,
-              style: theme.textTheme.bodyMedium
-                  ?.copyWith(color: theme.colorScheme.onSurfaceVariant),
+              style: theme.textTheme.bodyMedium?.copyWith(
+                color: theme.colorScheme.onSurfaceVariant,
+              ),
             ),
           ],
         ),
@@ -587,10 +629,12 @@ class _ChapterTitle extends ConsumerWidget {
                   : chapter.light,
             ),
           ),
-          Text(name,
-              maxLines: 1,
-              overflow: TextOverflow.ellipsis,
-              style: theme.appBarTheme.titleTextStyle?.copyWith(fontSize: 19)),
+          Text(
+            name,
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
+            style: theme.appBarTheme.titleTextStyle?.copyWith(fontSize: 19),
+          ),
         ],
       ),
     );

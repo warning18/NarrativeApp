@@ -77,11 +77,14 @@ AutoplayBuild planAutoplayBuild(
   int scoreOf(String itemId) {
     final item = items[itemId] as Map<String, dynamic>?;
     if (item == null) return -1;
-    final scaling = equipmentScalingBonusFor([itemId], items,
-        strength: strength,
-        dexterity: dexterity,
-        constitution: constitution,
-        intelligence: intelligence);
+    final scaling = equipmentScalingBonusFor(
+      [itemId],
+      items,
+      strength: strength,
+      dexterity: dexterity,
+      constitution: constitution,
+      intelligence: intelligence,
+    );
     return ((item['attackDamage'] as num?)?.toInt() ?? 0) +
         ((item['armor'] as num?)?.toInt() ?? 0) +
         scaling.damageBonus +
@@ -103,11 +106,13 @@ AutoplayBuild planAutoplayBuild(
     final slot = slotOf(id);
     if (slot.isEmpty || session.equippedItemIds.contains(id)) continue;
     if (session.freeCopiesOf(id, wearerId: playerWearerId) <= 0) continue;
-    if (!meetsItemStatRequirement(item,
-            strength: strength,
-            dexterity: dexterity,
-            constitution: constitution,
-            intelligence: intelligence) ||
+    if (!meetsItemStatRequirement(
+          item,
+          strength: strength,
+          dexterity: dexterity,
+          constitution: constitution,
+          intelligence: intelligence,
+        ) ||
         !meetsItemAlignment(item, session.alignmentLabel)) {
       continue;
     }
@@ -142,9 +147,7 @@ Map<String, String>? _bestFaces(
     for (var i = 0; i < faces.length; i++)
       if (isOpenSkillFace(faces[i])) i,
   ];
-  final assignments = <String, String>{
-    ...?session.diceSkillAssignments[dieId],
-  };
+  final assignments = <String, String>{...?session.diceSkillAssignments[dieId]};
   // The open Skill faces are refilled; the mana skill keeps its own.
   for (final i in open) {
     final current = assignments['$i'];
@@ -249,11 +252,14 @@ ArrivalTopUp planArrivalTopUp(
   int scoreOf(String id) {
     final item = items[id] as Map<String, dynamic>?;
     if (item == null) return -1;
-    final scaling = equipmentScalingBonusFor([id], items,
-        strength: strength,
-        dexterity: dexterity,
-        constitution: constitution,
-        intelligence: intelligence);
+    final scaling = equipmentScalingBonusFor(
+      [id],
+      items,
+      strength: strength,
+      dexterity: dexterity,
+      constitution: constitution,
+      intelligence: intelligence,
+    );
     return ((item['attackDamage'] as num?)?.toInt() ?? 0) +
         ((item['armor'] as num?)?.toInt() ?? 0) +
         scaling.damageBonus +
@@ -291,11 +297,13 @@ ArrivalTopUp planArrivalTopUp(
     if (item == null || item['isEquippable'] != true) continue;
     final slot = slotOf(id);
     if (slot.isEmpty || session.inventoryItemIds.contains(id)) continue;
-    if (!meetsItemStatRequirement(item,
-            strength: strength,
-            dexterity: dexterity,
-            constitution: constitution,
-            intelligence: intelligence) ||
+    if (!meetsItemStatRequirement(
+          item,
+          strength: strength,
+          dexterity: dexterity,
+          constitution: constitution,
+          intelligence: intelligence,
+        ) ||
         !meetsItemAlignment(item, session.alignmentLabel)) {
       continue;
     }

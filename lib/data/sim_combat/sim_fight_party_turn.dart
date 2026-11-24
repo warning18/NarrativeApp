@@ -47,13 +47,16 @@ extension _SimFightPartyTurn on _SimFight {
       c.potions--;
       potionsUsed++;
       final drink = healed(
-          HealSource.potion, _potionHeal + s.potionBonus + perks.potionBonus,
-          round: rounds + 1);
+        HealSource.potion,
+        _potionHeal + s.potionBonus + perks.potionBonus,
+        round: rounds + 1,
+      );
       // The Brimming Draught: what spills past full feeds the fire.
       if (healFeedsFire(
-          source: HealSource.potion,
-          watchfire: core == ProfessionCore.watchfire,
-          brimmingDraught: has(Spec.brimmingDraught))) {
+        source: HealSource.potion,
+        watchfire: core == ProfessionCore.watchfire,
+        brimmingDraught: has(Spec.brimmingDraught),
+      )) {
         fire = fireAfterHeal(
           fire: fire,
           healing: drink,
@@ -105,8 +108,9 @@ extension _SimFightPartyTurn on _SimFight {
       healed: (amount) => healed(HealSource.spell, amount),
       // The Watchfire: a spell's heal past full feeds the fire too.
       onSpellHeal: healFeedsFire(
-              source: HealSource.spell,
-              watchfire: core == ProfessionCore.watchfire)
+        source: HealSource.spell,
+        watchfire: core == ProfessionCore.watchfire,
+      )
           ? (heal) => fire = fireAfterHeal(
                 fire: fire,
                 healing: heal,
@@ -117,10 +121,13 @@ extension _SimFightPartyTurn on _SimFight {
           : null,
       partyBlow: ctx == null
           ? null
-          : (raw, element) => ctx.blow(raw, rounds,
-              byParty: true,
-              element: element,
-              bossFight: bossFlags.any((b) => b)),
+          : (raw, element) => ctx.blow(
+                raw,
+                rounds,
+                byParty: true,
+                element: element,
+                bossFight: bossFlags.any((b) => b),
+              ),
       ashWell: core == ProfessionCore.ashWell,
       fullWellMultiplier: has(Spec.burdenBearer) ? mods.burdenMultiplier : 1,
       fullWellHealShare: has(Spec.burdenBearer) ? mods.burdenHealShare : 0,
@@ -162,13 +169,26 @@ extension _SimFightPartyTurn on _SimFight {
     // mean is rolled again too (simFaceValue; the round's last roll kept).
     final caster = c.knownSpells.isNotEmpty;
     final mean = rerollWeakFaces
-        ? simDieValue(c.diceFaces, c.diceSkillAssignments, skills,
-            damage: c.baseDamage, caster: caster, maxHealth: c.maxHealth)
+        ? simDieValue(
+            c.diceFaces,
+            c.diceSkillAssignments,
+            skills,
+            damage: c.baseDamage,
+            caster: caster,
+            maxHealth: c.maxHealth,
+          )
         : 0.0;
     bool weak(DiceFaceResult f) =>
         rerollWeakFaces &&
-        simFaceValue(c.diceFaces, f.faceIndex, c.diceSkillAssignments, skills,
-                damage: c.baseDamage, caster: caster, maxHealth: c.maxHealth) <
+        simFaceValue(
+              c.diceFaces,
+              f.faceIndex,
+              c.diceSkillAssignments,
+              skills,
+              damage: c.baseDamage,
+              caster: caster,
+              maxHealth: c.maxHealth,
+            ) <
             mean;
     do {
       rolls++;
@@ -243,15 +263,19 @@ extension _SimFightPartyTurn on _SimFight {
     // The guard, mend and spell signs on the face's number.
     face = switch (face.type) {
       'Defend' => face.withValue(s.guardValue(face.value, bank: guardBank)),
-      'Heal' => face.withValue(s
-          .mendValue(face.value, wisdomHealBonusFor(c.wisdom), bank: mendBank)),
+      'Heal' => face.withValue(
+          s.mendValue(face.value, wisdomHealBonusFor(c.wisdom), bank: mendBank),
+        ),
       'Mana' => face.withValue(s.manaValue(face.value)),
       _ => face,
     };
     final skillId =
         face.linkedSkillID.isEmpty ? 'heavy_attack' : face.linkedSkillID;
-    var element =
-        faceHitElement(face.type, face.element, availableSkills[skillId]);
+    var element = faceHitElement(
+      face.type,
+      face.element,
+      availableSkills[skillId],
+    );
     var damageBase = c.casterDamage(items, element, itemSets: itemSets);
     if (attack || face.type == 'Skill') {
       damageBase = s.strikeBase(
@@ -356,9 +380,9 @@ extension _SimFightPartyTurn on _SimFight {
       c.mana = min(c.maxMana, c.mana + crits * mods.relicMana);
       manaGained += c.mana - before;
       c.currentHealth = min(
-          c.maxHealth,
-          c.currentHealth +
-              (c.maxHealth * mods.relicHealShare * crits).round());
+        c.maxHealth,
+        c.currentHealth + (c.maxHealth * mods.relicHealShare * crits).round(),
+      );
     }
     if (core == ProfessionCore.ashWell && result.manaGained > 0) {
       result = coreResult(
@@ -371,8 +395,13 @@ extension _SimFightPartyTurn on _SimFight {
     var dealt =
         pain ? result.damageDealt * painDamageMultiplier : result.damageDealt;
     if (ctx != null) {
-      dealt = ctx.blow(dealt, rounds,
-          byParty: true, element: element, bossFight: bossFlags.any((b) => b));
+      dealt = ctx.blow(
+        dealt,
+        rounds,
+        byParty: true,
+        element: element,
+        bossFight: bossFlags.any((b) => b),
+      );
     }
     if (pain) {
       final cost = painCost(
@@ -402,8 +431,11 @@ extension _SimFightPartyTurn on _SimFight {
       // An Armored foe shrugs off a point of an Attack face (not a Pierce).
       final struck = pierce
           ? dealt
-          : strikeDamageAfterAffixes(dealt, face.type,
-              armored: target.has(EnemyAffix.armored));
+          : strikeDamageAfterAffixes(
+              dealt,
+              face.type,
+              armored: target.has(EnemyAffix.armored),
+            );
       final landed = clash
           ? target.landHit(
               struck,
@@ -416,26 +448,34 @@ extension _SimFightPartyTurn on _SimFight {
       if (landed > 0) crowsHits++;
       if (!clash) target.health = max(0, target.health - landed);
       if (pitched && target.isAlive) {
-        target.statusEffects =
-            applyStatusEffect(target.statusEffects, pitchSlow);
+        target.statusEffects = applyStatusEffect(
+          target.statusEffects,
+          pitchSlow,
+        );
       }
       // Against an Evil foe the Vanguard's heavy blow heals; the
       // Inquisition's weakens.
       if (heavy && has(Spec.lanternVanguard)) {
         if (isEvilFoe(target.data)) {
-          c.currentHealth = min(c.maxHealth,
-              c.currentHealth + (landed * mods.vanguardEvilHeal).round());
+          c.currentHealth = min(
+            c.maxHealth,
+            c.currentHealth + (landed * mods.vanguardEvilHeal).round(),
+          );
         }
         if (mods.vanguardWeakens && target.isAlive) {
-          target.statusEffects =
-              applyStatusEffect(target.statusEffects, specWeaken);
+          target.statusEffects = applyStatusEffect(
+            target.statusEffects,
+            specWeaken,
+          );
         }
       }
       // The Fever Blade's Rot, a stack for each critical hit.
       if (has(Spec.feverBlade) && target.isAlive) {
         for (var i = 0; i < crits; i++) {
-          target.statusEffects =
-              mods.withRotOf(target.statusEffects, (landed / 2).round());
+          target.statusEffects = mods.withRotOf(
+            target.statusEffects,
+            (landed / 2).round(),
+          );
         }
       }
       // The Trail's Verdict stuns (Trapwright: the Scaffolders a second
@@ -453,10 +493,14 @@ extension _SimFightPartyTurn on _SimFight {
       }
       if (target.isAlive && firstOfRun && has(Spec.fenGuide)) {
         target.statusEffects = applyStatusEffect(
-            target.statusEffects, mods.fenPoisonFor((landed / 2).round()));
+          target.statusEffects,
+          mods.fenPoisonFor((landed / 2).round()),
+        );
         if (mods.fenSlows) {
-          target.statusEffects =
-              applyStatusEffect(target.statusEffects, specWeaken);
+          target.statusEffects = applyStatusEffect(
+            target.statusEffects,
+            specWeaken,
+          );
         }
       }
       bestHit = max(bestHit, landed);
@@ -517,10 +561,13 @@ extension _SimFightPartyTurn on _SimFight {
     // The heal rule (heal_rules.dart): the Anvil-Deaf's wall takes no Heal
     // faces; the Watchfire's heals from the die don't tire, they are its
     // fire.
-    final heal = healed(HealSource.face, result.healingDone,
-        noHealFaces:
-            mods.noHealFaces && has(Spec.briarGuard) && face.type == 'Heal',
-        round: rounds);
+    final heal = healed(
+      HealSource.face,
+      result.healingDone,
+      noHealFaces:
+          mods.noHealFaces && has(Spec.briarGuard) && face.type == 'Heal',
+      round: rounds,
+    );
     if (core == ProfessionCore.watchfire && heal > 0) {
       // Every heal from the die burns (under the Beacon, every enemy);
       // the part past full feeds the fire.
@@ -582,7 +629,9 @@ extension _SimFightPartyTurn on _SimFight {
         mods.defendFeedsFire &&
         result.blockAmount > 0) {
       fire = min(
-          (c.maxHealth * watchfireCapShare).round(), fire + result.blockAmount);
+        (c.maxHealth * watchfireCapShare).round(),
+        fire + result.blockAmount,
+      );
     }
     // A Defend face arms the guard signs, and may heal.
     if (face.type == 'Defend' && result.blockAmount > 0) {
@@ -599,10 +648,14 @@ extension _SimFightPartyTurn on _SimFight {
       final burnTarget = firstLiving();
       if (has(Spec.censerMage) && overflow > 0 && burnTarget != null) {
         burnTarget.health = max(
-            0, burnTarget.health - mods.censerBurnFor(overflow, damageBase));
+          0,
+          burnTarget.health - mods.censerBurnFor(overflow, damageBase),
+        );
         if (mods.censerWeakens && burnTarget.isAlive) {
-          burnTarget.statusEffects =
-              applyStatusEffect(burnTarget.statusEffects, specWeaken);
+          burnTarget.statusEffects = applyStatusEffect(
+            burnTarget.statusEffects,
+            specWeaken,
+          );
         }
         phasesEntered += burnTarget.advancePhases();
       }
@@ -636,8 +689,11 @@ extension _SimFightPartyTurn on _SimFight {
       a.facesPlayed[face.type] = (a.facesPlayed[face.type] ?? 0) + 1;
       final skillId =
           face.linkedSkillID.isEmpty ? 'heavy_attack' : face.linkedSkillID;
-      final element =
-          faceHitElement(face.type, face.element, a.skills[skillId]);
+      final element = faceHitElement(
+        face.type,
+        face.element,
+        a.skills[skillId],
+      );
       if (face.type == 'Skill') {
         a.skillsCast[skillId] = (a.skillsCast[skillId] ?? 0) + 1;
       }
@@ -657,21 +713,32 @@ extension _SimFightPartyTurn on _SimFight {
           ? result.damageDealt * painDamageMultiplier
           : result.damageDealt;
       if (ctx != null) {
-        dealt = ctx.blow(dealt, rounds,
-            byParty: true,
-            element: element,
-            bossFight: bossFlags.any((b) => b));
+        dealt = ctx.blow(
+          dealt,
+          rounds,
+          byParty: true,
+          element: element,
+          bossFight: bossFlags.any((b) => b),
+        );
       }
       final target = on('squad') ? _focusTarget(ens) : firstLiving();
       if (target != null && dealt > 0) {
         final pierce = face.hasKeyword(FaceKeyword.pierce);
         final struck = pierce
             ? dealt
-            : strikeDamageAfterAffixes(dealt, face.type,
-                armored: target.has(EnemyAffix.armored));
+            : strikeDamageAfterAffixes(
+                dealt,
+                face.type,
+                armored: target.has(EnemyAffix.armored),
+              );
         final landed = clash
-            ? target.landHit(struck, element, rounds,
-                pierce: pierce, react: on('reaction'))
+            ? target.landHit(
+                struck,
+                element,
+                rounds,
+                pierce: pierce,
+                react: on('reaction'),
+              )
             : target.takeHit(struck, element, pierce: pierce);
         if (!clash) target.health = max(0, target.health - landed);
         a.damageDealt += landed;
@@ -680,8 +747,10 @@ extension _SimFightPartyTurn on _SimFight {
       }
       final inflicted = result.inflictedStatus;
       if (target != null && inflicted != null && target.isAlive) {
-        target.statusEffects =
-            applyStatusEffect(target.statusEffects, inflicted);
+        target.statusEffects = applyStatusEffect(
+          target.statusEffects,
+          inflicted,
+        );
       }
       var heal = ctx?.heal(result.healingDone, rounds) ?? result.healingDone;
       if (on('fatigue') && heal > 0) heal = fatiguedHeal(heal, a.healsGiven++);

@@ -217,8 +217,11 @@ ShipDress buildShipDress({
   final figurehead = worn('figurehead');
   final ensign = worn('ensign');
 
-  final fitted =
-      partsWithinSlots(ship: ship, parts: parts, installedPartIds: installed);
+  final fitted = partsWithinSlots(
+    ship: ship,
+    parts: parts,
+    installedPartIds: installed,
+  );
   final mounts = <ShipMount>[];
   ShipPlating? plating;
   String? gear;
@@ -229,13 +232,15 @@ ShipDress buildShipDress({
     final tier = (part['tier'] as num?)?.toInt() ?? 1;
     switch (part['slotType']?.toString()) {
       case 'Weapon':
-        mounts.add(ShipMount(
-          family: family,
-          tier: tier,
-          rarity: part['rarity']?.toString() ?? 'common',
-          ammo: part['ammo']?.toString() ?? '',
-          fire: part['setsFire'] == true,
-        ));
+        mounts.add(
+          ShipMount(
+            family: family,
+            tier: tier,
+            rarity: part['rarity']?.toString() ?? 'common',
+            ammo: part['ammo']?.toString() ?? '',
+            fire: part['setsFire'] == true,
+          ),
+        );
       case 'Shield':
         plating ??= ShipPlating(family, tier, id);
       case 'Utility':
@@ -261,8 +266,10 @@ ShipDress buildShipDress({
     gear: gear,
     sigils: [
       for (final painted in installedSails(parts, fitted))
-        ShipSigil(painted.power,
-            sailMediumColors[painted.medium] ?? Palette.orange30),
+        ShipSigil(
+          painted.power,
+          sailMediumColors[painted.medium] ?? Palette.orange30,
+        ),
     ],
   );
 }
@@ -350,8 +357,15 @@ Paint _line(Color c, double w) => Paint()
 /// Draws the guns of [dress] along the broadside of [room] (the gun room
 /// on the deck), each from the centre line out toward [towards] (-1 up, 1
 /// down), as the kind of gun it is. With none fitted the ports are empty.
-void paintMounts(Canvas canvas, Rect room, double cy, double beam,
-    double towards, ShipDress dress, double t) {
+void paintMounts(
+  Canvas canvas,
+  Rect room,
+  double cy,
+  double beam,
+  double towards,
+  ShipDress dress,
+  double t,
+) {
   final n = math.min(3, dress.mounts.length);
   for (var i = 0; i < n; i++) {
     final x = room.left + room.width * (i + 0.5) / n;
@@ -376,8 +390,9 @@ void _mount(Canvas canvas, ShipMount m, double t) {
   // A carriage under every gun.
   void carriage(double w, double h) {
     final r = RRect.fromRectAndRadius(
-        Rect.fromCenter(center: Offset(0, -h / 2 - 2), width: w, height: h),
-        const Radius.circular(2));
+      Rect.fromCenter(center: Offset(0, -h / 2 - 2), width: w, height: h),
+      const Radius.circular(2),
+    );
     canvas.drawRRect(r, _fill(_timber));
     canvas.drawRRect(r, _line(Palette.stone35, 1));
   }
@@ -385,37 +400,56 @@ void _mount(Canvas canvas, ShipMount m, double t) {
   void barrel(double w, double from, double to) {
     final r = Rect.fromLTRB(-w / 2, -to, w / 2, -from);
     canvas.drawRRect(
-        RRect.fromRectAndRadius(r, Radius.circular(w * 0.3)), _fill(metal));
+      RRect.fromRectAndRadius(r, Radius.circular(w * 0.3)),
+      _fill(metal),
+    );
     canvas.drawRect(Rect.fromLTRB(-w / 2, -to, w / 2, -to + 2.2), _fill(dark));
-    canvas.drawLine(Offset(-w * 0.2, -to + 3), Offset(-w * 0.2, -from - 1),
-        _line(light.withValues(alpha: 0.8), 1));
+    canvas.drawLine(
+      Offset(-w * 0.2, -to + 3),
+      Offset(-w * 0.2, -from - 1),
+      _line(light.withValues(alpha: 0.8), 1),
+    );
   }
 
   switch (m.family) {
     case 'ballista':
       // Stock, two bowed arms across the front, a bolt laid in the groove.
       canvas.drawLine(
-          Offset.zero, const Offset(0, -26), _line(Palette.stone35, 3.2));
+        Offset.zero,
+        const Offset(0, -26),
+        _line(Palette.stone35, 3.2),
+      );
       final arm = _line(const Color(0xFF8A6A44), 2.6);
       final reach = 9.0 + m.tier * 1.4;
       canvas.drawPath(
-          Path()
-            ..moveTo(-reach, -13)
-            ..quadraticBezierTo(0, -19, reach, -13),
-          arm);
-      canvas.drawLine(Offset(-reach, -13), const Offset(0, -6),
-          _line(const Color(0xFFD7C9A6), 0.8));
-      canvas.drawLine(Offset(reach, -13), const Offset(0, -6),
-          _line(const Color(0xFFD7C9A6), 0.8));
+        Path()
+          ..moveTo(-reach, -13)
+          ..quadraticBezierTo(0, -19, reach, -13),
+        arm,
+      );
       canvas.drawLine(
-          const Offset(0, -6), const Offset(0, -30), _line(metal, 1.8));
+        Offset(-reach, -13),
+        const Offset(0, -6),
+        _line(const Color(0xFFD7C9A6), 0.8),
+      );
+      canvas.drawLine(
+        Offset(reach, -13),
+        const Offset(0, -6),
+        _line(const Color(0xFFD7C9A6), 0.8),
+      );
+      canvas.drawLine(
+        const Offset(0, -6),
+        const Offset(0, -30),
+        _line(metal, 1.8),
+      );
       canvas.drawPath(
-          Path()
-            ..moveTo(0, -33)
-            ..lineTo(-2.2, -28)
-            ..lineTo(2.2, -28)
-            ..close(),
-          _fill(light));
+        Path()
+          ..moveTo(0, -33)
+          ..lineTo(-2.2, -28)
+          ..lineTo(2.2, -28)
+          ..close(),
+        _fill(light),
+      );
       if (m.tier >= 3) {
         // The siege engine: a winch drum behind the stock.
         canvas.drawCircle(const Offset(0, -3), 4, _fill(dark));
@@ -428,14 +462,20 @@ void _mount(Canvas canvas, ShipMount m, double t) {
       if (m.family == 'chain') {
         // Two balls on a bar, hung at the muzzle.
         canvas.drawLine(
-            const Offset(-4.5, -27), const Offset(4.5, -27), _line(light, 1));
+          const Offset(-4.5, -27),
+          const Offset(4.5, -27),
+          _line(light, 1),
+        );
         canvas.drawCircle(const Offset(-4.5, -27), 2.2, _fill(dark));
         canvas.drawCircle(const Offset(4.5, -27), 2.2, _fill(dark));
       } else {
         // A bag of shot beside the carriage.
         for (final (dx, dy) in [(8.0, -6.0), (10.5, -9.5), (6.5, -10.0)]) {
           canvas.drawCircle(
-              Offset(dx, dy), 2.3, _fill(const Color(0xFF8A7A56)));
+            Offset(dx, dy),
+            2.3,
+            _fill(const Color(0xFF8A7A56)),
+          );
         }
       }
       canvas.drawCircle(const Offset(0, -3), 2.4, _fill(light));
@@ -445,22 +485,37 @@ void _mount(Canvas canvas, ShipMount m, double t) {
       canvas.drawRect(const Rect.fromLTRB(-6.5, -14, 6.5, -12.4), _fill(dark));
       if (m.ammo == 'heated' || m.fire) {
         final glow = 0.55 + 0.25 * math.sin(t * 6);
-        canvas.drawCircle(const Offset(0, -22), 6.5,
-            _fill(Palette.orange59.withValues(alpha: glow * 0.5)));
-        canvas.drawCircle(const Offset(0, -21), 2.6,
-            _fill(const Color(0xFFFFC857).withValues(alpha: glow)));
+        canvas.drawCircle(
+          const Offset(0, -22),
+          6.5,
+          _fill(Palette.orange59.withValues(alpha: glow * 0.5)),
+        );
+        canvas.drawCircle(
+          const Offset(0, -21),
+          2.6,
+          _fill(const Color(0xFFFFC857).withValues(alpha: glow)),
+        );
       }
     case 'fire_pots':
       carriage(20, 12);
       for (final (dx, dy) in [(-6.0, -7.0), (6.0, -7.0), (0.0, -12.0)]) {
         canvas.drawCircle(Offset(dx, dy), 4.4, _fill(const Color(0xFF9A5A32)));
         canvas.drawCircle(
-            Offset(dx, dy), 4.4, _line(const Color(0xFF5E331C), 1));
+          Offset(dx, dy),
+          4.4,
+          _line(const Color(0xFF5E331C), 1),
+        );
         final flick = 1.4 * math.sin(t * 9 + dx);
-        canvas.drawCircle(Offset(dx, dy - 1), 2.3,
-            _fill(const Color(0xFFFF8A2E).withValues(alpha: 0.9)));
         canvas.drawCircle(
-            Offset(dx, dy - 2 - flick.abs()), 1.2, _fill(Palette.amber77));
+          Offset(dx, dy - 1),
+          2.3,
+          _fill(const Color(0xFFFF8A2E).withValues(alpha: 0.9)),
+        );
+        canvas.drawCircle(
+          Offset(dx, dy - 2 - flick.abs()),
+          1.2,
+          _fill(Palette.amber77),
+        );
       }
     case 'harpoon':
     case 'hunters_harpoon':
@@ -469,19 +524,29 @@ void _mount(Canvas canvas, ShipMount m, double t) {
       final spears = m.tier >= 3 ? 1 : 3;
       for (var k = 0; k < spears; k++) {
         final dx = spears == 1 ? 0.0 : (k - 1) * 5.0;
-        canvas.drawLine(Offset(dx, -3), Offset(dx, -29),
-            _line(const Color(0xFF8A6A44), spears == 1 ? 3.2 : 1.7));
+        canvas.drawLine(
+          Offset(dx, -3),
+          Offset(dx, -29),
+          _line(const Color(0xFF8A6A44), spears == 1 ? 3.2 : 1.7),
+        );
         canvas.drawPath(
-            Path()
-              ..moveTo(dx, -34)
-              ..lineTo(dx - 3, -28)
-              ..lineTo(dx + 3, -28)
-              ..close(),
-            _fill(light));
+          Path()
+            ..moveTo(dx, -34)
+            ..lineTo(dx - 3, -28)
+            ..lineTo(dx + 3, -28)
+            ..close(),
+          _fill(light),
+        );
         canvas.drawLine(
-            Offset(dx - 3, -30), Offset(dx - 5, -27.5), _line(metal, 1));
+          Offset(dx - 3, -30),
+          Offset(dx - 5, -27.5),
+          _line(metal, 1),
+        );
         canvas.drawLine(
-            Offset(dx + 3, -30), Offset(dx + 5, -27.5), _line(metal, 1));
+          Offset(dx + 3, -30),
+          Offset(dx + 5, -27.5),
+          _line(metal, 1),
+        );
       }
       canvas.drawCircle(const Offset(7, -4), 3.2, _line(Palette.amber66, 1.4));
       if (m.tier >= 3) {
@@ -496,17 +561,19 @@ void _mount(Canvas canvas, ShipMount m, double t) {
     case 'trophy_beak':
       // The Tide-Mother's beak: a bone hook, tip out.
       canvas.drawPath(
-          Path()
-            ..moveTo(-7, -2)
-            ..quadraticBezierTo(-6, -22, 2, -30)
-            ..quadraticBezierTo(2, -17, 7, -2)
-            ..close(),
-          _fill(Palette.amber77a));
+        Path()
+          ..moveTo(-7, -2)
+          ..quadraticBezierTo(-6, -22, 2, -30)
+          ..quadraticBezierTo(2, -17, 7, -2)
+          ..close(),
+        _fill(Palette.amber77a),
+      );
       canvas.drawPath(
-          Path()
-            ..moveTo(-7, -2)
-            ..quadraticBezierTo(-6, -22, 2, -30),
-          _line(Palette.stone35, 1.2));
+        Path()
+          ..moveTo(-7, -2)
+          ..quadraticBezierTo(-6, -22, 2, -30),
+        _line(Palette.stone35, 1.2),
+      );
     default:
       carriage(11, 10);
       barrel(5, 4, 22);
@@ -515,20 +582,32 @@ void _mount(Canvas canvas, ShipMount m, double t) {
 
 /// Draws the plating on the bulwark room [room], along both rails of the
 /// hull of width [beam] centred on [cy].
-void paintPlating(Canvas canvas, Rect room, double cy, double beam,
-    ShipPlating? plating, int refit, Color wood) {
+void paintPlating(
+  Canvas canvas,
+  Rect room,
+  double cy,
+  double beam,
+  ShipPlating? plating,
+  int refit,
+  Color wood,
+) {
   if (plating == null) {
     final plate = _line(refit >= 2 ? Palette.stone60 : wood, 2.5);
     for (final s in [-1.0, 1.0]) {
-      canvas.drawLine(Offset(room.left + 4, cy + s * beam * 0.34),
-          Offset(room.right - 2, cy + s * beam * 0.18), plate);
+      canvas.drawLine(
+        Offset(room.left + 4, cy + s * beam * 0.34),
+        Offset(room.right - 2, cy + s * beam * 0.18),
+        plate,
+      );
     }
     return;
   }
   void rails(void Function(Offset a, Offset b) each) {
     for (final s in [-1.0, 1.0]) {
-      each(Offset(room.left + 4, cy + s * beam * 0.34),
-          Offset(room.right - 2, cy + s * beam * 0.18));
+      each(
+        Offset(room.left + 4, cy + s * beam * 0.34),
+        Offset(room.right - 2, cy + s * beam * 0.18),
+      );
     }
   }
 
@@ -547,14 +626,20 @@ void paintPlating(Canvas canvas, Rect room, double cy, double beam,
       rails((a, b) {
         canvas.drawLine(a, b, _line(tone, width));
         canvas.drawLine(
-            a, b, _line(Color.lerp(tone, Palette.white, 0.4)!, 0.8));
+          a,
+          b,
+          _line(Color.lerp(tone, Palette.white, 0.4)!, 0.8),
+        );
         // Rivets, or scales for the deep's own plate.
         final steps = plating.tier >= 7 ? 9 : 6;
         for (var k = 0; k < steps; k++) {
           final p = Offset.lerp(a, b, (k + 0.5) / steps)!;
           if (plating.tier >= 7) {
-            canvas.drawCircle(p, width * 0.42,
-                _fill(const Color(0xFF9EE0D2).withValues(alpha: 0.8)));
+            canvas.drawCircle(
+              p,
+              width * 0.42,
+              _fill(const Color(0xFF9EE0D2).withValues(alpha: 0.8)),
+            );
           } else {
             canvas.drawCircle(p, 0.9, _fill(Palette.night11a));
           }
@@ -562,15 +647,21 @@ void paintPlating(Canvas canvas, Rect room, double cy, double beam,
         if (plating.tier == 6) {
           // Dwarf-gold studs.
           for (var k = 0; k < 3; k++) {
-            canvas.drawCircle(Offset.lerp(a, b, 0.2 + k * 0.3)!, 1.5,
-                _fill(const Color(0xFFE0A93A)));
+            canvas.drawCircle(
+              Offset.lerp(a, b, 0.2 + k * 0.3)!,
+              1.5,
+              _fill(const Color(0xFFE0A93A)),
+            );
           }
         }
       });
     case 'bracing':
       // Timber ribs crossing the rail.
       final tone = Color.lerp(
-          wood, const Color(0xFFC9A36B), 0.25 + 0.15 * (plating.tier - 1))!;
+        wood,
+        const Color(0xFFC9A36B),
+        0.25 + 0.15 * (plating.tier - 1),
+      )!;
       rails((a, b) {
         canvas.drawLine(a, b, _line(tone, 2.4));
         final ribs = 4 + plating.tier * 2;
@@ -578,7 +669,10 @@ void paintPlating(Canvas canvas, Rect room, double cy, double beam,
           final p = Offset.lerp(a, b, (k + 0.5) / ribs)!;
           final out = (p.dy - cy).sign;
           canvas.drawLine(
-              p, p + Offset(0, -out * beam * 0.1), _line(tone, 1.4));
+            p,
+            p + Offset(0, -out * beam * 0.1),
+            _line(tone, 1.4),
+          );
         }
       });
     case 'screens':
@@ -590,13 +684,21 @@ void paintPlating(Canvas canvas, Rect room, double cy, double beam,
               final p = Offset.lerp(a, b, 0.2 + k * 0.3)!;
               final out = (p.dy - cy).sign;
               canvas.drawRect(
-                  Rect.fromCenter(
-                      center: p + Offset(0, out * 2.2), width: 6, height: 4.2),
-                  _fill(const Color(0xFF4A3A28)));
+                Rect.fromCenter(
+                  center: p + Offset(0, out * 2.2),
+                  width: 6,
+                  height: 4.2,
+                ),
+                _fill(const Color(0xFF4A3A28)),
+              );
               canvas.drawRect(
-                  Rect.fromCenter(
-                      center: p + Offset(0, out * 2.2), width: 6, height: 4.2),
-                  _line(Palette.orange58, 0.8));
+                Rect.fromCenter(
+                  center: p + Offset(0, out * 2.2),
+                  width: 6,
+                  height: 4.2,
+                ),
+                _line(Palette.orange58, 0.8),
+              );
             }
           });
         case 'netted_rails':
@@ -617,7 +719,10 @@ void paintPlating(Canvas canvas, Rect room, double cy, double beam,
             for (var k = 0; k < 5; k++) {
               final p = Offset.lerp(a, b, (k + 0.5) / 5)!;
               canvas.drawCircle(
-                  p, 2.6, _fill(Palette.purple71.withValues(alpha: 0.28)));
+                p,
+                2.6,
+                _fill(Palette.purple71.withValues(alpha: 0.28)),
+              );
               canvas.drawCircle(p, 1.1, _fill(const Color(0xFFCFB8FF)));
             }
           });
@@ -628,7 +733,10 @@ void paintPlating(Canvas canvas, Rect room, double cy, double beam,
         canvas.drawLine(a, b, _line(Palette.stone48, 1));
         for (var k = 0; k < 5; k++) {
           canvas.drawCircle(
-              Offset.lerp(a, b, (k + 0.5) / 5)!, 1.2, _fill(Palette.stone35b));
+            Offset.lerp(a, b, (k + 0.5) / 5)!,
+            1.2,
+            _fill(Palette.stone35b),
+          );
         }
       });
     default:
@@ -638,88 +746,129 @@ void paintPlating(Canvas canvas, Rect room, double cy, double beam,
 
 /// A utility's gear, drawn on [helm], [hold] and [guns] (the rooms on
 /// the deck), [beam] wide.
-void paintGear(Canvas canvas, String? gear, Rect helm, Rect hold, Rect guns,
-    double cy, double beam, double towards, double t) {
+void paintGear(
+  Canvas canvas,
+  String? gear,
+  Rect helm,
+  Rect hold,
+  Rect guns,
+  double cy,
+  double beam,
+  double towards,
+  double t,
+) {
   if (gear == null) return;
   final u = beam / 72;
   switch (gear) {
     case 'stores':
       // Barrels lashed beside the hatch.
       for (final (dx, dy) in [(-0.26, -0.3), (0.26, -0.3), (-0.26, 0.3)]) {
-        final c =
-            Offset(hold.center.dx + dx * hold.width, cy + dy * beam * 0.95);
+        final c = Offset(
+          hold.center.dx + dx * hold.width,
+          cy + dy * beam * 0.95,
+        );
         canvas.drawCircle(c, 5.2 * u * 1.4, _fill(const Color(0xFF7A5230)));
         canvas.drawCircle(c, 5.2 * u * 1.4, _line(const Color(0xFF2E1E10), 1));
         canvas.drawCircle(
-            c, 3.0 * u * 1.4, _line(const Color(0xFF2E1E10), 0.8));
+          c,
+          3.0 * u * 1.4,
+          _line(const Color(0xFF2E1E10), 0.8),
+        );
       }
     case 'orders':
       // Lanterns on posts at the helm, and a chart table.
       for (final dy in [-0.3, 0.3]) {
         final c = Offset(helm.left + helm.width * 0.18, cy + dy * beam);
         final glow = 0.5 + 0.2 * math.sin(t * 5 + dy * 10);
-        canvas.drawCircle(c, 7 * u * 1.4,
-            _fill(const Color(0xFFFFC857).withValues(alpha: glow * 0.4)));
+        canvas.drawCircle(
+          c,
+          7 * u * 1.4,
+          _fill(const Color(0xFFFFC857).withValues(alpha: glow * 0.4)),
+        );
         canvas.drawCircle(c, 2.6 * u * 1.4, _fill(Palette.amber77));
       }
       final table = Rect.fromCenter(
-          center: Offset(helm.center.dx + helm.width * 0.18, cy + beam * 0.22),
-          width: 13 * u * 1.4,
-          height: 9 * u * 1.4);
+        center: Offset(helm.center.dx + helm.width * 0.18, cy + beam * 0.22),
+        width: 13 * u * 1.4,
+        height: 9 * u * 1.4,
+      );
       canvas.drawRect(table, _fill(const Color(0xFFE3D5B0)));
       canvas.drawRect(table, _line(Palette.stone35, 1));
       canvas.drawLine(
-          table.topLeft + const Offset(2, 3),
-          table.bottomRight - const Offset(3, 3),
-          _line(const Color(0xFFA2472E), 0.8));
+        table.topLeft + const Offset(2, 3),
+        table.bottomRight - const Offset(3, 3),
+        _line(const Color(0xFFA2472E), 0.8),
+      );
     case 'helm':
       // Coils of rope and a spare yard along the helm.
       for (var k = 0; k < 2; k++) {
-        final c = Offset(helm.left + helm.width * (0.22 + k * 0.2),
-            cy + beam * (k == 0 ? -0.26 : 0.27));
+        final c = Offset(
+          helm.left + helm.width * (0.22 + k * 0.2),
+          cy + beam * (k == 0 ? -0.26 : 0.27),
+        );
         canvas.drawCircle(c, 5 * u * 1.4, _line(Palette.amber66, 1.8));
         canvas.drawCircle(c, 2 * u * 1.4, _line(Palette.amber66, 1.2));
       }
     case 'gunnery':
       // A rack of shot by the guns.
       for (final (dx, dy) in [(0.0, 0.0), (5.0, 0.0), (2.5, -4.4)]) {
-        final c = Offset(guns.right - guns.width * 0.14 + dx * u * 1.4,
-            cy - towards * beam * 0.3 + dy * u * 1.4);
+        final c = Offset(
+          guns.right - guns.width * 0.14 + dx * u * 1.4,
+          cy - towards * beam * 0.3 + dy * u * 1.4,
+        );
         canvas.drawCircle(c, 2.6 * u * 1.4, _fill(Palette.night18));
         canvas.drawCircle(
-            c, 2.6 * u * 1.4, _line(const Color(0xFF7A7886), 0.7));
+          c,
+          2.6 * u * 1.4,
+          _line(const Color(0xFF7A7886), 0.7),
+        );
       }
     case 'hold':
       // A pump handle on the hatch, buckets beside it.
       final c = Offset(hold.center.dx, cy - beam * 0.3);
-      canvas.drawLine(c, c + Offset(10 * u * 1.4, -4 * u * 1.4),
-          _line(Palette.orange58, 2));
+      canvas.drawLine(
+        c,
+        c + Offset(10 * u * 1.4, -4 * u * 1.4),
+        _line(Palette.orange58, 2),
+      );
       canvas.drawCircle(c, 2.4 * u * 1.4, _fill(const Color(0xFF6C7480)));
       canvas.drawCircle(
-          Offset(hold.center.dx - hold.width * 0.3, cy + beam * 0.3),
-          3.4 * u * 1.4,
-          _fill(const Color(0xFF6C7480)));
+        Offset(hold.center.dx - hold.width * 0.3, cy + beam * 0.3),
+        3.4 * u * 1.4,
+        _fill(const Color(0xFF6C7480)),
+      );
     case 'command':
       // A cabin roof at the stern, with a trim stripe.
-      final roof = Rect.fromLTRB(helm.left - helm.width * 0.02,
-          cy - beam * 0.24, helm.left + helm.width * 0.46, cy + beam * 0.24);
+      final roof = Rect.fromLTRB(
+        helm.left - helm.width * 0.02,
+        cy - beam * 0.24,
+        helm.left + helm.width * 0.46,
+        cy + beam * 0.24,
+      );
       canvas.drawRRect(
-          RRect.fromRectAndRadius(roof, Radius.circular(beam * 0.05)),
-          _fill(Palette.orange25));
+        RRect.fromRectAndRadius(roof, Radius.circular(beam * 0.05)),
+        _fill(Palette.orange25),
+      );
       canvas.drawRRect(
-          RRect.fromRectAndRadius(roof, Radius.circular(beam * 0.05)),
-          _line(const Color(0xFFD9B15B), 1.4));
-      canvas.drawLine(Offset(roof.left + 3, cy), Offset(roof.right - 3, cy),
-          _line(const Color(0xFFD9B15B), 1));
+        RRect.fromRectAndRadius(roof, Radius.circular(beam * 0.05)),
+        _line(const Color(0xFFD9B15B), 1.4),
+      );
+      canvas.drawLine(
+        Offset(roof.left + 3, cy),
+        Offset(roof.right - 3, cy),
+        _line(const Color(0xFFD9B15B), 1),
+      );
     case 'trophy_hull':
       // Sharkskin patches over the stern planks.
       for (final (dx, dy) in [(0.15, -0.3), (0.3, 0.28), (0.1, 0.18)]) {
         canvas.drawOval(
-            Rect.fromCenter(
-                center: Offset(helm.left + helm.width * dx, cy + dy * beam),
-                width: 12 * u * 1.4,
-                height: 7 * u * 1.4),
-            _fill(const Color(0xFF6C7C78).withValues(alpha: 0.85)));
+          Rect.fromCenter(
+            center: Offset(helm.left + helm.width * dx, cy + dy * beam),
+            width: 12 * u * 1.4,
+            height: 7 * u * 1.4,
+          ),
+          _fill(const Color(0xFF6C7C78).withValues(alpha: 0.85)),
+        );
       }
   }
 }
@@ -727,15 +876,23 @@ void paintGear(Canvas canvas, String? gear, Rect helm, Rect hold, Rect guns,
 /// Works the cloth of the sail inside [sail] (clipped to it), by
 /// [pattern], with [mark] and [edge] colours.
 void paintCloth(
-    Canvas canvas, Path sail, Rect bounds, String pattern, Color mark) {
+  Canvas canvas,
+  Path sail,
+  Rect bounds,
+  String pattern,
+  Color mark,
+) {
   canvas.save();
   canvas.clipPath(sail);
   switch (pattern) {
     case 'stripes':
       for (var k = 1; k <= 3; k++) {
         final x = bounds.left + bounds.width * k / 4.2;
-        canvas.drawLine(Offset(x, bounds.top), Offset(x, bounds.bottom),
-            _line(mark.withValues(alpha: 0.9), bounds.width * 0.09));
+        canvas.drawLine(
+          Offset(x, bounds.top),
+          Offset(x, bounds.bottom),
+          _line(mark.withValues(alpha: 0.9), bounds.width * 0.09),
+        );
       }
     case 'patches':
       for (final (fx, fy, w, h) in [
@@ -744,10 +901,13 @@ void paintCloth(
         (0.35, 0.78, 0.22, 0.12),
       ]) {
         final r = Rect.fromCenter(
-            center: Offset(bounds.left + bounds.width * fx,
-                bounds.top + bounds.height * fy),
-            width: bounds.width * w,
-            height: bounds.height * h);
+          center: Offset(
+            bounds.left + bounds.width * fx,
+            bounds.top + bounds.height * fy,
+          ),
+          width: bounds.width * w,
+          height: bounds.height * h,
+        );
         canvas.drawRect(r, _fill(mark.withValues(alpha: 0.85)));
         canvas.drawRect(r, _line(Palette.black.withValues(alpha: 0.3), 0.7));
       }
@@ -756,18 +916,20 @@ void paintCloth(
       for (var row = 0; row < 4; row++) {
         for (var col = 0; col < 2; col++) {
           final c = Offset(
-              bounds.left + bounds.width * (0.28 + col * 0.4),
-              bounds.top +
-                  bounds.height * (0.2 + row * 0.2) +
-                  (col.isOdd ? bounds.height * 0.1 : 0));
+            bounds.left + bounds.width * (0.28 + col * 0.4),
+            bounds.top +
+                bounds.height * (0.2 + row * 0.2) +
+                (col.isOdd ? bounds.height * 0.1 : 0),
+          );
           canvas.drawPath(
-              Path()
-                ..moveTo(c.dx, c.dy - d)
-                ..lineTo(c.dx + d * 0.7, c.dy)
-                ..lineTo(c.dx, c.dy + d)
-                ..lineTo(c.dx - d * 0.7, c.dy)
-                ..close(),
-              _fill(mark.withValues(alpha: 0.85)));
+            Path()
+              ..moveTo(c.dx, c.dy - d)
+              ..lineTo(c.dx + d * 0.7, c.dy)
+              ..lineTo(c.dx, c.dy + d)
+              ..lineTo(c.dx - d * 0.7, c.dy)
+              ..close(),
+            _fill(mark.withValues(alpha: 0.85)),
+          );
         }
       }
   }
@@ -776,7 +938,12 @@ void paintCloth(
 
 /// The painted sail's sigil, [size] across, centred at [c].
 void paintSigil(
-    Canvas canvas, Offset c, double size, ShipSigil sigil, double t) {
+  Canvas canvas,
+  Offset c,
+  double size,
+  ShipSigil sigil,
+  double t,
+) {
   final ink = sigil.color;
   final r = size / 2;
   switch (sigil.power) {
@@ -784,11 +951,16 @@ void paintSigil(
       // Two wings, spread.
       for (final s in [-1.0, 1.0]) {
         canvas.drawPath(
-            Path()
-              ..moveTo(c.dx, c.dy)
-              ..quadraticBezierTo(c.dx - r * 0.2, c.dy + s * r * 0.9,
-                  c.dx - r * 0.9, c.dy + s * r * 0.8),
-            _line(ink, size * 0.14));
+          Path()
+            ..moveTo(c.dx, c.dy)
+            ..quadraticBezierTo(
+              c.dx - r * 0.2,
+              c.dy + s * r * 0.9,
+              c.dx - r * 0.9,
+              c.dy + s * r * 0.8,
+            ),
+          _line(ink, size * 0.14),
+        );
       }
       canvas.drawCircle(c, size * 0.1, _fill(ink));
     case SailPower.foresight:
@@ -802,24 +974,30 @@ void paintSigil(
     case SailPower.hearth:
       // A flame.
       canvas.drawPath(
-          Path()
-            ..moveTo(c.dx, c.dy - r)
-            ..quadraticBezierTo(c.dx + r * 0.9, c.dy, c.dx, c.dy + r * 0.9)
-            ..quadraticBezierTo(c.dx - r * 0.9, c.dy, c.dx, c.dy - r),
-          _fill(ink));
-      canvas.drawCircle(Offset(c.dx, c.dy + r * 0.25), size * 0.12,
-          _fill(Palette.amber77.withValues(alpha: 0.85)));
+        Path()
+          ..moveTo(c.dx, c.dy - r)
+          ..quadraticBezierTo(c.dx + r * 0.9, c.dy, c.dx, c.dy + r * 0.9)
+          ..quadraticBezierTo(c.dx - r * 0.9, c.dy, c.dx, c.dy - r),
+        _fill(ink),
+      );
+      canvas.drawCircle(
+        Offset(c.dx, c.dy + r * 0.25),
+        size * 0.12,
+        _fill(Palette.amber77.withValues(alpha: 0.85)),
+      );
     case SailPower.windknot:
       // A knot: two crossed loops.
       canvas.drawOval(
-          Rect.fromCenter(center: c, width: size, height: size * 0.5),
-          _line(ink, size * 0.12));
+        Rect.fromCenter(center: c, width: size, height: size * 0.5),
+        _line(ink, size * 0.12),
+      );
       canvas.save();
       canvas.translate(c.dx, c.dy);
       canvas.rotate(math.pi / 2);
       canvas.drawOval(
-          Rect.fromCenter(center: Offset.zero, width: size, height: size * 0.5),
-          _line(ink, size * 0.12));
+        Rect.fromCenter(center: Offset.zero, width: size, height: size * 0.5),
+        _line(ink, size * 0.12),
+      );
       canvas.restore();
     case SailPower.voidmark:
       // A ring and a spiral.
@@ -837,7 +1015,12 @@ void paintSigil(
 /// The figurehead of [dress] at the stem, its tip at [tip] (the hull's
 /// bow), looking right, [size] across.
 void paintFigurehead(
-    Canvas canvas, Offset tip, double size, ShipDress dress, double t) {
+  Canvas canvas,
+  Offset tip,
+  double size,
+  ShipDress dress,
+  double t,
+) {
   final body = dress.figureheadColor ?? Palette.orange30;
   final eye = dress.figureheadEye ?? const Color(0xFFF2E3A0);
   final dark = Color.lerp(body, Palette.black, 0.5)!;
@@ -848,20 +1031,21 @@ void paintFigurehead(
     case 'gull':
       for (final k in [-1.0, 1.0]) {
         canvas.drawPath(
-            Path()
-              ..moveTo(0, 0)
-              ..quadraticBezierTo(
-                  -s * 0.15, k * s * 0.6, -s * 0.75, k * s * 0.9),
-            _line(body, s * 0.2));
+          Path()
+            ..moveTo(0, 0)
+            ..quadraticBezierTo(-s * 0.15, k * s * 0.6, -s * 0.75, k * s * 0.9),
+          _line(body, s * 0.2),
+        );
       }
       canvas.drawCircle(Offset(s * 0.05, 0), s * 0.2, _fill(body));
       canvas.drawPath(
-          Path()
-            ..moveTo(s * 0.4, 0)
-            ..lineTo(s * 0.18, -s * 0.09)
-            ..lineTo(s * 0.18, s * 0.09)
-            ..close(),
-          _fill(eye));
+        Path()
+          ..moveTo(s * 0.4, 0)
+          ..lineTo(s * 0.18, -s * 0.09)
+          ..lineTo(s * 0.18, s * 0.09)
+          ..close(),
+        _fill(eye),
+      );
     case 'eel':
       final p = Path()
         ..moveTo(-s * 0.7, s * 0.3)
@@ -871,30 +1055,39 @@ void paintFigurehead(
       canvas.drawCircle(Offset(s * 0.3, -s * 0.05), s * 0.07, _fill(eye));
     case 'siren':
       canvas.drawOval(
-          Rect.fromCenter(
-              center: Offset(s * 0.1, 0), width: s * 0.55, height: s * 0.42),
-          _fill(body));
+        Rect.fromCenter(
+          center: Offset(s * 0.1, 0),
+          width: s * 0.55,
+          height: s * 0.42,
+        ),
+        _fill(body),
+      );
       for (final k in [-0.25, -0.08, 0.08, 0.25]) {
-        canvas.drawLine(Offset(-s * 0.1, k * s), Offset(-s * 0.85, k * s * 2.2),
-            _line(eye, s * 0.1));
+        canvas.drawLine(
+          Offset(-s * 0.1, k * s),
+          Offset(-s * 0.85, k * s * 2.2),
+          _line(eye, s * 0.1),
+        );
       }
       canvas.drawCircle(Offset(s * 0.22, 0), s * 0.05, _fill(dark));
     case 'wolf':
       canvas.drawPath(
-          Path()
-            ..moveTo(s * 0.55, 0)
-            ..lineTo(-s * 0.1, -s * 0.3)
-            ..lineTo(-s * 0.1, s * 0.3)
-            ..close(),
-          _fill(body));
+        Path()
+          ..moveTo(s * 0.55, 0)
+          ..lineTo(-s * 0.1, -s * 0.3)
+          ..lineTo(-s * 0.1, s * 0.3)
+          ..close(),
+        _fill(body),
+      );
       for (final k in [-1.0, 1.0]) {
         canvas.drawPath(
-            Path()
-              ..moveTo(-s * 0.05, k * s * 0.18)
-              ..lineTo(-s * 0.3, k * s * 0.5)
-              ..lineTo(-s * 0.32, k * s * 0.12)
-              ..close(),
-            _fill(dark));
+          Path()
+            ..moveTo(-s * 0.05, k * s * 0.18)
+            ..lineTo(-s * 0.3, k * s * 0.5)
+            ..lineTo(-s * 0.32, k * s * 0.12)
+            ..close(),
+          _fill(dark),
+        );
       }
       canvas.drawCircle(Offset(s * 0.12, -s * 0.1), s * 0.04, _fill(eye));
       canvas.drawCircle(Offset(s * 0.12, s * 0.1), s * 0.04, _fill(eye));
@@ -902,88 +1095,119 @@ void paintFigurehead(
     case 'skull':
       canvas.drawCircle(Offset.zero, s * 0.34, _fill(body));
       canvas.drawRect(
-          Rect.fromCenter(
-              center: Offset(s * 0.3, 0), width: s * 0.22, height: s * 0.3),
-          _fill(body));
+        Rect.fromCenter(
+          center: Offset(s * 0.3, 0),
+          width: s * 0.22,
+          height: s * 0.3,
+        ),
+        _fill(body),
+      );
       canvas.drawCircle(Offset(s * 0.05, -s * 0.13), s * 0.09, _fill(eye));
       canvas.drawCircle(Offset(s * 0.05, s * 0.13), s * 0.09, _fill(eye));
       for (var k = -1; k <= 1; k++) {
-        canvas.drawLine(Offset(s * 0.22, k * s * 0.08),
-            Offset(s * 0.4, k * s * 0.08), _line(eye, s * 0.04));
+        canvas.drawLine(
+          Offset(s * 0.22, k * s * 0.08),
+          Offset(s * 0.4, k * s * 0.08),
+          _line(eye, s * 0.04),
+        );
       }
     case 'lion':
       for (var k = 0; k < 9; k++) {
         final a = k * math.pi * 2 / 9;
         canvas.drawCircle(
-            Offset(math.cos(a), math.sin(a)) * s * 0.34, s * 0.14, _fill(eye));
+          Offset(math.cos(a), math.sin(a)) * s * 0.34,
+          s * 0.14,
+          _fill(eye),
+        );
       }
       canvas.drawCircle(Offset.zero, s * 0.3, _fill(body));
       canvas.drawOval(
-          Rect.fromCenter(
-              center: Offset(s * 0.32, 0), width: s * 0.3, height: s * 0.24),
-          _fill(body));
+        Rect.fromCenter(
+          center: Offset(s * 0.32, 0),
+          width: s * 0.3,
+          height: s * 0.24,
+        ),
+        _fill(body),
+      );
       canvas.drawCircle(Offset(s * 0.12, -s * 0.1), s * 0.04, _fill(dark));
       canvas.drawCircle(Offset(s * 0.12, s * 0.1), s * 0.04, _fill(dark));
     case 'dragon':
       canvas.drawPath(
-          Path()
-            ..moveTo(s * 0.7, 0)
-            ..lineTo(s * 0.2, -s * 0.18)
-            ..lineTo(-s * 0.2, -s * 0.3)
-            ..lineTo(-s * 0.3, 0)
-            ..lineTo(-s * 0.2, s * 0.3)
-            ..lineTo(s * 0.2, s * 0.18)
-            ..close(),
-          _fill(body));
+        Path()
+          ..moveTo(s * 0.7, 0)
+          ..lineTo(s * 0.2, -s * 0.18)
+          ..lineTo(-s * 0.2, -s * 0.3)
+          ..lineTo(-s * 0.3, 0)
+          ..lineTo(-s * 0.2, s * 0.3)
+          ..lineTo(s * 0.2, s * 0.18)
+          ..close(),
+        _fill(body),
+      );
       for (final k in [-1.0, 1.0]) {
-        canvas.drawLine(Offset(-s * 0.1, k * s * 0.25),
-            Offset(-s * 0.8, k * s * 0.55), _line(eye, s * 0.1));
+        canvas.drawLine(
+          Offset(-s * 0.1, k * s * 0.25),
+          Offset(-s * 0.8, k * s * 0.55),
+          _line(eye, s * 0.1),
+        );
       }
       canvas.drawCircle(
-          Offset(s * 0.2, -s * 0.08), s * 0.05, _fill(Palette.amber77));
+        Offset(s * 0.2, -s * 0.08),
+        s * 0.05,
+        _fill(Palette.amber77),
+      );
       canvas.drawCircle(
-          Offset(s * 0.2, s * 0.08), s * 0.05, _fill(Palette.amber77));
+        Offset(s * 0.2, s * 0.08),
+        s * 0.05,
+        _fill(Palette.amber77),
+      );
     case 'maw':
       for (final k in [-1.0, 1.0]) {
         canvas.drawPath(
-            Path()
-              ..moveTo(-s * 0.3, k * s * 0.05)
-              ..lineTo(s * 0.7, k * s * 0.4)
-              ..lineTo(s * 0.7, k * s * 0.28)
-              ..lineTo(-s * 0.3, k * s * 0.0)
-              ..close(),
-            _fill(body));
+          Path()
+            ..moveTo(-s * 0.3, k * s * 0.05)
+            ..lineTo(s * 0.7, k * s * 0.4)
+            ..lineTo(s * 0.7, k * s * 0.28)
+            ..lineTo(-s * 0.3, k * s * 0.0)
+            ..close(),
+          _fill(body),
+        );
         for (var j = 0; j < 4; j++) {
           final x = s * (0.1 + j * 0.15);
           canvas.drawPath(
-              Path()
-                ..moveTo(x, k * s * (0.1 + j * 0.06))
-                ..lineTo(x + s * 0.05, k * s * (0.03 + j * 0.03))
-                ..lineTo(x - s * 0.05, k * s * (0.03 + j * 0.03))
-                ..close(),
-              _fill(const Color(0xFFF2F0E6)));
+            Path()
+              ..moveTo(x, k * s * (0.1 + j * 0.06))
+              ..lineTo(x + s * 0.05, k * s * (0.03 + j * 0.03))
+              ..lineTo(x - s * 0.05, k * s * (0.03 + j * 0.03))
+              ..close(),
+            _fill(const Color(0xFFF2F0E6)),
+          );
         }
       }
     case 'horn':
       canvas.drawPath(
-          Path()
-            ..moveTo(-s * 0.2, -s * 0.12)
-            ..quadraticBezierTo(s * 0.5, -s * 0.2, s * 1.1, s * 0.05)
-            ..quadraticBezierTo(s * 0.45, s * 0.06, -s * 0.2, s * 0.14)
-            ..close(),
-          _fill(body));
+        Path()
+          ..moveTo(-s * 0.2, -s * 0.12)
+          ..quadraticBezierTo(s * 0.5, -s * 0.2, s * 1.1, s * 0.05)
+          ..quadraticBezierTo(s * 0.45, s * 0.06, -s * 0.2, s * 0.14)
+          ..close(),
+        _fill(body),
+      );
       canvas.drawPath(
-          Path()
-            ..moveTo(-s * 0.1, 0)
-            ..quadraticBezierTo(s * 0.5, -s * 0.07, s * 1.0, s * 0.04),
-          _line(eye, 1));
+        Path()
+          ..moveTo(-s * 0.1, 0)
+          ..quadraticBezierTo(s * 0.5, -s * 0.07, s * 1.0, s * 0.04),
+        _line(eye, 1),
+      );
     case 'eye':
       canvas.drawCircle(Offset.zero, s * 0.42, _fill(const Color(0xFFB08A4E)));
       canvas.drawCircle(Offset.zero, s * 0.34, _fill(const Color(0xFFF2EFE6)));
       canvas.drawCircle(Offset.zero, s * 0.22, _fill(body));
       canvas.drawCircle(Offset.zero, s * 0.1, _fill(eye));
       canvas.drawCircle(
-          Offset(-s * 0.05, -s * 0.07), s * 0.04, _fill(Palette.white));
+        Offset(-s * 0.05, -s * 0.07),
+        s * 0.04,
+        _fill(Palette.white),
+      );
     default:
       break;
   }
@@ -992,8 +1216,14 @@ void paintFigurehead(
 
 /// The flag of [dress] flying from the mast at [mast], streaming aft (to
 /// the left), [length] long.
-void paintEnsign(Canvas canvas, Offset mast, double length, ShipDress dress,
-    Color fallback, double t) {
+void paintEnsign(
+  Canvas canvas,
+  Offset mast,
+  double length,
+  ShipDress dress,
+  Color fallback,
+  double t,
+) {
   final cloth = dress.ensignColor ?? fallback;
   final device = dress.ensignDevice ?? const Color(0xFFF2E3A0);
   final h = length * 0.4;
@@ -1006,8 +1236,10 @@ void paintEnsign(Canvas canvas, Offset mast, double length, ShipDress dress,
       p.lineTo(mast.dx - x * length, mast.dy + top * h + wave(x));
     }
     if (fork) {
-      p.lineTo(mast.dx - (end - 0.18) * length,
-          mast.dy + (top + bottom) / 2 * h + wave(end - 0.18));
+      p.lineTo(
+        mast.dx - (end - 0.18) * length,
+        mast.dy + (top + bottom) / 2 * h + wave(end - 0.18),
+      );
     }
     for (var k = 8; k >= 1; k--) {
       final x = k / 8 * end;
@@ -1028,8 +1260,10 @@ void paintEnsign(Canvas canvas, Offset mast, double length, ShipDress dress,
       for (var k = 0; k <= 10; k++) {
         final x = k / 10;
         final y = math.sin(x * math.pi * 3) * h * 0.14;
-        final o =
-            Offset(mast.dx - x * length * 0.9, mast.dy + y + wave(x * 0.9));
+        final o = Offset(
+          mast.dx - x * length * 0.9,
+          mast.dy + y + wave(x * 0.9),
+        );
         k == 0 ? p.moveTo(o.dx, o.dy) : p.lineTo(o.dx, o.dy);
       }
       canvas.drawPath(p, _line(device, h * 0.14));
@@ -1045,9 +1279,14 @@ void paintEnsign(Canvas canvas, Offset mast, double length, ShipDress dress,
           if ((cx + cy).isEven) continue;
           final x0 = cx / 4 * 0.75, x1 = (cx + 1) / 4 * 0.75;
           canvas.drawRect(
-              Rect.fromLTRB(mast.dx - x1 * length, mast.dy + (cy - 1) * h * 0.5,
-                  mast.dx - x0 * length, mast.dy + cy * h * 0.5 - h * 0.0),
-              _fill(device));
+            Rect.fromLTRB(
+              mast.dx - x1 * length,
+              mast.dy + (cy - 1) * h * 0.5,
+              mast.dx - x0 * length,
+              mast.dy + cy * h * 0.5 - h * 0.0,
+            ),
+            _fill(device),
+          );
         }
       }
       canvas.restore();
@@ -1055,30 +1294,38 @@ void paintEnsign(Canvas canvas, Offset mast, double length, ShipDress dress,
       canvas.drawPath(strip(-0.5, 0.5, end: 0.8), _fill(cloth));
       final c = Offset(mast.dx - length * 0.4, mast.dy + wave(0.4));
       canvas.drawCircle(c, h * 0.2, _fill(device));
-      canvas.drawLine(c + Offset(-h * 0.28, h * 0.22),
-          c + Offset(h * 0.28, -h * 0.22), _line(device, h * 0.07));
-      canvas.drawLine(c + Offset(-h * 0.28, -h * 0.22),
-          c + Offset(h * 0.28, h * 0.22), _line(device, h * 0.07));
+      canvas.drawLine(
+        c + Offset(-h * 0.28, h * 0.22),
+        c + Offset(h * 0.28, -h * 0.22),
+        _line(device, h * 0.07),
+      );
+      canvas.drawLine(
+        c + Offset(-h * 0.28, -h * 0.22),
+        c + Offset(h * 0.28, h * 0.22),
+        _line(device, h * 0.07),
+      );
     case 'crown':
       canvas.drawPath(strip(-0.5, 0.5, end: 0.8), _fill(cloth));
       final cc = Offset(mast.dx - length * 0.4, mast.dy + wave(0.4));
       canvas.drawPath(
-          Path()
-            ..moveTo(cc.dx - h * 0.3, cc.dy + h * 0.15)
-            ..lineTo(cc.dx - h * 0.3, cc.dy - h * 0.1)
-            ..lineTo(cc.dx - h * 0.15, cc.dy + h * 0.02)
-            ..lineTo(cc.dx, cc.dy - h * 0.18)
-            ..lineTo(cc.dx + h * 0.15, cc.dy + h * 0.02)
-            ..lineTo(cc.dx + h * 0.3, cc.dy - h * 0.1)
-            ..lineTo(cc.dx + h * 0.3, cc.dy + h * 0.15)
-            ..close(),
-          _fill(device));
+        Path()
+          ..moveTo(cc.dx - h * 0.3, cc.dy + h * 0.15)
+          ..lineTo(cc.dx - h * 0.3, cc.dy - h * 0.1)
+          ..lineTo(cc.dx - h * 0.15, cc.dy + h * 0.02)
+          ..lineTo(cc.dx, cc.dy - h * 0.18)
+          ..lineTo(cc.dx + h * 0.15, cc.dy + h * 0.02)
+          ..lineTo(cc.dx + h * 0.3, cc.dy - h * 0.1)
+          ..lineTo(cc.dx + h * 0.3, cc.dy + h * 0.15)
+          ..close(),
+        _fill(device),
+      );
     case 'void':
       final glow = 0.35 + 0.15 * math.sin(t * 3);
       canvas.drawPath(
-          strip(-0.55, 0.55, end: 1.1),
-          _fill(device.withValues(alpha: glow))
-            ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 4));
+        strip(-0.55, 0.55, end: 1.1),
+        _fill(device.withValues(alpha: glow))
+          ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 4),
+      );
       canvas.drawPath(strip(-0.5, 0.5, end: 1.0, fork: true), _fill(cloth));
       canvas.drawPath(strip(-0.1, 0.1, end: 0.8), _fill(device));
     default:

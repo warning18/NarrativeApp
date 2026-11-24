@@ -51,8 +51,10 @@ Future<TurnInChoice?> showTurnInChoiceDialog(
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              Text(tr(ref, 'turn_in_choice_title'),
-                  style: theme.textTheme.titleSmall),
+              Text(
+                tr(ref, 'turn_in_choice_title'),
+                style: theme.textTheme.titleSmall,
+              ),
               const SizedBox(height: 12),
               for (final (i, choice) in choices.indexed) ...[
                 _tile(
@@ -74,22 +76,26 @@ Future<TurnInChoice?> showTurnInChoiceDialog(
                                 '${signed(choice.alignmentFor(questAlignment))}',
                         ].join(' · '),
                         style: theme.textTheme.labelSmall?.copyWith(
-                            color: theme.colorScheme.onSurfaceVariant),
+                          color: theme.colorScheme.onSurfaceVariant,
+                        ),
                       ),
                       if (hintOf(choice).isNotEmpty)
                         Opacity(
                           opacity: 0.7,
                           child: Row(
                             children: [
-                              const Icon(Icons.flag_outlined,
-                                  size: IconSize.inline),
+                              const Icon(
+                                Icons.flag_outlined,
+                                size: IconSize.inline,
+                              ),
                               const SizedBox(width: 4),
                               Flexible(
                                 child: Text(
                                   hintOf(choice),
                                   key: Key('turn_in_politics_hint_$i'),
-                                  style: theme.textTheme.labelSmall
-                                      ?.copyWith(fontStyle: FontStyle.italic),
+                                  style: theme.textTheme.labelSmall?.copyWith(
+                                    fontStyle: FontStyle.italic,
+                                  ),
                                 ),
                               ),
                             ],

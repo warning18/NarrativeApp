@@ -37,8 +37,10 @@ class WindBanner extends StatefulWidget {
 
 class _WindBannerState extends State<WindBanner>
     with SingleTickerProviderStateMixin {
-  late final AnimationController _clock =
-      AnimationController(vsync: this, duration: widget.period);
+  late final AnimationController _clock = AnimationController(
+    vsync: this,
+    duration: widget.period,
+  );
   bool _still = false;
 
   @override
@@ -158,7 +160,11 @@ class WindPainter extends CustomPainter {
         image,
         Rect.fromLTWH(0, y.toDouble(), w, _strip.toDouble()),
         Rect.fromLTWH(
-            left + dx.roundToDouble(), top, w, math.max(1, bottom - top)),
+          left + dx.roundToDouble(),
+          top,
+          w,
+          math.max(1, bottom - top),
+        ),
         paint,
       );
     }

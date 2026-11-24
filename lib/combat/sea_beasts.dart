@@ -31,8 +31,10 @@ class BeastProfile {
       regen: max(0, (spec['regen'] as num?)?.toInt() ?? 0),
       diveEvery: max(0, (spec['diveEvery'] as num?)?.toInt() ?? 0),
       breach: max(0, (spec['breach'] as num?)?.toInt() ?? 0),
-      fleeShare:
-          ((spec['fleeShare'] as num?)?.toDouble() ?? 0.3).clamp(0.0, 1.0),
+      fleeShare: ((spec['fleeShare'] as num?)?.toDouble() ?? 0.3).clamp(
+        0.0,
+        1.0,
+      ),
       edge: max(0, edge),
     );
   }
@@ -200,8 +202,9 @@ int beastEdge(BeastState state, {required bool hunt}) =>
 /// The hull a beast of [maxHull] starts a battle with, carrying [state]'s
 /// wounds.
 int beastStartHull(int maxHull, BeastState state) => max(
-    maxHull - (maxHull * maxWoundShare).round(),
-    maxHull - max(0, state.wounds));
+      maxHull - (maxHull * maxWoundShare).round(),
+      maxHull - max(0, state.wounds),
+    );
 
 /// The wounds a beast of [maxHull] carries away from a battle it ended
 /// with [hullAtEnd].
@@ -242,10 +245,12 @@ String? rollBeastEncounter({
           beastWaters(enemyShips[id] as Map<String, dynamic>).contains(chapter))
         id,
   ];
-  final firstLook = roaming.any((id) =>
-      !(beasts[id]?.seen ?? false) &&
-      beastWaters(enemyShips[id] as Map<String, dynamic>).reduce(min) ==
-          chapter);
+  final firstLook = roaming.any(
+    (id) =>
+        !(beasts[id]?.seen ?? false) &&
+        beastWaters(enemyShips[id] as Map<String, dynamic>).reduce(min) ==
+            chapter,
+  );
   final chance = firstLook ? firstWatersEncounterChance : beastEncounterChance;
   if (roaming.isEmpty || random.nextDouble() >= chance) return null;
   return roaming[random.nextInt(roaming.length)];

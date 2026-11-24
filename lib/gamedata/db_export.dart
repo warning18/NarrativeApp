@@ -48,10 +48,9 @@ String recordsCsv(DbSchema schema, Map<String, dynamic> records) {
   final out = StringBuffer(_bom)..write(_row(['id', ...columns]));
   for (final entry in records.entries) {
     final record = entry.value is Map ? entry.value as Map : const {};
-    out.write(_row([
-      entry.key,
-      for (final column in columns) _cell(record[column]),
-    ]));
+    out.write(
+      _row([entry.key, for (final column in columns) _cell(record[column])]),
+    );
   }
   return out.toString();
 }
@@ -65,12 +64,14 @@ String allRecordsCsv(Map<String, Map<String, dynamic>> collections) {
     for (final record in collection.value.entries) {
       final fields = record.value is Map ? record.value as Map : const {};
       for (final field in fields.entries) {
-        out.write(_row([
-          collection.key,
-          record.key,
-          field.key.toString(),
-          _cell(field.value),
-        ]));
+        out.write(
+          _row([
+            collection.key,
+            record.key,
+            field.key.toString(),
+            _cell(field.value),
+          ]),
+        );
       }
     }
   }
@@ -104,14 +105,19 @@ List<RecordText> recordTexts(Map record, {Set<String> schemaKeys = const {}}) {
 /// `…Name`, `…Text`, `…Line(s)`, `…Title`, `…Label`, `…Message`,
 /// `…Description`, `…Hint`, `…Dialogue`.
 final RegExp _textKey = RegExp(
-    r'(name|text|lines?|title|label|message|description|hint|dialogue)$',
-    caseSensitive: false);
+  r'(name|text|lines?|title|label|message|description|hint|dialogue)$',
+  caseSensitive: false,
+);
 
 bool _isWords(Object? value) =>
     value is String || (value is List && value.every((e) => e is String));
 
 void _collectTexts(
-    Map map, String prefix, Set<String> schemaKeys, List<RecordText> out) {
+  Map map,
+  String prefix,
+  Set<String> schemaKeys,
+  List<RecordText> out,
+) {
   final keys = [for (final key in map.keys) key.toString()];
   bool known(String key) => map.containsKey(key) || schemaKeys.contains(key);
   String? twinOf(String key) {
@@ -137,8 +143,11 @@ void _collectTexts(
       final en = english is List ? english : const [];
       final fr = french is List ? french : const [];
       for (var i = 0; i < en.length || i < fr.length; i++) {
-        emit('$path[$i]', i < en.length ? en[i] : null,
-            i < fr.length ? fr[i] : null);
+        emit(
+          '$path[$i]',
+          i < en.length ? en[i] : null,
+          i < fr.length ? fr[i] : null,
+        );
       }
       return;
     }
@@ -190,8 +199,9 @@ String textsCsv(List<(DbSchema, Map<String, dynamic>)> collections) {
     for (final record in records.entries) {
       if (record.value is! Map) continue;
       for (final text in recordTexts(record.value as Map, schemaKeys: keys)) {
-        out.write(_row(
-            [schema.id, record.key, text.path, text.english, text.french]));
+        out.write(
+          _row([schema.id, record.key, text.path, text.english, text.french]),
+        );
       }
     }
   }

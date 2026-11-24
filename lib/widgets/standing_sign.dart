@@ -148,20 +148,22 @@ class _StandingSignPainter extends CustomPainter {
     final inner = rim ? r - size.width * 0.07 : r;
     canvas.drawCircle(c, inner, Paint()..color = Palette.night8c);
     canvas.drawCircle(
-        c,
-        inner - 0.75,
-        Paint()
-          ..style = PaintingStyle.stroke
-          ..strokeWidth = size.width < 20 ? 1.2 : 1.5
-          ..color = colour);
+      c,
+      inner - 0.75,
+      Paint()
+        ..style = PaintingStyle.stroke
+        ..strokeWidth = size.width < 20 ? 1.2 : 1.5
+        ..color = colour,
+    );
     if (rim) {
       canvas.drawCircle(
-          c,
-          r - 0.6,
-          Paint()
-            ..style = PaintingStyle.stroke
-            ..strokeWidth = size.width < 20 ? 0.9 : 1
-            ..color = colour.withValues(alpha: 0.75));
+        c,
+        r - 0.6,
+        Paint()
+          ..style = PaintingStyle.stroke
+          ..strokeWidth = size.width < 20 ? 0.9 : 1
+          ..color = colour.withValues(alpha: 0.75),
+      );
     }
     final px = (size.width * 0.62) / 7;
     final origin = c - Offset(px * 3.5, px * 3.5);
@@ -173,8 +175,9 @@ class _StandingSignPainter extends CustomPainter {
       for (var x = 0; x < 7; x++) {
         if (rows[y][x] == '#') {
           canvas.drawRect(
-              Rect.fromLTWH(origin.dx + x * px, origin.dy + y * px, px, px),
-              paint);
+            Rect.fromLTWH(origin.dx + x * px, origin.dy + y * px, px, px),
+            paint,
+          );
         }
       }
     }

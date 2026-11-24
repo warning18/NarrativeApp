@@ -58,7 +58,9 @@ class StatusEffect {
 /// instead of compounding into an ever-growing tick, which would make
 /// dogpiling a single status trivially dominant over any other tactic.
 List<StatusEffect> applyStatusEffect(
-    List<StatusEffect> current, StatusEffect incoming) {
+  List<StatusEffect> current,
+  StatusEffect incoming,
+) {
   return [
     for (final effect in current)
       if (effect.type != incoming.type) effect,

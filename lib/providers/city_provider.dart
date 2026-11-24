@@ -20,12 +20,15 @@ const String cityPlansAssetPath = 'assets/gamedata/city_plans.json';
 
 /// Every city's plan (board 15, see city_plan_record.dart), by city id;
 /// empty if the file is missing.
-final cityPlanRecordsProvider =
-    FutureProvider<Map<String, CityPlanRecord>>((ref) async {
+final cityPlanRecordsProvider = FutureProvider<Map<String, CityPlanRecord>>((
+  ref,
+) async {
   try {
     // Read off the main thread (v1.741): 715 KB, about 17 ms there.
     return await compute(
-        _cityPlansFrom, await rootBundle.loadString(cityPlansAssetPath));
+      _cityPlansFrom,
+      await rootBundle.loadString(cityPlansAssetPath),
+    );
   } catch (_) {
     return const {};
   }
@@ -83,10 +86,11 @@ final foundDistrictsProvider = Provider<Set<String>>((ref) {
   final city = ref.watch(currentCityProvider);
   final story = ref.watch(storyDataProvider).value;
   if (city == null || story == null) return const {};
-  final play = ref.watch(storyPlayProvider.select((p) => (
-        visitedNodeIds: p.visitedNodeIds,
-        currentNodeId: p.currentNodeId,
-      )));
+  final play = ref.watch(
+    storyPlayProvider.select(
+      (p) => (visitedNodeIds: p.visitedNodeIds, currentNodeId: p.currentNodeId),
+    ),
+  );
   return foundDistricts(
     ref.watch(geographyProvider),
     story,
@@ -94,8 +98,9 @@ final foundDistrictsProvider = Provider<Set<String>>((ref) {
     visitedNodeIds: play.visitedNodeIds,
     currentNodeId: play.currentNodeId,
     flags: ref.watch(playerSessionProvider.select((s) => s.flags)),
-    completedQuestIds:
-        ref.watch(playerSessionProvider.select((s) => s.completedQuestIds)),
+    completedQuestIds: ref.watch(
+      playerSessionProvider.select((s) => s.completedQuestIds),
+    ),
   );
 });
 
@@ -175,12 +180,18 @@ Future<bool> walkToDistrict(WidgetRef ref, String districtId) async {
   if (city == null || geo.locationOf(districtId)?.id != city) return false;
   final session = ref.read(playerSessionProvider);
   if (districtLocked(
-      geo, districtId, session.flags, session.completedQuestIds)) {
+    geo,
+    districtId,
+    session.flags,
+    session.completedQuestIds,
+  )) {
     return false;
   }
   final nodeId = ref.read(storyPlayProvider).currentNodeId;
-  ref.read(_walkedDistrictProvider.notifier).state =
-      (nodeId: nodeId, districtId: districtId);
+  ref.read(_walkedDistrictProvider.notifier).state = (
+    nodeId: nodeId,
+    districtId: districtId,
+  );
   final flag = districtFoundFlag(districtId);
   if (!ref.read(playerSessionProvider).flags.contains(flag)) {
     await ref
@@ -198,7 +209,8 @@ Future<bool> walkToDistrict(WidgetRef ref, String districtId) async {
 /// list of places.
 final _standingAtPlaceProvider =
     StateProvider<({String nodeId, String districtId, String placeId})?>(
-        (ref) => null);
+  (ref) => null,
+);
 
 /// The id of the place (WayPlace.id) the party stands at in its district
 /// (see [_standingAtPlaceProvider]), or null when it is at the list.
@@ -245,8 +257,9 @@ final districtPlacesProvider = Provider<List<WayPlaceEntry>>((ref) {
   final geo = ref.watch(geographyProvider);
   // Only what the locks read: a purse or a clock changing redraws nothing.
   final flags = ref.watch(playerSessionProvider.select((s) => s.flags));
-  final completed =
-      ref.watch(playerSessionProvider.select((s) => s.completedQuestIds));
+  final completed = ref.watch(
+    playerSessionProvider.select((s) => s.completedQuestIds),
+  );
   return districtPlaces(
     node,
     story: story!,

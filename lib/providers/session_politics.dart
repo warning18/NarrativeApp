@@ -20,8 +20,15 @@ mixin _PoliticsActions on _SessionNotifierBase {
     required String cause,
     int? chapter,
   }) async {
-    final result = applyStandingChange(state.politics, factionId, delta, cause,
-        data: data, chapter: _politicsChapter(chapter), day: state.day);
+    final result = applyStandingChange(
+      state.politics,
+      factionId,
+      delta,
+      cause,
+      data: data,
+      chapter: _politicsChapter(chapter),
+      day: state.day,
+    );
     if (!result.changed) return result;
     state = _withTitles(state.copyWith(politics: result.state), data);
     await _persist();
@@ -38,8 +45,14 @@ mixin _PoliticsActions on _SessionNotifierBase {
     int? chapter,
   }) async {
     final result = clan_rules.setSubclanMark(
-        state.politics, subclanId, mark, cause,
-        data: data, chapter: _politicsChapter(chapter), day: state.day);
+      state.politics,
+      subclanId,
+      mark,
+      cause,
+      data: data,
+      chapter: _politicsChapter(chapter),
+      day: state.day,
+    );
     if (!result.changed) return false;
     state = _withTitles(state.copyWith(politics: result.state), data);
     await _persist();
@@ -57,8 +70,16 @@ mixin _PoliticsActions on _SessionNotifierBase {
     required String cause,
     int? chapter,
   }) async {
-    final result = clan_rules.shiftRelation(state.politics, a, b, steps, cause,
-        data: data, chapter: _politicsChapter(chapter), day: state.day);
+    final result = clan_rules.shiftRelation(
+      state.politics,
+      a,
+      b,
+      steps,
+      cause,
+      data: data,
+      chapter: _politicsChapter(chapter),
+      day: state.day,
+    );
     if (!result.changed) return false;
     state = _withTitles(state.copyWith(politics: result.state), data);
     await _persist();
@@ -73,8 +94,15 @@ mixin _PoliticsActions on _SessionNotifierBase {
     required ClanData data,
     int? chapter,
   }) async {
-    final result = setStandingValue(state.politics, factionId, value, 'edit',
-        data: data, chapter: _politicsChapter(chapter), day: state.day);
+    final result = setStandingValue(
+      state.politics,
+      factionId,
+      value,
+      'edit',
+      data: data,
+      chapter: _politicsChapter(chapter),
+      day: state.day,
+    );
     if (!result.changed) return;
     state = _withTitles(state.copyWith(politics: result.state), data);
     await _persist();
@@ -94,8 +122,11 @@ mixin _PoliticsActions on _SessionNotifierBase {
   /// The world the politics rules read now: [data], [events], the chapter
   /// (see [_politicsChapter]) and the story's day.
   CoastWorld _coastWorld(
-          ClanData data, Map<String, PoliticsEvent> events, int? chapter,
-          [Geography? geography]) =>
+    ClanData data,
+    Map<String, PoliticsEvent> events,
+    int? chapter, [
+    Geography? geography,
+  ]) =>
       CoastWorld(
         data: data,
         events: events,
@@ -111,8 +142,11 @@ mixin _PoliticsActions on _SessionNotifierBase {
   /// companions an intrigue moved (one who `leaves` walks out for good,
   /// one who `disapproves` thinks less of the character), the titles it
   /// gave (worn when none is) and those standing and remembrance earn.
-  void _takeCoastChange(CoastChange change, ClanData data,
-      {Map<String, dynamic> companions = const {}}) {
+  void _takeCoastChange(
+    CoastChange change,
+    ClanData data, {
+    Map<String, dynamic> companions = const {},
+  }) {
     var next = state.copyWith(
       politics: change.politics,
       flags: change.flags,
@@ -120,9 +154,10 @@ mixin _PoliticsActions on _SessionNotifierBase {
         ...state.pendingOffers,
         for (final o in change.offers)
           OfferTicket(
-              source: OfferSource.story,
-              detail: o.cause,
-              factionId: o.factionId),
+            source: OfferSource.story,
+            detail: o.cause,
+            factionId: o.factionId,
+          ),
       ],
     );
     for (final id in change.titles) {
@@ -143,8 +178,9 @@ mixin _PoliticsActions on _SessionNotifierBase {
     }
     state = next;
     for (final turn in change.companions) {
-      if (!state.recruitedAllies
-          .any((a) => a.companionId == turn.companionId)) {
+      if (!state.recruitedAllies.any(
+        (a) => a.companionId == turn.companionId,
+      )) {
         continue;
       }
       switch (turn.change) {
@@ -156,12 +192,14 @@ mixin _PoliticsActions on _SessionNotifierBase {
           final by = turn.change == 'approves'
               ? PlayerSessionNotifier.intrigueApprovalShift
               : -PlayerSessionNotifier.intrigueApprovalShift;
-          state = state.copyWith(recruitedAllies: [
-            for (final a in state.recruitedAllies)
-              a.companionId == turn.companionId
-                  ? a.copyWith(approval: approvalAfter(a.approval, by))
-                  : a,
-          ]);
+          state = state.copyWith(
+            recruitedAllies: [
+              for (final a in state.recruitedAllies)
+                a.companionId == turn.companionId
+                    ? a.copyWith(approval: approvalAfter(a.approval, by))
+                    : a,
+            ],
+          );
       }
     }
     state = _withTitles(state, data);
@@ -184,12 +222,14 @@ mixin _PoliticsActions on _SessionNotifierBase {
     int? chapter,
     String? cause,
   }) async {
-    final change = coast.applyStoryPolitics(politics,
-        cause: cause ?? 'story:$nodeId',
-        key: key,
-        politics: state.politics,
-        flags: state.flags,
-        world: _coastWorld(data, events, chapter, geography));
+    final change = coast.applyStoryPolitics(
+      politics,
+      cause: cause ?? 'story:$nodeId',
+      key: key,
+      politics: state.politics,
+      flags: state.flags,
+      world: _coastWorld(data, events, chapter, geography),
+    );
     if (!change.applied) return change;
     _takeCoastChange(change, data, companions: companions);
     _syncHeld(geography);
@@ -211,9 +251,10 @@ mixin _PoliticsActions on _SessionNotifierBase {
     int? chapter,
   }) async {
     final change = runDueEvents(
-        politics: state.politics,
-        flags: state.flags,
-        world: _coastWorld(data, events, chapter, geography));
+      politics: state.politics,
+      flags: state.flags,
+      world: _coastWorld(data, events, chapter, geography),
+    );
     if (!change.applied) return change;
     _takeCoastChange(change, data, companions: companions);
     _syncHeld(geography);
@@ -231,11 +272,13 @@ mixin _PoliticsActions on _SessionNotifierBase {
     Map<String, dynamic> companions = const {},
     int? chapter,
   }) async {
-    final change = fireEvent(eventId,
-        politics: state.politics,
-        flags: state.flags,
-        world: _coastWorld(data, events, chapter, geography),
-        force: true);
+    final change = fireEvent(
+      eventId,
+      politics: state.politics,
+      flags: state.flags,
+      world: _coastWorld(data, events, chapter, geography),
+      force: true,
+    );
     if (!change.applied) return change;
     _takeCoastChange(change, data, companions: companions);
     _syncHeld(geography);
@@ -250,8 +293,9 @@ mixin _PoliticsActions on _SessionNotifierBase {
   void _syncHeld(Geography? geography) {
     if (geography == null || geography.isEmpty) return;
     final flags = syncSiegeFlags(
-        influence.syncHeldFlags(state.flags, geography, state.politics),
-        state.politics);
+      influence.syncHeldFlags(state.flags, geography, state.politics),
+      state.politics,
+    );
     if (!identical(flags, state.flags)) {
       state = state.copyWith(flags: flags);
     }
@@ -273,12 +317,15 @@ mixin _PoliticsActions on _SessionNotifierBase {
     final random = _siegeRandom(chapter);
     var politics = state.politics;
     for (final siege in expired) {
-      politics = settleSiegeAway(politics, siege,
-          data: data,
-          geography: geography,
-          random: random,
-          chapter: chapter,
-          day: state.day);
+      politics = settleSiegeAway(
+        politics,
+        siege,
+        data: data,
+        geography: geography,
+        random: random,
+        chapter: chapter,
+        day: state.day,
+      );
     }
     state = state.copyWith(politics: politics);
     _syncHeld(geography);
@@ -317,17 +364,22 @@ mixin _PoliticsActions on _SessionNotifierBase {
     String? partyDistrict,
     int chapter = 0,
   }) async {
-    final result = influence.applyQuestInfluence(state.politics, quest,
-        flags: state.flags,
-        data: data,
-        geography: geography,
-        picked: picked,
-        partyDistrict: partyDistrict,
-        chapter: chapter,
-        day: state.day);
+    final result = influence.applyQuestInfluence(
+      state.politics,
+      quest,
+      flags: state.flags,
+      data: data,
+      geography: geography,
+      picked: picked,
+      partyDistrict: partyDistrict,
+      chapter: chapter,
+      day: state.day,
+    );
     if (!result.counted) return result;
     state = _withTitles(
-        state.copyWith(politics: result.state, flags: result.flags), data);
+      state.copyWith(politics: result.state, flags: result.flags),
+      data,
+    );
     await _persist();
     return result;
   }
@@ -341,11 +393,13 @@ mixin _PoliticsActions on _SessionNotifierBase {
     Map<String, PoliticsEvent> events = const {},
     int? chapter,
   }) async {
-    final change = coast.applyStoryPolitics(politics,
-        cause: 'edit',
-        politics: state.politics,
-        flags: state.flags,
-        world: _coastWorld(data, events, chapter));
+    final change = coast.applyStoryPolitics(
+      politics,
+      cause: 'edit',
+      politics: state.politics,
+      flags: state.flags,
+      world: _coastWorld(data, events, chapter),
+    );
     _takeCoastChange(change, data);
     await _persist();
     return change;
@@ -353,8 +407,11 @@ mixin _PoliticsActions on _SessionNotifierBase {
 
   /// Edit Mode: [factionId]'s clan quest at [steps] (0..3): the flags
   /// `clan_<id>_step_1` up to it held, those past it dropped.
-  Future<void> setClanStepsForEdit(String factionId, int steps,
-      {required ClanData data}) async {
+  Future<void> setClanStepsForEdit(
+    String factionId,
+    int steps, {
+    required ClanData data,
+  }) async {
     final keep = [
       for (var n = 1; n <= steps.clamp(0, clanQuestSteps); n++)
         clanStepFlag(factionId, n),
@@ -387,15 +444,20 @@ mixin _PoliticsActions on _SessionNotifierBase {
     };
     bool climbFlag(String f) => climb.contains(f) || isMusterFlag(f, ids);
     state = _withTitles(
-        state.copyWith(
-          politics: state.politics.copyWith(
-              claim: '', throneWinner: '', pledged: const [], host: Host.none),
-          flags: [
-            for (final f in state.flags)
-              if (!climbFlag(f)) f,
-          ],
+      state.copyWith(
+        politics: state.politics.copyWith(
+          claim: '',
+          throneWinner: '',
+          pledged: const [],
+          host: Host.none,
         ),
-        data);
+        flags: [
+          for (final f in state.flags)
+            if (!climbFlag(f)) f,
+        ],
+      ),
+      data,
+    );
     await _persist();
   }
 
@@ -403,9 +465,11 @@ mixin _PoliticsActions on _SessionNotifierBase {
   Future<void> markCoastNewsRead() async {
     if (state.politics.unreadNews.isEmpty) return;
     state = state.copyWith(
-      politics: state.politics.copyWith(news: [
-        for (final n in state.politics.news) n.read ? n : n.markedRead(),
-      ]),
+      politics: state.politics.copyWith(
+        news: [
+          for (final n in state.politics.news) n.read ? n : n.markedRead(),
+        ],
+      ),
     );
     await _persist();
   }
@@ -461,8 +525,12 @@ mixin _PoliticsActions on _SessionNotifierBase {
     required ClanData data,
     required Random random,
   }) async {
-    await changeStanding(hunterClan, spared ? spareStanding : finishStanding,
-        data: data, cause: spared ? 'mercy' : 'no_mercy');
+    await changeStanding(
+      hunterClan,
+      spared ? spareStanding : finishStanding,
+      data: data,
+      cause: spared ? 'mercy' : 'no_mercy',
+    );
     if (!spared) return false;
     final betrays =
         random.nextDouble() < betrayalChance(alignment, state.alignmentScore);

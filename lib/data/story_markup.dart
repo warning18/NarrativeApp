@@ -12,8 +12,12 @@ enum StoryNameKind { person, place, clan }
 
 /// One run of a paragraph: [text] with the same look all through.
 class StoryRun {
-  const StoryRun(this.text,
-      {this.bold = false, this.italic = false, this.kind});
+  const StoryRun(
+    this.text, {
+    this.bold = false,
+    this.italic = false,
+    this.kind,
+  });
 
   final String text;
   final bool bold;
@@ -60,15 +64,17 @@ class StoryNameMatcher {
   static RegExp? _compile(Iterable<String> names) {
     final sorted = [
       for (final n in names)
-        if (n.trim().length >= 3) n.trim()
+        if (n.trim().length >= 3) n.trim(),
     ]..sort((a, b) => b.length.compareTo(a.length));
     if (sorted.isEmpty) return null;
     final alternatives = sorted.map((n) {
       final escaped = RegExp.escape(n).replaceAll(RegExp("['’]"), "['’]");
       return escaped;
     }).join('|');
-    return RegExp('(?<![\\p{L}\\p{N}_])(?:$alternatives)(?![\\p{L}\\p{N}_])',
-        unicode: true);
+    return RegExp(
+      '(?<![\\p{L}\\p{N}_])(?:$alternatives)(?![\\p{L}\\p{N}_])',
+      unicode: true,
+    );
   }
 
   /// The names found in [text], in order and not overlapping.
@@ -85,7 +91,9 @@ class StoryNameMatcher {
 
 /// [text] without the markup: the `**` signs gone, the words as written.
 String stripStoryMarkup(String text) => text.replaceAllMapped(
-    RegExp(r'\*\*(?=\S)(.+?)(?<=\S)\*\*', dotAll: false), (m) => m.group(1)!);
+      RegExp(r'\*\*(?=\S)(.+?)(?<=\S)\*\*', dotAll: false),
+      (m) => m.group(1)!,
+    );
 
 final RegExp _paragraphBreak = RegExp(r'\n[ \t]*\n\s*');
 
@@ -109,17 +117,21 @@ List<List<StoryRun>> parseStoryText(
   ];
   return [
     for (final (i, p) in paragraphs.indexed)
-      _runsOf(p,
-          names: names,
-          italicQuotes: italicQuotes,
-          firstSentenceBold: firstSentenceBold && i == 0),
+      _runsOf(
+        p,
+        names: names,
+        italicQuotes: italicQuotes,
+        firstSentenceBold: firstSentenceBold && i == 0,
+      ),
   ];
 }
 
-List<StoryRun> _runsOf(String paragraph,
-    {required StoryNameMatcher? names,
-    required bool italicQuotes,
-    required bool firstSentenceBold}) {
+List<StoryRun> _runsOf(
+  String paragraph, {
+  required StoryNameMatcher? names,
+  required bool italicQuotes,
+  required bool firstSentenceBold,
+}) {
   // The bold ranges, over the text without its `**`.
   final plain = StringBuffer();
   final bold = <(int, int)>[];
@@ -180,16 +192,20 @@ List<StoryRun> _runsOf(String paragraph,
         .where((n) => a >= n.start && b <= n.end)
         .map((n) => n.kind)
         .firstOrNull;
-    runs.add(StoryRun(
-      text.substring(a, b),
-      bold: bold.any((r) => a >= r.$1 && b <= r.$2),
-      italic: italics.any((r) => a >= r.$1 && b <= r.$2),
-      kind: kind,
-    ));
+    runs.add(
+      StoryRun(
+        text.substring(a, b),
+        bold: bold.any((r) => a >= r.$1 && b <= r.$2),
+        italic: italics.any((r) => a >= r.$1 && b <= r.$2),
+        kind: kind,
+      ),
+    );
   }
   return runs;
 }
 
 /// The characters a text shows once marked up (what a typewriter counts).
 int storyTextLength(List<List<StoryRun>> paragraphs) => paragraphs.fold(
-    0, (sum, p) => sum + p.fold(0, (s, r) => s + r.text.length));
+      0,
+      (sum, p) => sum + p.fold(0, (s, r) => s + r.text.length),
+    );

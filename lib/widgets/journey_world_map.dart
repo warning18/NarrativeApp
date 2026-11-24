@@ -46,9 +46,10 @@ double worldMoveTimeScale = 1;
 /// How long a move over the world chart takes: slower than the Journey's
 /// own short walks (a tap skips it), longer for a longer road.
 Duration worldMoveDuration(WorldLegPath path) => Duration(
-    milliseconds: ((4200 + 45 * path.length).round().clamp(6000, 13000) *
-            worldMoveTimeScale)
-        .round());
+      milliseconds: ((4200 + 45 * path.length).round().clamp(6000, 13000) *
+              worldMoveTimeScale)
+          .round(),
+    );
 
 /// The walk's pace over a move's clock: the party stands while the camera
 /// closes in and again as it pulls back out.
@@ -101,8 +102,10 @@ abstract final class JourneyWorldMapZoom {
   /// diameter in pixels at zoom 1.
   static double fillFor(Size box, double ballAtOne) => ballAtOne <= 0
       ? 1
-      : (Offset(box.width, box.height).distance / ballAtOne)
-          .clamp(1.0, fillMax);
+      : (Offset(box.width, box.height).distance / ballAtOne).clamp(
+          1.0,
+          fillMax,
+        );
 
   /// The rungs the zoom buttons climb: the whole ball, the ball filling
   /// the box ([fill]), the district, the closest (past which the streets
@@ -220,7 +223,10 @@ class _JourneyWorldMapState extends ConsumerState<JourneyWorldMap>
   /// tint passes from the old ruler's colour over a second ([_handoverFade],
   /// 0 to 1; a town not in [_fadeFrom] does not fade), and a toast says so.
   late final AnimationController _handoverFade = AnimationController(
-      vsync: this, duration: const Duration(milliseconds: 1400), value: 1);
+    vsync: this,
+    duration: const Duration(milliseconds: 1400),
+    value: 1,
+  );
   Map<String, ({Color fill, Color accent})?> _fadeFrom = const {};
 
   /// Compares who rules each town with who ruled it when the world chart was
@@ -244,16 +250,16 @@ class _JourneyWorldMapState extends ConsumerState<JourneyWorldMap>
     final notifier = ref.read(playerSessionProvider.notifier);
     final rulers = ref.read(townRulersProvider);
     if (!notifier.isLoaded || rulers.isEmpty) return;
-    final changed =
-        townHandovers(ref.read(playerSessionProvider).seenTownRulers, rulers);
+    final changed = townHandovers(
+      ref.read(playerSessionProvider).seenTownRulers,
+      rulers,
+    );
     notifier.markTownRulersSeen(townRulerIds(rulers));
     if (changed.isEmpty) return;
     final recent = ref.read(recentHandoversProvider.notifier);
     recent.state = withRecentHandovers(recent.state, changed);
     final factions = ref.read(factionsProvider);
-    final colours = {
-      for (final e in factions.entries) e.key: e.value.color,
-    };
+    final colours = {for (final e in factions.entries) e.key: e.value.color};
     final changedTowns = {for (final h in changed) h.townId: h};
     final from = <String, ({Color fill, Color accent})?>{};
     for (final e in ref.read(landmarkRulersProvider).entries) {
@@ -270,16 +276,21 @@ class _JourneyWorldMapState extends ConsumerState<JourneyWorldMap>
         geography.places[id]?.nameFor(language == AppLanguage.fr) ?? id;
     final text = changed.length == 1
         ? changed.single.toClan.isEmpty
-            ? trFor(language, 'town_handover_none')
-                .replaceAll('{town}', townName(changed.single.townId))
+            ? trFor(
+                language,
+                'town_handover_none',
+              ).replaceAll('{town}', townName(changed.single.townId))
             : trFor(language, 'town_handover_to')
                 .replaceAll(
-                    '{clan}',
-                    factions[changed.single.toClan]?.shortFor(language) ??
-                        changed.single.toClan)
+                  '{clan}',
+                  factions[changed.single.toClan]?.shortFor(language) ??
+                      changed.single.toClan,
+                )
                 .replaceAll('{town}', townName(changed.single.townId))
-        : trFor(language, 'town_handover_many')
-            .replaceAll('{n}', '${changed.length}');
+        : trFor(
+            language,
+            'town_handover_many',
+          ).replaceAll('{n}', '${changed.length}');
     setState(() => _fadeFrom = from);
     if (MediaQuery.of(context).disableAnimations) {
       _handoverFade.value = 1;
@@ -287,7 +298,8 @@ class _JourneyWorldMapState extends ConsumerState<JourneyWorldMap>
       _handoverFade.forward(from: 0);
     }
     ScaffoldMessenger.maybeOf(context)?.showSnackBar(
-        SnackBar(key: const Key('town_handover_toast'), content: Text(text)));
+      SnackBar(key: const Key('town_handover_toast'), content: Text(text)),
+    );
   }
 
   /// Counts the ball's turns and zooms. Only the ball and its weather
@@ -307,7 +319,9 @@ class _JourneyWorldMapState extends ConsumerState<JourneyWorldMap>
   /// Glides the sphere from one zoom or turn to another, so a button or a
   /// change of level never jumps (v1.201.1).
   late final AnimationController _glide = AnimationController(
-      vsync: this, duration: const Duration(milliseconds: 320));
+    vsync: this,
+    duration: const Duration(milliseconds: 320),
+  );
   Animation<double>? _glideRadius;
   (Animation<double>, Animation<double>)? _glideTurn;
 
@@ -330,8 +344,10 @@ class _JourneyWorldMapState extends ConsumerState<JourneyWorldMap>
         CurvedAnimation(parent: _glide, curve: Curves.easeOutCubic);
     _glideRadius = zoom == null
         ? null
-        : Tween<double>(begin: g.radius, end: GlobeView.baseRadius * zoom)
-            .animate(curve());
+        : Tween<double>(
+            begin: g.radius,
+            end: GlobeView.baseRadius * zoom,
+          ).animate(curve());
     if (turnTo == null) {
       _glideTurn = null;
     } else {
@@ -355,8 +371,13 @@ class _JourneyWorldMapState extends ConsumerState<JourneyWorldMap>
       if (g == null) return;
       final radius = _glideRadius, turn = _glideTurn;
       if (radius == null && turn == null) return;
-      _setGlobe(g.copyWith(
-          radius: radius?.value, lon0: turn?.$1.value, lat0: turn?.$2.value));
+      _setGlobe(
+        g.copyWith(
+          radius: radius?.value,
+          lon0: turn?.$1.value,
+          lat0: turn?.$2.value,
+        ),
+      );
     });
     final move = widget.move, clock = widget.moveClock;
     if (move != null && clock != null) {
@@ -403,8 +424,10 @@ class _JourneyWorldMapState extends ConsumerState<JourneyWorldMap>
       return;
     }
     final w = _cameraAt(clock.value);
-    final (x, y) =
-        pointAlong(_walkPath, RegionFlightPainter.walkAt(clock.value));
+    final (x, y) = pointAlong(
+      _walkPath,
+      RegionFlightPainter.walkAt(clock.value),
+    );
     const middle = Offset(worldMapWidth / 2, worldMapHeight / 2);
     final centre = Offset.lerp(middle, Offset(x, y), w)!;
     final zoom = 1 + (_landZoom - 1) * w;
@@ -439,12 +462,16 @@ class _JourneyWorldMapState extends ConsumerState<JourneyWorldMap>
   /// first zoom fills the box's short side (v1.350; it was a 250 px ball,
   /// small on a phone).
   double _sphereK(Size box) => math.min(
-      box.shortestSide * 0.9 / (2 * GlobeView.baseRadius), sphereMaxScale);
+        box.shortestSide * 0.9 / (2 * GlobeView.baseRadius),
+        sphereMaxScale,
+      );
 
   /// The zoom at which the ball fills [box], corners included: what the
   /// world opens at, on the party.
   double _fillZoom(Size box) => JourneyWorldMapZoom.fillFor(
-      box, 2 * GlobeView.baseRadius * _sphereK(box));
+        box,
+        2 * GlobeView.baseRadius * _sphereK(box),
+      );
 
   /// How close a place asked for is framed.
   static const double _focusZoom = 2.4;
@@ -513,7 +540,10 @@ class _JourneyWorldMapState extends ConsumerState<JourneyWorldMap>
       _globe = geo.globeAt(geo.of(here), fill, centre);
     } else {
       _globe = geo.globeAt(
-          const Offset(worldMapWidth / 2, worldMapHeight / 2), 1, centre);
+        const Offset(worldMapWidth / 2, worldMapHeight / 2),
+        1,
+        centre,
+      );
     }
   }
 
@@ -539,8 +569,9 @@ class _JourneyWorldMapState extends ConsumerState<JourneyWorldMap>
     var next = g;
     if (d.pointerCount > 1) {
       next = next.copyWith(
-          radius: GlobeView.baseRadius *
-              (_pinchStartZoom * d.scale).clamp(1.0, _maxZoom));
+        radius: GlobeView.baseRadius *
+            (_pinchStartZoom * d.scale).clamp(1.0, _maxZoom),
+      );
     }
     final last = _dragLast;
     if (last != null) {
@@ -565,10 +596,11 @@ class _JourneyWorldMapState extends ConsumerState<JourneyWorldMap>
     if (_intoPlace()) return;
     final here = widget.here;
     _animateGlobe(
-        zoom: JourneyWorldMapZoom.stepIn(zoom, fill),
-        turnTo: here == null || (_walking && widget.moveClock != null)
-            ? null
-            : _geo.globeAt(_geo.of(here), 1, g.centre));
+      zoom: JourneyWorldMapZoom.stepIn(zoom, fill),
+      turnTo: here == null || (_walking && widget.moveClock != null)
+          ? null
+          : _geo.globeAt(_geo.of(here), 1, g.centre),
+    );
   }
 
   void _globeTap(Offset position, Size box) {
@@ -626,7 +658,9 @@ class _JourneyWorldMapState extends ConsumerState<JourneyWorldMap>
     }
     _diving = true;
     _animateGlobe(
-        zoom: _diveZoom, turnTo: _geo.globeAt(_geo.of(here), 1, g.centre));
+      zoom: _diveZoom,
+      turnTo: _geo.globeAt(_geo.of(here), 1, g.centre),
+    );
     void done(AnimationStatus status) {
       if (status != AnimationStatus.completed &&
           status != AnimationStatus.dismissed) {
@@ -666,186 +700,220 @@ class _JourneyWorldMapState extends ConsumerState<JourneyWorldMap>
     // The first look, a session read late, or a town changing hands while
     // the chart is up: see who rules what against what was seen.
     ref.listen(townRulersProvider, (_, __) => _queueHandoverCheck());
-    ref.listen(playerSessionProvider.select((s) => s.seenTownRulers),
-        (_, __) => _queueHandoverCheck());
+    ref.listen(
+      playerSessionProvider.select((s) => s.seenTownRulers),
+      (_, __) => _queueHandoverCheck(),
+    );
     // The ruling clan's tint under each town (wave 15).
     final townTints = {
       for (final e in ref.watch(landmarkRulersProvider).entries)
         e.key: (fill: Color(e.value.color), accent: Color(e.value.accent)),
     };
-    return LayoutBuilder(builder: (context, box) {
-      final boxSize = Size(box.maxWidth, box.maxHeight);
-      _box = boxSize;
-      _frameFor(boxSize);
-      GlobeView viewNow() => _globe!.copyWith(centre: _globeCentre(boxSize));
-      ChartMapPainter painter() => ChartMapPainter(
-            frame: _frame,
-            walk: _moveWalk ?? _walk,
-            geography: geo,
-            palette: widget.palette,
-            language: language,
-            discovered: widget.discovered,
-            legs: widget.legs,
-            ahead: widget.ahead,
-            selectedId: _selectedId ?? '',
-            here: widget.here,
-            walking: _walking,
-            walkPath: _walkPath,
-            chapterFilter: widget.chapterFilter,
-            reduceMotion: true,
-            chapterColor:
-                calque == ChartCalque.chapters || calque == ChartCalque.none
-                    ? widget.chapterColor
-                    : (_) => widget.palette.road,
-            fog: widget.fog,
-            calque: calque,
-            clanColours: clanColours,
-            zoneHolders: calque == ChartCalque.clans
-                ? chartZoneHolders(geo, ref.watch(geographyProvider), politics)
-                : null,
-            standingOf: standings,
-            shopPlaces: widget.shopPlaces,
-            campPlaces: widget.campPlaces,
-            townTints: townTints,
-            townTintsFrom: _fadeFrom,
-            townFade: _handoverFade,
-            heardOf: widget.heardOf,
-            goalId: widget.goalId,
-            globeOf: viewNow,
-            sphereScale: _sphereK(boxSize),
-            // Names stop short of the button column on the right.
-            labelInsetRight: _buttonSize + 12,
-            zoomOf: () => viewNow().zoom,
-            view: Listenable.merge([_repaint, _turned]),
-          );
-      // The sphere: the whole box is its sky; a drag turns it, a pinch
-      // brings it close, a tap picks a place on it.
-      final sphereChart = GestureDetector(
-        key: const ValueKey('journey_globe_canvas'),
-        behavior: HitTestBehavior.opaque,
-        onScaleStart: _onGlobeScaleStart,
-        onScaleUpdate: (d) => _onGlobeScaleUpdate(d, boxSize),
-        onScaleEnd: (_) {
-          _dragLast = null;
-          if ((_globe?.zoom ?? 1) > _pinchStartZoom) _intoPlace();
-        },
-        onTapUp: (d) => _globeTap(d.localPosition, boxSize),
-        child: SizedBox(
-          width: boxSize.width,
-          height: boxSize.height,
-          // The ball and its sky follow [_turned] themselves: a drag, a
-          // pinch or a glide repaints them and rebuilds nothing (a rebuild
-          // under this LayoutBuilder would lay it out again and repaint
-          // the whole screen).
-          child: RepaintBoundary(
-            child: Stack(
-              fit: StackFit.expand,
-              children: [
-                CustomPaint(painter: painter()),
-                if (weatherOn)
-                  ChartWeather(
-                    size: boxSize,
-                    geography: geo,
-                    palette: widget.palette,
-                    day: day,
-                    globeOf: viewNow,
-                    turned: _turned,
-                    sphereScale: _sphereK(boxSize),
-                    showOf: () =>
-                        !weatherWorldOnly ||
-                        viewNow().zoom < JourneyWorldMapZoom.land,
-                  ),
-              ],
-            ),
-          ),
-        ),
-      );
-      Widget button(String key, IconData icon, String tip, VoidCallback? onTap,
-          {bool on = false}) {
-        return Tooltip(
-          message: tip,
-          child: Material(
-            color: widget.palette.land.withValues(alpha: 0.9),
-            shape: RoundedRectangleBorder(
-              side: BorderSide(
-                  color: on ? widget.palette.mark : widget.palette.coast,
-                  width: 2),
-            ),
-            child: InkWell(
-              key: Key(key),
-              onTap: onTap,
-              child: SizedBox(
-                width: _buttonSize,
-                height: _buttonSize,
-                child: Icon(icon,
-                    size: IconSize.s16,
-                    color: on ? widget.palette.mark : widget.palette.place),
+    return LayoutBuilder(
+      builder: (context, box) {
+        final boxSize = Size(box.maxWidth, box.maxHeight);
+        _box = boxSize;
+        _frameFor(boxSize);
+        GlobeView viewNow() => _globe!.copyWith(centre: _globeCentre(boxSize));
+        ChartMapPainter painter() => ChartMapPainter(
+              frame: _frame,
+              walk: _moveWalk ?? _walk,
+              geography: geo,
+              palette: widget.palette,
+              language: language,
+              discovered: widget.discovered,
+              legs: widget.legs,
+              ahead: widget.ahead,
+              selectedId: _selectedId ?? '',
+              here: widget.here,
+              walking: _walking,
+              walkPath: _walkPath,
+              chapterFilter: widget.chapterFilter,
+              reduceMotion: true,
+              chapterColor:
+                  calque == ChartCalque.chapters || calque == ChartCalque.none
+                      ? widget.chapterColor
+                      : (_) => widget.palette.road,
+              fog: widget.fog,
+              calque: calque,
+              clanColours: clanColours,
+              zoneHolders: calque == ChartCalque.clans
+                  ? chartZoneHolders(
+                      geo, ref.watch(geographyProvider), politics)
+                  : null,
+              standingOf: standings,
+              shopPlaces: widget.shopPlaces,
+              campPlaces: widget.campPlaces,
+              townTints: townTints,
+              townTintsFrom: _fadeFrom,
+              townFade: _handoverFade,
+              heardOf: widget.heardOf,
+              goalId: widget.goalId,
+              globeOf: viewNow,
+              sphereScale: _sphereK(boxSize),
+              // Names stop short of the button column on the right.
+              labelInsetRight: _buttonSize + 12,
+              zoomOf: () => viewNow().zoom,
+              view: Listenable.merge([_repaint, _turned]),
+            );
+        // The sphere: the whole box is its sky; a drag turns it, a pinch
+        // brings it close, a tap picks a place on it.
+        final sphereChart = GestureDetector(
+          key: const ValueKey('journey_globe_canvas'),
+          behavior: HitTestBehavior.opaque,
+          onScaleStart: _onGlobeScaleStart,
+          onScaleUpdate: (d) => _onGlobeScaleUpdate(d, boxSize),
+          onScaleEnd: (_) {
+            _dragLast = null;
+            if ((_globe?.zoom ?? 1) > _pinchStartZoom) _intoPlace();
+          },
+          onTapUp: (d) => _globeTap(d.localPosition, boxSize),
+          child: SizedBox(
+            width: boxSize.width,
+            height: boxSize.height,
+            // The ball and its sky follow [_turned] themselves: a drag, a
+            // pinch or a glide repaints them and rebuilds nothing (a rebuild
+            // under this LayoutBuilder would lay it out again and repaint
+            // the whole screen).
+            child: RepaintBoundary(
+              child: Stack(
+                fit: StackFit.expand,
+                children: [
+                  CustomPaint(painter: painter()),
+                  if (weatherOn)
+                    ChartWeather(
+                      size: boxSize,
+                      geography: geo,
+                      palette: widget.palette,
+                      day: day,
+                      globeOf: viewNow,
+                      turned: _turned,
+                      sphereScale: _sphereK(boxSize),
+                      showOf: () =>
+                          !weatherWorldOnly ||
+                          viewNow().zoom < JourneyWorldMapZoom.land,
+                    ),
+                ],
               ),
             ),
           ),
         );
-      }
+        Widget button(
+          String key,
+          IconData icon,
+          String tip,
+          VoidCallback? onTap, {
+          bool on = false,
+        }) {
+          return Tooltip(
+            message: tip,
+            child: Material(
+              color: widget.palette.land.withValues(alpha: 0.9),
+              shape: RoundedRectangleBorder(
+                side: BorderSide(
+                  color: on ? widget.palette.mark : widget.palette.coast,
+                  width: 2,
+                ),
+              ),
+              child: InkWell(
+                key: Key(key),
+                onTap: onTap,
+                child: SizedBox(
+                  width: _buttonSize,
+                  height: _buttonSize,
+                  child: Icon(
+                    icon,
+                    size: IconSize.s16,
+                    color: on ? widget.palette.mark : widget.palette.place,
+                  ),
+                ),
+              ),
+            ),
+          );
+        }
 
-      return Stack(
-        children: [
-          Positioned.fill(
-            child: ColoredBox(color: widget.palette.fog, child: sphereChart),
-          ),
-          Positioned(
-            right: 8,
-            top: 8,
-            // On their own layer: a press's ripple repaints the buttons,
-            // not the screen.
-            child: RepaintBoundary(
-                child: Column(
-              children: [
-                button('journey_layers', Icons.layers_outlined,
-                    tr(ref, 'journey_calques'), widget.onLayers,
-                    on: calque != ChartCalque.none),
-                const SizedBox(height: 6),
-                if (widget.onFullMap != null) ...[
-                  button('journey_full_map', Icons.fullscreen,
-                      tr(ref, 'map_full_open'), widget.onFullMap),
-                  const SizedBox(height: 6),
-                ],
-                button('journey_recentre', Icons.my_location,
-                    tr(ref, 'journey_recentre'), () {
-                  // Mid-move, the button gives the camera back to the party.
-                  if (_cameraFree && _walking) {
-                    setState(() => _cameraFree = false);
-                    _followMove();
-                    return;
-                  }
-                  final here = widget.here;
-                  final g = _globe;
-                  if (here == null || g == null) return;
-                  // Glides back to the party (v1.201.1), no further out
-                  // than the zoom that fills the box.
-                  _animateGlobe(
-                      zoom: math.max(g.zoom, _fillZoom(boxSize)),
-                      turnTo: geo.globeAt(geo.of(here), 1, g.centre));
-                }, on: _cameraFree && _walking),
-                const SizedBox(height: 6),
-                button(
-                    'journey_zoom_in', Icons.add, tr(ref, 'world_map_zoom_in'),
-                    () {
-                  _takeCamera();
-                  _globeZoom(1.5);
-                }),
-                const SizedBox(height: 6),
-                button('journey_zoom_out', Icons.remove,
-                    tr(ref, 'world_map_zoom_out'), () {
-                  _takeCamera();
-                  _globeZoom(1 / 1.5);
-                }),
-              ],
-            )),
-          ),
-          if (calque == ChartCalque.clans)
+        return Stack(
+          children: [
+            Positioned.fill(
+              child: ColoredBox(color: widget.palette.fog, child: sphereChart),
+            ),
             Positioned(
-              left: 8,
-              bottom: 8,
-              child: _ClanLegend(
+              right: 8,
+              top: 8,
+              // On their own layer: a press's ripple repaints the buttons,
+              // not the screen.
+              child: RepaintBoundary(
+                child: Column(
+                  children: [
+                    button(
+                      'journey_layers',
+                      Icons.layers_outlined,
+                      tr(ref, 'journey_calques'),
+                      widget.onLayers,
+                      on: calque != ChartCalque.none,
+                    ),
+                    const SizedBox(height: 6),
+                    if (widget.onFullMap != null) ...[
+                      button(
+                        'journey_full_map',
+                        Icons.fullscreen,
+                        tr(ref, 'map_full_open'),
+                        widget.onFullMap,
+                      ),
+                      const SizedBox(height: 6),
+                    ],
+                    button(
+                      'journey_recentre',
+                      Icons.my_location,
+                      tr(ref, 'journey_recentre'),
+                      () {
+                        // Mid-move, the button gives the camera back to the party.
+                        if (_cameraFree && _walking) {
+                          setState(() => _cameraFree = false);
+                          _followMove();
+                          return;
+                        }
+                        final here = widget.here;
+                        final g = _globe;
+                        if (here == null || g == null) return;
+                        // Glides back to the party (v1.201.1), no further out
+                        // than the zoom that fills the box.
+                        _animateGlobe(
+                          zoom: math.max(g.zoom, _fillZoom(boxSize)),
+                          turnTo: geo.globeAt(geo.of(here), 1, g.centre),
+                        );
+                      },
+                      on: _cameraFree && _walking,
+                    ),
+                    const SizedBox(height: 6),
+                    button(
+                      'journey_zoom_in',
+                      Icons.add,
+                      tr(ref, 'world_map_zoom_in'),
+                      () {
+                        _takeCamera();
+                        _globeZoom(1.5);
+                      },
+                    ),
+                    const SizedBox(height: 6),
+                    button(
+                      'journey_zoom_out',
+                      Icons.remove,
+                      tr(ref, 'world_map_zoom_out'),
+                      () {
+                        _takeCamera();
+                        _globeZoom(1 / 1.5);
+                      },
+                    ),
+                  ],
+                ),
+              ),
+            ),
+            if (calque == ChartCalque.clans)
+              Positioned(
+                left: 8,
+                bottom: 8,
+                child: _ClanLegend(
                   colours: clanColours,
                   names: {
                     for (final e in factions.entries)
@@ -856,11 +924,13 @@ class _JourneyWorldMapState extends ConsumerState<JourneyWorldMap>
                   palette: widget.palette,
                   theme: theme,
                   contested: tr(ref, 'calque_contested'),
-                  reduceMotion: reduceMotion),
-            ),
-        ],
-      );
-    });
+                  reduceMotion: reduceMotion,
+                ),
+              ),
+          ],
+        );
+      },
+    );
   }
 }
 
@@ -904,38 +974,44 @@ class _ClanLegend extends StatelessWidget {
           for (final id in _shown)
             if (colours[id] case final colour?)
               _swatch(colour, names[id] ?? id, style),
-          Row(mainAxisSize: MainAxisSize.min, children: [
-            Container(
-              width: 10,
-              height: 10,
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(2),
-                gradient: LinearGradient(
-                  colors: [
-                    colours['compact'] ?? palette.label,
-                    colours['dominion'] ?? palette.label,
-                  ],
+          Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Container(
+                width: 10,
+                height: 10,
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(2),
+                  gradient: LinearGradient(
+                    colors: [
+                      colours['compact'] ?? palette.label,
+                      colours['dominion'] ?? palette.label,
+                    ],
+                  ),
                 ),
               ),
-            ),
-            const SizedBox(width: 4),
-            Text(contested, style: style),
-          ]),
+              const SizedBox(width: 4),
+              Text(contested, style: style),
+            ],
+          ),
         ],
       ),
     );
   }
 
-  Widget _swatch(Color colour, String name, TextStyle? style) =>
-      Row(mainAxisSize: MainAxisSize.min, children: [
-        Container(
-          width: 10,
-          height: 10,
-          decoration: BoxDecoration(
+  Widget _swatch(Color colour, String name, TextStyle? style) => Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Container(
+            width: 10,
+            height: 10,
+            decoration: BoxDecoration(
               color: colour.withValues(alpha: 0.85),
-              borderRadius: BorderRadius.circular(2)),
-        ),
-        const SizedBox(width: 4),
-        Text(name, style: style),
-      ]);
+              borderRadius: BorderRadius.circular(2),
+            ),
+          ),
+          const SizedBox(width: 4),
+          Text(name, style: style),
+        ],
+      );
 }

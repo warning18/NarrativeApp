@@ -4,7 +4,9 @@ import '../models/story_node.dart';
 /// as plain text, one `[id] (Chapter N)` header per node followed by its
 /// comment -- the original export format from before JSON/CSV existed.
 String asCommentExportText(
-    List<StoryNode> nodes, int Function(String) chapterOfNode) {
+  List<StoryNode> nodes,
+  int Function(String) chapterOfNode,
+) {
   final b = StringBuffer();
   for (final node in nodes) {
     b.writeln('[${node.id}] (Chapter ${chapterOfNode(node.id)})');
@@ -19,13 +21,17 @@ String asCommentExportText(
 /// checkout, since the full node text/choices are already covered by
 /// sharing the repository itself.
 String asCommentExportJson(
-    List<StoryNode> nodes, int Function(String) chapterOfNode) {
+  List<StoryNode> nodes,
+  int Function(String) chapterOfNode,
+) {
   final b = StringBuffer('[\n');
   for (var i = 0; i < nodes.length; i++) {
     final node = nodes[i];
-    b.write('  {"id": ${_jsonString(node.id)}, '
-        '"chapter": ${chapterOfNode(node.id)}, '
-        '"comment": ${_jsonString(node.authoringComment!)}}');
+    b.write(
+      '  {"id": ${_jsonString(node.id)}, '
+      '"chapter": ${chapterOfNode(node.id)}, '
+      '"comment": ${_jsonString(node.authoringComment!)}}',
+    );
     b.writeln(i == nodes.length - 1 ? '' : ',');
   }
   b.write(']');
@@ -42,7 +48,9 @@ String _jsonString(String value) {
 }
 
 String asCommentExportCsv(
-    List<StoryNode> nodes, int Function(String) chapterOfNode) {
+  List<StoryNode> nodes,
+  int Function(String) chapterOfNode,
+) {
   final b = StringBuffer('id,chapter,comment\r\n');
   for (final node in nodes) {
     b.write(_csvField(node.id));

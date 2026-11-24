@@ -29,26 +29,34 @@ class SpellsView extends ConsumerWidget {
     final ink = InkColors.of(context);
     final session = ref.watch(playerSessionProvider);
     final spells = parseSpells(
-        ref.watch(localizedDbProvider(spellsSchema)).value ?? const {});
+      ref.watch(localizedDbProvider(spellsSchema)).value ?? const {},
+    );
     final items = ref.watch(localizedDbProvider(itemsSchema)).value ?? const {};
     final shops = ref.watch(localizedDbProvider(shopsSchema)).value ?? const {};
     final list = spellsForProfession(
-        spells, session.professionId, session.knownSpellIds);
+      spells,
+      session.professionId,
+      session.knownSpellIds,
+    );
     final known = [
       for (final s in list)
-        if (session.knownSpellIds.contains(s.id)) s
+        if (session.knownSpellIds.contains(s.id)) s,
     ];
     final toFind = [
       for (final s in list)
-        if (!session.knownSpellIds.contains(s.id)) s
+        if (!session.knownSpellIds.contains(s.id)) s,
     ];
     final wisdomBonus = wisdomManaBonusFor(session.wisdom);
 
     Widget heading(String text) => Padding(
           padding: const EdgeInsets.only(top: 16, bottom: 2),
-          child: Text(text.toUpperCase(),
-              style: theme.textTheme.labelSmall
-                  ?.copyWith(color: ink.ash, letterSpacing: 1)),
+          child: Text(
+            text.toUpperCase(),
+            style: theme.textTheme.labelSmall?.copyWith(
+              color: ink.ash,
+              letterSpacing: 1,
+            ),
+          ),
         );
 
     return ListView(
@@ -65,18 +73,21 @@ class SpellsView extends ConsumerWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Row(children: [
-                const Icon(manaIcon, size: IconSize.s16, color: manaColor),
-                const SizedBox(width: 6),
-                Expanded(
-                  child: Text(
-                    '${tr(ref, 'mana_label')} ${session.mana} / ${session.maxMana}',
-                    style:
-                        theme.textTheme.titleMedium?.copyWith(color: manaColor),
+              Row(
+                children: [
+                  const Icon(manaIcon, size: IconSize.s16, color: manaColor),
+                  const SizedBox(width: 6),
+                  Expanded(
+                    child: Text(
+                      '${tr(ref, 'mana_label')} ${session.mana} / ${session.maxMana}',
+                      style: theme.textTheme.titleMedium?.copyWith(
+                        color: manaColor,
+                      ),
+                    ),
                   ),
-                ),
-                ManaMeter(mana: session.mana, maxMana: session.maxMana),
-              ]),
+                  ManaMeter(mana: session.mana, maxMana: session.maxMana),
+                ],
+              ),
               const SizedBox(height: 6),
               Text(
                 '${tr(ref, 'mana_faces_note')} ${tr(ref, 'cast_in_battle_hint')}',
@@ -95,9 +106,11 @@ class SpellsView extends ConsumerWidget {
         if (list.isEmpty)
           Padding(
             padding: const EdgeInsets.symmetric(vertical: 24),
-            child: Text(tr(ref, 'no_spells_hint'),
-                textAlign: TextAlign.center,
-                style: theme.textTheme.bodyMedium?.copyWith(color: ink.ash)),
+            child: Text(
+              tr(ref, 'no_spells_hint'),
+              textAlign: TextAlign.center,
+              style: theme.textTheme.bodyMedium?.copyWith(color: ink.ash),
+            ),
           ),
         if (known.isNotEmpty) heading(tr(ref, 'spells_known')),
         for (final spell in known)
@@ -132,8 +145,11 @@ class _SpellRow extends ConsumerWidget {
     final preview = previewSpellFor(spell, session, items);
     final colour = spellEffectColor(spell.effect);
     final shopNames = spellbookShopsFor(spell.id, items, shops)
-        .map((id) =>
-            (shops[id] as Map<String, dynamic>?)?['shopName']?.toString() ?? id)
+        .map(
+          (id) =>
+              (shops[id] as Map<String, dynamic>?)?['shopName']?.toString() ??
+              id,
+        )
         .join(', ');
     final whereLine = known
         ? null
@@ -168,24 +184,35 @@ class _SpellRow extends ConsumerWidget {
         context,
         title: name,
         description: description,
-        leading: Icon(spellEffectIcon(spell.effect),
-            color: colour, size: IconSize.s32),
+        leading: Icon(
+          spellEffectIcon(spell.effect),
+          color: colour,
+          size: IconSize.s32,
+        ),
         closeLabel: tr(ref, 'close_button'),
         rows: [
-          MapEntry(tr(ref, 'cost_label'),
-              '${spell.manaCost} ${tr(ref, 'mana_label')}'),
-          MapEntry(tr(ref, 'effect_label'),
-              tr(ref, spellEffectLabelKey(spell.effect))),
+          MapEntry(
+            tr(ref, 'cost_label'),
+            '${spell.manaCost} ${tr(ref, 'mana_label')}',
+          ),
+          MapEntry(
+            tr(ref, 'effect_label'),
+            tr(ref, spellEffectLabelKey(spell.effect)),
+          ),
           if (preview.amount > 0)
             MapEntry(tr(ref, 'right_now_label'), '${preview.amount}'),
-          MapEntry(tr(ref, 'target_label'),
-              tr(ref, spellTargetLabelKey(spell.target))),
+          MapEntry(
+            tr(ref, 'target_label'),
+            tr(ref, spellTargetLabelKey(spell.target)),
+          ),
           if (spell.element != 'None')
             MapEntry(tr(ref, 'element_label'), spell.element),
           if (statusLine != null) MapEntry(tr(ref, 'status_label'), statusLine),
           if (whereLine != null)
-            MapEntry(tr(ref, 'where_to_learn_label'),
-                shopNames.isEmpty ? tr(ref, 'spellbook_not_sold') : shopNames),
+            MapEntry(
+              tr(ref, 'where_to_learn_label'),
+              shopNames.isEmpty ? tr(ref, 'spellbook_not_sold') : shopNames,
+            ),
         ],
       ),
       child: Opacity(
@@ -193,14 +220,18 @@ class _SpellRow extends ConsumerWidget {
         child: Container(
           padding: const EdgeInsets.symmetric(vertical: 10),
           decoration: BoxDecoration(
-              border: Border(bottom: BorderSide(color: ink.seam))),
+            border: Border(bottom: BorderSide(color: ink.seam)),
+          ),
           child: Row(
             children: [
               CircleAvatar(
                 radius: 17,
                 backgroundColor: colour.withValues(alpha: 0.15),
-                child: Icon(spellEffectIcon(spell.effect),
-                    color: colour, size: IconSize.s16),
+                child: Icon(
+                  spellEffectIcon(spell.effect),
+                  color: colour,
+                  size: IconSize.s16,
+                ),
               ),
               const SizedBox(width: 10),
               Expanded(
@@ -208,18 +239,27 @@ class _SpellRow extends ConsumerWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(name, style: theme.textTheme.bodyLarge),
-                    Text(numbers,
-                        style: theme.textTheme.labelSmall
-                            ?.copyWith(color: ink.ash)),
+                    Text(
+                      numbers,
+                      style: theme.textTheme.labelSmall?.copyWith(
+                        color: ink.ash,
+                      ),
+                    ),
                     if (whereLine != null)
-                      Text(whereLine,
-                          style: theme.textTheme.labelSmall
-                              ?.copyWith(color: ink.gold)),
+                      Text(
+                        whereLine,
+                        style: theme.textTheme.labelSmall?.copyWith(
+                          color: ink.gold,
+                        ),
+                      ),
                   ],
                 ),
               ),
-              Icon(known ? Icons.chevron_right : Icons.lock_outline,
-                  size: IconSize.s16, color: ink.ash),
+              Icon(
+                known ? Icons.chevron_right : Icons.lock_outline,
+                size: IconSize.s16,
+                color: ink.ash,
+              ),
             ],
           ),
         ),

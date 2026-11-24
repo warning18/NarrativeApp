@@ -62,7 +62,7 @@ class TrainingPath {
         },
         professions: [
           for (final p in (raw['professions'] as List? ?? const []))
-            p.toString()
+            p.toString(),
         ],
         races: [
           for (final r in (raw['races'] as List? ?? const [])) r.toString()
@@ -112,22 +112,29 @@ List<TrainingPath> _drawThree({
   final all = paths;
   List<TrainingPath> left() => [
         for (final p in all)
-          if (!chosen.contains(p)) p
+          if (!chosen.contains(p)) p,
       ];
 
   // The calling: a path of the profession or the people, the ones taken
   // before likelier.
   final calling = [
     for (final p in all)
-      if (p.leansTo(professionId: professionId, raceId: raceId)) p
+      if (p.leansTo(professionId: professionId, raceId: raceId)) p,
   ];
-  chosen.add(_weighted(calling.isEmpty ? all : calling,
-      (p) => 1.0 + 2 * (taken[p.id] ?? 0), random));
+  chosen.add(
+    _weighted(
+      calling.isEmpty ? all : calling,
+      (p) => 1.0 + 2 * (taken[p.id] ?? 0),
+      random,
+    ),
+  );
 
   // The habit: the path taken most; with none taken, the one whose gains
   // follow the stats the character has most of.
-  double affinity(TrainingPath p) => p.gains.entries
-      .fold(0.0, (sum, e) => sum + e.value * (stats[e.key] ?? 0));
+  double affinity(TrainingPath p) => p.gains.entries.fold(
+        0.0,
+        (sum, e) => sum + e.value * (stats[e.key] ?? 0),
+      );
   final rest = left();
   rest.sort((a, b) {
     final t = (taken[b.id] ?? 0).compareTo(taken[a.id] ?? 0);
@@ -193,11 +200,12 @@ SignRarity _drawStatPickTier(int luck, Random random) {
 /// One offer of a pick: [gains] from [pathId] (its ability, and at Rare or
 /// better maybe a second), worth [points] -- what its [tier] gives.
 class StatPickOffer {
-  const StatPickOffer(
-      {required this.pathId,
-      required this.gains,
-      this.tier = SignRarity.common,
-      this.raised = false});
+  const StatPickOffer({
+    required this.pathId,
+    required this.gains,
+    this.tier = SignRarity.common,
+    this.raised = false,
+  });
 
   /// A saved offer; one saved as `rare: true` (before the four rarities)
   /// reads as Rare.
@@ -255,8 +263,12 @@ class StatPickOffer {
 /// ability of its path ('' for none): Common +1; Rare +2, or +1 and +1 to
 /// [second] ([split]); Epic +2 and +1 to [second]; Heroic +2 and +2 to
 /// [second]. Without a second, every point goes to [stat].
-Map<String, int> statPickGains(String stat, SignRarity tier,
-    {String second = '', bool split = false}) {
+Map<String, int> statPickGains(
+  String stat,
+  SignRarity tier, {
+  String second = '',
+  bool split = false,
+}) {
   final points = statPickPointsOf(tier);
   if (second.isEmpty || second == stat || tier == SignRarity.common) {
     return {stat: points};
@@ -289,7 +301,7 @@ List<StatPickOffer> drawStatPick({
 }) {
   var usable = [
     for (final p in paths.values)
-      if (p.gains.isNotEmpty) p
+      if (p.gains.isNotEmpty) p,
   ];
   if (usable.length < _statPickOfferCount) return const [];
   // The paths warded at the Warding Cairn (camp_rolls.dart) are left out,
@@ -297,17 +309,18 @@ List<StatPickOffer> drawStatPick({
   if (bannedPaths.isNotEmpty) {
     final open = [
       for (final p in usable)
-        if (!bannedPaths.contains(p.id)) p
+        if (!bannedPaths.contains(p.id)) p,
     ];
     if (open.length >= _statPickOfferCount) usable = open;
   }
   final chosen = _drawThree(
-      paths: usable,
-      random: random,
-      professionId: professionId,
-      raceId: raceId,
-      taken: taken,
-      stats: stats);
+    paths: usable,
+    random: random,
+    professionId: professionId,
+    raceId: raceId,
+    taken: taken,
+    stats: stats,
+  );
   double size(MapEntry<String, int> e) => max(1, e.value).toDouble();
   final used = <String>{};
   final picked = <TrainingPath>[];
@@ -316,14 +329,14 @@ List<StatPickOffer> drawStatPick({
     var path = chosen[i];
     List<MapEntry<String, int>> fresh(TrainingPath p) => [
           for (final e in p.gains.entries)
-            if (!used.contains(e.key)) e
+            if (!used.contains(e.key)) e,
         ];
     if (fresh(path).isEmpty) {
       // Every gain of the path is shown already: another path instead.
       final others = [
         for (final p in usable)
           if (!chosen.contains(p) && !picked.contains(p) && fresh(p).isNotEmpty)
-            p
+            p,
       ];
       if (others.isEmpty) return const [];
       path = others[random.nextInt(others.length)];
@@ -343,22 +356,27 @@ List<StatPickOffer> drawStatPick({
 /// The offer of [path] for its ability [stat] at [tier], a second ability
 /// of the path drawn for the rarer tiers (statPickGains).
 StatPickOffer _offerOf(
-    TrainingPath path, String stat, SignRarity tier, Random random,
-    {bool raised = false}) {
+  TrainingPath path,
+  String stat,
+  SignRarity tier,
+  Random random, {
+  bool raised = false,
+}) {
   double size(MapEntry<String, int> e) => max(1, e.value).toDouble();
   final rest = [
     for (final e in path.gains.entries)
-      if (e.key != stat) e
+      if (e.key != stat) e,
   ];
   final second = tier == SignRarity.common || rest.isEmpty
       ? ''
       : _weighted(rest, size, random).key;
   final split = tier == SignRarity.rare && random.nextBool();
   return StatPickOffer(
-      pathId: path.id,
-      gains: statPickGains(stat, tier, second: second, split: split),
-      tier: tier,
-      raised: raised);
+    pathId: path.id,
+    gains: statPickGains(stat, tier, second: second, split: split),
+    tier: tier,
+    raised: raised,
+  );
 }
 
 /// The Warding Cairn's replacement (camp_rolls.dart) for the offer at
@@ -380,14 +398,14 @@ StatPickOffer? replaceStatPickOffer({
   };
   List<MapEntry<String, int>> fresh(TrainingPath p) => [
         for (final e in p.gains.entries)
-          if (!shownStats.contains(e.key)) e
+          if (!shownStats.contains(e.key)) e,
       ];
   final options = [
     for (final p in paths.values)
       if (!shownPaths.contains(p.id) &&
           !bannedPaths.contains(p.id) &&
           fresh(p).isNotEmpty)
-        p
+        p,
   ];
   if (options.isEmpty) return null;
   final path = options[random.nextInt(options.length)];
@@ -400,7 +418,10 @@ StatPickOffer? replaceStatPickOffer({
 /// rebuilt for it, the second ability drawn from its path in [paths]. Null
 /// when it can't be: already raised, Heroic, or its path unknown.
 StatPickOffer? raisedStatPickOffer(
-    StatPickOffer card, Map<String, TrainingPath> paths, Random random) {
+  StatPickOffer card,
+  Map<String, TrainingPath> paths,
+  Random random,
+) {
   if (card.raised || card.tier == SignRarity.heroic) return null;
   final path = paths[card.pathId];
   if (path == null || card.stat.isEmpty) return null;
@@ -415,8 +436,11 @@ const List<String> statPickPriority = ['constitution', 'dexterity', 'luck'];
 /// The offer of [offer] a build after [stat] takes (autoplay's policy): the
 /// first offer raising [stat], else [priority]'s first ability offered,
 /// the one giving it most first; else the calling (the first).
-int statPickFor(List<StatPickOffer> offer, String stat,
-    {List<String> priority = statPickPriority}) {
+int statPickFor(
+  List<StatPickOffer> offer,
+  String stat, {
+  List<String> priority = statPickPriority,
+}) {
   for (final want in [stat, ...priority]) {
     var best = -1;
     for (var i = 0; i < offer.length; i++) {
@@ -434,8 +458,11 @@ int statPickFor(List<StatPickOffer> offer, String stat,
 /// (ability -> share of the points, e.g. Str 0.6, Con 0.3) takes, having
 /// put [taken] points into each so far (the simulator's policy): the one
 /// whose ability is furthest below its share; else the calling (the first).
-int statPickForShares(List<StatPickOffer> offer, Map<String, double> shares,
-    Map<String, int> taken) {
+int statPickForShares(
+  List<StatPickOffer> offer,
+  Map<String, double> shares,
+  Map<String, int> taken,
+) {
   final total = taken.values.fold<int>(0, (a, b) => a + b) + 1;
   var best = 0;
   var bestGap = double.negativeInfinity;

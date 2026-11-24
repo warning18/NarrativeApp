@@ -6,9 +6,15 @@ part of '../combat_vfx.dart';
 /// One burst's drawing at progress [t]: its style, then the details its
 /// tier adds (see [_tierDetails]).
 class _Fx {
-  _Fx(this.canvas, this.layer, this.burst, this.rect, this.sourceRect, this.t,
-      this.frame)
-      : c = rect.center,
+  _Fx(
+    this.canvas,
+    this.layer,
+    this.burst,
+    this.rect,
+    this.sourceRect,
+    this.t,
+    this.frame,
+  )   : c = rect.center,
         s = min(rect.width, rect.height).clamp(40.0, 110.0),
         primary = Color(burst.palette.primary),
         secondary = Color(burst.palette.secondary);
@@ -39,9 +45,12 @@ class _Fx {
   /// [count] particles as many as the tier throws, within the burst's
   /// supply.
   int _n(int count) => max(
-      1,
-      min(p.length,
-          (count * vfxCountFactor(tier) * (frame.crowded ? 0.6 : 1)).round()));
+        1,
+        min(
+          p.length,
+          (count * vfxCountFactor(tier) * (frame.crowded ? 0.6 : 1)).round(),
+        ),
+      );
 
   /// A light touch glows less.
   double get _glowK => tier == VfxTier.light ? 0.65 : 1.0;
@@ -130,7 +139,9 @@ class _Fx {
               ..lineTo(c.dx, y - w * 0.2)
               ..lineTo(c.dx + w, y + w * 0.5);
             canvas.drawPath(
-                chevron, _stroke(secondary, (1 - local) * 0.9, 3 * scale));
+              chevron,
+              _stroke(secondary, (1 - local) * 0.9, 3 * scale),
+            );
           }
         }
       case VfxAccent.subclan:
@@ -139,9 +150,15 @@ class _Fx {
         if (lt == null) return;
         final r = s * 0.62 * scale * (0.7 + 0.3 * _easeOut(lt));
         canvas.drawCircle(
-            c, r, _stroke(primary, 0.55 * _fade(lt, 0.15, 0.6), 2.5));
+          c,
+          r,
+          _stroke(primary, 0.55 * _fade(lt, 0.15, 0.6), 2.5),
+        );
         canvas.drawCircle(
-            c, r * 0.72, _stroke(secondary, 0.4 * _fade(lt, 0.2, 0.6), 1.5));
+          c,
+          r * 0.72,
+          _stroke(secondary, 0.4 * _fade(lt, 0.2, 0.6), 1.5),
+        );
         final spread = lt > 0.6 ? (lt - 0.6) * 2.5 : 0.0;
         for (var i = 0; i < 6; i++) {
           final angle = lt * pi * 2 + i * pi / 3;
@@ -167,8 +184,11 @@ class _Fx {
             final y = c.dy + s * 0.3 - lt * s * 0.9 * q.speed;
             final len = s * 0.08 * q.size * scale;
             final dir = Offset(cos(q.angle), sin(q.angle)) * len;
-            canvas.drawLine(Offset(x, y) - dir, Offset(x, y) + dir,
-                _stroke(secondary, (1 - lt) * 0.9, 2));
+            canvas.drawLine(
+              Offset(x, y) - dir,
+              Offset(x, y) + dir,
+              _stroke(secondary, (1 - lt) * 0.9, 2),
+            );
           }
         }
         _ring(0.55, 0.4, s * 0.15, s * 0.8, width: 2, color: primary);
@@ -180,8 +200,13 @@ class _Fx {
       case VfxStyle.slash:
         // An afterimage trails the blade; a strong cut crosses back.
         if (tier != VfxTier.light) {
-          _slash(0.06, 1,
-              width: 0.045, shift: const Offset(0.09, 0.07), fade: 0.35);
+          _slash(
+            0.06,
+            1,
+            width: 0.045,
+            shift: const Offset(0.09, 0.07),
+            fade: 0.35,
+          );
         }
         _slash(0, 1);
         if (strong) _slash(0.14, -1, width: 0.055);

@@ -84,8 +84,13 @@ enum SeaAction {
 }
 
 class SeaChoice {
-  const SeaChoice(this.action, this.text, this.textFr,
-      {this.checkAbility, this.dcBonus = 0});
+  const SeaChoice(
+    this.action,
+    this.text,
+    this.textFr, {
+    this.checkAbility,
+    this.dcBonus = 0,
+  });
 
   final SeaAction action;
   final String text;
@@ -105,45 +110,73 @@ List<SeaChoice> seaChoicesFor(SeaEventKind kind) => switch (kind) {
       SeaEventKind.raider => const [
           SeaChoice(
               SeaAction.fight, 'Beat to quarters', 'Branle-bas de combat'),
-          SeaChoice(SeaAction.payOff, 'Pay them to sheer off',
-              'Les payer pour qu’ils s’écartent'),
           SeaChoice(
-              SeaAction.outrun, 'Try to outrun them', 'Tenter de les distancer',
-              checkAbility: 'dexterity'),
+            SeaAction.payOff,
+            'Pay them to sheer off',
+            'Les payer pour qu’ils s’écartent',
+          ),
+          SeaChoice(
+            SeaAction.outrun,
+            'Try to outrun them',
+            'Tenter de les distancer',
+            checkAbility: 'dexterity',
+          ),
         ],
       SeaEventKind.storm => const [
           SeaChoice(SeaAction.rideOut, 'Ride it out', 'Tenir bon'),
-          SeaChoice(SeaAction.pushThrough, 'Push through under full sail',
-              'Forcer le passage toutes voiles dehors',
-              checkAbility: 'strength'),
-          SeaChoice(SeaAction.shelter, 'Shelter in a cove and lose a day',
-              'S’abriter dans une crique et perdre un jour'),
+          SeaChoice(
+            SeaAction.pushThrough,
+            'Push through under full sail',
+            'Forcer le passage toutes voiles dehors',
+            checkAbility: 'strength',
+          ),
+          SeaChoice(
+            SeaAction.shelter,
+            'Shelter in a cove and lose a day',
+            'S’abriter dans une crique et perdre un jour',
+          ),
         ],
       SeaEventKind.derelict => const [
-          SeaChoice(SeaAction.salvage, 'Salvage what floats',
-              'Récupérer ce qui flotte'),
-          SeaChoice(SeaAction.board, 'Board her and search the hold',
-              'Monter à bord et fouiller la cale',
-              checkAbility: 'perception'),
+          SeaChoice(
+            SeaAction.salvage,
+            'Salvage what floats',
+            'Récupérer ce qui flotte',
+          ),
+          SeaChoice(
+            SeaAction.board,
+            'Board her and search the hold',
+            'Monter à bord et fouiller la cale',
+            checkAbility: 'perception',
+          ),
           SeaChoice(
               SeaAction.passBy, 'Leave her to the sea', 'La laisser à la mer'),
         ],
       SeaEventKind.calm => const [
           SeaChoice(SeaAction.repair, 'Make repairs', 'Faire des réparations'),
-          SeaChoice(SeaAction.rest, 'Let the crew rest',
-              'Laisser l’équipage se reposer'),
+          SeaChoice(
+            SeaAction.rest,
+            'Let the crew rest',
+            'Laisser l’équipage se reposer',
+          ),
         ],
       SeaEventKind.sighting => const [
           SeaChoice(SeaAction.sailOn, 'Sail on', 'Poursuivre'),
         ],
       SeaEventKind.beast => const [
           SeaChoice(SeaAction.fight, 'Stand and fight', 'Lui tenir tête'),
-          SeaChoice(SeaAction.outrun, 'Crowd on sail and run',
-              'Forcer la voile et fuir',
-              checkAbility: 'dexterity', dcBonus: beastOutrunDcBonus),
-          SeaChoice(SeaAction.holdStill, 'Strike the sails and keep still',
-              'Amener les voiles et ne plus bouger',
-              checkAbility: 'wisdom'),
+          SeaChoice(
+            SeaAction.outrun,
+            'Crowd on sail and run',
+            'Forcer la voile et fuir',
+            checkAbility: 'dexterity',
+            dcBonus: beastOutrunDcBonus,
+          ),
+          SeaChoice(
+            SeaAction.holdStill,
+            'Strike the sails and keep still',
+            'Amener les voiles et ne plus bouger',
+            checkAbility: 'wisdom',
+          ),
         ],
       SeaEventKind.hunt => const [
           SeaChoice(
@@ -255,12 +288,14 @@ const _sightingFr = [
 /// met on its own (see sea_beasts.dart).
 List<String> raiderPoolFor(Map<String, dynamic> enemyShips, int chapter) =>
     enemyShips.entries
-        .where((e) =>
-            !isBeastRecord(e.value as Map<String, dynamic>?) &&
-            (((e.value as Map<String, dynamic>)['minChapter'] as num?)
-                        ?.toInt() ??
-                    1) <=
-                chapter)
+        .where(
+          (e) =>
+              !isBeastRecord(e.value as Map<String, dynamic>?) &&
+              (((e.value as Map<String, dynamic>)['minChapter'] as num?)
+                          ?.toInt() ??
+                      1) <=
+                  chapter,
+        )
         .map((e) => e.key)
         .toList()
       ..sort();
@@ -317,49 +352,59 @@ List<SeaEvent> buildVoyage({
     final idx = random.nextInt(4);
     switch (kind) {
       case SeaEventKind.raider:
-        events.add(SeaEvent(
-          kind: kind,
-          description: _raider[idx],
-          descriptionFr: _raiderFr[idx],
-          choiceText: 'Beat to quarters',
-          choiceTextFr: 'Branle-bas de combat',
-          enemyShipId: raiders[random.nextInt(raiders.length)],
-        ));
+        events.add(
+          SeaEvent(
+            kind: kind,
+            description: _raider[idx],
+            descriptionFr: _raiderFr[idx],
+            choiceText: 'Beat to quarters',
+            choiceTextFr: 'Branle-bas de combat',
+            enemyShipId: raiders[random.nextInt(raiders.length)],
+          ),
+        );
       case SeaEventKind.storm:
-        events.add(SeaEvent(
-          kind: kind,
-          description: _storm[idx],
-          descriptionFr: _stormFr[idx],
-          choiceText: 'Ride it out',
-          choiceTextFr: 'Tenir bon',
-          hullDelta: -(8 + random.nextInt(9)),
-        ));
+        events.add(
+          SeaEvent(
+            kind: kind,
+            description: _storm[idx],
+            descriptionFr: _stormFr[idx],
+            choiceText: 'Ride it out',
+            choiceTextFr: 'Tenir bon',
+            hullDelta: -(8 + random.nextInt(9)),
+          ),
+        );
       case SeaEventKind.derelict:
-        events.add(SeaEvent(
-          kind: kind,
-          description: _derelict[idx],
-          descriptionFr: _derelictFr[idx],
-          choiceText: 'Salvage what floats',
-          choiceTextFr: 'Récupérer ce qui flotte',
-          gold: 20 + random.nextInt(26) + 10 * (max(1, chapter) - 1),
-        ));
+        events.add(
+          SeaEvent(
+            kind: kind,
+            description: _derelict[idx],
+            descriptionFr: _derelictFr[idx],
+            choiceText: 'Salvage what floats',
+            choiceTextFr: 'Récupérer ce qui flotte',
+            gold: 20 + random.nextInt(26) + 10 * (max(1, chapter) - 1),
+          ),
+        );
       case SeaEventKind.calm:
-        events.add(SeaEvent(
-          kind: kind,
-          description: _calm[idx],
-          descriptionFr: _calmFr[idx],
-          choiceText: 'Make repairs',
-          choiceTextFr: 'Faire des réparations',
-          hullDelta: 12,
-        ));
+        events.add(
+          SeaEvent(
+            kind: kind,
+            description: _calm[idx],
+            descriptionFr: _calmFr[idx],
+            choiceText: 'Make repairs',
+            choiceTextFr: 'Faire des réparations',
+            hullDelta: 12,
+          ),
+        );
       case SeaEventKind.sighting:
-        events.add(SeaEvent(
-          kind: kind,
-          description: _sighting[idx],
-          descriptionFr: _sightingFr[idx],
-          choiceText: 'Sail on',
-          choiceTextFr: 'Poursuivre',
-        ));
+        events.add(
+          SeaEvent(
+            kind: kind,
+            description: _sighting[idx],
+            descriptionFr: _sightingFr[idx],
+            choiceText: 'Sail on',
+            choiceTextFr: 'Poursuivre',
+          ),
+        );
       case SeaEventKind.beast:
       case SeaEventKind.hunt:
         // Never drawn: the voyage lays a beast's day in (see
@@ -377,8 +422,11 @@ List<SeaEvent> buildVoyage({
 /// false (the extra day a shelter costs, which may pass as well). [calmed]
 /// counts the days that passed.
 ({List<SeaEvent> events, int calmed}) applyVoyageCalm(
-    List<SeaEvent> events, int percent, Random random,
-    {bool keepOne = true}) {
+  List<SeaEvent> events,
+  int percent,
+  Random random, {
+  bool keepOne = true,
+}) {
   if (percent <= 0) return (events: events, calmed: 0);
   final kept = [
     for (final event in events)
@@ -395,8 +443,11 @@ List<SeaEvent> buildVoyage({
 
 /// The day a beast's [record] is met: on a crossing ([hunt] false), its
 /// sighting; on a hunt, the signs that led the Eel to it.
-SeaEvent beastDayFor(String beastId, Map<String, dynamic> record,
-    {required bool hunt}) {
+SeaEvent beastDayFor(
+  String beastId,
+  Map<String, dynamic> record, {
+  required bool hunt,
+}) {
   final spec = beastSpecOf(record);
   final key = hunt ? 'hunt' : 'sighting';
   return SeaEvent(
@@ -416,8 +467,12 @@ int beastDayIndex(Random random, int length) =>
 
 /// [events] with the beast [beastId] met on day [day] (in place of what
 /// was drawn), its omen on the day before.
-List<SeaEvent> withBeastDay(List<SeaEvent> events, int day, String beastId,
-    Map<String, dynamic> record) {
+List<SeaEvent> withBeastDay(
+  List<SeaEvent> events,
+  int day,
+  String beastId,
+  Map<String, dynamic> record,
+) {
   if (events.isEmpty) return [beastDayFor(beastId, record, hunt: false)];
   final at = day.clamp(0, events.length - 1);
   return [

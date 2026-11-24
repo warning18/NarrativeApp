@@ -133,16 +133,21 @@ class ShipWeapon {
 
   /// A player weapon off its ship_parts.json record; [damageBonus] is the
   /// painted sail's extra on its own volley (see sail_powers.dart).
-  factory ShipWeapon.fromPart(String partId, Map<String, dynamic> part,
-      {int damageBonus = 0}) {
+  factory ShipWeapon.fromPart(
+    String partId,
+    Map<String, dynamic> part, {
+    int damageBonus = 0,
+  }) {
     final cooldown = (part['cooldownTurns'] as num?)?.toInt() ?? 0;
     return ShipWeapon(
       id: partId,
       name: part['partName']?.toString() ?? partId,
       nameFr: part['partName_fr']?.toString() ?? '',
       damage: ((part['damageAmount'] as num?)?.toInt() ?? 0) + damageBonus,
-      chargeTurns:
-          max(1, (part['chargeTurns'] as num?)?.toInt() ?? (cooldown + 1)),
+      chargeTurns: max(
+        1,
+        (part['chargeTurns'] as num?)?.toInt() ?? (cooldown + 1),
+      ),
       piercing: part['piercesShield'] == true,
       incendiary: part['setsFire'] == true,
       roomDamage: max(1, (part['roomDamage'] as num?)?.toInt() ?? 1),
@@ -290,9 +295,9 @@ class ShipState {
   ShipState withRoom(ShipRoom which, RoomState state) =>
       copyWith(rooms: {...rooms, which: state});
 
-  ShipState withWeapon(ShipWeapon weapon) => copyWith(weapons: [
-        for (final w in weapons) w.id == weapon.id ? weapon : w,
-      ]);
+  ShipState withWeapon(ShipWeapon weapon) => copyWith(
+        weapons: [for (final w in weapons) w.id == weapon.id ? weapon : w],
+      );
 }
 
 /// One crew member aboard the Eel: the player or an active companion,
@@ -505,11 +510,14 @@ ShotOutcome resolveShot({
     final cracked = bulwark.copyWith(damage: bulwark.damage + 1);
     var next = target
         .copyWith(
-            layers: max(0, target.layers - layersStripped(weapon, room, mods)))
+          layers: max(0, target.layers - layersStripped(weapon, room, mods)),
+        )
         .withRoom(ShipRoom.bulwark, cracked);
     if (mods.shieldBreak) {
-      final chip =
-          scaledDamage(weapon.damage, mods.damageFactor * _shieldChipShare);
+      final chip = scaledDamage(
+        weapon.damage,
+        mods.damageFactor * _shieldChipShare,
+      );
       next = next.copyWith(hull: max(0, next.hull - chip));
     }
     next = next.copyWith(layers: min(next.layers, next.maxLayers));
@@ -623,7 +631,9 @@ class _CrewWork {
 /// hull instead. Returns the ship, what each of them did, and the rooms
 /// whose hands are busy.
 ({ShipState ship, List<_CrewWork> work, Set<ShipRoom> busy}) crewTurn(
-    ShipState ship, Stations stations) {
+  ShipState ship,
+  Stations stations,
+) {
   var next = ship;
   final work = <_CrewWork>[];
   final busy = <ShipRoom>{};
@@ -650,8 +660,10 @@ class _CrewWork {
       continue;
     }
     if (room == ShipRoom.hold) {
-      final hull = min(next.maxHull - next.hull,
-          crewHullRepair(crew, next.room(ShipRoom.hold).working));
+      final hull = min(
+        next.maxHull - next.hull,
+        crewHullRepair(crew, next.room(ShipRoom.hold).working),
+      );
       if (hull > 0) {
         next = next.copyWith(hull: next.hull + hull);
         work.add(_CrewWork(crew: crew, room: room, hullRepaired: hull));
@@ -690,8 +702,11 @@ const List<ShipRoom> _enemyRepairPriority = [
 /// [penalty] actions are lost to a crew cut down by grapeshot; [extra] are
 /// gained by one with every hand at the pumps (see ShipIntent.mend). A
 /// fire is fought first, then a leak plugged, then a pip mended.
-EnemyMaintenance enemyMaintenance(ShipState ship,
-    {int penalty = 0, int extra = 0}) {
+EnemyMaintenance enemyMaintenance(
+  ShipState ship, {
+  int penalty = 0,
+  int extra = 0,
+}) {
   var next = ship;
   final firesOut = <ShipRoom>[];
   final repaired = <ShipRoom>[];
@@ -728,10 +743,11 @@ EnemyMaintenance enemyMaintenance(ShipState ship,
     repaired.add(damaged);
   }
   return EnemyMaintenance(
-      ship: next,
-      firesOut: firesOut,
-      repaired: repaired,
-      leaksPlugged: plugged);
+    ship: next,
+    firesOut: firesOut,
+    repaired: repaired,
+    leaksPlugged: plugged,
+  );
 }
 
 /// Where the enemy aims a weapon at [player]: fire goes for the hold
@@ -825,8 +841,10 @@ List<String> partsBeyondSlots({
   required List<String> installedPartIds,
 }) {
   final within = partsWithinSlots(
-          ship: ship, parts: parts, installedPartIds: installedPartIds)
-      .toSet();
+    ship: ship,
+    parts: parts,
+    installedPartIds: installedPartIds,
+  ).toSet();
   return [
     for (final id in installedPartIds)
       if (!within.contains(id)) id,
@@ -873,13 +891,18 @@ ShipState buildPlayerShip({
   int lifted(int value, int percent) =>
       percent == 0 ? value : (value * (100 + percent) / 100).round();
   final fitted = partsWithinSlots(
-      ship: ship, parts: parts, installedPartIds: installedPartIds);
+    ship: ship,
+    parts: parts,
+    installedPartIds: installedPartIds,
+  );
   final maxHull = max(
-      1,
-      lifted(
-          ((ship['baseMaxHull'] as num?)?.toInt() ?? 100) +
-              hullBonusOf(parts, fitted),
-          hullPercent));
+    1,
+    lifted(
+      ((ship['baseMaxHull'] as num?)?.toInt() ?? 100) +
+          hullBonusOf(parts, fitted),
+      hullPercent,
+    ),
+  );
   final rooms = _roomsFrom(ship['rooms']);
   final weapons = <ShipWeapon>[];
   for (final id in fitted) {
@@ -892,14 +915,20 @@ ShipState buildPlayerShip({
         if (room == null) continue;
         final current = rooms[room]!;
         rooms[room] = current.copyWith(
-            level: current.level + ((entry.value as num?)?.toInt() ?? 0));
+          level: current.level + ((entry.value as num?)?.toInt() ?? 0),
+        );
       }
     }
     final damage = (part['damageAmount'] as num?)?.toInt() ?? 0;
     if (damage > 0) {
       final volley = damage + (id == voidVolleyPartId ? voidVolleyBonus : 0);
-      weapons.add(ShipWeapon.fromPart(id, part,
-          damageBonus: lifted(volley, gunPercent) - damage));
+      weapons.add(
+        ShipWeapon.fromPart(
+          id,
+          part,
+          damageBonus: lifted(volley, gunPercent) - damage,
+        ),
+      );
     }
   }
   final hull = currentHull < 0 ? maxHull : min(maxHull, max(0, currentHull));
@@ -949,13 +978,15 @@ ShipState buildEnemyShip(Map<String, dynamic> enemyShip) {
       ShipWeapon.fromRecord(rawWeapons[i], i),
   ];
   if (weapons.isEmpty) {
-    weapons.add(ShipWeapon(
-      id: 'enemy_weapon_0',
-      name: 'Guns',
-      nameFr: 'Canons',
-      damage: max(1, (enemyShip['weaponDamage'] as num?)?.toInt() ?? 8),
-      chargeTurns: 1,
-    ));
+    weapons.add(
+      ShipWeapon(
+        id: 'enemy_weapon_0',
+        name: 'Guns',
+        nameFr: 'Canons',
+        damage: max(1, (enemyShip['weaponDamage'] as num?)?.toInt() ?? 8),
+        chargeTurns: 1,
+      ),
+    );
   }
   final state = ShipState(
     hull: hull,
@@ -977,8 +1008,9 @@ Map<ShipRoom, RoomState> _roomsFrom(Object? raw) {
     for (final entry in raw.entries) {
       final room = _roomFromName(entry.key.toString());
       if (room == null) continue;
-      rooms[room] =
-          RoomState(level: max(0, (entry.value as num?)?.toInt() ?? 1));
+      rooms[room] = RoomState(
+        level: max(0, (entry.value as num?)?.toInt() ?? 1),
+      );
     }
   }
   return rooms;
@@ -1001,12 +1033,13 @@ ShotOutcome previewShot({
   ShotMods mods = const ShotMods(),
 }) =>
     resolveShot(
-        target: target,
-        weapon: weapon,
-        room: room,
-        evasionPercent: 0,
-        roll: 1,
-        mods: mods);
+      target: target,
+      weapon: weapon,
+      room: room,
+      evasionPercent: 0,
+      roll: 1,
+      mods: mods,
+    );
 
 /// True when a ship's rail is open to boarders: no shield layer stands and
 /// the bulwark itself is knocked out.
@@ -1031,7 +1064,8 @@ bool grapplesHold(ShipState target, double roll) =>
 
 /// The Eel after her boarding party was thrown back.
 ShipState boardingRepelled(ShipState ship) => ship.copyWith(
-    hull: max(1, ship.hull - (ship.maxHull * _repelledHullShare).round()));
+      hull: max(1, ship.hull - (ship.maxHull * _repelledHullShare).round()),
+    );
 
 /// Boarders who won the deck before they were driven off: the hold is
 /// wrecked (knocked out) and a share of the hull with it, never below one
@@ -1041,8 +1075,8 @@ ShipState boardersWreck(ShipState ship) {
   return ship
       .withRoom(ShipRoom.hold, hold.copyWith(damage: hold.level))
       .copyWith(
-          hull:
-              max(1, ship.hull - (ship.maxHull * _boardersHullShare).round()));
+        hull: max(1, ship.hull - (ship.maxHull * _boardersHullShare).round()),
+      );
 }
 
 /// What an enemy ship brings to the rail: the crew it boards with (ids in
@@ -1073,8 +1107,10 @@ BoardingProfile boardingProfileFor(Map<String, dynamic> enemyShip) {
   final prize = enemyShip['prizePartId']?.toString() ?? '';
   return BoardingProfile(
     crew: crew,
-    chance: ((enemyShip['boardingChance'] as num?)?.toDouble() ?? 0)
-        .clamp(0.0, 1.0),
+    chance: ((enemyShip['boardingChance'] as num?)?.toDouble() ?? 0).clamp(
+      0.0,
+      1.0,
+    ),
     prizePartId: prize.isEmpty ? null : prize,
     prizeGold: max(0, (enemyShip['prizeGold'] as num?)?.toInt() ?? 0),
   );
@@ -1160,9 +1196,11 @@ int slotsUsed(
   String slotType,
 ) =>
     installedPartIds
-        .where((id) =>
-            (parts[id] as Map<String, dynamic>?)?['slotType']?.toString() ==
-            slotType)
+        .where(
+          (id) =>
+              (parts[id] as Map<String, dynamic>?)?['slotType']?.toString() ==
+              slotType,
+        )
         .length;
 
 /// A part fits if it isn't already aboard and its slot type has room.

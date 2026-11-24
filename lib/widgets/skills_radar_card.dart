@@ -102,10 +102,12 @@ class _SkillsRadarCardState extends ConsumerState<SkillsRadarCard> {
                     ),
                     const SizedBox(width: 8),
                     Expanded(
-                      child: Text(skillDisplayName(id, language: lang),
-                          maxLines: 2,
-                          overflow: TextOverflow.ellipsis,
-                          style: theme.textTheme.bodyMedium),
+                      child: Text(
+                        skillDisplayName(id, language: lang),
+                        maxLines: 2,
+                        overflow: TextOverflow.ellipsis,
+                        style: theme.textTheme.bodyMedium,
+                      ),
                     ),
                   ],
                 ),
@@ -138,13 +140,14 @@ class _SkillsRadarCardState extends ConsumerState<SkillsRadarCard> {
               RadarAxis(label: elementName(e), value: '${byElement[e]}'),
           ],
           layers: [
-            RadarLayer(values: [
-              for (final e in elementChartOrder) byElement[e]! + 0.0
-            ], color: radarGold),
+            RadarLayer(
+              values: [for (final e in elementChartOrder) byElement[e]! + 0.0],
+              color: radarGold,
+            ),
           ],
           semanticsLabel: [
             for (final e in elementChartOrder)
-              '${elementName(e)} ${byElement[e]}'
+              '${elementName(e)} ${byElement[e]}',
           ].join(', '),
         ),
       );
@@ -156,10 +159,12 @@ class _SkillsRadarCardState extends ConsumerState<SkillsRadarCard> {
             children: [
               SizedBox(
                 width: 72,
-                child: Text(label,
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                    style: theme.textTheme.bodySmall),
+                child: Text(
+                  label,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: theme.textTheme.bodySmall,
+                ),
               ),
               Expanded(
                 child: ClipRRect(
@@ -180,9 +185,13 @@ class _SkillsRadarCardState extends ConsumerState<SkillsRadarCard> {
 
     Widget heading(String text) => Padding(
           padding: const EdgeInsets.fromLTRB(0, 8, 0, 4),
-          child: Text(text.toUpperCase(),
-              style: theme.textTheme.labelMedium
-                  ?.copyWith(color: ink.gold, letterSpacing: 1.2)),
+          child: Text(
+            text.toUpperCase(),
+            style: theme.textTheme.labelMedium?.copyWith(
+              color: ink.gold,
+              letterSpacing: 1.2,
+            ),
+          ),
         );
 
     Widget detail() {
@@ -198,37 +207,49 @@ class _SkillsRadarCardState extends ConsumerState<SkillsRadarCard> {
             for (final k in abilityRadarOrder)
               InkWell(
                 onTap: () => showStatSheet(context, k),
-                child:
-                    bar(tr(ref, abilityAbbrevKey(k)), abilities[k] ?? 0, top),
+                child: bar(
+                  tr(ref, abilityAbbrevKey(k)),
+                  abilities[k] ?? 0,
+                  top,
+                ),
               ),
             heading(tr(ref, 'skills')),
             if (known.isEmpty)
-              Text(tr(ref, 'skills_none_short'),
-                  style: theme.textTheme.bodySmall?.copyWith(color: ink.ash))
+              Text(
+                tr(ref, 'skills_none_short'),
+                style: theme.textTheme.bodySmall?.copyWith(color: ink.ash),
+              )
             else ...[
               for (final e in elementChartOrder)
                 if (byElement[e]! > 0)
                   bar(elementName(e), byElement[e]!, topElement),
               const SizedBox(height: 8),
-              LayoutBuilder(builder: (context, box) {
-                final width = (box.maxWidth - 6) / 2;
-                return Wrap(
-                  spacing: 6,
-                  runSpacing: 6,
-                  children: [for (final id in shown) skill(id, width)],
-                );
-              }),
+              LayoutBuilder(
+                builder: (context, box) {
+                  final width = (box.maxWidth - 6) / 2;
+                  return Wrap(
+                    spacing: 6,
+                    runSpacing: 6,
+                    children: [for (final id in shown) skill(id, width)],
+                  );
+                },
+              ),
               Align(
                 alignment: Alignment.centerRight,
                 child: InkWell(
                   key: const Key('character_skills_all'),
                   onTap: openSkills,
                   child: Padding(
-                    padding:
-                        const EdgeInsets.symmetric(horizontal: 4, vertical: 8),
-                    child: Text('${tr(ref, 'skills_see_all')} ›',
-                        style: theme.textTheme.bodySmall
-                            ?.copyWith(color: ink.ash)),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 4,
+                      vertical: 8,
+                    ),
+                    child: Text(
+                      '${tr(ref, 'skills_see_all')} ›',
+                      style: theme.textTheme.bodySmall?.copyWith(
+                        color: ink.ash,
+                      ),
+                    ),
                   ),
                 ),
               ),
@@ -260,30 +281,43 @@ class _SkillsRadarCardState extends ConsumerState<SkillsRadarCard> {
                       style: const ButtonStyle(
                         visualDensity: VisualDensity.compact,
                         padding: WidgetStatePropertyAll(
-                            EdgeInsets.symmetric(horizontal: 4)),
+                          EdgeInsets.symmetric(horizontal: 4),
+                        ),
                       ),
                       segments: [
                         ButtonSegment(
-                            value: _RadarView.abilities,
-                            label: FittedBox(
-                                fit: BoxFit.scaleDown,
-                                child: Text(tr(ref, 'abilities_label'),
-                                    key: const Key('character_view_abilities'),
-                                    maxLines: 1))),
+                          value: _RadarView.abilities,
+                          label: FittedBox(
+                            fit: BoxFit.scaleDown,
+                            child: Text(
+                              tr(ref, 'abilities_label'),
+                              key: const Key('character_view_abilities'),
+                              maxLines: 1,
+                            ),
+                          ),
+                        ),
                         ButtonSegment(
-                            value: _RadarView.skills,
-                            label: FittedBox(
-                                fit: BoxFit.scaleDown,
-                                child: Text(tr(ref, 'skills'),
-                                    key: const Key('character_view_skills'),
-                                    maxLines: 1))),
+                          value: _RadarView.skills,
+                          label: FittedBox(
+                            fit: BoxFit.scaleDown,
+                            child: Text(
+                              tr(ref, 'skills'),
+                              key: const Key('character_view_skills'),
+                              maxLines: 1,
+                            ),
+                          ),
+                        ),
                         ButtonSegment(
-                            value: _RadarView.detail,
-                            label: FittedBox(
-                                fit: BoxFit.scaleDown,
-                                child: Text(tr(ref, 'radar_view_detail'),
-                                    key: const Key('character_view_detail'),
-                                    maxLines: 1))),
+                          value: _RadarView.detail,
+                          label: FittedBox(
+                            fit: BoxFit.scaleDown,
+                            child: Text(
+                              tr(ref, 'radar_view_detail'),
+                              key: const Key('character_view_detail'),
+                              maxLines: 1,
+                            ),
+                          ),
+                        ),
                       ],
                       selected: {view},
                       onSelectionChanged: (picked) =>
@@ -302,23 +336,30 @@ class _SkillsRadarCardState extends ConsumerState<SkillsRadarCard> {
                   ),
                   // The corner labels hang below the radar's own box.
                   const SizedBox(height: 14),
-                  Text(tr(ref, 'stat_radar_hint'),
-                      key: const Key('character_radar_hint'),
-                      textAlign: TextAlign.center,
-                      style: theme.textTheme.bodySmall?.copyWith(
-                          color: ink.ash, fontStyle: FontStyle.italic)),
+                  Text(
+                    tr(ref, 'stat_radar_hint'),
+                    key: const Key('character_radar_hint'),
+                    textAlign: TextAlign.center,
+                    style: theme.textTheme.bodySmall?.copyWith(
+                      color: ink.ash,
+                      fontStyle: FontStyle.italic,
+                    ),
+                  ),
                   const SizedBox(height: 4),
                 ] else if (view == _RadarView.skills) ...[
                   skillsRadar(),
                   const SizedBox(height: 14),
                   Text(
-                      known.isEmpty
-                          ? tr(ref, 'skills_none_short')
-                          : tr(ref, 'skills_radar_hint'),
-                      key: const Key('character_skills_radar_hint'),
-                      textAlign: TextAlign.center,
-                      style: theme.textTheme.bodySmall?.copyWith(
-                          color: ink.ash, fontStyle: FontStyle.italic)),
+                    known.isEmpty
+                        ? tr(ref, 'skills_none_short')
+                        : tr(ref, 'skills_radar_hint'),
+                    key: const Key('character_skills_radar_hint'),
+                    textAlign: TextAlign.center,
+                    style: theme.textTheme.bodySmall?.copyWith(
+                      color: ink.ash,
+                      fontStyle: FontStyle.italic,
+                    ),
+                  ),
                   const SizedBox(height: 4),
                 ] else
                   detail(),

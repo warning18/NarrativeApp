@@ -199,12 +199,13 @@ class EncounterModifiers {
   /// The same modifiers stamped with a fight's chapter and/or zone-tier
   /// multiplier (an expedition applies its zone's to every draw), or made
   /// one of the last battles ([hostFight]).
-  EncounterModifiers copyWith(
-          {int? chapter,
-          double? difficultyMultiplier,
-          bool? hostFight,
-          FightStage? forcedStage,
-          String? placeId}) =>
+  EncounterModifiers copyWith({
+    int? chapter,
+    double? difficultyMultiplier,
+    bool? hostFight,
+    FightStage? forcedStage,
+    String? placeId,
+  }) =>
       EncounterModifiers(
         forcedAffixes: forcedAffixes,
         namedEnemyName: namedEnemyName,

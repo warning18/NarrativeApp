@@ -9,11 +9,14 @@ extension _TowerPanels on _FightScreenState {
   static const double _panelGap = 4;
 
   Widget _buildTowerPanels(
-      Map<String, dynamic> items, Map<String, _FacePreview> previews) {
+    Map<String, dynamic> items,
+    Map<String, _FacePreview> previews,
+  ) {
     // Art's painted scene of the band: the foes' panel shows its middle, the
     // hero's its floor (v1.1008).
-    final plate =
-        towerFightScene(FightPlateOverride.maybeOf(context)?.floor ?? 1);
+    final plate = towerFightScene(
+      FightPlateOverride.maybeOf(context)?.floor ?? 1,
+    );
     // A short phone has no room for the figures under the plates.
     final figures = !_shortPhone;
     // A tall phone gives the pictures more room, so the figures stand bigger.
@@ -28,121 +31,128 @@ extension _TowerPanels on _FightScreenState {
     final figureH = tall ? 84.0 : 56.0;
     // The foe the picked die is aimed at (its index in the row), if any.
     final aimed = _towerAimedFoe();
-    Widget panel(
-      double height,
-      bool foes,
-      List<Widget> cards,
-    ) =>
-        LayoutBuilder(builder: (context, box) {
-          final w = box.maxWidth;
-          // Slanted edges: the foes' panel rises to the right, the party's
-          // falls, so the two read as one cut picture.
-          final pts = foes
-              ? [
-                  const Offset(6, 14),
-                  Offset(w - 6, 6),
-                  Offset(w - 6, height - 6),
-                  Offset(6, height - 6),
-                ]
-              : [
-                  const Offset(6, 6),
-                  Offset(w - 6, 6),
-                  Offset(w - 6, height - 6),
-                  Offset(6, height - 14),
-                ];
-          return InkSlantPanel(
-            size: Size(w, height),
-            points: pts,
-            child: Stack(fit: StackFit.expand, children: [
-              Image.asset(plate,
-                  fit: BoxFit.cover,
-                  alignment:
-                      foes ? const Alignment(0, 0.25) : Alignment.bottomCenter,
-                  filterQuality: FilterQuality.none,
-                  errorBuilder: (c, e, s) => const ColoredBox(color: inkDeep)),
-              if (figures && foes && aimed != null)
-                Positioned.fill(
-                  child: IgnorePointer(
-                    child: CustomPaint(
-                      key: const Key('tower_aim_splash'),
-                      painter: InkSplashPainter(
-                          (aimed + 0.5) / _enemies.length, height - 40),
+    Widget panel(double height, bool foes, List<Widget> cards) => LayoutBuilder(
+          builder: (context, box) {
+            final w = box.maxWidth;
+            // Slanted edges: the foes' panel rises to the right, the party's
+            // falls, so the two read as one cut picture.
+            final pts = foes
+                ? [
+                    const Offset(6, 14),
+                    Offset(w - 6, 6),
+                    Offset(w - 6, height - 6),
+                    Offset(6, height - 6),
+                  ]
+                : [
+                    const Offset(6, 6),
+                    Offset(w - 6, 6),
+                    Offset(w - 6, height - 6),
+                    Offset(6, height - 14),
+                  ];
+            return InkSlantPanel(
+              size: Size(w, height),
+              points: pts,
+              child: Stack(
+                fit: StackFit.expand,
+                children: [
+                  Image.asset(
+                    plate,
+                    fit: BoxFit.cover,
+                    alignment: foes
+                        ? const Alignment(0, 0.25)
+                        : Alignment.bottomCenter,
+                    filterQuality: FilterQuality.none,
+                    errorBuilder: (c, e, s) => const ColoredBox(color: inkDeep),
+                  ),
+                  if (figures && foes && aimed != null)
+                    Positioned.fill(
+                      child: IgnorePointer(
+                        child: CustomPaint(
+                          key: const Key('tower_aim_splash'),
+                          painter: InkSplashPainter(
+                            (aimed + 0.5) / _enemies.length,
+                            height - 40,
+                          ),
+                        ),
+                      ),
+                    ),
+                  if (figures)
+                    Positioned(
+                      // A lone fighter: a box 176 wide holds its half (84) at the
+                      // panel's edge; several share the whole width.
+                      left: cards.length == 1 && foes ? null : 8,
+                      right: cards.length == 1 && !foes ? null : 8,
+                      width: cards.length == 1 ? 176 : null,
+                      bottom: 22,
+                      child: IgnorePointer(
+                        child: FightFigures(
+                          allies: foes
+                              ? const []
+                              : [for (final m in _party) _headIdFor(m)],
+                          foes: foes
+                              ? [for (final e in _enemies) e.enemyId]
+                              : const [],
+                          height: figureH,
+                        ),
+                      ),
+                    ),
+                  Positioned(
+                    // One fighter's plate leaves its picture room to stand beside
+                    // it (the hero left, a lone foe right), as in the approved A.
+                    left: 12 + (!foes && figures && cards.length == 1 ? 96 : 0),
+                    right: 12 + (foes && figures && cards.length == 1 ? 96 : 0),
+                    top: foes ? 18 : 10,
+                    child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        for (var i = 0; i < cards.length; i++) ...[
+                          if (i > 0) const SizedBox(width: 6),
+                          Expanded(child: cards[i]),
+                        ],
+                      ],
                     ),
                   ),
-                ),
-              if (figures)
-                Positioned(
-                  // A lone fighter: a box 176 wide holds its half (84) at the
-                  // panel's edge; several share the whole width.
-                  left: cards.length == 1 && foes ? null : 8,
-                  right: cards.length == 1 && !foes ? null : 8,
-                  width: cards.length == 1 ? 176 : null,
-                  bottom: 22,
-                  child: IgnorePointer(
-                    child: FightFigures(
-                      allies: foes
-                          ? const []
-                          : [for (final m in _party) _headIdFor(m)],
-                      foes: foes
-                          ? [for (final e in _enemies) e.enemyId]
-                          : const [],
-                      height: figureH,
-                    ),
-                  ),
-                ),
-              Positioned(
-                // One fighter's plate leaves its picture room to stand beside
-                // it (the hero left, a lone foe right), as in the approved A.
-                left: 12 + (!foes && figures && cards.length == 1 ? 96 : 0),
-                right: 12 + (foes && figures && cards.length == 1 ? 96 : 0),
-                top: foes ? 18 : 10,
-                child: Row(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    for (var i = 0; i < cards.length; i++) ...[
-                      if (i > 0) const SizedBox(width: 6),
-                      Expanded(child: cards[i]),
-                    ],
-                  ],
-                ),
+                ],
               ),
-            ]),
-          );
-        });
+            );
+          },
+        );
 
-    return Column(children: [
-      _buildClimbStrip(),
-      SizedBox(
-        height: foeH,
-        child: panel(foeH, true, [
-          for (final e in _enemies)
-            KeyedSubtree(
-              key: _enemyCardKey(e.key),
-              child: VfxRecoil(
-                controller: _vfx,
-                anchor: _enemyCardKey(e.key),
-                flash: false,
-                child: _buildEnemySlot(e, previews),
+    return Column(
+      children: [
+        _buildClimbStrip(),
+        SizedBox(
+          height: foeH,
+          child: panel(foeH, true, [
+            for (final e in _enemies)
+              KeyedSubtree(
+                key: _enemyCardKey(e.key),
+                child: VfxRecoil(
+                  controller: _vfx,
+                  anchor: _enemyCardKey(e.key),
+                  flash: false,
+                  child: _buildEnemySlot(e, previews),
+                ),
               ),
-            ),
-        ]),
-      ),
-      const SizedBox(height: _panelGap),
-      SizedBox(
-        height: partyH,
-        child: panel(partyH, false, [
-          for (final m in _party)
-            KeyedSubtree(
-              key: _memberCardKey(m.id),
-              child: VfxRecoil(
-                controller: _vfx,
-                anchor: _memberCardKey(m.id),
-                child: _buildPartySlot(m, items),
+          ]),
+        ),
+        const SizedBox(height: _panelGap),
+        SizedBox(
+          height: partyH,
+          child: panel(partyH, false, [
+            for (final m in _party)
+              KeyedSubtree(
+                key: _memberCardKey(m.id),
+                child: VfxRecoil(
+                  controller: _vfx,
+                  anchor: _memberCardKey(m.id),
+                  child: _buildPartySlot(m, items),
+                ),
               ),
-            ),
-        ]),
-      ),
-    ]);
+          ]),
+        ),
+      ],
+    );
   }
 
   /// The index of the foe the picked die is aimed at (more than one foe
@@ -167,25 +177,27 @@ extension _TowerPanels on _FightScreenState {
       child: SizedBox(
         key: const Key('tower_climb_strip'),
         height: 20,
-        child: Row(children: [
-          for (var i = 1; i <= 30; i++)
-            Expanded(
-              child: Container(
-                margin: EdgeInsets.fromLTRB(0.8, i % 10 == 0 ? 0 : 6, 0.8, 0),
-                decoration: BoxDecoration(
-                  color: i < floor
-                      ? inkGrey
-                      : i == floor
-                          ? inkRed
-                          : inkBlack,
-                  border: Border.all(
-                      color: i % 10 == 0
-                          ? inkRed
-                          : inkGrey.withValues(alpha: 0.6)),
+        child: Row(
+          children: [
+            for (var i = 1; i <= 30; i++)
+              Expanded(
+                child: Container(
+                  margin: EdgeInsets.fromLTRB(0.8, i % 10 == 0 ? 0 : 6, 0.8, 0),
+                  decoration: BoxDecoration(
+                    color: i < floor
+                        ? inkGrey
+                        : i == floor
+                            ? inkRed
+                            : inkBlack,
+                    border: Border.all(
+                      color:
+                          i % 10 == 0 ? inkRed : inkGrey.withValues(alpha: 0.6),
+                    ),
+                  ),
                 ),
               ),
-            ),
-        ]),
+          ],
+        ),
       ),
     );
   }
@@ -199,36 +211,47 @@ extension _TowerPanels on _FightScreenState {
     return Padding(
       key: const Key('tower_face_strip'),
       padding: const EdgeInsets.only(top: 6),
-      child: Row(children: [
-        for (var i = 0; i < faces.length; i++)
-          Expanded(
-            child: Container(
-              height: 28,
-              margin: const EdgeInsets.symmetric(horizontal: 1.5),
-              decoration: BoxDecoration(
-                color: inkDeep,
-                border: Border.all(
+      child: Row(
+        children: [
+          for (var i = 0; i < faces.length; i++)
+            Expanded(
+              child: Container(
+                height: 28,
+                margin: const EdgeInsets.symmetric(horizontal: 1.5),
+                decoration: BoxDecoration(
+                  color: inkDeep,
+                  border: Border.all(
                     color: i == lit ? inkRed : inkGrey.withValues(alpha: 0.6),
-                    width: i == lit ? 2 : 1),
-              ),
-              alignment: Alignment.center,
-              child: FittedBox(
-                fit: BoxFit.scaleDown,
-                child: Row(mainAxisSize: MainAxisSize.min, children: [
-                  Icon(faceKind('${faces[i]['type']}').icon,
-                      size: IconSize.inline,
-                      color: i == lit ? inkPaper : inkGrey),
-                  if (faces[i]['value'] != null)
-                    Text(' ${faces[i]['value']}',
-                        style: TextStyle(
+                    width: i == lit ? 2 : 1,
+                  ),
+                ),
+                alignment: Alignment.center,
+                child: FittedBox(
+                  fit: BoxFit.scaleDown,
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Icon(
+                        faceKind('${faces[i]['type']}').icon,
+                        size: IconSize.inline,
+                        color: i == lit ? inkPaper : inkGrey,
+                      ),
+                      if (faces[i]['value'] != null)
+                        Text(
+                          ' ${faces[i]['value']}',
+                          style: TextStyle(
                             fontSize: 10,
                             height: 1,
-                            color: i == lit ? inkPaper : inkGrey)),
-                ]),
+                            color: i == lit ? inkPaper : inkGrey,
+                          ),
+                        ),
+                    ],
+                  ),
+                ),
               ),
             ),
-          ),
-      ]),
+        ],
+      ),
     );
   }
 
@@ -250,14 +273,17 @@ extension _TowerPanels on _FightScreenState {
       key: Key('tower_die_tag_${actor.id}'),
       padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
       color: inkBlack.withValues(alpha: 0.88),
-      child: Text(text,
-          maxLines: 1,
-          overflow: TextOverflow.ellipsis,
-          style: const TextStyle(
-              fontFamily: InkFonts.system,
-              fontSize: 9,
-              height: 1.1,
-              color: inkPaper)),
+      child: Text(
+        text,
+        maxLines: 1,
+        overflow: TextOverflow.ellipsis,
+        style: const TextStyle(
+          fontFamily: InkFonts.system,
+          fontSize: 9,
+          height: 1.1,
+          color: inkPaper,
+        ),
+      ),
     );
   }
 
@@ -265,7 +291,11 @@ extension _TowerPanels on _FightScreenState {
   /// keep only the name and a thin bar): the health in numbers, the armour
   /// and the damage, and the status marks with their own popins.
   Future<void> _showTowerHeroSheet(
-      _PartyMember member, int armor, int damage, List<Widget> icons) {
+    _PartyMember member,
+    int armor,
+    int damage,
+    List<Widget> icons,
+  ) {
     final theme = Theme.of(context);
     return showModalBottomSheet<void>(
       context: context,
@@ -282,26 +312,43 @@ extension _TowerPanels on _FightScreenState {
                 mainAxisSize: MainAxisSize.min,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(member.displayName,
-                      style: theme.textTheme.titleLarge
-                          ?.copyWith(color: inkPaper)),
+                  Text(
+                    member.displayName,
+                    style: theme.textTheme.titleLarge?.copyWith(
+                      color: inkPaper,
+                    ),
+                  ),
                   const SizedBox(height: 10),
-                  Text('${member.currentHealth} / ${member.maxHealth}',
-                      key: const Key('tower_hero_sheet_hp'),
-                      style: theme.textTheme.headlineSmall
-                          ?.copyWith(color: inkPaper)),
+                  Text(
+                    '${member.currentHealth} / ${member.maxHealth}',
+                    key: const Key('tower_hero_sheet_hp'),
+                    style: theme.textTheme.headlineSmall?.copyWith(
+                      color: inkPaper,
+                    ),
+                  ),
                   const SizedBox(height: 8),
-                  Row(children: [
-                    const Icon(Icons.shield_outlined,
-                        size: IconSize.s16, color: inkPaper),
-                    Text(' $armor   ',
-                        style: theme.textTheme.titleMedium
-                            ?.copyWith(color: inkPaper)),
-                    const Icon(Icons.bolt, size: IconSize.s16, color: inkRed),
-                    Text(' $damage',
-                        style: theme.textTheme.titleMedium
-                            ?.copyWith(color: inkPaper)),
-                  ]),
+                  Row(
+                    children: [
+                      const Icon(
+                        Icons.shield_outlined,
+                        size: IconSize.s16,
+                        color: inkPaper,
+                      ),
+                      Text(
+                        ' $armor   ',
+                        style: theme.textTheme.titleMedium?.copyWith(
+                          color: inkPaper,
+                        ),
+                      ),
+                      const Icon(Icons.bolt, size: IconSize.s16, color: inkRed),
+                      Text(
+                        ' $damage',
+                        style: theme.textTheme.titleMedium?.copyWith(
+                          color: inkPaper,
+                        ),
+                      ),
+                    ],
+                  ),
                   if (icons.isNotEmpty) ...[
                     const SizedBox(height: 12),
                     Wrap(spacing: 4, runSpacing: 4, children: icons),

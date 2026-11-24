@@ -137,7 +137,9 @@ class CityChartRuler {
 /// (a neutral district is left out and keeps its own colour), from
 /// townRulersProvider's [rulers].
 Map<String, CityChartRuler> cityChartRulersOf(
-        CityChart chart, Map<String, TownRuler> rulers) =>
+  CityChart chart,
+  Map<String, TownRuler> rulers,
+) =>
     {
       for (final d in chart.districts)
         if (rulers[d.id] case final r? when !r.isNeutral)
@@ -342,7 +344,8 @@ class CityChart {
 
   static Future<CityChart> load(AssetBundle bundle, String asset) async =>
       CityChart.fromJson(
-          jsonDecode(await bundle.loadString(asset)) as Map<String, dynamic>);
+        jsonDecode(await bundle.loadString(asset)) as Map<String, dynamic>,
+      );
 
   /// The colours the districts wear, in the order the plan lists them.
   static const List<Color> districtColours = [
@@ -404,13 +407,16 @@ class CityChart {
       final b = record.buildingOfWay(w.sceneId, w.districtId);
       if (b == null) continue;
       pinned[b.id] = w.name;
-      chartWays.add(CityChartWay(
+      chartWays.add(
+        CityChartWay(
           id: w.id,
           district: d,
           kind: w.kind,
           name: w.name,
           building: b.id,
-          at: w.at));
+          at: w.at,
+        ),
+      );
     }
 
     // The buildings: the story's own, and the lots of the rest.
@@ -429,17 +435,19 @@ class CityChart {
           ..lineTo(ridge.$2.dx, ridge.$2.dy);
       }
       final written = record.nameOf(b.id, french: french);
-      buildings.add(CityChartBuilding(
-        key: b.id,
-        district: d,
-        name: written.isNotEmpty ? written : (pinned[b.id] ?? ''),
-        shape: polygon(b.shape),
-        round: false,
-        quiet: false,
-        at: b.centre,
-        ridge: ridge,
-        story: story,
-      ));
+      buildings.add(
+        CityChartBuilding(
+          key: b.id,
+          district: d,
+          name: written.isNotEmpty ? written : (pinned[b.id] ?? ''),
+          shape: polygon(b.shape),
+          round: false,
+          quiet: false,
+          at: b.centre,
+          ridge: ridge,
+          story: story,
+        ),
+      );
     }
 
     final districts = <CityChartDistrict>[
@@ -479,11 +487,13 @@ class CityChart {
         ..translateByDouble(b.at.dx, b.at.dy, 0, 1)
         ..rotateZ(a);
       bridges.addPath(
-          Path()
-            ..addRect(Rect.fromCenter(
-                center: Offset.zero, width: b.length, height: 13)),
-          Offset.zero,
-          matrix4: m.storage);
+        Path()
+          ..addRect(
+            Rect.fromCenter(center: Offset.zero, width: b.length, height: 13),
+          ),
+        Offset.zero,
+        matrix4: m.storage,
+      );
     }
 
     final islands = Path();
@@ -499,9 +509,7 @@ class CityChart {
       if (sq.kind == 'arena') {
         arena = polygon(sq.shape);
         final c = sq.centre;
-        arenaInner = polygon([
-          for (final p in sq.shape) c + (p - c) * 0.62,
-        ]);
+        arenaInner = polygon([for (final p in sq.shape) c + (p - c) * 0.62]);
       } else {
         polygon(sq.shape, squares);
       }
@@ -573,8 +581,9 @@ class CityChart {
   static const String saltmouthStub = 'assets/visuals/city/saltmouth_stub.json';
 
   factory CityChart.fromJson(Map<String, dynamic> j) {
-    List<double> nums(Object? raw) =>
-        [for (final v in raw as List) (v as num).toDouble()];
+    List<double> nums(Object? raw) => [
+          for (final v in raw as List) (v as num).toDouble(),
+        ];
     Path ringPath(Path p, List<double> flat) {
       if (flat.length < 6) return p;
       p.moveTo(flat[0], flat[1]);
@@ -650,16 +659,18 @@ class CityChart {
       final cx = (x0 + x1) / 2, cy = (y0 + y1) / 2;
       final hw = ((x1 - x0) / 2 + 44).clamp(95.0, 400.0);
       final hh = ((y1 - y0) / 2 + 44).clamp(95.0, 400.0);
-      districts.add(CityChartDistrict(
-        id: d['id'] as String,
-        name: d['name'] as String,
-        colour: hex(d['colour'] as String),
-        blocks: shape(d['blocks']),
-        lots: lotsBy[i],
-        ridges: ridgesBy[i],
-        box: Rect.fromLTRB(cx - hw, cy - hh, cx + hw, cy + hh),
-        centre: seed,
-      ));
+      districts.add(
+        CityChartDistrict(
+          id: d['id'] as String,
+          name: d['name'] as String,
+          colour: hex(d['colour'] as String),
+          blocks: shape(d['blocks']),
+          lots: lotsBy[i],
+          ridges: ridgesBy[i],
+          box: Rect.fromLTRB(cx - hw, cy - hh, cx + hw, cy + hh),
+          centre: seed,
+        ),
+      );
     }
 
     final marks = j['marks'] as Map<String, dynamic>;
@@ -707,8 +718,12 @@ class CityChart {
       trees: points('trees'),
       piers: [
         for (final p in marks['piers'] as List)
-          Rect.fromLTWH((p as List)[0].toDouble(), p[1].toDouble(),
-              p[2].toDouble(), (p[3] as num).toDouble()),
+          Rect.fromLTWH(
+            (p as List)[0].toDouble(),
+            p[1].toDouble(),
+            p[2].toDouble(),
+            (p[3] as num).toDouble(),
+          ),
       ],
     );
   }

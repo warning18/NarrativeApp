@@ -19,7 +19,10 @@ int _dieFaceCount(Map<String, dynamic>? die) =>
 
 /// The dice of [owned] the Skillwright can recut: the d8s, in the order
 /// owned.
-List<String> weavableDice(Iterable<String> owned, Map<String, dynamic> dice) =>
+List<String> weavableDice(
+  Iterable<String> owned,
+  Map<String, dynamic> dice,
+) =>
     [
       for (final id in owned)
         if (id != tallyDieId &&

@@ -59,18 +59,28 @@ const double _undeadCrumbleShare = 0.03;
 double _beastTireFactor(int round) => round < foeRuleStartRound
     ? 1.0
     : max(
-        _beastTireFloor, 1 - _beastTireStep * (round - foeRuleStartRound + 1));
+        _beastTireFloor,
+        1 - _beastTireStep * (round - foeRuleStartRound + 1),
+      );
 
 /// [damage] struck by [enemy] in [round]: softer for a tiring beast.
-int foeBlow(int damage, Map<String, dynamic>? enemy, int round,
-        {bool boss = false}) =>
+int foeBlow(
+  int damage,
+  Map<String, dynamic>? enemy,
+  int round, {
+  bool boss = false,
+}) =>
     damage <= 0 || boss || foeKindOf(enemy) != FoeKind.beast
         ? damage
         : (damage * _beastTireFactor(round)).round();
 
 /// What [enemy] of [maxHealth] crumbles away in [round] (the dead only).
-int crumble(Map<String, dynamic>? enemy, int maxHealth, int round,
-        {bool boss = false}) =>
+int crumble(
+  Map<String, dynamic>? enemy,
+  int maxHealth,
+  int round, {
+  bool boss = false,
+}) =>
     boss || foeKindOf(enemy) != FoeKind.undead || round < foeRuleStartRound
         ? 0
         : max(1, (maxHealth * _undeadCrumbleShare).round());

@@ -20,29 +20,39 @@ extension _FightSquad on _FightScreenState {
       );
       if (index == null) continue;
       final friend = _enemies[index];
-      final healed = min(squadHealAmount(friend.maxHealth),
-          friend.maxHealth - friend.currentHealth);
+      final healed = min(
+        squadHealAmount(friend.maxHealth),
+        friend.maxHealth - friend.currentHealth,
+      );
       if (healed <= 0) continue;
-      _fx(VfxStyle.heal, _enemyCardKey(friend.key),
-          text: '+$healed', textKind: VfxTextKind.heal);
+      _fx(
+        VfxStyle.heal,
+        _enemyCardKey(friend.key),
+        text: '+$healed',
+        textKind: VfxTextKind.heal,
+      );
       _update(() {
         friend.currentHealth += healed;
-        _log.add(_LogEntry(
+        _log.add(
+          _LogEntry(
             trFor(lang, 'squad_healer_mends')
                 .replaceAll('{healer}', healer.displayName)
                 .replaceAll('{name}', friend.displayName)
                 .replaceAll('{n}', '$healed'),
-            _LogKind.info));
+            _LogKind.info,
+          ),
+        );
       });
     }
   }
 
   /// After the party's blows: the enemies that watch the round answer it.
   void _applyEnemyResponses(
-      Map<String, DiceFaceResult> played,
-      Map<String, PlayerActionResult> results,
-      List<_LogEntry> entries,
-      AppLanguage lang) {
+    Map<String, DiceFaceResult> played,
+    Map<String, PlayerActionResult> results,
+    List<_LogEntry> entries,
+    AppLanguage lang,
+  ) {
     final acting = played.keys.length;
     final defenders = played.values.where((f) => f.type == 'Defend').length;
     String? bestHealer;
@@ -70,23 +80,34 @@ extension _FightSquad on _FightScreenState {
               final member = _memberById(hitter);
               if (member != null && !member.isKnockedOut) {
                 enemy.pendingMove = _PendingEnemyMove(
-                    move: pending.move,
-                    targetId: member.id,
-                    release: pending.release);
+                  move: pending.move,
+                  targetId: member.id,
+                  release: pending.release,
+                );
               }
             }
-            entries.add(_LogEntry(
-                trFor(lang, 'response_provoked')
-                    .replaceAll('{name}', enemy.displayName),
-                _LogKind.enemyDamage));
+            entries.add(
+              _LogEntry(
+                trFor(
+                  lang,
+                  'response_provoked',
+                ).replaceAll('{name}', enemy.displayName),
+                _LogKind.enemyDamage,
+              ),
+            );
           }
         case EnemyResponse.press:
           if (provokesPress(defenders: defenders, acting: acting)) {
             enemy.pressing = true;
-            entries.add(_LogEntry(
-                trFor(lang, 'response_pressing')
-                    .replaceAll('{name}', enemy.displayName),
-                _LogKind.enemyDamage));
+            entries.add(
+              _LogEntry(
+                trFor(
+                  lang,
+                  'response_pressing',
+                ).replaceAll('{name}', enemy.displayName),
+                _LogKind.enemyDamage,
+              ),
+            );
           }
         case EnemyResponse.huntHealer:
           final healerId = bestHealer;
@@ -95,14 +116,18 @@ extension _FightSquad on _FightScreenState {
             final member = _memberById(healerId);
             if (member != null && !member.isKnockedOut) {
               enemy.pendingMove = _PendingEnemyMove(
-                  move: pending.move,
-                  targetId: member.id,
-                  release: pending.release);
-              entries.add(_LogEntry(
+                move: pending.move,
+                targetId: member.id,
+                release: pending.release,
+              );
+              entries.add(
+                _LogEntry(
                   trFor(lang, 'response_hunts')
                       .replaceAll('{name}', enemy.displayName)
                       .replaceAll('{target}', member.displayName),
-                  _LogKind.enemyDamage));
+                  _LogKind.enemyDamage,
+                ),
+              );
             }
           }
         case EnemyResponse.none:
@@ -129,10 +154,16 @@ extension _FightSquad on _FightScreenState {
         ),
       if (enemy.provoked)
         _stateChip(
-            Icons.whatshot, tr(ref, 'response_provoked_chip'), Palette.danger),
+          Icons.whatshot,
+          tr(ref, 'response_provoked_chip'),
+          Palette.danger,
+        ),
       if (enemy.pressing)
-        _stateChip(Icons.keyboard_double_arrow_down,
-            tr(ref, 'response_pressing_chip'), Palette.danger),
+        _stateChip(
+          Icons.keyboard_double_arrow_down,
+          tr(ref, 'response_pressing_chip'),
+          Palette.danger,
+        ),
     ];
   }
 }

@@ -103,4 +103,5 @@ class FinishedStoryNotifier extends StateNotifier<_FinishedStory> {
 
 final finishedStoryProvider =
     StateNotifierProvider<FinishedStoryNotifier, _FinishedStory>(
-        (ref) => FinishedStoryNotifier());
+  (ref) => FinishedStoryNotifier(),
+);

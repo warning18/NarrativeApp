@@ -46,7 +46,8 @@ class FightScenery {
             mid: Color(0xFF63794F),
             ground: Color(0xFF566B42),
             dark: Color(0xFF3F5030),
-            light: Color(0xFFE5E9C6)),
+            light: Color(0xFFE5E9C6),
+          ),
         FightStage.dunes => const FightScenery(
             skyTop: Color(0xFFD9A15E),
             skyLow: Color(0xFFF2D9A4),
@@ -54,7 +55,8 @@ class FightScenery {
             mid: Color(0xFFB8864A),
             ground: Color(0xFFA9783F),
             dark: Color(0xFF7F5A2E),
-            light: Color(0xFFFFF1CC)),
+            light: Color(0xFFFFF1CC),
+          ),
         FightStage.saltFlats => const FightScenery(
             skyTop: Color(0xFF9FC1CF),
             skyLow: Palette.amber91,
@@ -62,7 +64,8 @@ class FightScenery {
             mid: Color(0xFFDAD0B6),
             ground: Color(0xFFD8CAA6),
             dark: Palette.stone50,
-            light: Palette.white),
+            light: Palette.white,
+          ),
         FightStage.waves => const FightScenery(
             skyTop: Color(0xFF38607E),
             skyLow: Color(0xFF9CC3D6),
@@ -70,7 +73,8 @@ class FightScenery {
             mid: Color(0xFF28506C),
             ground: Palette.blue23,
             dark: Color(0xFF14293A),
-            light: Palette.cyan87),
+            light: Palette.cyan87,
+          ),
         FightStage.ash => const FightScenery(
             skyTop: Color(0xFF6D6963),
             skyLow: Color(0xFFA79F94),
@@ -78,7 +82,8 @@ class FightScenery {
             mid: Palette.stone35a,
             ground: Color(0xFF4A4743),
             dark: Color(0xFF2E2C29),
-            light: Color(0xFFE9A35B)),
+            light: Color(0xFFE9A35B),
+          ),
         FightStage.terraces => const FightScenery(
             skyTop: Color(0xFF8E4B3A),
             skyLow: Color(0xFFE0A27A),
@@ -86,7 +91,8 @@ class FightScenery {
             mid: Color(0xFF8A4632),
             ground: Color(0xFF723A2B),
             dark: Color(0xFF4A241B),
-            light: Palette.orange73a),
+            light: Palette.orange73a,
+          ),
         FightStage.cliffs => const FightScenery(
             skyTop: Color(0xFF7FA3B5),
             skyLow: Color(0xFFD7E1DC),
@@ -94,7 +100,8 @@ class FightScenery {
             mid: Color(0xFF52625A),
             ground: Color(0xFF45544D),
             dark: Color(0xFF2F3A35),
-            light: Palette.paper85),
+            light: Palette.paper85,
+          ),
         FightStage.reeds => const FightScenery(
             skyTop: Color(0xFF7A8C80),
             skyLow: Color(0xFFB9C4A8),
@@ -102,7 +109,8 @@ class FightScenery {
             mid: Color(0xFF3E4A3A),
             ground: Color(0xFF2E3A36),
             dark: Color(0xFF1E2724),
-            light: Palette.stone66),
+            light: Palette.stone66,
+          ),
         FightStage.snow => const FightScenery(
             skyTop: Color(0xFFA9BCCC),
             skyLow: Color(0xFFF0F4F8),
@@ -110,7 +118,8 @@ class FightScenery {
             mid: Color(0xFFC9D3DD),
             ground: Color(0xFFE3EAF0),
             dark: Color(0xFFA7B6C4),
-            light: Palette.white),
+            light: Palette.white,
+          ),
         FightStage.glass => const FightScenery(
             skyTop: Color(0xFF8D86A0),
             skyLow: Color(0xFFD9D4DC),
@@ -118,7 +127,8 @@ class FightScenery {
             mid: Color(0xFF857F8E),
             ground: Palette.stone63,
             dark: Color(0xFF5A5470),
-            light: Palette.paper89a),
+            light: Palette.paper89a,
+          ),
         FightStage.hall => const FightScenery(
             skyTop: Color(0xFF2C2A33),
             skyLow: Palette.night30,
@@ -126,7 +136,8 @@ class FightScenery {
             mid: Color(0xFF34313D),
             ground: Color(0xFF3A3642),
             dark: Color(0xFF211F27),
-            light: Color(0xFFE9B96B)),
+            light: Color(0xFFE9B96B),
+          ),
         FightStage.ruins => const FightScenery(
             skyTop: Color(0xFF6B6560),
             skyLow: Color(0xFFB8AB9B),
@@ -134,7 +145,8 @@ class FightScenery {
             mid: Color(0xFF433F3B),
             ground: Color(0xFF4C453E),
             dark: Color(0xFF2A2724),
-            light: Color(0xFFE2C79A)),
+            light: Color(0xFFE2C79A),
+          ),
         FightStage.woods => const FightScenery(
             skyTop: Color(0xFF7E967F),
             skyLow: Color(0xFFC3D0B2),
@@ -142,7 +154,8 @@ class FightScenery {
             mid: Color(0xFF3F5A3B),
             ground: Color(0xFF3A4A30),
             dark: Color(0xFF22301F),
-            light: Color(0xFFF1EBB8)),
+            light: Color(0xFFF1EBB8),
+          ),
         FightStage.ford => const FightScenery(
             skyTop: Color(0xFF7799AE),
             skyLow: Color(0xFFD4DEC9),
@@ -150,7 +163,8 @@ class FightScenery {
             mid: Color(0xFF63794F),
             ground: Color(0xFF566B42),
             dark: Color(0xFF3F5030),
-            light: Color(0xFFCFE6EE)),
+            light: Color(0xFFCFE6EE),
+          ),
         FightStage.burntFields => const FightScenery(
             skyTop: Color(0xFF7A5A4A),
             skyLow: Color(0xFFD99A68),
@@ -158,7 +172,8 @@ class FightScenery {
             mid: Color(0xFF3A2F2A),
             ground: Color(0xFF2F2723),
             dark: Color(0xFF1B1613),
-            light: Color(0xFFFFB45C)),
+            light: Color(0xFFFFB45C),
+          ),
         FightStage.oasis => const FightScenery(
             skyTop: Color(0xFFDDA862),
             skyLow: Color(0xFFF2D9A4),
@@ -166,7 +181,8 @@ class FightScenery {
             mid: Color(0xFFB8864A),
             ground: Color(0xFFC79A58),
             dark: Color(0xFF7F5A2E),
-            light: Color(0xFFFFF1CC)),
+            light: Color(0xFFFFF1CC),
+          ),
         FightStage.caravanRoad => const FightScenery(
             skyTop: Color(0xFFD28E5A),
             skyLow: Color(0xFFF0CFA0),
@@ -174,7 +190,8 @@ class FightScenery {
             mid: Color(0xFFA9783F),
             ground: Color(0xFFB98B4C),
             dark: Color(0xFF7F5A2E),
-            light: Color(0xFFFFF1CC)),
+            light: Color(0xFFFFF1CC),
+          ),
         FightStage.quay => const FightScenery(
             skyTop: Color(0xFF2F4A66),
             skyLow: Color(0xFFC59A78),
@@ -182,7 +199,8 @@ class FightScenery {
             mid: Color(0xFF1F364B),
             ground: Palette.night28,
             dark: Color(0xFF2C2118),
-            light: Palette.orange71a),
+            light: Palette.orange71a,
+          ),
         FightStage.pass => const FightScenery(
             skyTop: Color(0xFF8AA0AE),
             skyLow: Color(0xFFDCD3BC),
@@ -190,7 +208,8 @@ class FightScenery {
             mid: Color(0xFF6E685B),
             ground: Color(0xFF8A8068),
             dark: Color(0xFF4F4A3E),
-            light: Color(0xFFF1E7C9)),
+            light: Color(0xFFF1E7C9),
+          ),
         // Placeholders until UX's board skins (v1.662): grey stone for
         // the streets, a wet deck under a sea sky.
         FightStage.cityRoad => const FightScenery(
@@ -200,7 +219,8 @@ class FightScenery {
             mid: Color(0xFF5A554F),
             ground: Color(0xFF77716A),
             dark: Color(0xFF3E3A36),
-            light: Color(0xFFE6DCC4)),
+            light: Color(0xFFE6DCC4),
+          ),
         FightStage.shipDeck => const FightScenery(
             skyTop: Color(0xFF5E86A3),
             skyLow: Color(0xFFB9D0DC),
@@ -208,7 +228,8 @@ class FightScenery {
             mid: Color(0xFF6E5236),
             ground: Color(0xFF8A6A47),
             dark: Color(0xFF4A3622),
-            light: Color(0xFFF0E2C2)),
+            light: Color(0xFFF0E2C2),
+          ),
       };
 }
 
@@ -467,8 +488,12 @@ void paintFightBackdrop(
   if (ground && plate != null) {
     _paintPlate(canvas, size, plate);
   } else if (ground) {
-    paintPixelStage(canvas, size, stage,
-        stars: light <= 0.5 ? 34 : (light < 1 ? 8 : 0));
+    paintPixelStage(
+      canvas,
+      size,
+      stage,
+      stars: light <= 0.5 ? 34 : (light < 1 ? 8 : 0),
+    );
   }
   // The day's weather over the stage, as the scenes draw it: pixel streaks.
   final particles = switch (sky) {
@@ -481,7 +506,13 @@ void paintFightBackdrop(
   };
   if (weather && particles != SideParticles.none && stage != FightStage.hall) {
     paintSideParticles(
-        canvas, size, particles, 0.6, t, size.width / pixelStageColumns);
+      canvas,
+      size,
+      particles,
+      0.6,
+      t,
+      size.width / pixelStageColumns,
+    );
   }
   if (anomalyId != null && level > 0) {
     _paintAnomaly(canvas, size, anomalyId, scenery, t, level);
@@ -508,16 +539,18 @@ void _paintPlate(Canvas canvas, Size size, ui.Image plate) {
   final h = plate.height.toDouble();
   final k = math.max(size.width / w, size.height / h);
   final src = Rect.fromCenter(
-      center: Offset(w / 2, h / 2),
-      width: size.width / k,
-      height: size.height / k);
+    center: Offset(w / 2, h / 2),
+    width: size.width / k,
+    height: size.height / k,
+  );
   canvas.drawImageRect(
-      plate,
-      src,
-      Offset.zero & size,
-      Paint()
-        ..filterQuality = FilterQuality.none
-        ..isAntiAlias = false);
+    plate,
+    src,
+    Offset.zero & size,
+    Paint()
+      ..filterQuality = FilterQuality.none
+      ..isAntiAlias = false,
+  );
 }
 
 double _h(num n) {
@@ -528,15 +561,23 @@ double _h(num n) {
 // --- The anomalies ------------------------------------------------------------
 
 void _veil(Canvas canvas, Size size, Color colour, double alpha) {
-  canvas.drawRect(Offset.zero & size,
-      Paint()..color = colour.withValues(alpha: alpha.clamp(0.0, 1.0)));
+  canvas.drawRect(
+    Offset.zero & size,
+    Paint()..color = colour.withValues(alpha: alpha.clamp(0.0, 1.0)),
+  );
 }
 
-void _streaks(Canvas canvas, Size size, double t, Color colour, double level,
-    {int count = 36,
-    double speed = 0.5,
-    double length = 22,
-    double slope = 0.1}) {
+void _streaks(
+  Canvas canvas,
+  Size size,
+  double t,
+  Color colour,
+  double level, {
+  int count = 36,
+  double speed = 0.5,
+  double length = 22,
+  double slope = 0.1,
+}) {
   final paint = Paint()
     ..strokeCap = StrokeCap.round
     ..strokeWidth = 1.4;
@@ -545,15 +586,26 @@ void _streaks(Canvas canvas, Size size, double t, Color colour, double level,
     final p = ((t * speed * (0.6 + _h(i) * 0.8)) + _h(i + 50)) % 1.0;
     final x = p * (size.width + length * 2) - length;
     final y = size.height * (0.1 + _h(i + 10) * 0.85);
-    paint.color =
-        colour.withValues(alpha: math.sin(math.pi * p) * 0.55 * level);
+    paint.color = colour.withValues(
+      alpha: math.sin(math.pi * p) * 0.55 * level,
+    );
     canvas.drawLine(
-        Offset(x, y), Offset(x - length, y + length * slope), paint);
+      Offset(x, y),
+      Offset(x - length, y + length * slope),
+      paint,
+    );
   }
 }
 
-void _rain(Canvas canvas, Size size, double t, Color colour, double level,
-    {int count = 70, double slant = 0.25}) {
+void _rain(
+  Canvas canvas,
+  Size size,
+  double t,
+  Color colour,
+  double level, {
+  int count = 70,
+  double slant = 0.25,
+}) {
   final paint = Paint()
     ..strokeCap = StrokeCap.round
     ..strokeWidth = 1.3;
@@ -575,19 +627,29 @@ void _flash(Canvas canvas, Size size, double t, double level) {
   if (f > 0) _veil(canvas, size, Palette.blue96, f * level);
 }
 
-void _motes(Canvas canvas, Size size, double t, Color colour, double level,
-    {int count = 22, bool up = true, double radius = 2.2}) {
+void _motes(
+  Canvas canvas,
+  Size size,
+  double t,
+  Color colour,
+  double level, {
+  int count = 22,
+  bool up = true,
+  double radius = 2.2,
+}) {
   final n = (count * level).round();
   for (var i = 0; i < n; i++) {
     final p = ((t * (0.08 + _h(i) * 0.1)) + _h(i + 30)) % 1.0;
     final x = size.width * _h(i + 5) + math.sin(t * 1.2 + i) * 8;
     final y = up ? size.height * (1 - p) : size.height * p;
     canvas.drawCircle(
-        Offset(x, y),
-        radius * (0.6 + _h(i + 60)),
-        Paint()
-          ..color =
-              colour.withValues(alpha: math.sin(math.pi * p) * 0.75 * level));
+      Offset(x, y),
+      radius * (0.6 + _h(i + 60)),
+      Paint()
+        ..color = colour.withValues(
+          alpha: math.sin(math.pi * p) * 0.75 * level,
+        ),
+    );
   }
 }
 
@@ -600,14 +662,23 @@ void _fogBanks(Canvas canvas, Size size, double t, Color colour, double level) {
     final y = (0.2 + _h(k + 15) * 0.7) * size.height;
     paint.color = colour.withValues(alpha: 0.28 * level);
     canvas.drawOval(
-        Rect.fromCenter(
-            center: Offset(x, y), width: size.width * 0.7, height: 46),
-        paint);
+      Rect.fromCenter(
+        center: Offset(x, y),
+        width: size.width * 0.7,
+        height: 46,
+      ),
+      paint,
+    );
   }
 }
 
 void _cracksGlow(
-    Canvas canvas, Size size, double t, Color colour, double level) {
+  Canvas canvas,
+  Size size,
+  double t,
+  Color colour,
+  double level,
+) {
   final glow = Paint()
     ..color = colour.withValues(alpha: 0.5 * level)
     ..style = PaintingStyle.stroke
@@ -634,8 +705,9 @@ void _cracksGlow(
   // The ground jolts: a low dust at the foot of the screen.
   final shake = math.sin(t * 24) * 2 * level;
   canvas.drawRect(
-      Rect.fromLTWH(shake, size.height * 0.94, size.width, size.height * 0.06),
-      Paint()..color = colour.withValues(alpha: 0.12 * level));
+    Rect.fromLTWH(shake, size.height * 0.94, size.width, size.height * 0.06),
+    Paint()..color = colour.withValues(alpha: 0.12 * level),
+  );
 }
 
 void _falling(Canvas canvas, Size size, double t, Color colour, double level) {
@@ -649,8 +721,9 @@ void _falling(Canvas canvas, Size size, double t, Color colour, double level) {
     canvas.translate(x, y);
     canvas.rotate(t * 3 + i);
     canvas.drawRect(
-        Rect.fromCenter(center: Offset.zero, width: r * 2, height: r * 1.4),
-        Paint()..color = colour.withValues(alpha: 0.85 * level));
+      Rect.fromCenter(center: Offset.zero, width: r * 2, height: r * 1.4),
+      Paint()..color = colour.withValues(alpha: 0.85 * level),
+    );
     canvas.restore();
   }
 }
@@ -661,12 +734,13 @@ void _rays(Canvas canvas, Size size, double t, Color colour, double level) {
     final a = 1.9 + i * 0.16 + math.sin(t * 0.3 + i) * 0.02;
     final end = origin + Offset(math.cos(a), math.sin(a)) * size.height * 1.3;
     canvas.drawLine(
-        origin,
-        end,
-        Paint()
-          ..color = colour.withValues(alpha: 0.16 * level)
-          ..strokeWidth = 18 + i * 3
-          ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 8));
+      origin,
+      end,
+      Paint()
+        ..color = colour.withValues(alpha: 0.16 * level)
+        ..strokeWidth = 18 + i * 3
+        ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 8),
+    );
   }
 }
 
@@ -677,15 +751,14 @@ void _eclipse(Canvas canvas, Size size, double t, double level) {
     at,
     52,
     Paint()
-      ..shader = RadialGradient(colors: [
-        Palette.clear,
-        const Color(0xFFBFB6FF).withValues(alpha: 0.55 * level),
-        Palette.clear,
-      ], stops: const [
-        0.55,
-        0.62,
-        1.0
-      ]).createShader(Rect.fromCircle(center: at, radius: 52)),
+      ..shader = RadialGradient(
+        colors: [
+          Palette.clear,
+          const Color(0xFFBFB6FF).withValues(alpha: 0.55 * level),
+          Palette.clear,
+        ],
+        stops: const [0.55, 0.62, 1.0],
+      ).createShader(Rect.fromCircle(center: at, radius: 52)),
   );
   canvas.drawCircle(at, 30, Paint()..color = const Color(0xFF05060F));
 }
@@ -707,12 +780,13 @@ void _sheen(Canvas canvas, Size size, double t, double level) {
     final y = size.height * (0.62 + i * 0.07);
     final x = ((t * 0.1 + _h(i)) % 1.0) * size.width;
     canvas.drawLine(
-        Offset(x - 60, y),
-        Offset(x + 60, y),
-        Paint()
-          ..color = const Color(0xFFEAF6FF).withValues(alpha: 0.45 * level)
-          ..strokeWidth = 2.2
-          ..strokeCap = StrokeCap.round);
+      Offset(x - 60, y),
+      Offset(x + 60, y),
+      Paint()
+        ..color = const Color(0xFFEAF6FF).withValues(alpha: 0.45 * level)
+        ..strokeWidth = 2.2
+        ..strokeCap = StrokeCap.round,
+    );
   }
 }
 
@@ -733,7 +807,12 @@ void _heat(Canvas canvas, Size size, double t, double level) {
 }
 
 void _anomalyGlint(
-    Canvas canvas, Size size, double t, Color colour, double level) {
+  Canvas canvas,
+  Size size,
+  double t,
+  Color colour,
+  double level,
+) {
   final n = (14 * level).round();
   for (var i = 0; i < n; i++) {
     final x = size.width * _h(i + 2);
@@ -748,17 +827,41 @@ void _anomalyGlint(
   }
 }
 
-void _paintAnomaly(Canvas canvas, Size size, String id, FightScenery s,
-    double t, double level) {
+void _paintAnomaly(
+  Canvas canvas,
+  Size size,
+  String id,
+  FightScenery s,
+  double t,
+  double level,
+) {
   switch (id) {
     case 'sandstorm':
       _veil(canvas, size, const Color(0xFFC79A55), 0.3 * level);
-      _streaks(canvas, size, t, const Color(0xFFE6C690), level,
-          count: 60, speed: 0.9, length: 30, slope: 0.05);
+      _streaks(
+        canvas,
+        size,
+        t,
+        const Color(0xFFE6C690),
+        level,
+        count: 60,
+        speed: 0.9,
+        length: 30,
+        slope: 0.05,
+      );
     case 'ash_storm':
       _veil(canvas, size, const Color(0xFF4B4743), 0.32 * level);
-      _streaks(canvas, size, t, const Color(0xFFC9C2B6), level,
-          count: 50, speed: 0.7, length: 20, slope: 0.18);
+      _streaks(
+        canvas,
+        size,
+        t,
+        const Color(0xFFC9C2B6),
+        level,
+        count: 50,
+        speed: 0.7,
+        length: 20,
+        slope: 0.18,
+      );
       _motes(canvas, size, t, const Color(0xFFE9A35B), level, count: 16);
     case 'heatstroke':
       _heat(canvas, size, t, level);
@@ -778,21 +881,45 @@ void _paintAnomaly(Canvas canvas, Size size, String id, FightScenery s,
       _flash(canvas, size, t, level);
     case 'downpour':
       _veil(canvas, size, const Color(0xFF2B3B4A), 0.3 * level);
-      _rain(canvas, size, t, const Color(0xFFD2E6EE), level,
-          count: 130, slant: 0.12);
+      _rain(
+        canvas,
+        size,
+        t,
+        const Color(0xFFD2E6EE),
+        level,
+        count: 130,
+        slant: 0.12,
+      );
     case 'flash_flood':
       _rain(canvas, size, t, const Color(0xFFD2E6EE), level, count: 60);
       _tide(canvas, size, t, const Color(0xFF6B8C72), level);
     case 'hailstorm':
       _veil(canvas, size, const Color(0xFF3B4650), 0.22 * level);
-      _motes(canvas, size, t * 6, const Color(0xFFF4F8FB), level,
-          count: 40, up: false, radius: 2.6);
+      _motes(
+        canvas,
+        size,
+        t * 6,
+        const Color(0xFFF4F8FB),
+        level,
+        count: 40,
+        up: false,
+        radius: 2.6,
+      );
     case 'fog_bank':
       _fogBanks(canvas, size, t, const Color(0xFFE3E9E8), level);
     case 'whiteout':
       _veil(canvas, size, const Color(0xFFF4F8FB), 0.4 * level);
-      _streaks(canvas, size, t, Palette.white, level,
-          count: 54, speed: 0.8, length: 26, slope: 0.22);
+      _streaks(
+        canvas,
+        size,
+        t,
+        Palette.white,
+        level,
+        count: 54,
+        speed: 0.8,
+        length: 26,
+        slope: 0.22,
+      );
     case 'black_ice':
       _sheen(canvas, size, t, level);
       _anomalyGlint(canvas, size, t, const Color(0xFFDDF1FF), level);
@@ -807,8 +934,15 @@ void _paintAnomaly(Canvas canvas, Size size, String id, FightScenery s,
       _veil(canvas, size, const Color(0xFF26301E), 0.2 * level);
       _motes(canvas, size, t, const Color(0xFF9DAA7C), level, count: 14);
     case 'marsh_lights':
-      _motes(canvas, size, t, const Color(0xFFBFF2C6), level,
-          count: 14, radius: 3.4);
+      _motes(
+        canvas,
+        size,
+        t,
+        const Color(0xFFBFF2C6),
+        level,
+        count: 14,
+        radius: 3.4,
+      );
     case 'racing_tide':
       _tide(canvas, size, t, const Color(0xFF4A8CB5), level);
     case 'ember_pits':
@@ -817,8 +951,15 @@ void _paintAnomaly(Canvas canvas, Size size, String id, FightScenery s,
       _motes(canvas, size, t, const Color(0xFFFF9B3D), level, count: 26);
     case 'blaze':
       _veil(canvas, size, const Color(0xFFD9602A), 0.2 * level);
-      _motes(canvas, size, t, const Color(0xFFFFC46B), level,
-          count: 32, radius: 2.6);
+      _motes(
+        canvas,
+        size,
+        t,
+        const Color(0xFFFFC46B),
+        level,
+        count: 32,
+        radius: 2.6,
+      );
     case 'glass_field':
       _anomalyGlint(canvas, size, t, Palette.white, level);
       _veil(canvas, size, const Color(0xFFCFC6F2), 0.12 * level);
@@ -829,8 +970,17 @@ void _paintAnomaly(Canvas canvas, Size size, String id, FightScenery s,
     case 'wellspring':
       _motes(canvas, size, t, const Color(0xFF9CF0D2), level, count: 30);
     case 'tailwind':
-      _streaks(canvas, size, t, const Color(0xFFEFF6F2), level,
-          count: 30, speed: 0.9, length: 40, slope: 0.02);
+      _streaks(
+        canvas,
+        size,
+        t,
+        const Color(0xFFEFF6F2),
+        level,
+        count: 30,
+        speed: 0.9,
+        length: 40,
+        slope: 0.02,
+      );
     default:
       _veil(canvas, size, s.dark, 0.1 * level);
   }

@@ -146,9 +146,10 @@ class FaceColorLegend extends StatelessWidget {
                 Text(
                   trFor(language, kind.labelKey),
                   style: TextStyle(
-                      fontSize: 11,
-                      color: kind.color,
-                      fontWeight: FontWeight.w600),
+                    fontSize: 11,
+                    color: kind.color,
+                    fontWeight: FontWeight.w600,
+                  ),
                 ),
               ],
             ),

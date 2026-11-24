@@ -69,7 +69,8 @@ class _SlowFramesChip extends ConsumerWidget {
             decoration: BoxDecoration(
               color: Colors.black.withValues(alpha: 0.75),
               border: Border.all(
-                  color: slow > 0 ? Palette.orange52 : Colors.white38),
+                color: slow > 0 ? Palette.orange52 : Colors.white38,
+              ),
               borderRadius: BorderRadius.circular(8),
             ),
             child: Text(

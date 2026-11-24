@@ -38,8 +38,13 @@ class SceneVignette extends StatelessWidget {
   /// One line instead of the two-figure scene.
   final bool folded;
 
-  Widget _head(BuildContext context, String id, String name,
-      {double size = 40, bool voice = false}) {
+  Widget _head(
+    BuildContext context,
+    String id,
+    String name, {
+    double size = 40,
+    bool voice = false,
+  }) {
     final scheme = Theme.of(context).colorScheme;
     return HeadAvatar(
       id: id,
@@ -47,8 +52,11 @@ class SceneVignette extends StatelessWidget {
       size: size,
       // A scene with no one faced: a voice's icon in place of a head.
       fallback: voice
-          ? Icon(Icons.record_voice_over_outlined,
-              size: size * 0.55, color: scheme.onSurfaceVariant)
+          ? Icon(
+              Icons.record_voice_over_outlined,
+              size: size * 0.55,
+              color: scheme.onSurfaceVariant,
+            )
           : null,
     );
   }
@@ -60,10 +68,14 @@ class SceneVignette extends StatelessWidget {
     final who = faced;
     final question = prompt.isEmpty
         ? const SizedBox.shrink()
-        : Text(prompt,
+        : Text(
+            prompt,
             key: const Key('scene_prompt'),
-            style: theme.textTheme.bodyMedium
-                ?.copyWith(fontStyle: FontStyle.italic, color: ink.ash));
+            style: theme.textTheme.bodyMedium?.copyWith(
+              fontStyle: FontStyle.italic,
+              color: ink.ash,
+            ),
+          );
     return Container(
       key: Key(folded ? 'scene_vignette_folded' : 'scene_vignette'),
       margin: const EdgeInsets.only(bottom: 8),
@@ -75,18 +87,25 @@ class SceneVignette extends StatelessWidget {
       child: folded
           ? Row(
               children: [
-                _head(context, who?.id ?? '', who?.name ?? '',
-                    size: 30, voice: who == null),
+                _head(
+                  context,
+                  who?.id ?? '',
+                  who?.name ?? '',
+                  size: 30,
+                  voice: who == null,
+                ),
                 const SizedBox(width: 8),
                 Expanded(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       if (who != null)
-                        Text(who.name,
-                            maxLines: 1,
-                            overflow: TextOverflow.ellipsis,
-                            style: theme.textTheme.labelLarge),
+                        Text(
+                          who.name,
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                          style: theme.textTheme.labelLarge,
+                        ),
                       question,
                     ],
                   ),
@@ -108,19 +127,26 @@ class SceneVignette extends StatelessWidget {
                         color: ink.seam,
                       ),
                     ),
-                    _head(context, who?.id ?? '', who?.name ?? '',
-                        voice: who == null),
+                    _head(
+                      context,
+                      who?.id ?? '',
+                      who?.name ?? '',
+                      voice: who == null,
+                    ),
                   ],
                 ),
                 const SizedBox(height: 2),
                 Row(
                   children: [
                     Expanded(
-                      child: Text(heroName,
-                          maxLines: 1,
-                          overflow: TextOverflow.ellipsis,
-                          style: theme.textTheme.labelSmall
-                              ?.copyWith(color: ink.ash)),
+                      child: Text(
+                        heroName,
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        style: theme.textTheme.labelSmall?.copyWith(
+                          color: ink.ash,
+                        ),
+                      ),
                     ),
                     if (who != null)
                       Flexible(
@@ -131,16 +157,14 @@ class SceneVignette extends StatelessWidget {
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,
                           textAlign: TextAlign.end,
-                          style: theme.textTheme.labelSmall
-                              ?.copyWith(fontWeight: FontWeight.w700),
+                          style: theme.textTheme.labelSmall?.copyWith(
+                            fontWeight: FontWeight.w700,
+                          ),
                         ),
                       ),
                   ],
                 ),
-                if (prompt.isNotEmpty) ...[
-                  const SizedBox(height: 6),
-                  question,
-                ],
+                if (prompt.isNotEmpty) ...[const SizedBox(height: 6), question],
               ],
             ),
     );

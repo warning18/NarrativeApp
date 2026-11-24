@@ -35,12 +35,14 @@ int strikeDamageFor({
 }) =>
     baseDamage +
     equipmentBonusFor(equippedItemIds, items, 'attackDamage') +
-    equipmentScalingBonusFor(equippedItemIds, items,
-            strength: strength,
-            dexterity: dexterity,
-            constitution: constitution,
-            intelligence: intelligence)
-        .damageBonus +
+    equipmentScalingBonusFor(
+      equippedItemIds,
+      items,
+      strength: strength,
+      dexterity: dexterity,
+      constitution: constitution,
+      intelligence: intelligence,
+    ).damageBonus +
     alignmentGearBonusFor(equippedItemIds, items, alignmentLabel).damageBonus +
     gearAttack +
     elementalDamageBonusFor(element, equippedItemIds, items);

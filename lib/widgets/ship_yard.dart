@@ -78,8 +78,10 @@ class ShipYardPreview extends StatefulWidget {
 
 class _ShipYardPreviewState extends State<ShipYardPreview>
     with SingleTickerProviderStateMixin {
-  late final AnimationController _clock =
-      AnimationController(vsync: this, duration: const Duration(seconds: 12));
+  late final AnimationController _clock = AnimationController(
+    vsync: this,
+    duration: const Duration(seconds: 12),
+  );
   bool _started = false;
 
   @override
@@ -116,41 +118,50 @@ class _ShipYardPreviewState extends State<ShipYardPreview>
                 Positioned.fill(
                   child: CustomPaint(
                     painter: SeaSurfacePainter(
-                        waters: SeaWaters.open, weather: SeaWeather.calm, t: t),
+                      waters: SeaWaters.open,
+                      weather: SeaWeather.calm,
+                      t: t,
+                    ),
                   ),
                 ),
-                LayoutBuilder(builder: (context, c) {
-                  final width = ((c.maxWidth - 36) * 0.86).clamp(180.0, 400.0);
-                  final box = topShipBoxHeight(width, look);
-                  return Center(
-                    child: SizedBox(
-                      width: width,
-                      height: box,
-                      child: CustomPaint(
-                        painter: TopShipPainter(
-                          look: look,
-                          flip: false,
-                          facingDown: false,
-                          t: t,
-                          layers: 0,
-                          maxLayers: 0,
-                          battered: false,
-                          down: const {},
-                          burning: const {},
-                          water: 0,
-                          shield: Palette.cyan75,
-                          foam: Palette.cyan93,
-                          roomColors: {
-                            for (final r in ShipRoom.values) r: Palette.stone67
-                          },
-                          refit: widget.refit,
-                          speed: 0.6,
-                          dress: widget.dress,
+                LayoutBuilder(
+                  builder: (context, c) {
+                    final width = ((c.maxWidth - 36) * 0.86).clamp(
+                      180.0,
+                      400.0,
+                    );
+                    final box = topShipBoxHeight(width, look);
+                    return Center(
+                      child: SizedBox(
+                        width: width,
+                        height: box,
+                        child: CustomPaint(
+                          painter: TopShipPainter(
+                            look: look,
+                            flip: false,
+                            facingDown: false,
+                            t: t,
+                            layers: 0,
+                            maxLayers: 0,
+                            battered: false,
+                            down: const {},
+                            burning: const {},
+                            water: 0,
+                            shield: Palette.cyan75,
+                            foam: Palette.cyan93,
+                            roomColors: {
+                              for (final r in ShipRoom.values)
+                                r: Palette.stone67,
+                            },
+                            refit: widget.refit,
+                            speed: 0.6,
+                            dress: widget.dress,
+                          ),
                         ),
                       ),
-                    ),
-                  );
-                }),
+                    );
+                  },
+                ),
               ],
             );
           },
@@ -187,11 +198,12 @@ class _LookSwatchPainter extends CustomPainter {
           ..close();
         canvas.drawPath(deck, Paint()..color = look.color2 ?? Palette.earth);
         canvas.drawPath(
-            deck,
-            Paint()
-              ..style = PaintingStyle.stroke
-              ..strokeWidth = 1.6
-              ..color = look.color3 ?? Palette.alert);
+          deck,
+          Paint()
+            ..style = PaintingStyle.stroke
+            ..strokeWidth = 1.6
+            ..color = look.color3 ?? Palette.alert,
+        );
       case 'sail':
         final sail = Path()
           ..moveTo(w * 0.34, h * 0.1)
@@ -200,65 +212,74 @@ class _LookSwatchPainter extends CustomPainter {
           ..close();
         canvas.drawPath(sail, Paint()..color = look.color ?? Colors.white);
         paintCloth(
-            canvas,
-            sail,
-            Rect.fromLTRB(w * 0.34, h * 0.1, w * 0.8, h * 0.9),
-            look.pattern,
-            look.color2 ?? Palette.earth);
+          canvas,
+          sail,
+          Rect.fromLTRB(w * 0.34, h * 0.1, w * 0.8, h * 0.9),
+          look.pattern,
+          look.color2 ?? Palette.earth,
+        );
         canvas.drawPath(
-            sail,
-            Paint()
-              ..style = PaintingStyle.stroke
-              ..strokeWidth = 1.4
-              ..color = look.color3 ?? Palette.earth);
+          sail,
+          Paint()
+            ..style = PaintingStyle.stroke
+            ..strokeWidth = 1.4
+            ..color = look.color3 ?? Palette.earth,
+        );
         canvas.drawLine(
-            Offset(w * 0.34, h * 0.06),
-            Offset(w * 0.34, h * 0.94),
-            Paint()
-              ..color = Palette.orange16
-              ..strokeWidth = 2);
+          Offset(w * 0.34, h * 0.06),
+          Offset(w * 0.34, h * 0.94),
+          Paint()
+            ..color = Palette.orange16
+            ..strokeWidth = 2,
+        );
       case 'figurehead':
         if (look.pattern == 'none') {
           canvas.drawLine(
-              Offset(w * 0.2, h / 2),
-              Offset(w * 0.8, h / 2),
-              Paint()
-                ..color = Palette.orange30
-                ..strokeWidth = 4
-                ..strokeCap = StrokeCap.round);
+            Offset(w * 0.2, h / 2),
+            Offset(w * 0.8, h / 2),
+            Paint()
+              ..color = Palette.orange30
+              ..strokeWidth = 4
+              ..strokeCap = StrokeCap.round,
+          );
         } else {
           paintFigurehead(
-              canvas,
-              Offset(w * 0.62, h / 2),
-              h * 0.52,
-              ShipDress(
-                  figurehead: look.pattern,
-                  figureheadColor: look.color,
-                  figureheadEye: look.color2),
-              0);
+            canvas,
+            Offset(w * 0.62, h / 2),
+            h * 0.52,
+            ShipDress(
+              figurehead: look.pattern,
+              figureheadColor: look.color,
+              figureheadEye: look.color2,
+            ),
+            0,
+          );
         }
       case 'ensign':
         canvas.drawLine(
-            Offset(w * 0.12, h * 0.1),
-            Offset(w * 0.12, h * 0.9),
-            Paint()
-              ..color = Palette.orange16
-              ..strokeWidth = 2);
+          Offset(w * 0.12, h * 0.1),
+          Offset(w * 0.12, h * 0.9),
+          Paint()
+            ..color = Palette.orange16
+            ..strokeWidth = 2,
+        );
         // The flag streams aft in the ship's own drawing; here it is
         // mirrored to fly to the right of its pole.
         canvas.save();
         canvas.translate(w * 0.12, 0);
         canvas.scale(-1, 1);
         paintEnsign(
-            canvas,
-            Offset(0, h / 2),
-            w * 0.74,
-            ShipDress(
-                ensign: look.pattern,
-                ensignColor: look.color,
-                ensignDevice: look.color2),
-            Palette.red44,
-            0.6);
+          canvas,
+          Offset(0, h / 2),
+          w * 0.74,
+          ShipDress(
+            ensign: look.pattern,
+            ensignColor: look.color,
+            ensignDevice: look.color2,
+          ),
+          Palette.red44,
+          0.6,
+        );
         canvas.restore();
       default:
         canvas.drawCircle(c, h * 0.2, Paint()..color = Palette.neutral);
@@ -329,8 +350,10 @@ class LookShelf extends ConsumerWidget {
             : tr(ref, 'look_trophy_locked');
       }
       if (chapter < look.unlockChapter) {
-        return tr(ref, 'look_locked_note')
-            .replaceAll('{n}', '${look.unlockChapter}');
+        return tr(
+          ref,
+          'look_locked_note',
+        ).replaceAll('{n}', '${look.unlockChapter}');
       }
       return '${look.cost} ${tr(ref, 'gold_label')}';
     }
@@ -366,8 +389,12 @@ class LookShelf extends ConsumerWidget {
                 state: stateLine(look),
                 isWorn: worn[category] == look.id,
                 isTried: tried == look.id,
-                locked: !lookOffered(look,
-                    chapter: chapter, slain: slain, owned: owned),
+                locked: !lookOffered(
+                  look,
+                  chapter: chapter,
+                  slain: slain,
+                  owned: owned,
+                ),
                 onTap: () => onTry(look),
               ),
           ],
@@ -378,8 +405,10 @@ class LookShelf extends ConsumerWidget {
           if (selected.description.isNotEmpty)
             Padding(
               padding: const EdgeInsets.only(top: 2),
-              child: Text(selected.description,
-                  style: theme.textTheme.bodySmall?.copyWith(color: ink.ash)),
+              child: Text(
+                selected.description,
+                style: theme.textTheme.bodySmall?.copyWith(color: ink.ash),
+              ),
             ),
           if (selected.trophyOf.isNotEmpty &&
               !slain.contains(selected.trophyOf) &&
@@ -387,9 +416,12 @@ class LookShelf extends ConsumerWidget {
             Padding(
               padding: const EdgeInsets.only(top: 2),
               child: Text(
-                  tr(ref, 'look_trophy_note').replaceAll(
-                      '{beast}', beastNames[selected.trophyOf] ?? '?'),
-                  style: theme.textTheme.bodySmall?.copyWith(color: ink.ash)),
+                tr(
+                  ref,
+                  'look_trophy_note',
+                ).replaceAll('{beast}', beastNames[selected.trophyOf] ?? '?'),
+                style: theme.textTheme.bodySmall?.copyWith(color: ink.ash),
+              ),
             ),
           const SizedBox(height: 8),
           Align(
@@ -404,8 +436,12 @@ class LookShelf extends ConsumerWidget {
   Widget _wearButton(BuildContext context, WidgetRef ref, ShipLook look) {
     final isWorn = worn[category] == look.id;
     final isOwned = look.isDefault || owned.contains(look.id);
-    final offered =
-        lookOffered(look, chapter: chapter, slain: slain, owned: owned);
+    final offered = lookOffered(
+      look,
+      chapter: chapter,
+      slain: slain,
+      owned: owned,
+    );
     final price = isOwned || look.trophyOf.isNotEmpty ? 0 : look.cost;
     final label = isWorn
         ? tr(ref, 'look_worn_label')
@@ -460,8 +496,9 @@ class _LookTile extends StatelessWidget {
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(10),
             border: Border.all(color: edge, width: isTried || isWorn ? 2 : 1),
-            color: theme.colorScheme.surfaceContainerHighest
-                .withValues(alpha: 0.4),
+            color: theme.colorScheme.surfaceContainerHighest.withValues(
+              alpha: 0.4,
+            ),
           ),
           child: Column(
             children: [
@@ -480,17 +517,23 @@ class _LookTile extends StatelessWidget {
                 ),
               ),
               const SizedBox(height: 4),
-              Text(name,
-                  maxLines: 2,
-                  overflow: TextOverflow.ellipsis,
-                  textAlign: TextAlign.center,
-                  style: theme.textTheme.labelMedium),
-              Text(state,
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                  textAlign: TextAlign.center,
-                  style: theme.textTheme.labelSmall?.copyWith(
-                      color: isWorn ? ink.heal : ink.ash, fontSize: 10)),
+              Text(
+                name,
+                maxLines: 2,
+                overflow: TextOverflow.ellipsis,
+                textAlign: TextAlign.center,
+                style: theme.textTheme.labelMedium,
+              ),
+              Text(
+                state,
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+                textAlign: TextAlign.center,
+                style: theme.textTheme.labelSmall?.copyWith(
+                  color: isWorn ? ink.heal : ink.ash,
+                  fontSize: 10,
+                ),
+              ),
             ],
           ),
         ),
@@ -520,7 +563,10 @@ class HullThumb extends StatelessWidget {
             const Positioned.fill(
               child: CustomPaint(
                 painter: SeaSurfacePainter(
-                    waters: SeaWaters.open, weather: SeaWeather.calm, t: 1.3),
+                  waters: SeaWaters.open,
+                  weather: SeaWeather.calm,
+                  t: 1.3,
+                ),
               ),
             ),
             Positioned(
@@ -543,7 +589,7 @@ class HullThumb extends StatelessWidget {
                   shield: Palette.cyan75,
                   foam: Palette.cyan93,
                   roomColors: {
-                    for (final r in ShipRoom.values) r: Palette.stone67
+                    for (final r in ShipRoom.values) r: Palette.stone67,
                   },
                   speed: 0.2,
                   pixel: 2,

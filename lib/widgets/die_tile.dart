@@ -93,7 +93,7 @@ class _MarkPainter extends CustomPainter {
     };
     final corners = [
       for (var i = 0; i < sides; i++)
-        Offset.fromDirection(-1.5708 + i * 6.2832 / sides, 0.9)
+        Offset.fromDirection(-1.5708 + i * 6.2832 / sides, 0.9),
     ];
     paintDieArt(canvas, size, dieId, skin, corners);
   }

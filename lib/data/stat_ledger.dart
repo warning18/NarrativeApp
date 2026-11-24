@@ -64,7 +64,7 @@ Map<String, Map<String, int>> ledgerWith(
 ) {
   final added = {
     for (final e in amounts.entries)
-      if (e.value != 0) e.key: e.value
+      if (e.value != 0) e.key: e.value,
   };
   if (added.isEmpty) return ledger;
   final key = ledgerKey(kind, id);
