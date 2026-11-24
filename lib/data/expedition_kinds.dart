@@ -1,5 +1,7 @@
 import 'dart:math';
 
+import 'package:flutter/foundation.dart' show visibleForTesting;
+
 import '../models/story_node.dart';
 import 'sub_node_engine.dart';
 
@@ -587,6 +589,7 @@ final List<_Scene> _deliveryScenes = [
 ];
 
 /// Every scene key of [kind] (for tests and tools).
+@visibleForTesting
 List<String> kindSceneKeys(ExpeditionKind kind) => [
       for (final s in kind == ExpeditionKind.escort
           ? _escortScenes

@@ -22,6 +22,7 @@ import '../widgets/wind_banner.dart';
 import 'home_shell.dart';
 import 'intro_screen.dart';
 import 'settings_screen.dart';
+import 'tower/ink/tower_menu_button.dart';
 import 'tower/tower_start_screen.dart';
 import '../widgets/ink_confirm.dart';
 
@@ -315,9 +316,9 @@ class _MainMenuScreenState extends ConsumerState<MainMenuScreen> {
                         ),
                         // The Tower (v1.850): open to everyone, below the other
                         // buttons so the story's keep their places.
-                        item(
-                          key: const Key('menu_tower'),
-                          icon: Icons.fort_outlined,
+                        // In ink (v1.1004): the Tower's own look, this button only.
+                        TowerMenuButton(
+                          buttonKey: const Key('menu_tower'),
                           label: tr(ref, 'tower_menu'),
                           detail: tr(ref, 'tower_menu_sub'),
                           onPressed: () => Navigator.of(context).push(

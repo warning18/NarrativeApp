@@ -73,8 +73,12 @@ void main() {
     await tester.tap(find.byKey(const Key('tower_die_flame_die')));
     await tester.pump();
     expect(seen, ['flame_die']);
-    expect(find.byIcon(Icons.bolt), findsNWidgets(3));
-    expect(find.byIcon(Icons.shield), findsNWidgets(3));
+    // The face strip lists each face once (the solid carries them too).
+    final strip = find.byKey(const Key('tower_die_strip'));
+    expect(find.descendant(of: strip, matching: find.byIcon(Icons.bolt)),
+        findsNWidgets(3));
+    expect(find.descendant(of: strip, matching: find.byIcon(Icons.shield)),
+        findsNWidgets(3));
     await tester.tap(find.byKey(const Key('tower_die_roll')));
     expect(chosen, ['flame_die']);
   });

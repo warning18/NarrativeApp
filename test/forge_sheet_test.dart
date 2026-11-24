@@ -44,45 +44,48 @@ void main() {
 
   group('the sheet', () {
     test('no modifier: the plain odds, the piece at each tier', () {
-      final sheet = forgeSheetFor(_boots);
-      expect(sheet.modifierTotal, 0);
-      expect(sheet.modifiers, isEmpty);
-      expect(sheet.odds[ForgeTier.flawed], closeTo(0.20, 1e-9));
-      expect(sheet.odds[ForgeTier.sound], closeTo(0.50, 1e-9));
-      expect(sheet.odds[ForgeTier.fine], closeTo(0.25, 1e-9));
-      expect(sheet.odds[ForgeTier.masterwork], closeTo(0.05, 1e-9));
-      final sound = sheet.pieceAt[ForgeTier.sound]!;
+      final roll = ForgeRoll(face: 10);
+      expect(roll.modifierTotal, 0);
+      expect(roll.modifiers, isEmpty);
+      expect(roll.odds[ForgeTier.flawed], closeTo(0.20, 1e-9));
+      expect(roll.odds[ForgeTier.sound], closeTo(0.50, 1e-9));
+      expect(roll.odds[ForgeTier.fine], closeTo(0.25, 1e-9));
+      expect(roll.odds[ForgeTier.masterwork], closeTo(0.05, 1e-9));
+      final pieceAt = {
+        for (final t in ForgeTier.values) t: forgedPieceBeforeAfter(_boots, t),
+      };
+      final sound = pieceAt[ForgeTier.sound]!;
       expect(sound.after, sound.before);
       expect(sound.resaleAfter, sound.resaleBefore);
-      expect(sheet.pieceAt[ForgeTier.fine]!.after, sound.before + 1);
-      expect(sheet.pieceAt[ForgeTier.masterwork]!.after, sound.before + 2);
-      expect(sheet.pieceAt[ForgeTier.flawed]!.after, max(0, sound.before - 1));
-      expect(sheet.pieceAt[ForgeTier.fine]!.resaleAfter,
+      expect(pieceAt[ForgeTier.fine]!.after, sound.before + 1);
+      expect(pieceAt[ForgeTier.masterwork]!.after, sound.before + 2);
+      expect(pieceAt[ForgeTier.flawed]!.after, max(0, sound.before - 1));
+      expect(pieceAt[ForgeTier.fine]!.resaleAfter,
           greaterThan(sound.resaleBefore));
-      expect(sheet.tierOf(10), ForgeTier.sound);
+      expect(roll.tier, ForgeTier.sound);
     });
 
     test('a dwarf with friends at the forge: +3, and the odds follow', () {
       final mods = forgeModifiersFor(
           raceId: 'dwarf', holderId: 'compact', holderTier: null);
       expect(mods.map((m) => (m.source, m.value)), [('dwarf', 2)]);
-      final sheet = forgeSheetFor(_boots, modifiers: [
+      final all = [
         ...mods,
         const ForgeModifier(
             source: 'standing',
             labelKey: 'forge_mod_friends',
             value: friendlyForgeBonus,
             clanId: 'compact'),
-      ]);
-      expect(sheet.modifierTotal, 3);
-      expect(sheet.odds, forgeOdds(3));
-      expect(sheet.odds.values.fold(0.0, (a, b) => a + b), closeTo(1, 1e-9));
-      expect(sheet.tierOf(17), ForgeTier.masterwork);
-      expect(sheet.tierOf(1), ForgeTier.flawed);
-      // A roll's own reading matches the sheet's.
-      final roll = ForgeRoll(face: 13, modifiers: sheet.modifiers);
+      ];
+      final roll = ForgeRoll(face: 13, modifiers: all);
+      expect(roll.modifierTotal, 3);
+      expect(roll.odds, forgeOdds(3));
+      expect(roll.odds.values.fold(0.0, (a, b) => a + b), closeTo(1, 1e-9));
+      expect(ForgeRoll(face: 17, modifiers: all).tier, ForgeTier.masterwork);
+      expect(ForgeRoll(face: 1, modifiers: all).tier, ForgeTier.flawed);
+      // A roll's own reading: the face and the modifiers, its tier.
       expect(roll.total, 16);
-      expect(roll.tier, sheet.tierOf(13));
+      expect(roll.tier, forgeTierFor(13 + 3));
     });
   });
 

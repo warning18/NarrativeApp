@@ -12,7 +12,8 @@ import 'tower_backdrop.dart';
 import 'tower_look.dart';
 import 'tower_marks_screen.dart';
 import 'tower_start_screen.dart';
-import '../../widgets/ink_panel.dart';
+import 'ink/ink_kit.dart';
+import 'ink/ink_palette.dart';
 
 /// The end of a run, in the Tower's night theme (its body below).
 class TowerEndScreen extends StatelessWidget {
@@ -38,7 +39,8 @@ class _TowerEndBody extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final theme = Theme.of(context);
-    final ink = InkColors.of(context);
+    final paper =
+        theme.textTheme.apply(bodyColor: inkOnPaper, displayColor: inkOnPaper);
     final won = run.status == TowerStatus.won;
     final line = switch (run.status) {
       TowerStatus.won => tr(ref, 'tower_victory'),
@@ -61,9 +63,9 @@ class _TowerEndBody extends ConsumerWidget {
           child: ListView(
             padding: const EdgeInsets.fromLTRB(16, 8, 16, 24),
             children: [
-              InkPanel(
-                lit: won,
-                padding: const EdgeInsets.all(16),
+              // Where it ended and what it earned, on paper (Art's wide frame).
+              InkPaperPanel(
+                padding: const EdgeInsets.fromLTRB(46, 20, 22, 16),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
@@ -71,18 +73,21 @@ class _TowerEndBody extends ConsumerWidget {
                         tr(ref, 'tower_floor_of')
                             .replaceAll('{n}', '${run.floorReached}'),
                         key: const Key('tower_end_floor'),
-                        style: theme.textTheme.headlineSmall
-                            ?.copyWith(color: won ? ink.gold : ink.blood)),
+                        style: paper.headlineSmall?.copyWith(
+                            fontFamily: InkFonts.display,
+                            color: won ? inkOnPaper : inkRed)),
                     const SizedBox(height: 8),
                     Text(line,
                         key: const Key('tower_end_line'),
-                        style: theme.textTheme.bodyLarge
+                        style: paper.bodyLarge
                             ?.copyWith(fontStyle: FontStyle.italic)),
                   ],
                 ),
               ),
-              const SizedBox(height: 10),
-              InkPanel(
+              const SizedBox(height: 14),
+              InkPaperPanel(
+                title: tr(ref, 'tower_marks_name'),
+                padding: const EdgeInsets.fromLTRB(46, 22, 22, 16),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
@@ -90,30 +95,31 @@ class _TowerEndBody extends ConsumerWidget {
                         tr(ref, 'tower_earned')
                             .replaceAll('{n}', '${run.marks}'),
                         key: const Key('tower_end_earned'),
-                        style: theme.textTheme.titleMedium
-                            ?.copyWith(color: ink.gold)),
+                        style: paper.titleMedium?.copyWith(color: inkRed)),
                     const SizedBox(height: 4),
                     Text(
                         '${progress.marks} ${tr(ref, 'tower_marks_name')} · '
                         '${tr(ref, 'tower_best').replaceAll('{n}', '${progress.bestFloor}')}',
-                        style: theme.textTheme.bodySmall),
+                        style: paper.bodySmall),
                   ],
                 ),
               ),
               const SizedBox(height: 16),
-              FilledButton(
-                key: const Key('tower_end_again'),
+              InkButton(
+                buttonKey: const Key('tower_end_again'),
+                primary: true,
+                height: 46,
+                label: tr(ref, 'tower_climb_again'),
                 onPressed: () => Navigator.of(context).pushReplacement(
                     MaterialPageRoute(
                         builder: (_) => const TowerStartScreen())),
-                child: Text(tr(ref, 'tower_climb_again')),
               ),
               const SizedBox(height: 8),
-              OutlinedButton(
-                key: const Key('tower_end_marks'),
+              InkButton(
+                buttonKey: const Key('tower_end_marks'),
+                label: tr(ref, 'tower_marks_button'),
                 onPressed: () => Navigator.of(context).push(MaterialPageRoute(
                     builder: (_) => const TowerMarksScreen())),
-                child: Text(tr(ref, 'tower_marks_button')),
               ),
               const SizedBox(height: 8),
               TextButton(

@@ -3,6 +3,8 @@
 // corners, with a gold edge when lit; a label over a group of panels.
 import 'package:flutter/material.dart';
 
+import '../screens/tower/ink/ink_palette.dart';
+import '../screens/tower/ink/ink_panel_painter.dart';
 import '../screens/tower/tower_look.dart';
 import '../theme/frame_style.dart';
 import '../theme/stitched_ink.dart';
@@ -34,56 +36,17 @@ class InkPanel extends StatelessWidget {
   Widget build(BuildContext context) {
     final ink = InkColors.of(context);
     final scheme = Theme.of(context).colorScheme;
-    final f = Theme.of(context).extension<FrameStyle>();
-    if (TowerPanelStyle.of(context) &&
-        f != null &&
-        FrameImages.ready(f.material, f.env)) {
-      final framed = Container(
-        // Top pieces (32 px tall at 2x) hang below the frame's edge: the
-        // content starts under them, never under a piece.
-        padding: padding
-            .add(EdgeInsets.all(2.0 * f.compactScale))
-            .add(EdgeInsets.only(top: decor.top > 0 ? 12 : 0)),
-        decoration: ShapeDecoration(
-          color: scheme.surfaceContainer,
-          shape: FrameBorder(
-              piece: FramePiece.panelDark,
-              material: f.material,
-              env: decor == EnvParts.none ? EnvDecor.none : f.env,
-              envParts: decor,
-              envPixel: f.compactScale,
-              pixel: f.compactScale,
-              seed: f.seed * 31 + decor.hashCode),
-        ),
-        child: Opacity(opacity: dim ? .5 : 1, child: child),
-      );
-      return onTap == null ? framed : InkWell(onTap: onTap, child: framed);
-    }
     if (TowerPanelStyle.of(context)) {
-      // The Tower's panel (v1.900): a double ink line and a bevel.
+      // The Tower's panel (v1.1005): ink, a grey line and a bar on the left.
       final panel = CustomPaint(
-        foregroundPainter: BevelPanelPainter(
-          outer: lit ? ink.gold : ink.seam,
-          inner: lit ? ink.gold.withValues(alpha: .6) : ink.seam,
-          light: Colors.white.withValues(alpha: .10),
-          shade: Colors.black.withValues(alpha: .35),
-          radius: 8,
-        ),
+        foregroundPainter: InkPanelPainter(lit: lit),
         child: Container(
-          padding: padding.add(const EdgeInsets.all(5)),
-          decoration: BoxDecoration(
-            color: scheme.surfaceContainer,
-            borderRadius: BorderRadius.circular(8),
-          ),
+          padding: padding.add(const EdgeInsets.fromLTRB(5, 1, 1, 1)),
+          color: inkBlack,
           child: Opacity(opacity: dim ? .5 : 1, child: child),
         ),
       );
-      return onTap == null
-          ? panel
-          : InkWell(
-              borderRadius: BorderRadius.circular(10),
-              onTap: onTap,
-              child: panel);
+      return onTap == null ? panel : InkWell(onTap: onTap, child: panel);
     }
     final body = Container(
       padding: padding,

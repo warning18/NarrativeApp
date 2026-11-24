@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart' show visibleForTesting;
 import '../l10n/app_locale.dart';
 import '../l10n/app_strings.dart';
 import '../models/story_node.dart';
@@ -987,6 +988,7 @@ CoastChange fireEvent(
 }
 
 /// The variant [event] would take now (see [runDueEvents]).
+@visibleForTesting
 int eventVariantFor(
   PoliticsEvent event, {
   required PoliticsState politics,
@@ -996,6 +998,7 @@ int eventVariantFor(
     _Coast(world, politics, flags).variantOf(event);
 
 /// Whether [event] would fire by itself now.
+@visibleForTesting
 bool eventDue(
   PoliticsEvent event, {
   required PoliticsState politics,

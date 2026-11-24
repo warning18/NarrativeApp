@@ -8,6 +8,38 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.1005.0+1041]
+
+- The Tower is moving to ink; the rest follows (part 2 of 4: the climb). The floor screen, its ladder, the foe's and the hero's pictures, the oaths row, the events (setback, rival, shortcut, parley, stall, bargain) and the dice panel are drawn in ink: black panels with a thin grey line and a bar on the left, paper white text, red only for what matters (danger, a loss, the die in play, the one button that goes on). The foe and the hero stand in slanted frames, their chibi recoloured to ink. The dice are real 3D solids in ink with the list of their faces under the open one. The climb's buttons are square, flat red or black. The fights, the spoils, the level up and the calling pick are still in the night look until the next parts. UX (view only).
+
+## [1.1004.0+1040]
+
+- The Tower is moving to ink; the rest follows (part 1 of 4). The Tower's plates, its door, its marks and unlocks, the end of a run and its button on the main menu are drawn in the ink look the user picked: near-black, cold greys and paper white, deep red only for the one button that goes on, text panels as paper in Art's brush frame, the Tower's own button on the menu in the same frame (nothing else on the menu changes). The Tower's 14 plates are the old ones recoloured into the ink greys. New: the kit the next parts draw with (the paper panel, the skewed button, the slanted picture panel, the chibi sprites recoloured at load time and cached). The climb, the fights, the spoils and the level up are still in the night look until the next parts. UX (view only).
+
+## [1.1003.0+1039]
+
+- Fights: a foe's nameplate emblem now says its group in the player's language, as a tooltip (a long press) and as a screen-reader label. The groups of no clan read from their own strings, a clan's from its faction's name. The nine looks that had no names now have them in English and French (The Choir / Le Chœur, The Pit / La Fosse, The Giants / Les géants, The Tide-Kin / Les Gens de la Marée, The Dead / Les morts, The Void / Le Néant, Beasts / Les bêtes, Constructs / Les constructions, People of no clan / Les sans-clan), and the French of the void cults is now "Les cultes du Néant". UX (view and strings only).
+
+## [1.1002.0+1038]
+
+- **Dependencies: flutter_riverpod 3.4.3 → 3.5.0** (and riverpod with it; Dependabot #1043). No code change. The lock now needs Dart 3.13 and Flutter 3.47.0 or later (CI pins 3.47.9), and brings in material_ui, cupertino_ui, intl and flutter_localizations as transitive packages. Core.
+
+## [1.1001.0+1037]
+
+- **Cleanup: an unused forge-sheet class removed, seven test helpers
+  marked as such.** `ForgeSheet` and `forgeSheetFor` (nothing on screen
+  builds them: the forge sheet reads the roll and the piece directly) are
+  gone, and the two tests that used them read the live `ForgeRoll` and
+  `forgedPieceBeforeAfter` with the same checks. Seven public helpers that
+  only tests call (`eventVariantFor`, `eventDue`, `kindSceneKeys`,
+  `isMainSpec`, `towerStoreClanOf`, `towerParleyClanOf`, `statPickEffect`)
+  are marked `@visibleForTesting`, so the analyzer flags any use from the
+  game's own code. Nothing changes on screen or in a number.
+
+## [1.1000.0+1036]
+
+- Maps, wave 1 of the review. Seen by the player: on the World, "Town" is dim at a place with no town plan (the Spire of Judgment), as it already was on the District and the Room; a tap used to land on the District. Not seen, but lighter: turning, pinching or gliding the ball redraws the ball only and rebuilds nothing (it rebuilt about 89 widgets and repainted the whole screen each frame); the party's ring on a town or district redraws alone (each beat repainted the buttons, the strip and the weather line with it); when the last ball leaves the screen its ground pictures are let go, all but the one the World opens with, and made again when next looked at; while one is being made another stands in, so the plain coarse ball no longer flashes.
+
 ## [1.999.0+1035]
 
 - Settings at a big text size, in French (a follow-up to v1.997): the colour palette names (Horizon crépusculaire, Aurore crépusculaire, Prairie automnale) keep every word whole instead of breaking inside it, and so do the Appearance buttons (Système, Clair, Sombre). The inventory's tile names and the palette names now share one small widget that follows the text-size setting up to 15 % and shrinks only as far as the longest word needs. UX (view only).

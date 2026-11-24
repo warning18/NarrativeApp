@@ -50,6 +50,8 @@
 // Pure rules; the fight screen and the playthrough simulator play them.
 import 'dart:math';
 
+import 'package:flutter/foundation.dart' show visibleForTesting;
+
 import '../data/factions.dart';
 import 'combat_engine.dart';
 import 'profession_cores.dart';
@@ -100,6 +102,7 @@ const Set<Spec> weakLinkSpecs = {
 };
 
 /// Whether [spec] is one of the fifteen main specialisations.
+@visibleForTesting
 bool isMainSpec(Spec spec) => !weakLinkSpecs.contains(spec);
 
 /// A specialisation's id in specialisations.json and in a save.

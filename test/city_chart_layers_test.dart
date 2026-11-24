@@ -52,14 +52,17 @@ void main() {
     expect(plan.layer, CityChartLayer.base);
     expect(painterOf('city_chart_party').layer, CityChartLayer.party);
 
-    // A breath redraws the ring, not the plan: the plan's painter is asked
-    // again with the same view and says there is nothing to repaint.
-    final pulseBefore = painterOf('city_chart_party').pulse;
+    // A breath redraws the ring, not the plan, and rebuilds no widget: the
+    // ring's painter follows the breath itself (the same painter before
+    // and after, its beat moved on), and the plan's is not asked again.
+    final ring = painterOf('city_chart_party');
+    final beatBefore = ring.beat!.value;
     await tester.pump(const Duration(milliseconds: 300));
     final planAfter = painterOf('city_chart_plan');
-    expect(painterOf('city_chart_party').pulse, isNot(pulseBefore));
-    expect(planAfter.pulse, 0);
-    expect(planAfter.shouldRepaint(plan), isFalse);
+    expect(identical(painterOf('city_chart_party'), ring), isTrue);
+    expect(ring.beat!.value, isNot(beatBefore));
+    expect(planAfter.beat, isNull);
+    expect(identical(planAfter, plan), isTrue);
 
     // The party is on the plan, and + closes in on its place.
     final party = plan.partyPoint;
