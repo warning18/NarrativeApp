@@ -30,13 +30,8 @@ class WardMark extends ConsumerWidget {
     final ink = InkColors.of(context);
     final lines = [
       for (final w in wards)
-        wardLine(
-          'ward_mark',
-          language,
-          clanId: w.clanId,
-          data: data,
-          n: w.roadsLeft,
-        ),
+        wardLine('ward_mark', language,
+            clanId: w.clanId, data: data, n: w.roadsLeft),
     ];
     final line = lines.join('\n');
     if (compact) {
@@ -56,11 +51,8 @@ class WardMark extends ConsumerWidget {
             ),
             child: Padding(
               padding: const EdgeInsets.all(6),
-              child: Icon(
-                Icons.shield_outlined,
-                size: IconSize.s16,
-                color: palette.place,
-              ),
+              child: Icon(Icons.shield_outlined,
+                  size: IconSize.s16, color: palette.place),
             ),
           ),
         ),
@@ -80,11 +72,8 @@ class WardMark extends ConsumerWidget {
           child: Row(
             mainAxisSize: MainAxisSize.min,
             children: [
-              Icon(
-                Icons.shield_outlined,
-                size: IconSize.s16,
-                color: palette.place,
-              ),
+              Icon(Icons.shield_outlined,
+                  size: IconSize.s16, color: palette.place),
               const SizedBox(width: 5),
               Flexible(
                 child: Text(

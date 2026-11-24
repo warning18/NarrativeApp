@@ -45,9 +45,7 @@ int hunterAlignmentOf(Map<String, dynamic>? enemy) =>
 /// The chance a hunter of [hunter] alignment spared by a character of
 /// [player] alignment comes back to stab them.
 double betrayalChance(int hunter, int player) => min(
-      betrayalMax,
-      _betrayalBase + _betrayalPerPoint * (hunter - player).abs(),
-    );
+    betrayalMax, _betrayalBase + _betrayalPerPoint * (hunter - player).abs());
 
 /// How a high Perception reads a hunter: its side ('good', 'neutral',
 /// 'evil') and whether it is close to the reader's alignment.
@@ -89,10 +87,7 @@ const String _backstabFr =
 /// The betrayal's ambush: a one-node chain in which [enemyId] (from
 /// [enemies]) strikes first.
 StoryNode betrayalAmbushNode(
-  String enemyId,
-  Map<String, dynamic> enemies,
-  Random random,
-) {
+    String enemyId, Map<String, dynamic> enemies, Random random) {
   final enemy = enemies[enemyId] as Map<String, dynamic>? ?? const {};
   String text(String key) => enemy[key]?.toString() ?? '';
   final nameFr =

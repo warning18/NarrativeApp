@@ -23,32 +23,22 @@ class _AimBarPainter extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
     final bar = RRect.fromRectAndRadius(
-      Rect.fromLTWH(0, size.height * 0.25, size.width, size.height * 0.5),
-      const Radius.circular(2),
-    );
+        Rect.fromLTWH(0, size.height * 0.25, size.width, size.height * 0.5),
+        const Radius.circular(2));
     canvas.save();
     canvas.clipRRect(bar);
     void band(double from, double to, Color color) => canvas.drawRect(
-          Rect.fromLTRB(from * size.width, 0, to * size.width, size.height),
-          Paint()..color = color,
-        );
+        Rect.fromLTRB(from * size.width, 0, to * size.width, size.height),
+        Paint()..color = color);
     band(0, 1, wide.withValues(alpha: 0.55));
-    band(
-      0.5 - aimSteadyHalfWidth,
-      0.5 + aimSteadyHalfWidth,
-      steady.withValues(alpha: 0.75),
-    );
-    band(
-      0.5 - aimPerfectHalfWidth,
-      0.5 + aimPerfectHalfWidth,
-      perfect.withValues(alpha: 0.9),
-    );
+    band(0.5 - aimSteadyHalfWidth, 0.5 + aimSteadyHalfWidth,
+        steady.withValues(alpha: 0.75));
+    band(0.5 - aimPerfectHalfWidth, 0.5 + aimPerfectHalfWidth,
+        perfect.withValues(alpha: 0.9));
     canvas.restore();
     final x = position.clamp(0.0, 1.0) * size.width;
     canvas.drawRect(
-      Rect.fromLTWH(x - 2, 0, 4, size.height),
-      Paint()..color = marker,
-    );
+        Rect.fromLTWH(x - 2, 0, 4, size.height), Paint()..color = marker);
   }
 
   @override
@@ -62,11 +52,8 @@ class _AimBarPainter extends CustomPainter {
 
 /// A hull bar made of ten planks, filled from the left.
 class _PlankBarPainter extends CustomPainter {
-  const _PlankBarPainter({
-    required this.ratio,
-    required this.color,
-    required this.empty,
-  });
+  const _PlankBarPainter(
+      {required this.ratio, required this.color, required this.empty});
 
   final double ratio;
   final Color color;
@@ -84,10 +71,8 @@ class _PlankBarPainter extends CustomPainter {
       canvas.drawRect(rect, Paint()..color = empty);
       final part = (filled - i).clamp(0.0, 1.0);
       if (part > 0) {
-        canvas.drawRect(
-          Rect.fromLTWH(left, 0, plank * part, size.height),
-          Paint()..color = color,
-        );
+        canvas.drawRect(Rect.fromLTWH(left, 0, plank * part, size.height),
+            Paint()..color = color);
       }
     }
   }
@@ -112,16 +97,10 @@ class _BracketPainter extends CustomPainter {
     final x = size.width / 2;
     canvas.drawLine(Offset(x, 0), Offset(x, size.height * 0.3), paint);
     canvas.drawLine(
-      Offset(x, size.height * 0.7),
-      Offset(x, size.height),
-      paint,
-    );
+        Offset(x, size.height * 0.7), Offset(x, size.height), paint);
     canvas.drawLine(Offset(x - 5, 0), Offset(x + 5, 0), paint);
     canvas.drawLine(
-      Offset(x - 5, size.height),
-      Offset(x + 5, size.height),
-      paint,
-    );
+        Offset(x - 5, size.height), Offset(x + 5, size.height), paint);
   }
 
   @override
@@ -171,12 +150,8 @@ class _ChargeRing extends StatelessWidget {
 
 /// What a shot just did, rising off the room it hit and fading.
 class _Flash extends StatelessWidget {
-  const _Flash({
-    super.key,
-    required this.text,
-    required this.color,
-    this.size = 15,
-  });
+  const _Flash(
+      {super.key, required this.text, required this.color, this.size = 15});
 
   final String text;
   final Color color;
@@ -194,9 +169,7 @@ class _Flash extends StatelessWidget {
             offset: Offset(0, -14 * t),
             // Pops in large, settles, then rises and fades.
             child: Transform.scale(
-              scale: t < 0.15 ? 1.6 - 4 * t : 1.0,
-              child: child,
-            ),
+                scale: t < 0.15 ? 1.6 - 4 * t : 1.0, child: child),
           ),
         ),
         child: Text(
@@ -237,10 +210,8 @@ String tidyShipLine(String text, AppLanguage lang) {
         .replaceAllMapped(_deElidedArticle, (_) => 'de l’')
         .replaceAllMapped(_deBeforeVowel, (m) => 'd’${m.group(1)}')
         // "sous Le Rusty Eel": the name's article, mid-sentence.
-        .replaceAllMapped(
-          _articleMidSentence,
-          (m) => '${m.group(1)} ${m.group(2)!.toLowerCase()} ',
-        );
+        .replaceAllMapped(_articleMidSentence,
+            (m) => '${m.group(1)} ${m.group(2)!.toLowerCase()} ');
   }
   return text
       .replaceAll('the The ', 'the ')

@@ -41,11 +41,8 @@ class InkFold extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final theme = Theme.of(context);
     final ink = InkColors.of(context);
-    final folded = ref.watch(
-      foldedSectionsProvider.select(
-        (s) => s.contains(id) || (initiallyFolded && !s.contains('open:$id')),
-      ),
-    );
+    final folded = ref.watch(foldedSectionsProvider.select(
+        (s) => s.contains(id) || (initiallyFolded && !s.contains('open:$id'))));
     void toggle() {
       final set = {...ref.read(foldedSectionsProvider)};
       if (initiallyFolded) {
@@ -72,32 +69,24 @@ class InkFold extends ConsumerWidget {
               child: Row(
                 children: [
                   Expanded(
-                    child: Text(
-                      title,
-                      style: dense
-                          ? theme.textTheme.titleSmall
-                          : theme.textTheme.titleMedium,
-                    ),
+                    child: Text(title,
+                        style: dense
+                            ? theme.textTheme.titleSmall
+                            : theme.textTheme.titleMedium),
                   ),
                   if (count != null)
                     Padding(
                       padding: const EdgeInsets.only(right: 6),
-                      child: Text(
-                        '$count',
-                        style: theme.textTheme.labelMedium?.copyWith(
-                          color: ink.ash,
-                        ),
-                      ),
+                      child: Text('$count',
+                          style: theme.textTheme.labelMedium
+                              ?.copyWith(color: ink.ash)),
                     ),
                   if (trailing != null) trailing!,
                   AnimatedRotation(
                     turns: folded ? 0 : 0.5,
                     duration: Motion.fast,
-                    child: Icon(
-                      Icons.expand_more,
-                      size: IconSize.s16,
-                      color: ink.ash,
-                    ),
+                    child: Icon(Icons.expand_more,
+                        size: IconSize.s16, color: ink.ash),
                   ),
                 ],
               ),

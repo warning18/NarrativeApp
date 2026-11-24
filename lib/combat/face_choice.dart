@@ -138,33 +138,14 @@ FaceSkillChoice faceSkillChoice({
 }) {
   final kept = limitedFaceAssignments(faces, assignments, skills);
   final current = kept['$faceIndex'];
-  final before = faceOutputWith(
-    faces,
-    faceIndex,
-    current,
-    skills,
-    baseDamage: baseDamage,
-    armor: armor,
-  );
-  final after = faceOutputWith(
-    faces,
-    faceIndex,
-    candidateId,
-    skills,
-    baseDamage: baseDamage,
-    armor: armor,
-  );
-  final used = facesCastingSkill(
-    candidateId,
-    faces,
-    assignments,
-    skills,
-    exceptIndex: faceIndex,
-  );
-  final max = maxFacesForSkill(
-    skills[candidateId] as Map<String, dynamic>?,
-    faceCount: faces.length,
-  );
+  final before = faceOutputWith(faces, faceIndex, current, skills,
+      baseDamage: baseDamage, armor: armor);
+  final after = faceOutputWith(faces, faceIndex, candidateId, skills,
+      baseDamage: baseDamage, armor: armor);
+  final used = facesCastingSkill(candidateId, faces, assignments, skills,
+      exceptIndex: faceIndex);
+  final max = maxFacesForSkill(skills[candidateId] as Map<String, dynamic>?,
+      faceCount: faces.length);
   final FaceChoiceBlock? block;
   if (!isAssignableFace(faces[faceIndex])) {
     block = FaceChoiceBlock.notOpen;

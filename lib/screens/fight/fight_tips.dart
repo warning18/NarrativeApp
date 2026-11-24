@@ -91,18 +91,12 @@ class _FightTipsCardState extends ConsumerState<FightTipsCard> {
                           ? '${tr(ref, fightTipNameKey(id))} · '
                               '${_index + 1}/${due.length}'
                           : tr(ref, fightTipNameKey(id)),
-                      style: theme.textTheme.bodySmall?.copyWith(
-                        fontWeight: FontWeight.bold,
-                        color: onTip,
-                      ),
+                      style: theme.textTheme.bodySmall
+                          ?.copyWith(fontWeight: FontWeight.bold, color: onTip),
                     ),
-                    Text(
-                      text,
-                      style: theme.textTheme.bodySmall?.copyWith(
-                        height: 1.25,
-                        color: onTip,
-                      ),
-                    ),
+                    Text(text,
+                        style: theme.textTheme.bodySmall
+                            ?.copyWith(height: 1.25, color: onTip)),
                   ],
                 ),
               ),
@@ -110,11 +104,8 @@ class _FightTipsCardState extends ConsumerState<FightTipsCard> {
                 key: Key(last ? 'fight_tip_ok' : 'fight_tip_next'),
                 tooltip: tr(ref, last ? 'tip_got_it' : 'tip_fight_next'),
                 visualDensity: VisualDensity.compact,
-                icon: Icon(
-                  last ? Icons.check : Icons.arrow_forward,
-                  size: IconSize.s16,
-                  color: ink.gold,
-                ),
+                icon: Icon(last ? Icons.check : Icons.arrow_forward,
+                    size: IconSize.s16, color: ink.gold),
                 onPressed: _next,
               ),
             ],

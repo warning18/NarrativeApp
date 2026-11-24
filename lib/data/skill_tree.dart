@@ -74,15 +74,10 @@ List<SkillBranch> skillBranchesFor(
   final branches = [
     for (final entry in trees.entries)
       if (entry.value is Map<String, dynamic>)
-        if (_belongsTo(
-          entry.value as Map<String, dynamic>,
-          raceId: raceId,
-          professionId: professionId,
-        ))
+        if (_belongsTo(entry.value as Map<String, dynamic>,
+            raceId: raceId, professionId: professionId))
           SkillBranch.fromRecord(
-            entry.key,
-            entry.value as Map<String, dynamic>,
-          ),
+              entry.key, entry.value as Map<String, dynamic>),
   ];
   branches.sort((a, b) {
     if (a.heritage != b.heritage) return a.heritage ? 1 : -1;
@@ -93,11 +88,8 @@ List<SkillBranch> skillBranchesFor(
   return branches;
 }
 
-bool _belongsTo(
-  Map<String, dynamic> record, {
-  required String raceId,
-  required String professionId,
-}) {
+bool _belongsTo(Map<String, dynamic> record,
+    {required String raceId, required String professionId}) {
   final profession = record['professionId']?.toString() ?? '';
   final race = record['raceId']?.toString() ?? '';
   if (profession.isNotEmpty) return profession == professionId;
@@ -106,9 +98,7 @@ bool _belongsTo(
 
 /// The branch [skillId] grows on in [branches], and its place there.
 ({SkillBranch branch, int index})? branchPlaceOf(
-  String skillId,
-  List<SkillBranch> branches,
-) {
+    String skillId, List<SkillBranch> branches) {
   for (final branch in branches) {
     final index = branch.skillIds.indexOf(skillId);
     if (index >= 0) return (branch: branch, index: index);

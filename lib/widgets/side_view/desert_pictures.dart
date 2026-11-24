@@ -42,9 +42,8 @@ abstract final class DesertPictures {
         final b = bundle ?? rootBundle;
         try {
           for (final p in [sky, far, mid, near]) {
-            final data = await b.load(
-              'assets/visuals/crossing/desert/${p.name}.png',
-            );
+            final data =
+                await b.load('assets/visuals/crossing/desert/${p.name}.png');
             final codec =
                 await ui.instantiateImageCodec(data.buffer.asUint8List());
             _images[p.name] = (await codec.getNextFrame()).image;
@@ -74,42 +73,28 @@ final ui.Paint _pixelPaint = ui.Paint()
 void paintDesertSky(ui.Canvas canvas, ui.Size size, double u) {
   final image = DesertPictures.imageOf(DesertPictures.sky)!;
   final w = image.width.toDouble(), h = image.height.toDouble();
-  canvas.drawImageRect(
-    image,
-    ui.Rect.fromLTWH(0, 0, w, h),
-    ui.Rect.fromLTWH(0, 0, w * u, h * u),
-    _pixelPaint,
-  );
+  canvas.drawImageRect(image, ui.Rect.fromLTWH(0, 0, w, h),
+      ui.Rect.fromLTWH(0, 0, w * u, h * u), _pixelPaint);
   final cols = size.width / u;
   if (cols > w) {
     canvas.drawImageRect(
-      image,
-      ui.Rect.fromLTWH(w - 1, 0, 1, h),
-      ui.Rect.fromLTWH((w - 1) * u, 0, (cols - w + 1) * u + 1, h * u),
-      _pixelPaint,
-    );
+        image,
+        ui.Rect.fromLTWH(w - 1, 0, 1, h),
+        ui.Rect.fromLTWH((w - 1) * u, 0, (cols - w + 1) * u + 1, h * u),
+        _pixelPaint);
   }
 }
 
 /// A tiling layer from its [DesertPicture.top] row, [scroll] logical pixels
 /// along: whole scene pixels, wrapped round the image's own width.
 void paintDesertTile(
-  ui.Canvas canvas,
-  ui.Size size,
-  DesertPicture p,
-  double scroll,
-  double u,
-) {
+    ui.Canvas canvas, ui.Size size, DesertPicture p, double scroll, double u) {
   final image = DesertPictures.imageOf(p)!;
   final w = image.width.toDouble(), h = image.height.toDouble();
   final offset = (scroll / u).floorToDouble() % w;
   final cols = size.width / u;
   for (var x = -offset; x < cols; x += w) {
-    canvas.drawImageRect(
-      image,
-      ui.Rect.fromLTWH(0, 0, w, h),
-      ui.Rect.fromLTWH(x * u, p.top * u, w * u, h * u),
-      _pixelPaint,
-    );
+    canvas.drawImageRect(image, ui.Rect.fromLTWH(0, 0, w, h),
+        ui.Rect.fromLTWH(x * u, p.top * u, w * u, h * u), _pixelPaint);
   }
 }

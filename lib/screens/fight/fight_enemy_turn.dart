@@ -72,25 +72,16 @@ extension _FightEnemyTurn on _FightScreenState {
   ///
   /// [edge]: the player's own strike, which a Compact edge (see signs.dart's
   /// compactEdge) breaks a raised guard with, outright, while it lasts.
-  int _landHitOnEnemy(
-    _EnemyMember enemy,
-    int damage,
-    String element,
-    List<_LogEntry> entries,
-    AppLanguage lang, {
-    bool pierce = false,
-    bool edge = false,
-  }) {
+  int _landHitOnEnemy(_EnemyMember enemy, int damage, String element,
+      List<_LogEntry> entries, AppLanguage lang,
+      {bool pierce = false, bool edge = false}) {
     if (damage <= 0) return damage;
     // The Tide grows the party's blows from its round on, and the place's
     // rule with it (context_rules.dart).
-    damage = _length.rule.blow(
-      damage,
-      _roundsStarted,
-      byParty: true,
-      element: element,
-      bossFight: _enemies.any((e) => isBossEnemy(e.enemyId, e.data)),
-    );
+    damage = _length.rule.blow(damage, _roundsStarted,
+        byParty: true,
+        element: element,
+        bossFight: _enemies.any((e) => isBossEnemy(e.enemyId, e.data)));
     final multiplier = elementMultiplierFor(enemy.data, element);
     var landed = damageAfterElement(damage, enemy.data, element);
     if (multiplier != 1.0) {
@@ -99,25 +90,21 @@ extension _FightEnemyTurn on _FightScreenState {
         _weaknessHits++;
       }
       if (enemy.revealedElements.add(element)) {
-        entries.add(
-          _LogEntry(
-            '${enemy.displayName} ${trFor(lang, multiplier > 1.0 ? 'weak_to_suffix' : 'resists_suffix')} '
-            '${elementLabel(element, lang)}.',
-            _LogKind.info,
-          ),
-        );
+        entries.add(_LogEntry(
+          '${enemy.displayName} ${trFor(lang, multiplier > 1.0 ? 'weak_to_suffix' : 'resists_suffix')} '
+          '${elementLabel(element, lang)}.',
+          _LogKind.info,
+        ));
       }
     }
     // The Compact edge breaks the whole guard before the blow lands.
     if (enemy.guard > 0 && !pierce && edge && _edgeCharges > 0) {
       _edgeCharges--;
       enemy.guard = 0;
-      entries.add(
-        _LogEntry(
-          '${enemy.displayName} ${trFor(lang, 'sign_log_edge')}',
-          _LogKind.playerDamage,
-        ),
-      );
+      entries.add(_LogEntry(
+        '${enemy.displayName} ${trFor(lang, 'sign_log_edge')}',
+        _LogKind.playerDamage,
+      ));
     }
     // A Pierce goes straight through a raised guard (see face_keywords).
     if (enemy.guard > 0 && !pierce) {
@@ -126,33 +113,27 @@ extension _FightEnemyTurn on _FightScreenState {
       enemy.guard = through.guard;
       landed = through.damage;
       if (soaked > 0) {
-        entries.add(
-          _LogEntry(
-            '${enemy.displayName} ${trFor(lang, 'guard_soaks_suffix')} $soaked.',
-            _LogKind.info,
-          ),
-        );
+        entries.add(_LogEntry(
+          '${enemy.displayName} ${trFor(lang, 'guard_soaks_suffix')} $soaked.',
+          _LogKind.info,
+        ));
       }
     }
     // A standing guard covers its pack (v1.215, see squad.dart).
     if (landed > 0 &&
         !pierce &&
         enemy.role != SquadRole.guard &&
-        _enemies.any(
-          (e) => e != enemy && e.isAlive && e.role == SquadRole.guard,
-        )) {
+        _enemies
+            .any((e) => e != enemy && e.isAlive && e.role == SquadRole.guard)) {
       final cut = (landed * guardCoverShare).round();
       if (cut > 0) {
         landed -= cut;
-        entries.add(
-          _LogEntry(
-            trFor(
-              lang,
-              'squad_guard_covers',
-            ).replaceAll('{name}', enemy.displayName).replaceAll('{n}', '$cut'),
-            _LogKind.info,
-          ),
-        );
+        entries.add(_LogEntry(
+          trFor(lang, 'squad_guard_covers')
+              .replaceAll('{name}', enemy.displayName)
+              .replaceAll('{n}', '$cut'),
+          _LogKind.info,
+        ));
       }
     }
     enemy.damageThisRound += landed;
@@ -178,25 +159,18 @@ extension _FightEnemyTurn on _FightScreenState {
       enemy.pendingMove = null;
       _chargesBroken++;
       _fx(VfxStyle.stun, _enemyCardKey(enemy.key), delayMs: 250, big: true);
-      entries.add(
-        _LogEntry(
-          '${enemy.displayName} ${trFor(lang, 'charge_broken_suffix')}',
-          _LogKind.playerDamage,
-        ),
-      );
+      entries.add(_LogEntry(
+        '${enemy.displayName} ${trFor(lang, 'charge_broken_suffix')}',
+        _LogKind.playerDamage,
+      ));
     }
   }
 
   /// A turn [enemy] spends on something other than a swing: mending
   /// itself, raising its guard, winding up, or rallying its pack.
   void _resolveEnemyStance(
-    _EnemyMember enemy,
-    EnemyMoveResult move,
-    AppLanguage lang,
-    int delay, {
-    required String targetId,
-    required Map<String, dynamic> skills,
-  }) {
+      _EnemyMember enemy, EnemyMoveResult move, AppLanguage lang, int delay,
+      {required String targetId, required Map<String, dynamic> skills}) {
     final key = _enemyCardKey(enemy.key);
     switch (move.intent) {
       case EnemyIntent.tamper:
@@ -204,60 +178,43 @@ extension _FightEnemyTurn on _FightScreenState {
       case EnemyIntent.heal:
         // A claimant's one heal spent (fight_length.dart): its turn passes.
         if (enemy.healBlocked) return;
-        final amount = scaledEnemyHeal(
-          move.healAmount,
-          maxHealth: enemy.maxHealth,
-          baseMaxHealth: enemy.baseMaxHealth,
-        );
+        final amount = scaledEnemyHeal(move.healAmount,
+            maxHealth: enemy.maxHealth, baseMaxHealth: enemy.baseMaxHealth);
         final healed = min(amount, enemy.maxHealth - enemy.currentHealth);
         if (healed > 0) enemy.noteHeal(skills);
-        _fx(
-          VfxStyle.heal,
-          key,
-          delayMs: delay,
-          text: '+$healed',
-          textKind: VfxTextKind.heal,
-        );
+        _fx(VfxStyle.heal, key,
+            delayMs: delay, text: '+$healed', textKind: VfxTextKind.heal);
         _update(() {
           enemy.currentHealth += healed;
-          _log.add(
-            _LogEntry(
-              '${move.message} ${enemy.displayName} '
-              '${trFor(lang, 'enemy_recovers_word')} $healed '
-              '${trFor(lang, 'hp_label')}.',
-              _LogKind.info,
-            ),
-          );
+          _log.add(_LogEntry(
+            '${move.message} ${enemy.displayName} '
+            '${trFor(lang, 'enemy_recovers_word')} $healed '
+            '${trFor(lang, 'hp_label')}.',
+            _LogKind.info,
+          ));
         });
       case EnemyIntent.guard:
-        _fx(
-          VfxStyle.shield,
-          key,
-          delayMs: delay,
-          text: '+${move.guardAmount}',
-          textKind: VfxTextKind.block,
-        );
+        _fx(VfxStyle.shield, key,
+            delayMs: delay,
+            text: '+${move.guardAmount}',
+            textKind: VfxTextKind.block);
         _update(() {
           enemy.guard = move.guardAmount;
-          _log.add(
-            _LogEntry(
-              '${move.message} ${enemy.displayName} '
-              '${trFor(lang, 'enemy_guards_word')} ${move.guardAmount}.',
-              _LogKind.info,
-            ),
-          );
+          _log.add(_LogEntry(
+            '${move.message} ${enemy.displayName} '
+            '${trFor(lang, 'enemy_guards_word')} ${move.guardAmount}.',
+            _LogKind.info,
+          ));
         });
       case EnemyIntent.charge:
         _fx(VfxStyle.phase, key, delayMs: delay);
         _update(() {
           enemy.chargedBlow = move;
-          _log.add(
-            _LogEntry(
-              '${move.message} ${enemy.displayName} '
-              '${trFor(lang, 'enemy_winds_up_suffix')}',
-              _LogKind.enemyDamage,
-            ),
-          );
+          _log.add(_LogEntry(
+            '${move.message} ${enemy.displayName} '
+            '${trFor(lang, 'enemy_winds_up_suffix')}',
+            _LogKind.enemyDamage,
+          ));
         });
       case EnemyIntent.rally:
         var rallied = 0;
@@ -269,15 +226,13 @@ extension _FightEnemyTurn on _FightScreenState {
           _fx(VfxStyle.shout, _enemyCardKey(other.key), delayMs: delay);
         }
         _update(() {
-          _log.add(
-            _LogEntry(
-              rallied == 0
-                  ? '${move.message} ${trFor(lang, 'rally_spent_message')}'
-                  : '${move.message} ${trFor(lang, 'enemy_rallies_message')} '
-                      '(+${move.rallyPercent}%)',
-              _LogKind.enemyDamage,
-            ),
-          );
+          _log.add(_LogEntry(
+            rallied == 0
+                ? '${move.message} ${trFor(lang, 'rally_spent_message')}'
+                : '${move.message} ${trFor(lang, 'enemy_rallies_message')} '
+                    '(+${move.rallyPercent}%)',
+            _LogKind.enemyDamage,
+          ));
         });
       case EnemyIntent.attack:
         break;
@@ -290,17 +245,11 @@ extension _FightEnemyTurn on _FightScreenState {
   /// enemy's telegraphed move is re-rolled so the new stance shows on its
   /// very next turn. Appends each announcement to [entries].
   void _advanceBossPhases(
-    List<_LogEntry> entries,
-    AppLanguage lang,
-    Map<String, dynamic> skills,
-  ) {
+      List<_LogEntry> entries, AppLanguage lang, Map<String, dynamic> skills) {
     for (final enemy in _enemies) {
       if (!enemy.isAlive || enemy.phases.isEmpty) continue;
-      final target = bossPhaseIndexFor(
-        enemy.phases,
-        enemy.currentHealth,
-        enemy.maxHealth,
-      );
+      final target =
+          bossPhaseIndexFor(enemy.phases, enemy.currentHealth, enemy.maxHealth);
       var entered = false;
       while (enemy.phaseIndex < target) {
         final phase = enemy.phases[enemy.phaseIndex];
@@ -311,10 +260,7 @@ extension _FightEnemyTurn on _FightScreenState {
         final healed = enemy.healBlocked
             ? 0
             : healthAfterPhaseHeal(
-                  phase,
-                  enemy.currentHealth,
-                  enemy.maxHealth,
-                ) -
+                    phase, enemy.currentHealth, enemy.maxHealth) -
                 enemy.currentHealth;
         enemy.currentHealth += healed;
         if (phase.cleanse) enemy.statusEffects = [];
@@ -327,14 +273,12 @@ extension _FightEnemyTurn on _FightScreenState {
           if (phase.cleanse) trFor(lang, 'phase_cleansed_label'),
           if (phase.damageMultiplier > 1.0) trFor(lang, 'phase_enraged_label'),
         ];
-        entries.add(
-          _LogEntry(
-            '${enemy.displayName} — ${phase.nameFor(lang)}: '
-            '${phase.messageFor(lang)}'
-            '${details.isEmpty ? '' : ' (${details.join(', ')})'}',
-            _LogKind.phase,
-          ),
-        );
+        entries.add(_LogEntry(
+          '${enemy.displayName} — ${phase.nameFor(lang)}: '
+          '${phase.messageFor(lang)}'
+          '${details.isEmpty ? '' : ' (${details.join(', ')})'}',
+          _LogKind.phase,
+        ));
       }
       if (entered) {
         enemy.nextMove = null;
@@ -360,9 +304,7 @@ extension _FightEnemyTurn on _FightScreenState {
   /// (rather than ahead of time) is exactly what every enemy did before
   /// pre-rolling existed.
   _PendingEnemyMove _rollMoveAndTargetFor(
-    _EnemyMember enemy,
-    Map<String, dynamic> skills,
-  ) {
+      _EnemyMember enemy, Map<String, dynamic> skills) {
     final lang = ref.read(appLanguageProvider);
     // Rolled un-Weakened: a Weaken is applied at execution time in
     // [_takeEnemyTurn] against the enemy's effects as they stand THEN, so a
@@ -398,9 +340,8 @@ extension _FightEnemyTurn on _FightScreenState {
   /// swing at all.
   void _takeEnemyTurn(Map<String, dynamic> skills, Map<String, dynamic> items) {
     final lang = ref.read(appLanguageProvider);
-    final leaderStanding = _enemies.any(
-      (e) => e.isAlive && e.hasAffix(EnemyAffix.packLeader),
-    );
+    final leaderStanding =
+        _enemies.any((e) => e.isAlive && e.hasAffix(EnemyAffix.packLeader));
 
     // Cramped: only so many enemies can reach the party each round; the
     // rest hold back, rotating so the same one isn't always the one waiting.
@@ -425,13 +366,8 @@ extension _FightEnemyTurn on _FightScreenState {
 
       final poison = poisonDamageFor(enemy.statusEffects);
       if (poison > 0) {
-        _fx(
-          VfxStyle.poison,
-          _enemyCardKey(enemy.key),
-          delayMs: fxDelay,
-          text: '-$poison',
-          textKind: VfxTextKind.damage,
-        );
+        _fx(VfxStyle.poison, _enemyCardKey(enemy.key),
+            delayMs: fxDelay, text: '-$poison', textKind: VfxTextKind.damage);
         _update(() {
           enemy.currentHealth = max(0, enemy.currentHealth - poison);
           // The Moss Choir: the Rot heals the rogue a share of it.
@@ -439,19 +375,16 @@ extension _FightEnemyTurn on _FightScreenState {
             final hero = _party.where((m) => m.isPlayer && !m.isKnockedOut);
             if (hero.isNotEmpty) {
               hero.first.currentHealth = min(
-                hero.first.maxHealth,
-                hero.first.currentHealth +
-                    (poison * _core.mods.rotHealShare).round(),
-              );
+                  hero.first.maxHealth,
+                  hero.first.currentHealth +
+                      (poison * _core.mods.rotHealShare).round());
             }
           }
-          _log.add(
-            _LogEntry(
-              '${enemy.displayName} ${trFor(lang, 'takes_damage_word')} '
-              '$poison ${trFor(lang, 'damage_word')} ${trFor(lang, 'from_poison_suffix')}.',
-              _LogKind.playerDamage,
-            ),
-          );
+          _log.add(_LogEntry(
+            '${enemy.displayName} ${trFor(lang, 'takes_damage_word')} '
+            '$poison ${trFor(lang, 'damage_word')} ${trFor(lang, 'from_poison_suffix')}.',
+            _LogKind.playerDamage,
+          ));
         });
         if (!enemy.isAlive) continue;
         _advancePhasesNow(lang, skills);
@@ -460,12 +393,10 @@ extension _FightEnemyTurn on _FightScreenState {
       if (isStunned(enemy.statusEffects)) {
         _fx(VfxStyle.stun, _enemyCardKey(enemy.key), delayMs: fxDelay);
         _update(() {
-          _log.add(
-            _LogEntry(
-              '${enemy.displayName} ${trFor(lang, 'stunned_skip_turn_suffix')}',
-              _LogKind.info,
-            ),
-          );
+          _log.add(_LogEntry(
+            '${enemy.displayName} ${trFor(lang, 'stunned_skip_turn_suffix')}',
+            _LogKind.info,
+          ));
           enemy.statusEffects = tickStatusEffects(enemy.statusEffects);
           enemy.chargedBlow = null;
           enemy.staggered = false;
@@ -476,12 +407,10 @@ extension _FightEnemyTurn on _FightScreenState {
       // A broken wind-up: the enemy reels and loses this turn.
       if (enemy.staggered) {
         _update(() {
-          _log.add(
-            _LogEntry(
-              '${enemy.displayName} ${trFor(lang, 'staggered_skip_turn_suffix')}',
-              _LogKind.info,
-            ),
-          );
+          _log.add(_LogEntry(
+            '${enemy.displayName} ${trFor(lang, 'staggered_skip_turn_suffix')}',
+            _LogKind.info,
+          ));
           enemy.staggered = false;
           enemy.statusEffects = tickStatusEffects(enemy.statusEffects);
         });
@@ -490,12 +419,10 @@ extension _FightEnemyTurn on _FightScreenState {
 
       if (heldBack.contains(enemy.key)) {
         _update(() {
-          _log.add(
-            _LogEntry(
-              '${enemy.displayName} ${trFor(lang, 'holds_back_suffix')}',
-              _LogKind.info,
-            ),
-          );
+          _log.add(_LogEntry(
+            '${enemy.displayName} ${trFor(lang, 'holds_back_suffix')}',
+            _LogKind.info,
+          ));
           enemy.statusEffects = tickStatusEffects(enemy.statusEffects);
         });
         continue;
@@ -504,23 +431,14 @@ extension _FightEnemyTurn on _FightScreenState {
       final pending = enemy.pendingMove ?? _rollMoveAndTargetFor(enemy, skills);
       final move = pending.move;
       if (!pending.release && move.intent != EnemyIntent.attack) {
-        _resolveEnemyStance(
-          enemy,
-          move,
-          lang,
-          fxDelay,
-          targetId: pending.targetId,
-          skills: skills,
-        );
+        _resolveEnemyStance(enemy, move, lang, fxDelay,
+            targetId: pending.targetId, skills: skills);
         enemy.statusEffects = tickStatusEffects(enemy.statusEffects);
         continue;
       }
       if (pending.release) enemy.chargedBlow = null;
-      final moveDamage = _incomingDamage(
-        enemy,
-        move,
-        leaderStanding: leaderStanding,
-      );
+      final moveDamage =
+          _incomingDamage(enemy, move, leaderStanding: leaderStanding);
       enemy.provoked = false;
       enemy.pressing = false;
 
@@ -545,14 +463,10 @@ extension _FightEnemyTurn on _FightScreenState {
         target = guardian;
         if (!guardAnnounced) {
           guardAnnounced = true;
-          _update(
-            () => _log.add(
-              _LogEntry(
+          _update(() => _log.add(_LogEntry(
                 '${guardian.displayName} ${trFor(lang, 'draws_attacks_suffix')}',
                 _LogKind.playerBlock,
-              ),
-            ),
-          );
+              )));
         }
       }
 
@@ -562,12 +476,10 @@ extension _FightEnemyTurn on _FightScreenState {
         _writCharges--;
         _fx(VfxStyle.radiance, _memberCardKey(target.id), delayMs: fxDelay);
         _update(() {
-          _log.add(
-            _LogEntry(
-              '${move.message} ${trFor(lang, 'sign_log_writ')}',
-              _LogKind.playerBlock,
-            ),
-          );
+          _log.add(_LogEntry(
+            '${move.message} ${trFor(lang, 'sign_log_writ')}',
+            _LogKind.playerBlock,
+          ));
           enemy.statusEffects = tickStatusEffects(enemy.statusEffects);
         });
         continue;
@@ -577,11 +489,9 @@ extension _FightEnemyTurn on _FightScreenState {
       // rather than just softening it further on top of block/armor/resist.
       // The Briar Guard can't dodge (specialisations.dart).
       final wasDodged = _random.nextDouble() * 100 <
-              dodgeChanceFor(
-                    target.dexterity,
-                    perception: target.perception,
-                    professionId: target.professionId,
-                  ) +
+              dodgeChanceFor(target.dexterity,
+                      perception: target.perception,
+                      professionId: target.professionId) +
                   target.gear.dodgeChance &&
           !(target.isPlayer && _core.has(Spec.briarGuard));
       // A parry (v1.214) takes its share of the blow first.
@@ -593,15 +503,11 @@ extension _FightEnemyTurn on _FightScreenState {
               blow: moveDamage,
               parry: parry,
               block: target.block,
-              mitigation: mitigation,
-            );
+              mitigation: mitigation);
       // A warrior's Perception blocks a blow now and then: half of it
       // (stat_rules.dart); signs, titles and Iron Hide lend anyone a block.
       final blockChance = blockChanceWith(
-        target.professionId,
-        target.perception,
-        target.gear.blockChance,
-      );
+          target.professionId, target.perception, target.gear.blockChance);
       if (!wasDodged &&
           damageTaken > 0 &&
           blockChance > 0 &&
@@ -641,10 +547,8 @@ extension _FightEnemyTurn on _FightScreenState {
       // Thorns (a Thornmail Hauberk, the Hollow Court set, a sign) send
       // back their share of whatever actually connected (gear_effects.dart's
       // ThornsBank keeps the fractions for the next blow).
-      final thorns = target.thornsBank.answer(
-        damageTaken,
-        target.gear.thornsPercent,
-      );
+      final thorns =
+          target.thornsBank.answer(damageTaken, target.gear.thornsPercent);
       // A guard sign bites the enemy that hits the player's raised guard
       // (the block of a Defend face played this round, before this blow
       // takes it down).
@@ -668,26 +572,19 @@ extension _FightEnemyTurn on _FightScreenState {
         target.block = 0;
         target.reflect = null;
         if (wardBite != null && enemy.isAlive) {
-          enemy.statusEffects = applyStatusEffect(
-            enemy.statusEffects,
-            wardBite,
-          );
-          _log.add(
-            _LogEntry(
-              trFor(
-                lang,
-                'skill_ward_bites',
-              ).replaceAll('{name}', enemy.displayName),
-              _LogKind.playerBlock,
-            ),
-          );
+          enemy.statusEffects =
+              applyStatusEffect(enemy.statusEffects, wardBite);
+          _log.add(_LogEntry(
+            trFor(lang, 'skill_ward_bites')
+                .replaceAll('{name}', enemy.displayName),
+            _LogKind.playerBlock,
+          ));
           _fx(
-            wardBite.type == StatusEffectType.poison
-                ? VfxStyle.poison
-                : VfxStyle.frost,
-            _enemyCardKey(enemy.key),
-            delayMs: fxDelay + 250,
-          );
+              wardBite.type == StatusEffectType.poison
+                  ? VfxStyle.poison
+                  : VfxStyle.frost,
+              _enemyCardKey(enemy.key),
+              delayMs: fxDelay + 250);
         }
         _lastDamageTaken = damageTaken;
         _lastDamagedMemberId = target.id;
@@ -702,39 +599,30 @@ extension _FightEnemyTurn on _FightScreenState {
           enemy.currentHealth = max(0, enemy.currentHealth - briar);
           // The Quarrymen: a blow sent back breaks the guard.
           if (_core.mods.briarBreaksGuard) enemy.guard = 0;
-          _log.add(
-            _LogEntry(
+          _log.add(_LogEntry(
               trFor(lang, 'spec_briar_log')
                   .replaceAll('{name}', enemy.displayName)
                   .replaceAll('{n}', '$briar'),
-              _LogKind.playerDamage,
-            ),
-          );
+              _LogKind.playerDamage));
         }
         if (damageTaken > 0) _momentum = momentumAfterHit(_momentum);
         if (damageTaken > 0) _plunderFrom(enemy, lang);
         if (wasDodged) {
-          _log.add(
-            _LogEntry(
-              target.isPlayer
-                  ? '${move.message} ${trFor(lang, 'you_dodge_suffix')}'
-                  : '${move.message} ${target.displayName} '
-                      '${trFor(lang, 'dodges_suffix')}',
-              _LogKind.playerBlock,
-            ),
-          );
-          final banter = _rollBanter(
-            kind: _BanterKind.dodge,
-            excludeId: target.id,
-          );
+          _log.add(_LogEntry(
+            target.isPlayer
+                ? '${move.message} ${trFor(lang, 'you_dodge_suffix')}'
+                : '${move.message} ${target.displayName} '
+                    '${trFor(lang, 'dodges_suffix')}',
+            _LogKind.playerBlock,
+          ));
+          final banter =
+              _rollBanter(kind: _BanterKind.dodge, excludeId: target.id);
           if (banter != null) _log.add(banter);
         } else if (warded) {
-          _log.add(
-            _LogEntry(
-              '${move.message} ${trFor(lang, 'warding_absorbs_message')}',
-              _LogKind.playerBlock,
-            ),
-          );
+          _log.add(_LogEntry(
+            '${move.message} ${trFor(lang, 'warding_absorbs_message')}',
+            _LogKind.playerBlock,
+          ));
         } else {
           final damageLine = target.isPlayer
               ? '${move.message} ${trFor(lang, 'you_take_damage_prefix')} $damageTaken '
@@ -742,10 +630,8 @@ extension _FightEnemyTurn on _FightScreenState {
               : '${move.message} ${target.displayName} ${trFor(lang, 'takes_damage_word')} '
                   '$damageTaken ${trFor(lang, 'damage_word')}.';
           _log.add(
-            _LogEntry(
-              damageLine,
-              damageTaken > 0 ? _LogKind.enemyDamage : _LogKind.playerBlock,
-            ),
+            _LogEntry(damageLine,
+                damageTaken > 0 ? _LogKind.enemyDamage : _LogKind.playerBlock),
           );
           if (!target.isPlayer &&
               !wasKnockedOutAlready &&
@@ -758,10 +644,8 @@ extension _FightEnemyTurn on _FightScreenState {
                 _LogKind.defeat,
               ),
             );
-            final banter = _rollBanter(
-              kind: _BanterKind.ko,
-              excludeId: target.id,
-            );
+            final banter =
+                _rollBanter(kind: _BanterKind.ko, excludeId: target.id);
             if (banter != null) _log.add(banter);
           }
           if (inflicted != null && !target.isKnockedOut) {
@@ -769,12 +653,10 @@ extension _FightEnemyTurn on _FightScreenState {
               target.statusEffects,
               applyWisdomResistance(inflicted, target.wisdom),
             );
-            _log.add(
-              _LogEntry(
-                _statusInflictedMessage(inflicted, target.displayName, lang),
-                _LogKind.info,
-              ),
-            );
+            _log.add(_LogEntry(
+              _statusInflictedMessage(inflicted, target.displayName, lang),
+              _LogKind.info,
+            ));
           }
         }
         enemy.statusEffects = tickStatusEffects(enemy.statusEffects);
@@ -794,48 +676,33 @@ extension _FightEnemyTurn on _FightScreenState {
       _resolveParry(enemy, moveDamage, parry, wasDodged, lang, skills);
       if (move.healAmount > 0 && enemy.isAlive && !enemy.healBlocked) {
         final healed = min(
-          scaledEnemyHeal(
-            move.healAmount,
-            maxHealth: enemy.maxHealth,
-            baseMaxHealth: enemy.baseMaxHealth,
-          ),
-          enemy.maxHealth - enemy.currentHealth,
-        );
+            scaledEnemyHeal(move.healAmount,
+                maxHealth: enemy.maxHealth, baseMaxHealth: enemy.baseMaxHealth),
+            enemy.maxHealth - enemy.currentHealth);
         if (healed > 0) {
           enemy.noteHeal(skills);
-          _fx(
-            VfxStyle.heal,
-            _enemyCardKey(enemy.key),
-            delayMs: fxDelay + 300,
-            text: '+$healed',
-            textKind: VfxTextKind.heal,
-          );
+          _fx(VfxStyle.heal, _enemyCardKey(enemy.key),
+              delayMs: fxDelay + 300,
+              text: '+$healed',
+              textKind: VfxTextKind.heal);
           _update(() {
             enemy.currentHealth += healed;
-            _log.add(
-              _LogEntry(
-                '${enemy.displayName} ${trFor(lang, 'enemy_recovers_word')} '
-                '$healed ${trFor(lang, 'hp_label')}.',
-                _LogKind.info,
-              ),
-            );
+            _log.add(_LogEntry(
+              '${enemy.displayName} ${trFor(lang, 'enemy_recovers_word')} '
+              '$healed ${trFor(lang, 'hp_label')}.',
+              _LogKind.info,
+            ));
           });
         }
       }
       if (secondWind) {
-        _fx(
-          VfxStyle.heal,
-          _memberCardKey(target.id),
-          delayMs: fxDelay + 450,
-          big: true,
-        );
+        _fx(VfxStyle.heal, _memberCardKey(target.id),
+            delayMs: fxDelay + 450, big: true);
         _update(() {
-          _log.add(
-            _LogEntry(
-              '${target.displayName} ${trFor(lang, 'second_wind_message')}',
-              _LogKind.playerHeal,
-            ),
-          );
+          _log.add(_LogEntry(
+            '${target.displayName} ${trFor(lang, 'second_wind_message')}',
+            _LogKind.playerHeal,
+          ));
         });
       }
       if (target.isPlayer && _signGuardArmed && enemy.isAlive) {
@@ -843,25 +710,20 @@ extension _FightEnemyTurn on _FightScreenState {
         _advancePhasesNow(lang, skills);
       }
       if (thorns > 0 && enemy.isAlive) {
-        _fx(
-          VfxStyle.impact,
-          _enemyCardKey(enemy.key),
-          source: _memberCardKey(target.id),
-          delayMs: fxDelay + 400,
-          text: '-$thorns',
-          textKind: VfxTextKind.damage,
-        );
+        _fx(VfxStyle.impact, _enemyCardKey(enemy.key),
+            source: _memberCardKey(target.id),
+            delayMs: fxDelay + 400,
+            text: '-$thorns',
+            textKind: VfxTextKind.damage);
         _update(() {
           enemy.currentHealth = max(0, enemy.currentHealth - thorns);
           _lastDamagedEnemyKey = enemy.key;
           _lastEnemyDamageTaken = thorns;
-          _log.add(
-            _LogEntry(
-              '${enemy.displayName} ${trFor(lang, 'thorns_suffix')} $thorns '
-              '${trFor(lang, 'damage_word')}.',
-              _LogKind.playerDamage,
-            ),
-          );
+          _log.add(_LogEntry(
+            '${enemy.displayName} ${trFor(lang, 'thorns_suffix')} $thorns '
+            '${trFor(lang, 'damage_word')}.',
+            _LogKind.playerDamage,
+          ));
         });
         _advancePhasesNow(lang, skills);
       }
@@ -879,11 +741,8 @@ extension _FightEnemyTurn on _FightScreenState {
     }
 
     if (_holdHeld) {
-      _update(
-        () => _log.add(
-          _LogEntry(trFor(lang, 'goal_won_hold_log'), _LogKind.victory),
-        ),
-      );
+      _update(() => _log
+          .add(_LogEntry(trFor(lang, 'goal_won_hold_log'), _LogKind.victory)));
       _finishFight(won: true);
       return;
     }

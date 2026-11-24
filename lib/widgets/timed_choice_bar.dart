@@ -50,10 +50,8 @@ class _TimedChoiceBarState extends ConsumerState<TimedChoiceBar>
   late final AnimationController _clock;
 
   /// How much of the clock the scene has used, as the shared clock has it.
-  double get _spent => math.min(
-        1,
-        _shared.elapsedOn(widget.scene).inMicroseconds / _limit.inMicroseconds,
-      );
+  double get _spent => math.min(1,
+      _shared.elapsedOn(widget.scene).inMicroseconds / _limit.inMicroseconds);
 
   @override
   void initState() {
@@ -112,19 +110,14 @@ class _TimedChoiceBarState extends ConsumerState<TimedChoiceBar>
             children: [
               Row(
                 children: [
-                  Icon(
-                    Icons.hourglass_bottom,
-                    size: IconSize.s16,
-                    color: colour,
-                  ),
+                  Icon(Icons.hourglass_bottom,
+                      size: IconSize.s16, color: colour),
                   const SizedBox(width: 4),
                   Expanded(
                     child: Text(
                       widget.label,
-                      style: theme.textTheme.labelSmall?.copyWith(
-                        color: colour,
-                        letterSpacing: 0.4,
-                      ),
+                      style: theme.textTheme.labelSmall
+                          ?.copyWith(color: colour, letterSpacing: 0.4),
                     ),
                   ),
                   Text(

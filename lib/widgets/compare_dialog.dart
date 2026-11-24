@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-
 import '../theme/palette.dart';
 
 /// One stat line in a comparison table: a label plus two numeric values to
@@ -105,18 +104,14 @@ Future<void> showCompareDialog(
                       children: [
                         Expanded(flex: 2, child: Text(row.label)),
                         Expanded(
-                          child: Text(
-                            _formatNum(row.valueA),
-                            textAlign: TextAlign.center,
-                          ),
+                          child: Text(_formatNum(row.valueA),
+                              textAlign: TextAlign.center),
                         ),
                         Expanded(
                           child: Column(
                             children: [
-                              Text(
-                                _formatNum(row.valueB),
-                                textAlign: TextAlign.center,
-                              ),
+                              Text(_formatNum(row.valueB),
+                                  textAlign: TextAlign.center),
                               Text(
                                 deltaText,
                                 textAlign: TextAlign.center,

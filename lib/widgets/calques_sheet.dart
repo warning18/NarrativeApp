@@ -15,102 +15,88 @@ Future<void> showCalquesSheet(BuildContext context, WidgetRef ref) {
   final lang = ref.read(appLanguageProvider);
   return showInkSheet<void>(
     context: context,
-    builder: (sheetContext) => Consumer(
-      builder: (context, ref, _) {
-        final current = ref.watch(chartCalqueProvider);
-        final theme = Theme.of(context);
-        final ink = InkColors.of(context);
-        return SafeArea(
-          child: SingleChildScrollView(
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Padding(
-                  padding: const EdgeInsets.fromLTRB(20, 0, 20, 4),
-                  child: Text(
-                    trFor(lang, 'journey_calques').toUpperCase(),
-                    style: theme.textTheme.labelMedium?.copyWith(
-                      letterSpacing: 1.4,
-                      color: ink.gold,
-                    ),
-                  ),
-                ),
+    builder: (sheetContext) => Consumer(builder: (context, ref, _) {
+      final current = ref.watch(chartCalqueProvider);
+      final theme = Theme.of(context);
+      final ink = InkColors.of(context);
+      return SafeArea(
+        child: SingleChildScrollView(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Padding(
+                padding: const EdgeInsets.fromLTRB(20, 0, 20, 4),
+                child: Text(trFor(lang, 'journey_calques').toUpperCase(),
+                    style: theme.textTheme.labelMedium
+                        ?.copyWith(letterSpacing: 1.4, color: ink.gold)),
+              ),
+              SwitchListTile(
+                key: const Key('journey_weather'),
+                dense: true,
+                value: ref.watch(chartWeatherProvider),
+                secondary: const Icon(Icons.cloud_outlined),
+                title: Text(trFor(lang, 'journey_weather')),
+                subtitle: Text(trFor(lang, 'journey_weather_sub'),
+                    style:
+                        theme.textTheme.labelSmall?.copyWith(color: ink.ash)),
+                onChanged: (on) =>
+                    ref.read(chartWeatherProvider.notifier).choose(on),
+              ),
+              if (ref.watch(chartWeatherProvider))
                 SwitchListTile(
-                  key: const Key('journey_weather'),
+                  key: const Key('journey_weather_world_only'),
                   dense: true,
-                  value: ref.watch(chartWeatherProvider),
-                  secondary: const Icon(Icons.cloud_outlined),
-                  title: Text(trFor(lang, 'journey_weather')),
-                  subtitle: Text(
-                    trFor(lang, 'journey_weather_sub'),
-                    style: theme.textTheme.labelSmall?.copyWith(color: ink.ash),
-                  ),
-                  onChanged: (on) =>
-                      ref.read(chartWeatherProvider.notifier).choose(on),
+                  value: ref.watch(chartWeatherWorldOnlyProvider),
+                  secondary: const Icon(Icons.public_outlined),
+                  title: Text(trFor(lang, 'journey_weather_world_only')),
+                  subtitle: Text(trFor(lang, 'journey_weather_world_only_sub'),
+                      style:
+                          theme.textTheme.labelSmall?.copyWith(color: ink.ash)),
+                  onChanged: (on) => ref
+                      .read(chartWeatherWorldOnlyProvider.notifier)
+                      .choose(on),
                 ),
-                if (ref.watch(chartWeatherProvider))
-                  SwitchListTile(
-                    key: const Key('journey_weather_world_only'),
-                    dense: true,
-                    value: ref.watch(chartWeatherWorldOnlyProvider),
-                    secondary: const Icon(Icons.public_outlined),
-                    title: Text(trFor(lang, 'journey_weather_world_only')),
-                    subtitle: Text(
-                      trFor(lang, 'journey_weather_world_only_sub'),
-                      style: theme.textTheme.labelSmall?.copyWith(
-                        color: ink.ash,
-                      ),
-                    ),
-                    onChanged: (on) => ref
-                        .read(chartWeatherWorldOnlyProvider.notifier)
-                        .choose(on),
-                  ),
-                const Divider(height: 8),
-                for (final calque in const [
-                  ChartCalque.none,
-                  ChartCalque.clans,
-                  ChartCalque.chapters,
-                ])
-                  SwitchListTile(
-                    key: Key('calque_${calque.name}'),
-                    dense: true,
-                    value: current == calque,
-                    secondary: Icon(switch (calque) {
-                      ChartCalque.none => Icons.layers_clear_outlined,
-                      ChartCalque.clans => Icons.balance,
-                      ChartCalque.standing => Icons.person_outline,
-                      ChartCalque.lands => Icons.map_outlined,
-                      ChartCalque.chapters => Icons.route_outlined,
-                      ChartCalque.shops => Icons.storefront_outlined,
-                      ChartCalque.height => Icons.terrain,
-                      ChartCalque.humidity => Icons.water_drop_outlined,
-                      ChartCalque.warmth => Icons.thermostat,
-                    }),
-                    title: Text(trFor(lang, 'calque_${calque.name}')),
-                    subtitle: Text(
-                      trFor(lang, 'calque_${calque.name}_sub'),
-                      style: theme.textTheme.labelSmall?.copyWith(
-                        color: ink.ash,
-                      ),
-                    ),
-                    onChanged: (on) => ref
-                        .read(chartCalqueProvider.notifier)
-                        .choose(on ? calque : ChartCalque.none),
-                  ),
-                const HandoverList(),
-                Padding(
-                  padding: const EdgeInsets.fromLTRB(20, 4, 20, 12),
-                  child: Text(
-                    trFor(lang, 'journey_calques_hint'),
-                    style: theme.textTheme.labelSmall?.copyWith(color: ink.ash),
-                  ),
+              const Divider(height: 8),
+              for (final calque in const [
+                ChartCalque.none,
+                ChartCalque.clans,
+                ChartCalque.chapters,
+              ])
+                SwitchListTile(
+                  key: Key('calque_${calque.name}'),
+                  dense: true,
+                  value: current == calque,
+                  secondary: Icon(switch (calque) {
+                    ChartCalque.none => Icons.layers_clear_outlined,
+                    ChartCalque.clans => Icons.balance,
+                    ChartCalque.standing => Icons.person_outline,
+                    ChartCalque.lands => Icons.map_outlined,
+                    ChartCalque.chapters => Icons.route_outlined,
+                    ChartCalque.shops => Icons.storefront_outlined,
+                    ChartCalque.height => Icons.terrain,
+                    ChartCalque.humidity => Icons.water_drop_outlined,
+                    ChartCalque.warmth => Icons.thermostat,
+                  }),
+                  title: Text(trFor(lang, 'calque_${calque.name}')),
+                  subtitle: Text(trFor(lang, 'calque_${calque.name}_sub'),
+                      style:
+                          theme.textTheme.labelSmall?.copyWith(color: ink.ash)),
+                  onChanged: (on) => ref
+                      .read(chartCalqueProvider.notifier)
+                      .choose(on ? calque : ChartCalque.none),
                 ),
-              ],
-            ),
+              const HandoverList(),
+              Padding(
+                padding: const EdgeInsets.fromLTRB(20, 4, 20, 12),
+                child: Text(trFor(lang, 'journey_calques_hint'),
+                    style:
+                        theme.textTheme.labelSmall?.copyWith(color: ink.ash)),
+              ),
+            ],
           ),
-        );
-      },
-    ),
+        ),
+      );
+    }),
   );
 }

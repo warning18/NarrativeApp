@@ -85,8 +85,7 @@ List<String> remembranceTitlesFor(Iterable<String> flags, ClanData data) {
 /// Records of a gamedata table: every entry that is a record, leaving out
 /// notes (a key starting with `_`, like factions.json's `_newKinds`).
 Iterable<MapEntry<String, Map<String, dynamic>>> _records(
-  Map<String, dynamic> db,
-) =>
+        Map<String, dynamic> db) =>
     [
       for (final entry in db.entries)
         if (!entry.key.startsWith('_') && entry.value is Map)

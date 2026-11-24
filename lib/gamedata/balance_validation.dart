@@ -51,11 +51,8 @@ List<String> _validateMandatoryCombat(StoryData story) {
     }
   }
 
-  Set<String> bfsForward(
-    Set<String> starts,
-    Set<String> allowed, {
-    StoryChoice? excludeChoice,
-  }) {
+  Set<String> bfsForward(Set<String> starts, Set<String> allowed,
+      {StoryChoice? excludeChoice}) {
     final visited = <String>{...starts};
     final queue = [...starts];
     while (queue.isNotEmpty) {
@@ -84,10 +81,8 @@ List<String> _validateMandatoryCombat(StoryData story) {
 
   for (final spine in chapterSpines) {
     final allowed = story.nodes.keys
-        .where(
-          (id) =>
-              chapterForNode(id) == null || chapterForNode(id) == spine.chapter,
-        )
+        .where((id) =>
+            chapterForNode(id) == null || chapterForNode(id) == spine.chapter)
         .toSet();
 
     for (var i = 0; i < spine.beats.length - 1; i++) {
@@ -107,25 +102,20 @@ List<String> _validateMandatoryCombat(StoryData story) {
           if (choice.tutorialFight) continue;
           if (!allowed.contains(choice.nextId)) continue;
 
-          final withoutThisFight = bfsForward(
-            beatFrom,
-            allowed,
-            excludeChoice: choice,
-          );
+          final withoutThisFight =
+              bfsForward(beatFrom, allowed, excludeChoice: choice);
           final stillReachesNextBeat = beatTo.any(withoutThisFight.contains);
           if (stillReachesNextBeat) {
             continue; // there's another route — avoidable
           }
 
-          final ancestors = reachable.intersection(
-            bfsBackward({nodeId}, allowed),
-          );
+          final ancestors =
+              reachable.intersection(bfsBackward({nodeId}, allowed));
           final hasShopOpportunity = ancestors.any((id) {
             final ancestor = story.nodeFor(id);
             if (ancestor == null) return false;
-            return ancestor.choices.any(
-              (c) => (c.unlockShopId ?? '').isNotEmpty,
-            );
+            return ancestor.choices
+                .any((c) => (c.unlockShopId ?? '').isNotEmpty);
           });
 
           if (!hasShopOpportunity) {

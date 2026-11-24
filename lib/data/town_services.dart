@@ -102,7 +102,7 @@ List<TownService> townServicesOf(
                 (
                   action: TownServiceAction.bountyBoard,
                   id: 'bounty_board',
-                  unlocked: true,
+                  unlocked: true
                 ),
               ],
             'market' => [
@@ -124,7 +124,7 @@ List<TownService> townServicesOf(
                 (
                   action: TownServiceAction.temple,
                   id: pin.district.isNotEmpty ? pin.district : record.cityId,
-                  unlocked: true,
+                  unlocked: true
                 ),
               ],
             'harbour' => [

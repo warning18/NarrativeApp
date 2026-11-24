@@ -51,7 +51,7 @@ const List<String> _forgeSlotOrder = [
   'Top',
   'Bottom',
   'Foot',
-  'Weapon',
+  'Weapon'
 ];
 
 String _nameOf(Map<String, dynamic>? item, String id, AppLanguage lang) {
@@ -83,11 +83,8 @@ class _ForgeSheetViewState extends ConsumerState<ForgeSheetView> {
     if (item == null) return false;
     final gold = (item['craftGold'] as num?)?.toInt() ?? 0;
     if (session.gold < gold) return false;
-    return craftMaterialsFor(item).entries.every(
-          (m) =>
-              session.inventoryItemIds.where((i) => i == m.key).length >=
-              m.value,
-        );
+    return craftMaterialsFor(item).entries.every((m) =>
+        session.inventoryItemIds.where((i) => i == m.key).length >= m.value);
   }
 
   /// Asks whether the Bone-Caster's Hut rolls the flawed piece again; true
@@ -135,13 +132,10 @@ class _ForgeSheetViewState extends ConsumerState<ForgeSheetView> {
             '${m.value} ${_nameOf(items[m.key] as Map<String, dynamic>?, m.key, lang).toLowerCase()}',
           '${(item['craftGold'] as num?)?.toInt() ?? 0} ${trFor(lang, 'gold_label')}',
         ].join(' · ');
-        var roll = await notifier.craftItem(
-          id,
-          item,
-          origin: itemOriginHere(ref),
-          random: random,
-          modifiers: ref.read(forgeModifiersProvider),
-        );
+        var roll = await notifier.craftItem(id, item,
+            origin: itemOriginHere(ref),
+            random: random,
+            modifiers: ref.read(forgeModifiersProvider));
         if (roll == null || !mounted) break;
         // A Flawed piece, and the Bone-Caster's Hut standing with a Reroll
         // charge: the hut may roll the forge's d20 again (camp_rolls.dart).
@@ -150,10 +144,8 @@ class _ForgeSheetViewState extends ConsumerState<ForgeSheetView> {
             notifier.canRerollForge &&
             await _offerHutReroll(lang)) {
           final redo = await notifier.rerollForge(
-            forgedVariantId(baseItemIdOf(id), roll.tier),
-            roll,
-            random: random,
-          );
+              forgedVariantId(baseItemIdOf(id), roll.tier), roll,
+              random: random);
           if (redo != null) {
             coinLine = '${trFor(lang, 'forge_hut_rolled')} ';
             roll = redo;
@@ -164,16 +156,11 @@ class _ForgeSheetViewState extends ConsumerState<ForgeSheetView> {
         // once more (fate_coin.dart).
         if (fateCoinWorthFlippingForge(roll) &&
             carriesFateCoin(ref.read(playerSessionProvider).inventoryItemIds) &&
-            await offerFateCoin(
-              context,
-              lang,
-              messageKey: 'forge_coin_offer',
-            )) {
+            await offerFateCoin(context, lang,
+                messageKey: 'forge_coin_offer')) {
           final redo = await notifier.reforgeWithFateCoin(
-            forgedVariantId(baseItemIdOf(id), roll.tier),
-            roll,
-            random: random,
-          );
+              forgedVariantId(baseItemIdOf(id), roll.tier), roll,
+              random: random);
           if (redo != null) {
             coinLine += '${fateCoinLandedLine(flipFateCoin(random), lang)} ';
             roll = redo;
@@ -225,21 +212,18 @@ class _ForgeSheetViewState extends ConsumerState<ForgeSheetView> {
       });
     final ready = {
       for (final s in slots)
-        s: recipes.any(
-          (id) => slotOf(id) == s && _canForge(id, items, session),
-        ),
+        s: recipes
+            .any((id) => slotOf(id) == s && _canForge(id, items, session)),
     };
     // The tab shown: the one left on, else the first with something to
     // forge, else the first.
     final slot = slots.contains(_slot)
         ? _slot!
-        : slots.firstWhere(
-            (s) => ready[s] ?? false,
-            orElse: () => slots.isEmpty ? '' : slots.first,
-          );
+        : slots.firstWhere((s) => ready[s] ?? false,
+            orElse: () => slots.isEmpty ? '' : slots.first);
     final shown = [
       for (final id in recipes)
-        if (slotOf(id) == slot) id,
+        if (slotOf(id) == slot) id
     ];
 
     final modifiers = ref.watch(forgeModifiersProvider);
@@ -259,24 +243,19 @@ class _ForgeSheetViewState extends ConsumerState<ForgeSheetView> {
       children: [
         Padding(
           padding: const EdgeInsets.fromLTRB(16, 0, 16, 2),
-          child: Row(
-            children: [
-              Text(tr(ref, 'forge_title'), style: theme.textTheme.titleMedium),
-              IconButton(
-                key: const Key('forge_hint_button'),
-                icon: Icon(
-                  Icons.info_outline,
-                  size: IconSize.s16,
-                  color: ink.ash,
-                ),
-                tooltip: tr(ref, 'forge_hint_tip'),
-                visualDensity: VisualDensity.compact,
-                onPressed: () => setState(() => _hint = !_hint),
-              ),
-              const Spacer(),
-              const GoldBadge(),
-            ],
-          ),
+          child: Row(children: [
+            Text(tr(ref, 'forge_title'), style: theme.textTheme.titleMedium),
+            IconButton(
+              key: const Key('forge_hint_button'),
+              icon:
+                  Icon(Icons.info_outline, size: IconSize.s16, color: ink.ash),
+              tooltip: tr(ref, 'forge_hint_tip'),
+              visualDensity: VisualDensity.compact,
+              onPressed: () => setState(() => _hint = !_hint),
+            ),
+            const Spacer(),
+            const GoldBadge(),
+          ]),
         ),
         if (firstSentence.isNotEmpty)
           Padding(
@@ -289,10 +268,9 @@ class _ForgeSheetViewState extends ConsumerState<ForgeSheetView> {
               maxLines: 2,
               overflow: TextOverflow.ellipsis,
               style: theme.textTheme.bodySmall?.copyWith(
-                color: ink.ash,
-                fontStyle: FontStyle.italic,
-                fontFamily: InkFonts.prose,
-              ),
+                  color: ink.ash,
+                  fontStyle: FontStyle.italic,
+                  fontFamily: InkFonts.prose),
             ),
           ),
         if (_hint)
@@ -301,13 +279,10 @@ class _ForgeSheetViewState extends ConsumerState<ForgeSheetView> {
             margin: const EdgeInsets.fromLTRB(16, 0, 16, 8),
             padding: const EdgeInsets.all(10),
             decoration: BoxDecoration(
-              color: theme.colorScheme.surfaceContainerHighest,
-              borderRadius: BorderRadius.circular(8),
-            ),
-            child: Text(
-              tr(ref, 'forge_hint'),
-              style: theme.textTheme.bodySmall,
-            ),
+                color: theme.colorScheme.surfaceContainerHighest,
+                borderRadius: BorderRadius.circular(8)),
+            child:
+                Text(tr(ref, 'forge_hint'), style: theme.textTheme.bodySmall),
           ),
         // The tabs.
         SizedBox(
@@ -325,31 +300,25 @@ class _ForgeSheetViewState extends ConsumerState<ForgeSheetView> {
                     showCheckmark: false,
                     visualDensity: VisualDensity.compact,
                     labelPadding: const EdgeInsets.symmetric(horizontal: 2),
-                    labelStyle: theme.textTheme.labelLarge?.copyWith(
-                      color: theme.colorScheme.onSurface,
-                    ),
-                    label: Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Text(
+                    labelStyle: theme.textTheme.labelLarge
+                        ?.copyWith(color: theme.colorScheme.onSurface),
+                    label: Row(mainAxisSize: MainAxisSize.min, children: [
+                      Text(
                           trFor(lang, 'forge_slot_$s').startsWith('forge_slot_')
                               ? s
-                              : trFor(lang, 'forge_slot_$s'),
-                        ),
-                        if (ready[s] ?? false) ...[
-                          const SizedBox(width: 6),
-                          Container(
-                            key: ValueKey('forge_tab_dot_$s'),
-                            width: 7,
-                            height: 7,
-                            decoration: BoxDecoration(
+                              : trFor(lang, 'forge_slot_$s')),
+                      if (ready[s] ?? false) ...[
+                        const SizedBox(width: 6),
+                        Container(
+                          key: ValueKey('forge_tab_dot_$s'),
+                          width: 7,
+                          height: 7,
+                          decoration: BoxDecoration(
                               color: Colors.green.shade500,
-                              shape: BoxShape.circle,
-                            ),
-                          ),
-                        ],
+                              shape: BoxShape.circle),
+                        ),
                       ],
-                    ),
+                    ]),
                     onSelected: (_) => setState(() => _slot = s),
                   ),
                 ),
@@ -365,115 +334,83 @@ class _ForgeSheetViewState extends ConsumerState<ForgeSheetView> {
               borderRadius: BorderRadius.circular(8),
               border: Border.all(color: theme.colorScheme.outlineVariant),
             ),
-            child: Column(
-              children: [
-                InkWell(
-                  key: const Key('forge_odds_toggle'),
-                  borderRadius: BorderRadius.circular(8),
-                  onTap: () => setState(() => _odds = !_odds),
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 12,
-                      vertical: 9,
-                    ),
-                    child: Row(
-                      children: [
-                        const Icon(Icons.casino_outlined, size: IconSize.s16),
-                        const SizedBox(width: 8),
-                        Text(
-                          trFor(lang, 'forge_roll_line').replaceAll(
+            child: Column(children: [
+              InkWell(
+                key: const Key('forge_odds_toggle'),
+                borderRadius: BorderRadius.circular(8),
+                onTap: () => setState(() => _odds = !_odds),
+                child: Padding(
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 12, vertical: 9),
+                  child: Row(children: [
+                    const Icon(Icons.casino_outlined, size: IconSize.s16),
+                    const SizedBox(width: 8),
+                    Text(
+                        trFor(lang, 'forge_roll_line').replaceAll(
                             '{mod}',
                             total == 0
                                 ? ''
-                                : (total > 0 ? '+ $total' : '− ${total.abs()}'),
-                          ),
-                          style: theme.textTheme.bodyMedium?.copyWith(
-                            fontWeight: FontWeight.w600,
-                          ),
-                        ),
-                        const Spacer(),
-                        Text(
-                          trFor(
-                            lang,
-                            _odds ? 'forge_odds_close' : 'forge_odds_open',
-                          ),
-                          style: theme.textTheme.bodySmall?.copyWith(
-                            color: ink.ash,
-                          ),
-                        ),
-                        Icon(
-                          _odds ? Icons.expand_less : Icons.expand_more,
-                          size: IconSize.s16,
-                          color: ink.ash,
-                        ),
-                      ],
-                    ),
-                  ),
+                                : (total > 0
+                                    ? '+ $total'
+                                    : '− ${total.abs()}')),
+                        style: theme.textTheme.bodyMedium
+                            ?.copyWith(fontWeight: FontWeight.w600)),
+                    const Spacer(),
+                    Text(
+                        trFor(lang,
+                            _odds ? 'forge_odds_close' : 'forge_odds_open'),
+                        style: theme.textTheme.bodySmall
+                            ?.copyWith(color: ink.ash)),
+                    Icon(_odds ? Icons.expand_less : Icons.expand_more,
+                        size: IconSize.s16, color: ink.ash),
+                  ]),
                 ),
-                if (_odds)
-                  Padding(
-                    key: const Key('forge_odds'),
-                    padding: const EdgeInsets.fromLTRB(12, 0, 12, 10),
-                    child: Column(
+              ),
+              if (_odds)
+                Padding(
+                  key: const Key('forge_odds'),
+                  padding: const EdgeInsets.fromLTRB(12, 0, 12, 10),
+                  child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         if (modifiers.isNotEmpty)
-                          Wrap(
-                            spacing: 6,
-                            runSpacing: 4,
-                            children: [
-                              for (final m in modifiers)
-                                Container(
-                                  padding: const EdgeInsets.symmetric(
-                                    horizontal: 8,
-                                    vertical: 3,
-                                  ),
-                                  decoration: BoxDecoration(
-                                    border: Border.all(
+                          Wrap(spacing: 6, runSpacing: 4, children: [
+                            for (final m in modifiers)
+                              Container(
+                                padding: const EdgeInsets.symmetric(
+                                    horizontal: 8, vertical: 3),
+                                decoration: BoxDecoration(
+                                  border: Border.all(
                                       color: m.value >= 0
                                           ? Palette.goodStrong
-                                          : theme.colorScheme.error,
-                                    ),
-                                    borderRadius: BorderRadius.circular(12),
-                                  ),
-                                  child: Text(
-                                    '${m.labelFor(lang, clans: clans)} ${m.value >= 0 ? '+' : '−'}${m.value.abs()}',
-                                    style: theme.textTheme.labelMedium,
-                                  ),
+                                          : theme.colorScheme.error),
+                                  borderRadius: BorderRadius.circular(12),
                                 ),
-                            ],
-                          ),
+                                child: Text(
+                                    '${m.labelFor(lang, clans: clans)} ${m.value >= 0 ? '+' : '−'}${m.value.abs()}',
+                                    style: theme.textTheme.labelMedium),
+                              ),
+                          ]),
                         const SizedBox(height: 8),
                         ForgeTierBar(odds: forgeOdds(total)),
                         const SizedBox(height: 6),
-                        Row(
-                          children: [
-                            for (final t in ForgeTier.values)
-                              Expanded(
-                                child: Text(
-                                  trFor(lang, forgeTierLabelKey(t)),
+                        Row(children: [
+                          for (final t in ForgeTier.values)
+                            Expanded(
+                              child: Text(trFor(lang, forgeTierLabelKey(t)),
                                   textAlign: TextAlign.center,
                                   maxLines: 1,
-                                  style: theme.textTheme.labelSmall?.copyWith(
-                                    color: forgeTierColor(t),
-                                  ),
-                                ),
-                              ),
-                          ],
-                        ),
+                                  style: theme.textTheme.labelSmall
+                                      ?.copyWith(color: forgeTierColor(t))),
+                            ),
+                        ]),
                         const SizedBox(height: 6),
-                        Text(
-                          trFor(lang, 'forge_odds_note'),
-                          style: theme.textTheme.bodySmall?.copyWith(
-                            color: ink.ash,
-                            fontStyle: FontStyle.italic,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-              ],
-            ),
+                        Text(trFor(lang, 'forge_odds_note'),
+                            style: theme.textTheme.bodySmall?.copyWith(
+                                color: ink.ash, fontStyle: FontStyle.italic)),
+                      ]),
+                ),
+            ]),
           ),
         ),
         Expanded(
@@ -481,182 +418,136 @@ class _ForgeSheetViewState extends ConsumerState<ForgeSheetView> {
             padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
             children: [
               for (final id in shown)
-                Builder(
-                  builder: (context) {
-                    final item = items[id] as Map<String, dynamic>;
-                    final name = _nameOf(item, id, lang);
-                    final stat = forgeMainStatOf(item);
-                    final number = (item[stat] as num?)?.toInt() ?? 0;
-                    final gold = (item['craftGold'] as num?)?.toInt() ?? 0;
-                    final materials = craftMaterialsFor(item);
-                    final can = _canForge(id, items, session);
-                    // What is missing, the first thing first.
-                    String? lacking;
-                    for (final m in materials.entries) {
-                      final have = session.inventoryItemIds
-                          .where((i) => i == m.key)
-                          .length;
-                      if (have < m.value) {
-                        lacking = trFor(lang, 'forge_short_of')
-                            .replaceAll('{n}', '${m.value - have}')
-                            .replaceAll(
+                Builder(builder: (context) {
+                  final item = items[id] as Map<String, dynamic>;
+                  final name = _nameOf(item, id, lang);
+                  final stat = forgeMainStatOf(item);
+                  final number = (item[stat] as num?)?.toInt() ?? 0;
+                  final gold = (item['craftGold'] as num?)?.toInt() ?? 0;
+                  final materials = craftMaterialsFor(item);
+                  final can = _canForge(id, items, session);
+                  // What is missing, the first thing first.
+                  String? lacking;
+                  for (final m in materials.entries) {
+                    final have = session.inventoryItemIds
+                        .where((i) => i == m.key)
+                        .length;
+                    if (have < m.value) {
+                      lacking = trFor(lang, 'forge_short_of')
+                          .replaceAll('{n}', '${m.value - have}')
+                          .replaceAll(
                               '{item}',
-                              _nameOf(
-                                items[m.key] as Map<String, dynamic>?,
-                                m.key,
-                                lang,
-                              ).toLowerCase(),
-                            );
-                        break;
-                      }
+                              _nameOf(items[m.key] as Map<String, dynamic>?,
+                                      m.key, lang)
+                                  .toLowerCase());
+                      break;
                     }
-                    if (lacking == null && session.gold < gold) {
-                      lacking = trFor(
-                        lang,
-                        'forge_short_gold',
-                      ).replaceAll('{n}', '${gold - session.gold}');
-                    }
-                    Widget need(String text, bool ok) => Container(
-                          padding: const EdgeInsets.symmetric(
-                            horizontal: 8,
-                            vertical: 3,
-                          ),
-                          decoration: BoxDecoration(
-                            border: Border.all(
+                  }
+                  if (lacking == null && session.gold < gold) {
+                    lacking = trFor(lang, 'forge_short_gold')
+                        .replaceAll('{n}', '${gold - session.gold}');
+                  }
+                  Widget need(String text, bool ok) => Container(
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 8, vertical: 3),
+                        decoration: BoxDecoration(
+                          border: Border.all(
                               color: ok
                                   ? Palette.goodStrong
-                                  : theme.colorScheme.error,
+                                  : theme.colorScheme.error),
+                          borderRadius: BorderRadius.circular(6),
+                        ),
+                        child: Row(mainAxisSize: MainAxisSize.min, children: [
+                          Icon(ok ? Icons.check : Icons.close,
+                              size: IconSize.s16,
+                              color: ok
+                                  ? Palette.goodStrong
+                                  : theme.colorScheme.error),
+                          const SizedBox(width: 4),
+                          Flexible(
+                              child: Text(text,
+                                  style: theme.textTheme.labelMedium)),
+                        ]),
+                      );
+                  return Card(
+                    key: ValueKey('forge_card_$id'),
+                    child: Padding(
+                      padding: const EdgeInsets.all(12),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Row(children: [
+                            ItemPixelIcon(id, item['itemType']?.toString(),
+                                size: IconSize.s32),
+                            const SizedBox(width: 12),
+                            Expanded(
+                              child:
+                                  Text(name, style: theme.textTheme.titleSmall),
                             ),
-                            borderRadius: BorderRadius.circular(6),
-                          ),
-                          child: Row(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              Icon(
-                                ok ? Icons.check : Icons.close,
-                                size: IconSize.s16,
-                                color: ok
-                                    ? Palette.goodStrong
-                                    : theme.colorScheme.error,
+                            Container(
+                              padding: const EdgeInsets.symmetric(
+                                  horizontal: 8, vertical: 3),
+                              decoration: BoxDecoration(
+                                border: Border.all(color: Palette.goodStrong),
+                                borderRadius: BorderRadius.circular(6),
                               ),
-                              const SizedBox(width: 4),
-                              Flexible(
-                                child: Text(
-                                  text,
-                                  style: theme.textTheme.labelMedium,
-                                ),
-                              ),
-                            ],
-                          ),
-                        );
-                    return Card(
-                      key: ValueKey('forge_card_$id'),
-                      child: Padding(
-                        padding: const EdgeInsets.all(12),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Row(
-                              children: [
-                                ItemPixelIcon(
-                                  id,
-                                  item['itemType']?.toString(),
-                                  size: IconSize.s32,
-                                ),
-                                const SizedBox(width: 12),
-                                Expanded(
-                                  child: Text(
-                                    name,
-                                    style: theme.textTheme.titleSmall,
-                                  ),
-                                ),
-                                Container(
-                                  padding: const EdgeInsets.symmetric(
-                                    horizontal: 8,
-                                    vertical: 3,
-                                  ),
-                                  decoration: BoxDecoration(
-                                    border: Border.all(
-                                      color: Palette.goodStrong,
-                                    ),
-                                    borderRadius: BorderRadius.circular(6),
-                                  ),
-                                  child: Text(
-                                    '${trFor(lang, stat == 'attackDamage' ? 'atk_abbrev' : 'arm_abbrev')} +$number',
-                                    style: theme.textTheme.labelMedium,
-                                  ),
-                                ),
-                              ],
+                              child: Text(
+                                  '${trFor(lang, stat == 'attackDamage' ? 'atk_abbrev' : 'arm_abbrev')} +$number',
+                                  style: theme.textTheme.labelMedium),
                             ),
-                            const SizedBox(height: 8),
-                            Wrap(
-                              spacing: 6,
-                              runSpacing: 6,
-                              children: [
-                                for (final m in materials.entries)
-                                  need(
-                                    trFor(lang, 'forge_have_need')
-                                        .replaceAll(
-                                          '{item}',
-                                          _nameOf(
-                                            items[m.key]
-                                                as Map<String, dynamic>?,
-                                            m.key,
-                                            lang,
-                                          ),
-                                        )
-                                        .replaceAll('{have}', carriedOf(m.key))
-                                        .replaceAll('{need}', '${m.value}'),
-                                    session.inventoryItemIds
-                                            .where((i) => i == m.key)
-                                            .length >=
-                                        m.value,
-                                  ),
-                                need(
+                          ]),
+                          const SizedBox(height: 8),
+                          Wrap(spacing: 6, runSpacing: 6, children: [
+                            for (final m in materials.entries)
+                              need(
                                   trFor(lang, 'forge_have_need')
                                       .replaceAll(
-                                        '{item}',
-                                        _capital(trFor(lang, 'gold_label')),
-                                      )
-                                      .replaceAll('{have}', '${session.gold}')
-                                      .replaceAll('{need}', '$gold'),
-                                  session.gold >= gold,
-                                ),
-                              ],
-                            ),
-                            const SizedBox(height: 10),
-                            SizedBox(
-                              width: double.infinity,
-                              child: can
-                                  ? FilledButton.icon(
-                                      key: ValueKey('forge_go_$id'),
-                                      onPressed: _busy
-                                          ? null
-                                          : () => _forge(id, items),
-                                      icon: const Icon(
-                                        Icons.hardware,
-                                        size: IconSize.s16,
-                                      ),
-                                      label: Text(trFor(lang, 'forge_button')),
-                                    )
-                                  : FilledButton.tonalIcon(
-                                      key: ValueKey('forge_go_$id'),
-                                      onPressed: null,
-                                      icon: const PixelGlyph(
-                                        PixelGlyphs.lock,
-                                        size: IconSize.s16,
-                                      ),
-                                      label: Text(
-                                        lacking ?? trFor(lang, 'forge_button'),
-                                      ),
-                                    ),
-                            ),
-                          ],
-                        ),
+                                          '{item}',
+                                          _nameOf(
+                                              items[m.key]
+                                                  as Map<String, dynamic>?,
+                                              m.key,
+                                              lang))
+                                      .replaceAll('{have}', carriedOf(m.key))
+                                      .replaceAll('{need}', '${m.value}'),
+                                  session.inventoryItemIds
+                                          .where((i) => i == m.key)
+                                          .length >=
+                                      m.value),
+                            need(
+                                trFor(lang, 'forge_have_need')
+                                    .replaceAll('{item}',
+                                        _capital(trFor(lang, 'gold_label')))
+                                    .replaceAll('{have}', '${session.gold}')
+                                    .replaceAll('{need}', '$gold'),
+                                session.gold >= gold),
+                          ]),
+                          const SizedBox(height: 10),
+                          SizedBox(
+                            width: double.infinity,
+                            child: can
+                                ? FilledButton.icon(
+                                    key: ValueKey('forge_go_$id'),
+                                    onPressed:
+                                        _busy ? null : () => _forge(id, items),
+                                    icon: const Icon(Icons.hardware,
+                                        size: IconSize.s16),
+                                    label: Text(trFor(lang, 'forge_button')),
+                                  )
+                                : FilledButton.tonalIcon(
+                                    key: ValueKey('forge_go_$id'),
+                                    onPressed: null,
+                                    icon: const PixelGlyph(PixelGlyphs.lock,
+                                        size: IconSize.s16),
+                                    label: Text(
+                                        lacking ?? trFor(lang, 'forge_button')),
+                                  ),
+                          ),
+                        ],
                       ),
-                    );
-                  },
-                ),
+                    ),
+                  );
+                }),
             ],
           ),
         ),

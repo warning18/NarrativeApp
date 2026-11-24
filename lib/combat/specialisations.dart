@@ -236,9 +236,7 @@ Spec? specOfHeldId(String id) {
 /// clans' standings ([standingOf] a clan) leave them: the ids that still
 /// play, and the specialisations that play only every other round.
 ({List<String> ids, Set<Spec> halved}) specsByStanding(
-  Iterable<String> held,
-  num Function(String clanId) standingOf,
-) {
+    Iterable<String> held, num Function(String clanId) standingOf) {
   final halved = <Spec>{};
   final ids = <String>[];
   for (final id in held) {
@@ -356,21 +354,17 @@ const int rotTurns = 99;
 
 /// [effects] with the Rot of a critical hit of [hit] added: the poison
 /// there grows by it (the Rot stacks, where poison refreshes).
-List<StatusEffect> withRot(
-  List<StatusEffect> effects,
-  int hit, {
-  double share = rotShare,
-}) {
+List<StatusEffect> withRot(List<StatusEffect> effects, int hit,
+    {double share = rotShare}) {
   final add = hit <= 0 ? 0 : max(1, (hit * share).round());
   if (add == 0) return effects;
   final poison = poisonDamageFor(effects);
   return applyStatusEffect(
     effects,
     StatusEffect(
-      type: StatusEffectType.poison,
-      remainingTurns: rotTurns,
-      magnitude: poison + add,
-    ),
+        type: StatusEffectType.poison,
+        remainingTurns: rotTurns,
+        magnitude: poison + add),
   );
 }
 
@@ -402,10 +396,9 @@ const int _fenPoisonTurns = 3;
 /// The Fen Guide's poison for a ranger whose strike is [strike].
 StatusEffect fenPoison(int strike, {double share = fenPoisonShare}) =>
     StatusEffect(
-      type: StatusEffectType.poison,
-      remainingTurns: _fenPoisonTurns,
-      magnitude: max(1, (strike * share).round()),
-    );
+        type: StatusEffectType.poison,
+        remainingTurns: _fenPoisonTurns,
+        magnitude: max(1, (strike * share).round()));
 
 // --- The weak links (step 3c) -----------------------------------------------
 //
@@ -428,10 +421,9 @@ const int _lingeringHexTurns = 1;
 
 /// [status] as a Lingering Hex leaves it: [_lingeringHexTurns] longer.
 StatusEffect lingered(StatusEffect status) => StatusEffect(
-      type: status.type,
-      remainingTurns: status.remainingTurns + _lingeringHexTurns,
-      magnitude: status.magnitude,
-    );
+    type: status.type,
+    remainingTurns: status.remainingTurns + _lingeringHexTurns,
+    magnitude: status.magnitude);
 
 /// The share of healing past full the Stitch-Thrust sends at the foe.
 const double _stitchThrustShare = 1.0;
@@ -447,10 +439,7 @@ int stitchThrust(int over) =>
 
 /// The Pitch Hand's slowing: a short, light Weaken.
 const StatusEffect pitchSlow = StatusEffect(
-  type: StatusEffectType.weaken,
-  remainingTurns: 1,
-  magnitude: 15,
-);
+    type: StatusEffectType.weaken, remainingTurns: 1, magnitude: 15);
 
 /// Whether a face of [type] strikes (the Second Broadside keeps those).
 bool faceStrikes(String type) => type == 'Attack' || type == 'Skill';

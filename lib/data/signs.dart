@@ -385,8 +385,7 @@ class SignEffect {
       : StatusEffect(
           type: status!,
           remainingTurns: max(1, duration),
-          magnitude: magnitude,
-        );
+          magnitude: magnitude);
 
   /// This effect at [rarity] and [level]: its value and chance scaled (see
   /// [signPower]), a chance capped at [signChanceCap]; durations and a
@@ -660,9 +659,7 @@ Map<String, Patron> parsePatrons(Map<String, dynamic> db) => {
       for (final entry in db.entries)
         if (entry.value is Map && !entry.key.startsWith('_'))
           entry.key: Patron.fromJson(
-            entry.key,
-            (entry.value as Map).cast<String, dynamic>(),
-          ),
+              entry.key, (entry.value as Map).cast<String, dynamic>()),
     };
 
 /// signs.json parsed, by id.
@@ -670,9 +667,7 @@ Map<String, SignDef> parseSigns(Map<String, dynamic> db) => {
       for (final entry in db.entries)
         if (entry.value is Map)
           entry.key: SignDef.fromJson(
-            entry.key,
-            (entry.value as Map).cast<String, dynamic>(),
-          ),
+              entry.key, (entry.value as Map).cast<String, dynamic>()),
     };
 
 // --- What the session keeps -----------------------------------------------
@@ -775,9 +770,7 @@ SignRarity rollSignRarity({
 /// The Choir or the Pit, whichever gave a sign this life first: the other
 /// no longer offers until the life ends. Null while neither has.
 String? otherworldClaimOf(
-  List<String> patronsThisLife,
-  Map<String, Patron> patrons,
-) =>
+        List<String> patronsThisLife, Map<String, Patron> patrons) =>
     patronsThisLife
         .where((id) => patrons[id]?.kind == PatronKind.otherworld)
         .firstOrNull;
@@ -869,10 +862,7 @@ List<HeldSign> withStoryBoons(List<HeldSign> held, Iterable<String> flags) =>
 
 /// The held sign in [slot] (never a passive: those are many), if any.
 HeldSign? heldInSlot(
-  SignSlot slot,
-  List<HeldSign> held,
-  Map<String, SignDef> signs,
-) {
+    SignSlot slot, List<HeldSign> held, Map<String, SignDef> signs) {
   if (slot == SignSlot.passive) return null;
   return held.where((h) => signs[h.signId]?.slot == slot).firstOrNull;
 }
@@ -1203,21 +1193,14 @@ class SignEffects {
   ///
   /// The shares go through [bank] when one is given (the fight's strike
   /// bank, see FractionBank; [keep] false for a preview).
-  int strikeBase(
-    int baseDamage,
-    int faceValue, {
-    required bool attackFace,
-    int percent = 0,
-    FractionBank? bank,
-    bool keep = true,
-  }) {
+  int strikeBase(int baseDamage, int faceValue,
+      {required bool attackFace,
+      int percent = 0,
+      FractionBank? bank,
+      bool keep = true}) {
     if (!attackFace) return _banked(baseDamage, percent, bank, keep);
-    final total = _banked(
-      baseDamage + faceValue + strikeFlat,
-      percent,
-      bank,
-      keep,
-    );
+    final total =
+        _banked(baseDamage + faceValue + strikeFlat, percent, bank, keep);
     return total - faceValue;
   }
 
@@ -1233,12 +1216,8 @@ class SignEffects {
   /// A Heal face's number with the mend signs in, for a healer whose
   /// Wisdom adds [wisdomBonus] (which the engine adds again on top); the
   /// share through [bank], as [strikeBase].
-  int mendValue(
-    int faceValue,
-    int wisdomBonus, {
-    FractionBank? bank,
-    bool keep = true,
-  }) =>
+  int mendValue(int faceValue, int wisdomBonus,
+          {FractionBank? bank, bool keep = true}) =>
       mendPercent == 0
           ? faceValue
           : _banked(faceValue + wisdomBonus, mendPercent, bank, keep) -
@@ -1264,11 +1243,8 @@ class SignEffects {
 
   /// The health a member enters a fight with, [current] of [base] going up
   /// to [fightMax]: full stays full; wounds stay as they are.
-  static int healthEntering({
-    required int current,
-    required int base,
-    required int fightMax,
-  }) =>
+  static int healthEntering(
+          {required int current, required int base, required int fightMax}) =>
       current >= base ? fightMax : min(current, fightMax);
 
   /// What a pact's starting-health curse takes off [health] of [maxHealth]
@@ -1301,11 +1277,10 @@ class SignEffects {
       mendPartyPercent <= 0 ? 0 : (healing * mendPartyPercent / 100).round();
 
   /// Block from healing past full: what spilled over, up to [mendShield].
-  int shieldFromOverheal({
-    required int healing,
-    required int currentHealth,
-    required int maxHealth,
-  }) =>
+  int shieldFromOverheal(
+          {required int healing,
+          required int currentHealth,
+          required int maxHealth}) =>
       mendShield <= 0
           ? 0
           : min(mendShield, max(0, currentHealth + healing - maxHealth));
@@ -1327,8 +1302,7 @@ class SignEffects {
           : StatusEffect(
               type: status.type,
               remainingTurns: status.remainingTurns + poisonExtraTurns,
-              magnitude: status.magnitude,
-            );
+              magnitude: status.magnitude);
 
   /// The gold a fight's Crow's Price stole on [hits] hits landed.
   int crowsGold(int hits) => crowsPrice * min(hits, crowsPriceMaxHits);
@@ -1402,15 +1376,11 @@ SignEffects signEffectsFor(
   var pactsRunning = 0;
 
   void addStatus(
-    List<SignStatusChance> into,
-    SignEffect effect,
-    String signId,
-  ) {
+      List<SignStatusChance> into, SignEffect effect, String signId) {
     final status = effect.inflicted;
     if (status == null || effect.chance <= 0) return;
-    into.add(
-      SignStatusChance(status: status, chance: effect.chance, signId: signId),
-    );
+    into.add(SignStatusChance(
+        status: status, chance: effect.chance, signId: signId));
   }
 
   void add(SignEffect e, String sourceId) {
@@ -1652,10 +1622,8 @@ String signEffectText(SignEffect effect, AppLanguage language) {
       .replaceAll('{c}', '${effect.chance}')
       .replaceAll('{e}', _elementName(effect.element, language))
       .replaceAll('{s}', status == null ? '' : _statusText(status, language))
-      .replaceAll(
-        '{k}',
-        keyword == null ? '' : trFor(language, keywordLabelKey(keyword)),
-      )
+      .replaceAll('{k}',
+          keyword == null ? '' : trFor(language, keywordLabelKey(keyword)))
       .replaceAll('{stat}', _statName(effect.stat, language));
 }
 
@@ -1673,7 +1641,5 @@ List<String> signEffectLines(
 
 /// A pact's curse as the player reads it, for [fights] more fights.
 String pactCurseText(SignPact pact, AppLanguage language, {int? fights}) =>
-    _fillSignedValue(
-      trFor(language, pactCurseKey(pact.curse)),
-      pact.value,
-    ).replaceAll('{n}', '${fights ?? pact.fights}');
+    _fillSignedValue(trFor(language, pactCurseKey(pact.curse)), pact.value)
+        .replaceAll('{n}', '${fights ?? pact.fights}');

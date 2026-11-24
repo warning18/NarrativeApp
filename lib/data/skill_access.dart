@@ -6,11 +6,8 @@
 /// another profession (`restrictedProfessionID`) is not theirs. An
 /// alignment gate is not a class gate: a skill waiting on the character's
 /// reputation still counts.
-bool skillFitsCharacter(
-  Map<String, dynamic>? skill, {
-  required String raceId,
-  required String professionId,
-}) {
+bool skillFitsCharacter(Map<String, dynamic>? skill,
+    {required String raceId, required String professionId}) {
   if (skill == null) return false;
   final race = skill['restrictedRaceID']?.toString() ?? '';
   final profession = skill['restrictedProfessionID']?.toString() ?? '';

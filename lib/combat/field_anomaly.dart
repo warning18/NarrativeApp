@@ -91,12 +91,8 @@ extension FightStageKin on FightStage {
 /// The stage of a fight on land of [pattern]: a [ship]'s deck first, then
 /// [indoors] (a hall, a crypt, a cellar), then a [town]'s streets; no
 /// pattern at all is open country.
-FightStage fightStageOf(
-  BiomePattern? pattern, {
-  bool indoors = false,
-  bool town = false,
-  bool ship = false,
-}) {
+FightStage fightStageOf(BiomePattern? pattern,
+    {bool indoors = false, bool town = false, bool ship = false}) {
   if (ship) return FightStage.shipDeck;
   if (indoors) return FightStage.hall;
   if (town) return FightStage.cityRoad;
@@ -244,11 +240,8 @@ class FieldAnomaly {
 
   /// Whether the roll for the weather and the stage lets it in, and how
   /// likely it is among the others.
-  double weightUnder(
-    FightStage stage,
-    WeatherKind? sky, {
-    Set<String> tags = const {},
-  }) {
+  double weightUnder(FightStage stage, WeatherKind? sky,
+      {Set<String> tags = const {}}) {
     // A stage's own anomalies, and those of the older stage it is kin to.
     if (!stages.contains(stage) && !stages.contains(stage.kin)) return 0;
     final matches = skies.isEmpty || (sky != null && skies.contains(sky));
@@ -833,18 +826,13 @@ FieldAnomalyPlan planFor(
 /// The plan of a scene whose ground the story or the lab sets: the anomaly
 /// [id] from the round after the first, for three rounds, falling on a side
 /// the roll picks (or [side]). Null for an id no anomaly has.
-FieldAnomalyPlan? forcedFieldAnomaly(
-  String? id, {
-  Random? random,
-  AnomalySide? side,
-}) {
+FieldAnomalyPlan? forcedFieldAnomaly(String? id,
+    {Random? random, AnomalySide? side}) {
   final anomaly = fieldAnomalyById(id);
   if (anomaly == null) return null;
-  return planFor(
-    anomaly,
-    random: random ?? Random(),
-    side: side,
-    onset: _anomalyEarliestOnset,
-    rounds: 3,
-  );
+  return planFor(anomaly,
+      random: random ?? Random(),
+      side: side,
+      onset: _anomalyEarliestOnset,
+      rounds: 3);
 }

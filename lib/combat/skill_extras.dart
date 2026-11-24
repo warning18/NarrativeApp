@@ -91,10 +91,7 @@ class SkillExtras {
       final turns = intOf(duration);
       if (kind == null || turns <= 0) return null;
       return StatusEffect(
-        type: kind,
-        remainingTurns: turns,
-        magnitude: intOf(magnitude),
-      );
+          type: kind, remainingTurns: turns, magnitude: intOf(magnitude));
     }
 
     return SkillExtras(
@@ -103,11 +100,8 @@ class SkillExtras {
       splashShare: (record['splashShare'] as num?)?.toDouble() ?? 0,
       splashTargets: intOf('splashTargets'),
       statusAll: record['statusAll'] == true,
-      secondStatus: status(
-        'inflictsStatus2',
-        'statusDuration2',
-        'statusMagnitude2',
-      ),
+      secondStatus:
+          status('inflictsStatus2', 'statusDuration2', 'statusMagnitude2'),
       reflect: status('reflectStatus', 'reflectDuration', 'reflectMagnitude'),
       cleanse: record['cleanse']?.toString() ?? '',
       healAll: record['healAll'] == true,

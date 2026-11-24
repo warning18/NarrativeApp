@@ -33,33 +33,23 @@ class ElementPoints {
   int get highest =>
       [...damage.values, ...resist.values].fold(0, (m, v) => v > m ? v : m);
 
-  List<double> damageInOrder() => [
-        for (final e in elementChartOrder) (damage[e] ?? 0).toDouble(),
-      ];
-  List<double> resistInOrder() => [
-        for (final e in elementChartOrder) (resist[e] ?? 0).toDouble(),
-      ];
+  List<double> damageInOrder() =>
+      [for (final e in elementChartOrder) (damage[e] ?? 0).toDouble()];
+  List<double> resistInOrder() =>
+      [for (final e in elementChartOrder) (resist[e] ?? 0).toDouble()];
 }
 
 /// What [equippedItemIds] give in each element, off the items table.
 ElementPoints elementPointsFor(
-  List<String> equippedItemIds,
-  Map<String, dynamic> items,
-) {
+    List<String> equippedItemIds, Map<String, dynamic> items) {
   final damage = <String, int>{};
   final resist = <String, int>{};
   for (final element in elementChartOrder) {
     final prefix = elementFieldPrefixes[element]!;
-    damage[element] = equipmentBonusFor(
-      equippedItemIds,
-      items,
-      '${prefix}DmgBonus',
-    );
-    resist[element] = equipmentBonusFor(
-      equippedItemIds,
-      items,
-      '${prefix}Resist',
-    );
+    damage[element] =
+        equipmentBonusFor(equippedItemIds, items, '${prefix}DmgBonus');
+    resist[element] =
+        equipmentBonusFor(equippedItemIds, items, '${prefix}Resist');
   }
   return ElementPoints(damage, resist);
 }

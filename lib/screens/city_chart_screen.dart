@@ -46,10 +46,8 @@ class CityChartScreen extends ConsumerStatefulWidget {
 }
 
 class _CityChartScreenState extends ConsumerState<CityChartScreen> {
-  late final Future<CityChart> _stub = CityChart.load(
-    rootBundle,
-    CityChart.saltmouthStub,
-  );
+  late final Future<CityChart> _stub =
+      CityChart.load(rootBundle, CityChart.saltmouthStub);
   bool _fog = false;
 
   // The chart of the story's city, kept while what it is made of holds.
@@ -97,15 +95,13 @@ class _CityChartScreenState extends ConsumerState<CityChartScreen> {
       final district = districts[i];
       if (district == null || !record.districts.containsKey(district)) continue;
       choices.add(c);
-      inputs.add(
-        CityWayInput(
-          id: '${choices.length - 1}',
-          districtId: district,
-          kind: _wayKindOf(journeyStepKindOf(c)),
-          name: c.textFor(french),
-          sceneId: c.nextId,
-        ),
-      );
+      inputs.add(CityWayInput(
+        id: '${choices.length - 1}',
+        districtId: district,
+        kind: _wayKindOf(journeyStepKindOf(c)),
+        name: c.textFor(french),
+        sceneId: c.nextId,
+      ));
     }
     final key = [
       city,
@@ -174,9 +170,7 @@ class _CityChartScreenState extends ConsumerState<CityChartScreen> {
                   hereDistrict: ref.watch(partyDistrictProvider),
                   explored: ref.watch(foundDistrictsProvider),
                   rulers: cityChartRulersOf(
-                    live.chart,
-                    ref.watch(townRulersProvider),
-                  ),
+                      live.chart, ref.watch(townRulersProvider)),
                   locked: ref.watch(lockedDistrictsProvider),
                   phase: ref.watch(dayPhaseProvider),
                   onWay: (way) {

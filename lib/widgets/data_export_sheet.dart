@@ -62,10 +62,8 @@ Future<void> showDataExportSheet(
             children: [
               Padding(
                 padding: const EdgeInsets.fromLTRB(16, 0, 16, 8),
-                child: Text(
-                  title,
-                  style: Theme.of(sheetContext).textTheme.titleMedium,
-                ),
+                child: Text(title,
+                    style: Theme.of(sheetContext).textTheme.titleMedium),
               ),
               for (final option in options)
                 ListTile(

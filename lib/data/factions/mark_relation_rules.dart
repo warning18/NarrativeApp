@@ -43,11 +43,8 @@ MarkResult setSubclanMark(
   return MarkResult(
     state: state.copyWith(
       marks: marks,
-      standingLog: _appendCapped(
-        state.standingLog,
-        entry,
-        maxStandingLogEntries,
-      ),
+      standingLog:
+          _appendCapped(state.standingLog, entry, maxStandingLogEntries),
     ),
     entry: entry,
   );
@@ -97,47 +94,31 @@ RelationResult shiftRelation(
     relationSteps[key] = to;
   }
   final entry = RelationLogEntry(
-    chapter: chapter,
-    day: day,
-    a: a,
-    b: b,
-    from: from,
-    to: to,
-    cause: cause,
-  );
+      chapter: chapter, day: day, a: a, b: b, from: from, to: to, cause: cause);
   var next = state.copyWith(
     relationSteps: relationSteps,
     relationSnapshots: {...state.relationSnapshots, chapter: relationSteps},
-    relationsLog: _appendCapped(
-      state.relationsLog,
-      entry,
-      _maxRelationsLogEntries,
-    ),
+    relationsLog:
+        _appendCapped(state.relationsLog, entry, _maxRelationsLogEntries),
   );
   StandingLogEntry? standing;
   if (next.swornFactionId.isNotEmpty) {
     final before = _allStandings(next, data);
     final values = {...before};
-    final banner = _applyBanner(
-      values,
-      sworn: next.swornFactionId,
-      preferred: next.swornFactionId,
-      state: next,
-      data: data,
-      chargeRivals: false,
-    );
-    final capped = _commit(
-      next,
-      before,
-      values,
-      sworn: banner.sworn,
-      swore: banner.swore,
-      released: banner.released,
-      factionId: next.swornFactionId,
-      cause: 'sworn_cap',
-      chapter: chapter,
-      day: day,
-    );
+    final banner = _applyBanner(values,
+        sworn: next.swornFactionId,
+        preferred: next.swornFactionId,
+        state: next,
+        data: data,
+        chargeRivals: false);
+    final capped = _commit(next, before, values,
+        sworn: banner.sworn,
+        swore: banner.swore,
+        released: banner.released,
+        factionId: next.swornFactionId,
+        cause: 'sworn_cap',
+        chapter: chapter,
+        day: day);
     next = capped.state;
     standing = capped.entry;
   }
@@ -149,10 +130,7 @@ RelationResult shiftRelation(
 /// over the steps the story opens on. A chapter past every snapshot reads
 /// the relations as they stand now.
 Map<String, int> relationsAtChapter(
-  PoliticsState state,
-  int chapter,
-  ClanData data,
-) {
+    PoliticsState state, int chapter, ClanData data) {
   final base = data.relations.baseSteps;
   final earlier = [
     for (final c in state.relationSnapshots.keys)
@@ -168,10 +146,7 @@ Map<String, int> relationsAtChapter(
 /// moved any, for the Evolution chart: index 0 is where they stood before
 /// the first, then one map per such entry. Factions in [ids] only.
 List<Map<String, double>> standingHistory(
-  PoliticsState state,
-  ClanData data,
-  List<String> ids,
-) {
+    PoliticsState state, ClanData data, List<String> ids) {
   final moving = [
     for (final e in state.standingLog)
       if (e.deltas.isNotEmpty) e,
@@ -188,7 +163,9 @@ List<Map<String, double>> standingHistory(
   final history = <Map<String, double>>[start];
   var current = start;
   for (final e in moving) {
-    current = {for (final id in ids) id: e.after[id] ?? current[id]!};
+    current = {
+      for (final id in ids) id: e.after[id] ?? current[id]!,
+    };
     history.add(current);
   }
   return history;

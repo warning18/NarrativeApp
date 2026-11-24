@@ -16,9 +16,7 @@ final geographyProvider = Provider<Geography>((ref) {
   final biomes = ref.watch(gameDbProvider(biomesSchema));
   if (places.isLoading || biomes.isLoading) return Geography.empty;
   return Geography.parse(
-    geography: places.value ?? const {},
-    biomes: biomes.value ?? const {},
-  );
+      geography: places.value ?? const {}, biomes: biomes.value ?? const {});
 });
 
 /// The geography once both files have loaded (or failed to): for code that

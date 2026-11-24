@@ -45,17 +45,12 @@ class _SingleRunDetailState extends ConsumerState<_SingleRunDetail> {
       _chapterFilter; // null = show all chapters. Use -1 as the "Prologue" sentinel.
 
   String _namesFor(
-    Set<String> ids,
-    Map<String, dynamic> records,
-    String nameField,
-  ) {
+      Set<String> ids, Map<String, dynamic> records, String nameField) {
     if (ids.isEmpty) return '—';
     return ids
-        .map(
-          (id) =>
-              (records[id] as Map<String, dynamic>?)?[nameField]?.toString() ??
-              id,
-        )
+        .map((id) =>
+            (records[id] as Map<String, dynamic>?)?[nameField]?.toString() ??
+            id)
         .join(', ');
   }
 
@@ -87,12 +82,8 @@ class _SingleRunDetailState extends ConsumerState<_SingleRunDetail> {
             onPressed: () => _copyToClipboard(
               context,
               ref,
-              _runTranscript(
-                result,
-                widget.strategyLabel,
-                runNumber: widget.runNumber,
-                spells: widget.spells,
-              ),
+              _runTranscript(result, widget.strategyLabel,
+                  runNumber: widget.runNumber, spells: widget.spells),
             ),
           ),
           IconButton(
@@ -101,12 +92,8 @@ class _SingleRunDetailState extends ConsumerState<_SingleRunDetail> {
             onPressed: () => _exportToFile(
               context,
               ref,
-              _runTranscript(
-                result,
-                widget.strategyLabel,
-                runNumber: widget.runNumber,
-                spells: widget.spells,
-              ),
+              _runTranscript(result, widget.strategyLabel,
+                  runNumber: widget.runNumber, spells: widget.spells),
               'playthrough_run_${widget.runNumber ?? 1}.txt',
             ),
           ),
@@ -121,8 +108,7 @@ class _SingleRunDetailState extends ConsumerState<_SingleRunDetail> {
         '(${result.steps.length} ${tr(ref, 'total_steps_label')})',
       ),
       Text(
-        '${tr(ref, 'shops_discovered_label')}: ${_namesFor(result.shopsDiscovered, widget.shops, 'shopName')}',
-      ),
+          '${tr(ref, 'shops_discovered_label')}: ${_namesFor(result.shopsDiscovered, widget.shops, 'shopName')}'),
       Text(
         '${tr(ref, 'quests_discovered_label')}: ${_namesFor(result.questsDiscovered, widget.quests, 'questName')}',
       ),
@@ -137,8 +123,7 @@ class _SingleRunDetailState extends ConsumerState<_SingleRunDetail> {
           '(${result.raceId}) · ${tr(ref, 'level_abbrev')} ${result.finalLevel}',
         ),
         Text(
-          '${tr(ref, 'sim_fights_label')}: ${result.fightsWon} / ${result.fightsLost}',
-        ),
+            '${tr(ref, 'sim_fights_label')}: ${result.fightsWon} / ${result.fightsLost}'),
         Row(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -157,10 +142,8 @@ class _SingleRunDetailState extends ConsumerState<_SingleRunDetail> {
         ),
       ],
       const SizedBox(height: 12),
-      Text(
-        tr(ref, 'path_summary_label'),
-        style: Theme.of(context).textTheme.titleSmall,
-      ),
+      Text(tr(ref, 'path_summary_label'),
+          style: Theme.of(context).textTheme.titleSmall),
       const SizedBox(height: 8),
       Wrap(
         spacing: 6,
@@ -220,10 +203,8 @@ class _SingleRunDetailState extends ConsumerState<_SingleRunDetail> {
                         child: Text(
                           '${tr(ref, 'sim_spells_cast_label')}: '
                           '${_castsSummary(entry.value.spellsCast, widget.spells, ref.watch(appLanguageProvider))}',
-                          style: const TextStyle(
-                            color: manaColor,
-                            fontSize: 12,
-                          ),
+                          style:
+                              const TextStyle(color: manaColor, fontSize: 12),
                         ),
                       ),
                   ],

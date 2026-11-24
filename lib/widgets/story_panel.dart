@@ -46,11 +46,8 @@ const Map<CardTier, _FrameOrnaments> _frameOrnaments = {
   CardTier.uncommon: _FrameOrnaments(),
   CardTier.rare: _FrameOrnaments(top: (45, 59)),
   CardTier.epic: _FrameOrnaments(top: (47, 57), bottom: (47, 57)),
-  CardTier.legendary: _FrameOrnaments(
-    top: (41, 63),
-    bottom: (44, 60),
-    sides: (25, 44),
-  ),
+  CardTier.legendary:
+      _FrameOrnaments(top: (41, 63), bottom: (44, 60), sides: (25, 44)),
 };
 
 /// The plain rows of a side edge and the plain columns of the top and bottom
@@ -88,10 +85,8 @@ List<FrameSlice> frameSlices(CardTier tier, Size size, double k) {
   add(const Rect.fromLTWH(0, 0, c, c), Rect.fromLTWH(0, 0, d, d));
   add(const Rect.fromLTWH(fw - c, 0, c, c), Rect.fromLTWH(w - d, 0, d, d));
   add(const Rect.fromLTWH(0, fh - c, c, c), Rect.fromLTWH(0, h - d, d, d));
-  add(
-    const Rect.fromLTWH(fw - c, fh - c, c, c),
-    Rect.fromLTWH(w - d, h - d, d, d),
-  );
+  add(const Rect.fromLTWH(fw - c, fh - c, c, c),
+      Rect.fromLTWH(w - d, h - d, d, d));
 
   // A horizontal edge: [srcY] the art's band, [dstY] where it goes.
   void horizontal(double srcY, double dstY, (int, int)? ornament) {
@@ -108,18 +103,12 @@ List<FrameSlice> frameSlices(CardTier tier, Size size, double k) {
       if (innerW >= ow + 2 * d) {
         final mid = w / 2;
         final left = mid - ow / 2, right = mid + ow / 2;
-        add(
-          Rect.fromLTRB(c, srcY, a, srcY + c),
-          Rect.fromLTRB(d, dstY, left, dstY + d),
-        );
-        add(
-          Rect.fromLTRB(a, srcY, b, srcY + c),
-          Rect.fromLTRB(left, dstY, right, dstY + d),
-        );
-        add(
-          Rect.fromLTRB(b, srcY, fw - c, srcY + c),
-          Rect.fromLTRB(right, dstY, w - d, dstY + d),
-        );
+        add(Rect.fromLTRB(c, srcY, a, srcY + c),
+            Rect.fromLTRB(d, dstY, left, dstY + d));
+        add(Rect.fromLTRB(a, srcY, b, srcY + c),
+            Rect.fromLTRB(left, dstY, right, dstY + d));
+        add(Rect.fromLTRB(b, srcY, fw - c, srcY + c),
+            Rect.fromLTRB(right, dstY, w - d, dstY + d));
         return;
       }
     }
@@ -134,14 +123,9 @@ List<FrameSlice> frameSlices(CardTier tier, Size size, double k) {
     final innerH = h - 2 * d;
     if (innerH <= 0) return;
     add(
-      Rect.fromLTRB(
-        srcX,
-        _plainRows.$1.toDouble(),
-        srcX + c,
-        _plainRows.$2.toDouble(),
-      ),
-      Rect.fromLTRB(dstX, d, dstX + d, h - d),
-    );
+        Rect.fromLTRB(
+            srcX, _plainRows.$1.toDouble(), srcX + c, _plainRows.$2.toDouble()),
+        Rect.fromLTRB(dstX, d, dstX + d, h - d));
     final s = o.sides;
     if (s == null) return;
     final sh = (s.$2 - s.$1) * k;
@@ -150,14 +134,10 @@ List<FrameSlice> frameSlices(CardTier tier, Size size, double k) {
     final y1 = d + innerH * 0.25 - sh / 2;
     final y2 = d + innerH * 0.75 - sh / 2;
     final mirrored = fh - s.$2;
-    add(
-      Rect.fromLTRB(srcX, s.$1.toDouble(), srcX + c, s.$2.toDouble()),
-      Rect.fromLTWH(dstX, y1, d, sh),
-    );
-    add(
-      Rect.fromLTRB(srcX, mirrored, srcX + c, mirrored + (s.$2 - s.$1)),
-      Rect.fromLTWH(dstX, y2, d, sh),
-    );
+    add(Rect.fromLTRB(srcX, s.$1.toDouble(), srcX + c, s.$2.toDouble()),
+        Rect.fromLTWH(dstX, y1, d, sh));
+    add(Rect.fromLTRB(srcX, mirrored, srcX + c, mirrored + (s.$2 - s.$1)),
+        Rect.fromLTWH(dstX, y2, d, sh));
   }
 
   vertical(0, 0);
@@ -187,14 +167,12 @@ class StoryFrames {
       ByteData data;
       var isDim = true;
       try {
-        data = await rootBundle.load(
-          'assets/visuals/cards/frame_${tier.name}_dim.png',
-        );
+        data = await rootBundle
+            .load('assets/visuals/cards/frame_${tier.name}_dim.png');
       } catch (_) {
         isDim = false;
-        data = await rootBundle.load(
-          'assets/visuals/cards/frame_${tier.name}.png',
-        );
+        data = await rootBundle
+            .load('assets/visuals/cards/frame_${tier.name}.png');
       }
       final codec = await ui.instantiateImageCodec(data.buffer.asUint8List());
       _images[tier] = (await codec.getNextFrame()).image;
@@ -304,14 +282,11 @@ Widget storyWeightFrame({
         padding: const EdgeInsets.symmetric(horizontal: 2),
         fill: color.withValues(alpha: 0.16),
         child: IntrinsicHeight(
-          child: Row(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              Container(width: 3, color: color),
-              const SizedBox(width: 8),
-              Expanded(child: child),
-            ],
-          ),
+          child: Row(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
+            Container(width: 3, color: color),
+            const SizedBox(width: 8),
+            Expanded(child: child),
+          ]),
         ),
       );
     case ChoiceWeight.major:
@@ -367,45 +342,36 @@ class StoryPlate extends StatelessWidget {
       decoration: ShapeDecoration(
         color: scheme.surface,
         shape: PixelChipBorder(
-          side: BorderSide(color: frame ?? color, width: 2),
-          step: 3,
-          steps: 3,
-        ),
+            side: BorderSide(color: frame ?? color, width: 2),
+            step: 3,
+            steps: 3),
       ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          Container(
-            height: plateHeight,
-            margin: const EdgeInsets.fromLTRB(3, 3, 3, 0),
-            padding: const EdgeInsets.symmetric(horizontal: 6),
-            color: color,
-            child: Row(
-              children: [
-                if (lead != null) ...[lead!, const SizedBox(width: 5)],
-                Expanded(
-                  child: FittedBox(
-                    fit: BoxFit.scaleDown,
-                    alignment: Alignment.centerLeft,
-                    child: Text(
-                      title,
-                      maxLines: 1,
-                      style: TextStyle(
+      child: Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
+        Container(
+          height: plateHeight,
+          margin: const EdgeInsets.fromLTRB(3, 3, 3, 0),
+          padding: const EdgeInsets.symmetric(horizontal: 6),
+          color: color,
+          child: Row(children: [
+            if (lead != null) ...[lead!, const SizedBox(width: 5)],
+            Expanded(
+              child: FittedBox(
+                fit: BoxFit.scaleDown,
+                alignment: Alignment.centerLeft,
+                child: Text(title,
+                    maxLines: 1,
+                    style: TextStyle(
                         fontFamily: InkFonts.display,
                         fontSize: 15,
                         height: 1,
-                        color: ink,
-                      ),
-                    ),
-                  ),
-                ),
-                if (trail != null) trail!,
-              ],
+                        color: ink)),
+              ),
             ),
-          ),
-          Padding(padding: padding, child: child),
-        ],
-      ),
+            if (trail != null) trail!,
+          ]),
+        ),
+        Padding(padding: padding, child: child),
+      ]),
     );
   }
 }
@@ -413,13 +379,8 @@ class StoryPlate extends StatelessWidget {
 /// A gem: a small pixel-cornered plate with a number and a label over it (the
 /// fight blocks' armour and damage gems).
 class StoryGem extends StatelessWidget {
-  const StoryGem(
-    this.value,
-    this.color, {
-    super.key,
-    this.label,
-    this.size = 36,
-  });
+  const StoryGem(this.value, this.color,
+      {super.key, this.label, this.size = 36});
 
   final String value;
   final Color color;
@@ -435,36 +396,24 @@ class StoryGem extends StatelessWidget {
       decoration: ShapeDecoration(
         color: scheme.surface,
         shape: PixelChipBorder(
-          side: BorderSide(color: color, width: 1.5),
-          step: 2,
-          steps: 2,
-        ),
+            side: BorderSide(color: color, width: 1.5), step: 2, steps: 2),
       ),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          if (label != null)
-            Text(
-              label!,
+      child: Column(mainAxisSize: MainAxisSize.min, children: [
+        if (label != null)
+          Text(label!,
               style: TextStyle(
-                fontFamily: InkFonts.system,
-                fontSize: 8,
-                height: 1.2,
-                color: color,
-              ),
-            ),
-          Text(
-            value,
+                  fontFamily: InkFonts.system,
+                  fontSize: 8,
+                  height: 1.2,
+                  color: color)),
+        Text(value,
             style: TextStyle(
-              fontFamily: InkFonts.prose,
-              fontWeight: FontWeight.w700,
-              fontSize: 13,
-              height: 1.1,
-              color: scheme.onSurface,
-            ),
-          ),
-        ],
-      ),
+                fontFamily: InkFonts.prose,
+                fontWeight: FontWeight.w700,
+                fontSize: 13,
+                height: 1.1,
+                color: scheme.onSurface)),
+      ]),
     );
   }
 }

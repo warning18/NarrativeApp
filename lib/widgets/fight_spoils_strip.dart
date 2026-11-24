@@ -106,25 +106,22 @@ class _FightSpoilsStripState extends State<FightSpoilsStrip>
         builder: (context, _) {
           final ms = _anim.value * total;
           final count = Curves.easeOut.transform(
-            (ms / _spoilsCountTime.inMilliseconds).clamp(0.0, 1.0),
-          );
+              (ms / _spoilsCountTime.inMilliseconds).clamp(0.0, 1.0));
           return Wrap(
             crossAxisAlignment: WrapCrossAlignment.center,
             spacing: 12,
             runSpacing: 4,
             children: [
               if (spoils.gold > 0)
-                Text(
-                  '+${(spoils.gold * count).round()} ${widget.goldLabel}',
-                  key: const Key('fight_spoils_gold'),
-                  style: theme.textTheme.labelLarge?.copyWith(color: ink.gold),
-                ),
+                Text('+${(spoils.gold * count).round()} ${widget.goldLabel}',
+                    key: const Key('fight_spoils_gold'),
+                    style:
+                        theme.textTheme.labelLarge?.copyWith(color: ink.gold)),
               if (spoils.xp > 0)
-                Text(
-                  '+${(spoils.xp * count).round()} XP',
-                  key: const Key('fight_spoils_xp'),
-                  style: theme.textTheme.labelLarge?.copyWith(color: ink.heal),
-                ),
+                Text('+${(spoils.xp * count).round()} XP',
+                    key: const Key('fight_spoils_xp'),
+                    style:
+                        theme.textTheme.labelLarge?.copyWith(color: ink.heal)),
               for (var i = 0; i < spoils.items.length; i++)
                 _drop(spoils.items[i], i, ms),
             ],

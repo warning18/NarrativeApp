@@ -46,14 +46,8 @@ const List<MapShape> mapLookShapes = [
 /// One region's name on the chart, shown once the story reaches
 /// [chapter].
 class ChartLabel {
-  const ChartLabel(
-    this.en,
-    this.fr,
-    this.x,
-    this.y,
-    this.chapter, {
-    this.sea = false,
-  });
+  const ChartLabel(this.en, this.fr, this.x, this.y, this.chapter,
+      {this.sea = false});
   final String en;
   final String fr;
   final double x;
@@ -148,13 +142,8 @@ class ChartGeography {
 /// sits. [biome] is a biomes.json id (temperate, desert, frost…).
 class ChartZone {
   const ChartZone(
-    this.biome,
-    this.nameEn,
-    this.nameFr,
-    this.labelAt,
-    this.polygon, {
-    this.influence = const [],
-  });
+      this.biome, this.nameEn, this.nameFr, this.labelAt, this.polygon,
+      {this.influence = const []});
   final String biome;
 
   /// The clans whose writ runs here, strongest first, each with how far
@@ -170,14 +159,8 @@ class ChartZone {
 
 /// A mountain range: peaks drawn along [line], [size] units tall.
 class ChartRange {
-  const ChartRange(
-    this.nameEn,
-    this.nameFr,
-    this.line,
-    this.size, {
-    this.snow = false,
-    this.ember = false,
-  });
+  const ChartRange(this.nameEn, this.nameFr, this.line, this.size,
+      {this.snow = false, this.ember = false});
   final String nameEn;
   final String nameFr;
   final List<Offset> line;
@@ -194,18 +177,13 @@ enum ChartFeatureKind { village, seat, bridge, giant, site }
 /// a clan's seat (ringed in [clan]'s colour, with a pennant), a bridge
 /// turned by [angle], a stone giant, or a later quest's place ([site]).
 class ChartFeature {
-  const ChartFeature(
-    this.kind,
-    this.at,
-    this.nameEn,
-    this.nameFr, {
-    this.noteEn = '',
-    this.noteFr = '',
-    this.clan = '',
-    this.angle = 0,
-    this.landmark = '',
-    this.atSea = false,
-  });
+  const ChartFeature(this.kind, this.at, this.nameEn, this.nameFr,
+      {this.noteEn = '',
+      this.noteFr = '',
+      this.clan = '',
+      this.angle = 0,
+      this.landmark = '',
+      this.atSea = false});
   final ChartFeatureKind kind;
   final Offset at;
   final String nameEn;
@@ -266,18 +244,13 @@ final ChartGeography _chartWorldStoryFull = () {
       for (final f in chartWorldB.features)
         if (storyFeatureAt['${f.kind.name}|${f.nameEn}'] case final at?
             when seen.add('${f.kind.name}|${f.nameEn}'))
-          ChartFeature(
-            f.kind,
-            at,
-            f.nameEn,
-            f.nameFr,
-            noteEn: f.noteEn,
-            noteFr: f.noteFr,
-            clan: f.clan,
-            angle: f.angle,
-            landmark: f.landmark,
-            atSea: f.atSea,
-          ),
+          ChartFeature(f.kind, at, f.nameEn, f.nameFr,
+              noteEn: f.noteEn,
+              noteFr: f.noteFr,
+              clan: f.clan,
+              angle: f.angle,
+              landmark: f.landmark,
+              atSea: f.atSea),
     ],
   );
 }();

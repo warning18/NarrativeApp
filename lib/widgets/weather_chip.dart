@@ -49,10 +49,8 @@ class WeatherChip extends ConsumerWidget {
   static String describe(WidgetRef ref, WeatherSample sky) {
     final wind = sky.windSpeed < 12
         ? tr(ref, 'weather_calm')
-        : tr(
-            ref,
-            'weather_wind_from',
-          ).replaceAll('{d}', tr(ref, 'compass_${sky.windFrom}'));
+        : tr(ref, 'weather_wind_from')
+            .replaceAll('{d}', tr(ref, 'compass_${sky.windFrom}'));
     return [
       tr(ref, 'weather_${sky.kind.name}'),
       '${sky.climate.temperature.round()}°',
@@ -114,11 +112,8 @@ class WeatherChip extends ConsumerWidget {
             ),
             child: Padding(
               padding: const EdgeInsets.all(6),
-              child: Icon(
-                iconOf(sky.kind),
-                size: IconSize.s16,
-                color: palette.place,
-              ),
+              child: Icon(iconOf(sky.kind),
+                  size: IconSize.s16, color: palette.place),
             ),
           ),
         ),

@@ -59,9 +59,7 @@ class _FightBoardPainter extends CustomPainter {
     final h = size.height;
     final r = math.Random(stage.index * 97 + 13);
     canvas.drawRect(
-      Rect.fromLTWH(0, 0, w, h),
-      Paint()..color = _fightBoardBase(stage),
-    );
+        Rect.fromLTWH(0, 0, w, h), Paint()..color = _fightBoardBase(stage));
     Paint stroke(Color c, double width, [double alpha = 1]) => Paint()
       ..color = c.withValues(alpha: alpha)
       ..style = PaintingStyle.stroke
@@ -75,13 +73,11 @@ class _FightBoardPainter extends CustomPainter {
       case FightStage.fields:
         for (var i = 0; i < 8; i++) {
           canvas.drawOval(
-            Rect.fromCenter(
-              center: Offset(rx(0, w), rx(0, h)),
-              width: rx(28, 72),
-              height: rx(10, 20),
-            ),
-            fill(const Color(0xFF4A3D2A), 0.35),
-          );
+              Rect.fromCenter(
+                  center: Offset(rx(0, w), rx(0, h)),
+                  width: rx(28, 72),
+                  height: rx(10, 20)),
+              fill(const Color(0xFF4A3D2A), 0.35));
         }
         for (var i = 0; i < 150; i++) {
           final x = rx(5, w - 5);
@@ -134,7 +130,7 @@ class _FightBoardPainter extends CustomPainter {
           final c = [
             Palette.orange52,
             const Color(0xFFF2A24A),
-            const Color(0xFF5B5860),
+            const Color(0xFF5B5860)
           ][r.nextInt(3)];
           canvas.drawCircle(Offset(rx(0, w), rx(0, h)), rx(1, 2), fill(c, 0.7));
         }
@@ -142,15 +138,12 @@ class _FightBoardPainter extends CustomPainter {
         for (var i = 0; i < 5; i++) {
           final rect = Rect.fromLTWH(0, i * h / 5, w, h / 5);
           canvas.drawRect(
-            rect,
-            fill(
-              [
+              rect,
+              fill([
                 const Color(0xFF7A776A),
                 const Color(0xFF6C6A5E),
-                const Color(0xFF827F70),
-              ][i % 3],
-            ),
-          );
+                const Color(0xFF827F70)
+              ][i % 3]));
           canvas.drawRect(rect, stroke(const Color(0xFF3C3B34), 2));
         }
       case FightStage.cliffs:
@@ -168,13 +161,11 @@ class _FightBoardPainter extends CustomPainter {
       case FightStage.reeds:
         for (var i = 0; i < 7; i++) {
           canvas.drawOval(
-            Rect.fromCenter(
-              center: Offset(rx(0, w), rx(0, h)),
-              width: rx(40, 100),
-              height: rx(16, 36),
-            ),
-            fill(const Color(0xFF2C4A52), 0.7),
-          );
+              Rect.fromCenter(
+                  center: Offset(rx(0, w), rx(0, h)),
+                  width: rx(40, 100),
+                  height: rx(16, 36)),
+              fill(const Color(0xFF2C4A52), 0.7));
         }
         for (var i = 0; i < 60; i++) {
           final x = rx(5, w - 5);
@@ -192,9 +183,9 @@ class _FightBoardPainter extends CustomPainter {
         for (var i = 0; i < 14; i++) {
           final c = Offset(rx(0, w), rx(0, h));
           canvas.drawOval(
-            Rect.fromCenter(center: c, width: rx(60, 140), height: rx(12, 28)),
-            fill(Colors.white, 0.7),
-          );
+              Rect.fromCenter(
+                  center: c, width: rx(60, 140), height: rx(12, 28)),
+              fill(Colors.white, 0.7));
           final p = Path()
             ..moveTo(c.dx, c.dy)
             ..relativeLineTo(rx(20, 50), 6);
@@ -208,16 +199,14 @@ class _FightBoardPainter extends CustomPainter {
             ..lineTo(rx(0, w), rx(0, h))
             ..close();
           canvas.drawPath(
-            p,
-            fill(
-              [
-                const Color(0xFF2B5A6A),
-                const Color(0xFF3A2F5E),
-                const Color(0xFF1F7A78),
-              ][r.nextInt(3)],
-              0.35,
-            ),
-          );
+              p,
+              fill(
+                  [
+                    const Color(0xFF2B5A6A),
+                    const Color(0xFF3A2F5E),
+                    const Color(0xFF1F7A78)
+                  ][r.nextInt(3)],
+                  0.35));
           canvas.drawPath(p, stroke(const Color(0xFF9FE0E8), 1));
         }
       case FightStage.hall:
@@ -225,22 +214,15 @@ class _FightBoardPainter extends CustomPainter {
         for (var row = 0; row < 5; row++) {
           for (var col = -1; col < 7; col++) {
             final x = col * cell.width + (row.isOdd ? cell.width / 2 : 0);
-            final rect = Rect.fromLTWH(
-              x,
-              row * cell.height,
-              cell.width,
-              cell.height,
-            );
+            final rect =
+                Rect.fromLTWH(x, row * cell.height, cell.width, cell.height);
             canvas.drawRect(
-              rect,
-              fill(
-                [
+                rect,
+                fill([
                   const Color(0xFF5A4F42),
                   const Color(0xFF4F453A),
-                  const Color(0xFF625648),
-                ][r.nextInt(3)],
-              ),
-            );
+                  const Color(0xFF625648)
+                ][r.nextInt(3)]));
             canvas.drawRect(rect, stroke(Palette.night14, 2));
           }
         }
@@ -249,19 +231,15 @@ class _FightBoardPainter extends CustomPainter {
         for (var row = 0; row * 24.0 < h; row++) {
           for (var x = row.isOdd ? -20.0 : 0.0; x < w; x += 40) {
             final stone = RRect.fromRectAndRadius(
-              Rect.fromLTWH(x + 1, row * 24.0 + 1, 38, 22),
-              const Radius.circular(7),
-            );
+                Rect.fromLTWH(x + 1, row * 24.0 + 1, 38, 22),
+                const Radius.circular(7));
             canvas.drawRRect(
-              stone,
-              fill(
-                [
+                stone,
+                fill([
                   const Color(0xFF6D6B70),
                   const Color(0xFF5F5D63),
-                  const Color(0xFF77747A),
-                ][r.nextInt(3)],
-              ),
-            );
+                  const Color(0xFF77747A)
+                ][r.nextInt(3)]));
             canvas.drawRRect(stone, stroke(const Color(0xFF2F2E33), 2));
           }
         }
@@ -280,29 +258,22 @@ class _FightBoardPainter extends CustomPainter {
         for (var i = 0; i < 9; i++) {
           final rect = Rect.fromLTWH(0, i * plank, w, plank);
           canvas.drawRect(
-            rect,
-            fill(
-              [
+              rect,
+              fill([
                 const Color(0xFF86623C),
                 const Color(0xFF795733),
-                const Color(0xFF8D6A42),
-              ][i % 3],
-            ),
-          );
+                const Color(0xFF8D6A42)
+              ][i % 3]));
           canvas.drawRect(rect, stroke(const Color(0xFF3A2814), 2));
           for (final x in [14.0, w - 14]) {
-            canvas.drawCircle(
-              Offset(x, i * plank + plank / 2),
-              2.2,
-              fill(const Color(0xFF2A1D0E)),
-            );
+            canvas.drawCircle(Offset(x, i * plank + plank / 2), 2.2,
+                fill(const Color(0xFF2A1D0E)));
           }
           final joint = rx(60, w - 60);
           canvas.drawLine(
-            Offset(joint, i * plank),
-            Offset(joint, (i + 1) * plank),
-            stroke(const Color(0xFF3A2814), 2),
-          );
+              Offset(joint, i * plank),
+              Offset(joint, (i + 1) * plank),
+              stroke(const Color(0xFF3A2814), 2));
         }
       case FightStage.ruins:
         // Broken flagstones, cracks between them, moss in the joints.
@@ -310,62 +281,46 @@ class _FightBoardPainter extends CustomPainter {
           for (var col = -1; col < 6; col++) {
             final x = col * w / 5 + (row.isOdd ? w / 10 : 0);
             final rect = Rect.fromLTWH(
-              x + rx(-2, 2),
-              row * h / 5,
-              w / 5,
-              h / 5 + rx(-3, 3),
-            );
+                x + rx(-2, 2), row * h / 5, w / 5, h / 5 + rx(-3, 3));
             canvas.drawRect(
-              rect,
-              fill(
-                [
+                rect,
+                fill([
                   const Color(0xFF65635E),
                   const Color(0xFF55534F),
-                  const Color(0xFF6E6C66),
-                ][r.nextInt(3)],
-              ),
-            );
+                  const Color(0xFF6E6C66)
+                ][r.nextInt(3)]));
             canvas.drawRect(rect, stroke(Palette.night16, 2));
           }
         }
         for (var i = 0; i < 18; i++) {
           canvas.drawOval(
-            Rect.fromCenter(
-              center: Offset(rx(0, w), rx(0, h)),
-              width: rx(16, 40),
-              height: rx(6, 12),
-            ),
-            fill(const Color(0xFF4A6B3A), 0.55),
-          );
+              Rect.fromCenter(
+                  center: Offset(rx(0, w), rx(0, h)),
+                  width: rx(16, 40),
+                  height: rx(6, 12)),
+              fill(const Color(0xFF4A6B3A), 0.55));
         }
       case FightStage.woods:
         // A floor of leaves and roots under the trees.
         for (var i = 0; i < 120; i++) {
           canvas.drawOval(
-            Rect.fromCenter(
-              center: Offset(rx(0, w), rx(0, h)),
-              width: rx(6, 14),
-              height: 4,
-            ),
-            fill(
-              [
-                const Color(0xFF6B4A22),
-                const Color(0xFF8A5B24),
-                const Color(0xFF4A5C2A),
-              ][r.nextInt(3)],
-              0.7,
-            ),
-          );
+              Rect.fromCenter(
+                  center: Offset(rx(0, w), rx(0, h)),
+                  width: rx(6, 14),
+                  height: 4),
+              fill(
+                  [
+                    const Color(0xFF6B4A22),
+                    const Color(0xFF8A5B24),
+                    const Color(0xFF4A5C2A)
+                  ][r.nextInt(3)],
+                  0.7));
         }
         for (var i = 0; i < 9; i++) {
           final p = Path()
             ..moveTo(rx(0, w), rx(0, h))
             ..relativeQuadraticBezierTo(
-              rx(-30, 30),
-              rx(10, 40),
-              rx(-50, 50),
-              rx(20, 60),
-            );
+                rx(-30, 30), rx(10, 40), rx(-50, 50), rx(20, 60));
           canvas.drawPath(p, stroke(Palette.night8b, 4));
         }
       case FightStage.ford:
@@ -379,41 +334,31 @@ class _FightBoardPainter extends CustomPainter {
         }
         for (var i = 0; i < 26; i++) {
           canvas.drawOval(
-            Rect.fromCenter(
-              center: Offset(rx(0, w), rx(0, h)),
-              width: rx(18, 40),
-              height: rx(10, 20),
-            ),
-            fill(const Color(0xFF6E7A78), 0.8),
-          );
+              Rect.fromCenter(
+                  center: Offset(rx(0, w), rx(0, h)),
+                  width: rx(18, 40),
+                  height: rx(10, 20)),
+              fill(const Color(0xFF6E7A78), 0.8));
         }
       case FightStage.burntFields:
         // Charred earth, burnt stubble, a few embers still red.
         for (var i = 0; i < 9; i++) {
           canvas.drawOval(
-            Rect.fromCenter(
-              center: Offset(rx(0, w), rx(0, h)),
-              width: rx(40, 100),
-              height: rx(10, 26),
-            ),
-            fill(const Color(0xFF14100E), 0.6),
-          );
+              Rect.fromCenter(
+                  center: Offset(rx(0, w), rx(0, h)),
+                  width: rx(40, 100),
+                  height: rx(10, 26)),
+              fill(const Color(0xFF14100E), 0.6));
         }
         for (var i = 0; i < 130; i++) {
           final x = rx(5, w - 5);
           final y = rx(10, h);
-          canvas.drawLine(
-            Offset(x, y),
-            Offset(x + rx(-3, 3), y - rx(5, 11)),
-            stroke(const Color(0xFF0E0B0A), 1.6),
-          );
+          canvas.drawLine(Offset(x, y), Offset(x + rx(-3, 3), y - rx(5, 11)),
+              stroke(const Color(0xFF0E0B0A), 1.6));
         }
         for (var i = 0; i < 40; i++) {
-          canvas.drawCircle(
-            Offset(rx(0, w), rx(0, h)),
-            rx(1, 2),
-            fill(Palette.orange52, 0.8),
-          );
+          canvas.drawCircle(Offset(rx(0, w), rx(0, h)), rx(1, 2),
+              fill(Palette.orange52, 0.8));
         }
       case FightStage.oasis:
         // Sand ripples around a pool, a few palms' shade.
@@ -425,27 +370,20 @@ class _FightBoardPainter extends CustomPainter {
           canvas.drawPath(p, stroke(const Color(0xFFB09858), 2, 0.5));
         }
         canvas.drawOval(
-          Rect.fromCenter(
-            center: Offset(w * 0.5, h * 0.52),
-            width: w * 0.55,
-            height: h * 0.3,
-          ),
-          fill(const Color(0xFF3F8FA0), 0.85),
-        );
+            Rect.fromCenter(
+                center: Offset(w * 0.5, h * 0.52),
+                width: w * 0.55,
+                height: h * 0.3),
+            fill(const Color(0xFF3F8FA0), 0.85));
         canvas.drawOval(
-          Rect.fromCenter(
-            center: Offset(w * 0.5, h * 0.52),
-            width: w * 0.55,
-            height: h * 0.3,
-          ),
-          stroke(const Color(0xFF4F7A3A), 5),
-        );
+            Rect.fromCenter(
+                center: Offset(w * 0.5, h * 0.52),
+                width: w * 0.55,
+                height: h * 0.3),
+            stroke(const Color(0xFF4F7A3A), 5));
         for (var i = 0; i < 6; i++) {
-          canvas.drawCircle(
-            Offset(rx(0, w), rx(0, h)),
-            rx(8, 18),
-            fill(const Color(0xFF4F7A3A), 0.5),
-          );
+          canvas.drawCircle(Offset(rx(0, w), rx(0, h)), rx(8, 18),
+              fill(const Color(0xFF4F7A3A), 0.5));
         }
       case FightStage.caravanRoad:
         // A packed dirt road with two wheel ruts and stones at its edge.
@@ -458,11 +396,8 @@ class _FightBoardPainter extends CustomPainter {
           canvas.drawPath(p, stroke(const Color(0xFFB59A70), 2, 0.7));
         }
         for (var i = 0; i < 50; i++) {
-          canvas.drawCircle(
-            Offset(rx(0, w), rx(0, h)),
-            rx(1.5, 4),
-            fill(const Color(0xFF6E5A40), 0.8),
-          );
+          canvas.drawCircle(Offset(rx(0, w), rx(0, h)), rx(1.5, 4),
+              fill(const Color(0xFF6E5A40), 0.8));
         }
       case FightStage.quay:
         // Dressed stone blocks of a harbour, an iron ring, a wet edge.
@@ -471,27 +406,19 @@ class _FightBoardPainter extends CustomPainter {
             final x = col * w / 4 + (row.isOdd ? w / 8 : 0);
             final rect = Rect.fromLTWH(x, row * h / 6, w / 4, h / 6);
             canvas.drawRect(
-              rect,
-              fill(
-                [
+                rect,
+                fill([
                   const Color(0xFF5C6770),
                   const Color(0xFF4F5A63),
-                  const Color(0xFF66727B),
-                ][r.nextInt(3)],
-              ),
-            );
+                  const Color(0xFF66727B)
+                ][r.nextInt(3)]));
             canvas.drawRect(rect, stroke(const Color(0xFF2A3036), 2));
           }
         }
         canvas.drawCircle(
-          Offset(w * 0.12, h * 0.2),
-          9,
-          stroke(const Color(0xFF1B1F23), 4),
-        );
-        canvas.drawRect(
-          Rect.fromLTWH(0, h * 0.86, w, h * 0.14),
-          fill(const Color(0xFF2D5F78), 0.7),
-        );
+            Offset(w * 0.12, h * 0.2), 9, stroke(const Color(0xFF1B1F23), 4));
+        canvas.drawRect(Rect.fromLTWH(0, h * 0.86, w, h * 0.14),
+            fill(const Color(0xFF2D5F78), 0.7));
       case FightStage.pass:
         // Bare rock of a mountain pass, snow in its hollows.
         for (var i = 0; i < 20; i++) {
@@ -502,21 +429,17 @@ class _FightBoardPainter extends CustomPainter {
         }
         for (var i = 0; i < 9; i++) {
           canvas.drawOval(
-            Rect.fromCenter(
-              center: Offset(rx(0, w), rx(0, h)),
-              width: rx(30, 80),
-              height: rx(10, 20),
-            ),
-            fill(Colors.white, 0.75),
-          );
+              Rect.fromCenter(
+                  center: Offset(rx(0, w), rx(0, h)),
+                  width: rx(30, 80),
+                  height: rx(10, 20)),
+              fill(Colors.white, 0.75));
         }
     }
     final toward = tint;
     if (toward != null) {
-      canvas.drawRect(
-        Rect.fromLTWH(0, 0, w, h),
-        Paint()..color = toward.withValues(alpha: lean),
-      );
+      canvas.drawRect(Rect.fromLTWH(0, 0, w, h),
+          Paint()..color = toward.withValues(alpha: lean));
     }
     // The edge falls into shadow, so the dice stand out in the middle.
     canvas.drawRect(
@@ -540,13 +463,12 @@ class _FightBoardPainter extends CustomPainter {
 /// clipped, so what plays on the board (a later event layer) never draws
 /// outside it.
 class FightBoardSurface extends StatelessWidget {
-  const FightBoardSurface({
-    super.key,
-    required this.stage,
-    required this.child,
-    this.event,
-    this.plate,
-  });
+  const FightBoardSurface(
+      {super.key,
+      required this.stage,
+      required this.child,
+      this.event,
+      this.plate});
 
   final FightStage stage;
 
@@ -567,9 +489,7 @@ class FightBoardSurface extends StatelessWidget {
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(inked ? 0 : 18),
         border: Border.all(
-          color: inked ? inkPaper : const Color(0xFF4D5B4A),
-          width: 2,
-        ),
+            color: inked ? inkPaper : const Color(0xFF4D5B4A), width: 2),
       ),
       child: ClipRRect(
         borderRadius: BorderRadius.circular(inked ? 0 : 16),
@@ -581,33 +501,29 @@ class FightBoardSurface extends StatelessWidget {
               // veil that keeps the dice and the hint readable (v1.1008).
               Positioned.fill(
                 child: RepaintBoundary(
-                  child: Stack(
-                    fit: StackFit.expand,
-                    children: [
-                      Image.asset(
-                        key: const Key('fight_board_skin'),
-                        towerFightDicePlate(
-                          FightPlateOverride.maybeOf(context)?.floor ?? 1,
-                        ),
-                        fit: BoxFit.cover,
-                        filterQuality: FilterQuality.none,
-                        errorBuilder: (c, e, s) =>
-                            const ColoredBox(color: inkDeep),
-                      ),
-                      DecoratedBox(
-                        decoration: BoxDecoration(
-                          gradient: LinearGradient(
-                            begin: Alignment.topCenter,
-                            end: Alignment.bottomCenter,
-                            colors: [
-                              inkBlack.withValues(alpha: 0.1),
-                              inkBlack.withValues(alpha: 0.55),
-                            ],
-                          ),
+                  child: Stack(fit: StackFit.expand, children: [
+                    Image.asset(
+                      key: const Key('fight_board_skin'),
+                      towerFightDicePlate(
+                          FightPlateOverride.maybeOf(context)?.floor ?? 1),
+                      fit: BoxFit.cover,
+                      filterQuality: FilterQuality.none,
+                      errorBuilder: (c, e, s) =>
+                          const ColoredBox(color: inkDeep),
+                    ),
+                    DecoratedBox(
+                      decoration: BoxDecoration(
+                        gradient: LinearGradient(
+                          begin: Alignment.topCenter,
+                          end: Alignment.bottomCenter,
+                          colors: [
+                            inkBlack.withValues(alpha: 0.1),
+                            inkBlack.withValues(alpha: 0.55),
+                          ],
                         ),
                       ),
-                    ],
-                  ),
+                    ),
+                  ]),
                 ),
               )
             else
@@ -617,10 +533,9 @@ class FightBoardSurface extends StatelessWidget {
                   builder: (context, _, __) => CustomPaint(
                     key: const Key('fight_board_skin'),
                     painter: _FightBoardPainter(
-                      stage,
-                      plate == null ? null : FightPlateImages.tintOf(plate!),
-                      plate == null ? 0.38 : FightPlateImages.leanOf(plate!),
-                    ),
+                        stage,
+                        plate == null ? null : FightPlateImages.tintOf(plate!),
+                        plate == null ? 0.38 : FightPlateImages.leanOf(plate!)),
                   ),
                 ),
               ),
@@ -722,20 +637,15 @@ class _FightAimLineState extends State<FightAimLine> {
                     border: Border.all(color: widget.color),
                   ),
                   child: Padding(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 7,
-                      vertical: 2,
-                    ),
-                    child: Text(
-                      widget.label,
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
-                      style: const TextStyle(
-                        fontSize: 11,
-                        color: Colors.white,
-                        fontWeight: FontWeight.w600,
-                      ),
-                    ),
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: 7, vertical: 2),
+                    child: Text(widget.label,
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        style: const TextStyle(
+                            fontSize: 11,
+                            color: Colors.white,
+                            fontWeight: FontWeight.w600)),
                   ),
                 ),
               ),
@@ -761,13 +671,12 @@ class _AimPainter extends CustomPainter {
       ..moveTo(a.dx, a.dy)
       ..quadraticBezierTo(mid.dx + bend.dx, mid.dy, b.dx, b.dy);
     canvas.drawPath(
-      path,
-      Paint()
-        ..color = color
-        ..style = PaintingStyle.stroke
-        ..strokeWidth = 3.5
-        ..strokeCap = StrokeCap.round,
-    );
+        path,
+        Paint()
+          ..color = color
+          ..style = PaintingStyle.stroke
+          ..strokeWidth = 3.5
+          ..strokeCap = StrokeCap.round);
     canvas.drawCircle(a, 4, Paint()..color = color);
     canvas.drawCircle(b, 6, Paint()..color = color);
   }

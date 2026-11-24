@@ -93,13 +93,11 @@ class _CityDistrictView extends ConsumerWidget {
       shown: shown,
       nameOf: (place) => place.isHere
           ? tr(ref, 'place_here')
-          : wayPlaceName(
-              place,
+          : wayPlaceName(place,
               record: record,
               geography: geography,
               french: french,
-              fallback: '',
-            ),
+              fallback: ''),
     );
     // A scene with one place at most has no places to list: its ways are the
     // list, as before.
@@ -111,9 +109,9 @@ class _CityDistrictView extends ConsumerWidget {
     final theme = Theme.of(context);
     // The rows sit on the page, not on the chart: the page's own colours.
     final ink = InkColors.of(context);
-    final pagePalette = ChartPalette.of(
-      theme.brightness == Brightness.dark ? MapLook.night : MapLook.parchment,
-    );
+    final pagePalette = ChartPalette.of(theme.brightness == Brightness.dark
+        ? MapLook.night
+        : MapLook.parchment);
     // Each way's number: its place among its district's ways.
     // A way hangs as a banner in its category's colour (see
     // journey_banner_pin.dart); only the fights and rolls keep a numbered
@@ -135,13 +133,12 @@ class _CityDistrictView extends ConsumerWidget {
         numbers['$i'] = list.length;
       } else {
         banners['$i'] = PinBanner(
-          cat,
-          steps[i].locked
-              ? chartPalette.label
-              : look == MapLook.shroud && cat != JourneyPinCat.main
-                  ? chartPalette.place
-                  : cat.colorOn(chartInk, dark: chartDark),
-        );
+            cat,
+            steps[i].locked
+                ? chartPalette.label
+                : look == MapLook.shroud && cat != JourneyPinCat.main
+                    ? chartPalette.place
+                    : cat.colorOn(chartInk, dark: chartDark));
       }
     }
     final shown = focus == null ? const <int>[] : byDistrict[focus] ?? const [];
@@ -164,7 +161,7 @@ class _CityDistrictView extends ConsumerWidget {
     void goPlace(PlaceInfo p) {
       final open = [
         for (final i in p.steps)
-          if (!steps[i].locked) i,
+          if (!steps[i].locked) i
       ];
       if (p.wayOut && open.length == 1) {
         onOpen(open.first);
@@ -175,9 +172,8 @@ class _CityDistrictView extends ConsumerWidget {
 
     // The town's own signs (wave 14): a notice board, the market, a tavern...
     final townServices = ref.watch(currentTownServicesProvider);
-    final boardContracts = ref.watch(
-      playerSessionProvider.select((s) => s.contracts),
-    );
+    final boardContracts =
+        ref.watch(playerSessionProvider.select((s) => s.contracts));
 
     Widget kindDisc(_Step s, {double size = 30}) {
       final colour = s.locked
@@ -200,15 +196,12 @@ class _CityDistrictView extends ConsumerWidget {
           height: 20,
           alignment: Alignment.center,
           decoration: BoxDecoration(shape: BoxShape.circle, color: ink.gold),
-          child: Text(
-            '$n',
-            style: const TextStyle(
-              fontFamily: InkFonts.system,
-              fontSize: 11,
-              height: 1,
-              color: Palette.night9,
-            ),
-          ),
+          child: Text('$n',
+              style: const TextStyle(
+                  fontFamily: InkFonts.system,
+                  fontSize: 11,
+                  height: 1,
+                  color: Palette.night9)),
         );
 
     // A way's pin in the street (v1.544): its banner, else its kind's disc.
@@ -257,11 +250,8 @@ class _CityDistrictView extends ConsumerWidget {
     // A shut district is explained, not entered.
     void focusOrExplain(String? id) {
       if (id != null && shutDistricts.contains(id)) {
-        showLockedDistrictSheet(
-          context,
-          standings[id]!,
-          name: chart.districts.firstWhere((d) => d.id == id).name,
-        );
+        showLockedDistrictSheet(context, standings[id]!,
+            name: chart.districts.firstWhere((d) => d.id == id).name);
         return;
       }
       onFocus(id);
@@ -301,38 +291,33 @@ class _CityDistrictView extends ConsumerWidget {
       final clan = lookedAt.isNeutral
           ? null
           : factions[lookedAt.clanId]?.shortFor(language);
-      rows.add(
-        Padding(
-          key: const ValueKey('journey_city_ruler'),
-          padding: const EdgeInsets.only(top: 8),
-          child: Row(
-            children: [
-              Container(
-                width: 12,
-                height: 12,
-                decoration: BoxDecoration(
+      rows.add(Padding(
+        key: const ValueKey('journey_city_ruler'),
+        padding: const EdgeInsets.only(top: 8),
+        child: Row(children: [
+          Container(
+              width: 12,
+              height: 12,
+              decoration: BoxDecoration(
                   shape: BoxShape.circle,
                   color: Color(lookedAt.color),
-                  border: Border.all(color: Color(lookedAt.accent), width: 1.5),
-                ),
-              ),
-              const SizedBox(width: 8),
-              Expanded(
-                child: Text(
-                  [
-                    clan == null
-                        ? tr(ref, 'town_ruled_none')
-                        : tr(ref, 'town_ruled_by').replaceAll('{clan}', clan),
-                    if (lookedAt.mixed && focus == null)
-                      tr(ref, 'town_ruled_mixed'),
-                  ].join(' · '),
-                  style: theme.textTheme.bodySmall?.copyWith(color: ink.ash),
-                ),
-              ),
-            ],
+                  border:
+                      Border.all(color: Color(lookedAt.accent), width: 1.5))),
+          const SizedBox(width: 8),
+          Expanded(
+            child: Text(
+              [
+                clan == null
+                    ? tr(ref, 'town_ruled_none')
+                    : tr(ref, 'town_ruled_by').replaceAll('{clan}', clan),
+                if (lookedAt.mixed && focus == null)
+                  tr(ref, 'town_ruled_mixed'),
+              ].join(' · '),
+              style: theme.textTheme.bodySmall?.copyWith(color: ink.ash),
+            ),
           ),
-        ),
-      );
+        ]),
+      ));
     }
     if (focus != null) {
       // The ways hang at pins on the map (a building, or a spot): a pin with
@@ -340,28 +325,25 @@ class _CityDistrictView extends ConsumerWidget {
       groups = groupWaysByPin([
         for (final i in shown)
           WayPinEntry(
-              i,
-              switch (chart.ways.where((w) => w.id == '$i').firstOrNull) {
-                final way? when way.at != null =>
-                  'at:${way.at!.dx.round()},${way.at!.dy.round()}',
-                final way? => 'b:${way.building}',
-                null => 'step:$i',
-              },
-              leads: banners['$i'] != null),
+            i,
+            switch (chart.ways.where((w) => w.id == '$i').firstOrNull) {
+              final way? when way.at != null =>
+                'at:${way.at!.dx.round()},${way.at!.dy.round()}',
+              final way? => 'b:${way.building}',
+              null => 'step:$i',
+            },
+            leads: banners['$i'] != null,
+          ),
       ]);
       if (infos == null && groups.isNotEmpty) {
-        rows.add(
-          Padding(
-            padding: const EdgeInsets.only(top: 8, bottom: 4),
-            child: Text(
-              tr(ref, 'journey_city_places_here').toUpperCase(),
-              style: theme.textTheme.labelSmall?.copyWith(
-                color: ink.ash,
-                letterSpacing: 0.8,
-              ),
-            ),
+        rows.add(Padding(
+          padding: const EdgeInsets.only(top: 8, bottom: 4),
+          child: Text(
+            tr(ref, 'journey_city_places_here').toUpperCase(),
+            style: theme.textTheme.labelSmall
+                ?.copyWith(color: ink.ash, letterSpacing: 0.8),
           ),
-        );
+        ));
       }
 
       // One way's row (inside a place's list), indented when [indent].
@@ -375,70 +357,57 @@ class _CityDistrictView extends ConsumerWidget {
           onTap: () => onOpen(i),
           child: Container(
             padding: EdgeInsets.fromLTRB(indent, 7, 0, 7),
-            decoration: BoxDecoration(
-              border: Border(top: BorderSide(color: ink.seam)),
-            ),
-            child: Row(
-              children: [
-                if (banners['$i'] case final banner?)
-                  BannerPin(
-                    key: ValueKey('journey_row_banner_$i'),
-                    cat: banner.cat,
-                    color: s.locked
-                        ? banner.color
-                        : banner.cat.colorOn(
-                            ink,
-                            dark: theme.brightness == Brightness.dark,
-                          ),
-                    dark: theme.brightness == Brightness.dark,
-                    icon: s.locked ? Icons.lock_outline : null,
-                    scale: 0.8,
-                  )
-                else ...[
-                  numberDot(numbers['$i']!),
-                  const SizedBox(width: 8),
-                  kindDisc(s),
-                ],
-                const SizedBox(width: 10),
-                Expanded(
-                  child: Text(
-                    s.label,
+            decoration:
+                BoxDecoration(border: Border(top: BorderSide(color: ink.seam))),
+            child: Row(children: [
+              if (banners['$i'] case final banner?)
+                BannerPin(
+                  key: ValueKey('journey_row_banner_$i'),
+                  cat: banner.cat,
+                  color: s.locked
+                      ? banner.color
+                      : banner.cat.colorOn(ink,
+                          dark: theme.brightness == Brightness.dark),
+                  dark: theme.brightness == Brightness.dark,
+                  icon: s.locked ? Icons.lock_outline : null,
+                  scale: 0.8,
+                )
+              else ...[
+                numberDot(numbers['$i']!),
+                const SizedBox(width: 8),
+                kindDisc(s),
+              ],
+              const SizedBox(width: 10),
+              Expanded(
+                child: Text(s.label,
                     maxLines: 2,
                     overflow: TextOverflow.ellipsis,
                     style: theme.textTheme.bodyMedium?.copyWith(
-                      color: s.locked ? ink.ash : null,
-                      height: 1.2,
-                    ),
-                  ),
-                ),
-                if (s.tag case final tag?) ...[
-                  const SizedBox(width: 8),
-                  ChoiceTagChip(
+                        color: s.locked ? ink.ash : null, height: 1.2)),
+              ),
+              if (s.tag case final tag?) ...[
+                const SizedBox(width: 8),
+                ChoiceTagChip(
                     key: ValueKey('journey_row_tag_$i'),
                     tag: tag,
-                    locked: s.locked,
-                  ),
-                ],
-                if (target.isNotEmpty) ...[
-                  const SizedBox(width: 8),
-                  Flexible(
-                    flex: 0,
-                    child: ConstrainedBox(
-                      constraints: const BoxConstraints(maxWidth: 96),
-                      child: Text(
-                        target,
+                    locked: s.locked),
+              ],
+              if (target.isNotEmpty) ...[
+                const SizedBox(width: 8),
+                Flexible(
+                  flex: 0,
+                  child: ConstrainedBox(
+                    constraints: const BoxConstraints(maxWidth: 96),
+                    child: Text(target,
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
                         textAlign: TextAlign.end,
-                        style: theme.textTheme.labelSmall?.copyWith(
-                          color: ink.ash,
-                        ),
-                      ),
-                    ),
+                        style: theme.textTheme.labelSmall
+                            ?.copyWith(color: ink.ash)),
                   ),
-                ],
+                ),
               ],
-            ),
+            ]),
           ),
         );
       }
@@ -452,10 +421,8 @@ class _CityDistrictView extends ConsumerWidget {
           cat: banner.cat,
           color: steps[i].locked
               ? banner.color
-              : banner.cat.colorOn(
-                  ink,
-                  dark: theme.brightness == Brightness.dark,
-                ),
+              : banner.cat
+                  .colorOn(ink, dark: theme.brightness == Brightness.dark),
           dark: theme.brightness == Brightness.dark,
           icon: steps[i].locked ? Icons.lock_outline : null,
           scale: 0.8,
@@ -463,17 +430,15 @@ class _CityDistrictView extends ConsumerWidget {
       }
 
       if (infos != null) {
-        rows.addAll(
-          placesRows(
-            context,
-            ref,
-            infos: infos,
-            standing: standing,
-            wayRow: wayRow,
-            onGo: goPlace,
-            onLeave: onLeavePlace,
-          ),
-        );
+        rows.addAll(placesRows(
+          context,
+          ref,
+          infos: infos,
+          standing: standing,
+          wayRow: wayRow,
+          onGo: goPlace,
+          onLeave: onLeavePlace,
+        ));
       } else {
         // The list names the places, one row each (no count, nothing to
         // open in place); the ways show after a tap, as after a tap on the
@@ -481,49 +446,36 @@ class _CityDistrictView extends ConsumerWidget {
         for (final g in groups) {
           final name = pinName(g.lead);
           final allShut = g.members.every((i) => steps[i].locked);
-          rows.add(
-            InkWell(
-              key: ValueKey(
-                g.isPin
-                    ? 'journey_city_pin_${g.lead}'
-                    : 'journey_city_row_${g.lead}',
-              ),
-              onTap: () =>
-                  g.isPin ? onOpenPin(g.members, name) : onOpen(g.lead),
-              child: Container(
-                padding: const EdgeInsets.symmetric(vertical: 9),
-                decoration: BoxDecoration(
-                  border: Border(top: BorderSide(color: ink.seam)),
+          rows.add(InkWell(
+            key: ValueKey(g.isPin
+                ? 'journey_city_pin_${g.lead}'
+                : 'journey_city_row_${g.lead}'),
+            onTap: () => g.isPin ? onOpenPin(g.members, name) : onOpen(g.lead),
+            child: Container(
+              padding: const EdgeInsets.symmetric(vertical: 9),
+              decoration: BoxDecoration(
+                  border: Border(top: BorderSide(color: ink.seam))),
+              child: Row(children: [
+                SizedBox(width: 30, child: Center(child: pinLead(g.lead))),
+                const SizedBox(width: 10),
+                Expanded(
+                  child: Text(name,
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
+                      style: theme.textTheme.bodyMedium?.copyWith(
+                          color: allShut ? ink.ash : null, height: 1.2)),
                 ),
-                child: Row(
-                  children: [
-                    SizedBox(width: 30, child: Center(child: pinLead(g.lead))),
-                    const SizedBox(width: 10),
-                    Expanded(
-                      child: Text(
-                        name,
-                        maxLines: 2,
-                        overflow: TextOverflow.ellipsis,
-                        style: theme.textTheme.bodyMedium?.copyWith(
-                          color: allShut ? ink.ash : null,
-                          height: 1.2,
-                        ),
-                      ),
-                    ),
-                    // A place with one way wears that way's tag (v1.854).
-                    if (g.members.length == 1 && steps[g.lead].tag != null) ...[
-                      const SizedBox(width: 8),
-                      ChoiceTagChip(
-                        key: ValueKey('journey_row_tag_${g.lead}'),
-                        tag: steps[g.lead].tag!,
-                        locked: allShut,
-                      ),
-                    ],
-                  ],
-                ),
-              ),
+                // A place with one way wears that way's tag (v1.854).
+                if (g.members.length == 1 && steps[g.lead].tag != null) ...[
+                  const SizedBox(width: 8),
+                  ChoiceTagChip(
+                      key: ValueKey('journey_row_tag_${g.lead}'),
+                      tag: steps[g.lead].tag!,
+                      locked: allShut),
+                ],
+              ]),
             ),
-          );
+          ));
         }
       }
       // No way in the party's own district: a free walk (no time, no
@@ -532,117 +484,87 @@ class _CityDistrictView extends ConsumerWidget {
         for (final id in ref.watch(partyDistrictNeighboursProvider)) {
           final d = chart.districts.where((d) => d.id == id).firstOrNull;
           if (d == null) continue;
-          rows.add(
-            InkWell(
-              key: ValueKey('journey_city_walk_$id'),
-              onTap: () => onWalk(id),
-              child: Container(
-                padding: const EdgeInsets.symmetric(vertical: 8),
-                decoration: BoxDecoration(
-                  border: Border(top: BorderSide(color: ink.seam)),
-                ),
-                child: Row(
-                  children: [
-                    Icon(
-                      Icons.directions_walk,
-                      size: IconSize.s16,
-                      color: d.colour,
-                    ),
-                    const SizedBox(width: 10),
-                    Expanded(
-                      child: Text(
-                        tr(
-                          ref,
-                          'journey_city_walk_to',
-                        ).replaceAll('{district}', townNameInSentence(d.name)),
-                        style: theme.textTheme.bodyMedium,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
+          rows.add(InkWell(
+            key: ValueKey('journey_city_walk_$id'),
+            onTap: () => onWalk(id),
+            child: Container(
+              padding: const EdgeInsets.symmetric(vertical: 8),
+              decoration: BoxDecoration(
+                  border: Border(top: BorderSide(color: ink.seam))),
+              child: Row(children: [
+                Icon(Icons.directions_walk,
+                    size: IconSize.s16, color: d.colour),
+                const SizedBox(width: 10),
+                Expanded(
+                    child: Text(
+                        tr(ref, 'journey_city_walk_to').replaceAll(
+                            '{district}', townNameInSentence(d.name)),
+                        style: theme.textTheme.bodyMedium)),
+              ]),
             ),
-          );
+          ));
         }
       }
     } else {
-      rows.add(
-        Padding(
-          padding: const EdgeInsets.only(top: 8, bottom: 4),
-          child: Text(
-            tr(ref, 'journey_city_districts').toUpperCase(),
-            style: theme.textTheme.labelSmall?.copyWith(
-              color: ink.ash,
-              letterSpacing: 0.8,
-            ),
-          ),
-        ),
-      );
+      rows.add(Padding(
+        padding: const EdgeInsets.only(top: 8, bottom: 4),
+        child: Text(tr(ref, 'journey_city_districts').toUpperCase(),
+            style: theme.textTheme.labelSmall
+                ?.copyWith(color: ink.ash, letterSpacing: 0.8)),
+      ));
       for (final d in chart.districts) {
         final standing = standings[d.id]!;
         // A shut district is named (a rumour), never "?".
         final known =
             standing.locked || explored == null || explored!.contains(d.id);
         final n = byDistrict[d.id]?.length ?? 0;
-        rows.add(
-          InkWell(
-            key: ValueKey('journey_city_district_${d.id}'),
-            // A district not yet found is walked into (and so found), not
-            // looked at under its fog; a shut one is explained.
-            onTap: () => standing.locked
-                ? focusOrExplain(d.id)
-                : known
-                    ? onFocus(d.id)
-                    : onWalk(d.id),
-            child: Container(
-              padding: const EdgeInsets.symmetric(vertical: 8),
-              decoration: BoxDecoration(
-                border: Border(top: BorderSide(color: ink.seam)),
-              ),
-              child: Row(
-                children: [
-                  DistrictLead(
-                    standing,
-                    plain: Container(
-                      width: 12,
-                      height: 12,
-                      decoration: BoxDecoration(
+        rows.add(InkWell(
+          key: ValueKey('journey_city_district_${d.id}'),
+          // A district not yet found is walked into (and so found), not
+          // looked at under its fog; a shut one is explained.
+          onTap: () => standing.locked
+              ? focusOrExplain(d.id)
+              : known
+                  ? onFocus(d.id)
+                  : onWalk(d.id),
+          child: Container(
+            padding: const EdgeInsets.symmetric(vertical: 8),
+            decoration:
+                BoxDecoration(border: Border(top: BorderSide(color: ink.seam))),
+            child: Row(children: [
+              DistrictLead(
+                standing,
+                plain: Container(
+                    width: 12,
+                    height: 12,
+                    decoration: BoxDecoration(
                         shape: BoxShape.circle,
                         color: known ? d.colour : Colors.transparent,
-                        border: Border.all(color: d.colour),
-                      ),
-                    ),
-                  ),
-                  const SizedBox(width: 10),
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          known ? d.name : '?',
-                          style: theme.textTheme.bodyMedium?.copyWith(
-                            color: known ? null : ink.ash,
-                          ),
-                        ),
-                        DistrictStandingLine(standing),
-                      ],
-                    ),
-                  ),
-                  Text(
-                    d.id == hereDistrict
-                        ? text.here
-                        : standing.locked
-                            ? ''
-                            : !known
-                                ? text.unexplored
-                                : (n == 0 ? '' : text.ways(n)),
-                    style: theme.textTheme.labelSmall?.copyWith(color: ink.ash),
-                  ),
-                ],
+                        border: Border.all(color: d.colour))),
               ),
-            ),
+              const SizedBox(width: 10),
+              Expanded(
+                child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(known ? d.name : '?',
+                          style: theme.textTheme.bodyMedium
+                              ?.copyWith(color: known ? null : ink.ash)),
+                      DistrictStandingLine(standing),
+                    ]),
+              ),
+              Text(
+                  d.id == hereDistrict
+                      ? text.here
+                      : standing.locked
+                          ? ''
+                          : !known
+                              ? text.unexplored
+                              : (n == 0 ? '' : text.ways(n)),
+                  style: theme.textTheme.labelSmall?.copyWith(color: ink.ash)),
+            ]),
           ),
-        );
+        ));
       }
     }
 
@@ -676,8 +598,7 @@ class _CityDistrictView extends ConsumerWidget {
                                   : ChoiceTagChip(
                                       key: ValueKey('journey_pin_tag_$i'),
                                       tag: steps[i].tag!,
-                                      locked: steps[i].locked,
-                                    ),
+                                      locked: steps[i].locked),
                               child: streetPinOf(i),
                             ),
                         ],
@@ -715,9 +636,8 @@ class _CityDistrictView extends ConsumerWidget {
                               if (i == null || i >= steps.length) return;
                               // With places, a pin shows its place's card (a
                               // second tap folds it); Go takes the party there.
-                              final place = infos?.where(
-                                (p) => p.steps.contains(i),
-                              );
+                              final place =
+                                  infos?.where((p) => p.steps.contains(i));
                               if (place == null || place.isEmpty) {
                                 final group = groups
                                     .where((g) => g.members.contains(i))
@@ -739,22 +659,21 @@ class _CityDistrictView extends ConsumerWidget {
                             services: [
                               for (final s in townServices)
                                 CityChartService(
-                                  id: s.id,
-                                  kind: s.kind,
-                                  at: s.pin.at,
-                                  district: s.pin.district,
-                                  opens: s.opensSomething,
-                                  // The notice board says what waits on it.
-                                  badge: s.kind == 'notice_board'
-                                      ? boardContracts.length
-                                      : 0,
-                                  urgent: boardContracts.any((c) => c.done),
-                                ),
+                                    id: s.id,
+                                    kind: s.kind,
+                                    at: s.pin.at,
+                                    district: s.pin.district,
+                                    opens: s.opensSomething,
+                                    // The notice board says what waits on it.
+                                    badge: s.kind == 'notice_board'
+                                        ? boardContracts.length
+                                        : 0,
+                                    urgent: boardContracts.any((c) => c.done)),
                             ],
                             onService: (picked) => showTownServiceSheet(
-                              context,
-                              townServices.firstWhere((s) => s.id == picked.id),
-                            ),
+                                context,
+                                townServices
+                                    .firstWhere((s) => s.id == picked.id)),
                           ),
                         ),
                       ),
@@ -812,11 +731,7 @@ class _TownShotPainter extends CustomPainter {
     canvas.drawImageRect(
       shot,
       Rect.fromLTWH(
-        at.left * ratio,
-        at.top * ratio,
-        at.width * ratio,
-        at.height * ratio,
-      ),
+          at.left * ratio, at.top * ratio, at.width * ratio, at.height * ratio),
       Offset.zero & size,
       Paint()..filterQuality = FilterQuality.low,
     );

@@ -37,10 +37,7 @@ class _ElevenLabsVoiceSettingsSectionState
   Future<(int, int, String)>? _status;
 
   Future<(int, int, String)> _statusFor(
-    int version,
-    String voiceId,
-    AppLanguage language,
-  ) {
+      int version, String voiceId, AppLanguage language) {
     final key = '$version|$voiceId|${language.name}';
     if (key != _statusKey || _status == null) {
       _statusKey = key;
@@ -59,8 +56,7 @@ class _ElevenLabsVoiceSettingsSectionState
   void initState() {
     super.initState();
     _voiceController = TextEditingController(
-      text: ref.read(elevenLabsVoiceSettingsProvider).voiceId,
-    );
+        text: ref.read(elevenLabsVoiceSettingsProvider).voiceId);
   }
 
   @override
@@ -143,9 +139,8 @@ class _ElevenLabsVoiceSettingsSectionState
         if (voice.enabled && !NarrationRecordings.supported)
           Text(
             tr(ref, 'elevenlabs_web_unsupported'),
-            style: theme.textTheme.bodySmall?.copyWith(
-              color: theme.colorScheme.error,
-            ),
+            style: theme.textTheme.bodySmall
+                ?.copyWith(color: theme.colorScheme.error),
           ),
         if (voice.enabled && NarrationRecordings.supported) ...[
           const SizedBox(height: 8),
@@ -211,10 +206,8 @@ class _ElevenLabsVoiceSettingsSectionState
             decoration: InputDecoration(
               border: const OutlineInputBorder(),
               labelText: tr(ref, 'elevenlabs_voice_id_label'),
-              helperText: tr(
-                ref,
-                'elevenlabs_voice_id_hint',
-              ).replaceAll('{id}', defaultElevenLabsVoiceId),
+              helperText: tr(ref, 'elevenlabs_voice_id_hint')
+                  .replaceAll('{id}', defaultElevenLabsVoiceId),
               helperMaxLines: 3,
               suffixIcon: IconButton(
                 icon: const Icon(Icons.check),
@@ -240,22 +233,17 @@ class _ElevenLabsVoiceSettingsSectionState
           ),
           const SizedBox(height: 12),
           FutureBuilder<(int, int, String)>(
-            future: _statusFor(
-              ref.watch(narrationRecordingsVersionProvider),
-              voice.voiceId,
-              language,
-            ),
+            future: _statusFor(ref.watch(narrationRecordingsVersionProvider),
+                voice.voiceId, language),
             builder: (context, snapshot) {
               final data = snapshot.data;
               if (data == null) return const SizedBox.shrink();
               return Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(
-                    tr(ref, 'elevenlabs_recorded_count')
-                        .replaceAll('{count}', '${data.$1}')
-                        .replaceAll('{bundled}', '${data.$2}'),
-                  ),
+                  Text(tr(ref, 'elevenlabs_recorded_count')
+                      .replaceAll('{count}', '${data.$1}')
+                      .replaceAll('{bundled}', '${data.$2}')),
                   SelectableText(data.$3, style: theme.textTheme.bodySmall),
                 ],
               );
@@ -270,11 +258,8 @@ class _ElevenLabsVoiceSettingsSectionState
           if (ref.watch(appModeProvider) == AppMode.edit) ...[
             const SizedBox(height: 8),
             OutlinedButton.icon(
-              onPressed: () => Navigator.of(context).push(
-                MaterialPageRoute(
-                  builder: (_) => const NarrationRecordingScreen(),
-                ),
-              ),
+              onPressed: () => Navigator.of(context).push(MaterialPageRoute(
+                  builder: (_) => const NarrationRecordingScreen())),
               icon: const Icon(Icons.checklist),
               label: Text(tr(ref, 'narration_recording_open_button')),
             ),

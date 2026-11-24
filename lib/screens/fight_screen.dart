@@ -8,6 +8,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../combat/battlefield_condition.dart';
 import '../combat/field_anomaly.dart';
 import '../combat/fight_ground_rule.dart';
+import '../data/chapter_goals.dart';
 import '../data/hunter_mercy.dart';
 import '../data/place_traits.dart';
 import '../data/climate.dart' show WeatherKind;
@@ -481,17 +482,13 @@ class _FightScreenState extends ConsumerState<FightScreen>
     final core = coreOfProfession(session.professionId);
     final clans = ref.read(clanDataProvider);
     final held = specsByStanding(
-      session.specIds,
-      (id) => session.politics.standingOf(id, clans),
-    );
+        session.specIds, (id) => session.politics.standingOf(id, clans));
     final specs = specsFor(held.ids, core);
-    return _HeroCore(
-      core,
-      specs: specs,
-      halved: held.halved,
-      roundOf: () => _roundsStarted,
-      mods: specs.isEmpty ? SpecMods.none : SpecMods(held.ids),
-    );
+    return _HeroCore(core,
+        specs: specs,
+        halved: held.halved,
+        roundOf: () => _roundsStarted,
+        mods: specs.isEmpty ? SpecMods.none : SpecMods(held.ids));
   }();
 
   /// The member whose kept Defend face draws the enemies' attacks this
@@ -822,51 +819,35 @@ class _FightScreenState extends ConsumerState<FightScreen>
     if (!_partyBuilt) {
       _itemSets = parseItemSets(itemSetsDb);
       final clanData = ClanData(
-        factions: parseFactions(factionsDb),
-        subclans: parseSubclans(subclansDb),
-        titles: parseTitles(titlesDb),
-      );
+          factions: parseFactions(factionsDb),
+          subclans: parseSubclans(subclansDb),
+          titles: parseTitles(titlesDb));
       // One of the last battles (v1.196, see throne.dart): the Host fights
       // beside the party, its effects through the signs' machinery.
       if (widget.modifiers.hostFight) {
         _hostData = clanData;
         _host = fieldedHost(
-          politics: session.politics,
-          data: clanData,
-          signPatrons: session.signPatronsThisLife,
-        );
-      }
-      _ensurePartyBuilt(
-        session,
-        companions,
-        races,
-        professions,
-        gameConfig,
-        items,
-        _itemSets,
-        houses,
-        dice,
-        skillTrees,
-        skills,
-        signsDb,
-        [
-          ...clanEffectsFor(
-            activeTitleId: session.activeTitleId,
-            heldTitleIds: session.heldTitleIds,
-            swornBoonIds: session.swornBoonIds,
-            swornFactionId: session.politics.swornFactionId,
+            politics: session.politics,
             data: clanData,
-          ),
-          ...hostEffects(_host, clanData),
-          // A temple's blessing (temple.dart), a fight of it spent at the start.
-          if (!widget.modifiers.isTest)
-            ...activeBlessingEffects(
+            signPatrons: session.signPatronsThisLife);
+      }
+      _ensurePartyBuilt(session, companions, races, professions, gameConfig,
+          items, _itemSets, houses, dice, skillTrees, skills, signsDb, [
+        ...clanEffectsFor(
+          activeTitleId: session.activeTitleId,
+          heldTitleIds: session.heldTitleIds,
+          swornBoonIds: session.swornBoonIds,
+          swornFactionId: session.politics.swornFactionId,
+          data: clanData,
+        ),
+        ...hostEffects(_host, clanData),
+        // A temple's blessing (temple.dart), a fight of it spent at the start.
+        if (!widget.modifiers.isTest)
+          ...activeBlessingEffects(
               blessingFights: session.blessingFights,
               blessingClan: session.blessingClan,
-              data: clanData,
-            ),
-        ],
-      );
+              data: clanData),
+      ]);
       _spells = parseSpells(spellsDb);
     }
 
@@ -908,13 +889,9 @@ class _FightScreenState extends ConsumerState<FightScreen>
               ),
           ],
         ),
-        body: _withEntrance(
-          _victoryTapArea(
-            !_started
-                ? _buildSetup(dice, skills, items, session)
-                : _buildBattle(dice, skills, items, session),
-          ),
-        ),
+        body: _withEntrance(_victoryTapArea(!_started
+            ? _buildSetup(dice, skills, items, session)
+            : _buildBattle(dice, skills, items, session))),
       ),
     );
   }

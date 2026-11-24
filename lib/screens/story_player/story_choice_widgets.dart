@@ -6,10 +6,8 @@ part of '../story_player_screen.dart';
 /// different node (or leaves/enters an excursion), for both the narrative
 /// text and the choice list below it.
 Widget _nodeTransition(Widget child, Animation<double> animation) {
-  final offset = Tween<Offset>(
-    begin: const Offset(0, 0.04),
-    end: Offset.zero,
-  ).animate(animation);
+  final offset = Tween<Offset>(begin: const Offset(0, 0.04), end: Offset.zero)
+      .animate(animation);
   return FadeTransition(
     opacity: animation,
     child: SlideTransition(position: offset, child: child),
@@ -39,14 +37,10 @@ class _StaggeredRevealState extends State<_StaggeredReveal>
   void initState() {
     super.initState();
     _controller = AnimationController(
-      vsync: this,
-      duration: const Duration(milliseconds: 300),
-    );
+        vsync: this, duration: const Duration(milliseconds: 300));
     _opacity = CurvedAnimation(parent: _controller, curve: Curves.easeOut);
-    _offset = Tween<Offset>(
-      begin: const Offset(0, 0.15),
-      end: Offset.zero,
-    ).animate(CurvedAnimation(parent: _controller, curve: Curves.easeOut));
+    _offset = Tween<Offset>(begin: const Offset(0, 0.15), end: Offset.zero)
+        .animate(CurvedAnimation(parent: _controller, curve: Curves.easeOut));
     if (stillMotion(context)) {
       _controller.value = 1; // shown at once, not staggered
     } else {
@@ -92,24 +86,15 @@ class _ChoiceButton extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final mainQuestShut = _mainQuestShut(ref, choice, isExcursion);
     final locked = mainQuestShut ||
-        _isChoiceLocked(
-          choice,
-          story,
-          session,
-          isExcursion,
-          world: ref.watch(coastGateWorldProvider),
-          shutWays: ref.watch(lockedStoryWaysProvider),
-        );
+        _isChoiceLocked(choice, story, session, isExcursion,
+            world: ref.watch(coastGateWorldProvider),
+            shutWays: ref.watch(lockedStoryWaysProvider));
 
     final lockedLabel = locked
-        ? storyChoiceLockedText(
-            ref,
-            choice,
-            session,
+        ? storyChoiceLockedText(ref, choice, session,
             isExcursion: isExcursion,
             french: french,
-            mainQuestShut: mainQuestShut,
-          )
+            mainQuestShut: mainQuestShut)
         : null;
     final label = (lockedLabel?.isNotEmpty ?? false)
         ? lockedLabel!
@@ -135,8 +120,7 @@ class _ChoiceButton extends ConsumerWidget {
             ...session.completedQuestIds,
           },
           mainQuestIds: mainQuestIdsOf(
-            ref.watch(localizedDbProvider(questsSchema)).value ?? const {},
-          ),
+              ref.watch(localizedDbProvider(questsSchema)).value ?? const {}),
         );
 
     final hint = isExcursion ? '' : choicePoliticsHint(ref, choice);
@@ -153,10 +137,8 @@ class _ChoiceButton extends ConsumerWidget {
                   children: [
                     Text(label),
                     Text(
-                      tr(
-                        ref,
-                        'choice_fight_roster',
-                      ).replaceAll('{roster}', roster),
+                      tr(ref, 'choice_fight_roster')
+                          .replaceAll('{roster}', roster),
                       style: Theme.of(context).textTheme.labelSmall,
                     ),
                   ],
@@ -226,11 +208,8 @@ String choicePoliticsHint(WidgetRef ref, StoryChoice choice) {
   if (politics == null || !politics.hasHint) return '';
   if (!ref.watch(politicsHintsEnabledProvider)) return '';
   return politicsHint(
-    politics,
-    ref.watch(clanDataProvider),
-    ref.watch(appLanguageProvider),
-    politics: ref.watch(politicsProvider),
-  );
+      politics, ref.watch(clanDataProvider), ref.watch(appLanguageProvider),
+      politics: ref.watch(politicsProvider));
 }
 
 /// The muted line under a choice: "Vigil +5 · Dominion −5".
@@ -287,25 +266,18 @@ class _ChoiceLabel extends ConsumerWidget {
     String signed(int v) => v > 0 ? '+$v' : '\u2212${v.abs()}';
     final tags = [
       if (choice.goldMod != 0)
-        InkChip(
-          '${signed(choice.goldMod)} ${tr(ref, 'gold_label')}',
-          color: ink.gold,
-        ),
+        InkChip('${signed(choice.goldMod)} ${tr(ref, 'gold_label')}',
+            color: ink.gold),
       if (choice.healAmount != 0)
-        InkChip(
-          '${signed(choice.healAmount)} ${tr(ref, 'hp_label')}',
-          color: choice.healAmount > 0 ? ink.heal : ink.blood,
-        ),
+        InkChip('${signed(choice.healAmount)} ${tr(ref, 'hp_label')}',
+            color: choice.healAmount > 0 ? ink.heal : ink.blood),
       if (choice.alignmentMod != 0)
-        InkChip(
-          '${tr(ref, 'alignment_label')} ${signed(choice.alignmentMod)}',
-          color: ink.voidColor,
-        ),
+        InkChip('${tr(ref, 'alignment_label')} ${signed(choice.alignmentMod)}',
+            color: ink.voidColor),
       if (choice.grantsItem)
         InkChip(
-          '+ ${(ref.watch(localizedDbProvider(itemsSchema)).value?[choice.grantItemId] as Map<String, dynamic>?)?['itemName'] ?? choice.grantItemId}',
-          color: ink.gold,
-        ),
+            '+ ${(ref.watch(localizedDbProvider(itemsSchema)).value?[choice.grantItemId] as Map<String, dynamic>?)?['itemName'] ?? choice.grantItemId}',
+            color: ink.gold),
       if (workAhead) InkChip(tr(ref, 'choice_work_ahead'), color: ink.gold),
     ];
     if (tags.isEmpty) return Text(label);
@@ -353,8 +325,7 @@ class _ReadAloudButton extends ConsumerWidget {
               isSpeaking
                   ? Icons.stop_circle_outlined
                   : Icons.volume_up_outlined,
-              size: IconSize.s16,
-            ),
+              size: IconSize.s16),
       tooltip: isLoading
           ? tr(ref, 'loading_voice_tooltip')
           : (isSpeaking
@@ -370,13 +341,11 @@ class _ReadAloudButton extends ConsumerWidget {
           await _speakNarration(ref, paragraphs, language);
         } catch (e) {
           if (!context.mounted) return;
-          unawaited(
-            showImmersiveNotice(
-              context,
-              icon: Icons.error_outline,
-              message: '${tr(ref, 'voice_error_prefix')}: $e',
-            ),
-          );
+          unawaited(showImmersiveNotice(
+            context,
+            icon: Icons.error_outline,
+            message: '${tr(ref, 'voice_error_prefix')}: $e',
+          ));
         }
       },
     );
@@ -408,12 +377,7 @@ class _RecordSceneButton extends ConsumerWidget {
           color: recorded ? Theme.of(context).colorScheme.primary : null,
           tooltip: tr(ref, recorded ? 'scene_recorded' : 'record_scene'),
           visualDensity: VisualDensity.compact,
-          onPressed: () => recordNarration(
-              context,
-              ref,
-              {
-                language: paragraphs,
-              },
+          onPressed: () => recordNarration(context, ref, {language: paragraphs},
               confirm: false),
         );
       },
@@ -467,18 +431,14 @@ class _FoldedNarration extends StatelessWidget {
             children: [
               Row(
                 children: [
-                  Icon(
-                    Icons.auto_stories_outlined,
-                    size: IconSize.s16,
-                    color: accent.text,
-                  ),
+                  Icon(Icons.auto_stories_outlined,
+                      size: IconSize.s16, color: accent.text),
                   const SizedBox(width: 10),
                   Expanded(
                     child: Text(
                       label,
-                      style: theme.textTheme.titleSmall?.copyWith(
-                        color: accent.text,
-                      ),
+                      style: theme.textTheme.titleSmall
+                          ?.copyWith(color: accent.text),
                     ),
                   ),
                   Icon(Icons.expand_more, color: accent.text),
@@ -541,8 +501,6 @@ class _StoryWeather extends ConsumerWidget {
     // chapters' ash under a clear one.
     final sky = ref.watch(skyHereProvider)?.today();
     return WeatherLayer(
-      weather: journeyWeatherOf(sky?.kind, chapter),
-      strength: 0.3,
-    );
+        weather: journeyWeatherOf(sky?.kind, chapter), strength: 0.3);
   }
 }

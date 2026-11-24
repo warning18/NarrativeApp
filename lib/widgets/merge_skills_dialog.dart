@@ -44,15 +44,11 @@ class _CraftSheet extends ConsumerWidget {
     final ink = InkColors.of(context);
     final lang = ref.watch(appLanguageProvider);
     final known = ref.watch(
-      playerSessionProvider.select((s) => s.unlockedSkillIds.toList()),
-    );
+        playerSessionProvider.select((s) => s.unlockedSkillIds.toList()));
     // The table may still be loading when the bench opens: wait for it.
     final live = ref.watch(localizedDbProvider(skillMergesSchema));
     final recipes = craftRecipesFor(
-      merges: live.value ?? merges,
-      unlockedSkillIds: known,
-      language: lang,
-    );
+        merges: live.value ?? merges, unlockedSkillIds: known, language: lang);
     return SafeArea(
       child: Padding(
         padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
@@ -60,17 +56,12 @@ class _CraftSheet extends ConsumerWidget {
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            Text(
-              tr(ref, 'craft_skill_button'),
-              style: theme.textTheme.titleLarge?.copyWith(
-                fontFamily: InkFonts.display,
-              ),
-            ),
+            Text(tr(ref, 'craft_skill_button'),
+                style: theme.textTheme.titleLarge
+                    ?.copyWith(fontFamily: InkFonts.display)),
             const SizedBox(height: 2),
-            Text(
-              tr(ref, 'craft_sheet_intro'),
-              style: theme.textTheme.bodySmall?.copyWith(color: ink.ash),
-            ),
+            Text(tr(ref, 'craft_sheet_intro'),
+                style: theme.textTheme.bodySmall?.copyWith(color: ink.ash)),
             const SizedBox(height: 12),
             Flexible(
               child: recipes.isEmpty
@@ -83,12 +74,8 @@ class _CraftSheet extends ConsumerWidget {
                             key: Key('craft_${recipe.id}'),
                             recipe: recipe,
                             language: lang,
-                            onMerge: () => _confirmAndMerge(
-                              context,
-                              ref,
-                              recipe: recipe,
-                              language: lang,
-                            ),
+                            onMerge: () => _confirmAndMerge(context, ref,
+                                recipe: recipe, language: lang),
                           ),
                         // Two d8s recut into the tally die (Core).
                         const DiceWeaveCard(),
@@ -201,15 +188,10 @@ class _Sign extends StatelessWidget {
           width: 22,
           child: text == null
               ? Icon(Icons.arrow_forward, size: IconSize.s16, color: color)
-              : Text(
-                  text!,
+              : Text(text!,
                   textAlign: TextAlign.center,
                   style: TextStyle(
-                    fontFamily: InkFonts.system,
-                    fontSize: 20,
-                    color: color,
-                  ),
-                ),
+                      fontFamily: InkFonts.system, fontSize: 20, color: color)),
         ),
       );
 }
@@ -256,9 +238,8 @@ class _SkillTile extends StatelessWidget {
                 borderRadius: BorderRadius.circular(6),
                 color: accent.withValues(alpha: 0.10),
                 border: Border.all(
-                  color: accent.withValues(alpha: missing ? 0.6 : 0.9),
-                  width: 1.5,
-                ),
+                    color: accent.withValues(alpha: missing ? 0.6 : 0.9),
+                    width: 1.5),
               ),
               child: missing || future
                   ? Opacity(opacity: missing ? 0.35 : 0.55, child: icon)
@@ -268,52 +249,39 @@ class _SkillTile extends StatelessWidget {
               Positioned(
                 right: -5,
                 top: -5,
-                child: Icon(
-                  Icons.check_circle,
-                  size: IconSize.s16,
-                  color: ink.heal,
-                ),
+                child: Icon(Icons.check_circle,
+                    size: IconSize.s16, color: ink.heal),
               ),
             if (missing)
               Positioned(
                 right: -5,
                 top: -5,
-                child: PixelGlyph(
-                  PixelGlyphs.lock,
-                  size: IconSize.s16,
-                  color: ink.ember,
-                ),
+                child: PixelGlyph(PixelGlyphs.lock,
+                    size: IconSize.s16, color: ink.ember),
               ),
           ],
         ),
         const SizedBox(height: 6),
-        Text(
-          skill.name,
-          maxLines: 2,
-          textAlign: TextAlign.center,
-          overflow: TextOverflow.ellipsis,
-          style: theme.textTheme.labelLarge?.copyWith(
-            // A long word (Détermination) shrinks rather than breaks.
-            fontSize: skill.name
-                        .split(' ')
-                        .fold(0, (m, w) => w.length > m ? w.length : m) >
-                    11
-                ? 10
-                : 12,
-            color: missing ? ink.ash : null,
-            height: 1.15,
-          ),
-        ),
+        Text(skill.name,
+            maxLines: 2,
+            textAlign: TextAlign.center,
+            overflow: TextOverflow.ellipsis,
+            style: theme.textTheme.labelLarge?.copyWith(
+                // A long word (Détermination) shrinks rather than breaks.
+                fontSize: skill.name
+                            .split(' ')
+                            .fold(0, (m, w) => w.length > m ? w.length : m) >
+                        11
+                    ? 10
+                    : 12,
+                color: missing ? ink.ash : null,
+                height: 1.15)),
         if (state == _TileState.missing && missingTag.isNotEmpty)
-          Text(
-            missingTag,
-            style: theme.textTheme.labelSmall?.copyWith(color: ink.ember),
-          ),
+          Text(missingTag,
+              style: theme.textTheme.labelSmall?.copyWith(color: ink.ember)),
         if (state == _TileState.result)
-          Text(
-            knownTag,
-            style: theme.textTheme.labelSmall?.copyWith(color: ink.heal),
-          ),
+          Text(knownTag,
+              style: theme.textTheme.labelSmall?.copyWith(color: ink.heal)),
       ],
     );
   }
@@ -334,10 +302,8 @@ Future<void> _confirmAndMerge(
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          Text(
-            trFor(language, 'merge_confirm_message'),
-            style: theme.textTheme.bodyMedium,
-          ),
+          Text(trFor(language, 'merge_confirm_message'),
+              style: theme.textTheme.bodyMedium),
           const SizedBox(height: 12),
           _CraftRecipeCard(recipe: recipe, language: language),
         ],

@@ -20,12 +20,10 @@ String _resonanceLineFor(Resonance state, String clan, AppLanguage language) {
     Resonance.lit => t('clan_die_resonance_lit')
         .replaceAll('{n}', '$resonanceBonus')
         .replaceAll('{max}', '$resonanceMaxFace'),
-    Resonance.notMainClan => t(
-        'clan_die_resonance_main',
-      ).replaceAll('{clan}', clan),
-    Resonance.standingLow => t(
-        'clan_die_resonance_standing',
-      ).replaceAll('{clan}', clan),
+    Resonance.notMainClan =>
+      t('clan_die_resonance_main').replaceAll('{clan}', clan),
+    Resonance.standingLow =>
+      t('clan_die_resonance_standing').replaceAll('{clan}', clan),
     Resonance.none => '',
   };
 }
@@ -69,22 +67,17 @@ class ClanDieGift extends ConsumerWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  trFor(
-                    language,
-                    'clan_die_gift_title',
-                  ).replaceAll('{clan}', clan),
-                  style: theme.textTheme.labelMedium?.copyWith(
-                    color: color,
-                    fontWeight: FontWeight.w700,
-                  ),
+                  trFor(language, 'clan_die_gift_title')
+                      .replaceAll('{clan}', clan),
+                  style: theme.textTheme.labelMedium
+                      ?.copyWith(color: color, fontWeight: FontWeight.w700),
                 ),
                 Text(
                   _resonanceLineFor(state, clan, language),
                   key: Key('clan_die_resonance_${state.name}'),
                   style: theme.textTheme.labelSmall?.copyWith(
-                    color: lit ? null : theme.colorScheme.onSurfaceVariant,
-                    fontStyle: lit ? null : FontStyle.italic,
-                  ),
+                      color: lit ? null : theme.colorScheme.onSurfaceVariant,
+                      fontStyle: lit ? null : FontStyle.italic),
                 ),
               ],
             ),

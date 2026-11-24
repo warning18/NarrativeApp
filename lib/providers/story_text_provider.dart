@@ -10,10 +10,8 @@ import 'geography_provider.dart';
 /// The names the story text colours, for [french] or English text (see
 /// story_names.dart). Raw tables: a table still loading reads as empty, and
 /// the names come in once it has loaded.
-final storyNameMatcherProvider = Provider.family<StoryNameMatcher, bool>((
-  ref,
-  french,
-) {
+final storyNameMatcherProvider =
+    Provider.family<StoryNameMatcher, bool>((ref, french) {
   Map<String, dynamic> table(DbSchema schema) =>
       ref.watch(gameDbProvider(schema)).value ?? const {};
   return buildStoryNames(

@@ -29,9 +29,8 @@ final travelHistoryProvider = Provider<TravelHistory>((ref) {
 
 /// The chart the travel-history map is drawn on: the story world
 /// ([MapShape.story]), whatever look the world map is set to.
-final storyChartProvider = Provider<ChartGeography>(
-  (ref) => chartOf(MapShape.story),
-);
+final storyChartProvider =
+    Provider<ChartGeography>((ref) => chartOf(MapShape.story));
 
 /// The path of a move from landmark `from` to landmark `to` on the story
 /// chart (storyChartProvider, the full map's), along the world's roads and
@@ -40,14 +39,9 @@ final storyChartProvider = Provider<ChartGeography>(
 /// world_leg_path.dart). The ids are world_map.dart's, as landmarkOfScene
 /// gives them for the scenes the Journey moves between.
 final worldLegPathProvider =
-    Provider.family<WorldLegPath, ({String from, String to})>(
-  (ref, leg) => worldLegPath(
-    ref.watch(storyChartProvider),
-    leg.from,
-    leg.to,
-    language: ref.watch(appLanguageProvider),
-  ),
-);
+    Provider.family<WorldLegPath, ({String from, String to})>((ref, leg) =>
+        worldLegPath(ref.watch(storyChartProvider), leg.from, leg.to,
+            language: ref.watch(appLanguageProvider)));
 
 /// What the full map's sheet offers for each place only heard of (see
 /// heard_of.dart): "Set out" there or by the expedition that finds it, or
@@ -70,9 +64,6 @@ final heardOfPlacesProvider = Provider<Map<String, HeardOfPlace>>((ref) {
 
 /// The landmark marked as the map's goal, until it is reached (see
 /// mapGoalIn); null when there is none.
-final mapGoalProvider = Provider<String?>(
-  (ref) => mapGoalIn(
+final mapGoalProvider = Provider<String?>((ref) => mapGoalIn(
     ref.watch(playerSessionProvider.select((s) => s.flags)),
-    ref.watch(travelHistoryProvider).visited,
-  ),
-);
+    ref.watch(travelHistoryProvider).visited));

@@ -13,10 +13,8 @@ import '../gamedata/db_schema.dart';
 import '../gamedata/game_db_repository.dart';
 import '../l10n/app_locale.dart';
 
-final gameDbRepositoryProvider = Provider.family<GameDbRepository, DbSchema>((
-  ref,
-  schema,
-) {
+final gameDbRepositoryProvider =
+    Provider.family<GameDbRepository, DbSchema>((ref, schema) {
   return GameDbRepository(schema);
 });
 
@@ -25,10 +23,7 @@ final gameDbRepositoryProvider = Provider.family<GameDbRepository, DbSchema>((
 /// its English fields already hold the French text. Other tables as they
 /// are.
 Map<String, dynamic> _readableTable(
-  DbSchema schema,
-  Map<String, dynamic> records, {
-  bool french = false,
-}) =>
+        DbSchema schema, Map<String, dynamic> records, {bool french = false}) =>
     schema.id == itemsSchema.id
         ? withForgedVariants(records, french: french)
         : records;
@@ -52,24 +47,18 @@ class _GameDbNotifier extends StateNotifier<AsyncValue<Map<String, dynamic>>> {
     if (_loaded.isCompleted) _loaded = Completer();
     final loaded = _loaded;
     try {
-      final records = _readableTable(
-        _repository.schema,
-        await _repository.loadRecords(),
-      );
+      final records =
+          _readableTable(_repository.schema, await _repository.loadRecords());
       state = AsyncValue.data(records);
       if (!loaded.isCompleted) loaded.complete(records);
     } catch (error, stackTrace) {
       // Logged, not swallowed (issue #696): the bundled file itself failed.
-      FlutterError.reportError(
-        FlutterErrorDetails(
+      FlutterError.reportError(FlutterErrorDetails(
           exception: error,
           stack: stackTrace,
           library: 'gamedata',
-          context: ErrorDescription(
-            'loading the ${_repository.schema.id} table',
-          ),
-        ),
-      );
+          context:
+              ErrorDescription('loading the ${_repository.schema.id} table')));
       state = AsyncValue.error(error, stackTrace);
       if (!loaded.isCompleted) loaded.complete(const {});
     }
@@ -87,18 +76,16 @@ class _GameDbNotifier extends StateNotifier<AsyncValue<Map<String, dynamic>>> {
   }
 
   Future<void> upsertRecord(String key, Map<String, dynamic> record) async {
-    final current = Map<String, dynamic>.from(
-      state.value ?? <String, dynamic>{},
-    );
+    final current =
+        Map<String, dynamic>.from(state.value ?? <String, dynamic>{});
     current[key] = record;
     await _repository.saveRecords(current);
     state = AsyncValue.data(_readableTable(_repository.schema, current));
   }
 
   Future<void> deleteRecord(String key) async {
-    final current = Map<String, dynamic>.from(
-      state.value ?? <String, dynamic>{},
-    );
+    final current =
+        Map<String, dynamic>.from(state.value ?? <String, dynamic>{});
     current.remove(key);
     await _repository.saveRecords(current);
     state = AsyncValue.data(_readableTable(_repository.schema, current));
@@ -116,17 +103,17 @@ class _GameDbNotifier extends StateNotifier<AsyncValue<Map<String, dynamic>>> {
 }
 
 final gameDbProvider = StateNotifierProvider.family<_GameDbNotifier,
-    AsyncValue<Map<String, dynamic>>, DbSchema>((ref, schema) {
-  final repository = ref.watch(gameDbRepositoryProvider(schema));
-  return _GameDbNotifier(repository);
-});
+    AsyncValue<Map<String, dynamic>>, DbSchema>(
+  (ref, schema) {
+    final repository = ref.watch(gameDbRepositoryProvider(schema));
+    return _GameDbNotifier(repository);
+  },
+);
 
 /// [_GameDbNotifier.whenLoaded] for [schema]'s table, as the player reads
 /// it ([localizedDbProvider]'s, cached: it isn't rebuilt on each call).
 Future<Map<String, dynamic>> loadedGameDb(
-  WidgetRef ref,
-  DbSchema schema,
-) async {
+    WidgetRef ref, DbSchema schema) async {
   await ref.read(gameDbProvider(schema).notifier).whenLoaded();
   return ref.read(localizedDbProvider(schema)).value ?? const {};
 }
@@ -172,16 +159,11 @@ final localizedDbProvider =
     Provider.family<AsyncValue<Map<String, dynamic>>, DbSchema>(_localized);
 
 AsyncValue<Map<String, dynamic>> _localized(Ref ref, DbSchema schema) {
-  final raw = ref.watch(gameDbProvider(schema)).whenData(
-        (records) => _readableTable(
-          schema,
-          withResolvedPlaceholders(schema.id, records),
-        ),
-      );
+  final raw = ref.watch(gameDbProvider(schema)).whenData((records) =>
+      _readableTable(schema, withResolvedPlaceholders(schema.id, records)));
   if (ref.watch(appLanguageProvider) != AppLanguage.fr) return raw;
-  return raw.whenData(
-    (records) => _readableTable(schema, frenchOverlay(records), french: true),
-  );
+  return raw.whenData((records) =>
+      _readableTable(schema, frenchOverlay(records), french: true));
 }
 
 /// The overrides that hold [schema]'s table at [records] under a
@@ -192,8 +174,7 @@ AsyncValue<Map<String, dynamic>> _localized(Ref ref, DbSchema schema) {
 List<Override> gameDbScopedTo(DbSchema schema, Map<String, dynamic> records) =>
     [
       gameDbProvider(schema).overrideWith(
-        (ref) => _GameDbNotifier.fixed(GameDbRepository(schema), records),
-      ),
+          (ref) => _GameDbNotifier.fixed(GameDbRepository(schema), records)),
       localizedDbProvider(schema)
           .overrideWith((ref) => _localized(ref, schema)),
     ];

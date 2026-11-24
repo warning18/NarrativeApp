@@ -45,12 +45,8 @@ const Set<String> restockingItemTypes = {'Potion', 'Scroll'};
 
 /// The key a purchase of [itemId] at [shopId] is counted under: gear once
 /// for the whole run, a restocking type once per [chapter].
-String stockKeyFor(
-  String shopId,
-  String itemId, {
-  String? itemType,
-  required int chapter,
-}) =>
+String stockKeyFor(String shopId, String itemId,
+        {String? itemType, required int chapter}) =>
     restockingItemTypes.contains(itemType)
         ? '$shopId::$itemId@$chapter'
         : '$shopId::$itemId';

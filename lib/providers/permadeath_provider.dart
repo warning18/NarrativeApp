@@ -26,5 +26,4 @@ class _PermadeathNotifier extends StateNotifier<bool> {
 /// `applyPermadeath`). Off by default; persisted via [SharedPreferences].
 final permadeathEnabledProvider =
     StateNotifierProvider<_PermadeathNotifier, bool>(
-  (ref) => _PermadeathNotifier(),
-);
+        (ref) => _PermadeathNotifier());

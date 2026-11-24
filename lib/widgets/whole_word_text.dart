@@ -8,13 +8,12 @@ import 'package:flutter/material.dart';
 const double wholeWordMaxTextScale = 1.15;
 
 class WholeWordText extends StatelessWidget {
-  const WholeWordText({
-    super.key,
-    required this.text,
-    required this.maxLines,
-    required this.style,
-    this.maxScale = wholeWordMaxTextScale,
-  });
+  const WholeWordText(
+      {super.key,
+      required this.text,
+      required this.maxLines,
+      required this.style,
+      this.maxScale = wholeWordMaxTextScale});
 
   final String text;
   final int maxLines;
@@ -25,36 +24,32 @@ class WholeWordText extends StatelessWidget {
   Widget build(BuildContext context) {
     final user =
         MediaQuery.textScalerOf(context).clamp(maxScaleFactor: maxScale);
-    return LayoutBuilder(
-      builder: (context, box) {
-        var scaler = user;
-        if (box.maxWidth.isFinite) {
-          var widest = 0.0;
-          for (final word in text.split(RegExp(r'\s+'))) {
-            final p = TextPainter(
-              text: TextSpan(text: word, style: style),
-              textScaler: user,
-              textDirection: TextDirection.ltr,
-              maxLines: 1,
-            )..layout();
-            if (p.width > widest) widest = p.width;
-          }
-          // A 3 % margin: scaled text is not exactly proportional.
-          final room = box.maxWidth * 0.97;
-          if (widest > room) {
-            final k = (user.scale(1) * room / widest).clamp(0.8, 1.0);
-            scaler = TextScaler.linear(k);
-          }
+    return LayoutBuilder(builder: (context, box) {
+      var scaler = user;
+      if (box.maxWidth.isFinite) {
+        var widest = 0.0;
+        for (final word in text.split(RegExp(r'\s+'))) {
+          final p = TextPainter(
+            text: TextSpan(text: word, style: style),
+            textScaler: user,
+            textDirection: TextDirection.ltr,
+            maxLines: 1,
+          )..layout();
+          if (p.width > widest) widest = p.width;
         }
-        return Text(
-          text,
+        // A 3 % margin: scaled text is not exactly proportional.
+        final room = box.maxWidth * 0.97;
+        if (widest > room) {
+          final k = (user.scale(1) * room / widest).clamp(0.8, 1.0);
+          scaler = TextScaler.linear(k);
+        }
+      }
+      return Text(text,
           textScaler: scaler,
           maxLines: maxLines,
           overflow: TextOverflow.ellipsis,
           textAlign: TextAlign.center,
-          style: style,
-        );
-      },
-    );
+          style: style);
+    });
   }
 }

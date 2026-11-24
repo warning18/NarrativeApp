@@ -9,10 +9,7 @@ const String companionAssetsRoot =
 
 /// Builds `count` sequential frame paths named frame_000.png, frame_001.png,
 /// ... under [relativeDir] (relative to [companionAssetsRoot]).
-List<String> companionFrames(
-  String relativeDir,
-  int count,
-) =>
+List<String> companionFrames(String relativeDir, int count) =>
     List<String>.generate(
       count,
       (i) =>

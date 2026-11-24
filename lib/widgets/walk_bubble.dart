@@ -45,23 +45,17 @@ class WalkBubble extends StatelessWidget {
               mainAxisSize: MainAxisSize.min,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(
-                  speaker,
-                  key: const Key('walk_bubble_speaker'),
-                  style: theme.textTheme.labelSmall?.copyWith(
-                    color: ink.gold,
-                    letterSpacing: 0.6,
-                  ),
-                ),
+                Text(speaker,
+                    key: const Key('walk_bubble_speaker'),
+                    style: theme.textTheme.labelSmall
+                        ?.copyWith(color: ink.gold, letterSpacing: 0.6)),
                 const SizedBox(height: 2),
-                Text(
-                  line,
-                  key: const Key('walk_bubble_line'),
-                  maxLines: 4,
-                  overflow: TextOverflow.ellipsis,
-                  style: speechBubbleTextStyle(theme)
-                      ?.copyWith(fontSize: 13, height: 1.3),
-                ),
+                Text(line,
+                    key: const Key('walk_bubble_line'),
+                    maxLines: 4,
+                    overflow: TextOverflow.ellipsis,
+                    style: speechBubbleTextStyle(theme)
+                        ?.copyWith(fontSize: 13, height: 1.3)),
               ],
             ),
           ),
@@ -90,18 +84,16 @@ class _Tail extends CustomPainter {
       ..lineTo(size.width / 2, size.height)
       ..lineTo(size.width, 0);
     canvas.drawPath(
-      path.shift(Offset.zero),
-      Paint()
-        ..color = fill
-        ..style = PaintingStyle.fill,
-    );
+        path.shift(Offset.zero),
+        Paint()
+          ..color = fill
+          ..style = PaintingStyle.fill);
     canvas.drawPath(
-      path,
-      Paint()
-        ..color = stroke
-        ..style = PaintingStyle.stroke
-        ..strokeWidth = 1.2,
-    );
+        path,
+        Paint()
+          ..color = stroke
+          ..style = PaintingStyle.stroke
+          ..strokeWidth = 1.2);
   }
 
   @override

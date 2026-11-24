@@ -96,15 +96,10 @@ class _CampTownSectionState extends ConsumerState<CampTownSection> {
       final fromBottom = (townHarborHeight +
               (spot.$1 + footprint.height / 2) * townRowHeight) *
           scale;
-      final target = (fromBottom - position.viewportDimension / 2).clamp(
-        0.0,
-        position.maxScrollExtent,
-      );
-      _scroll.animateTo(
-        target,
-        duration: const Duration(milliseconds: 400),
-        curve: Curves.easeOut,
-      );
+      final target = (fromBottom - position.viewportDimension / 2)
+          .clamp(0.0, position.maxScrollExtent);
+      _scroll.animateTo(target,
+          duration: const Duration(milliseconds: 400), curve: Curves.easeOut);
     });
   }
 
@@ -182,18 +177,15 @@ class _CampTownSectionState extends ConsumerState<CampTownSection> {
     final house = widget.houses[houseId] as Map<String, dynamic>;
     final cost = (house['buildCost'] as num?)?.toInt() ?? 0;
     final notifier = ref.read(playerSessionProvider.notifier);
-    await notifier.buildHouse(
-      houseId,
-      cost,
-      unlocksShopId: house['unlocksShopId']?.toString() ?? '',
-      requiredFlags: requiredFlagsOf(house),
-      unlockedByFlags: unlockedByFlagsOf(house),
-      materialCost: materialCountsOf(house, 'materialCost'),
-      // A house comes with its tier's chapter (camp_works.dart).
-      fromChapter: tierFirstChapter(workTierOf(house)),
-      chapter: ref.read(reachedChapterProvider),
-      requiredAllyId: house['requiredAllyId']?.toString(),
-    );
+    await notifier.buildHouse(houseId, cost,
+        unlocksShopId: house['unlocksShopId']?.toString() ?? '',
+        requiredFlags: requiredFlagsOf(house),
+        unlockedByFlags: unlockedByFlagsOf(house),
+        materialCost: materialCountsOf(house, 'materialCost'),
+        // A house comes with its tier's chapter (camp_works.dart).
+        fromChapter: tierFirstChapter(workTierOf(house)),
+        chapter: ref.read(reachedChapterProvider),
+        requiredAllyId: house['requiredAllyId']?.toString());
     if (!mounted) return;
     // Nothing to tell if it did not go up (the purse or the flags changed
     // under the button).
@@ -209,18 +201,16 @@ class _CampTownSectionState extends ConsumerState<CampTownSection> {
         : '\n${trFor(lang, 'achievement_unlocked_prefix')}: '
             '${newAchievements.map((id) => (widget.achievements[id] as Map<String, dynamic>?)?['achievementName']?.toString() ?? id).join(", ")}';
     if (newAchievements.isNotEmpty) {
-      unawaited(
-        announceAchievements(
-            context,
-            [
-              for (final id in newAchievements)
-                (widget.achievements[id]
-                            as Map<String, dynamic>?)?['achievementName']
-                        ?.toString() ??
-                    id,
-            ],
-            trFor(lang, 'achievement_unlocked_prefix').toUpperCase()),
-      );
+      unawaited(announceAchievements(
+          context,
+          [
+            for (final id in newAchievements)
+              (widget.achievements[id]
+                          as Map<String, dynamic>?)?['achievementName']
+                      ?.toString() ??
+                  id
+          ],
+          trFor(lang, 'achievement_unlocked_prefix').toUpperCase()));
     }
     // A companion's word on some houses (Core's speakUpOnMoment), after
     // the notice, as for a shared drink.
@@ -285,10 +275,8 @@ class _CampTownSectionState extends ConsumerState<CampTownSection> {
         (!isTownAddition(selected) && built.contains(selected))) {
       selected = _showAdditions
           ? townAdditions.first.id
-          : _houseIds.firstWhere(
-              buildable,
-              orElse: () => townAdditions.first.id,
-            );
+          : _houseIds.firstWhere(buildable,
+              orElse: () => townAdditions.first.id);
     }
     final previewFootprint = footprintOf(selected);
 
@@ -319,10 +307,8 @@ class _CampTownSectionState extends ConsumerState<CampTownSection> {
           crossAxisAlignment: CrossAxisAlignment.end,
           children: [
             Expanded(
-              child: Text(
-                tr(ref, 'town_title'),
-                style: theme.textTheme.headlineSmall,
-              ),
+              child: Text(tr(ref, 'town_title'),
+                  style: theme.textTheme.headlineSmall),
             ),
             Text(
               tr(ref, 'town_counts')
@@ -355,10 +341,8 @@ class _CampTownSectionState extends ConsumerState<CampTownSection> {
                   ),
                   // The hour over the town (the world clock).
                   WatchSky(
-                    watch: ref.watch(
-                      playerSessionProvider.select((s) => s.watch),
-                    ),
-                  ),
+                      watch: ref
+                          .watch(playerSessionProvider.select((s) => s.watch))),
                 ],
               ),
             ),
@@ -374,10 +358,8 @@ class _CampTownSectionState extends ConsumerState<CampTownSection> {
                     : tr(ref, 'town_tap_to_preview')),
             maxLines: 1,
             overflow: TextOverflow.ellipsis,
-            style: theme.textTheme.bodyMedium?.copyWith(
-              fontStyle: FontStyle.italic,
-              color: ink.ash,
-            ),
+            style: theme.textTheme.bodyMedium
+                ?.copyWith(fontStyle: FontStyle.italic, color: ink.ash),
           ),
         ),
         TutorialTarget(
@@ -400,10 +382,8 @@ class _CampTownSectionState extends ConsumerState<CampTownSection> {
                   addition: addition,
                   gold: session.gold,
                   built: townPieceCount(session.townPieces, addition.id),
-                  limit: townAdditionLimit(
-                    addition.id,
-                    houseCount: session.builtHouseIds.length,
-                  ),
+                  limit: townAdditionLimit(addition.id,
+                      houseCount: session.builtHouseIds.length),
                 ),
             ],
             onSelectAddition: (id) {
@@ -411,9 +391,7 @@ class _CampTownSectionState extends ConsumerState<CampTownSection> {
               _reveal(town, footprintOf(id));
             },
             onBuildAddition: (id) => _buildAddition(
-              townAdditions.firstWhere((a) => a.id == id),
-              town,
-            ),
+                townAdditions.firstWhere((a) => a.id == id), town),
             houseList: (works) => CampWorksList(
               works: works,
               houses: ref.watch(localizedDbProvider(housesSchema)).value ??

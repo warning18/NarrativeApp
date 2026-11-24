@@ -47,11 +47,8 @@ void _overlayFor(
 }
 
 class _TimedPaint extends StatefulWidget {
-  const _TimedPaint({
-    required this.duration,
-    required this.paint,
-    required this.onDone,
-  });
+  const _TimedPaint(
+      {required this.duration, required this.paint, required this.onDone});
 
   final Duration duration;
   final void Function(Canvas canvas, Size size, double t) paint;
@@ -103,12 +100,8 @@ Offset centreOf(BuildContext context) {
 
 /// A burst of sparks at [at] in [colour]: a skill learned, a coin paid, a
 /// face snapped onto a die.
-void showBurst(
-  BuildContext context, {
-  required Offset at,
-  required Color colour,
-  int count = 14,
-}) {
+void showBurst(BuildContext context,
+    {required Offset at, required Color colour, int count = 14}) {
   final rng = math.Random(at.dx.toInt() * 31 + at.dy.toInt());
   final sparks = [
     for (var i = 0; i < count; i++)
@@ -137,22 +130,15 @@ void showBurst(
             Offset(math.cos(s.angle), math.sin(s.angle)) * (s.speed * e) +
             Offset(0, 30 * t * t);
         canvas.drawCircle(
-          p,
-          s.size,
-          Paint()..color = colour.withValues(alpha: alpha),
-        );
+            p, s.size, Paint()..color = colour.withValues(alpha: alpha));
       }
     },
   );
 }
 
 /// Coins flying from [from] to [to] (a purchase, gold earned).
-void showCoinFlight(
-  BuildContext context, {
-  required Offset from,
-  required Offset to,
-  int count = 6,
-}) {
+void showCoinFlight(BuildContext context,
+    {required Offset from, required Offset to, int count = 6}) {
   const gold = Palette.goldDark;
   _overlayFor(
     context,
@@ -162,24 +148,18 @@ void showCoinFlight(
         final local = ((t - i * 0.06) / 0.75).clamp(0.0, 1.0);
         if (local <= 0 || local >= 1) continue;
         final e = Curves.easeInOutCubic.transform(local);
-        final mid = Offset(
-          (from.dx + to.dx) / 2 + (i - count / 2) * 8,
-          math.min(from.dy, to.dy) - 80 - i * 6,
-        );
-        final p = Offset.lerp(
-          Offset.lerp(from, mid, e),
-          Offset.lerp(mid, to, e),
-          e,
-        )!;
+        final mid = Offset((from.dx + to.dx) / 2 + (i - count / 2) * 8,
+            math.min(from.dy, to.dy) - 80 - i * 6);
+        final p =
+            Offset.lerp(Offset.lerp(from, mid, e), Offset.lerp(mid, to, e), e)!;
         canvas.drawCircle(p, 5, Paint()..color = gold);
         canvas.drawCircle(
-          p,
-          5,
-          Paint()
-            ..style = PaintingStyle.stroke
-            ..strokeWidth = 1
-            ..color = Palette.goldLight,
-        );
+            p,
+            5,
+            Paint()
+              ..style = PaintingStyle.stroke
+              ..strokeWidth = 1
+              ..color = Palette.goldLight);
       }
     },
   );
@@ -212,11 +192,8 @@ void showHealWave(BuildContext context) {
 
 /// An achievement earned: a toast slides down from the top with a shine
 /// across it, then goes back up.
-Future<void> _showAchievementToast(
-  BuildContext context,
-  String name, {
-  String label = 'ACHIEVEMENT',
-}) async {
+Future<void> _showAchievementToast(BuildContext context, String name,
+    {String label = 'ACHIEVEMENT'}) async {
   final overlay = Overlay.maybeOf(context, rootOverlay: true);
   if (overlay == null) return;
   final still = _still(context);
@@ -311,13 +288,11 @@ class _AchievementToastState extends State<_AchievementToast>
                             translation: Offset(-1 + shine * 2.2, 0),
                             child: DecoratedBox(
                               decoration: BoxDecoration(
-                                gradient: LinearGradient(
-                                  colors: [
-                                    ink.gold.withValues(alpha: 0),
-                                    ink.gold.withValues(alpha: 0.28),
-                                    ink.gold.withValues(alpha: 0),
-                                  ],
-                                ),
+                                gradient: LinearGradient(colors: [
+                                  ink.gold.withValues(alpha: 0),
+                                  ink.gold.withValues(alpha: 0.28),
+                                  ink.gold.withValues(alpha: 0),
+                                ]),
                               ),
                             ),
                           ),
@@ -336,11 +311,8 @@ class _AchievementToastState extends State<_AchievementToast>
                 CircleAvatar(
                   radius: 18,
                   backgroundColor: ink.gold.withValues(alpha: 0.18),
-                  child: Icon(
-                    Icons.emoji_events,
-                    color: ink.gold,
-                    size: IconSize.s16,
-                  ),
+                  child: Icon(Icons.emoji_events,
+                      color: ink.gold, size: IconSize.s16),
                 ),
                 const SizedBox(width: 10),
                 Expanded(
@@ -348,19 +320,12 @@ class _AchievementToastState extends State<_AchievementToast>
                     crossAxisAlignment: CrossAxisAlignment.start,
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      Text(
-                        widget.label.toUpperCase(),
-                        style: theme.textTheme.labelSmall?.copyWith(
-                          color: ink.gold,
-                          letterSpacing: 1.4,
-                        ),
-                      ),
-                      Text(
-                        widget.name,
-                        style: theme.textTheme.titleMedium?.copyWith(
-                          fontFamily: InkFonts.display,
-                        ),
-                      ),
+                      Text(widget.label.toUpperCase(),
+                          style: theme.textTheme.labelSmall
+                              ?.copyWith(color: ink.gold, letterSpacing: 1.4)),
+                      Text(widget.name,
+                          style: theme.textTheme.titleMedium
+                              ?.copyWith(fontFamily: InkFonts.display)),
                     ],
                   ),
                 ),
@@ -379,15 +344,13 @@ class _AchievementToastState extends State<_AchievementToast>
 /// the [news] from the coast the chapter brings (v1.195) under
 /// [newsTitle] -- the card stays longer for each. It lets taps through:
 /// the story goes on under it.
-Future<void> showChapterCard(
-  BuildContext context, {
-  required String number,
-  required String title,
-  required Color colour,
-  String? note,
-  String newsTitle = '',
-  List<String> news = const [],
-}) {
+Future<void> showChapterCard(BuildContext context,
+    {required String number,
+    required String title,
+    required Color colour,
+    String? note,
+    String newsTitle = '',
+    List<String> news = const []}) {
   if (_still(context)) return Future.value();
   final overlay = Overlay.maybeOf(context, rootOverlay: true);
   if (overlay == null) return Future.value();
@@ -416,8 +379,7 @@ Future<void> showChapterCard(
 Duration chapterCardDuration(int newsCount) {
   final ms = 2400 + 2600 * newsCount;
   return Duration(
-    milliseconds: ms.clamp(2400, _chapterCardLongest.inMilliseconds),
-  );
+      milliseconds: ms.clamp(2400, _chapterCardLongest.inMilliseconds));
 }
 
 const Duration _chapterCardLongest = Duration(milliseconds: 10400);
@@ -490,15 +452,12 @@ class _ChapterCardState extends State<ChapterCard>
                     tier: CardTier.common,
                     band: 0.5,
                     padding: const EdgeInsets.symmetric(
-                      vertical: 28,
-                      horizontal: 14,
-                    ),
+                        vertical: 28, horizontal: 14),
                     // The page, opaque, under a wash of the chapter's colour: the story's text
                     // does not show through the news.
                     fill: Color.alphaBlend(
-                      widget.colour.withValues(alpha: 0.22),
-                      theme.colorScheme.surface,
-                    ),
+                        widget.colour.withValues(alpha: 0.22),
+                        theme.colorScheme.surface),
                     child: Stack(
                       alignment: Alignment.center,
                       children: [
@@ -514,28 +473,17 @@ class _ChapterCardState extends State<ChapterCard>
                               child: PixelMoment(
                                 key: const ValueKey('chapter_card_burst'),
                                 palette: VfxPalette(
-                                  widget.colour.toARGB32(),
-                                  Color.lerp(
-                                    widget.colour,
-                                    Colors.white,
-                                    0.6,
-                                  )!
-                                      .toARGB32(),
-                                ),
+                                    widget.colour.toARGB32(),
+                                    Color.lerp(
+                                            widget.colour, Colors.white, 0.6)!
+                                        .toARGB32()),
                                 duration: const Duration(milliseconds: 1500),
                                 delay: const Duration(milliseconds: 300),
                                 layers: const [
-                                  PixelMomentLayer(
-                                    'vfx_shout',
-                                    span: 0.7,
-                                    scale: 4,
-                                  ),
-                                  PixelMomentLayer(
-                                    'vfx_mana',
-                                    t0: 0.2,
-                                    span: 0.8,
-                                    scale: 3,
-                                  ),
+                                  PixelMomentLayer('vfx_shout',
+                                      span: 0.7, scale: 4),
+                                  PixelMomentLayer('vfx_mana',
+                                      t0: 0.2, span: 0.8, scale: 3),
                                 ],
                               ),
                             ),
@@ -548,33 +496,25 @@ class _ChapterCardState extends State<ChapterCard>
                             if (_chapterNumeral(widget.number) case final n?)
                               Opacity(
                                 opacity: ink,
-                                child: Text(
-                                  n,
-                                  key: const ValueKey('chapter_card_numeral'),
-                                  style:
-                                      theme.textTheme.displayMedium?.copyWith(
-                                    fontFamily: InkFonts.display,
-                                    color: widget.colour,
-                                    height: 1,
-                                  ),
-                                ),
+                                child: Text(n,
+                                    key: const ValueKey('chapter_card_numeral'),
+                                    style: theme.textTheme.displayMedium
+                                        ?.copyWith(
+                                            fontFamily: InkFonts.display,
+                                            color: widget.colour,
+                                            height: 1)),
                               ),
-                            Text(
-                              widget.number.toUpperCase(),
-                              style: theme.textTheme.labelLarge?.copyWith(
-                                color: widget.colour,
-                                letterSpacing: 3,
-                              ),
-                            ),
+                            Text(widget.number.toUpperCase(),
+                                style: theme.textTheme.labelLarge?.copyWith(
+                                    color: widget.colour, letterSpacing: 3)),
                             const SizedBox(height: 8),
                             Opacity(
                               opacity: ink,
                               child: Text(
                                 widget.title,
                                 textAlign: TextAlign.center,
-                                style: theme.textTheme.headlineMedium?.copyWith(
-                                  fontFamily: InkFonts.display,
-                                ),
+                                style: theme.textTheme.headlineMedium
+                                    ?.copyWith(fontFamily: InkFonts.display),
                               ),
                             ),
                             if (widget.note != null) ...[
@@ -585,9 +525,8 @@ class _ChapterCardState extends State<ChapterCard>
                                   widget.note!,
                                   textAlign: TextAlign.center,
                                   style: theme.textTheme.bodyMedium?.copyWith(
-                                    color: widget.colour,
-                                    fontStyle: FontStyle.italic,
-                                  ),
+                                      color: widget.colour,
+                                      fontStyle: FontStyle.italic),
                                 ),
                               ),
                             ],
@@ -605,9 +544,8 @@ class _ChapterCardState extends State<ChapterCard>
                                         textAlign: TextAlign.center,
                                         style: theme.textTheme.labelSmall
                                             ?.copyWith(
-                                          color: widget.colour,
-                                          letterSpacing: 2,
-                                        ),
+                                                color: widget.colour,
+                                                letterSpacing: 2),
                                       ),
                                     for (final line in widget.news)
                                       Padding(
@@ -621,9 +559,8 @@ class _ChapterCardState extends State<ChapterCard>
                                           overflow: TextOverflow.ellipsis,
                                           style: theme.textTheme.bodySmall
                                               ?.copyWith(
-                                            fontFamily: InkFonts.prose,
-                                            fontStyle: FontStyle.italic,
-                                          ),
+                                                  fontFamily: InkFonts.prose,
+                                                  fontStyle: FontStyle.italic),
                                         ),
                                       ),
                                   ],
@@ -726,33 +663,24 @@ class StormLayer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return _Looping(
-      paint: (canvas, size, t) {
-        paintJourneyWeather(
-          canvas,
-          size,
-          t,
-          JourneyWeather.rain,
-          const Color(0xFFC8E6F0),
-          count: 40,
-        );
-        // A flash every few seconds.
-        final phase = t % 4.2;
-        final flash = phase > 3.7 && phase < 3.95
-            ? (phase < 3.8
-                ? 0.55
-                : phase > 3.85
-                    ? 0.35
-                    : 0.1)
-            : 0.0;
-        if (flash > 0) {
-          canvas.drawRect(
-            Offset.zero & size,
-            Paint()..color = Palette.blue96.withValues(alpha: flash),
-          );
-        }
-      },
-    );
+    return _Looping(paint: (canvas, size, t) {
+      paintJourneyWeather(
+          canvas, size, t, JourneyWeather.rain, const Color(0xFFC8E6F0),
+          count: 40);
+      // A flash every few seconds.
+      final phase = t % 4.2;
+      final flash = phase > 3.7 && phase < 3.95
+          ? (phase < 3.8
+              ? 0.55
+              : phase > 3.85
+                  ? 0.35
+                  : 0.1)
+          : 0.0;
+      if (flash > 0) {
+        canvas.drawRect(Offset.zero & size,
+            Paint()..color = Palette.blue96.withValues(alpha: flash));
+      }
+    });
   }
 }
 
@@ -771,7 +699,7 @@ class LowHealthEdge extends StatelessWidget {
               radius: 1.0,
               colors: [
                 blood.withValues(alpha: 0),
-                blood.withValues(alpha: 0.18),
+                blood.withValues(alpha: 0.18)
               ],
               stops: const [0.7, 1],
             ),
@@ -780,26 +708,21 @@ class LowHealthEdge extends StatelessWidget {
         ),
       );
     }
-    return _Looping(
-      paint: (canvas, size, t) {
-        final beat = (t % 1.8) / 1.8;
-        double pulse(double at) => math.exp(-math.pow((beat - at) * 12, 2));
-        final a = 0.08 + 0.22 * pulse(0.1) + 0.16 * pulse(0.3);
-        final rect = Offset.zero & size;
-        canvas.drawRect(
-          rect,
-          Paint()
-            ..shader = RadialGradient(
-              radius: 0.95,
-              colors: [
-                blood.withValues(alpha: 0),
-                blood.withValues(alpha: a),
-              ],
-              stops: const [0.72, 1],
-            ).createShader(rect),
-        );
-      },
-    );
+    return _Looping(paint: (canvas, size, t) {
+      final beat = (t % 1.8) / 1.8;
+      double pulse(double at) => math.exp(-math.pow((beat - at) * 12, 2));
+      final a = 0.08 + 0.22 * pulse(0.1) + 0.16 * pulse(0.3);
+      final rect = Offset.zero & size;
+      canvas.drawRect(
+        rect,
+        Paint()
+          ..shader = RadialGradient(
+            radius: 0.95,
+            colors: [blood.withValues(alpha: 0), blood.withValues(alpha: a)],
+            stops: const [0.72, 1],
+          ).createShader(rect),
+      );
+    });
   }
 }
 
@@ -877,20 +800,17 @@ class WatchSky extends StatelessWidget {
         children: [
           ColoredBox(key: Key('watch_sky_$watch'), color: tint),
           if (watch == 3)
-            _Looping(
-              paint: (canvas, size, t) {
-                for (var i = 0; i < 28; i++) {
-                  final x = size.width * ((i * 0.618) % 1.0);
-                  final y = size.height * 0.45 * ((i * 0.377) % 1.0);
-                  final a = 0.35 + 0.55 * (0.5 + 0.5 * math.sin(t * 1.7 + i));
-                  canvas.drawRect(
-                    Rect.fromCenter(center: Offset(x, y), width: 2, height: 2),
-                    Paint()
-                      ..color = const Color(0xFFF4EBD0).withValues(alpha: a),
-                  );
-                }
-              },
-            ),
+            _Looping(paint: (canvas, size, t) {
+              for (var i = 0; i < 28; i++) {
+                final x = size.width * ((i * 0.618) % 1.0);
+                final y = size.height * 0.45 * ((i * 0.377) % 1.0);
+                final a = 0.35 + 0.55 * (0.5 + 0.5 * math.sin(t * 1.7 + i));
+                canvas.drawRect(
+                  Rect.fromCenter(center: Offset(x, y), width: 2, height: 2),
+                  Paint()..color = const Color(0xFFF4EBD0).withValues(alpha: a),
+                );
+              }
+            }),
         ],
       ),
     );
@@ -905,12 +825,10 @@ class ApprovalHeart extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final heart = Icon(
-      Icons.favorite,
-      key: const Key('approval_heart'),
-      size: size,
-      color: Colors.amber.shade600,
-    );
+    final heart = Icon(Icons.favorite,
+        key: const Key('approval_heart'),
+        size: size,
+        color: Colors.amber.shade600);
     if (_still(context)) return heart;
     return TweenAnimationBuilder<double>(
       tween: Tween(begin: 0.6, end: 1),
@@ -930,22 +848,20 @@ class RayBurst extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return _Looping(
-      paint: (canvas, size, t) {
-        final c = size.center(Offset.zero);
-        final r = size.shortestSide / 2;
-        final paint = Paint()..color = colour.withValues(alpha: 0.22);
-        for (var i = 0; i < 12; i++) {
-          final a = t * 0.4 + i * math.pi / 6;
-          final path = Path()
-            ..moveTo(c.dx, c.dy)
-            ..lineTo(c.dx + math.cos(a - 0.1) * r, c.dy + math.sin(a - 0.1) * r)
-            ..lineTo(c.dx + math.cos(a + 0.1) * r, c.dy + math.sin(a + 0.1) * r)
-            ..close();
-          canvas.drawPath(path, paint);
-        }
-      },
-    );
+    return _Looping(paint: (canvas, size, t) {
+      final c = size.center(Offset.zero);
+      final r = size.shortestSide / 2;
+      final paint = Paint()..color = colour.withValues(alpha: 0.22);
+      for (var i = 0; i < 12; i++) {
+        final a = t * 0.4 + i * math.pi / 6;
+        final path = Path()
+          ..moveTo(c.dx, c.dy)
+          ..lineTo(c.dx + math.cos(a - 0.1) * r, c.dy + math.sin(a - 0.1) * r)
+          ..lineTo(c.dx + math.cos(a + 0.1) * r, c.dy + math.sin(a + 0.1) * r)
+          ..close();
+        canvas.drawPath(path, paint);
+      }
+    });
   }
 }
 
@@ -964,18 +880,13 @@ class RiseIn extends StatelessWidget {
     return TweenAnimationBuilder<double>(
       tween: Tween(begin: 0, end: 1),
       duration: total,
-      curve: Interval(
-        delay.inMilliseconds / total.inMilliseconds,
-        1,
-        curve: Curves.easeOutBack,
-      ),
+      curve: Interval(delay.inMilliseconds / total.inMilliseconds, 1,
+          curve: Curves.easeOutBack),
       child: child,
       builder: (context, t, child) => Opacity(
         opacity: t.clamp(0.0, 1.0),
-        child: Transform.translate(
-          offset: Offset(0, (1 - t) * 18),
-          child: child,
-        ),
+        child:
+            Transform.translate(offset: Offset(0, (1 - t) * 18), child: child),
       ),
     );
   }
@@ -983,10 +894,8 @@ class RiseIn extends StatelessWidget {
 
 /// A wax seal stamped over the screen's middle (a quest settled): it drops,
 /// presses flat with a ring, then fades.
-void showQuestSeal(
-  BuildContext context, {
-  Color colour = const Color(0xFFA8322A),
-}) {
+void showQuestSeal(BuildContext context,
+    {Color colour = const Color(0xFFA8322A)}) {
   _overlayFor(
     context,
     duration: const Duration(milliseconds: 1100),
@@ -1044,10 +953,7 @@ void showQuestSeal(
 /// Each of [names] announced in turn with [_showAchievementToast]; not
 /// awaited by callers (the toasts run over whatever comes next).
 Future<void> announceAchievements(
-  BuildContext context,
-  List<String> names,
-  String label,
-) async {
+    BuildContext context, List<String> names, String label) async {
   for (final name in names) {
     if (!context.mounted) return;
     await _showAchievementToast(context, name, label: label);
@@ -1070,25 +976,23 @@ class BadgeRing extends StatelessWidget {
         alignment: Alignment.center,
         children: [
           Positioned.fill(
-            child: _Looping(
-              paint: (canvas, size, t) {
-                final rect = (Offset.zero & size).deflate(2);
-                canvas.drawArc(
-                  rect,
-                  t * 1.4,
-                  math.pi * 1.2,
-                  false,
-                  Paint()
-                    ..style = PaintingStyle.stroke
-                    ..strokeWidth = 2
-                    ..strokeCap = StrokeCap.round
-                    ..shader = SweepGradient(
-                      colors: [colour.withValues(alpha: 0), colour],
-                      transform: GradientRotation(t * 1.4),
-                    ).createShader(rect),
-                );
-              },
-            ),
+            child: _Looping(paint: (canvas, size, t) {
+              final rect = (Offset.zero & size).deflate(2);
+              canvas.drawArc(
+                rect,
+                t * 1.4,
+                math.pi * 1.2,
+                false,
+                Paint()
+                  ..style = PaintingStyle.stroke
+                  ..strokeWidth = 2
+                  ..strokeCap = StrokeCap.round
+                  ..shader = SweepGradient(
+                    colors: [colour.withValues(alpha: 0), colour],
+                    transform: GradientRotation(t * 1.4),
+                  ).createShader(rect),
+              );
+            }),
           ),
           child,
         ],

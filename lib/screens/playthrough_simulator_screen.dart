@@ -147,7 +147,7 @@ class _SimulatorBatchesNotifier extends StateNotifier<List<_SimBatch>> {
   void addBatch(SimStrategy strategy, List<_SimResult> results) {
     state = [
       ...state,
-      _SimBatch(id: _nextId++, strategy: strategy, results: results),
+      _SimBatch(id: _nextId++, strategy: strategy, results: results)
     ];
   }
 
@@ -351,9 +351,8 @@ class _PlaythroughSimulatorScreenState
     // switching the tab alone leaves it invisible underneath both until
     // they're popped back to the root.
     if (result.stepsApplied > 0) {
-      ref.read(homeTabIndexProvider.notifier).state = storyTabIndex(
-        ref.read(appModeProvider),
-      );
+      ref.read(homeTabIndexProvider.notifier).state =
+          storyTabIndex(ref.read(appModeProvider));
       Navigator.of(context).popUntil(isGameRoute);
     }
   }
@@ -405,14 +404,8 @@ class _PlaythroughSimulatorScreenState
     final random = Random();
     final results = [
       for (var i = 0; i < _runCount; i++)
-        _simulate(
-          story,
-          random,
-          enemies: enemies,
-          strategy: _strategy,
-          french: french,
-          sim: sim,
-        ),
+        _simulate(story, random,
+            enemies: enemies, strategy: _strategy, french: french, sim: sim),
     ];
     if (!mounted) return;
     ref.read(_simulatorBatchesProvider.notifier).addBatch(_strategy, results);
@@ -428,67 +421,60 @@ class _PlaythroughSimulatorScreenState
   /// hand after a content pass.
   Future<void> _runStructuralAudit() async {
     final story = await ref.read(storyDataProvider.future);
-    final report = checkStoryGraphIntegrity(
-      story.nodes,
-      startNodeId: StoryRepository.startNodeId,
-    );
+    final report = checkStoryGraphIntegrity(story.nodes,
+        startNodeId: StoryRepository.startNodeId);
     if (!mounted) return;
-    unawaited(
-      showDialog<void>(
-        context: context,
-        builder: (dialogContext) => AlertDialog(
-          title: Text(
-            report.isClean
-                ? tr(ref, 'structural_audit_clean_title')
-                : tr(ref, 'structural_audit_issues_title'),
-          ),
-          content: SingleChildScrollView(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Text(
-                  '${tr(ref, 'structural_audit_endings_label')}: ${report.reachableEndingCount}',
-                ),
-                if (report.unreachableNodeIds.isNotEmpty) ...[
-                  const SizedBox(height: 8),
-                  Text(
-                    '${tr(ref, 'structural_audit_unreachable_label')}: ${report.unreachableNodeIds.join(', ')}',
-                  ),
-                ],
-                if (report.deadEndNodeIds.isNotEmpty) ...[
-                  const SizedBox(height: 8),
-                  Text(
-                    '${tr(ref, 'structural_audit_dead_ends_label')}: ${report.deadEndNodeIds.join(', ')}',
-                  ),
-                ],
-                if (report.brokenReferences.isNotEmpty) ...[
-                  const SizedBox(height: 8),
-                  Text('${tr(ref, 'structural_audit_broken_links_label')}:'),
-                  for (final link in report.brokenReferences) Text('• $link'),
-                ],
-              ],
-            ),
-          ),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.pop(dialogContext),
-              child: const Text('OK'),
-            ),
-          ],
+    unawaited(showDialog<void>(
+      context: context,
+      builder: (dialogContext) => AlertDialog(
+        title: Text(
+          report.isClean
+              ? tr(ref, 'structural_audit_clean_title')
+              : tr(ref, 'structural_audit_issues_title'),
         ),
+        content: SingleChildScrollView(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text(
+                  '${tr(ref, 'structural_audit_endings_label')}: ${report.reachableEndingCount}'),
+              if (report.unreachableNodeIds.isNotEmpty) ...[
+                const SizedBox(height: 8),
+                Text(
+                  '${tr(ref, 'structural_audit_unreachable_label')}: ${report.unreachableNodeIds.join(', ')}',
+                ),
+              ],
+              if (report.deadEndNodeIds.isNotEmpty) ...[
+                const SizedBox(height: 8),
+                Text(
+                  '${tr(ref, 'structural_audit_dead_ends_label')}: ${report.deadEndNodeIds.join(', ')}',
+                ),
+              ],
+              if (report.brokenReferences.isNotEmpty) ...[
+                const SizedBox(height: 8),
+                Text('${tr(ref, 'structural_audit_broken_links_label')}:'),
+                for (final link in report.brokenReferences) Text('• $link'),
+              ],
+            ],
+          ),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(dialogContext),
+            child: const Text('OK'),
+          ),
+        ],
       ),
-    );
+    ));
   }
 
   Widget _fullControls(BuildContext context, List<_SimBatch> batches) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        Text(
-          tr(ref, 'strategy_label'),
-          style: Theme.of(context).textTheme.labelLarge,
-        ),
+        Text(tr(ref, 'strategy_label'),
+            style: Theme.of(context).textTheme.labelLarge),
         const SizedBox(height: 8),
         Wrap(
           spacing: 8,
@@ -502,10 +488,8 @@ class _PlaythroughSimulatorScreenState
           }).toList(),
         ),
         const SizedBox(height: 16),
-        Text(
-          tr(ref, 'runs_label'),
-          style: Theme.of(context).textTheme.labelLarge,
-        ),
+        Text(tr(ref, 'runs_label'),
+            style: Theme.of(context).textTheme.labelLarge),
         const SizedBox(height: 8),
         Wrap(
           spacing: 8,
@@ -530,11 +514,9 @@ class _PlaythroughSimulatorScreenState
                         child: CircularProgressIndicator(strokeWidth: 2),
                       )
                     : const Icon(Icons.play_circle_outline),
-                label: Text(
-                  _running
-                      ? tr(ref, 'simulating_label')
-                      : tr(ref, 'auto_playthrough_button'),
-                ),
+                label: Text(_running
+                    ? tr(ref, 'simulating_label')
+                    : tr(ref, 'auto_playthrough_button')),
               ),
             ),
             const SizedBox(width: 8),
@@ -554,10 +536,8 @@ class _PlaythroughSimulatorScreenState
           ],
         ),
         const Divider(height: 32),
-        Text(
-          tr(ref, 'play_to_chapter_title'),
-          style: Theme.of(context).textTheme.labelLarge,
-        ),
+        Text(tr(ref, 'play_to_chapter_title'),
+            style: Theme.of(context).textTheme.labelLarge),
         const SizedBox(height: 4),
         Text(
           tr(ref, 'play_to_chapter_subtitle'),
@@ -569,17 +549,13 @@ class _PlaythroughSimulatorScreenState
           runSpacing: 8,
           children: [
             for (var chapter = 0; chapter <= _maxChapter; chapter++)
-              if (firstNodeIdForChapter(
-                    chapter,
-                    prologueNodeId: StoryRepository.startNodeId,
-                  ) !=
+              if (firstNodeIdForChapter(chapter,
+                      prologueNodeId: StoryRepository.startNodeId) !=
                   null)
                 ChoiceChip(
-                  label: Text(
-                    chapter == 0
-                        ? tr(ref, 'chapter_band_prologue')
-                        : '$chapter',
-                  ),
+                  label: Text(chapter == 0
+                      ? tr(ref, 'chapter_band_prologue')
+                      : '$chapter'),
                   selected: _targetChapter == chapter,
                   onSelected: (_) => setState(() => _targetChapter = chapter),
                 ),
@@ -599,14 +575,12 @@ class _PlaythroughSimulatorScreenState
                   child: CircularProgressIndicator(strokeWidth: 2),
                 )
               : const Icon(Icons.fast_forward),
-          label: Text(
-            _autoplayRunning
-                ? (_autoplayAttempt > 1
-                    ? '${tr(ref, 'autoplay_running')} '
-                        '${tr(ref, 'autoplay_attempt_label')} $_autoplayAttempt'
-                    : tr(ref, 'autoplay_running'))
-                : tr(ref, 'play_to_chapter_button'),
-          ),
+          label: Text(_autoplayRunning
+              ? (_autoplayAttempt > 1
+                  ? '${tr(ref, 'autoplay_running')} '
+                      '${tr(ref, 'autoplay_attempt_label')} $_autoplayAttempt'
+                  : tr(ref, 'autoplay_running'))
+              : tr(ref, 'play_to_chapter_button')),
         ),
       ],
     );
@@ -650,19 +624,11 @@ class _PlaythroughSimulatorScreenState
           crossAxisAlignment: WrapCrossAlignment.center,
           children: [
             Text(tr(ref, 'race_label')),
-            picker(
-              _raceRecords,
-              'raceName',
-              _autoplayRaceId,
-              (v) => setState(() => _autoplayRaceId = v),
-            ),
+            picker(_raceRecords, 'raceName', _autoplayRaceId,
+                (v) => setState(() => _autoplayRaceId = v)),
             Text(tr(ref, 'profession_label')),
-            picker(
-              _professionRecords,
-              'professionName',
-              _autoplayProfessionId,
-              (v) => setState(() => _autoplayProfessionId = v),
-            ),
+            picker(_professionRecords, 'professionName', _autoplayProfessionId,
+                (v) => setState(() => _autoplayProfessionId = v)),
           ],
         ),
         TextField(
@@ -689,11 +655,9 @@ class _PlaythroughSimulatorScreenState
           padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
           child: Row(
             children: [
-              Icon(
-                Icons.tune,
-                size: IconSize.s16,
-                color: Theme.of(context).colorScheme.onSurfaceVariant,
-              ),
+              Icon(Icons.tune,
+                  size: IconSize.s16,
+                  color: Theme.of(context).colorScheme.onSurfaceVariant),
               const SizedBox(width: 8),
               Expanded(
                 child: Text(
@@ -713,10 +677,8 @@ class _PlaythroughSimulatorScreenState
                 tooltip: tr(ref, 'auto_playthrough_button'),
                 onPressed: _running ? null : _run,
               ),
-              Icon(
-                Icons.expand_more,
-                color: Theme.of(context).colorScheme.onSurfaceVariant,
-              ),
+              Icon(Icons.expand_more,
+                  color: Theme.of(context).colorScheme.onSurfaceVariant),
             ],
           ),
         ),
@@ -730,9 +692,8 @@ class _PlaythroughSimulatorScreenState
     final quests = ref.watch(gameDbProvider(questsSchema)).value ?? const {};
     final professions =
         ref.watch(gameDbProvider(professionsSchema)).value ?? const {};
-    final spells = parseSpells(
-      ref.watch(gameDbProvider(spellsSchema)).value ?? const {},
-    );
+    final spells =
+        parseSpells(ref.watch(gameDbProvider(spellsSchema)).value ?? const {});
     final companions =
         ref.watch(gameDbProvider(companionsSchema)).value ?? const {};
     final batches = ref.watch(_simulatorBatchesProvider);
@@ -784,8 +745,7 @@ class _PlaythroughSimulatorScreenState
                       Padding(
                         padding: const EdgeInsets.symmetric(vertical: 24),
                         child: Center(
-                          child: Text(tr(ref, 'no_batches_yet_message')),
-                        ),
+                            child: Text(tr(ref, 'no_batches_yet_message'))),
                       )
                     else
                       ...resultCards(),

@@ -41,8 +41,15 @@ final towerDataProvider = FutureProvider<TowerData>((ref) async {
     'spells': await table(spellsSchema),
     // The level-up's paths (v1.857): the stat picks the player takes.
     'training_paths': jsonDecode(
-      await rootBundle.loadString('assets/gamedata/training_paths.json'),
-    ) as Map<String, dynamic>,
+            await rootBundle.loadString('assets/gamedata/training_paths.json'))
+        as Map<String, dynamic>,
+    // The clans' offers (docs/simulation/tower-clan-offers.md): the
+    // branches each clan sponsors, the steps between them, the trees.
+    'factions': await table(factionsSchema),
+    for (final name in const ['relations', 'skill_trees'])
+      name:
+          jsonDecode(await rootBundle.loadString('assets/gamedata/$name.json'))
+              as Map<String, dynamic>,
   });
 });
 
@@ -67,8 +74,7 @@ class TowerController extends StateNotifier<AsyncValue<TowerState>> {
   Future<void> _load() async {
     final save = _save = await TowerSave.open();
     state = AsyncValue.data(
-      TowerState(progress: save.loadProgress(), run: save.loadRun()),
-    );
+        TowerState(progress: save.loadProgress(), run: save.loadRun()));
   }
 
   Future<TowerSave> _opened() async => _save ??= await TowerSave.open();
@@ -146,18 +152,16 @@ class TowerController extends StateNotifier<AsyncValue<TowerState>> {
 
 final towerProvider =
     StateNotifierProvider<TowerController, AsyncValue<TowerState>>(
-  (ref) => TowerController(),
-);
+        (ref) => TowerController());
 
 /// How a floor's fight ended.
 class TowerFightResult {
-  const TowerFightResult({
-    required this.won,
-    required this.healthLeft,
-    this.potionsLeft,
-    this.antidotesLeft,
-    this.rounds,
-  });
+  const TowerFightResult(
+      {required this.won,
+      required this.healthLeft,
+      this.potionsLeft,
+      this.antidotesLeft,
+      this.rounds});
 
   final bool won;
 
@@ -177,13 +181,9 @@ class TowerFightResult {
 /// Plays the fight of [run]'s floor and says how it ended; null when it was
 /// fought (Back before the first roll).
 typedef TowerFightLauncher = Future<TowerFightResult?> Function(
-  BuildContext context,
-  TowerRun run,
-  TowerData data,
-);
+    BuildContext context, TowerRun run, TowerData data);
 
 /// The fight of a floor: [towerFightFor] plays it for real. Tests give a
 /// fake (or null: not fought).
 final towerFightLauncherProvider = Provider<TowerFightLauncher>(
-  (ref) => (context, run, data) => towerFightFor(ref, context, run, data),
-);
+    (ref) => (context, run, data) => towerFightFor(ref, context, run, data));

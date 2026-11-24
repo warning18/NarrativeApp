@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-
 import '../widgets/help_hint.dart';
 
 import '../gamedata/db_schema.dart';
@@ -63,10 +62,7 @@ class _InventoryScreenState extends ConsumerState<InventoryScreen> {
   }
 
   void _onCompareTap(
-    BuildContext context,
-    Map<String, dynamic> items,
-    String itemId,
-  ) {
+      BuildContext context, Map<String, dynamic> items, String itemId) {
     if (_firstCompareId == null) {
       setState(() => _firstCompareId = itemId);
       return;
@@ -111,11 +107,9 @@ class _InventoryScreenState extends ConsumerState<InventoryScreen> {
           TutorialTarget(
             id: 'inventory.compare',
             child: IconButton(
-              icon: Icon(
-                _compareMode
-                    ? Icons.compare_arrows
-                    : Icons.compare_arrows_outlined,
-              ),
+              icon: Icon(_compareMode
+                  ? Icons.compare_arrows
+                  : Icons.compare_arrows_outlined),
               tooltip: tr(ref, 'compare_button'),
               onPressed: _toggleCompareMode,
             ),
@@ -130,10 +124,8 @@ class _InventoryScreenState extends ConsumerState<InventoryScreen> {
               Container(
                 width: double.infinity,
                 color: Theme.of(context).colorScheme.primaryContainer,
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 16,
-                  vertical: 8,
-                ),
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
                 child: Text(
                   _firstCompareId == null
                       ? tr(ref, 'compare_hint_items')
@@ -147,10 +139,10 @@ class _InventoryScreenState extends ConsumerState<InventoryScreen> {
                   data: (items) => diceAsync.when(
                     data: (dice) => _InventoryBody(
                       items: items,
-                      itemSets: parseItemSets(
-                        ref.watch(localizedDbProvider(itemSetsSchema)).value ??
-                            const {},
-                      ),
+                      itemSets: parseItemSets(ref
+                              .watch(localizedDbProvider(itemSetsSchema))
+                              .value ??
+                          const {}),
                       dice: dice,
                       allyId: widget.allyId,
                       companion: companion,
@@ -162,13 +154,13 @@ class _InventoryScreenState extends ConsumerState<InventoryScreen> {
                     ),
                     loading: () => const InkLoading(),
                     error: (error, stack) => Center(
-                      child: Text('${tr(ref, 'failed_to_load_dice')}: $error'),
-                    ),
+                        child:
+                            Text('${tr(ref, 'failed_to_load_dice')}: $error')),
                   ),
                   loading: () => const InkLoading(),
                   error: (error, stack) => Center(
-                    child: Text('${tr(ref, 'failed_to_load_items')}: $error'),
-                  ),
+                      child:
+                          Text('${tr(ref, 'failed_to_load_items')}: $error')),
                 ),
               ),
             ),
@@ -182,97 +174,78 @@ class _InventoryScreenState extends ConsumerState<InventoryScreen> {
 /// Stat rows shared by the manual item-vs-item compare dialog and the
 /// automatic item-vs-currently-equipped delta shown in item details.
 List<CompareRow> _itemCompareRows(
-  Map<String, dynamic>? a,
-  Map<String, dynamic>? b,
-) {
+    Map<String, dynamic>? a, Map<String, dynamic>? b) {
   num v(Map<String, dynamic>? item, String key) => (item?[key] as num?) ?? 0;
   return [
     CompareRow(
-      label: 'ATK',
-      valueA: v(a, 'attackDamage'),
-      valueB: v(b, 'attackDamage'),
-    ),
+        label: 'ATK',
+        valueA: v(a, 'attackDamage'),
+        valueB: v(b, 'attackDamage')),
     CompareRow(label: 'ARM', valueA: v(a, 'armor'), valueB: v(b, 'armor')),
     CompareRow(
-      label: 'Fire Dmg',
-      valueA: v(a, 'fireDmgBonus'),
-      valueB: v(b, 'fireDmgBonus'),
-    ),
+        label: 'Fire Dmg',
+        valueA: v(a, 'fireDmgBonus'),
+        valueB: v(b, 'fireDmgBonus')),
     CompareRow(
-      label: 'Wind Dmg',
-      valueA: v(a, 'windDmgBonus'),
-      valueB: v(b, 'windDmgBonus'),
-    ),
+        label: 'Wind Dmg',
+        valueA: v(a, 'windDmgBonus'),
+        valueB: v(b, 'windDmgBonus')),
     CompareRow(
-      label: 'Earth Dmg',
-      valueA: v(a, 'earthDmgBonus'),
-      valueB: v(b, 'earthDmgBonus'),
-    ),
+        label: 'Earth Dmg',
+        valueA: v(a, 'earthDmgBonus'),
+        valueB: v(b, 'earthDmgBonus')),
     CompareRow(
-      label: 'Water Dmg',
-      valueA: v(a, 'waterDmgBonus'),
-      valueB: v(b, 'waterDmgBonus'),
-    ),
+        label: 'Water Dmg',
+        valueA: v(a, 'waterDmgBonus'),
+        valueB: v(b, 'waterDmgBonus')),
     CompareRow(
-      label: 'Elec Dmg',
-      valueA: v(a, 'elecDmgBonus'),
-      valueB: v(b, 'elecDmgBonus'),
-    ),
+        label: 'Elec Dmg',
+        valueA: v(a, 'elecDmgBonus'),
+        valueB: v(b, 'elecDmgBonus')),
     CompareRow(
-      label: 'Ice Dmg',
-      valueA: v(a, 'iceDmgBonus'),
-      valueB: v(b, 'iceDmgBonus'),
-    ),
+        label: 'Ice Dmg',
+        valueA: v(a, 'iceDmgBonus'),
+        valueB: v(b, 'iceDmgBonus')),
     CompareRow(
-      label: 'Light Dmg',
-      valueA: v(a, 'lightDmgBonus'),
-      valueB: v(b, 'lightDmgBonus'),
-    ),
+        label: 'Light Dmg',
+        valueA: v(a, 'lightDmgBonus'),
+        valueB: v(b, 'lightDmgBonus')),
     CompareRow(
-      label: 'Void Dmg',
-      valueA: v(a, 'voidDmgBonus'),
-      valueB: v(b, 'voidDmgBonus'),
-    ),
+        label: 'Void Dmg',
+        valueA: v(a, 'voidDmgBonus'),
+        valueB: v(b, 'voidDmgBonus')),
     CompareRow(
-      label: 'Fire Resist',
-      valueA: v(a, 'fireResist'),
-      valueB: v(b, 'fireResist'),
-    ),
+        label: 'Fire Resist',
+        valueA: v(a, 'fireResist'),
+        valueB: v(b, 'fireResist')),
     CompareRow(
-      label: 'Wind Resist',
-      valueA: v(a, 'windResist'),
-      valueB: v(b, 'windResist'),
-    ),
+        label: 'Wind Resist',
+        valueA: v(a, 'windResist'),
+        valueB: v(b, 'windResist')),
     CompareRow(
-      label: 'Earth Resist',
-      valueA: v(a, 'earthResist'),
-      valueB: v(b, 'earthResist'),
-    ),
+        label: 'Earth Resist',
+        valueA: v(a, 'earthResist'),
+        valueB: v(b, 'earthResist')),
     CompareRow(
-      label: 'Water Resist',
-      valueA: v(a, 'waterResist'),
-      valueB: v(b, 'waterResist'),
-    ),
+        label: 'Water Resist',
+        valueA: v(a, 'waterResist'),
+        valueB: v(b, 'waterResist')),
     CompareRow(
-      label: 'Elec Resist',
-      valueA: v(a, 'elecResist'),
-      valueB: v(b, 'elecResist'),
-    ),
+        label: 'Elec Resist',
+        valueA: v(a, 'elecResist'),
+        valueB: v(b, 'elecResist')),
     CompareRow(
-      label: 'Ice Resist',
-      valueA: v(a, 'iceResist'),
-      valueB: v(b, 'iceResist'),
-    ),
+        label: 'Ice Resist',
+        valueA: v(a, 'iceResist'),
+        valueB: v(b, 'iceResist')),
     CompareRow(
-      label: 'Light Resist',
-      valueA: v(a, 'lightResist'),
-      valueB: v(b, 'lightResist'),
-    ),
+        label: 'Light Resist',
+        valueA: v(a, 'lightResist'),
+        valueB: v(b, 'lightResist')),
     CompareRow(
-      label: 'Void Resist',
-      valueA: v(a, 'voidResist'),
-      valueB: v(b, 'voidResist'),
-    ),
+        label: 'Void Resist',
+        valueA: v(a, 'voidResist'),
+        valueB: v(b, 'voidResist')),
     CompareRow(
       label: 'Cost',
       valueA: v(a, 'cost'),
@@ -416,10 +389,7 @@ class _InventoryBodyState extends ConsumerState<_InventoryBody> {
                   as Map<String, dynamic>? ??
               const {};
       final allyBase = deriveAllyBaseStats(
-        gameConfig: gameConfig,
-        race: race,
-        profession: profession,
-      );
+          gameConfig: gameConfig, race: race, profession: profession);
       equipperStrength = allyBase.strength;
       equipperDexterity = allyBase.dexterity;
       equipperConstitution = allyBase.constitution;
@@ -437,9 +407,7 @@ class _InventoryBodyState extends ConsumerState<_InventoryBody> {
           intelligence: equipperIntelligence,
         ) &&
         meetsItemAlignment(
-          items[itemId] as Map<String, dynamic>?,
-          session.alignmentLabel,
-        );
+            items[itemId] as Map<String, dynamic>?, session.alignmentLabel);
 
     final void Function(String itemId, {String? slot}) equipFn = allyId != null
         ? (itemId, {slot}) => ref
@@ -515,13 +483,9 @@ class _InventoryBodyState extends ConsumerState<_InventoryBody> {
     final ink = InkColors.of(context);
     Widget caption(String text) => Padding(
           padding: const EdgeInsets.only(bottom: 8),
-          child: Text(
-            text.toUpperCase(),
-            style: theme.textTheme.labelSmall?.copyWith(
-              color: ink.ash,
-              letterSpacing: 1.2,
-            ),
-          ),
+          child: Text(text.toUpperCase(),
+              style: theme.textTheme.labelSmall
+                  ?.copyWith(color: ink.ash, letterSpacing: 1.2)),
         );
 
     // An empty slot a piece in the bag could go to is lit.
@@ -543,13 +507,11 @@ class _InventoryBodyState extends ConsumerState<_InventoryBody> {
                 width: 26,
                 height: 26,
                 child: InventoryDieTile(
-                  dieId: equippedDiceId,
-                  faces: (equippedDie['numberOfFaces'] as num?)?.toInt() ??
-                      (equippedDie['faces'] as List?)?.length ??
-                      6,
-                  size: 26,
-                ),
-              )
+                    dieId: equippedDiceId,
+                    faces: (equippedDie['numberOfFaces'] as num?)?.toInt() ??
+                        (equippedDie['faces'] as List?)?.length ??
+                        6,
+                    size: 26))
             : Icon(Icons.casino, size: IconSize.s32, color: ink.gold),
         worn: equippedDiceId != null && equippedDie != null
             ? dieDisplayName(equippedDiceId, language: lang)
@@ -573,16 +535,10 @@ class _InventoryBodyState extends ConsumerState<_InventoryBody> {
             slotLabel: inventorySlotName(lang, slot),
             icon: equippedId != null
                 ? ItemPixelIcon(
-                    equippedId,
-                    equippedItem?['itemType']?.toString(),
-                    size: IconSize.s32,
-                  )
-                : PixelGlyph(
-                    inventorySlotGlyph(slot),
-                    size: IconSize.s32,
-                    color: ink.ash,
-                    opacity: 0.7,
-                  ),
+                    equippedId, equippedItem?['itemType']?.toString(),
+                    size: IconSize.s32)
+                : PixelGlyph(inventorySlotGlyph(slot),
+                    size: IconSize.s32, color: ink.ash, opacity: 0.7),
             worn: equippedItem?['itemName']?.toString(),
             tier: itemTierOf(equippedItem),
             lit: equippedId == null && candidates.isNotEmpty,
@@ -590,15 +546,8 @@ class _InventoryBodyState extends ConsumerState<_InventoryBody> {
             clearTip: tr(ref, 'unequip'),
             onTap: candidates.isEmpty
                 ? null
-                : () => _pickForSlot(
-                      context,
-                      ref,
-                      slot,
-                      candidates,
-                      equippedId,
-                      equipFn,
-                      canEquip,
-                    ),
+                : () => _pickForSlot(context, ref, slot, candidates, equippedId,
+                    equipFn, canEquip),
             onClear: equippedId == null ? null : () => unequipFn(equippedId),
           );
         }(),
@@ -606,17 +555,12 @@ class _InventoryBodyState extends ConsumerState<_InventoryBody> {
 
     final shown = tab == InventoryTab.dice
         ? const <String>[]
-        : sortInventoryIds(
-            [
-              for (final id in ownedIds)
-                if (tab == InventoryTab.all ||
-                    inventoryKindOf(items[id] as Map<String, dynamic>?) == tab)
-                  id,
-            ],
-            items,
-            _sort,
-            session.inventoryItemIds,
-          );
+        : sortInventoryIds([
+            for (final id in ownedIds)
+              if (tab == InventoryTab.all ||
+                  inventoryKindOf(items[id] as Map<String, dynamic>?) == tab)
+                id
+          ], items, _sort, session.inventoryItemIds);
 
     Widget row(String id) {
       final item = items[id] as Map<String, dynamic>?;
@@ -709,10 +653,7 @@ class _InventoryBodyState extends ConsumerState<_InventoryBody> {
                   itemSet: set,
                   setPiecesWorn: setPiecesWorn,
                   originLine: itemOriginLineFor(
-                    session.itemOrigins[id],
-                    geography,
-                    lang,
-                  ),
+                      session.itemOrigins[id], geography, lang),
                   count: counts[id],
                   wornBy: wornBy,
                   isWorn: isEquipped,
@@ -733,11 +674,8 @@ class _InventoryBodyState extends ConsumerState<_InventoryBody> {
           ref.watch(localizedDbProvider(racesSchema)).value ?? const {};
       Widget dieRow(String id, {required bool inHand}) {
         final die = dice[id] as Map<String, dynamic>?;
-        final usable = dieUsableBy(
-          die,
-          professionId: session.professionId,
-          raceId: session.raceId,
-        );
+        final usable = dieUsableBy(die,
+            professionId: session.professionId, raceId: session.raceId);
         return InventoryDieRow(
           key: Key('inv_die_$id'),
           dieId: id,
@@ -757,20 +695,17 @@ class _InventoryBodyState extends ConsumerState<_InventoryBody> {
         );
       }
 
-      return Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          if (equippedDiceId != null &&
-              ownedDiceIds.contains(equippedDiceId)) ...[
-            caption(tr(ref, 'inv_in_hand')),
-            dieRow(equippedDiceId, inHand: true),
-          ],
-          const SizedBox(height: 6),
-          caption(tr(ref, 'inv_in_bag')),
-          for (final id in ownedDiceIds)
-            if (id != equippedDiceId) dieRow(id, inHand: false),
+      return Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+        if (equippedDiceId != null &&
+            ownedDiceIds.contains(equippedDiceId)) ...[
+          caption(tr(ref, 'inv_in_hand')),
+          dieRow(equippedDiceId, inHand: true),
         ],
-      );
+        const SizedBox(height: 6),
+        caption(tr(ref, 'inv_in_bag')),
+        for (final id in ownedDiceIds)
+          if (id != equippedDiceId) dieRow(id, inHand: false),
+      ]);
     }
 
     return ListView(
@@ -811,28 +746,19 @@ class _InventoryBodyState extends ConsumerState<_InventoryBody> {
           if (tab != InventoryTab.dice)
             Padding(
               padding: const EdgeInsets.only(top: 4, bottom: 6),
-              child: Row(
-                children: [
-                  Expanded(
-                    child: tab == InventoryTab.gear || tab == InventoryTab.all
-                        ? Text(
-                            tr(ref, 'inv_compare_hold'),
-                            maxLines: 1,
-                            overflow: TextOverflow.ellipsis,
-                            style: theme.textTheme.bodySmall?.copyWith(
-                              color: ink.ash,
-                              fontStyle: FontStyle.italic,
-                            ),
-                          )
-                        : const SizedBox.shrink(),
-                  ),
-                  InventorySortButton(
-                    sort: _sort,
-                    onChanged: _setSort,
-                    language: lang,
-                  ),
-                ],
-              ),
+              child: Row(children: [
+                Expanded(
+                  child: tab == InventoryTab.gear || tab == InventoryTab.all
+                      ? Text(tr(ref, 'inv_compare_hold'),
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                          style: theme.textTheme.bodySmall?.copyWith(
+                              color: ink.ash, fontStyle: FontStyle.italic))
+                      : const SizedBox.shrink(),
+                ),
+                InventorySortButton(
+                    sort: _sort, onChanged: _setSort, language: lang),
+              ]),
             )
           else
             const SizedBox(height: 10),
@@ -852,11 +778,8 @@ class _InventoryBodyState extends ConsumerState<_InventoryBody> {
 
   /// The dice screen, opened on [dieId].
   void _openDice(BuildContext context, String? dieId) {
-    Navigator.of(context).push(
-      MaterialPageRoute<void>(
-        builder: (_) => DiceLoadoutScreen(initialDieId: dieId),
-      ),
-    );
+    Navigator.of(context).push(MaterialPageRoute<void>(
+        builder: (_) => DiceLoadoutScreen(initialDieId: dieId)));
   }
 
   Future<void> _pickForSlot(

@@ -57,12 +57,8 @@ class RollPowerRow extends ConsumerWidget {
             FilledButton(
               key: Key('${keyPrefix}_roll_reroll_confirm'),
               onPressed: () => Navigator.pop(context, true),
-              child: Text(
-                tr(
-                  ref,
-                  'roll_reroll',
-                ).replaceAll('{left}', '${rolls.reroll ?? 0}'),
-              ),
+              child: Text(tr(ref, 'roll_reroll')
+                  .replaceAll('{left}', '${rolls.reroll ?? 0}')),
             ),
           ],
         ),
@@ -96,11 +92,9 @@ class RollPowerRow extends ConsumerWidget {
                   : null,
               child: Opacity(
                 opacity: banishCostOf(length) <= charges ? 1 : 0.4,
-                child: Text(
-                  tr(ref, 'roll_banish_length')
-                      .replaceAll('{draws}', '$length')
-                      .replaceAll('{cost}', '${banishCostOf(length)}'),
-                ),
+                child: Text(tr(ref, 'roll_banish_length')
+                    .replaceAll('{draws}', '$length')
+                    .replaceAll('{cost}', '${banishCostOf(length)}')),
               ),
             ),
           // The Warding Cairn's other use: keep a hunting clan off the trail.
@@ -129,13 +123,8 @@ class RollPowerRow extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     if (!rolls.any) return const SizedBox.shrink();
-    Widget button(
-      String key,
-      IconData icon,
-      int left,
-      VoidCallback? onTap, {
-      double? progress,
-    }) =>
+    Widget button(String key, IconData icon, int left, VoidCallback? onTap,
+            {double? progress}) =>
         Expanded(
           child: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 3),
@@ -153,36 +142,26 @@ class RollPowerRow extends ConsumerWidget {
       padding: const EdgeInsets.only(top: 6),
       // The powers stand as tall as the tallest (Raise carries a bar).
       child: IntrinsicHeight(
-        child: Row(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            if (rolls.reroll case final left?)
-              button(
-                'reroll',
-                Icons.casino_outlined,
-                left,
-                () => _reroll(context, ref),
-              ),
-            if (rolls.banish case final left?)
-              button(
+          child: Row(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          if (rolls.reroll case final left?)
+            button('reroll', Icons.casino_outlined, left,
+                () => _reroll(context, ref)),
+          if (rolls.banish case final left?)
+            button(
                 'banish',
                 Icons.block,
                 left,
                 canBanish || ref.watch(wardTargetsProvider).isNotEmpty
                     ? () => _banish(context, ref)
-                    : null,
-              ),
-            if (rolls.raise case final left?)
-              button(
-                'raise',
-                Icons.keyboard_double_arrow_up,
-                left,
+                    : null),
+          if (rolls.raise case final left?)
+            button('raise', Icons.keyboard_double_arrow_up, left,
                 canRaise ? onRaise : null,
-                progress: rolls.raiseProgress / raiseChargeEvery,
-              ),
-          ],
-        ),
-      ),
+                progress: rolls.raiseProgress / raiseChargeEvery),
+        ],
+      )),
     );
   }
 }
@@ -237,13 +216,10 @@ class _PowerButton extends StatelessWidget {
                 const SizedBox(height: 2),
                 FittedBox(
                   fit: BoxFit.scaleDown,
-                  child: Text(
-                    name,
-                    maxLines: 1,
-                    style: theme.textTheme.labelMedium?.copyWith(
-                      color: on ? null : ink.ash,
-                    ),
-                  ),
+                  child: Text(name,
+                      maxLines: 1,
+                      style: theme.textTheme.labelMedium
+                          ?.copyWith(color: on ? null : ink.ash)),
                 ),
                 const SizedBox(height: 3),
                 if (left <= _maxPips)
@@ -257,25 +233,19 @@ class _PowerButton extends StatelessWidget {
                           height: 6,
                           margin: const EdgeInsets.symmetric(horizontal: 1.5),
                           decoration: BoxDecoration(
-                            shape: BoxShape.circle,
-                            color: colour,
-                          ),
+                              shape: BoxShape.circle, color: colour),
                         ),
                       if (left == 0)
-                        Text(
-                          '0',
-                          style: theme.textTheme.labelSmall?.copyWith(
-                            color: ink.ash,
-                          ),
-                        ),
+                        Text('0',
+                            style: theme.textTheme.labelSmall
+                                ?.copyWith(color: ink.ash)),
                     ],
                   )
                 else
-                  Text(
-                    '×$left',
-                    key: const Key('roll_pips'),
-                    style: theme.textTheme.labelSmall?.copyWith(color: colour),
-                  ),
+                  Text('×$left',
+                      key: const Key('roll_pips'),
+                      style:
+                          theme.textTheme.labelSmall?.copyWith(color: colour)),
                 if (progress != null) ...[
                   const SizedBox(height: 3),
                   ClipRRect(

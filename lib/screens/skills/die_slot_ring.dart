@@ -57,49 +57,47 @@ class DieSlotRing extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return LayoutBuilder(
-      builder: (context, box) {
-        final width = math.min(box.maxWidth, 420.0);
-        final side = ringSlotSide(count, width);
-        final radius = ringRadius(count, side);
-        final extent = math.min(width, 2 * radius + side);
-        final mid = extent / 2;
-        return Center(
-          child: SizedBox(
-            key: const Key('die_slot_ring'),
-            width: extent,
-            height: extent,
-            child: Stack(
-              children: [
-                Positioned.fill(
-                  child: CustomPaint(
-                    painter: _RingPainter(
-                      radius: radius,
-                      color: Theme.of(context).colorScheme.outlineVariant,
-                    ),
+    return LayoutBuilder(builder: (context, box) {
+      final width = math.min(box.maxWidth, 420.0);
+      final side = ringSlotSide(count, width);
+      final radius = ringRadius(count, side);
+      final extent = math.min(width, 2 * radius + side);
+      final mid = extent / 2;
+      return Center(
+        child: SizedBox(
+          key: const Key('die_slot_ring'),
+          width: extent,
+          height: extent,
+          child: Stack(
+            children: [
+              Positioned.fill(
+                child: CustomPaint(
+                  painter: _RingPainter(
+                    radius: radius,
+                    color: Theme.of(context).colorScheme.outlineVariant,
                   ),
                 ),
+              ),
+              Positioned(
+                left: mid - (radius - side / 2) + 4,
+                top: mid - (radius - side / 2) + 4,
+                width: 2 * (radius - side / 2) - 8,
+                height: 2 * (radius - side / 2) - 8,
+                child: Center(child: center),
+              ),
+              for (var i = 0; i < count; i++)
                 Positioned(
-                  left: mid - (radius - side / 2) + 4,
-                  top: mid - (radius - side / 2) + 4,
-                  width: 2 * (radius - side / 2) - 8,
-                  height: 2 * (radius - side / 2) - 8,
-                  child: Center(child: center),
+                  left: mid + radius * ringSpot(i, count).dx - side / 2,
+                  top: mid + radius * ringSpot(i, count).dy - side / 2,
+                  width: side,
+                  height: side,
+                  child: slot(i, side, side < ringSlotCompact),
                 ),
-                for (var i = 0; i < count; i++)
-                  Positioned(
-                    left: mid + radius * ringSpot(i, count).dx - side / 2,
-                    top: mid + radius * ringSpot(i, count).dy - side / 2,
-                    width: side,
-                    height: side,
-                    child: slot(i, side, side < ringSlotCompact),
-                  ),
-              ],
-            ),
+            ],
           ),
-        );
-      },
-    );
+        ),
+      );
+    });
   }
 }
 
@@ -113,13 +111,12 @@ class _RingPainter extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
     canvas.drawCircle(
-      size.center(Offset.zero),
-      radius,
-      Paint()
-        ..style = PaintingStyle.stroke
-        ..strokeWidth = 1.5
-        ..color = color,
-    );
+        size.center(Offset.zero),
+        radius,
+        Paint()
+          ..style = PaintingStyle.stroke
+          ..strokeWidth = 1.5
+          ..color = color);
   }
 
   @override

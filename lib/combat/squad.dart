@@ -49,8 +49,11 @@ List<SquadRole?> rollSquadRoles({
       if (i < eligible.length && eligible[i]) i,
   ]..shuffle(random);
   final budget = min(open.length, packSize - 1);
-  final pool = <SquadRole>[SquadRole.healer, SquadRole.guard, SquadRole.striker]
-    ..shuffle(random);
+  final pool = <SquadRole>[
+    SquadRole.healer,
+    SquadRole.guard,
+    SquadRole.striker,
+  ]..shuffle(random);
   for (var n = 0; n < budget && n < pool.length; n++) {
     roles[open[n]] = pool[n];
   }

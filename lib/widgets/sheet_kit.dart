@@ -56,18 +56,13 @@ class SheetHeader extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(
-                      title,
-                      key: titleKey,
-                      style: titleStyle ?? theme.textTheme.titleMedium,
-                    ),
+                    Text(title,
+                        key: titleKey,
+                        style: titleStyle ?? theme.textTheme.titleMedium),
                     if (sub != null && sub.isNotEmpty)
-                      Text(
-                        sub,
-                        style: theme.textTheme.labelMedium?.copyWith(
-                          color: ink.ash,
-                        ),
-                      ),
+                      Text(sub,
+                          style: theme.textTheme.labelMedium
+                              ?.copyWith(color: ink.ash)),
                   ],
                 ),
               ),
@@ -75,13 +70,10 @@ class SheetHeader extends StatelessWidget {
           ),
           if (word != null && word.isNotEmpty) ...[
             const SizedBox(height: 6),
-            Text(
-              word,
-              key: captionKey,
-              style: theme.textTheme.bodyMedium?.copyWith(
-                fontStyle: FontStyle.italic,
-              ),
-            ),
+            Text(word,
+                key: captionKey,
+                style: theme.textTheme.bodyMedium
+                    ?.copyWith(fontStyle: FontStyle.italic)),
           ],
         ],
       ),
@@ -104,17 +96,12 @@ class PriceChip extends StatelessWidget {
     return Row(
       mainAxisSize: MainAxisSize.min,
       children: [
-        Text(
-          'G',
-          style: theme.textTheme.labelMedium?.copyWith(color: ink.gold),
-        ),
+        Text('G',
+            style: theme.textTheme.labelMedium?.copyWith(color: ink.gold)),
         const SizedBox(width: 3),
-        Text(
-          '$amount',
-          style: theme.textTheme.labelMedium?.copyWith(
-            color: short ? ink.ember : ink.ash,
-          ),
-        ),
+        Text('$amount',
+            style: theme.textTheme.labelMedium
+                ?.copyWith(color: short ? ink.ember : ink.ash)),
       ],
     );
   }
@@ -157,7 +144,7 @@ class SheetRow extends StatelessWidget {
     final theme = Theme.of(context);
     final shown = [
       for (final l in lines)
-        if (l.isNotEmpty) l,
+        if (l.isNotEmpty) l
     ];
     return ListTile(
       leading: leading,
@@ -168,13 +155,10 @@ class SheetRow extends StatelessWidget {
               children: [
                 // The body face, not the pixel one: at small sizes the
                 // pixel face read "Blessing" as "Glessing".
-                Text(
-                  label!,
-                  style: theme.textTheme.bodySmall?.copyWith(
-                    color: InkColors.of(context).ash,
-                    fontWeight: FontWeight.w600,
-                  ),
-                ),
+                Text(label!,
+                    style: theme.textTheme.bodySmall?.copyWith(
+                        color: InkColors.of(context).ash,
+                        fontWeight: FontWeight.w600)),
                 Text(title, key: titleKey),
               ],
             ),
@@ -191,11 +175,10 @@ class SheetRow extends StatelessWidget {
                     child: PriceChip(price!),
                   ),
                 if (shown.isNotEmpty)
-                  Text(
-                    shown.join('\n'),
-                    maxLines: maxLines,
-                    overflow: maxLines == null ? null : TextOverflow.ellipsis,
-                  ),
+                  Text(shown.join('\n'),
+                      maxLines: maxLines,
+                      overflow:
+                          maxLines == null ? null : TextOverflow.ellipsis),
               ],
             ),
       trailing: trailing,
@@ -237,16 +220,12 @@ class SheetButtons extends StatelessWidget {
         FilledButton(
           key: primaryKey,
           onPressed: onPrimary,
-          child: Text(
-            price == null ? primaryLabel : '$primaryLabel · $price G',
-          ),
+          child:
+              Text(price == null ? primaryLabel : '$primaryLabel · $price G'),
         ),
         const SizedBox(height: 6),
         OutlinedButton(
-          key: closeKey,
-          onPressed: onClose,
-          child: Text(closeLabel),
-        ),
+            key: closeKey, onPressed: onClose, child: Text(closeLabel)),
       ],
     );
   }

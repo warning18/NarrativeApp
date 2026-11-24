@@ -66,12 +66,7 @@ class StationRoll {
 /// [die]'s landing for [crewId] at [room] on [turn] of the battle seeded
 /// [seed].
 StationRoll rollStationDie(
-  CrewDie die,
-  String crewId,
-  ShipRoom room,
-  int turn,
-  int seed,
-) {
+    CrewDie die, String crewId, ShipRoom room, int turn, int seed) {
   final faces = die.forRoom(room);
   if (faces.isEmpty) return StationRoll(crewId, room, null);
   final rng = Random(Object.hash(seed, turn, crewId, room.index) & 0x3fffffff);

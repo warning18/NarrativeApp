@@ -22,12 +22,11 @@ extension _SimFightEnd on _SimFight {
             (watchfireBurn(fire) * (has(Spec.beacon) ? mods.beaconBurn : 1))
                 .round();
         burnTarget.health = max(
-          0,
-          burnTarget.health -
-              (burnsLight()
-                  ? burnTarget.takeHit(burn, beaconElement, pierce: true)
-                  : burn),
-        );
+            0,
+            burnTarget.health -
+                (burnsLight()
+                    ? burnTarget.takeHit(burn, beaconElement, pierce: true)
+                    : burn));
         phasesEntered += burnTarget.advancePhases();
       }
       if (has(Spec.ashenHand)) ashenHand(watchfireBurn(fire));
@@ -41,10 +40,8 @@ extension _SimFightEnd on _SimFight {
     }
     // The rising ground takes from both sides (context_rules.dart).
     if (ctx != null) {
-      c.currentHealth = afterTick(
-        c.currentHealth,
-        ctx.tick(c.maxHealth, rounds),
-      );
+      c.currentHealth =
+          afterTick(c.currentHealth, ctx.tick(c.maxHealth, rounds));
       for (final e in ens) {
         if (e.isAlive) {
           e.health = afterTick(e.health, ctx.tick(e.maxHealth, rounds));
@@ -57,25 +54,19 @@ extension _SimFightEnd on _SimFight {
       for (final e in ens) {
         if (e.isAlive) {
           e.health = afterTick(
-            e.health,
-            allyStrike(e.maxHealth, rounds, bossFight: anyBoss),
-          );
+              e.health, allyStrike(e.maxHealth, rounds, bossFight: anyBoss));
         }
       }
     } else if (reinforcement == Reinforcement.foes) {
       c.currentHealth = afterTick(
-        c.currentHealth,
-        foeStrike(c.maxHealth, rounds, bossFight: anyBoss),
-      );
+          c.currentHealth, foeStrike(c.maxHealth, rounds, bossFight: anyBoss));
     }
     // The dead crumble (foe_kind.dart).
     if (on('kinds')) {
       for (final e in ens) {
         if (e.isAlive) {
           e.health = afterTick(
-            e.health,
-            crumble(e.data, e.maxHealth, rounds, boss: boss(e)),
-          );
+              e.health, crumble(e.data, e.maxHealth, rounds, boss: boss(e)));
         }
       }
     }

@@ -35,10 +35,9 @@ class ThroneEditTab extends ConsumerWidget {
     final climbers = [...data.clans, ...data.lost];
     final others = [...data.tribes, ...data.otherworld];
     final preview = hostFor(
-      politics: politics,
-      data: data,
-      signPatrons: session.signPatronsThisLife,
-    );
+        politics: politics,
+        data: data,
+        signPatrons: session.signPatronsThisLife);
     final notifier = ref.read(playerSessionProvider.notifier);
     final messenger = ScaffoldMessenger.of(context);
     final done = trFor(lang, 'throne_edit_done');
@@ -46,16 +45,13 @@ class ThroneEditTab extends ConsumerWidget {
     Future<void> apply(StoryPolitics politics) async {
       await applyThroneEditNow(ref, politics);
       messenger.showSnackBar(
-        SnackBar(content: Text(done), duration: const Duration(seconds: 1)),
-      );
+          SnackBar(content: Text(done), duration: const Duration(seconds: 1)));
     }
 
     Widget tag(String key, Color colour) => Text(
           trFor(lang, key),
-          style: theme.textTheme.labelSmall?.copyWith(
-            color: colour,
-            fontWeight: FontWeight.w700,
-          ),
+          style: theme.textTheme.labelSmall
+              ?.copyWith(color: colour, fontWeight: FontWeight.w700),
         );
 
     Widget card(Faction faction, {required bool climbs}) {
@@ -76,15 +72,12 @@ class ThroneEditTab extends ConsumerWidget {
                       ? LostClanEmblem(
                           faction: faction,
                           stage: openHandStageFrom(session.flags),
-                          size: 26,
-                        )
+                          size: 26)
                       : PatronEmblem(patron: faction.patron, size: 26),
                   const SizedBox(width: 8),
                   Expanded(
-                    child: Text(
-                      faction.nameFor(lang),
-                      style: theme.textTheme.titleSmall,
-                    ),
+                    child: Text(faction.nameFor(lang),
+                        style: theme.textTheme.titleSmall),
                   ),
                 ],
               ),
@@ -111,23 +104,17 @@ class ThroneEditTab extends ConsumerWidget {
                       key: Key('throne_step_down_$id'),
                       visualDensity: VisualDensity.compact,
                       icon: const Icon(Icons.remove, size: IconSize.s16),
-                      tooltip: trFor(
-                        lang,
-                        'throne_edit_steps',
-                      ).replaceAll('{n}', '${climb.steps}'),
+                      tooltip: trFor(lang, 'throne_edit_steps')
+                          .replaceAll('{n}', '${climb.steps}'),
                       onPressed: climb.steps <= 0
                           ? null
                           : () => notifier.setClanStepsForEdit(
-                                id,
-                                climb.steps - 1,
-                                data: data,
-                              ),
+                              id, climb.steps - 1,
+                              data: data),
                     ),
                     Text(
-                      trFor(
-                        lang,
-                        'throne_edit_steps',
-                      ).replaceAll('{n}', '${climb.steps}'),
+                      trFor(lang, 'throne_edit_steps')
+                          .replaceAll('{n}', '${climb.steps}'),
                       key: Key('throne_steps_$id'),
                       style: theme.textTheme.labelMedium,
                     ),
@@ -135,17 +122,13 @@ class ThroneEditTab extends ConsumerWidget {
                       key: Key('throne_step_up_$id'),
                       visualDensity: VisualDensity.compact,
                       icon: const Icon(Icons.add, size: IconSize.s16),
-                      tooltip: trFor(
-                        lang,
-                        'throne_edit_steps',
-                      ).replaceAll('{n}', '${climb.steps}'),
+                      tooltip: trFor(lang, 'throne_edit_steps')
+                          .replaceAll('{n}', '${climb.steps}'),
                       onPressed: climb.steps >= clanQuestSteps
                           ? null
                           : () => notifier.setClanStepsForEdit(
-                                id,
-                                climb.steps + 1,
-                                data: data,
-                              ),
+                              id, climb.steps + 1,
+                              data: data),
                     ),
                   ],
                   if (climbs)
@@ -190,12 +173,9 @@ class ThroneEditTab extends ConsumerWidget {
       key: const Key('clans_throne_list'),
       padding: const EdgeInsets.fromLTRB(12, 8, 12, 24),
       children: [
-        Text(
-          trFor(lang, 'throne_edit_hint'),
-          style: theme.textTheme.bodySmall?.copyWith(
-            color: theme.colorScheme.onSurfaceVariant,
-          ),
-        ),
+        Text(trFor(lang, 'throne_edit_hint'),
+            style: theme.textTheme.bodySmall
+                ?.copyWith(color: theme.colorScheme.onSurfaceVariant)),
         for (final faction in climbers) card(faction, climbs: true),
         for (final faction in others) card(faction, climbs: false),
         const SizedBox(height: 8),
@@ -206,10 +186,8 @@ class ThroneEditTab extends ConsumerWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(
-                  trFor(lang, 'throne_edit_preview'),
-                  style: theme.textTheme.titleSmall,
-                ),
+                Text(trFor(lang, 'throne_edit_preview'),
+                    style: theme.textTheme.titleSmall),
                 Text(
                   '${trFor(lang, 'host_banner')}$colon '
                   '${preview.banner.isEmpty ? '–' : name(preview.banner)}',
@@ -243,9 +221,7 @@ class ThroneEditTab extends ConsumerWidget {
               label: Text(trFor(lang, 'throne_edit_muster')),
               onPressed: () async {
                 await applyThroneEditNow(
-                  ref,
-                  const StoryPolitics(muster: true),
-                );
+                    ref, const StoryPolitics(muster: true));
                 if (context.mounted) await showHostSheet(context);
               },
             ),
@@ -261,12 +237,8 @@ class ThroneEditTab extends ConsumerWidget {
               label: Text(trFor(lang, 'throne_edit_clear')),
               onPressed: () async {
                 await notifier.clearThroneForEdit(data: data);
-                messenger.showSnackBar(
-                  SnackBar(
-                    content: Text(done),
-                    duration: const Duration(seconds: 1),
-                  ),
-                );
+                messenger.showSnackBar(SnackBar(
+                    content: Text(done), duration: const Duration(seconds: 1)));
               },
             ),
           ],

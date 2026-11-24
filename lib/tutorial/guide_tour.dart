@@ -110,10 +110,7 @@ Rect? debugGuideHole;
 /// screen and talks the player through it, lighting up each part as it
 /// goes. Skippable at any point. Marks the tour seen.
 Future<void> showGuideTour(
-  BuildContext context,
-  WidgetRef ref,
-  TutorialTopic topic,
-) async {
+    BuildContext context, WidgetRef ref, TutorialTopic topic) async {
   if (_tourShowing) return;
   _tourShowing = true;
   unawaited(ref.read(tutorialProvider.notifier).markSeen(topic));
@@ -321,9 +318,8 @@ class _GuideTourState extends ConsumerState<GuideTour>
     super.initState();
     _move = AnimationController(vsync: this);
     _gait = AnimationController(
-      vsync: this,
-      duration: const Duration(milliseconds: 800),
-    )..repeat();
+        vsync: this, duration: const Duration(milliseconds: 800))
+      ..repeat();
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (!mounted) return;
       final steps = [
@@ -354,9 +350,7 @@ class _GuideTourState extends ConsumerState<GuideTour>
   String _textOf(int step) {
     final name = ref.read(companionNameProvider);
     return tr(ref, _steps[step].textKey).replaceAll(
-      '{name}',
-      name.isEmpty ? tr(ref, 'tut_guide_default_name') : name,
-    );
+        '{name}', name.isEmpty ? tr(ref, 'tut_guide_default_name') : name);
   }
 
   Future<void> _goTo(int step) async {
@@ -381,12 +375,11 @@ class _GuideTourState extends ConsumerState<GuideTour>
     final targetId = _steps[step].target;
     final target = targetId == null ? null : _shownTarget(targetId);
     if (target != null) {
-      await Scrollable.ensureVisible(
-        target,
-        alignment: 0.25,
-        duration:
-            _reduceMotion ? Duration.zero : const Duration(milliseconds: 300),
-      );
+      await Scrollable.ensureVisible(target,
+          alignment: 0.25,
+          duration: _reduceMotion
+              ? Duration.zero
+              : const Duration(milliseconds: 300));
       await WidgetsBinding.instance.endOfFrame;
       if (!mounted || id != _moveId) return;
       if (target.mounted) hole = _rectOf(target, area);
@@ -404,10 +397,7 @@ class _GuideTourState extends ConsumerState<GuideTour>
     final (dog, above) = _placeDog(hole, screen, media.padding, room);
     final from = _started
         ? Offset.lerp(
-            _dogFrom,
-            _dogTo,
-            Curves.easeInOut.transform(_move.value),
-          )!
+            _dogFrom, _dogTo, Curves.easeInOut.transform(_move.value))!
         : Offset(-_dogSize, dog.dy);
     final holeFrom = _started ? _currentHole : null;
     _started = true;
@@ -422,8 +412,7 @@ class _GuideTourState extends ConsumerState<GuideTour>
     _move.duration = _reduceMotion
         ? Duration.zero
         : Duration(
-            milliseconds: (distance / 320 * 1000).clamp(250, 1500).round(),
-          );
+            milliseconds: (distance / 320 * 1000).clamp(250, 1500).round());
     await _move.forward(from: 0).orCancel.catchError((_) {});
     if (!mounted || id != _moveId) return;
     setState(() => _arrived = true);
@@ -446,10 +435,9 @@ class _GuideTourState extends ConsumerState<GuideTour>
     final to = _holeTo;
     if (from == null && to == null) return null;
     return Rect.lerp(
-      from ?? Rect.fromCenter(center: to!.center, width: 0, height: 0),
-      to ?? Rect.fromCenter(center: from!.center, width: 0, height: 0),
-      t,
-    );
+        from ?? Rect.fromCenter(center: to!.center, width: 0, height: 0),
+        to ?? Rect.fromCenter(center: from!.center, width: 0, height: 0),
+        t);
   }
 
   /// Where the dog sits for a step lighting [hole]: under it when there is
@@ -459,11 +447,7 @@ class _GuideTourState extends ConsumerState<GuideTour>
   /// dog leaves it free between itself and the screen's edge, even if that
   /// means sitting over part of the lit area.
   (Offset, bool) _placeDog(
-    Rect? hole,
-    Size screen,
-    EdgeInsets padding,
-    double bubble,
-  ) {
+      Rect? hole, Size screen, EdgeInsets padding, double bubble) {
     final top = padding.top + 56;
     final bottom = screen.height - padding.bottom - 12;
     // Never so much that the dog itself is pushed off the screen: past
@@ -474,12 +458,10 @@ class _GuideTourState extends ConsumerState<GuideTour>
     if (hole == null || hole.height > screen.height * 0.5) {
       return (
         Offset(
-          (screen.width - _dogSize) / 2,
-          math.min(
-            math.max((top + bottom + room) / 2 - _dogSize / 2, top + room),
-            bottom - _dogSize,
-          ),
-        ),
+            (screen.width - _dogSize) / 2,
+            math.min(
+                math.max((top + bottom + room) / 2 - _dogSize / 2, top + room),
+                bottom - _dogSize)),
         true,
       );
     }
@@ -552,183 +534,163 @@ class _GuideTourState extends ConsumerState<GuideTour>
       },
       child: Material(
         type: MaterialType.transparency,
-        child: LayoutBuilder(
-          builder: (context, constraints) {
-            // The tour's own size, not the screen's (see [_goTo]).
-            final screen = constraints.biggest;
-            return AnimatedBuilder(
-              animation: Listenable.merge([_move, _gait]),
-              builder: (context, _) {
-                final t = Curves.easeInOut.transform(_move.value);
-                final dog = Offset.lerp(_dogFrom, _dogTo, t)!;
-                final delta = _dogTo - _dogFrom;
-                final walking = _started && !_arrived && delta.distance > 1;
-                final frames = _walkFrames(delta, alignment);
-                // The angel and demon only walk east: west is east mirrored.
-                final flip = walking &&
-                    (alignment == 'Good' || alignment == 'Evil') &&
-                    delta.dx < 0 &&
-                    delta.dx.abs() >= delta.dy.abs();
-                final sprite = walking
-                    ? frames[
-                        (_gait.value * frames.length).floor() % frames.length]
-                    : switch (alignment) {
-                        'Good' => _angelSit,
-                        'Evil' => _demonSit,
-                        _ => _neutralSit,
-                      };
-                final spriteSize =
-                    walking ? _dogSize : _dogSize * _sitNative / _walkNative;
-                final (bubbleLeft, bubbleWidth) = _bubbleBox(screen.width);
-                // The bubble stays between the Skip button and the bottom of
-                // the screen (the navigation bar), whatever its words.
-                final safeTop = media.padding.top + 56;
-                final safeBottom = screen.height - media.padding.bottom - 8;
-                var bubbleTop = safeTop;
-                var bubbleBottom = safeBottom;
-                if (_bubbleAbove) {
-                  // The tail's tip just over the dog's head (a walking dog
-                  // fills its box; a sitting one sits low in it).
-                  bubbleBottom = math.min(
-                    safeBottom,
-                    dog.dy + (walking ? 0 : _sitTop) + 4,
-                  );
-                  if (bubbleBottom - safeTop < _bubbleMinHeight) {
-                    bubbleBottom = math.min(
-                      safeBottom,
-                      safeTop + _bubbleMinHeight,
-                    );
-                  }
-                } else {
-                  bubbleTop = math.max(safeTop, dog.dy + _dogSize + 2);
-                  if (safeBottom - bubbleTop < _bubbleMinHeight) {
-                    bubbleTop = math.max(
-                      safeTop,
-                      safeBottom - _bubbleMinHeight,
-                    );
-                  }
+        child: LayoutBuilder(builder: (context, constraints) {
+          // The tour's own size, not the screen's (see [_goTo]).
+          final screen = constraints.biggest;
+          return AnimatedBuilder(
+            animation: Listenable.merge([_move, _gait]),
+            builder: (context, _) {
+              final t = Curves.easeInOut.transform(_move.value);
+              final dog = Offset.lerp(_dogFrom, _dogTo, t)!;
+              final delta = _dogTo - _dogFrom;
+              final walking = _started && !_arrived && delta.distance > 1;
+              final frames = _walkFrames(delta, alignment);
+              // The angel and demon only walk east: west is east mirrored.
+              final flip = walking &&
+                  (alignment == 'Good' || alignment == 'Evil') &&
+                  delta.dx < 0 &&
+                  delta.dx.abs() >= delta.dy.abs();
+              final sprite = walking
+                  ? frames[
+                      (_gait.value * frames.length).floor() % frames.length]
+                  : switch (alignment) {
+                      'Good' => _angelSit,
+                      'Evil' => _demonSit,
+                      _ => _neutralSit,
+                    };
+              final spriteSize =
+                  walking ? _dogSize : _dogSize * _sitNative / _walkNative;
+              final (bubbleLeft, bubbleWidth) = _bubbleBox(screen.width);
+              // The bubble stays between the Skip button and the bottom of
+              // the screen (the navigation bar), whatever its words.
+              final safeTop = media.padding.top + 56;
+              final safeBottom = screen.height - media.padding.bottom - 8;
+              var bubbleTop = safeTop;
+              var bubbleBottom = safeBottom;
+              if (_bubbleAbove) {
+                // The tail's tip just over the dog's head (a walking dog
+                // fills its box; a sitting one sits low in it).
+                bubbleBottom =
+                    math.min(safeBottom, dog.dy + (walking ? 0 : _sitTop) + 4);
+                if (bubbleBottom - safeTop < _bubbleMinHeight) {
+                  bubbleBottom =
+                      math.min(safeBottom, safeTop + _bubbleMinHeight);
                 }
-                final skipCorner = Rect.fromLTWH(
-                  screen.width - 132,
-                  media.padding.top,
-                  132,
-                  56,
-                );
-                final lit = _holeTo;
-                final skipLeft =
-                    lit != null && lit.inflate(6).overlaps(skipCorner);
-                final tailX = (dog.dx + _dogSize / 2 - bubbleLeft - 9).clamp(
-                  14.0,
-                  bubbleWidth - 32,
-                );
+              } else {
+                bubbleTop = math.max(safeTop, dog.dy + _dogSize + 2);
+                if (safeBottom - bubbleTop < _bubbleMinHeight) {
+                  bubbleTop = math.max(safeTop, safeBottom - _bubbleMinHeight);
+                }
+              }
+              final skipCorner =
+                  Rect.fromLTWH(screen.width - 132, media.padding.top, 132, 56);
+              final lit = _holeTo;
+              final skipLeft =
+                  lit != null && lit.inflate(6).overlaps(skipCorner);
+              final tailX = (dog.dx + _dogSize / 2 - bubbleLeft - 9)
+                  .clamp(14.0, bubbleWidth - 32);
 
-                final bubble = SpeechBubble(
-                  nextKey: const Key('tutorial_next'),
-                  speaker:
-                      name.isEmpty ? tr(ref, 'tut_guide_default_name') : name,
-                  fullText: text,
-                  shown: text.substring(0, math.min(_chars, text.length)),
-                  counter: '${_step + 1} / ${_steps.length}',
-                  nextLabel: tr(ref, isLast ? 'tut_done' : 'tut_next'),
-                  onNext: _next,
-                  voice: voice,
-                  voiceLabel: tr(ref, voice ? 'tut_voice_off' : 'tut_voice_on'),
-                  onVoice: () {
-                    final on = !voice;
-                    ref.read(tutorialProvider.notifier).setVoice(on);
-                    if (on) {
-                      _speak(text);
-                    } else {
-                      _voice?.stop();
-                    }
-                  },
-                  tailX: tailX,
-                  tailDown: _bubbleAbove,
-                );
+              final bubble = SpeechBubble(
+                nextKey: const Key('tutorial_next'),
+                speaker:
+                    name.isEmpty ? tr(ref, 'tut_guide_default_name') : name,
+                fullText: text,
+                shown: text.substring(0, math.min(_chars, text.length)),
+                counter: '${_step + 1} / ${_steps.length}',
+                nextLabel: tr(ref, isLast ? 'tut_done' : 'tut_next'),
+                onNext: _next,
+                voice: voice,
+                voiceLabel: tr(ref, voice ? 'tut_voice_off' : 'tut_voice_on'),
+                onVoice: () {
+                  final on = !voice;
+                  ref.read(tutorialProvider.notifier).setVoice(on);
+                  if (on) {
+                    _speak(text);
+                  } else {
+                    _voice?.stop();
+                  }
+                },
+                tailX: tailX,
+                tailDown: _bubbleAbove,
+              );
 
-                return Stack(
-                  children: [
-                    Positioned.fill(
-                      child: GestureDetector(
-                        behavior: HitTestBehavior.opaque,
-                        onTap: _next,
-                        child: CustomPaint(
-                          painter: _DimPainter(
-                            hole: _started ? _currentHole : null,
-                            dim: Colors.black.withValues(
-                              alpha: _holeTo == null ? 0.45 : 0.6,
-                            ),
-                            ring: ink.gold,
-                          ),
+              return Stack(
+                children: [
+                  Positioned.fill(
+                    child: GestureDetector(
+                      behavior: HitTestBehavior.opaque,
+                      onTap: _next,
+                      child: CustomPaint(
+                        painter: _DimPainter(
+                          hole: _started ? _currentHole : null,
+                          dim: Colors.black
+                              .withValues(alpha: _holeTo == null ? 0.45 : 0.6),
+                          ring: ink.gold,
                         ),
                       ),
                     ),
-                    if (_started)
-                      Positioned(
-                        left: dog.dx,
-                        top: dog.dy,
-                        width: _dogSize,
-                        height: _dogSize,
-                        child: IgnorePointer(
-                          child: Align(
-                            alignment: Alignment.bottomCenter,
-                            child: Transform.flip(
-                              flipX: flip,
-                              child: Image.asset(
-                                sprite,
-                                key: const Key('guide_dog'),
-                                width: spriteSize,
-                                height: spriteSize,
-                                filterQuality: FilterQuality.none,
-                                gaplessPlayback: true,
-                                errorBuilder: (_, __, ___) => Icon(
-                                  Icons.pets,
-                                  size: spriteSize * 0.6,
-                                  color: ink.gold,
-                                ),
-                              ),
-                            ),
-                          ),
-                        ),
-                      ),
-                    if (_arrived)
-                      Positioned(
-                        left: bubbleLeft,
-                        width: bubbleWidth,
-                        top: bubbleTop,
-                        bottom: screen.height - bubbleBottom,
-                        child: Align(
-                          alignment: _bubbleAbove
-                              ? Alignment.bottomCenter
-                              : Alignment.topCenter,
-                          child: bubble,
-                        ),
-                      ),
+                  ),
+                  if (_started)
                     Positioned(
-                      top: media.padding.top + 8,
-                      // Skip keeps out of the way of what is lit: a button
-                      // in the top right corner sends it to the left.
-                      right: skipLeft ? null : 12,
-                      left: skipLeft ? 12 : null,
-                      child: OutlinedButton.icon(
-                        key: const Key('tutorial_skip'),
-                        onPressed: _close,
-                        style: OutlinedButton.styleFrom(
-                          backgroundColor: theme.colorScheme.surface.withValues(
-                            alpha: 0.92,
+                      left: dog.dx,
+                      top: dog.dy,
+                      width: _dogSize,
+                      height: _dogSize,
+                      child: IgnorePointer(
+                        child: Align(
+                          alignment: Alignment.bottomCenter,
+                          child: Transform.flip(
+                            flipX: flip,
+                            child: Image.asset(
+                              sprite,
+                              key: const Key('guide_dog'),
+                              width: spriteSize,
+                              height: spriteSize,
+                              filterQuality: FilterQuality.none,
+                              gaplessPlayback: true,
+                              errorBuilder: (_, __, ___) => Icon(Icons.pets,
+                                  size: spriteSize * 0.6, color: ink.gold),
+                            ),
                           ),
-                          minimumSize: const Size(0, 40),
                         ),
-                        icon: const Icon(Icons.close, size: IconSize.s16),
-                        label: Text(tr(ref, 'tut_skip')),
                       ),
                     ),
-                  ],
-                );
-              },
-            );
-          },
-        ),
+                  if (_arrived)
+                    Positioned(
+                      left: bubbleLeft,
+                      width: bubbleWidth,
+                      top: bubbleTop,
+                      bottom: screen.height - bubbleBottom,
+                      child: Align(
+                        alignment: _bubbleAbove
+                            ? Alignment.bottomCenter
+                            : Alignment.topCenter,
+                        child: bubble,
+                      ),
+                    ),
+                  Positioned(
+                    top: media.padding.top + 8,
+                    // Skip keeps out of the way of what is lit: a button
+                    // in the top right corner sends it to the left.
+                    right: skipLeft ? null : 12,
+                    left: skipLeft ? 12 : null,
+                    child: OutlinedButton.icon(
+                      key: const Key('tutorial_skip'),
+                      onPressed: _close,
+                      style: OutlinedButton.styleFrom(
+                        backgroundColor:
+                            theme.colorScheme.surface.withValues(alpha: 0.92),
+                        minimumSize: const Size(0, 40),
+                      ),
+                      icon: const Icon(Icons.close, size: IconSize.s16),
+                      label: Text(tr(ref, 'tut_skip')),
+                    ),
+                  ),
+                ],
+              );
+            },
+          );
+        }),
       ),
     );
   }
@@ -750,10 +712,8 @@ class _DimPainter extends CustomPainter {
       canvas.drawRect(screen, Paint()..color = dim);
       return;
     }
-    final lit = RRect.fromRectAndRadius(
-      hole.inflate(6),
-      const Radius.circular(8),
-    );
+    final lit =
+        RRect.fromRectAndRadius(hole.inflate(6), const Radius.circular(8));
     canvas.drawPath(
       Path()
         ..fillType = PathFillType.evenOdd

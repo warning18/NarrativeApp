@@ -161,16 +161,7 @@ class TowerEventResult {
 
   @override
   int get hashCode => Object.hash(
-        kind,
-        roll,
-        total,
-        passed,
-        from,
-        to,
-        bought.join(','),
-        paid,
-        healed,
-      );
+      kind, roll, total, passed, from, to, bought.join(','), paid, healed);
 }
 
 /// What a merchant sells (TowerStockView.kind).
@@ -392,11 +383,8 @@ _Drawn? _peacefulDrawn(int seed, int floor) {
     return null;
   }
   if (_drawn(seed, floor) != null) return null;
-  final random = towerRandom(
-    seed,
-    towerPeacefulDraw + floor,
-    TowerStream.board,
-  );
+  final random =
+      towerRandom(seed, towerPeacefulDraw + floor, TowerStream.board);
   final u = random.nextDouble();
   final clanId = towerClans[random.nextInt(towerClans.length)];
   final roll = random.nextInt(20) + 1;
@@ -422,17 +410,11 @@ bool _isStore(TowerEventKind kind) =>
 /// draw, as _peacefulDrawn reads them).
 _Drawn? _storeDrawn(int seed, int floor) {
   if (towerShopFloors.contains(floor)) {
-    final random = towerRandom(
-      seed,
-      towerPeacefulDraw + floor,
-      TowerStream.board,
-    )..nextDouble();
-    return _Drawn(
-      TowerEventKind.merchant,
-      0,
-      0,
-      clanId: towerClans[random.nextInt(towerClans.length)],
-    );
+    final random =
+        towerRandom(seed, towerPeacefulDraw + floor, TowerStream.board)
+          ..nextDouble();
+    return _Drawn(TowerEventKind.merchant, 0, 0,
+        clanId: towerClans[random.nextInt(towerClans.length)]);
   }
   final drawn = _peacefulDrawn(seed, floor);
   return drawn != null && _isStore(drawn.kind) ? drawn : null;
@@ -515,12 +497,8 @@ int towerBargainCostOf(SimCharacter hero) =>
 /// to TowerRun.marksSpent, the id to TowerRun.bought, and the store's sales
 /// so far to TowerRun.lastEvent. [hero], when given, is [run]'s hero
 /// already built (towerHeroOf).
-TowerRun towerBuy(
-  TowerRun run,
-  TowerData data,
-  String stockId, {
-  SimCharacter? hero,
-}) {
+TowerRun towerBuy(TowerRun run, TowerData data, String stockId,
+    {SimCharacter? hero}) {
   final store = _openStore(run);
   final kind = towerStockIds[stockId];
   if (store == null || store.kind != TowerEventKind.merchant || kind == null) {
@@ -572,12 +550,8 @@ TowerRun towerBuy(
 /// point, the health held within the new max. Refused: 0 saved. Either way
 /// the choice is TowerRun.lastEvent, and the store stays open until left.
 /// [hero], when given, is [run]'s hero already built (towerHeroOf).
-TowerRun towerChooseBargain(
-  TowerRun run,
-  TowerData data,
-  bool accept, {
-  SimCharacter? hero,
-}) {
+TowerRun towerChooseBargain(TowerRun run, TowerData data, bool accept,
+    {SimCharacter? hero}) {
   final store = _openStore(run);
   if (store == null || store.kind != TowerEventKind.bargain) return run;
   final floor = run.store!;
@@ -586,11 +560,10 @@ TowerRun towerChooseBargain(
   final chosen = run.copyWith(
     bargains: {...run.bargains, floor: cut},
     lastEvent: TowerEventResult(
-      kind: TowerEventKind.bargain,
-      passed: accept,
-      from: floor,
-      to: floor + 1,
-    ),
+        kind: TowerEventKind.bargain,
+        passed: accept,
+        from: floor,
+        to: floor + 1),
   );
   if (!accept) return chosen;
   final after = towerHeroOf(chosen, data).maxHealth;
@@ -720,12 +693,8 @@ String? towerParleyClanOf(TowerRun run) {
 /// up. Failed, TowerRun.parley true and the floor's fight. Either way the
 /// talk's end is TowerRun.lastEvent. [hero], when given, is [run]'s hero
 /// already built (towerHeroOf): the check's modifier is read from it.
-TowerRun towerChooseParley(
-  TowerRun run,
-  TowerData data,
-  bool talk, {
-  SimCharacter? hero,
-}) {
+TowerRun towerChooseParley(TowerRun run, TowerData data, bool talk,
+    {SimCharacter? hero}) {
   if (run.status != TowerStatus.climbing || run.parley != null) return run;
   final event = _eventOf(run);
   if (event == null || event.kind != TowerEventKind.parley) return run;
@@ -734,16 +703,11 @@ TowerRun towerChooseParley(
   final TowerEventResult result;
   if (run.clanIds.contains(event.clanId)) {
     result = TowerEventResult(
-      kind: TowerEventKind.parley,
-      passed: true,
-      from: from,
-      to: from + 1,
-    );
+        kind: TowerEventKind.parley, passed: true, from: from, to: from + 1);
   } else {
     final dc = towerSetbackDcOf(from);
-    final modifier = checkBonusFor(
-      (hero ?? towerHeroOf(run, data)).abilityScore(towerParleyAbilityOf(from)),
-    );
+    final modifier = checkBonusFor((hero ?? towerHeroOf(run, data))
+        .abilityScore(towerParleyAbilityOf(from)));
     final passed = checkPasses(event.roll, modifier, dc);
     result = TowerEventResult(
       kind: TowerEventKind.parley,
@@ -756,15 +720,13 @@ TowerRun towerChooseParley(
   }
   if (!result.passed) return run.copyWith(parley: true, lastEvent: result);
   return _land(
-    run.copyWith(
-      lastEvent: result,
-      clearShortcut: true,
-      clearParley: true,
-      clearStore: true,
-    ),
-    from + 1,
-    data,
-  );
+      run.copyWith(
+          lastEvent: result,
+          clearShortcut: true,
+          clearParley: true,
+          clearStore: true),
+      from + 1,
+      data);
 }
 
 /// The floor after the last gate (warden or boss) below [floor]: 1 when
@@ -789,11 +751,8 @@ int towerSetbackFallTo(int floor, int fall) =>
 /// floor met again gives a view with [TowerEventView.kind] null and
 /// [TowerEventView.revisit] true. [hero], when given, is [run]'s hero
 /// already built (towerHeroOf): a test's modifier is read from it.
-TowerEventView? towerEventOf(
-  TowerRun run,
-  TowerData data, {
-  SimCharacter? hero,
-}) {
+TowerEventView? towerEventOf(TowerRun run, TowerData data,
+    {SimCharacter? hero}) {
   if (run.events < 1 || run.isOver) return null;
   final store = _openStore(run);
   if (store != null) return _storeView(run, data, store, hero);
@@ -807,9 +766,8 @@ TowerEventView? towerEventOf(
     case TowerEventKind.test:
       final ability = towerSetbackAbilityOf(floor);
       final dc = towerSetbackDcOf(floor);
-      final modifier = checkBonusFor(
-        (hero ?? towerHeroOf(run, data)).abilityScore(ability),
-      );
+      final modifier =
+          checkBonusFor((hero ?? towerHeroOf(run, data)).abilityScore(ability));
       return TowerEventView(
         kind: TowerEventKind.test,
         floor: floor,
@@ -836,9 +794,8 @@ TowerEventView? towerEventOf(
         result: run.lastEvent,
       );
     case TowerEventKind.shortcut:
-      final tough = towerShortcutFloor(
-        towerFloorsFor(run.seed, data.enemies)[floor - 1],
-      );
+      final tough =
+          towerShortcutFloor(towerFloorsFor(run.seed, data.enemies)[floor - 1]);
       final landsOn = towerShortcutLandsOn(floor, event!.fall);
       return TowerEventView(
         kind: TowerEventKind.shortcut,
@@ -858,9 +815,8 @@ TowerEventView? towerEventOf(
     case TowerEventKind.parley:
       final ability = towerParleyAbilityOf(floor);
       final dc = towerSetbackDcOf(floor);
-      final modifier = checkBonusFor(
-        (hero ?? towerHeroOf(run, data)).abilityScore(ability),
-      );
+      final modifier =
+          checkBonusFor((hero ?? towerHeroOf(run, data)).abilityScore(ability));
       return TowerEventView(
         kind: TowerEventKind.parley,
         floor: floor,
@@ -895,11 +851,7 @@ TowerEventView? towerEventOf(
 /// The view of the store [store] open on [run]'s landing (floor events
 /// PR 4): TowerEventView.storeOpen.
 TowerEventView _storeView(
-  TowerRun run,
-  TowerData data,
-  _Drawn store,
-  SimCharacter? hero,
-) {
+    TowerRun run, TowerData data, _Drawn store, SimCharacter? hero) {
   final floor = run.store!;
   final built = hero ?? towerHeroOf(run, data);
   final setbacksLeft = max(0, towerSetbacksPerRun - run.setbacks);
@@ -959,8 +911,7 @@ TowerRun _land(TowerRun next, int to, TowerData data) {
   final landed = next.copyWith(floor: to, crest: max(next.crest, to - 1));
   final after = towerHeroOf(landed, data).maxHealth;
   return landed.copyWith(
-    health: (next.health + after - before).clamp(1, after),
-  );
+      health: (next.health + after - before).clamp(1, after));
 }
 
 /// The rival's end after [run]'s fight of its floor, won in [rounds]
@@ -1009,13 +960,8 @@ TowerRun towerAfterEvent(TowerRun won, TowerRun next, TowerData data) {
       if (won.shortcut != true) return next;
       final to = towerShortcutLandsOn(from, event.fall);
       final landed = _land(next, to, data).copyWith(
-        lastEvent: TowerEventResult(
-          kind: TowerEventKind.shortcut,
-          passed: true,
-          from: from,
-          to: to,
-        ),
-      );
+          lastEvent: TowerEventResult(
+              kind: TowerEventKind.shortcut, passed: true, from: from, to: to));
       // The card on landing (the proposal's "card on landing"): the floor
       // below the landing deals its offer, as the one just won would.
       final hero = towerHeroOf(landed, data);
@@ -1023,7 +969,10 @@ TowerRun towerAfterEvent(TowerRun won, TowerRun next, TowerData data) {
         seed: landed.seed,
         floor: to - 1,
         hero: towerHeroView(landed, hero),
-        oaths: landed.oathsLeft,
+        clanPool: landed.clanPool,
+        standing: towerStandingOf(landed, data),
+        oathOpen: landed.clanIds.isEmpty,
+        clans: data.clans,
         items: data.items,
         dice: data.dice,
         skills: data.skills,
@@ -1031,10 +980,7 @@ TowerRun towerAfterEvent(TowerRun won, TowerRun next, TowerData data) {
       );
       if (offer.isEmpty) return landed;
       return landed.copyWith(
-        floor: to - 1,
-        status: TowerStatus.choosing,
-        offer: offer,
-      );
+          floor: to - 1, status: TowerStatus.choosing, offer: offer);
     case TowerEventKind.test:
       final hero = towerHeroOf(next, data);
       final ability = towerSetbackAbilityOf(from);
@@ -1056,8 +1002,7 @@ TowerRun towerAfterEvent(TowerRun won, TowerRun next, TowerData data) {
             ? next.copyWith(potions: next.potions + 1, lastEvent: result)
             : next.copyWith(
                 health: min(hero.maxHealth, next.health + potionHealAmount),
-                lastEvent: result,
-              );
+                lastEvent: result);
       }
       return next.copyWith(
         floor: to,

@@ -167,9 +167,7 @@ class _RewardCardState extends State<RewardCard>
     final begin = (_stagger.inMilliseconds * i) / total;
     final end = (begin + 280 / total).clamp(0.0, 1.0);
     return CurvedAnimation(
-      parent: _in,
-      curve: Interval(begin, end, curve: Curves.easeOut),
-    );
+        parent: _in, curve: Interval(begin, end, curve: Curves.easeOut));
   }
 
   @override
@@ -202,11 +200,9 @@ class _RewardCardState extends State<RewardCard>
                   for (var i = 0; i < data.lines.length; i++) ...[
                     if (i > 0 || data.counters.isNotEmpty)
                       Divider(
-                        height: 1,
-                        color: theme.colorScheme.outlineVariant.withValues(
-                          alpha: 0.6,
-                        ),
-                      ),
+                          height: 1,
+                          color: theme.colorScheme.outlineVariant
+                              .withValues(alpha: 0.6)),
                     _row(context, data.lines[i], _slice(i)),
                   ],
                   for (final note in data.notes) _note(context, note, ink),
@@ -220,10 +216,9 @@ class _RewardCardState extends State<RewardCard>
             child: FilledButton(
               key: const Key('reward_button'),
               style: FilledButton.styleFrom(
-                backgroundColor: data.accent,
-                foregroundColor: Colors.black,
-                minimumSize: const Size.fromHeight(44),
-              ),
+                  backgroundColor: data.accent,
+                  foregroundColor: Colors.black,
+                  minimumSize: const Size.fromHeight(44)),
               onPressed: widget.onDone,
               child: Text(data.button),
             ),
@@ -246,8 +241,7 @@ class _RewardCardState extends State<RewardCard>
             ],
           ),
           border: Border(
-            bottom: BorderSide(color: data.accent.withValues(alpha: 0.8)),
-          ),
+              bottom: BorderSide(color: data.accent.withValues(alpha: 0.8))),
         ),
         child: _headerText(theme, data),
       );
@@ -299,21 +293,19 @@ class _RewardCardState extends State<RewardCard>
             data.kind.toUpperCase(),
             key: const Key('reward_kind'),
             style: theme.textTheme.labelSmall?.copyWith(
-              color: data.accent,
-              fontFamily: InkFonts.system,
-              letterSpacing: 1.2,
-            ),
+                color: data.accent,
+                fontFamily: InkFonts.system,
+                letterSpacing: 1.2),
           ),
           const SizedBox(height: 4),
           Text(
             data.title,
             key: const Key('reward_title'),
             style: theme.textTheme.titleLarge?.copyWith(
-              fontFamily: InkFonts.display,
-              color: data.hero == null
-                  ? theme.colorScheme.onSurface
-                  : Colors.white,
-            ),
+                fontFamily: InkFonts.display,
+                color: data.hero == null
+                    ? theme.colorScheme.onSurface
+                    : Colors.white),
           ),
         ],
       );
@@ -336,36 +328,25 @@ class _RewardCardState extends State<RewardCard>
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(10),
                     border: Border.all(
-                      color: theme.colorScheme.outlineVariant,
-                      width: 1.5,
-                    ),
+                        color: theme.colorScheme.outlineVariant, width: 1.5),
                   ),
                   child: Column(
                     children: [
-                      Text(
-                        data.counters[i].value,
-                        style: theme.textTheme.headlineSmall?.copyWith(
-                          fontFamily: InkFonts.system,
-                          color: data.counters[i].accent,
-                          fontWeight: FontWeight.w700,
-                        ),
-                      ),
+                      Text(data.counters[i].value,
+                          style: theme.textTheme.headlineSmall?.copyWith(
+                              fontFamily: InkFonts.system,
+                              color: data.counters[i].accent,
+                              fontWeight: FontWeight.w700)),
                       const SizedBox(height: 2),
-                      Text(
-                        data.counters[i].label.toUpperCase(),
-                        style: theme.textTheme.labelSmall?.copyWith(
-                          color: theme.colorScheme.onSurfaceVariant,
-                          fontFamily: InkFonts.system,
-                        ),
-                      ),
-                      if (data.counters[i].sub.isNotEmpty)
-                        Text(
-                          data.counters[i].sub,
+                      Text(data.counters[i].label.toUpperCase(),
                           style: theme.textTheme.labelSmall?.copyWith(
-                            color: data.counters[i].accent,
-                            fontWeight: FontWeight.w700,
-                          ),
-                        ),
+                              color: theme.colorScheme.onSurfaceVariant,
+                              fontFamily: InkFonts.system)),
+                      if (data.counters[i].sub.isNotEmpty)
+                        Text(data.counters[i].sub,
+                            style: theme.textTheme.labelSmall?.copyWith(
+                                color: data.counters[i].accent,
+                                fontWeight: FontWeight.w700)),
                     ],
                   ),
                 ),
@@ -382,10 +363,8 @@ class _RewardCardState extends State<RewardCard>
     return FadeTransition(
       opacity: anim,
       child: SlideTransition(
-        position: Tween<Offset>(
-          begin: const Offset(0, 0.25),
-          end: Offset.zero,
-        ).animate(anim),
+        position: Tween<Offset>(begin: const Offset(0, 0.25), end: Offset.zero)
+            .animate(anim),
         child: Padding(
           key: line.key,
           padding: const EdgeInsets.symmetric(vertical: 10),
@@ -403,9 +382,8 @@ class _RewardCardState extends State<RewardCard>
                   boxShadow: line.glow
                       ? [
                           BoxShadow(
-                            color: line.accent.withValues(alpha: 0.5),
-                            blurRadius: 10,
-                          ),
+                              color: line.accent.withValues(alpha: 0.5),
+                              blurRadius: 10)
                         ]
                       : null,
                 ),
@@ -421,31 +399,22 @@ class _RewardCardState extends State<RewardCard>
                       runSpacing: 2,
                       crossAxisAlignment: WrapCrossAlignment.center,
                       children: [
-                        Text(
-                          line.title,
-                          style: theme.textTheme.titleMedium?.copyWith(
-                            fontWeight: FontWeight.w600,
-                          ),
-                        ),
+                        Text(line.title,
+                            style: theme.textTheme.titleMedium
+                                ?.copyWith(fontWeight: FontWeight.w600)),
                         if (line.tag.isNotEmpty)
                           Container(
                             padding: const EdgeInsets.symmetric(
-                              horizontal: 6,
-                              vertical: 1,
-                            ),
+                                horizontal: 6, vertical: 1),
                             decoration: BoxDecoration(
                               borderRadius: BorderRadius.circular(6),
-                              color: (line.tagColor ?? line.accent).withValues(
-                                alpha: 0.16,
-                              ),
+                              color: (line.tagColor ?? line.accent)
+                                  .withValues(alpha: 0.16),
                             ),
-                            child: Text(
-                              line.tag,
-                              style: theme.textTheme.labelSmall?.copyWith(
-                                color: line.tagColor ?? line.accent,
-                                fontWeight: FontWeight.w700,
-                              ),
-                            ),
+                            child: Text(line.tag,
+                                style: theme.textTheme.labelSmall?.copyWith(
+                                    color: line.tagColor ?? line.accent,
+                                    fontWeight: FontWeight.w700)),
                           ),
                       ],
                     ),
@@ -459,32 +428,25 @@ class _RewardCardState extends State<RewardCard>
                             value: line.bar!.clamp(0.0, 1.0),
                             minHeight: 6,
                             color: line.accent,
-                            backgroundColor: line.accent.withValues(
-                              alpha: 0.18,
-                            ),
+                            backgroundColor:
+                                line.accent.withValues(alpha: 0.18),
                           ),
                         ),
                       ),
                     if (line.sub.isNotEmpty)
-                      Text(
-                        line.sub,
-                        style: theme.textTheme.bodySmall?.copyWith(
-                          color: theme.colorScheme.onSurfaceVariant,
-                        ),
-                      ),
+                      Text(line.sub,
+                          style: theme.textTheme.bodySmall?.copyWith(
+                              color: theme.colorScheme.onSurfaceVariant)),
                   ],
                 ),
               ),
               if (line.value.isNotEmpty) ...[
                 const SizedBox(width: 8),
-                Text(
-                  line.value,
-                  style: theme.textTheme.titleMedium?.copyWith(
-                    fontFamily: InkFonts.system,
-                    color: line.accent,
-                    fontWeight: FontWeight.w700,
-                  ),
-                ),
+                Text(line.value,
+                    style: theme.textTheme.titleMedium?.copyWith(
+                        fontFamily: InkFonts.system,
+                        color: line.accent,
+                        fontWeight: FontWeight.w700)),
               ],
             ],
           ),
@@ -504,46 +466,35 @@ class _RewardCardState extends State<RewardCard>
           child: Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Icon(
-                Icons.info_outline,
-                size: IconSize.s16,
-                color: theme.colorScheme.onSurfaceVariant,
-              ),
+              Icon(Icons.info_outline,
+                  size: IconSize.s16,
+                  color: theme.colorScheme.onSurfaceVariant),
               const SizedBox(width: 8),
               Expanded(
-                child: Text.rich(
-                  TextSpan(
-                    children: [
-                      TextSpan(text: note.text),
-                      if (note.chip.isNotEmpty)
-                        WidgetSpan(
-                          alignment: PlaceholderAlignment.middle,
-                          child: Padding(
-                            padding: const EdgeInsets.only(left: 6),
-                            child: Container(
-                              key: const Key('reward_note_chip'),
-                              padding: const EdgeInsets.symmetric(
-                                horizontal: 6,
-                                vertical: 1,
-                              ),
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(6),
-                                color: ink.gold.withValues(alpha: 0.16),
-                              ),
-                              child: Text(
-                                note.chip,
-                                style: theme.textTheme.labelSmall?.copyWith(
+                child: Text.rich(TextSpan(children: [
+                  TextSpan(text: note.text),
+                  if (note.chip.isNotEmpty)
+                    WidgetSpan(
+                      alignment: PlaceholderAlignment.middle,
+                      child: Padding(
+                        padding: const EdgeInsets.only(left: 6),
+                        child: Container(
+                          key: const Key('reward_note_chip'),
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 6, vertical: 1),
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(6),
+                            color: ink.gold.withValues(alpha: 0.16),
+                          ),
+                          child: Text(note.chip,
+                              style: theme.textTheme.labelSmall?.copyWith(
                                   color: ink.gold,
                                   fontFamily: InkFonts.system,
-                                  fontWeight: FontWeight.w700,
-                                ),
-                              ),
-                            ),
-                          ),
+                                  fontWeight: FontWeight.w700)),
                         ),
-                    ],
-                  ),
-                ),
+                      ),
+                    ),
+                ])),
               ),
             ],
           ),
@@ -562,9 +513,7 @@ class _DashedBox extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
     final rrect = RRect.fromRectAndRadius(
-      (Offset.zero & size).deflate(0.5),
-      const Radius.circular(8),
-    );
+        (Offset.zero & size).deflate(0.5), const Radius.circular(8));
     final path = Path()..addRRect(rrect);
     final paint = Paint()
       ..color = color.withValues(alpha: 0.7)

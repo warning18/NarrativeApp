@@ -146,11 +146,8 @@ class SubNodeEngine {
   /// [to]: not in chapter 1, not into or out of a set piece
   /// ([StoryNode.noDetour]), and not in the middle of a crisis (see
   /// [detourAllowedBetween]).
-  static bool detourAllowedBetweenScenes(
-    StoryNode? from,
-    StoryNode? to, {
-    required int chapter,
-  }) =>
+  static bool detourAllowedBetweenScenes(StoryNode? from, StoryNode? to,
+          {required int chapter}) =>
       chapter >= firstDetourChapter &&
       !(from?.noDetour ?? false) &&
       !(to?.noDetour ?? false) &&
@@ -329,13 +326,10 @@ class SubNodeEngine {
     required List<String> enemyPool,
   }) {
     return enemyPool
-        .where(
-          (id) =>
-              isRandomDrawEnemy(id) &&
-              ((enemies[id] as Map<String, dynamic>?)?['packEligible']
-                      as bool? ??
-                  false),
-        )
+        .where((id) =>
+            isRandomDrawEnemy(id) &&
+            ((enemies[id] as Map<String, dynamic>?)?['packEligible'] as bool? ??
+                false))
         .toList();
   }
 
@@ -369,9 +363,7 @@ class SubNodeEngine {
 
   /// Whether a quest's `requiredAlignment` admits [alignmentLabel].
   static bool questMeetsAlignment(
-    Map<String, dynamic> quest,
-    String alignmentLabel,
-  ) {
+      Map<String, dynamic> quest, String alignmentLabel) {
     final required = quest['requiredAlignment']?.toString() ?? '';
     if (required.isEmpty || required == 'Neutral') return true;
     return required == alignmentLabel;
@@ -451,10 +443,7 @@ class SubNodeEngine {
     required int chapter,
   }) {
     final eligible = filterEnemyPool(
-      enemies: enemies,
-      unlockedEnemyIds: const [],
-      chapter: chapter,
-    );
+        enemies: enemies, unlockedEnemyIds: const [], chapter: chapter);
     return [
       for (final id in eligible)
         for (var i = 0;
@@ -548,26 +537,12 @@ class SubNodeEngine {
           for (var i = 0; i < size; i++)
             packEligible[random.nextInt(packEligible.length)],
         ];
-        return _fightNode(
-          id,
-          ids,
-          idx,
-          flavor,
-          enemies,
-          pack: true,
-          chapter: chapter,
-        );
+        return _fightNode(id, ids, idx, flavor, enemies,
+            pack: true, chapter: chapter);
       }
       final enemyId = enemyPool[random.nextInt(enemyPool.length)];
-      return _fightNode(
-        id,
-        [enemyId],
-        idx,
-        flavor,
-        enemies,
-        pack: false,
-        chapter: chapter,
-      );
+      return _fightNode(id, [enemyId], idx, flavor, enemies,
+          pack: false, chapter: chapter);
     }
     if (roll < 0.65) {
       final goldFound = treasureGoldFor(chapter, 5 + random.nextInt(16));
@@ -606,11 +581,10 @@ class SubNodeEngine {
         descriptionFr: flavor.restFr[idx],
         choices: [
           StoryChoice(
-            text: 'Rest a while (+${restHealFor(chapter)} HP)',
-            textFr: 'Se reposer un moment (+${restHealFor(chapter)} PV)',
-            nextId: '',
-            healAmount: restHealFor(chapter),
-          ),
+              text: 'Rest a while (+${restHealFor(chapter)} HP)',
+              textFr: 'Se reposer un moment (+${restHealFor(chapter)} PV)',
+              nextId: '',
+              healAmount: restHealFor(chapter)),
           // Skip the rest and poke around instead: health or a purse.
           StoryChoice(
             text: 'Scavenge instead ($scavenged gold)',

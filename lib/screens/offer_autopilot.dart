@@ -78,12 +78,10 @@ class _OfferAutopilotState extends ConsumerState<OfferAutopilot> {
     // over it closed), when the offers waiting change, when the clans
     // open, and when a fight ends or the mode changes.
     final current = ModalRoute.isCurrentOf(context) ?? true;
-    final waiting = ref.watch(
-      playerSessionProvider.select((s) => s.pendingOffers.length),
-    );
+    final waiting =
+        ref.watch(playerSessionProvider.select((s) => s.pendingOffers.length));
     final clansOpen = ref.watch(
-      playerSessionProvider.select((s) => s.featureOpen(GameFeature.clans)),
-    );
+        playerSessionProvider.select((s) => s.featureOpen(GameFeature.clans)));
     final inGame = ref.watch(appModeProvider) == AppMode.inGame;
     final fighting = ref.watch(combatActiveProvider);
     if (waiting != _noneAt) _noneAt = null;

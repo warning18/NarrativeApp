@@ -5,16 +5,7 @@ import 'package:flutter/painting.dart';
 import '../../../widgets/die_skins.dart';
 import 'ink_palette.dart';
 
-const DieSkin inkDieSkin = DieSkin(
-  'Ink',
-  inkOnPaper,
-  Color(0xFFB7C0C4),
-  DiePattern.none,
-);
-const DieSkin inkDieSkinLit = DieSkin(
-  'Ink',
-  inkOnPaper,
-  inkRed,
-  DiePattern.none,
-  inkRed,
-);
+const DieSkin inkDieSkin =
+    DieSkin('Ink', inkOnPaper, Color(0xFFB7C0C4), DiePattern.none);
+const DieSkin inkDieSkinLit =
+    DieSkin('Ink', inkOnPaper, inkRed, DiePattern.none, inkRed);

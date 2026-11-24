@@ -18,7 +18,14 @@
 /// - [eclipse] (Light + Void): the hit does [_eclipseBonusShare] more.
 ///
 /// Everything here is pure, like enemy_affix.dart.
-enum ElementReaction { conduct, shatter, firestorm, freeze, sandblast, eclipse }
+enum ElementReaction {
+  conduct,
+  shatter,
+  firestorm,
+  freeze,
+  sandblast,
+  eclipse,
+}
 
 /// How many rounds after the priming hit a partner still springs it: the
 /// same round and the next.
@@ -59,10 +66,7 @@ List<String> activeMarks(Map<String, int> marks, int round) => [
 /// What a hit of [element] springs on an enemy primed with [marks] in
 /// [round]: the reaction and the element that primed it, or null.
 ({ElementReaction reaction, String primer})? reactionOn(
-  Map<String, int> marks,
-  String element,
-  int round,
-) {
+    Map<String, int> marks, String element, int round) {
   if (element == 'None') return null;
   for (final primer in activeMarks(marks, round)) {
     final reaction = reactionBetween(primer, element);

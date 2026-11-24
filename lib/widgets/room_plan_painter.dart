@@ -40,14 +40,10 @@ class RoomPlanPainter extends CustomPainter {
         : Color.lerp(palette.roofs, palette.land, 0.3)!;
 
     // The street round the building: the land, darkened.
-    canvas.drawRect(
-      RoomPlan.bounds.inflate(2000),
-      Paint()..color = palette.land.withValues(alpha: 0.72),
-    );
-    canvas.drawRect(
-      RoomPlan.bounds.inflate(2000),
-      Paint()..color = _dark.withValues(alpha: 0.25),
-    );
+    canvas.drawRect(RoomPlan.bounds.inflate(2000),
+        Paint()..color = palette.land.withValues(alpha: 0.72));
+    canvas.drawRect(RoomPlan.bounds.inflate(2000),
+        Paint()..color = _dark.withValues(alpha: 0.25));
 
     final shell = Path()..addPolygon(plan.outline, true);
     // The floor.
@@ -67,12 +63,11 @@ class RoomPlanPainter extends CustomPainter {
       ..strokeJoin = StrokeJoin.miter;
     canvas.drawPath(shell, wall);
     canvas.drawPath(
-      shell,
-      Paint()
-        ..color = stone
-        ..style = PaintingStyle.stroke
-        ..strokeWidth = 2,
-    );
+        shell,
+        Paint()
+          ..color = stone
+          ..style = PaintingStyle.stroke
+          ..strokeWidth = 2);
     final inner = Paint()
       ..color = palette.coast
       ..style = PaintingStyle.stroke
@@ -97,10 +92,9 @@ class RoomPlanPainter extends CustomPainter {
       final dot = Paint()..color = stone.withValues(alpha: 0.35);
       for (var i = 0; i < 400; i++) {
         canvas.drawCircle(
-          Offset(rng.nextDouble() * 1000, rng.nextDouble() * 1000),
-          1.5 + rng.nextDouble() * 2,
-          dot,
-        );
+            Offset(rng.nextDouble() * 1000, rng.nextDouble() * 1000),
+            1.5 + rng.nextDouble() * 2,
+            dot);
       }
       return;
     }
@@ -134,9 +128,8 @@ class RoomPlanPainter extends CustomPainter {
     canvas.rotate(door.angle);
     // The opening cut through the wall, the floor showing through.
     canvas.drawRect(
-      Rect.fromCenter(center: Offset.zero, width: 20, height: door.width),
-      Paint()..color = floor,
-    );
+        Rect.fromCenter(center: Offset.zero, width: 20, height: door.width),
+        Paint()..color = floor);
     // The leaf, swung open inward, and its arc.
     final leaf = Paint()
       ..color = stone
@@ -144,20 +137,16 @@ class RoomPlanPainter extends CustomPainter {
       ..strokeCap = StrokeCap.round;
     final half = door.width / 2;
     canvas.drawLine(
-      Offset(0, -half),
-      Offset(-half * 0.75, -half - half * 0.65),
-      leaf,
-    );
+        Offset(0, -half), Offset(-half * 0.75, -half - half * 0.65), leaf);
     canvas.drawArc(
-      Rect.fromCircle(center: Offset(0, -half), radius: door.width * 0.98),
-      math.pi / 2 + 0.15,
-      math.pi / 2 - 0.15,
-      false,
-      Paint()
-        ..color = stone.withValues(alpha: 0.5)
-        ..style = PaintingStyle.stroke
-        ..strokeWidth = 1.2,
-    );
+        Rect.fromCircle(center: Offset(0, -half), radius: door.width * 0.98),
+        math.pi / 2 + 0.15,
+        math.pi / 2 - 0.15,
+        false,
+        Paint()
+          ..color = stone.withValues(alpha: 0.5)
+          ..style = PaintingStyle.stroke
+          ..strokeWidth = 1.2);
     // Jambs.
     final jamb = Paint()..color = _dark.withValues(alpha: 0.6);
     canvas.drawCircle(Offset(0, -half), 5, jamb);
@@ -170,10 +159,7 @@ class RoomPlanPainter extends CustomPainter {
     canvas.translate(f.centre.dx, f.centre.dy);
     canvas.rotate(f.angle);
     final r = Rect.fromCenter(
-      center: Offset.zero,
-      width: f.size.width,
-      height: f.size.height,
-    );
+        center: Offset.zero, width: f.size.width, height: f.size.height);
     final fill = Paint()..color = wood;
     final edge = Paint()
       ..color = _dark.withValues(alpha: 0.7)
@@ -185,40 +171,27 @@ class RoomPlanPainter extends CustomPainter {
         final rad = f.size.width / 2;
         for (var i = 0; i < 4; i++) {
           final a = i * math.pi / 2 + math.pi / 4;
-          canvas.drawCircle(
-            Offset(math.cos(a), math.sin(a)) * (rad + 10),
-            7,
-            Paint()..color = stone,
-          );
+          canvas.drawCircle(Offset(math.cos(a), math.sin(a)) * (rad + 10), 7,
+              Paint()..color = stone);
         }
         canvas.drawCircle(const Offset(2, 3), rad, shadow);
         canvas.drawCircle(Offset.zero, rad, fill);
         canvas.drawCircle(Offset.zero, rad, edge);
-        canvas.drawCircle(
-          Offset.zero,
-          rad * 0.5,
-          Paint()..color = _dark.withValues(alpha: 0.12),
-        );
+        canvas.drawCircle(Offset.zero, rad * 0.5,
+            Paint()..color = _dark.withValues(alpha: 0.12));
       case FurnitureKind.longTable ||
             FurnitureKind.counter ||
             FurnitureKind.pew ||
             FurnitureKind.desk ||
             FurnitureKind.bench:
         canvas.drawRRect(
-          RRect.fromRectAndRadius(
-            r.shift(const Offset(2, 3)),
-            const Radius.circular(4),
-          ),
-          shadow,
-        );
+            RRect.fromRectAndRadius(
+                r.shift(const Offset(2, 3)), const Radius.circular(4)),
+            shadow);
         canvas.drawRRect(
-          RRect.fromRectAndRadius(r, const Radius.circular(4)),
-          fill,
-        );
+            RRect.fromRectAndRadius(r, const Radius.circular(4)), fill);
         canvas.drawRRect(
-          RRect.fromRectAndRadius(r, const Radius.circular(4)),
-          edge,
-        );
+            RRect.fromRectAndRadius(r, const Radius.circular(4)), edge);
         if (f.kind == FurnitureKind.longTable) {
           final along = f.size.width > f.size.height;
           final n = ((along ? f.size.width : f.size.height) / 48).floor();
@@ -242,17 +215,11 @@ class RoomPlanPainter extends CustomPainter {
         final along = f.size.height > f.size.width;
         for (var t = -0.5; t < 0.5; t += 0.08) {
           if (along) {
-            canvas.drawLine(
-              Offset(r.left + 4, r.top + (t + 0.5) * r.height),
-              Offset(r.right - 4, r.top + (t + 0.5) * r.height + 6),
-              hatch,
-            );
+            canvas.drawLine(Offset(r.left + 4, r.top + (t + 0.5) * r.height),
+                Offset(r.right - 4, r.top + (t + 0.5) * r.height + 6), hatch);
           } else {
-            canvas.drawLine(
-              Offset(r.left + (t + 0.5) * r.width, r.top + 4),
-              Offset(r.left + (t + 0.5) * r.width + 6, r.bottom - 4),
-              hatch,
-            );
+            canvas.drawLine(Offset(r.left + (t + 0.5) * r.width, r.top + 4),
+                Offset(r.left + (t + 0.5) * r.width + 6, r.bottom - 4), hatch);
           }
         }
         // Stools along it.
@@ -271,56 +238,33 @@ class RoomPlanPainter extends CustomPainter {
         final mouth = along
             ? Rect.fromLTWH(r.left + 8, r.top + 16, r.width + 10, r.height - 32)
             : Rect.fromLTWH(
-                r.left + 16,
-                r.top + 8,
-                r.width - 32,
-                r.height + 10,
-              );
+                r.left + 16, r.top + 8, r.width - 32, r.height + 10);
         canvas.drawRect(mouth, Paint()..color = _dark.withValues(alpha: 0.8));
         canvas.drawCircle(
-          mouth.center,
-          f.size.height * 0.9,
-          Paint()
-            ..shader = RadialGradient(
-              colors: [
+            mouth.center,
+            f.size.height * 0.9,
+            Paint()
+              ..shader = RadialGradient(colors: [
                 ember.withValues(alpha: 0.45),
                 ember.withValues(alpha: 0),
-              ],
-            ).createShader(
-              Rect.fromCircle(
-                center: mouth.center,
-                radius: f.size.height * 0.9,
-              ),
-            ),
-        );
+              ]).createShader(Rect.fromCircle(
+                  center: mouth.center, radius: f.size.height * 0.9)));
         canvas.drawCircle(
-          mouth.center,
-          7,
-          Paint()..color = ember.withValues(alpha: 0.9),
-        );
+            mouth.center, 7, Paint()..color = ember.withValues(alpha: 0.9));
       case FurnitureKind.bed:
         canvas.drawRRect(
-          RRect.fromRectAndRadius(
-            r.shift(const Offset(2, 3)),
-            const Radius.circular(6),
-          ),
-          shadow,
-        );
+            RRect.fromRectAndRadius(
+                r.shift(const Offset(2, 3)), const Radius.circular(6)),
+            shadow);
         canvas.drawRRect(
-          RRect.fromRectAndRadius(r, const Radius.circular(6)),
-          fill,
-        );
+            RRect.fromRectAndRadius(r, const Radius.circular(6)), fill);
         canvas.drawRRect(
-          RRect.fromRectAndRadius(r, const Radius.circular(6)),
-          edge,
-        );
+            RRect.fromRectAndRadius(r, const Radius.circular(6)), edge);
         canvas.drawRRect(
-          RRect.fromRectAndRadius(
-            Rect.fromLTWH(r.left + 8, r.top + 8, r.width - 16, 22),
-            const Radius.circular(5),
-          ),
-          Paint()..color = Color.lerp(stone, Colors.white, 0.4)!,
-        );
+            RRect.fromRectAndRadius(
+                Rect.fromLTWH(r.left + 8, r.top + 8, r.width - 16, 22),
+                const Radius.circular(5)),
+            Paint()..color = Color.lerp(stone, Colors.white, 0.4)!);
       case FurnitureKind.cask:
         final rad = f.size.width / 2;
         canvas.drawCircle(const Offset(2, 2), rad, shadow);
@@ -360,17 +304,11 @@ class RoomPlanPainter extends CustomPainter {
         for (var i = 1; i < n; i++) {
           final t = i / n;
           if (along) {
-            canvas.drawLine(
-              Offset(r.left, r.top + t * r.height),
-              Offset(r.right, r.top + t * r.height),
-              edge,
-            );
+            canvas.drawLine(Offset(r.left, r.top + t * r.height),
+                Offset(r.right, r.top + t * r.height), edge);
           } else {
-            canvas.drawLine(
-              Offset(r.left + t * r.width, r.top),
-              Offset(r.left + t * r.width, r.bottom),
-              edge,
-            );
+            canvas.drawLine(Offset(r.left + t * r.width, r.top),
+                Offset(r.left + t * r.width, r.bottom), edge);
           }
         }
       case FurnitureKind.cage:
@@ -380,11 +318,8 @@ class RoomPlanPainter extends CustomPainter {
           ..color = stone
           ..strokeWidth = 2;
         for (var t = 0.2; t < 1; t += 0.2) {
-          canvas.drawLine(
-            Offset(r.left + t * r.width, r.top),
-            Offset(r.left + t * r.width, r.bottom),
-            bar,
-          );
+          canvas.drawLine(Offset(r.left + t * r.width, r.top),
+              Offset(r.left + t * r.width, r.bottom), bar);
         }
       case FurnitureKind.stair:
         canvas.drawRect(r, Paint()..color = Color.lerp(wood, _dark, 0.15)!);
@@ -394,17 +329,11 @@ class RoomPlanPainter extends CustomPainter {
         for (var i = 1; i < n; i++) {
           final t = i / n;
           if (along) {
-            canvas.drawLine(
-              Offset(r.left, r.top + t * r.height),
-              Offset(r.right, r.top + t * r.height),
-              edge,
-            );
+            canvas.drawLine(Offset(r.left, r.top + t * r.height),
+                Offset(r.right, r.top + t * r.height), edge);
           } else {
-            canvas.drawLine(
-              Offset(r.left + t * r.width, r.top),
-              Offset(r.left + t * r.width, r.bottom),
-              edge,
-            );
+            canvas.drawLine(Offset(r.left + t * r.width, r.top),
+                Offset(r.left + t * r.width, r.bottom), edge);
           }
         }
       case FurnitureKind.strongbox:
@@ -417,17 +346,17 @@ class RoomPlanPainter extends CustomPainter {
         canvas.drawRect(r, edge..strokeWidth = 1.5);
         // The seat.
         canvas.drawRect(
-          Rect.fromCenter(center: const Offset(0, -10), width: 44, height: 40),
-          fill,
-        );
+            Rect.fromCenter(
+                center: const Offset(0, -10), width: 44, height: 40),
+            fill);
         canvas.drawRect(
-          Rect.fromCenter(center: const Offset(0, -10), width: 44, height: 40),
-          edge,
-        );
+            Rect.fromCenter(
+                center: const Offset(0, -10), width: 44, height: 40),
+            edge);
         canvas.drawRect(
-          Rect.fromCenter(center: const Offset(0, -34), width: 44, height: 10),
-          Paint()..color = stone,
-        );
+            Rect.fromCenter(
+                center: const Offset(0, -34), width: 44, height: 10),
+            Paint()..color = stone);
       case FurnitureKind.railing:
         final rail = Paint()
           ..color = stone
@@ -440,51 +369,35 @@ class RoomPlanPainter extends CustomPainter {
         final rad = f.size.width / 2;
         canvas.drawCircle(const Offset(2, 3), rad, shadow);
         canvas.drawCircle(
-          Offset.zero,
-          rad,
-          Paint()..color = Color.lerp(wood, _dark, 0.3)!,
-        );
+            Offset.zero, rad, Paint()..color = Color.lerp(wood, _dark, 0.3)!);
         canvas.drawCircle(Offset.zero, rad, edge);
         canvas.drawCircle(Offset.zero, rad * 0.72, edge..strokeWidth = 1.5);
         for (var i = 0; i < 12; i++) {
           final a = i * math.pi / 6;
-          canvas.drawLine(
-            Offset(math.cos(a), math.sin(a)) * rad * 0.72,
-            Offset(math.cos(a), math.sin(a)) * rad * 0.97,
-            edge,
-          );
+          canvas.drawLine(Offset(math.cos(a), math.sin(a)) * rad * 0.72,
+              Offset(math.cos(a), math.sin(a)) * rad * 0.97, edge);
         }
         canvas.drawCircle(Offset.zero, rad * 0.3, Paint()..color = stone);
         canvas.drawCircle(Offset.zero, 6, Paint()..color = palette.mark);
       case FurnitureKind.stage:
         canvas.drawRect(r, Paint()..color = Color.lerp(wood, stone, 0.35)!);
         for (var y = r.top + 18; y < r.bottom; y += 18) {
-          canvas.drawLine(
-            Offset(r.left, y),
-            Offset(r.right, y),
-            Paint()..color = _dark.withValues(alpha: 0.18),
-          );
+          canvas.drawLine(Offset(r.left, y), Offset(r.right, y),
+              Paint()..color = _dark.withValues(alpha: 0.18));
         }
         canvas.drawRect(r, edge..strokeWidth = 3);
-        canvas.drawRect(
-          Rect.fromLTWH(r.left, r.top, r.width, 16),
-          Paint()..color = _dark.withValues(alpha: 0.5),
-        );
+        canvas.drawRect(Rect.fromLTWH(r.left, r.top, r.width, 16),
+            Paint()..color = _dark.withValues(alpha: 0.5));
         for (var x = r.left + 20; x < r.right; x += 40) {
-          canvas.drawCircle(
-            Offset(x, r.bottom - 7),
-            3.5,
-            Paint()..color = ember.withValues(alpha: 0.8),
-          );
+          canvas.drawCircle(Offset(x, r.bottom - 7), 3.5,
+              Paint()..color = ember.withValues(alpha: 0.8));
         }
       case FurnitureKind.pool:
         final rr = RRect.fromRectAndRadius(r, const Radius.circular(18));
         canvas.drawRRect(rr.inflate(8), Paint()..color = stone);
         canvas.drawRRect(rr.inflate(8), edge);
         canvas.drawRRect(
-          rr,
-          Paint()..color = Color.lerp(palette.sea, palette.land, 0.35)!,
-        );
+            rr, Paint()..color = Color.lerp(palette.sea, palette.land, 0.35)!);
         canvas.drawRRect(rr, edge..strokeWidth = 1.5);
         final ripple = Paint()
           ..color = palette.seaLine.withValues(alpha: 0.5)
@@ -492,10 +405,7 @@ class RoomPlanPainter extends CustomPainter {
         for (var i = 1; i < 4; i++) {
           final y = r.top + r.height * i / 4;
           canvas.drawLine(
-            Offset(r.left + 20, y),
-            Offset(r.right - 20, y),
-            ripple,
-          );
+              Offset(r.left + 20, y), Offset(r.right - 20, y), ripple);
         }
       case FurnitureKind.anvil:
         canvas.drawRect(r.shift(const Offset(2, 3)), shadow);
@@ -519,17 +429,11 @@ class RoomPlanPainter extends CustomPainter {
         for (var i = 0; i < n; i++) {
           final t = (i + 0.5) / n;
           if (along) {
-            canvas.drawLine(
-              Offset(r.left - 6, r.top + t * r.height),
-              Offset(r.right + 6, r.top + t * r.height),
-              tick,
-            );
+            canvas.drawLine(Offset(r.left - 6, r.top + t * r.height),
+                Offset(r.right + 6, r.top + t * r.height), tick);
           } else {
-            canvas.drawLine(
-              Offset(r.left + t * r.width, r.top - 6),
-              Offset(r.left + t * r.width, r.bottom + 6),
-              tick,
-            );
+            canvas.drawLine(Offset(r.left + t * r.width, r.top - 6),
+                Offset(r.left + t * r.width, r.bottom + 6), tick);
           }
         }
       case FurnitureKind.rock:
@@ -538,9 +442,8 @@ class RoomPlanPainter extends CustomPainter {
         for (var i = 0; i < n; i++) {
           final a = i * 2 * math.pi / n;
           final rr = Offset(
-            math.cos(a) * r.width / 2 * (0.8 + 0.2 * math.sin(a * 3)),
-            math.sin(a) * r.height / 2 * (0.8 + 0.2 * math.cos(a * 2)),
-          );
+              math.cos(a) * r.width / 2 * (0.8 + 0.2 * math.sin(a * 3)),
+              math.sin(a) * r.height / 2 * (0.8 + 0.2 * math.cos(a * 2)));
           if (i == 0) {
             path.moveTo(rr.dx, rr.dy);
           } else {

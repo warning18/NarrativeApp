@@ -106,7 +106,10 @@ const Map<SeaWeather, Map<SeaWeather, int>> weatherTrend = {
     SeaWeather.crosswind: 40,
     SeaWeather.calm: 20,
   },
-  SeaWeather.fog: {SeaWeather.fog: 55, SeaWeather.calm: 45},
+  SeaWeather.fog: {
+    SeaWeather.fog: 55,
+    SeaWeather.calm: 45,
+  },
 };
 
 /// The weather after [from] that a [roll] in [0, 1) draws (see
@@ -186,11 +189,8 @@ bool tailwindFor(SeaWeather weather, {bool windKnot = false}) =>
     (windKnot && weather == SeaWeather.crosswind);
 
 /// Evasion the weather adds to one ship ([eel] for the player's).
-int _weatherEvasion(
-  SeaWeather weather, {
-  required bool eel,
-  bool windKnot = false,
-}) {
+int _weatherEvasion(SeaWeather weather,
+    {required bool eel, bool windKnot = false}) {
   if (tailwindFor(weather, windKnot: windKnot)) {
     return eel ? _tailwindEvasion : 0;
   }
@@ -238,11 +238,8 @@ AimResult aimResultFor(double position) {
 
 /// A critical shot (a perfect aim, or Liora's eagle eye): it cannot be
 /// slipped, does half again the hull and knocks an extra pip off.
-const ShotMods _criticalMods = ShotMods(
-  damageFactor: 1.5,
-  extraRoomDamage: 1,
-  sure: true,
-);
+const ShotMods _criticalMods =
+    ShotMods(damageFactor: 1.5, extraRoomDamage: 1, sure: true);
 
 /// A room already hit this turn loses this many extra pips per hit after
 /// the first.
@@ -395,10 +392,8 @@ const double _braceDamageFactor = 0.5;
 const double _intentHelmBase = 0.5;
 const double _intentHelmPerPip = 0.2;
 
-double intentHelmChance(ShipState enemy) => min(
-      1.0,
-      _intentHelmBase + _intentHelmPerPip * enemy.room(ShipRoom.helm).working,
-    );
+double intentHelmChance(ShipState enemy) => min(1.0,
+    _intentHelmBase + _intentHelmPerPip * enemy.room(ShipRoom.helm).working);
 
 /// A raider that turns tail waits for a friend on the horizon unless it
 /// is below this share of its hull.
@@ -825,12 +820,10 @@ class ShipBattle {
     }
     if (target == null) return;
     final hit = target;
-    enemy = enemy.copyWith(
-      weapons: [
-        for (final w in enemy.weapons)
-          w.id == hit.id ? w.withCharge(w.charge - 1) : w,
-      ],
-    );
+    enemy = enemy.copyWith(weapons: [
+      for (final w in enemy.weapons)
+        w.id == hit.id ? w.withCharge(w.charge - 1) : w,
+    ]);
     _add('ship_log_dice_stun', crew: crewById(roll.crewId)?.name, weapon: hit);
   }
 
@@ -851,12 +844,10 @@ class ShipBattle {
       }
       if (slow == null) return;
       final wound = slow;
-      player = player.copyWith(
-        weapons: [
-          for (final w in player.weapons)
-            w.id == wound.id ? w.withCharge(w.charge + 1) : w,
-        ],
-      );
+      player = player.copyWith(weapons: [
+        for (final w in player.weapons)
+          w.id == wound.id ? w.withCharge(w.charge + 1) : w,
+      ]);
       _add('ship_log_dice_wound', crew: name, weapon: wound);
     }
   }
@@ -918,18 +909,13 @@ class ShipBattle {
         _add('ship_log_room_repaired', crew: work.crew.name, room: work.room);
       }
       if (work.hullRepaired > 0) {
-        _add(
-          'ship_log_hull_patched',
-          crew: work.crew.name,
-          n: work.hullRepaired,
-        );
+        _add('ship_log_hull_patched',
+            crew: work.crew.name, n: work.hullRepaired);
       }
     }
-    player = chargeWeapons(
-      player,
-      gunnerAboard: stations.containsKey(ShipRoom.guns) &&
-          !busyRooms.contains(ShipRoom.guns),
-    );
+    player = chargeWeapons(player,
+        gunnerAboard: stations.containsKey(ShipRoom.guns) &&
+            !busyRooms.contains(ShipRoom.guns));
     planEnemyTurn();
   }
 
@@ -977,9 +963,8 @@ class ShipBattle {
   /// [0, 1)), only when that is what decides it (from [random] unless a
   /// test gives one). Beyond that draw it changes nothing: [planEnemyTurn]
   /// keeps what it picks.
-  ({ShipIntent intent, ShipRange? toward}) enemyIntentFor({
-    double Function()? boardRoll,
-  }) {
+  ({ShipIntent intent, ShipRange? toward}) enemyIntentFor(
+      {double Function()? boardRoll}) {
     if (beast != null) return (intent: _beastIntent(), toward: null);
     const volley = (intent: ShipIntent.volley, toward: null);
     if (!rules.intents) return volley;
@@ -1027,7 +1012,7 @@ class ShipBattle {
       if (eager || nerve) {
         return (
           intent: ShipIntent.board,
-          toward: alongside ? null : ShipRange.close,
+          toward: alongside ? null : ShipRange.close
         );
       }
     }
@@ -1045,7 +1030,7 @@ class ShipBattle {
       return (
         intent:
             want.index < range.index ? ShipIntent.closeIn : ShipIntent.pullAway,
-        toward: want,
+        toward: want
       );
     }
     return volley;
@@ -1178,9 +1163,8 @@ class ShipBattle {
     if (gunners != 1.0) mods = mods.merge(ShotMods(damageFactor: gunners));
     if (!rules.flooding) mods = mods.merge(const ShotMods(floods: false));
     if (shieldBreakOn) {
-      mods = mods.merge(
-        ShotMods(shieldBreak: true, slips: aim == AimResult.perfect),
-      );
+      mods = mods
+          .merge(ShotMods(shieldBreak: true, slips: aim == AimResult.perfect));
     }
     // Braced for the volley: half the hull, the room's pips as ever.
     if (enemyBraced) {
@@ -1213,13 +1197,8 @@ class ShipBattle {
       if (w.piercing) {
         piercing = true;
       } else {
-        strips.add(
-          layersStripped(
-            w,
-            ShipRoom.bulwark,
-            shotMods(ShipRoom.bulwark, weapon: w),
-          ),
-        );
+        strips.add(layersStripped(
+            w, ShipRoom.bulwark, shotMods(ShipRoom.bulwark, weapon: w)));
       }
     }
     if (piercing) return true;
@@ -1237,11 +1216,10 @@ class ShipBattle {
     final weapon = weaponById(weaponId);
     if (weapon == null) return null;
     return previewShot(
-      target: enemy,
-      weapon: weapon,
-      room: room,
-      mods: shotMods(room, weapon: weapon),
-    );
+        target: enemy,
+        weapon: weapon,
+        room: room,
+        mods: shotMods(room, weapon: weapon));
   }
 
   /// Fires [weaponId] at [room] of the enemy with its own shot. [aim]
@@ -1320,11 +1298,8 @@ class ShipBattle {
     if (!tailwindFor(weather, windKnot: windKnot)) {
       busyRooms = {...busyRooms, ShipRoom.helm};
     }
-    _add(
-      closing ? 'ship_log_close_in' : 'ship_log_pull_away',
-      side: BattleSide.eel,
-      range: to,
-    );
+    _add(closing ? 'ship_log_close_in' : 'ship_log_pull_away',
+        side: BattleSide.eel, range: to);
   }
 
   // --- Running -----------------------------------------------------------
@@ -1385,9 +1360,8 @@ class ShipBattle {
   /// The chance in percent that pushing [room] now strains it (see
   /// [pushStrainFor]): a hand standing there, not busy, steadies it.
   int pushStrainChance(ShipRoom room) => pushStrainFor(
-        pushes: pushes,
-        manned: stations.containsKey(room) && !busyRooms.contains(room),
-      );
+      pushes: pushes,
+      manned: stations.containsKey(room) && !busyRooms.contains(room));
 
   /// Drives [room] past its limit for the turn: the guns bring every
   /// weapon a step of charge closer, the helm slips [pushEvasion] more
@@ -1402,20 +1376,17 @@ class ShipBattle {
     pushes++;
     switch (room) {
       case ShipRoom.guns:
-        player = player.copyWith(
-          weapons: [
-            for (final w in player.weapons)
-              w.isReady ? w : w.withCharge(w.charge + 1),
-          ],
-        );
+        player = player.copyWith(weapons: [
+          for (final w in player.weapons)
+            w.isReady ? w : w.withCharge(w.charge + 1),
+        ]);
         _add('ship_log_push_guns', side: BattleSide.eel);
       case ShipRoom.helm:
         helmPushed = true;
         _add('ship_log_push_helm', side: BattleSide.eel, n: pushEvasion);
       case ShipRoom.bulwark:
-        player = player.copyWith(
-          layers: min(_pushedLayerCap, player.layers + 1),
-        );
+        player =
+            player.copyWith(layers: min(_pushedLayerCap, player.layers + 1));
         _add('ship_log_push_bulwark', side: BattleSide.eel);
       case ShipRoom.hold:
         final before = player.hull;
@@ -1423,31 +1394,24 @@ class ShipBattle {
           leaks: player.leaks - 1,
           hull: min(player.maxHull, player.hull + pushHullPatch),
         );
-        _add(
-          'ship_log_push_hold',
-          side: BattleSide.eel,
-          n: player.hull - before,
-        );
+        _add('ship_log_push_hold',
+            side: BattleSide.eel, n: player.hull - before);
     }
     final roll = random.nextDouble() * 100;
     if (roll >= chance) return;
     final state = player.room(room);
     final burns = roll < chance / 3 && weather != SeaWeather.squall;
     player = player.withRoom(
-      room,
-      state.copyWith(damage: state.damage + 1, onFire: state.onFire || burns),
-    );
+        room,
+        state.copyWith(
+            damage: state.damage + 1, onFire: state.onFire || burns));
     if (room == ShipRoom.bulwark) {
       final bulwark = player.room(ShipRoom.bulwark);
       player = player.copyWith(
-        layers: bulwark.isDown ? 0 : min(player.layers, _pushedLayerCap),
-      );
+          layers: bulwark.isDown ? 0 : min(player.layers, _pushedLayerCap));
     }
-    _add(
-      burns ? 'ship_log_push_strain_fire' : 'ship_log_push_strain',
-      side: BattleSide.eel,
-      room: room,
-    );
+    _add(burns ? 'ship_log_push_strain_fire' : 'ship_log_push_strain',
+        side: BattleSide.eel, room: room);
     if (player.room(room).isDown) {
       _add('ship_log_room_down', side: BattleSide.eel, room: room);
     }
@@ -1522,37 +1486,32 @@ class ShipBattle {
     ordersUsed.add(member.id);
     switch (order) {
       case CrewOrder.allHands:
-        player = player.copyWith(
-          rooms: {
-            for (final entry in player.rooms.entries)
-              entry.key: entry.value.copyWith(damage: entry.value.damage - 1),
-          },
-        );
+        player = player.copyWith(rooms: {
+          for (final entry in player.rooms.entries)
+            entry.key: entry.value.copyWith(damage: entry.value.damage - 1),
+        });
       case CrewOrder.brace:
         braced = true;
       case CrewOrder.grapple:
         grappled = true;
         if (rules.range) range = ShipRange.close;
       case CrewOrder.bless:
-        player = player.copyWith(
-          rooms: {
-            for (final entry in player.rooms.entries)
-              entry.key: entry.value.copyWith(onFire: false),
-          },
-        );
+        player = player.copyWith(rooms: {
+          for (final entry in player.rooms.entries)
+            entry.key: entry.value.copyWith(onFire: false),
+        });
         crew = [for (final c in crew) c.withHealth(c.health + _blessHeal)];
       case CrewOrder.shoreUp:
         final bulwark = player.room(ShipRoom.bulwark);
         player = player.withRoom(ShipRoom.bulwark, bulwark.copyWith(damage: 0));
-        player = player.copyWith(
-          layers: min(player.maxLayers, player.layers + 1),
-        );
+        player =
+            player.copyWith(layers: min(player.maxLayers, player.layers + 1));
       case CrewOrder.markHelm:
         helmMarked = true;
       case CrewOrder.cutRigging:
-        enemy = enemy.copyWith(
-          weapons: [for (final w in enemy.weapons) w.withCharge(w.charge - 1)],
-        );
+        enemy = enemy.copyWith(weapons: [
+          for (final w in enemy.weapons) w.withCharge(w.charge - 1),
+        ]);
       case CrewOrder.eagleEye:
         eagleEye = true;
       case CrewOrder.voidWard:
@@ -1596,11 +1555,8 @@ class ShipBattle {
     player = boardingRepelled(player);
     boardingSpent = true;
     grappled = false;
-    _add(
-      'ship_log_boarding_repelled',
-      side: BattleSide.enemy,
-      n: before - player.hull,
-    );
+    _add('ship_log_boarding_repelled',
+        side: BattleSide.enemy, n: before - player.hull);
   }
 
   /// The boarders ran from the dice fight on the enemy's deck (see
@@ -1648,11 +1604,8 @@ class ShipBattle {
     }
     final mending = live && _intent == ShipIntent.mend;
     if (mending) _add('ship_log_intent_mend', side: BattleSide.enemy);
-    final maintenance = enemyMaintenance(
-      enemy,
-      penalty: grapeLeft > 0 ? 1 : 0,
-      extra: mending ? _mendExtraActions : 0,
-    );
+    final maintenance = enemyMaintenance(enemy,
+        penalty: grapeLeft > 0 ? 1 : 0, extra: mending ? _mendExtraActions : 0);
     enemy = maintenance.ship;
     for (final room in maintenance.firesOut) {
       _add('ship_log_enemy_fire_out', side: BattleSide.enemy, room: room);
@@ -1733,12 +1686,11 @@ class ShipBattle {
   /// The enemy steers to [to]; closing on a running Eel sets her back.
   void _enemySteps(ShipRange to) {
     _add(
-      to.index < range.index
-          ? 'ship_log_enemy_closes'
-          : 'ship_log_enemy_pulls_away',
-      side: BattleSide.enemy,
-      range: to,
-    );
+        to.index < range.index
+            ? 'ship_log_enemy_closes'
+            : 'ship_log_enemy_pulls_away',
+        side: BattleSide.enemy,
+        range: to);
     range = to;
     if (escape > 0 && to != ShipRange.long) {
       escape--;
@@ -1914,12 +1866,10 @@ class ShipBattle {
   void endRound() {
     if (over) return;
     final rain = weather == SeaWeather.squall;
-    final mine = combat.endRound(
-      player,
-      bulwarkCrewed: stations.containsKey(ShipRoom.bulwark) &&
-          !busyRooms.contains(ShipRoom.bulwark),
-      rain: rain,
-    );
+    final mine = combat.endRound(player,
+        bulwarkCrewed: stations.containsKey(ShipRoom.bulwark) &&
+            !busyRooms.contains(ShipRoom.bulwark),
+        rain: rain);
     player = mine.ship;
     _roundLines(mine, BattleSide.eel);
     _stationHold();
@@ -1966,7 +1916,7 @@ class ShipBattle {
     final last = _burnedLast[side]!;
     final twice = [
       for (final room in burnedNow)
-        if (last.contains(room)) room,
+        if (last.contains(room)) room
     ];
     _burnedLast[side] = burnedNow.toSet();
     for (final room in twice) {
@@ -1976,7 +1926,7 @@ class ShipBattle {
           if (i >= 0 &&
               i < ShipRoom.values.length &&
               !ship.room(ShipRoom.values[i]).onFire)
-            ShipRoom.values[i],
+            ShipRoom.values[i]
       ];
       if (beside.isEmpty || random.nextDouble() >= _fireSpreadChance) continue;
       final to = beside.length == 1 ? beside.single : beside[random.nextInt(2)];
@@ -1998,9 +1948,8 @@ class ShipBattle {
     if (sailIn > 0) {
       sailIn--;
       if (sailIn == 0) {
-        enemy = enemy.copyWith(
-          weapons: [...enemy.weapons, consortWeaponFor(enemy)],
-        );
+        enemy = enemy
+            .copyWith(weapons: [...enemy.weapons, consortWeaponFor(enemy)]);
         _add('ship_log_sail_arrives', side: BattleSide.enemy);
       }
       return;
@@ -2031,23 +1980,20 @@ class ShipBattle {
     }
     final hurt = enemy.hull <= enemy.maxHull * b.fleeShare;
     if (hurt != beastTurning) {
-      _add(
-        hurt ? 'ship_log_beast_turning' : 'ship_log_beast_turns_back',
-        side: BattleSide.enemy,
-      );
+      _add(hurt ? 'ship_log_beast_turning' : 'ship_log_beast_turns_back',
+          side: BattleSide.enemy);
     }
     beastTurning = hurt;
   }
 
   void _roundLines(
-    ({
-      ShipState ship,
-      List<ShipRoom> burned,
-      List<ShipRoom> quenched,
-      int flooded,
-    }) result,
-    BattleSide side,
-  ) {
+      ({
+        ShipState ship,
+        List<ShipRoom> burned,
+        List<ShipRoom> quenched,
+        int flooded
+      }) result,
+      BattleSide side) {
     if (result.quenched.isNotEmpty) _add('ship_log_squall_quench', side: side);
     for (final room in result.burned) {
       _add('ship_log_fire_burns', side: side, room: room);
@@ -2120,13 +2066,11 @@ class ShipBattle {
       }
       return;
     }
-    _add(
-      'ship_log_shot_hits',
-      side: target,
-      weapon: weapon,
-      room: outcome.room,
-      n: outcome.hullDamage,
-    );
+    _add('ship_log_shot_hits',
+        side: target,
+        weapon: weapon,
+        room: outcome.room,
+        n: outcome.hullDamage);
     if (outcome.fireStarted) {
       _add('ship_log_fire_started', side: target, room: outcome.room);
     }
@@ -2151,15 +2095,11 @@ class ShipBattle {
     int? n,
     ShipRange? range,
   }) =>
-      log.add(
-        BattleLine(
-          key,
+      log.add(BattleLine(key,
           side: side,
           weapon: weapon,
           room: room,
           crew: crew,
           n: n,
-          range: range,
-        ),
-      );
+          range: range));
 }

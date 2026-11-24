@@ -4,7 +4,6 @@
 // when it is greyed. Compare and Craft hang off it for a known skill.
 
 import 'dart:async';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -84,40 +83,28 @@ String _lowerFirst(String text) =>
 
 /// Learns [id] for companion [allyId] with one of their own points, with
 /// sparks and a notice (the player's skills come from the clans' offers).
-Future<void> learnSkill(
-  BuildContext context,
-  WidgetRef ref,
-  String id, {
-  String? allyId,
-  required int cost,
-}) async {
+Future<void> learnSkill(BuildContext context, WidgetRef ref, String id,
+    {String? allyId, required int cost}) async {
   final notifier = ref.read(playerSessionProvider.notifier);
   if (allyId == null) return;
   await notifier.unlockAllySkill(allyId, id);
   if (!context.mounted) return;
   final lang = ref.read(appLanguageProvider);
-  showBurst(
+  showBurst(context,
+      at: MediaQuery.sizeOf(context).center(Offset.zero),
+      colour: InkColors.of(context).ember,
+      count: 18);
+  unawaited(showImmersiveNotice(
     context,
-    at: MediaQuery.sizeOf(context).center(Offset.zero),
-    colour: InkColors.of(context).ember,
-    count: 18,
-  );
-  unawaited(
-    showImmersiveNotice(
-      context,
-      icon: Icons.auto_awesome,
-      message: '${trFor(lang, 'unlocked_prefix')}: '
-          '${skillDisplayName(id, language: lang)}',
-    ),
-  );
+    icon: Icons.auto_awesome,
+    message: '${trFor(lang, 'unlocked_prefix')}: '
+        '${skillDisplayName(id, language: lang)}',
+  ));
 }
 
 /// Opens the sheet for [skillId].
-Future<void> showSkillSheet(
-  BuildContext context,
-  String skillId, {
-  String? allyId,
-}) {
+Future<void> showSkillSheet(BuildContext context, String skillId,
+    {String? allyId}) {
   return showInkSheet<void>(
     context: context,
     builder: (_) =>
@@ -163,21 +150,16 @@ class _SkillSheet extends ConsumerWidget {
             border: Border.all(color: colour),
             borderRadius: BorderRadius.circular(8),
           ),
-          child: Row(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              if (icon != null) ...[
-                Icon(icon, size: IconSize.s16, color: colour),
-                const SizedBox(width: 4),
-              ],
-              Flexible(
-                child: Text(
-                  label,
-                  style: theme.textTheme.labelSmall?.copyWith(color: colour),
-                ),
-              ),
+          child: Row(mainAxisSize: MainAxisSize.min, children: [
+            if (icon != null) ...[
+              Icon(icon, size: IconSize.s16, color: colour),
+              const SizedBox(width: 4),
             ],
-          ),
+            Flexible(
+              child: Text(label,
+                  style: theme.textTheme.labelSmall?.copyWith(color: colour)),
+            ),
+          ]),
         );
 
     final table = model.isPlayer
@@ -194,40 +176,28 @@ class _SkillSheet extends ConsumerWidget {
             SheetHeader(
               leading: SkillPixelIcon(skillId, size: IconSize.s32),
               title: skillDisplayName(skillId, language: lang),
-              titleStyle: theme.textTheme.titleLarge?.copyWith(
-                fontFamily: InkFonts.display,
-              ),
+              titleStyle: theme.textTheme.titleLarge
+                  ?.copyWith(fontFamily: InkFonts.display),
               subtitle: where,
               padding: EdgeInsets.zero,
             ),
             const SizedBox(height: 10),
-            Wrap(
-              spacing: 6,
-              runSpacing: 6,
-              children: [
-                chip(tr(ref, kind.labelKey), kind.color, icon: kind.icon),
-                chip(
+            Wrap(spacing: 6, runSpacing: 6, children: [
+              chip(tr(ref, kind.labelKey), kind.color, icon: kind.icon),
+              chip(
                   tr(ref, 'skill_max_faces')
                       .replaceAll('{rarity}', tr(ref, rarity.labelKey))
                       .replaceAll('{max}', '${maxFacesForSkill(skill)}'),
-                  rarity.color,
-                ),
-              ],
-            ),
+                  rarity.color),
+            ]),
             const SizedBox(height: 10),
-            Text(
-              skill['description']?.toString() ?? '',
-              style: theme.textTheme.bodyLarge,
-            ),
+            Text(skill['description']?.toString() ?? '',
+                style: theme.textTheme.bodyLarge),
             if (table.isNotEmpty) ...[
               const SizedBox(height: 14),
-              Text(
-                tr(ref, 'skill_by_tier').toUpperCase(),
-                style: theme.textTheme.labelSmall?.copyWith(
-                  color: ink.ash,
-                  letterSpacing: 1,
-                ),
-              ),
+              Text(tr(ref, 'skill_by_tier').toUpperCase(),
+                  style: theme.textTheme.labelSmall
+                      ?.copyWith(color: ink.ash, letterSpacing: 1)),
               const SizedBox(height: 6),
               _TierTable(
                 rows: table,
@@ -237,12 +207,10 @@ class _SkillSheet extends ConsumerWidget {
             if (entry.fightTier > entry.tier && entry.known) ...[
               const SizedBox(height: 6),
               Text(
-                tr(
-                  ref,
-                  'fights_at_tier',
-                ).replaceAll('{n}', '${entry.fightTier}'),
-                style: theme.textTheme.labelMedium?.copyWith(color: ink.gold),
-              ),
+                  tr(ref, 'fights_at_tier')
+                      .replaceAll('{n}', '${entry.fightTier}'),
+                  style:
+                      theme.textTheme.labelMedium?.copyWith(color: ink.gold)),
             ],
             if (model.isPlayer && entry.known) ...[
               const SizedBox(height: 12),
@@ -261,8 +229,7 @@ class _SkillSheet extends ConsumerWidget {
                     child: Text(tr(ref, 'compare_with')),
                   ),
                   if (skillCraftOpen(
-                    ref.read(playerSessionProvider).builtHouseIds,
-                  ))
+                      ref.read(playerSessionProvider).builtHouseIds))
                     TextButton(
                       key: const Key('skill_craft'),
                       onPressed: () => openCraft(context, ref),
@@ -277,16 +244,12 @@ class _SkillSheet extends ConsumerWidget {
     );
   }
 
-  Future<void> _compare(
-    BuildContext context,
-    WidgetRef ref,
-    SkillsModel model,
-    SkillEntry entry,
-  ) async {
+  Future<void> _compare(BuildContext context, WidgetRef ref, SkillsModel model,
+      SkillEntry entry) async {
     final lang = ref.read(appLanguageProvider);
     final others = [
       for (final id in model.knownIds)
-        if (id != entry.id) id,
+        if (id != entry.id) id
     ];
     final otherId = await showDialog<String>(
       context: context,
@@ -297,13 +260,11 @@ class _SkillSheet extends ConsumerWidget {
             SimpleDialogOption(
               key: Key('compare_pick_$id'),
               onPressed: () => Navigator.of(dialogContext).pop(id),
-              child: Row(
-                children: [
-                  SkillPixelIcon(id, size: IconSize.s32),
-                  const SizedBox(width: 10),
-                  Expanded(child: Text(skillDisplayName(id, language: lang))),
-                ],
-              ),
+              child: Row(children: [
+                SkillPixelIcon(id, size: IconSize.s32),
+                const SizedBox(width: 10),
+                Expanded(child: Text(skillDisplayName(id, language: lang))),
+              ]),
             ),
         ],
       ),
@@ -357,71 +318,53 @@ class _TierTable extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final ink = InkColors.of(context);
-    return Consumer(
-      builder: (context, ref, _) {
-        Widget cell(String text, int column, {bool header = false}) {
-          final here = current == column;
-          return Expanded(
-            child: Container(
-              margin: const EdgeInsets.all(2),
-              padding: const EdgeInsets.symmetric(vertical: 5),
-              alignment: Alignment.center,
-              decoration: BoxDecoration(
-                color: here ? ink.gold.withValues(alpha: 0.14) : null,
-                border: Border.all(color: here ? ink.gold : ink.seam),
-                borderRadius: BorderRadius.circular(6),
-              ),
-              child: Text(
-                text,
-                style: (header
-                        ? theme.textTheme.labelSmall
-                        : theme.textTheme.labelLarge)
-                    ?.copyWith(
-                  color: header || (current != null && column > current!)
-                      ? ink.ash
-                      : null,
-                ),
-              ),
+    return Consumer(builder: (context, ref, _) {
+      Widget cell(String text, int column, {bool header = false}) {
+        final here = current == column;
+        return Expanded(
+          child: Container(
+            margin: const EdgeInsets.all(2),
+            padding: const EdgeInsets.symmetric(vertical: 5),
+            alignment: Alignment.center,
+            decoration: BoxDecoration(
+              color: here ? ink.gold.withValues(alpha: 0.14) : null,
+              border: Border.all(color: here ? ink.gold : ink.seam),
+              borderRadius: BorderRadius.circular(6),
             ),
-          );
-        }
-
-        return Column(
-          children: [
-            Row(
-              children: [
-                const SizedBox(width: 84),
-                for (var t = 0; t <= maxSkillTier; t++)
-                  cell(
-                    t == 0
-                        ? tr(ref, 'tier_base')
-                        : '${tr(ref, 'tier_label')} $t',
-                    t,
-                    header: true,
-                  ),
-              ],
+            child: Text(
+              text,
+              style: (header
+                      ? theme.textTheme.labelSmall
+                      : theme.textTheme.labelLarge)
+                  ?.copyWith(
+                      color: header || (current != null && column > current!)
+                          ? ink.ash
+                          : null),
             ),
-            for (final row in rows)
-              Row(
-                children: [
-                  SizedBox(
-                    width: 84,
-                    child: Text(
-                      tr(ref, row.key),
-                      maxLines: 2,
-                      style: theme.textTheme.labelSmall?.copyWith(
-                        color: ink.ash,
-                      ),
-                    ),
-                  ),
-                  for (var t = 0; t < row.values.length; t++)
-                    cell(row.values[t], t),
-                ],
-              ),
-          ],
+          ),
         );
-      },
-    );
+      }
+
+      return Column(children: [
+        Row(children: [
+          const SizedBox(width: 84),
+          for (var t = 0; t <= maxSkillTier; t++)
+            cell(t == 0 ? tr(ref, 'tier_base') : '${tr(ref, 'tier_label')} $t',
+                t,
+                header: true),
+        ]),
+        for (final row in rows)
+          Row(children: [
+            SizedBox(
+              width: 84,
+              child: Text(tr(ref, row.key),
+                  maxLines: 2,
+                  style: theme.textTheme.labelSmall?.copyWith(color: ink.ash)),
+            ),
+            for (var t = 0; t < row.values.length; t++) cell(row.values[t], t),
+          ]),
+      ]);
+    });
   }
 }
 
@@ -466,17 +409,13 @@ class _DiceLine extends ConsumerWidget {
           border: Border.all(color: ink.seam),
           borderRadius: BorderRadius.circular(8),
         ),
-        child: Row(
-          children: [
-            Icon(Icons.casino_outlined, size: IconSize.s16, color: ink.tide),
-            const SizedBox(width: 8),
-            Expanded(child: Text(text, style: theme.textTheme.bodyMedium)),
-            Text(
-              '${tr(ref, 'skill_dice_link')} ›',
-              style: theme.textTheme.labelMedium?.copyWith(color: ink.tide),
-            ),
-          ],
-        ),
+        child: Row(children: [
+          Icon(Icons.casino_outlined, size: IconSize.s16, color: ink.tide),
+          const SizedBox(width: 8),
+          Expanded(child: Text(text, style: theme.textTheme.bodyMedium)),
+          Text('${tr(ref, 'skill_dice_link')} ›',
+              style: theme.textTheme.labelMedium?.copyWith(color: ink.tide)),
+        ]),
       ),
     );
   }
@@ -484,12 +423,11 @@ class _DiceLine extends ConsumerWidget {
 
 /// The sheet's one button, or why there is none.
 class _Action extends ConsumerWidget {
-  const _Action({
-    required this.entry,
-    required this.model,
-    this.allyId,
-    required this.host,
-  });
+  const _Action(
+      {required this.entry,
+      required this.model,
+      this.allyId,
+      required this.host});
 
   final SkillEntry entry;
   final SkillsModel model;
@@ -501,11 +439,9 @@ class _Action extends ConsumerWidget {
     final theme = Theme.of(context);
     final ink = InkColors.of(context);
     final lang = ref.watch(appLanguageProvider);
-    Text note(String text) => Text(
-          text,
-          textAlign: TextAlign.center,
-          style: theme.textTheme.titleSmall?.copyWith(color: ink.ash),
-        );
+    Text note(String text) => Text(text,
+        textAlign: TextAlign.center,
+        style: theme.textTheme.titleSmall?.copyWith(color: ink.ash));
 
     switch (entry.status) {
       case SkillStatus.known:
@@ -526,11 +462,9 @@ class _Action extends ConsumerWidget {
                       .read(playerSessionProvider.notifier)
                       .upgradeSkillTier(entry.id),
               icon: const Icon(Icons.arrow_upward),
-              label: Text(
-                tr(ref, 'raise_tier_button')
-                    .replaceAll('{n}', '${entry.tier + 1}')
-                    .replaceAll('{cost}', '$cost'),
-              ),
+              label: Text(tr(ref, 'raise_tier_button')
+                  .replaceAll('{n}', '${entry.tier + 1}')
+                  .replaceAll('{cost}', '$cost')),
             ),
             if (short > 0) ...[
               const SizedBox(height: 4),
@@ -545,21 +479,15 @@ class _Action extends ConsumerWidget {
       case SkillStatus.locked:
         final after = entry.after;
         if (after != null) {
-          final afterLine = tr(
-            ref,
-            'skill_after_label',
-          ).replaceAll('{skill}', skillDisplayName(after, language: lang));
-          return note(
-            model.isPlayer
-                ? '$afterLine\n${_offeredByLine(ref, entry)}'
-                : afterLine,
-          );
+          final afterLine = tr(ref, 'skill_after_label')
+              .replaceAll('{skill}', skillDisplayName(after, language: lang));
+          return note(model.isPlayer
+              ? '$afterLine\n${_offeredByLine(ref, entry)}'
+              : afterLine);
         }
         final min = entry.record['requiredAlignmentMin'];
-        return note(
-          '${tr(ref, 'reserved_prefix')}: '
-          '${min != null ? tr(ref, 'good_aligned_label') : tr(ref, 'evil_aligned_label')}',
-        );
+        return note('${tr(ref, 'reserved_prefix')}: '
+            '${min != null ? tr(ref, 'good_aligned_label') : tr(ref, 'evil_aligned_label')}');
       case SkillStatus.ready:
         // The player's skills come from the clans' offers.
         if (model.isPlayer) {
@@ -578,10 +506,9 @@ class _Action extends ConsumerWidget {
                         Padding(
                           padding: const EdgeInsets.symmetric(horizontal: 4),
                           child: ClanFlag(
-                            key: Key('skill_flag_$id'),
-                            factionId: id,
-                            height: 56,
-                          ),
+                              key: Key('skill_flag_$id'),
+                              factionId: id,
+                              height: 56),
                         ),
                     ],
                   ),
@@ -607,19 +534,14 @@ class _Action extends ConsumerWidget {
                 }
               : null,
           icon: const Icon(Icons.auto_awesome),
-          label: Text(
-            have >= points
-                ? (points == 1
-                    ? tr(ref, 'learn_for_point')
-                    : tr(
-                        ref,
-                        'learn_for_points',
-                      ).replaceAll('{n}', '$points'))
-                : have == 0
-                    ? tr(ref, 'no_skill_points')
-                    : tr(ref, 'skill_points_needed')
-                        .replaceAll('{n}', '$points'),
-          ),
+          label: Text(have >= points
+              ? (points == 1
+                  ? tr(ref, 'learn_for_point')
+                  : tr(ref, 'learn_for_points').replaceAll('{n}', '$points'))
+              : have == 0
+                  ? tr(ref, 'no_skill_points')
+                  : tr(ref, 'skill_points_needed')
+                      .replaceAll('{n}', '$points')),
         );
     }
   }
@@ -627,105 +549,85 @@ class _Action extends ConsumerWidget {
 
 /// The sheet for a branch's mastery.
 Future<void> showMasterySheet(
-  BuildContext context,
-  WidgetRef ref,
-  SkillBranch branch,
-) {
+    BuildContext context, WidgetRef ref, SkillBranch branch) {
   return showInkSheet<void>(
     context: context,
     scrollControlled: false,
-    builder: (sheetContext) => Consumer(
-      builder: (inner, ref, _) {
-        final model = watchSkillsModel(ref, null);
-        if (model == null) return const SizedBox(height: 120);
-        final theme = Theme.of(inner);
-        final ink = InkColors.of(inner);
-        final isMastered = branch.id == model.masteredBranchId;
-        final String status;
-        if (isMastered) {
-          status = tr(ref, 'mastery_done');
-        } else if (model.masteredBranchId.isNotEmpty) {
-          status = tr(ref, 'mastery_closed');
-        } else if (!model.isComplete(branch)) {
-          status = tr(ref, 'mastery_needs_branch');
-        } else {
-          status = '';
-        }
-        return SafeArea(
-          child: Padding(
-            padding: const EdgeInsets.fromLTRB(20, 0, 20, 20),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                Row(
-                  children: [
-                    PixelGlyph(
-                      PixelGlyphs.star,
-                      color: ink.gold,
-                      size: IconSize.s32,
-                    ),
-                    const SizedBox(width: 12),
-                    Expanded(
-                      child: Text(
-                        tr(
-                          ref,
-                          'mastery_title',
-                        ).replaceAll('{branch}', branch.name),
-                        style: theme.textTheme.titleLarge,
-                      ),
-                    ),
-                  ],
-                ),
-                const SizedBox(height: 8),
-                Text(branch.description, style: theme.textTheme.bodyMedium),
-                const SizedBox(height: 8),
-                Text(
-                  tr(
-                    ref,
-                    'mastery_body',
-                  ).replaceAll('{cost}', '$branchMasteryEssenceCost'),
-                  style: theme.textTheme.bodySmall,
-                ),
-                const SizedBox(height: 16),
-                if (status.isNotEmpty)
-                  Text(
-                    status,
-                    textAlign: TextAlign.center,
-                    style: theme.textTheme.titleSmall?.copyWith(color: ink.ash),
-                  )
-                else
-                  FilledButton.icon(
-                    key: const Key('tree_master'),
-                    onPressed: model.canMaster(branch)
-                        ? () {
-                            Navigator.of(sheetContext).pop();
-                            ref
-                                .read(playerSessionProvider.notifier)
-                                .masterBranch(branch.id);
-                            showImmersiveNotice(
-                              context,
-                              icon: Icons.star,
-                              message: tr(
-                                ref,
-                                'mastery_gained',
-                              ).replaceAll('{branch}', branch.name),
-                            );
-                          }
-                        : null,
-                    icon: const PixelGlyph(PixelGlyphs.star),
-                    label: Text(
-                      tr(
-                        ref,
-                        'mastery_button',
-                      ).replaceAll('{cost}', '$branchMasteryEssenceCost'),
+    builder: (sheetContext) => Consumer(builder: (inner, ref, _) {
+      final model = watchSkillsModel(ref, null);
+      if (model == null) return const SizedBox(height: 120);
+      final theme = Theme.of(inner);
+      final ink = InkColors.of(inner);
+      final isMastered = branch.id == model.masteredBranchId;
+      final String status;
+      if (isMastered) {
+        status = tr(ref, 'mastery_done');
+      } else if (model.masteredBranchId.isNotEmpty) {
+        status = tr(ref, 'mastery_closed');
+      } else if (!model.isComplete(branch)) {
+        status = tr(ref, 'mastery_needs_branch');
+      } else {
+        status = '';
+      }
+      return SafeArea(
+        child: Padding(
+          padding: const EdgeInsets.fromLTRB(20, 0, 20, 20),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              Row(
+                children: [
+                  PixelGlyph(PixelGlyphs.star,
+                      color: ink.gold, size: IconSize.s32),
+                  const SizedBox(width: 12),
+                  Expanded(
+                    child: Text(
+                      tr(ref, 'mastery_title')
+                          .replaceAll('{branch}', branch.name),
+                      style: theme.textTheme.titleLarge,
                     ),
                   ),
-              ],
-            ),
+                ],
+              ),
+              const SizedBox(height: 8),
+              Text(branch.description, style: theme.textTheme.bodyMedium),
+              const SizedBox(height: 8),
+              Text(
+                tr(ref, 'mastery_body')
+                    .replaceAll('{cost}', '$branchMasteryEssenceCost'),
+                style: theme.textTheme.bodySmall,
+              ),
+              const SizedBox(height: 16),
+              if (status.isNotEmpty)
+                Text(status,
+                    textAlign: TextAlign.center,
+                    style: theme.textTheme.titleSmall?.copyWith(color: ink.ash))
+              else
+                FilledButton.icon(
+                  key: const Key('tree_master'),
+                  onPressed: model.canMaster(branch)
+                      ? () {
+                          Navigator.of(sheetContext).pop();
+                          ref
+                              .read(playerSessionProvider.notifier)
+                              .masterBranch(branch.id);
+                          showImmersiveNotice(
+                            context,
+                            icon: Icons.star,
+                            message: tr(ref, 'mastery_gained')
+                                .replaceAll('{branch}', branch.name),
+                          );
+                        }
+                      : null,
+                  icon: const PixelGlyph(PixelGlyphs.star),
+                  label: Text(tr(ref, 'mastery_button')
+                      .replaceAll('{cost}', '$branchMasteryEssenceCost')),
+                ),
+            ],
           ),
-        );
-      },
-    ),
+        ),
+      );
+    }),
   );
 }

@@ -627,9 +627,8 @@ class Geography {
   }
 
   /// What [id] is: its own tags and those of every place above it.
-  Set<String> tagsOf(String? id) => {
-        for (final place in pathOf(id)) ...place.tags,
-      };
+  Set<String> tagsOf(String? id) =>
+      {for (final place in pathOf(id)) ...place.tags};
 
   /// The watches a walk to [id] takes: its own, else the nearest place above
   /// it that says, else [fallback].

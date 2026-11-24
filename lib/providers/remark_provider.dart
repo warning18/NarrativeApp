@@ -18,19 +18,16 @@ final remarkBookProvider = Provider<RemarkBook>((ref) {
 /// which lines (see companion_remarks.dart): companions take turns and
 /// don't repeat themselves back to back.
 final remarkMemoryProvider = StateProvider<RemarkMemory>(
-  (ref) => RemarkMemory(seed: Random().nextInt(1 << 20)),
-);
+    (ref) => RemarkMemory(seed: Random().nextInt(1 << 20)));
 
 /// What the party says the next scene opens with (a remark, and maybe an
 /// answer to it), set when a choice is made and cleared as soon as the
 /// player makes the next one.
-final pendingRemarksProvider = StateProvider<List<CompanionRemark>>(
-  (ref) => const [],
-);
+final pendingRemarksProvider =
+    StateProvider<List<CompanionRemark>>((ref) => const []);
 
 /// The last set of remarks shown in a speech bubble (see
 /// companion_remark_bubble.dart), so each set is shown once however often
 /// the screen under it is rebuilt.
-final shownRemarksProvider = StateProvider<List<CompanionRemark>?>(
-  (ref) => null,
-);
+final shownRemarksProvider =
+    StateProvider<List<CompanionRemark>?>((ref) => null);

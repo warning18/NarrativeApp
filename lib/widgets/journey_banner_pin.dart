@@ -122,16 +122,13 @@ class BannerPin extends StatelessWidget {
             top: 12 * scale,
             child: Center(
               child: unknown
-                  ? Text(
-                      '?',
+                  ? Text('?',
                       style: TextStyle(
-                        fontFamily: InkFonts.system,
-                        fontSize: 15 * scale,
-                        height: 1,
-                        fontWeight: FontWeight.w700,
-                        color: color,
-                      ),
-                    )
+                          fontFamily: InkFonts.system,
+                          fontSize: 15 * scale,
+                          height: 1,
+                          fontWeight: FontWeight.w700,
+                          color: color))
                   : Icon(icon ?? cat.icon, size: 14 * scale, color: iconColor),
             ),
           ),
@@ -181,12 +178,8 @@ class PinBanner {
 /// The banner drawn on a canvas (the city chart's painter draws its pins
 /// itself): [BannerPin.base] in size, its top left at the origin, the icon
 /// on the cloth.
-void paintBannerPin(
-  Canvas canvas,
-  PinBanner banner, {
-  required bool dark,
-  bool lit = false,
-}) {
+void paintBannerPin(Canvas canvas, PinBanner banner,
+    {required bool dark, bool lit = false}) {
   _paintBannerCloth(canvas, banner.color, dark: dark, lit: lit);
   final icon = banner.cat.icon;
   final tp = TextPainter(
@@ -206,13 +199,8 @@ void paintBannerPin(
 }
 
 /// The cloth, rod and ring of a banner in [BannerPin.base] units.
-void _paintBannerCloth(
-  Canvas canvas,
-  Color color, {
-  required bool dark,
-  bool lit = false,
-  bool unknown = false,
-}) {
+void _paintBannerCloth(Canvas canvas, Color color,
+    {required bool dark, bool lit = false, bool unknown = false}) {
   const w = 26.0;
   const h = 38.0;
   final surface = dark ? Palette.night8a : const Color(0xFFFAF3E2);
@@ -228,31 +216,28 @@ void _paintBannerCloth(
     ..close();
   if (lit) {
     canvas.drawPath(
-      cloth,
-      Paint()
-        ..color = color.withValues(alpha: 0.75)
-        ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 5),
-    );
+        cloth,
+        Paint()
+          ..color = color.withValues(alpha: 0.75)
+          ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 5));
   }
   // The ring above the rod.
   canvas.drawCircle(
-    const Offset(w / 2, 3.2),
-    2.4,
-    Paint()
-      ..style = PaintingStyle.stroke
-      ..strokeWidth = 1.4
-      ..color = rod,
-  );
+      const Offset(w / 2, 3.2),
+      2.4,
+      Paint()
+        ..style = PaintingStyle.stroke
+        ..strokeWidth = 1.4
+        ..color = rod);
   if (unknown) {
     canvas.drawPath(cloth, Paint()..color = surface.withValues(alpha: 0.9));
     _dashed(
-      canvas,
-      cloth,
-      Paint()
-        ..style = PaintingStyle.stroke
-        ..strokeWidth = 1.6
-        ..color = color,
-    );
+        canvas,
+        cloth,
+        Paint()
+          ..style = PaintingStyle.stroke
+          ..strokeWidth = 1.6
+          ..color = color);
   } else {
     canvas.drawPath(cloth, Paint()..color = color);
     // The cord, inside the edge.
@@ -264,34 +249,29 @@ void _paintBannerCloth(
       ..lineTo(5.5, h - 5)
       ..close();
     canvas.drawPath(
-      inner,
-      Paint()
-        ..style = PaintingStyle.stroke
-        ..strokeWidth = 0.9
-        ..color = cord.withValues(alpha: 0.85),
-    );
+        inner,
+        Paint()
+          ..style = PaintingStyle.stroke
+          ..strokeWidth = 0.9
+          ..color = cord.withValues(alpha: 0.85));
     canvas.drawPath(
-      cloth,
-      Paint()
-        ..style = PaintingStyle.stroke
-        ..strokeWidth = 1.2
-        ..strokeJoin = StrokeJoin.round
-        ..color = lit ? Colors.white : surface,
-    );
+        cloth,
+        Paint()
+          ..style = PaintingStyle.stroke
+          ..strokeWidth = 1.2
+          ..strokeJoin = StrokeJoin.round
+          ..color = lit ? Colors.white : surface);
   }
   // The rod across the top, over the cloth.
   final bar = RRect.fromRectAndRadius(
-    const Rect.fromLTWH(1, 6.2, w - 2, 4),
-    const Radius.circular(1.6),
-  );
+      const Rect.fromLTWH(1, 6.2, w - 2, 4), const Radius.circular(1.6));
   canvas.drawRRect(bar, Paint()..color = rod);
   canvas.drawRRect(
-    bar,
-    Paint()
-      ..style = PaintingStyle.stroke
-      ..strokeWidth = 0.9
-      ..color = surface,
-  );
+      bar,
+      Paint()
+        ..style = PaintingStyle.stroke
+        ..strokeWidth = 0.9
+        ..color = surface);
 }
 
 void _dashed(Canvas canvas, Path path, Paint paint) {
@@ -329,12 +309,9 @@ class JourneyLegendSheet extends ConsumerWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           mainAxisSize: MainAxisSize.min,
           children: [
-            Text(
-              tr(ref, 'journey_legend_title'),
-              style: theme.textTheme.titleMedium?.copyWith(
-                fontFamily: InkFonts.display,
-              ),
-            ),
+            Text(tr(ref, 'journey_legend_title'),
+                style: theme.textTheme.titleMedium
+                    ?.copyWith(fontFamily: InkFonts.display)),
             const SizedBox(height: 10),
             for (final cat in JourneyPinCat.values)
               Padding(
@@ -343,29 +320,22 @@ class JourneyLegendSheet extends ConsumerWidget {
                   key: Key('journey_legend_${cat.name}'),
                   children: [
                     BannerPin(
-                      cat: cat,
-                      color: cat.colorOn(ink, dark: dark),
-                      dark: dark,
-                      scale: 0.9,
-                    ),
+                        cat: cat,
+                        color: cat.colorOn(ink, dark: dark),
+                        dark: dark,
+                        scale: 0.9),
                     const SizedBox(width: 12),
                     Expanded(
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text(
-                            tr(ref, cat.nameKey),
-                            style: theme.textTheme.bodyMedium?.copyWith(
-                              color: cat.colorOn(ink, dark: dark),
-                              fontWeight: FontWeight.w600,
-                            ),
-                          ),
-                          Text(
-                            tr(ref, cat.lineKey),
-                            style: theme.textTheme.bodySmall?.copyWith(
-                              color: ink.ash,
-                            ),
-                          ),
+                          Text(tr(ref, cat.nameKey),
+                              style: theme.textTheme.bodyMedium?.copyWith(
+                                  color: cat.colorOn(ink, dark: dark),
+                                  fontWeight: FontWeight.w600)),
+                          Text(tr(ref, cat.lineKey),
+                              style: theme.textTheme.bodySmall
+                                  ?.copyWith(color: ink.ash)),
                         ],
                       ),
                     ),
@@ -373,13 +343,9 @@ class JourneyLegendSheet extends ConsumerWidget {
                 ),
               ),
             const SizedBox(height: 6),
-            Text(
-              tr(ref, 'journey_legend_note'),
-              style: theme.textTheme.bodySmall?.copyWith(
-                color: ink.ash,
-                fontStyle: FontStyle.italic,
-              ),
-            ),
+            Text(tr(ref, 'journey_legend_note'),
+                style: theme.textTheme.bodySmall
+                    ?.copyWith(color: ink.ash, fontStyle: FontStyle.italic)),
           ],
         ),
       ),

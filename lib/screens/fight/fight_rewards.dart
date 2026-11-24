@@ -13,12 +13,9 @@ extension _FightRewards on _FightScreenState {
       }
       _currentFaces.clear();
       _awaitingDecision = false;
-      _log.add(
-        _LogEntry(
+      _log.add(_LogEntry(
           trFor(ref.read(appLanguageProvider), 'edit_auto_win_log'),
-          _LogKind.info,
-        ),
-      );
+          _LogKind.info));
     });
     _finishFight(won: true);
   }
@@ -37,9 +34,8 @@ extension _FightRewards on _FightScreenState {
       // A reward that failed to pay (a save that threw) never strands the
       // party on a fight already over: the error is reported and the way
       // out opens, with nothing paid twice.
-      FlutterError.reportError(
-        FlutterErrorDetails(exception: error, stack: stack, library: 'fight'),
-      );
+      FlutterError.reportError(FlutterErrorDetails(
+          exception: error, stack: stack, library: 'fight'));
       if (mounted && !_settled) _update(() => _settled = true);
     }
   }
@@ -55,10 +51,8 @@ extension _FightRewards on _FightScreenState {
     // The mage's Ash Well: what is left of it after a win heals, and the
     // well is empty for the next fight (profession_cores.dart).
     if (won && _core.core == ProfessionCore.ashWell && _mana > 0) {
-      player.currentHealth = min(
-        player.maxHealth,
-        player.currentHealth + ashWellHeal(_mana, player.maxHealth),
-      );
+      player.currentHealth = min(player.maxHealth,
+          player.currentHealth + ashWellHeal(_mana, player.maxHealth));
       _mana = 0;
       unawaited(notifier.setMana(0));
     }
@@ -88,9 +82,7 @@ extension _FightRewards on _FightScreenState {
 
   /// A won fight: the spoils, the chest, the save, the log and the way out.
   Future<void> _settleWin(
-    PlayerSessionNotifier notifier,
-    _PartyMember player,
-  ) async {
+      PlayerSessionNotifier notifier, _PartyMember player) async {
     // Every enemy that died (or fled) in this fight -- a pack's rewards
     // are summed across all of them, not just the one FightScreen was
     // originally constructed with.
@@ -116,13 +108,11 @@ extension _FightRewards on _FightScreenState {
     final bossBeaten = !widget.modifiers.isTest &&
         !widget.modifiers.tower &&
         (widget.modifiers.isZoneBoss ||
-            defeated.any(
-              (e) =>
-                  !e.fled &&
-                  (isBossEnemy(e.enemyId, e.data) ||
-                      e.phases.isNotEmpty ||
-                      zoneBossEnemyIds.contains(e.enemyId)),
-            ));
+            defeated.any((e) =>
+                !e.fled &&
+                (isBossEnemy(e.enemyId, e.data) ||
+                    e.phases.isNotEmpty ||
+                    zoneBossEnemyIds.contains(e.enemyId))));
     final titanBlood = widget.modifiers.isTest
         ? 0
         : widget.modifiers.isHunt ||
@@ -157,21 +147,12 @@ extension _FightRewards on _FightScreenState {
     final rewardMultiplier = widget.modifiers.rewardMultiplier *
         chapterRewardMultiplier(_chapter) *
         goalRewardMultiplier(_goal.kind);
-    final tally = _tallyDefeated(
-      defeated,
-      session,
-      items,
-      rewardMultiplier,
-      loot,
-    );
+    final tally =
+        _tallyDefeated(defeated, session, items, rewardMultiplier, loot);
     goldGain += tally.gold;
     xpGain += tally.xp;
-    final lootContext = _lootContextFor(
-      player,
-      session,
-      tally,
-      preferredScalingStat,
-    );
+    final lootContext =
+        _lootContextFor(player, session, tally, preferredScalingStat);
     // On the feature ladder the lesson (105) brings no chest: the next
     // fight won does (feature_unlocks.dart).
     final noChest = spared ||
@@ -184,8 +165,7 @@ extension _FightRewards on _FightScreenState {
             modifiers: [],
             gold: 0,
             itemIds: [],
-            extraSlot: false,
-          )
+            extraSlot: false)
         : rollLootBox(lootContext, items, _random);
     loot.addAll(chest.itemIds);
     goldGain += chest.gold;
@@ -201,24 +181,16 @@ extension _FightRewards on _FightScreenState {
     }
     // The Short Con (see doctrine.dart): whatever a thief still carries,
     // having fled or outlasted the fight, is missing from the spoils.
-    final escaped = plunderLoss(
-      goldGain: goldGain,
-      escapedStashes: [
-        for (final e in _enemies)
-          if (e.stash > 0 && (e.isAlive || e.fled)) e.stash,
-      ],
-    );
+    final escaped = plunderLoss(goldGain: goldGain, escapedStashes: [
+      for (final e in _enemies)
+        if (e.stash > 0 && (e.isAlive || e.fled)) e.stash,
+    ]);
     if (escaped > 0) {
       goldGain -= escaped;
-      _log.add(
-        _LogEntry(
-          trFor(
-            ref.read(appLanguageProvider),
-            'plunder_loss_log',
-          ).replaceAll('{n}', '$escaped'),
-          _LogKind.enemyDamage,
-        ),
-      );
+      _log.add(_LogEntry(
+          trFor(ref.read(appLanguageProvider), 'plunder_loss_log')
+              .replaceAll('{n}', '$escaped'),
+          _LogKind.enemyDamage));
     }
     xpGain = _signs.scaleXp(_perks.scaleXp(xpGain));
     // A Tower floor pays in its own rewards, never in gold or XP.
@@ -276,11 +248,10 @@ extension _FightRewards on _FightScreenState {
     final keepWounds = widget.modifiers.keepWounds;
     final drinks = keepWounds ? 0 : spoils.drinkItemIds.length;
     final hpAfterSpoils = healthAfterDrinks(
-      health: player.currentHealth,
-      maxHealth: player.maxHealth,
-      drinks: drinks,
-      potionBonus: _potionBonus,
-    );
+        health: player.currentHealth,
+        maxHealth: player.maxHealth,
+        drinks: drinks,
+        potionBonus: _potionBonus);
     // A sign that mends the party after a won fight.
     final signHeal = keepWounds ? 0 : _signs.afterFightHeal(player.maxHealth);
     final leveledUp = await notifier.applyCombatResult(
@@ -308,6 +279,27 @@ extension _FightRewards on _FightScreenState {
             defeated.where((e) => _isElite || e.affixes.isNotEmpty).length,
       ),
     );
+    // The chapter's goals (chapter_goals.dart, v2.5.0): a fight won may
+    // meet some; each makes the chapter's chest a tier better.
+    if (!widget.modifiers.isTest && !widget.modifiers.tower) {
+      final goals = chapterGoalTable[_chapter] ?? const <ChapterGoal>[];
+      if (goals.isNotEmpty) {
+        await notifier.noteChapterGoals(
+            _chapter,
+            goals,
+            ChapterFightFacts(
+              won: true,
+              rounds: max(1, _roundsStarted),
+              healthLeft: player.currentHealth,
+              maxHealth: player.maxHealth,
+              enemyIds: [for (final e in defeated) e.enemyId],
+              firstTry: defeated.every(
+                  (e) => (session.bossDefeatCounts[e.enemyId] ?? 0) == 0),
+              weaknessHits: _weaknessHits,
+              potionUsed: _potionUsed,
+            ));
+      }
+    }
     final anyAllyRevived = await _settleAllies(notifier, leveledUp);
     final newlyUnlockedAchievement =
         anyAllyRevived && await notifier.unlockAchievement('ally_revival');
@@ -317,15 +309,10 @@ extension _FightRewards on _FightScreenState {
     final spoilsLog = <String>[];
     for (final itemId in spoils.equipItemIds) {
       final item = items[itemId] as Map<String, dynamic>?;
-      await notifier.equipItem(
-        itemId,
-        slot: item?['equipSlot']?.toString(),
-        items: items,
-      );
-      spoilsLog.add(
-        '${trFor(lang, 'loot_equipped_message')} '
-        '${item?['itemName']?.toString() ?? itemId}.',
-      );
+      await notifier.equipItem(itemId,
+          slot: item?['equipSlot']?.toString(), items: items);
+      spoilsLog.add('${trFor(lang, 'loot_equipped_message')} '
+          '${item?['itemName']?.toString() ?? itemId}.');
     }
     if (keepWounds && spoils.drinkItemIds.isNotEmpty) {
       spoilsLog.add(trFor(lang, 'loot_potion_kept_message'));
@@ -337,12 +324,8 @@ extension _FightRewards on _FightScreenState {
         for (var i = 0; i < drinks; i++) {
           await notifier.consumePotion();
         }
-        spoilsLog.add(
-          trFor(
-            lang,
-            'loot_drank_message',
-          ).replaceAll('{hp}', '${hpAfterSpoils - player.currentHealth}'),
-        );
+        spoilsLog.add(trFor(lang, 'loot_drank_message')
+            .replaceAll('{hp}', '${hpAfterSpoils - player.currentHealth}'));
       }
     }
     if (!mounted) return;
@@ -366,36 +349,28 @@ extension _FightRewards on _FightScreenState {
     // Kept for the next scene: the fight closes itself.
     final outcome = ref.read(lastFightOutcomeProvider);
     if (outcome != null && !widget.modifiers.tower) {
-      ref.read(lastFightOutcomeProvider.notifier).state = outcome.withSpoils(
-        victoryLine,
-      );
+      ref.read(lastFightOutcomeProvider.notifier).state =
+          outcome.withSpoils(victoryLine);
     }
     _update(() {
-      _spoils = FightSpoils(
-        gold: goldGain,
-        xp: xpGain,
-        items: [
-          for (final id in loot)
-            SpoilItem(
+      _spoils = FightSpoils(gold: goldGain, xp: xpGain, items: [
+        for (final id in loot)
+          SpoilItem(
               id,
               (items[id] as Map<String, dynamic>?)?['itemType']?.toString() ??
                   '',
               (items[id] as Map<String, dynamic>?)?['itemName']?.toString() ??
-                  id,
-            ),
-        ],
-      );
+                  id),
+      ]);
       for (final line in defeatLines) {
         _log.add(_LogEntry(line, _LogKind.banter));
       }
       _log.add(_LogEntry(victoryLine, _LogKind.victory));
-      _log.add(
-        _LogEntry(
-          '${trFor(lang, chestTierLabelKey(chest.tier))} '
-          '(${trFor(lang, 'fortune_roll_label')} ${chest.roll})',
-          _LogKind.victory,
-        ),
-      );
+      _log.add(_LogEntry(
+        '${trFor(lang, chestTierLabelKey(chest.tier))} '
+        '(${trFor(lang, 'fortune_roll_label')} ${chest.roll})',
+        _LogKind.victory,
+      ));
       if (chestBanter != null) _log.add(chestBanter);
       for (final line in spoilsLog) {
         _log.add(_LogEntry(line, _LogKind.victory));
@@ -410,31 +385,22 @@ extension _FightRewards on _FightScreenState {
       }
       _log.addAll(signLog);
       if (signHeal > 0) {
-        _log.add(
-          _LogEntry(
-            trFor(
-              lang,
-              'sign_log_after_fight',
-            ).replaceAll('{n}', '${_signs.afterFightHealPercent}'),
-            _LogKind.playerHeal,
-          ),
-        );
+        _log.add(_LogEntry(
+            trFor(lang, 'sign_log_after_fight')
+                .replaceAll('{n}', '${_signs.afterFightHealPercent}'),
+            _LogKind.playerHeal));
       }
       if (stolen > 0) {
-        _log.add(
-          _LogEntry(
+        _log.add(_LogEntry(
             trFor(lang, 'sign_log_crows').replaceAll('{n}', '$stolen'),
-            _LogKind.victory,
-          ),
-        );
+            _LogKind.victory));
       }
       if (bossBeaten) {
         _log.add(_LogEntry(trFor(lang, 'sign_log_offer'), _LogKind.victory));
       }
       if (titanBlood > 0) {
         _log.add(
-          _LogEntry(trFor(lang, 'sign_log_titan_blood'), _LogKind.victory),
-        );
+            _LogEntry(trFor(lang, 'sign_log_titan_blood'), _LogKind.victory));
       }
     });
     if (leveledUp) {
@@ -475,13 +441,9 @@ extension _FightRewards on _FightScreenState {
     final signatureIds = <String>[];
     for (final enemy in defeated) {
       var enemyGold = scaledReward(
-        (enemy.data['goldReward'] as num?)?.toInt() ?? 0,
-        _playerLevel,
-      );
+          (enemy.data['goldReward'] as num?)?.toInt() ?? 0, _playerLevel);
       var enemyXp = scaledReward(
-        (enemy.data['xpReward'] as num?)?.toInt() ?? 0,
-        _playerLevel,
-      );
+          (enemy.data['xpReward'] as num?)?.toInt() ?? 0, _playerLevel);
       if (_isElite) {
         enemyGold = (enemyGold * _eliteRewardMultiplier).round();
         enemyXp = (enemyXp * _eliteRewardMultiplier).round();
@@ -595,9 +557,7 @@ extension _FightRewards on _FightScreenState {
   /// itself, so skip writing each ally's stale pre-level-up battle-end
   /// HP over that full heal (and over the new, higher level-up max).
   Future<bool> _settleAllies(
-    PlayerSessionNotifier notifier,
-    bool leveledUp,
-  ) async {
+      PlayerSessionNotifier notifier, bool leveledUp) async {
     var anyAllyRevived = false;
     for (final member in _party) {
       if (member.isPlayer) continue;
@@ -606,22 +566,16 @@ extension _FightRewards on _FightScreenState {
       final hpAfter = member.isKnockedOut
           ? (member.maxHealth * _reviveHealthFraction).round()
           : member.currentHealth;
-      await notifier.applyAllyCombatResult(
-        member.id,
-        hpAfter: min(
-          member.maxHealth,
-          hpAfter + _signs.afterFightHeal(member.maxHealth),
-        ),
-      );
+      await notifier.applyAllyCombatResult(member.id,
+          hpAfter: min(member.maxHealth,
+              hpAfter + _signs.afterFightHeal(member.maxHealth)));
     }
     return anyAllyRevived;
   }
 
   /// A lost fight: no punishment but a boss's Resolve, a share of the XP.
   Future<void> _settleLoss(
-    PlayerSessionNotifier notifier,
-    _PartyMember player,
-  ) async {
+      PlayerSessionNotifier notifier, _PartyMember player) async {
     // Ally HP changes from a lost fight are never persisted (mirrors the
     // player's own full-heal-on-loss below — neither side is punished
     // HP-wise by a loss).
@@ -640,33 +594,25 @@ extension _FightRewards on _FightScreenState {
     final lostXp = widget.modifiers.isTest
         ? 0
         : (_enemies.fold<int>(
-                  0,
-                  (sum, e) =>
-                      sum +
-                      scaledReward(
-                        (e.data['xpReward'] as num?)?.toInt() ?? 0,
-                        _playerLevel,
-                      ),
-                ) *
+                    0,
+                    (sum, e) =>
+                        sum +
+                        scaledReward((e.data['xpReward'] as num?)?.toInt() ?? 0,
+                            _playerLevel)) *
                 widget.modifiers.rewardMultiplier *
                 chapterRewardMultiplier(_chapter) *
                 lostFightXpShare)
             .round();
     await notifier.applyCombatResult(
-      xpGain: lostXp,
-      keepWounds: keepWounds,
-      hpAfter: keepWounds ? max(1, player.currentHealth) : player.maxHealth,
-      manaAfter: keepWounds ? _mana : _maxMana,
-      pactFight: !widget.modifiers.isTest,
-    );
+        xpGain: lostXp,
+        keepWounds: keepWounds,
+        hpAfter: keepWounds ? max(1, player.currentHealth) : player.maxHealth,
+        manaAfter: keepWounds ? _mana : _maxMana,
+        pactFight: !widget.modifiers.isTest);
     if (!mounted) return;
     _update(() {
-      _log.add(
-        _LogEntry(
-          trFor(ref.read(appLanguageProvider), 'defeat_message'),
-          _LogKind.defeat,
-        ),
-      );
+      _log.add(_LogEntry(trFor(ref.read(appLanguageProvider), 'defeat_message'),
+          _LogKind.defeat));
       if (lostXp > 0) _log.add(_LogEntry('+$lostXp XP', _LogKind.info));
       _settled = true;
     });
@@ -680,11 +626,9 @@ extension _FightRewards on _FightScreenState {
       !widget.modifiers.tower &&
       _started &&
       !_over &&
-      !_enemies.any(
-        (e) =>
-            isBossEnemy(e.enemyId, e.data) ||
-            zoneBossEnemyIds.contains(e.enemyId),
-      );
+      !_enemies.any((e) =>
+          isBossEnemy(e.enemyId, e.data) ||
+          zoneBossEnemyIds.contains(e.enemyId));
 
   /// Getting away: after a confirmation that names the cost, a share of
   /// the purse is lost (see [retreatCostFor]) and the party leaves with
@@ -700,14 +644,10 @@ extension _FightRewards on _FightScreenState {
       context: context,
       builder: (dialogContext) => AlertDialog(
         title: Text(trFor(lang, 'retreat_confirm_title')),
-        content: Text(
-          trFor(lang, 'retreat_confirm_body')
-              .replaceAll('{gold}', '$cost')
-              .replaceAll(
-                '{potion}',
-                dropsPotion ? trFor(lang, 'retreat_potion_part') : '',
-              ),
-        ),
+        content: Text(trFor(lang, 'retreat_confirm_body')
+            .replaceAll('{gold}', '$cost')
+            .replaceAll('{potion}',
+                dropsPotion ? trFor(lang, 'retreat_potion_part') : '')),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(dialogContext, false),
@@ -732,10 +672,8 @@ extension _FightRewards on _FightScreenState {
     );
     for (final member in _party) {
       if (member.isPlayer) continue;
-      await notifier.applyAllyCombatResult(
-        member.id,
-        hpAfter: max(1, member.currentHealth),
-      );
+      await notifier.applyAllyCombatResult(member.id,
+          hpAfter: max(1, member.currentHealth));
     }
     // No aftermath is written for a fight left unfinished.
     ref.read(lastFightOutcomeProvider.notifier).state = null;
@@ -757,16 +695,11 @@ extension _FightRewards on _FightScreenState {
     final notifier = ref.read(playerSessionProvider.notifier);
     final player = _party.firstWhere((m) => m.isPlayer);
     await notifier.applyRetreat(
-      hpAfter: player.currentHealth,
-      goldLost: 0,
-      manaAfter: _mana,
-    );
+        hpAfter: player.currentHealth, goldLost: 0, manaAfter: _mana);
     for (final member in _party) {
       if (member.isPlayer) continue;
-      await notifier.applyAllyCombatResult(
-        member.id,
-        hpAfter: max(1, member.currentHealth),
-      );
+      await notifier.applyAllyCombatResult(member.id,
+          hpAfter: max(1, member.currentHealth));
     }
     ref.read(lastFightOutcomeProvider.notifier).state = null;
     ref.read(lastFightRetreatedProvider.notifier).state = true;
@@ -787,9 +720,8 @@ extension _FightRewards on _FightScreenState {
     // to come back on (v1.910, QA #956): its hunters fall like any foe.
     if (widget.modifiers.isTest || widget.modifiers.tower) return false;
     final hunter = defeated
-        .where(
-          (e) => !e.fled && (e.data['hunterClan']?.toString() ?? '').isNotEmpty,
-        )
+        .where((e) =>
+            !e.fled && (e.data['hunterClan']?.toString() ?? '').isNotEmpty)
         .firstOrNull;
     if (hunter == null) return false;
     final lang = ref.read(appLanguageProvider);
@@ -821,17 +753,10 @@ extension _FightRewards on _FightScreenState {
           random: _random,
         );
     if (!mounted) return spared;
-    _update(
-      () => _log.add(
-        _LogEntry(
-          trFor(
-            lang,
-            spared ? 'mercy_spared_log' : 'mercy_finished_log',
-          ).replaceAll('{name}', hunter.displayName),
-          _LogKind.info,
-        ),
-      ),
-    );
+    _update(() => _log.add(_LogEntry(
+        trFor(lang, spared ? 'mercy_spared_log' : 'mercy_finished_log')
+            .replaceAll('{name}', hunter.displayName),
+        _LogKind.info)));
     return spared;
   }
 
@@ -873,13 +798,11 @@ extension _FightRewards on _FightScreenState {
   Widget _buildReturnButton() {
     return ElevatedButton(
       onPressed: _settled ? _leaveFight : null,
-      child: Text(
-        _won
-            ? tr(ref, 'victory_return_button')
-            : widget.modifiers.lossContinues
-                ? tr(ref, 'defeat_continue_button')
-                : tr(ref, 'retreat_button'),
-      ),
+      child: Text(_won
+          ? tr(ref, 'victory_return_button')
+          : widget.modifiers.lossContinues
+              ? tr(ref, 'defeat_continue_button')
+              : tr(ref, 'retreat_button')),
     );
   }
 
@@ -913,14 +836,11 @@ extension _FightRewards on _FightScreenState {
       // after character creation, never through it (creating a character
       // wipes the one who just died, level and all).
       final story = ref.read(storyDataProvider).value;
-      ref.read(storyPlayProvider.notifier).restart(
-            story == null
-                ? StoryRepository.startNodeId
-                : firstSceneAfterCreation(story),
-          );
-      ref.read(homeTabIndexProvider.notifier).state = storyTabIndex(
-        ref.read(appModeProvider),
-      );
+      ref.read(storyPlayProvider.notifier).restart(story == null
+          ? StoryRepository.startNodeId
+          : firstSceneAfterCreation(story));
+      ref.read(homeTabIndexProvider.notifier).state =
+          storyTabIndex(ref.read(appModeProvider));
       // The dead character's last fight is the death screen's to tell,
       // not the next scene's.
       ref.read(lastFightOutcomeProvider.notifier).state = null;

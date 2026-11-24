@@ -55,9 +55,8 @@ Future<void> showTownServiceSheet(BuildContext context, TownService service) {
       service.opens.first.action == TownServiceAction.bountyBoard) {
     return Navigator.of(context).push(
       MaterialPageRoute<void>(
-        builder: (_) => const NoticeBoardPage(),
-        settings: const RouteSettings(name: 'notice_board'),
-      ),
+          builder: (_) => const NoticeBoardPage(),
+          settings: const RouteSettings(name: 'notice_board')),
     );
   }
   return showInkSheet<void>(
@@ -158,11 +157,10 @@ class _TownServiceSheet extends ConsumerWidget {
             if (service.opens.isEmpty)
               Padding(
                 padding: const EdgeInsets.all(12),
-                child: Text(
-                  tr(ref, 'service_nothing_yet'),
-                  key: const Key('town_service_nothing'),
-                  style: theme.textTheme.bodyMedium?.copyWith(color: ink.ash),
-                ),
+                child: Text(tr(ref, 'service_nothing_yet'),
+                    key: const Key('town_service_nothing'),
+                    style:
+                        theme.textTheme.bodyMedium?.copyWith(color: ink.ash)),
               )
             else
               for (final open in service.opens) row(open),
@@ -194,9 +192,8 @@ class _TempleRows extends ConsumerWidget {
       return Padding(
         padding: const EdgeInsets.all(12),
         child: Text(
-          own(keeper?.templeLineHuntedFor(lang), 'temple_refused_hunted'),
-          key: const Key('temple_refused'),
-        ),
+            own(keeper?.templeLineHuntedFor(lang), 'temple_refused_hunted'),
+            key: const Key('temple_refused')),
       );
     }
     String why(TempleBlock? block, int price) => switch (block) {
@@ -205,11 +202,8 @@ class _TempleRows extends ConsumerWidget {
           TempleBlock.mendedToday => tr(ref, 'temple_mended_today'),
           _ => tr(ref, 'temple_price').replaceAll('{gold}', '$price'),
         };
-    Future<void> buy(
-      Future<bool> Function(PlayerSessionNotifier n) act,
-      String done,
-      RemarkKind kind,
-    ) async {
+    Future<void> buy(Future<bool> Function(PlayerSessionNotifier n) act,
+        String done, RemarkKind kind) async {
       final messenger = ScaffoldMessenger.maybeOf(host);
       final text = tr(ref, done);
       final bought = await act(ref.read(playerSessionProvider.notifier));
@@ -236,14 +230,12 @@ class _TempleRows extends ConsumerWidget {
         if (keeperLine.isNotEmpty)
           Padding(
             padding: const EdgeInsets.fromLTRB(16, 0, 16, 8),
-            child: Text(
-              keeperLine,
-              key: const Key('temple_keeper_line'),
-              style: Theme.of(context)
-                  .textTheme
-                  .bodyMedium
-                  ?.copyWith(fontStyle: FontStyle.italic),
-            ),
+            child: Text(keeperLine,
+                key: const Key('temple_keeper_line'),
+                style: Theme.of(context)
+                    .textTheme
+                    .bodyMedium
+                    ?.copyWith(fontStyle: FontStyle.italic)),
           ),
         if (offer.mendOffered)
           SheetRow(
@@ -258,10 +250,9 @@ class _TempleRows extends ConsumerWidget {
             ],
             enabled: offer.canMend,
             onTap: () => buy(
-              (n) => n.templeMend(offer.clanId, data: data, chapter: chapter),
-              'temple_mend_result',
-              RemarkKind.templeMended,
-            ),
+                (n) => n.templeMend(offer.clanId, data: data, chapter: chapter),
+                'temple_mend_result',
+                RemarkKind.templeMended),
           ),
         SheetRow(
           key: const Key('temple_bless'),
@@ -286,10 +277,9 @@ class _TempleRows extends ConsumerWidget {
           ],
           enabled: offer.canBless,
           onTap: () => buy(
-            (n) => n.templeBless(offer.clanId, data: data, chapter: chapter),
-            'temple_blessing_result',
-            RemarkKind.templeBlessed,
-          ),
+              (n) => n.templeBless(offer.clanId, data: data, chapter: chapter),
+              'temple_blessing_result',
+              RemarkKind.templeBlessed),
         ),
       ],
     );

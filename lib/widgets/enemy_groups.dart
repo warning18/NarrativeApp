@@ -96,7 +96,13 @@ const Map<String, List<String>> _glyphs = {
     '#..#.#..#',
     '....#....',
   ],
-  'crown': ['#...#...#', '##.###.##', '#########', '#########', '.#######.'],
+  'crown': [
+    '#...#...#',
+    '##.###.##',
+    '#########',
+    '#########',
+    '.#######.',
+  ],
   'flame': [
     '....#....',
     '...##....',
@@ -106,20 +112,20 @@ const Map<String, List<String>> _glyphs = {
     '.#######.',
     '..#####..',
   ],
-  'chain': ['.##...##.', '#..#.#..#', '#..###..#', '#..#.#..#', '.##...##.'],
+  'chain': [
+    '.##...##.',
+    '#..#.#..#',
+    '#..###..#',
+    '#..#.#..#',
+    '.##...##.',
+  ],
 };
 
 /// A group's look.
 @immutable
 class EnemyGroup {
-  const EnemyGroup(
-    this.id,
-    this.name,
-    this.color, {
-    this.banner,
-    this.glyph,
-    this.ornament = 'studs',
-  });
+  const EnemyGroup(this.id, this.name, this.color,
+      {this.banner, this.glyph, this.ornament = 'studs'});
 
   final String id;
   final String name;
@@ -140,140 +146,49 @@ Color _c(int rgb) => Color(0xFF000000 | rgb);
 /// Every group the fight knows. Clan colours are the clans' own
 /// (factions.json); the others are Apollo (docs/art/palette-apollo.md).
 final Map<String, EnemyGroup> enemyGroups = {
-  'dominion': EnemyGroup(
-    'dominion',
-    'Lantern Dominion',
-    _c(0x2F62B5),
-    banner: clanBannerId('dominion'),
-  ),
-  'crows': EnemyGroup(
-    'crows',
-    'Salt Crows',
-    _c(0xB0303F),
-    banner: clanBannerId('crows'),
-  ),
-  'compact': EnemyGroup(
-    'compact',
-    'Cinder Compact',
-    _c(0xB86B3C),
-    banner: clanBannerId('compact'),
-  ),
-  'mire': EnemyGroup(
-    'mire',
-    'Mire Courts',
-    _c(0x3F8F5A),
-    banner: clanBannerId('mire'),
-  ),
-  'vigil': EnemyGroup(
-    'vigil',
-    'Grey Vigil',
-    _c(0x8A8F98),
-    banner: clanBannerId('vigil'),
-  ),
-  'penitents': EnemyGroup(
-    'penitents',
-    'Ashen Penitents',
-    _c(0xCBB68E),
-    banner: clanBannerId('penitents'),
-  ),
+  'dominion': EnemyGroup('dominion', 'Lantern Dominion', _c(0x2F62B5),
+      banner: clanBannerId('dominion')),
+  'crows': EnemyGroup('crows', 'Salt Crows', _c(0xB0303F),
+      banner: clanBannerId('crows')),
+  'compact': EnemyGroup('compact', 'Cinder Compact', _c(0xB86B3C),
+      banner: clanBannerId('compact')),
+  'mire': EnemyGroup('mire', 'Mire Courts', _c(0x3F8F5A),
+      banner: clanBannerId('mire')),
+  'vigil': EnemyGroup('vigil', 'Grey Vigil', _c(0x8A8F98),
+      banner: clanBannerId('vigil')),
+  'penitents': EnemyGroup('penitents', 'Ashen Penitents', _c(0xCBB68E),
+      banner: clanBannerId('penitents')),
   'choir': EnemyGroup('choir', 'The Choir', _c(0xAD8A10), glyph: 'halo'),
-  'pit': EnemyGroup(
-    'pit',
-    'The Pit',
-    _c(0xA94BB4),
-    glyph: 'horns',
-    ornament: 'spikes',
-  ),
-  'giants': EnemyGroup(
-    'giants',
-    'Giants',
-    _c(0x6F8796),
-    glyph: 'fist',
-    ornament: 'rivets',
-  ),
-  'tidekin': EnemyGroup(
-    'tidekin',
-    'Tide-Kin',
-    _c(0x1C8FA0),
-    glyph: 'wave',
-    ornament: 'notches',
-  ),
-  'undead': EnemyGroup(
-    'undead',
-    'The dead',
-    _c(0x819796),
-    glyph: 'skull',
-    ornament: 'notches',
-  ),
-  'void': EnemyGroup(
-    'void',
-    'The Void',
-    _c(0xA23E8C),
-    glyph: 'void',
-    ornament: 'spikes',
-  ),
-  'beast': EnemyGroup(
-    'beast',
-    'Beasts',
-    _c(0xAD7757),
-    glyph: 'paw',
-    ornament: 'notches',
-  ),
-  'construct': EnemyGroup(
-    'construct',
-    'Constructs',
-    _c(0x4F8FBA),
-    glyph: 'gear',
-    ornament: 'rivets',
-  ),
+  'pit': EnemyGroup('pit', 'The Pit', _c(0xA94BB4),
+      glyph: 'horns', ornament: 'spikes'),
+  'giants': EnemyGroup('giants', 'Giants', _c(0x6F8796),
+      glyph: 'fist', ornament: 'rivets'),
+  'tidekin': EnemyGroup('tidekin', 'Tide-Kin', _c(0x1C8FA0),
+      glyph: 'wave', ornament: 'notches'),
+  'undead': EnemyGroup('undead', 'The dead', _c(0x819796),
+      glyph: 'skull', ornament: 'notches'),
+  'void': EnemyGroup('void', 'The Void', _c(0xA23E8C),
+      glyph: 'void', ornament: 'spikes'),
+  'beast': EnemyGroup('beast', 'Beasts', _c(0xAD7757),
+      glyph: 'paw', ornament: 'notches'),
+  'construct': EnemyGroup('construct', 'Constructs', _c(0x4F8FBA),
+      glyph: 'gear', ornament: 'rivets'),
   // The people of no clan, by the groups Core gives them (enemies.json
   // `group`). The ids are the ones Core names; an unknown one is the fallback.
-  'hollow_court': EnemyGroup(
-    'hollow_court',
-    'The Hollow Court',
-    _c(0x7A367B),
-    glyph: 'mask',
-    ornament: 'spikes',
-  ),
-  'turned': EnemyGroup(
-    'turned',
-    'The Turned',
-    _c(0xE8C170),
-    glyph: 'chain',
-    ornament: 'notches',
-  ),
-  'claimants': EnemyGroup(
-    'claimants',
-    'The Claimants',
-    _c(0x884B2B),
-    glyph: 'crown',
-  ),
-  'champions': EnemyGroup(
-    'champions',
-    'The Champions',
-    _c(0xF2C14E),
-    glyph: 'crown',
-    ornament: 'rivets',
-  ),
-  'void_cults': EnemyGroup(
-    'void_cults',
-    'The Void Cults',
-    _c(0xA53030),
-    glyph: 'flame',
-    ornament: 'spikes',
-  ),
-  'common_folk': EnemyGroup(
-    'common_folk',
-    'Common folk',
-    _c(0x9A8C6E),
-    glyph: 'fist',
-  ),
-  'people': EnemyGroup(
-    'people',
-    'People of no clan',
-    _c(0x7A4841),
-    glyph: 'mask',
-  ),
+  'hollow_court': EnemyGroup('hollow_court', 'The Hollow Court', _c(0x7A367B),
+      glyph: 'mask', ornament: 'spikes'),
+  'turned': EnemyGroup('turned', 'The Turned', _c(0xE8C170),
+      glyph: 'chain', ornament: 'notches'),
+  'claimants':
+      EnemyGroup('claimants', 'The Claimants', _c(0x884B2B), glyph: 'crown'),
+  'champions': EnemyGroup('champions', 'The Champions', _c(0xF2C14E),
+      glyph: 'crown', ornament: 'rivets'),
+  'void_cults': EnemyGroup('void_cults', 'The Void Cults', _c(0xA53030),
+      glyph: 'flame', ornament: 'spikes'),
+  'common_folk':
+      EnemyGroup('common_folk', 'Common folk', _c(0x9A8C6E), glyph: 'fist'),
+  'people':
+      EnemyGroup('people', 'People of no clan', _c(0x7A4841), glyph: 'mask'),
 };
 
 /// The look of an enemy record: the group Core reads from it (`enemyGroupOf`,
@@ -334,12 +249,8 @@ class _GlyphPainter extends CustomPainter {
 /// A group's emblem in a [size] square: the clan's own banner cropped to its
 /// sign, or the group's pixel mark in [color].
 class GroupEmblem extends StatelessWidget {
-  const GroupEmblem(
-    this.group, {
-    super.key,
-    this.size = 14,
-    required this.color,
-  });
+  const GroupEmblem(this.group,
+      {super.key, this.size = 14, required this.color});
 
   final EnemyGroup group;
   final double size;
@@ -369,11 +280,8 @@ class GroupEmblem extends StatelessWidget {
       width: size,
       height: size,
       child: Center(
-        child: GroupGlyph(
-          group.glyph ?? 'mask',
-          color,
-          px: (size / 9).floorToDouble().clamp(1.0, 4.0),
-        ),
+        child: GroupGlyph(group.glyph ?? 'mask', color,
+            px: (size / 9).floorToDouble().clamp(1.0, 4.0)),
       ),
     );
   }

@@ -10,9 +10,8 @@ import 'story_markup.dart';
 const Set<String> _storyNamesIgnore = {'Mire', 'Pit', 'Choir', 'Giants', 'Oni'};
 
 final RegExp _article = RegExp(
-  r"^(?:(?:The|A|An|Le|La|Les|Un|Une)\s+|L['’]\s*)(?=\S)",
-  caseSensitive: false,
-);
+    r"^(?:(?:The|A|An|Le|La|Les|Un|Une)\s+|L['’]\s*)(?=\S)",
+    caseSensitive: false);
 
 /// [name] without its article ("The Lantern Dominion" -> "Lantern
 /// Dominion"), or null when the name is only a description of someone ("The
@@ -55,21 +54,16 @@ StoryNameMatcher buildStoryNames({
   }
   for (final r in companions.values) {
     if (r is Map) {
-      add(
-        _clean(r['companionName']?.toString() ?? '', people: true),
-        StoryNameKind.person,
-      );
+      add(_clean(r['companionName']?.toString() ?? '', people: true),
+          StoryNameKind.person);
     }
   }
   if (geography != null) {
     for (final p in geography.places.values) {
       add(
-        _clean(
-          french && p.nameFr.isNotEmpty ? p.nameFr : p.name,
-          people: false,
-        ),
-        StoryNameKind.place,
-      );
+          _clean(french && p.nameFr.isNotEmpty ? p.nameFr : p.name,
+              people: false),
+          StoryNameKind.place);
     }
   }
   for (final r in factions.values) {

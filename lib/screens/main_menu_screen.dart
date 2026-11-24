@@ -29,10 +29,7 @@ import '../widgets/ink_confirm.dart';
 
 /// Opens the game (HomeShell) over the menu in [mode], on the Story tab.
 Future<void> _enterGame(
-  BuildContext context,
-  WidgetRef ref,
-  AppMode mode,
-) async {
+    BuildContext context, WidgetRef ref, AppMode mode) async {
   await ref.read(appModeProvider.notifier).setMode(mode);
   ref.read(homeTabIndexProvider.notifier).state = storyTabIndex(mode);
   if (!context.mounted) return;
@@ -90,10 +87,8 @@ class _MainMenuScreenState extends ConsumerState<MainMenuScreen> {
         .whereType<SaveSlotSummary>()
         .where((slot) => isEnding(slot.nodeId))
         .toList()
-      ..sort(
-        (a, b) =>
-            (b.savedAt ?? DateTime(0)).compareTo(a.savedAt ?? DateTime(0)),
-      );
+      ..sort((a, b) =>
+          (b.savedAt ?? DateTime(0)).compareTo(a.savedAt ?? DateTime(0)));
     for (final slot in endedSlots) {
       final saved = await ref.read(savedGamesProvider.notifier).load(slot.slot);
       if (!mounted) return;
@@ -118,9 +113,8 @@ class _MainMenuScreenState extends ConsumerState<MainMenuScreen> {
       ].join('|');
       if (check != _lastFinishedCheck) {
         _lastFinishedCheck = check;
-        WidgetsBinding.instance.addPostFrameCallback(
-          (_) => _countStoryAlreadyFinished(),
-        );
+        WidgetsBinding.instance
+            .addPostFrameCallback((_) => _countStoryAlreadyFinished());
       }
     }
     final ironman = ref.watch(permadeathEnabledProvider);
@@ -173,12 +167,11 @@ class _MainMenuScreenState extends ConsumerState<MainMenuScreen> {
                 child: IconButton(
                   icon: Text(lang == AppLanguage.fr ? '🇫🇷' : '🇬🇧'),
                   tooltip: tr(ref, 'language'),
-                  onPressed: () =>
-                      ref.read(appLanguageProvider.notifier).setLanguage(
-                            lang == AppLanguage.fr
-                                ? AppLanguage.en
-                                : AppLanguage.fr,
-                          ),
+                  onPressed: () => ref
+                      .read(appLanguageProvider.notifier)
+                      .setLanguage(lang == AppLanguage.fr
+                          ? AppLanguage.en
+                          : AppLanguage.fr),
                 ),
               ),
               Center(
@@ -258,15 +251,11 @@ class _MainMenuScreenState extends ConsumerState<MainMenuScreen> {
                               ? null
                               : () async {
                                   final loaded = await showSaveSlotsSheet(
-                                    context,
-                                    saving: false,
-                                  );
+                                      context,
+                                      saving: false);
                                   if ((loaded ?? false) && context.mounted) {
                                     await _enterGame(
-                                      context,
-                                      ref,
-                                      AppMode.inGame,
-                                    );
+                                        context, ref, AppMode.inGame);
                                   }
                                 },
                         ),
@@ -276,8 +265,7 @@ class _MainMenuScreenState extends ConsumerState<MainMenuScreen> {
                           label: tr(ref, 'settings'),
                           onPressed: () => Navigator.of(context).push(
                             MaterialPageRoute(
-                              builder: (_) => const SettingsScreen(),
-                            ),
+                                builder: (_) => const SettingsScreen()),
                           ),
                         ),
                         item(
@@ -297,17 +285,15 @@ class _MainMenuScreenState extends ConsumerState<MainMenuScreen> {
                           detail: tr(ref, 'tower_menu_sub'),
                           onPressed: () => Navigator.of(context).push(
                             MaterialPageRoute(
-                              builder: (_) => const TowerStartScreen(),
-                            ),
+                                builder: (_) => const TowerStartScreen()),
                           ),
                         ),
                         const SizedBox(height: 16),
                         Text(
                           'v${AppInfo.version}',
                           textAlign: TextAlign.center,
-                          style: theme.textTheme.labelSmall?.copyWith(
-                            color: inkGrey,
-                          ),
+                          style: theme.textTheme.labelSmall
+                              ?.copyWith(color: inkGrey),
                         ),
                       ],
                     ),
@@ -324,11 +310,8 @@ class _MainMenuScreenState extends ConsumerState<MainMenuScreen> {
   /// A fresh story from character creation. Over a story under way it
   /// asks first: the story's own autosave is replaced (the save slots are
   /// kept).
-  Future<void> _newGame(
-    BuildContext context,
-    WidgetRef ref, {
-    required bool confirm,
-  }) async {
+  Future<void> _newGame(BuildContext context, WidgetRef ref,
+      {required bool confirm}) async {
     if (confirm) {
       final lang = ref.read(appLanguageProvider);
       final ok = await showInkConfirm(
@@ -349,8 +332,9 @@ class _MainMenuScreenState extends ConsumerState<MainMenuScreen> {
     final playIntro = introOnNewGame && !await introSeen();
     if (!context.mounted) return;
     if (playIntro) {
-      await Navigator.of(context)
-          .push(MaterialPageRoute<bool>(builder: (_) => const IntroScreen()));
+      await Navigator.of(context).push(
+        MaterialPageRoute<bool>(builder: (_) => const IntroScreen()),
+      );
       if (!context.mounted) return;
     }
     await _enterGame(context, ref, AppMode.inGame);
@@ -399,9 +383,7 @@ class _BannerMark extends StatelessWidget {
       key: const Key('menu_banner_glow'),
       decoration: BoxDecoration(
         gradient: RadialGradient(
-          radius: 0.62,
-          colors: [inkSlate, inkBlack.withValues(alpha: 0)],
-        ),
+            radius: 0.62, colors: [inkSlate, inkBlack.withValues(alpha: 0)]),
       ),
       child: WindBanner(id: titleBannerId, scale: scale),
     );

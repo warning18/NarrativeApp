@@ -59,24 +59,20 @@ bool _templeMendOffered(int chapter) => roadRulesApply(chapter);
 List<SignEffect> templeBlessingEffects(String clanId, ClanData data) => [
       if (clanId.isEmpty)
         const SignEffect(
-          kind: SignEffectKind.partyMaxHealthPercent,
-          value: templeNeutralHealthPercent,
-        )
+            kind: SignEffectKind.partyMaxHealthPercent,
+            value: templeNeutralHealthPercent)
       else
         ...?data.faction(clanId)?.host?.effects,
       const SignEffect(
-        kind: SignEffectKind.partyStartBlock,
-        value: templeWardBlock,
-      ),
+          kind: SignEffectKind.partyStartBlock, value: templeWardBlock),
     ];
 
 /// What an active blessing adds to the next fight: none when
 /// [blessingFights] is 0.
-List<SignEffect> activeBlessingEffects({
-  required int blessingFights,
-  required String blessingClan,
-  required ClanData data,
-}) =>
+List<SignEffect> activeBlessingEffects(
+        {required int blessingFights,
+        required String blessingClan,
+        required ClanData data}) =>
     blessingFights > 0
         ? templeBlessingEffects(blessingClan, data)
         : const <SignEffect>[];
@@ -207,33 +203,26 @@ TempleOffer templeOfferFor({
     chapter: chapter,
     mendOffered: _templeMendOffered(chapter),
     mendPrice: mendPrice,
-    mendBlock: blockFor(
-      mendPrice,
-      mendedToday: templeMendDay > 0 && templeMendDay == day,
-    ),
+    mendBlock: blockFor(mendPrice,
+        mendedToday: templeMendDay > 0 && templeMendDay == day),
     blessingPrice: blessingPrice,
     blessingBlock: blockFor(blessingPrice),
     blessingEffects: templeBlessingEffects(ruler, data),
     blessingReplaces: blessingFights > 0,
     blessingStanding: !hunted &&
-        _templeBlessingGivesStanding(
-          ruler,
-          data: data,
-          chapter: chapter,
-          alignment: alignment,
-          standingChapters: standingChapters,
-        ),
+        _templeBlessingGivesStanding(ruler,
+            data: data,
+            chapter: chapter,
+            alignment: alignment,
+            standingChapters: standingChapters),
   );
 }
 
 /// The clan that keeps the temple of [placeId] (a district, else a town)
 /// in [rulers] (town_rulers.dart): the place's ruler, else that of
 /// [parent] (the town above it); '' for a neutral temple.
-String templeClanAt(
-  String placeId,
-  Map<String, TownRuler> rulers, {
-  String parent = '',
-}) =>
+String templeClanAt(String placeId, Map<String, TownRuler> rulers,
+        {String parent = ''}) =>
     (rulers[placeId] ?? rulers[parent])?.clanId ?? '';
 
 /// The clan that keeps the temple of the town [placeId] lies in ('' a
@@ -241,10 +230,7 @@ String templeClanAt(
 /// there): the place, else the nearest place above it that is a town or a
 /// district of one. For the simulator's hubs.
 String? templeClanOfPlace(
-  String? placeId,
-  Map<String, TownRuler> rulers,
-  Geography geography,
-) {
+    String? placeId, Map<String, TownRuler> rulers, Geography geography) {
   var id = placeId;
   for (var depth = 0; id != null && id.isNotEmpty && depth < 16; depth++) {
     final ruler = rulers[id];

@@ -26,17 +26,13 @@ class InkNamePlate extends StatelessWidget {
           decoration: BoxDecoration(
             color: inkBlack,
             border: Border(
-              left: BorderSide(color: lit ? inkRed : inkPaper, width: 3),
-              bottom: BorderSide(color: lit ? inkRed : inkSlate),
-            ),
+                left: BorderSide(color: lit ? inkRed : inkPaper, width: 3),
+                bottom: BorderSide(color: lit ? inkRed : inkSlate)),
           ),
           child: Transform(
-            transform: Matrix4.skewX(inkSkew),
-            child: DefaultTextStyle.merge(
-              style: const TextStyle(color: inkPaper),
-              child: child,
-            ),
-          ),
+              transform: Matrix4.skewX(inkSkew),
+              child: DefaultTextStyle.merge(
+                  style: const TextStyle(color: inkPaper), child: child)),
         ),
       );
 }
@@ -66,33 +62,26 @@ class _Band extends StatelessWidget {
   final Widget Function(double width) builder;
 
   @override
-  Widget build(BuildContext context) => LayoutBuilder(
-        builder: (context, box) {
-          final w = box.maxWidth;
-          return InkSlantPanel(
-            size: Size(w, height),
-            points: [
-              Offset(6, slantTop),
-              Offset(w - 6, 6),
-              Offset(w - 6, height - 6 - slantBottom),
-              Offset(6, height - 6),
-            ],
-            child: Stack(
-              fit: StackFit.expand,
-              children: [
-                Image.asset(
-                  plate,
-                  fit: BoxFit.cover,
-                  alignment: Alignment.bottomCenter,
-                  filterQuality: FilterQuality.none,
-                  errorBuilder: (c, e, s) => const ColoredBox(color: inkDeep),
-                ),
-                builder(w),
-              ],
-            ),
-          );
-        },
-      );
+  Widget build(BuildContext context) => LayoutBuilder(builder: (context, box) {
+        final w = box.maxWidth;
+        return InkSlantPanel(
+          size: Size(w, height),
+          points: [
+            Offset(6, slantTop),
+            Offset(w - 6, 6),
+            Offset(w - 6, height - 6 - slantBottom),
+            Offset(6, height - 6),
+          ],
+          child: Stack(fit: StackFit.expand, children: [
+            Image.asset(plate,
+                fit: BoxFit.cover,
+                alignment: Alignment.bottomCenter,
+                filterQuality: FilterQuality.none,
+                errorBuilder: (c, e, s) => const ColoredBox(color: inkDeep)),
+            builder(w),
+          ]),
+        );
+      });
 }
 
 /// The foes standing in a row on [plate], each under its nameplate.
@@ -117,50 +106,44 @@ class InkFoeBand extends StatelessWidget {
         builder: (w) {
           final n = foes.length.clamp(1, 3);
           final cell = (w - 24) / n;
-          return Stack(
-            children: [
-              for (var i = 0; i < foes.length && i < 3; i++) ...[
-                Positioned(
-                  left: 12 + i * cell,
-                  bottom: 8,
-                  width: cell,
-                  child: Center(
-                    child: Builder(
-                      builder: (context) {
-                        final set = enemyFightSprite(foes[i].id);
-                        return KeyedSubtree(
-                          key: i == 0 ? Key('tower_foe_${foes[i].id}') : null,
-                          child: set == null
-                              ? const SizedBox(height: 84)
-                              : InkFigure(set, size: 84),
-                        );
-                      },
-                    ),
-                  ),
+          return Stack(children: [
+            for (var i = 0; i < foes.length && i < 3; i++) ...[
+              Positioned(
+                left: 12 + i * cell,
+                bottom: 8,
+                width: cell,
+                child: Center(
+                  child: Builder(builder: (context) {
+                    final set = enemyFightSprite(foes[i].id);
+                    return KeyedSubtree(
+                      key: i == 0 ? Key('tower_foe_${foes[i].id}') : null,
+                      child: set == null
+                          ? const SizedBox(height: 84)
+                          : InkFigure(set, size: 84),
+                    );
+                  }),
                 ),
-                Positioned(
-                  left: 14 + i * cell,
-                  top: 20,
-                  width: cell - 8,
-                  child: InkNamePlate(
-                    lit: lit,
-                    child: FittedBox(
-                      fit: BoxFit.scaleDown,
-                      alignment: Alignment.centerLeft,
-                      child: Text(
-                        foes[i].name,
+              ),
+              Positioned(
+                left: 14 + i * cell,
+                top: 20,
+                width: cell - 8,
+                child: InkNamePlate(
+                  lit: lit,
+                  child: FittedBox(
+                    fit: BoxFit.scaleDown,
+                    alignment: Alignment.centerLeft,
+                    child: Text(foes[i].name,
                         maxLines: 1,
                         style: Theme.of(context)
                             .textTheme
                             .titleSmall
-                            ?.copyWith(color: inkPaper),
-                      ),
-                    ),
+                            ?.copyWith(color: inkPaper)),
                   ),
                 ),
-              ],
+              ),
             ],
-          );
+          ]);
         },
       );
 }
@@ -191,42 +174,36 @@ class InkHeroBand extends StatelessWidget {
         height: 118,
         slantTop: 0,
         slantBottom: 12,
-        builder: (w) => Stack(
-          children: [
-            Positioned(left: 14, bottom: 8, child: InkFigure(sprite, size: 84)),
-            Positioned(
-              left: 108,
-              right: 18,
-              top: 30,
-              child: InkNamePlate(
-                lit: true,
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Text(
-                      title,
+        builder: (w) => Stack(children: [
+          Positioned(left: 14, bottom: 8, child: InkFigure(sprite, size: 84)),
+          Positioned(
+            left: 108,
+            right: 18,
+            top: 30,
+            child: InkNamePlate(
+              lit: true,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Text(title,
                       style: Theme.of(context)
                           .textTheme
                           .labelSmall
-                          ?.copyWith(color: inkGrey, letterSpacing: 1),
-                    ),
-                    const SizedBox(height: 3),
-                    InkBar(value: health, height: 6),
-                    const SizedBox(height: 3),
-                    Text(
-                      healthText,
+                          ?.copyWith(color: inkGrey, letterSpacing: 1)),
+                  const SizedBox(height: 3),
+                  InkBar(value: health, height: 6),
+                  const SizedBox(height: 3),
+                  Text(healthText,
                       key: healthKey,
                       style: Theme.of(context)
                           .textTheme
                           .bodySmall
-                          ?.copyWith(color: inkPaper),
-                    ),
-                  ],
-                ),
+                          ?.copyWith(color: inkPaper)),
+                ],
               ),
             ),
-          ],
-        ),
+          ),
+        ]),
       );
 }

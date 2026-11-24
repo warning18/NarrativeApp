@@ -282,6 +282,8 @@ class PlayerSession {
     this.contractBoards = 0,
     this.seaBeasts = const {},
     this.bossDefeatCounts = const {},
+    this.chapterGoalsMet = const {},
+    this.chapterChestsGiven = const [],
     this.grandfatheredQuestIds = const [],
     this.talkedToNpcIds = const [],
     this.skillEssence = 0,
@@ -747,6 +749,14 @@ class PlayerSession {
   /// party_bonus.dart). Reset with everything else on a new game.
   final Map<String, int> bossDefeatCounts;
 
+  /// The chapter goals met (chapter number as a string -> goal ids;
+  /// chapter_goals.dart, v2.5.0): each one makes the chapter's chest a tier
+  /// better. Old saves start with none met.
+  final Map<String, List<String>> chapterGoalsMet;
+
+  /// The chapters whose chest was given, so each comes once.
+  final List<int> chapterChestsGiven;
+
   /// Quest ids grandfathered past objective-completion gating entirely —
   /// populated once, automatically, the first time a save from before this
   /// field existed loads (see [fromJson]), from whatever was in
@@ -1004,6 +1014,8 @@ class PlayerSession {
     int? contractBoards,
     Map<String, BeastState>? seaBeasts,
     Map<String, int>? bossDefeatCounts,
+    Map<String, List<String>>? chapterGoalsMet,
+    List<int>? chapterChestsGiven,
     List<String>? grandfatheredQuestIds,
     List<String>? talkedToNpcIds,
     int? skillEssence,
@@ -1137,6 +1149,8 @@ class PlayerSession {
       contractBoards: contractBoards ?? this.contractBoards,
       seaBeasts: seaBeasts ?? this.seaBeasts,
       bossDefeatCounts: bossDefeatCounts ?? this.bossDefeatCounts,
+      chapterGoalsMet: chapterGoalsMet ?? this.chapterGoalsMet,
+      chapterChestsGiven: chapterChestsGiven ?? this.chapterChestsGiven,
       grandfatheredQuestIds:
           grandfatheredQuestIds ?? this.grandfatheredQuestIds,
       talkedToNpcIds: talkedToNpcIds ?? this.talkedToNpcIds,
@@ -1217,18 +1231,15 @@ class PlayerSession {
       s = s.withSourcedGains(ledgerCurse, faction, {old.stat: old.amount});
     }
     s = s.withSourcedGains(ledgerCurse, faction, {stat: -amount});
-    return s.copyWith(
-      riskCurses: [
-        for (final c in s.riskCurses)
-          if (c.clan != faction) c,
-        RiskCurse(
+    return s.copyWith(riskCurses: [
+      for (final c in s.riskCurses)
+        if (c.clan != faction) c,
+      RiskCurse(
           clan: faction,
           stat: stat,
           amount: amount,
-          untilLevel: level + riskyCurseLevels,
-        ),
-      ],
-    );
+          untilLevel: level + riskyCurseLevels),
+    ]);
   }
 
   /// This session with the curses whose level is reached lifted: their
@@ -1243,12 +1254,10 @@ class PlayerSession {
     for (final c in ended) {
       s = s.withSourcedGains(ledgerCurse, c.clan, {c.stat: c.amount});
     }
-    return s.copyWith(
-      riskCurses: [
-        for (final c in riskCurses)
-          if (level < c.untilLevel) c,
-      ],
-    );
+    return s.copyWith(riskCurses: [
+      for (final c in riskCurses)
+        if (level < c.untilLevel) c,
+    ]);
   }
 
   Map<String, dynamic> toJson() => {
@@ -1371,9 +1380,11 @@ class PlayerSession {
         'contractsChapter': contractsChapter,
         'contractBoards': contractBoards,
         'seaBeasts': {
-          for (final e in seaBeasts.entries) e.key: e.value.toJson()
+          for (final e in seaBeasts.entries) e.key: e.value.toJson(),
         },
         'bossDefeatCounts': bossDefeatCounts,
+        'chapterGoalsMet': chapterGoalsMet,
+        'chapterChestsGiven': chapterChestsGiven,
         'grandfatheredQuestIds': grandfatheredQuestIds,
         'talkedToNpcIds': talkedToNpcIds,
         'skillEssence': skillEssence,
@@ -1440,14 +1451,12 @@ class PlayerSession {
       // Houses built before the story read them back get their flag here.
       flags: {
         ...?(json['flags'] as List?)?.map((e) => e.toString()),
-        ...?(json['builtHouseIds'] as List?)?.map(
-          (e) => houseFlag(e.toString()),
-        ),
+        ...?(json['builtHouseIds'] as List?)
+            ?.map((e) => houseFlag(e.toString())),
         if (legacyHarbourDue(json)) houseFlag(harborHouseId),
         // Quests taken before the accepted flag was set (v1.639).
-        ...?(json['activeQuestIds'] as List?)?.map(
-          (e) => questAcceptedFlag(e.toString()),
-        ),
+        ...?(json['activeQuestIds'] as List?)
+            ?.map((e) => questAcceptedFlag(e.toString())),
       }.toList(),
       activeQuestIds: (json['activeQuestIds'] as List?)
               ?.map((e) => e.toString())
@@ -1713,17 +1722,14 @@ class PlayerSession {
       seaBeasts: {
         for (final e in ((json['seaBeasts'] as Map?) ?? const {}).entries)
           if (e.value is Map)
-            e.key.toString(): BeastState.fromJson(
-              Map<String, dynamic>.from(e.value as Map),
-            ),
+            e.key.toString():
+                BeastState.fromJson(Map<String, dynamic>.from(e.value as Map)),
       },
       questKillBaselines: (json['questKillBaselines'] as Map?)?.map(
             (quest, kills) => MapEntry(
               quest.toString(),
-              (kills as Map).map(
-                (enemy, count) =>
-                    MapEntry(enemy.toString(), (count as num).toInt()),
-              ),
+              (kills as Map).map((enemy, count) =>
+                  MapEntry(enemy.toString(), (count as num).toInt())),
             ),
           ) ??
           const {},
@@ -1731,6 +1737,15 @@ class PlayerSession {
             (key, value) => MapEntry(key.toString(), (value as num).toInt()),
           ) ??
           const {},
+      chapterGoalsMet: (json['chapterGoalsMet'] as Map?)?.map(
+            (key, value) => MapEntry(key.toString(),
+                [for (final id in (value as List?) ?? const []) '$id']),
+          ) ??
+          const {},
+      chapterChestsGiven: [
+        for (final c in (json['chapterChestsGiven'] as List?) ?? const [])
+          (c as num).toInt(),
+      ],
       grandfatheredQuestIds: isPreObjectiveTrackingSave
           ? ((json['activeQuestIds'] as List?)
                   ?.map((e) => e.toString())
@@ -1757,7 +1772,9 @@ class PlayerSession {
       // A save from before mana existed wakes up with a full pool, the
       // same as a fresh character.
       mana: (json['mana'] as num?)?.toInt() ??
-          maxManaFor(wisdom: (json['wisdom'] as num?)?.toInt() ?? 0),
+          maxManaFor(
+            wisdom: (json['wisdom'] as num?)?.toInt() ?? 0,
+          ),
       knownSpellIds:
           (json['knownSpellIds'] as List?)?.map((e) => e.toString()).toList() ??
               const [],

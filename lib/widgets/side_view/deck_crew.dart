@@ -93,48 +93,26 @@ void paintDeckCrew(
       // The head, turned toward the bow, or back for a moment.
       paint.color = skin;
       sidePixels(
-        canvas,
-        u,
-        paint,
-        fx + (look ? 0 : 1),
-        feet - 7 + crouch,
-        3,
-        2,
-      );
+          canvas, u, paint, fx + (look ? 0 : 1), feet - 7 + crouch, 3, 2);
       // The hero's pale hat.
       paint.color = Palette.amber87;
       sidePixels(canvas, u, paint, fx, feet - 8 + crouch, 4, 1);
       // A dark eye.
       paint.color = boots;
       sidePixels(
-        canvas,
-        u,
-        paint,
-        fx + (look ? 0 : 2),
-        feet - 7 + crouch,
-        1,
-        1,
-      );
+          canvas, u, paint, fx + (look ? 0 : 2), feet - 7 + crouch, 1, 1);
     } else {
       // A companion's own face (party_look.dart), over the cloak.
       paintPartyHead(
-        canvas,
-        u,
-        fx + 1,
-        feet - 8 + crouch,
-        partyLookFor(who.id),
-      );
+          canvas, u, fx + 1, feet - 8 + crouch, partyLookFor(who.id));
     }
     // After dark the hero carries a lantern, held out toward the bow.
     if (lamp && who.isHero) {
       const warm = Palette.orange74;
       final lx = fx + 5, ly = feet - 4 + crouch;
       final sway = math.sin(t * 2.2) * 0.4;
-      canvas.drawCircle(
-        Offset((lx + 0.5) * u, (ly + 1 + sway) * u),
-        6 * u,
-        Paint()..color = warm.withValues(alpha: 0.22),
-      );
+      canvas.drawCircle(Offset((lx + 0.5) * u, (ly + 1 + sway) * u), 6 * u,
+          Paint()..color = warm.withValues(alpha: 0.22));
       paint.color = Palette.orange17a;
       sidePixels(canvas, u, paint, lx, ly - 1, 2, 1);
       paint.color = warm;

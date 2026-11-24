@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-
 import '../widgets/help_hint.dart';
 
 import '../gamedata/db_schema.dart';
@@ -19,9 +18,8 @@ class AchievementsScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final achievementsAsync = ref.watch(
-      localizedDbProvider(achievementsSchema),
-    );
+    final achievementsAsync =
+        ref.watch(localizedDbProvider(achievementsSchema));
     final session = ref.watch(playerSessionProvider);
     // In play, an achievement keeps its name and how to earn it hidden
     // until it is earned.
@@ -30,10 +28,10 @@ class AchievementsScreen extends ConsumerWidget {
     return TutorialTrigger(
       topic: TutorialTopic.achievements,
       child: Scaffold(
-        appBar: AppBar(
-          title: Text(tr(ref, 'achievements_title')),
-          actions: const [TourInfoButton(topic: TutorialTopic.achievements)],
-        ),
+        appBar:
+            AppBar(title: Text(tr(ref, 'achievements_title')), actions: const [
+          TourInfoButton(topic: TutorialTopic.achievements),
+        ]),
         body: achievementsAsync.when(
           data: (records) {
             final keys = records.keys.toList()..sort();
@@ -64,15 +62,11 @@ class AchievementsScreen extends ConsumerWidget {
                       leading: unlocked
                           ? BadgeRing(
                               colour: colorScheme.primary,
-                              child: Icon(
-                                Icons.emoji_events,
-                                color: colorScheme.primary,
-                              ),
+                              child: Icon(Icons.emoji_events,
+                                  color: colorScheme.primary),
                             )
-                          : Icon(
-                              Icons.emoji_events_outlined,
-                              color: colorScheme.outline,
-                            ),
+                          : Icon(Icons.emoji_events_outlined,
+                              color: colorScheme.outline),
                       title: Text(
                         name,
                         style: unlocked
@@ -91,8 +85,7 @@ class AchievementsScreen extends ConsumerWidget {
           },
           loading: () => const InkLoading(),
           error: (error, stack) => Center(
-            child: Text('${tr(ref, 'failed_to_load_achievements')}: $error'),
-          ),
+              child: Text('${tr(ref, 'failed_to_load_achievements')}: $error')),
         ),
       ),
     );

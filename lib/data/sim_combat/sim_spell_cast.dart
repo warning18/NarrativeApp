@@ -37,12 +37,11 @@ int _castSpellIfWorth(
   if (c.knownSpells.isEmpty || living.isEmpty || c.mana <= 0) return 0;
 
   int costOf(SpellSpec spell) => max(
-        1,
-        (ashWell
-                ? ashWellSpellCost(signs.spellCost(spell.manaCost))
-                : signs.spellCost(spell.manaCost)) -
-            spellDiscount,
-      );
+      1,
+      (ashWell
+              ? ashWellSpellCost(signs.spellCost(spell.manaCost))
+              : signs.spellCost(spell.manaCost)) -
+          spellDiscount);
   int amountOf(SpellSpec spell) {
     final amount = spellAmountFor(
       spell,
@@ -131,13 +130,9 @@ int _castSpellIfWorth(
     for (final e in targets) {
       final before = e.health;
       if (clash) {
-        e.landHit(
-          amount,
-          spell.element,
-          round,
-          react: react,
-          reactionTimes: spell.element == 'Fire' ? fireReactionTimes : 1,
-        );
+        e.landHit(amount, spell.element, round,
+            react: react,
+            reactionTimes: spell.element == 'Fire' ? fireReactionTimes : 1);
       } else {
         e.health = max(0, e.health - e.takeHit(amount, spell.element));
       }
@@ -146,10 +141,8 @@ int _castSpellIfWorth(
       final dealtHere = before - e.health;
       final healShare = spellLifeShare + (fullWell > 1 ? fullWellHealShare : 0);
       if (healShare > 0 && dealtHere > 0) {
-        c.currentHealth = min(
-          c.maxHealth,
-          c.currentHealth + (dealtHere * healShare).round(),
-        );
+        c.currentHealth =
+            min(c.maxHealth, c.currentHealth + (dealtHere * healShare).round());
       }
       if (dealtHere > 0) onSpellHit?.call();
       if (spell.element != 'None') e.elementsHit.add(spell.element);

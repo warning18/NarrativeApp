@@ -10,11 +10,8 @@ class _RoundPlan {
     required this.duos,
   });
 
-  static const _RoundPlan empty = _RoundPlan(
-    previews: {},
-    combos: {},
-    duos: [],
-  );
+  static const _RoundPlan empty =
+      _RoundPlan(previews: {}, combos: {}, duos: []);
 
   final Map<String, _FacePreview> previews;
   final Set<PartyCombo> combos;
@@ -51,10 +48,8 @@ extension _FightDiceRules on _FightScreenState {
       signed = signed.withKeywords({...signed.keywords, FaceKeyword.pain});
     }
     if (_signs.strikeKeywords.isNotEmpty) {
-      signed = signed.withKeywords({
-        ...signed.keywords,
-        ..._signs.strikeKeywords,
-      });
+      signed =
+          signed.withKeywords({...signed.keywords, ..._signs.strikeKeywords});
     }
     if (_signs.strikeElement.isNotEmpty && face.element == 'None') {
       signed = signed.withElement(_signs.strikeElement);
@@ -65,24 +60,15 @@ extension _FightDiceRules on _FightScreenState {
   /// [face]'s number with the player's guard, mend and spell signs on it
   /// (see SignEffects.guardValue and friends): their shares through the
   /// actor's banks, kept only when [keep] (the confirm, not a preview).
-  DiceFaceResult _signedValue(
-    _PartyMember actor,
-    DiceFaceResult face, {
-    bool keep = false,
-  }) {
+  DiceFaceResult _signedValue(_PartyMember actor, DiceFaceResult face,
+      {bool keep = false}) {
     if (!actor.isPlayer || _signs.isEmpty) return face;
     return switch (face.type) {
       'Defend' => face.withValue(
-          _signs.guardValue(face.value, bank: actor.guardBank, keep: keep),
-        ),
-      'Heal' => face.withValue(
-          _signs.mendValue(
-            face.value,
-            wisdomHealBonusFor(actor.wisdom),
-            bank: actor.mendBank,
-            keep: keep,
-          ),
-        ),
+          _signs.guardValue(face.value, bank: actor.guardBank, keep: keep)),
+      'Heal' => face.withValue(_signs.mendValue(
+          face.value, wisdomHealBonusFor(actor.wisdom),
+          bank: actor.mendBank, keep: keep)),
       'Mana' => face.withValue(_signs.manaValue(face.value)),
       _ => face,
     };
@@ -91,21 +77,16 @@ extension _FightDiceRules on _FightScreenState {
   /// [face] of [actor]'s die under the enemies' tampering this round: a
   /// Curse on the face, then a Silence over the round.
   DiceFaceResult _tampered(
-    _PartyMember actor,
-    DiceFaceResult face,
-    AppLanguage lang,
-  ) {
+      _PartyMember actor, DiceFaceResult face, AppLanguage lang) {
     if (_cursedFaces[actor.id]?.contains(face.faceIndex) ?? false) {
       face =
           cursedFace(face).withFaceName(rolledFaceName(cursedFace(face), lang));
     }
     if (_silenced && face.type == 'Skill') {
       final silenced = silencedFace(face);
-      face = silenced.withFaceName(
-        silenced.type == 'Empty'
-            ? trFor(lang, 'silenced_face_label')
-            : rolledFaceName(silenced, lang),
-      );
+      face = silenced.withFaceName(silenced.type == 'Empty'
+          ? trFor(lang, 'silenced_face_label')
+          : rolledFaceName(silenced, lang));
     }
     return face;
   }
@@ -185,25 +166,22 @@ extension _FightDiceRules on _FightScreenState {
         if (source != null) {
           // An echo of an echo is named once, not once a round.
           final name = source.faceName.endsWith(echoTag)
-              ? source.faceName.substring(
-                  0,
-                  source.faceName.length - echoTag.length,
-                )
+              ? source.faceName
+                  .substring(0, source.faceName.length - echoTag.length)
               : source.faceName;
           final copy = _tampered(
-            actor,
-            DiceFaceResult(
-              faceIndex: face.faceIndex,
-              faceName: name,
-              type: source.type,
-              value: source.value,
-              linkedSkillID: source.linkedSkillID,
-              element: source.element,
-              channeledFrom: source.channeledFrom,
-              keywords: {...source.keywords}..remove(FaceKeyword.echo),
-            ),
-            lang,
-          );
+              actor,
+              DiceFaceResult(
+                faceIndex: face.faceIndex,
+                faceName: name,
+                type: source.type,
+                value: source.value,
+                linkedSkillID: source.linkedSkillID,
+                element: source.element,
+                channeledFrom: source.channeledFrom,
+                keywords: {...source.keywords}..remove(FaceKeyword.echo),
+              ),
+              lang);
           face = copy.withFaceName('${copy.faceName}$echoTag');
         }
       }
@@ -226,10 +204,7 @@ extension _FightDiceRules on _FightScreenState {
   /// The skills [actor] can cast with [face]: their own, plus the skill an
   /// Echo copied from someone else (at its base tier).
   Map<String, dynamic> _skillsForFace(
-    _PartyMember actor,
-    DiceFaceResult face,
-    Map<String, dynamic> skills,
-  ) {
+      _PartyMember actor, DiceFaceResult face, Map<String, dynamic> skills) {
     final own = _availableSkillsFor(actor, skills);
     if (face.type != 'Skill') return own;
     final id = _effectiveSkillId(face);
@@ -258,29 +233,24 @@ extension _FightDiceRules on _FightScreenState {
     final basic =
         face.type == 'Attack' || face.type == 'Defend' || face.type == 'Heal';
     final played = _signedValue(
-      actor,
-      bonus > 0 && basic ? face.withValue(face.value + bonus) : face,
-      keep: keep,
-    );
+        actor, bonus > 0 && basic ? face.withValue(face.value + bonus) : face,
+        keep: keep);
     var damage = _totalDamageFor(actor, played, skills, items) +
         (played.type == 'Skill' ? bonus : 0);
     // The player's strike signs: an Attack face's flat damage and its
     // share, and the low-health and first-round shares on any strike.
     if (actor.isPlayer && (played.type == 'Attack' || played.type == 'Skill')) {
       final attack = played.type == 'Attack';
-      damage = _signs.strikeBase(
-        damage,
-        played.value,
-        attackFace: attack,
-        bank: actor.strikeBank,
-        keep: keep,
-        percent: _signs.strikePercentFor(
+      damage = _signs.strikeBase(damage, played.value,
           attackFace: attack,
-          currentHealth: actor.currentHealth,
-          maxHealth: actor.maxHealth,
-          firstRound: _roundsStarted <= 1,
-        ),
-      );
+          bank: actor.strikeBank,
+          keep: keep,
+          percent: _signs.strikePercentFor(
+            attackFace: attack,
+            currentHealth: actor.currentHealth,
+            maxHealth: actor.maxHealth,
+            firstRound: _roundsStarted <= 1,
+          ));
     }
     // The Relicbreaker's mana makes a sure critical of the player's strike;
     // the Ledger Knife's misses raise the chance.
@@ -373,14 +343,8 @@ extension _FightDiceRules on _FightScreenState {
     for (final actor in _actingParty) {
       final face = played[actor.id];
       if (face == null) continue;
-      results[actor.id] = _resolveFor(
-        actor,
-        face,
-        skills,
-        items,
-        lang,
-        surge: actor.id == surgeTo,
-      );
+      results[actor.id] = _resolveFor(actor, face, skills, items, lang,
+          surge: actor.id == surgeTo);
     }
     final combos = partyCombosFor([for (final r in results.values) _roleOf(r)]);
     final previews = <String, _FacePreview>{};
@@ -395,11 +359,8 @@ extension _FightDiceRules on _FightScreenState {
           ? dealt
           : face.hasKeyword(FaceKeyword.pierce)
               ? dealt
-              : strikeDamageAfterAffixes(
-                  dealt,
-                  face.type,
-                  armored: target.hasAffix(EnemyAffix.armored),
-                );
+              : strikeDamageAfterAffixes(dealt, face.type,
+                  armored: target.hasAffix(EnemyAffix.armored));
       // As the round will heal it, nothing counted (_healDealt).
       final healing = _healDealt(actor, face, result.healingDone, count: false);
       var block = result.blockAmount;
@@ -426,18 +387,13 @@ extension _FightDiceRules on _FightScreenState {
   /// damage, and a Shelter's heal, land with the faces in [_confirmRoll]).
   /// Returns the mana a Wellspring adds.
   int _applyAfterFaceCombos(
-    Set<PartyCombo> combos,
-    List<_LogEntry> entries,
-    AppLanguage lang,
-  ) {
+      Set<PartyCombo> combos, List<_LogEntry> entries, AppLanguage lang) {
     for (final combo in combos) {
-      entries.add(
-        _LogEntry(
-          '${trFor(lang, comboLabelKey(combo))}! '
-          '${trFor(lang, comboDescriptionKey(combo))}',
-          _LogKind.playerBlock,
-        ),
-      );
+      entries.add(_LogEntry(
+        '${trFor(lang, comboLabelKey(combo))}! '
+        '${trFor(lang, comboDescriptionKey(combo))}',
+        _LogKind.playerBlock,
+      ));
     }
     if (combos.contains(PartyCombo.shieldWall)) {
       var wall = 0;
@@ -455,50 +411,30 @@ extension _FightDiceRules on _FightScreenState {
 
   /// A Shelter: [healer]'s heal of [healing] on [healed] reaches every
   /// other party member standing (the healer too) at [shelterShare].
-  void _shelterFrom(
-    _PartyMember healer,
-    _PartyMember healed,
-    int healing,
-    List<_LogEntry> entries,
-    AppLanguage lang,
-  ) {
+  void _shelterFrom(_PartyMember healer, _PartyMember healed, int healing,
+      List<_LogEntry> entries, AppLanguage lang) {
     final share = (healing * shelterShare).round();
     if (share <= 0) return;
     for (final member in _party) {
       if (member.id == healed.id || member.isKnockedOut) continue;
-      member.currentHealth = min(
-        member.maxHealth,
-        member.currentHealth + share,
-      );
-      _fx(
-        VfxStyle.heal,
-        _memberCardKey(member.id),
-        delayMs: 300,
-        text: '+$share',
-        textKind: VfxTextKind.heal,
-      );
+      member.currentHealth =
+          min(member.maxHealth, member.currentHealth + share);
+      _fx(VfxStyle.heal, _memberCardKey(member.id),
+          delayMs: 300, text: '+$share', textKind: VfxTextKind.heal);
     }
-    entries.add(
-      _LogEntry(
-        trFor(
-          lang,
-          'shelter_heals',
-        ).replaceAll('{name}', healer.displayName).replaceAll('{n}', '$share'),
-        _LogKind.playerHeal,
-      ),
-    );
+    entries.add(_LogEntry(
+      trFor(lang, 'shelter_heals')
+          .replaceAll('{name}', healer.displayName)
+          .replaceAll('{n}', '$share'),
+      _LogKind.playerHeal,
+    ));
   }
 
   /// What a skill's [extras] do for its caster's side once its heal has
   /// landed: cleanse [caster], mend the whole party for [healing], fill the
   /// momentum. Returns the rerolls the skill grants the next round.
-  int _applySkillExtrasOnCaster(
-    _PartyMember caster,
-    int healing,
-    SkillExtras extras,
-    List<_LogEntry> entries,
-    AppLanguage lang,
-  ) {
+  int _applySkillExtrasOnCaster(_PartyMember caster, int healing,
+      SkillExtras extras, List<_LogEntry> entries, AppLanguage lang) {
     final cleansed = extras.cleanse.isEmpty
         ? const <_PartyMember>[]
         : [
@@ -512,15 +448,10 @@ extension _FightDiceRules on _FightScreenState {
       if (after.length == member.statusEffects.length) continue;
       member.statusEffects = after;
       _fx(VfxStyle.radiance, _memberCardKey(member.id), delayMs: 300);
-      entries.add(
-        _LogEntry(
-          trFor(
-            lang,
-            'skill_cleansed',
-          ).replaceAll('{name}', member.displayName),
-          _LogKind.playerHeal,
-        ),
-      );
+      entries.add(_LogEntry(
+        trFor(lang, 'skill_cleansed').replaceAll('{name}', member.displayName),
+        _LogKind.playerHeal,
+      ));
     }
     if (extras.healAll && healing > 0) {
       for (final member in _party) {
@@ -529,28 +460,20 @@ extension _FightDiceRules on _FightScreenState {
         member.currentHealth = min(member.maxHealth, before + healing);
         final gained = member.currentHealth - before;
         if (gained <= 0) continue;
-        _fx(
-          VfxStyle.heal,
-          _memberCardKey(member.id),
-          delayMs: 300,
-          text: '+$gained',
-          textKind: VfxTextKind.heal,
-        );
-        entries.add(
-          _LogEntry(
-            trFor(lang, 'skill_party_mended')
-                .replaceAll('{name}', member.displayName)
-                .replaceAll('{n}', '$gained'),
-            _LogKind.playerHeal,
-          ),
-        );
+        _fx(VfxStyle.heal, _memberCardKey(member.id),
+            delayMs: 300, text: '+$gained', textKind: VfxTextKind.heal);
+        entries.add(_LogEntry(
+          trFor(lang, 'skill_party_mended')
+              .replaceAll('{name}', member.displayName)
+              .replaceAll('{n}', '$gained'),
+          _LogKind.playerHeal,
+        ));
       }
     }
     if (extras.chargesMomentum && _momentum < _momentumNeeded) {
       _momentum = _momentumNeeded;
-      entries.add(
-        _LogEntry(trFor(lang, 'momentum_ready_message'), _LogKind.info),
-      );
+      entries
+          .add(_LogEntry(trFor(lang, 'momentum_ready_message'), _LogKind.info));
     }
     if (extras.bonusRolls > 0) {
       entries.add(_LogEntry(trFor(lang, 'skill_bonus_roll'), _LogKind.info));
@@ -562,17 +485,16 @@ extension _FightDiceRules on _FightScreenState {
   /// [damage] (their guards and weaknesses count; a Pierce goes through the
   /// guards).
   void _splashFrom(
-    _PartyMember actor,
-    _EnemyMember target,
-    int damage,
-    double share,
-    String element,
-    bool pierce,
-    List<_LogEntry> entries,
-    AppLanguage lang, {
-    int limit = 0,
-    String logKey = 'splash_hits',
-  }) {
+      _PartyMember actor,
+      _EnemyMember target,
+      int damage,
+      double share,
+      String element,
+      bool pierce,
+      List<_LogEntry> entries,
+      AppLanguage lang,
+      {int limit = 0,
+      String logKey = 'splash_hits'}) {
     final splash = (damage * share).round();
     if (splash <= 0) return;
     var reached = 0;
@@ -581,32 +503,19 @@ extension _FightDiceRules on _FightScreenState {
       // A chain stops after [limit] other enemies (0 = the whole pack).
       if (limit > 0 && reached >= limit) break;
       reached++;
-      final landed = _landHitOnEnemy(
-        other,
-        splash,
-        element,
-        entries,
-        lang,
-        pierce: pierce,
-      );
+      final landed = _landHitOnEnemy(other, splash, element, entries, lang,
+          pierce: pierce);
       if (landed <= 0) continue;
       other.currentHealth = max(0, other.currentHealth - landed);
       _bestHitThisRound = max(_bestHitThisRound, landed);
-      _fx(
-        VfxStyle.whirl,
-        _enemyCardKey(other.key),
-        delayMs: 200,
-        text: '-$landed',
-        textKind: VfxTextKind.damage,
-      );
-      entries.add(
-        _LogEntry(
-          trFor(lang, logKey)
-              .replaceAll('{name}', other.displayName)
-              .replaceAll('{n}', '$landed'),
-          _LogKind.playerDamage,
-        ),
-      );
+      _fx(VfxStyle.whirl, _enemyCardKey(other.key),
+          delayMs: 200, text: '-$landed', textKind: VfxTextKind.damage);
+      entries.add(_LogEntry(
+        trFor(lang, logKey)
+            .replaceAll('{name}', other.displayName)
+            .replaceAll('{n}', '$landed'),
+        _LogKind.playerDamage,
+      ));
     }
   }
 
@@ -622,39 +531,25 @@ extension _FightDiceRules on _FightScreenState {
       final target = _strikeTargetFor(first) ??
           _strikeTargetFor(second) ??
           _firstLivingEnemy();
-      entries.add(
-        _LogEntry(
-          '${duo.nameFor(french)}! ${duo.descriptionFor(french)}',
-          _LogKind.phase,
-        ),
-      );
+      entries.add(_LogEntry(
+        '${duo.nameFor(french)}! ${duo.descriptionFor(french)}',
+        _LogKind.phase,
+      ));
       void strike(_EnemyMember enemy, int amount, {VfxStyle? style}) {
         if (!enemy.isAlive || amount <= 0) return;
         final landed = _landHitOnEnemy(enemy, amount, 'None', entries, lang);
         enemy.currentHealth = max(0, enemy.currentHealth - landed);
         _bestHitThisRound = max(_bestHitThisRound, landed);
-        _fx(
-          style ?? VfxStyle.heavySlash,
-          _enemyCardKey(enemy.key),
-          delayMs: 350,
-          text: '-$landed',
-          textKind: VfxTextKind.damage,
-        );
+        _fx(style ?? VfxStyle.heavySlash, _enemyCardKey(enemy.key),
+            delayMs: 350, text: '-$landed', textKind: VfxTextKind.damage);
       }
 
       void mend(_PartyMember member, int amount) {
         if (member.isKnockedOut || amount <= 0) return;
-        member.currentHealth = min(
-          member.maxHealth,
-          member.currentHealth + amount,
-        );
-        _fx(
-          VfxStyle.heal,
-          _memberCardKey(member.id),
-          delayMs: 350,
-          text: '+$amount',
-          textKind: VfxTextKind.heal,
-        );
+        member.currentHealth =
+            min(member.maxHealth, member.currentHealth + amount);
+        _fx(VfxStyle.heal, _memberCardKey(member.id),
+            delayMs: 350, text: '+$amount', textKind: VfxTextKind.heal);
       }
 
       switch (duo.effect) {
@@ -663,12 +558,9 @@ extension _FightDiceRules on _FightScreenState {
           strike(target, power, style: VfxStyle.quake);
           if (target.isAlive) {
             target.statusEffects = applyStatusEffect(
-              target.statusEffects,
-              const StatusEffect(
-                type: StatusEffectType.stun,
-                remainingTurns: 1,
-              ),
-            );
+                target.statusEffects,
+                const StatusEffect(
+                    type: StatusEffectType.stun, remainingTurns: 1));
           }
         case DuoEffect.poisonCrit:
           if (target == null) break;
@@ -678,13 +570,11 @@ extension _FightDiceRules on _FightScreenState {
           final landed = before - target.currentHealth;
           if (target.isAlive) {
             target.statusEffects = applyStatusEffect(
-              target.statusEffects,
-              StatusEffect(
-                type: StatusEffectType.poison,
-                remainingTurns: duoPoisonTurns,
-                magnitude: max(3, landed ~/ 5),
-              ),
-            );
+                target.statusEffects,
+                StatusEffect(
+                    type: StatusEffectType.poison,
+                    remainingTurns: duoPoisonTurns,
+                    magnitude: max(3, landed ~/ 5)));
           }
         case DuoEffect.partyHeal:
           for (final member in _party) {
@@ -694,37 +584,29 @@ extension _FightDiceRules on _FightScreenState {
           }
         case DuoEffect.starfall:
           for (final enemy in [..._enemies]) {
-            strike(
-              enemy,
-              (power * duoVolleyShare).round(),
-              style: VfxStyle.volley,
-            );
+            strike(enemy, (power * duoVolleyShare).round(),
+                style: VfxStyle.volley);
           }
         case DuoEffect.weakenAll:
           for (final enemy in [..._enemies]) {
             strike(enemy, power ~/ 2, style: VfxStyle.shadow);
             if (enemy.isAlive) {
               enemy.statusEffects = applyStatusEffect(
-                enemy.statusEffects,
-                const StatusEffect(
-                  type: StatusEffectType.weaken,
-                  remainingTurns: duoWeakenTurns,
-                  magnitude: duoWeakenPercent,
-                ),
-              );
+                  enemy.statusEffects,
+                  const StatusEffect(
+                      type: StatusEffectType.weaken,
+                      remainingTurns: duoWeakenTurns,
+                      magnitude: duoWeakenPercent));
             }
           }
         case DuoEffect.partyWard:
           for (final member in _party) {
             if (member.isKnockedOut) continue;
             member.block += power ~/ 2;
-            _fx(
-              VfxStyle.stoneShield,
-              _memberCardKey(member.id),
-              delayMs: 350,
-              text: '+${power ~/ 2}',
-              textKind: VfxTextKind.block,
-            );
+            _fx(VfxStyle.stoneShield, _memberCardKey(member.id),
+                delayMs: 350,
+                text: '+${power ~/ 2}',
+                textKind: VfxTextKind.block);
           }
         case DuoEffect.mercyShot:
           _PartyMember? worst;
@@ -743,11 +625,8 @@ extension _FightDiceRules on _FightScreenState {
         case DuoEffect.bloodOath:
           if (target == null) break;
           final before = target.currentHealth;
-          strike(
-            target,
-            (power * duoOathMultiplier).round(),
-            style: VfxStyle.drain,
-          );
+          strike(target, (power * duoOathMultiplier).round(),
+              style: VfxStyle.drain);
           final landed = before - target.currentHealth;
           mend(first, landed ~/ 4);
           mend(second, landed ~/ 4);
@@ -757,35 +636,24 @@ extension _FightDiceRules on _FightScreenState {
 
   /// An enemy's Hex, Silence or Curse on the party's dice (see
   /// dice_tamper.dart), aimed at [targetId] for a Curse.
-  void _applyTamper(
-    _EnemyMember enemy,
-    EnemyMoveResult move,
-    String targetId,
-    AppLanguage lang,
-    int delay,
-  ) {
+  void _applyTamper(_EnemyMember enemy, EnemyMoveResult move, String targetId,
+      AppLanguage lang, int delay) {
     final key = _enemyCardKey(enemy.key);
     _fx(VfxStyle.voidRift, key, delayMs: delay);
     switch (move.tamper) {
       case DiceTamper.hex:
         _update(() {
           _hexPending = true;
-          _log.add(
-            _LogEntry(
+          _log.add(_LogEntry(
               '${move.message} ${trFor(lang, 'tamper_hex_laid')}',
-              _LogKind.enemyDamage,
-            ),
-          );
+              _LogKind.enemyDamage));
         });
       case DiceTamper.silence:
         _update(() {
           _silencePending = true;
-          _log.add(
-            _LogEntry(
+          _log.add(_LogEntry(
               '${move.message} ${trFor(lang, 'tamper_silence_laid')}',
-              _LogKind.enemyDamage,
-            ),
-          );
+              _LogKind.enemyDamage));
         });
       case DiceTamper.curse:
         var member = _memberById(targetId);
@@ -800,19 +668,12 @@ extension _FightDiceRules on _FightScreenState {
         // The Ember face lifts the Curse at once, while it lasts.
         if (index != null && victim.isPlayer && _emberCharges > 0) {
           _emberCharges--;
-          _update(
-            () => _log.add(
-              _LogEntry(
+          _update(() => _log.add(_LogEntry(
                 '${move.message} ${trFor(lang, 'sign_log_ember')}',
                 _LogKind.playerHeal,
-              ),
-            ),
-          );
-          _fx(
-            VfxStyle.holyFire,
-            _memberCardKey(victim.id),
-            delayMs: delay + 200,
-          );
+              )));
+          _fx(VfxStyle.holyFire, _memberCardKey(victim.id),
+              delayMs: delay + 200);
           return;
         }
         _update(() {
@@ -821,17 +682,13 @@ extension _FightDiceRules on _FightScreenState {
             return;
           }
           cursed.add(index);
-          final faceName = faceDisplayName(
-            victim.dieFaces[index],
-            assignedSkillId: victim.diceSkillAssignments[index.toString()],
-            language: lang,
-          );
-          _log.add(
-            _LogEntry(
-              '${move.message} ${trFor(lang, 'tamper_curse_laid').replaceAll('{name}', victim.displayName).replaceAll('{face}', faceName)}',
-              _LogKind.enemyDamage,
-            ),
-          );
+          final faceName = faceDisplayName(victim.dieFaces[index],
+              assignedSkillId: victim.diceSkillAssignments[index.toString()],
+              language: lang);
+          _log.add(_LogEntry(
+            '${move.message} ${trFor(lang, 'tamper_curse_laid').replaceAll('{name}', victim.displayName).replaceAll('{face}', faceName)}',
+            _LogKind.enemyDamage,
+          ));
         });
         _fx(VfxStyle.weaken, _memberCardKey(victim.id), delayMs: delay + 200);
       case DiceTamper.mirror:
@@ -866,15 +723,13 @@ extension _FightDiceRules on _FightScreenState {
       _lockedActorIds.remove(victim.id);
       _noteSteadyFaces([victim.id]);
       _autoAssignTargets();
-      _log.add(
-        _LogEntry(
-          trFor(lang, 'tamper_hex_sprung')
-              .replaceAll('{name}', victim.displayName)
-              .replaceAll('{from}', before.faceName)
-              .replaceAll('{to}', again.faceName),
-          _LogKind.enemyDamage,
-        ),
-      );
+      _log.add(_LogEntry(
+        trFor(lang, 'tamper_hex_sprung')
+            .replaceAll('{name}', victim.displayName)
+            .replaceAll('{from}', before.faceName)
+            .replaceAll('{to}', again.faceName),
+        _LogKind.enemyDamage,
+      ));
     });
   }
 
@@ -896,15 +751,13 @@ extension _FightDiceRules on _FightScreenState {
       _lockedActorIds.add(actor.id);
       _noteSteadyFaces([actor.id]);
       _autoAssignTargets();
-      _log.add(
-        _LogEntry(
-          trFor(lang, 'nudge_log')
-              .replaceAll('{name}', actor.displayName)
-              .replaceAll('{from}', face.faceName)
-              .replaceAll('{to}', flipped.faceName),
-          _LogKind.info,
-        ),
-      );
+      _log.add(_LogEntry(
+        trFor(lang, 'nudge_log')
+            .replaceAll('{name}', actor.displayName)
+            .replaceAll('{from}', face.faceName)
+            .replaceAll('{to}', flipped.faceName),
+        _LogKind.info,
+      ));
     });
   }
 
@@ -967,12 +820,9 @@ extension _FightDiceRules on _FightScreenState {
         if (nameOf(index).isNotEmpty) nameOf(index),
     ].join(', ');
     if (name.isEmpty) return;
-    entries.add(
-      _LogEntry(
+    entries.add(_LogEntry(
         trFor(lang, 'trail_ahead_log').replaceAll('{face}', name),
-        _LogKind.info,
-      ),
-    );
+        _LogKind.info));
   }
 
   /// The hero's core on the round's results: Flurry's second strike, Fury's
@@ -998,16 +848,8 @@ extension _FightDiceRules on _FightScreenState {
     switch (_core.core) {
       case ProfessionCore.flurry:
         if (result.damageDealt <= 0) return;
-        final second = _resolveFor(
-          hero,
-          face,
-          skills,
-          items,
-          lang,
-          surge: false,
-          rollCritical: true,
-          again: true,
-        );
+        final second = _resolveFor(hero, face, skills, items, lang,
+            surge: false, rollCritical: true, again: true);
         // The Pitch Hand: the second hit slows its target (step 3c).
         _core.pitched = _core.has(Spec.pitchHand) && second.damageDealt > 0;
         // Each hit's critical: the Ledger Knife's chain, the Relicbreaker's
@@ -1026,55 +868,46 @@ extension _FightDiceRules on _FightScreenState {
           return ledgerCritical(r.damageDealt);
         }
 
-        result = coreResult(
-          result,
-          damage: flurryDamage(hit(result), hit(second)),
-          mana: result.manaGained +
-              (_core.has(Spec.relicbreaker)
-                  ? _core.crits * _core.mods.relicMana
-                  : 0),
-        );
+        result = coreResult(result,
+            damage: flurryDamage(hit(result), hit(second)),
+            mana: result.manaGained +
+                (_core.has(Spec.relicbreaker)
+                    ? _core.crits * _core.mods.relicMana
+                    : 0));
         // The Ember Sisters: the mana of a critical hit heals too.
         if (_core.has(Spec.relicbreaker) &&
             _core.mods.relicHealShare > 0 &&
             _core.crits > 0) {
           hero.currentHealth = min(
-            hero.maxHealth,
-            hero.currentHealth +
-                (hero.maxHealth * _core.mods.relicHealShare * _core.crits)
-                    .round(),
-          );
+              hero.maxHealth,
+              hero.currentHealth +
+                  (hero.maxHealth * _core.mods.relicHealShare * _core.crits)
+                      .round());
         }
-        entries.add(
-          _LogEntry(trFor(lang, 'flurry_log'), _LogKind.playerDamage),
-        );
+        entries
+            .add(_LogEntry(trFor(lang, 'flurry_log'), _LogKind.playerDamage));
       case ProfessionCore.fury:
         if (result.damageDealt <= 0) return;
         if (_core.fury >= furyMax) {
-          result = coreResult(
-            result,
-            damage: (result.damageDealt *
-                    (_core.has(Spec.lanternVanguard)
-                        ? vanguardHeavyMultiplier
-                        : furyHeavyMultiplier))
-                .round(),
-          );
+          result = coreResult(result,
+              damage: (result.damageDealt *
+                      (_core.has(Spec.lanternVanguard)
+                          ? vanguardHeavyMultiplier
+                          : furyHeavyMultiplier))
+                  .round());
           _core.fury = 0;
           _core.heavy = true;
           // The Lantern Vanguard's heavy blow is Fire and Pierces.
           _core.piercing = _core.has(Spec.lanternVanguard);
           entries.add(
-            _LogEntry(trFor(lang, 'fury_heavy_log'), _LogKind.playerDamage),
-          );
+              _LogEntry(trFor(lang, 'fury_heavy_log'), _LogKind.playerDamage));
         } else {
           _addFury(entries, lang);
         }
       case ProfessionCore.ashWell:
         if (result.manaGained <= 0) return;
-        result = coreResult(
-          result,
-          mana: result.manaGained * ashWellManaMultiplier,
-        );
+        result =
+            coreResult(result, mana: result.manaGained * ashWellManaMultiplier);
       case ProfessionCore.trail:
         // Corsair's Eye: the Verdict counts double and Pierces.
         if (!_core.verdict ||
@@ -1082,14 +915,11 @@ extension _FightDiceRules on _FightScreenState {
             result.damageDealt <= 0) {
           return;
         }
-        result = coreResult(
-          result,
-          damage: (result.damageDealt * _core.mods.verdict).round(),
-        );
+        result = coreResult(result,
+            damage: (result.damageDealt * _core.mods.verdict).round());
         _core.piercing = true;
         entries.add(
-          _LogEntry(trFor(lang, 'spec_verdict_log'), _LogKind.playerDamage),
-        );
+            _LogEntry(trFor(lang, 'spec_verdict_log'), _LogKind.playerDamage));
       case ProfessionCore.watchfire:
       case ProfessionCore.none:
         return;
@@ -1101,13 +931,8 @@ extension _FightDiceRules on _FightScreenState {
   /// [target] (specialisations.dart): the Vanguard's heal against an Evil
   /// foe, the Fever Blade's Rot, the Trapwright's stun, the Fen Guide's
   /// poison.
-  void _applySpecsOnHit(
-    _PartyMember hero,
-    _EnemyMember target,
-    int landed,
-    List<_LogEntry> entries,
-    AppLanguage lang,
-  ) {
+  void _applySpecsOnHit(_PartyMember hero, _EnemyMember target, int landed,
+      List<_LogEntry> entries, AppLanguage lang) {
     if (landed <= 0) return;
     final mods = _core.mods;
     if (_core.heavy && _core.has(Spec.lanternVanguard)) {
@@ -1115,54 +940,38 @@ extension _FightDiceRules on _FightScreenState {
         final heal = (landed * mods.vanguardEvilHeal).round();
         if (heal > 0) {
           hero.currentHealth = min(hero.maxHealth, hero.currentHealth + heal);
-          entries.add(
-            _LogEntry(
+          entries.add(_LogEntry(
               trFor(lang, 'spec_vanguard_heal_log').replaceAll('{n}', '$heal'),
-              _LogKind.playerHeal,
-            ),
-          );
+              _LogKind.playerHeal));
         }
       }
       // The Inquisition: the heavy blow weakens.
       if (mods.vanguardWeakens && target.isAlive) {
-        target.statusEffects = applyStatusEffect(
-          target.statusEffects,
-          specWeaken,
-        );
-        entries.add(
-          _LogEntry(
+        target.statusEffects =
+            applyStatusEffect(target.statusEffects, specWeaken);
+        entries.add(_LogEntry(
             _statusInflictedMessage(specWeaken, target.displayName, lang),
-            _LogKind.info,
-          ),
-        );
+            _LogKind.info));
       }
     }
     if (!target.isAlive) return;
     if (_core.pitched) {
       _core.pitched = false;
       target.statusEffects = applyStatusEffect(target.statusEffects, pitchSlow);
-      entries.add(
-        _LogEntry(
+      entries.add(_LogEntry(
           _statusInflictedMessage(pitchSlow, target.displayName, lang),
-          _LogKind.info,
-        ),
-      );
+          _LogKind.info));
     }
     if (_core.has(Spec.feverBlade) && _core.crits > 0) {
       for (var i = 0; i < _core.crits; i++) {
-        target.statusEffects = mods.withRotOf(
-          target.statusEffects,
-          (landed / 2).round(),
-        );
+        target.statusEffects =
+            mods.withRotOf(target.statusEffects, (landed / 2).round());
       }
-      entries.add(
-        _LogEntry(
+      entries.add(_LogEntry(
           trFor(lang, 'spec_rot_log')
               .replaceAll('{name}', target.displayName)
               .replaceAll('{n}', '${poisonDamageFor(target.statusEffects)}'),
-          _LogKind.info,
-        ),
-      );
+          _LogKind.info));
     }
     // The Verdict's trap: the Scaffolders take a second foe, the
     // Quarrymen break the guard.
@@ -1174,29 +983,21 @@ extension _FightDiceRules on _FightScreenState {
       for (final e in caught) {
         e.statusEffects = applyStatusEffect(e.statusEffects, mods.stun);
         if (mods.trapBreaksGuard) e.guard = 0;
-        entries.add(
-          _LogEntry(
+        entries.add(_LogEntry(
             _statusInflictedMessage(mods.stun, e.displayName, lang),
-            _LogKind.info,
-          ),
-        );
+            _LogKind.info));
       }
     }
     if (_core.firstOfRun && _core.has(Spec.fenGuide)) {
       final poison = mods.fenPoisonFor((landed / 2).round());
       target.statusEffects = applyStatusEffect(target.statusEffects, poison);
-      entries.add(
-        _LogEntry(
+      entries.add(_LogEntry(
           _statusInflictedMessage(poison, target.displayName, lang),
-          _LogKind.info,
-        ),
-      );
+          _LogKind.info));
       // The Heron's Wake: and slows.
       if (mods.fenSlows) {
-        target.statusEffects = applyStatusEffect(
-          target.statusEffects,
-          specWeaken,
-        );
+        target.statusEffects =
+            applyStatusEffect(target.statusEffects, specWeaken);
       }
     }
   }
@@ -1209,15 +1010,11 @@ extension _FightDiceRules on _FightScreenState {
     final enemy = _firstLivingEnemy();
     if (hit <= 0 || enemy == null) return;
     final dealt = _landHitOnEnemy(enemy, hit, 'None', entries, lang);
-    entries.add(
-      _LogEntry(
-        trFor(
-          lang,
-          'spec_stitch_log',
-        ).replaceAll('{n}', '$dealt').replaceAll('{name}', enemy.displayName),
-        _LogKind.playerDamage,
-      ),
-    );
+    entries.add(_LogEntry(
+        trFor(lang, 'spec_stitch_log')
+            .replaceAll('{n}', '$dealt')
+            .replaceAll('{name}', enemy.displayName),
+        _LogKind.playerDamage));
   }
 
   /// One more Fury for the warrior, said when it is full.
@@ -1231,22 +1028,17 @@ extension _FightDiceRules on _FightScreenState {
 
   /// The cleric's heal of [healing] from the die: it burns the enemy the
   /// cleric faces, and what heals past full feeds the Watchfire.
-  void _watchfireOnHeal(
-    _PartyMember actor,
-    int healing,
-    List<_LogEntry> entries,
-    AppLanguage lang, {
-    _PartyMember? healed,
-  }) {
+  void _watchfireOnHeal(_PartyMember actor, int healing,
+      List<_LogEntry> entries, AppLanguage lang,
+      {_PartyMember? healed}) {
     // What heals past full on the member mended feeds the fire.
     final mended = healed ?? actor;
     _core.fire = fireAfterHeal(
-      fire: _core.fire,
-      healing: healing,
-      currentHealth: mended.currentHealth,
-      maxHealth: mended.maxHealth,
-      beacon: _core.has(Spec.beacon),
-    );
+        fire: _core.fire,
+        healing: healing,
+        currentHealth: mended.currentHealth,
+        maxHealth: mended.maxHealth,
+        beacon: _core.has(Spec.beacon));
     final key = _selectedTargets[actor.id];
     final picked = key == null ? null : _enemyByKey(key);
     final first =
@@ -1263,26 +1055,16 @@ extension _FightDiceRules on _FightScreenState {
     for (final target in targets) {
       // The Beacon's burn is Light (specialisations.dart).
       final burn = _burnsLight
-          ? _landHitOnEnemy(
-              target,
-              raw,
-              beaconElement,
-              entries,
-              lang,
-              pierce: true,
-            )
+          ? _landHitOnEnemy(target, raw, beaconElement, entries, lang,
+              pierce: true)
           : raw;
       target.currentHealth = max(0, target.currentHealth - burn);
       target.damageThisRound += burn;
-      entries.add(
-        _LogEntry(
-          trFor(
-            lang,
-            'watchfire_burn_log',
-          ).replaceAll('{name}', target.displayName).replaceAll('{n}', '$burn'),
-          _LogKind.playerDamage,
-        ),
-      );
+      entries.add(_LogEntry(
+          trFor(lang, 'watchfire_burn_log')
+              .replaceAll('{name}', target.displayName)
+              .replaceAll('{n}', '$burn'),
+          _LogKind.playerDamage));
     }
     _ashenHand(raw, entries, lang);
   }
@@ -1295,10 +1077,8 @@ extension _FightDiceRules on _FightScreenState {
     final hero = _party.where((m) => m.isPlayer);
     if (hero.isNotEmpty) {
       final h = hero.first;
-      h.currentHealth = min(
-        h.maxHealth,
-        h.currentHealth + (burned * _core.mods.ashenMend).round(),
-      );
+      h.currentHealth = min(h.maxHealth,
+          h.currentHealth + (burned * _core.mods.ashenMend).round());
       if (h.statusEffects.isNotEmpty) {
         h.statusEffects =
             h.statusEffects.skip(_core.mods.ashenCleanse).toList();
@@ -1332,25 +1112,15 @@ extension _FightDiceRules on _FightScreenState {
     if (targets.isEmpty) return false;
     for (final target in targets) {
       final burn = _burnsLight
-          ? _landHitOnEnemy(
-              target,
-              raw,
-              beaconElement,
-              entries,
-              lang,
-              pierce: true,
-            )
+          ? _landHitOnEnemy(target, raw, beaconElement, entries, lang,
+              pierce: true)
           : raw;
       target.currentHealth = max(0, target.currentHealth - burn);
-      entries.add(
-        _LogEntry(
-          trFor(
-            lang,
-            'watchfire_round_log',
-          ).replaceAll('{name}', target.displayName).replaceAll('{n}', '$burn'),
-          _LogKind.playerDamage,
-        ),
-      );
+      entries.add(_LogEntry(
+          trFor(lang, 'watchfire_round_log')
+              .replaceAll('{name}', target.displayName)
+              .replaceAll('{n}', '$burn'),
+          _LogKind.playerDamage));
     }
     _ashenHand(raw, entries, lang);
     return _enemies.every((e) => !e.isAlive);
@@ -1367,20 +1137,14 @@ extension _FightDiceRules on _FightScreenState {
     target.currentHealth = max(0, target.currentHealth - burn);
     // The Inquisition's smoke weakens.
     if (_core.mods.censerWeakens && target.isAlive) {
-      target.statusEffects = applyStatusEffect(
-        target.statusEffects,
-        specWeaken,
-      );
+      target.statusEffects =
+          applyStatusEffect(target.statusEffects, specWeaken);
     }
-    entries.add(
-      _LogEntry(
-        trFor(
-          lang,
-          'spec_censer_log',
-        ).replaceAll('{name}', target.displayName).replaceAll('{n}', '$burn'),
-        _LogKind.playerDamage,
-      ),
-    );
+    entries.add(_LogEntry(
+        trFor(lang, 'spec_censer_log')
+            .replaceAll('{name}', target.displayName)
+            .replaceAll('{n}', '$burn'),
+        _LogKind.playerDamage));
   }
 
   /// The Long Vigil mends the cleric above half health as the round turns
@@ -1389,18 +1153,13 @@ extension _FightDiceRules on _FightScreenState {
     if (!_core.has(Spec.longVigil)) return;
     final hero = _party.where((m) => m.isPlayer && !m.isKnockedOut);
     if (hero.isEmpty) return;
-    final mend = _core.mods.vigilMend(
-      hero.first.currentHealth,
-      hero.first.maxHealth,
-    );
+    final mend =
+        _core.mods.vigilMend(hero.first.currentHealth, hero.first.maxHealth);
     if (mend <= 0) return;
     hero.first.currentHealth += mend;
-    entries.add(
-      _LogEntry(
+    entries.add(_LogEntry(
         trFor(lang, 'spec_vigil_log').replaceAll('{n}', '$mend'),
-        _LogKind.playerHeal,
-      ),
-    );
+        _LogKind.playerHeal));
   }
 
   /// The fire's burns are Light under the Beacon, and the Road Exorcists'.
@@ -1420,23 +1179,18 @@ extension _FightDiceRules on _FightScreenState {
       for (final id in session.specIds)
         if (specNamed(id) case final spec? when coreOfSpec(spec) == _core.core)
           if (specStrengthAt(
-            session.politics.standingOf(clanOfSpec(spec), clans),
-          )
+                  session.politics.standingOf(clanOfSpec(spec), clans))
               case final strength when strength != SpecStrength.full)
             _LogEntry(
-              trFor(
-                lang,
-                strength == SpecStrength.half
-                    ? 'spec_halved_log'
-                    : 'spec_asleep_log',
-              )
-                  .replaceAll('{spec}', infos[id]?.nameFor(french) ?? id)
-                  .replaceAll(
-                    '{clan}',
-                    clans.faction(clanOfSpec(spec))?.nameFor(lang) ?? '',
-                  ),
-              _LogKind.info,
-            ),
+                trFor(
+                        lang,
+                        strength == SpecStrength.half
+                            ? 'spec_halved_log'
+                            : 'spec_asleep_log')
+                    .replaceAll('{spec}', infos[id]?.nameFor(french) ?? id)
+                    .replaceAll('{clan}',
+                        clans.faction(clanOfSpec(spec))?.nameFor(lang) ?? ''),
+                _LogKind.info),
     ];
   }
 
@@ -1466,18 +1220,13 @@ extension _FightDiceRules on _FightScreenState {
       if (heroes.isEmpty) continue;
       final hero = heroes.first;
       if (_core.has(Spec.berserker) && mods.killHealShare > 0) {
-        final heal = min(
-          hero.maxHealth - hero.currentHealth,
-          (hero.maxHealth * mods.killHealShare).round(),
-        );
+        final heal = min(hero.maxHealth - hero.currentHealth,
+            (hero.maxHealth * mods.killHealShare).round());
         if (heal > 0) {
           hero.currentHealth += heal;
-          entries.add(
-            _LogEntry(
+          entries.add(_LogEntry(
               trFor(lang, 'sign_log_kill_heal').replaceAll('{n}', '$heal'),
-              _LogKind.playerHeal,
-            ),
-          );
+              _LogKind.playerHeal));
         }
       }
       if (_core.has(Spec.corsairsEye) && mods.killReshuffles) {
@@ -1488,14 +1237,11 @@ extension _FightDiceRules on _FightScreenState {
         final next = _firstLivingEnemy();
         if (next != null) {
           next.statusEffects = withRot(next.statusEffects, rot, share: 1);
-          entries.add(
-            _LogEntry(
+          entries.add(_LogEntry(
               trFor(lang, 'spec_rot_log')
                   .replaceAll('{name}', next.displayName)
                   .replaceAll('{n}', '${poisonDamageFor(next.statusEffects)}'),
-              _LogKind.info,
-            ),
-          );
+              _LogKind.info));
         }
       }
     }

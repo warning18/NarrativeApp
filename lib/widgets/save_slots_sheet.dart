@@ -1,5 +1,4 @@
 import 'dart:async';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -49,10 +48,8 @@ class SaveSlotsSheet extends ConsumerWidget {
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             Text(
-              tr(
-                ref,
-                saving ? 'save_slots_save_title' : 'save_slots_load_title',
-              ),
+              tr(ref,
+                  saving ? 'save_slots_save_title' : 'save_slots_load_title'),
               style: theme.textTheme.titleMedium,
             ),
             if (ironman) ...[
@@ -80,11 +77,7 @@ class SaveSlotsSheet extends ConsumerWidget {
   }
 
   Future<void> _save(
-    BuildContext context,
-    WidgetRef ref,
-    int slot,
-    bool filled,
-  ) async {
+      BuildContext context, WidgetRef ref, int slot, bool filled) async {
     final lang = ref.read(appLanguageProvider);
     if (filled) {
       final overwrite = await showInkConfirm(
@@ -106,13 +99,8 @@ class SaveSlotsSheet extends ConsumerWidget {
     // A seal pressed on the page: the game is kept.
     showQuestSeal(context, colour: const Color(0xFF3F6E8C));
     Navigator.pop(context);
-    unawaited(
-      showImmersiveNotice(
-        context,
-        icon: Icons.save,
-        message: trFor(lang, 'game_saved_message'),
-      ),
-    );
+    unawaited(showImmersiveNotice(context,
+        icon: Icons.save, message: trFor(lang, 'game_saved_message')));
   }
 
   Future<void> _load(BuildContext context, WidgetRef ref, int slot) async {
@@ -120,9 +108,7 @@ class SaveSlotsSheet extends ConsumerWidget {
     // Loading replaces the game in progress (its autosave included), so
     // anything since the player last saved goes with it: ask first.
     if (hasGameInProgress(
-      ref.read(playerSessionProvider),
-      ref.read(storyPlayProvider),
-    )) {
+        ref.read(playerSessionProvider), ref.read(storyPlayProvider))) {
       final ok = await showDialog<bool>(
         context: context,
         builder: (dialogContext) => AlertDialog(
@@ -146,13 +132,9 @@ class SaveSlotsSheet extends ConsumerWidget {
     final saved = await ref.read(savedGamesProvider.notifier).load(slot);
     if (!context.mounted) return;
     if (saved == null) {
-      unawaited(
-        showImmersiveNotice(
-          context,
+      unawaited(showImmersiveNotice(context,
           icon: Icons.error_outline,
-          message: trFor(lang, 'save_slot_unreadable'),
-        ),
-      );
+          message: trFor(lang, 'save_slot_unreadable')));
       return;
     }
     await ref.read(playerSessionProvider.notifier).loadSession(saved.session);
@@ -161,13 +143,8 @@ class SaveSlotsSheet extends ConsumerWidget {
         .loadState(saved.currentNodeId, saved.history);
     if (!context.mounted) return;
     Navigator.pop(context, true);
-    unawaited(
-      showImmersiveNotice(
-        context,
-        icon: Icons.folder_open,
-        message: trFor(lang, 'game_loaded_message'),
-      ),
-    );
+    unawaited(showImmersiveNotice(context,
+        icon: Icons.folder_open, message: trFor(lang, 'game_loaded_message')));
   }
 }
 

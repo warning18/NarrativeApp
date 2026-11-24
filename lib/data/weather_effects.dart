@@ -28,49 +28,39 @@ class WeatherEffects {
   final double roadOdds;
 
   static const _none = WeatherEffects._(
-    kind: WeatherKind.clear,
-    factors: {},
-    perceptionPenalty: 0,
-    roadOdds: 1,
-  );
+      kind: WeatherKind.clear, factors: {}, perceptionPenalty: 0, roadOdds: 1);
 
   static WeatherEffects of(WeatherKind? kind) => switch (kind) {
         WeatherKind.rain => const WeatherEffects._(
             kind: WeatherKind.rain,
             factors: {'Fire': 0.7, 'Water': 1.2, 'Electricity': 1.2},
             perceptionPenalty: 1,
-            roadOdds: 1.25,
-          ),
+            roadOdds: 1.25),
         WeatherKind.snow => const WeatherEffects._(
             kind: WeatherKind.snow,
             factors: {'Fire': 0.75, 'Ice': 1.25},
             perceptionPenalty: 2,
-            roadOdds: 1.4,
-          ),
+            roadOdds: 1.4),
         WeatherKind.fog => const WeatherEffects._(
             kind: WeatherKind.fog,
             factors: {'Fire': 0.9},
             perceptionPenalty: 5,
-            roadOdds: 1.3,
-          ),
+            roadOdds: 1.3),
         WeatherKind.dust => const WeatherEffects._(
             kind: WeatherKind.dust,
             factors: {'Fire': 1.15, 'Wind': 1.15, 'Water': 0.85},
             perceptionPenalty: 3,
-            roadOdds: 1.3,
-          ),
+            roadOdds: 1.3),
         WeatherKind.ash => const WeatherEffects._(
             kind: WeatherKind.ash,
             factors: {'Fire': 1.2, 'Wind': 1.1},
             perceptionPenalty: 3,
-            roadOdds: 1.2,
-          ),
+            roadOdds: 1.2),
         WeatherKind.cloud => const WeatherEffects._(
             kind: WeatherKind.cloud,
             factors: {},
             perceptionPenalty: 0,
-            roadOdds: 1.05,
-          ),
+            roadOdds: 1.05),
         _ => _none,
       };
 

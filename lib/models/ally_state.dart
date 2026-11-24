@@ -196,11 +196,9 @@ AllyBaseStats deriveAllyBaseStats({
     baseDamage: ((gameConfig['baseDamage'] as num?)?.toInt() ?? 2) +
         bonus(race, 'bonusBaseDamage') +
         bonus(profession, 'bonusBaseDamage'),
-    baseArmor: startingArmor(
-      ((gameConfig['baseArmor'] as num?)?.toInt() ?? 0) +
-          bonus(race, 'bonusBaseArmor') +
-          bonus(profession, 'bonusBaseArmor'),
-    ),
+    baseArmor: startingArmor(((gameConfig['baseArmor'] as num?)?.toInt() ?? 0) +
+        bonus(race, 'bonusBaseArmor') +
+        bonus(profession, 'bonusBaseArmor')),
     strength: ((gameConfig['strength'] as num?)?.toInt() ?? 0) +
         bonus(race, 'bonusStrength') +
         bonus(profession, 'bonusStrength'),
@@ -326,7 +324,5 @@ EquipmentScalingBonus alignmentGearBonusFor(
     armorBonus += (item?['alignedArmorBonus'] as num?)?.toInt() ?? 0;
   }
   return EquipmentScalingBonus(
-    damageBonus: damageBonus,
-    armorBonus: armorBonus,
-  );
+      damageBonus: damageBonus, armorBonus: armorBonus);
 }

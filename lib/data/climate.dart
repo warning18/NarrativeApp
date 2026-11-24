@@ -209,13 +209,8 @@ class ChartClimate {
 
   /// Adds a rounded bump of [height] round [at], [sigma] wide, to the
   /// cells it reaches.
-  void _bump(
-    Float32List field,
-    Offset at,
-    double height,
-    double sigma, {
-    bool landOnly = true,
-  }) {
+  void _bump(Float32List field, Offset at, double height, double sigma,
+      {bool landOnly = true}) {
     final reach = sigma * 2.6;
     final i0 = math.max(0, ((at.dx - reach) / cell).floor());
     final i1 = math.min(cols - 1, ((at.dx + reach) / cell).ceil());
@@ -234,11 +229,7 @@ class ChartClimate {
 
   /// Adds a ridge along [line].
   void _ridge(
-    Float32List field,
-    List<Offset> line,
-    double height,
-    double sigma,
-  ) {
+      Float32List field, List<Offset> line, double height, double sigma) {
     for (var s = 0; s + 1 < line.length; s++) {
       final a = line[s], b = line[s + 1];
       final len = (b - a).distance;
@@ -403,11 +394,8 @@ class ChartClimate {
 
   /// [p] as a longitude and latitude on this chart's globe (the band, or
   /// the whole sphere, see ChartGeography.lonSpan).
-  (double, double) _lonLat(Offset p) => GlobeView.lonLatOf(
-        p,
-        lonSpan: geography.lonSpan,
-        latSpan: geography.latSpan,
-      );
+  (double, double) _lonLat(Offset p) => GlobeView.lonLatOf(p,
+      lonSpan: geography.lonSpan, latSpan: geography.latSpan);
 
   /// Where the warmth curve ends: the band's edge (70 degrees). The whole
   /// sphere keeps the same curve, so a story place keeps the warmth it had
@@ -501,10 +489,8 @@ class ChartClimate {
   Offset _drift(Offset p, double t) {
     final (_, lat) = _lonLat(p);
     final band = _tanh((lat.abs() - 0.36) / 0.14);
-    return Offset(
-      band * 62 * t + 18 / 0.31 * math.sin(0.31 * t),
-      24 * math.sin(0.23 * t + lat * 3) + 10 * math.sin(0.71 * t),
-    );
+    return Offset(band * 62 * t + 18 / 0.31 * math.sin(0.31 * t),
+        24 * math.sin(0.23 * t + lat * 3) + 10 * math.sin(0.71 * t));
   }
 
   /// How wet the air is over [p] for the clouds' sake: the sea counts

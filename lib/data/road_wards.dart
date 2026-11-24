@@ -118,15 +118,12 @@ String wardLine(
 
 /// The line when [clanId]'s ward is set: the nemesis's own when it is
 /// [nemesis].
-String wardSetLine(
-  String clanId,
-  AppLanguage language, {
-  required ClanData data,
-  String nemesis = '',
-}) =>
+String wardSetLine(String clanId, AppLanguage language,
+        {required ClanData data, String nemesis = ''}) =>
     wardLine(
-      clanId.isNotEmpty && clanId == nemesis ? 'ward_set_nemesis' : 'ward_set',
-      language,
-      clanId: clanId,
-      data: data,
-    );
+        clanId.isNotEmpty && clanId == nemesis
+            ? 'ward_set_nemesis'
+            : 'ward_set',
+        language,
+        clanId: clanId,
+        data: data);

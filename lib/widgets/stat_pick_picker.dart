@@ -10,7 +10,6 @@
 //
 // Shown on the Level Up screen and in the pop-up after a fight while picks
 // wait; the next pick is drawn as soon as one is taken.
-
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -110,10 +109,8 @@ class _StatPickPickerState extends ConsumerState<StatPickPicker> {
       children: [
         Text(
           tr(ref, 'stat_pick_title'),
-          style: theme.textTheme.titleMedium?.copyWith(
-            fontFamily: InkFonts.display,
-            color: ink.gold,
-          ),
+          style: theme.textTheme.titleMedium
+              ?.copyWith(fontFamily: InkFonts.display, color: ink.gold),
         ),
         const SizedBox(height: 8),
         // The offers, side by side: the picked one ringed, the rest dimmed.
@@ -157,10 +154,8 @@ class _StatPickPickerState extends ConsumerState<StatPickPicker> {
                 tr(ref, 'stat_pick_hint'),
                 key: const Key('stat_pick_hint'),
                 textAlign: TextAlign.center,
-                style: theme.textTheme.bodySmall?.copyWith(
-                  color: ink.ash,
-                  fontStyle: FontStyle.italic,
-                ),
+                style: theme.textTheme.bodySmall
+                    ?.copyWith(color: ink.ash, fontStyle: FontStyle.italic),
               ),
             ),
         ],
@@ -174,22 +169,16 @@ class _StatPickPickerState extends ConsumerState<StatPickPicker> {
                     .read(playerSessionProvider.notifier)
                     .canRaiseStatPickOffer(picked),
             warnRaised: offer.any((o) => o.raised),
-            onReroll: () => _roll(
-              () => ref
-                  .read(playerSessionProvider.notifier)
-                  .rerollStatPick(paths),
-            ),
-            onBanish: (draws) => _roll(
-              () => ref
-                  .read(playerSessionProvider.notifier)
-                  .banishStatPickOffer(picked!, draws, paths),
-            ),
+            onReroll: () => _roll(() =>
+                ref.read(playerSessionProvider.notifier).rerollStatPick(paths)),
+            onBanish: (draws) => _roll(() => ref
+                .read(playerSessionProvider.notifier)
+                .banishStatPickOffer(picked!, draws, paths)),
             onRaise: () => _roll(
-              () => ref
-                  .read(playerSessionProvider.notifier)
-                  .raiseStatPickOffer(picked!, paths),
-              keep: true,
-            ),
+                () => ref
+                    .read(playerSessionProvider.notifier)
+                    .raiseStatPickOffer(picked!, paths),
+                keep: true),
           ),
         if (offer.isNotEmpty) ...[
           const SizedBox(height: 8),
@@ -281,18 +270,14 @@ class _OfferBanner extends ConsumerWidget {
           boxShadow: [
             if (tier == SignRarity.heroic)
               BoxShadow(
-                color: tierColor.withValues(alpha: 0.35),
-                blurRadius: 10,
-              ),
+                  color: tierColor.withValues(alpha: 0.35), blurRadius: 10),
           ],
         ),
         child: Material(
           color: selected
               ? ink.gold.withValues(alpha: 0.12)
-              : Color.alphaBlend(
-                  tierColor.withValues(alpha: _frameTint(tier)),
-                  theme.colorScheme.surfaceContainerLow,
-                ),
+              : Color.alphaBlend(tierColor.withValues(alpha: _frameTint(tier)),
+                  theme.colorScheme.surfaceContainerLow),
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(6),
             side: BorderSide(color: frame, width: width),
@@ -328,10 +313,8 @@ class _OfferBanner extends ConsumerWidget {
                     ),
                     alignment: Alignment.center,
                     child: ItemPixelIcon(
-                      trainingPathItem(path?.icon ?? ''),
-                      null,
-                      size: IconSize.s32,
-                    ),
+                        trainingPathItem(path?.icon ?? ''), null,
+                        size: IconSize.s32),
                   ),
                   const SizedBox(height: 6),
                   for (final MapEntry(:key, :value) in offer.gains.entries)
@@ -340,18 +323,15 @@ class _OfferBanner extends ConsumerWidget {
                       child: Column(
                         mainAxisSize: MainAxisSize.min,
                         children: [
-                          Text(
-                            _gainText(value),
-                            style: TextStyle(
-                              fontFamily: InkFonts.system,
-                              fontSize: 18,
-                              height: 1.1,
-                              color: trainingStatColor(key, ink),
-                            ),
-                          ),
-                          // Whole words: each word shrinks to the card
-                          // rather than break in two (#1139); no
-                          // LayoutBuilder, the row is an IntrinsicHeight.
+                          Text(_gainText(value),
+                              style: TextStyle(
+                                  fontFamily: InkFonts.system,
+                                  fontSize: 18,
+                                  height: 1.1,
+                                  color: trainingStatColor(key, ink))),
+                          // Whole words: each word shrinks to the card rather
+                          // than break in two (#1139); no LayoutBuilder, the
+                          // row is an IntrinsicHeight.
                           for (final word
                               in tr(ref, trainingStatLabelKey(key)).split(' '))
                             FittedBox(
@@ -364,20 +344,15 @@ class _OfferBanner extends ConsumerWidget {
                               ),
                             ),
                           // What it does for this hero.
-                          for (final (n, effect) in statPickEffects(
-                            key,
-                            professionId,
-                            value,
-                          ).indexed)
+                          for (final (n, effect)
+                              in statPickEffects(key, professionId, value)
+                                  .indexed)
                             Text(
                               statEffectText(effect, language),
                               key: Key('stat_pick_effect_${key}_$n'),
                               textAlign: TextAlign.center,
                               style: theme.textTheme.labelSmall?.copyWith(
-                                fontSize: 10,
-                                height: 1.15,
-                                color: ink.ash,
-                              ),
+                                  fontSize: 10, height: 1.15, color: ink.ash),
                             ),
                         ],
                       ),
@@ -385,11 +360,8 @@ class _OfferBanner extends ConsumerWidget {
                   if (selected)
                     Padding(
                       padding: const EdgeInsets.only(top: 2),
-                      child: Icon(
-                        Icons.check_circle,
-                        size: IconSize.s16,
-                        color: ink.gold,
-                      ),
+                      child: Icon(Icons.check_circle,
+                          size: IconSize.s16, color: ink.gold),
                     ),
                 ],
               ),

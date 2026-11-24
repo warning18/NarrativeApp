@@ -64,9 +64,7 @@ double hunterChanceFor(int alignmentScore) {
   }
   final past = lean - alignmentThreshold;
   return min(
-    hunterChanceCap,
-    hunterBaseChance + past * hunterChancePerAlignmentPoint,
-  );
+      hunterChanceCap, hunterBaseChance + past * hunterChancePerAlignmentPoint);
 }
 
 /// The side that hunts a Neutral character of [alignmentScore] this time:
@@ -320,19 +318,17 @@ StoryNode? buildHunterAmbushNode({
     // The side that hunts: the good orders hunt the Evil ('Evil' side).
     final good = isAngel;
     description = fill(
-      neutral
-          ? (good ? _goodHuntsNeutralEn : _evilHuntsNeutralEn)
-          : (good ? _orderHuntsEvilEn : _forceHuntsGoodEn),
-      text('enemyName'),
-      text('battleCry'),
-    );
+        neutral
+            ? (good ? _goodHuntsNeutralEn : _evilHuntsNeutralEn)
+            : (good ? _orderHuntsEvilEn : _forceHuntsGoodEn),
+        text('enemyName'),
+        text('battleCry'));
     descriptionFr = fill(
-      neutral
-          ? (good ? _goodHuntsNeutralFr : _evilHuntsNeutralFr)
-          : (good ? _orderHuntsEvilFr : _forceHuntsGoodFr),
-      nameFr,
-      cryFr,
-    );
+        neutral
+            ? (good ? _goodHuntsNeutralFr : _evilHuntsNeutralFr)
+            : (good ? _orderHuntsEvilFr : _forceHuntsGoodFr),
+        nameFr,
+        cryFr);
   }
   return StoryNode(
     id: 'hunter_${enemyId}_${random.nextInt(1 << 30)}',
@@ -566,30 +562,23 @@ List<StoryNode>? maybeAlignmentEvent({
   // yet, whatever the character's past.
   if (!enabled || chapter < _firstHuntChapter) return null;
   final side = huntedSideFor(
-    alignmentScore: alignmentScore,
-    activeQuestIds: activeQuestIds,
-  );
+      alignmentScore: alignmentScore, activeQuestIds: activeQuestIds);
   if (side != null) {
     if (rollsSinceAmbush < hunterCooldownRolls) return null;
     if (random.nextDouble() >= hunterChanceFor(alignmentScore)) return null;
     final node = buildHunterAmbushNode(
-      enemies: enemies,
-      side: side,
-      chapter: chapter,
-      random: random,
-    );
+        enemies: enemies, side: side, chapter: chapter, random: random);
     return node == null ? null : [node];
   }
   // Neutral: hunted lightly by both sides, then courted.
   if (rollsSinceAmbush >= hunterCooldownRolls &&
       random.nextDouble() < hunterChanceFor(alignmentScore)) {
     final node = buildHunterAmbushNode(
-      enemies: enemies,
-      side: neutralHuntedSide(alignmentScore, random),
-      chapter: chapter,
-      random: random,
-      neutral: true,
-    );
+        enemies: enemies,
+        side: neutralHuntedSide(alignmentScore, random),
+        chapter: chapter,
+        random: random,
+        neutral: true);
     if (node != null) return [node];
   }
   if (random.nextDouble() >= temptationChance) return null;

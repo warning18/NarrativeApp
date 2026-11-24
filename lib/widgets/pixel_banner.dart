@@ -106,9 +106,7 @@ class ClanFlag extends StatelessWidget {
     return SizedBox(
       width: height * pixelBannerSize.width / pixelBannerSize.height,
       height: height,
-      child: FittedBox(
-        child: PixelBanner(id: id, scale: 1, found: found),
-      ),
+      child: FittedBox(child: PixelBanner(id: id, scale: 1, found: found)),
     );
   }
 }

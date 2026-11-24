@@ -104,9 +104,7 @@ List<GameFeature> unlockedFeatures(LadderState state) => [
 /// The features open and not yet told of ([acknowledged]: their ids), in
 /// the ladder's order; none off the ladder.
 List<GameFeature> newlyUnlockedFeatures(
-  LadderState state,
-  Iterable<String> acknowledged,
-) =>
+        LadderState state, Iterable<String> acknowledged) =>
     !state.flags.contains(featureLadderFlag)
         ? const []
         : [
@@ -116,10 +114,8 @@ List<GameFeature> newlyUnlockedFeatures(
 
 /// The flags a won fight sets on the ladder ([tutorial]: the lesson,
 /// which sets none): the chest's, then, a fight later, the place rules'.
-List<String> ladderFlagsForWin(
-  Iterable<String> flags, {
-  required bool tutorial,
-}) {
+List<String> ladderFlagsForWin(Iterable<String> flags,
+    {required bool tutorial}) {
   if (tutorial || !flags.contains(featureLadderFlag)) return const [];
   if (!flags.contains(GameFeature.chest.flag)) {
     return [GameFeature.chest.flag];
@@ -154,10 +150,8 @@ String? trainerSkillFor({
           t['professionId'] == professionId &&
           (t['raceId']?.toString() ?? '').isEmpty)
         t,
-  ]..sort(
-      (a, b) =>
-          ((a['order'] as num?) ?? 0).compareTo((b['order'] as num?) ?? 0),
-    );
+  ]..sort((a, b) =>
+      ((a['order'] as num?) ?? 0).compareTo((b['order'] as num?) ?? 0));
   for (final branch in branches) {
     for (final id in (branch['skillIds'] as List?) ?? const []) {
       final skill = skills[id];

@@ -43,12 +43,8 @@ List<ObjectiveStatus> objectiveStatusesFor(
           const [];
   return [
     for (final objective in objectives)
-      _statusFor(
-        objective,
-        session,
-        grandfathered: grandfathered,
-        questId: questId,
-      ),
+      _statusFor(objective, session,
+          grandfathered: grandfathered, questId: questId),
   ];
 }
 
@@ -61,11 +57,8 @@ bool allObjectivesMet(
   Map<String, dynamic> questRecord,
   PlayerSession session,
 ) =>
-    objectiveStatusesFor(
-      questId,
-      questRecord,
-      session,
-    ).every((status) => status.met);
+    objectiveStatusesFor(questId, questRecord, session)
+        .every((status) => status.met);
 
 /// The foes a Kill [objective] counts: its `targetEnemyIDs` (any of them,
 /// e.g. every hunter of one side), or its single `targetEnemyID`.
@@ -117,10 +110,8 @@ ObjectiveStatus _statusFor(
         final baseline = fromAccept
             ? (session.questKillBaselines[questId]?[targetEnemyId] ?? 0)
             : 0;
-        current += max(
-          0,
-          (session.enemyKillCounts[targetEnemyId] ?? 0) - baseline,
-        );
+        current +=
+            max(0, (session.enemyKillCounts[targetEnemyId] ?? 0) - baseline);
       }
       return ObjectiveStatus(
         description: description,

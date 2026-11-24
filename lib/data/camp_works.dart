@@ -170,15 +170,12 @@ Map<WorkCategory, List<CampWork>> campWorksOf({
     final tier = workTierOf(value);
     final comesIn = tierFirstChapter(tier);
     if (built.contains(id)) {
-      works.add(
-        CampWork(
+      works.add(CampWork(
           houseId: id,
           category: category,
           tier: tier,
           chapter: comesIn,
-          state: WorkState.built,
-        ),
-      );
+          state: WorkState.built));
       continue;
     }
 
@@ -186,25 +183,21 @@ Map<WorkCategory, List<CampWork>> campWorksOf({
     final locks = [
       if (chapter < comesIn)
         WorkNeed(
-          kind: WorkNeedKind.chapter,
-          id: '$comesIn',
-          have: chapter,
-          need: comesIn,
-        ),
+            kind: WorkNeedKind.chapter,
+            id: '$comesIn',
+            have: chapter,
+            need: comesIn),
       if (allyId.isNotEmpty && !allies.contains(allyId))
         WorkNeed(kind: WorkNeedKind.ally, id: allyId),
     ];
     if (locks.isNotEmpty) {
-      works.add(
-        CampWork(
+      works.add(CampWork(
           houseId: id,
           category: category,
           tier: tier,
           chapter: comesIn,
           state: WorkState.locked,
-          needs: locks,
-        ),
-      );
+          needs: locks));
       continue;
     }
 
@@ -213,16 +206,11 @@ Map<WorkCategory, List<CampWork>> campWorksOf({
     final short = missingMaterials(inventory, materials);
     final needs = [
       for (final flag in missingRequiredFlags(value, held))
-        WorkNeed(
-          kind: WorkNeedKind.flag,
-          id: flag,
-          zoneIds: [
-            ...zonesSetting(flag),
-            // Clearing any of these opens it too.
-            for (final other in unlockedByFlagsOf(value))
-              ...zonesSetting(other),
-          ],
-        ),
+        WorkNeed(kind: WorkNeedKind.flag, id: flag, zoneIds: [
+          ...zonesSetting(flag),
+          // Clearing any of these opens it too.
+          for (final other in unlockedByFlagsOf(value)) ...zonesSetting(other),
+        ]),
       if (gold < cost)
         WorkNeed(kind: WorkNeedKind.gold, have: gold, need: cost),
       for (final MapEntry(key: itemId, value: need) in materials.entries)
@@ -236,16 +224,14 @@ Map<WorkCategory, List<CampWork>> campWorksOf({
             shopIds: shopsStocking(itemId),
           ),
     ];
-    works.add(
-      CampWork(
-        houseId: id,
-        category: category,
-        tier: tier,
-        chapter: comesIn,
-        state: needs.isEmpty ? WorkState.buildable : WorkState.shown,
-        needs: needs,
-      ),
-    );
+    works.add(CampWork(
+      houseId: id,
+      category: category,
+      tier: tier,
+      chapter: comesIn,
+      state: needs.isEmpty ? WorkState.buildable : WorkState.shown,
+      needs: needs,
+    ));
   }
 
   int costOf(CampWork w) =>
@@ -260,7 +246,7 @@ Map<WorkCategory, List<CampWork>> campWorksOf({
     for (final category in WorkCategory.values)
       category: [
         for (final w in works)
-          if (w.category == category) w,
+          if (w.category == category) w
       ],
   };
 }

@@ -40,10 +40,7 @@ bool isGear(Map<String, dynamic>? item) =>
 
 /// The id of the item worn in [slot] among [equippedIds], or null.
 String? _equippedInSlot(
-  List<String> equippedIds,
-  Map<String, dynamic> items,
-  String slot,
-) {
+    List<String> equippedIds, Map<String, dynamic> items, String slot) {
   for (final id in equippedIds) {
     final item = items[id] as Map<String, dynamic>?;
     if ((item?['equipSlot']?.toString() ?? '') == slot) return id;
@@ -53,18 +50,11 @@ String? _equippedInSlot(
 
 /// The item worn in [item]'s own slot among [equippedIds] (null for an
 /// item that is not gear, the same item, or an empty slot).
-String? equippedCounterpart(
-  String itemId,
-  Map<String, dynamic>? item,
-  List<String> equippedIds,
-  Map<String, dynamic> items,
-) {
+String? equippedCounterpart(String itemId, Map<String, dynamic>? item,
+    List<String> equippedIds, Map<String, dynamic> items) {
   if (!isGear(item)) return null;
-  final worn = _equippedInSlot(
-    equippedIds,
-    items,
-    item!['equipSlot'].toString(),
-  );
+  final worn =
+      _equippedInSlot(equippedIds, items, item!['equipSlot'].toString());
   return worn == itemId ? null : worn;
 }
 
@@ -78,19 +68,13 @@ class GearStatLine {
   num get delta => value - equipped;
 }
 
-List<GearStatLine> gearStatLines(
-  Map<String, dynamic>? item,
-  Map<String, dynamic>? equipped,
-  AppLanguage lang,
-) {
+List<GearStatLine> gearStatLines(Map<String, dynamic>? item,
+    Map<String, dynamic>? equipped, AppLanguage lang) {
   return [
     for (final (key, labelKey) in _gearStatKeys)
       if (_stat(item, key) != 0 || _stat(equipped, key) != 0)
         GearStatLine(
-          trFor(lang, labelKey),
-          _stat(item, key),
-          _stat(equipped, key),
-        ),
+            trFor(lang, labelKey), _stat(item, key), _stat(equipped, key)),
   ];
 }
 
@@ -117,11 +101,8 @@ class ItemTrait {
   }
 }
 
-List<ItemTrait> itemTraits(
-  Map<String, dynamic>? item,
-  AppLanguage lang, {
-  String? unmetRequirement,
-}) {
+List<ItemTrait> itemTraits(Map<String, dynamic>? item, AppLanguage lang,
+    {String? unmetRequirement}) {
   String t(String key) => trFor(lang, key);
   final scaling = switch (item?['scalingStat']?.toString() ?? '') {
     'strength' => t('str_abbrev'),
@@ -143,42 +124,31 @@ List<ItemTrait> itemTraits(
       ItemTrait(Icons.trending_up, t('scales_with_label'), scaling),
     if (unique != null)
       ItemTrait(
-        Icons.auto_awesome,
-        t('unique_label'),
-        t(uniqueEffectDescriptionKey(unique))
-            .replaceAll('{v}', '${uniqueValueOf(item)}'),
-      ),
+          Icons.auto_awesome,
+          t('unique_label'),
+          t(uniqueEffectDescriptionKey(unique))
+              .replaceAll('{v}', '${uniqueValueOf(item)}')),
     if (alignment.isNotEmpty)
       ItemTrait(
-        Icons.balance,
-        '${t('aligned_gear_label')} '
-        '(${alignment == 'Good' ? t('alignment_good') : t('alignment_evil')})',
-        alignedParts.join(', '),
-      ),
+          Icons.balance,
+          '${t('aligned_gear_label')} '
+          '(${alignment == 'Good' ? t('alignment_good') : t('alignment_evil')})',
+          alignedParts.join(', ')),
     if (unmetRequirement != null && unmetRequirement.isNotEmpty)
       ItemTrait(
-        Icons.lock_outline,
-        t('stat_requirement_label'),
-        unmetRequirement,
-        warn: true,
-      ),
+          Icons.lock_outline, t('stat_requirement_label'), unmetRequirement,
+          warn: true),
   ];
 }
 
 /// The short text a list row shows about [item] besides its stats: the
 /// stat it scales with, its unique effect, its alignment, a requirement it
 /// does not meet.
-List<String> itemTraitNotes(
-  Map<String, dynamic>? item,
-  AppLanguage lang, {
-  String? unmetRequirement,
-}) =>
+List<String> itemTraitNotes(Map<String, dynamic>? item, AppLanguage lang,
+        {String? unmetRequirement}) =>
     [
-      for (final trait in itemTraits(
-        item,
-        lang,
-        unmetRequirement: unmetRequirement,
-      ))
+      for (final trait
+          in itemTraits(item, lang, unmetRequirement: unmetRequirement))
         trait.note(lang),
     ];
 
@@ -186,10 +156,7 @@ List<String> itemTraitNotes(
 /// antidote's cure, a charm's effect for one fight, a tome's points. Null
 /// for anything that is not used up.
 String? consumableNote(
-  String itemId,
-  Map<String, dynamic>? item,
-  AppLanguage lang,
-) {
+    String itemId, Map<String, dynamic>? item, AppLanguage lang) {
   String t(String key) => trFor(lang, key);
   switch (item?['itemType']?.toString() ?? '') {
     case 'Potion':
@@ -202,11 +169,9 @@ String? consumableNote(
       final text = t(key);
       return text == key ? null : '${t('charm_use_prefix')} $text';
     case 'Tome':
-      return t(
-        itemId == 'tome_of_mastery'
-            ? 'tome_skill_point_desc'
-            : 'tome_stat_point_desc',
-      );
+      return t(itemId == 'tome_of_mastery'
+          ? 'tome_skill_point_desc'
+          : 'tome_stat_point_desc');
   }
   return null;
 }
@@ -242,22 +207,16 @@ class ItemStatChips extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final lines = gearStatLines(
-      item,
-      equipped,
-      language,
-    ).where((l) => l.value != 0 || equipped != null).toList();
+    final lines = gearStatLines(item, equipped, language)
+        .where((l) => l.value != 0 || equipped != null)
+        .toList();
     final theme = Theme.of(context);
     final gear = isGear(item);
     final chips = <Widget>[
       for (final line in lines)
         if (line.value != 0 || line.delta != 0)
-          _chip(
-            context,
-            line.label,
-            _fmt(line.value),
-            equipped == null && (!gear || !deltaVsEmpty) ? null : line.delta,
-          ),
+          _chip(context, line.label, _fmt(line.value),
+              equipped == null && (!gear || !deltaVsEmpty) ? null : line.delta),
     ];
     if (maxChips != null && chips.length > maxChips!) {
       chips.removeRange(maxChips!, chips.length);
@@ -274,9 +233,8 @@ class ItemStatChips extends StatelessWidget {
             equipped == null
                 ? trFor(language, 'slot_empty_compare_note')
                 : '${trFor(language, 'compare_vs_label')} ${equippedName ?? ''}',
-            style: theme.textTheme.labelSmall?.copyWith(
-              color: theme.colorScheme.onSurfaceVariant,
-            ),
+            style: theme.textTheme.labelSmall
+                ?.copyWith(color: theme.colorScheme.onSurfaceVariant),
           ),
         ],
       ],
@@ -297,19 +255,14 @@ class ItemStatChips extends StatelessWidget {
         borderRadius: BorderRadius.circular(6),
       ),
       child: Text.rich(
-        TextSpan(
-          children: [
-            TextSpan(text: '$label $value'),
-            if (delta != null && delta != 0)
-              TextSpan(
-                text: ' ${delta > 0 ? '+' : ''}${_fmt(delta)}',
-                style: TextStyle(
-                  color: deltaColor,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-          ],
-        ),
+        TextSpan(children: [
+          TextSpan(text: '$label $value'),
+          if (delta != null && delta != 0)
+            TextSpan(
+              text: ' ${delta > 0 ? '+' : ''}${_fmt(delta)}',
+              style: TextStyle(color: deltaColor, fontWeight: FontWeight.bold),
+            ),
+        ]),
         style: theme.textTheme.labelSmall,
       ),
     );

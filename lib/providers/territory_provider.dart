@@ -15,8 +15,5 @@ final holderHereProvider = Provider<String>((ref) {
       .value
       ?.nodeFor(ref.watch(storyPlayProvider).currentNodeId);
   return holderOf(
-    geography.placeOfNode(node)?.id,
-    geography,
-    ref.watch(politicsProvider),
-  );
+      geography.placeOfNode(node)?.id, geography, ref.watch(politicsProvider));
 });

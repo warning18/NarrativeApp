@@ -65,16 +65,12 @@ List<WalkingPartyMember> walkingPartyOf(PlayerSession session) {
 /// (UX reads it; see [walkingPartyOf]).
 final walkingPartyProvider = Provider<List<WalkingPartyMember>>((ref) {
   // Only the companions' lists it reads (P4).
-  ref.watch(
-    playerSessionProvider.select(
-      (s) => (
+  ref.watch(playerSessionProvider.select((s) => (
         lost: s.lostAllyIds,
         departed: s.departedAllyIds,
         recruited: s.recruitedAllies,
         active: s.activeAllyIds,
-      ),
-    ),
-  );
+      )));
   return walkingPartyOf(ref.read(playerSessionProvider));
 });
 
@@ -88,10 +84,7 @@ CompanionRemark? speakUpOnWalk(WidgetRef ref) {
       if (!member.isHero) member.id,
   ];
   final said = walkRemark(
-    ref.read(remarkBookProvider),
-    ref.read(remarkMemoryProvider),
-    walkers,
-  );
+      ref.read(remarkBookProvider), ref.read(remarkMemoryProvider), walkers);
   ref.read(remarkMemoryProvider.notifier).state = said.memory;
   return said.remark;
 }

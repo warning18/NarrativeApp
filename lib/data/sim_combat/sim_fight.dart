@@ -144,12 +144,8 @@ class _SimFight {
   /// screen uses (heal_rules.dart), with the ground's rule of [round]
   /// (default this round) and the fatigue when its clash rule is on. The
   /// simulator has no battlefield conditions, so no shrine.
-  int healed(
-    HealSource source,
-    int raw, {
-    bool noHealFaces = false,
-    int? round,
-  }) {
+  int healed(HealSource source, int raw,
+      {bool noHealFaces = false, int? round}) {
     final healing = healDealt(
       source: source,
       raw: raw,
@@ -177,10 +173,8 @@ class _SimFight {
   // affliction.
   void ashenHand(int burned) {
     c.mana = min(c.maxMana, c.mana + ashenManaPerBurn);
-    c.currentHealth = min(
-      c.maxHealth,
-      c.currentHealth + (burned * mods.ashenMend).round(),
-    );
+    c.currentHealth =
+        min(c.maxHealth, c.currentHealth + (burned * mods.ashenMend).round());
     if (c.statusEffects.isNotEmpty) {
       c.statusEffects = c.statusEffects.skip(mods.ashenCleanse).toList();
     }
@@ -237,10 +231,8 @@ class _SimFight {
     for (final e in ens) {
       if (e.isAlive || !specFed.add(e) || c.isKnockedOut) continue;
       if (mods.killHealShare > 0 && has(Spec.berserker)) {
-        c.currentHealth = min(
-          c.maxHealth,
-          c.currentHealth + (c.maxHealth * mods.killHealShare).round(),
-        );
+        c.currentHealth = min(c.maxHealth,
+            c.currentHealth + (c.maxHealth * mods.killHealShare).round());
       }
       if (mods.killReshuffles && has(Spec.corsairsEye)) trail?.reshuffle();
       final rot = poisonDamageFor(e.statusEffects);
@@ -296,8 +288,7 @@ class _SimFight {
   void overhealed(int healing, {int? current, int? full}) {
     if (!has(Spec.stitchThrust)) return;
     final hit = stitchThrust(
-      overheal(healing, current ?? c.currentHealth, full ?? c.maxHealth),
-    );
+        overheal(healing, current ?? c.currentHealth, full ?? c.maxHealth));
     final target = firstLiving();
     if (hit > 0 && target != null) target.health = max(0, target.health - hit);
   }

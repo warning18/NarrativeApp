@@ -22,9 +22,7 @@ extension _FightControls on _FightScreenState {
         },
         child: Padding(
           padding: const EdgeInsets.only(
-            top: _stripReachTop,
-            bottom: 5 + _stripReachBottom,
-          ),
+              top: _stripReachTop, bottom: 5 + _stripReachBottom),
           child: SizedBox(
             width: 32,
             height: 32,
@@ -37,11 +35,8 @@ extension _FightControls on _FightScreenState {
                       borderRadius: BorderRadius.circular(8),
                       border: Border.all(color: scheme.outlineVariant),
                     ),
-                    child: Icon(
-                      Icons.history,
-                      size: IconSize.s16,
-                      color: scheme.onSurfaceVariant,
-                    ),
+                    child: Icon(Icons.history,
+                        size: IconSize.s16, color: scheme.onSurfaceVariant),
                   ),
                 ),
                 if (unread)
@@ -53,9 +48,7 @@ extension _FightControls on _FightScreenState {
                       width: 8,
                       height: 8,
                       decoration: const BoxDecoration(
-                        shape: BoxShape.circle,
-                        color: Palette.orange52,
-                      ),
+                          shape: BoxShape.circle, color: Palette.orange52),
                     ),
                   ),
               ],
@@ -89,11 +82,9 @@ extension _FightControls on _FightScreenState {
                   for (final entry in recent)
                     Row(
                       children: [
-                        Icon(
-                          _logIcon(entry.kind),
-                          size: IconSize.inline,
-                          color: _logColor(context, entry.kind),
-                        ),
+                        Icon(_logIcon(entry.kind),
+                            size: IconSize.inline,
+                            color: _logColor(context, entry.kind)),
                         const SizedBox(width: 4),
                         Expanded(
                           child: Text(
@@ -112,18 +103,13 @@ extension _FightControls on _FightScreenState {
                       ],
                     ),
                   if (recent.isEmpty)
-                    Text(
-                      tr(ref, 'battle_log_title'),
-                      style: const TextStyle(fontSize: 11),
-                    ),
+                    Text(tr(ref, 'battle_log_title'),
+                        style: const TextStyle(fontSize: 11)),
                 ],
               ),
             ),
-            Icon(
-              Icons.unfold_more,
-              size: IconSize.s16,
-              color: colorScheme.outline,
-            ),
+            Icon(Icons.unfold_more,
+                size: IconSize.s16, color: colorScheme.outline),
           ],
         ),
       ),
@@ -139,10 +125,8 @@ extension _FightControls on _FightScreenState {
           height: MediaQuery.of(sheetContext).size.height * 0.6,
           child: Column(
             children: [
-              Text(
-                trFor(lang, 'battle_log_title'),
-                style: Theme.of(sheetContext).textTheme.titleMedium,
-              ),
+              Text(trFor(lang, 'battle_log_title'),
+                  style: Theme.of(sheetContext).textTheme.titleMedium),
               const SizedBox(height: 8),
               Expanded(
                 child: ListView.builder(
@@ -157,11 +141,8 @@ extension _FightControls on _FightScreenState {
                       child: Row(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Icon(
-                            _logIcon(entry.kind),
-                            size: IconSize.s16,
-                            color: color,
-                          ),
+                          Icon(_logIcon(entry.kind),
+                              size: IconSize.s16, color: color),
                           const SizedBox(width: 6),
                           Expanded(
                             child: Text(
@@ -247,16 +228,11 @@ extension _FightControls on _FightScreenState {
                   count: session.inventoryItemIds
                       .where((id) => id == fireballScrollId)
                       .length,
-                  tooltip: fireballScroll.nameFor(
-                    ref.watch(appLanguageProvider),
-                  ),
+                  tooltip:
+                      fireballScroll.nameFor(ref.watch(appLanguageProvider)),
                   enabled: !_rolling && !_over,
-                  onTap: () => _castSpell(
-                    fireballScroll,
-                    skills,
-                    items,
-                    scrollItemId: fireballScrollId,
-                  ),
+                  onTap: () => _castSpell(fireballScroll, skills, items,
+                      scrollItemId: fireballScrollId),
                 ),
               ],
               if (_party.first.statusEffects.isNotEmpty) ...[
@@ -340,21 +316,16 @@ extension _FightControls on _FightScreenState {
             child: Stack(
               children: [
                 Center(
-                  child: Icon(
-                    icon,
-                    size: IconSize.s16,
-                    color: inked ? inkPaper : Palette.good,
-                  ),
-                ),
+                    child: Icon(icon,
+                        size: IconSize.s16,
+                        color: inked ? inkPaper : Palette.good)),
                 Positioned(
                   right: 2,
                   bottom: 1,
                   child: Text(
                     '$count',
                     style: const TextStyle(
-                      fontSize: 10,
-                      fontWeight: FontWeight.bold,
-                    ),
+                        fontSize: 10, fontWeight: FontWeight.bold),
                   ),
                 ),
               ],
@@ -421,20 +392,16 @@ extension _FightControls on _FightScreenState {
                   : tr(ref, 'ash_well_label'),
               key: const Key('ash_well_label'),
               style: TextStyle(
-                fontSize: 10,
-                fontStyle: FontStyle.italic,
-                color: manaColor.withValues(alpha: 0.85),
-              ),
+                  fontSize: 10,
+                  fontStyle: FontStyle.italic,
+                  color: manaColor.withValues(alpha: 0.85)),
             ),
             const SizedBox(width: 4),
           ],
           Text(
             '$_mana/$_maxMana',
             style: const TextStyle(
-              fontWeight: FontWeight.bold,
-              fontSize: 12,
-              color: manaColor,
-            ),
+                fontWeight: FontWeight.bold, fontSize: 12, color: manaColor),
           ),
           if (showPips) ...[
             const SizedBox(width: 4),
@@ -484,19 +451,15 @@ extension _FightControls on _FightScreenState {
               child: Row(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  Icon(
-                    spellEffectIcon(spell.effect),
-                    size: IconSize.s16,
-                    color: color,
-                  ),
+                  Icon(spellEffectIcon(spell.effect),
+                      size: IconSize.s16, color: color),
                   const SizedBox(width: 4),
                   Text(
                     spell.nameFor(lang),
                     style: TextStyle(
-                      fontSize: 11,
-                      fontWeight: FontWeight.bold,
-                      color: color,
-                    ),
+                        fontSize: 11,
+                        fontWeight: FontWeight.bold,
+                        color: color),
                   ),
                   const SizedBox(width: 5),
                   for (var i = 0; i < _spellCost(spell); i++)
@@ -505,9 +468,7 @@ extension _FightControls on _FightScreenState {
                       height: 5,
                       margin: const EdgeInsets.only(left: 1.5),
                       decoration: const BoxDecoration(
-                        shape: BoxShape.circle,
-                        color: manaColor,
-                      ),
+                          shape: BoxShape.circle, color: manaColor),
                     ),
                 ],
               ),
@@ -538,34 +499,23 @@ extension _FightControls on _FightScreenState {
               children: [
                 Row(
                   children: [
-                    Icon(
-                      spellEffectIcon(spell.effect),
-                      color: color,
-                      size: IconSize.s32,
-                    ),
+                    Icon(spellEffectIcon(spell.effect),
+                        color: color, size: IconSize.s32),
                     const SizedBox(width: 10),
                     Expanded(
-                      child: Text(
-                        spell.nameFor(lang),
-                        style: theme.textTheme.titleMedium,
-                      ),
+                      child: Text(spell.nameFor(lang),
+                          style: theme.textTheme.titleMedium),
                     ),
                     const Icon(manaIcon, size: IconSize.s16, color: manaColor),
                     const SizedBox(width: 2),
-                    Text(
-                      '${_spellCost(spell)}',
-                      style: const TextStyle(
-                        fontWeight: FontWeight.bold,
-                        color: manaColor,
-                      ),
-                    ),
+                    Text('${_spellCost(spell)}',
+                        style: const TextStyle(
+                            fontWeight: FontWeight.bold, color: manaColor)),
                   ],
                 ),
                 const SizedBox(height: 8),
-                Text(
-                  spell.descriptionFor(lang),
-                  style: theme.textTheme.bodyMedium,
-                ),
+                Text(spell.descriptionFor(lang),
+                    style: theme.textTheme.bodyMedium),
                 const SizedBox(height: 6),
                 Text(
                   '${trFor(lang, spellEffectLabelKey(spell.effect))}'

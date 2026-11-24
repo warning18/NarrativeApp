@@ -17,10 +17,8 @@ class InkPanelPainter extends CustomPainter {
       ..strokeWidth = 1
       ..color = lit ? inkRed : inkSlate;
     canvas.drawRect(Offset.zero & size, line);
-    canvas.drawRect(
-      Rect.fromLTWH(0, 0, 3, size.height),
-      Paint()..color = lit ? inkRed : inkPaper,
-    );
+    canvas.drawRect(Rect.fromLTWH(0, 0, 3, size.height),
+        Paint()..color = lit ? inkRed : inkPaper);
   }
 
   @override

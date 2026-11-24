@@ -160,17 +160,11 @@ RoadEventKind? roadEventFor({
 /// own and not an old foe the party has long outgrown. On a road through
 /// [biome] (v1.197), the ones that live there (enemies.json's `biomes`)
 /// when there are two or more of them.
-List<String> championPoolFor(
-  Map<String, dynamic> enemies,
-  int chapter, {
-  String? biome,
-}) {
+List<String> championPoolFor(Map<String, dynamic> enemies, int chapter,
+    {String? biome}) {
   final pool = [
     for (final id in SubNodeEngine.filterEnemyPool(
-      enemies: enemies,
-      unlockedEnemyIds: const [],
-      chapter: chapter,
-    ))
+        enemies: enemies, unlockedEnemyIds: const [], chapter: chapter))
       if ((((enemies[id] as Map<String, dynamic>?)?['minChapter'] as num?)
                   ?.toInt() ??
               1) >=

@@ -109,10 +109,8 @@ class CampScreen extends ConsumerWidget {
     final itemNames =
         ref.watch(localizedDbProvider(itemsSchema)).value ?? const {};
     final harbourCost = [
-      for (final MapEntry(key: id, value: count) in materialCountsOf(
-        harbourRecord,
-        'materialCost',
-      ).entries)
+      for (final MapEntry(key: id, value: count)
+          in materialCountsOf(harbourRecord, 'materialCost').entries)
         '$count ${(itemNames[id] as Map?)?['itemName'] ?? id}',
       if (harbourGold > 0) '$harbourGold ${tr(ref, 'gold_label')}',
     ].join(', ');
@@ -127,13 +125,11 @@ class CampScreen extends ConsumerWidget {
         : portZoneIds(homePort)
             .where((id) => zones[id] is Map<String, dynamic>)
             .where((id) => !zoneIsMain(zones[id] as Map<String, dynamic>))
-            .where(
-              (id) =>
-                  (((zones[id] as Map<String, dynamic>)['chapter'] as num?)
-                          ?.toInt() ??
-                      1) <=
-                  reached,
-            )
+            .where((id) =>
+                (((zones[id] as Map<String, dynamic>)['chapter'] as num?)
+                        ?.toInt() ??
+                    1) <=
+                reached)
             .toList();
     final busy =
         ref.watch(combatActiveProvider) || ref.watch(expeditionActiveProvider);
@@ -160,12 +156,10 @@ class CampScreen extends ConsumerWidget {
     ];
     // Which houses' shops are browsable: built, with a shop still on file.
     final boutiqueShopIds = session.builtHouseIds
-        .map(
-          (houseId) =>
-              (houses[houseId] as Map<String, dynamic>?)?['unlocksShopId']
-                  ?.toString() ??
-              '',
-        )
+        .map((houseId) =>
+            (houses[houseId] as Map<String, dynamic>?)?['unlocksShopId']
+                ?.toString() ??
+            '')
         .where((shopId) => shopId.isNotEmpty && shops[shopId] is Map)
         .toList()
       ..sort();
@@ -197,12 +191,9 @@ class CampScreen extends ConsumerWidget {
               count: places.length,
               children: [
                 if (places.isEmpty)
-                  Text(
-                    tr(ref, 'places_empty'),
-                    style: theme.textTheme.bodyMedium?.copyWith(
-                      color: theme.colorScheme.onSurfaceVariant,
-                    ),
-                  )
+                  Text(tr(ref, 'places_empty'),
+                      style: theme.textTheme.bodyMedium
+                          ?.copyWith(color: theme.colorScheme.onSurfaceVariant))
                 else
                   for (final place in places) PlaceCard(place: place),
               ],
@@ -224,12 +215,8 @@ class CampScreen extends ConsumerWidget {
                         ref.watch(localizedDbProvider(enemiesSchema)).value ??
                             const <String, dynamic>{},
                     enabled: !busy,
-                    onBegin: () => launchExpedition(
-                      context,
-                      ref,
-                      zoneId,
-                      zones[zoneId] as Map<String, dynamic>,
-                    ),
+                    onBegin: () => launchExpedition(context, ref, zoneId,
+                        zones[zoneId] as Map<String, dynamic>),
                   ),
             ],
           ),
@@ -246,7 +233,9 @@ class CampScreen extends ConsumerWidget {
       CampTab.town => [
           const SizedBox(height: 12),
           CampTownSection(
-            houses: {for (final id in discoveredHouseIds) id: houses[id]},
+            houses: {
+              for (final id in discoveredHouseIds) id: houses[id],
+            },
             shops: shops,
             zones: zones,
             achievements:
@@ -267,9 +256,7 @@ class CampScreen extends ConsumerWidget {
                         foregroundColor: Palette.paper89,
                         side: const BorderSide(color: Palette.tideDark),
                         textStyle: const TextStyle(
-                          fontFamily: 'PixelifySans',
-                          fontSize: 12,
-                        ),
+                            fontFamily: 'PixelifySans', fontSize: 12),
                       ),
                       icon: const Icon(Icons.anchor, size: IconSize.s16),
                       label: Text(tr(ref, 'harbor_title')),
@@ -290,23 +277,19 @@ class CampScreen extends ConsumerWidget {
                     child: ListTile(
                       leading: ShopPixelIcon(shopId),
                       title: Text(
-                        (shops[shopId] as Map<String, dynamic>)['shopName']
-                                ?.toString() ??
-                            shopId,
-                      ),
-                      subtitle: Text(
-                        (shops[shopId]
-                                    as Map<String, dynamic>)['shopDescription']
-                                ?.toString() ??
-                            '',
-                      ),
+                          (shops[shopId] as Map<String, dynamic>)['shopName']
+                                  ?.toString() ??
+                              shopId),
+                      subtitle: Text((shops[shopId]
+                                  as Map<String, dynamic>)['shopDescription']
+                              ?.toString() ??
+                          ''),
                       trailing: const Icon(Icons.chevron_right),
                       onTap: () => Navigator.of(context).push(
                         MaterialPageRoute(
                           builder: (_) => ShopDetailScreen(
-                            shopId: shopId,
-                            shop: shops[shopId] as Map<String, dynamic>,
-                          ),
+                              shopId: shopId,
+                              shop: shops[shopId] as Map<String, dynamic>),
                         ),
                       ),
                     ),
@@ -315,11 +298,9 @@ class CampScreen extends ConsumerWidget {
           ),
         ],
       CampTab.party => [
-          section(
-            tr(ref, 'camp_party_section'),
-            trailing: '${tr(ref, 'active_party_label')}: '
-                '${session.activeAllyIds.length} / $partyCapacity',
-          ),
+          section(tr(ref, 'camp_party_section'),
+              trailing: '${tr(ref, 'active_party_label')}: '
+                  '${session.activeAllyIds.length} / $partyCapacity'),
           PartyFormation(houses: houses),
         ],
       // The Eel, her harbour (or what building it would give), and the
@@ -332,9 +313,8 @@ class CampScreen extends ConsumerWidget {
           section(tr(ref, 'camp_sail_section')),
           Text(
             tr(ref, 'camp_sail_hint'),
-            style: theme.textTheme.bodySmall?.copyWith(
-              color: theme.colorScheme.onSurfaceVariant,
-            ),
+            style: theme.textTheme.bodySmall
+                ?.copyWith(color: theme.colorScheme.onSurfaceVariant),
           ),
           const SizedBox(height: 4),
           const PortChart(homeOnChart: false),
@@ -373,9 +353,8 @@ class CampScreen extends ConsumerWidget {
                   Text(
                     subtitle,
                     key: const Key('camp_subtitle'),
-                    style: theme.textTheme.labelSmall?.copyWith(
-                      color: InkColors.of(context).ash,
-                    ),
+                    style: theme.textTheme.labelSmall
+                        ?.copyWith(color: InkColors.of(context).ash),
                   ),
                 ],
               ),
@@ -412,9 +391,7 @@ class CampScreen extends ConsumerWidget {
         // The camp's first work, until it stands (see harbour.dart): the
         // camp's tour points at it.
         if (harbourAwaited(
-          flags: session.flags,
-          builtHouseIds: session.builtHouseIds,
-        )) ...[
+            flags: session.flags, builtHouseIds: session.builtHouseIds)) ...[
           const SizedBox(height: 12),
           TutorialTarget(
             id: 'camp.harbour',
@@ -463,7 +440,7 @@ class _ChapterCard extends ConsumerWidget {
     // The camp errands follow the camp's own ways (see camp_errands.dart).
     final visible = [
       ...campNode.choices,
-      ...ref.watch(campErrandChoicesProvider),
+      ...ref.watch(campErrandChoicesProvider)
     ].where((c) => !choiceHiddenFor(c, session, gateWorld)).toList();
     bool shut(StoryChoice c) =>
         story == null ||
@@ -492,11 +469,8 @@ class _ChapterCard extends ConsumerWidget {
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Icon(
-              done ? Icons.check_circle : Icons.radio_button_unchecked,
-              size: IconSize.s16,
-              color: done ? ink.heal : ink.ash,
-            ),
+            Icon(done ? Icons.check_circle : Icons.radio_button_unchecked,
+                size: IconSize.s16, color: done ? ink.heal : ink.ash),
             const SizedBox(width: 8),
             Expanded(
               child: Column(
@@ -510,12 +484,9 @@ class _ChapterCard extends ConsumerWidget {
                     ),
                   ),
                   if (sub != null)
-                    Text(
-                      sub,
-                      style: theme.textTheme.labelSmall?.copyWith(
-                        color: ink.ash,
-                      ),
-                    ),
+                    Text(sub,
+                        style: theme.textTheme.labelSmall
+                            ?.copyWith(color: ink.ash)),
                 ],
               ),
             ),
@@ -532,50 +503,39 @@ class _ChapterCard extends ConsumerWidget {
     if (progress != null && !open) {
       for (final id in progress.missingPlaceIds) {
         stepsLeft++;
-        steps.add(
-          step(
-            key: Key('next_place_$id'),
-            done: false,
-            text: tr(
-              ref,
-              'next_visit_place',
-            ).replaceAll('{place}', placeName(id)),
-            sub: tr(ref, 'next_visit_place_sub'),
-            onTap: () =>
-                ref.read(campTabProvider.notifier).state = CampTab.road,
-          ),
-        );
+        steps.add(step(
+          key: Key('next_place_$id'),
+          done: false,
+          text:
+              tr(ref, 'next_visit_place').replaceAll('{place}', placeName(id)),
+          sub: tr(ref, 'next_visit_place_sub'),
+          onTap: () => ref.read(campTabProvider.notifier).state = CampTab.road,
+        ));
       }
     }
     if (progress != null && progress.goal > 0) {
       final done = progress.done >= progress.goal;
       if (!done) stepsLeft++;
-      steps.add(
-        step(
-          key: const Key('chapter_progress'),
-          done: done,
-          text: tr(ref, 'chapter_progress')
-              .replaceAll('{done}', '${progress.done.clamp(0, progress.goal)}')
-              .replaceAll('{goal}', '${progress.goal}'),
-          sub: done ? null : tr(ref, 'next_explore_sub'),
-        ),
-      );
+      steps.add(step(
+        key: const Key('chapter_progress'),
+        done: done,
+        text: tr(ref, 'chapter_progress')
+            .replaceAll('{done}', '${progress.done.clamp(0, progress.goal)}')
+            .replaceAll('{goal}', '${progress.goal}'),
+        sub: done ? null : tr(ref, 'next_explore_sub'),
+      ));
     }
     if (progress != null && progress.questGoal > 0) {
       final done = progress.questsDone >= progress.questGoal;
       if (!done) stepsLeft++;
-      steps.add(
-        step(
-          key: const Key('chapter_quests_progress'),
-          done: done,
-          text: tr(ref, 'chapter_quests_progress')
-              .replaceAll(
-                '{done}',
-                '${progress.questsDone.clamp(0, progress.questGoal)}',
-              )
-              .replaceAll('{goal}', '${progress.questGoal}'),
-        ),
-      );
+      steps.add(step(
+        key: const Key('chapter_quests_progress'),
+        done: done,
+        text: tr(ref, 'chapter_quests_progress')
+            .replaceAll(
+                '{done}', '${progress.questsDone.clamp(0, progress.questGoal)}')
+            .replaceAll('{goal}', '${progress.questGoal}'),
+      ));
     }
 
     return Container(
@@ -591,44 +551,31 @@ class _ChapterCard extends ConsumerWidget {
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           if (progress != null) ...[
-            Row(
-              children: [
-                Icon(
-                  open ? Icons.flag : Icons.flag_outlined,
-                  size: IconSize.s16,
-                  color: ink.gold,
-                ),
-                const SizedBox(width: 6),
-                // Longer in French: cut short rather than overflow.
-                Flexible(
-                  child: Text(
+            Row(children: [
+              Icon(open ? Icons.flag : Icons.flag_outlined,
+                  size: IconSize.s16, color: ink.gold),
+              const SizedBox(width: 6),
+              // Longer in French: cut short rather than overflow.
+              Flexible(
+                child: Text(
                     (open
                             ? tr(ref, 'main_quest_open_label')
                             : tr(ref, 'next_main_quest_label'))
                         .toUpperCase(),
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
-                    style: theme.textTheme.labelSmall?.copyWith(
-                      color: ink.gold,
-                      letterSpacing: 1,
-                    ),
-                  ),
-                ),
-              ],
-            ),
-            const SizedBox(height: 4),
-            Text(
-              progress.loop.mainQuestTitle,
-              style: theme.textTheme.titleLarge?.copyWith(
-                fontFamily: InkFonts.display,
+                    style: theme.textTheme.labelSmall
+                        ?.copyWith(color: ink.gold, letterSpacing: 1)),
               ),
-            ),
+            ]),
+            const SizedBox(height: 4),
+            Text(progress.loop.mainQuestTitle,
+                style: theme.textTheme.titleLarge
+                    ?.copyWith(fontFamily: InkFonts.display)),
             if (!open && progress.loop.mainQuestHint.isNotEmpty) ...[
               const SizedBox(height: 4),
-              Text(
-                progress.loop.mainQuestHint,
-                style: theme.textTheme.bodySmall?.copyWith(color: ink.ash),
-              ),
+              Text(progress.loop.mainQuestHint,
+                  style: theme.textTheme.bodySmall?.copyWith(color: ink.ash)),
             ],
             const SizedBox(height: 6),
             ...steps,
@@ -643,18 +590,13 @@ class _ChapterCard extends ConsumerWidget {
                 child: Row(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Icon(
-                      Icons.person_add_alt_1_outlined,
-                      size: IconSize.s16,
-                      color: ink.voidColor,
-                    ),
+                    Icon(Icons.person_add_alt_1_outlined,
+                        size: IconSize.s16, color: ink.voidColor),
                     const SizedBox(width: 8),
                     Expanded(
                       child: Text(
-                        tr(
-                          ref,
-                          'companion_hint',
-                        ).replaceAll('{place}', placeName(placeId)),
+                        tr(ref, 'companion_hint')
+                            .replaceAll('{place}', placeName(placeId)),
                         style: theme.textTheme.bodySmall,
                       ),
                     ),
@@ -672,9 +614,7 @@ class _ChapterCard extends ConsumerWidget {
                     key: Key('main_quest_${choice.nextId}'),
                     style: FilledButton.styleFrom(
                       padding: const EdgeInsets.symmetric(
-                        horizontal: 16,
-                        vertical: 12,
-                      ),
+                          horizontal: 16, vertical: 12),
                     ),
                     onPressed: busy || !open || shut(choice)
                         ? null
@@ -687,15 +627,12 @@ class _ChapterCard extends ConsumerWidget {
                       child: Text(
                         stepsLeft == 1
                             ? tr(ref, 'steps_left_one')
-                            : tr(
-                                ref,
-                                'steps_left_many',
-                              ).replaceAll('{n}', '$stepsLeft'),
+                            : tr(ref, 'steps_left_many')
+                                .replaceAll('{n}', '$stepsLeft'),
                         key: const Key('main_quest_steps_left'),
                         textAlign: TextAlign.center,
-                        style: theme.textTheme.labelSmall?.copyWith(
-                          color: ink.ash,
-                        ),
+                        style: theme.textTheme.labelSmall
+                            ?.copyWith(color: ink.ash),
                       ),
                     ),
                 ],
@@ -708,10 +645,8 @@ class _ChapterCard extends ConsumerWidget {
                 key: Key('camp_choice_${choice.nextId}'),
                 style: OutlinedButton.styleFrom(
                   alignment: Alignment.centerLeft,
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 16,
-                    vertical: 12,
-                  ),
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
                 ),
                 onPressed: busy || shut(choice)
                     ? null
@@ -728,8 +663,7 @@ class _ChapterCard extends ConsumerWidget {
 final ButtonStyle _compact = ButtonStyle(
   visualDensity: VisualDensity.compact,
   padding: WidgetStateProperty.all(
-    const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
-  ),
+      const EdgeInsets.symmetric(horizontal: 12, vertical: 4)),
 );
 
 class _RestButton extends ConsumerWidget {
@@ -744,16 +678,10 @@ class _RestButton extends ConsumerWidget {
           style: _compact,
           onPressed: blocked
               ? null
-              : () => restTheNight(
-                    context,
-                    ref,
-                    message: tr(ref, 'party_rested_message'),
-                    atCamp: true,
-                  ),
-          icon: const Icon(
-            Icons.local_fire_department_outlined,
-            size: IconSize.s16,
-          ),
+              : () => restTheNight(context, ref,
+                  message: tr(ref, 'party_rested_message'), atCamp: true),
+          icon: const Icon(Icons.local_fire_department_outlined,
+              size: IconSize.s16),
           label: Text(tr(ref, 'rest_button')),
         ),
       );
@@ -800,10 +728,8 @@ class _CampSceneCardState extends ConsumerState<_CampSceneCard> {
                   const Icon(Icons.menu_book_outlined, size: IconSize.s16),
                   const SizedBox(width: 8),
                   Expanded(
-                    child: Text(
-                      tr(ref, 'camp_scene_title'),
-                      style: theme.textTheme.titleSmall,
-                    ),
+                    child: Text(tr(ref, 'camp_scene_title'),
+                        style: theme.textTheme.titleSmall),
                   ),
                   Icon(_open ? Icons.expand_less : Icons.expand_more),
                 ],
@@ -820,9 +746,8 @@ class _CampSceneCardState extends ConsumerState<_CampSceneCard> {
                   padding: const EdgeInsets.only(top: 4),
                   child: Text(
                     tr(ref, 'camp_scene_read_all'),
-                    style: theme.textTheme.labelLarge?.copyWith(
-                      color: theme.colorScheme.primary,
-                    ),
+                    style: theme.textTheme.labelLarge
+                        ?.copyWith(color: theme.colorScheme.primary),
                   ),
                 )
               else
@@ -864,18 +789,14 @@ class _SceneChip extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(
-                  title,
-                  style: Theme.of(sheetContext).textTheme.titleMedium,
-                ),
+                Text(title,
+                    style: Theme.of(sheetContext).textTheme.titleMedium),
                 const SizedBox(height: 10),
-                Text(
-                  stripStoryMarkup(text),
-                  style: Theme.of(sheetContext)
-                      .textTheme
-                      .bodyLarge
-                      ?.copyWith(height: 1.5),
-                ),
+                Text(stripStoryMarkup(text),
+                    style: Theme.of(sheetContext)
+                        .textTheme
+                        .bodyLarge
+                        ?.copyWith(height: 1.5)),
               ],
             ),
           ),
@@ -904,13 +825,8 @@ class _CampTabs extends ConsumerWidget {
     final ink = InkColors.of(context);
     final theme = Theme.of(context);
     final placesWaiting = ref.watch(companionLeadsProvider).isNotEmpty;
-    Widget tab(
-      CampTab t,
-      IconData icon,
-      String label,
-      String tourId, {
-      bool dot = false,
-    }) {
+    Widget tab(CampTab t, IconData icon, String label, String tourId,
+        {bool dot = false}) {
       final on = t == selected;
       return Expanded(
         child: TutorialTarget(
@@ -923,28 +839,20 @@ class _CampTabs extends ConsumerWidget {
               decoration: BoxDecoration(
                 border: Border(
                   bottom: BorderSide(
-                    color: on ? ink.gold : ink.seam,
-                    width: on ? 2 : 1,
-                  ),
+                      color: on ? ink.gold : ink.seam, width: on ? 2 : 1),
                 ),
               ),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Icon(
-                    icon,
-                    size: IconSize.s16,
-                    color: on ? ink.gold : ink.ash,
-                  ),
+                  Icon(icon,
+                      size: IconSize.s16, color: on ? ink.gold : ink.ash),
                   const SizedBox(width: 4),
                   Flexible(
-                    child: Text(
-                      label,
-                      overflow: TextOverflow.ellipsis,
-                      style: theme.textTheme.labelLarge?.copyWith(
-                        color: on ? null : ink.ash,
-                      ),
-                    ),
+                    child: Text(label,
+                        overflow: TextOverflow.ellipsis,
+                        style: theme.textTheme.labelLarge
+                            ?.copyWith(color: on ? null : ink.ash)),
                   ),
                   if (dot) ...[
                     const SizedBox(width: 4),
@@ -952,9 +860,7 @@ class _CampTabs extends ConsumerWidget {
                       width: 6,
                       height: 6,
                       decoration: BoxDecoration(
-                        color: ink.gold,
-                        shape: BoxShape.circle,
-                      ),
+                          color: ink.gold, shape: BoxShape.circle),
                     ),
                   ],
                 ],
@@ -965,41 +871,24 @@ class _CampTabs extends ConsumerWidget {
       );
     }
 
-    return Row(
-      children: [
-        tab(
-          CampTab.road,
-          Icons.route_outlined,
-          tr(ref, 'camp_tab_road'),
+    return Row(children: [
+      tab(CampTab.road, Icons.route_outlined, tr(ref, 'camp_tab_road'),
           'camp.road',
-          dot: placesWaiting,
-        ),
-        tab(
-          CampTab.town,
-          Icons.holiday_village_outlined,
-          tr(ref, 'camp_tab_town'),
-          'camp.town',
-        ),
-        tab(
-          CampTab.party,
-          Icons.groups_outlined,
-          tr(ref, 'camp_tab_party'),
-          'camp.roster',
-        ),
-        tab(CampTab.sea, Icons.anchor, tr(ref, 'camp_tab_sea'), 'camp.sail'),
-      ],
-    );
+          dot: placesWaiting),
+      tab(CampTab.town, Icons.holiday_village_outlined,
+          tr(ref, 'camp_tab_town'), 'camp.town'),
+      tab(CampTab.party, Icons.groups_outlined, tr(ref, 'camp_tab_party'),
+          'camp.roster'),
+      tab(CampTab.sea, Icons.anchor, tr(ref, 'camp_tab_sea'), 'camp.sail'),
+    ]);
   }
 }
 
 /// The harbour in the Sea tab: the way to refit the Eel once it stands,
 /// and before that what building it gives and costs (a tap goes to Town).
 class _HarbourCard extends ConsumerWidget {
-  const _HarbourCard({
-    required this.built,
-    required this.cost,
-    this.first = false,
-  });
+  const _HarbourCard(
+      {required this.built, required this.cost, this.first = false});
 
   final bool built;
 
@@ -1016,13 +905,11 @@ class _HarbourCard extends ConsumerWidget {
     final theme = Theme.of(context);
     final colour = built ? ink.tide : ink.gold;
     return InkWell(
-      key: Key(
-        first
-            ? 'camp_harbour_first'
-            : built
-                ? 'camp_harbor'
-                : 'camp_harbor_locked',
-      ),
+      key: Key(first
+          ? 'camp_harbour_first'
+          : built
+              ? 'camp_harbor'
+              : 'camp_harbor_locked'),
       borderRadius: BorderRadius.circular(10),
       onTap: built
           ? () => Navigator.of(context)
@@ -1035,35 +922,30 @@ class _HarbourCard extends ConsumerWidget {
           border: Border.all(color: colour),
           color: colour.withValues(alpha: 0.06),
         ),
-        child: Row(
-          children: [
-            Icon(Icons.anchor, color: colour),
-            const SizedBox(width: 10),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
+        child: Row(children: [
+          Icon(Icons.anchor, color: colour),
+          const SizedBox(width: 10),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
                     built
                         ? tr(ref, 'harbor_title')
                         : tr(ref, 'harbour_not_built_title'),
-                    style: theme.textTheme.titleSmall?.copyWith(color: colour),
-                  ),
-                  Text(
-                    built
-                        ? tr(ref, 'harbour_built_body')
-                        : tr(
-                            ref,
-                            'harbour_not_built_body',
-                          ).replaceAll('{cost}', cost),
-                    style: theme.textTheme.bodySmall?.copyWith(color: ink.ash),
-                  ),
-                ],
-              ),
+                    style: theme.textTheme.titleSmall?.copyWith(color: colour)),
+                Text(
+                  built
+                      ? tr(ref, 'harbour_built_body')
+                      : tr(ref, 'harbour_not_built_body')
+                          .replaceAll('{cost}', cost),
+                  style: theme.textTheme.bodySmall?.copyWith(color: ink.ash),
+                ),
+              ],
             ),
-            Icon(Icons.chevron_right, color: colour),
-          ],
-        ),
+          ),
+          Icon(Icons.chevron_right, color: colour),
+        ]),
       ),
     );
   }

@@ -155,10 +155,8 @@ class _PartyTransitState extends State<_PartyTransit>
                   elevation: 3,
                   borderRadius: BorderRadius.circular(10),
                   child: Padding(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 12,
-                      vertical: 9,
-                    ),
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: 12, vertical: 9),
                     child: Row(
                       mainAxisSize: MainAxisSize.min,
                       children: [
@@ -188,28 +186,23 @@ class _PartyTransitState extends State<_PartyTransit>
                                 AnimatedBuilder(
                                   animation: _c,
                                   builder: (context, _) {
-                                    final walked = RegionFlightPainter.walkAt(
-                                      _c.value,
-                                    );
+                                    final walked =
+                                        RegionFlightPainter.walkAt(_c.value);
                                     ChartRouteStop? stop;
                                     for (final s in path.stops) {
                                       if (s.along <= walked) stop = s;
                                     }
                                     if (stop == null) return const SizedBox();
                                     return Text(
-                                      widget.passText.replaceAll(
-                                        '{stop}',
-                                        stop.name,
-                                      ),
+                                      widget.passText
+                                          .replaceAll('{stop}', stop.name),
                                       key: const ValueKey(
-                                        'journey_transit_stop',
-                                      ),
+                                          'journey_transit_stop'),
                                       style: Theme.of(context)
                                           .textTheme
                                           .bodySmall
                                           ?.copyWith(
-                                            color: scheme.onSurfaceVariant,
-                                          ),
+                                              color: scheme.onSurfaceVariant),
                                     );
                                   },
                                 ),

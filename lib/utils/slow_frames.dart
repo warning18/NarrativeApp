@@ -66,10 +66,8 @@ class SlowFrameMeter {
     if (_running) return;
     _running = true;
     SchedulerBinding.instance.addTimingsCallback(_onTimings);
-    _publish = Timer.periodic(
-      const Duration(milliseconds: 500),
-      (_) => _flush(),
-    );
+    _publish =
+        Timer.periodic(const Duration(milliseconds: 500), (_) => _flush());
   }
 
   /// Stops counting and lets go of everything it held; what was counted stays
@@ -109,12 +107,10 @@ class SlowFrameMeter {
 
   /// Counts one frame of [label] (the timings callback's work, apart so a test
   /// can feed it).
-  void addFrame(
-    String label, {
-    required double totalMs,
-    required double buildMs,
-    required double rasterMs,
-  }) {
+  void addFrame(String label,
+      {required double totalMs,
+      required double buildMs,
+      required double rasterMs}) {
     final stat = stats.putIfAbsent(label, SlowFrameStat.new);
     stat.frames++;
     if (totalMs > stat.worstMs) stat.worstMs = totalMs;
@@ -151,11 +147,9 @@ class SlowFrameMeter {
         ..writeln()
         ..writeln('Worst frames: total = build + raster (ms), where');
       for (final frame in worst) {
-        buffer.writeln(
-          '${frame.totalMs.toStringAsFixed(1)} total = '
-          '${frame.buildMs.toStringAsFixed(1)} build + '
-          '${frame.rasterMs.toStringAsFixed(1)} raster, ${frame.screen}',
-        );
+        buffer.writeln('${frame.totalMs.toStringAsFixed(1)} total = '
+            '${frame.buildMs.toStringAsFixed(1)} build + '
+            '${frame.rasterMs.toStringAsFixed(1)} raster, ${frame.screen}');
       }
     }
     return buffer.toString().trimRight();

@@ -42,16 +42,12 @@ class StoryRepository {
       } catch (error, stack) {
         // A broken edited story is reported, and the bundled one read in
         // its place (issue #696).
-        FlutterError.reportError(
-          FlutterErrorDetails(
+        FlutterError.reportError(FlutterErrorDetails(
             exception: error,
             stack: stack,
             library: 'story',
             context: ErrorDescription(
-              'reading the edited story; the bundled one is used',
-            ),
-          ),
-        );
+                'reading the edited story; the bundled one is used')));
       }
     }
     return rootBundle.loadString(assetPath);
@@ -73,10 +69,8 @@ class StoryRepository {
 
 StoryData _storyFrom(String raw) => StoryData({
       for (final entry in (json.decode(raw) as Map<String, dynamic>).entries)
-        entry.key: StoryNode.fromJson(
-          entry.key,
-          entry.value as Map<String, dynamic>,
-        ),
+        entry.key:
+            StoryNode.fromJson(entry.key, entry.value as Map<String, dynamic>),
     });
 
 /// The first scene after character creation: where the story picks up when

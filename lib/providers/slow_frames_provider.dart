@@ -14,8 +14,7 @@ import 'home_tab_provider.dart';
 /// Whether the player asked for the slow-frames counter. Off by default; when
 /// off nothing runs at all.
 final slowFramesProvider = StateNotifierProvider<PersistedFlagNotifier, bool>(
-  (ref) => PersistedFlagNotifier('slow_frames_enabled', defaultValue: false),
-);
+    (ref) => PersistedFlagNotifier('slow_frames_enabled', defaultValue: false));
 
 /// Watches the navigator's routes so the meter knows which screen is on top.
 class _SlowFrameRoutes extends NavigatorObserver {
@@ -47,9 +46,8 @@ class _SlowFrameRoutes extends NavigatorObserver {
   }
 }
 
-final slowFrameRoutesProvider = Provider<_SlowFrameRoutes>(
-  (ref) => _SlowFrameRoutes(),
-);
+final slowFrameRoutesProvider =
+    Provider<_SlowFrameRoutes>((ref) => _SlowFrameRoutes());
 
 /// The screen the player is on, in words for the report: a fight, one of the
 /// game's tabs, the main menu, or another screen on top of them.

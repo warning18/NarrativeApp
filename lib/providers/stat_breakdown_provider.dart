@@ -18,10 +18,8 @@ export '../data/stat_breakdown.dart'
 /// all of them to the number the next fight starts with. Raw tables, not
 /// French-overlaid (only numbers and ids are read); a table still loading
 /// reads as empty, so its rows show up as `earlier` until it has loaded.
-final statBreakdownProvider = Provider.family<List<StatSource>, String>((
-  ref,
-  stat,
-) {
+final statBreakdownProvider =
+    Provider.family<List<StatSource>, String>((ref, stat) {
   Map<String, dynamic> table(DbSchema schema) =>
       ref.watch(gameDbProvider(schema)).value ?? const {};
   return statBreakdown(

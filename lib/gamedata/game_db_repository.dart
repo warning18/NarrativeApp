@@ -32,16 +32,12 @@ class GameDbRepository {
       } catch (error, stack) {
         // A broken edited copy is reported, and the bundled table read in
         // its place: never an empty table far from the cause (issue #696).
-        FlutterError.reportError(
-          FlutterErrorDetails(
+        FlutterError.reportError(FlutterErrorDetails(
             exception: error,
             stack: stack,
             library: 'gamedata',
             context: ErrorDescription(
-              'reading the edited ${schema.id} table; the bundled one is used',
-            ),
-          ),
-        );
+                'reading the edited ${schema.id} table; the bundled one is used')));
       }
     }
     final raw = await rootBundle.loadString(schema.assetPath);

@@ -156,13 +156,11 @@ Map<String, HeardOfPlace> heardOfPlacesOf({
     final bySea =
         roads.isNotEmpty && roads.every((r) => r.kind == RoadKind.sea);
     final place = placeOf[id];
-    HeardOfPlace goal(
-      HeardOfReason reason, {
-      int? inChapter,
-      String? expeditionId,
-      String? portId,
-      List<String> waits = const [],
-    }) =>
+    HeardOfPlace goal(HeardOfReason reason,
+            {int? inChapter,
+            String? expeditionId,
+            String? portId,
+            List<String> waits = const []}) =>
         HeardOfPlace(
           landmarkId: id,
           action: HeardOfAction.markGoal,
@@ -225,32 +223,23 @@ Map<String, HeardOfPlace> heardOfPlacesOf({
     final zoneChapter = (zone['chapter'] as num?)?.toInt() ?? 1;
     final portId = portOf(zoneId);
     if (zoneChapter > chapter) {
-      result[id] = goal(
-        HeardOfReason.laterChapter,
-        inChapter: zoneChapter,
-        expeditionId: zoneId,
-        portId: portId,
-      );
+      result[id] = goal(HeardOfReason.laterChapter,
+          inChapter: zoneChapter, expeditionId: zoneId, portId: portId);
       continue;
     }
     if (portId != null && portId != home && !harbourBuilt) {
-      result[id] = goal(
-        HeardOfReason.needsHarbour,
-        expeditionId: zoneId,
-        portId: portId,
-      );
+      result[id] = goal(HeardOfReason.needsHarbour,
+          expeditionId: zoneId, portId: portId);
       continue;
     }
     if (!meetsRequiredFlags(zone, held)) {
-      result[id] = goal(
-        HeardOfReason.needsExpedition,
-        expeditionId: zoneId,
-        portId: portId,
-        waits: [
-          for (final flag in requiredFlagsOf(zone))
-            if (!held.contains(flag)) flag,
-        ],
-      );
+      result[id] = goal(HeardOfReason.needsExpedition,
+          expeditionId: zoneId,
+          portId: portId,
+          waits: [
+            for (final flag in requiredFlagsOf(zone))
+              if (!held.contains(flag)) flag,
+          ]);
       continue;
     }
     result[id] = HeardOfPlace(

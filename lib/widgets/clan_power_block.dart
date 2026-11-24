@@ -24,10 +24,7 @@ const Color nemesisRed = Color(0xFFD1453B);
 /// The colour a place held by [holder] is washed with on the map: the
 /// clan's own, red when it is the party's [nemesis]; none for no holder.
 Color? holderTint(
-  String holder,
-  Map<String, Faction> factions,
-  String? nemesis,
-) {
+    String holder, Map<String, Faction> factions, String? nemesis) {
   if (holder.isEmpty) return null;
   if (holder == nemesis) return nemesisRed;
   final faction = factions[holder];
@@ -40,11 +37,8 @@ String powerTierKey(PowerTier tier) => 'power_tier_${tier.name}';
 const int powerBlockMaxPlaces = 6;
 
 class ClanPowerBlock extends ConsumerWidget {
-  const ClanPowerBlock({
-    super.key,
-    required this.factionId,
-    required this.color,
-  });
+  const ClanPowerBlock(
+      {super.key, required this.factionId, required this.color});
 
   final String factionId;
   final Color color;
@@ -97,20 +91,13 @@ class ClanPowerBlock extends ConsumerWidget {
             child: Row(
               mainAxisSize: MainAxisSize.min,
               children: [
-                const Icon(
-                  Icons.local_fire_department,
-                  size: IconSize.s16,
-                  color: nemesisRed,
-                ),
+                const Icon(Icons.local_fire_department,
+                    size: IconSize.s16, color: nemesisRed),
                 const SizedBox(width: 5),
                 Flexible(
-                  child: Text(
-                    trFor(lang, 'clan_nemesis_tag'),
-                    style: theme.textTheme.labelMedium?.copyWith(
-                      color: nemesisRed,
-                      fontWeight: FontWeight.w700,
-                    ),
-                  ),
+                  child: Text(trFor(lang, 'clan_nemesis_tag'),
+                      style: theme.textTheme.labelMedium?.copyWith(
+                          color: nemesisRed, fontWeight: FontWeight.w700)),
                 ),
               ],
             ),
@@ -120,29 +107,21 @@ class ClanPowerBlock extends ConsumerWidget {
             padding: const EdgeInsets.only(top: 10, bottom: 4),
             child: Row(
               children: [
-                Text(
-                  trFor(lang, 'power_label').toUpperCase(),
-                  style: theme.textTheme.labelSmall?.copyWith(
-                    color: accent,
-                    fontFamily: InkFonts.system,
-                    letterSpacing: 1,
-                  ),
-                ),
+                Text(trFor(lang, 'power_label').toUpperCase(),
+                    style: theme.textTheme.labelSmall?.copyWith(
+                        color: accent,
+                        fontFamily: InkFonts.system,
+                        letterSpacing: 1)),
                 const Spacer(),
-                Text(
-                  trFor(lang, powerTierKey(tier)),
-                  key: Key('clan_power_tier_$factionId'),
-                  style: theme.textTheme.labelMedium?.copyWith(
-                    fontWeight: FontWeight.w700,
-                    color: accent,
-                  ),
-                ),
+                Text(trFor(lang, powerTierKey(tier)),
+                    key: Key('clan_power_tier_$factionId'),
+                    style: theme.textTheme.labelMedium
+                        ?.copyWith(fontWeight: FontWeight.w700, color: accent)),
                 const SizedBox(width: 6),
-                Text(
-                  '$power',
-                  key: Key('clan_power_value_$factionId'),
-                  style: theme.textTheme.labelMedium?.copyWith(color: ink.ash),
-                ),
+                Text('$power',
+                    key: Key('clan_power_value_$factionId'),
+                    style:
+                        theme.textTheme.labelMedium?.copyWith(color: ink.ash)),
               ],
             ),
           ),
@@ -151,13 +130,10 @@ class ClanPowerBlock extends ConsumerWidget {
         ],
         Padding(
           padding: const EdgeInsets.only(top: 8),
-          child: Text(
-            holds(),
-            key: Key('clan_holds_count_$factionId'),
-            style: theme.textTheme.labelMedium?.copyWith(
-              color: theme.colorScheme.onSurfaceVariant,
-            ),
-          ),
+          child: Text(holds(),
+              key: Key('clan_holds_count_$factionId'),
+              style: theme.textTheme.labelMedium
+                  ?.copyWith(color: theme.colorScheme.onSurfaceVariant)),
         ),
         if (shown.isNotEmpty)
           Padding(
@@ -169,10 +145,8 @@ class ClanPowerBlock extends ConsumerWidget {
               children: [
                 for (final name in shown)
                   Container(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 6,
-                      vertical: 1,
-                    ),
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: 6, vertical: 1),
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(8),
                       border: Border.all(color: accent.withValues(alpha: 0.6)),
@@ -181,10 +155,9 @@ class ClanPowerBlock extends ConsumerWidget {
                     child: Text(name, style: theme.textTheme.labelSmall),
                   ),
                 if (more > 0)
-                  Text(
-                    trFor(lang, 'holds_more').replaceAll('{n}', '$more'),
-                    style: theme.textTheme.labelSmall?.copyWith(color: ink.ash),
-                  ),
+                  Text(trFor(lang, 'holds_more').replaceAll('{n}', '$more'),
+                      style:
+                          theme.textTheme.labelSmall?.copyWith(color: ink.ash)),
               ],
             ),
           ),
@@ -203,54 +176,50 @@ class _PowerBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final ink = InkColors.of(context);
-    return LayoutBuilder(
-      builder: (context, box) {
-        final width = box.maxWidth;
-        return SizedBox(
-          key: const Key('power_bar'),
-          height: 12,
-          child: Stack(
-            children: [
-              Positioned.fill(
-                top: 3,
-                bottom: 3,
-                child: DecoratedBox(
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(3),
-                    color: ink.seam.withValues(alpha: 0.5),
-                  ),
+    return LayoutBuilder(builder: (context, box) {
+      final width = box.maxWidth;
+      return SizedBox(
+        key: const Key('power_bar'),
+        height: 12,
+        child: Stack(
+          children: [
+            Positioned.fill(
+              top: 3,
+              bottom: 3,
+              child: DecoratedBox(
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(3),
+                  color: ink.seam.withValues(alpha: 0.5),
                 ),
               ),
+            ),
+            Positioned(
+              left: 0,
+              top: 3,
+              bottom: 3,
+              width: width * power.clamp(0, maxPower) / maxPower,
+              child: DecoratedBox(
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(3),
+                  color: color,
+                ),
+              ),
+            ),
+            for (final tick in const [
+              risingPower,
+              dominantPower,
+              ascendantPower
+            ])
               Positioned(
-                left: 0,
-                top: 3,
-                bottom: 3,
-                width: width * power.clamp(0, maxPower) / maxPower,
-                child: DecoratedBox(
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(3),
-                    color: color,
-                  ),
-                ),
+                left: width * tick / maxPower - 1,
+                top: 0,
+                bottom: 0,
+                width: 2,
+                child: ColoredBox(color: ink.voidColor.withValues(alpha: 0.7)),
               ),
-              for (final tick in const [
-                risingPower,
-                dominantPower,
-                ascendantPower,
-              ])
-                Positioned(
-                  left: width * tick / maxPower - 1,
-                  top: 0,
-                  bottom: 0,
-                  width: 2,
-                  child: ColoredBox(
-                    color: ink.voidColor.withValues(alpha: 0.7),
-                  ),
-                ),
-            ],
-          ),
-        );
-      },
-    );
+          ],
+        ),
+      );
+    });
   }
 }

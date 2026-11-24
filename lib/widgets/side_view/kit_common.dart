@@ -15,14 +15,8 @@ const _bayer = [
 
 /// The sky in dithered [bands] (top to bottom) down to [horizon] scene
 /// pixels, the ground behind the hills filled with [ground] below it.
-void kitSky(
-  Canvas canvas,
-  Size size,
-  double u, {
-  required List<Color> bands,
-  required Color ground,
-  int horizon = 48,
-}) {
+void kitSky(Canvas canvas, Size size, double u,
+    {required List<Color> bands, required Color ground, int horizon = 48}) {
   final cols = (size.width / u).ceil();
   final paint = Paint();
   for (var y = 0; y < horizon; y++) {
@@ -35,24 +29,18 @@ void kitSky(
       canvas.drawRect(Rect.fromLTWH(x * u, y * u, u + 0.5, u + 0.5), paint);
     }
   }
-  canvas.drawRect(
-    Rect.fromLTWH(0, horizon * u, size.width, size.height),
-    Paint()..color = ground,
-  );
+  canvas.drawRect(Rect.fromLTWH(0, horizon * u, size.width, size.height),
+      Paint()..color = ground);
 }
 
 /// A disc of [radius] scene pixels at [cx] (a share of the width) and [cy],
 /// with a dithered halo of [glow]'s colour.
-void kitDisc(
-  Canvas canvas,
-  Size size,
-  double u, {
-  required double cx,
-  required double cy,
-  required Color disc,
-  required Color glow,
-  int radius = 4,
-}) {
+void kitDisc(Canvas canvas, Size size, double u,
+    {required double cx,
+    required double cy,
+    required Color disc,
+    required Color glow,
+    int radius = 4}) {
   final x0 = (size.width / u * cx).floorToDouble();
   final discPaint = Paint()..color = disc;
   final glowPaint = Paint()..color = glow;
@@ -63,14 +51,12 @@ void kitDisc(
       final d = x * x + y * y;
       if (d <= r2) {
         canvas.drawRect(
-          Rect.fromLTWH((x0 + x) * u, (cy + y) * u, u + 0.5, u + 0.5),
-          discPaint,
-        );
+            Rect.fromLTWH((x0 + x) * u, (cy + y) * u, u + 0.5, u + 0.5),
+            discPaint);
       } else if (d <= halo * halo && (x + y).isEven) {
         canvas.drawRect(
-          Rect.fromLTWH((x0 + x) * u, (cy + y) * u, u + 0.5, u + 0.5),
-          glowPaint,
-        );
+            Rect.fromLTWH((x0 + x) * u, (cy + y) * u, u + 0.5, u + 0.5),
+            glowPaint);
       }
     }
   }
@@ -78,15 +64,8 @@ void kitDisc(
 
 /// The path along the bottom: [body] with a [light] rim and a scattering of
 /// [dark] marks.
-void kitPath(
-  Canvas canvas,
-  Size size,
-  double scroll,
-  double u, {
-  required Color body,
-  required Color light,
-  required Color dark,
-}) {
+void kitPath(Canvas canvas, Size size, double scroll, double u,
+    {required Color body, required Color light, required Color dark}) {
   final w = size.width / u;
   sidePixels(canvas, u, Paint()..color = body, 0, 63, w + 1, 9);
   sidePixels(canvas, u, Paint()..color = light, 0, 63, w + 1, 1);

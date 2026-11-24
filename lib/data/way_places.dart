@@ -51,12 +51,8 @@ class WayPlace {
   const WayPlace.here() : this._(herePlaceWord, WayPlaceKind.here);
 
   const WayPlace.building(String buildingId, {String? placeId})
-      : this._(
-          'building:$buildingId',
-          WayPlaceKind.building,
-          buildingId: buildingId,
-          placeId: placeId,
-        );
+      : this._('building:$buildingId', WayPlaceKind.building,
+            buildingId: buildingId, placeId: placeId);
 
   const WayPlace.wayOut(String placeId)
       : this._('out:$placeId', WayPlaceKind.wayOut, placeId: placeId);
@@ -99,12 +95,10 @@ WayPlace placeOfWay(
   // A way out of the town told by a departure scene still here (v1.851).
   if (own == outPlaceWord) {
     final end = story.nodeFor(wayOutEndOf(choice, story));
-    return WayPlace.wayOut(
-      shape.to?.id ??
-          geography.locationOfNode(end)?.id ??
-          end?.location ??
-          choice.nextId,
-    );
+    return WayPlace.wayOut(shape.to?.id ??
+        geography.locationOfNode(end)?.id ??
+        end?.location ??
+        choice.nextId);
   }
   if (shape.here) return const WayPlace.here();
   final next = story.nodeFor(choice.nextId);
@@ -123,28 +117,18 @@ WayPlace placeOfWay(
   final district = districtOfNode(geography, next)?.id;
   final anchor = record.building(record.anchors[next.id] ?? '');
   if (anchor != null && (district == null || anchor.district == district)) {
-    return WayPlace.building(
-      anchor.id,
-      placeId: geography.placeOfNode(next)?.id,
-    );
+    return WayPlace.building(anchor.id,
+        placeId: geography.placeOfNode(next)?.id);
   }
   return const WayPlace.here();
 }
 
 /// Whether [choice] carries the party somewhere else in the town or out of
 /// it (a walk, a journey), rather than being done where it stands.
-bool _wayCarriesParty(
-  StoryNode node,
-  StoryChoice choice, {
-  required StoryData story,
-  required Geography geography,
-}) {
-  final move = choiceShape(
-    node,
-    choice,
-    story: story,
-    geography: geography,
-  ).move;
+bool _wayCarriesParty(StoryNode node, StoryChoice choice,
+    {required StoryData story, required Geography geography}) {
+  final move =
+      choiceShape(node, choice, story: story, geography: geography).move;
   return move == ChoiceMove.walk || move == ChoiceMove.travel;
 }
 
@@ -263,26 +247,15 @@ List<WayPlaceEntry> districtPlaces(
   final carries = <int>{};
   for (final i in indices) {
     final choice = node.choices[i];
-    places[i] = placeOfWay(
-      node,
-      choice,
-      story: story,
-      geography: geography,
-      record: record,
-      stops: stops,
-    );
+    places[i] = placeOfWay(node, choice,
+        story: story, geography: geography, record: record, stops: stops);
     if (_wayIsMainStory(choice, stops: stops)) main.add(i);
     if (_wayCarriesParty(node, choice, story: story, geography: geography)) {
       carries.add(i);
     }
   }
-  return groupWaysByPlace(
-    places,
-    main: main,
-    carries: carries,
-    locked: lockedWays,
-    distance: distance,
-  );
+  return groupWaysByPlace(places,
+      main: main, carries: carries, locked: lockedWays, distance: distance);
 }
 
 /// The name of [place] in the town of [record]: a building's name on the

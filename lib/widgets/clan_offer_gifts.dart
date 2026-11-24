@@ -156,9 +156,8 @@ class ClanCardView extends StatelessWidget {
         decoration: BoxDecoration(
           boxShadow: [
             BoxShadow(
-              color: glow.withValues(alpha: lit ? 0.6 : 0.22),
-              blurRadius: lit ? 18 : 8,
-            ),
+                color: glow.withValues(alpha: lit ? 0.6 : 0.22),
+                blurRadius: lit ? 18 : 8),
           ],
         ),
         child: Stack(
@@ -177,12 +176,11 @@ class ClanCardView extends StatelessWidget {
               child: _ClanBackdrop(tier: tier, color: color, id: backdropId),
             ),
             Positioned(
-              left: 18,
-              top: 12,
-              width: 64,
-              height: 128,
-              child: FittedBox(fit: BoxFit.contain, child: flag),
-            ),
+                left: 18,
+                top: 12,
+                width: 64,
+                height: 128,
+                child: FittedBox(fit: BoxFit.contain, child: flag)),
             Positioned(
               right: 16,
               top: 36,
@@ -211,11 +209,10 @@ class ClanCardView extends StatelessWidget {
                     name,
                     maxLines: 1,
                     style: const TextStyle(
-                      fontFamily: InkFonts.display,
-                      fontSize: 18,
-                      height: 1,
-                      color: _outline,
-                    ),
+                        fontFamily: InkFonts.display,
+                        fontSize: 18,
+                        height: 1,
+                        color: _outline),
                   ),
                 ),
               ),
@@ -248,11 +245,10 @@ class ClanCardView extends StatelessWidget {
                       overflow: TextOverflow.ellipsis,
                       textAlign: TextAlign.center,
                       style: const TextStyle(
-                        fontFamily: InkFonts.system,
-                        fontSize: 12,
-                        height: 1.2,
-                        color: _gold,
-                      ),
+                          fontFamily: InkFonts.system,
+                          fontSize: 12,
+                          height: 1.2,
+                          color: _gold),
                     ),
                   ],
                   if (standing != null) ...[
@@ -262,11 +258,10 @@ class ClanCardView extends StatelessWidget {
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
                       style: TextStyle(
-                        fontFamily: InkFonts.system,
-                        fontSize: 12,
-                        height: 1.2,
-                        color: standingGood ? _core : scheme.error,
-                      ),
+                          fontFamily: InkFonts.system,
+                          fontSize: 12,
+                          height: 1.2,
+                          color: standingGood ? _core : scheme.error),
                     ),
                   ],
                   const Spacer(),
@@ -278,12 +273,11 @@ class ClanCardView extends StatelessWidget {
                     maxLines: 3,
                     overflow: TextOverflow.ellipsis,
                     style: const TextStyle(
-                      fontFamily: InkFonts.prose,
-                      fontStyle: FontStyle.italic,
-                      fontSize: 11.5,
-                      height: 1.25,
-                      color: _cream,
-                    ),
+                        fontFamily: InkFonts.prose,
+                        fontStyle: FontStyle.italic,
+                        fontSize: 11.5,
+                        height: 1.25,
+                        color: _cream),
                   ),
                   const SizedBox(height: 6),
                   Text(
@@ -291,20 +285,18 @@ class ClanCardView extends StatelessWidget {
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
                     style: TextStyle(
-                      fontFamily: InkFonts.system,
-                      fontSize: 9.5,
-                      color: Color.lerp(color, _cream, 0.45),
-                    ),
+                        fontFamily: InkFonts.system,
+                        fontSize: 9.5,
+                        color: Color.lerp(color, _cream, 0.45)),
                   ),
                 ],
               ),
             ),
             // The tier's frame over it all (its centre is transparent).
             Positioned(
-              left: 1,
-              top: 1,
-              child: _art(_asset('frame', tier), width: 208, height: 344),
-            ),
+                left: 1,
+                top: 1,
+                child: _art(_asset('frame', tier), width: 208, height: 344)),
           ],
         ),
       ),
@@ -327,10 +319,7 @@ class _ClanBackdrop extends StatelessWidget {
       children: [
         _art(_asset('backdrop', tier), width: 208, height: 152),
         Container(
-          width: 208,
-          height: 152,
-          color: color.withValues(alpha: 0.18),
-        ),
+            width: 208, height: 152, color: color.withValues(alpha: 0.18)),
       ],
     );
     if (id == null) return fallback;
@@ -382,9 +371,8 @@ class ClanHandFan extends StatelessWidget {
   Widget build(BuildContext context) {
     final n = cards.length;
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 8),
-      child: LayoutBuilder(
-        builder: (context, box) {
+        padding: const EdgeInsets.symmetric(horizontal: 8),
+        child: LayoutBuilder(builder: (context, box) {
           final width = box.maxWidth;
           const restW = _clanCardWidth * _rest;
           const upW = _clanCardWidth * _up;
@@ -441,9 +429,7 @@ class ClanHandFan extends StatelessWidget {
               children: [for (final i in order) one(i)],
             ),
           );
-        },
-      ),
-    );
+        }));
   }
 }
 
@@ -495,10 +481,9 @@ class ClanRaiseRow extends StatelessWidget {
         decoration: ShapeDecoration(
           color: selected ? Color.lerp(_navy, _core, 0.1) : _navy,
           shape: PixelChipBorder(
-            side: BorderSide(color: frame, width: selected ? 2.5 : 1.5),
-            step: 2,
-            steps: 2,
-          ),
+              side: BorderSide(color: frame, width: selected ? 2.5 : 1.5),
+              step: 2,
+              steps: 2),
           shadows: [
             if (selected)
               BoxShadow(color: _core.withValues(alpha: 0.4), blurRadius: 10),
@@ -523,9 +508,8 @@ class ClanRaiseRow extends StatelessWidget {
                 ),
                 alignment: Alignment.center,
                 child: SizedBox(
-                  height: 84,
-                  child: FittedBox(fit: BoxFit.contain, child: flag),
-                ),
+                    height: 84,
+                    child: FittedBox(fit: BoxFit.contain, child: flag)),
               ),
               Expanded(
                 child: Padding(
@@ -541,11 +525,8 @@ class ClanRaiseRow extends StatelessWidget {
                             child: Stack(
                               alignment: Alignment.center,
                               children: [
-                                _art(
-                                  _asset('plate', tier),
-                                  width: 44,
-                                  height: 44,
-                                ),
+                                _art(_asset('plate', tier),
+                                    width: 44, height: 44),
                                 FittedBox(child: icon),
                               ],
                             ),
@@ -555,59 +536,53 @@ class ClanRaiseRow extends StatelessWidget {
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                Text(
-                                  name,
-                                  maxLines: 2,
-                                  overflow: TextOverflow.ellipsis,
-                                  style: const TextStyle(
-                                    fontFamily: InkFonts.display,
-                                    fontSize: 16,
-                                    height: 1.1,
-                                    color: _cream,
-                                  ),
-                                ),
+                                Text(name,
+                                    maxLines: 2,
+                                    overflow: TextOverflow.ellipsis,
+                                    style: const TextStyle(
+                                        fontFamily: InkFonts.display,
+                                        fontSize: 16,
+                                        height: 1.1,
+                                        color: _cream)),
                                 const SizedBox(height: 3),
-                                Wrap(spacing: 4, runSpacing: 3, children: tags),
+                                Wrap(
+                                  spacing: 4,
+                                  runSpacing: 3,
+                                  children: tags,
+                                ),
                               ],
                             ),
                           ),
                         ],
                       ),
                       const SizedBox(height: 6),
-                      Text(
-                        raises,
-                        maxLines: 2,
-                        overflow: TextOverflow.ellipsis,
-                        style: const TextStyle(
-                          fontFamily: InkFonts.system,
-                          fontSize: 11,
-                          height: 1.2,
-                          color: _gold,
-                        ),
-                      ),
-                      if (standing != null)
-                        Text(
-                          standing!,
-                          maxLines: 1,
+                      Text(raises,
+                          maxLines: 2,
                           overflow: TextOverflow.ellipsis,
-                          style: TextStyle(
-                            fontFamily: InkFonts.system,
-                            fontSize: 11,
-                            height: 1.2,
-                            color: standingGood ? _core : scheme.error,
-                          ),
-                        ),
+                          style: const TextStyle(
+                              fontFamily: InkFonts.system,
+                              fontSize: 11,
+                              height: 1.2,
+                              color: _gold)),
+                      if (standing != null)
+                        Text(standing!,
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                            style: TextStyle(
+                                fontFamily: InkFonts.system,
+                                fontSize: 11,
+                                height: 1.2,
+                                color: standingGood ? _core : scheme.error)),
                       const SizedBox(height: 4),
                       Text(
                         '${clanName.toUpperCase()}  ·  “$greeting”',
                         maxLines: selected ? 4 : 1,
                         overflow: TextOverflow.ellipsis,
                         style: TextStyle(
-                          fontFamily: InkFonts.prose,
-                          fontSize: 11,
-                          height: 1.25,
-                          color: scheme.onSurfaceVariant,
-                        ),
+                            fontFamily: InkFonts.prose,
+                            fontSize: 11,
+                            height: 1.25,
+                            color: scheme.onSurfaceVariant),
                       ),
                     ],
                   ),

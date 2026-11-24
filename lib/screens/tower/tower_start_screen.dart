@@ -3,7 +3,6 @@
 // to continue, and the pick of a people, a calling and a clan for a new
 // one (the ones not bought yet lie locked), then Climb.
 import '../../widgets/fit_title.dart';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -58,13 +57,14 @@ class _TowerStartScreenState extends ConsumerState<_TowerStartBody> {
   Future<void> _create() async {
     final progress = ref.read(towerProvider).value?.progress;
     final locks = _locks(progress?.professions ?? towerStartProfessions);
-    await Navigator.of(context).push(
-      MaterialPageRoute(
-        builder: (_) => TowerNight(
-          child: RaceProfessionScreen(locks: locks, onChosen: _begin),
+    await Navigator.of(context).push(MaterialPageRoute(
+      builder: (_) => TowerNight(
+        child: RaceProfessionScreen(
+          locks: locks,
+          onChosen: _begin,
         ),
       ),
-    );
+    ));
   }
 
   Future<void> _begin(String race, String profession) async {
@@ -77,18 +77,15 @@ class _TowerStartScreenState extends ConsumerState<_TowerStartBody> {
     if (!mounted) return;
     setState(() => _starting = false);
     await Navigator.of(context).pushReplacement(
-      MaterialPageRoute(builder: (_) => const TowerFloorScreen()),
-    );
+        MaterialPageRoute(builder: (_) => const TowerFloorScreen()));
   }
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final ink = InkColors.of(context);
-    final paper = theme.textTheme.apply(
-      bodyColor: inkOnPaper,
-      displayColor: inkOnPaper,
-    );
+    final paper =
+        theme.textTheme.apply(bodyColor: inkOnPaper, displayColor: inkOnPaper);
     final state = ref.watch(towerProvider).value ?? const TowerState();
     final progress = state.progress;
     final run = state.run;
@@ -100,12 +97,9 @@ class _TowerStartScreenState extends ConsumerState<_TowerStartBody> {
           child: ListView(
             padding: const EdgeInsets.fromLTRB(16, 4, 16, 24),
             children: [
-              Text(
-                tr(ref, 'tower_tagline'),
-                style: theme.textTheme.bodyLarge?.copyWith(
-                  fontStyle: FontStyle.italic,
-                ),
-              ),
+              Text(tr(ref, 'tower_tagline'),
+                  style: theme.textTheme.bodyLarge
+                      ?.copyWith(fontStyle: FontStyle.italic)),
               const SizedBox(height: 18),
               // The marks and the best floor, on paper (Art's wide frame).
               InkPaperPanel(
@@ -117,22 +111,17 @@ class _TowerStartScreenState extends ConsumerState<_TowerStartBody> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            '${progress.marks} ${tr(ref, 'tower_marks_name')}',
-                            key: const Key('tower_marks_total'),
-                            style: paper.titleMedium,
-                          ),
+                              '${progress.marks} ${tr(ref, 'tower_marks_name')}',
+                              key: const Key('tower_marks_total'),
+                              style: paper.titleMedium),
                           Text(
-                            [
-                              _fill(tr(ref, 'tower_best'), {
-                                'n': progress.bestFloor,
-                              }),
-                              _fill(tr(ref, 'tower_runs_line'), {
-                                'r': progress.runs,
-                                'w': progress.wins,
-                              }),
-                            ].join(' · '),
-                            style: paper.bodySmall,
-                          ),
+                              [
+                                _fill(tr(ref, 'tower_best'),
+                                    {'n': progress.bestFloor}),
+                                _fill(tr(ref, 'tower_runs_line'),
+                                    {'r': progress.runs, 'w': progress.wins}),
+                              ].join(' · '),
+                              style: paper.bodySmall),
                         ],
                       ),
                     ),
@@ -141,10 +130,8 @@ class _TowerStartScreenState extends ConsumerState<_TowerStartBody> {
                       onPaper: true,
                       label: tr(ref, 'tower_marks_button'),
                       onPressed: () => Navigator.of(context).push(
-                        MaterialPageRoute(
-                          builder: (_) => const TowerMarksScreen(),
-                        ),
-                      ),
+                          MaterialPageRoute(
+                              builder: (_) => const TowerMarksScreen())),
                     ),
                   ],
                 ),
@@ -163,13 +150,10 @@ class _TowerStartScreenState extends ConsumerState<_TowerStartBody> {
                 onPressed: _starting ? null : _create,
               ),
               const SizedBox(height: 8),
-              Text(
-                tr(ref, 'tower_save_note'),
-                textAlign: TextAlign.center,
-                style: theme.textTheme.bodySmall?.copyWith(
-                  color: theme.colorScheme.onSurfaceVariant,
-                ),
-              ),
+              Text(tr(ref, 'tower_save_note'),
+                  textAlign: TextAlign.center,
+                  style: theme.textTheme.bodySmall
+                      ?.copyWith(color: theme.colorScheme.onSurfaceVariant)),
               // The three bands of the tower, top to bottom (v1.900).
               const SizedBox(height: 18),
               for (final band in [3, 2, 1]) _bandPane(band, theme, ink),
@@ -194,52 +178,38 @@ class _TowerStartScreenState extends ConsumerState<_TowerStartBody> {
               Offset(w - 8, h - 8),
               const Offset(8, h - 8),
             ],
-            child: Stack(
-              fit: StackFit.expand,
-              children: [
-                Image.asset(
-                  towerBackdropAsset(towerBandOf(run.floor)),
-                  fit: BoxFit.cover,
-                  filterQuality: FilterQuality.none,
-                ),
-                Positioned(
-                  left: 20,
-                  top: 14,
-                  right: 20,
-                  bottom: 14,
-                  child: ColoredBox(
-                    color: inkBlack.withValues(alpha: 0.82),
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 14),
-                      child: Row(
-                        children: [
-                          Expanded(
-                            child: Text(
-                              _fill(
-                                  tr(ref, 'tower_floor_of'), {'n': run.floor}),
-                              style: theme.textTheme.titleMedium?.copyWith(
-                                fontFamily: InkFonts.display,
-                                color: inkPaper,
-                              ),
-                            ),
-                          ),
-                          InkButton(
-                            buttonKey: const Key('tower_continue'),
-                            primary: true,
-                            label: tr(ref, 'tower_continue'),
-                            onPressed: () => Navigator.of(context).push(
-                              MaterialPageRoute(
-                                builder: (_) => const TowerFloorScreen(),
-                              ),
-                            ),
-                          ),
-                        ],
+            child: Stack(fit: StackFit.expand, children: [
+              Image.asset(towerBackdropAsset(towerBandOf(run.floor)),
+                  fit: BoxFit.cover, filterQuality: FilterQuality.none),
+              Positioned(
+                left: 20,
+                top: 14,
+                right: 20,
+                bottom: 14,
+                child: ColoredBox(
+                  color: inkBlack.withValues(alpha: 0.82),
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 14),
+                    child: Row(children: [
+                      Expanded(
+                        child: Text(
+                            _fill(tr(ref, 'tower_floor_of'), {'n': run.floor}),
+                            style: theme.textTheme.titleMedium?.copyWith(
+                                fontFamily: InkFonts.display, color: inkPaper)),
                       ),
-                    ),
+                      InkButton(
+                        buttonKey: const Key('tower_continue'),
+                        primary: true,
+                        label: tr(ref, 'tower_continue'),
+                        onPressed: () => Navigator.of(context).push(
+                            MaterialPageRoute(
+                                builder: (_) => const TowerFloorScreen())),
+                      ),
+                    ]),
                   ),
                 ),
-              ],
-            ),
+              ),
+            ]),
           );
         },
       );
@@ -251,38 +221,24 @@ class _TowerStartScreenState extends ConsumerState<_TowerStartBody> {
           borderRadius: BorderRadius.circular(8),
           child: SizedBox(
             height: 70,
-            child: Stack(
-              fit: StackFit.expand,
-              children: [
-                Image.asset(
-                  towerBackdropAsset(band),
-                  fit: BoxFit.cover,
-                  filterQuality: FilterQuality.none,
-                ),
-                ColoredBox(color: Colors.black.withValues(alpha: .45)),
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 14),
-                  child: Row(
-                    children: [
-                      Expanded(
-                        child: Text(
-                          tr(ref, 'tower_band_$band'),
-                          style: theme.textTheme.titleMedium?.copyWith(
-                            color: Colors.white,
-                          ),
-                        ),
-                      ),
-                      Text(
-                        '${(band - 1) * 10 + 1}\u2013${band * 10}',
-                        style: theme.textTheme.titleMedium?.copyWith(
-                          color: ink.gold,
-                        ),
-                      ),
-                    ],
+            child: Stack(fit: StackFit.expand, children: [
+              Image.asset(towerBackdropAsset(band),
+                  fit: BoxFit.cover, filterQuality: FilterQuality.none),
+              ColoredBox(color: Colors.black.withValues(alpha: .45)),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 14),
+                child: Row(children: [
+                  Expanded(
+                    child: Text(tr(ref, 'tower_band_$band'),
+                        style: theme.textTheme.titleMedium
+                            ?.copyWith(color: Colors.white)),
                   ),
-                ),
-              ],
-            ),
+                  Text('${(band - 1) * 10 + 1}\u2013${band * 10}',
+                      style: theme.textTheme.titleMedium
+                          ?.copyWith(color: ink.gold)),
+                ]),
+              ),
+            ]),
           ),
         ),
       );

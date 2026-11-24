@@ -45,12 +45,8 @@ class ClanPeek extends StatelessWidget {
 /// stands, the motto, what the clan stands for, the way it leans (alignment
 /// and the five axes of its gifts), its sub-clans, and its story.
 class ClanDetailsCard extends ConsumerWidget {
-  const ClanDetailsCard({
-    super.key,
-    required this.factionId,
-    this.greeting = '',
-    this.onClose,
-  });
+  const ClanDetailsCard(
+      {super.key, required this.factionId, this.greeting = '', this.onClose});
 
   final String factionId;
 
@@ -87,17 +83,14 @@ class ClanDetailsCard extends ConsumerWidget {
     final stands = faction.standsForIn(lang);
     final intro = faction.introFor(lang);
     final ruling = faction.rulingFor(lang);
-    final subs = [for (final s in data.subclansOf(factionId)) s.nameFor(lang)];
+    final subs = [
+      for (final s in data.subclansOf(factionId)) s.nameFor(lang),
+    ];
     Widget heading(String key) => Padding(
           padding: const EdgeInsets.only(top: 10, bottom: 3),
-          child: Text(
-            tr(ref, key).toUpperCase(),
-            style: theme.textTheme.labelSmall?.copyWith(
-              color: color,
-              fontFamily: InkFonts.system,
-              letterSpacing: 1,
-            ),
-          ),
+          child: Text(tr(ref, key).toUpperCase(),
+              style: theme.textTheme.labelSmall?.copyWith(
+                  color: color, fontFamily: InkFonts.system, letterSpacing: 1)),
         );
     return Material(
       key: Key('clan_details_$factionId'),
@@ -107,214 +100,171 @@ class ClanDetailsCard extends ConsumerWidget {
         borderRadius: BorderRadius.circular(14),
         side: BorderSide(color: color.withValues(alpha: 0.9), width: 1.5),
       ),
-      child: Stack(
-        children: [
-          SingleChildScrollView(
-            padding: EdgeInsets.fromLTRB(14, 14, onClose == null ? 14 : 38, 14),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Row(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    if (bannerId != null)
-                      SizedBox(
-                        width: 52,
-                        height: 76,
-                        child: FittedBox(
+      child: Stack(children: [
+        SingleChildScrollView(
+          padding: EdgeInsets.fromLTRB(14, 14, onClose == null ? 14 : 38, 14),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  if (bannerId != null)
+                    SizedBox(
+                      width: 52,
+                      height: 76,
+                      child: FittedBox(
                           child: ClanMarks(
-                            factionId: factionId,
-                            discSize: 30,
-                            plate: true,
-                            child: PixelBanner(id: bannerId, scale: 1),
-                          ),
-                        ),
-                      ),
-                    if (bannerId != null) const SizedBox(width: 12),
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            faction.nameFor(lang),
-                            style: theme.textTheme.titleMedium?.copyWith(
-                              fontFamily: InkFonts.display,
-                              color: color,
-                            ),
-                          ),
-                          if (tier != null)
-                            Padding(
-                              padding: const EdgeInsets.only(top: 4),
-                              child: Text(
-                                trFor(lang, standingTierKey(tier)),
-                                style: theme.textTheme.labelSmall?.copyWith(
-                                  color: Color(tierColor(tier) | 0xFF000000),
-                                  fontWeight: FontWeight.w700,
-                                ),
-                              ),
-                            ),
-                          if (motto.isNotEmpty)
-                            Padding(
-                              padding: const EdgeInsets.only(top: 6),
-                              child: Text(
-                                '“$motto”',
-                                style: theme.textTheme.bodyMedium?.copyWith(
-                                  fontStyle: FontStyle.italic,
-                                ),
-                              ),
-                            ),
-                        ],
-                      ),
+                              factionId: factionId,
+                              discSize: 30,
+                              plate: true,
+                              child: PixelBanner(id: bannerId, scale: 1))),
                     ),
-                  ],
-                ),
-                ClanPowerBlock(factionId: factionId, color: color),
-                heading('clan_peek_orientation'),
-                Row(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          if (stands.isNotEmpty)
-                            Text.rich(
+                  if (bannerId != null) const SizedBox(width: 12),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(faction.nameFor(lang),
+                            style: theme.textTheme.titleMedium?.copyWith(
+                                fontFamily: InkFonts.display, color: color)),
+                        if (tier != null)
+                          Padding(
+                            padding: const EdgeInsets.only(top: 4),
+                            child: Text(trFor(lang, standingTierKey(tier)),
+                                style: theme.textTheme.labelSmall?.copyWith(
+                                    color: Color(tierColor(tier) | 0xFF000000),
+                                    fontWeight: FontWeight.w700)),
+                          ),
+                        if (motto.isNotEmpty)
+                          Padding(
+                            padding: const EdgeInsets.only(top: 6),
+                            child: Text('“$motto”',
+                                style: theme.textTheme.bodyMedium
+                                    ?.copyWith(fontStyle: FontStyle.italic)),
+                          ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+              ClanPowerBlock(factionId: factionId, color: color),
+              heading('clan_peek_orientation'),
+              Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        if (stands.isNotEmpty)
+                          Text.rich(
+                            TextSpan(children: [
                               TextSpan(
-                                children: [
-                                  TextSpan(
-                                    text:
-                                        '${trFor(lang, 'offer_stands_for')} · ',
-                                    style: TextStyle(
-                                      color: theme.colorScheme.onSurfaceVariant,
-                                    ),
-                                  ),
-                                  TextSpan(
-                                    text: stands,
-                                    style: const TextStyle(
-                                      fontWeight: FontWeight.w600,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                              key: Key('clan_peek_stands_$factionId'),
-                              style: theme.textTheme.bodySmall,
-                            ),
-                          const SizedBox(height: 6),
-                          Container(
-                            key: const Key('clan_peek_alignment'),
-                            padding: const EdgeInsets.symmetric(
-                              horizontal: 8,
-                              vertical: 3,
-                            ),
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(10),
-                              border: Border.all(
-                                color: leanColor.withValues(alpha: 0.7),
-                              ),
-                              color: leanColor.withValues(alpha: 0.10),
-                            ),
-                            child: Text(
+                                  text: '${trFor(lang, 'offer_stands_for')} · ',
+                                  style: TextStyle(
+                                      color:
+                                          theme.colorScheme.onSurfaceVariant)),
+                              TextSpan(
+                                  text: stands,
+                                  style: const TextStyle(
+                                      fontWeight: FontWeight.w600)),
+                            ]),
+                            key: Key('clan_peek_stands_$factionId'),
+                            style: theme.textTheme.bodySmall,
+                          ),
+                        const SizedBox(height: 6),
+                        Container(
+                          key: const Key('clan_peek_alignment'),
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 8, vertical: 3),
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(10),
+                            border: Border.all(
+                                color: leanColor.withValues(alpha: 0.7)),
+                            color: leanColor.withValues(alpha: 0.10),
+                          ),
+                          child: Text(
                               '${trFor(lang, 'alignment_label')} · ${trFor(lang, leanKey)}',
                               style: theme.textTheme.labelSmall?.copyWith(
-                                color: leanColor,
-                                fontWeight: FontWeight.w700,
-                              ),
-                            ),
-                          ),
-                          if (subs.isNotEmpty) ...[
-                            const SizedBox(height: 8),
-                            Wrap(
-                              key: const Key('clan_peek_subclans'),
-                              spacing: 5,
-                              runSpacing: 4,
-                              children: [
-                                for (final name in subs)
-                                  Container(
-                                    padding: const EdgeInsets.symmetric(
-                                      horizontal: 6,
-                                      vertical: 1,
-                                    ),
-                                    decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.circular(8),
-                                      border: Border.all(
-                                        color: color.withValues(alpha: 0.6),
-                                      ),
-                                      color: color.withValues(alpha: 0.12),
-                                    ),
-                                    child: Text(
-                                      name,
-                                      style: theme.textTheme.labelSmall,
-                                    ),
+                                  color: leanColor,
+                                  fontWeight: FontWeight.w700)),
+                        ),
+                        if (subs.isNotEmpty) ...[
+                          const SizedBox(height: 8),
+                          Wrap(
+                            key: const Key('clan_peek_subclans'),
+                            spacing: 5,
+                            runSpacing: 4,
+                            children: [
+                              for (final name in subs)
+                                Container(
+                                  padding: const EdgeInsets.symmetric(
+                                      horizontal: 6, vertical: 1),
+                                  decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(8),
+                                    border: Border.all(
+                                        color: color.withValues(alpha: 0.6)),
+                                    color: color.withValues(alpha: 0.12),
                                   ),
-                              ],
-                            ),
-                          ],
+                                  child: Text(name,
+                                      style: theme.textTheme.labelSmall),
+                                ),
+                            ],
+                          ),
                         ],
-                      ),
+                      ],
                     ),
-                    const SizedBox(width: 6),
-                    ClanRadarChart(
-                      factionId: factionId,
-                      color: color,
-                      size: 108,
-                    ),
-                  ],
-                ),
-                if (intro.isNotEmpty) ...[
-                  heading('clan_peek_backstory'),
-                  Text(
-                    intro,
+                  ),
+                  const SizedBox(width: 6),
+                  ClanRadarChart(factionId: factionId, color: color, size: 108),
+                ],
+              ),
+              if (intro.isNotEmpty) ...[
+                heading('clan_peek_backstory'),
+                Text(intro,
                     key: Key('clan_peek_intro_$factionId'),
-                    style: theme.textTheme.bodySmall?.copyWith(
-                      color: theme.colorScheme.onSurfaceVariant,
-                    ),
-                  ),
-                ],
-                if (ruling.isNotEmpty) ...[
-                  heading('clan_peek_ruling'),
-                  Text(
-                    ruling,
+                    style: theme.textTheme.bodySmall
+                        ?.copyWith(color: theme.colorScheme.onSurfaceVariant)),
+              ],
+              if (ruling.isNotEmpty) ...[
+                heading('clan_peek_ruling'),
+                Text(ruling,
                     key: Key('clan_peek_ruling_$factionId'),
-                    style: theme.textTheme.bodySmall?.copyWith(
-                      color: theme.colorScheme.onSurfaceVariant,
-                    ),
+                    style: theme.textTheme.bodySmall
+                        ?.copyWith(color: theme.colorScheme.onSurfaceVariant)),
+              ],
+              if (greeting.isNotEmpty) ...[
+                heading('clan_peek_says'),
+                Container(
+                  padding: const EdgeInsets.only(left: 10),
+                  decoration: BoxDecoration(
+                    border: Border(left: BorderSide(color: color, width: 3)),
                   ),
-                ],
-                if (greeting.isNotEmpty) ...[
-                  heading('clan_peek_says'),
-                  Container(
-                    padding: const EdgeInsets.only(left: 10),
-                    decoration: BoxDecoration(
-                      border: Border(left: BorderSide(color: color, width: 3)),
-                    ),
-                    child: Text(
-                      greeting,
+                  child: Text(greeting,
                       key: Key('clan_peek_greeting_$factionId'),
                       style: theme.textTheme.bodySmall?.copyWith(
-                        fontStyle: FontStyle.italic,
-                        color: theme.colorScheme.onSurfaceVariant,
-                      ),
-                    ),
-                  ),
-                ],
+                          fontStyle: FontStyle.italic,
+                          color: theme.colorScheme.onSurfaceVariant)),
+                ),
               ],
+            ],
+          ),
+        ),
+        if (onClose != null)
+          Positioned(
+            top: 2,
+            right: 2,
+            child: IconButton(
+              key: const Key('clan_details_close'),
+              icon: const Icon(Icons.close, size: IconSize.s16),
+              tooltip: tr(ref, 'close_button'),
+              visualDensity: VisualDensity.compact,
+              onPressed: onClose,
             ),
           ),
-          if (onClose != null)
-            Positioned(
-              top: 2,
-              right: 2,
-              child: IconButton(
-                key: const Key('clan_details_close'),
-                icon: const Icon(Icons.close, size: IconSize.s16),
-                tooltip: tr(ref, 'close_button'),
-                visualDensity: VisualDensity.compact,
-                onPressed: onClose,
-              ),
-            ),
-        ],
-      ),
+      ]),
     );
   }
 }
@@ -322,11 +272,8 @@ class ClanDetailsCard extends ConsumerWidget {
 /// The card as a dialog (a long press, and the offer's (i)): it stays open
 /// until a tap outside it, its close button or the back gesture closes it;
 /// [greeting] is what the clan says to the party, when given.
-Future<void> showClanDetails(
-  BuildContext context, {
-  required String factionId,
-  String greeting = '',
-}) =>
+Future<void> showClanDetails(BuildContext context,
+        {required String factionId, String greeting = ''}) =>
     showDialog<void>(
       context: context,
       builder: (dialogContext) => Center(

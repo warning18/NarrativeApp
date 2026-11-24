@@ -88,9 +88,7 @@ class ZoneCard extends ConsumerWidget {
                   Text(
                     flavor,
                     style: theme.textTheme.bodyMedium?.copyWith(
-                      fontFamily: 'serif',
-                      fontStyle: FontStyle.italic,
-                    ),
+                        fontFamily: 'serif', fontStyle: FontStyle.italic),
                   ),
                 ],
                 for (final fact in facts) ...[
@@ -148,12 +146,9 @@ class ZoneCard extends ConsumerWidget {
                         for (final fact in facts)
                           Padding(
                             padding: const EdgeInsets.only(top: 4),
-                            child: Text(
-                              fact,
-                              style: theme.textTheme.bodySmall?.copyWith(
-                                color: theme.colorScheme.onSurfaceVariant,
-                              ),
-                            ),
+                            child: Text(fact,
+                                style: theme.textTheme.bodySmall?.copyWith(
+                                    color: theme.colorScheme.onSurfaceVariant)),
                           ),
                       ],
                     ),
@@ -171,9 +166,8 @@ class ZoneCard extends ConsumerWidget {
                 children: [
                   Text(
                     tr(ref, 'hold_for_details_hint'),
-                    style: theme.textTheme.labelSmall?.copyWith(
-                      color: theme.colorScheme.onSurfaceVariant,
-                    ),
+                    style: theme.textTheme.labelSmall
+                        ?.copyWith(color: theme.colorScheme.onSurfaceVariant),
                   ),
                   completed
                       ? Padding(

@@ -68,10 +68,8 @@ List<SideLayer> desertLayers({double progress = 0, bool painted = false}) {
       if (!DesertPictures.loaded) return code[2].paint(c, s, scroll, t, u);
       paintDesertTile(c, s, DesertPictures.far, scroll, u);
       final top = DesertPictures.sandRow * u;
-      c.drawRect(
-        Rect.fromLTWH(0, top, s.width, s.height - top),
-        Paint()..color = _DesertLook.sand,
-      );
+      c.drawRect(Rect.fromLTWH(0, top, s.width, s.height - top),
+          Paint()..color = _DesertLook.sand);
       _goal(c, s, u, progress, painted: true);
     }),
     SideLayer(code[3].speed, (c, s, scroll, t, u) {
@@ -96,61 +94,41 @@ List<SideLayer> _codeLayers(double progress) => [
       const SideLayer(0.05, _sun),
       SideLayer(0.15, (c, s, scroll, t, u) {
         // Far mesas, and the goal standing among them.
-        sideHills(
-          c,
-          s,
-          u,
-          scroll,
-          base: 38,
-          amp: 2.6,
-          wave: 0.05,
-          phase: 1,
-          fill: _DesertLook.mesa,
-          rim: _DesertLook.mesaRim,
-        );
+        sideHills(c, s, u, scroll,
+            base: 38,
+            amp: 2.6,
+            wave: 0.05,
+            phase: 1,
+            fill: _DesertLook.mesa,
+            rim: _DesertLook.mesaRim);
         _goal(c, s, u, progress);
       }),
       SideLayer(0.15, (c, s, scroll, t, u) {
-        sideHills(
-          c,
-          s,
-          u,
-          scroll,
-          base: 42,
-          amp: 2.4,
-          wave: 0.07,
-          phase: 3,
-          fill: _DesertLook.far,
-          rim: _DesertLook.farRim,
-        );
+        sideHills(c, s, u, scroll,
+            base: 42,
+            amp: 2.4,
+            wave: 0.07,
+            phase: 3,
+            fill: _DesertLook.far,
+            rim: _DesertLook.farRim);
       }),
       SideLayer(0.4, (c, s, scroll, t, u) {
-        sideHills(
-          c,
-          s,
-          u,
-          scroll,
-          base: 47,
-          amp: 3.2,
-          wave: 0.045,
-          phase: 0.4,
-          fill: _DesertLook.mid,
-          rim: _DesertLook.midRim,
-        );
+        sideHills(c, s, u, scroll,
+            base: 47,
+            amp: 3.2,
+            wave: 0.045,
+            phase: 0.4,
+            fill: _DesertLook.mid,
+            rim: _DesertLook.midRim);
       }),
       SideLayer(0.8, (c, s, scroll, t, u) {
-        sideHills(
-          c,
-          s,
-          u,
-          scroll,
-          base: 54,
-          amp: 3.6,
-          wave: 0.03,
-          phase: 2.1,
-          fill: _DesertLook.near,
-          rim: _DesertLook.nearRim,
-        );
+        sideHills(c, s, u, scroll,
+            base: 54,
+            amp: 3.6,
+            wave: 0.03,
+            phase: 2.1,
+            fill: _DesertLook.near,
+            rim: _DesertLook.nearRim);
         _props(c, s, u, scroll);
       }),
       const SideLayer(1.0, _path),
@@ -216,15 +194,9 @@ SideLayer desertActors({
     for (var i = members.length - 1; i >= 1; i--) {
       c.save();
       c.scale(1.6);
-      _figure(
-        c,
-        u,
-        xs[i] / 1.6,
-        66 / 1.6,
-        walkPlaceholderColour(members[i].id),
-        moving ? t + i * 0.4 : 1.3,
-        look: partyLookFor(members[i].id),
-      );
+      _figure(c, u, xs[i] / 1.6, 66 / 1.6, walkPlaceholderColour(members[i].id),
+          moving ? t + i * 0.4 : 1.3,
+          look: partyLookFor(members[i].id));
       c.restore();
     }
     if (!SideSprites.paint(c, u, xs[0], 66, t, moving: moving)) {
@@ -250,10 +222,8 @@ void _sky(Canvas canvas, Size size, double scroll, double t, double u) {
       canvas.drawRect(Rect.fromLTWH(x * u, y * u, u + 0.5, u + 0.5), paint);
     }
   }
-  canvas.drawRect(
-    Rect.fromLTWH(0, horizon * u, size.width, size.height),
-    Paint()..color = _DesertLook.far,
-  );
+  canvas.drawRect(Rect.fromLTWH(0, horizon * u, size.width, size.height),
+      Paint()..color = _DesertLook.far);
 }
 
 void _sun(Canvas canvas, Size size, double scroll, double t, double u) {
@@ -266,14 +236,10 @@ void _sun(Canvas canvas, Size size, double scroll, double t, double u) {
       final d = x * x + y * y;
       if (d <= 25) {
         canvas.drawRect(
-          Rect.fromLTWH((cx + x) * u, (cy + y) * u, u + 0.5, u + 0.5),
-          disc,
-        );
+            Rect.fromLTWH((cx + x) * u, (cy + y) * u, u + 0.5, u + 0.5), disc);
       } else if (d <= 81 && (x + y).isEven) {
         canvas.drawRect(
-          Rect.fromLTWH((cx + x) * u, (cy + y) * u, u + 0.5, u + 0.5),
-          glow,
-        );
+            Rect.fromLTWH((cx + x) * u, (cy + y) * u, u + 0.5, u + 0.5), glow);
       }
     }
   }
@@ -281,13 +247,8 @@ void _sun(Canvas canvas, Size size, double scroll, double t, double u) {
 
 /// The goal on the horizon: a face of rock among the mesas, nearer with
 /// [progress].
-void _goal(
-  Canvas canvas,
-  Size size,
-  double u,
-  double progress, {
-  bool painted = false,
-}) {
+void _goal(Canvas canvas, Size size, double u, double progress,
+    {bool painted = false}) {
   final w = size.width / u;
   final x = w * (1.05 - 0.62 * progress.clamp(0, 1));
   final scale = 1 + progress.clamp(0, 1) * 0.8;
@@ -300,24 +261,10 @@ void _goal(
   final base = painted ? 47.0 : 44.0;
   if (painted) {
     sidePixels(
-      canvas,
-      u,
-      dark,
-      x - bw / 2 - 1,
-      base - bh - 1,
-      bw + 2.0,
-      bh + 2.0,
-    );
+        canvas, u, dark, x - bw / 2 - 1, base - bh - 1, bw + 2.0, bh + 2.0);
   }
   sidePixels(
-    canvas,
-    u,
-    body,
-    x - bw / 2,
-    base - bh,
-    bw.toDouble(),
-    bh.toDouble(),
-  );
+      canvas, u, body, x - bw / 2, base - bh, bw.toDouble(), bh.toDouble());
   sidePixels(canvas, u, rim, x - bw / 2, base - bh, bw.toDouble(), 1);
   // Two dark hollows for eyes, and the brow.
   final eye = math.max(2, (2.2 * scale).round()).toDouble();
@@ -354,14 +301,7 @@ void _path(Canvas canvas, Size size, double scroll, double t, double u) {
   final w = size.width / u;
   sidePixels(canvas, u, Paint()..color = _DesertLook.path, 0, 63, w + 1, 9);
   sidePixels(
-    canvas,
-    u,
-    Paint()..color = _DesertLook.pathLight,
-    0,
-    63,
-    w + 1,
-    1,
-  );
+      canvas, u, Paint()..color = _DesertLook.pathLight, 0, 63, w + 1, 1);
   final dark = Paint()..color = _DesertLook.pathDark;
   final offset = scroll / u;
   for (var i = 0; i < 14; i++) {
@@ -372,14 +312,8 @@ void _path(Canvas canvas, Size size, double scroll, double t, double u) {
 
 /// A placeholder walker: a cloaked body, a head, two legs that swap.
 void _figure(
-  Canvas canvas,
-  double u,
-  double x,
-  double baseY,
-  Color cloak,
-  double t, {
-  PartyLook? look,
-}) {
+    Canvas canvas, double u, double x, double baseY, Color cloak, double t,
+    {PartyLook? look}) {
   final step = (t * 6).floor() % 2;
   final skin = Paint()..color = const Color(0xFFE0B48A);
   final body = Paint()..color = cloak;

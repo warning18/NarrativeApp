@@ -112,12 +112,7 @@ class InkSprites {
     final out = inkRecolour(bytes, w, h);
     final done = Completer<ui.Image>();
     ui.decodeImageFromPixels(
-      out,
-      w + 2,
-      h + 2,
-      ui.PixelFormat.rgba8888,
-      done.complete,
-    );
+        out, w + 2, h + 2, ui.PixelFormat.rgba8888, done.complete);
     recolours++;
     return done.future;
   }

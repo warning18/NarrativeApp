@@ -27,9 +27,7 @@ class CityPath {
   factory CityPath.fromJson(Object? raw) {
     final map = raw is Map ? raw : const {};
     return CityPath(
-      _points(map['path']),
-      (map['width'] as num?)?.toDouble() ?? 6,
-    );
+        _points(map['path']), (map['width'] as num?)?.toDouble() ?? 6);
   }
 
   final List<Offset> points;
@@ -125,24 +123,23 @@ class CityPlanRecord implements PlacePlan {
 
   factory CityPlanRecord.fromJson(String cityId, Map raw) {
     final wall = raw['wall'] is Map ? raw['wall'] as Map : const {};
-    List<CityPath> paths(String key) => [
-          for (final p in (raw[key] as List? ?? const [])) CityPath.fromJson(p),
-        ];
+    List<CityPath> paths(String key) =>
+        [for (final p in (raw[key] as List? ?? const [])) CityPath.fromJson(p)];
     return CityPlanRecord(
       cityId: cityId,
       seed: (raw['seed'] as num?)?.toInt() ?? 0,
       sea: _points(raw['sea']),
       rivers: paths('rivers'),
       islands: [
-        for (final i in (raw['islands'] as List? ?? const [])) _points(i),
+        for (final i in (raw['islands'] as List? ?? const [])) _points(i)
       ],
       canals: paths('canals'),
       wallRuns: [
-        for (final r in (wall['runs'] as List? ?? const [])) _points(r),
+        for (final r in (wall['runs'] as List? ?? const [])) _points(r)
       ],
       gates: [
         for (final g in (wall['gates'] as List? ?? const []))
-          if (g is Map) CityGate(g['id']?.toString() ?? '', _point(g['at'])),
+          if (g is Map) CityGate(g['id']?.toString() ?? '', _point(g['at']))
       ],
       towers: _points(wall['towers']),
       avenues: paths('avenues'),
@@ -150,41 +147,33 @@ class CityPlanRecord implements PlacePlan {
       bridges: [
         for (final b in (raw['bridges'] as List? ?? const []))
           if (b is Map)
-            CityBridge(
-              _point(b['at']),
-              (b['angle'] as num?)?.toDouble() ?? 0,
-              (b['length'] as num?)?.toDouble() ?? 30,
-            ),
+            CityBridge(_point(b['at']), (b['angle'] as num?)?.toDouble() ?? 0,
+                (b['length'] as num?)?.toDouble() ?? 30)
       ],
       squares: [
         for (final s in (raw['squares'] as List? ?? const []))
           if (s is Map)
-            CitySquare(
-              s['id']?.toString() ?? '',
-              s['kind']?.toString() ?? '',
-              _points(s['shape']),
-            ),
+            CitySquare(s['id']?.toString() ?? '', s['kind']?.toString() ?? '',
+                _points(s['shape']))
       ],
       districts: {
         for (final MapEntry(:key, :value)
             in ((raw['districts'] as Map?) ?? const {}).entries)
           if (value is Map)
             key.toString(): CityDistrictShape(
-              key.toString(),
-              _points(value['shape']),
-              _point(value['label']),
-              _point(value['entry']),
-            ),
+                key.toString(),
+                _points(value['shape']),
+                _point(value['label']),
+                _point(value['entry'])),
       },
       buildings: [
         for (final b in (raw['buildings'] as List? ?? const []))
           if (b is Map)
             CityPlanBuilding(
-              b['id']?.toString() ?? '',
-              b['district']?.toString() ?? '',
-              b['kind']?.toString() ?? 'house',
-              _points(b['shape']),
-            ),
+                b['id']?.toString() ?? '',
+                b['district']?.toString() ?? '',
+                b['kind']?.toString() ?? 'house',
+                _points(b['shape']))
       ],
       anchors: {
         for (final MapEntry(:key, :value)
@@ -197,7 +186,7 @@ class CityPlanRecord implements PlacePlan {
           if (value is Map)
             key.toString(): (
               en: value['en']?.toString() ?? '',
-              fr: value['fr']?.toString() ?? '',
+              fr: value['fr']?.toString() ?? ''
             ),
       },
       services: [
@@ -281,14 +270,14 @@ class CityPlanRecord implements PlacePlan {
     if (d == null) return const [];
     final own = [
       for (final b in buildings)
-        if (b.district == districtId) b,
+        if (b.district == districtId) b
     ];
     own.sort((a, b) {
       final r = (a.notable ? 0 : 1).compareTo(b.notable ? 0 : 1);
       if (r != 0) return r;
-      final c = (a.centre - d.label).distance.compareTo(
-            (b.centre - d.label).distance,
-          );
+      final c = (a.centre - d.label)
+          .distance
+          .compareTo((b.centre - d.label).distance);
       return c != 0 ? c : a.id.compareTo(b.id);
     });
     return own;
@@ -307,7 +296,7 @@ class CityPlanRecord implements PlacePlan {
     final held = anchors.values.toSet();
     final free = [
       for (final b in order)
-        if (!held.contains(b.id)) b,
+        if (!held.contains(b.id)) b
     ];
     final pool = free.isEmpty ? order : free;
     return pool[_stableHash(sceneId) % pool.length];
@@ -330,17 +319,15 @@ class CityPlanRecord implements PlacePlan {
     if (here == null) return const [];
     final open = [
       for (final b in neighboursOf(districtId))
-        if (!locked.contains(b)) b,
+        if (!locked.contains(b)) b
     ];
     if (open.isNotEmpty) return open;
     final rest = [
       for (final b in districts.keys)
-        if (b != districtId && !locked.contains(b)) b,
-    ]..sort(
-        (x, y) => (districts[x]!.entry - here.entry)
-            .distanceSquared
-            .compareTo((districts[y]!.entry - here.entry).distanceSquared),
-      );
+        if (b != districtId && !locked.contains(b)) b
+    ]..sort((x, y) => (districts[x]!.entry - here.entry)
+        .distanceSquared
+        .compareTo((districts[y]!.entry - here.entry).distanceSquared));
     return rest.isEmpty ? const [] : [rest.first];
   }
 
@@ -361,11 +348,9 @@ class CityPlanRecord implements PlacePlan {
       if (links[a]!.isNotEmpty || ids.length < 2) continue;
       final from = districts[a]!.entry;
       final nearest = (ids.where((b) => b != a).toList()
-            ..sort(
-              (x, y) => (districts[x]!.entry - from)
-                  .distanceSquared
-                  .compareTo((districts[y]!.entry - from).distanceSquared),
-            ))
+            ..sort((x, y) => (districts[x]!.entry - from)
+                .distanceSquared
+                .compareTo((districts[y]!.entry - from).distanceSquared)))
           .first;
       links[a]!.add(nearest);
       links[nearest]!.add(a);
@@ -374,7 +359,7 @@ class CityPlanRecord implements PlacePlan {
       for (final a in ids)
         a: [
           for (final b in ids)
-            if (links[a]!.contains(b)) b,
+            if (links[a]!.contains(b)) b
         ],
     };
   }();
@@ -487,9 +472,9 @@ class CityPlanRecord implements PlacePlan {
       for (var i = 1; i < path.points.length; i++)
         for (var k = 0,
                 n = math.max(
-          1,
-          ((path.points[i] - path.points[i - 1]).distance / 4).ceil(),
-        );
+                    1,
+                    ((path.points[i] - path.points[i - 1]).distance / 4)
+                        .ceil());
             k < n;
             k++)
           Offset.lerp(path.points[i - 1], path.points[i], k / n)!,
@@ -517,20 +502,15 @@ class CityPlanRecord implements PlacePlan {
   /// [gap] from the doorstep and from one another, the nearest first, so
   /// the pins stand in the street around the door and not on one point.
   /// Where the streets near it give too few, the rest ring the doorstep.
-  List<Offset> streetSpotsAround(
-    String buildingId,
-    int count, {
-    double gap = 22,
-  }) {
+  List<Offset> streetSpotsAround(String buildingId, int count,
+      {double gap = 22}) {
     if (count <= 0) return const [];
     final door = doorstepOf(buildingId);
     final near = [
       for (final p in _streetSamples)
-        if ((p - door).distance >= gap && (p - door).distance <= gap * 6) p,
-    ]..sort(
-        (a, b) =>
-            (a - door).distanceSquared.compareTo((b - door).distanceSquared),
-      );
+        if ((p - door).distance >= gap && (p - door).distance <= gap * 6) p
+    ]..sort((a, b) =>
+        (a - door).distanceSquared.compareTo((b - door).distanceSquared));
     final picked = <Offset>[];
     for (final p in near) {
       if (picked.length == count) break;

@@ -99,8 +99,7 @@ class _QuestTrackerBarState extends ConsumerState<QuestTrackerBar> {
                   ? accent.withValues(alpha: 0.2)
                   : colors.surfaceContainerHighest.withValues(alpha: 0.55),
               shape: CircleBorder(
-                side: BorderSide(color: accent.withValues(alpha: 0.6)),
-              ),
+                  side: BorderSide(color: accent.withValues(alpha: 0.6))),
               child: InkWell(
                 key: const Key('quest_tracker'),
                 customBorder: const CircleBorder(),
@@ -112,26 +111,21 @@ class _QuestTrackerBarState extends ConsumerState<QuestTrackerBar> {
                     alignment: Alignment.center,
                     children: [
                       Icon(
-                        questIcon(
-                          quest['category']?.toString(),
-                          objectives.isEmpty
-                              ? null
-                              : objectives.first['type']?.toString(),
-                        ),
-                        size: IconSize.s16,
-                        color: accent,
-                      ),
+                          questIcon(
+                              quest['category']?.toString(),
+                              objectives.isEmpty
+                                  ? null
+                                  : objectives.first['type']?.toString()),
+                          size: IconSize.s16,
+                          color: accent),
                       if (goal.ready)
                         Positioned(
-                          right: 1,
-                          top: 1,
-                          child: Icon(
-                            Icons.check_circle,
-                            key: const Key('quest_tracker_ready'),
-                            size: IconSize.s16,
-                            color: accent,
-                          ),
-                        )
+                            right: 1,
+                            top: 1,
+                            child: Icon(Icons.check_circle,
+                                key: const Key('quest_tracker_ready'),
+                                size: IconSize.s16,
+                                color: accent))
                       else if (_highlight)
                         Positioned(
                           right: 4,
@@ -140,9 +134,7 @@ class _QuestTrackerBarState extends ConsumerState<QuestTrackerBar> {
                             width: 8,
                             height: 8,
                             decoration: BoxDecoration(
-                              color: accent,
-                              shape: BoxShape.circle,
-                            ),
+                                color: accent, shape: BoxShape.circle),
                           ),
                         ),
                     ],
@@ -175,11 +167,10 @@ class _QuestTrackerBarState extends ConsumerState<QuestTrackerBar> {
               children: [
                 Icon(
                   questIcon(
-                    quest['category']?.toString(),
-                    objectives.isEmpty
-                        ? null
-                        : objectives.first['type']?.toString(),
-                  ),
+                      quest['category']?.toString(),
+                      objectives.isEmpty
+                          ? null
+                          : objectives.first['type']?.toString()),
                   size: IconSize.s16,
                   color: accent,
                 ),
@@ -193,9 +184,8 @@ class _QuestTrackerBarState extends ConsumerState<QuestTrackerBar> {
                         quest['questName']?.toString() ?? questId,
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
-                        style: theme.textTheme.labelLarge?.copyWith(
-                          fontWeight: FontWeight.bold,
-                        ),
+                        style: theme.textTheme.labelLarge
+                            ?.copyWith(fontWeight: FontWeight.bold),
                       ),
                       Text(
                         goal.ready
@@ -214,13 +204,9 @@ class _QuestTrackerBarState extends ConsumerState<QuestTrackerBar> {
                 if (_highlight && !goal.ready)
                   Padding(
                     padding: const EdgeInsets.only(left: 4),
-                    child: Text(
-                      trFor(lang, 'quest_updated_label'),
-                      style: theme.textTheme.labelSmall?.copyWith(
-                        color: accent,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
+                    child: Text(trFor(lang, 'quest_updated_label'),
+                        style: theme.textTheme.labelSmall?.copyWith(
+                            color: accent, fontWeight: FontWeight.bold)),
                   ),
                 if (goal.ready)
                   Padding(
@@ -250,10 +236,7 @@ class _QuestTrackerBarState extends ConsumerState<QuestTrackerBar> {
 /// reward, and what can be done now -- turn it in, follow it, or switch
 /// to another quest in progress.
 Future<void> _showQuestSheet(
-  BuildContext context,
-  WidgetRef ref,
-  String questId,
-) {
+    BuildContext context, WidgetRef ref, String questId) {
   return showInkSheet<void>(
     context: context,
     builder: (sheetContext) =>
@@ -306,45 +289,30 @@ class _QuestSheet extends ConsumerWidget {
             Row(
               children: [
                 Expanded(
-                  child: Text(
-                    quest['questName']?.toString() ?? questId,
-                    style: theme.textTheme.titleLarge,
-                  ),
+                  child: Text(quest['questName']?.toString() ?? questId,
+                      style: theme.textTheme.titleLarge),
                 ),
                 if (category.isNotEmpty)
                   Chip(
                     visualDensity: VisualDensity.compact,
-                    label: Text(
-                      trFor(
-                        lang,
-                        category == 'Main' ? 'quest_main' : 'quest_side',
-                      ),
-                    ),
+                    label: Text(trFor(lang,
+                        category == 'Main' ? 'quest_main' : 'quest_side')),
                   ),
               ],
             ),
             if (followed)
-              Text(
-                trFor(lang, 'quest_following_label'),
-                style: theme.textTheme.labelMedium?.copyWith(
-                  color: theme.colorScheme.primary,
-                ),
-              ),
+              Text(trFor(lang, 'quest_following_label'),
+                  style: theme.textTheme.labelMedium
+                      ?.copyWith(color: theme.colorScheme.primary)),
             if (dialogue.isNotEmpty) ...[
               const SizedBox(height: 10),
-              Text(
-                dialogue,
-                style: theme.textTheme.bodyMedium?.copyWith(
-                  fontFamily: 'serif',
-                  height: 1.5,
-                ),
-              ),
+              Text(dialogue,
+                  style: theme.textTheme.bodyMedium
+                      ?.copyWith(fontFamily: 'serif', height: 1.5)),
             ],
             const SizedBox(height: 14),
-            Text(
-              trFor(lang, 'quest_objectives_title'),
-              style: theme.textTheme.titleSmall,
-            ),
+            Text(trFor(lang, 'quest_objectives_title'),
+                style: theme.textTheme.titleSmall),
             const SizedBox(height: 4),
             for (final status in statuses)
               Padding(
@@ -379,10 +347,8 @@ class _QuestSheet extends ConsumerWidget {
               ),
             if (rewards.isNotEmpty) ...[
               const SizedBox(height: 12),
-              Text(
-                '${trFor(lang, 'quest_rewards_label')}: $rewards',
-                style: theme.textTheme.bodySmall,
-              ),
+              Text('${trFor(lang, 'quest_rewards_label')}: $rewards',
+                  style: theme.textTheme.bodySmall),
             ],
             const SizedBox(height: 16),
             Wrap(
@@ -410,40 +376,32 @@ class _QuestSheet extends ConsumerWidget {
             ),
             if (active && others.isNotEmpty) ...[
               const Divider(height: 28),
-              Text(
-                trFor(lang, 'quest_others_title'),
-                style: theme.textTheme.titleSmall,
-              ),
+              Text(trFor(lang, 'quest_others_title'),
+                  style: theme.textTheme.titleSmall),
               for (final id in others)
-                Builder(
-                  builder: (context) {
-                    final other = quests[id] as Map<String, dynamic>;
-                    final goal = questGoalFor(id, other, session);
-                    return ListTile(
-                      contentPadding: EdgeInsets.zero,
-                      leading: Icon(
-                        goal.ready
-                            ? Icons.check_circle
-                            : Icons.radio_button_unchecked,
-                      ),
-                      title: Text(other['questName']?.toString() ?? id),
-                      subtitle: Text(
-                        goal.ready
-                            ? trFor(lang, 'quest_goal_ready')
-                            : goal.label,
-                      ),
-                      trailing: TextButton(
-                        onPressed: () async {
-                          await ref
-                              .read(playerSessionProvider.notifier)
-                              .trackQuest(id);
-                          if (context.mounted) Navigator.of(context).pop();
-                        },
-                        child: Text(trFor(lang, 'quest_follow_button')),
-                      ),
-                    );
-                  },
-                ),
+                Builder(builder: (context) {
+                  final other = quests[id] as Map<String, dynamic>;
+                  final goal = questGoalFor(id, other, session);
+                  return ListTile(
+                    contentPadding: EdgeInsets.zero,
+                    leading: Icon(goal.ready
+                        ? Icons.check_circle
+                        : Icons.radio_button_unchecked),
+                    title: Text(other['questName']?.toString() ?? id),
+                    subtitle: Text(goal.ready
+                        ? trFor(lang, 'quest_goal_ready')
+                        : goal.label),
+                    trailing: TextButton(
+                      onPressed: () async {
+                        await ref
+                            .read(playerSessionProvider.notifier)
+                            .trackQuest(id);
+                        if (context.mounted) Navigator.of(context).pop();
+                      },
+                      child: Text(trFor(lang, 'quest_follow_button')),
+                    ),
+                  );
+                }),
             ],
           ],
         ),
@@ -453,11 +411,8 @@ class _QuestSheet extends ConsumerWidget {
 }
 
 /// "80 gold · 150 XP · Iron Die · Kelda joins": what [quest] pays.
-String _rewardsLine(
-  Map<String, dynamic> quest,
-  Map<String, dynamic> Function(DbSchema) db,
-  AppLanguage lang,
-) {
+String _rewardsLine(Map<String, dynamic> quest,
+    Map<String, dynamic> Function(DbSchema) db, AppLanguage lang) {
   final gold = (quest['rewardGold'] as num?)?.toInt() ?? 0;
   final xp = (quest['rewardXP'] as num?)?.toInt() ?? 0;
   final itemId = quest['rewardItemID']?.toString() ?? '';

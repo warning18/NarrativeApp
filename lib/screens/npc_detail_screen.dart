@@ -43,25 +43,13 @@ class NpcDetailScreen extends ConsumerWidget {
     final description = npcText(npc, 'description', french);
     final role = npcText(npc, 'role', french);
     final want = npcText(npc, 'want', french);
-    final place = npcPlaceName(
-      geography,
-      npc['placeId']?.toString() ?? '',
-      language,
-    );
+    final place =
+        npcPlaceName(geography, npc['placeId']?.toString() ?? '', language);
     final world = ref.watch(coastGateWorldProvider);
-    final passed = npcStateLines(
-      npc,
-      session.flags,
-      french,
-      world: world,
-      politics: session.politics,
-    );
-    final intrigueLines = npcIntrigueLines(
-      npc,
-      clanData.intrigues.values,
-      session.flags,
-      french,
-    );
+    final passed = npcStateLines(npc, session.flags, french,
+        world: world, politics: session.politics);
+    final intrigueLines =
+        npcIntrigueLines(npc, clanData.intrigues.values, session.flags, french);
     final linesRaw = french
         ? ((npc['dialogueLines_fr'] as List?)?.isNotEmpty ?? false)
             ? npc['dialogueLines_fr'] as List
@@ -93,31 +81,24 @@ class NpcDetailScreen extends ConsumerWidget {
                 id: npcId,
                 name: npcName,
                 size: 76,
-                fallback: Icon(
-                  npcKindIcon(npc['kind']?.toString()),
-                  size: IconSize.s48,
-                ),
+                fallback: Icon(npcKindIcon(npc['kind']?.toString()),
+                    size: IconSize.s48),
               ),
             ),
           ),
           const SizedBox(height: 10),
           Center(
-            child: Text(
-              npcName,
-              textAlign: TextAlign.center,
-              style: theme.textTheme.headlineSmall?.copyWith(
-                fontFamily: InkFonts.display,
-              ),
-            ),
+            child: Text(npcName,
+                textAlign: TextAlign.center,
+                style: theme.textTheme.headlineSmall
+                    ?.copyWith(fontFamily: InkFonts.display)),
           ),
           if (role.isNotEmpty)
             Center(
-              child: Text(
-                role,
-                key: const Key('npc_role'),
-                textAlign: TextAlign.center,
-                style: theme.textTheme.bodyMedium,
-              ),
+              child: Text(role,
+                  key: const Key('npc_role'),
+                  textAlign: TextAlign.center,
+                  style: theme.textTheme.bodyMedium),
             ),
           const SizedBox(height: 6),
           Wrap(
@@ -127,21 +108,16 @@ class NpcDetailScreen extends ConsumerWidget {
             crossAxisAlignment: WrapCrossAlignment.center,
             children: [
               NpcFactionTag(
-                data: clanData,
-                factionId: npc['faction']?.toString() ?? '',
-                language: language,
-              ),
+                  data: clanData,
+                  factionId: npc['faction']?.toString() ?? '',
+                  language: language),
               if (place.isNotEmpty)
-                Text(
-                  place,
-                  key: const Key('npc_place'),
-                  style: theme.textTheme.bodySmall?.copyWith(color: muted),
-                ),
+                Text(place,
+                    key: const Key('npc_place'),
+                    style: theme.textTheme.bodySmall?.copyWith(color: muted)),
               Text(
-                tr(
-                  ref,
-                  'npc_met_in_chapter',
-                ).replaceAll('{n}', '${npcChapter(npc)}'),
+                tr(ref, 'npc_met_in_chapter')
+                    .replaceAll('{n}', '${npcChapter(npc)}'),
                 key: const Key('npc_met_chapter'),
                 style: theme.textTheme.bodySmall?.copyWith(color: muted),
               ),
@@ -149,33 +125,24 @@ class NpcDetailScreen extends ConsumerWidget {
           ),
           Divider(height: 28, color: InkColors.of(context).seam),
           if (description.isNotEmpty)
-            Text(
-              description,
-              style: theme.textTheme.bodyLarge?.copyWith(
-                fontFamily: InkFonts.prose,
-                height: 1.55,
-              ),
-            ),
+            Text(description,
+                style: theme.textTheme.bodyLarge
+                    ?.copyWith(fontFamily: InkFonts.prose, height: 1.55)),
           if (want.isNotEmpty) ...[
             const SizedBox(height: 14),
             Text(tr(ref, 'npc_want_label'), style: theme.textTheme.labelLarge),
             const SizedBox(height: 2),
-            Text(
-              want,
-              key: const Key('npc_want'),
-              style: theme.textTheme.bodyLarge?.copyWith(
-                fontFamily: InkFonts.prose,
-                fontStyle: FontStyle.italic,
-                height: 1.5,
-              ),
-            ),
+            Text(want,
+                key: const Key('npc_want'),
+                style: theme.textTheme.bodyLarge?.copyWith(
+                    fontFamily: InkFonts.prose,
+                    fontStyle: FontStyle.italic,
+                    height: 1.5)),
           ],
           if (passed.isNotEmpty) ...[
             const SizedBox(height: 16),
-            Text(
-              tr(ref, 'npc_passed_between'),
-              style: theme.textTheme.titleSmall,
-            ),
+            Text(tr(ref, 'npc_passed_between'),
+                style: theme.textTheme.titleSmall),
             const SizedBox(height: 6),
             for (final (i, line) in passed.indexed)
               Padding(
@@ -186,11 +153,9 @@ class NpcDetailScreen extends ConsumerWidget {
                     Icon(Icons.history_edu, size: IconSize.s16, color: muted),
                     const SizedBox(width: 8),
                     Expanded(
-                      child: Text(
-                        line,
-                        key: Key('npc_state_$i'),
-                        style: theme.textTheme.bodyMedium,
-                      ),
+                      child: Text(line,
+                          key: Key('npc_state_$i'),
+                          style: theme.textTheme.bodyMedium),
                     ),
                   ],
                 ),
@@ -198,11 +163,9 @@ class NpcDetailScreen extends ConsumerWidget {
           ],
           if (intrigueLines.isNotEmpty) ...[
             const SizedBox(height: 16),
-            Text(
-              tr(ref, 'npc_intrigues_label'),
-              key: const Key('npc_intrigues_label'),
-              style: theme.textTheme.titleSmall,
-            ),
+            Text(tr(ref, 'npc_intrigues_label'),
+                key: const Key('npc_intrigues_label'),
+                style: theme.textTheme.titleSmall),
             const SizedBox(height: 6),
             for (final (i, line) in intrigueLines.indexed)
               Padding(
@@ -210,18 +173,13 @@ class NpcDetailScreen extends ConsumerWidget {
                 child: Row(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Icon(
-                      Icons.theater_comedy,
-                      size: IconSize.s16,
-                      color: muted,
-                    ),
+                    Icon(Icons.theater_comedy,
+                        size: IconSize.s16, color: muted),
                     const SizedBox(width: 8),
                     Expanded(
-                      child: Text(
-                        npcIntrigueLineText(line, french),
-                        key: Key('npc_intrigue_$i'),
-                        style: theme.textTheme.bodyMedium,
-                      ),
+                      child: Text(npcIntrigueLineText(line, french),
+                          key: Key('npc_intrigue_$i'),
+                          style: theme.textTheme.bodyMedium),
                     ),
                   ],
                 ),
@@ -234,15 +192,16 @@ class NpcDetailScreen extends ConsumerWidget {
               child: Container(
                 padding: const EdgeInsets.only(left: 12),
                 decoration: BoxDecoration(
-                  border: Border(left: BorderSide(color: railColor, width: 3)),
+                  border: Border(
+                    left: BorderSide(color: railColor, width: 3),
+                  ),
                 ),
                 child: Text(
                   line,
                   style: theme.textTheme.bodyLarge?.copyWith(
-                    fontFamily: InkFonts.prose,
-                    fontStyle: FontStyle.italic,
-                    height: 1.5,
-                  ),
+                      fontFamily: InkFonts.prose,
+                      fontStyle: FontStyle.italic,
+                      height: 1.5),
                 ),
               ),
             ),
@@ -260,9 +219,8 @@ class NpcDetailScreen extends ConsumerWidget {
                     );
                   },
             icon: Icon(talkedTo ? Icons.check : Icons.forum),
-            label: Text(
-              tr(ref, talkedTo ? 'npc_already_talked' : 'talk_button'),
-            ),
+            label:
+                Text(tr(ref, talkedTo ? 'npc_already_talked' : 'talk_button')),
           ),
         ],
       ),

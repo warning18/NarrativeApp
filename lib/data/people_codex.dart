@@ -76,12 +76,8 @@ List<String> npcStateLines(
     if (_stringList(state['unlessFlags']).any(held.contains)) continue;
     if (conditions.isNotEmpty) {
       if (world == null || politics == null) continue;
-      if (!politicsIfHolds(
-        conditions,
-        politics: politics,
-        flags: held,
-        world: world,
-      )) {
+      if (!politicsIfHolds(conditions,
+          politics: politics, flags: held, world: world)) {
         continue;
       }
     }
@@ -157,22 +153,16 @@ List<String> discoveredNpcIds(
     [
       for (final entry in records.entries)
         if (entry.value is Map<String, dynamic> &&
-            npcDiscovered(
-              entry.key,
-              entry.value as Map<String, dynamic>,
-              session,
-              currentChapter,
-              visitedNodeIds: visitedNodeIds,
-            ))
+            npcDiscovered(entry.key, entry.value as Map<String, dynamic>,
+                session, currentChapter,
+                visitedNodeIds: visitedNodeIds))
           entry.key,
     ];
 
 /// [npcIds] grouped by chapter, chapters in order, each group sorted by
 /// id.
 Map<int, List<String>> npcsByChapter(
-  Iterable<String> npcIds,
-  Map<String, dynamic> records,
-) {
+    Iterable<String> npcIds, Map<String, dynamic> records) {
   final groups = <int, List<String>>{};
   for (final id in npcIds) {
     final npc = records[id];
@@ -180,7 +170,9 @@ Map<int, List<String>> npcsByChapter(
     (groups[chapter] ??= []).add(id);
   }
   final chapters = groups.keys.toList()..sort();
-  return {for (final chapter in chapters) chapter: groups[chapter]!..sort()};
+  return {
+    for (final chapter in chapters) chapter: groups[chapter]!..sort(),
+  };
 }
 
 /// How many of [discovered] the player has not looked at in the People

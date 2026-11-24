@@ -38,12 +38,9 @@ class PersistedFlagNotifier extends StateNotifier<bool> {
 }
 
 StateNotifierProvider<PersistedFlagNotifier, bool> _flag(
-  String prefsKey,
-  bool defaultValue,
-) =>
+        String prefsKey, bool defaultValue) =>
     StateNotifierProvider<PersistedFlagNotifier, bool>(
-      (ref) => PersistedFlagNotifier(prefsKey, defaultValue: defaultValue),
-    );
+        (ref) => PersistedFlagNotifier(prefsKey, defaultValue: defaultValue));
 
 /// Whether the screen should briefly shake when the player takes damage
 /// in combat, or a mighty blow lands. Defaults to on.
@@ -57,10 +54,8 @@ final chestAutoOpenProvider = _flag('combat_chest_auto_open', false);
 /// Whether alignment has consequences on the road: angels hunting an
 /// Evil character, demons hunting a Good one, and temptations courting a
 /// Neutral one (see alignment_events.dart). Defaults to on.
-final alignmentHuntersEnabledProvider = _flag(
-  'alignment_hunters_enabled',
-  true,
-);
+final alignmentHuntersEnabledProvider =
+    _flag('alignment_hunters_enabled', true);
 
 /// Whether companions aim their own strikes in a pack fight (focus fire on
 /// the player's target, else the weakest enemy) or the player picks every
@@ -99,10 +94,8 @@ class _AimedShotsNotifier extends StateNotifier<AimedShots> {
     final prefs = await SharedPreferences.getInstance();
     if (_changed || !mounted) return;
     final saved = prefs.getString(prefsKey);
-    state = AimedShots.values.firstWhere(
-      (v) => v.name == saved,
-      orElse: () => AimedShots.normal,
-    );
+    state = AimedShots.values
+        .firstWhere((v) => v.name == saved, orElse: () => AimedShots.normal);
   }
 
   Future<void> set(AimedShots value) async {
@@ -116,8 +109,7 @@ class _AimedShotsNotifier extends StateNotifier<AimedShots> {
 /// How aimed shots play in ship battles (see [AimedShots]).
 final aimedShotsProvider =
     StateNotifierProvider<_AimedShotsNotifier, AimedShots>(
-  (ref) => _AimedShotsNotifier(),
-);
+        (ref) => _AimedShotsNotifier());
 
 /// How fast the dice of a fight are thrown (v1.679): the default is slow
 /// enough to watch them tumble and land; 2x and 4x divide every wait of
@@ -155,10 +147,8 @@ class _DiceSpeedNotifier extends StateNotifier<DiceSpeed> {
     final prefs = await SharedPreferences.getInstance();
     if (_changed || !mounted) return;
     final saved = prefs.getString(prefsKey);
-    state = DiceSpeed.values.firstWhere(
-      (v) => v.name == saved,
-      orElse: () => DiceSpeed.normal,
-    );
+    state = DiceSpeed.values
+        .firstWhere((v) => v.name == saved, orElse: () => DiceSpeed.normal);
   }
 
   Future<void> set(DiceSpeed value) async {
@@ -171,8 +161,7 @@ class _DiceSpeedNotifier extends StateNotifier<DiceSpeed> {
 
 /// How fast a fight's dice are thrown (see [DiceSpeed]).
 final diceSpeedProvider = StateNotifierProvider<_DiceSpeedNotifier, DiceSpeed>(
-  (ref) => _DiceSpeedNotifier(),
-);
+    (ref) => _DiceSpeedNotifier());
 
 /// Whether a story choice that moves the clans says so, in a muted line
 /// under it: "Vigil +5 · Dominion −5" (v1.195, see politicsHint). A

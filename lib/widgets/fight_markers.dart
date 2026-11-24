@@ -24,15 +24,12 @@ class DieBadge extends StatelessWidget {
           borderRadius: BorderRadius.circular(6),
           border: Border.all(color: Palette.goldDark, width: 1),
         ),
-        child: Text(
-          text,
-          style: const TextStyle(
-            fontSize: 9,
-            height: 1.2,
-            fontWeight: FontWeight.w800,
-            color: Palette.goldDark,
-          ),
-        ),
+        child: Text(text,
+            style: const TextStyle(
+                fontSize: 9,
+                height: 1.2,
+                fontWeight: FontWeight.w800,
+                color: Palette.goldDark)),
       ),
     );
   }

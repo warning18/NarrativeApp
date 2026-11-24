@@ -126,10 +126,7 @@ int _elementalResist(
 /// shared by the player/ally-inflicted (enemy target) and enemy-inflicted
 /// (party target) paths so both read the same way.
 String _statusInflictedMessage(
-  StatusEffect effect,
-  String targetName,
-  AppLanguage lang,
-) {
+    StatusEffect effect, String targetName, AppLanguage lang) {
   final suffixKey = switch (effect.type) {
     StatusEffectType.poison => 'poisoned_suffix',
     StatusEffectType.stun => 'stunned_suffix',
@@ -266,11 +263,8 @@ class _PartyMember {
 /// [targetId] ever gets a live fallback re-pick, if the cached target was
 /// knocked out in the meantime.
 class _PendingEnemyMove {
-  const _PendingEnemyMove({
-    required this.move,
-    required this.targetId,
-    this.release = false,
-  });
+  const _PendingEnemyMove(
+      {required this.move, required this.targetId, this.release = false});
 
   final EnemyMoveResult move;
 
@@ -501,13 +495,12 @@ class _FightLength {
 /// The hero's profession core over a fight (profession_cores.dart): Fury
 /// built up, the Watchfire's fire, the Trail's deck.
 class _HeroCore {
-  _HeroCore(
-    this.core, {
-    this.specs = const {},
-    this.halved = const {},
-    this.roundOf,
-    SpecMods? mods,
-  }) : mods = mods ?? SpecMods.none;
+  _HeroCore(this.core,
+      {this.specs = const {},
+      this.halved = const {},
+      this.roundOf,
+      SpecMods? mods})
+      : mods = mods ?? SpecMods.none;
 
   final ProfessionCore core;
 

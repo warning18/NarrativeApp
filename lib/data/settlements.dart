@@ -16,11 +16,8 @@ bool _isWithinPlace(String nodeId, String placeNodeId) =>
 /// (no previous scene) is not: the player was already in the place. Given
 /// the scenes read so far ([history]), a first visit is an arrival even
 /// through one of the place's own scenes (the Reliquary Quarter's gate).
-bool isSettlementArrival(
-  String settlementNodeId,
-  String? previousNodeId, {
-  List<String>? history,
-}) =>
+bool isSettlementArrival(String settlementNodeId, String? previousNodeId,
+        {List<String>? history}) =>
     previousNodeId != null &&
     (!_isWithinPlace(previousNodeId, settlementNodeId) ||
         (history != null && !history.contains(settlementNodeId)));
@@ -49,12 +46,8 @@ bool isLocalChoice(StoryChoice choice, String hubNodeId, [StoryData? story]) {
 /// Whether the story from [startId] comes back to [hubNodeId] within
 /// [depth] scenes, following every way on (success, failure and defeat
 /// branches alike).
-bool _leadsBackTo(
-  String startId,
-  String hubNodeId,
-  StoryData story, {
-  int depth = 6,
-}) {
+bool _leadsBackTo(String startId, String hubNodeId, StoryData story,
+    {int depth = 6}) {
   if (startId == hubNodeId) return true;
   final seen = <String>{startId};
   var frontier = [startId];

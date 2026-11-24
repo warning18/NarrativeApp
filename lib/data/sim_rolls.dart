@@ -70,12 +70,11 @@ class SimRolls {
   /// A fresh draw of [on]: its bans count down, the Raise count moves on.
   void freshDraw(RollBanOn on) {
     final next = afterFreshDraw(
-      on: on,
-      bans: bans,
-      raiseBuilt: built.contains(RollPower.raise),
-      raise: raise,
-      raiseProgress: raiseProgress,
-    );
+        on: on,
+        bans: bans,
+        raiseBuilt: built.contains(RollPower.raise),
+        raise: raise,
+        raiseProgress: raiseProgress);
     bans = next.bans;
     raise = next.raise;
     raiseProgress = next.raiseProgress;
@@ -137,17 +136,14 @@ class SimRolls {
       for (var i = 0; i < cards.length && banish >= 2; i++) {
         if (wants(cards[i])) continue;
         final draws = banishLengths.first;
-        final next = withRollBan(
-          bans,
-          RollBan(on: RollBanOn.pick, id: cards[i].pathId, left: draws),
-        );
+        final next = withRollBan(bans,
+            RollBan(on: RollBanOn.pick, id: cards[i].pathId, left: draws));
         final card = replaceStatPickOffer(
-          offer: cards,
-          index: i,
-          paths: paths,
-          random: random,
-          bannedPaths: bannedIdsOf(next, RollBanOn.pick),
-        );
+            offer: cards,
+            index: i,
+            paths: paths,
+            random: random,
+            bannedPaths: bannedIdsOf(next, RollBanOn.pick));
         if (card == null) continue;
         bans = next;
         banish -= banishCostOf(draws);

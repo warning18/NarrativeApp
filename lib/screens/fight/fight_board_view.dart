@@ -68,9 +68,7 @@ extension _FightBoardView on _FightScreenState {
   /// The two columns of slots: the party on the left, the foes on the right,
   /// the same size.
   Widget _buildSlots(
-    Map<String, dynamic> items,
-    Map<String, _FacePreview> previews,
-  ) {
+      Map<String, dynamic> items, Map<String, _FacePreview> previews) {
     Widget column(int filled, Widget Function(int i) build, String tourId) {
       return TutorialTarget(
         id: tourId,
@@ -135,21 +133,15 @@ extension _FightBoardView on _FightScreenState {
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(12),
         border: Border.all(
-          color: colorScheme.outlineVariant.withValues(alpha: 0.6),
-        ),
+            color: colorScheme.outlineVariant.withValues(alpha: 0.6)),
       ),
     );
   }
 
   /// A fighter's head (head_avatar.dart): a crop of its sprite, or its
   /// initial in [accent] when it has none.
-  Widget _headTile(
-    String id,
-    String name,
-    Color accent, {
-    double size = 36,
-    bool dim = false,
-  }) {
+  Widget _headTile(String id, String name, Color accent,
+      {double size = 36, bool dim = false}) {
     return HeadAvatar(id: id, name: name, accent: accent, size: size, dim: dim);
   }
 
@@ -171,9 +163,8 @@ extension _FightBoardView on _FightScreenState {
     int? turns,
   }) {
     final group = _fxGroup;
-    group.add(
-      FightEffectEntry(effect: effect, title: title, body: body, badge: badge),
-    );
+    group.add(FightEffectEntry(
+        effect: effect, title: title, body: body, badge: badge));
     return Builder(
       builder: (iconContext) => FightEffectChip(
         key: Key('fight_effect_${effect.name}_$who'),
@@ -188,10 +179,9 @@ extension _FightBoardView on _FightScreenState {
             showFightEffectsPopin(
               context,
               anchor: rect,
-              title: tr(
-                ref,
-                'effects_popin_title',
-              ).replaceAll('{name}', who).replaceAll('{n}', '${group.length}'),
+              title: tr(ref, 'effects_popin_title')
+                  .replaceAll('{name}', who)
+                  .replaceAll('{n}', '${group.length}'),
               entries: List.of(group),
               closeHint: tr(ref, 'effect_popin_close'),
             );
@@ -204,10 +194,9 @@ extension _FightBoardView on _FightScreenState {
             title: title,
             subtitle: turns == null
                 ? who
-                : tr(
-                    ref,
-                    'effect_popin_sub',
-                  ).replaceAll('{name}', who).replaceAll('{turns}', '$turns'),
+                : tr(ref, 'effect_popin_sub')
+                    .replaceAll('{name}', who)
+                    .replaceAll('{turns}', '$turns'),
             body: body,
             closeHint: tr(ref, 'effect_popin_close'),
           );
@@ -221,36 +210,28 @@ extension _FightBoardView on _FightScreenState {
         for (final effect in effects)
           switch (effect.type) {
             StatusEffectType.poison => _effectIcon(
-                FightEffect.poison,
-                tr(ref, 'status_poison_label'),
+                FightEffect.poison, tr(ref, 'status_poison_label'),
                 badge: '${effect.remainingTurns}',
                 who: who,
                 turns: effect.remainingTurns,
                 body: tr(ref, 'poison_tip')
                     .replaceAll('{n}', '${effect.magnitude}')
-                    .replaceAll('{turns}', '${effect.remainingTurns}'),
-              ),
+                    .replaceAll('{turns}', '${effect.remainingTurns}')),
             StatusEffectType.stun => _effectIcon(
-                FightEffect.stun,
-                tr(ref, 'status_stun_label'),
+                FightEffect.stun, tr(ref, 'status_stun_label'),
                 badge: '${effect.remainingTurns}',
                 who: who,
                 turns: effect.remainingTurns,
-                body: tr(
-                  ref,
-                  'stun_tip',
-                ).replaceAll('{turns}', '${effect.remainingTurns}'),
-              ),
+                body: tr(ref, 'stun_tip')
+                    .replaceAll('{turns}', '${effect.remainingTurns}')),
             StatusEffectType.weaken => _effectIcon(
-                FightEffect.weaken,
-                tr(ref, 'status_weaken_label'),
+                FightEffect.weaken, tr(ref, 'status_weaken_label'),
                 badge: '${effect.remainingTurns}',
                 who: who,
                 turns: effect.remainingTurns,
                 body: tr(ref, 'weaken_tip')
                     .replaceAll('{n}', '${effect.magnitude}')
-                    .replaceAll('{turns}', '${effect.remainingTurns}'),
-              ),
+                    .replaceAll('{turns}', '${effect.remainingTurns}')),
           },
       ];
 
@@ -262,36 +243,19 @@ extension _FightBoardView on _FightScreenState {
     _fxGroup = [];
     return [
       if (member.isPlayer && _core.core == ProfessionCore.fury)
-        _effectIcon(
-          FightEffect.fury,
-          tr(ref, 'fury_label'),
-          badge: '${_core.fury}',
-          who: who,
-          body: tr(ref, 'fury_tip'),
-        ),
+        _effectIcon(FightEffect.fury, tr(ref, 'fury_label'),
+            badge: '${_core.fury}', who: who, body: tr(ref, 'fury_tip')),
       if (member.isPlayer && _core.core == ProfessionCore.watchfire)
-        _effectIcon(
-          FightEffect.watchfire,
-          tr(ref, 'watchfire_label'),
-          badge: '${_core.fire}',
-          who: who,
-          body: tr(ref, 'watchfire_tip'),
-        ),
+        _effectIcon(FightEffect.watchfire, tr(ref, 'watchfire_label'),
+            badge: '${_core.fire}', who: who, body: tr(ref, 'watchfire_tip')),
       if (member.block > 0)
-        _effectIcon(
-          FightEffect.block,
-          tr(ref, 'effect_block_label'),
-          badge: '${member.block}',
-          who: who,
-          body: tr(ref, 'block_tip').replaceAll('{n}', '${member.block}'),
-        ),
+        _effectIcon(FightEffect.block, tr(ref, 'effect_block_label'),
+            badge: '${member.block}',
+            who: who,
+            body: tr(ref, 'block_tip').replaceAll('{n}', '${member.block}')),
       if (!member.isKnockedOut && _isTelegraphedTarget(member))
-        _effectIcon(
-          FightEffect.target,
-          tr(ref, 'effect_target_label'),
-          who: who,
-          body: tr(ref, 'effect_target_tip'),
-        ),
+        _effectIcon(FightEffect.target, tr(ref, 'effect_target_label'),
+            who: who, body: tr(ref, 'effect_target_tip')),
       ..._statusIcons(member.statusEffects, who),
     ];
   }
@@ -372,13 +336,8 @@ extension _FightBoardView on _FightScreenState {
                 ? const Color(0xFFD9457A)
                 : null,
         borderWidth: picked || healed ? 3 : null,
-        head: _headTile(
-          _headIdFor(member),
-          member.displayName,
-          accent,
-          size: 32,
-          dim: member.isKnockedOut,
-        ),
+        head: _headTile(_headIdFor(member), member.displayName, accent,
+            size: 32, dim: member.isKnockedOut),
         armor: armor,
         damage: damage,
         bar: _buildPartyHp(member, items),
@@ -386,14 +345,11 @@ extension _FightBoardView on _FightScreenState {
           ...icons,
           if (_canParry(member)) _buildParryChip(member),
           if (member.isKnockedOut)
-            Text(
-              tr(ref, 'knocked_out_label'),
-              style: TextStyle(
-                fontSize: 10,
-                color: colorScheme.error,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
+            Text(tr(ref, 'knocked_out_label'),
+                style: TextStyle(
+                    fontSize: 10,
+                    color: colorScheme.error,
+                    fontWeight: FontWeight.bold)),
         ],
       ),
     );
@@ -417,9 +373,7 @@ extension _FightBoardView on _FightScreenState {
       (enemy.currentPhase == null ? 0 : 1);
 
   Widget _buildEnemySlot(
-    _EnemyMember enemy,
-    Map<String, _FacePreview> previews,
-  ) {
+      _EnemyMember enemy, Map<String, _FacePreview> previews) {
     final colorScheme = Theme.of(context).colorScheme;
     var pending = 0;
     for (final preview in previews.values) {
@@ -457,45 +411,27 @@ extension _FightBoardView on _FightScreenState {
         ),
       ..._statusIcons(enemy.statusEffects, who),
       if (enemy.isAlive && enemy.guard > 0)
-        _effectIcon(
-          FightEffect.guard,
-          tr(ref, 'effect_guard_label'),
-          badge: '${enemy.guard}',
-          who: who,
-          body: tr(ref, 'enemy_guard_tooltip'),
-        ),
+        _effectIcon(FightEffect.guard, tr(ref, 'effect_guard_label'),
+            badge: '${enemy.guard}',
+            who: who,
+            body: tr(ref, 'enemy_guard_tooltip')),
       if (enemy.isAlive && enemy.chargedBlow != null)
-        _effectIcon(
-          FightEffect.windUp,
-          tr(ref, 'effect_windup_label'),
-          who: who,
-          body: tr(ref, 'winding_up_tooltip'),
-        ),
+        _effectIcon(FightEffect.windUp, tr(ref, 'effect_windup_label'),
+            who: who, body: tr(ref, 'winding_up_tooltip')),
       if (enemy.isAlive && enemy.staggered)
-        _effectIcon(
-          FightEffect.staggered,
-          tr(ref, 'staggered_label'),
-          who: who,
-          body: tr(ref, 'intent_staggered_label'),
-        ),
+        _effectIcon(FightEffect.staggered, tr(ref, 'staggered_label'),
+            who: who, body: tr(ref, 'intent_staggered_label')),
       if (enemy.isAlive &&
           !enemy.yielded &&
           !_enemies.any((e) => isBossEnemy(e.enemyId, e.data)) &&
           wavers(health: enemy.currentHealth, maxHealth: enemy.maxHealth))
-        _effectIcon(
-          FightEffect.flee,
-          tr(ref, 'effect_flee_label'),
-          who: who,
-          body: tr(ref, 'wavering_tip'),
-        ),
+        _effectIcon(FightEffect.flee, tr(ref, 'effect_flee_label'),
+            who: who, body: tr(ref, 'wavering_tip')),
       if (enemy.isAlive && enemy.rallyStacks > 0)
-        _effectIcon(
-          FightEffect.rally,
-          tr(ref, 'rallied_label'),
-          badge: '${enemy.rallyStacks}',
-          who: who,
-          body: tr(ref, 'rallied_label'),
-        ),
+        _effectIcon(FightEffect.rally, tr(ref, 'rallied_label'),
+            badge: '${enemy.rallyStacks}',
+            who: who,
+            body: tr(ref, 'rallied_label')),
       if (extras > 0)
         Builder(
           builder: (_) => FightEffectChip(
@@ -536,23 +472,15 @@ extension _FightBoardView on _FightScreenState {
           borderColor: aimedByPicked ? Palette.goldDark : null,
           borderWidth: aimedByPicked ? 3 : null,
           marks: enemy.isAlive ? _elementMarks(enemy) : const [],
-          head: _headTile(
-            enemy.enemyId,
-            enemy.displayName,
-            Palette.hot,
-            size: 32,
-            dim: !enemy.isAlive,
-          ),
+          head: _headTile(enemy.enemyId, enemy.displayName, Palette.hot,
+              size: 32, dim: !enemy.isAlive),
           armor: enemy.isAlive && enemy.guard > 0 ? enemy.guard : null,
           bar: Tooltip(
             message: boss ? '' : tr(ref, 'execute_tick_tip'),
-            child: _buildHpBar(
-              enemy.currentHealth,
-              enemy.maxHealth,
-              pending: enemy.isAlive ? pending : 0,
-              executeLine: enemy.isAlive && !boss,
-              foe: true,
-            ),
+            child: _buildHpBar(enemy.currentHealth, enemy.maxHealth,
+                pending: enemy.isAlive ? pending : 0,
+                executeLine: enemy.isAlive && !boss,
+                foe: true),
           ),
           chips: icons,
           intent: enemy.isAlive ? _buildIntentBox(enemy, compact: true) : null,
@@ -605,33 +533,23 @@ extension _FightBoardView on _FightScreenState {
   /// The plan of the throw under way, made once per roll from the seats the
   /// board gives the dice and kept until the next.
   DiceThrowPlan _throwPlanFor(
-    List<_PartyMember> acting,
-    List<_PartyMember> onBoard,
-    Size size,
-  ) {
+      List<_PartyMember> acting, List<_PartyMember> onBoard, Size size) {
     final key = '$_rollCount|$_roundsStarted|${size.width.round()}x'
         '${size.height.round()}|${[for (final a in onBoard) a.id].join(',')}';
     if (_throwPlan != null && _throwKey == key) return _throwPlan!;
     final seats = [
       for (final a in onBoard)
         DiceThrowSeat(
-          _seatFor(acting.indexOf(a), acting.length, size),
-          _dieSquareFor(
-                a.dieFaces.length,
-                count: onBoard.length,
-                boardWidth: size.width,
-              ) *
-              0.5 *
-              dieSolidScale(dieShapeOf(a.dieFaces.length)) *
-              0.95,
-        ),
+            _seatFor(acting.indexOf(a), acting.length, size),
+            _dieSquareFor(a.dieFaces.length,
+                    count: onBoard.length, boardWidth: size.width) *
+                0.5 *
+                dieSolidScale(dieShapeOf(a.dieFaces.length)) *
+                0.95),
     ];
     _throwKey = key;
     return _throwPlan = DiceThrowPlan.build(
-      seats: seats,
-      board: size,
-      seed: _rollCount * 131 + _roundsStarted,
-    );
+        seats: seats, board: size, seed: _rollCount * 131 + _roundsStarted);
   }
 
   Widget _buildDiceBoard(
@@ -722,7 +640,9 @@ extension _FightBoardView on _FightScreenState {
                             top: 4,
                             child: IgnorePointer(
                               child: FightFigures(
-                                allies: [for (final m in _party) _headIdFor(m)],
+                                allies: [
+                                  for (final m in _party) _headIdFor(m),
+                                ],
                                 foes: [for (final e in _enemies) e.enemyId],
                                 height: fightFigureHeight(size.width),
                               ),
@@ -742,11 +662,10 @@ extension _FightBoardView on _FightScreenState {
                                   decoration: BoxDecoration(
                                     shape: BoxShape.circle,
                                     color: Colors.black.withValues(
-                                      alpha: 0.4 *
-                                          (1 -
-                                              throwPlan.lift(k, u) /
-                                                  (diceThrowMaxLift * 2)),
-                                    ),
+                                        alpha: 0.4 *
+                                            (1 -
+                                                throwPlan.lift(k, u) /
+                                                    (diceThrowMaxLift * 2))),
                                   ),
                                 ),
                               ),
@@ -761,11 +680,8 @@ extension _FightBoardView on _FightScreenState {
                                 ? throwPlan.position(k, u) - Offset(0, lift)
                                 : Offset.lerp(launch, seat, t)! -
                                     Offset(0, arc);
-                            final square = _dieSquareFor(
-                              actor.dieFaces.length,
-                              count: onBoard.length,
-                              boardWidth: size.width,
-                            );
+                            final square = _dieSquareFor(actor.dieFaces.length,
+                                count: onBoard.length, boardWidth: size.width);
                             final tileW = max(_tileW, square + 24);
                             final tileH = _tileH + (square - _dieCube);
                             return Positioned(
@@ -773,30 +689,19 @@ extension _FightBoardView on _FightScreenState {
                               top: pos.dy - tileH / 2,
                               width: tileW,
                               height: tileH,
-                              child: _buildDieTile(
-                                actor,
-                                dice,
-                                skills,
-                                items,
-                                canLock,
-                                plan.previews[actor.id],
-                                cube: square,
-                                hideName: TowerPanelStyle.of(context) &&
-                                    size.height <
-                                        tileH +
-                                            _hintHeight(
-                                              tr(ref, hintKey),
-                                              size.width - 16,
-                                            ) +
-                                            16,
-                                roll: throwPlan == null
-                                    ? null
-                                    : _rollController.drive(
-                                        CurveTween(
-                                          curve: throwPlan.turnCurve(k),
-                                        ),
-                                      ),
-                              ),
+                              child: _buildDieTile(actor, dice, skills, items,
+                                  canLock, plan.previews[actor.id],
+                                  cube: square,
+                                  hideName: TowerPanelStyle.of(context) &&
+                                      size.height <
+                                          tileH +
+                                              _hintHeight(tr(ref, hintKey),
+                                                  size.width - 16) +
+                                              16,
+                                  roll: throwPlan == null
+                                      ? null
+                                      : _rollController.drive(CurveTween(
+                                          curve: throwPlan.turnCurve(k)))),
                             );
                           }(),
                         // The Tower's ink: the dice's tags on the plate, over
@@ -807,13 +712,10 @@ extension _FightBoardView on _FightScreenState {
                             left: 8,
                             right: 8,
                             bottom: max(
-                              40.0,
-                              10 +
-                                  _hintHeight(
-                                    tr(ref, hintKey),
-                                    size.width - 16,
-                                  ),
-                            ),
+                                40.0,
+                                10 +
+                                    _hintHeight(
+                                        tr(ref, hintKey), size.width - 16)),
                             child: IgnorePointer(
                               child: Row(
                                 mainAxisAlignment:
@@ -821,8 +723,7 @@ extension _FightBoardView on _FightScreenState {
                                 children: [
                                   for (final a in onBoard)
                                     Flexible(
-                                      child: _buildTowerDieTag(a, skills),
-                                    ),
+                                        child: _buildTowerDieTag(a, skills)),
                                 ],
                               ),
                             ),
@@ -841,14 +742,11 @@ extension _FightBoardView on _FightScreenState {
                                   .textTheme
                                   .labelSmall
                                   ?.copyWith(
-                                color: Colors.white.withValues(alpha: 0.9),
-                                shadows: const [
-                                  Shadow(
-                                    blurRadius: 4,
-                                    color: Colors.black,
-                                  ),
-                                ],
-                              ),
+                                      color:
+                                          Colors.white.withValues(alpha: 0.9),
+                                      shadows: const [
+                                    Shadow(blurRadius: 4, color: Colors.black)
+                                  ]),
                             ),
                           ),
                         ),
@@ -878,10 +776,7 @@ extension _FightBoardView on _FightScreenState {
   // --- The kept row --------------------------------------------------------
 
   Widget _buildKeptRow(
-    List<_PartyMember> acting,
-    bool canLock,
-    ColorScheme colorScheme,
-  ) {
+      List<_PartyMember> acting, bool canLock, ColorScheme colorScheme) {
     final kept = [
       for (final a in acting)
         if (_lockedActorIds.contains(a.id)) a,
@@ -913,29 +808,22 @@ extension _FightBoardView on _FightScreenState {
           const SizedBox(width: 10),
           if (kept.isEmpty)
             Expanded(
-              child: Text(
-                tr(ref, 'dice_kept_none'),
-                style: Theme.of(context).textTheme.labelSmall?.copyWith(
+              child: Text(tr(ref, 'dice_kept_none'),
+                  style: Theme.of(context).textTheme.labelSmall?.copyWith(
                       color: colorScheme.onSurfaceVariant,
-                      fontStyle: FontStyle.italic,
-                    ),
-              ),
+                      fontStyle: FontStyle.italic)),
             )
           else
             for (final actor in kept) _keptDie(actor),
           if (kept.isNotEmpty) const Spacer(),
           if (kept.any((a) => _canReleaseDie(a.id)))
             Flexible(
-              child: Text(
-                tr(ref, 'dice_kept_return_hint'),
-                textAlign: TextAlign.end,
-                maxLines: 3,
-                overflow: TextOverflow.ellipsis,
-                style: Theme.of(context).textTheme.labelSmall?.copyWith(
-                      color: colorScheme.onSurfaceVariant,
-                      fontSize: 9,
-                    ),
-              ),
+              child: Text(tr(ref, 'dice_kept_return_hint'),
+                  textAlign: TextAlign.end,
+                  maxLines: 3,
+                  overflow: TextOverflow.ellipsis,
+                  style: Theme.of(context).textTheme.labelSmall?.copyWith(
+                      color: colorScheme.onSurfaceVariant, fontSize: 9)),
             ),
         ],
       ),
@@ -958,21 +846,17 @@ extension _FightBoardView on _FightScreenState {
             ? () => _update(() => _releaseDie(actor.id))
             : null,
         onTap: final_
-            ? () => showImmersiveNotice(
-                  context,
-                  icon: Icons.lock_outline,
-                  message: tr(ref, 'dice_sealed_tip'),
-                )
+            ? () => showImmersiveNotice(context,
+                icon: Icons.lock_outline, message: tr(ref, 'dice_sealed_tip'))
             : null,
         onLongPress: face == null
             ? null
             : () => _showFaceSheet(
-                  actor,
-                  face,
-                  ref.read(localizedDbProvider(diceSchema)).value ?? const {},
-                  ref.read(localizedDbProvider(skillsSchema)).value ?? const {},
-                  ref.read(localizedDbProvider(itemsSchema)).value ?? const {},
-                ),
+                actor,
+                face,
+                ref.read(localizedDbProvider(diceSchema)).value ?? const {},
+                ref.read(localizedDbProvider(skillsSchema)).value ?? const {},
+                ref.read(localizedDbProvider(itemsSchema)).value ?? const {}),
         child: Stack(
           clipBehavior: Clip.none,
           children: [
@@ -985,20 +869,16 @@ extension _FightBoardView on _FightScreenState {
                 border: Border.all(color: accent, width: 1.6),
               ),
               child: Center(
-                child: face == null
-                    ? const SizedBox.shrink()
-                    : _buildFaceGlyph(face, size: 22),
-              ),
+                  child: face == null
+                      ? const SizedBox.shrink()
+                      : _buildFaceGlyph(face, size: 22)),
             ),
             if (final_)
               const Positioned(
                 right: -4,
                 top: -6,
-                child: PixelGlyph(
-                  PixelGlyphs.lock,
-                  size: IconSize.s16,
-                  color: Palette.orange61,
-                ),
+                child: PixelGlyph(PixelGlyphs.lock,
+                    size: IconSize.s16, color: Palette.orange61),
               ),
           ],
         ),
@@ -1011,13 +891,12 @@ extension _FightBoardView on _FightScreenState {
   /// The first tap on a landed die picks it (its line to the target shows);
   /// the second keeps it (the lock rules are Core's, die_locks.dart).
   void _onDieTap(
-    _PartyMember actor,
-    DiceFaceResult face,
-    bool canLock,
-    Map<String, dynamic> dice,
-    Map<String, dynamic> skills,
-    Map<String, dynamic> items,
-  ) {
+      _PartyMember actor,
+      DiceFaceResult face,
+      bool canLock,
+      Map<String, dynamic> dice,
+      Map<String, dynamic> skills,
+      Map<String, dynamic> items) {
     if (!canLock || _steadyActorIds.contains(actor.id)) {
       _showFaceSheet(actor, face, dice, skills, items);
       return;

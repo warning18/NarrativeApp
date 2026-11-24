@@ -35,25 +35,18 @@ Color itemRarityColor(ColorScheme scheme, String? rarity) =>
 /// "Yours since the Lower Town, chapter 1", or "Yours since chapter 1"
 /// when the place is unknown to [geography]; null for no [origin].
 String? itemOriginLineFor(
-  ItemOrigin? origin,
-  Geography geography,
-  AppLanguage language,
-) {
+    ItemOrigin? origin, Geography geography, AppLanguage language) {
   if (origin == null) return null;
   final place = geography.place(origin.placeId);
   final chapter = '${origin.chapter}';
   if (place == null) {
-    return trFor(
-      language,
-      'item_origin_chapter_line',
-    ).replaceAll('{n}', chapter);
+    return trFor(language, 'item_origin_chapter_line')
+        .replaceAll('{n}', chapter);
   }
   // "the Lower Town" mid-sentence, not "The Lower Town".
   return trFor(language, 'item_origin_line')
       .replaceAll(
-        '{place}',
-        midSentenceName(place.nameFor(language == AppLanguage.fr)),
-      )
+          '{place}', midSentenceName(place.nameFor(language == AppLanguage.fr)))
       .replaceAll('{n}', chapter);
 }
 

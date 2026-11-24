@@ -103,48 +103,42 @@ class _FacadePalette {
             roof: Color(0xFF7A4B3B),
             timber: Color(0xFF4F3B2D),
             door: Color(0xFF3D2A1D),
-            glass: Color(0xFF6D8FA0),
-          ),
+            glass: Color(0xFF6D8FA0)),
         FacadeStyle.tavern => const _FacadePalette(
             wall: Color(0xFFA98E6E),
             shade: Color(0xFF7F6850),
             roof: Color(0xFF5E3F36),
             timber: Color(0xFF3F2E24),
             door: Color(0xFF2E2018),
-            glass: Color(0xFF5E7A86),
-          ),
+            glass: Color(0xFF5E7A86)),
         FacadeStyle.warehouse => const _FacadePalette(
             wall: Color(0xFF8F8575),
             shade: Color(0xFF6D6559),
             roof: Color(0xFF55483E),
             timber: Color(0xFF3B3028),
             door: Color(0xFF3A2D22),
-            glass: Color(0xFF58707A),
-          ),
+            glass: Color(0xFF58707A)),
         FacadeStyle.shop => const _FacadePalette(
             wall: Color(0xFFBBA383),
             shade: Color(0xFF93805F),
             roof: Color(0xFF6C4A3A),
             timber: Color(0xFF4A3828),
             door: Palette.orange17,
-            glass: Color(0xFF75929F),
-          ),
+            glass: Color(0xFF75929F)),
         FacadeStyle.temple => const _FacadePalette(
             wall: Color(0xFFB4B0A6),
             shade: Color(0xFF8A877E),
             roof: Color(0xFF5B5C66),
             timber: Color(0xFF45464F),
             door: Color(0xFF3A2C22),
-            glass: Color(0xFF7A8FB0),
-          ),
+            glass: Color(0xFF7A8FB0)),
         FacadeStyle.fort => const _FacadePalette(
             wall: Color(0xFF8E8C88),
             shade: Color(0xFF6A6865),
             roof: Color(0xFF55555A),
             timber: Color(0xFF3F3F44),
             door: Color(0xFF362A20),
-            glass: Color(0xFF4F5A64),
-          ),
+            glass: Color(0xFF4F5A64)),
       };
 }
 
@@ -152,13 +146,8 @@ class _FacadePalette {
 /// (the evening's and the night's): done again over the hour's wash by
 /// [paintFacadeLights], so the glow is not dimmed with the rest. [snow]
 /// whitens the roof.
-void paintFacade(
-  Canvas canvas,
-  double u,
-  FacadeStyle style,
-  FacadeBox box, {
-  bool snow = false,
-}) {
+void paintFacade(Canvas canvas, double u, FacadeStyle style, FacadeBox box,
+    {bool snow = false}) {
   final p = _FacadePalette.of(style);
   final paint = Paint();
   void rect(Color c, double x, double y, double w, double h) {
@@ -248,13 +237,8 @@ void paintFacade(
       _ => (8.0, 13.0, 0.0),
     };
 
-void _door(
-  Canvas canvas,
-  double u,
-  FacadeStyle style,
-  FacadeBox box,
-  _FacadePalette p,
-) {
+void _door(Canvas canvas, double u, FacadeStyle style, FacadeBox box,
+    _FacadePalette p) {
   final paint = Paint();
   final (dw, dh, _) = _doorSize(style);
   final x = box.doorX - dw / 2, y = box.base - dh;
@@ -331,25 +315,13 @@ List<Rect> facadeWindows(FacadeStyle style, FacadeBox box) {
 }
 
 void _windows(
-  Canvas canvas,
-  double u,
-  FacadeStyle style,
-  FacadeBox box,
-  _FacadePalette p, {
-  required bool lit,
-}) {
+    Canvas canvas, double u, FacadeStyle style, FacadeBox box, _FacadePalette p,
+    {required bool lit}) {
   final paint = Paint();
   for (final r in facadeWindows(style, box)) {
     paint.color = p.timber;
     sidePixels(
-      canvas,
-      u,
-      paint,
-      r.left - 1,
-      r.top - 1,
-      r.width + 2,
-      r.height + 2,
-    );
+        canvas, u, paint, r.left - 1, r.top - 1, r.width + 2, r.height + 2);
     paint.color = lit ? Palette.orange74 : p.glass;
     sidePixels(canvas, u, paint, r.left, r.top, r.width, r.height);
     if (!lit && r.width >= 5) {
@@ -361,13 +333,8 @@ void _windows(
 
 /// What says what it is: an inn's hanging sign, a shop's awning, a
 /// warehouse's hoist, a temple's rose window.
-void _signs(
-  Canvas canvas,
-  double u,
-  FacadeStyle style,
-  FacadeBox box,
-  _FacadePalette p,
-) {
+void _signs(Canvas canvas, double u, FacadeStyle style, FacadeBox box,
+    _FacadePalette p) {
   final paint = Paint();
   void rect(Color c, double x, double y, double w, double h) {
     paint.color = c;
@@ -387,13 +354,8 @@ void _signs(
       // An awning in two colours over the shopfront.
       final y = box.base - 17;
       for (var i = 0; i < box.width ~/ 4; i++) {
-        rect(
-          i.isEven ? const Color(0xFF9E3A32) : const Color(0xFFE9DCC1),
-          box.left + i * 4,
-          y,
-          4,
-          4,
-        );
+        rect(i.isEven ? const Color(0xFF9E3A32) : const Color(0xFFE9DCC1),
+            box.left + i * 4, y, 4, 4);
       }
       rect(Palette.alpha33Night0, box.left, y + 4, box.width, 1);
     case FacadeStyle.warehouse:
@@ -415,13 +377,8 @@ void _signs(
     case FacadeStyle.house:
       // A flower box under the upper windows.
       rect(p.timber, box.left + box.width * 0.2 - 1, box.base - 18, 8, 2);
-      rect(
-        const Color(0xFF5E8A4B),
-        box.left + box.width * 0.2,
-        box.base - 19,
-        6,
-        1,
-      );
+      rect(const Color(0xFF5E8A4B), box.left + box.width * 0.2, box.base - 19,
+          6, 1);
     case FacadeStyle.fort:
       break;
   }
@@ -431,13 +388,8 @@ void _signs(
 /// hour's wash so the light is not dimmed with the night. [t] makes the
 /// lantern flicker.
 void paintFacadeLights(
-  Canvas canvas,
-  double u,
-  FacadeStyle style,
-  FacadeBox box,
-  double t, {
-  required double strength,
-}) {
+    Canvas canvas, double u, FacadeStyle style, FacadeBox box, double t,
+    {required double strength}) {
   if (strength <= 0) return;
   final p = _FacadePalette.of(style);
   _windows(canvas, u, style, box, p, lit: true);
@@ -445,11 +397,8 @@ void paintFacadeLights(
   // A lantern by the door.
   final lx = box.doorX + _doorSize(style).$1 / 2 + 3, ly = box.base - 12;
   final flick = 0.8 + 0.2 * math.sin(t * 7.3);
-  canvas.drawCircle(
-    Offset((lx + 0.5) * u, (ly + 1.5) * u),
-    7 * u,
-    Paint()..color = Palette.orange74.withValues(alpha: 0.18 * flick),
-  );
+  canvas.drawCircle(Offset((lx + 0.5) * u, (ly + 1.5) * u), 7 * u,
+      Paint()..color = Palette.orange74.withValues(alpha: 0.18 * flick));
   paint.color = Palette.orange17a;
   sidePixels(canvas, u, paint, lx, ly - 1, 2, 1);
   paint.color = Palette.orange74;

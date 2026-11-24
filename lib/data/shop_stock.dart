@@ -26,11 +26,8 @@ List<String> shopStockFor(Map<String, dynamic> shop, {required int chapter}) {
 
 /// [shopStockFor], with one item of the chapter ahead (its `lootChapter`
 /// past [chapter]) swapped in when the draw holds none and the pool does.
-List<String> shopStockWithAhead(
-  Map<String, dynamic> shop, {
-  required int chapter,
-  required Map<String, dynamic> items,
-}) {
+List<String> shopStockWithAhead(Map<String, dynamic> shop,
+    {required int chapter, required Map<String, dynamic> items}) {
   final picked = shopStockFor(shop, chapter: chapter);
   final pool = _ids(shop['stockPool']);
   if (pool.isEmpty || picked.length == pool.length) return picked;
@@ -41,9 +38,8 @@ List<String> shopStockWithAhead(
   final ahead = pool.where((id) => lootChapter(id) > chapter).toList();
   if (ahead.isEmpty) return picked;
   final seed = stableHash('${shop['shopID']}@$chapter:ahead');
-  ahead.sort(
-    (a, b) => stableHash('$seed:$a').compareTo(stableHash('$seed:$b')),
-  );
+  ahead
+      .sort((a, b) => stableHash('$seed:$a').compareTo(stableHash('$seed:$b')));
   return [...picked.take(picked.length - 1), ahead.first];
 }
 
@@ -69,11 +65,8 @@ String? shopKeeperName(Map<String, dynamic> shop, AppLanguage language) {
 /// faction (null: no faction): their Wary line below Unknown, their
 /// Trusted or Sworn line above Known, their plain line otherwise, and the
 /// plain line again where a shop has no line for the tier.
-String? shopKeeperLine(
-  Map<String, dynamic> shop,
-  AppLanguage language, {
-  StandingTier? tier,
-}) {
+String? shopKeeperLine(Map<String, dynamic> shop, AppLanguage language,
+    {StandingTier? tier}) {
   String? line(String key) {
     final fr = shop['${key}_fr']?.toString().trim();
     final en = shop[key]?.toString().trim();

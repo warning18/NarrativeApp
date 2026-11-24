@@ -61,12 +61,9 @@ bool isPlainGoOn(StoryChoice choice) =>
 /// Geography.travelsBetween, so a way to another district of the same
 /// city is a walk through its streets and reads through. Without one,
 /// a change of landmark decides (see [isRoadStep]).
-StoryChoice? passThroughChoiceOf(
-  StoryNode node,
-  Iterable<String> flags, {
-  bool Function(StoryChoice choice)? hidden,
-  bool Function(String from, String to)? travels,
-}) {
+StoryChoice? passThroughChoiceOf(StoryNode node, Iterable<String> flags,
+    {bool Function(StoryChoice choice)? hidden,
+    bool Function(String from, String to)? travels}) {
   if (node.settlement != null || isStoryEnding(node)) return null;
   if (node.hubProgress != null || node.isTimed) return null;
   // A page turn is a stop of its own: the player turns the page.
@@ -109,12 +106,9 @@ String readThroughEnd(
   for (var i = 0; i < maxPassThrough; i++) {
     final node = nodeFor(id);
     if (node == null) break;
-    final way = passThroughChoiceOf(
-      node,
-      held,
-      hidden: hidden == null ? null : (c) => hidden(c, held),
-      travels: travels,
-    );
+    final way = passThroughChoiceOf(node, held,
+        hidden: hidden == null ? null : (c) => hidden(c, held),
+        travels: travels);
     if (way == null || (blocked?.call(way, held) ?? false)) break;
     held.addAll(way.flagsToAdd);
     id = way.nextId;

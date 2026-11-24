@@ -46,49 +46,34 @@ List<SideLayer> ruinsLayers({double progress = 0}) => [
       const SideLayer(0, _sky),
       const SideLayer(0.05, _sun),
       SideLayer(0.12, (c, s, scroll, t, u) {
-        sideHills(
-          c,
-          s,
-          u,
-          scroll,
-          base: 40,
-          amp: 1.6,
-          wave: 0.06,
-          phase: 1.3,
-          fill: _RuinsLook.skyline,
-          rim: _RuinsLook.skylineRim,
-        );
+        sideHills(c, s, u, scroll,
+            base: 40,
+            amp: 1.6,
+            wave: 0.06,
+            phase: 1.3,
+            fill: _RuinsLook.skyline,
+            rim: _RuinsLook.skylineRim);
         _skyline(c, s, u, scroll);
         _tower(c, s, u, progress);
       }),
       SideLayer(0.3, (c, s, scroll, t, u) {
-        sideHills(
-          c,
-          s,
-          u,
-          scroll,
-          base: 46,
-          amp: 2.2,
-          wave: 0.05,
-          phase: 0.6,
-          fill: _RuinsLook.hill,
-          rim: _RuinsLook.hillRim,
-        );
+        sideHills(c, s, u, scroll,
+            base: 46,
+            amp: 2.2,
+            wave: 0.05,
+            phase: 0.6,
+            fill: _RuinsLook.hill,
+            rim: _RuinsLook.hillRim);
         _walls(c, s, u, scroll);
       }),
       SideLayer(0.8, (c, s, scroll, t, u) {
-        sideHills(
-          c,
-          s,
-          u,
-          scroll,
-          base: 54,
-          amp: 3,
-          wave: 0.035,
-          phase: 2.4,
-          fill: _RuinsLook.near,
-          rim: _RuinsLook.nearRim,
-        );
+        sideHills(c, s, u, scroll,
+            base: 54,
+            amp: 3,
+            wave: 0.035,
+            phase: 2.4,
+            fill: _RuinsLook.near,
+            rim: _RuinsLook.nearRim);
         _rubble(c, s, u, scroll);
       }),
       const SideLayer(1.0, _path),
@@ -110,10 +95,8 @@ void _sky(Canvas canvas, Size size, double scroll, double t, double u) {
       canvas.drawRect(Rect.fromLTWH(x * u, y * u, u + 0.5, u + 0.5), paint);
     }
   }
-  canvas.drawRect(
-    Rect.fromLTWH(0, horizon * u, size.width, size.height),
-    Paint()..color = _RuinsLook.skyline,
-  );
+  canvas.drawRect(Rect.fromLTWH(0, horizon * u, size.width, size.height),
+      Paint()..color = _RuinsLook.skyline);
 }
 
 void _sun(Canvas canvas, Size size, double scroll, double t, double u) {
@@ -127,14 +110,10 @@ void _sun(Canvas canvas, Size size, double scroll, double t, double u) {
       final d = x * x + y * y;
       if (d <= 20) {
         canvas.drawRect(
-          Rect.fromLTWH((cx + x) * u, (cy + y) * u, u + 0.5, u + 0.5),
-          disc,
-        );
+            Rect.fromLTWH((cx + x) * u, (cy + y) * u, u + 0.5, u + 0.5), disc);
       } else if (d <= 81 && (x + y).isEven) {
         canvas.drawRect(
-          Rect.fromLTWH((cx + x) * u, (cy + y) * u, u + 0.5, u + 0.5),
-          glow,
-        );
+            Rect.fromLTWH((cx + x) * u, (cy + y) * u, u + 0.5, u + 0.5), glow);
       }
     }
   }
@@ -156,14 +135,7 @@ void _skyline(Canvas canvas, Size size, double u, double scroll) {
     sidePixels(canvas, u, rim, px, 42 - h, 4, 1);
     // A snapped top: one pixel bitten off.
     sidePixels(
-      canvas,
-      u,
-      Paint()..color = _RuinsLook.sky[3],
-      px + 2,
-      42 - h,
-      2,
-      1,
-    );
+        canvas, u, Paint()..color = _RuinsLook.sky[3], px + 2, 42 - h, 2, 1);
   }
 }
 
@@ -179,28 +151,14 @@ void _tower(Canvas canvas, Size size, double u, double progress) {
   const base = 44.0;
   final body = Paint()..color = const Color(0xFF2B2030);
   sidePixels(canvas, u, body, x - bw / 2, base - bh, bw, bh);
-  sidePixels(
-    canvas,
-    u,
-    Paint()..color = _RuinsLook.skylineRim,
-    x - bw / 2,
-    base - bh,
-    bw,
-    1,
-  );
+  sidePixels(canvas, u, Paint()..color = _RuinsLook.skylineRim, x - bw / 2,
+      base - bh, bw, 1);
   // The broken crown: two uneven teeth.
   sidePixels(canvas, u, body, x - bw / 2, base - bh - 2, 2, 2);
   sidePixels(canvas, u, body, x + bw / 2 - 2, base - bh - 1, 2, 1);
   final win = math.max(2, (2 * scale).round()).toDouble();
-  sidePixels(
-    canvas,
-    u,
-    Paint()..color = _RuinsLook.window,
-    x - win / 2,
-    base - bh * 0.7,
-    win,
-    win * 1.5,
-  );
+  sidePixels(canvas, u, Paint()..color = _RuinsLook.window, x - win / 2,
+      base - bh * 0.7, win, win * 1.5);
 }
 
 /// Ruined walls with a gap or an arch, repeating along the ground.

@@ -114,9 +114,7 @@ class _StoryText extends StatelessWidget {
                       if (placeLabel != null)
                         Container(
                           padding: const EdgeInsets.symmetric(
-                            horizontal: 8,
-                            vertical: 3,
-                          ),
+                              horizontal: 8, vertical: 3),
                           decoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(3),
                             border: Border.all(color: accent.border),
@@ -127,9 +125,7 @@ class _StoryText extends StatelessWidget {
                                 .textTheme
                                 .labelSmall
                                 ?.copyWith(
-                                  color: accent.text,
-                                  letterSpacing: 1,
-                                ),
+                                    color: accent.text, letterSpacing: 1),
                           ),
                         ),
                       if (moodLabel != null)
@@ -141,11 +137,10 @@ class _StoryText extends StatelessWidget {
                                 .textTheme
                                 .labelSmall
                                 ?.copyWith(
-                                  color: Theme.of(context)
-                                      .colorScheme
-                                      .onSurfaceVariant,
-                                  letterSpacing: 1,
-                                ),
+                                    color: Theme.of(context)
+                                        .colorScheme
+                                        .onSurfaceVariant,
+                                    letterSpacing: 1),
                           ),
                         ),
                     ],
@@ -220,7 +215,10 @@ class _StoryText extends StatelessWidget {
                     ),
                     const SizedBox(height: 8),
                   ],
-                  StoryText(text: storyBodyFor(scene.body), style: baseStyle),
+                  StoryText(
+                    text: storyBodyFor(scene.body),
+                    style: baseStyle,
+                  ),
                   for (final echo in scene.echoes) ...[
                     const SizedBox(height: 14),
                     EchoLine(
@@ -236,9 +234,8 @@ class _StoryText extends StatelessWidget {
                     child: Text(
                       '⁂',
                       style: TextStyle(
-                        color: accent.text.withValues(alpha: 0.55),
-                        fontSize: 14,
-                      ),
+                          color: accent.text.withValues(alpha: 0.55),
+                          fontSize: 14),
                     ),
                   ),
                   const SizedBox(height: 14),
@@ -254,7 +251,11 @@ class _StoryText extends StatelessWidget {
                   ),
                   const SizedBox(height: 8),
                 ],
-                StoryText(text: body, style: baseStyle, revealKey: revealKey),
+                StoryText(
+                  text: body,
+                  style: baseStyle,
+                  revealKey: revealKey,
+                ),
                 for (final echo in echoes) ...[
                   const SizedBox(height: 14),
                   EchoLine(
@@ -349,11 +350,9 @@ class _EndingView extends ConsumerWidget {
                       ),
                       const SizedBox(height: 8),
                       Text(
-                        '${tr(ref, 'final_level_label')}: ${recapSession.level}',
-                      ),
+                          '${tr(ref, 'final_level_label')}: ${recapSession.level}'),
                       Text(
-                        '${tr(ref, 'final_gold_label')}: ${recapSession.gold}',
-                      ),
+                          '${tr(ref, 'final_gold_label')}: ${recapSession.gold}'),
                       Text(
                         '${tr(ref, 'final_alignment_label')}: '
                         '${trAlignmentLabel(ref, recapSession.alignmentLabel)} '
@@ -373,15 +372,17 @@ class _EndingView extends ConsumerWidget {
               // Who holds each town at the end (the epilogue map).
               OutlinedButton.icon(
                 key: const Key('ending_realm_map'),
-                onPressed: () => Navigator.of(context).push(
-                  MaterialPageRoute(builder: (_) => const EpilogueMapScreen()),
-                ),
+                onPressed: () => Navigator.of(context).push(MaterialPageRoute(
+                    builder: (_) => const EpilogueMapScreen())),
                 icon: const Icon(Icons.map_outlined),
                 label: Text(tr(ref, 'epilogue_map_button')),
               ),
             ],
             const SizedBox(height: 16),
-            ElevatedButton(onPressed: onRestart, child: Text(restartLabel)),
+            ElevatedButton(
+              onPressed: onRestart,
+              child: Text(restartLabel),
+            ),
             if (onNewGamePlus != null && recapSession != null) ...[
               const SizedBox(height: 8),
               FilledButton.tonalIcon(
@@ -419,8 +420,7 @@ Future<void> _startNewGamePlus(BuildContext context, WidgetRef ref) async {
     context: context,
     builder: (dialogContext) => AlertDialog(
       title: Text(
-        '${trFor(lang, 'new_game_plus_button')} · ${trFor(lang, 'new_game_plus_cycle_label')} $nextCycle',
-      ),
+          '${trFor(lang, 'new_game_plus_button')} · ${trFor(lang, 'new_game_plus_cycle_label')} $nextCycle'),
       content: Text(
         '${trFor(lang, 'new_game_plus_desc')}\n\n'
         '${trFor(lang, 'new_game_plus_enemies_prefix')} +$bonus% '
@@ -446,13 +446,11 @@ Future<void> _startNewGamePlus(BuildContext context, WidgetRef ref) async {
   final middle = MediaQuery.sizeOf(context).center(Offset.zero);
   showBurst(context, at: middle, colour: Palette.amber46, count: 28);
   showQuestSeal(context, colour: const Color(0xFFB8860B));
-  unawaited(
-    showImmersiveNotice(
-      context,
-      icon: Icons.replay_circle_filled_outlined,
-      message: trFor(lang, 'new_game_plus_started_message'),
-    ),
-  );
+  unawaited(showImmersiveNotice(
+    context,
+    icon: Icons.replay_circle_filled_outlined,
+    message: trFor(lang, 'new_game_plus_started_message'),
+  ));
 }
 
 /// Shown once, right after a choice unlocks a shop and/or quest, on the
@@ -497,14 +495,12 @@ Future<void> _showDiscoveryModal(
         .read(playerSessionProvider.notifier)
         .acceptQuest(questId!, quest: quest);
     if (!context.mounted) return;
-    unawaited(
-      showImmersiveNotice(
-        context,
-        icon: Icons.assignment_turned_in_outlined,
-        message:
-            '${trFor(lang, 'quest_accepted_prefix')}: ${quest?['questName']?.toString() ?? questId}',
-      ),
-    );
+    unawaited(showImmersiveNotice(
+      context,
+      icon: Icons.assignment_turned_in_outlined,
+      message:
+          '${trFor(lang, 'quest_accepted_prefix')}: ${quest?['questName']?.toString() ?? questId}',
+    ));
   }
 
   // A main quest is never left for later (Wave 6): taken on at once (here,
@@ -513,13 +509,8 @@ Future<void> _showDiscoveryModal(
   if (isPlayMode && isMainQuest(quest)) {
     if (questEligible) await acceptDiscoveredQuest();
     if (shopId == null || !context.mounted) return;
-    return _showDiscoveryModal(
-      context,
-      ref,
-      PendingDiscovery(shopId: shopId),
-      shops: shops,
-      quests: quests,
-    );
+    return _showDiscoveryModal(context, ref, PendingDiscovery(shopId: shopId),
+        shops: shops, quests: quests);
   }
 
   void viewDiscoveredQuest() {
@@ -544,14 +535,12 @@ Future<void> _showDiscoveryModal(
           MapEntry(trFor(lang, 'required_gold_label'), '$requiredGold'),
         if (requiredFlags.isNotEmpty)
           MapEntry(
-            trFor(lang, 'required_flags_label'),
-            requiredFlags.join(', '),
-          ),
+              trFor(lang, 'required_flags_label'), requiredFlags.join(', ')),
         // A quest settled by a choice pays by it (see turn_in_choices.dart).
         if (turnInChoicesOf(quest).isNotEmpty)
           MapEntry(trFor(lang, 'reward_gold_label'), () {
             final golds = [
-              for (final c in turnInChoicesOf(quest)) c.goldFor(rewardGold),
+              for (final c in turnInChoicesOf(quest)) c.goldFor(rewardGold)
             ]..sort();
             return '${golds.first}–${golds.last}';
           }())
@@ -615,8 +604,8 @@ Future<void> _showDiscoveryModal(
               Navigator.pop(dialogContext);
               Navigator.of(context).push(
                 MaterialPageRoute(
-                  builder: (_) => ShopDetailScreen(shopId: shopId, shop: shop),
-                ),
+                    builder: (_) =>
+                        ShopDetailScreen(shopId: shopId, shop: shop)),
               );
             },
             child: Text(trFor(lang, 'open_shop_button')),
@@ -686,8 +675,7 @@ class EchoLine extends ConsumerWidget {
     return DecoratedBox(
       decoration: BoxDecoration(
         border: Border(
-          left: BorderSide(color: colour.withValues(alpha: 0.6), width: 2),
-        ),
+            left: BorderSide(color: colour.withValues(alpha: 0.6), width: 2)),
       ),
       child: Padding(
         padding: const EdgeInsets.only(left: 10),
@@ -701,10 +689,10 @@ class EchoLine extends ConsumerWidget {
                 Flexible(
                   child: Text(
                     caption,
-                    style: Theme.of(context)
-                        .textTheme
-                        .labelSmall
-                        ?.copyWith(letterSpacing: 0.4, color: colour),
+                    style: Theme.of(context).textTheme.labelSmall?.copyWith(
+                          letterSpacing: 0.4,
+                          color: colour,
+                        ),
                   ),
                 ),
               ],

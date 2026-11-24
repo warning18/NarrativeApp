@@ -10,10 +10,7 @@ import 'ink_chip.dart';
 /// know. A faction reads by its short name ("Compact"), a sub-clan by its
 /// own.
 ({String name, Color color})? npcFactionTag(
-  ClanData data,
-  String factionId,
-  AppLanguage language,
-) {
+    ClanData data, String factionId, AppLanguage language) {
   final id = factionId.trim();
   if (id.isEmpty) return null;
   final faction = data.faction(id);
@@ -29,10 +26,7 @@ import 'ink_chip.dart';
 
 /// The name of [placeId] in [language] ('' for none or an unknown place).
 String npcPlaceName(
-  Geography geography,
-  String placeId,
-  AppLanguage language,
-) =>
+        Geography geography, String placeId, AppLanguage language) =>
     geography.place(placeId)?.nameFor(language == AppLanguage.fr) ?? '';
 
 /// A person's faction as a small coloured tag (see [npcFactionTag]);
@@ -54,9 +48,7 @@ class NpcFactionTag extends StatelessWidget {
     final tag = npcFactionTag(data, factionId, language);
     if (tag == null) return const SizedBox.shrink();
     final dark = Theme.of(context).brightness == Brightness.dark;
-    return InkChip(
-      tag.name,
-      color: dark ? tag.color : Color.lerp(tag.color, Colors.black, 0.38)!,
-    );
+    return InkChip(tag.name,
+        color: dark ? tag.color : Color.lerp(tag.color, Colors.black, 0.38)!);
   }
 }

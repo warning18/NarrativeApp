@@ -52,9 +52,7 @@ Set<RollPower> rollPowersOf(Iterable<String> builtHouseIds) => {
 
 /// The powers of the houses in [builtHouseIds] (houses.json [houses]).
 Set<RollPower> rollPowersBuilt(
-  Iterable<String> builtHouseIds,
-  Map<String, dynamic> houses,
-) {
+    Iterable<String> builtHouseIds, Map<String, dynamic> houses) {
   final out = <RollPower>{};
   for (final id in builtHouseIds) {
     final house = houses[id];
@@ -224,11 +222,7 @@ bool suitorBanishable(Suitor suitor, ClanOffer offer) =>
 /// pool, drawn as the offer's other places are. The new card keeps the old
 /// one's greeting. Null when nobody can take the place.
 Suitor? replacementSuitor(
-  ClanOffer offer,
-  String factionId,
-  OfferContext c,
-  Random random,
-) {
+    ClanOffer offer, String factionId, OfferContext c, Random random) {
   final old = offer.suitorOf(factionId);
   if (old == null) return null;
   Suitor keepGreeting(Suitor s) => Suitor(
@@ -255,9 +249,8 @@ Suitor? replacementSuitor(
   final shown = {for (final s in offer.suitors) s.factionId};
   bool otherworld(String id) =>
       c.data.faction(id)?.kind == PatronKind.otherworld;
-  final otherworldShown = offer.suitors.any(
-    (s) => s.factionId != factionId && otherworld(s.factionId),
-  );
+  final otherworldShown = offer.suitors
+      .any((s) => s.factionId != factionId && otherworld(s.factionId));
   final pool = {
     for (final id in eligibleSuitors(c))
       if (!shown.contains(id) &&
@@ -288,12 +281,9 @@ Suitor? replacementSuitor(
 
 /// [offer] with the card of [factionId] replaced by [next].
 ClanOffer offerWith(ClanOffer offer, String factionId, Suitor next) =>
-    ClanOffer(
-      ticket: offer.ticket,
-      suitors: [
-        for (final s in offer.suitors) s.factionId == factionId ? next : s,
-      ],
-    );
+    ClanOffer(ticket: offer.ticket, suitors: [
+      for (final s in offer.suitors) s.factionId == factionId ? next : s,
+    ]);
 
 /// Whether [suitor]'s card is of a kind Raise may act on: not raised yet,
 /// not risky (its better rarity is the risk's prize), not the Sworn boon,
@@ -319,19 +309,15 @@ Suitor? raisedSuitor(Suitor suitor, OfferContext c, Random random) {
     var rarity = SignRarity.values[gift.rarity.index + 1];
     if (hasPower(suitor.factionId, c.data)) {
       final cap = maxSignRarityFor(
-        powerTierFor(powerOf(c.politics, suitor.factionId, c.data)),
-      );
+          powerTierFor(powerOf(c.politics, suitor.factionId, c.data)));
       if (rarity.index > cap.index) rarity = cap;
     }
     if (rarity.index <= gift.rarity.index) return null;
-    return suitor.asRaised(
-      OfferGift(
+    return suitor.asRaised(OfferGift(
         kind: gift.kind,
         id: gift.id,
         rarity: rarity,
-        partnerId: gift.partnerId,
-      ),
-    );
+        partnerId: gift.partnerId));
   }
   final better = drawSuitor(suitor.factionId, c, random, better: true);
   if (better == null ||

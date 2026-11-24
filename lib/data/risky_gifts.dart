@@ -174,12 +174,9 @@ int _riskyHealthLoss({required int maxHealth, required int currentHealth}) =>
 /// The gold penalty on a purse of [gold] in [chapter]: [_riskyGoldShare] of
 /// it, at least [_riskyGoldPerChapter] a chapter, never more than the purse.
 int _riskyGoldLoss({required int gold, required int chapter}) => max(
-      0,
-      min(
-        gold,
-        max((gold * _riskyGoldShare).round(), _riskyGoldPerChapter * chapter),
-      ),
-    );
+    0,
+    min(gold,
+        max((gold * _riskyGoldShare).round(), _riskyGoldPerChapter * chapter)));
 
 /// What the die [roll] means for the character now, with the fallbacks:
 /// an empty purse turns the gold penalty into the health penalty, and a
@@ -202,17 +199,12 @@ RiskyResult riskyResultFor({
     outcome = RiskyOutcome.health;
   }
   if (outcome == RiskyOutcome.health) {
-    final lost = _riskyHealthLoss(
-      maxHealth: maxHealth,
-      currentHealth: currentHealth,
-    );
+    final lost =
+        _riskyHealthLoss(maxHealth: maxHealth, currentHealth: currentHealth);
     if (lost > 0) return RiskyResult(RiskyOutcome.health, amount: lost);
   }
-  return RiskyResult(
-    RiskyOutcome.curse,
-    amount: riskyCurseAmount,
-    stat: curseStat,
-  );
+  return RiskyResult(RiskyOutcome.curse,
+      amount: riskyCurseAmount, stat: curseStat);
 }
 
 /// A clan's curse on the character: [amount] points off [stat] until
@@ -270,10 +262,9 @@ List<RiskCurse> riskCursesFromJson(Object? raw) => [
 /// The odds line of a risky card at [luck] ("Gift 80% · Price 20%").
 String riskyOddsText(int luck, AppLanguage lang) {
   final odds = riskyOddsFor(luck);
-  return trFor(
-    lang,
-    'offer_risky_odds',
-  ).replaceAll('{gift}', '${odds.gift}').replaceAll('{price}', '${odds.price}');
+  return trFor(lang, 'offer_risky_odds')
+      .replaceAll('{gift}', '${odds.gift}')
+      .replaceAll('{price}', '${odds.price}');
 }
 
 /// [name] inside a sentence: its leading article lowered ("the Grey
@@ -310,8 +301,6 @@ String riskyResultText(RiskyResult result, Faction? faction, AppLanguage lang) {
       .replaceAll('{clan}', opens ? name : _inSentence(name))
       .replaceAll('{clanOf}', faction?.nameOfFor(lang) ?? '')
       .replaceAll('{n}', '${result.amount}')
-      .replaceAll(
-        '{stat}',
-        result.stat.isEmpty ? '' : trFor(lang, '${result.stat}_label'),
-      );
+      .replaceAll('{stat}',
+          result.stat.isEmpty ? '' : trFor(lang, '${result.stat}_label'));
 }

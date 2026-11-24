@@ -31,10 +31,8 @@ class TowerSpoilsView extends ConsumerWidget {
     final ink = InkColors.of(context);
     final items = ref.watch(localizedDbProvider(itemsSchema)).value ?? const {};
     final drop = run.spoils[run.floor] ?? const <String>[];
-    final potions = drop.fold<int>(
-      0,
-      (n, id) => n + (towerSpoilsPotions[id] ?? 0),
-    );
+    final potions =
+        drop.fold<int>(0, (n, id) => n + (towerSpoilsPotions[id] ?? 0));
     final antidotes = drop.where((id) => id == towerSpoilsAntidote).length;
     final rewards = <LootReward>[
       for (var i = 0; i < drop.length; i++)
@@ -71,24 +69,17 @@ class TowerSpoilsView extends ConsumerWidget {
       onUseNow: (_, __) {},
       onTake: onTake,
       footer: drop.isEmpty
-          ? Text(
-              tr(ref, 'tower_spoils_none'),
+          ? Text(tr(ref, 'tower_spoils_none'),
               key: const Key('tower_spoils_none'),
               style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                    fontStyle: FontStyle.italic,
-                    color: Theme.of(context).colorScheme.onSurfaceVariant,
-                  ),
-            )
+                  fontStyle: FontStyle.italic,
+                  color: Theme.of(context).colorScheme.onSurfaceVariant))
           : null,
     );
   }
 
   LootReward _reward(
-    int i,
-    String id,
-    Map<String, dynamic>? item,
-    AppLanguage lang,
-  ) {
+      int i, String id, Map<String, dynamic>? item, AppLanguage lang) {
     final type = item?['itemType']?.toString() ?? '';
     final note = consumableNote(id, item, lang);
     final worn = note == null

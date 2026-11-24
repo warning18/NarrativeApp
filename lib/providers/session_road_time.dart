@@ -44,8 +44,7 @@ mixin _RoadTimeActions on _SessionNotifierBase {
   Future<bool> unlockAchievement(String id) async {
     if (state.unlockedAchievementIds.contains(id)) return false;
     state = state.copyWith(
-      unlockedAchievementIds: [...state.unlockedAchievementIds, id],
-    );
+        unlockedAchievementIds: [...state.unlockedAchievementIds, id]);
     await _persist();
     return true;
   }
@@ -73,10 +72,9 @@ mixin _RoadTimeActions on _SessionNotifierBase {
     check('first_companion', state.recruitedAllies.isNotEmpty);
     if (totalCompanionCount > 0) {
       check(
-        'full_roster',
-        state.recruitedAllies.length >=
-            min(totalCompanionCount, fullRosterCompanionCount),
-      );
+          'full_roster',
+          state.recruitedAllies.length >=
+              min(totalCompanionCount, fullRosterCompanionCount));
     }
     // "Field a full 3-member active party" means the player plus 2 active
     // allies (the default party capacity) -- activeAllyIds counts allies
@@ -102,23 +100,18 @@ mixin _RoadTimeActions on _SessionNotifierBase {
     final politics = state.politics;
     check('sworn_to_a_clan', politics.swornFactionId.isNotEmpty);
     check(
-      'hunted_by_a_clan',
-      coastClanIds.any(
-        (id) =>
-            standingTierFor(politics.standings[id] ?? 0) == StandingTier.hunted,
-      ),
-    );
+        'hunted_by_a_clan',
+        coastClanIds.any((id) =>
+            standingTierFor(politics.standings[id] ?? 0) ==
+            StandingTier.hunted));
     check(
-      'friend_of_four_clans',
-      politics.swornFactionId.isEmpty &&
-          coastClanIds
-                  .where(
-                    (id) => standingTierFor(politics.standings[id] ?? 0)
-                        .isAtLeast(StandingTier.trusted),
-                  )
-                  .length >=
-              _trustedClansForFriend,
-    );
+        'friend_of_four_clans',
+        politics.swornFactionId.isEmpty &&
+            coastClanIds
+                    .where((id) => standingTierFor(politics.standings[id] ?? 0)
+                        .isAtLeast(StandingTier.trusted))
+                    .length >=
+                _trustedClansForFriend);
     check('akagiri_found', state.flags.contains(placeFoundFlag('3200')));
     check('kindly_hill_found', state.flags.contains(placeFoundFlag('5200')));
     check('highhearth_found', state.flags.contains(placeFoundFlag('6200')));
@@ -165,7 +158,7 @@ mixin _RoadTimeActions on _SessionNotifierBase {
           !keepsItsPlace) {
         newShopUnlockNodeIds = {
           ...newShopUnlockNodeIds,
-          shopId: shopUnlockNodeId,
+          shopId: shopUnlockNodeId
         };
       }
       if (newSeenShopIds.contains(shopId)) {
@@ -215,17 +208,16 @@ mixin _RoadTimeActions on _SessionNotifierBase {
   /// the player has met.
   Future<void> talkToNpc(String npcId) async {
     if (npcId.isEmpty || state.talkedToNpcIds.contains(npcId)) return;
-    state = state.copyWith(talkedToNpcIds: [...state.talkedToNpcIds, npcId]);
+    state = state.copyWith(
+      talkedToNpcIds: [...state.talkedToNpcIds, npcId],
+    );
     await _persist();
   }
 
   /// Marks a shop/quest/enemy id as viewed in the Play tab, clearing its
   /// "newly unlocked" badge contribution.
-  Future<void> markSeen({
-    String? shopId,
-    String? questId,
-    String? enemyId,
-  }) async {
+  Future<void> markSeen(
+      {String? shopId, String? questId, String? enemyId}) async {
     var newSeenShopIds = state.seenShopIds;
     var newSeenQuestIds = state.seenQuestIds;
     var newSeenEnemyIds = state.seenEnemyIds;
@@ -285,9 +277,8 @@ mixin _RoadTimeActions on _SessionNotifierBase {
         if (!state.seenFightTipIds.contains(id)) id,
     ];
     if (fresh.isEmpty) return;
-    state = state.copyWith(
-      seenFightTipIds: [...state.seenFightTipIds, ...fresh],
-    );
+    state =
+        state.copyWith(seenFightTipIds: [...state.seenFightTipIds, ...fresh]);
     await _persist();
   }
 
@@ -318,9 +309,7 @@ mixin _RoadTimeActions on _SessionNotifierBase {
     final hungry = session.provisions <= 0;
     final bite = hungry
         ? hungerDamage(
-            health: session.currentHealth,
-            maxHealth: session.maxHealth,
-          )
+            health: session.currentHealth, maxHealth: session.maxHealth)
         : 0;
     final later = _later(session, watches);
     state = later.copyWith(
@@ -422,12 +411,8 @@ mixin _RoadTimeActions on _SessionNotifierBase {
 
   /// The offer of the temple [clanId] ('' neutral) keeps, to the party
   /// now, in [chapter] ([busy]: a fight or an expedition under way).
-  TempleOffer templeOffer(
-    String clanId, {
-    required ClanData data,
-    required int chapter,
-    bool busy = false,
-  }) =>
+  TempleOffer templeOffer(String clanId,
+          {required ClanData data, required int chapter, bool busy = false}) =>
       templeOfferFor(
         clanId: clanId,
         data: data,
@@ -446,12 +431,8 @@ mixin _RoadTimeActions on _SessionNotifierBase {
   /// mana unchanged, no time passing, for the offer's price. False, and
   /// nothing done, when the offer is shut (Hunted, busy, too poor, mended
   /// today, chapter 1).
-  Future<bool> templeMend(
-    String clanId, {
-    required ClanData data,
-    required int chapter,
-    bool busy = false,
-  }) async {
+  Future<bool> templeMend(String clanId,
+      {required ClanData data, required int chapter, bool busy = false}) async {
     final offer = templeOffer(clanId, data: data, chapter: chapter, busy: busy);
     if (!offer.canMend) return false;
     state = state.copyWith(
@@ -471,12 +452,8 @@ mixin _RoadTimeActions on _SessionNotifierBase {
   /// fights, replacing any carried; the first of [chapter] from a clan
   /// brings [templeStandingGain] standing with it. False, and nothing
   /// done, when the offer is shut (Hunted, busy, too poor).
-  Future<bool> templeBless(
-    String clanId, {
-    required ClanData data,
-    required int chapter,
-    bool busy = false,
-  }) async {
+  Future<bool> templeBless(String clanId,
+      {required ClanData data, required int chapter, bool busy = false}) async {
     final offer = templeOffer(clanId, data: data, chapter: chapter, busy: busy);
     if (!offer.canBless) return false;
     state = state.copyWith(
@@ -488,13 +465,8 @@ mixin _RoadTimeActions on _SessionNotifierBase {
           : null,
     );
     if (offer.blessingStanding) {
-      await changeStanding(
-        offer.clanId,
-        templeStandingGain,
-        data: data,
-        cause: 'temple',
-        chapter: chapter,
-      );
+      await changeStanding(offer.clanId, templeStandingGain,
+          data: data, cause: 'temple', chapter: chapter);
     }
     await _persist();
     return true;
@@ -505,9 +477,7 @@ mixin _RoadTimeActions on _SessionNotifierBase {
     if (state.blessingFights <= 0) return;
     final left = state.blessingFights - 1;
     state = state.copyWith(
-      blessingFights: left,
-      blessingClan: left == 0 ? '' : null,
-    );
+        blessingFights: left, blessingClan: left == 0 ? '' : null);
     await _persist();
   }
 

@@ -77,71 +77,62 @@ class TitleChips extends ConsumerWidget {
             runSpacing: 6,
             children: [
               for (final title in held)
-                Builder(
-                  builder: (context) {
-                    final worn = session.activeTitleId == title.id;
-                    final color = title.negative
-                        ? ink.blood
-                        : worn
-                            ? ink.gold
-                            : theme.colorScheme.onSurface;
-                    return Semantics(
-                      button: true,
-                      selected: worn,
-                      child: InkWell(
-                        key: Key('title_${title.id}'),
-                        borderRadius: BorderRadius.circular(16),
-                        onTap: title.negative
-                            ? null
-                            : () => ref
-                                .read(playerSessionProvider.notifier)
-                                .setActiveTitle(worn ? '' : title.id),
-                        onLongPress: () => read(title),
-                        child: Container(
-                          constraints: const BoxConstraints(minHeight: 32),
-                          padding: const EdgeInsets.symmetric(
-                            horizontal: 11,
-                            vertical: 5,
-                          ),
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(16),
-                            color: worn
-                                ? ink.gold.withValues(alpha: 0.14)
-                                : Colors.transparent,
-                            border: Border.all(
+                Builder(builder: (context) {
+                  final worn = session.activeTitleId == title.id;
+                  final color = title.negative
+                      ? ink.blood
+                      : worn
+                          ? ink.gold
+                          : theme.colorScheme.onSurface;
+                  return Semantics(
+                    button: true,
+                    selected: worn,
+                    child: InkWell(
+                      key: Key('title_${title.id}'),
+                      borderRadius: BorderRadius.circular(16),
+                      onTap: title.negative
+                          ? null
+                          : () => ref
+                              .read(playerSessionProvider.notifier)
+                              .setActiveTitle(worn ? '' : title.id),
+                      onLongPress: () => read(title),
+                      child: Container(
+                        constraints: const BoxConstraints(minHeight: 32),
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 11, vertical: 5),
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(16),
+                          color: worn
+                              ? ink.gold.withValues(alpha: 0.14)
+                              : Colors.transparent,
+                          border: Border.all(
                               color: worn || title.negative
                                   ? color.withValues(alpha: 0.8)
-                                  : ink.seam,
-                            ),
-                          ),
-                          child: Row(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              if (title.negative || worn) ...[
-                                Icon(
+                                  : ink.seam),
+                        ),
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            if (title.negative || worn) ...[
+                              Icon(
                                   title.negative
                                       ? Icons.report_outlined
                                       : Icons.workspace_premium,
                                   size: IconSize.s16,
-                                  color: color,
-                                ),
-                                const SizedBox(width: 5),
-                              ],
-                              Flexible(
-                                child: Text(
-                                  title.nameFor(lang),
-                                  style: theme.textTheme.labelLarge?.copyWith(
-                                    color: color,
-                                  ),
-                                ),
-                              ),
+                                  color: color),
+                              const SizedBox(width: 5),
                             ],
-                          ),
+                            Flexible(
+                              child: Text(title.nameFor(lang),
+                                  style: theme.textTheme.labelLarge
+                                      ?.copyWith(color: color)),
+                            ),
+                          ],
                         ),
                       ),
-                    );
-                  },
-                ),
+                    ),
+                  );
+                }),
             ],
           ),
         ],

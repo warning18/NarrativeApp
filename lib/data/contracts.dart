@@ -70,9 +70,8 @@ class Contract {
   factory Contract.fromJson(Map<String, dynamic> json) => Contract(
         id: json['id']?.toString() ?? '',
         kind: ContractKind.values.firstWhere(
-          (k) => k.name == json['kind']?.toString(),
-          orElse: () => ContractKind.packs,
-        ),
+            (k) => k.name == json['kind']?.toString(),
+            orElse: () => ContractKind.packs),
         targetEnemyId: json['targetEnemyId']?.toString() ?? '',
         required: (json['required'] as num?)?.toInt() ?? 1,
         progress: (json['progress'] as num?)?.toInt() ?? 0,
@@ -267,7 +266,10 @@ List<Contract> repostBoard(List<Contract> current, List<Contract> fresh) {
     for (final contract in current)
       if (contract.done) contract,
   ];
-  return [...earned, ...fresh.take(max(0, contractBoardSize - earned.length))];
+  return [
+    ...earned,
+    ...fresh.take(max(0, contractBoardSize - earned.length)),
+  ];
 }
 
 /// Whether the board at the camp needs a fresh notice: nothing posted,

@@ -74,11 +74,8 @@ class SpecVariantInfo {
   String voiceFor(bool french) =>
       _resolved(french && voiceFr.isNotEmpty ? voiceFr : voice, french);
 
-  String _resolved(String line, bool french) => resolvePlaceholders(
-        line,
-        specVariantPlaceholders(id),
-        french ? AppLanguage.fr : AppLanguage.en,
-      );
+  String _resolved(String line, bool french) => resolvePlaceholders(line,
+      specVariantPlaceholders(id), french ? AppLanguage.fr : AppLanguage.en);
 }
 
 /// The numbers a spec_variants.json line may name (text_placeholders.dart),
@@ -160,10 +157,7 @@ int specGunPercent(Iterable<String> ids) => SpecMods(ids).gunPercent;
 /// The Inquisition's weakening (the Vanguard's heavy blow, the Censer's
 /// burn) and the Heron's Wake's slowing: a Weaken of this many percent.
 const StatusEffect specWeaken = StatusEffect(
-  type: StatusEffectType.weaken,
-  remainingTurns: 2,
-  magnitude: 25,
-);
+    type: StatusEffectType.weaken, remainingTurns: 2, magnitude: 25);
 
 /// The numbers of the specialisations, variants and ranks a character
 /// holds ([held]: their ids, as PlayerSession.specIds keeps them).
@@ -225,8 +219,7 @@ class SpecMods {
       : max(
           1,
           (overflow * strike * censerBurnPerMana * _rank(Spec.censerMage))
-              .round(),
-        );
+              .round());
   bool get censerWeakens => has('inquisition_censer_mage');
   bool get wellRefill => has('tribunal_censer_mage');
 
@@ -271,9 +264,8 @@ class SpecMods {
   // Trapwright
   int get stunTargets => has('scaffolders_trapwright') ? 2 : 1;
   StatusEffect get stun => StatusEffect(
-        type: StatusEffectType.stun,
-        remainingTurns: _two(Spec.trapwright) ? 2 : 1,
-      );
+      type: StatusEffectType.stun,
+      remainingTurns: _two(Spec.trapwright) ? 2 : 1);
   bool get trapBreaksGuard => has('quarrymen_trapwright');
 
   // Fen Guide

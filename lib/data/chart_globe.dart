@@ -43,22 +43,16 @@ class GlobeView {
   /// A look at [p] (chart units) from straight above, at [zoom], on a
   /// chart spanning [lonSpan] by [latSpan] (the chart's own, see
   /// ChartGeography).
-  factory GlobeView.at(
-    Offset p,
-    double zoom,
-    Offset centre, {
-    double lonSpan = bandLonSpan,
-    double latSpan = bandLatSpan,
-  }) {
+  factory GlobeView.at(Offset p, double zoom, Offset centre,
+      {double lonSpan = bandLonSpan, double latSpan = bandLatSpan}) {
     final (lon, lat) = lonLatOf(p, lonSpan: lonSpan, latSpan: latSpan);
     return GlobeView(
-      lon0: lon,
-      lat0: lat,
-      radius: baseRadius * zoom,
-      centre: centre,
-      lonSpan: lonSpan,
-      latSpan: latSpan,
-    );
+        lon0: lon,
+        lat0: lat,
+        radius: baseRadius * zoom,
+        centre: centre,
+        lonSpan: lonSpan,
+        latSpan: latSpan);
   }
 
   /// Whether the chart covers the whole sphere: a view can then turn right
@@ -71,12 +65,8 @@ class GlobeView {
       '${radius.toStringAsFixed(2)},${centre.dx.toStringAsFixed(1)},'
       '${centre.dy.toStringAsFixed(1)}';
 
-  GlobeView copyWith({
-    double? lon0,
-    double? lat0,
-    double? radius,
-    Offset? centre,
-  }) =>
+  GlobeView copyWith(
+          {double? lon0, double? lat0, double? radius, Offset? centre}) =>
       GlobeView(
         lon0: lon0 ?? this.lon0,
         lat0: lat0 ?? this.lat0,
@@ -91,8 +81,10 @@ class GlobeView {
   double get maxLat => wholeSphere ? math.pi / 2 : 1.45;
 
   /// Turned by [dlon], [dlat] radians, the latitude kept within [maxLat].
-  GlobeView turned(double dlon, double dlat) =>
-      copyWith(lon0: lon0 + dlon, lat0: (lat0 + dlat).clamp(-maxLat, maxLat));
+  GlobeView turned(double dlon, double dlat) => copyWith(
+        lon0: lon0 + dlon,
+        lat0: (lat0 + dlat).clamp(-maxLat, maxLat),
+      );
 
   /// Turned to look straight down on the north pole ([north]) or the south
   /// one, at the same longitude and zoom.
@@ -101,11 +93,8 @@ class GlobeView {
 
   /// [p] on the chart as a longitude and latitude, on a chart spanning
   /// [lonSpan] by [latSpan] (the band by default).
-  static (double, double) lonLatOf(
-    Offset p, {
-    double lonSpan = bandLonSpan,
-    double latSpan = bandLatSpan,
-  }) =>
+  static (double, double) lonLatOf(Offset p,
+          {double lonSpan = bandLonSpan, double latSpan = bandLatSpan}) =>
       (
         (p.dx / worldMapWidth - 0.5) * lonSpan,
         (0.5 - p.dy / worldMapHeight) * latSpan,
@@ -113,12 +102,8 @@ class GlobeView {
 
   /// The chart point at [lon], [lat]; on the whole sphere a longitude past
   /// the seam comes round to the chart's other edge.
-  static Offset chartOf(
-    double lon,
-    double lat, {
-    double lonSpan = bandLonSpan,
-    double latSpan = bandLatSpan,
-  }) {
+  static Offset chartOf(double lon, double lat,
+      {double lonSpan = bandLonSpan, double latSpan = bandLatSpan}) {
     var l = lon;
     if (lonSpan >= 2 * math.pi - 1e-9) {
       l = (lon + math.pi) % (2 * math.pi) - math.pi;

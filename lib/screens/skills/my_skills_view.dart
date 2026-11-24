@@ -70,7 +70,7 @@ class _MySkillsViewState extends ConsumerState<MySkillsView> {
       for (final branch in model.branches) {
         final onIt = [
           for (final id in branch.skillIds)
-            if (visible.any((e) => e.id == id)) model[id]!,
+            if (visible.any((e) => e.id == id)) model[id]!
         ];
         if (onIt.isNotEmpty) groups.add((branch.name, onIt));
       }
@@ -85,10 +85,8 @@ class _MySkillsViewState extends ConsumerState<MySkillsView> {
       padding: const EdgeInsets.fromLTRB(16, 10, 16, 24),
       children: [
         if (widget.note != null) ...[
-          Text(
-            widget.note!,
-            style: theme.textTheme.bodySmall?.copyWith(color: ink.ash),
-          ),
+          Text(widget.note!,
+              style: theme.textTheme.bodySmall?.copyWith(color: ink.ash)),
           const SizedBox(height: 8),
         ],
         // A merge ready to craft (v1.990): the player's own list only.
@@ -110,11 +108,8 @@ class _MySkillsViewState extends ConsumerState<MySkillsView> {
                     key: Key('skill_filter_${f.name}'),
                     avatar: kind == null
                         ? null
-                        : Icon(
-                            kind.icon,
-                            size: IconSize.s16,
-                            color: kind.color,
-                          ),
+                        : Icon(kind.icon,
+                            size: IconSize.s16, color: kind.color),
                     label: Text('${tr(ref, key)} ${count(f)}'),
                     selected: _filter == f,
                     onSelected: (_) => setState(() => _filter = f),
@@ -141,22 +136,17 @@ class _MySkillsViewState extends ConsumerState<MySkillsView> {
           if (title != null)
             Padding(
               padding: const EdgeInsets.only(top: 14, bottom: 2),
-              child: Text(
-                title.toUpperCase(),
-                style: theme.textTheme.labelSmall?.copyWith(
-                  color: ink.ash,
-                  letterSpacing: 1,
-                ),
-              ),
+              child: Text(title.toUpperCase(),
+                  style: theme.textTheme.labelSmall
+                      ?.copyWith(color: ink.ash, letterSpacing: 1)),
             ),
           for (final entry in entries)
             _SkillRow(entry: entry, model: model, allyId: widget.allyId),
         ],
         // Crafting is the camp's Skillwright's (Wave 7, skill_craft.dart).
         if (model.isPlayer &&
-            skillCraftOpen(
-              ref.watch(playerSessionProvider.select((s) => s.builtHouseIds)),
-            )) ...[
+            skillCraftOpen(ref.watch(
+                playerSessionProvider.select((s) => s.builtHouseIds)))) ...[
           const SizedBox(height: 16),
           _CraftCard(onTap: () => openCraft(context, ref)),
         ],
@@ -178,11 +168,8 @@ class _SkillRow extends ConsumerWidget {
     final ink = InkColors.of(context);
     final lang = ref.watch(appLanguageProvider);
     final kind = entry.kind;
-    final summary = skillSummary(
-      entry.record,
-      entry.fightTier,
-      (key) => tr(ref, key),
-    );
+    final summary =
+        skillSummary(entry.record, entry.fightTier, (key) => tr(ref, key));
 
     Widget? trailing;
     if (!entry.known) {
@@ -194,13 +181,8 @@ class _SkillRow extends ConsumerWidget {
           padding: const EdgeInsets.symmetric(horizontal: 12),
         ),
         onPressed: entry.affordable
-            ? () => learnSkill(
-                  context,
-                  ref,
-                  entry.id,
-                  allyId: allyId,
-                  cost: entry.cost,
-                )
+            ? () => learnSkill(context, ref, entry.id,
+                allyId: allyId, cost: entry.cost)
             : null,
         child: Text(tr(ref, 'unlock_button')),
       );
@@ -212,29 +194,23 @@ class _SkillRow extends ConsumerWidget {
         children: [
           if (entry.tierable) TierPips(tier: entry.tier, size: 7),
           const SizedBox(height: 4),
-          Row(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              if (cost != null)
-                Icon(
-                  Icons.arrow_upward,
+          Row(mainAxisSize: MainAxisSize.min, children: [
+            if (cost != null)
+              Icon(Icons.arrow_upward,
                   size: IconSize.inline,
-                  color: model.essence >= cost ? ink.voidColor : ink.ash,
-                ),
-              Text(
-                !entry.tierable
-                    ? tr(ref, 'no_tiers_label')
-                    : cost == null
-                        ? tr(ref, 'tier_max_label')
-                        : '$cost',
-                style: theme.textTheme.labelSmall?.copyWith(
+                  color: model.essence >= cost ? ink.voidColor : ink.ash),
+            Text(
+              !entry.tierable
+                  ? tr(ref, 'no_tiers_label')
+                  : cost == null
+                      ? tr(ref, 'tier_max_label')
+                      : '$cost',
+              style: theme.textTheme.labelSmall?.copyWith(
                   color: cost != null && model.essence >= cost
                       ? ink.voidColor
-                      : ink.ash,
-                ),
-              ),
-            ],
-          ),
+                      : ink.ash),
+            ),
+          ]),
         ],
       );
     }
@@ -244,9 +220,8 @@ class _SkillRow extends ConsumerWidget {
       onTap: () => showSkillSheet(context, entry.id, allyId: allyId),
       child: Container(
         padding: const EdgeInsets.symmetric(vertical: 9),
-        decoration: BoxDecoration(
-          border: Border(bottom: BorderSide(color: ink.seam)),
-        ),
+        decoration:
+            BoxDecoration(border: Border(bottom: BorderSide(color: ink.seam))),
         child: Row(
           children: [
             SkillPixelIcon(entry.id, size: IconSize.s32),
@@ -255,27 +230,20 @@ class _SkillRow extends ConsumerWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Row(
-                    children: [
-                      Flexible(
-                        child: Text(
-                          skillDisplayName(entry.id, language: lang),
-                          style: theme.textTheme.bodyLarge,
-                        ),
-                      ),
-                      const SizedBox(width: 6),
-                      Icon(kind.icon, size: IconSize.s16, color: kind.color),
-                    ],
-                  ),
-                  if (summary.isNotEmpty)
-                    Text(
-                      summary,
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
-                      style: theme.textTheme.labelSmall?.copyWith(
-                        color: ink.ash,
-                      ),
+                  Row(children: [
+                    Flexible(
+                      child: Text(skillDisplayName(entry.id, language: lang),
+                          style: theme.textTheme.bodyLarge),
                     ),
+                    const SizedBox(width: 6),
+                    Icon(kind.icon, size: IconSize.s16, color: kind.color),
+                  ]),
+                  if (summary.isNotEmpty)
+                    Text(summary,
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        style: theme.textTheme.labelSmall
+                            ?.copyWith(color: ink.ash)),
                 ],
               ),
             ),
@@ -308,30 +276,23 @@ class _CraftCard extends ConsumerWidget {
           borderRadius: BorderRadius.circular(10),
           border: Border.all(color: ink.tide),
         ),
-        child: Row(
-          children: [
-            Icon(Icons.auto_fix_high, color: ink.tide),
-            const SizedBox(width: 10),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    tr(ref, 'craft_skill_button'),
-                    style: theme.textTheme.titleSmall?.copyWith(
-                      color: ink.tide,
-                    ),
-                  ),
-                  Text(
-                    tr(ref, 'craft_card_body'),
-                    style: theme.textTheme.bodySmall?.copyWith(color: ink.ash),
-                  ),
-                ],
-              ),
+        child: Row(children: [
+          Icon(Icons.auto_fix_high, color: ink.tide),
+          const SizedBox(width: 10),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(tr(ref, 'craft_skill_button'),
+                    style:
+                        theme.textTheme.titleSmall?.copyWith(color: ink.tide)),
+                Text(tr(ref, 'craft_card_body'),
+                    style: theme.textTheme.bodySmall?.copyWith(color: ink.ash)),
+              ],
             ),
-            Icon(Icons.chevron_right, color: ink.tide),
-          ],
-        ),
+          ),
+          Icon(Icons.chevron_right, color: ink.tide),
+        ]),
       ),
     );
   }

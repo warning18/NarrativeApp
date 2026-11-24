@@ -71,19 +71,18 @@ abstract final class SideSprites {
           Future<_Facing> facing(String side) async {
             final ronin = name == 'ronin';
             return _Facing(
-              await _decode(
-                b,
-                ronin ? 'walker/ronin_walk_$side' : 'heroes/${name}_walk_$side',
-              ),
-              await _decode(
-                b,
-                ronin
-                    ? 'walker/ronin_idle_$side'
-                    : 'heroes/${name}_stand_$side',
-              ),
-              ronin ? frameWidth : 48,
-              ronin ? frameHeight : 48,
-            );
+                await _decode(
+                    b,
+                    ronin
+                        ? 'walker/ronin_walk_$side'
+                        : 'heroes/${name}_walk_$side'),
+                await _decode(
+                    b,
+                    ronin
+                        ? 'walker/ronin_idle_$side'
+                        : 'heroes/${name}_stand_$side'),
+                ronin ? frameWidth : 48,
+                ronin ? frameHeight : 48);
           }
 
           final east = await facing('east');
@@ -123,12 +122,8 @@ abstract final class SideSprites {
     final h = fh * scale;
     // Standing, she breathes: one sprite pixel up and down, slowly.
     final bob = moving ? 0.0 : (((t * 1.2) % 1.0) < 0.5 ? 0.0 : -scale);
-    final dst = ui.Rect.fromLTWH(
-      (x - w / 2) * u,
-      (baseY - h + bob) * u,
-      w * u,
-      h * u,
-    );
+    final dst =
+        ui.Rect.fromLTWH((x - w / 2) * u, (baseY - h + bob) * u, w * u, h * u);
     final paint = ui.Paint()
       ..filterQuality = ui.FilterQuality.none
       ..isAntiAlias = false;
@@ -137,18 +132,14 @@ abstract final class SideSprites {
       // for a hero with another count.
       final i = (t * facing.frames * 1.25).floor() % facing.frames;
       canvas.drawImageRect(
-        facing.walk,
-        ui.Rect.fromLTWH((i * fw).toDouble(), 0, fw.toDouble(), fh.toDouble()),
-        dst,
-        paint,
-      );
+          facing.walk,
+          ui.Rect.fromLTWH(
+              (i * fw).toDouble(), 0, fw.toDouble(), fh.toDouble()),
+          dst,
+          paint);
     } else {
-      canvas.drawImageRect(
-        facing.idle,
-        ui.Rect.fromLTWH(0, 0, fw.toDouble(), fh.toDouble()),
-        dst,
-        paint,
-      );
+      canvas.drawImageRect(facing.idle,
+          ui.Rect.fromLTWH(0, 0, fw.toDouble(), fh.toDouble()), dst, paint);
     }
     return true;
   }

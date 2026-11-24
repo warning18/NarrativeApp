@@ -111,31 +111,25 @@ class StorySceneBand extends StatelessWidget {
         borderRadius: BorderRadius.circular(8),
         child: AspectRatio(
           aspectRatio: 240 / 100,
-          child: Stack(
-            fit: StackFit.expand,
-            children: [
-              Image.asset(
-                asset,
-                key: Key('story_scene_$location'),
-                fit: BoxFit.cover,
-                filterQuality: FilterQuality.none,
-                gaplessPlayback: true,
-              ),
-              DecoratedBox(
-                decoration: BoxDecoration(
-                  gradient: LinearGradient(
-                    begin: Alignment.topCenter,
-                    end: Alignment.bottomCenter,
-                    stops: const [0.62, 1],
-                    colors: [
-                      Palette.alpha33Night0.withValues(alpha: 0),
-                      ground,
-                    ],
-                  ),
+          child: Stack(fit: StackFit.expand, children: [
+            Image.asset(
+              asset,
+              key: Key('story_scene_$location'),
+              fit: BoxFit.cover,
+              filterQuality: FilterQuality.none,
+              gaplessPlayback: true,
+            ),
+            DecoratedBox(
+              decoration: BoxDecoration(
+                gradient: LinearGradient(
+                  begin: Alignment.topCenter,
+                  end: Alignment.bottomCenter,
+                  stops: const [0.62, 1],
+                  colors: [Palette.alpha33Night0.withValues(alpha: 0), ground],
                 ),
               ),
-            ],
-          ),
+            ),
+          ]),
         ),
       ),
     );

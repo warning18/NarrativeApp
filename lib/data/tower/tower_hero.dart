@@ -11,6 +11,7 @@ import '../../combat/stat_rules.dart' show levelHealthGain, levelStatPicks;
 import '../sim_combat.dart';
 import '../sim_policy.dart' show simSkillAssignments;
 import '../training.dart';
+import 'tower_clans.dart' show TowerClanTables;
 import 'tower_floors.dart' show TowerStream, towerRandom;
 import 'tower_rewards.dart';
 import 'tower_run.dart';
@@ -30,6 +31,7 @@ class TowerData {
     required Map<String, dynamic> enemies,
     required this.spells,
     this.trainingPaths = const {},
+    this.clans = const TowerClanTables(),
   })  : dice = towerDiceTable(dice),
         enemies = towerEnemyTable(enemies),
         spellSpecs = parseSpells(spells);
@@ -47,6 +49,11 @@ class TowerData {
         enemies: tables['enemies'] ?? const {},
         spells: tables['spells'] ?? const {},
         trainingPaths: trainingPathsFrom(tables['training_paths'] ?? const {}),
+        clans: TowerClanTables.fromTables(
+          factions: tables['factions'] ?? const {},
+          relations: tables['relations'] ?? const {},
+          skillTrees: tables['skill_trees'] ?? const {},
+        ),
       );
 
   /// The tables [TowerData.fromTables] reads.
@@ -60,6 +67,9 @@ class TowerData {
     'enemies',
     'spells',
     'training_paths',
+    'factions',
+    'relations',
+    'skill_trees',
   ];
 
   final Map<String, dynamic> races;
@@ -82,6 +92,12 @@ class TowerData {
   /// the player takes (v1.857, the main game's level-up).
   final Map<String, TrainingPath> trainingPaths;
 
+  /// What the clans' offers read (docs/simulation/tower-clan-offers.md):
+  /// the branches each clan sponsors, the steps between the clans, the
+  /// skill trees. Empty, every clan's gift is a skill of the Tower's pool
+  /// and a gift moves its clan only.
+  final TowerClanTables clans;
+
   List<Map<String, dynamic>> facesOf(String dieId) =>
       ((dice[dieId] as Map?)?['faces'] as List?)
           ?.cast<Map<String, dynamic>>() ??
@@ -95,14 +111,9 @@ class TowerData {
 /// [towerHeroOf]). [bag]: the start's dice go to the bag, the calling's own
 /// die stays in play (a run with [TowerRun.dieChoice]); else the best is
 /// rolled (simDieValue, a run saved before).
-SimCharacter towerFreshHero(
-  String raceId,
-  String professionId,
-  Iterable<String> unlockIds,
-  TowerData data, {
-  int unlocksOwned = 0,
-  bool bag = false,
-}) {
+SimCharacter towerFreshHero(String raceId, String professionId,
+    Iterable<String> unlockIds, TowerData data,
+    {int unlocksOwned = 0, bool bag = false}) {
   final hero = SimCharacter.create(
     raceId: raceId,
     race: data.races[raceId] as Map<String, dynamic>? ?? const {},
@@ -166,11 +177,7 @@ Map<String, int> _abilitiesOf(SimCharacter hero) => {
 /// before it: the main game's own draw (drawStatPick, three offers and one
 /// rarity), from the run's own stream so a replay draws the same.
 List<StatPickOffer> towerStatPickDraw(
-  SimCharacter hero,
-  int seed,
-  int n,
-  TowerData data,
-) =>
+        SimCharacter hero, int seed, int n, TowerData data) =>
     drawStatPick(
       paths: data.trainingPaths,
       random: towerRandom(seed, n + 1, TowerStream.pick),
@@ -194,23 +201,18 @@ void towerTakePickOn(SimCharacter hero, StatPickOffer pick) {
 /// [reward] given to [hero]. [bag]: a die gained goes to the bag, the one
 /// in play stays (a run with [TowerRun.dieChoice]); else it is rolled when
 /// the simulator's worth rates it higher (a run saved before).
-void towerApplyReward(
-  SimCharacter hero,
-  TowerReward reward,
-  TowerData data, {
-  bool bag = false,
-}) {
+void towerApplyReward(SimCharacter hero, TowerReward reward, TowerData data,
+    {bool bag = false}) {
   switch (reward.kind) {
     case TowerRewardKind.die:
       _takeDie(hero, reward.id, data, bag: bag);
     case TowerRewardKind.skill:
       hero.unlockedSkillIds.add(reward.id);
       hero.diceSkillAssignments = simSkillAssignments(
-        faces: hero.diceFaces,
-        current: hero.diceSkillAssignments,
-        unlocked: hero.unlockedSkillIds,
-        skills: data.skills,
-      );
+          faces: hero.diceFaces,
+          current: hero.diceSkillAssignments,
+          unlocked: hero.unlockedSkillIds,
+          skills: data.skills);
     case TowerRewardKind.spell:
       final spell = data.spellSpecs[reward.id];
       if (spell != null && !hero.knownSpells.any((s) => s.id == reward.id)) {
@@ -231,10 +233,7 @@ void towerApplyReward(
 
 /// A floor's spoils [itemIds] given to [hero]: its gear worn when better.
 void towerWearSpoils(
-  SimCharacter hero,
-  Iterable<String> itemIds,
-  TowerData data,
-) {
+    SimCharacter hero, Iterable<String> itemIds, TowerData data) {
   for (final id in itemIds) {
     _wear(hero, id, data);
   }
@@ -258,12 +257,8 @@ int _gearScore(String itemId, TowerData data) {
   return n('attackDamage') + n('damage') + n('armor');
 }
 
-void _takeDie(
-  SimCharacter hero,
-  String dieId,
-  TowerData data, {
-  bool bag = false,
-}) {
+void _takeDie(SimCharacter hero, String dieId, TowerData data,
+    {bool bag = false}) {
   final faces = data.facesOf(dieId);
   if (faces.isEmpty) return;
   hero.ownedDice[dieId] = faces;
@@ -281,11 +276,10 @@ void towerRollDie(SimCharacter hero, String dieId, TowerData data) {
     ..diceId = dieId
     ..diceFaces = faces
     ..diceSkillAssignments = simSkillAssignments(
-      faces: faces,
-      current: const {},
-      unlocked: hero.unlockedSkillIds,
-      skills: data.skills,
-    );
+        faces: faces,
+        current: const {},
+        unlocked: hero.unlockedSkillIds,
+        skills: data.skills);
 }
 
 /// The run's hero now: rebuilt from [run]'s start, the levels of the
@@ -320,10 +314,8 @@ SimCharacter towerHeroOf(TowerRun run, TowerData data) {
     level = next;
     final picks = run.statPicks.sublist(from, min(pick, run.statPicks.length));
     picksAt.add(picks);
-    keys.add(
-      '${keys.last}#$floor:${picks.join(',')}:'
-      '${(run.spoils[floor] ?? const []).join(',')}:${run.taken[floor]}',
-    );
+    keys.add('${keys.last}#$floor:${picks.join(',')}:'
+        '${(run.spoils[floor] ?? const []).join(',')}:${run.taken[floor]}');
   }
   // The longest run of floors already built.
   var floor = keys.length - 1;
@@ -338,14 +330,8 @@ SimCharacter towerHeroOf(TowerRun run, TowerData data) {
       pick += picksAt[f].length;
     }
   } else {
-    hero = towerFreshHero(
-      run.raceId,
-      run.professionId,
-      run.startUnlocks,
-      data,
-      unlocksOwned: run.unlocksOwned,
-      bag: bag,
-    );
+    hero = towerFreshHero(run.raceId, run.professionId, run.startUnlocks, data,
+        unlocksOwned: run.unlocksOwned, bag: bag);
     // A clan sworn at the start: its oath on floor 0 (towerStart).
     if (run.taken[0] case final oath?) {
       towerApplyReward(hero, oath, data, bag: bag);

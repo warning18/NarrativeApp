@@ -62,10 +62,7 @@ bool get companionRemarksShowing => _showing;
 /// the other, the way the guide talks in a tour; done when the player has
 /// tapped through them.
 Future<void> showCompanionRemarks(
-  BuildContext context,
-  WidgetRef ref,
-  List<CompanionRemark> remarks,
-) =>
+        BuildContext context, WidgetRef ref, List<CompanionRemark> remarks) =>
     showSpokenLines(context, ref, spokenRemarks(ref, remarks));
 
 /// Shows [lines] in speech bubbles over the screen, one after the other:
@@ -73,10 +70,7 @@ Future<void> showCompanionRemarks(
 /// left, who answers on the right) and the words typed out above it. Tap
 /// anywhere (or Next) to go on.
 Future<void> showSpokenLines(
-  BuildContext context,
-  WidgetRef ref,
-  List<SpokenLine> lines,
-) async {
+    BuildContext context, WidgetRef ref, List<SpokenLine> lines) async {
   if (lines.isEmpty || _showing || !context.mounted) return;
   _showing = true;
   try {
@@ -188,89 +182,79 @@ class _CompanionRemarkOverlayState extends State<CompanionRemarkOverlay> {
 
     return Material(
       type: MaterialType.transparency,
-      child: LayoutBuilder(
-        builder: (context, constraints) {
-          final screen = constraints.biggest;
-          final bubbleLeft = ((screen.width - _bubbleWidth) / 2).clamp(
-            12.0,
-            screen.width,
-          );
-          final bubbleWidth = math.min(_bubbleWidth, screen.width - 2 * 12.0);
-          const badgeInset = 20.0;
-          final badgeLeft =
-              onLeft ? badgeInset : screen.width - badgeInset - _badgeSize;
-          final badgeBottom = media.padding.bottom + 20;
-          final bubbleBottom = badgeBottom + _badgeSize + 2;
-          final tailX = (badgeLeft + _badgeSize / 2 - bubbleLeft - 9).clamp(
-            14.0,
-            math.max(14.0, bubbleWidth - 32),
-          );
+      child: LayoutBuilder(builder: (context, constraints) {
+        final screen = constraints.biggest;
+        final bubbleLeft =
+            ((screen.width - _bubbleWidth) / 2).clamp(12.0, screen.width);
+        final bubbleWidth = math.min(_bubbleWidth, screen.width - 2 * 12.0);
+        const badgeInset = 20.0;
+        final badgeLeft =
+            onLeft ? badgeInset : screen.width - badgeInset - _badgeSize;
+        final badgeBottom = media.padding.bottom + 20;
+        final bubbleBottom = badgeBottom + _badgeSize + 2;
+        final tailX = (badgeLeft + _badgeSize / 2 - bubbleLeft - 9)
+            .clamp(14.0, math.max(14.0, bubbleWidth - 32));
 
-          return Stack(
-            children: [
-              Positioned.fill(
-                child: GestureDetector(
-                  key: const Key('remark_bubble_barrier'),
-                  behavior: HitTestBehavior.opaque,
-                  onTap: _next,
-                  child: ColoredBox(
-                    color: Colors.black.withValues(alpha: 0.45),
+        return Stack(
+          children: [
+            Positioned.fill(
+              child: GestureDetector(
+                key: const Key('remark_bubble_barrier'),
+                behavior: HitTestBehavior.opaque,
+                onTap: _next,
+                child: ColoredBox(color: Colors.black.withValues(alpha: 0.45)),
+              ),
+            ),
+            Positioned(
+              left: badgeLeft,
+              bottom: badgeBottom,
+              width: _badgeSize,
+              height: _badgeSize,
+              child: IgnorePointer(
+                child: AnimatedSwitcher(
+                  duration: media.disableAnimations
+                      ? Duration.zero
+                      : const Duration(milliseconds: 220),
+                  transitionBuilder: (child, animation) => ScaleTransition(
+                    scale: CurvedAnimation(
+                        parent: animation, curve: Curves.easeOutBack),
+                    child: child,
+                  ),
+                  child: _Badge(
+                    key: ValueKey(_index),
+                    letter: _initialOf(spoken),
+                    fill: theme.colorScheme.surfaceContainerHigh,
+                    ring: ink.gold,
                   ),
                 ),
               ),
-              Positioned(
-                left: badgeLeft,
-                bottom: badgeBottom,
-                width: _badgeSize,
-                height: _badgeSize,
-                child: IgnorePointer(
-                  child: AnimatedSwitcher(
-                    duration: media.disableAnimations
-                        ? Duration.zero
-                        : const Duration(milliseconds: 220),
-                    transitionBuilder: (child, animation) => ScaleTransition(
-                      scale: CurvedAnimation(
-                        parent: animation,
-                        curve: Curves.easeOutBack,
-                      ),
-                      child: child,
-                    ),
-                    child: _Badge(
-                      key: ValueKey(_index),
-                      letter: _initialOf(spoken),
-                      fill: theme.colorScheme.surfaceContainerHigh,
-                      ring: ink.gold,
-                    ),
-                  ),
+            ),
+            Positioned(
+              left: bubbleLeft,
+              width: bubbleWidth,
+              top: media.padding.top + 16,
+              bottom: bubbleBottom,
+              child: Align(
+                alignment: Alignment.bottomCenter,
+                child: SpeechBubble(
+                  key: const Key('remark_bubble'),
+                  nextKey: const Key('remark_next'),
+                  speaker: spoken.speaker,
+                  fullText: spoken.line,
+                  shown: spoken.line.substring(0, _chars),
+                  counter: widget.lines.length > 1
+                      ? '${_index + 1} / ${widget.lines.length}'
+                      : null,
+                  nextLabel: last ? widget.doneLabel : widget.nextLabel,
+                  onNext: _next,
+                  tailX: tailX.toDouble(),
+                  tailDown: true,
                 ),
               ),
-              Positioned(
-                left: bubbleLeft,
-                width: bubbleWidth,
-                top: media.padding.top + 16,
-                bottom: bubbleBottom,
-                child: Align(
-                  alignment: Alignment.bottomCenter,
-                  child: SpeechBubble(
-                    key: const Key('remark_bubble'),
-                    nextKey: const Key('remark_next'),
-                    speaker: spoken.speaker,
-                    fullText: spoken.line,
-                    shown: spoken.line.substring(0, _chars),
-                    counter: widget.lines.length > 1
-                        ? '${_index + 1} / ${widget.lines.length}'
-                        : null,
-                    nextLabel: last ? widget.doneLabel : widget.nextLabel,
-                    onNext: _next,
-                    tailX: tailX.toDouble(),
-                    tailDown: true,
-                  ),
-                ),
-              ),
-            ],
-          );
-        },
-      ),
+            ),
+          ],
+        );
+      }),
     );
   }
 

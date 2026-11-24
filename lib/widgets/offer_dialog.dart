@@ -57,11 +57,8 @@ const int _wayfarerGreetings = 4;
 /// say so (the Character tab's button) rather than nothing (after a
 /// fight). True when an offer is on the table (shown here, or already open);
 /// false when none could be drawn.
-Future<bool> showOfferIfWaiting(
-  BuildContext context,
-  WidgetRef ref, {
-  bool sayWhenNone = false,
-}) async {
+Future<bool> showOfferIfWaiting(BuildContext context, WidgetRef ref,
+    {bool sayWhenNone = false}) async {
   if (ref.read(playerSessionProvider).pendingOffers.isEmpty) return false;
   // One offer dialog at a time, opened over the whole app: a fight left
   // while the offer loads does not lose it.
@@ -77,9 +74,8 @@ Future<bool> showOfferIfWaiting(
     if (!navigator.mounted) return offer != null;
     if (offer == null) {
       if (sayWhenNone && context.mounted) {
-        ScaffoldMessenger.of(
-          context,
-        ).showSnackBar(SnackBar(content: Text(tr(ref, 'offer_none_to_come'))));
+        ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text(tr(ref, 'offer_none_to_come'))));
       }
       return false;
     }
@@ -91,9 +87,7 @@ Future<bool> showOfferIfWaiting(
       context: navigator.context,
       barrierDismissible: false,
       builder: (_) => UncontrolledProviderScope(
-        container: scope,
-        child: OfferDialog(tables: tables),
-      ),
+          container: scope, child: OfferDialog(tables: tables)),
     );
     return true;
   } finally {
@@ -137,10 +131,8 @@ String _suitorGreeting(Suitor suitor, ClanData data, AppLanguage lang) {
   if (suitor.isWayfarer) {
     return suitor.firstMeeting
         ? trFor(lang, 'offer_wayfarer_intro')
-        : trFor(
-            lang,
-            'offer_wayfarer_greeting_${suitor.greetingIndex % _wayfarerGreetings}',
-          );
+        : trFor(lang,
+            'offer_wayfarer_greeting_${suitor.greetingIndex % _wayfarerGreetings}');
   }
   if (data.faction(suitor.factionId)?.isLost ?? false) {
     return trFor(lang, 'offer_own_hand_greeting');
@@ -316,13 +308,10 @@ List<({String text, double delta})> standingPreviewParts(
     return i < 0 ? order.length : i;
   }
 
-  final deltas = suitorPreview(
-    suitor,
-    ticket,
-    politics: politics,
-    data: data,
-    flags: flags,
-  ).entries.toList()
+  final deltas = suitorPreview(suitor, ticket,
+          politics: politics, data: data, flags: flags)
+      .entries
+      .toList()
     ..sort((a, b) {
       if (a.key == suitor.factionId) return -1;
       if (b.key == suitor.factionId) return 1;
@@ -377,29 +366,20 @@ class _OfferDialogState extends ConsumerState<OfferDialog> {
     final lang = ref.read(appLanguageProvider);
     final tables = widget.tables;
     final items = ref.read(localizedDbProvider(itemsSchema)).value ?? const {};
-    final name = _giftName(
-      suitor.gift,
-      tables: tables,
-      localizedItems: items,
-      lang: lang,
-    );
-    final preview = standingPreviewParts(
-      suitor,
-      offer.ticket,
-      politics: ref.read(playerSessionProvider).politics,
-      data: tables.data,
-      lang: lang,
-    );
+    final name = _giftName(suitor.gift,
+        tables: tables, localizedItems: items, lang: lang);
+    final preview = standingPreviewParts(suitor, offer.ticket,
+        politics: ref.read(playerSessionProvider).politics,
+        data: tables.data,
+        lang: lang);
     final odds = ref.read(playerSessionProvider.notifier).riskyOdds(tables);
     final confirmed = !confirm
         ? true
         : await showDialog<bool>(
             context: context,
             builder: (dialogContext) => Dialog(
-              insetPadding: const EdgeInsets.symmetric(
-                horizontal: 20,
-                vertical: 24,
-              ),
+              insetPadding:
+                  const EdgeInsets.symmetric(horizontal: 20, vertical: 24),
               child: SingleChildScrollView(
                 padding: const EdgeInsets.fromLTRB(16, 20, 16, 16),
                 child: Column(
@@ -407,30 +387,23 @@ class _OfferDialogState extends ConsumerState<OfferDialog> {
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
                     SheetHeader(
-                      title: trFor(
-                        lang,
-                        'offer_confirm_title',
-                      ).replaceAll('{gift}', name),
+                      title: trFor(lang, 'offer_confirm_title')
+                          .replaceAll('{gift}', name),
                       caption: trFor(lang, 'offer_confirm_from').replaceAll(
-                        '{who}',
-                        _suitorName(suitor, tables.data, lang),
-                      ),
+                          '{who}', _suitorName(suitor, tables.data, lang)),
                       padding: const EdgeInsets.only(bottom: 12),
                     ),
-                    Text(
-                      preview.isEmpty
-                          ? trFor(lang, 'offer_no_standing')
-                          : preview.map((p) => p.text).join(' · '),
-                    ),
+                    Text(preview.isEmpty
+                        ? trFor(lang, 'offer_no_standing')
+                        : preview.map((p) => p.text).join(' · ')),
                     if (suitor.risky) ...[
                       const SizedBox(height: 8),
                       Text(trFor(lang, 'offer_risky_hint')),
                       Text(
-                        trFor(lang, 'offer_risky_odds')
-                            .replaceAll('{gift}', '${odds.gift}')
-                            .replaceAll('{price}', '${odds.price}'),
-                        key: const Key('offer_confirm_risky_odds'),
-                      ),
+                          trFor(lang, 'offer_risky_odds')
+                              .replaceAll('{gift}', '${odds.gift}')
+                              .replaceAll('{price}', '${odds.price}'),
+                          key: const Key('offer_confirm_risky_odds')),
                     ],
                     const SizedBox(height: 16),
                     SheetButtons(
@@ -456,19 +429,14 @@ class _OfferDialogState extends ConsumerState<OfferDialog> {
     if (risk != null) await _speakUp(RemarkKind.riskyTaken);
     // ... and the die rolled in front of the player before it is applied.
     if (risk != null && mounted) {
-      await showRiskyRoll(
-        context,
-        roll: suitor.riskRoll,
-        luck: notifier.riskyLuck(tables),
-        won: risk.won,
-        lang: lang,
-      );
+      await showRiskyRoll(context,
+          roll: suitor.riskRoll,
+          luck: notifier.riskyLuck(tables),
+          won: risk.won,
+          lang: lang);
     }
-    await notifier.acceptSuitor(
-      suitor.factionId,
-      tables: tables,
-      origin: itemOriginHere(ref),
-    );
+    await notifier.acceptSuitor(suitor.factionId,
+        tables: tables, origin: itemOriginHere(ref));
     // The gift, as the reward card tells it, before the next offer.
     if (mounted) {
       final skills =
@@ -485,10 +453,7 @@ class _OfferDialogState extends ConsumerState<OfferDialog> {
                 icon: Icon(Icons.casino_outlined, color: clanColour),
                 accent: clanColour,
                 title: riskyResultText(
-                  risk,
-                  tables.data.faction(suitor.factionId),
-                  lang,
-                ),
+                    risk, tables.data.faction(suitor.factionId), lang),
                 sub: name,
                 tag: trFor(lang, 'offer_risky_badge'),
               )
@@ -513,23 +478,16 @@ class _OfferDialogState extends ConsumerState<OfferDialog> {
                 button: card.button,
                 lines: card.lines,
                 notes: [
-                  RewardNote(
-                    riskyResultText(
-                      risk,
-                      tables.data.faction(suitor.factionId),
-                      lang,
-                    ),
-                  ),
+                  RewardNote(riskyResultText(
+                      risk, tables.data.faction(suitor.factionId), lang)),
                   ...card.notes,
                 ],
               ),
       );
     }
     if (risk != null) await _speakUp(riskyOutcomeRemarkKind(risk.outcome));
-    final next = await notifier.ensureOffer(
-      tables,
-      placeHolder: ref.read(holderHereProvider),
-    );
+    final next = await notifier.ensureOffer(tables,
+        placeHolder: ref.read(holderHereProvider));
     if (!mounted) return;
     if (next == null) {
       Navigator.of(context).pop();
@@ -548,9 +506,8 @@ class _OfferDialogState extends ConsumerState<OfferDialog> {
     setState(() => _busy = true);
     try {
       await ref.read(playerSessionProvider.notifier).declineSoloOffer(
-            widget.tables,
-            placeHolder: ref.read(holderHereProvider),
-          );
+          widget.tables,
+          placeHolder: ref.read(holderHereProvider));
     } finally {
       if (mounted) {
         setState(() {
@@ -604,10 +561,8 @@ class _OfferDialogState extends ConsumerState<OfferDialog> {
       );
     }
     final ticket = offer.ticket;
-    final source = trFor(
-      lang,
-      'offer_source_${ticket.source.name}',
-    ).replaceAll('{n}', ticket.detail);
+    final source = trFor(lang, 'offer_source_${ticket.source.name}')
+        .replaceAll('{n}', ticket.detail);
     final waiting = session.pendingOffers.length;
     final selected = _selected == null ? null : offer.suitorOf(_selected!);
     final accent = selected == null
@@ -621,10 +576,8 @@ class _OfferDialogState extends ConsumerState<OfferDialog> {
         canPop: false,
         child: Dialog(
           key: const Key('offer_solo'),
-          insetPadding: const EdgeInsets.symmetric(
-            horizontal: 12,
-            vertical: 24,
-          ),
+          insetPadding:
+              const EdgeInsets.symmetric(horizontal: 12, vertical: 24),
           clipBehavior: Clip.antiAlias,
           child: _Drawing(
             drawing: drawing,
@@ -670,10 +623,8 @@ class _OfferDialogState extends ConsumerState<OfferDialog> {
                     color: theme.colorScheme.surfaceContainerHighest,
                     child: Row(
                       children: [
-                        Icon(
-                          Icons.diversity_3,
-                          color: theme.colorScheme.primary,
-                        ),
+                        Icon(Icons.diversity_3,
+                            color: theme.colorScheme.primary),
                         const SizedBox(width: 10),
                         Expanded(
                           child: Column(
@@ -682,17 +633,15 @@ class _OfferDialogState extends ConsumerState<OfferDialog> {
                               Text(
                                 trFor(lang, 'offer_title'),
                                 key: const Key('offer_title'),
-                                style: theme.textTheme.titleMedium?.copyWith(
-                                  fontWeight: FontWeight.bold,
-                                ),
+                                style: theme.textTheme.titleMedium
+                                    ?.copyWith(fontWeight: FontWeight.bold),
                               ),
                               Text(
                                 waiting > 1
                                     ? '$source · ${trFor(lang, 'offer_pending').replaceAll('{n}', '$waiting')}'
                                     : source,
                                 style: theme.textTheme.labelMedium?.copyWith(
-                                  color: theme.colorScheme.onSurfaceVariant,
-                                ),
+                                    color: theme.colorScheme.onSurfaceVariant),
                               ),
                             ],
                           ),
@@ -753,35 +702,24 @@ class _OfferDialogState extends ConsumerState<OfferDialog> {
                             ref
                                     .read(playerSessionProvider.notifier)
                                     .raisePreview(
-                                      selected.factionId,
-                                      widget.tables,
-                                    ) !=
+                                        selected.factionId, widget.tables) !=
                                 null,
                         warnRaised: offer.suitors.any((s) => s.raised),
-                        onReroll: () => _roll(
-                          () => ref
-                              .read(playerSessionProvider.notifier)
-                              .rerollOffer(
-                                widget.tables,
-                                placeHolder: ref.read(holderHereProvider),
-                              ),
-                        ),
-                        onBanish: (draws) => _roll(
-                          () => ref
-                              .read(playerSessionProvider.notifier)
-                              .banishSuitor(
-                                selected!.factionId,
-                                draws,
-                                widget.tables,
-                                placeHolder: ref.read(holderHereProvider),
-                              ),
-                        ),
+                        onReroll: () => _roll(() => ref
+                            .read(playerSessionProvider.notifier)
+                            .rerollOffer(widget.tables,
+                                placeHolder: ref.read(holderHereProvider))),
+                        onBanish: (draws) => _roll(() => ref
+                            .read(playerSessionProvider.notifier)
+                            .banishSuitor(
+                                selected!.factionId, draws, widget.tables,
+                                placeHolder: ref.read(holderHereProvider))),
                         onRaise: () => _roll(
-                          () => ref
-                              .read(playerSessionProvider.notifier)
-                              .raiseSuitor(selected!.factionId, widget.tables),
-                          keep: true,
-                        ),
+                            () => ref
+                                .read(playerSessionProvider.notifier)
+                                .raiseSuitor(
+                                    selected!.factionId, widget.tables),
+                            keep: true),
                       ),
                       FilledButton(
                         key: const Key('offer_take_button'),
@@ -794,32 +732,21 @@ class _OfferDialogState extends ConsumerState<OfferDialog> {
                               ? trFor(lang, 'offer_take_button')
                               : trFor(lang, 'offer_take_named')
                                   .replaceAll(
-                                    '{gift}',
-                                    _giftName(
-                                      selected.gift,
-                                      tables: widget.tables,
-                                      localizedItems: ref
-                                              .watch(
-                                                localizedDbProvider(
-                                                  itemsSchema,
-                                                ),
-                                              )
-                                              .value ??
-                                          const {},
-                                      lang: lang,
-                                    ),
-                                  )
+                                      '{gift}',
+                                      _giftName(selected.gift,
+                                          tables: widget.tables,
+                                          localizedItems: ref
+                                                  .watch(localizedDbProvider(
+                                                      itemsSchema))
+                                                  .value ??
+                                              const {},
+                                          lang: lang))
                                   .replaceAll(
-                                    '{clan}',
-                                    _midSentence(
-                                      _suitorName(
-                                        selected,
-                                        widget.tables.data,
-                                        lang,
-                                      ),
-                                      lang,
-                                    ),
-                                  ),
+                                      '{clan}',
+                                      _midSentence(
+                                          _suitorName(selected,
+                                              widget.tables.data, lang),
+                                          lang)),
                           key: const Key('offer_take_label'),
                           textAlign: TextAlign.center,
                           maxLines: 2,
@@ -875,18 +802,11 @@ class _SoloOffer extends ConsumerWidget {
     final color = _suitorColor(suitor, data);
     final tight = MediaQuery.sizeOf(context).height < tightHeight;
     final bannerId = clanBannerId(suitor.factionId);
-    final banner = clanCardFlag(
-      bannerId,
-      plain: _PlainFlag(color: color, wayfarer: false),
-    );
+    final banner = clanCardFlag(bannerId,
+        plain: _PlainFlag(color: color, wayfarer: false));
     final tier = session.politics.tierOf(suitor.factionId, data);
-    final preview = standingPreviewParts(
-      suitor,
-      offer.ticket,
-      politics: session.politics,
-      data: data,
-      lang: lang,
-    );
+    final preview = standingPreviewParts(suitor, offer.ticket,
+        politics: session.politics, data: data, lang: lang);
     // A short screen (320 x 568) keeps everything in view: tighter gaps.
     final gap = tight ? 6.0 : 10.0;
     return Column(
@@ -904,19 +824,13 @@ class _SoloOffer extends ConsumerWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(
-                      trFor(lang, 'offer_solo_title'),
-                      key: const Key('offer_title'),
-                      style: theme.textTheme.titleMedium?.copyWith(
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                    Text(
-                      source,
-                      style: theme.textTheme.labelMedium?.copyWith(
-                        color: theme.colorScheme.onSurfaceVariant,
-                      ),
-                    ),
+                    Text(trFor(lang, 'offer_solo_title'),
+                        key: const Key('offer_title'),
+                        style: theme.textTheme.titleMedium
+                            ?.copyWith(fontWeight: FontWeight.bold)),
+                    Text(source,
+                        style: theme.textTheme.labelMedium?.copyWith(
+                            color: theme.colorScheme.onSurfaceVariant)),
                   ],
                 ),
               ),
@@ -957,34 +871,26 @@ class _SoloOffer extends ConsumerWidget {
                             )
                           : KeyedSubtree(
                               key: const Key('offer_solo_banner_full'),
-                              child: banner,
-                            ),
+                              child: banner),
                       const SizedBox(width: 12),
                       Expanded(
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Text(
-                              _suitorName(suitor, data, lang),
-                              style: theme.textTheme.titleMedium?.copyWith(
-                                fontFamily: InkFonts.display,
-                                color: color,
-                              ),
-                            ),
+                            Text(_suitorName(suitor, data, lang),
+                                style: theme.textTheme.titleMedium?.copyWith(
+                                    fontFamily: InkFonts.display,
+                                    color: color)),
                             const SizedBox(height: 4),
                             _Tag(
-                              text: trFor(lang, standingTierKey(tier)),
-                              color: color,
-                            ),
+                                text: trFor(lang, standingTierKey(tier)),
+                                color: color),
                             const SizedBox(height: 8),
-                            Text(
-                              '“${_suitorGreeting(suitor, data, lang)}”',
-                              style: theme.textTheme.bodyMedium?.copyWith(
-                                fontFamily: InkFonts.prose,
-                                fontStyle: FontStyle.italic,
-                                height: tight ? 1.2 : 1.35,
-                              ),
-                            ),
+                            Text('“${_suitorGreeting(suitor, data, lang)}”',
+                                style: theme.textTheme.bodyMedium?.copyWith(
+                                    fontFamily: InkFonts.prose,
+                                    fontStyle: FontStyle.italic,
+                                    height: tight ? 1.2 : 1.35)),
                           ],
                         ),
                       ),
@@ -1013,30 +919,22 @@ class _SoloOffer extends ConsumerWidget {
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 Text(
-                                  _giftName(
-                                    gift,
-                                    tables: tables,
-                                    localizedItems: items,
-                                    lang: lang,
-                                  ),
-                                  style: theme.textTheme.titleMedium,
-                                ),
+                                    _giftName(gift,
+                                        tables: tables,
+                                        localizedItems: items,
+                                        lang: lang),
+                                    style: theme.textTheme.titleMedium),
                                 const SizedBox(height: 4),
                                 Wrap(
                                   spacing: 6,
                                   runSpacing: 4,
                                   children: [
                                     _Tag(
-                                      text: trFor(
-                                        lang,
-                                        _giftTagKey(gift, skills),
-                                      ),
-                                      color: color,
-                                    ),
+                                        text: trFor(
+                                            lang, _giftTagKey(gift, skills)),
+                                        color: color),
                                     SignRarityChip(
-                                      rarity: gift.rarity,
-                                      language: lang,
-                                    ),
+                                        rarity: gift.rarity, language: lang),
                                   ],
                                 ),
                               ],
@@ -1046,26 +944,19 @@ class _SoloOffer extends ConsumerWidget {
                       ),
                       SizedBox(height: gap),
                       Text(
-                        _giftEffect(
-                          gift,
-                          tables: tables,
-                          items: items,
-                          skills: skills,
-                          lang: lang,
-                        ),
-                        style: theme.textTheme.bodyMedium?.copyWith(
-                          height: tight ? 1.25 : 1.4,
-                        ),
-                      ),
+                          _giftEffect(gift,
+                              tables: tables,
+                              items: items,
+                              skills: skills,
+                              lang: lang),
+                          style: theme.textTheme.bodyMedium
+                              ?.copyWith(height: tight ? 1.25 : 1.4)),
                       if (preview.isNotEmpty) ...[
                         SizedBox(height: tight ? 4 : 8),
-                        Text(
-                          preview.map((p) => p.text).join(' · '),
-                          key: const Key('offer_solo_standing'),
-                          style: theme.textTheme.labelMedium?.copyWith(
-                            color: theme.colorScheme.onSurfaceVariant,
-                          ),
-                        ),
+                        Text(preview.map((p) => p.text).join(' · '),
+                            key: const Key('offer_solo_standing'),
+                            style: theme.textTheme.labelMedium?.copyWith(
+                                color: theme.colorScheme.onSurfaceVariant)),
                       ],
                     ],
                   ),
@@ -1082,9 +973,8 @@ class _SoloOffer extends ConsumerWidget {
               FilledButton(
                 key: const Key('offer_solo_accept'),
                 style: FilledButton.styleFrom(
-                  backgroundColor: color,
-                  minimumSize: Size.fromHeight(tight ? 44 : 48),
-                ),
+                    backgroundColor: color,
+                    minimumSize: Size.fromHeight(tight ? 44 : 48)),
                 onPressed: onAccept,
                 child: Text(trFor(lang, 'offer_confirm_accept')),
               ),
@@ -1092,21 +982,17 @@ class _SoloOffer extends ConsumerWidget {
               TextButton(
                 key: const Key('offer_solo_decline'),
                 style: TextButton.styleFrom(
-                  minimumSize: Size.fromHeight(tight ? 40 : 44),
-                ),
+                    minimumSize: Size.fromHeight(tight ? 40 : 44)),
                 onPressed: onDecline,
                 child: Text(trFor(lang, 'offer_solo_decline')),
               ),
               Padding(
                 padding: const EdgeInsets.only(top: 2),
-                child: Text(
-                  trFor(lang, 'offer_solo_note'),
-                  textAlign: TextAlign.center,
-                  style: theme.textTheme.bodySmall?.copyWith(
-                    color: theme.colorScheme.onSurfaceVariant,
-                    fontStyle: FontStyle.italic,
-                  ),
-                ),
+                child: Text(trFor(lang, 'offer_solo_note'),
+                    textAlign: TextAlign.center,
+                    style: theme.textTheme.bodySmall?.copyWith(
+                        color: theme.colorScheme.onSurfaceVariant,
+                        fontStyle: FontStyle.italic)),
               ),
             ],
           ),
@@ -1190,14 +1076,11 @@ class _OfferGifts extends ConsumerWidget {
     }) parts(Suitor suitor) {
       final color = _suitorColor(suitor, data);
       final gift = suitor.gift;
-      final preview = standingPreviewParts(
-        suitor,
-        offer.ticket,
-        politics: session.politics,
-        data: data,
-        lang: lang,
-        flags: session.flags,
-      );
+      final preview = standingPreviewParts(suitor, offer.ticket,
+          politics: session.politics,
+          data: data,
+          lang: lang,
+          flags: session.flags);
       final skill = skills[gift.id];
       final bannerId =
           suitor.isWayfarer ? null : clanBannerId(suitor.factionId);
@@ -1208,18 +1091,12 @@ class _OfferGifts extends ConsumerWidget {
         color: color,
         flag: KeyedSubtree(
           key: Key('offer_banner_${suitor.factionId}'),
-          child: clanCardFlag(
-            bannerId,
-            plain: _PlainFlag(color: color, wayfarer: suitor.isWayfarer),
-          ),
+          child: clanCardFlag(bannerId,
+              plain: _PlainFlag(color: color, wayfarer: suitor.isWayfarer)),
         ),
         icon: _giftGlyph(gift, color, size: IconSize.s48),
-        name: _giftName(
-          gift,
-          tables: tables,
-          localizedItems: items,
-          lang: lang,
-        ),
+        name:
+            _giftName(gift, tables: tables, localizedItems: items, lang: lang),
         tags: [
           _Tag(text: trFor(lang, _giftTagKey(gift, skills)), color: color),
           if (gift.kind != GiftKind.perk)
@@ -1229,13 +1106,8 @@ class _OfferGifts extends ConsumerWidget {
         ],
         greeting: _suitorGreeting(suitor, data, lang),
         clanName: _suitorName(suitor, data, lang),
-        effect: _giftEffect(
-          gift,
-          tables: tables,
-          items: items,
-          skills: skills,
-          lang: lang,
-        ),
+        effect: _giftEffect(gift,
+            tables: tables, items: items, skills: skills, lang: lang),
         backdropId: suitor.isWayfarer ? 'wayfarer' : suitor.factionId,
         standing: preview.isEmpty ? null : preview.first.text,
         good: preview.isEmpty || preview.first.delta >= 0,
@@ -1253,29 +1125,27 @@ class _OfferGifts extends ConsumerWidget {
           ClanHandFan(
             cards: [
               for (final s in cards)
-                Builder(
-                  builder: (_) {
-                    final p = parts(s);
-                    return peek(
-                      s,
-                      ClanCardView(
-                        tier: p.tier,
-                        color: p.color,
-                        flag: p.flag,
-                        icon: p.icon,
-                        name: p.name,
-                        tags: p.tags,
-                        greeting: p.greeting,
-                        clanName: p.clanName,
-                        effect: p.effect,
-                        backdropId: p.backdropId,
-                        standing: p.standing,
-                        standingGood: p.good,
-                        lit: s.factionId == selected,
-                      ),
-                    );
-                  },
-                ),
+                Builder(builder: (_) {
+                  final p = parts(s);
+                  return peek(
+                    s,
+                    ClanCardView(
+                      tier: p.tier,
+                      color: p.color,
+                      flag: p.flag,
+                      icon: p.icon,
+                      name: p.name,
+                      tags: p.tags,
+                      greeting: p.greeting,
+                      clanName: p.clanName,
+                      effect: p.effect,
+                      backdropId: p.backdropId,
+                      standing: p.standing,
+                      standingGood: p.good,
+                      lit: s.factionId == selected,
+                    ),
+                  );
+                }),
             ],
             keys: [for (final s in cards) Key('offer_suitor_${s.factionId}')],
             lit: litCard,
@@ -1289,54 +1159,48 @@ class _OfferGifts extends ConsumerWidget {
               trFor(lang, 'offer_raises_header'),
               key: const Key('offer_raises_header'),
               style: TextStyle(
-                fontFamily: InkFonts.system,
-                fontSize: 10,
-                color: Theme.of(context).colorScheme.onSurfaceVariant,
-              ),
+                  fontFamily: InkFonts.system,
+                  fontSize: 10,
+                  color: Theme.of(context).colorScheme.onSurfaceVariant),
             ),
           ),
           for (final s in rows)
             Padding(
               key: Key('offer_suitor_${s.factionId}'),
               padding: const EdgeInsets.only(bottom: 6),
-              child: Builder(
-                builder: (_) {
-                  final p = parts(s);
-                  final skill = skills[s.gift.id];
-                  final base = skill is Map<String, dynamic>
-                      ? skill['ascendsSkillID']?.toString() ?? ''
-                      : '';
-                  return peek(
-                    s,
-                    Semantics(
-                      button: true,
+              child: Builder(builder: (_) {
+                final p = parts(s);
+                final skill = skills[s.gift.id];
+                final base = skill is Map<String, dynamic>
+                    ? skill['ascendsSkillID']?.toString() ?? ''
+                    : '';
+                return peek(
+                  s,
+                  Semantics(
+                    button: true,
+                    selected: s.factionId == selected,
+                    label: '${p.clanName}: ${p.name}',
+                    child: ClanRaiseRow(
+                      tier: p.tier,
+                      color: p.color,
+                      flag: p.flag,
+                      icon: p.icon,
+                      name: p.name,
+                      tags: p.tags,
+                      raises: base.isNotEmpty
+                          ? trFor(lang, 'offer_ascension_line').replaceAll(
+                              '{skill}', skillDisplayName(base, language: lang))
+                          : trFor(lang, 'offer_raises_line'),
+                      greeting: p.greeting,
+                      clanName: p.clanName,
+                      standing: p.standing,
+                      standingGood: p.good,
                       selected: s.factionId == selected,
-                      label: '${p.clanName}: ${p.name}',
-                      child: ClanRaiseRow(
-                        tier: p.tier,
-                        color: p.color,
-                        flag: p.flag,
-                        icon: p.icon,
-                        name: p.name,
-                        tags: p.tags,
-                        raises: base.isNotEmpty
-                            ? trFor(lang, 'offer_ascension_line').replaceAll(
-                                '{skill}',
-                                skillDisplayName(base, language: lang),
-                              )
-                            : trFor(lang, 'offer_raises_line'),
-                        greeting: p.greeting,
-                        clanName: p.clanName,
-                        standing: p.standing,
-                        standingGood: p.good,
-                        selected: s.factionId == selected,
-                        onTap:
-                            onPick == null ? null : () => onPick!(s.factionId),
-                      ),
+                      onTap: onPick == null ? null : () => onPick!(s.factionId),
                     ),
-                  );
-                },
-              ),
+                  ),
+                );
+              }),
             ),
         ],
       ],
@@ -1380,13 +1244,8 @@ class _OfferHall extends ConsumerWidget {
     final onRing = picked != null && clanIds.contains(picked.factionId);
     final preview = picked == null
         ? const <String, double>{}
-        : suitorPreview(
-            picked,
-            offer.ticket,
-            politics: politics,
-            data: data,
-            flags: session.flags,
-          );
+        : suitorPreview(picked, offer.ticket,
+            politics: politics, data: data, flags: session.flags);
     const good = Palette.green43;
     final bad = theme.colorScheme.error;
     final compass = ClanCompass(
@@ -1414,19 +1273,16 @@ class _OfferHall extends ConsumerWidget {
           const SizedBox(height: 10),
           Row(
             children: [
-              Icon(
-                Icons.touch_app_outlined,
-                size: IconSize.s16,
-                color: theme.colorScheme.onSurfaceVariant,
-              ),
+              Icon(Icons.touch_app_outlined,
+                  size: IconSize.s16,
+                  color: theme.colorScheme.onSurfaceVariant),
               const SizedBox(width: 8),
               Expanded(
                 child: Text(
                   trFor(lang, 'offer_select_hint'),
                   key: const Key('offer_select_hint'),
-                  style: theme.textTheme.bodySmall?.copyWith(
-                    color: theme.colorScheme.onSurfaceVariant,
-                  ),
+                  style: theme.textTheme.bodySmall
+                      ?.copyWith(color: theme.colorScheme.onSurfaceVariant),
                 ),
               ),
             ],
@@ -1460,14 +1316,11 @@ class _OfferHall extends ConsumerWidget {
         compass,
         if (preview.isEmpty) ...[
           const SizedBox(height: 6),
-          Text(
-            trFor(lang, 'offer_no_standing'),
-            key: Key('offer_preview_${picked.factionId}'),
-            textAlign: TextAlign.center,
-            style: theme.textTheme.labelMedium?.copyWith(
-              color: theme.colorScheme.onSurfaceVariant,
-            ),
-          ),
+          Text(trFor(lang, 'offer_no_standing'),
+              key: Key('offer_preview_${picked.factionId}'),
+              textAlign: TextAlign.center,
+              style: theme.textTheme.labelMedium
+                  ?.copyWith(color: theme.colorScheme.onSurfaceVariant)),
         ],
         const SizedBox(height: 10),
         // One block under the ring (Wave 8): the clan's name and standing
@@ -1497,9 +1350,7 @@ class _OfferHall extends ConsumerWidget {
                     child: Text(
                       _suitorName(picked, data, lang),
                       style: theme.textTheme.titleMedium?.copyWith(
-                        fontFamily: InkFonts.display,
-                        color: color,
-                      ),
+                          fontFamily: InkFonts.display, color: color),
                     ),
                   ),
                   // The same card a long press on the banner shows.
@@ -1509,17 +1360,13 @@ class _OfferHall extends ConsumerWidget {
                       tooltip: trFor(lang, 'clan_peek_orientation'),
                       visualDensity: VisualDensity.compact,
                       padding: EdgeInsets.zero,
-                      constraints: const BoxConstraints(
-                        minWidth: 32,
-                        minHeight: 32,
-                      ),
-                      icon: Icon(
-                        Icons.info_outline,
-                        size: IconSize.s16,
-                        color: picked.firstMeeting
-                            ? theme.colorScheme.primary
-                            : theme.colorScheme.onSurfaceVariant,
-                      ),
+                      constraints:
+                          const BoxConstraints(minWidth: 32, minHeight: 32),
+                      icon: Icon(Icons.info_outline,
+                          size: IconSize.s16,
+                          color: picked.firstMeeting
+                              ? theme.colorScheme.primary
+                              : theme.colorScheme.onSurfaceVariant),
                       onPressed: () => showClanDetails(
                         context,
                         factionId: picked.factionId,
@@ -1531,22 +1378,19 @@ class _OfferHall extends ConsumerWidget {
                     Container(
                       key: const Key('offer_standing_chip'),
                       padding: const EdgeInsets.symmetric(
-                        horizontal: 8,
-                        vertical: 2,
-                      ),
+                          horizontal: 8, vertical: 2),
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(10),
                         color: Color(tierColor(tier)).withValues(alpha: 0.15),
                         border: Border.all(
-                          color: Color(tierColor(tier)).withValues(alpha: 0.7),
-                        ),
+                            color:
+                                Color(tierColor(tier)).withValues(alpha: 0.7)),
                       ),
                       child: Text(
                         trFor(lang, standingTierKey(tier)),
                         style: theme.textTheme.labelSmall?.copyWith(
-                          color: Color(tierColor(tier)),
-                          fontWeight: FontWeight.w700,
-                        ),
+                            color: Color(tierColor(tier)),
+                            fontWeight: FontWeight.w700),
                       ),
                     ),
                   ],
@@ -1571,12 +1415,10 @@ class _OfferHall extends ConsumerWidget {
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   Text(
-                                    _giftName(
-                                      gift,
-                                      tables: tables,
-                                      localizedItems: items,
-                                      lang: lang,
-                                    ),
+                                    _giftName(gift,
+                                        tables: tables,
+                                        localizedItems: items,
+                                        lang: lang),
                                     style: theme.textTheme.titleSmall,
                                   ),
                                   const SizedBox(height: 3),
@@ -1587,26 +1429,19 @@ class _OfferHall extends ConsumerWidget {
                                         WrapCrossAlignment.center,
                                     children: [
                                       _Tag(
-                                        text: trFor(
-                                          lang,
-                                          _giftTagKey(gift, skills),
-                                        ),
-                                        color: color,
-                                      ),
+                                          text: trFor(
+                                              lang, _giftTagKey(gift, skills)),
+                                          color: color),
                                       if (gift.kind != GiftKind.perk)
                                         SignRarityChip(
-                                          rarity: gift.rarity,
-                                          language: lang,
-                                        ),
+                                            rarity: gift.rarity,
+                                            language: lang),
                                       if (picked.risky)
                                         _Tag(
-                                          key: const Key('offer_risky_badge'),
-                                          text: trFor(
-                                            lang,
-                                            'offer_risky_badge',
-                                          ),
-                                          color: bad,
-                                        ),
+                                            key: const Key('offer_risky_badge'),
+                                            text: trFor(
+                                                lang, 'offer_risky_badge'),
+                                            color: bad),
                                     ],
                                   ),
                                 ],
@@ -1628,57 +1463,43 @@ class _OfferHall extends ConsumerWidget {
                         if (picked.risky) ...[
                           const SizedBox(height: 6),
                           if ((faction?.riskyOfferFor(lang) ?? '').isNotEmpty)
-                            Text(
-                              faction!.riskyOfferFor(lang),
-                              style: theme.textTheme.bodySmall?.copyWith(
-                                fontStyle: FontStyle.italic,
-                              ),
-                            ),
-                          Text(
-                            trFor(lang, 'offer_risky_hint'),
-                            style: theme.textTheme.bodySmall,
-                          ),
+                            Text(faction!.riskyOfferFor(lang),
+                                style: theme.textTheme.bodySmall
+                                    ?.copyWith(fontStyle: FontStyle.italic)),
+                          Text(trFor(lang, 'offer_risky_hint'),
+                              style: theme.textTheme.bodySmall),
                           const SizedBox(height: 4),
                           RiskyOddsBar(
-                            luck: ref
-                                .read(playerSessionProvider.notifier)
-                                .riskyLuck(tables),
-                          ),
+                              luck: ref
+                                  .read(playerSessionProvider.notifier)
+                                  .riskyLuck(tables)),
                           const SizedBox(height: 4),
                           Text(
                             riskyOddsText(
-                              ref
-                                  .read(playerSessionProvider.notifier)
-                                  .riskyLuck(tables),
-                              lang,
-                            ),
+                                ref
+                                    .read(playerSessionProvider.notifier)
+                                    .riskyLuck(tables),
+                                lang),
                             key: const Key('offer_risky_odds'),
                             style: theme.textTheme.labelSmall?.copyWith(
-                              color: bad,
-                              fontWeight: FontWeight.w700,
-                            ),
+                                color: bad, fontWeight: FontWeight.w700),
                           ),
                         ],
                         const SizedBox(height: 6),
                         Container(
                           key: const Key('offer_alignment_word'),
                           padding: const EdgeInsets.symmetric(
-                            horizontal: 8,
-                            vertical: 3,
-                          ),
+                              horizontal: 8, vertical: 3),
                           decoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(10),
                             border: Border.all(
-                              color: alignColor.withValues(alpha: 0.7),
-                            ),
+                                color: alignColor.withValues(alpha: 0.7)),
                             color: alignColor.withValues(alpha: 0.10),
                           ),
                           child: Text(
                             '${trFor(lang, 'alignment_label')} · ${trFor(lang, alignKey)}',
                             style: theme.textTheme.labelSmall?.copyWith(
-                              color: alignColor,
-                              fontWeight: FontWeight.w700,
-                            ),
+                                color: alignColor, fontWeight: FontWeight.w700),
                           ),
                         ),
                       ],
@@ -1688,10 +1509,7 @@ class _OfferHall extends ConsumerWidget {
                   if (onRing) ...[
                     const SizedBox(width: 6),
                     ClanRadarChart(
-                      factionId: picked.factionId,
-                      color: color,
-                      size: 108,
-                    ),
+                        factionId: picked.factionId, color: color, size: 108),
                   ],
                 ],
               ),
@@ -1743,16 +1561,10 @@ Widget _giftGlyph(OfferGift gift, Color color, {double size = IconSize.s32}) {
   };
   final mark = Icon(fallback, size: size, color: color);
   return switch (gift.kind) {
-    GiftKind.object => PixelIcon(
-        ItemIcons.pathFor(gift.id),
-        size: size,
-        fallback: mark,
-      ),
-    GiftKind.skill => PixelIcon(
-        SkillIcons.pathFor(gift.id),
-        size: size,
-        fallback: mark,
-      ),
+    GiftKind.object =>
+      PixelIcon(ItemIcons.pathFor(gift.id), size: size, fallback: mark),
+    GiftKind.skill =>
+      PixelIcon(SkillIcons.pathFor(gift.id), size: size, fallback: mark),
     _ => mark,
   };
 }
@@ -1786,11 +1598,8 @@ class _PlainFlag extends StatelessWidget {
                   children: [
                     Container(height: 4, color: color),
                     const Spacer(),
-                    Icon(
-                      wayfarer ? Icons.hiking : Icons.flag,
-                      size: IconSize.s32,
-                      color: Palette.amber88,
-                    ),
+                    Icon(wayfarer ? Icons.hiking : Icons.flag,
+                        size: IconSize.s32, color: Palette.amber88),
                     const SizedBox(height: 14),
                     const Spacer(),
                   ],
@@ -1849,13 +1658,11 @@ class _Tag extends StatelessWidget {
           borderRadius: BorderRadius.circular(8),
           border: Border.all(color: color.withValues(alpha: 0.7)),
         ),
-        child: Text(
-          text,
-          style: Theme.of(context)
-              .textTheme
-              .labelSmall
-              ?.copyWith(fontWeight: FontWeight.w700),
-        ),
+        child: Text(text,
+            style: Theme.of(context)
+                .textTheme
+                .labelSmall
+                ?.copyWith(fontWeight: FontWeight.w700)),
       );
 }
 
@@ -1910,14 +1717,11 @@ class _GiftBody extends StatelessWidget {
             ),
             if (replaced != null)
               Text(
-                trFor(
-                  lang,
-                  'sign_replaces',
-                ).replaceAll('{name}', replaced.nameFor(lang)),
+                trFor(lang, 'sign_replaces')
+                    .replaceAll('{name}', replaced.nameFor(lang)),
                 style: theme.textTheme.labelSmall?.copyWith(
-                  color: theme.colorScheme.tertiary,
-                  fontWeight: FontWeight.w600,
-                ),
+                    color: theme.colorScheme.tertiary,
+                    fontWeight: FontWeight.w600),
               ),
           ],
         );
@@ -1937,10 +1741,8 @@ class _GiftBody extends StatelessWidget {
                 .replaceAll('{clan}', partner ?? ''),
           if (skill?['hiddenFlags'] is List) trFor(lang, 'offer_secret_line'),
           if (base.isNotEmpty)
-            trFor(
-              lang,
-              'offer_ascension_line',
-            ).replaceAll('{skill}', skillDisplayName(base, language: lang)),
+            trFor(lang, 'offer_ascension_line')
+                .replaceAll('{skill}', skillDisplayName(base, language: lang)),
           skill?['description']?.toString() ?? '',
         ]);
       case GiftKind.object:
@@ -1963,10 +1765,8 @@ class _GiftBody extends StatelessWidget {
           children: [
             lines([for (final e in title.effects) signEffectText(e, lang)]),
             if (title.lineFor(lang).isNotEmpty)
-              Text(
-                title.lineFor(lang),
-                style: muted?.copyWith(fontStyle: FontStyle.italic),
-              ),
+              Text(title.lineFor(lang),
+                  style: muted?.copyWith(fontStyle: FontStyle.italic)),
           ],
         );
       case GiftKind.sworn:
@@ -1977,10 +1777,8 @@ class _GiftBody extends StatelessWidget {
           children: [
             lines([for (final e in boon.effects) signEffectText(e, lang)]),
             if (boon.lineFor(lang).isNotEmpty)
-              Text(
-                boon.lineFor(lang),
-                style: muted?.copyWith(fontStyle: FontStyle.italic),
-              ),
+              Text(boon.lineFor(lang),
+                  style: muted?.copyWith(fontStyle: FontStyle.italic)),
             Text(trFor(lang, 'offer_sworn_note'), style: muted),
           ],
         );
@@ -1998,10 +1796,8 @@ class _GiftBody extends StatelessWidget {
           children: [
             // A variant says which specialisation it bends.
             if (variant != null)
-              Text(
-                tables.specs[specId(variant.spec)]?.nameFor(fr) ?? '',
-                style: muted,
-              ),
+              Text(tables.specs[specId(variant.spec)]?.nameFor(fr) ?? '',
+                  style: muted),
             lines([text]),
             if (voice.isNotEmpty)
               Text(voice, style: muted?.copyWith(fontStyle: FontStyle.italic)),

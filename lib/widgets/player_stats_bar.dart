@@ -65,10 +65,8 @@ class PlayerStatsBar extends ConsumerWidget {
               '${tr(ref, 'day_label').replaceAll('{n}', '${session.day}')}'
                   ' · ${tr(ref, 'watch_${session.watch}')}',
               if (threat > 0)
-                tr(
-                  ref,
-                  'stats_threat',
-                ).replaceAll('{p}', '${(threat * 100).round()}'),
+                tr(ref, 'stats_threat')
+                    .replaceAll('{p}', '${(threat * 100).round()}'),
             ].join('\n'),
             tint: session.watch == 3 ? ink.voidColor : ink.ember,
             color: threat > 0 ? scheme.error : null,
@@ -206,9 +204,8 @@ Future<void> _showPlayerStatusSheet(BuildContext context) {
   return showInkSheet<void>(
     context: context,
     builder: (context) => ConstrainedBox(
-      constraints: BoxConstraints(
-        maxHeight: MediaQuery.of(context).size.height * 0.8,
-      ),
+      constraints:
+          BoxConstraints(maxHeight: MediaQuery.of(context).size.height * 0.8),
       child: const _PlayerStatusSheet(),
     ),
   );
@@ -228,9 +225,8 @@ class _PlayerStatusSheet extends ConsumerWidget {
         );
     void openPlay() {
       Navigator.of(context).pop();
-      ref.read(homeTabIndexProvider.notifier).state = questsTabIndex(
-        ref.read(appModeProvider),
-      );
+      ref.read(homeTabIndexProvider.notifier).state =
+          questsTabIndex(ref.read(appModeProvider));
     }
 
     return SafeArea(
@@ -239,33 +235,18 @@ class _PlayerStatusSheet extends ConsumerWidget {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            row(
-              Icons.shield,
-              tr(ref, 'level_field_label'),
-              '${session.level} · ${session.currentXP}/${session.xpToNextLevel} ${tr(ref, 'xp_label')}',
-            ),
-            row(
-              Icons.favorite,
-              tr(ref, 'hp_label'),
-              '${session.currentHealth}/${session.maxHealth}',
-            ),
-            row(
-              manaIcon,
-              tr(ref, 'mana_label'),
-              '${session.mana}/${session.maxMana}',
-            ),
+            row(Icons.shield, tr(ref, 'level_field_label'),
+                '${session.level} · ${session.currentXP}/${session.xpToNextLevel} ${tr(ref, 'xp_label')}'),
+            row(Icons.favorite, tr(ref, 'hp_label'),
+                '${session.currentHealth}/${session.maxHealth}'),
+            row(manaIcon, tr(ref, 'mana_label'),
+                '${session.mana}/${session.maxMana}'),
             row(Icons.paid, tr(ref, 'gold_field_label'), '${session.gold}'),
-            row(
-              Icons.balance,
-              tr(ref, 'alignment_label'),
-              trAlignmentLabel(ref, session.alignmentLabel),
-            ),
+            row(Icons.balance, tr(ref, 'alignment_label'),
+                trAlignmentLabel(ref, session.alignmentLabel)),
             if (session.flags.isNotEmpty)
-              row(
-                Icons.flag,
-                tr(ref, 'flags_count_label'),
-                '${session.flags.length}',
-              ),
+              row(Icons.flag, tr(ref, 'flags_count_label'),
+                  '${session.flags.length}'),
             const RoadPanel(),
             const SizedBox(height: 8),
             Padding(
@@ -277,16 +258,14 @@ class _PlayerStatusSheet extends ConsumerWidget {
                   ActionChip(
                     avatar: const Icon(Icons.assignment, size: IconSize.s16),
                     label: Text(
-                      '${tr(ref, 'quests')} (${session.activeQuestIds.length})',
-                    ),
+                        '${tr(ref, 'quests')} (${session.activeQuestIds.length})'),
                     onPressed: openPlay,
                   ),
                   if (session.unlockedShopIds.isNotEmpty)
                     ActionChip(
                       avatar: const Icon(Icons.storefront, size: IconSize.s16),
                       label: Text(
-                        '${tr(ref, 'shops')} (${session.unlockedShopIds.length})',
-                      ),
+                          '${tr(ref, 'shops')} (${session.unlockedShopIds.length})'),
                       onPressed: openPlay,
                     ),
                 ],
@@ -325,11 +304,8 @@ class GoldBadge extends ConsumerWidget {
             child: Row(
               mainAxisSize: MainAxisSize.min,
               children: [
-                Icon(
-                  Icons.paid,
-                  size: IconSize.s16,
-                  color: InkColors.of(context).gold,
-                ),
+                Icon(Icons.paid,
+                    size: IconSize.s16, color: InkColors.of(context).gold),
                 const SizedBox(width: 4),
                 Text(
                   '$gold',
@@ -369,22 +345,16 @@ class _PulseOnChangeState extends State<_PulseOnChange>
   void initState() {
     super.initState();
     _controller = AnimationController(
-      vsync: this,
-      duration: const Duration(milliseconds: 260),
-    );
+        vsync: this, duration: const Duration(milliseconds: 260));
     _scale = TweenSequence<double>([
       TweenSequenceItem(
-        tween: Tween(
-          begin: 1.0,
-          end: 1.25,
-        ).chain(CurveTween(curve: Curves.easeOut)),
+        tween: Tween(begin: 1.0, end: 1.25)
+            .chain(CurveTween(curve: Curves.easeOut)),
         weight: 1,
       ),
       TweenSequenceItem(
-        tween: Tween(
-          begin: 1.25,
-          end: 1.0,
-        ).chain(CurveTween(curve: Curves.easeIn)),
+        tween: Tween(begin: 1.25, end: 1.0)
+            .chain(CurveTween(curve: Curves.easeIn)),
         weight: 1,
       ),
     ]).animate(_controller);

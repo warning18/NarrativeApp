@@ -31,9 +31,7 @@ Map<String, String> townRulerIds(Map<String, TownRuler> rulers) => {
 /// has seen none (an old save, or the first look) has nothing changed, and
 /// a town it never saw has not changed hands either.
 List<TownHandover> townHandovers(
-  Map<String, String> seen,
-  Map<String, TownRuler> rulers,
-) {
+    Map<String, String> seen, Map<String, TownRuler> rulers) {
   if (seen.isEmpty) return const [];
   return [
     for (final e in townRulerIds(rulers).entries)
@@ -46,9 +44,7 @@ List<TownHandover> townHandovers(
 /// ruler's: the old clan's fill and its darker outline; null when the old
 /// ruler was no one (the tint fades in from nothing).
 ({int fill, int accent})? handoverFromColours(
-  TownHandover handover,
-  Map<String, int> clanColours,
-) {
+    TownHandover handover, Map<String, int> clanColours) {
   if (handover.fromClan.isEmpty) return null;
   final fill = clanColours[handover.fromClan];
   if (fill == null) return null;
@@ -63,10 +59,8 @@ final recentHandoversProvider = StateProvider<List<TownHandover>>((ref) => []);
 /// [older] with [changed] in front: a town named again replaces its old
 /// entry, and no more than [limit] are kept.
 List<TownHandover> withRecentHandovers(
-  List<TownHandover> older,
-  List<TownHandover> changed, {
-  int limit = 8,
-}) {
+    List<TownHandover> older, List<TownHandover> changed,
+    {int limit = 8}) {
   final towns = {for (final h in changed) h.townId};
   return [
     ...changed,

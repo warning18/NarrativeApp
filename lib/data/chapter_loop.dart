@@ -180,13 +180,9 @@ ChapterLoop? currentLoop({
   required List<ChapterLoop> loops,
 }) =>
     _loopForCamp(
-      currentCampNodeId(
-        currentNodeId: currentNodeId,
-        history: history,
-        loops: loops,
-      ),
-      loops,
-    );
+        currentCampNodeId(
+            currentNodeId: currentNodeId, history: history, loops: loops),
+        loops);
 
 /// The chapter a scene belongs to for its fights, its detours and the
 /// chart: a place's own chapter, else its spine chapter, else (v1.196)
@@ -221,9 +217,8 @@ Map<String, int> _computeSpineLed(StoryData story) {
   }
 
   final led = <String, int>{};
-  for (final spine in [
-    ...chapterSpines,
-  ]..sort((a, b) => a.chapter.compareTo(b.chapter))) {
+  for (final spine in [...chapterSpines]
+    ..sort((a, b) => a.chapter.compareTo(b.chapter))) {
     for (final beat in spine.beats) {
       for (final start in beat) {
         final stack = [...next(start)];
@@ -252,11 +247,8 @@ int reachedChapter({
   required List<ChapterLoop> loops,
   StoryData? story,
 }) {
-  final loop = currentLoop(
-    currentNodeId: currentNodeId,
-    history: history,
-    loops: loops,
-  );
+  final loop =
+      currentLoop(currentNodeId: currentNodeId, history: history, loops: loops);
   return max(loop?.chapter ?? 0, storyChapterOf(currentNodeId, story));
 }
 
@@ -280,9 +272,8 @@ List<StoryNode> loopPlaces(StoryData story) {
           node.settlement!.chapter != null)
         node,
   ]..sort((a, b) {
-      final byChapter = b.settlement!.chapter!.compareTo(
-        a.settlement!.chapter!,
-      );
+      final byChapter =
+          b.settlement!.chapter!.compareTo(a.settlement!.chapter!);
       return byChapter != 0 ? byChapter : a.id.compareTo(b.id);
     });
   return places;
@@ -313,7 +304,10 @@ Set<String> placeActivityMarkers(StoryNode place) => {
 ({int done, int total}) placeProgress(StoryNode place, Iterable<String> flags) {
   final markers = placeActivityMarkers(place);
   final held = flags.toSet();
-  return (done: markers.where(held.contains).length, total: markers.length);
+  return (
+    done: markers.where(held.contains).length,
+    total: markers.length,
+  );
 }
 
 /// How much of [chapter] is done: its expeditions cleared (not its main
@@ -387,12 +381,8 @@ bool mainQuestOpen({
 }) =>
     activityCount >= loop.activityGoal &&
     questCount >= loop.questGoal &&
-    missingMainQuestPlaces(
-      loop,
-      story,
-      flags,
-      visitedNodeIds: visitedNodeIds,
-    ).isEmpty;
+    missingMainQuestPlaces(loop, story, flags, visitedNodeIds: visitedNodeIds)
+        .isEmpty;
 
 /// The companions [place] can still bring into the party: an activity not
 /// done yet that starts a companion's quest (quests.json `rewardAllyId`),
@@ -463,10 +453,8 @@ List<String> zoneDiscoveries(Map<String, dynamic> zone) =>
 /// What [zone] reveals at its midpoint ([atEnd] false) or on being cleared
 /// ([atEnd] true): the first place at the midpoint, every place at the end
 /// (so a party that never saw the midpoint still finds them all).
-List<String> zoneDiscoveriesAt(
-  Map<String, dynamic> zone, {
-  required bool atEnd,
-}) {
+List<String> zoneDiscoveriesAt(Map<String, dynamic> zone,
+    {required bool atEnd}) {
   final all = zoneDiscoveries(zone);
   if (atEnd || all.isEmpty) return all;
   return [all.first];

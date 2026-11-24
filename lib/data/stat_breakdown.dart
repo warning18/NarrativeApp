@@ -84,7 +84,7 @@ extension StatBreakdownTotals on List<StatSource> {
   /// The rows of [kind].
   List<StatSource> ofKind(String kind) => [
         for (final r in this)
-          if (r.kind == kind) r,
+          if (r.kind == kind) r
       ];
 }
 
@@ -182,14 +182,8 @@ List<StatSource> statBreakdown(
 
   return [
     ...kept,
-    ..._lentRows(
-      s,
-      stat,
-      items: items,
-      itemSets: itemSets,
-      signs: signs,
-      clans: clans,
-    ),
+    ..._lentRows(s, stat,
+        items: items, itemSets: itemSets, signs: signs, clans: clans),
   ];
 }
 
@@ -216,13 +210,12 @@ List<StatSource> _lentRows(
     for (final id in s.equippedItemIds) {
       final aligned = alignmentGearBonusFor([id], items, s.alignmentLabel);
       lend(
-        'gear',
-        id,
-        damage
-            ? equipmentBonusFor([id], items, 'attackDamage') +
-                aligned.damageBonus
-            : equipmentBonusFor([id], items, 'armor') + aligned.armorBonus,
-      );
+          'gear',
+          id,
+          damage
+              ? equipmentBonusFor([id], items, 'attackDamage') +
+                  aligned.damageBonus
+              : equipmentBonusFor([id], items, 'armor') + aligned.armorBonus);
     }
     for (final active in activeSetsFor(s.equippedItemIds, itemSets)) {
       var amount = 0;
@@ -245,7 +238,7 @@ List<StatSource> _lentRows(
       (
         'sign',
         h.signId,
-        signEffectsFor([h], signs, alignment: s.alignmentScore),
+        signEffectsFor([h], signs, alignment: s.alignmentScore)
       ),
     for (final id in s.heldTitleIds)
       if (clans.titles[id] case final title?)
@@ -264,18 +257,15 @@ List<StatSource> _lentRows(
         'baseArmor' => e.armor,
         _ => e.stat(stat),
       };
-  final all = signEffectsFor(
-    s.heldSigns,
-    signs,
-    alignment: s.alignmentScore,
-    extra: clanEffectsFor(
-      activeTitleId: s.activeTitleId,
-      heldTitleIds: s.heldTitleIds,
-      swornBoonIds: s.swornBoonIds,
-      swornFactionId: s.politics.swornFactionId,
-      data: clans,
-    ),
-  );
+  final all = signEffectsFor(s.heldSigns, signs,
+      alignment: s.alignmentScore,
+      extra: clanEffectsFor(
+        activeTitleId: s.activeTitleId,
+        heldTitleIds: s.heldTitleIds,
+        swornBoonIds: s.swornBoonIds,
+        swornFactionId: s.politics.swornFactionId,
+        data: clans,
+      ));
   final amounts = [for (final (_, _, e) in parts) lentBy(e)];
   final rest = lentBy(all) - amounts.fold<int>(0, (a, b) => a + b);
   if (rest != 0) {
@@ -288,14 +278,7 @@ List<StatSource> _lentRows(
   return rows;
 }
 
-SignEffects _extraEffects(
-  List<SignEffect> effects,
-  Map<String, SignDef> signs,
-  PlayerSession s,
-) =>
-    signEffectsFor(
-      const [],
-      signs,
-      alignment: s.alignmentScore,
-      extra: effects,
-    );
+SignEffects _extraEffects(List<SignEffect> effects, Map<String, SignDef> signs,
+        PlayerSession s) =>
+    signEffectsFor(const [], signs,
+        alignment: s.alignmentScore, extra: effects);

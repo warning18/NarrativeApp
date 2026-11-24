@@ -4,11 +4,8 @@ part of 'player_session_provider.dart';
 mixin _QuestActions on _SessionNotifierBase {
   /// Edit Mode: story flag [flag] held or not ([held]); the titles it
   /// earns come with it ([data]).
-  Future<void> setStoryFlag(
-    String flag,
-    bool held, {
-    required ClanData data,
-  }) async {
+  Future<void> setStoryFlag(String flag, bool held,
+      {required ClanData data}) async {
     if (flag.isEmpty || state.flags.contains(flag) == held) return;
     final flags = held
         ? [...state.flags, flag]
@@ -35,15 +32,11 @@ mixin _QuestActions on _SessionNotifierBase {
     }
     // Vica (a permanent companion) is never taken (story_companions.dart).
     if (isPermanentCompanion(
-      companions[companionId] as Map<String, dynamic>?,
-    )) {
+        companions[companionId] as Map<String, dynamic>?)) {
       return null;
     }
-    final replacement = _removeAlly(
-      companionId,
-      lost: true,
-      companions: companions,
-    );
+    final replacement =
+        _removeAlly(companionId, lost: true, companions: companions);
     if (persist) _persist();
     return replacement;
   }
@@ -54,10 +47,8 @@ mixin _QuestActions on _SessionNotifierBase {
   /// made after count (see [questKillBaselines]); a quest with none stores
   /// nothing. Without [quest] the objectives can't be read, and every
   /// count is kept, as before.
-  Future<void> acceptQuest(
-    String questId, {
-    Map<String, dynamic>? quest,
-  }) async {
+  Future<void> acceptQuest(String questId,
+      {Map<String, dynamic>? quest}) async {
     if (state.activeQuestIds.contains(questId) ||
         state.completedQuestIds.contains(questId)) {
       return;
@@ -127,10 +118,8 @@ mixin _QuestActions on _SessionNotifierBase {
 
   /// Puts a fresh bounty board up at the camp (see rollContracts) for
   /// [chapter], replacing whatever was there.
-  Future<void> postContractBoard(
-    List<Contract> board, {
-    required int chapter,
-  }) async {
+  Future<void> postContractBoard(List<Contract> board,
+      {required int chapter}) async {
     state = state.copyWith(
       contracts: board,
       contractsChapter: chapter,
@@ -185,10 +174,8 @@ mixin _QuestActions on _SessionNotifierBase {
     var potionsGained = 0;
     var antidotesGained = 0;
     if (rewardItemId != null && rewardItemId.isNotEmpty) {
-      final charges = PlayerSessionNotifier.consumableChargesFor(
-        rewardItemId,
-        rewardItem,
-      );
+      final charges =
+          PlayerSessionNotifier.consumableChargesFor(rewardItemId, rewardItem);
       if (charges == null) {
         newInventory.add(rewardItemId);
         newOrigins = withItemOrigins(newOrigins, [rewardItemId], origin);

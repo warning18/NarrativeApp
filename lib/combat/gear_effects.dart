@@ -94,12 +94,11 @@ class SetBonusTier {
   /// The description in [language], its placeholders filled (see
   /// [placeholders]).
   String descriptionFor(AppLanguage language) => resolvePlaceholders(
-        language == AppLanguage.fr && (descriptionFr?.isNotEmpty ?? false)
-            ? descriptionFr!
-            : description,
-        placeholders,
-        language,
-      );
+      language == AppLanguage.fr && (descriptionFr?.isNotEmpty ?? false)
+          ? descriptionFr!
+          : description,
+      placeholders,
+      language);
 
   /// The numbers a description may name (text_placeholders.dart): every
   /// bonus of the tier, 0 when it has none.
@@ -178,18 +177,13 @@ Map<String, ItemSet> parseItemSets(Map<String, dynamic> db) => {
       for (final entry in db.entries)
         if (entry.value is Map)
           entry.key: ItemSet.fromJson(
-            entry.key,
-            (entry.value as Map).cast<String, dynamic>(),
-          ),
+              entry.key, (entry.value as Map).cast<String, dynamic>()),
     };
 
 /// The set [itemId] belongs to, if any -- by the item's own `setId` field
 /// or by appearing in a set's item list.
 ItemSet? setForItem(
-  String itemId,
-  Map<String, dynamic>? item,
-  Map<String, ItemSet> sets,
-) {
+    String itemId, Map<String, dynamic>? item, Map<String, ItemSet> sets) {
   final setId = item?['setId']?.toString() ?? '';
   if (setId.isNotEmpty && sets[setId] != null) return sets[setId];
   for (final set in sets.values) {
@@ -302,9 +296,7 @@ class ActiveSet {
 
 /// Every set at least one worn piece belongs to.
 List<ActiveSet> activeSetsFor(
-  List<String> equippedItemIds,
-  Map<String, ItemSet> sets,
-) {
+    List<String> equippedItemIds, Map<String, ItemSet> sets) {
   final out = <ActiveSet>[];
   for (final set in sets.values) {
     final worn = set.piecesWornIn(equippedItemIds);

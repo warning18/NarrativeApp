@@ -213,8 +213,7 @@ Future<void> _maybeCreateCharacter(
   if (runSeed != null) {
     final notifier = ref.read(playerSessionProvider.notifier);
     await notifier.loadSession(
-      ref.read(playerSessionProvider).copyWith(runSeed: runSeed),
-    );
+        ref.read(playerSessionProvider).copyWith(runSeed: runSeed));
   }
 }
 
@@ -303,11 +302,8 @@ Future<void> _exploreChapterBeforeMainQuest(
   // stat combination stalemating the loop.
   for (var turn = 0; turn < maxTurns && diceFaces.isNotEmpty; turn++) {
     var face = rollDie(diceFaces, random);
-    face = applyFaceAssignment(
-      face,
-      diceFaces[face.faceIndex],
-      assignments[face.faceIndex.toString()],
-    );
+    face = applyFaceAssignment(face, diceFaces[face.faceIndex],
+        assignments[face.faceIndex.toString()]);
     final result = resolvePlayerFace(face, skills, playerDamage);
     final through = damageThroughGuard(result.damageDealt, guard);
     guard = through.guard;
@@ -321,30 +317,26 @@ Future<void> _exploreChapterBeforeMainQuest(
     if (held != null) {
       chargedBlow = null;
       if (chargeBroken(
-        damageThisRound: through.damage,
-        maxHealth: enemyMaxHealth,
-      )) {
+          damageThisRound: through.damage, maxHealth: enemyMaxHealth)) {
         continue; // staggered: the blow never lands, the turn is lost
       }
       playerHealth = max(
-        0,
-        playerHealth - max(0, held - result.blockAmount - playerArmor),
-      );
+          0, playerHealth - max(0, held - result.blockAmount - playerArmor));
       if (playerHealth <= 0) break;
       continue;
     }
     final move = resolveEnemyMove(
-      enemy: {...enemy, 'damage': baseDamage * (100 + rallyPercent) ~/ 100},
+      enemy: {
+        ...enemy,
+        'damage': baseDamage * (100 + rallyPercent) ~/ 100,
+      },
       skills: skills,
       enemyCurrentHealth: enemyHealth,
       enemyMaxHealth: enemyMaxHealth,
       random: random,
     );
-    final heal = scaledEnemyHeal(
-      move.healAmount,
-      maxHealth: enemyMaxHealth,
-      baseMaxHealth: baseMaxHealth,
-    );
+    final heal = scaledEnemyHeal(move.healAmount,
+        maxHealth: enemyMaxHealth, baseMaxHealth: baseMaxHealth);
     switch (move.intent) {
       case EnemyIntent.charge:
         chargedBlow = move.damage;
@@ -364,9 +356,9 @@ Future<void> _exploreChapterBeforeMainQuest(
         break;
       case EnemyIntent.attack:
         playerHealth = max(
-          0,
-          playerHealth - max(0, move.damage - result.blockAmount - playerArmor),
-        );
+            0,
+            playerHealth -
+                max(0, move.damage - result.blockAmount - playerArmor));
         // An attack that also mends (Shadow Step) mends after the hit.
         enemyHealth = min(enemyMaxHealth, enemyHealth + heal);
     }
@@ -389,14 +381,13 @@ Future<bool> _fightWithRetries(
 }) async {
   for (var attempt = 0; attempt < retries; attempt++) {
     if (await _simulateFight(
-      ref: ref,
-      enemyId: enemyId,
-      enemy: enemy,
-      dice: dice,
-      skills: skills,
-      items: items,
-      random: random,
-    )) {
+        ref: ref,
+        enemyId: enemyId,
+        enemy: enemy,
+        dice: dice,
+        skills: skills,
+        items: items,
+        random: random)) {
       return true;
     }
   }
@@ -405,10 +396,7 @@ Future<bool> _fightWithRetries(
 
 /// The walk stops at [enemy], which beat every retry.
 AutoplayResult _stuckAt(
-  Map<String, dynamic> enemy,
-  String? enemyId,
-  int stepsApplied,
-) =>
+        Map<String, dynamic> enemy, String? enemyId, int stepsApplied) =>
     AutoplayResult(
       status: AutoplayStatus.stuckInCombat,
       stepsApplied: stepsApplied,
@@ -428,11 +416,10 @@ Future<bool> _simulateFight({
   final session = ref.read(playerSessionProvider);
   // The die as the Hammersmith left it (see face_smithing.dart).
   final diceFaces = smithedFaces(
-    (dice[session.equippedDiceId]?['faces'] as List?)
-            ?.cast<Map<String, dynamic>>() ??
-        const <Map<String, dynamic>>[],
-    session.diceUpgrades[session.equippedDiceId ?? ''],
-  );
+      (dice[session.equippedDiceId]?['faces'] as List?)
+              ?.cast<Map<String, dynamic>>() ??
+          const <Map<String, dynamic>>[],
+      session.diceUpgrades[session.equippedDiceId ?? '']);
   if (diceFaces.isEmpty && !forceWin) return false;
 
   final playerScalingBonus = equipmentScalingBonusFor(
@@ -450,20 +437,15 @@ Future<bool> _simulateFight({
       equipmentBonusFor(session.equippedItemIds, items, 'armor') +
       playerScalingBonus.armorBonus;
   final assignments = limitedFaceAssignments(
-    diceFaces,
-    session.diceSkillAssignments[session.equippedDiceId] ??
-        const <String, String>{},
-    skills,
-  );
+      diceFaces,
+      session.diceSkillAssignments[session.equippedDiceId] ??
+          const <String, String>{},
+      skills);
 
   final enemyMaxHealth = enemyScaledMaxHealth(
-    (enemy['maxHealth'] as num?)?.toInt() ?? 1,
-    session.level,
-  );
-  final enemyDamage = scaledDamage(
-    (enemy['damage'] as num?)?.toInt() ?? 0,
-    session.level,
-  );
+      (enemy['maxHealth'] as num?)?.toInt() ?? 1, session.level);
+  final enemyDamage =
+      scaledDamage((enemy['damage'] as num?)?.toInt() ?? 0, session.level);
   final duel = autoplayDuel(
     diceFaces: diceFaces,
     assignments: assignments,
@@ -485,14 +467,10 @@ Future<bool> _simulateFight({
     playerHealth = max(1, session.maxHealth ~/ 4);
   }
 
-  final goldGain = scaledReward(
-    (enemy['goldReward'] as num?)?.toInt() ?? 0,
-    session.level,
-  );
-  final xpGain = scaledReward(
-    (enemy['xpReward'] as num?)?.toInt() ?? 0,
-    session.level,
-  );
+  final goldGain =
+      scaledReward((enemy['goldReward'] as num?)?.toInt() ?? 0, session.level);
+  final xpGain =
+      scaledReward((enemy['xpReward'] as num?)?.toInt() ?? 0, session.level);
   final loot = <String>[];
   final lootTable =
       (enemy['lootTable'] as List?)?.cast<Map<String, dynamic>>() ?? const [];
@@ -516,37 +494,22 @@ Future<bool> _simulateFight({
 
 /// The politics [choice] carries from [fromNodeId] (v1.195), applied as a
 /// tap applies them: once.
-Future<void> _applyPolitics(
-  WidgetRef ref,
-  StoryData story,
-  String fromNodeId,
-  StoryChoice choice,
-) async {
+Future<void> _applyPolitics(WidgetRef ref, StoryData story, String fromNodeId,
+    StoryChoice choice) async {
   if (!choice.hasPolitics) return;
   final index = story.nodeFor(fromNodeId)?.choices.indexOf(choice) ?? -1;
   if (index < 0) return;
-  await applyStoryPoliticsNow(
-    ref,
-    choice.politics!,
-    nodeId: fromNodeId,
-    key: choicePoliticsKey(fromNodeId, index),
-  );
+  await applyStoryPoliticsNow(ref, choice.politics!,
+      nodeId: fromNodeId, key: choicePoliticsKey(fromNodeId, index));
 }
 
 /// The politics scene [nodeId] carries on entry (v1.195), once.
 Future<void> _applyEnterPolitics(
-  WidgetRef ref,
-  StoryData story,
-  String nodeId,
-) async {
+    WidgetRef ref, StoryData story, String nodeId) async {
   final politics = story.nodeFor(nodeId)?.politicsOnEnter;
   if (politics == null || politics.isEmpty) return;
-  await applyStoryPoliticsNow(
-    ref,
-    politics,
-    nodeId: nodeId,
-    key: enterPoliticsKey(nodeId),
-  );
+  await applyStoryPoliticsNow(ref, politics,
+      nodeId: nodeId, key: enterPoliticsKey(nodeId));
 }
 
 /// What follows the fights of one autoplay step: the land crossed, the
@@ -594,12 +557,8 @@ Future<void> _finishAutoplayStep(
   }
 
   // A hazard on the road there (v1.197), taken as a player would.
-  await meetRoadHazard(
-    ref,
-    story,
-    fromNodeId: fromNodeId,
-    toNodeId: choice.nextId,
-  );
+  await meetRoadHazard(ref, story,
+      fromNodeId: fromNodeId, toNodeId: choice.nextId);
   playNotifier.choose(choice.nextId);
   await _applyEnterPolitics(ref, story, choice.nextId);
 }
@@ -629,20 +588,13 @@ Future<AutoplayResult> autoplayToNode(
   final playState = ref.read(storyPlayProvider);
   if (playState.currentNodeId == targetNodeId) {
     return const AutoplayResult(
-      status: AutoplayStatus.alreadyThere,
-      stepsApplied: 0,
-    );
+        status: AutoplayStatus.alreadyThere, stepsApplied: 0);
   }
-  final path = _findChoicePath(
-    story,
-    fromNodeId: playState.currentNodeId,
-    toNodeId: targetNodeId,
-  );
+  final path = _findChoicePath(story,
+      fromNodeId: playState.currentNodeId, toNodeId: targetNodeId);
   if (path == null) {
     return const AutoplayResult(
-      status: AutoplayStatus.noPathFound,
-      stepsApplied: 0,
-    );
+        status: AutoplayStatus.noPathFound, stepsApplied: 0);
   }
 
   final playNotifier = ref.read(storyPlayProvider.notifier);
@@ -660,13 +612,8 @@ Future<AutoplayResult> autoplayToNode(
       continue;
     }
 
-    await _exploreChapterBeforeMainQuest(
-      ref,
-      story: story,
-      fromNodeId: fromNodeId,
-      choice: choice,
-      zones: zones,
-    );
+    await _exploreChapterBeforeMainQuest(ref,
+        story: story, fromNodeId: fromNodeId, choice: choice, zones: zones);
 
     // Autoplay only ever resolves the first enemy of a multi-enemy pack
     // choice -- it's a dev "jump ahead in the story" tool, not a
@@ -680,35 +627,25 @@ Future<AutoplayResult> autoplayToNode(
     if (choice.triggersCombat) {
       final enemy = enemies[firstEnemyId] as Map<String, dynamic>?;
       if (enemy != null) {
-        final won = await _fightWithRetries(
-          maxCombatRetries,
-          ref: ref,
-          enemyId: firstEnemyId,
-          enemy: enemy,
-          dice: dice,
-          skills: skills,
-          items: items,
-          random: random,
-        );
+        final won = await _fightWithRetries(maxCombatRetries,
+            ref: ref,
+            enemyId: firstEnemyId,
+            enemy: enemy,
+            dice: dice,
+            skills: skills,
+            items: items,
+            random: random);
         if (!won) return _stuckAt(enemy, firstEnemyId, stepsApplied);
       }
     }
 
     await _finishAutoplayStep(
-      ref,
-      story,
-      choice,
-      fromNodeId,
-      firstEnemyId,
-      random,
-    );
+        ref, story, choice, fromNodeId, firstEnemyId, random);
     stepsApplied += 1;
   }
 
   return AutoplayResult(
-    status: AutoplayStatus.reachedTarget,
-    stepsApplied: stepsApplied,
-  );
+      status: AutoplayStatus.reachedTarget, stepsApplied: stepsApplied);
 }
 
 /// Plays real choices forward from the player's current story position
@@ -763,14 +700,11 @@ Future<AutoplayResult> autoplayToChapter(
   String? professionId,
   AutoplayLog? log,
 }) async {
-  final startChapter = chapterForNode(
-    ref.read(storyPlayProvider).currentNodeId,
-  );
+  final startChapter =
+      chapterForNode(ref.read(storyPlayProvider).currentNodeId);
   if (startChapter != null && startChapter >= targetChapter) {
     return const AutoplayResult(
-      status: AutoplayStatus.alreadyThere,
-      stepsApplied: 0,
-    );
+        status: AutoplayStatus.alreadyThere, stepsApplied: 0);
   }
 
   final savedSession = ref.read(playerSessionProvider);
@@ -811,29 +745,21 @@ Future<AutoplayResult> autoplayToChapter(
     if (result.status == AutoplayStatus.reachedTarget) break;
   }
   if (result.status == AutoplayStatus.reachedTarget) {
-    await applyArrivalTopUp(
-      ref,
-      chapter: targetChapter,
-      items: items,
-      professions: professions,
-      shops: shops ??
-          await ref.read(gameDbRepositoryProvider(shopsSchema)).loadRecords(),
-    );
+    await applyArrivalTopUp(ref,
+        chapter: targetChapter,
+        items: items,
+        professions: professions,
+        shops: shops ??
+            await ref
+                .read(gameDbRepositoryProvider(shopsSchema))
+                .loadRecords());
   }
   // Left as a player would leave it: the banners due taken, then the
   // gear and the die set, the harbour built and the party seated.
-  await _takeAutoplayOffers(
-    ref,
-    log: log,
-    random: seed == null ? Random() : Random(seed * 7919),
-  );
-  await applyAutoplayBuild(
-    ref,
-    items: items,
-    skills: skills,
-    dice: dice,
-    professions: professions,
-  );
+  await _takeAutoplayOffers(ref,
+      log: log, random: seed == null ? Random() : Random(seed * 7919));
+  await applyAutoplayBuild(ref,
+      items: items, skills: skills, dice: dice, professions: professions);
   await buildAwaitedHarbour(ref, houses: houses);
   await _seatAutoplayParty(ref, houses: houses);
   return result._withAttempts(attempts);
@@ -844,11 +770,8 @@ Future<AutoplayResult> autoplayToChapter(
 /// (preferredSuitor): kept to the main clan and its allies when there is
 /// one. The offers wait while the clans are not open yet, as in the game.
 /// Returns how many were taken.
-Future<int> _takeAutoplayOffers(
-  WidgetRef ref, {
-  AutoplayLog? log,
-  Random? random,
-}) async {
+Future<int> _takeAutoplayOffers(WidgetRef ref,
+    {AutoplayLog? log, Random? random}) async {
   final notifier = ref.read(playerSessionProvider.notifier);
   final tables = await loadOfferTables(ref);
   var taken = 0;
@@ -884,10 +807,8 @@ Future<int> _takeAutoplayOffers(
 
 /// Seats the recruited companions not yet in the party, up to the camp's
 /// party capacity (partyCapacityFor), as the Camp's party page would.
-Future<void> _seatAutoplayParty(
-  WidgetRef ref, {
-  Map<String, dynamic>? houses,
-}) async {
+Future<void> _seatAutoplayParty(WidgetRef ref,
+    {Map<String, dynamic>? houses}) async {
   final notifier = ref.read(playerSessionProvider.notifier);
   final records = houses ??
       await ref.read(gameDbRepositoryProvider(housesSchema)).loadRecords();
@@ -899,13 +820,10 @@ Future<void> _seatAutoplayParty(
     if (s.activeAllyIds.length >= capacity) break;
     if (s.activeAllyIds.contains(ally.companionId)) continue;
     final companion = companions[ally.companionId] as Map<String, dynamic>?;
-    await notifier.setAllyActive(
-      ally.companionId,
-      true,
-      partyCapacity: capacity,
-      requiredHouseId: companion?['requiredHouseId']?.toString(),
-      companions: companions,
-    );
+    await notifier.setAllyActive(ally.companionId, true,
+        partyCapacity: capacity,
+        requiredHouseId: companion?['requiredHouseId']?.toString(),
+        companions: companions);
   }
 }
 
@@ -914,15 +832,11 @@ Future<void> _seatAutoplayParty(
 /// the story's grant first thing, and "Play to chapter" hands back a camp
 /// whose Eel can sail. A no-op when it stands, or the pack can't pay for
 /// it. [houses]: houses.json's records, loaded when null.
-Future<void> buildAwaitedHarbour(
-  WidgetRef ref, {
-  Map<String, dynamic>? houses,
-}) async {
+Future<void> buildAwaitedHarbour(WidgetRef ref,
+    {Map<String, dynamic>? houses}) async {
   final session = ref.read(playerSessionProvider);
   if (!harbourAwaited(
-    flags: session.flags,
-    builtHouseIds: session.builtHouseIds,
-  )) {
+      flags: session.flags, builtHouseIds: session.builtHouseIds)) {
     return;
   }
   final records = houses ??
@@ -930,11 +844,9 @@ Future<void> buildAwaitedHarbour(
   final harbour = records[harborHouseId];
   if (harbour is! Map<String, dynamic>) return;
   await ref.read(playerSessionProvider.notifier).buildHouse(
-        harborHouseId,
-        (harbour['buildCost'] as num?)?.toInt() ?? 0,
-        requiredFlags: requiredFlagsOf(harbour),
-        materialCost: materialCountsOf(harbour, 'materialCost'),
-      );
+      harborHouseId, (harbour['buildCost'] as num?)?.toInt() ?? 0,
+      requiredFlags: requiredFlagsOf(harbour),
+      materialCost: materialCountsOf(harbour, 'materialCost'));
 }
 
 /// Brings a character that reached [chapter] up to where a typical run
@@ -949,13 +861,8 @@ Future<void> applyArrivalTopUp(
   required Map<String, dynamic> professions,
 }) async {
   final session = ref.read(playerSessionProvider);
-  final topUp = planArrivalTopUp(
-    session,
-    chapter: chapter,
-    items: items,
-    shops: shops,
-    professions: professions,
-  );
+  final topUp = planArrivalTopUp(session,
+      chapter: chapter, items: items, shops: shops, professions: professions);
   if (topUp.isEmpty) return;
   final notifier = ref.read(playerSessionProvider.notifier);
   await notifier.applyCombatResult(
@@ -972,8 +879,7 @@ Future<void> applyArrivalTopUp(
   final kept = session.pendingOffers.length;
   if (after.pendingOffers.length > kept) {
     await notifier.loadSession(
-      after.copyWith(pendingOffers: after.pendingOffers.sublist(0, kept)),
-    );
+        after.copyWith(pendingOffers: after.pendingOffers.sublist(0, kept)));
   }
 }
 
@@ -991,42 +897,25 @@ Future<void> applyAutoplayBuild(
   final notifier = ref.read(playerSessionProvider.notifier);
   final before = ref.read(playerSessionProvider);
   if (before.professionId.isEmpty) return;
-  var build = planAutoplayBuild(
-    before,
-    items: items,
-    skills: skills,
-    dice: dice,
-    professions: professions,
-  );
+  var build = planAutoplayBuild(before,
+      items: items, skills: skills, dice: dice, professions: professions);
   // The points are stat picks (training.dart): the offer statPickFor takes
   // for the build's stat.
   if (build.statPoints > 0) {
     final paths = await ref.read(trainingPathsProvider.future);
     while (ref.read(playerSessionProvider).pendingStatPicks > 0) {
       final s = ref.read(playerSessionProvider);
-      final offer = await notifier.ensureStatPick(
-        paths,
-        random: Random(s.level * 31 + s.statPoints),
-      );
+      final offer = await notifier.ensureStatPick(paths,
+          random: Random(s.level * 31 + s.statPoints));
       if (offer.isEmpty) break;
-      final pick = await _workStatPick(
-        ref,
-        offer,
-        build.statToRaise,
-        paths,
-        Random(s.level * 37 + s.statPoints),
-      );
+      final pick = await _workStatPick(ref, offer, build.statToRaise, paths,
+          Random(s.level * 37 + s.statPoints));
       if (!await notifier.takeStatPick(statPickFor(pick, build.statToRaise))) {
         break;
       }
     }
-    build = planAutoplayBuild(
-      ref.read(playerSessionProvider),
-      items: items,
-      skills: skills,
-      dice: dice,
-      professions: professions,
-    );
+    build = planAutoplayBuild(ref.read(playerSessionProvider),
+        items: items, skills: skills, dice: dice, professions: professions);
   }
   for (final entry in build.equip.entries) {
     await notifier.equipItem(entry.value, slot: entry.key, items: items);
@@ -1044,10 +933,7 @@ Future<void> applyAutoplayBuild(
   for (final entry in faces.entries) {
     if (current[entry.key] != entry.value) {
       await notifier.assignSkillToDiceFace(
-        dieId,
-        int.parse(entry.key),
-        entry.value,
-      );
+          dieId, int.parse(entry.key), entry.value);
     }
   }
 }
@@ -1058,12 +944,11 @@ Future<void> applyAutoplayBuild(
 /// while no card raises them; Raise the card taken when it raises [stat].
 /// [random] is the powers' own draw. Returns the pick on the table.
 Future<List<StatPickOffer>> _workStatPick(
-  WidgetRef ref,
-  List<StatPickOffer> offer,
-  String stat,
-  Map<String, TrainingPath> paths,
-  Random random,
-) async {
+    WidgetRef ref,
+    List<StatPickOffer> offer,
+    String stat,
+    Map<String, TrainingPath> paths,
+    Random random) async {
   final notifier = ref.read(playerSessionProvider.notifier);
   bool wants(StatPickOffer o) =>
       o.gains.containsKey(stat) || statPickPriority.any(o.gains.containsKey);
@@ -1072,12 +957,8 @@ Future<List<StatPickOffer>> _workStatPick(
     final rolls = campRollsOf(ref.read(playerSessionProvider));
     if ((rolls.banish ?? 0) < 2) break;
     if (wants(cards[i])) continue;
-    cards = await notifier.banishStatPickOffer(
-      i,
-      banishLengths.first,
-      paths,
-      random: random,
-    );
+    cards = await notifier.banishStatPickOffer(i, banishLengths.first, paths,
+        random: random);
   }
   while ((campRollsOf(ref.read(playerSessionProvider)).reroll ?? 0) > 0 &&
       !cards.any(wants)) {
@@ -1101,47 +982,35 @@ const int _crossingTries = 3;
 /// up to [_crossingTries] times, after which the walk goes on regardless
 /// (a testing tool is never stopped on the road).
 Future<void> _crossLand(
-  WidgetRef ref,
-  StoryChoice choice,
-  Random random,
-) async {
+    WidgetRef ref, StoryChoice choice, Random random) async {
   if (!choice.crossesLand) return;
   final routes =
       await ref.read(gameDbRepositoryProvider(landRoutesSchema)).loadRecords();
   final route = landRouteFor(routes, choice.landRouteId!);
   if (route == null) return;
   final events = landEventsFrom(
-    await ref.read(gameDbRepositoryProvider(landEventsSchema)).loadRecords(),
-  );
+      await ref.read(gameDbRepositoryProvider(landEventsSchema)).loadRecords());
   final notifier = ref.read(playerSessionProvider.notifier);
   final chapter = ref.read(reachedChapterProvider);
   // Who holds the road, and how they take the party (wave 16).
   final politics = ref.read(playerSessionProvider).politics;
   final road = crossingRuler(
-    route,
-    await loadGeography(ref),
-    politics,
-    await loadClanData(ref),
-  );
+      route, await loadGeography(ref), politics, await loadClanData(ref));
   final rulers = rulerPool(events, road.clanId, road.band);
   for (var i = 0; i < _crossingTries; i++) {
     final session = ref.read(playerSessionProvider);
-    final result = resolveCrossing(
-      road.route,
-      events,
-      health: session.currentHealth,
-      maxHealth: session.maxHealth,
-      gold: session.gold,
-      modifierFor: (ability) => abilityModifierFor(ability, session),
-      random: random,
-      chapter: chapter,
-      rulers: rulers,
-    );
+    final result = resolveCrossing(road.route, events,
+        health: session.currentHealth,
+        maxHealth: session.maxHealth,
+        gold: session.gold,
+        modifierFor: (ability) => abilityModifierFor(ability, session),
+        random: random,
+        chapter: chapter,
+        rulers: rulers);
     await notifier.applyChoiceEffects(
-      goldMod: result.gold,
-      healAmount: result.health - session.currentHealth,
-      goldIsProfit: false,
-    );
+        goldMod: result.gold,
+        healAmount: result.health - session.currentHealth,
+        goldIsProfit: false);
     await notifier.passTime(watchesPerDay * result.days, chapter: chapter);
     if (result.arrived) return;
   }
@@ -1203,10 +1072,9 @@ Future<AutoplayResult> _playTowardChapter(
     final currentChapter = chapterForNode(currentNodeId);
     if (currentChapter != null && currentChapter >= targetChapter) {
       return AutoplayResult(
-        status: AutoplayStatus.reachedTarget,
-        stepsApplied: stepsApplied,
-        forcedWins: forcedWins,
-      );
+          status: AutoplayStatus.reachedTarget,
+          stepsApplied: stepsApplied,
+          forcedWins: forcedWins);
     }
 
     final node = story.nodeFor(currentNodeId);
@@ -1214,10 +1082,9 @@ Future<AutoplayResult> _playTowardChapter(
       // A dead end or true ending short of the target chapter -- there's
       // nowhere further forward to walk.
       return AutoplayResult(
-        status: AutoplayStatus.noPathFound,
-        stepsApplied: stepsApplied,
-        forcedWins: forcedWins,
-      );
+          status: AutoplayStatus.noPathFound,
+          stepsApplied: stepsApplied,
+          forcedWins: forcedWins);
     }
 
     // Never deliberately walk into a true ending while still short of the
@@ -1227,18 +1094,14 @@ Future<AutoplayResult> _playTowardChapter(
     final session = ref.read(playerSessionProvider);
     // A choice behind a politics gate that fails (v1.196) is not taken,
     // unless nothing else is left.
-    final gateWorld = CoastWorld(
-      data: clans,
-      chapter: ref.read(reachedChapterProvider),
-    );
+    final gateWorld =
+        CoastWorld(data: clans, chapter: ref.read(reachedChapterProvider));
     final ungated = [
       for (final c in node.choices)
-        if (choicePoliticsGate(
-              c,
-              politics: session.politics,
-              flags: session.flags,
-              world: gateWorld,
-            ) ==
+        if (choicePoliticsGate(c,
+                politics: session.politics,
+                flags: session.flags,
+                world: gateWorld) ==
             ChoiceGate.open)
           c,
     ];
@@ -1269,35 +1132,27 @@ Future<AutoplayResult> _playTowardChapter(
 
     if (choice.isEnding) {
       return AutoplayResult(
-        status: AutoplayStatus.noPathFound,
-        stepsApplied: stepsApplied,
-        forcedWins: forcedWins,
-      );
+          status: AutoplayStatus.noPathFound,
+          stepsApplied: stepsApplied,
+          forcedWins: forcedWins);
     }
 
     log?.choices.add((nodeId: currentNodeId, text: choice.text));
     if (choice.opensCharacterCreation) {
-      await _maybeCreateCharacter(
-        ref,
-        races: races,
-        professions: professions,
-        random: random,
-        raceId: raceId,
-        professionId: professionId,
-        runSeed: runSeed,
-      );
+      await _maybeCreateCharacter(ref,
+          races: races,
+          professions: professions,
+          random: random,
+          raceId: raceId,
+          professionId: professionId,
+          runSeed: runSeed);
       playNotifier.choose(choice.nextId);
       stepsApplied += 1;
       continue;
     }
 
-    await _exploreChapterBeforeMainQuest(
-      ref,
-      story: story,
-      fromNodeId: currentNodeId,
-      choice: choice,
-      zones: zones,
-    );
+    await _exploreChapterBeforeMainQuest(ref,
+        story: story, fromNodeId: currentNodeId, choice: choice, zones: zones);
 
     // See the matching comment in autoplayToNode -- autoplay only ever
     // resolves the first enemy of a multi-enemy pack choice.
@@ -1308,16 +1163,14 @@ Future<AutoplayResult> _playTowardChapter(
     if (choice.triggersCombat) {
       final enemy = enemies[firstEnemyId] as Map<String, dynamic>?;
       if (enemy != null) {
-        var won = await _fightWithRetries(
-          maxCombatRetries,
-          ref: ref,
-          enemyId: firstEnemyId,
-          enemy: enemy,
-          dice: dice,
-          skills: skills,
-          items: items,
-          random: random,
-        );
+        var won = await _fightWithRetries(maxCombatRetries,
+            ref: ref,
+            enemyId: firstEnemyId,
+            enemy: enemy,
+            dice: dice,
+            skills: skills,
+            items: items,
+            random: random);
         var forced = false;
         if (!won && forceWins) {
           won = await _simulateFight(
@@ -1344,19 +1197,12 @@ Future<AutoplayResult> _playTowardChapter(
     }
 
     await _finishAutoplayStep(
-      ref,
-      story,
-      choice,
-      currentNodeId,
-      firstEnemyId,
-      random,
-    );
+        ref, story, choice, currentNodeId, firstEnemyId, random);
     stepsApplied += 1;
   }
 
   return AutoplayResult(
-    status: AutoplayStatus.stepCapReached,
-    stepsApplied: stepsApplied,
-    forcedWins: forcedWins,
-  );
+      status: AutoplayStatus.stepCapReached,
+      stepsApplied: stepsApplied,
+      forcedWins: forcedWins);
 }

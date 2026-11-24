@@ -5,7 +5,6 @@
 // road walk's own (journey_screen.dart's party transit); this file has the
 // words and the veil.
 import 'package:flutter/material.dart';
-
 import '../theme/icon_sizes.dart';
 
 /// [name] as it reads in the middle of a sentence: a leading article loses
@@ -14,7 +13,14 @@ import '../theme/icon_sizes.dart';
 /// alone.
 String townNameInSentence(String name) {
   final text = name.trim();
-  for (final article in const ['The ', 'Le ', 'La ', 'Les ', 'L’', 'L\'']) {
+  for (final article in const [
+    'The ',
+    'Le ',
+    'La ',
+    'Les ',
+    'L’',
+    'L\'',
+  ]) {
     if (text.startsWith(article) && text.length > article.length) {
       return article.toLowerCase() + text.substring(article.length);
     }
@@ -62,11 +68,9 @@ class TownDoorVeil extends StatelessWidget {
                 color: colour.withValues(alpha: opacity),
               ),
               Center(
-                child: Icon(
-                  icon,
-                  size: IconSize.s48,
-                  color: Colors.white.withValues(alpha: opacity * 0.9),
-                ),
+                child: Icon(icon,
+                    size: IconSize.s48,
+                    color: Colors.white.withValues(alpha: opacity * 0.9)),
               ),
             ],
           );

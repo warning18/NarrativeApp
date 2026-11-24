@@ -113,7 +113,7 @@ class ChoiceBook {
   /// How many clans back both choices.
   int backBoth(String raceId, String professionId) => [
         for (final c in matrix.clansOfRace(raceId))
-          if (matrix.professionLevel(c, professionId) > 0) c,
+          if (matrix.professionLevel(c, professionId) > 0) c
       ].length;
 }
 
@@ -156,25 +156,18 @@ class ClanDisc extends StatelessWidget {
       child: ClanFlag(factionId: faction.id, height: size * 0.66),
     );
     if (!name) return disc;
-    return Consumer(
-      builder: (context, ref, _) {
-        final lang = ref.watch(appLanguageProvider);
-        return Row(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            disc,
-            const SizedBox(width: 6),
-            Text(
-              faction.shortFor(lang),
-              style: Theme.of(context)
-                  .textTheme
-                  .labelMedium
-                  ?.copyWith(color: colour, fontWeight: FontWeight.w600),
-            ),
-          ],
-        );
-      },
-    );
+    return Consumer(builder: (context, ref, _) {
+      final lang = ref.watch(appLanguageProvider);
+      return Row(mainAxisSize: MainAxisSize.min, children: [
+        disc,
+        const SizedBox(width: 6),
+        Text(faction.shortFor(lang),
+            style: Theme.of(context)
+                .textTheme
+                .labelMedium
+                ?.copyWith(color: colour, fontWeight: FontWeight.w600)),
+      ]);
+    });
   }
 }
 
@@ -189,14 +182,10 @@ class StatChips extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final entries = presetBonuses(record)
       ..sort((a, b) => b.value.abs().compareTo(a.value.abs()));
-    return Wrap(
-      spacing: 4,
-      runSpacing: 4,
-      children: [
-        for (final e in entries.take(max))
-          _chip(context, tr(ref, e.key), e.value),
-      ],
-    );
+    return Wrap(spacing: 4, runSpacing: 4, children: [
+      for (final e in entries.take(max))
+        _chip(context, tr(ref, e.key), e.value),
+    ]);
   }
 
   Widget _chip(BuildContext context, String label, int value) {
@@ -210,13 +199,11 @@ class StatChips extends ConsumerWidget {
       decoration: ShapeDecoration(
         color: colour.withValues(alpha: 0.1),
         shape: PixelChipBorder(
-          side: BorderSide(color: colour.withValues(alpha: 0.6)),
-        ),
+            side: BorderSide(color: colour.withValues(alpha: 0.6))),
       ),
-      child: Text(
-        '${value > 0 ? '+' : ''}$value $label',
-        style: Theme.of(context).textTheme.labelMedium?.copyWith(color: colour),
-      ),
+      child: Text('${value > 0 ? '+' : ''}$value $label',
+          style:
+              Theme.of(context).textTheme.labelMedium?.copyWith(color: colour)),
     );
   }
 }
@@ -268,10 +255,8 @@ class ChoiceCard extends ConsumerWidget {
         child: Material(
           key: Key('choice_card_$id'),
           color: selected
-              ? Color.alphaBlend(
-                  ink.gold.withValues(alpha: 0.16),
-                  theme.colorScheme.surfaceContainer,
-                )
+              ? Color.alphaBlend(ink.gold.withValues(alpha: 0.16),
+                  theme.colorScheme.surfaceContainer)
               : theme.colorScheme.surfaceContainer,
           // The first tier of the frames: the choice of who you are is made
           // at the start, in wood (the pieces load while the menu opens).
@@ -283,132 +268,94 @@ class ChoiceCard extends ConsumerWidget {
                       : FramePiece.panelDark,
                   material: FrameMaterial.wood,
                   pixel: 2,
-                  seed: id.hashCode,
-                )
+                  seed: id.hashCode)
               : RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(
-                    TowerPanelStyle.of(context) ? 0 : 10,
-                  ),
+                      TowerPanelStyle.of(context) ? 0 : 10),
                   side: BorderSide(
-                    color: selected ? ink.gold : ink.seam,
-                    width: selected ? 2 : 1,
-                  ),
+                      color: selected ? ink.gold : ink.seam,
+                      width: selected ? 2 : 1),
                 ),
           child: InkWell(
             borderRadius: BorderRadius.circular(10),
             onTap: locked ? null : onTap,
             child: Padding(
               padding: EdgeInsets.fromLTRB(
-                16,
-                compact ? 11 : 14,
-                16,
-                compact ? 11 : 14,
-              ),
-              child: Row(
-                children: [
-                  PresetMark(
-                    folder: folder,
-                    preset: record,
-                    size: compact ? 32 : 48,
-                  ),
-                  const SizedBox(width: 10),
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Wrap(
+                  16, compact ? 11 : 14, 16, compact ? 11 : 14),
+              child: Row(children: [
+                PresetMark(
+                    folder: folder, preset: record, size: compact ? 32 : 48),
+                const SizedBox(width: 10),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Wrap(
                           crossAxisAlignment: WrapCrossAlignment.center,
                           spacing: 8,
                           children: [
-                            Text(
-                              book.nameOfChoice(folder, id),
-                              key: Key('choice_name_$id'),
-                              style: theme.textTheme.titleMedium?.copyWith(
-                                fontFamily: InkFonts.display,
-                              ),
-                            ),
+                            Text(book.nameOfChoice(folder, id),
+                                key: Key('choice_name_$id'),
+                                style: theme.textTheme.titleMedium
+                                    ?.copyWith(fontFamily: InkFonts.display)),
                             if (tag.isNotEmpty) InkChip(tag, color: ink.gold),
-                          ],
-                        ),
-                        Text(
-                          record['playstyle']?.toString() ?? '',
+                          ]),
+                      Text(record['playstyle']?.toString() ?? '',
                           maxLines: compact ? 1 : 3,
                           overflow: TextOverflow.ellipsis,
-                          style: theme.textTheme.bodySmall?.copyWith(
-                            color: ink.ash,
-                          ),
-                        ),
-                        if (locked)
-                          Padding(
-                            padding: const EdgeInsets.only(top: 4),
-                            child: Row(
-                              children: [
-                                PixelGlyph(
-                                  PixelGlyphs.lock,
-                                  size: IconSize.s16,
-                                  color: ink.gold,
-                                ),
-                                const SizedBox(width: 4),
-                                Flexible(
-                                  child: Text(
-                                    lockedNote!,
-                                    key: Key('choice_lock_$id'),
-                                    style:
-                                        theme.textTheme.labelMedium?.copyWith(
+                          style: theme.textTheme.bodySmall
+                              ?.copyWith(color: ink.ash)),
+                      if (locked)
+                        Padding(
+                          padding: const EdgeInsets.only(top: 4),
+                          child: Row(children: [
+                            PixelGlyph(PixelGlyphs.lock,
+                                size: IconSize.s16, color: ink.gold),
+                            const SizedBox(width: 4),
+                            Flexible(
+                              child: Text(lockedNote!,
+                                  key: Key('choice_lock_$id'),
+                                  style: theme.textTheme.labelMedium?.copyWith(
                                       color: ink.gold,
-                                      fontWeight: FontWeight.w600,
-                                    ),
-                                  ),
-                                ),
-                              ],
+                                      fontWeight: FontWeight.w600)),
                             ),
-                          )
-                        else if (!compact) ...[
-                          const SizedBox(height: 6),
-                          StatChips(record: record),
-                        ],
+                          ]),
+                        )
+                      else if (!compact) ...[
+                        const SizedBox(height: 6),
+                        StatChips(record: record),
                       ],
-                    ),
+                    ],
                   ),
-                  if (showClans) ...[
-                    const SizedBox(width: 6),
-                    Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Wrap(
-                          spacing: -6,
-                          children: [
-                            for (final f in clans.take(compact ? 3 : 4))
-                              ClanDisc(f, size: compact ? 22 : 26),
-                          ],
+                ),
+                if (showClans) ...[
+                  const SizedBox(width: 6),
+                  Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Wrap(spacing: -6, children: [
+                        for (final f in clans.take(compact ? 3 : 4))
+                          ClanDisc(f, size: compact ? 22 : 26),
+                      ]),
+                      if (!compact)
+                        Padding(
+                          padding: const EdgeInsets.only(top: 3),
+                          child: Text(
+                              tr(ref, 'rp_clans_count')
+                                  .replaceAll('{n}', '${clans.length}'),
+                              style: theme.textTheme.labelSmall
+                                  ?.copyWith(color: ink.ash)),
                         ),
-                        if (!compact)
-                          Padding(
-                            padding: const EdgeInsets.only(top: 3),
-                            child: Text(
-                              tr(
-                                ref,
-                                'rp_clans_count',
-                              ).replaceAll('{n}', '${clans.length}'),
-                              style: theme.textTheme.labelSmall?.copyWith(
-                                color: ink.ash,
-                              ),
-                            ),
-                          ),
-                      ],
-                    ),
-                  ],
-                  if (selected)
-                    Padding(
-                      padding: const EdgeInsets.only(left: 6),
-                      child: Icon(
-                        Icons.check_circle,
-                        color: ink.gold,
-                        size: IconSize.s16,
-                      ),
-                    ),
+                    ],
+                  ),
                 ],
-              ),
+                if (selected)
+                  Padding(
+                    padding: const EdgeInsets.only(left: 6),
+                    child: Icon(Icons.check_circle,
+                        color: ink.gold, size: IconSize.s16),
+                  ),
+              ]),
             ),
           ),
         ),
@@ -470,25 +417,23 @@ class _OpenChoiceState extends ConsumerState<OpenChoice> {
       if (isRace) ...[
         (
           Icons.account_tree_outlined,
-          tr(ref, 'rp_heritage_branch').replaceAll('{names}', names.join(', ')),
+          tr(ref, 'rp_heritage_branch').replaceAll('{names}', names.join(', '))
         ),
         if ('${medium ?? ''}'.isNotEmpty)
           (
             Icons.brush_outlined,
-            tr(ref, 'rp_power_medium').replaceAll('{name}', '$medium'),
+            tr(ref, 'rp_power_medium').replaceAll('{name}', '$medium')
           ),
       ] else ...[
         (
           Icons.account_tree_outlined,
-          tr(ref, 'rp_three_branches').replaceAll('{names}', names.join(' · ')),
+          tr(ref, 'rp_three_branches').replaceAll('{names}', names.join(' · '))
         ),
         if (scaling != null)
           (
             Icons.trending_up,
-            tr(
-              ref,
-              'rp_scales_with',
-            ).replaceAll('{stat}', tr(ref, scaling).toLowerCase()),
+            tr(ref, 'rp_scales_with')
+                .replaceAll('{stat}', tr(ref, scaling).toLowerCase())
           ),
         if (((record['startingSpellIds'] as List?) ?? const []).isNotEmpty)
           (Icons.auto_awesome, tr(ref, 'rp_casts')),
@@ -496,10 +441,8 @@ class _OpenChoiceState extends ConsumerState<OpenChoice> {
       if (standard.isNotEmpty)
         (
           Icons.bolt,
-          tr(
-            ref,
-            'rp_starting_skill',
-          ).replaceAll('{skill}', skillDisplayName(standard, language: lang)),
+          tr(ref, 'rp_starting_skill')
+              .replaceAll('{skill}', skillDisplayName(standard, language: lang))
         ),
     ];
     // The clans, each with why: a people's clans sponsor its heritage, a
@@ -509,20 +452,16 @@ class _OpenChoiceState extends ConsumerState<OpenChoice> {
       for (final f in book.clansOf(folder, id)) {
         rows.add((
           f,
-          tr(
-            ref,
-            'rp_sponsors_heritage',
-          ).replaceAll('{names}', names.join(', ')),
+          tr(ref, 'rp_sponsors_heritage')
+              .replaceAll('{names}', names.join(', '))
         ));
       }
     } else {
       for (final b in branches) {
         final f = book.sponsorOf(b);
         if (f != null) {
-          rows.add((
-            f,
-            tr(ref, 'rp_offers_branch').replaceAll('{branch}', b.name),
-          ));
+          rows.add(
+              (f, tr(ref, 'rp_offers_branch').replaceAll('{branch}', b.name)));
         }
       }
     }
@@ -539,16 +478,12 @@ class _OpenChoiceState extends ConsumerState<OpenChoice> {
         children: [
           if (lead.isNotEmpty) ...[
             Text.rich(
-              TextSpan(
-                children: [
-                  TextSpan(text: lead),
-                  if (_loreOpen && rest.isNotEmpty) TextSpan(text: ' $rest'),
-                ],
-              ),
-              style: theme.textTheme.bodyMedium?.copyWith(
-                fontStyle: FontStyle.italic,
-                height: 1.4,
-              ),
+              TextSpan(children: [
+                TextSpan(text: lead),
+                if (_loreOpen && rest.isNotEmpty) TextSpan(text: ' $rest'),
+              ]),
+              style: theme.textTheme.bodyMedium
+                  ?.copyWith(fontStyle: FontStyle.italic, height: 1.4),
             ),
             if (rest.isNotEmpty)
               InkWell(
@@ -557,91 +492,62 @@ class _OpenChoiceState extends ConsumerState<OpenChoice> {
                 child: Padding(
                   padding: const EdgeInsets.symmetric(vertical: 4),
                   child: Text(
-                    '${tr(ref, _loreOpen ? 'lore_less' : 'lore_more')} ${_loreOpen ? '▴' : '▾'}',
-                    style: theme.textTheme.labelMedium?.copyWith(
-                      color: theme.colorScheme.primary,
-                    ),
-                  ),
+                      '${tr(ref, _loreOpen ? 'lore_less' : 'lore_more')} ${_loreOpen ? '▴' : '▾'}',
+                      style: theme.textTheme.labelMedium
+                          ?.copyWith(color: theme.colorScheme.primary)),
                 ),
               ),
             const SizedBox(height: 8),
           ],
           if (widget.showClans) ...[
-            Text(
-              tr(ref, 'rp_clans_court').toUpperCase(),
-              style: theme.textTheme.labelSmall?.copyWith(
-                color: ink.ash,
-                letterSpacing: 1.2,
-              ),
-            ),
+            Text(tr(ref, 'rp_clans_court').toUpperCase(),
+                style: theme.textTheme.labelSmall
+                    ?.copyWith(color: ink.ash, letterSpacing: 1.2)),
             const SizedBox(height: 8),
             for (final (f, line) in rows)
               InkWell(
                 key: Key('clan_row_${f.id}'),
                 borderRadius: BorderRadius.circular(8),
-                onTap: () => _showClanSheet(
-                  context,
-                  ref,
-                  book,
-                  f,
-                  folder: folder,
-                  id: id,
-                ),
+                onTap: () => _showClanSheet(context, ref, book, f,
+                    folder: folder, id: id),
                 child: Padding(
                   padding: const EdgeInsets.symmetric(vertical: 3),
-                  child: Row(
-                    children: [
-                      ClanDisc(f, size: 28),
-                      const SizedBox(width: 10),
-                      Expanded(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              f.nameFor(lang),
-                              style: theme.textTheme.titleSmall?.copyWith(
-                                color: Color(f.color),
-                              ),
-                            ),
-                            Text(
-                              line,
-                              style: theme.textTheme.labelSmall?.copyWith(
-                                color: ink.ash,
-                              ),
-                            ),
-                          ],
-                        ),
+                  child: Row(children: [
+                    ClanDisc(f, size: 28),
+                    const SizedBox(width: 10),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(f.nameFor(lang),
+                              style: theme.textTheme.titleSmall
+                                  ?.copyWith(color: Color(f.color))),
+                          Text(line,
+                              style: theme.textTheme.labelSmall
+                                  ?.copyWith(color: ink.ash)),
+                        ],
                       ),
-                      Icon(
-                        Icons.chevron_right,
-                        size: IconSize.s16,
-                        color: ink.ash,
-                      ),
-                    ],
-                  ),
+                    ),
+                    Icon(Icons.chevron_right,
+                        size: IconSize.s16, color: ink.ash),
+                  ]),
                 ),
               ),
             const Divider(height: 18),
           ],
-          Text(
-            tr(ref, 'rp_unlocks').toUpperCase(),
-            style: theme.textTheme.labelSmall?.copyWith(
-              color: ink.ash,
-              letterSpacing: 1.2,
-            ),
-          ),
+          Text(tr(ref, 'rp_unlocks').toUpperCase(),
+              style: theme.textTheme.labelSmall
+                  ?.copyWith(color: ink.ash, letterSpacing: 1.2)),
           const SizedBox(height: 6),
           for (final (icon, text) in lines)
             Padding(
               padding: const EdgeInsets.only(bottom: 4),
-              child: Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Icon(icon, size: IconSize.s16, color: ink.gold),
-                  const SizedBox(width: 8),
-                  Expanded(child: Text(text, style: theme.textTheme.bodySmall)),
-                ],
-              ),
+              child:
+                  Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                Icon(icon, size: IconSize.s16, color: ink.gold),
+                const SizedBox(width: 8),
+                Expanded(child: Text(text, style: theme.textTheme.bodySmall)),
+              ]),
             ),
         ],
       ),
@@ -678,29 +584,20 @@ Future<void> _showClanSheet(
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Row(
-                children: [
-                  ClanDisc(clan, size: 40),
-                  const SizedBox(width: 12),
-                  Expanded(
-                    child: Text(
-                      clan.nameFor(lang),
+              Row(children: [
+                ClanDisc(clan, size: 40),
+                const SizedBox(width: 12),
+                Expanded(
+                  child: Text(clan.nameFor(lang),
                       style: theme.textTheme.titleLarge?.copyWith(
-                        fontFamily: InkFonts.display,
-                        color: colour,
-                      ),
-                    ),
-                  ),
-                ],
-              ),
+                          fontFamily: InkFonts.display, color: colour)),
+                ),
+              ]),
               if (clan.mottoFor(lang).isNotEmpty) ...[
                 const SizedBox(height: 8),
-                Text(
-                  '“${clan.mottoFor(lang)}”',
-                  style: theme.textTheme.bodyMedium?.copyWith(
-                    fontStyle: FontStyle.italic,
-                  ),
-                ),
+                Text('“${clan.mottoFor(lang)}”',
+                    style: theme.textTheme.bodyMedium
+                        ?.copyWith(fontStyle: FontStyle.italic)),
               ],
               if (clan.standsForIn(lang).isNotEmpty) ...[
                 const SizedBox(height: 8),
@@ -708,13 +605,9 @@ Future<void> _showClanSheet(
               ],
               if (branches.isNotEmpty) ...[
                 const SizedBox(height: 12),
-                Text(
-                  tr(ref, 'rp_clan_offers').toUpperCase(),
-                  style: theme.textTheme.labelSmall?.copyWith(
-                    color: ink.ash,
-                    letterSpacing: 1.2,
-                  ),
-                ),
+                Text(tr(ref, 'rp_clan_offers').toUpperCase(),
+                    style: theme.textTheme.labelSmall
+                        ?.copyWith(color: ink.ash, letterSpacing: 1.2)),
                 const SizedBox(height: 4),
                 Text(branches.join(' · '), style: theme.textTheme.titleSmall),
               ],
@@ -758,79 +651,56 @@ class StepSwitch extends ConsumerWidget {
               ? _DashedSlotBorder(color: on ? ink.gold : ink.ash)
               : PixelChipBorder(
                   side: BorderSide(
-                    color: on ? ink.gold : ink.seam,
-                    width: on ? 2 : 1,
-                  ),
-                ),
+                      color: on ? ink.gold : ink.seam, width: on ? 2 : 1)),
           child: InkWell(
             borderRadius: BorderRadius.circular(10),
             onTap: () => onStep(i),
             child: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
-              child: Row(
-                children: [
-                  if (record != null)
-                    PresetMark(folder: folder, preset: record, size: 28)
-                  else
-                    SizedBox(
+              child: Row(children: [
+                if (record != null)
+                  PresetMark(folder: folder, preset: record, size: 28)
+                else
+                  SizedBox(
                       width: 28,
                       child: Center(
-                        child: Text(
-                          '?',
-                          style: theme.textTheme.titleLarge?.copyWith(
-                            color: ink.ash,
-                          ),
-                        ),
-                      ),
-                    ),
-                  const SizedBox(width: 8),
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          tr(ref, key).toUpperCase(),
+                          child: Text('?',
+                              style: theme.textTheme.titleLarge
+                                  ?.copyWith(color: ink.ash)))),
+                const SizedBox(width: 8),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(tr(ref, key).toUpperCase(),
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,
-                          style: theme.textTheme.labelSmall?.copyWith(
-                            color: ink.ash,
-                            letterSpacing: 1,
-                          ),
-                        ),
-                        Text(
+                          style: theme.textTheme.labelSmall
+                              ?.copyWith(color: ink.ash, letterSpacing: 1)),
+                      Text(
                           id == null
                               ? tr(ref, 'rp_choose')
                               : book.nameOfChoice(folder, id),
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,
-                          style: theme.textTheme.titleSmall?.copyWith(
-                            color: id == null ? ink.ash : null,
-                          ),
-                        ),
-                      ],
-                    ),
+                          style: theme.textTheme.titleSmall
+                              ?.copyWith(color: id == null ? ink.ash : null)),
+                    ],
                   ),
-                ],
-              ),
+                ),
+              ]),
             ),
           ),
         ),
       );
     }
 
-    return Row(
-      children: [
-        seg(0, 'rp_step_people', raceId, ChoiceBook.folderRaces, 'people'),
-        const SizedBox(width: 8),
-        seg(
-          1,
-          'rp_step_calling',
-          professionId,
-          ChoiceBook.folderProfessions,
-          'calling',
-        ),
-      ],
-    );
+    return Row(children: [
+      seg(0, 'rp_step_people', raceId, ChoiceBook.folderRaces, 'people'),
+      const SizedBox(width: 8),
+      seg(1, 'rp_step_calling', professionId, ChoiceBook.folderProfessions,
+          'calling'),
+    ]);
   }
 }
 
@@ -855,10 +725,8 @@ class SummaryCard extends ConsumerWidget {
     final theme = Theme.of(context);
     final ink = InkColors.of(context);
     final race = book.recordOf(ChoiceBook.folderRaces, raceId);
-    final profession = book.recordOf(
-      ChoiceBook.folderProfessions,
-      professionId,
-    );
+    final profession =
+        book.recordOf(ChoiceBook.folderProfessions, professionId);
     final first = book.firstCourtiers(raceId, professionId).take(3);
     final both = book.backBoth(raceId, professionId);
     return Container(
@@ -872,65 +740,42 @@ class SummaryCard extends ConsumerWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(
-            tr(ref, 'rp_you_will_play').toUpperCase(),
-            style: theme.textTheme.labelSmall?.copyWith(
-              color: ink.gold,
-              letterSpacing: 1.2,
-            ),
-          ),
+          Text(tr(ref, 'rp_you_will_play').toUpperCase(),
+              style: theme.textTheme.labelSmall
+                  ?.copyWith(color: ink.gold, letterSpacing: 1.2)),
           const SizedBox(height: 6),
-          Row(
-            children: [
-              PresetMark(
-                folder: ChoiceBook.folderRaces,
-                preset: race,
-                size: 32,
-              ),
-              PresetMark(
+          Row(children: [
+            PresetMark(folder: ChoiceBook.folderRaces, preset: race, size: 32),
+            PresetMark(
                 folder: ChoiceBook.folderProfessions,
                 preset: profession,
-                size: 32,
-              ),
-              const SizedBox(width: 10),
-              Expanded(
-                child: Text(
+                size: 32),
+            const SizedBox(width: 10),
+            Expanded(
+              child: Text(
                   '${race['raceName'] ?? ''} ${profession['professionName'] ?? ''}',
-                  style: theme.textTheme.titleMedium?.copyWith(
-                    fontFamily: InkFonts.display,
-                  ),
-                ),
-              ),
-            ],
-          ),
-          Text(
-            profession['playstyle']?.toString() ?? '',
-            style: theme.textTheme.bodySmall?.copyWith(color: ink.ash),
-          ),
+                  style: theme.textTheme.titleMedium
+                      ?.copyWith(fontFamily: InkFonts.display)),
+            ),
+          ]),
+          Text(profession['playstyle']?.toString() ?? '',
+              style: theme.textTheme.bodySmall?.copyWith(color: ink.ash)),
           if (showClans) ...[
             const SizedBox(height: 8),
             Text(
-              [
-                tr(ref, 'rp_first_clans').toUpperCase(),
-                if (both > 0)
-                  tr(
-                    ref,
-                    'rp_back_both',
-                  ).replaceAll('{n}', '$both').toUpperCase(),
-              ].join(' · '),
-              style: theme.textTheme.labelSmall?.copyWith(
-                color: ink.ash,
-                letterSpacing: 1,
-              ),
-            ),
+                [
+                  tr(ref, 'rp_first_clans').toUpperCase(),
+                  if (both > 0)
+                    tr(ref, 'rp_back_both')
+                        .replaceAll('{n}', '$both')
+                        .toUpperCase(),
+                ].join(' · '),
+                style: theme.textTheme.labelSmall
+                    ?.copyWith(color: ink.ash, letterSpacing: 1)),
             const SizedBox(height: 6),
-            Wrap(
-              spacing: 10,
-              runSpacing: 6,
-              children: [
-                for (final f in first) ClanDisc(f, size: 28, name: true),
-              ],
-            ),
+            Wrap(spacing: 10, runSpacing: 6, children: [
+              for (final f in first) ClanDisc(f, size: 28, name: true),
+            ]),
           ],
         ],
       ),
@@ -959,142 +804,100 @@ Future<void> showCompareSheet(
   return showInkSheet<void>(
     context: context,
     maxWidth: 560,
-    builder: (sheet) => StatefulBuilder(
-      builder: (sheet, setState) {
-        final theme = Theme.of(sheet);
-        final ink = InkColors.of(sheet);
-        Widget column(String id) {
-          final record = book.recordOf(folder, id);
-          final branches = book.branchesOf(folder, id);
-          final clans = book.clansOf(folder, id);
-          return Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Center(
-                  child: PresetMark(folder: folder, preset: record, size: 44),
-                ),
-                const SizedBox(height: 4),
-                Center(
-                  child: Text(
-                    book.nameOfChoice(folder, id),
-                    style: theme.textTheme.titleMedium?.copyWith(
-                      fontFamily: InkFonts.display,
-                    ),
-                  ),
-                ),
-                if ((record['tag']?.toString() ?? '').isNotEmpty)
-                  Center(
-                    child: InkChip(record['tag'].toString(), color: ink.gold),
-                  ),
-                const SizedBox(height: 8),
-                Text(
-                  record['playstyle']?.toString() ?? '',
-                  style: theme.textTheme.bodySmall?.copyWith(color: ink.ash),
-                ),
-                const SizedBox(height: 8),
-                StatChips(record: record, max: 6),
-                const SizedBox(height: 10),
-                Text(
-                  tr(ref, 'rp_branches_title').toUpperCase(),
-                  style: theme.textTheme.labelSmall?.copyWith(
-                    color: ink.ash,
-                    letterSpacing: 1,
-                  ),
-                ),
-                for (final b in branches)
-                  Padding(
-                    padding: const EdgeInsets.only(top: 3),
-                    child: Text(b.name, style: theme.textTheme.bodySmall),
-                  ),
-                if (showClans) ...[
-                  const SizedBox(height: 10),
-                  Text(
-                    tr(ref, 'rp_clans_title').toUpperCase(),
-                    style: theme.textTheme.labelSmall?.copyWith(
-                      color: ink.ash,
-                      letterSpacing: 1,
-                    ),
-                  ),
-                  const SizedBox(height: 4),
-                  Wrap(
-                    spacing: 4,
-                    runSpacing: 4,
-                    children: [for (final f in clans) ClanDisc(f, size: 26)],
-                  ),
-                ],
-                const SizedBox(height: 10),
-                SizedBox(
-                  width: double.infinity,
-                  child: OutlinedButton(
-                    key: Key('compare_pick_$id'),
-                    onPressed: () {
-                      onPick(id);
-                      Navigator.of(sheet).pop();
-                    },
-                    child: Text(
-                      tr(
-                        ref,
-                        'rp_pick_the',
-                      ).replaceAll('{name}', book.nameOfChoice(folder, id)),
-                      textAlign: TextAlign.center,
-                    ),
-                  ),
-                ),
-              ],
+    builder: (sheet) => StatefulBuilder(builder: (sheet, setState) {
+      final theme = Theme.of(sheet);
+      final ink = InkColors.of(sheet);
+      Widget column(String id) {
+        final record = book.recordOf(folder, id);
+        final branches = book.branchesOf(folder, id);
+        final clans = book.clansOf(folder, id);
+        return Expanded(
+          child:
+              Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+            Center(child: PresetMark(folder: folder, preset: record, size: 44)),
+            const SizedBox(height: 4),
+            Center(
+              child: Text(book.nameOfChoice(folder, id),
+                  style: theme.textTheme.titleMedium
+                      ?.copyWith(fontFamily: InkFonts.display)),
             ),
-          );
-        }
-
-        return SafeArea(
-          child: SingleChildScrollView(
-            padding: const EdgeInsets.fromLTRB(14, 0, 14, 16),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Align(
-                  alignment: Alignment.centerLeft,
-                  child: Wrap(
-                    spacing: 6,
-                    runSpacing: 4,
-                    children: [
-                      Text(
-                        '${tr(ref, 'rp_compare_with')}:',
-                        style: theme.textTheme.labelMedium,
-                      ),
-                      for (final id in ids)
-                        if (id != first)
-                          ChoiceChip(
-                            key: Key('compare_with_$id'),
-                            label: Text(
-                              book.nameOfChoice(folder, id),
-                              style: TextStyle(
-                                color: theme.colorScheme.onSurface,
-                              ),
-                            ),
-                            selected: second == id,
-                            visualDensity: VisualDensity.compact,
-                            onSelected: (_) => setState(() => second = id),
-                          ),
-                    ],
-                  ),
-                ),
-                const SizedBox(height: 10),
-                Row(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    column(first),
-                    Container(width: 1, height: 360, color: ink.seam),
-                    const SizedBox(width: 10),
-                    column(second),
-                  ],
-                ),
-              ],
+            if ((record['tag']?.toString() ?? '').isNotEmpty)
+              Center(child: InkChip(record['tag'].toString(), color: ink.gold)),
+            const SizedBox(height: 8),
+            Text(record['playstyle']?.toString() ?? '',
+                style: theme.textTheme.bodySmall?.copyWith(color: ink.ash)),
+            const SizedBox(height: 8),
+            StatChips(record: record, max: 6),
+            const SizedBox(height: 10),
+            Text(tr(ref, 'rp_branches_title').toUpperCase(),
+                style: theme.textTheme.labelSmall
+                    ?.copyWith(color: ink.ash, letterSpacing: 1)),
+            for (final b in branches)
+              Padding(
+                padding: const EdgeInsets.only(top: 3),
+                child: Text(b.name, style: theme.textTheme.bodySmall),
+              ),
+            if (showClans) ...[
+              const SizedBox(height: 10),
+              Text(tr(ref, 'rp_clans_title').toUpperCase(),
+                  style: theme.textTheme.labelSmall
+                      ?.copyWith(color: ink.ash, letterSpacing: 1)),
+              const SizedBox(height: 4),
+              Wrap(spacing: 4, runSpacing: 4, children: [
+                for (final f in clans) ClanDisc(f, size: 26),
+              ]),
+            ],
+            const SizedBox(height: 10),
+            SizedBox(
+              width: double.infinity,
+              child: OutlinedButton(
+                key: Key('compare_pick_$id'),
+                onPressed: () {
+                  onPick(id);
+                  Navigator.of(sheet).pop();
+                },
+                child: Text(
+                    tr(ref, 'rp_pick_the')
+                        .replaceAll('{name}', book.nameOfChoice(folder, id)),
+                    textAlign: TextAlign.center),
+              ),
             ),
-          ),
+          ]),
         );
-      },
-    ),
+      }
+
+      return SafeArea(
+        child: SingleChildScrollView(
+          padding: const EdgeInsets.fromLTRB(14, 0, 14, 16),
+          child: Column(mainAxisSize: MainAxisSize.min, children: [
+            Align(
+              alignment: Alignment.centerLeft,
+              child: Wrap(spacing: 6, runSpacing: 4, children: [
+                Text('${tr(ref, 'rp_compare_with')}:',
+                    style: theme.textTheme.labelMedium),
+                for (final id in ids)
+                  if (id != first)
+                    ChoiceChip(
+                      key: Key('compare_with_$id'),
+                      label: Text(book.nameOfChoice(folder, id),
+                          style: TextStyle(color: theme.colorScheme.onSurface)),
+                      selected: second == id,
+                      visualDensity: VisualDensity.compact,
+                      onSelected: (_) => setState(() => second = id),
+                    ),
+              ]),
+            ),
+            const SizedBox(height: 10),
+            Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
+              column(first),
+              Container(width: 1, height: 360, color: ink.seam),
+              const SizedBox(width: 10),
+              column(second),
+            ]),
+          ]),
+        ),
+      );
+    }),
   );
 }
 

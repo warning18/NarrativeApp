@@ -32,11 +32,8 @@ const double rivalHunterChanceHunted = 0.08;
 /// at [rivalHunterChanceHunted] ([rivalHunterChanceHostile] for the
 /// story's own, [PoliticsState.isStoryNemesis]). The clans [warded] at
 /// the Warding Cairn (road_wards.dart) hunt nobody while their ward holds.
-Map<String, double> rivalHunts(
-  PoliticsState state,
-  ClanData data, {
-  Set<String> warded = const {},
-}) {
+Map<String, double> rivalHunts(PoliticsState state, ClanData data,
+    {Set<String> warded = const {}}) {
   final sworn = state.swornFactionId;
   return {
     for (final MapEntry(:key, :value) in _hunts(state, data, sworn).entries)
@@ -67,19 +64,13 @@ Map<String, double> _hunts(PoliticsState state, ClanData data, String sworn) {
 
 /// The odds a rival's hunter comes on a road: [rivalHunts] summed, up to
 /// [hunterChanceCap], the [warded] clans left out.
-double rivalHunterChance(
-  PoliticsState state,
-  ClanData data, {
-  Set<String> warded = const {},
-}) =>
+double rivalHunterChance(PoliticsState state, ClanData data,
+        {Set<String> warded = const {}}) =>
     min(
-      hunterChanceCap,
-      rivalHunts(
-        state,
-        data,
-        warded: warded,
-      ).values.fold(0.0, (sum, chance) => sum + chance),
-    );
+        hunterChanceCap,
+        rivalHunts(state, data, warded: warded)
+            .values
+            .fold(0.0, (sum, chance) => sum + chance));
 
 /// [clanId]'s hunters in [enemies] for [chapter]: tier 1 through chapter
 /// 2, either tier from chapter 3, none before its `minChapter`.
@@ -120,11 +111,7 @@ StoryNode? _buildRivalAmbushNode({
   Set<String> gone = const {},
 }) {
   final pool = rivalHunterPool(
-    enemies: enemies,
-    clanId: clanId,
-    chapter: chapter,
-    gone: gone,
-  );
+      enemies: enemies, clanId: clanId, chapter: chapter, gone: gone);
   if (pool.isEmpty) return null;
   final enemyId = pool[random.nextInt(pool.length)];
   final enemy = enemies[enemyId] as Map<String, dynamic>;
@@ -140,11 +127,10 @@ StoryNode? _buildRivalAmbushNode({
         .replaceAll('{cry}', cry.isEmpty ? _noCryEn : cry),
     descriptionFr: _ambushFr
         .replaceAll(
-          '{name}',
-          text('enemyName_fr').isEmpty
-              ? text('enemyName')
-              : text('enemyName_fr'),
-        )
+            '{name}',
+            text('enemyName_fr').isEmpty
+                ? text('enemyName')
+                : text('enemyName_fr'))
         .replaceAll('{cry}', cryFr.isEmpty ? _noCryFr : cryFr),
     contextNote: _reasonEn
         .replaceAll('{clan}', clan?.nameFor(AppLanguage.en) ?? clanId)
@@ -199,21 +185,20 @@ List<StoryNode>? maybeRivalHunter({
   }
   final coming = pendingBetrayals(flags);
   final node = _buildRivalAmbushNode(
-    enemies: enemies,
-    clanId: clanId,
-    swornId: politics.swornFactionId,
-    data: data,
-    chapter: chapter,
-    random: random,
-    // A hunter spared and gone, or a betrayer still on its way, comes no
-    // more as an ordinary hunter (hunter_mercy.dart).
-    gone: {
-      for (final id in enemies.keys)
-        if (flags.contains(sparedFlag(id)) ||
-            flags.contains(betrayerFlag(id)) ||
-            coming.containsKey(id))
-          id,
-    },
-  );
+      enemies: enemies,
+      clanId: clanId,
+      swornId: politics.swornFactionId,
+      data: data,
+      chapter: chapter,
+      random: random,
+      // A hunter spared and gone, or a betrayer still on its way, comes no
+      // more as an ordinary hunter (hunter_mercy.dart).
+      gone: {
+        for (final id in enemies.keys)
+          if (flags.contains(sparedFlag(id)) ||
+              flags.contains(betrayerFlag(id)) ||
+              coming.containsKey(id))
+            id,
+      });
   return node == null ? null : [node];
 }

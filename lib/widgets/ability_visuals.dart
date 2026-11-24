@@ -1,7 +1,6 @@
 // How the eight abilities look wherever they are shown (v1.223): one icon
 // each, and a pill that names an ability with its icon.
 import 'package:flutter/material.dart';
-
 import '../theme/icon_sizes.dart';
 import '../theme/pixel_chip.dart';
 
@@ -38,21 +37,18 @@ class AbilityPill extends StatelessWidget {
       decoration: ShapeDecoration(
         color: color.withValues(alpha: 0.14),
         shape: PixelChipBorder(
-          side: BorderSide(color: color.withValues(alpha: 0.7)),
-        ),
+            side: BorderSide(color: color.withValues(alpha: 0.7))),
       ),
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
           Icon(icon, size: IconSize.s16, color: color),
           const SizedBox(width: 6),
-          Text(
-            label,
-            style: Theme.of(context)
-                .textTheme
-                .labelMedium
-                ?.copyWith(color: color, fontSize: 13),
-          ),
+          Text(label,
+              style: Theme.of(context)
+                  .textTheme
+                  .labelMedium
+                  ?.copyWith(color: color, fontSize: 13)),
         ],
       ),
     );

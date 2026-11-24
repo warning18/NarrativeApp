@@ -72,11 +72,8 @@ class _HubSections extends ConsumerWidget {
         !settlement.isCamp &&
         session.flags.contains(campFoundedFlag);
     final travelsFromHere = !isExcursion &&
-        canReturnToCampFrom(
-          node,
-          inExcursion: isExcursion,
-          flags: session.flags,
-        );
+        canReturnToCampFrom(node,
+            inExcursion: isExcursion, flags: session.flags);
     final travelsOn = travelsFromHere &&
         ref.watch(knownPlacesProvider).any((p) => p.id != node.id);
     final ports = ref.watch(localizedDbProvider(portsSchema)).value;
@@ -91,11 +88,9 @@ class _HubSections extends ConsumerWidget {
     final portShops = port == null || shopsDb == null
         ? const <String>[]
         : portShopIds(port)
-            .where(
-              (id) =>
-                  shopsDb[id] is Map<String, dynamic> &&
-                  !storyShopIds.contains(id),
-            )
+            .where((id) =>
+                shopsDb[id] is Map<String, dynamic> &&
+                !storyShopIds.contains(id))
             .toList();
     final portZones = port == null || zones == null
         ? const <String>[]
@@ -109,11 +104,9 @@ class _HubSections extends ConsumerWidget {
           padding: const EdgeInsets.only(bottom: 4),
           child: Row(
             children: [
-              Icon(
-                Icons.check_circle,
-                size: IconSize.s16,
-                color: Theme.of(context).colorScheme.outline,
-              ),
+              Icon(Icons.check_circle,
+                  size: IconSize.s16,
+                  color: Theme.of(context).colorScheme.outline),
               const SizedBox(width: 8),
               Expanded(
                 child: Text(
@@ -145,11 +138,9 @@ class _HubSections extends ConsumerWidget {
           child: Card(
             child: ListTile(
               leading: ShopPixelIcon(shopId),
-              title: Text(
-                (shopsDb![shopId] as Map<String, dynamic>)['shopName']
-                        ?.toString() ??
-                    shopId,
-              ),
+              title: Text((shopsDb![shopId] as Map<String, dynamic>)['shopName']
+                      ?.toString() ??
+                  shopId),
               subtitle: Text(
                 (shopsDb[shopId] as Map<String, dynamic>)['shopDescription']
                         ?.toString() ??
@@ -181,9 +172,8 @@ class _HubSections extends ConsumerWidget {
             await Navigator.of(context).push(
               MaterialPageRoute(
                 builder: (_) => ExpeditionScreen(
-                  zoneId: zoneId,
-                  zone: zones[zoneId] as Map<String, dynamic>,
-                ),
+                    zoneId: zoneId,
+                    zone: zones[zoneId] as Map<String, dynamic>),
               ),
             );
             ref.read(expeditionActiveProvider.notifier).state = false;
@@ -298,12 +288,8 @@ class _HubSections extends ConsumerWidget {
             dense: true,
             visualDensity: VisualDensity.compact,
             leading: const Icon(Icons.logout),
-            title: Text(
-              tr(
-                ref,
-                'leave_settlement_title',
-              ).replaceAll('{place}', settlement.nameFor(french)),
-            ),
+            title: Text(tr(ref, 'leave_settlement_title')
+                .replaceAll('{place}', settlement.nameFor(french))),
             children: onwardButtons,
           ),
         )
@@ -314,10 +300,8 @@ class _HubSections extends ConsumerWidget {
             children: [
               const Icon(Icons.arrow_forward, size: IconSize.s16),
               const SizedBox(width: 6),
-              Text(
-                tr(ref, 'hub_onward_section'),
-                style: Theme.of(context).textTheme.titleMedium,
-              ),
+              Text(tr(ref, 'hub_onward_section'),
+                  style: Theme.of(context).textTheme.titleMedium),
             ],
           ),
         ),
@@ -393,22 +377,16 @@ class _HubSections extends ConsumerWidget {
             ),
           IconButton(
             key: const Key('hub_rest'),
-            tooltip: tr(
-              ref,
-              restsAtCamp ? 'rest_at_camp_button' : 'rest_button',
-            ),
+            tooltip:
+                tr(ref, restsAtCamp ? 'rest_at_camp_button' : 'rest_button'),
             icon: const Icon(Icons.local_fire_department_outlined),
-            onPressed: () => restTheNight(
-              context,
-              ref,
-              message: tr(
-                ref,
-                restsAtCamp
-                    ? 'party_rested_at_camp_message'
-                    : 'party_rested_message',
-              ),
-              atCamp: restsAtCamp,
-            ),
+            onPressed: () => restTheNight(context, ref,
+                message: tr(
+                    ref,
+                    restsAtCamp
+                        ? 'party_rested_at_camp_message'
+                        : 'party_rested_message'),
+                atCamp: restsAtCamp),
           ),
         ],
       ),
@@ -439,8 +417,7 @@ class _HubSections extends ConsumerWidget {
                       OutlinedButton.icon(
                         key: const Key('place_travel_on'),
                         style: OutlinedButton.styleFrom(
-                          visualDensity: VisualDensity.compact,
-                        ),
+                            visualDensity: VisualDensity.compact),
                         onPressed: () => showInkSheet<void>(
                           context: context,
                           builder: (_) => SafeArea(
@@ -449,11 +426,10 @@ class _HubSections extends ConsumerWidget {
                               child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.stretch,
                                 children: [
-                                  Text(
-                                    tr(ref, 'travel_on_title'),
-                                    style:
-                                        Theme.of(context).textTheme.titleLarge,
-                                  ),
+                                  Text(tr(ref, 'travel_on_title'),
+                                      style: Theme.of(context)
+                                          .textTheme
+                                          .titleLarge),
                                   const SizedBox(height: 8),
                                   TravelOnList(fromNodeId: node.id),
                                 ],
@@ -461,10 +437,8 @@ class _HubSections extends ConsumerWidget {
                             ),
                           ),
                         ),
-                        icon: const Icon(
-                          Icons.signpost_outlined,
-                          size: IconSize.s16,
-                        ),
+                        icon: const Icon(Icons.signpost_outlined,
+                            size: IconSize.s16),
                         label: Text(tr(ref, 'travel_on_button')),
                       ),
                   ],
@@ -574,16 +548,12 @@ class _EnterPlaceButton extends ConsumerWidget {
               key: const Key('hub_enter'),
               style: FilledButton.styleFrom(minimumSize: const Size(0, 52)),
               onPressed: onEnter,
-              icon: Icon(
-                place.isCamp
-                    ? Icons.local_fire_department_outlined
-                    : Icons.location_city_outlined,
-              ),
+              icon: Icon(place.isCamp
+                  ? Icons.local_fire_department_outlined
+                  : Icons.location_city_outlined),
               label: Text(
-                tr(
-                  ref,
-                  again ? 'hub_back_button' : 'hub_enter_button',
-                ).replaceAll('{place}', name),
+                tr(ref, again ? 'hub_back_button' : 'hub_enter_button')
+                    .replaceAll('{place}', name),
                 textAlign: TextAlign.center,
               ),
             ),
@@ -655,13 +625,9 @@ void _showSettlementArrival(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             if (portText.isNotEmpty) ...[
-              Text(
-                portText,
-                style: theme.textTheme.bodyMedium?.copyWith(
-                  fontStyle: FontStyle.italic,
-                  height: 1.4,
-                ),
-              ),
+              Text(portText,
+                  style: theme.textTheme.bodyMedium
+                      ?.copyWith(fontStyle: FontStyle.italic, height: 1.4)),
               const SizedBox(height: 12),
             ],
             Text(
@@ -673,55 +639,37 @@ void _showSettlementArrival(
               Row(
                 key: const ValueKey('arrival_condition'),
                 children: [
-                  Icon(
-                    Icons.flag_outlined,
-                    size: IconSize.s16,
-                    color: theme.colorScheme.primary,
-                  ),
+                  Icon(Icons.flag_outlined,
+                      size: IconSize.s16, color: theme.colorScheme.primary),
                   const SizedBox(width: 8),
                   Expanded(
                     child: Text(
-                      tr(
-                        ref,
-                        'condition_line',
-                      ).replaceAll('{name}', condition.nameFor(french)),
+                      tr(ref, 'condition_line')
+                          .replaceAll('{name}', condition.nameFor(french)),
                       style: theme.textTheme.titleSmall,
                     ),
                   ),
                 ],
               ),
               const SizedBox(height: 8),
-              Text(
-                condition.arrivalFor(french),
-                style: theme.textTheme.bodyMedium?.copyWith(
-                  fontStyle: FontStyle.italic,
-                  height: 1.4,
-                ),
-              ),
+              Text(condition.arrivalFor(french),
+                  style: theme.textTheme.bodyMedium
+                      ?.copyWith(fontStyle: FontStyle.italic, height: 1.4)),
               const SizedBox(height: 8),
-              Text(
-                condition.effectFor(french),
-                style: theme.textTheme.bodyMedium,
-              ),
+              Text(condition.effectFor(french),
+                  style: theme.textTheme.bodyMedium),
               const SizedBox(height: 4),
-              Text(
-                tr(ref, 'condition_where'),
-                style: theme.textTheme.bodySmall?.copyWith(
-                  color: theme.colorScheme.onSurfaceVariant,
-                ),
-              ),
+              Text(tr(ref, 'condition_where'),
+                  style: theme.textTheme.bodySmall
+                      ?.copyWith(color: theme.colorScheme.onSurfaceVariant)),
             ],
           ],
         ),
         actions: [
           FilledButton(
             onPressed: () => Navigator.of(dialogContext).pop(),
-            child: Text(
-              tr(
-                ref,
-                campFounded ? 'arrival_away_button' : 'arrival_town_button',
-              ),
-            ),
+            child: Text(tr(ref,
+                campFounded ? 'arrival_away_button' : 'arrival_town_button')),
           ),
         ],
       );
@@ -753,23 +701,14 @@ class _HubChoiceCard extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final mainQuestShut = _mainQuestShut(ref, choice, isExcursion);
     final locked = mainQuestShut ||
-        _isChoiceLocked(
-          choice,
-          story,
-          session,
-          isExcursion,
-          world: ref.watch(coastGateWorldProvider),
-          shutWays: ref.watch(lockedStoryWaysProvider),
-        );
+        _isChoiceLocked(choice, story, session, isExcursion,
+            world: ref.watch(coastGateWorldProvider),
+            shutWays: ref.watch(lockedStoryWaysProvider));
     final lockedLabel = locked
-        ? storyChoiceLockedText(
-            ref,
-            choice,
-            session,
+        ? storyChoiceLockedText(ref, choice, session,
             isExcursion: isExcursion,
             french: french,
-            mainQuestShut: mainQuestShut,
-          )
+            mainQuestShut: mainQuestShut)
         : null;
     final label = (lockedLabel?.isNotEmpty ?? false)
         ? lockedLabel!
@@ -784,9 +723,7 @@ class _HubChoiceCard extends ConsumerWidget {
     final roster = isExcursion
         ? null
         : _fightRosterFor(
-            choice,
-            ref.watch(localizedDbProvider(enemiesSchema)).value,
-          );
+            choice, ref.watch(localizedDbProvider(enemiesSchema)).value);
     final subtitle = choice.hasAbilityCheck
         ? '${tr(ref, '${choice.checkAbility}_label')} DC ${choice.checkDC ?? 10}'
         : roster == null
@@ -880,17 +817,14 @@ class _DetourContextCard extends ConsumerWidget {
                     Text(
                       note!,
                       style: theme.textTheme.bodySmall?.copyWith(
-                        color: onColor,
-                        fontStyle: FontStyle.italic,
-                      ),
+                          color: onColor, fontStyle: FontStyle.italic),
                     ),
                   ],
                   const SizedBox(height: 4),
                   Text(
                     tr(ref, 'detour_resumes'),
-                    style: theme.textTheme.bodySmall?.copyWith(
-                      color: onColor.withValues(alpha: 0.8),
-                    ),
+                    style: theme.textTheme.bodySmall
+                        ?.copyWith(color: onColor.withValues(alpha: 0.8)),
                   ),
                 ],
               ),

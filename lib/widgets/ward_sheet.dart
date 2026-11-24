@@ -17,8 +17,10 @@ import 'ink_sheet.dart';
 
 /// Opens the sheet over [context]; the charges to spend are read from the
 /// session.
-Future<void> showWardSheet(BuildContext context) =>
-    showInkSheet<void>(context: context, builder: (_) => const WardSheet());
+Future<void> showWardSheet(BuildContext context) => showInkSheet<void>(
+      context: context,
+      builder: (_) => const WardSheet(),
+    );
 
 class WardSheet extends ConsumerStatefulWidget {
   const WardSheet({super.key});
@@ -40,14 +42,10 @@ class _WardSheetState extends ConsumerState<WardSheet> {
         .wardRoad(clanId, roads, data);
     if (!ok || !mounted) return;
     Navigator.of(context).pop();
-    messenger?.showSnackBar(
-      SnackBar(
+    messenger?.showSnackBar(SnackBar(
         key: const Key('ward_set_toast'),
-        content: Text(
-          wardSetLine(clanId, language, data: data, nemesis: nemesis),
-        ),
-      ),
-    );
+        content:
+            Text(wardSetLine(clanId, language, data: data, nemesis: nemesis))));
   }
 
   @override
@@ -77,10 +75,8 @@ class _WardSheetState extends ConsumerState<WardSheet> {
             if (clan == null)
               Padding(
                 padding: const EdgeInsets.symmetric(vertical: 12),
-                child: Text(
-                  tr(ref, 'ward_no_target'),
-                  key: const Key('ward_no_target'),
-                ),
+                child: Text(tr(ref, 'ward_no_target'),
+                    key: const Key('ward_no_target')),
               )
             else ...[
               if (targets.length > 1)
@@ -95,9 +91,8 @@ class _WardSheetState extends ConsumerState<WardSheet> {
                           key: Key('ward_clan_$id'),
                           selected: id == clan,
                           avatar: ClanFlag(factionId: id, height: 18),
-                          label: Text(
-                            data.faction(id)?.shortFor(language) ?? id,
-                          ),
+                          label:
+                              Text(data.faction(id)?.shortFor(language) ?? id),
                           onSelected: (_) => setState(() => _clan = id),
                         ),
                     ],
@@ -106,29 +101,22 @@ class _WardSheetState extends ConsumerState<WardSheet> {
               else
                 Padding(
                   padding: const EdgeInsets.only(bottom: 4),
-                  child: Row(
-                    children: [
-                      ClanFlag(factionId: clan, height: 22),
-                      const SizedBox(width: 8),
-                      Expanded(
-                        child: Text(
+                  child: Row(children: [
+                    ClanFlag(factionId: clan, height: 22),
+                    const SizedBox(width: 8),
+                    Expanded(
+                      child: Text(
                           data.faction(clan)?.shortFor(language) ?? clan,
-                          style: theme.textTheme.titleSmall,
-                        ),
-                      ),
-                    ],
-                  ),
+                          style: theme.textTheme.titleSmall),
+                    ),
+                  ]),
                 ),
               for (final option in wardOptions(charges))
                 SheetRow(
                   key: Key('ward_option_${option.roads}'),
                   leading: const Icon(Icons.shield_outlined),
-                  title: wardLine(
-                    'ward_length',
-                    language,
-                    roads: option.roads,
-                    cost: option.cost,
-                  ),
+                  title: wardLine('ward_length', language,
+                      roads: option.roads, cost: option.cost),
                   enabled: option.affordable,
                   onTap: option.affordable
                       ? () => _ward(clan, option.roads)

@@ -44,10 +44,7 @@ class RollingDie extends StatefulWidget {
 class _RollingDieState extends State<RollingDie>
     with SingleTickerProviderStateMixin {
   late final AnimationController _roll = AnimationController(
-    vsync: this,
-    duration: dieRollDuration(widget.faceCount),
-    value: 1,
-  );
+      vsync: this, duration: dieRollDuration(widget.faceCount), value: 1);
 
   @override
   void didUpdateWidget(RollingDie old) {
@@ -78,16 +75,13 @@ class _RollingDieState extends State<RollingDie>
       for (var i = 0; i < n; i++)
         DieCubeFace(
           color: color,
-          glyph: Text(
-            '${(widget.face + i) % n + 1}',
-            style: TextStyle(
-              fontSize: widget.size * 0.3,
-              fontWeight: FontWeight.w800,
-              height: 1,
-              color: Colors.white,
-              shadows: const [Shadow(blurRadius: 3, color: Colors.black)],
-            ),
-          ),
+          glyph: Text('${(widget.face + i) % n + 1}',
+              style: TextStyle(
+                  fontSize: widget.size * 0.3,
+                  fontWeight: FontWeight.w800,
+                  height: 1,
+                  color: Colors.white,
+                  shadows: const [Shadow(blurRadius: 3, color: Colors.black)])),
         ),
     ];
   }

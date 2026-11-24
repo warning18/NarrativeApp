@@ -1,5 +1,4 @@
 import '../widgets/feature_unlock.dart';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_riverpod/legacy.dart';
@@ -82,10 +81,9 @@ class CharacterScreen extends ConsumerWidget {
       ],
     );
     final triggered = TutorialTrigger(
-      topic: TutorialTopic.character,
-      ready: session.raceId.isNotEmpty,
-      child: body,
-    );
+        topic: TutorialTopic.character,
+        ready: session.raceId.isNotEmpty,
+        child: body);
     if (embedded) return triggered;
     return Scaffold(
       appBar: AppBar(title: Text(tr(ref, 'character'))),
@@ -121,27 +119,21 @@ class _CharacterHeader extends ConsumerWidget {
             decoration: ShapeDecoration(
               color: theme.colorScheme.surface,
               shape: PixelChipBorder(
-                side: BorderSide(color: color, width: 1.5),
-                step: 2,
-                steps: 2,
-              ),
+                  side: BorderSide(color: color, width: 1.5),
+                  step: 2,
+                  steps: 2),
             ),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(
-                  label.toUpperCase(),
-                  style: theme.textTheme.labelSmall?.copyWith(color: ink.ash),
-                ),
-                Text(
-                  value,
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                  style: theme.textTheme.titleMedium?.copyWith(
-                    color: color,
-                    fontWeight: FontWeight.w600,
-                  ),
-                ),
+                Text(label.toUpperCase(),
+                    style:
+                        theme.textTheme.labelSmall?.copyWith(color: ink.ash)),
+                Text(value,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: theme.textTheme.titleMedium
+                        ?.copyWith(color: color, fontWeight: FontWeight.w600)),
               ],
             ),
           ),
@@ -188,41 +180,32 @@ class _CharacterHeader extends ConsumerWidget {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text(
-                          name,
-                          maxLines: 1,
-                          overflow: TextOverflow.ellipsis,
-                          style: theme.textTheme.headlineSmall,
-                        ),
+                        Text(name,
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                            style: theme.textTheme.headlineSmall),
                         // The title worn (see offers.dart's titles), with
                         // the race and profession.
                         Text.rich(
-                          TextSpan(
-                            children: [
-                              if (activeTitleName(ref) case final title
-                                  when title.isNotEmpty)
-                                TextSpan(
-                                  text: title,
-                                  style: theme.textTheme.labelLarge?.copyWith(
-                                    color: ink.gold,
-                                    fontStyle: FontStyle.italic,
-                                  ),
-                                ),
-                              if (activeTitleName(ref).isNotEmpty)
-                                TextSpan(
-                                  text: ' · ',
-                                  style: theme.textTheme.bodyMedium?.copyWith(
-                                    color: ink.ash,
-                                  ),
-                                ),
+                          TextSpan(children: [
+                            if (activeTitleName(ref) case final title
+                                when title.isNotEmpty)
                               TextSpan(
-                                text: subtitle,
-                                style: theme.textTheme.bodyMedium?.copyWith(
-                                  color: ink.ash,
-                                ),
+                                text: title,
+                                style: theme.textTheme.labelLarge?.copyWith(
+                                    color: ink.gold,
+                                    fontStyle: FontStyle.italic),
                               ),
-                            ],
-                          ),
+                            if (activeTitleName(ref).isNotEmpty)
+                              TextSpan(
+                                  text: ' · ',
+                                  style: theme.textTheme.bodyMedium
+                                      ?.copyWith(color: ink.ash)),
+                            TextSpan(
+                                text: subtitle,
+                                style: theme.textTheme.bodyMedium
+                                    ?.copyWith(color: ink.ash)),
+                          ]),
                           key: const Key('character_title'),
                           maxLines: 2,
                           overflow: TextOverflow.ellipsis,
@@ -230,12 +213,9 @@ class _CharacterHeader extends ConsumerWidget {
                         const SizedBox(height: 4),
                         Row(
                           children: [
-                            Text(
-                              '${tr(ref, 'level_abbrev')} ${session.level}',
-                              style: theme.textTheme.labelMedium?.copyWith(
-                                color: ink.gold,
-                              ),
-                            ),
+                            Text('${tr(ref, 'level_abbrev')} ${session.level}',
+                                style: theme.textTheme.labelMedium
+                                    ?.copyWith(color: ink.gold)),
                             const SizedBox(width: 8),
                             Expanded(
                               child: LinearProgressIndicator(
@@ -246,11 +226,9 @@ class _CharacterHeader extends ConsumerWidget {
                             ),
                             const SizedBox(width: 8),
                             Text(
-                              '${tr(ref, 'xp_label')} ${session.currentXP}/${session.xpToNextLevel}',
-                              style: theme.textTheme.labelSmall?.copyWith(
-                                color: ink.ash,
-                              ),
-                            ),
+                                '${tr(ref, 'xp_label')} ${session.currentXP}/${session.xpToNextLevel}',
+                                style: theme.textTheme.labelSmall
+                                    ?.copyWith(color: ink.ash)),
                           ],
                         ),
                       ],
@@ -262,16 +240,12 @@ class _CharacterHeader extends ConsumerWidget {
               Row(
                 children: [
                   vital(
-                    tr(ref, 'hp_label'),
-                    '${session.currentHealth}/${session.maxHealth}',
-                    ink.blood,
-                  ),
+                      tr(ref, 'hp_label'),
+                      '${session.currentHealth}/${session.maxHealth}',
+                      ink.blood),
                   const SizedBox(width: 8),
-                  vital(
-                    tr(ref, 'mana_label'),
-                    '${session.mana}/${session.maxMana}',
-                    manaColor,
-                  ),
+                  vital(tr(ref, 'mana_label'),
+                      '${session.mana}/${session.maxMana}', manaColor),
                   const SizedBox(width: 8),
                   vital(tr(ref, 'gold_label'), '${session.gold}', ink.gold),
                 ],
@@ -284,19 +258,17 @@ class _CharacterHeader extends ConsumerWidget {
           const SizedBox(height: 10),
           FilledButton(
             key: const Key('character_level_up'),
-            style: FilledButton.styleFrom(
-              minimumSize: const Size.fromHeight(48),
+            style:
+                FilledButton.styleFrom(minimumSize: const Size.fromHeight(48)),
+            onPressed: () => Navigator.of(context).push(
+              MaterialPageRoute(builder: (_) => const LevelUpScreen()),
             ),
-            onPressed: () => Navigator.of(context)
-                .push(MaterialPageRoute(builder: (_) => const LevelUpScreen())),
             child: Row(
               children: [
                 Expanded(
-                  child: Text(
-                    key: const Key('character_stat_points'),
-                    statPointsText(ref, session.statPoints),
-                  ),
-                ),
+                    child: Text(
+                        key: const Key('character_stat_points'),
+                        statPointsText(ref, session.statPoints))),
                 Text(tr(ref, 'level_up')),
               ],
             ),
@@ -347,14 +319,11 @@ class _CharacterTabs extends ConsumerWidget {
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   Flexible(
-                    child: Text(
-                      label,
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
-                      style: theme.textTheme.labelLarge?.copyWith(
-                        color: on ? ink.gold : ink.ash,
-                      ),
-                    ),
+                    child: Text(label,
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        style: theme.textTheme.labelLarge
+                            ?.copyWith(color: on ? ink.gold : ink.ash)),
                   ),
                   if (after != null) ...[const SizedBox(width: 5), after],
                 ],
@@ -394,18 +363,13 @@ class _CharacterTabs extends ConsumerWidget {
                           width: 8,
                           height: 8,
                           decoration: BoxDecoration(
-                            color: ink.blood,
-                            shape: BoxShape.circle,
-                          ),
+                              color: ink.blood, shape: BoxShape.circle),
                         ),
                       )
                     else if (gifts > 0)
-                      Text(
-                        '$gifts',
-                        style: theme.textTheme.labelSmall?.copyWith(
-                          color: ink.gold,
-                        ),
-                      ),
+                      Text('$gifts',
+                          style: theme.textTheme.labelSmall
+                              ?.copyWith(color: ink.gold)),
                   ],
                 ),
               ),
@@ -424,9 +388,8 @@ class _OverviewTab extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final alignment = ref.watch(
-      playerSessionProvider.select((s) => s.alignmentScore),
-    );
+    final alignment =
+        ref.watch(playerSessionProvider.select((s) => s.alignmentScore));
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
@@ -488,22 +451,16 @@ class _GiftsTab extends ConsumerWidget {
                   ? () => showOfferIfWaiting(context, ref, sayWhenNone: true)
                   : null,
               child: Padding(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 12,
-                  vertical: 11,
-                ),
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 12, vertical: 11),
                 child: Row(
                   children: [
-                    Icon(
-                      Icons.diversity_3,
-                      size: IconSize.s16,
-                      color: waiting > 0 ? ink.gold : ink.ash,
-                    ),
+                    Icon(Icons.diversity_3,
+                        size: IconSize.s16,
+                        color: waiting > 0 ? ink.gold : ink.ash),
                     const SizedBox(width: 8),
-                    Text(
-                      tr(ref, 'offers_section'),
-                      style: theme.textTheme.titleSmall,
-                    ),
+                    Text(tr(ref, 'offers_section'),
+                        style: theme.textTheme.titleSmall),
                     const SizedBox(width: 10),
                     Expanded(
                       child: Text(
@@ -514,17 +471,13 @@ class _GiftsTab extends ConsumerWidget {
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
                         textAlign: TextAlign.end,
-                        style: theme.textTheme.bodySmall?.copyWith(
-                          color: waiting > 0 ? ink.gold : ink.ash,
-                        ),
+                        style: theme.textTheme.bodySmall
+                            ?.copyWith(color: waiting > 0 ? ink.gold : ink.ash),
                       ),
                     ),
                     if (waiting > 0)
-                      Icon(
-                        Icons.chevron_right,
-                        size: IconSize.s16,
-                        color: ink.ash,
-                      ),
+                      Icon(Icons.chevron_right,
+                          size: IconSize.s16, color: ink.ash),
                   ],
                 ),
               ),
@@ -543,18 +496,13 @@ class _GiftsTab extends ConsumerWidget {
             children: [
               Row(
                 children: [
-                  Text(
-                    tr(ref, 'perk_section'),
-                    style: theme.textTheme.titleSmall,
-                  ),
+                  Text(tr(ref, 'perk_section'),
+                      style: theme.textTheme.titleSmall),
                   if (perks > 0) ...[
                     const SizedBox(width: 8),
-                    Text(
-                      '$perks',
-                      style: theme.textTheme.labelSmall?.copyWith(
-                        color: ink.ash,
-                      ),
-                    ),
+                    Text('$perks',
+                        style: theme.textTheme.labelSmall
+                            ?.copyWith(color: ink.ash)),
                   ],
                 ],
               ),
@@ -581,20 +529,10 @@ class _PagesTab extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final session = ref.watch(playerSessionProvider);
-    Widget tile(
-      IconData icon,
-      String label,
-      Widget page, {
-      String? note,
-      GameFeature? feature,
-    }) =>
+    Widget tile(IconData icon, String label, Widget page,
+            {String? note, GameFeature? feature}) =>
         _PageTile(
-          icon: icon,
-          label: label,
-          note: note,
-          page: page,
-          feature: feature,
-        );
+            icon: icon, label: label, note: note, page: page, feature: feature);
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -609,21 +547,15 @@ class _PagesTab extends ConsumerWidget {
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
               Expanded(
-                child: tile(
-                  Icons.backpack,
-                  tr(ref, 'tile_inventory'),
-                  const InventoryScreen(),
-                  feature: GameFeature.inventory,
-                ),
+                child: tile(Icons.backpack, tr(ref, 'tile_inventory'),
+                    const InventoryScreen(),
+                    feature: GameFeature.inventory),
               ),
               const SizedBox(width: 8),
               Expanded(
-                child: tile(
-                  Icons.casino,
-                  tr(ref, 'tile_dice'),
-                  const DiceLoadoutScreen(),
-                  feature: GameFeature.inventory,
-                ),
+                child: tile(Icons.casino, tr(ref, 'tile_dice'),
+                    const DiceLoadoutScreen(),
+                    feature: GameFeature.inventory),
               ),
             ],
           ),
@@ -634,20 +566,16 @@ class _PagesTab extends ConsumerWidget {
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
               Expanded(
-                child: tile(
-                  Icons.trending_up,
-                  tr(ref, 'level_up'),
-                  const LevelUpScreen(),
-                ),
+                child: tile(Icons.trending_up, tr(ref, 'level_up'),
+                    const LevelUpScreen()),
               ),
               const SizedBox(width: 8),
               Expanded(
                 child: tile(
-                  Icons.badge_outlined,
-                  tr(ref, 'race_profession_title'),
-                  const RaceProfessionScreen(),
-                  note: subtitle,
-                ),
+                    Icons.badge_outlined,
+                    tr(ref, 'race_profession_title'),
+                    const RaceProfessionScreen(),
+                    note: subtitle),
               ),
             ],
           ),
@@ -684,89 +612,73 @@ class _AlignmentBar extends ConsumerWidget {
           Row(
             children: [
               Expanded(
-                child: Text(
-                  tr(ref, 'alignment_label').toUpperCase(),
-                  style: theme.textTheme.labelSmall?.copyWith(color: ink.ash),
-                ),
+                child: Text(tr(ref, 'alignment_label').toUpperCase(),
+                    style:
+                        theme.textTheme.labelSmall?.copyWith(color: ink.ash)),
               ),
-              Text(
-                score > 0 ? '+$score' : '$score',
-                style: theme.textTheme.labelLarge?.copyWith(
-                  color: ink.voidColor,
-                ),
-              ),
+              Text(score > 0 ? '+$score' : '$score',
+                  style: theme.textTheme.labelLarge
+                      ?.copyWith(color: ink.voidColor)),
             ],
           ),
           const SizedBox(height: 10),
-          LayoutBuilder(
-            builder: (context, constraints) {
-              final w = constraints.maxWidth;
-              return SizedBox(
-                height: 18,
-                child: Stack(
-                  clipBehavior: Clip.none,
-                  children: [
-                    Positioned(
-                      left: 0,
-                      right: 0,
-                      top: 5,
-                      child: Container(
-                        height: 8,
-                        decoration: BoxDecoration(
-                          color: ink.voidColor.withValues(alpha: 0.18),
-                          borderRadius: BorderRadius.circular(2),
-                        ),
+          LayoutBuilder(builder: (context, constraints) {
+            final w = constraints.maxWidth;
+            return SizedBox(
+              height: 18,
+              child: Stack(
+                clipBehavior: Clip.none,
+                children: [
+                  Positioned(
+                    left: 0,
+                    right: 0,
+                    top: 5,
+                    child: Container(
+                      height: 8,
+                      decoration: BoxDecoration(
+                        color: ink.voidColor.withValues(alpha: 0.18),
+                        borderRadius: BorderRadius.circular(2),
                       ),
                     ),
-                    Positioned(
-                      left: 0,
-                      top: 5,
-                      width: w / 4,
-                      child: Container(
-                        height: 8,
-                        color: ink.blood.withValues(alpha: 0.45),
-                      ),
+                  ),
+                  Positioned(
+                    left: 0,
+                    top: 5,
+                    width: w / 4,
+                    child: Container(
+                        height: 8, color: ink.blood.withValues(alpha: 0.45)),
+                  ),
+                  Positioned(
+                    right: 0,
+                    top: 5,
+                    width: w / 4,
+                    child: Container(
+                        height: 8, color: ink.gold.withValues(alpha: 0.45)),
+                  ),
+                  Positioned(
+                    left: w * position - 2,
+                    top: 0,
+                    child: Container(
+                      width: 4,
+                      height: 18,
+                      color: theme.colorScheme.onSurface,
                     ),
-                    Positioned(
-                      right: 0,
-                      top: 5,
-                      width: w / 4,
-                      child: Container(
-                        height: 8,
-                        color: ink.gold.withValues(alpha: 0.45),
-                      ),
-                    ),
-                    Positioned(
-                      left: w * position - 2,
-                      top: 0,
-                      child: Container(
-                        width: 4,
-                        height: 18,
-                        color: theme.colorScheme.onSurface,
-                      ),
-                    ),
-                  ],
-                ),
-              );
-            },
-          ),
+                  ),
+                ],
+              ),
+            );
+          }),
           const SizedBox(height: 6),
           Row(
             children: [
-              Text(
-                '${tr(ref, 'alignment_evil')} ≤ −$alignmentThreshold',
-                style: theme.textTheme.labelSmall?.copyWith(color: ink.ash),
-              ),
+              Text('${tr(ref, 'alignment_evil')} ≤ −$alignmentThreshold',
+                  style: theme.textTheme.labelSmall?.copyWith(color: ink.ash)),
               const Spacer(),
-              Text(
-                '0',
-                style: theme.textTheme.labelSmall?.copyWith(color: ink.ash),
-              ),
+              Text('0',
+                  style: theme.textTheme.labelSmall?.copyWith(color: ink.ash)),
               const Spacer(),
-              Text(
-                '${tr(ref, 'alignment_good')} ≥ +$alignmentThreshold',
-                style: theme.textTheme.labelSmall?.copyWith(color: ink.ash),
-              ),
+              Text('${tr(ref, 'alignment_good')} ≥ +$alignmentThreshold',
+                  style: theme.textTheme.labelSmall?.copyWith(color: ink.ash)),
             ],
           ),
         ],
@@ -791,14 +703,10 @@ class _NewGamePlusCard extends ConsumerWidget {
     final bonus = (newGamePlusStep * cycle * 100).round();
     return Card(
       child: ListTile(
-        leading: const Icon(
-          Icons.replay_circle_filled_outlined,
-          color: Palette.arcane,
-          size: IconSize.s32,
-        ),
+        leading: const Icon(Icons.replay_circle_filled_outlined,
+            color: Palette.arcane, size: IconSize.s32),
         title: Text(
-          '${tr(ref, 'new_game_plus_label')} · ${tr(ref, 'new_game_plus_cycle_label')} $cycle',
-        ),
+            '${tr(ref, 'new_game_plus_label')} · ${tr(ref, 'new_game_plus_cycle_label')} $cycle'),
         subtitle: Text(
           '${tr(ref, 'new_game_plus_enemies_prefix')} +$bonus% '
           '${tr(ref, 'new_game_plus_enemies_suffix')}. '
@@ -817,8 +725,7 @@ class _ManaSpellsCard extends ConsumerWidget {
     final session = ref.watch(playerSessionProvider);
     final lang = ref.watch(appLanguageProvider);
     final spells = parseSpells(
-      ref.watch(localizedDbProvider(spellsSchema)).value ?? const {},
-    );
+        ref.watch(localizedDbProvider(spellsSchema)).value ?? const {});
     final known = <SpellSpec>[
       for (final id in session.knownSpellIds)
         if (spells[id] != null) spells[id]!,
@@ -845,8 +752,7 @@ class _ManaSpellsCard extends ConsumerWidget {
         onTap: () {
           Navigator.of(context).push(
             MaterialPageRoute(
-              builder: (_) => const SkillsScreen(initialTab: 2),
-            ),
+                builder: (_) => const SkillsScreen(initialTab: 2)),
           );
         },
       ),
@@ -902,21 +808,16 @@ class _PageTile extends ConsumerWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(
-                      label,
-                      maxLines: 2,
-                      overflow: TextOverflow.ellipsis,
-                      style: theme.textTheme.bodyMedium,
-                    ),
-                    if (note != null && note!.isNotEmpty)
-                      Text(
-                        note!,
-                        maxLines: 1,
+                    Text(label,
+                        maxLines: 2,
                         overflow: TextOverflow.ellipsis,
-                        style: theme.textTheme.labelSmall?.copyWith(
-                          color: ink.ash,
-                        ),
-                      ),
+                        style: theme.textTheme.bodyMedium),
+                    if (note != null && note!.isNotEmpty)
+                      Text(note!,
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                          style: theme.textTheme.labelSmall
+                              ?.copyWith(color: ink.ash)),
                   ],
                 ),
               ),
@@ -950,9 +851,8 @@ class _DebugStatsEditorState extends ConsumerState<_DebugStatsEditor> {
       'level': TextEditingController(text: '${session.level}'),
       'currentXP': TextEditingController(text: '${session.currentXP}'),
       'gold': TextEditingController(text: '${session.gold}'),
-      'alignmentScore': TextEditingController(
-        text: '${session.alignmentScore}',
-      ),
+      'alignmentScore':
+          TextEditingController(text: '${session.alignmentScore}'),
       'currentHealth': TextEditingController(text: '${session.currentHealth}'),
       'maxHealth': TextEditingController(text: '${session.maxHealth}'),
       'baseDamage': TextEditingController(text: '${session.baseDamage}'),
@@ -1019,9 +919,9 @@ class _DebugStatsEditorState extends ConsumerState<_DebugStatsEditor> {
           mana: parse('mana'),
           statPoints: parse('statPoints'),
         );
-    ScaffoldMessenger.of(
-      context,
-    ).showSnackBar(SnackBar(content: Text(tr(ref, 'stats_updated_message'))));
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text(tr(ref, 'stats_updated_message'))),
+    );
   }
 
   @override
@@ -1121,9 +1021,8 @@ class _ShroudCard extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final collected = ref.watch(
-      playerSessionProvider.select((s) => s.bannerPiecesCollected),
-    );
+    final collected =
+        ref.watch(playerSessionProvider.select((s) => s.bannerPiecesCollected));
     final found = collected.toSet();
     final theme = Theme.of(context);
     return Card(
@@ -1137,15 +1036,11 @@ class _ShroudCard extends ConsumerWidget {
                 const Icon(Icons.auto_stories_outlined),
                 const SizedBox(width: 12),
                 Expanded(
-                  child: Text(
-                    tr(ref, 'banner_pieces_title'),
-                    style: theme.textTheme.titleMedium,
-                  ),
+                  child: Text(tr(ref, 'banner_pieces_title'),
+                      style: theme.textTheme.titleMedium),
                 ),
-                Text(
-                  '${found.length} / ${shroudPieceIds.length}',
-                  style: theme.textTheme.labelLarge,
-                ),
+                Text('${found.length} / ${shroudPieceIds.length}',
+                    style: theme.textTheme.labelLarge),
               ],
             ),
             const SizedBox(height: 8),
@@ -1185,9 +1080,8 @@ class _ShroudPiece extends ConsumerWidget {
             key: Key('shroud_piece_$id'),
             width: 40,
             height: 80,
-            child: FittedBox(
-              child: PixelBanner(id: id, scale: 1, found: found),
-            ),
+            child:
+                FittedBox(child: PixelBanner(id: id, scale: 1, found: found)),
           ),
         ),
       ),

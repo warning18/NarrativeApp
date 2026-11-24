@@ -1,5 +1,4 @@
 import 'dart:async';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -54,13 +53,8 @@ class _SellSheet extends ConsumerWidget {
     final ids = counts.keys
         .where((id) => canSellItem(items[id] as Map<String, dynamic>?))
         .toList()
-      ..sort(
-        (a, b) => _nameOf(
-          items[a] as Map<String, dynamic>?,
-          a,
-          lang,
-        ).compareTo(_nameOf(items[b] as Map<String, dynamic>?, b, lang)),
-      );
+      ..sort((a, b) => _nameOf(items[a] as Map<String, dynamic>?, a, lang)
+          .compareTo(_nameOf(items[b] as Map<String, dynamic>?, b, lang)));
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -70,10 +64,8 @@ class _SellSheet extends ConsumerWidget {
           child: Row(
             children: [
               Expanded(
-                child: Text(
-                  tr(ref, 'sell_title'),
-                  style: Theme.of(context).textTheme.titleMedium,
-                ),
+                child: Text(tr(ref, 'sell_title'),
+                    style: Theme.of(context).textTheme.titleMedium),
               ),
               const GoldBadge(),
             ],
@@ -87,14 +79,13 @@ class _SellSheet extends ConsumerWidget {
                   children: [
                     for (final id in ids)
                       _sellRow(
-                        context,
-                        ref,
-                        id,
-                        items[id] as Map<String, dynamic>?,
-                        counts[id]!,
-                        session,
-                        lang,
-                      ),
+                          context,
+                          ref,
+                          id,
+                          items[id] as Map<String, dynamic>?,
+                          counts[id]!,
+                          session,
+                          lang),
                   ],
                 ),
         ),
@@ -118,11 +109,9 @@ class _SellSheet extends ConsumerWidget {
       child: ListTile(
         leading: ItemPixelIcon(id, item?['itemType']?.toString()),
         title: Text(owned > 1 ? '$name ×$owned' : name),
-        subtitle: Text(
-          free > 0
-              ? '$price ${trFor(lang, 'gold_label')}'
-              : trFor(lang, 'sell_worn_note'),
-        ),
+        subtitle: Text(free > 0
+            ? '$price ${trFor(lang, 'gold_label')}'
+            : trFor(lang, 'sell_worn_note')),
         trailing: FilledButton.tonal(
           onPressed: free <= 0
               ? null
@@ -131,15 +120,13 @@ class _SellSheet extends ConsumerWidget {
                       .read(playerSessionProvider.notifier)
                       .sellItem(id, price: price, shopId: shopId);
                   if (!sold || !context.mounted) return;
-                  unawaited(
-                    showImmersiveNotice(
-                      context,
-                      icon: Icons.sell_outlined,
-                      message: '${trFor(lang, 'sold_prefix')} $name '
-                          '${trFor(lang, 'for_label')} $price '
-                          '${trFor(lang, 'gold_label')}',
-                    ),
-                  );
+                  unawaited(showImmersiveNotice(
+                    context,
+                    icon: Icons.sell_outlined,
+                    message: '${trFor(lang, 'sold_prefix')} $name '
+                        '${trFor(lang, 'for_label')} $price '
+                        '${trFor(lang, 'gold_label')}',
+                  ));
                 },
           child: Text(trFor(lang, 'sell_button')),
         ),

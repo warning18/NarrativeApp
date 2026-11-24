@@ -54,8 +54,6 @@ bool voyageWaitsOnHarbour({
   if (harbour is! Map<String, dynamic>) return false;
   final cost = (harbour['buildCost'] as num?)?.toInt() ?? 0;
   return gold >= cost &&
-      missingMaterials(
-        inventory,
-        materialCountsOf(harbour, 'materialCost'),
-      ).isEmpty;
+      missingMaterials(inventory, materialCountsOf(harbour, 'materialCost'))
+          .isEmpty;
 }

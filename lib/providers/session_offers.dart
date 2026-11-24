@@ -51,18 +51,15 @@ mixin _OfferActions on _SessionNotifierBase {
   int _offerLuck(OfferTables tables) {
     final s = state;
     return s.luck +
-        signEffectsFor(
-          s.heldSigns,
-          tables.signs,
-          alignment: s.alignmentScore,
-          extra: clanEffectsFor(
-            activeTitleId: s.activeTitleId,
-            heldTitleIds: s.heldTitleIds,
-            swornBoonIds: s.swornBoonIds,
-            swornFactionId: s.politics.swornFactionId,
-            data: tables.data,
-          ),
-        ).stat('luck');
+        signEffectsFor(s.heldSigns, tables.signs,
+            alignment: s.alignmentScore,
+            extra: clanEffectsFor(
+              activeTitleId: s.activeTitleId,
+              heldTitleIds: s.heldTitleIds,
+              swornBoonIds: s.swornBoonIds,
+              swornFactionId: s.politics.swornFactionId,
+              data: tables.data,
+            )).stat('luck');
   }
 
   /// The Luck a risky card's roll reads now (see [_offerLuck]).
@@ -87,9 +84,7 @@ mixin _OfferActions on _SessionNotifierBase {
       maxHealth: s.maxHealth,
       currentHealth: s.currentHealth,
       curseStat: riskyCurseStatFor(
-        tables.data.faction(suitor.factionId),
-        s.professionId,
-      ),
+          tables.data.faction(suitor.factionId), s.professionId),
     );
   }
 
@@ -105,13 +100,11 @@ mixin _OfferActions on _SessionNotifierBase {
     int count = 1,
   }) async {
     if (count <= 0) return;
-    state = state.copyWith(
-      pendingOffers: [
-        ...state.pendingOffers,
-        for (var i = 0; i < count; i++)
-          OfferTicket(source: source, detail: detail, factionId: factionId),
-      ],
-    );
+    state = state.copyWith(pendingOffers: [
+      ...state.pendingOffers,
+      for (var i = 0; i < count; i++)
+        OfferTicket(source: source, detail: detail, factionId: factionId),
+    ]);
     await _persist();
   }
 
@@ -123,20 +116,13 @@ mixin _OfferActions on _SessionNotifierBase {
   /// rivals cool). With the world's [geography] too, the clans' power and
   /// places turn (territoryTurn, clan_power.dart). Returns whether one was
   /// granted.
-  Future<bool> grantChapterOffer(
-    int chapter, {
-    ClanData? data,
-    Geography? geography,
-  }) async {
+  Future<bool> grantChapterOffer(int chapter,
+      {ClanData? data, Geography? geography}) async {
     if (chapter < 2 || chapter <= state.chapterOffersThrough) return false;
     final drift = data == null
         ? null
-        : applyLoyaltyDrift(
-            state.politics,
-            data: data,
-            chapter: chapter,
-            day: state.day,
-          );
+        : applyLoyaltyDrift(state.politics,
+            data: data, chapter: chapter, day: state.day);
     if (drift != null && drift.changed) {
       state = _withTitles(state.copyWith(politics: drift.state), data!);
     }
@@ -144,38 +130,28 @@ mixin _OfferActions on _SessionNotifierBase {
       // Your clan's seat waits for you (clan_crisis.dart); the fallen
       // clan you stayed of lets go once a banner of your own is raised.
       final turned = territoryTurn(
-        settleFallenLoyalty(
-          state.politics,
-          bannerRaised: bannerRaisedIn(state.flags),
-        ),
-        data: data,
-        geography: geography,
-        chapter: chapter,
-        day: state.day,
-        protect: mainClanOf(state.politics),
-      ).state;
+              settleFallenLoyalty(state.politics,
+                  bannerRaised: bannerRaisedIn(state.flags)),
+              data: data,
+              geography: geography,
+              chapter: chapter,
+              day: state.day,
+              protect: mainClanOf(state.politics))
+          .state;
       state = state.copyWith(
-        politics: updateNemesis(
-          turned,
-          data,
-          chapter: chapter,
-          day: state.day,
-          flags: state.flags,
-        ),
-      );
+          politics: updateNemesis(turned, data,
+              chapter: chapter, day: state.day, flags: state.flags));
       // The rival clans' attacks on districts (district_attacks.dart):
       // the sieges run out settled, then the chapter's own rolled.
       _settleExpiredSieges(data, geography, chapter);
       state = state.copyWith(
-        politics: rollDistrictAttacks(
-          state.politics,
-          data: data,
-          geography: geography,
-          day: state.day,
-          chapter: chapter,
-          random: _siegeRandom(chapter),
-        ).state,
-      );
+          politics: rollDistrictAttacks(state.politics,
+                  data: data,
+                  geography: geography,
+                  day: state.day,
+                  chapter: chapter,
+                  random: _siegeRandom(chapter))
+              .state);
       _syncHeld(geography);
       // A new nemesis opens its quest (nemesis.dart): beat its champion;
       // the story's own once its champion can come.
@@ -185,23 +161,20 @@ mixin _OfferActions on _SessionNotifierBase {
           (!state.politics.isStoryNemesis || chapter >= championMinChapter) &&
           !state.unlockedQuestIds.contains(quest) &&
           !state.completedQuestIds.contains(quest)) {
-        state = state.copyWith(
-          unlockedQuestIds: [...state.unlockedQuestIds, quest],
-        );
+        state = state
+            .copyWith(unlockedQuestIds: [...state.unlockedQuestIds, quest]);
       }
     }
-    state = PlayerSessionNotifier._withFirstBanner(
-      state.copyWith(
-        chapterOffersThrough: chapter,
-        // Before the clans are met, no offer piles up (offersWaitForClans).
-        pendingOffers: offersWaitForClans(state)
-            ? null
-            : [
-                ...state.pendingOffers,
-                OfferTicket(source: OfferSource.chapter, detail: '$chapter'),
-              ],
-      ),
-    );
+    state = PlayerSessionNotifier._withFirstBanner(state.copyWith(
+      chapterOffersThrough: chapter,
+      // Before the clans are met, no offer piles up (offersWaitForClans).
+      pendingOffers: offersWaitForClans(state)
+          ? null
+          : [
+              ...state.pendingOffers,
+              OfferTicket(source: OfferSource.chapter, detail: '$chapter'),
+            ],
+    ));
     await _persist();
     return true;
   }
@@ -210,8 +183,7 @@ mixin _OfferActions on _SessionNotifierBase {
   Future<void> acknowledgeFeature(String featureId) async {
     if (state.acknowledgedFeatures.contains(featureId)) return;
     state = state.copyWith(
-      acknowledgedFeatures: [...state.acknowledgedFeatures, featureId],
-    );
+        acknowledgedFeatures: [...state.acknowledgedFeatures, featureId]);
     await _persist();
   }
 
@@ -240,12 +212,11 @@ mixin _OfferActions on _SessionNotifierBase {
     required Map<String, dynamic> skills,
   }) async {
     final id = trainerSkillFor(
-      professionId: state.professionId,
-      strike: strike,
-      trees: trees,
-      skills: skills,
-      known: state.unlockedSkillIds,
-    );
+        professionId: state.professionId,
+        strike: strike,
+        trees: trees,
+        skills: skills,
+        known: state.unlockedSkillIds);
     if (id == null) return null;
     state = state.copyWith(unlockedSkillIds: [...state.unlockedSkillIds, id]);
     await _persist();
@@ -268,10 +239,8 @@ mixin _OfferActions on _SessionNotifierBase {
   /// from [paths] and kept until one is taken. The default [random] is
   /// seeded from the pick itself (the level, the points left, the paths
   /// taken), so a pick drawn anew never rerolls. Empty when no pick waits.
-  Future<List<StatPickOffer>> ensureStatPick(
-    Map<String, TrainingPath> paths, {
-    Random? random,
-  }) async {
+  Future<List<StatPickOffer>> ensureStatPick(Map<String, TrainingPath> paths,
+      {Random? random}) async {
     final s = state;
     if (s.pendingStatPicks <= 0) {
       if (s.statPickOffer.isNotEmpty) {
@@ -302,9 +271,10 @@ mixin _OfferActions on _SessionNotifierBase {
   /// ban or a raise draws anew.
   static Random _statPickRandom(PlayerSession s) {
     final takenTotal = s.trainingTaken.values.fold<int>(0, (a, b) => a + b);
-    return Random(
-      s.level * 7919 + s.statPoints * 131 + takenTotal + s.rollNonce * 104729,
-    );
+    return Random(s.level * 7919 +
+        s.statPoints * 131 +
+        takenTotal +
+        s.rollNonce * 104729);
   }
 
   // --- The camp's roll houses (camp_rolls.dart) ---------------------------
@@ -316,17 +286,15 @@ mixin _OfferActions on _SessionNotifierBase {
     final raiseBuilt = rollPowersOf(s.builtHouseIds).contains(RollPower.raise);
     if (s.rollBans.isEmpty && !raiseBuilt) return s;
     final next = afterFreshDraw(
-      on: on,
-      bans: s.rollBans,
-      raiseBuilt: raiseBuilt,
-      raise: s.raiseCharges,
-      raiseProgress: s.raiseProgress,
-    );
+        on: on,
+        bans: s.rollBans,
+        raiseBuilt: raiseBuilt,
+        raise: s.raiseCharges,
+        raiseProgress: s.raiseProgress);
     return s.copyWith(
-      rollBans: next.bans,
-      raiseCharges: next.raise,
-      raiseProgress: next.raiseProgress,
-    );
+        rollBans: next.bans,
+        raiseCharges: next.raise,
+        raiseProgress: next.raiseProgress);
   }
 
   /// [power]'s charges after [levels] levels gained: +1 a level, never above
@@ -363,10 +331,8 @@ mixin _OfferActions on _SessionNotifierBase {
   /// Reroll (the Bone-Caster's Hut): the stat pick on the table drawn
   /// again, at the same tier, the warded paths left out; one charge. The
   /// set unchanged when there is no charge or no pick on the table.
-  Future<List<StatPickOffer>> rerollStatPick(
-    Map<String, TrainingPath> paths, {
-    Random? random,
-  }) async {
+  Future<List<StatPickOffer>> rerollStatPick(Map<String, TrainingPath> paths,
+      {Random? random}) async {
     final s = state;
     if (!_has(RollPower.reroll, s.rerollCharges) ||
         s.statPickOffer.isEmpty ||
@@ -387,9 +353,7 @@ mixin _OfferActions on _SessionNotifierBase {
     );
     if (offer.isEmpty) return s.statPickOffer;
     state = nonced.copyWith(
-      statPickOffer: offer,
-      rerollCharges: s.rerollCharges - 1,
-    );
+        statPickOffer: offer, rerollCharges: s.rerollCharges - 1);
     await _persist();
     return offer;
   }
@@ -400,11 +364,8 @@ mixin _OfferActions on _SessionNotifierBase {
   /// tier. The set unchanged when the charges fall short, the length is
   /// not one of [banishLengths], or no path is left to replace it.
   Future<List<StatPickOffer>> banishStatPickOffer(
-    int index,
-    int draws,
-    Map<String, TrainingPath> paths, {
-    Random? random,
-  }) async {
+      int index, int draws, Map<String, TrainingPath> paths,
+      {Random? random}) async {
     final s = state;
     final offer = s.statPickOffer;
     final cost = banishCostOf(draws);
@@ -415,25 +376,21 @@ mixin _OfferActions on _SessionNotifierBase {
         index >= offer.length) {
       return offer;
     }
-    final bans = withRollBan(
-      s.rollBans,
-      RollBan(on: RollBanOn.pick, id: offer[index].pathId, left: draws),
-    );
+    final bans = withRollBan(s.rollBans,
+        RollBan(on: RollBanOn.pick, id: offer[index].pathId, left: draws));
     final nonced = s.copyWith(rollNonce: s.rollNonce + 1);
     final card = replaceStatPickOffer(
-      offer: offer,
-      index: index,
-      paths: paths,
-      random: random ?? _statPickRandom(nonced),
-      bannedPaths: bannedIdsOf(bans, RollBanOn.pick),
-    );
+        offer: offer,
+        index: index,
+        paths: paths,
+        random: random ?? _statPickRandom(nonced),
+        bannedPaths: bannedIdsOf(bans, RollBanOn.pick));
     if (card == null) return offer;
     final next = [...offer]..[index] = card;
     state = nonced.copyWith(
-      statPickOffer: next,
-      rollBans: bans,
-      banishCharges: s.banishCharges - cost,
-    );
+        statPickOffer: next,
+        rollBans: bans,
+        banishCharges: s.banishCharges - cost);
     await _persist();
     return next;
   }
@@ -455,9 +412,8 @@ mixin _OfferActions on _SessionNotifierBase {
       return false;
     }
     state = s.copyWith(
-      rollBans: withWard(s.rollBans, clanId, roads),
-      banishCharges: s.banishCharges - cost,
-    );
+        rollBans: withWard(s.rollBans, clanId, roads),
+        banishCharges: s.banishCharges - cost);
     await _persist();
     return true;
   }
@@ -479,25 +435,16 @@ mixin _OfferActions on _SessionNotifierBase {
             eventId: 'ward_end:$clanId',
             chapter: chapter,
             day: s.day,
-            text: wardLine(
-              'ward_ended',
-              AppLanguage.en,
-              clanId: clanId,
-              data: data,
-            ),
-            textFr: wardLine(
-              'ward_ended',
-              AppLanguage.fr,
-              clanId: clanId,
-              data: data,
-            ),
+            text: wardLine('ward_ended', AppLanguage.en,
+                clanId: clanId, data: data),
+            textFr: wardLine('ward_ended', AppLanguage.fr,
+                clanId: clanId, data: data),
           ),
       ];
       politics = politics.copyWith(
-        news: news.length <= maxCoastNews
-            ? news
-            : news.sublist(news.length - maxCoastNews),
-      );
+          news: news.length <= maxCoastNews
+              ? news
+              : news.sublist(news.length - maxCoastNews));
     }
     state = s.copyWith(rollBans: next.bans, politics: politics);
     await _persist();
@@ -518,24 +465,17 @@ mixin _OfferActions on _SessionNotifierBase {
   /// its gains rebuilt (see raisedStatPickOffer); one charge. The set
   /// unchanged when it can't be ([canRaiseStatPickOffer]).
   Future<List<StatPickOffer>> raiseStatPickOffer(
-    int index,
-    Map<String, TrainingPath> paths, {
-    Random? random,
-  }) async {
+      int index, Map<String, TrainingPath> paths,
+      {Random? random}) async {
     final s = state;
     if (!canRaiseStatPickOffer(index)) return s.statPickOffer;
     final nonced = s.copyWith(rollNonce: s.rollNonce + 1);
     final card = raisedStatPickOffer(
-      s.statPickOffer[index],
-      paths,
-      random ?? _statPickRandom(nonced),
-    );
+        s.statPickOffer[index], paths, random ?? _statPickRandom(nonced));
     if (card == null) return s.statPickOffer;
     final next = [...s.statPickOffer]..[index] = card;
-    state = nonced.copyWith(
-      statPickOffer: next,
-      raiseCharges: s.raiseCharges - 1,
-    );
+    state =
+        nonced.copyWith(statPickOffer: next, raiseCharges: s.raiseCharges - 1);
     await _persist();
     return next;
   }
@@ -544,30 +484,22 @@ mixin _OfferActions on _SessionNotifierBase {
   /// its ticket (its faction and the home seat still come; a risky card
   /// drawn anew, with a new die), the warded gifts left out; one charge.
   /// The offer unchanged when there is no charge or none on the table.
-  Future<ClanOffer?> rerollOffer(
-    OfferTables tables, {
-    Random? random,
-    String placeHolder = '',
-  }) async {
+  Future<ClanOffer?> rerollOffer(OfferTables tables,
+      {Random? random, String placeHolder = ''}) async {
     final s = state;
     final offer = s.clanOffer;
     if (offer == null || !_has(RollPower.reroll, s.rerollCharges)) {
       return offer;
     }
-    final next = drawOffer(
-      offer.ticket,
-      offerContextFor(tables, placeHolder: placeHolder),
-      random ?? Random(),
-    );
+    final next = drawOffer(offer.ticket,
+        offerContextFor(tables, placeHolder: placeHolder), random ?? Random());
     if (next == null) return offer;
     state = s.copyWith(
       clanOffer: next,
       rerollCharges: s.rerollCharges - 1,
       rollNonce: s.rollNonce + 1,
-      patronsMet: {
-        ...s.patronsMet,
-        for (final x in next.suitors) x.factionId,
-      }.toList(),
+      patronsMet:
+          {...s.patronsMet, for (final x in next.suitors) x.factionId}.toList(),
     );
     await _persist();
     return next;
@@ -578,26 +510,18 @@ mixin _OfferActions on _SessionNotifierBase {
   /// declinedOffer); the gift may come in a later offer. Nothing else
   /// moves: no standing, no charge, no ban kept. The offer unchanged when
   /// it is not alone or nobody else can come.
-  Future<ClanOffer?> declineSoloOffer(
-    OfferTables tables, {
-    Random? random,
-    String placeHolder = '',
-  }) async {
+  Future<ClanOffer?> declineSoloOffer(OfferTables tables,
+      {Random? random, String placeHolder = ''}) async {
     final s = state;
     final offer = s.clanOffer;
     if (offer == null || !offer.solo) return offer;
-    final next = declinedOffer(
-      offer,
-      offerContextFor(tables, placeHolder: placeHolder),
-      random ?? Random(),
-    );
+    final next = declinedOffer(offer,
+        offerContextFor(tables, placeHolder: placeHolder), random ?? Random());
     if (next == null) return offer;
     state = s.copyWith(
       clanOffer: next,
-      patronsMet: {
-        ...s.patronsMet,
-        for (final x in next.suitors) x.factionId,
-      }.toList(),
+      patronsMet:
+          {...s.patronsMet, for (final x in next.suitors) x.factionId}.toList(),
     );
     await _persist();
     return next;
@@ -610,12 +534,8 @@ mixin _OfferActions on _SessionNotifierBase {
   /// ticket's own faction's card (suitorBanishable). The offer unchanged
   /// when it can't be.
   Future<ClanOffer?> banishSuitor(
-    String factionId,
-    int draws,
-    OfferTables tables, {
-    Random? random,
-    String placeHolder = '',
-  }) async {
+      String factionId, int draws, OfferTables tables,
+      {Random? random, String placeHolder = ''}) async {
     final s = state;
     final offer = s.clanOffer;
     final suitor = offer?.suitorOf(factionId);
@@ -628,14 +548,10 @@ mixin _OfferActions on _SessionNotifierBase {
         !suitorBanishable(suitor, offer)) {
       return offer;
     }
-    final bans = withRollBan(
-      s.rollBans,
-      RollBan(on: RollBanOn.offer, id: giftBanId(suitor.gift), left: draws),
-    );
-    final c = offerContextFor(
-      tables,
-      placeHolder: placeHolder,
-    ).withBans(bannedIdsOf(bans, RollBanOn.offer));
+    final bans = withRollBan(s.rollBans,
+        RollBan(on: RollBanOn.offer, id: giftBanId(suitor.gift), left: draws));
+    final c = offerContextFor(tables, placeHolder: placeHolder)
+        .withBans(bannedIdsOf(bans, RollBanOn.offer));
     final card = replacementSuitor(offer, factionId, c, random ?? Random());
     if (card == null) return offer;
     final next = offerWith(offer, factionId, card);
@@ -653,8 +569,7 @@ mixin _OfferActions on _SessionNotifierBase {
   /// The seed of [factionId]'s raise, the same until a power is used: the
   /// preview and the raise draw the same card.
   Random _raiseRandom(String factionId) => Random(
-        state.rollNonce * 104729 + stableSeedOf('${state.level}:$factionId'),
-      );
+      state.rollNonce * 104729 + stableSeedOf('${state.level}:$factionId'));
 
   /// What raising [factionId]'s card would give (raisedSuitor), drawn now
   /// and the same when it is raised; null when there is no Raise charge or
@@ -664,10 +579,7 @@ mixin _OfferActions on _SessionNotifierBase {
     final suitor = s.clanOffer?.suitorOf(factionId);
     if (suitor == null || !_has(RollPower.raise, s.raiseCharges)) return null;
     return raisedSuitor(
-      suitor,
-      offerContextFor(tables),
-      _raiseRandom(factionId),
-    );
+        suitor, offerContextFor(tables), _raiseRandom(factionId));
   }
 
   /// Raise (the Star Well): [factionId]'s card raised to its
@@ -679,10 +591,9 @@ mixin _OfferActions on _SessionNotifierBase {
     if (offer == null || raised == null) return offer;
     final next = offerWith(offer, factionId, raised);
     state = s.copyWith(
-      clanOffer: next,
-      raiseCharges: s.raiseCharges - 1,
-      rollNonce: s.rollNonce + 1,
-    );
+        clanOffer: next,
+        raiseCharges: s.raiseCharges - 1,
+        rollNonce: s.rollNonce + 1);
     await _persist();
     return next;
   }
@@ -719,32 +630,25 @@ mixin _OfferActions on _SessionNotifierBase {
   /// drawn once from [tables] and kept until a suitor is taken. Null when
   /// none is due, or nobody can come (the offer waits). The suitors'
   /// factions count as met, for their intro and the codex.
-  Future<ClanOffer?> ensureOffer(
-    OfferTables tables, {
-    Random? random,
-    String placeHolder = '',
-  }) async {
+  Future<ClanOffer?> ensureOffer(OfferTables tables,
+      {Random? random, String placeHolder = ''}) async {
     if (state.pendingOffers.isEmpty) return null;
     // On the feature ladder the clans come at Saltmouth: the offers wait.
     if (!state.featureOpen(GameFeature.clans)) return null;
     final waiting = state.clanOffer;
     if (waiting != null) return waiting;
-    final offer = drawOffer(
-      state.pendingOffers.first,
-      offerContextFor(tables, placeHolder: placeHolder),
-      random ?? Random(),
-    );
+    final offer = drawOffer(state.pendingOffers.first,
+        offerContextFor(tables, placeHolder: placeHolder), random ?? Random());
     if (offer == null) return null;
     state = _countFreshDraw(
-      state.copyWith(
-        clanOffer: offer,
-        patronsMet: {
-          ...state.patronsMet,
-          for (final s in offer.suitors) s.factionId,
-        }.toList(),
-      ),
-      RollBanOn.offer,
-    );
+        state.copyWith(
+          clanOffer: offer,
+          patronsMet: {
+            ...state.patronsMet,
+            for (final s in offer.suitors) s.factionId,
+          }.toList(),
+        ),
+        RollBanOn.offer);
     await _persist();
     return offer;
   }
@@ -760,11 +664,8 @@ mixin _OfferActions on _SessionNotifierBase {
   ///   a friend, all logged; the alignment nudged by their lean;
   /// - the titles standing earns (see titlesEarned).
   /// The offer is spent; false when there is none or no such suitor.
-  Future<bool> acceptSuitor(
-    String factionId, {
-    required OfferTables tables,
-    ItemOrigin? origin,
-  }) async {
+  Future<bool> acceptSuitor(String factionId,
+      {required OfferTables tables, ItemOrigin? origin}) async {
     final offer = state.clanOffer;
     final suitor = offer?.suitorOf(factionId);
     if (offer == null || suitor == null || state.pendingOffers.isEmpty) {
@@ -778,26 +679,18 @@ mixin _OfferActions on _SessionNotifierBase {
       RiskyOutcome.gift =>
         _withGift(state, suitor, tables, origin: origin),
       RiskyOutcome.health => state.copyWith(
-          currentHealth: max(1, state.currentHealth - risk!.amount),
-        ),
-      RiskyOutcome.gold => state.copyWith(
-          gold: max(0, state.gold - risk!.amount),
-        ),
-      RiskyOutcome.curse => state.withCurse(
-          suitor.factionId,
-          risk!.stat,
-          risk.amount,
-        ),
+          currentHealth: max(1, state.currentHealth - risk!.amount)),
+      RiskyOutcome.gold =>
+        state.copyWith(gold: max(0, state.gold - risk!.amount)),
+      RiskyOutcome.curse =>
+        state.withCurse(suitor.factionId, risk!.stat, risk.amount),
     };
-    final politics = acceptPolitics(
-      suitor,
-      offer.ticket,
-      politics: next.politics,
-      data: tables.data,
-      chapter: _politicsChapter(null),
-      day: next.day,
-      flags: next.flags,
-    );
+    final politics = acceptPolitics(suitor, offer.ticket,
+        politics: next.politics,
+        data: tables.data,
+        chapter: _politicsChapter(null),
+        day: next.day,
+        flags: next.flags);
     next = next.copyWith(
       politics: politics.politics,
       alignmentScore: next.alignmentScore + politics.alignment,
@@ -811,27 +704,19 @@ mixin _OfferActions on _SessionNotifierBase {
 
   /// [session] with [suitor]'s gift applied (see [acceptSuitor]).
   PlayerSession _withGift(
-    PlayerSession session,
-    Suitor suitor,
-    OfferTables tables, {
-    ItemOrigin? origin,
-  }) {
+      PlayerSession session, Suitor suitor, OfferTables tables,
+      {ItemOrigin? origin}) {
     final gift = suitor.gift;
     switch (gift.kind) {
       case GiftKind.skill:
         if (session.unlockedSkillIds.contains(gift.id)) return session;
-        return session.copyWith(
-          unlockedSkillIds: [...session.unlockedSkillIds, gift.id],
-        );
+        return session
+            .copyWith(unlockedSkillIds: [...session.unlockedSkillIds, gift.id]);
       case GiftKind.sign:
         final sign = tables.signs[gift.id];
         if (sign == null) return session;
-        final taken = takeSign(
-          session.heldSigns,
-          sign,
-          gift.rarity,
-          tables.signs,
-        );
+        final taken =
+            takeSign(session.heldSigns, sign, gift.rarity, tables.signs);
         return session.copyWith(
           heldSigns: taken.held,
           patronFavour: {
@@ -847,11 +732,8 @@ mixin _OfferActions on _SessionNotifierBase {
         );
       case GiftKind.object:
         return _withItem(
-          session,
-          gift.id,
-          tables.items[gift.id] as Map<String, dynamic>?,
-          origin: origin,
-        );
+            session, gift.id, tables.items[gift.id] as Map<String, dynamic>?,
+            origin: origin);
       case GiftKind.title:
         if (session.heldTitleIds.contains(gift.id)) return session;
         return session.copyWith(
@@ -861,9 +743,8 @@ mixin _OfferActions on _SessionNotifierBase {
         );
       case GiftKind.sworn:
         if (session.swornBoonIds.contains(gift.id)) return session;
-        return session.copyWith(
-          swornBoonIds: [...session.swornBoonIds, gift.id],
-        );
+        return session
+            .copyWith(swornBoonIds: [...session.swornBoonIds, gift.id]);
       case GiftKind.perk:
         final perk = perkFromName(gift.id);
         if (perk == null ||
@@ -885,9 +766,8 @@ mixin _OfferActions on _SessionNotifierBase {
       case GiftKind.die:
         // A clan's die (clan_dice.dart), to the bag: equipped like any.
         if (session.ownedDiceIds.contains(gift.id)) return session;
-        return session.copyWith(
-          ownedDiceIds: [...session.ownedDiceIds, gift.id],
-        );
+        return session
+            .copyWith(ownedDiceIds: [...session.ownedDiceIds, gift.id]);
     }
   }
 
@@ -896,11 +776,8 @@ mixin _OfferActions on _SessionNotifierBase {
   /// offer), anything else to the pack, with [origin] remembered for a
   /// piece new to it (see [PlayerSession.itemOrigins]).
   PlayerSession _withItem(
-    PlayerSession session,
-    String itemId,
-    Map<String, dynamic>? item, {
-    ItemOrigin? origin,
-  }) {
+      PlayerSession session, String itemId, Map<String, dynamic>? item,
+      {ItemOrigin? origin}) {
     final charges = PlayerSessionNotifier.consumableChargesFor(itemId, item);
     if (charges != null) {
       return session.copyWith(
@@ -912,19 +789,15 @@ mixin _OfferActions on _SessionNotifierBase {
     if (spellId != null) {
       return session.knownSpellIds.contains(spellId)
           ? session
-          : session.copyWith(
-              knownSpellIds: [...session.knownSpellIds, spellId],
-            );
+          : session
+              .copyWith(knownSpellIds: [...session.knownSpellIds, spellId]);
     }
     final tome = PlayerSessionNotifier.tomeGrantFor(itemId, item);
     if (tome != null) {
       return session.copyWith(
         statPoints: session.statPoints + tome.statPoints,
         tomePicks: PlayerSessionNotifier._withTomePicks(
-          session.tomePicks,
-          itemId,
-          tome.statPoints,
-        ),
+            session.tomePicks, itemId, tome.statPoints),
         pendingOffers: [...session.pendingOffers, ...tome.offers],
       );
     }
@@ -938,18 +811,10 @@ mixin _OfferActions on _SessionNotifierBase {
   /// titlesEarned), and the one worn kept, or the first good one gained.
   @override
   PlayerSession _withTitles(PlayerSession session, ClanData data) {
-    final titles = titlesEarned(
-      session.heldTitleIds,
-      session.politics,
-      data,
-      flags: session.flags,
-    );
+    final titles = titlesEarned(session.heldTitleIds, session.politics, data,
+        flags: session.flags);
     final active = activeTitleAfter(
-      session.activeTitleId,
-      titles.held,
-      titles.gained,
-      data,
-    );
+        session.activeTitleId, titles.held, titles.gained, data);
     if (titles.gained.isEmpty &&
         titles.lost.isEmpty &&
         active == session.activeTitleId) {

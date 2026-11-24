@@ -30,5 +30,4 @@ class _CompanionNameNotifier extends StateNotifier<String> {
 /// [SharedPreferences].
 final companionNameProvider =
     StateNotifierProvider<_CompanionNameNotifier, String>(
-  (ref) => _CompanionNameNotifier(),
-);
+        (ref) => _CompanionNameNotifier());

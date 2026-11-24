@@ -198,8 +198,7 @@ class _ExpeditionScreenState extends ConsumerState<ExpeditionScreen> {
     final location = widget.zone['location']?.toString() ?? '';
     if (location.isEmpty) return null;
     return fightStageFromName(
-      ref.read(geographyProvider).stageNameOf(location),
-    );
+        ref.read(geographyProvider).stageNameOf(location));
   }
 
   bool _isBossNode(StoryNode? node) =>
@@ -270,12 +269,9 @@ class _ExpeditionScreenState extends ConsumerState<ExpeditionScreen> {
       enabled: ref.read(alignmentHuntersEnabledProvider),
       rollsSinceAmbush: session.alignmentRollsSinceAmbush,
     );
-    unawaited(
-      ref.read(playerSessionProvider.notifier).noteAlignmentRoll(
-            ambushed:
-                alignmentEvent != null && isHunterAmbushChain(alignmentEvent),
-          ),
-    );
+    unawaited(ref.read(playerSessionProvider.notifier).noteAlignmentRoll(
+        ambushed:
+            alignmentEvent != null && isHunterAmbushChain(alignmentEvent)));
     _step = null;
     if (alignmentEvent != null) return alignmentEvent.first;
     final shopPool = SubNodeEngine.filterShopPool(
@@ -311,9 +307,7 @@ class _ExpeditionScreenState extends ConsumerState<ExpeditionScreen> {
         used: _usedScenes,
         enemyPool: enemyPool,
         packPool: SubNodeEngine.filterPackPool(
-          enemies: enemies,
-          enemyPool: enemyPool,
-        ),
+            enemies: enemies, enemyPool: enemyPool),
       );
       _usedScenes.add(step.key);
       _step = step;
@@ -332,10 +326,8 @@ class _ExpeditionScreenState extends ConsumerState<ExpeditionScreen> {
           ),
       shopPool: shopPool,
       enemyPool: enemyPool,
-      packPool: SubNodeEngine.filterPackPool(
-        enemies: enemies,
-        enemyPool: enemyPool,
-      ),
+      packPool:
+          SubNodeEngine.filterPackPool(enemies: enemies, enemyPool: enemyPool),
       maxPackSize: SubNodeEngine.maxPackSizeFor(
         zoneChapter,
         partySize: 1 + session.activeAllyIds.length,
@@ -381,13 +373,8 @@ class _ExpeditionScreenState extends ConsumerState<ExpeditionScreen> {
     if (countsTowardZone && nextIndex == _expeditionCount ~/ 2) {
       final found = await _discoverPlaces(atEnd: false);
       if (found.isNotEmpty && mounted) {
-        unawaited(
-          showImmersiveNotice(
-            context,
-            icon: Icons.travel_explore,
-            message: found.join('\n'),
-          ),
-        );
+        unawaited(showImmersiveNotice(context,
+            icon: Icons.travel_explore, message: found.join('\n')));
       }
     }
     // Halfway through a zone of three or more events, its own narration
@@ -473,21 +460,17 @@ class _ExpeditionScreenState extends ConsumerState<ExpeditionScreen> {
         hasFailScene: false,
         isSneak: choice.avoidFightOnSuccess,
       )) {
-        _checkOutcome = checkOutcomeLineFor(
-          result.ability,
-          success: result.success,
-          french: lang == AppLanguage.fr,
-          seed: Random().nextInt(1 << 20),
-        );
+        _checkOutcome = checkOutcomeLineFor(result.ability,
+            success: result.success,
+            french: lang == AppLanguage.fr,
+            seed: Random().nextInt(1 << 20));
       }
-      _remarks = speakUpAbout(
-        ref,
-        action: !result.success
-            ? RemarkKind.checkFailed
-            : fightAvoided
-                ? RemarkKind.sneakedPast
-                : RemarkKind.checkPassed,
-      );
+      _remarks = speakUpAbout(ref,
+          action: !result.success
+              ? RemarkKind.checkFailed
+              : fightAvoided
+                  ? RemarkKind.sneakedPast
+                  : RemarkKind.checkPassed);
     }
 
     final enemyIds =
@@ -498,10 +481,7 @@ class _ExpeditionScreenState extends ConsumerState<ExpeditionScreen> {
       };
       if (resolvedEnemies.values.any((e) => e == null)) {
         await _advance(
-          shops: shops,
-          enemies: enemies,
-          countsTowardZone: countsTowardZone,
-        );
+            shops: shops, enemies: enemies, countsTowardZone: countsTowardZone);
         return;
       }
       final won = await Navigator.of(context).push<bool>(
@@ -516,14 +496,12 @@ class _ExpeditionScreenState extends ConsumerState<ExpeditionScreen> {
             modifiers: isBoss
                 ? EncounterModifiers.zoneBoss(
                     chapter: _zoneChapter,
-                    difficultyMultiplier: zoneTierMultiplier(
-                      zoneTier(widget.zone),
-                    ),
+                    difficultyMultiplier:
+                        zoneTierMultiplier(zoneTier(widget.zone)),
                   ).copyWith(
                     hostFight: widget.hostFight,
                     forcedStage: _zoneStage,
-                    placeId: _zonePlace,
-                  )
+                    placeId: _zonePlace)
                 : _zoneModifiers(EncounterModifiers.fromChoice(choice)),
           ),
         ),
@@ -548,13 +526,11 @@ class _ExpeditionScreenState extends ConsumerState<ExpeditionScreen> {
         await notifier.unlockContent(enemyId: eid);
       }
       if (!mounted) return;
-      if (!await _applyStepOutcome(
-        stepOutcome,
-        failed: checkFailed,
-        checked: choice.hasAbilityCheck,
-        fought: true,
-        isStage: step != null,
-      )) {
+      if (!await _applyStepOutcome(stepOutcome,
+          failed: checkFailed,
+          checked: choice.hasAbilityCheck,
+          fought: true,
+          isStage: step != null)) {
         return;
       }
       if (isBoss) {
@@ -568,22 +544,17 @@ class _ExpeditionScreenState extends ConsumerState<ExpeditionScreen> {
       if (enemyIds.length >= 2 &&
           _random.nextDouble() < SubNodeEngine.huntChance) {
         final quarryId = enemyIds[_random.nextInt(enemyIds.length)];
-        _bonusQueue.addAll(
-          SubNodeEngine.buildHuntNodes(
-            quarryId: quarryId,
-            quarryBaseName:
-                (enemies[quarryId] as Map<String, dynamic>?)?['enemyName']
-                        ?.toString() ??
-                    quarryId,
-            random: _random,
-          ),
-        );
+        _bonusQueue.addAll(SubNodeEngine.buildHuntNodes(
+          quarryId: quarryId,
+          quarryBaseName:
+              (enemies[quarryId] as Map<String, dynamic>?)?['enemyName']
+                      ?.toString() ??
+                  quarryId,
+          random: _random,
+        ));
       }
       await _advance(
-        shops: shops,
-        enemies: enemies,
-        countsTowardZone: !wasBonus,
-      );
+          shops: shops, enemies: enemies, countsTowardZone: !wasBonus);
       return;
     }
 
@@ -592,22 +563,16 @@ class _ExpeditionScreenState extends ConsumerState<ExpeditionScreen> {
       final shop = shops[shopId] as Map<String, dynamic>?;
       // Met on the expedition's road: gone once the party moves on.
       await notifier.unlockContent(
-        shopId: shopId,
-        shopUnlockNodeId: roadShopNodeId,
-      );
+          shopId: shopId, shopUnlockNodeId: roadShopNodeId);
       if (shop != null && mounted) {
         await Navigator.of(context).push(
           MaterialPageRoute(
-            builder: (_) => ShopDetailScreen(shopId: shopId, shop: shop),
-          ),
+              builder: (_) => ShopDetailScreen(shopId: shopId, shop: shop)),
         );
       }
       if (!mounted) return;
       await _advance(
-        shops: shops,
-        enemies: enemies,
-        countsTowardZone: countsTowardZone,
-      );
+          shops: shops, enemies: enemies, countsTowardZone: countsTowardZone);
       return;
     }
 
@@ -616,10 +581,7 @@ class _ExpeditionScreenState extends ConsumerState<ExpeditionScreen> {
       await notifier.unlockContent(questId: questId);
       if (!mounted) return;
       await _advance(
-        shops: shops,
-        enemies: enemies,
-        countsTowardZone: countsTowardZone,
-      );
+          shops: shops, enemies: enemies, countsTowardZone: countsTowardZone);
       return;
     }
 
@@ -638,32 +600,22 @@ class _ExpeditionScreenState extends ConsumerState<ExpeditionScreen> {
         goldIsProfit: false,
       );
       if (reactions.isNotEmpty && mounted) {
-        await showApprovalReactions(
-          context,
-          ref,
-          reactions,
-          deed: RemarkDeed(
-            alignmentMod: choice.alignmentMod,
-            approvalMods: choice.approvalMods,
-          ),
-        );
+        await showApprovalReactions(context, ref, reactions,
+            deed: RemarkDeed(
+                alignmentMod: choice.alignmentMod,
+                approvalMods: choice.approvalMods));
       }
     }
     if (!mounted) return;
-    if (!await _applyStepOutcome(
-      stepOutcome,
-      failed: checkFailed,
-      checked: choice.hasAbilityCheck,
-      fought: false,
-      isStage: step != null,
-    )) {
+    if (!await _applyStepOutcome(stepOutcome,
+        failed: checkFailed,
+        checked: choice.hasAbilityCheck,
+        fought: false,
+        isStage: step != null)) {
       return;
     }
     await _advance(
-      shops: shops,
-      enemies: enemies,
-      countsTowardZone: countsTowardZone,
-    );
+        shops: shops, enemies: enemies, countsTowardZone: countsTowardZone);
   }
 
   /// What a choice of an escort's or a delivery's stage cost ([outcome],
@@ -672,21 +624,16 @@ class _ExpeditionScreenState extends ConsumerState<ExpeditionScreen> {
   /// when [isStage]; extra ones pass on the world's clock too) and the
   /// leader's health. False when the last of the load was lost, which ends
   /// the escort.
-  Future<bool> _applyStepOutcome(
-    StepOutcome? outcome, {
-    required bool failed,
-    required bool checked,
-    required bool fought,
-    required bool isStage,
-  }) async {
+  Future<bool> _applyStepOutcome(StepOutcome? outcome,
+      {required bool failed,
+      required bool checked,
+      required bool fought,
+      required bool isStage}) async {
     if (outcome == null) return true;
     final lang = ref.read(appLanguageProvider);
     // A written step's own words on what happened.
     final written = outcome.notesFor(
-      failed: failed,
-      checked: checked,
-      french: lang == AppLanguage.fr,
-    );
+        failed: failed, checked: checked, french: lang == AppLanguage.fr);
     if (_kind == ExpeditionKind.clear) {
       _kindNote = written.isEmpty ? null : written;
       return true;
@@ -697,25 +644,18 @@ class _ExpeditionScreenState extends ConsumerState<ExpeditionScreen> {
     if (_kind == ExpeditionKind.escort && cost.cargo != 0) {
       _cargo = (_cargo + cost.cargo).clamp(0, escortCargoFull);
       if (cost.cargo < 0) {
-        notes.add(
-          trFor(
-            lang,
-            'escort_cargo_lost',
-          ).replaceAll('{n}', '${-cost.cargo}').replaceAll('{left}', '$_cargo'),
-        );
+        notes.add(trFor(lang, 'escort_cargo_lost')
+            .replaceAll('{n}', '${-cost.cargo}')
+            .replaceAll('{left}', '$_cargo'));
       }
     }
     if (_kind == ExpeditionKind.delivery && isStage) {
       _daysUsed = max(0, _daysUsed + 1 + cost.days);
       if (cost.days != 0) {
-        notes.add(
-          trFor(
-            lang,
-            cost.days > 0 ? 'delivery_day_lost' : 'delivery_day_saved',
-          )
-              .replaceAll('{used}', '$_daysUsed')
-              .replaceAll('{deadline}', '$_deadline'),
-        );
+        notes.add(trFor(lang,
+                cost.days > 0 ? 'delivery_day_lost' : 'delivery_day_saved')
+            .replaceAll('{used}', '$_daysUsed')
+            .replaceAll('{deadline}', '$_deadline'));
       }
     } else if (_kind == ExpeditionKind.escort && cost.days > 0) {
       notes.add(trFor(lang, 'escort_day_lost'));
@@ -723,10 +663,8 @@ class _ExpeditionScreenState extends ConsumerState<ExpeditionScreen> {
     // A day lost on the road is a day on the world's clock (see
     // journey_rules.dart).
     if (cost.days > 0) {
-      await notifier.passDays(
-        cost.days,
-        chapter: ref.read(reachedChapterProvider),
-      );
+      await notifier.passDays(cost.days,
+          chapter: ref.read(reachedChapterProvider));
     }
     if (cost.hurt > 0) {
       final session = ref.read(playerSessionProvider);
@@ -776,16 +714,15 @@ class _ExpeditionScreenState extends ConsumerState<ExpeditionScreen> {
     ];
     if (fresh.isEmpty) return const [];
     await ref.read(playerSessionProvider.notifier).applyChoiceEffects(
-      flagsToAdd: [for (final id in fresh) placeFoundFlag(id)],
-    );
+        flagsToAdd: [for (final id in fresh) placeFoundFlag(id)]);
     final story = ref.read(storyDataProvider).value;
     final lang = ref.read(appLanguageProvider);
     return [
       for (final id in fresh)
         trFor(lang, 'place_found_line').replaceAll(
-          '{place}',
-          story?.nodeFor(id)?.settlement?.nameFor(lang == AppLanguage.fr) ?? id,
-        ),
+            '{place}',
+            story?.nodeFor(id)?.settlement?.nameFor(lang == AppLanguage.fr) ??
+                id),
     ];
   }
 
@@ -816,34 +753,24 @@ class _ExpeditionScreenState extends ConsumerState<ExpeditionScreen> {
         break;
       case ExpeditionKind.escort:
         rewardGold = escortPayFor(zoneGold, _cargo);
-        kindLines.add(
-          trFor(lang, 'escort_arrived').replaceAll('{n}', '$_cargo'),
-        );
+        kindLines
+            .add(trFor(lang, 'escort_arrived').replaceAll('{n}', '$_cargo'));
         if (!escortKeepsItem(_cargo) && zoneItemId.isNotEmpty) {
           rewardItemId = '';
           kindLines.add(trFor(lang, 'escort_item_missed'));
         }
       case ExpeditionKind.delivery:
         final onTime = deliveryOnTime(daysUsed: _daysUsed, deadline: _deadline);
-        rewardGold = deliveryPayFor(
-          zoneGold,
-          daysUsed: _daysUsed,
-          deadline: _deadline,
-        );
+        rewardGold =
+            deliveryPayFor(zoneGold, daysUsed: _daysUsed, deadline: _deadline);
         if (onTime) {
-          kindLines.add(
-            trFor(lang, 'delivery_on_time')
-                .replaceAll('{used}', '$_daysUsed')
-                .replaceAll('{deadline}', '$_deadline'),
-          );
+          kindLines.add(trFor(lang, 'delivery_on_time')
+              .replaceAll('{used}', '$_daysUsed')
+              .replaceAll('{deadline}', '$_deadline'));
         } else {
           rewardItemId = '';
-          kindLines.add(
-            trFor(
-              lang,
-              'delivery_late',
-            ).replaceAll('{n}', '${_daysUsed - _deadline}'),
-          );
+          kindLines.add(trFor(lang, 'delivery_late')
+              .replaceAll('{n}', '${_daysUsed - _deadline}'));
         }
     }
     // The chapter's condition: a rival company takes the best contracts,
@@ -853,11 +780,9 @@ class _ExpeditionScreenState extends ConsumerState<ExpeditionScreen> {
       final before = rewardGold;
       rewardGold = conditionedPrice(rewardGold, condition.expeditionPay);
       final delta = rewardGold - before;
-      kindLines.add(
-        trFor(lang, 'condition_pay_line')
-            .replaceAll('{name}', condition.nameFor(lang == AppLanguage.fr))
-            .replaceAll('{delta}', delta > 0 ? '+$delta' : '$delta'),
-      );
+      kindLines.add(trFor(lang, 'condition_pay_line')
+          .replaceAll('{name}', condition.nameFor(lang == AppLanguage.fr))
+          .replaceAll('{delta}', delta > 0 ? '+$delta' : '$delta'));
     }
     final rewardDiceId = widget.zone['rewardDiceId']?.toString() ?? '';
     final rewardAllyId = widget.zone['rewardAllyId']?.toString() ?? '';
@@ -879,7 +804,10 @@ class _ExpeditionScreenState extends ConsumerState<ExpeditionScreen> {
     // What the zone paid, as the reward card's rows; what changed the
     // outcome (an escort's cargo, a late delivery, a place found) as notes.
     final notes = <RewardNote>[
-      for (final line in [...kindLines, ...await _discoverPlaces(atEnd: true)])
+      for (final line in [
+        ...kindLines,
+        ...await _discoverPlaces(atEnd: true),
+      ])
         RewardNote(line),
     ];
     if (!mounted) return;
@@ -888,62 +816,50 @@ class _ExpeditionScreenState extends ConsumerState<ExpeditionScreen> {
         ref.read(localizedDbProvider(itemsSchema)).value ?? const {};
     final rows = <RewardLine>[];
     if (rewardGold > 0) {
-      rows.add(
-        RewardLine(
-          key: const Key('reward_gold'),
-          icon: Icon(Icons.paid, size: IconSize.s32, color: ink.gold),
-          accent: ink.gold,
-          title: trFor(lang, 'reward_gold'),
-          sub: trFor(lang, 'reward_gold_zone_sub'),
-          value: '+$rewardGold',
-        ),
-      );
+      rows.add(RewardLine(
+        key: const Key('reward_gold'),
+        icon: Icon(Icons.paid, size: IconSize.s32, color: ink.gold),
+        accent: ink.gold,
+        title: trFor(lang, 'reward_gold'),
+        sub: trFor(lang, 'reward_gold_zone_sub'),
+        value: '+$rewardGold',
+      ));
     }
     if (rewardItemId.isNotEmpty) {
-      rows.add(
-        rewardItemLine(
-          context,
+      rows.add(rewardItemLine(context,
           itemId: rewardItemId,
           item: itemsDb[rewardItemId] as Map<String, dynamic>?,
-          lang: lang,
-        ),
-      );
+          lang: lang));
     }
     for (final e in rewardMaterials.entries) {
-      final line = rewardItemLine(
-        context,
-        itemId: e.key,
-        item: itemsDb[e.key] as Map<String, dynamic>?,
-        lang: lang,
-      );
-      rows.add(
-        RewardLine(
-          key: line.key,
-          icon: line.icon,
-          accent: line.accent,
-          title: line.title,
-          tag: line.tag,
-          tagColor: line.tagColor,
-          sub: line.sub,
-          value: '×${e.value}',
-        ),
-      );
+      final line = rewardItemLine(context,
+          itemId: e.key,
+          item: itemsDb[e.key] as Map<String, dynamic>?,
+          lang: lang);
+      rows.add(RewardLine(
+        key: line.key,
+        icon: line.icon,
+        accent: line.accent,
+        title: line.title,
+        tag: line.tag,
+        tagColor: line.tagColor,
+        sub: line.sub,
+        value: '×${e.value}',
+      ));
     }
     if (rewardDiceId.isNotEmpty) {
       final dice = ref.read(localizedDbProvider(diceSchema)).value ?? const {};
       final diceName =
           (dice[rewardDiceId] as Map<String, dynamic>?)?['diceName']
               ?.toString();
-      rows.add(
-        RewardLine(
-          key: Key('reward_die_$rewardDiceId'),
-          icon: Icon(Icons.casino, size: IconSize.s32, color: ink.tide),
-          accent: ink.tide,
-          title: diceName ?? rewardDiceId,
-          sub: trFor(lang, 'reward_die_made_for'),
-          value: trFor(lang, 'reward_new'),
-        ),
-      );
+      rows.add(RewardLine(
+        key: Key('reward_die_$rewardDiceId'),
+        icon: Icon(Icons.casino, size: IconSize.s32, color: ink.tide),
+        accent: ink.tide,
+        title: diceName ?? rewardDiceId,
+        sub: trFor(lang, 'reward_die_made_for'),
+        value: trFor(lang, 'reward_new'),
+      ));
     }
     if (rewardAllyId.isNotEmpty) {
       final races =
@@ -967,20 +883,14 @@ class _ExpeditionScreenState extends ConsumerState<ExpeditionScreen> {
         houses: houses,
         requiredHouseId: companion?['requiredHouseId']?.toString(),
       );
-      rows.add(
-        RewardLine(
-          key: const Key('reward_ally'),
-          icon: Icon(
-            Icons.person_add_alt_1,
-            size: IconSize.s32,
-            color: ink.heal,
-          ),
-          accent: ink.heal,
-          title: companion?['companionName']?.toString() ?? rewardAllyId,
-          sub: trFor(lang, 'recruited_prefix'),
-          value: trFor(lang, 'reward_joins'),
-        ),
-      );
+      rows.add(RewardLine(
+        key: const Key('reward_ally'),
+        icon: Icon(Icons.person_add_alt_1, size: IconSize.s32, color: ink.heal),
+        accent: ink.heal,
+        title: companion?['companionName']?.toString() ?? rewardAllyId,
+        sub: trFor(lang, 'recruited_prefix'),
+        value: trFor(lang, 'reward_joins'),
+      ));
     }
     if (rewardFlag.isNotEmpty) {
       final flagKey = 'zone_flag_$rewardFlag';
@@ -989,8 +899,7 @@ class _ExpeditionScreenState extends ConsumerState<ExpeditionScreen> {
     }
 
     final newAchievements = await notifier.checkAchievements(
-      totalCompanionCount: companions.length,
-    );
+        totalCompanionCount: companions.length);
     if (newAchievements.isNotEmpty) {
       final achievements =
           ref.read(localizedDbProvider(achievementsSchema)).value ?? const {};
@@ -998,11 +907,8 @@ class _ExpeditionScreenState extends ConsumerState<ExpeditionScreen> {
         final name =
             (achievements[id] as Map<String, dynamic>?)?['achievementName']
                 ?.toString();
-        notes.add(
-          RewardNote(
-            '${trFor(lang, 'achievement_unlocked_prefix')}: ${name ?? id}',
-          ),
-        );
+        notes.add(RewardNote(
+            '${trFor(lang, 'achievement_unlocked_prefix')}: ${name ?? id}'));
       }
     }
 
@@ -1010,17 +916,15 @@ class _ExpeditionScreenState extends ConsumerState<ExpeditionScreen> {
     if (newAchievements.isNotEmpty) {
       final achievements =
           ref.read(localizedDbProvider(achievementsSchema)).value ?? const {};
-      unawaited(
-        announceAchievements(
-            context,
-            [
-              for (final id in newAchievements)
-                (achievements[id] as Map<String, dynamic>?)?['achievementName']
-                        ?.toString() ??
-                    id,
-            ],
-            trFor(lang, 'achievement_unlocked_prefix').toUpperCase()),
-      );
+      unawaited(announceAchievements(
+          context,
+          [
+            for (final id in newAchievements)
+              (achievements[id] as Map<String, dynamic>?)?['achievementName']
+                      ?.toString() ??
+                  id
+          ],
+          trFor(lang, 'achievement_unlocked_prefix').toUpperCase()));
     }
     setState(() {
       _phase = _ExpeditionPhase.completed;
@@ -1110,50 +1014,42 @@ class _ExpeditionScreenState extends ConsumerState<ExpeditionScreen> {
           child: Scaffold(
             appBar: AppBar(title: Text(zoneName)),
             body: SafeArea(
-              child: Column(
-                children: [
-                  // The zone's painted band (Art's) above the road; a zone
-                  // without one starts at its first line, as before.
-                  if (expeditionBandAsset(widget.zoneId) case final band?)
-                    ExpeditionBand(
-                      key: const Key('expedition_band'),
-                      asset: band,
-                    ),
-                  Expanded(
-                    child: Padding(
-                      padding: const EdgeInsets.all(20),
-                      child: switch (_phase) {
-                        // Each event dealt like a card turning over.
-                        _ExpeditionPhase.event => FlipIn(
-                            flipKey: _index,
-                            child: _buildEvent(
-                              context,
-                              shops: shops,
-                              enemies: enemies,
-                              lang: lang,
+              child: Column(children: [
+                // The zone's painted band (Art's) above the road; a zone
+                // without one starts at its first line, as before.
+                if (expeditionBandAsset(widget.zoneId) case final band?)
+                  ExpeditionBand(
+                      key: const Key('expedition_band'), asset: band),
+                Expanded(
+                  child: Padding(
+                    padding: const EdgeInsets.all(20),
+                    child: switch (_phase) {
+                      // Each event dealt like a card turning over.
+                      _ExpeditionPhase.event => FlipIn(
+                          flipKey: _index,
+                          child: _buildEvent(context,
+                              shops: shops, enemies: enemies, lang: lang),
+                        ),
+                      // The zone's pay as a reward card (see reward_cards.dart).
+                      _ExpeditionPhase.completed => Center(
+                          child: ConstrainedBox(
+                            constraints: const BoxConstraints(maxWidth: 460),
+                            child: RewardCard(
+                              key: const Key('zone_reward_card'),
+                              data: _rewardCard,
+                              onDone: () => Navigator.of(context).pop(true),
                             ),
                           ),
-                        // The zone's pay as a reward card (see reward_cards.dart).
-                        _ExpeditionPhase.completed => Center(
-                            child: ConstrainedBox(
-                              constraints: const BoxConstraints(maxWidth: 460),
-                              child: RewardCard(
-                                key: const Key('zone_reward_card'),
-                                data: _rewardCard,
-                                onDone: () => Navigator.of(context).pop(true),
-                              ),
-                            ),
-                          ),
-                        _ExpeditionPhase.retreated => _buildSummary(
-                            context,
-                            icon: Icons.directions_walk,
-                            title: trFor(lang, 'expedition_ended_title'),
-                          ),
-                      },
-                    ),
+                        ),
+                      _ExpeditionPhase.retreated => _buildSummary(
+                          context,
+                          icon: Icons.directions_walk,
+                          title: trFor(lang, 'expedition_ended_title'),
+                        ),
+                    },
                   ),
-                ],
-              ),
+                ),
+              ]),
             ),
           ),
         ),
@@ -1175,8 +1071,7 @@ class _ExpeditionScreenState extends ConsumerState<ExpeditionScreen> {
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
         LinearProgressIndicator(
-          value: (_index / _expeditionCount).clamp(0.0, 1.0),
-        ),
+            value: (_index / _expeditionCount).clamp(0.0, 1.0)),
         const SizedBox(height: 8),
         Text(
           _isBossNode(node)
@@ -1217,20 +1112,20 @@ class _ExpeditionScreenState extends ConsumerState<ExpeditionScreen> {
                 if (_aftermath != null && _aftermath!.isNotEmpty) ...[
                   Text(
                     _aftermath!,
-                    style: Theme.of(context)
-                        .textTheme
-                        .bodyLarge
-                        ?.copyWith(height: 1.5, fontStyle: FontStyle.italic),
+                    style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                          height: 1.5,
+                          fontStyle: FontStyle.italic,
+                        ),
                   ),
                   const SizedBox(height: 16),
                 ],
                 if (_checkOutcome != null && _checkOutcome!.isNotEmpty) ...[
                   Text(
                     _checkOutcome!,
-                    style: Theme.of(context)
-                        .textTheme
-                        .bodyLarge
-                        ?.copyWith(height: 1.5, fontStyle: FontStyle.italic),
+                    style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                          height: 1.5,
+                          fontStyle: FontStyle.italic,
+                        ),
                   ),
                   const SizedBox(height: 16),
                 ],
@@ -1238,19 +1133,15 @@ class _ExpeditionScreenState extends ConsumerState<ExpeditionScreen> {
                   Text(
                     _kindNote!,
                     key: const ValueKey('expedition_kind_note'),
-                    style: Theme.of(context)
-                        .textTheme
-                        .bodyMedium
-                        ?.copyWith(color: Theme.of(context).colorScheme.error),
+                    style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                          color: Theme.of(context).colorScheme.error,
+                        ),
                   ),
                   const SizedBox(height: 16),
                 ],
                 Text(
-                  stripStoryMarkup(
-                    joinedNarration(
-                      node.descriptionFor(lang == AppLanguage.fr),
-                    ),
-                  ),
+                  stripStoryMarkup(joinedNarration(
+                      node.descriptionFor(lang == AppLanguage.fr))),
                   style: Theme.of(context)
                       .textTheme
                       .bodyLarge
@@ -1267,13 +1158,11 @@ class _ExpeditionScreenState extends ConsumerState<ExpeditionScreen> {
             onPressed: _busy || !choice.affordableWith(gold)
                 ? null
                 : () => _resolveChoice(choice, shops: shops, enemies: enemies),
-            child: Text(
-              choice.affordableWith(gold)
-                  ? _choiceLabel(choice)
-                  : trFor(lang, 'choice_gold_short_lock')
-                      .replaceAll('{choice}', _choiceLabel(choice))
-                      .replaceAll('{gold}', '$gold'),
-            ),
+            child: Text(choice.affordableWith(gold)
+                ? _choiceLabel(choice)
+                : trFor(lang, 'choice_gold_short_lock')
+                    .replaceAll('{choice}', _choiceLabel(choice))
+                    .replaceAll('{gold}', '$gold')),
           ),
           const SizedBox(height: 8),
         ],
@@ -1317,16 +1206,11 @@ class _ExpeditionScreenState extends ConsumerState<ExpeditionScreen> {
       return Row(
         key: const ValueKey('expedition_cargo_gauge'),
         children: [
-          Icon(
-            Icons.local_shipping,
-            size: IconSize.s16,
-            color: low ? scheme.error : scheme.primary,
-          ),
+          Icon(Icons.local_shipping,
+              size: IconSize.s16, color: low ? scheme.error : scheme.primary),
           const SizedBox(width: 6),
-          Text(
-            '${trFor(lang, 'escort_cargo_label')} $_cargo%',
-            style: Theme.of(context).textTheme.labelMedium,
-          ),
+          Text('${trFor(lang, 'escort_cargo_label')} $_cargo%',
+              style: Theme.of(context).textTheme.labelMedium),
           const SizedBox(width: 8),
           Expanded(
             child: LinearProgressIndicator(
@@ -1344,11 +1228,8 @@ class _ExpeditionScreenState extends ConsumerState<ExpeditionScreen> {
     return Row(
       key: const ValueKey('expedition_deadline_gauge'),
       children: [
-        Icon(
-          Icons.hourglass_bottom,
-          size: IconSize.s16,
-          color: late ? scheme.error : scheme.primary,
-        ),
+        Icon(Icons.hourglass_bottom,
+            size: IconSize.s16, color: late ? scheme.error : scheme.primary),
         const SizedBox(width: 6),
         Text(
           trFor(lang, 'delivery_days_line')
@@ -1370,25 +1251,17 @@ class _ExpeditionScreenState extends ConsumerState<ExpeditionScreen> {
     );
   }
 
-  Widget _buildSummary(
-    BuildContext context, {
-    required IconData icon,
-    required String title,
-  }) {
+  Widget _buildSummary(BuildContext context,
+      {required IconData icon, required String title}) {
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        Icon(
-          icon,
-          size: IconSize.s64,
-          color: Theme.of(context).colorScheme.primary,
-        ),
+        Icon(icon,
+            size: IconSize.s64, color: Theme.of(context).colorScheme.primary),
         const SizedBox(height: 16),
-        Text(
-          title,
-          style: Theme.of(context).textTheme.headlineSmall,
-          textAlign: TextAlign.center,
-        ),
+        Text(title,
+            style: Theme.of(context).textTheme.headlineSmall,
+            textAlign: TextAlign.center),
         const SizedBox(height: 12),
         for (final line in _summaryLines)
           Padding(
@@ -1400,8 +1273,7 @@ class _ExpeditionScreenState extends ConsumerState<ExpeditionScreen> {
           onPressed: () =>
               Navigator.of(context).pop(_phase == _ExpeditionPhase.completed),
           child: Text(
-            trFor(ref.watch(appLanguageProvider), 'return_to_town_button'),
-          ),
+              trFor(ref.watch(appLanguageProvider), 'return_to_town_button')),
         ),
       ],
     );

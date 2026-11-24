@@ -123,32 +123,28 @@ class PatronEmblem extends StatelessWidget {
         child: SizedBox(
           width: size - 3,
           height: size - 3,
-          child: Stack(
-            children: [
-              Positioned(
-                left: -_sign.left * k,
-                top: -_sign.top * k,
-                width: pixelBannerSize.width * k,
-                height: pixelBannerSize.height * k,
-                child: Image.asset(
-                  'assets/visuals/banners/$banner.png',
-                  fit: BoxFit.fill,
-                  filterQuality:
-                      k >= 1 ? FilterQuality.none : FilterQuality.medium,
-                  isAntiAlias: false,
-                  errorBuilder: (_, __, ___) => const SizedBox.shrink(),
-                ),
+          child: Stack(children: [
+            Positioned(
+              left: -_sign.left * k,
+              top: -_sign.top * k,
+              width: pixelBannerSize.width * k,
+              height: pixelBannerSize.height * k,
+              child: Image.asset(
+                'assets/visuals/banners/$banner.png',
+                fit: BoxFit.fill,
+                filterQuality:
+                    k >= 1 ? FilterQuality.none : FilterQuality.medium,
+                isAntiAlias: false,
+                errorBuilder: (_, __, ___) => const SizedBox.shrink(),
               ),
-            ],
-          ),
+            ),
+          ]),
         ),
       );
       if (dimmed) {
         cloth = ColorFiltered(
-          colorFilter: const ColorFilter.mode(
-            Palette.neutral,
-            BlendMode.saturation,
-          ),
+          colorFilter:
+              const ColorFilter.mode(Palette.neutral, BlendMode.saturation),
           child: cloth,
         );
       }
@@ -175,11 +171,8 @@ class PatronEmblem extends StatelessWidget {
         ),
         border: Border.all(color: color.withValues(alpha: 0.9), width: 1.5),
       ),
-      child: Icon(
-        _patronIconFor(patron?.icon ?? ''),
-        size: size * 0.55,
-        color: Colors.white,
-      ),
+      child: Icon(_patronIconFor(patron?.icon ?? ''),
+          size: size * 0.55, color: Colors.white),
     );
   }
 }
@@ -216,11 +209,8 @@ class SignRarityChip extends StatelessWidget {
       ),
       child: Text(
         text,
-        style: TextStyle(
-          fontSize: 11,
-          fontWeight: FontWeight.w600,
-          color: color,
-        ),
+        style:
+            TextStyle(fontSize: 11, fontWeight: FontWeight.w600, color: color),
       ),
     );
   }
@@ -259,8 +249,7 @@ class SignEffectText extends StatelessWidget {
           Text(
             line,
             style: theme.textTheme.bodySmall?.copyWith(
-              color: muted ? theme.colorScheme.onSurfaceVariant : null,
-            ),
+                color: muted ? theme.colorScheme.onSurfaceVariant : null),
           ),
         if (showPact)
           Padding(
@@ -268,9 +257,7 @@ class SignEffectText extends StatelessWidget {
             child: Text(
               pactCurseText(pact, language, fights: pactFightsLeft),
               style: theme.textTheme.bodySmall?.copyWith(
-                color: theme.colorScheme.error,
-                fontWeight: FontWeight.w600,
-              ),
+                  color: theme.colorScheme.error, fontWeight: FontWeight.w600),
             ),
           ),
       ],
@@ -290,36 +277,23 @@ class SignsSection extends ConsumerWidget {
   final bool header;
 
   Future<void> _raise(
-    BuildContext context,
-    WidgetRef ref,
-    HeldSign held,
-    SignDef sign,
-  ) async {
+      BuildContext context, WidgetRef ref, HeldSign held, SignDef sign) async {
     final lang = ref.read(appLanguageProvider);
     final name = sign.nameFor(lang);
     if (held.level >= maxSignLevel) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(
-            trFor(lang, 'titan_blood_max').replaceAll('{name}', name),
-          ),
-        ),
-      );
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+          content:
+              Text(trFor(lang, 'titan_blood_max').replaceAll('{name}', name))));
       return;
     }
     final confirmed = await showDialog<bool>(
       context: context,
       builder: (dialogContext) => AlertDialog(
         icon: const Icon(Icons.water_drop, color: Palette.red41),
-        title: Text(
-          trFor(lang, 'titan_blood_confirm_title').replaceAll('{name}', name),
-        ),
-        content: Text(
-          trFor(
-            lang,
-            'titan_blood_confirm_body',
-          ).replaceAll('{n}', '${held.level + 1}'),
-        ),
+        title: Text(trFor(lang, 'titan_blood_confirm_title')
+            .replaceAll('{name}', name)),
+        content: Text(trFor(lang, 'titan_blood_confirm_body')
+            .replaceAll('{n}', '${held.level + 1}')),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(dialogContext, false),
@@ -364,10 +338,7 @@ class SignsSection extends ConsumerWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               PatronEmblem(
-                patron: patrons[sign.patronId],
-                size: 32,
-                dimmed: silent,
-              ),
+                  patron: patrons[sign.patronId], size: 32, dimmed: silent),
               const SizedBox(width: 10),
               Expanded(
                 child: Column(
@@ -381,16 +352,12 @@ class SignsSection extends ConsumerWidget {
                         Text(
                           sign.nameFor(lang),
                           style: theme.textTheme.titleSmall?.copyWith(
-                            color: silent
-                                ? theme.colorScheme.onSurfaceVariant
-                                : null,
-                          ),
+                              color: silent
+                                  ? theme.colorScheme.onSurfaceVariant
+                                  : null),
                         ),
                         SignRarityChip(
-                          rarity: h.rarity,
-                          level: h.level,
-                          language: lang,
-                        ),
+                            rarity: h.rarity, level: h.level, language: lang),
                       ],
                     ),
                     SignEffectText(
@@ -404,9 +371,8 @@ class SignsSection extends ConsumerWidget {
                     if (silent)
                       Text(
                         trFor(lang, 'sign_vow_silent'),
-                        style: theme.textTheme.labelSmall?.copyWith(
-                          color: theme.colorScheme.error,
-                        ),
+                        style: theme.textTheme.labelSmall
+                            ?.copyWith(color: theme.colorScheme.error),
                       ),
                   ],
                 ),
@@ -422,9 +388,7 @@ class SignsSection extends ConsumerWidget {
           child: Text(
             text.toUpperCase(),
             style: theme.textTheme.labelSmall?.copyWith(
-              color: theme.colorScheme.onSurfaceVariant,
-              letterSpacing: 1,
-            ),
+                color: theme.colorScheme.onSurfaceVariant, letterSpacing: 1),
           ),
         );
 
@@ -440,27 +404,20 @@ class SignsSection extends ConsumerWidget {
           children: [
             Expanded(
               child: header
-                  ? Text(
-                      tr(ref, 'signs_section'),
-                      style: theme.textTheme.titleSmall,
-                    )
+                  ? Text(tr(ref, 'signs_section'),
+                      style: theme.textTheme.titleSmall)
                   : const SizedBox.shrink(),
             ),
             if (session.titanBlood > 0)
               Row(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  const Icon(
-                    Icons.water_drop,
-                    size: IconSize.s16,
-                    color: Palette.red41,
-                  ),
+                  const Icon(Icons.water_drop,
+                      size: IconSize.s16, color: Palette.red41),
                   const SizedBox(width: 2),
                   Text(
-                    tr(
-                      ref,
-                      'titan_blood_label',
-                    ).replaceAll('{n}', '${session.titanBlood}'),
+                    tr(ref, 'titan_blood_label')
+                        .replaceAll('{n}', '${session.titanBlood}'),
                     key: const Key('titan_blood_count'),
                     style: theme.textTheme.labelMedium,
                   ),
@@ -471,18 +428,14 @@ class SignsSection extends ConsumerWidget {
         if (session.titanBlood > 0)
           Text(
             tr(ref, held.isEmpty ? 'titan_blood_no_sign' : 'titan_blood_hint'),
-            style: theme.textTheme.bodySmall?.copyWith(
-              color: theme.colorScheme.onSurfaceVariant,
-            ),
+            style: theme.textTheme.bodySmall
+                ?.copyWith(color: theme.colorScheme.onSurfaceVariant),
           ),
         const SizedBox(height: 4),
         if (held.isEmpty)
-          Text(
-            tr(ref, 'signs_none'),
-            style: theme.textTheme.bodySmall?.copyWith(
-              color: theme.colorScheme.onSurfaceVariant,
-            ),
-          ),
+          Text(tr(ref, 'signs_none'),
+              style: theme.textTheme.bodySmall
+                  ?.copyWith(color: theme.colorScheme.onSurfaceVariant)),
         for (final slot in [
           SignSlot.strike,
           SignSlot.guard,

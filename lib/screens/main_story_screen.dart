@@ -77,10 +77,8 @@ class MainStoryScreen extends ConsumerWidget {
                                 children: spine.beats[i].map((id) {
                                   final node = story.nodeFor(id);
                                   return ActionChip(
-                                    avatar: const Icon(
-                                      Icons.edit,
-                                      size: IconSize.s16,
-                                    ),
+                                    avatar: const Icon(Icons.edit,
+                                        size: IconSize.s16),
                                     label: Text(id),
                                     onPressed: node == null
                                         ? null
@@ -89,8 +87,7 @@ class MainStoryScreen extends ConsumerWidget {
                                               MaterialPageRoute(
                                                 builder: (_) =>
                                                     StoryNodeEditorScreen(
-                                                  node: node,
-                                                ),
+                                                        node: node),
                                               ),
                                             );
                                           },
@@ -100,11 +97,9 @@ class MainStoryScreen extends ConsumerWidget {
                               const SizedBox(height: 6),
                               Text(
                                 spine.beats[i]
-                                    .map(
-                                      (id) =>
-                                          story.nodeFor(id)?.description ??
-                                          tr(ref, 'missing_node_label'),
-                                    )
+                                    .map((id) =>
+                                        story.nodeFor(id)?.description ??
+                                        tr(ref, 'missing_node_label'))
                                     .join('\n'),
                                 maxLines: 3,
                                 overflow: TextOverflow.ellipsis,

@@ -28,22 +28,17 @@ Future<void> exportTextToFile(
     if (!context.mounted) return;
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
-        content: Text(
-          '${trFor(ref.read(appLanguageProvider), 'export_failed_prefix')}: $e',
-        ),
-      ),
+          content: Text(
+              '${trFor(ref.read(appLanguageProvider), 'export_failed_prefix')}: $e')),
     );
   }
 }
 
 Future<void> copyTextToClipboard(
-  BuildContext context,
-  WidgetRef ref,
-  String content,
-) async {
+    BuildContext context, WidgetRef ref, String content) async {
   await Clipboard.setData(ClipboardData(text: content));
   if (!context.mounted) return;
-  ScaffoldMessenger.of(
-    context,
-  ).showSnackBar(SnackBar(content: Text(tr(ref, 'transcript_copied_message'))));
+  ScaffoldMessenger.of(context).showSnackBar(
+    SnackBar(content: Text(tr(ref, 'transcript_copied_message'))),
+  );
 }

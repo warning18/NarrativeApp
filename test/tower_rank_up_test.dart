@@ -194,15 +194,22 @@ void main() {
           i++) {
         await settle(5);
       }
-      final level = find.byType(LevelUpScreen);
-      if (level.evaluate().isNotEmpty) {
-        Navigator.of(tester.element(level)).pop();
-        await settle();
-      }
-      final take = find.byKey(const Key('loot_sheet_take'));
-      if (take.evaluate().isNotEmpty) {
-        await tester.tap(take);
-        await settle();
+      // The Level Up and the spoils, in whichever order they open (the
+      // Tower's tables load a little longer since the clans' offers read
+      // the clans' tables too), until the cards show.
+      for (var i = 0;
+          i < 4 && find.byKey(const Key('tower_card_0')).evaluate().isEmpty;
+          i++) {
+        final level = find.byType(LevelUpScreen);
+        if (level.evaluate().isNotEmpty) {
+          Navigator.of(tester.element(level)).pop();
+          await settle();
+        }
+        final take = find.byKey(const Key('loot_sheet_take'));
+        if (take.evaluate().isNotEmpty) {
+          await tester.tap(take);
+          await settle();
+        }
       }
       final error = tester.takeException();
       final fr = lang == AppLanguage.fr;

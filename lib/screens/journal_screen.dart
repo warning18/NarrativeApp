@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-
 import '../widgets/help_hint.dart';
 
 import '../data/echoes.dart';
@@ -35,31 +34,23 @@ String _personal(String text, PlayerSession session, bool french) =>
 
 /// A journal card: the quiet frame (the rich one for where the story stands),
 /// the page opaque under the words.
-Widget _journalCard({
-  required Widget child,
-  Key? key,
-  CardTier tier = CardTier.common,
-  EdgeInsets padding = const EdgeInsets.all(8),
-}) =>
+Widget _journalCard(
+        {required Widget child,
+        Key? key,
+        CardTier tier = CardTier.common,
+        EdgeInsets padding = const EdgeInsets.all(8)}) =>
     Padding(
       padding: const EdgeInsets.only(bottom: 6),
       child: StoryFrame(
-        key: key,
-        tier: tier,
-        band: 0.5,
-        padding: padding,
-        child: child,
-      ),
+          key: key, tier: tier, band: 0.5, padding: padding, child: child),
     );
 
 /// A chapter's name worth showing: not empty, and not just "Chapter 3" again
 /// (a chapter with no name of its own carries its number as its title).
 bool _isNamed(String title) =>
     title.isNotEmpty &&
-    !RegExp(
-      r'^(chapter|chapitre|prologue)\s*\d*$',
-      caseSensitive: false,
-    ).hasMatch(title.trim());
+    !RegExp(r'^(chapter|chapitre|prologue)\s*\d*$', caseSensitive: false)
+        .hasMatch(title.trim());
 
 String _chapterTitle(int chapter, AppLanguage lang) => chapter == 0
     ? trFor(lang, 'chapter_band_prologue')
@@ -86,77 +77,60 @@ class JournalScreen extends ConsumerWidget {
 
     final entries = story == null
         ? const <JournalEntry>[]
-        : storySoFar(
-            story,
-            playState.history,
-            playState.currentNodeId,
-            french: french,
-          ).reversed.toList();
+        : storySoFar(story, playState.history, playState.currentNodeId,
+                french: french)
+            .reversed
+            .toList();
 
     final children = <Widget>[];
     int? lastChapter;
     for (final entry in entries) {
       if (entry.chapter != lastChapter) {
         lastChapter = entry.chapter;
-        children.add(
-          Padding(
-            padding: const EdgeInsets.only(top: 16, bottom: 6),
-            child: Text(
-              _chapterTitle(entry.chapter, lang),
-              style: theme.textTheme.titleLarge?.copyWith(
-                fontFamily: InkFonts.display,
-              ),
-            ),
-          ),
-        );
+        children.add(Padding(
+          padding: const EdgeInsets.only(top: 16, bottom: 6),
+          child: Text(_chapterTitle(entry.chapter, lang),
+              style: theme.textTheme.titleLarge
+                  ?.copyWith(fontFamily: InkFonts.display)),
+        ));
       }
       final here =
           entry.choiceText == null && entry.nodeId == playState.currentNodeId;
-      children.add(
-        _journalCard(
-          tier: here ? CardTier.epic : CardTier.common,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                _personal(entry.opening, session, french),
-                style: theme.textTheme.bodyMedium?.copyWith(
-                  fontStyle: FontStyle.italic,
-                  fontFamily: InkFonts.prose,
-                ),
-              ),
-              if (entry.choiceText != null) ...[
-                const SizedBox(height: 6),
-                Row(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Icon(
-                      Icons.subdirectory_arrow_right,
-                      size: IconSize.s16,
-                      color: theme.colorScheme.primary,
+      children.add(_journalCard(
+        tier: here ? CardTier.epic : CardTier.common,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              _personal(entry.opening, session, french),
+              style: theme.textTheme.bodyMedium?.copyWith(
+                  fontStyle: FontStyle.italic, fontFamily: InkFonts.prose),
+            ),
+            if (entry.choiceText != null) ...[
+              const SizedBox(height: 6),
+              Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Icon(Icons.subdirectory_arrow_right,
+                      size: IconSize.s16, color: theme.colorScheme.primary),
+                  const SizedBox(width: 4),
+                  Expanded(
+                    child: Text(
+                      _personal(entry.choiceText!, session, french),
+                      style: theme.textTheme.labelLarge,
                     ),
-                    const SizedBox(width: 4),
-                    Expanded(
-                      child: Text(
-                        _personal(entry.choiceText!, session, french),
-                        style: theme.textTheme.labelLarge,
-                      ),
-                    ),
-                  ],
-                ),
-              ] else if (entry.nodeId == playState.currentNodeId) ...[
-                const SizedBox(height: 6),
-                Text(
-                  trFor(lang, 'journal_you_are_here'),
-                  style: theme.textTheme.labelMedium?.copyWith(
-                    color: theme.colorScheme.primary,
                   ),
-                ),
-              ],
+                ],
+              ),
+            ] else if (entry.nodeId == playState.currentNodeId) ...[
+              const SizedBox(height: 6),
+              Text(trFor(lang, 'journal_you_are_here'),
+                  style: theme.textTheme.labelMedium
+                      ?.copyWith(color: theme.colorScheme.primary)),
             ],
-          ),
+          ],
         ),
-      );
+      ));
     }
 
     return TutorialTrigger(
@@ -168,46 +142,36 @@ class JournalScreen extends ConsumerWidget {
             title: Text(tr(ref, 'journal_title')),
             actions: const [TourInfoButton(topic: TutorialTopic.journal)],
             bottom: TabBar(
-              // Four tabs fit a 360 dp phone, a long label on two lines.
-              labelPadding: const EdgeInsets.symmetric(horizontal: 3),
-              labelStyle: const TextStyle(
-                fontFamily: InkFonts.system,
-                fontSize: 11,
-              ),
-              unselectedLabelStyle: const TextStyle(
-                fontFamily: InkFonts.system,
-                fontSize: 11,
-              ),
-              tabs: [
-                Tab(
-                  key: const ValueKey('journal_now_tab'),
-                  text: tr(ref, 'sofar_now'),
-                ),
-                Tab(text: tr(ref, 'journal_story_tab')),
-                Tab(
-                  key: const ValueKey('journal_changed_tab'),
-                  text: tr(ref, 'journal_changed_title'),
-                ),
-                Tab(
-                  key: const ValueKey('journal_news_tab'),
-                  text: tr(ref, 'journal_news_tab'),
-                ),
-              ],
-            ),
+                // Four tabs fit a 360 dp phone, a long label on two lines.
+                labelPadding: const EdgeInsets.symmetric(horizontal: 3),
+                labelStyle:
+                    const TextStyle(fontFamily: InkFonts.system, fontSize: 11),
+                unselectedLabelStyle:
+                    const TextStyle(fontFamily: InkFonts.system, fontSize: 11),
+                tabs: [
+                  Tab(
+                      key: const ValueKey('journal_now_tab'),
+                      text: tr(ref, 'sofar_now')),
+                  Tab(text: tr(ref, 'journal_story_tab')),
+                  Tab(
+                      key: const ValueKey('journal_changed_tab'),
+                      text: tr(ref, 'journal_changed_title')),
+                  Tab(
+                      key: const ValueKey('journal_news_tab'),
+                      text: tr(ref, 'journal_news_tab')),
+                ]),
           ),
-          body: TabBarView(
-            children: [
-              const _StorySoFarPage(),
-              entries.isEmpty
-                  ? InkEmptyState(message: tr(ref, 'journal_empty'))
-                  : ListView(
-                      padding: const EdgeInsets.fromLTRB(16, 0, 16, 24),
-                      children: children,
-                    ),
-              const _WhatChanged(),
-              const CoastNewsList(),
-            ],
-          ),
+          body: TabBarView(children: [
+            const _StorySoFarPage(),
+            entries.isEmpty
+                ? InkEmptyState(message: tr(ref, 'journal_empty'))
+                : ListView(
+                    padding: const EdgeInsets.fromLTRB(16, 0, 16, 24),
+                    children: children,
+                  ),
+            const _WhatChanged(),
+            const CoastNewsList(),
+          ]),
         ),
       ),
     );
@@ -229,19 +193,13 @@ class _StorySoFarPage extends ConsumerWidget {
     final french = lang == AppLanguage.fr;
     final theme = Theme.of(context);
     final ink = InkColors.of(context);
-    final prose = theme.textTheme.bodyMedium?.copyWith(
-      fontFamily: InkFonts.prose,
-      height: 1.45,
-    );
+    final prose = theme.textTheme.bodyMedium
+        ?.copyWith(fontFamily: InkFonts.prose, height: 1.45);
     Widget heading(String key, Color colour) => Padding(
           padding: EdgeInsets.only(top: compact ? 10 : 14, bottom: 6),
-          child: Text(
-            tr(ref, key).toUpperCase(),
-            style: theme.textTheme.labelSmall?.copyWith(
-              letterSpacing: 1.4,
-              color: colour,
-            ),
-          ),
+          child: Text(tr(ref, key).toUpperCase(),
+              style: theme.textTheme.labelSmall
+                  ?.copyWith(letterSpacing: 1.4, color: colour)),
         );
     Widget card(Widget child, {Key? key, CardTier tier = CardTier.common}) =>
         _journalCard(key: key, tier: tier, child: child);
@@ -258,19 +216,13 @@ class _StorySoFarPage extends ConsumerWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(
-                      state.placeName,
-                      style: theme.textTheme.titleMedium?.copyWith(
-                        fontFamily: InkFonts.display,
-                      ),
-                    ),
+                    Text(state.placeName,
+                        style: theme.textTheme.titleMedium
+                            ?.copyWith(fontFamily: InkFonts.display)),
                     if (state.placeSub.isNotEmpty)
-                      Text(
-                        state.placeSub,
-                        style: theme.textTheme.labelSmall?.copyWith(
-                          color: ink.ash,
-                        ),
-                      ),
+                      Text(state.placeSub,
+                          style: theme.textTheme.labelSmall
+                              ?.copyWith(color: ink.ash)),
                   ],
                 ),
               ),
@@ -278,7 +230,10 @@ class _StorySoFarPage extends ConsumerWidget {
           ),
         ),
         heading('sofar_now', ink.voidColor),
-        card(key: const ValueKey('sofar_now'), Text(state.now, style: prose)),
+        card(
+          key: const ValueKey('sofar_now'),
+          Text(state.now, style: prose),
+        ),
       ] else ...[
         for (final entry in state.recent) ...[
           Text(
@@ -288,10 +243,8 @@ class _StorySoFarPage extends ConsumerWidget {
           if (entry.choiceText != null)
             Padding(
               padding: const EdgeInsets.only(top: 2, bottom: 10),
-              child: Text(
-                '→ ${_personal(entry.choiceText!, session, french)}',
-                style: theme.textTheme.labelMedium,
-              ),
+              child: Text('→ ${_personal(entry.choiceText!, session, french)}',
+                  style: theme.textTheme.labelMedium),
             )
           else
             const SizedBox(height: 10),
@@ -312,33 +265,32 @@ class _StorySoFarPage extends ConsumerWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Icon(
-                        thread.main
-                            ? Icons.flag_outlined
-                            : Icons.chat_bubble_outline,
-                        size: IconSize.s16,
-                        color: thread.main ? ink.gold : ink.tide,
-                      ),
+                          thread.main
+                              ? Icons.flag_outlined
+                              : Icons.chat_bubble_outline,
+                          size: IconSize.s16,
+                          color: thread.main ? ink.gold : ink.tide),
                       const SizedBox(width: 8),
                       Expanded(
                         child: Text(
-                          thread.goal.isEmpty
-                              ? thread.name
-                              : '${thread.name} — ${thread.goal}',
-                          style: prose,
-                        ),
+                            thread.goal.isEmpty
+                                ? thread.name
+                                : '${thread.name} — ${thread.goal}',
+                            style: prose),
                       ),
                       if (thread.main || thread.followed)
                         Padding(
                           padding: const EdgeInsets.only(left: 8),
                           child: Text(
                             tr(
-                              ref,
-                              thread.main ? 'sofar_main' : 'sofar_followed',
-                            ).toUpperCase(),
+                                    ref,
+                                    thread.main
+                                        ? 'sofar_main'
+                                        : 'sofar_followed')
+                                .toUpperCase(),
                             style: theme.textTheme.labelSmall?.copyWith(
-                              color: thread.main ? ink.gold : ink.tide,
-                              letterSpacing: 1,
-                            ),
+                                color: thread.main ? ink.gold : ink.tide,
+                                letterSpacing: 1),
                           ),
                         ),
                     ],
@@ -360,9 +312,8 @@ class _StorySoFarPage extends ConsumerWidget {
               for (final name in state.party) _chip(name, ink.heal),
               for (final standing in state.standings)
                 _chip(
-                  '${standing.name} · ${tr(ref, 'standing_tier_${standing.tier.name}')}',
-                  standingTierColor(standing.tier),
-                ),
+                    '${standing.name} · ${tr(ref, 'standing_tier_${standing.tier.name}')}',
+                    standingTierColor(standing.tier)),
             ],
           ),
         ),
@@ -379,27 +330,19 @@ class _StorySoFarPage extends ConsumerWidget {
                     child: Row(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Icon(
-                          Icons.history,
-                          size: IconSize.s16,
-                          color: ink.ember,
-                        ),
+                        Icon(Icons.history,
+                            size: IconSize.s16, color: ink.ember),
                         const SizedBox(width: 8),
                         Expanded(
                           child: Text.rich(
-                            TextSpan(
-                              children: [
+                              TextSpan(children: [
                                 TextSpan(
-                                  text: echo.cause,
-                                  style: const TextStyle(
-                                    fontWeight: FontWeight.w600,
-                                  ),
-                                ),
+                                    text: echo.cause,
+                                    style: const TextStyle(
+                                        fontWeight: FontWeight.w600)),
                                 TextSpan(text: ' — ${echo.line}'),
-                              ],
-                            ),
-                            style: prose,
-                          ),
+                              ]),
+                              style: prose),
                         ),
                       ],
                     ),
@@ -444,14 +387,9 @@ class _StorySoFarPage extends ConsumerWidget {
           border: Border.all(color: colour),
           borderRadius: BorderRadius.circular(3),
         ),
-        child: Text(
-          text,
-          style: TextStyle(
-            fontFamily: InkFonts.system,
-            fontSize: 11.5,
-            color: colour,
-          ),
-        ),
+        child: Text(text,
+            style: TextStyle(
+                fontFamily: InkFonts.system, fontSize: 11.5, color: colour)),
       );
 }
 
@@ -477,10 +415,8 @@ class _WhatChanged extends ConsumerWidget {
       return Center(
         child: Padding(
           padding: const EdgeInsets.all(24),
-          child: Text(
-            tr(ref, 'journal_changed_empty'),
-            textAlign: TextAlign.center,
-          ),
+          child: Text(tr(ref, 'journal_changed_empty'),
+              textAlign: TextAlign.center),
         ),
       );
     }
@@ -493,28 +429,20 @@ class _WhatChanged extends ConsumerWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 if (landmarkOfScene(echo.nodeId) case final place?)
-                  Text(
-                    place.name(lang).toUpperCase(),
-                    style: theme.textTheme.labelSmall?.copyWith(
-                      letterSpacing: 1.1,
-                    ),
-                  ),
+                  Text(place.name(lang).toUpperCase(),
+                      style: theme.textTheme.labelSmall
+                          ?.copyWith(letterSpacing: 1.1)),
                 const SizedBox(height: 4),
                 Row(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Icon(
-                      Icons.history,
-                      size: IconSize.s16,
-                      color: theme.colorScheme.primary,
-                    ),
+                    Icon(Icons.history,
+                        size: IconSize.s16, color: theme.colorScheme.primary),
                     const SizedBox(width: 4),
                     Expanded(
                       child: Text(
                         tr(ref, 'echo_because').replaceAll(
-                          '{choice}',
-                          _personal(echo.cause, session, french),
-                        ),
+                            '{choice}', _personal(echo.cause, session, french)),
                         style: theme.textTheme.labelLarge,
                       ),
                     ),
@@ -524,9 +452,7 @@ class _WhatChanged extends ConsumerWidget {
                 Text(
                   _personal(echo.line, session, french),
                   style: theme.textTheme.bodyMedium?.copyWith(
-                    fontStyle: FontStyle.italic,
-                    fontFamily: InkFonts.prose,
-                  ),
+                      fontStyle: FontStyle.italic, fontFamily: InkFonts.prose),
                 ),
               ],
             ),

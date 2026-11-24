@@ -19,11 +19,8 @@ import '../theme/icon_sizes.dart';
 /// pop-up only closes once none are left (Wave 7, no "decide later"). Each
 /// level brings an offer from the clans (see offers.dart): it follows once
 /// this closes.
-Future<void> showLevelUpDialog(
-  BuildContext context,
-  WidgetRef ref, {
-  required int newLevel,
-}) async {
+Future<void> showLevelUpDialog(BuildContext context, WidgetRef ref,
+    {required int newLevel}) async {
   await showDialog<void>(
     context: context,
     barrierDismissible: false,
@@ -42,63 +39,57 @@ class _LevelUpDialog extends ConsumerWidget {
         width: 120,
         height: 96,
         child: Stack(
-          alignment: Alignment.center,
-          clipBehavior: Clip.none,
-          children: [
-            Positioned.fill(child: RayBurst(colour: ink.gold)),
-            const Positioned(
-              left: -12,
-              top: -24,
-              width: 144,
-              height: 144,
-              child: PixelMoment(
-                key: Key('level_up_burst'),
-                palette: PixelMoment.gold,
-                duration: Duration(milliseconds: 1500),
-                layers: [
-                  PixelMomentLayer('vfx_crit', span: 0.55),
-                  PixelMomentLayer('vfx_shout', t0: 0.15, span: 0.6),
-                  PixelMomentLayer('vfx_heal', t0: 0.3, span: 0.7),
-                ],
-              ),
-            ),
-            Container(
-              width: 52,
-              height: 52,
-              decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                gradient: LinearGradient(
-                  begin: Alignment.topLeft,
-                  end: Alignment.bottomRight,
-                  colors: [Color.lerp(ink.gold, Colors.white, 0.35)!, ink.gold],
+            alignment: Alignment.center,
+            clipBehavior: Clip.none,
+            children: [
+              Positioned.fill(child: RayBurst(colour: ink.gold)),
+              const Positioned(
+                left: -12,
+                top: -24,
+                width: 144,
+                height: 144,
+                child: PixelMoment(
+                  key: Key('level_up_burst'),
+                  palette: PixelMoment.gold,
+                  duration: Duration(milliseconds: 1500),
+                  layers: [
+                    PixelMomentLayer('vfx_crit', span: 0.55),
+                    PixelMomentLayer('vfx_shout', t0: 0.15, span: 0.6),
+                    PixelMomentLayer('vfx_heal', t0: 0.3, span: 0.7),
+                  ],
                 ),
-                boxShadow: [
-                  BoxShadow(
-                    color: ink.gold.withValues(alpha: 0.35),
-                    blurRadius: 16,
-                    spreadRadius: 2,
+              ),
+              Container(
+                width: 52,
+                height: 52,
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  gradient: LinearGradient(
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
+                    colors: [
+                      Color.lerp(ink.gold, Colors.white, 0.35)!,
+                      ink.gold
+                    ],
                   ),
-                ],
+                  boxShadow: [
+                    BoxShadow(
+                        color: ink.gold.withValues(alpha: 0.35),
+                        blurRadius: 16,
+                        spreadRadius: 2),
+                  ],
+                ),
+                child: const Icon(Icons.military_tech,
+                    size: IconSize.s32, color: Color(0xFF14110A)),
               ),
-              child: const Icon(
-                Icons.military_tech,
-                size: IconSize.s32,
-                color: Color(0xFF14110A),
-              ),
-            ),
-          ],
-        ),
+            ]),
       );
 
   /// The patron's gift of this level, from the clan log's entry of today:
   /// "Clan of X's favour: +1 Strength, +5 max health". Nothing when the
   /// level brought none.
   List<Widget> _patronLine(
-    BuildContext context,
-    WidgetRef ref,
-    ThemeData theme,
-    InkColors ink,
-  ) {
+      BuildContext context, WidgetRef ref, ThemeData theme, InkColors ink) {
     final session = ref.watch(playerSessionProvider);
     final lang = ref.watch(appLanguageProvider);
     StandingLogEntry? gift;
@@ -129,14 +120,12 @@ class _LevelUpDialog extends ConsumerWidget {
               child: Text(
                 clan.isEmpty
                     ? text
-                    : tr(
-                        ref,
-                        'level_up_patron_line',
-                      ).replaceAll('{clan}', clan).replaceAll('{gains}', text),
+                    : tr(ref, 'level_up_patron_line')
+                        .replaceAll('{clan}', clan)
+                        .replaceAll('{gains}', text),
                 style: theme.textTheme.bodySmall?.copyWith(
-                  color: Color.lerp(colour, Colors.white, 0.4),
-                  fontWeight: FontWeight.w600,
-                ),
+                    color: Color.lerp(colour, Colors.white, 0.4),
+                    fontWeight: FontWeight.w600),
               ),
             ),
           ],
@@ -175,9 +164,7 @@ class _LevelUpDialog extends ConsumerWidget {
                       '${tr(ref, 'level_up')}! ${tr(ref, 'level_field_label')} $newLevel',
                       textAlign: TextAlign.center,
                       style: theme.textTheme.headlineSmall?.copyWith(
-                        fontFamily: InkFonts.display,
-                        color: ink.gold,
-                      ),
+                          fontFamily: InkFonts.display, color: ink.gold),
                     ),
                   ),
                   // Only when more than one pick waits, a quiet count, so the
@@ -186,15 +173,12 @@ class _LevelUpDialog extends ConsumerWidget {
                     Padding(
                       padding: const EdgeInsets.only(top: 6),
                       child: Text(
-                        tr(
-                          ref,
-                          'stat_picks_count',
-                        ).replaceAll('{n}', '${session.pendingStatPicks}'),
+                        tr(ref, 'stat_picks_count')
+                            .replaceAll('{n}', '${session.pendingStatPicks}'),
                         key: const Key('level_up_points'),
                         textAlign: TextAlign.center,
-                        style: theme.textTheme.bodySmall?.copyWith(
-                          color: ink.ash,
-                        ),
+                        style:
+                            theme.textTheme.bodySmall?.copyWith(color: ink.ash),
                       ),
                     ),
                   // What the patron gave with this level (patron_stats.dart).

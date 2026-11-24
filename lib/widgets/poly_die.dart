@@ -114,19 +114,19 @@ _Solid _build(DieShape shape) {
           Offset(0.5, 0.04),
           Offset(0.93, 0.26),
           Offset(0.5, 0.48),
-          Offset(0.07, 0.26),
+          Offset(0.07, 0.26)
         ]),
         _Facet([
           Offset(0.07, 0.26),
           Offset(0.5, 0.48),
           Offset(0.5, 0.96),
-          Offset(0.07, 0.74),
+          Offset(0.07, 0.74)
         ]),
         _Facet([
           Offset(0.5, 0.48),
           Offset(0.93, 0.26),
           Offset(0.93, 0.74),
-          Offset(0.5, 0.96),
+          Offset(0.5, 0.96)
         ]),
       ], 2);
     case DieShape.d8:
@@ -163,7 +163,12 @@ _Solid _build(DieShape shape) {
       return _Solid([
         _Facet(inner),
         for (var i = 0; i < 5; i++)
-          _Facet([outer[i], outer[(i + 1) % 5], inner[(i + 1) % 5], inner[i]]),
+          _Facet([
+            outer[i],
+            outer[(i + 1) % 5],
+            inner[(i + 1) % 5],
+            inner[i],
+          ]),
       ], 0);
     case DieShape.d20:
       final h = _ring(6, 0.5, -math.pi / 2);
@@ -281,12 +286,10 @@ class PolyDie extends StatelessWidget {
                 child: DecoratedBox(
                   decoration: BoxDecoration(
                     shape: BoxShape.circle,
-                    gradient: RadialGradient(
-                      colors: [
-                        skin.glow!.withValues(alpha: 0.30),
-                        skin.glow!.withValues(alpha: 0),
-                      ],
-                    ),
+                    gradient: RadialGradient(colors: [
+                      skin.glow!.withValues(alpha: 0.30),
+                      skin.glow!.withValues(alpha: 0),
+                    ]),
                   ),
                 ),
               ),
@@ -436,11 +439,9 @@ class _PolyDiePainter extends CustomPainter {
           canvas.clipPath(path);
           final box = path.getBounds();
           canvas.translate(box.left, box.top);
-          DiePatternPainter(
-            skin.pattern,
-            Color.lerp(skin.edge, skin.base, 0.25)!,
-            7 + shape.index,
-          ).paint(canvas, box.size);
+          DiePatternPainter(skin.pattern,
+                  Color.lerp(skin.edge, skin.base, 0.25)!, 7 + shape.index)
+              .paint(canvas, box.size);
           canvas.restore();
         }
         outline.addPath(path, Offset.zero);
@@ -464,21 +465,17 @@ class _PolyDiePainter extends CustomPainter {
             height: 1,
             shadows: [
               Shadow(
-                color: skin.base.withValues(alpha: 0.9),
-                blurRadius: size.width * 0.04,
-              ),
+                  color: skin.base.withValues(alpha: 0.9),
+                  blurRadius: size.width * 0.04),
             ],
           ),
         ),
         textDirection: TextDirection.ltr,
       )..layout();
       painter.paint(
-        canvas,
-        Offset(
-          spot.dx * size.width - painter.width / 2,
-          spot.dy * size.height - painter.height / 2,
-        ),
-      );
+          canvas,
+          Offset(spot.dx * size.width - painter.width / 2,
+              spot.dy * size.height - painter.height / 2));
     }
     final mark = clan;
     if (mark != null) _paintBanner(canvas, size, mark);
@@ -487,20 +484,12 @@ class _PolyDiePainter extends CustomPainter {
 
   /// The silhouette, a little heavier than the inner edges.
   void _paintOutline(
-    Canvas canvas,
-    Size size,
-    _Solid solid,
-    Paint edge,
-    double line,
-  ) {
+      Canvas canvas, Size size, _Solid solid, Paint edge, double line) {
     final pts = <Offset>[];
     switch (shape) {
       case DieShape.d4:
-        pts.addAll(const [
-          Offset(0.5, 0.04),
-          Offset(0.03, 0.9),
-          Offset(0.97, 0.9),
-        ]);
+        pts.addAll(
+            const [Offset(0.5, 0.04), Offset(0.03, 0.9), Offset(0.97, 0.9)]);
       case DieShape.d6:
         pts.addAll(const [
           Offset(0.5, 0.04),
@@ -508,14 +497,14 @@ class _PolyDiePainter extends CustomPainter {
           Offset(0.93, 0.74),
           Offset(0.5, 0.96),
           Offset(0.07, 0.74),
-          Offset(0.07, 0.26),
+          Offset(0.07, 0.26)
         ]);
       case DieShape.d8:
         pts.addAll(const [
           Offset(0.5, 0.02),
           Offset(0.96, 0.5),
           Offset(0.5, 0.98),
-          Offset(0.04, 0.5),
+          Offset(0.04, 0.5)
         ]);
       case DieShape.d10:
         pts.addAll(const [
@@ -524,7 +513,7 @@ class _PolyDiePainter extends CustomPainter {
           Offset(0.73, 0.72),
           Offset(0.5, 1.0),
           Offset(0.27, 0.72),
-          Offset(0.1, 0.4),
+          Offset(0.1, 0.4)
         ]);
       case DieShape.d12:
         pts.addAll(_ring(5, 0.49, -math.pi / 2));
@@ -534,12 +523,11 @@ class _PolyDiePainter extends CustomPainter {
         return;
     }
     canvas.drawPath(
-      Path()
-        ..addPolygon([
-          for (final p in pts) Offset(p.dx * size.width, p.dy * size.height),
-        ], true),
-      edge..strokeWidth = line * 1.5,
-    );
+        Path()
+          ..addPolygon([
+            for (final p in pts) Offset(p.dx * size.width, p.dy * size.height)
+          ], true),
+        edge..strokeWidth = line * 1.5);
   }
 
   void _paintCoin(Canvas canvas, Size size, Paint edge, double line) {
@@ -547,10 +535,7 @@ class _PolyDiePainter extends CustomPainter {
     final r = size.width * 0.46;
     canvas.drawCircle(centre, r, Paint()..color = skin.base);
     canvas.drawCircle(
-      centre,
-      r * 0.78,
-      Paint()..color = _shade(skin.base, 0.08),
-    );
+        centre, r * 0.78, Paint()..color = _shade(skin.base, 0.08));
     canvas.drawCircle(centre, r, edge..strokeWidth = line * 1.5);
     canvas.drawCircle(centre, r * 0.78, edge..strokeWidth = line * 0.7);
     // A crown cut into it.
@@ -584,25 +569,23 @@ class _PolyDiePainter extends CustomPainter {
       ..close();
     canvas.drawPath(flag, Paint()..color = clan.color);
     canvas.drawPath(
-      flag,
-      Paint()
-        ..style = PaintingStyle.stroke
-        ..strokeWidth = math.max(1, size.width / 40)
-        ..strokeJoin = StrokeJoin.round
-        ..color = _shade(clan.color, -0.45),
-    );
+        flag,
+        Paint()
+          ..style = PaintingStyle.stroke
+          ..strokeWidth = math.max(1, size.width / 40)
+          ..strokeJoin = StrokeJoin.round
+          ..color = _shade(clan.color, -0.45));
     final cx = x + w / 2;
     final cy = y + h * 0.38;
     final d = w * 0.22;
     canvas.drawPath(
-      Path()
-        ..moveTo(cx, cy - d)
-        ..lineTo(cx + d, cy)
-        ..lineTo(cx, cy + d)
-        ..lineTo(cx - d, cy)
-        ..close(),
-      Paint()..color = _shade(clan.color, 0.7),
-    );
+        Path()
+          ..moveTo(cx, cy - d)
+          ..lineTo(cx + d, cy)
+          ..lineTo(cx, cy + d)
+          ..lineTo(cx - d, cy)
+          ..close(),
+        Paint()..color = _shade(clan.color, 0.7));
   }
 
   @override

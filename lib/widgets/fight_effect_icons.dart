@@ -3,7 +3,6 @@
 // icon in one colour, a corner number for the turns left or the value, and a
 // pop-in that explains it on a tap. Drawn in code: no image to ship.
 import 'package:flutter/material.dart';
-
 import '../screens/tower/ink/ink_palette.dart';
 import '../screens/tower/tower_look.dart' show TowerPanelStyle;
 import '../theme/palette.dart';
@@ -230,9 +229,7 @@ class _PixelPainter extends CustomPainter {
       for (var x = 0; x < rows[y].length; x++) {
         if (rows[y][x] == '#') {
           canvas.drawRect(
-            Rect.fromLTWH(x * cell, y * cell, cell + 0.4, cell + 0.4),
-            paint,
-          );
+              Rect.fromLTWH(x * cell, y * cell, cell + 0.4, cell + 0.4), paint);
         }
       }
     }
@@ -282,9 +279,8 @@ class FightEffectChip extends StatelessWidget {
             badge: badge,
             child: Padding(
               padding: EdgeInsets.all(size * 0.2),
-              child: CustomPaint(
-                painter: _PixelPainter(_bitmaps[effect]!, color),
-              ),
+              child:
+                  CustomPaint(painter: _PixelPainter(_bitmaps[effect]!, color)),
             ),
           ),
         ),
@@ -353,11 +349,8 @@ class FightStatusTile extends StatelessWidget {
           );
         },
         child: Padding(
-          padding: EdgeInsets.only(
-            top: reachTop,
-            right: 6,
-            bottom: 5 + reachBottom,
-          ),
+          padding:
+              EdgeInsets.only(top: reachTop, right: 6, bottom: 5 + reachBottom),
           child: _statusTile(icon, color, badge, size),
         ),
       ),
@@ -365,11 +358,7 @@ class FightStatusTile extends StatelessWidget {
   }
 
   static Widget _statusTile(
-    IconData icon,
-    Color color,
-    String? badge,
-    double size,
-  ) =>
+          IconData icon, Color color, String? badge, double size) =>
       _EffectTile(
         size: size,
         color: color,
@@ -423,8 +412,7 @@ class _EffectTile extends StatelessWidget {
               child: inked
                   ? ColorFiltered(
                       colorFilter: ColorFilter.mode(color, BlendMode.srcATop),
-                      child: child,
-                    )
+                      child: child)
                   : child,
             ),
           ),
@@ -433,24 +421,19 @@ class _EffectTile extends StatelessWidget {
               right: -4,
               bottom: -5,
               child: Container(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 3,
-                  vertical: 0.5,
-                ),
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 3, vertical: 0.5),
                 decoration: BoxDecoration(
                   color: const Color(0xFF15131A),
                   borderRadius: BorderRadius.circular(radius - 1),
                   border: Border.all(color: color.withValues(alpha: 0.9)),
                 ),
-                child: Text(
-                  badge!,
-                  style: const TextStyle(
-                    fontSize: 9,
-                    height: 1.1,
-                    color: Colors.white,
-                    fontWeight: FontWeight.w700,
-                  ),
-                ),
+                child: Text(badge!,
+                    style: const TextStyle(
+                        fontSize: 9,
+                        height: 1.1,
+                        color: Colors.white,
+                        fontWeight: FontWeight.w700)),
               ),
             ),
         ],
@@ -513,39 +496,25 @@ Future<void> showFightEffectPopin(
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text(
-                          title,
-                          style: theme.textTheme.titleMedium?.copyWith(
-                            color: color0,
-                            fontWeight: FontWeight.w700,
-                          ),
-                        ),
-                        Text(
-                          subtitle,
-                          style: theme.textTheme.labelSmall?.copyWith(
-                            color: const Color(0xFF9A94A8),
-                          ),
-                        ),
+                        Text(title,
+                            style: theme.textTheme.titleMedium?.copyWith(
+                                color: color0, fontWeight: FontWeight.w700)),
+                        Text(subtitle,
+                            style: theme.textTheme.labelSmall
+                                ?.copyWith(color: const Color(0xFF9A94A8))),
                       ],
                     ),
                   ),
                 ],
               ),
               const SizedBox(height: 8),
-              Text(
-                body,
-                style: theme.textTheme.bodyMedium?.copyWith(
-                  color: const Color(0xFFE8E2D2),
-                  height: 1.35,
-                ),
-              ),
+              Text(body,
+                  style: theme.textTheme.bodyMedium
+                      ?.copyWith(color: const Color(0xFFE8E2D2), height: 1.35)),
               const SizedBox(height: 8),
-              Text(
-                closeHint,
-                style: theme.textTheme.labelSmall?.copyWith(
-                  color: const Color(0xFF9A94A8),
-                ),
-              ),
+              Text(closeHint,
+                  style: theme.textTheme.labelSmall
+                      ?.copyWith(color: const Color(0xFF9A94A8))),
             ],
           ),
         ),
@@ -626,13 +595,9 @@ Future<void> showFightEffectsPopin(
               mainAxisSize: MainAxisSize.min,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(
-                  title,
-                  style: theme.textTheme.titleMedium?.copyWith(
-                    color: Colors.white,
-                    fontWeight: FontWeight.w700,
-                  ),
-                ),
+                Text(title,
+                    style: theme.textTheme.titleMedium?.copyWith(
+                        color: Colors.white, fontWeight: FontWeight.w700)),
                 Flexible(
                   child: SingleChildScrollView(
                     child: Column(
@@ -644,29 +609,24 @@ Future<void> showFightEffectsPopin(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               FightEffectChip(
-                                effect: e.effect,
-                                label: e.title,
-                                badge: e.badge,
-                                size: 30,
-                              ),
+                                  effect: e.effect,
+                                  label: e.title,
+                                  badge: e.badge,
+                                  size: 30),
                               const SizedBox(width: 8),
                               Expanded(
                                 child: Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
-                                    Text(
-                                      e.title,
-                                      style:
-                                          theme.textTheme.bodyMedium?.copyWith(
-                                        color: ink,
-                                        fontWeight: FontWeight.w700,
-                                      ),
-                                    ),
-                                    Text(
-                                      e.body,
-                                      style: theme.textTheme.bodySmall
-                                          ?.copyWith(color: ink, height: 1.3),
-                                    ),
+                                    Text(e.title,
+                                        style: theme.textTheme.bodyMedium
+                                            ?.copyWith(
+                                                color: ink,
+                                                fontWeight: FontWeight.w700)),
+                                    Text(e.body,
+                                        style: theme.textTheme.bodySmall
+                                            ?.copyWith(
+                                                color: ink, height: 1.3)),
                                   ],
                                 ),
                               ),
@@ -678,10 +638,8 @@ Future<void> showFightEffectsPopin(
                   ),
                 ),
                 const SizedBox(height: 8),
-                Text(
-                  closeHint,
-                  style: theme.textTheme.labelSmall?.copyWith(color: muted),
-                ),
+                Text(closeHint,
+                    style: theme.textTheme.labelSmall?.copyWith(color: muted)),
               ],
             ),
           ),

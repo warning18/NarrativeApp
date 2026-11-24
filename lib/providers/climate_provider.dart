@@ -33,15 +33,11 @@ class SkyHere {
 
 final skyHereProvider = Provider<SkyHere?>((ref) {
   // Only where the party stands (P4), not the rest of the story's state.
-  final play = ref.watch(
-    storyPlayProvider.select(
-      (p) => (
+  final play = ref.watch(storyPlayProvider.select((p) => (
         isInExcursion: p.isInExcursion,
         currentNodeId: p.currentNodeId,
         history: p.history,
-      ),
-    ),
-  );
+      )));
   if (play.isInExcursion) return null;
   final standing = currentLandmark(play.currentNodeId, play.history) ??
       landmarkOfScene(play.currentNodeId);
@@ -50,8 +46,5 @@ final skyHereProvider = Provider<SkyHere?>((ref) {
   final chart = chartOf(MapShape.story);
   final day = ref.watch(playerSessionProvider.select((s) => s.day));
   return SkyHere(
-    climate: ChartClimate.of(chart),
-    at: chart.of(standing),
-    day: day,
-  );
+      climate: ChartClimate.of(chart), at: chart.of(standing), day: day);
 });

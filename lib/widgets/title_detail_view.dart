@@ -80,39 +80,32 @@ class TitleDetailView extends StatelessWidget {
                     child: Row(
                       children: [
                         Icon(
-                          title.negative
-                              ? Icons.report_outlined
-                              : Icons.workspace_premium,
-                          size: IconSize.s32,
-                          color: accent,
-                        ),
+                            title.negative
+                                ? Icons.report_outlined
+                                : Icons.workspace_premium,
+                            size: IconSize.s32,
+                            color: accent),
                         const SizedBox(width: 8),
                         Expanded(
-                          child: Text(
-                            title.nameFor(language),
-                            style: theme.textTheme.titleLarge?.copyWith(
-                              fontFamily: InkFonts.display,
-                            ),
-                          ),
+                          child: Text(title.nameFor(language),
+                              style: theme.textTheme.titleLarge
+                                  ?.copyWith(fontFamily: InkFonts.display)),
                         ),
                       ],
                     ),
                   ),
                   const SizedBox(height: 10),
                   Text(
-                    faction == null
-                        ? t('title_no_clan')
-                        : t('title_granted_by'),
-                    style: theme.textTheme.labelSmall?.copyWith(color: ink.ash),
-                  ),
+                      faction == null
+                          ? t('title_no_clan')
+                          : t('title_granted_by'),
+                      style:
+                          theme.textTheme.labelSmall?.copyWith(color: ink.ash)),
                   if (faction != null)
-                    Text(
-                      faction!.nameFor(language),
-                      key: const Key('title_clan'),
-                      style: theme.textTheme.titleSmall?.copyWith(
-                        color: clanColor,
-                      ),
-                    ),
+                    Text(faction!.nameFor(language),
+                        key: const Key('title_clan'),
+                        style: theme.textTheme.titleSmall
+                            ?.copyWith(color: clanColor)),
                   if (worn) ...[
                     const SizedBox(height: 6),
                     InkChip(t('title_worn'), color: ink.gold),
@@ -135,10 +128,9 @@ class TitleDetailView extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(
-                  t('title_effect_heading'),
-                  style: theme.textTheme.labelSmall?.copyWith(color: ink.ash),
-                ),
+                Text(t('title_effect_heading'),
+                    style:
+                        theme.textTheme.labelSmall?.copyWith(color: ink.ash)),
                 const SizedBox(height: 4),
                 for (final text in effects)
                   Padding(
@@ -149,12 +141,9 @@ class TitleDetailView extends StatelessWidget {
                         Icon(Icons.bolt, size: IconSize.s16, color: accent),
                         const SizedBox(width: 6),
                         Expanded(
-                          child: Text(
-                            text,
-                            style: theme.textTheme.bodyLarge?.copyWith(
-                              fontWeight: FontWeight.w600,
-                            ),
-                          ),
+                          child: Text(text,
+                              style: theme.textTheme.bodyLarge
+                                  ?.copyWith(fontWeight: FontWeight.w600)),
                         ),
                       ],
                     ),
@@ -165,10 +154,8 @@ class TitleDetailView extends StatelessWidget {
         ],
         if (title.negative) ...[
           const SizedBox(height: 10),
-          Text(
-            t('title_bad_note'),
-            style: theme.textTheme.bodyMedium?.copyWith(color: ink.blood),
-          ),
+          Text(t('title_bad_note'),
+              style: theme.textTheme.bodyMedium?.copyWith(color: ink.blood)),
         ],
         if (line.isNotEmpty) ...[
           const SizedBox(height: 14),
@@ -177,16 +164,13 @@ class TitleDetailView extends StatelessWidget {
             decoration: BoxDecoration(
               border: Border(left: BorderSide(color: accent, width: 3)),
             ),
-            child: Text(
-              line,
-              key: const Key('title_line'),
-              style: theme.textTheme.bodyMedium?.copyWith(
-                fontFamily: InkFonts.prose,
-                fontStyle: FontStyle.italic,
-                color: ink.ash,
-                height: 1.45,
-              ),
-            ),
+            child: Text(line,
+                key: const Key('title_line'),
+                style: theme.textTheme.bodyMedium?.copyWith(
+                    fontFamily: InkFonts.prose,
+                    fontStyle: FontStyle.italic,
+                    color: ink.ash,
+                    height: 1.45)),
           ),
         ],
       ],
@@ -217,11 +201,10 @@ Future<void> showTitleSheet(
             Flexible(
               child: SingleChildScrollView(
                 child: TitleDetailView(
-                  title: title,
-                  faction: faction,
-                  language: language,
-                  worn: worn,
-                ),
+                    title: title,
+                    faction: faction,
+                    language: language,
+                    worn: worn),
               ),
             ),
             const SizedBox(height: 14),
@@ -242,9 +225,8 @@ Future<void> showTitleSheet(
                         Navigator.of(sheetContext).pop();
                         onToggle();
                       },
-                      child: Text(
-                        trFor(language, worn ? 'title_take_off' : 'title_wear'),
-                      ),
+                      child: Text(trFor(
+                          language, worn ? 'title_take_off' : 'title_wear')),
                     ),
                   ),
                 ],

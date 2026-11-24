@@ -111,23 +111,18 @@ class _RadarPainter extends CustomPainter {
     shape.close();
     canvas.drawPath(shape, Paint()..color = color.withValues(alpha: 0.32));
     canvas.drawPath(
-      shape,
-      Paint()
-        ..color = color
-        ..style = PaintingStyle.stroke
-        ..strokeWidth = 2
-        ..strokeJoin = StrokeJoin.round,
-    );
+        shape,
+        Paint()
+          ..color = color
+          ..style = PaintingStyle.stroke
+          ..strokeWidth = 2
+          ..strokeJoin = StrokeJoin.round);
     for (var i = 0; i < n; i++) {
       final tp = TextPainter(
         text: TextSpan(
-          text: labels[i],
-          style: (textStyle ?? const TextStyle()).copyWith(
-            color: text,
-            fontSize: 9,
-            fontWeight: FontWeight.w600,
-          ),
-        ),
+            text: labels[i],
+            style: (textStyle ?? const TextStyle()).copyWith(
+                color: text, fontSize: 9, fontWeight: FontWeight.w600)),
         textDirection: TextDirection.ltr,
         maxLines: 1,
       )..layout();

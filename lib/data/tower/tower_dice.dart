@@ -43,32 +43,24 @@ class TowerDieView {
 /// id. [clans] are the clans' records for the Resonance (clanDataProvider in
 /// the app); the sworn clans' standings are the run's own
 /// (towerPoliticsOf), so ClanData.empty reads the main clan's die alike.
-List<TowerDieView> towerDiceOf(
-  TowerRun run,
-  TowerData data, {
-  ClanData clans = ClanData.empty,
-}) {
+List<TowerDieView> towerDiceOf(TowerRun run, TowerData data,
+    {ClanData clans = ClanData.empty}) {
   final hero = towerHeroOf(run, data);
   final politics = towerPoliticsOf(run);
   final ids = hero.ownedDice.keys.toList()
-    ..sort(
-      (a, b) => a == hero.diceId
-          ? -1
-          : b == hero.diceId
-              ? 1
-              : a.compareTo(b),
-    );
+    ..sort((a, b) => a == hero.diceId
+        ? -1
+        : b == hero.diceId
+            ? 1
+            : a.compareTo(b));
   return [
     for (final id in ids)
       TowerDieView(
         id: id,
         faces: hero.ownedDice[id]!,
         inPlay: id == hero.diceId,
-        resonates: resonanceOf(
-              data.dice[id] as Map<String, dynamic>?,
-              politics: politics,
-              data: clans,
-            ) ==
+        resonates: resonanceOf(data.dice[id] as Map<String, dynamic>?,
+                politics: politics, data: clans) ==
             Resonance.lit,
         isNew: run.dieChoice != null && !run.seenDieIds.contains(id),
       ),

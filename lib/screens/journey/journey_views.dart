@@ -86,13 +86,10 @@ extension _JourneyViews on _JourneyViewState {
               mainAxisSize: MainAxisSize.min,
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
-                Text(
-                  name,
-                  key: const ValueKey('journey_pin_sheet_title'),
-                  style: theme.textTheme.titleMedium?.copyWith(
-                    fontFamily: InkFonts.display,
-                  ),
-                ),
+                Text(name,
+                    key: const ValueKey('journey_pin_sheet_title'),
+                    style: theme.textTheme.titleMedium
+                        ?.copyWith(fontFamily: InkFonts.display)),
                 const SizedBox(height: 6),
                 for (final i in ways)
                   InkWell(
@@ -104,26 +101,17 @@ extension _JourneyViews on _JourneyViewState {
                     child: Container(
                       padding: const EdgeInsets.symmetric(vertical: 10),
                       decoration: BoxDecoration(
-                        border: Border(top: BorderSide(color: ink.seam)),
-                      ),
-                      child: Row(
-                        children: [
-                          Expanded(
-                            child: Text(
-                              steps[i].label,
+                          border: Border(top: BorderSide(color: ink.seam))),
+                      child: Row(children: [
+                        Expanded(
+                          child: Text(steps[i].label,
                               style: theme.textTheme.bodyMedium?.copyWith(
-                                color: steps[i].locked ? ink.ash : null,
-                                height: 1.2,
-                              ),
-                            ),
-                          ),
-                          Icon(
-                            Icons.chevron_right,
-                            size: IconSize.s16,
-                            color: ink.ash,
-                          ),
-                        ],
-                      ),
+                                  color: steps[i].locked ? ink.ash : null,
+                                  height: 1.2)),
+                        ),
+                        Icon(Icons.chevron_right,
+                            size: IconSize.s16, color: ink.ash),
+                      ]),
                     ),
                   ),
               ],
@@ -168,8 +156,7 @@ extension _JourneyViews on _JourneyViewState {
           _townShotAt =
               found.localToGlobal(Offset.zero, ancestor: box) & found.size;
           shot = box.toImageSync(
-            pixelRatio: MediaQuery.devicePixelRatioOf(context),
-          );
+              pixelRatio: MediaQuery.devicePixelRatioOf(context));
         }
       }
     }
@@ -227,10 +214,8 @@ extension _JourneyViews on _JourneyViewState {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              Text(
-                tr(ref, 'travel_on_title'),
-                style: Theme.of(context).textTheme.titleLarge,
-              ),
+              Text(tr(ref, 'travel_on_title'),
+                  style: Theme.of(context).textTheme.titleLarge),
               const SizedBox(height: 8),
               TravelOnList(fromNodeId: fromNodeId),
             ],

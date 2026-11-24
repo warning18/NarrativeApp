@@ -144,7 +144,7 @@ class _FaceSkillSheetState extends ConsumerState<FaceSkillSheet> {
             FaceChangeKind.gain => ('+${o.change.delta ?? ''}', ink.heal),
             FaceChangeKind.loss => (
                 '−${(o.change.delta ?? 0).abs()}',
-                ink.ember,
+                ink.ember
               ),
             FaceChangeKind.kind => (tr(ref, 'face_change_kind'), ink.gold),
             FaceChangeKind.same => (tr(ref, 'face_change_same'), ink.ash),
@@ -155,11 +155,9 @@ class _FaceSkillSheetState extends ConsumerState<FaceSkillSheet> {
         borderRadius: BorderRadius.circular(10),
         border: Border.all(color: colour),
       ),
-      child: Text(
-        text,
-        maxLines: 1,
-        style: theme.textTheme.labelSmall?.copyWith(color: colour),
-      ),
+      child: Text(text,
+          maxLines: 1,
+          style: theme.textTheme.labelSmall?.copyWith(color: colour)),
     );
   }
 
@@ -171,9 +169,8 @@ class _FaceSkillSheetState extends ConsumerState<FaceSkillSheet> {
     final note = widget.note;
     return SafeArea(
       child: ConstrainedBox(
-        constraints: BoxConstraints(
-          maxHeight: MediaQuery.sizeOf(context).height * 0.8,
-        ),
+        constraints:
+            BoxConstraints(maxHeight: MediaQuery.sizeOf(context).height * 0.8),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -184,31 +181,23 @@ class _FaceSkillSheetState extends ConsumerState<FaceSkillSheet> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   note == null
-                      ? Text(
-                          tr(ref, 'pick_face_skill_title'),
-                          style: theme.textTheme.titleMedium,
-                        )
+                      ? Text(tr(ref, 'pick_face_skill_title'),
+                          style: theme.textTheme.titleMedium)
                       : HelpTitle(
-                          title: tr(ref, 'pick_face_skill_title'),
-                          help: note,
-                        ),
+                          title: tr(ref, 'pick_face_skill_title'), help: note),
                   const SizedBox(height: 6),
                   Container(
                     key: const Key('face_now'),
                     width: double.infinity,
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 10,
-                      vertical: 8,
-                    ),
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
                     decoration: BoxDecoration(
                       color: theme.colorScheme.surfaceContainer,
                       borderRadius: BorderRadius.circular(6),
                       border: Border.all(color: ink.seam),
                     ),
-                    child: Text(
-                      widget.nowLine,
-                      style: theme.textTheme.bodyMedium,
-                    ),
+                    child:
+                        Text(widget.nowLine, style: theme.textTheme.bodyMedium),
                   ),
                 ],
               ),
@@ -241,25 +230,20 @@ class _FaceSkillSheetState extends ConsumerState<FaceSkillSheet> {
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(6),
                         side: BorderSide(
-                          color:
-                              o.id == _picked ? ink.gold : Colors.transparent,
-                        ),
+                            color: o.id == _picked
+                                ? ink.gold
+                                : Colors.transparent),
                       ),
                       leading: Icon(o.icon, color: o.iconColour),
                       title: Text(o.name, overflow: TextOverflow.ellipsis),
                       subtitle: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text(
-                            '${o.change.before} → ${o.change.after}',
-                            key: Key('pick_change_${o.id}'),
-                          ),
-                          Text(
-                            o.limitLine,
-                            style: theme.textTheme.labelSmall?.copyWith(
-                              color: o.allowed ? ink.ash : ink.ember,
-                            ),
-                          ),
+                          Text('${o.change.before} → ${o.change.after}',
+                              key: Key('pick_change_${o.id}')),
+                          Text(o.limitLine,
+                              style: theme.textTheme.labelSmall?.copyWith(
+                                  color: o.allowed ? ink.ash : ink.ember)),
                         ],
                       ),
                       isThreeLine: true,
@@ -284,18 +268,12 @@ class _FaceSkillSheetState extends ConsumerState<FaceSkillSheet> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(
-                      '${picked.change.before} → ${picked.change.after}',
-                      style: theme.textTheme.bodyMedium?.copyWith(
-                        fontWeight: FontWeight.w600,
-                      ),
-                    ),
-                    Text(
-                      picked.name,
-                      style: theme.textTheme.labelSmall?.copyWith(
-                        color: ink.ash,
-                      ),
-                    ),
+                    Text('${picked.change.before} → ${picked.change.after}',
+                        style: theme.textTheme.bodyMedium
+                            ?.copyWith(fontWeight: FontWeight.w600)),
+                    Text(picked.name,
+                        style: theme.textTheme.labelSmall
+                            ?.copyWith(color: ink.ash)),
                     const SizedBox(height: 8),
                     Wrap(
                       alignment: WrapAlignment.end,

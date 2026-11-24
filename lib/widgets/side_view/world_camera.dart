@@ -97,11 +97,8 @@ class WorldCamera {
   /// windows), or the seam between two kits. [landmark] (0 to 1) is how
   /// much of the window's landmark shows: a camera on the move shows none.
   /// Null when the strip has no land there to paint.
-  List<SideLayer>? layersAt(
-    double x, {
-    double progress = 0.5,
-    double landmark = 1,
-  }) {
+  List<SideLayer>? layersAt(double x,
+      {double progress = 0.5, double landmark = 1}) {
     final seam = seamAt(x);
     List<SideLayer>? placed(String kit) {
       final layers = _kitLayersOf(kit, progress: progress);

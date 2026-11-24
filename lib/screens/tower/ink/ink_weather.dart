@@ -71,12 +71,9 @@ class InkWeatherStore {
 
 /// The one clock of a screen. The pieces below read it.
 class InkWeatherClock {
-  InkWeatherClock(
-    this.kind,
-    this.fall, {
-    required double start,
-    required this.reduceMotion,
-  }) : seconds = ValueNotifier<double>(start);
+  InkWeatherClock(this.kind, this.fall,
+      {required double start, required this.reduceMotion})
+      : seconds = ValueNotifier<double>(start);
 
   final WeatherKind kind;
   final double fall;
@@ -156,21 +153,15 @@ class _WeatherScopeState extends State<WeatherScope> {
     final start = reduce
         ? inkMediumLevel * inkSecondsToHeavy(widget.fall)
         : (had ?? InkWeatherStore.restore(widget.id, widget.fall));
-    final clock = InkWeatherClock(
-      widget.kind,
-      widget.fall,
-      start: start,
-      reduceMotion: reduce,
-    );
+    final clock = InkWeatherClock(widget.kind, widget.fall,
+        start: start, reduceMotion: reduce);
     _clock = clock;
     InkWeatherClock.live++;
     if (clock.active && !reduce) {
       // Half a second a tick: time on screen, not wall time (a paused app
       // builds nothing up), and a cap re-lays at most twice a second.
       _timer = Timer.periodic(
-        const Duration(milliseconds: 500),
-        (_) => clock.seconds.value += 0.5,
-      );
+          const Duration(milliseconds: 500), (_) => clock.seconds.value += 0.5);
     }
   }
 
@@ -236,9 +227,7 @@ class InkWeatherPieceState extends State<InkWeatherPiece>
     final puff = level;
     _knockLevel = puff;
     final ctrl = AnimationController(
-      vsync: this,
-      duration: const Duration(milliseconds: 450),
-    );
+        vsync: this, duration: const Duration(milliseconds: 450));
     _knock = ctrl;
     ctrl.addStatusListener((s) {
       if (s == AnimationStatus.completed) {
@@ -274,12 +263,9 @@ class InkWeatherPieceState extends State<InkWeatherPiece>
       body = ValueListenableBuilder<double>(
         valueListenable: clock.seconds,
         builder: (context, _, child) => ColorFiltered(
-          colorFilter: ColorFilter.mode(
-            inkBlack.withValues(alpha: 0.16 * _wet),
-            BlendMode.srcATop,
-          ),
-          child: child,
-        ),
+            colorFilter: ColorFilter.mode(
+                inkBlack.withValues(alpha: 0.16 * _wet), BlendMode.srcATop),
+            child: child),
         child: body,
       );
     }
@@ -296,15 +282,11 @@ class InkWeatherPieceState extends State<InkWeatherPiece>
     return Listener(
       behavior: HitTestBehavior.translucent,
       onPointerDown: (_) => _knocked(),
-      child: Stack(
-        clipBehavior: Clip.none,
-        children: [
-          body,
-          Positioned.fill(
-            child: IgnorePointer(child: CustomPaint(painter: painter)),
-          ),
-        ],
-      ),
+      child: Stack(clipBehavior: Clip.none, children: [
+        body,
+        Positioned.fill(
+            child: IgnorePointer(child: CustomPaint(painter: painter))),
+      ]),
     );
   }
 
@@ -313,10 +295,8 @@ class InkWeatherPieceState extends State<InkWeatherPiece>
     final c = _clock;
     if (c == null) return 0;
     if (c.reduceMotion) return 0.8;
-    return ((c.seconds.value - _baseline) / (8 / c.fall.clamp(0.3, 1.0))).clamp(
-      0.0,
-      1.0,
-    );
+    return ((c.seconds.value - _baseline) / (8 / c.fall.clamp(0.3, 1.0)))
+        .clamp(0.0, 1.0);
   }
 }
 
@@ -370,61 +350,39 @@ class InkSkyPainter extends CustomPainter {
       case WeatherKind.snow:
         _drift(canvas, s, r, wind, inkPaper, const Color(0xFFC9D2D6));
       case WeatherKind.dust:
-        _drift(
-          canvas,
-          s,
-          r,
-          wind,
-          inkSand,
-          const Color(0xFF9C8660),
-          ripples: true,
-        );
+        _drift(canvas, s, r, wind, inkSand, const Color(0xFF9C8660),
+            ripples: true);
       case WeatherKind.ash:
-        _drift(
-          canvas,
-          s,
-          r,
-          wind,
-          const Color(0xFF4A4A4E),
-          const Color(0xFF2A2A2E),
-          height: 0.55,
-        );
+        _drift(canvas, s, r, wind, const Color(0xFF4A4A4E),
+            const Color(0xFF2A2A2E),
+            height: 0.55);
         final l = level();
         if (l > 0.2 && knock() == 0) {
           for (var i = 0; i < 2 + (l * 6).round(); i++) {
             canvas.drawCircle(
-              Offset(r.nextDouble() * s.width, -2 - r.nextDouble() * 5 * l),
-              0.9,
-              Paint()..color = const Color(0xFFD06A1E),
-            );
+                Offset(r.nextDouble() * s.width, -2 - r.nextDouble() * 5 * l),
+                0.9,
+                Paint()..color = const Color(0xFFD06A1E));
           }
         }
       case WeatherKind.rain:
         _rain(canvas, s, r);
       case WeatherKind.fog:
         canvas.drawRect(
-          Offset.zero & s,
-          Paint()
-            ..shader = ui.Gradient.linear(Offset.zero, Offset(0, s.height), [
-              inkGrey.withValues(alpha: 0.05),
-              inkGrey.withValues(alpha: 0.2 + 0.2 * fall),
-            ]),
-        );
+            Offset.zero & s,
+            Paint()
+              ..shader = ui.Gradient.linear(Offset.zero, Offset(0, s.height), [
+                inkGrey.withValues(alpha: 0.05),
+                inkGrey.withValues(alpha: 0.2 + 0.2 * fall),
+              ]));
       default:
         break;
     }
   }
 
   void _drift(
-    Canvas canvas,
-    Size s,
-    math.Random r,
-    double wind,
-    Color top,
-    Color shade, {
-    bool ripples = false,
-    double height = 1,
-  }) {
+      Canvas canvas, Size s, math.Random r, double wind, Color top, Color shade,
+      {bool ripples = false, double height = 1}) {
     final k = knock();
     final lift = k * 20;
     final fade = (1 - k).clamp(0.0, 1.0);
@@ -433,18 +391,15 @@ class InkSkyPainter extends CustomPainter {
     if (h > 0.4 && fade > 0) {
       final pts = <Offset>[];
       for (var x = 0.0; x <= 1.0001; x += 1 / math.max(8, s.width / 2.5)) {
-        pts.add(
-          Offset(x * s.width, 1 + lift - inkDriftProfile(x, seed.n, wind) * h),
-        );
+        pts.add(Offset(
+            x * s.width, 1 + lift - inkDriftProfile(x, seed.n, wind) * h));
       }
       final path = Path()
         ..moveTo(-1, 2 + lift)
         ..lineTo(pts.first.dx, pts.first.dy);
       for (var i = 1; i < pts.length - 1; i++) {
         final mid = Offset(
-          (pts[i].dx + pts[i + 1].dx) / 2,
-          (pts[i].dy + pts[i + 1].dy) / 2,
-        );
+            (pts[i].dx + pts[i + 1].dx) / 2, (pts[i].dy + pts[i + 1].dy) / 2);
         path.quadraticBezierTo(pts[i].dx, pts[i].dy, mid.dx, mid.dy);
       }
       path
@@ -458,28 +413,25 @@ class InkSkyPainter extends CustomPainter {
       if (ripples) {
         for (var i = 0; i < 3; i++) {
           canvas.drawLine(
-            Offset(s.width * (0.2 + 0.15 * i), -h * 0.35 + lift),
-            Offset(s.width * (0.35 + 0.15 * i), -h * 0.45 + lift),
-            Paint()
-              ..color = shade.withValues(alpha: 0.6 * fade)
-              ..strokeWidth = 0.8,
-          );
+              Offset(s.width * (0.2 + 0.15 * i), -h * 0.35 + lift),
+              Offset(s.width * (0.35 + 0.15 * i), -h * 0.45 + lift),
+              Paint()
+                ..color = shade.withValues(alpha: 0.6 * fade)
+                ..strokeWidth = 0.8);
         }
       }
       for (var i = 0; i < (lv * 7).round(); i++) {
         final x = r.nextDouble() * s.width;
         canvas.drawCircle(
-          Offset(
-            x,
-            1 +
-                lift -
-                inkDriftProfile(x / s.width, seed.n, wind) * h -
-                1.5 -
-                r.nextDouble() * 4,
-          ),
-          0.7 + r.nextDouble() * 1.1,
-          Paint()..color = top.withValues(alpha: 0.9 * fade),
-        );
+            Offset(
+                x,
+                1 +
+                    lift -
+                    inkDriftProfile(x / s.width, seed.n, wind) * h -
+                    1.5 -
+                    r.nextDouble() * 4),
+            0.7 + r.nextDouble() * 1.1,
+            Paint()..color = top.withValues(alpha: 0.9 * fade));
       }
     }
     // The knock: a puff of flakes thrown off, the size of the cap it was.
@@ -489,13 +441,10 @@ class InkSkyPainter extends CustomPainter {
         final a = r.nextDouble() * math.pi * 2;
         final d = k * (8 + r.nextDouble() * 26);
         canvas.drawCircle(
-          Offset(
-            r.nextDouble() * s.width + math.cos(a) * d * 0.6,
-            -2 + math.sin(a).abs() * d,
-          ),
-          1.0 + r.nextDouble() * 1.8,
-          Paint()..color = top.withValues(alpha: (1 - k) * 0.95),
-        );
+            Offset(r.nextDouble() * s.width + math.cos(a) * d * 0.6,
+                -2 + math.sin(a).abs() * d),
+            1.0 + r.nextDouble() * 1.8,
+            Paint()..color = top.withValues(alpha: (1 - k) * 0.95));
       }
     }
   }
@@ -504,12 +453,11 @@ class InkSkyPainter extends CustomPainter {
     final w = wet();
     if (w > 0.35) {
       canvas.drawLine(
-        Offset(s.width * 0.28, s.height * 0.1),
-        Offset(s.width * 0.5, s.height * 0.9),
-        Paint()
-          ..color = inkPaper.withValues(alpha: 0.10 * w)
-          ..strokeWidth = 2.5,
-      );
+          Offset(s.width * 0.28, s.height * 0.1),
+          Offset(s.width * 0.5, s.height * 0.9),
+          Paint()
+            ..color = inkPaper.withValues(alpha: 0.10 * w)
+            ..strokeWidth = 2.5);
     }
     // The drips start once the piece is wet through.
     final drip = ((w - 0.6) / 0.4).clamp(0.0, 1.0);
@@ -518,17 +466,13 @@ class InkSkyPainter extends CustomPainter {
       final len = (3 + r.nextDouble() * 11) * drip;
       if (len < 1) continue;
       canvas.drawLine(
-        Offset(x, s.height),
-        Offset(x, s.height + len),
-        Paint()
-          ..color = inkSlate
-          ..strokeWidth = 1.6,
-      );
+          Offset(x, s.height),
+          Offset(x, s.height + len),
+          Paint()
+            ..color = inkSlate
+            ..strokeWidth = 1.6);
       canvas.drawCircle(
-        Offset(x, s.height + len),
-        1.8,
-        Paint()..color = inkGrey,
-      );
+          Offset(x, s.height + len), 1.8, Paint()..color = inkGrey);
     }
   }
 

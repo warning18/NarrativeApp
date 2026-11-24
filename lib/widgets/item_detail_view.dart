@@ -90,11 +90,8 @@ class ItemDetailView extends StatelessWidget {
         if (line.label != t('atk_abbrev') && line.label != t('arm_abbrev'))
           if (line.value != 0 || (gear && line.equipped != 0)) line,
     ];
-    final traits = itemTraits(
-      item,
-      language,
-      unmetRequirement: unmetRequirement,
-    );
+    final traits =
+        itemTraits(item, language, unmetRequirement: unmetRequirement);
     final tag = theme.textTheme.bodySmall?.copyWith(color: ink.ash);
 
     final Widget art = Container(
@@ -115,9 +112,7 @@ class ItemDetailView extends StatelessWidget {
         boxShadow: rarity == 'Relic'
             ? [
                 BoxShadow(
-                  color: rarityColor.withValues(alpha: 0.35),
-                  blurRadius: 12,
-                ),
+                    color: rarityColor.withValues(alpha: 0.35), blurRadius: 12)
               ]
             : null,
       ),
@@ -138,30 +133,21 @@ class ItemDetailView extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(
-                    name,
-                    style: theme.textTheme.titleLarge?.copyWith(
-                      fontFamily: InkFonts.display,
-                    ),
-                  ),
+                  Text(name,
+                      style: theme.textTheme.titleLarge
+                          ?.copyWith(fontFamily: InkFonts.display)),
                   const SizedBox(height: 6),
-                  Wrap(
-                    spacing: 4,
-                    runSpacing: 4,
-                    children: [
-                      if (rarityLabel.isNotEmpty)
-                        InkChip(
-                          rarityLabel,
+                  Wrap(spacing: 4, runSpacing: 4, children: [
+                    if (rarityLabel.isNotEmpty)
+                      InkChip(rarityLabel,
                           key: const Key('item_rarity_tag'),
-                          color: rarityColor,
-                        ),
-                      if (type.isNotEmpty) InkChip(type, color: ink.ash),
-                      if (slot.isNotEmpty && slot != type)
-                        InkChip(slot, color: ink.ash),
-                      if (count != null && count! > 1)
-                        InkChip('x$count', color: ink.ash),
-                    ],
-                  ),
+                          color: rarityColor),
+                    if (type.isNotEmpty) InkChip(type, color: ink.ash),
+                    if (slot.isNotEmpty && slot != type)
+                      InkChip(slot, color: ink.ash),
+                    if (count != null && count! > 1)
+                      InkChip('x$count', color: ink.ash),
+                  ]),
                   if (priceLine != null) ...[
                     const SizedBox(height: 6),
                     Text(priceLine!, style: tag),
@@ -185,11 +171,9 @@ class ItemDetailView extends StatelessWidget {
                 Expanded(
                   child: _HeroStat(
                     key: Key('item_hero_${heroKeys[i]}'),
-                    label: t(
-                      heroKeys[i] == 'attackDamage'
-                          ? 'attack_damage_label'
-                          : 'armor_label',
-                    ),
+                    label: t(heroKeys[i] == 'attackDamage'
+                        ? 'attack_damage_label'
+                        : 'armor_label'),
                     value: _stat(item, heroKeys[i]),
                     other: against == null ? null : _stat(against, heroKeys[i]),
                     color: heroKeys[i] == 'attackDamage' ? ink.ember : ink.tide,
@@ -205,11 +189,8 @@ class ItemDetailView extends StatelessWidget {
             key: const Key('item_compare_line'),
             children: [
               if (against != null) ...[
-                ItemPixelIcon(
-                  equippedId,
-                  against['itemType']?.toString(),
-                  size: IconSize.s16,
-                ),
+                ItemPixelIcon(equippedId, against['itemType']?.toString(),
+                    size: IconSize.s16),
                 const SizedBox(width: 4),
               ],
               Expanded(
@@ -227,14 +208,10 @@ class ItemDetailView extends StatelessWidget {
         ],
         if (elements.isNotEmpty) ...[
           const SizedBox(height: 10),
-          Wrap(
-            spacing: 6,
-            runSpacing: 6,
-            children: [
-              for (final line in elements)
-                _ElementChip(line: line, compare: gear && against != null),
-            ],
-          ),
+          Wrap(spacing: 6, runSpacing: 6, children: [
+            for (final line in elements)
+              _ElementChip(line: line, compare: gear && against != null),
+          ]),
         ],
         if (traits.isNotEmpty) ...[
           const SizedBox(height: 12),
@@ -244,27 +221,22 @@ class ItemDetailView extends StatelessWidget {
               child: Row(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Icon(
-                    trait.icon,
-                    size: IconSize.s16,
-                    color: trait.warn ? scheme.error : ink.gold,
-                  ),
+                  Icon(trait.icon,
+                      size: IconSize.s16,
+                      color: trait.warn ? scheme.error : ink.gold),
                   const SizedBox(width: 8),
                   Expanded(
                     child: Text.rich(
-                      TextSpan(
-                        children: [
-                          TextSpan(
+                      TextSpan(children: [
+                        TextSpan(
                             text: trait.label,
-                            style: const TextStyle(fontWeight: FontWeight.bold),
-                          ),
-                          if (trait.value.isNotEmpty)
-                            TextSpan(text: '  ${trait.value}'),
-                        ],
-                      ),
-                      style: theme.textTheme.bodyMedium?.copyWith(
-                        color: trait.warn ? scheme.error : null,
-                      ),
+                            style:
+                                const TextStyle(fontWeight: FontWeight.bold)),
+                        if (trait.value.isNotEmpty)
+                          TextSpan(text: '  ${trait.value}'),
+                      ]),
+                      style: theme.textTheme.bodyMedium
+                          ?.copyWith(color: trait.warn ? scheme.error : null),
                     ),
                   ),
                 ],
@@ -279,12 +251,9 @@ class ItemDetailView extends StatelessWidget {
         ],
         if (extraNote != null && extraNote!.isNotEmpty) ...[
           const SizedBox(height: 8),
-          Text(
-            extraNote!,
-            style: theme.textTheme.bodyMedium?.copyWith(
-              fontStyle: FontStyle.italic,
-            ),
-          ),
+          Text(extraNote!,
+              style: theme.textTheme.bodyMedium
+                  ?.copyWith(fontStyle: FontStyle.italic)),
         ],
         if (lore.isNotEmpty) ...[
           const SizedBox(height: 14),
@@ -293,16 +262,13 @@ class ItemDetailView extends StatelessWidget {
             decoration: BoxDecoration(
               border: Border(left: BorderSide(color: rarityColor, width: 3)),
             ),
-            child: Text(
-              lore,
-              key: const Key('item_lore'),
-              style: theme.textTheme.bodyMedium?.copyWith(
-                fontFamily: InkFonts.prose,
-                fontStyle: FontStyle.italic,
-                color: ink.ash,
-                height: 1.45,
-              ),
-            ),
+            child: Text(lore,
+                key: const Key('item_lore'),
+                style: theme.textTheme.bodyMedium?.copyWith(
+                    fontFamily: InkFonts.prose,
+                    fontStyle: FontStyle.italic,
+                    color: ink.ash,
+                    height: 1.45)),
           ),
         ],
         if (originLine != null && originLine!.isNotEmpty) ...[
@@ -348,82 +314,65 @@ class _HeroStat extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(
-            label,
-            maxLines: 1,
-            overflow: TextOverflow.ellipsis,
-            style: theme.textTheme.labelSmall?.copyWith(color: ink.ash),
-          ),
+          Text(label,
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+              style: theme.textTheme.labelSmall?.copyWith(color: ink.ash)),
           const SizedBox(height: 2),
           Row(
             crossAxisAlignment: CrossAxisAlignment.baseline,
             textBaseline: TextBaseline.alphabetic,
             children: [
-              Text(
-                _fmt(value),
-                style: TextStyle(
-                  fontFamily: InkFonts.system,
-                  fontSize: 28,
-                  height: 1.1,
-                  color: color,
-                ),
-              ),
+              Text(_fmt(value),
+                  style: TextStyle(
+                      fontFamily: InkFonts.system,
+                      fontSize: 28,
+                      height: 1.1,
+                      color: color)),
               if (delta != null && delta != 0) ...[
                 const SizedBox(width: 8),
-                Text(
-                  '${delta > 0 ? '+' : ''}${_fmt(delta)}',
-                  key: const Key('item_hero_delta'),
-                  style: TextStyle(
-                    fontFamily: InkFonts.system,
-                    fontSize: 15,
-                    color: delta > 0 ? ink.heal : ink.blood,
-                  ),
-                ),
+                Text('${delta > 0 ? '+' : ''}${_fmt(delta)}',
+                    key: const Key('item_hero_delta'),
+                    style: TextStyle(
+                        fontFamily: InkFonts.system,
+                        fontSize: 15,
+                        color: delta > 0 ? ink.heal : ink.blood)),
               ],
             ],
           ),
           const SizedBox(height: 6),
-          LayoutBuilder(
-            builder: (context, box) {
-              final w = box.maxWidth;
-              return SizedBox(
-                height: 8,
-                child: Stack(
-                  clipBehavior: Clip.none,
-                  children: [
-                    Container(
-                      decoration: BoxDecoration(
+          LayoutBuilder(builder: (context, box) {
+            final w = box.maxWidth;
+            return SizedBox(
+              height: 8,
+              child: Stack(
+                clipBehavior: Clip.none,
+                children: [
+                  Container(
+                    decoration: BoxDecoration(
                         color: ink.seam,
-                        borderRadius: BorderRadius.circular(2),
-                      ),
-                    ),
-                    Container(
-                      width: w * (value / scale).clamp(0.0, 1.0),
-                      decoration: BoxDecoration(
-                        color: color,
-                        borderRadius: BorderRadius.circular(2),
-                      ),
-                    ),
-                    if (other != null && other! > 0)
-                      Positioned(
-                        left: (w * (other! / scale).clamp(0.0, 1.0) - 1).clamp(
-                          0.0,
-                          w - 2,
-                        ),
-                        top: -3,
-                        bottom: -3,
-                        child: Container(
+                        borderRadius: BorderRadius.circular(2)),
+                  ),
+                  Container(
+                    width: w * (value / scale).clamp(0.0, 1.0),
+                    decoration: BoxDecoration(
+                        color: color, borderRadius: BorderRadius.circular(2)),
+                  ),
+                  if (other != null && other! > 0)
+                    Positioned(
+                      left: (w * (other! / scale).clamp(0.0, 1.0) - 1)
+                          .clamp(0.0, w - 2),
+                      top: -3,
+                      bottom: -3,
+                      child: Container(
                           width: 2,
-                          color: theme.colorScheme.onSurface.withValues(
-                            alpha: 0.85,
-                          ),
-                        ),
-                      ),
-                  ],
-                ),
-              );
-            },
-          ),
+                          color: theme.colorScheme.onSurface
+                              .withValues(alpha: 0.85)),
+                    ),
+                ],
+              ),
+            );
+          }),
         ],
       ),
     );
@@ -448,19 +397,15 @@ class _ElementChip extends StatelessWidget {
         borderRadius: BorderRadius.circular(4),
       ),
       child: Text.rich(
-        TextSpan(
-          children: [
-            TextSpan(text: '${line.label} ${_fmt(line.value)}'),
-            if (delta != 0)
-              TextSpan(
+        TextSpan(children: [
+          TextSpan(text: '${line.label} ${_fmt(line.value)}'),
+          if (delta != 0)
+            TextSpan(
                 text: ' ${delta > 0 ? '+' : ''}${_fmt(delta)}',
                 style: TextStyle(
-                  color: delta > 0 ? ink.heal : ink.blood,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-          ],
-        ),
+                    color: delta > 0 ? ink.heal : ink.blood,
+                    fontWeight: FontWeight.bold)),
+        ]),
         style: theme.textTheme.labelMedium,
       ),
     );
@@ -468,11 +413,8 @@ class _ElementChip extends StatelessWidget {
 }
 
 class _SetBlock extends StatelessWidget {
-  const _SetBlock({
-    required this.set,
-    required this.worn,
-    required this.language,
-  });
+  const _SetBlock(
+      {required this.set, required this.worn, required this.language});
 
   final ItemSet set;
   final int worn;
@@ -493,22 +435,16 @@ class _SetBlock extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Row(
-            children: [
-              Icon(Icons.layers_outlined, size: IconSize.s16, color: ink.gold),
-              const SizedBox(width: 6),
-              Expanded(
-                child: Text(
-                  set.nameFor(language),
-                  style: theme.textTheme.titleSmall,
-                ),
-              ),
-              Text(
-                '$worn/${set.itemIds.length}',
-                style: TextStyle(fontFamily: InkFonts.system, color: ink.gold),
-              ),
-            ],
-          ),
+          Row(children: [
+            Icon(Icons.layers_outlined, size: IconSize.s16, color: ink.gold),
+            const SizedBox(width: 6),
+            Expanded(
+              child: Text(set.nameFor(language),
+                  style: theme.textTheme.titleSmall),
+            ),
+            Text('$worn/${set.itemIds.length}',
+                style: TextStyle(fontFamily: InkFonts.system, color: ink.gold)),
+          ]),
           for (final tier in set.tiers)
             Padding(
               padding: const EdgeInsets.only(top: 4),
@@ -516,19 +452,17 @@ class _SetBlock extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Icon(
-                    tier.pieces <= worn
-                        ? Icons.check_circle
-                        : Icons.radio_button_unchecked,
-                    size: IconSize.s16,
-                    color: tier.pieces <= worn ? ink.heal : ink.ash,
-                  ),
+                      tier.pieces <= worn
+                          ? Icons.check_circle
+                          : Icons.radio_button_unchecked,
+                      size: IconSize.s16,
+                      color: tier.pieces <= worn ? ink.heal : ink.ash),
                   const SizedBox(width: 6),
                   Expanded(
                     child: Text(
                       tier.descriptionFor(language),
                       style: theme.textTheme.bodySmall?.copyWith(
-                        color: tier.pieces <= worn ? null : ink.ash,
-                      ),
+                          color: tier.pieces <= worn ? null : ink.ash),
                     ),
                   ),
                 ],

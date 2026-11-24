@@ -135,13 +135,11 @@ StoryGraphReport checkStoryGraphIntegrity(
         continue;
       }
       if (!nodes.containsKey(choice.nextId)) {
-        brokenReferences.add(
-          BrokenReference(
-            fromNodeId: id,
-            choiceText: choice.text,
-            targetId: choice.nextId,
-          ),
-        );
+        brokenReferences.add(BrokenReference(
+          fromNodeId: id,
+          choiceText: choice.text,
+          targetId: choice.nextId,
+        ));
         continue;
       }
       hasForwardPath = true;
@@ -157,13 +155,11 @@ StoryGraphReport checkStoryGraphIntegrity(
           if (nodes.containsKey(failNextId)) {
             if (!visited.contains(failNextId)) queue.add(failNextId);
           } else {
-            brokenReferences.add(
-              BrokenReference(
-                fromNodeId: id,
-                choiceText: '${choice.text} (failNextId)',
-                targetId: failNextId,
-              ),
-            );
+            brokenReferences.add(BrokenReference(
+              fromNodeId: id,
+              choiceText: '${choice.text} (failNextId)',
+              targetId: failNextId,
+            ));
           }
         }
       }
@@ -175,13 +171,11 @@ StoryGraphReport checkStoryGraphIntegrity(
           if (nodes.containsKey(loseNextId)) {
             if (!visited.contains(loseNextId)) queue.add(loseNextId);
           } else {
-            brokenReferences.add(
-              BrokenReference(
-                fromNodeId: id,
-                choiceText: '${choice.text} (loseNextId)',
-                targetId: loseNextId,
-              ),
-            );
+            brokenReferences.add(BrokenReference(
+              fromNodeId: id,
+              choiceText: '${choice.text} (loseNextId)',
+              targetId: loseNextId,
+            ));
           }
         }
       }

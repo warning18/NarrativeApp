@@ -207,9 +207,8 @@ class _Ring extends StatefulWidget {
 
 class _RingState extends State<_Ring> with SingleTickerProviderStateMixin {
   late final AnimationController _c = AnimationController(
-    vsync: this,
-    duration: const Duration(milliseconds: 600),
-  )..forward();
+      vsync: this, duration: const Duration(milliseconds: 600))
+    ..forward();
 
   @override
   void dispose() {
@@ -295,13 +294,12 @@ class _D20Painter extends CustomPainter {
       canvas.drawLine(p(a.$1, a.$2), p(b.$1, b.$2), facetPaint);
     }
     canvas.drawPath(
-      hex,
-      Paint()
-        ..color = edge
-        ..strokeWidth = 3
-        ..strokeJoin = StrokeJoin.round
-        ..style = PaintingStyle.stroke,
-    );
+        hex,
+        Paint()
+          ..color = edge
+          ..strokeWidth = 3
+          ..strokeJoin = StrokeJoin.round
+          ..style = PaintingStyle.stroke);
   }
 
   @override

@@ -35,10 +35,7 @@ String formatPlaceholderNumber(num value, AppLanguage language) {
 /// [text] with each placeholder [values] knows replaced by its number
 /// (see [formatPlaceholderNumber]); unknown ones stay as written.
 String resolvePlaceholders(
-  String text,
-  Map<String, num> values,
-  AppLanguage language,
-) {
+    String text, Map<String, num> values, AppLanguage language) {
   if (!text.contains('{')) return text;
   return text.replaceAllMapped(_placeholderPattern, (match) {
     final value = values[match.group(1)!];

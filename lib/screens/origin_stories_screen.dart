@@ -30,12 +30,8 @@ import '../theme/pixel_chip.dart';
 /// here: the page pops with the [OriginResult], or null when the player
 /// backs out, and the caller applies it once.
 class OriginStoriesScreen extends ConsumerStatefulWidget {
-  const OriginStoriesScreen({
-    super.key,
-    this.raceId,
-    this.professionId,
-    this.random,
-  });
+  const OriginStoriesScreen(
+      {super.key, this.raceId, this.professionId, this.random});
 
   /// Picks the race's own second memory.
   final String? raceId;
@@ -53,9 +49,7 @@ class OriginStoriesScreen extends ConsumerStatefulWidget {
 
 class _OriginStoriesScreenState extends ConsumerState<OriginStoriesScreen> {
   late final List<OriginMemory> _memories = originMemoriesFor(
-    raceId: widget.raceId,
-    professionId: widget.professionId,
-  );
+      raceId: widget.raceId, professionId: widget.professionId);
 
   // Shuffled once, so going back to a memory shows its answers in the same
   // order as before.
@@ -66,10 +60,8 @@ class _OriginStoriesScreenState extends ConsumerState<OriginStoriesScreen> {
     ];
   }();
 
-  late final List<OriginAnswer?> _answers = List<OriginAnswer?>.filled(
-    _memories.length,
-    null,
-  );
+  late final List<OriginAnswer?> _answers =
+      List<OriginAnswer?>.filled(_memories.length, null);
 
   /// The memory on screen; [_memories].length means the summary.
   int _index = 0;
@@ -178,10 +170,8 @@ class _OriginStoriesScreenState extends ConsumerState<OriginStoriesScreen> {
       '${tr(ref, 'origin_age_label').replaceAll('{n}', '${memory.age}')} · '
       '${tr(ref, memory.isChildhood ? 'origin_stage_childhood' : 'origin_stage_youth')}';
 
-  String _lessonLabel(OriginAnswer answer) => tr(
-        ref,
-        'origin_teaches',
-      ).replaceAll('{ability}', tr(ref, '${answer.ability}_label'));
+  String _lessonLabel(OriginAnswer answer) => tr(ref, 'origin_teaches')
+      .replaceAll('{ability}', tr(ref, '${answer.ability}_label'));
 
   String _leanLabel(OriginAnswer answer) {
     final n = answer.alignmentMod.abs();
@@ -205,9 +195,7 @@ class _OriginStoriesScreenState extends ConsumerState<OriginStoriesScreen> {
     final memory = _memories[_index];
     final chosen = _answers[_index];
     final before = originResultOf(
-      _memories.sublist(0, _index),
-      _answers.sublist(0, _index),
-    );
+        _memories.sublist(0, _index), _answers.sublist(0, _index));
     final recall = memory.recallFor(before.flags.toSet(), before.alignment);
     final sceneKey = 'origin|${memory.id}';
     final written = storyTextShownAtOnce(context) ||
@@ -219,61 +207,55 @@ class _OriginStoriesScreenState extends ConsumerState<OriginStoriesScreen> {
         SizedBox(
           key: const Key('origin_scene_backdrop'),
           height: 210,
-          child: Stack(
-            fit: StackFit.expand,
-            children: [
-              OriginSceneBackdrop(memoryId: memory.id),
-              DecoratedBox(
-                decoration: BoxDecoration(
-                  gradient: LinearGradient(
-                    begin: Alignment.topCenter,
-                    end: Alignment.bottomCenter,
-                    stops: const [0.3, 0.78],
-                    colors: [Colors.transparent, colors.surface],
-                  ),
+          child: Stack(fit: StackFit.expand, children: [
+            OriginSceneBackdrop(memoryId: memory.id),
+            DecoratedBox(
+              decoration: BoxDecoration(
+                gradient: LinearGradient(
+                  begin: Alignment.topCenter,
+                  end: Alignment.bottomCenter,
+                  stops: const [0.3, 0.78],
+                  colors: [Colors.transparent, colors.surface],
                 ),
               ),
-              Positioned(
-                left: side,
-                right: side,
-                bottom: 6,
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Row(
-                      children: [
-                        Expanded(
-                          child: Text(
-                            _stageLabel(memory).toUpperCase(),
-                            style: theme.textTheme.labelMedium?.copyWith(
-                              color: theme.brightness == Brightness.light
-                                  ? const Color(0xFF7A3E12)
-                                  : colors.primary,
-                              letterSpacing: 1.1,
-                              fontWeight: FontWeight.w600,
-                            ),
-                          ),
-                        ),
-                        Text(
-                          tr(ref, 'origin_memory_progress')
-                              .replaceAll('{n}', '${_index + 1}')
-                              .replaceAll('{total}', '${_memories.length}'),
+            ),
+            Positioned(
+              left: side,
+              right: side,
+              bottom: 6,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                    children: [
+                      Expanded(
+                        child: Text(
+                          _stageLabel(memory).toUpperCase(),
                           style: theme.textTheme.labelMedium?.copyWith(
-                            color: colors.onSurface,
+                            color: theme.brightness == Brightness.light
+                                ? const Color(0xFF7A3E12)
+                                : colors.primary,
+                            letterSpacing: 1.1,
+                            fontWeight: FontWeight.w600,
                           ),
                         ),
-                      ],
-                    ),
-                    const SizedBox(height: 2),
-                    Text(
-                      memory.titleFor(french),
-                      style: theme.textTheme.headlineSmall,
-                    ),
-                  ],
-                ),
+                      ),
+                      Text(
+                        tr(ref, 'origin_memory_progress')
+                            .replaceAll('{n}', '${_index + 1}')
+                            .replaceAll('{total}', '${_memories.length}'),
+                        style: theme.textTheme.labelMedium
+                            ?.copyWith(color: colors.onSurface),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 2),
+                  Text(memory.titleFor(french),
+                      style: theme.textTheme.headlineSmall),
+                ],
               ),
-            ],
-          ),
+            ),
+          ]),
         ),
         Padding(
           padding: const EdgeInsets.fromLTRB(side, 8, side, 0),
@@ -315,11 +297,8 @@ class _OriginStoriesScreenState extends ConsumerState<OriginStoriesScreen> {
                   children: [
                     Padding(
                       padding: const EdgeInsets.only(top: 2),
-                      child: Icon(
-                        Icons.history_edu_outlined,
-                        size: IconSize.s16,
-                        color: colors.tertiary,
-                      ),
+                      child: Icon(Icons.history_edu_outlined,
+                          size: IconSize.s16, color: colors.tertiary),
                     ),
                     const SizedBox(width: 8),
                     Expanded(
@@ -358,11 +337,10 @@ class _OriginStoriesScreenState extends ConsumerState<OriginStoriesScreen> {
                   lean: _leanLabel(chosen),
                   alignmentMod: chosen.alignmentMod,
                   nextLabel: tr(
-                    ref,
-                    _editingFromSummary || _index == _memories.length - 1
-                        ? 'origin_to_summary'
-                        : 'origin_next_memory',
-                  ),
+                      ref,
+                      _editingFromSummary || _index == _memories.length - 1
+                          ? 'origin_to_summary'
+                          : 'origin_next_memory'),
                   chooseAgainLabel: tr(ref, 'origin_choose_again'),
                   onNext: _moveOn,
                   onChooseAgain: _back,
@@ -403,21 +381,17 @@ class _OriginStoriesScreenState extends ConsumerState<OriginStoriesScreen> {
     final session = ref.watch(playerSessionProvider);
     final result = originResultOf(_memories, _answers);
     final starting = session.copyWith(
-      alignmentScore: session.alignmentScore + result.alignment,
-    );
+        alignmentScore: session.alignmentScore + result.alignment);
     final name = session.characterName.trim();
     return ListView(
       padding: const EdgeInsets.fromLTRB(20, 16, 20, 24),
       children: [
-        Text(
-          tr(ref, 'origin_summary_title'),
-          style: theme.textTheme.headlineSmall,
-        ),
+        Text(tr(ref, 'origin_summary_title'),
+            style: theme.textTheme.headlineSmall),
         if (name.isNotEmpty)
-          Text(
-            name,
-            style: theme.textTheme.titleMedium?.copyWith(color: colors.primary),
-          ),
+          Text(name,
+              style:
+                  theme.textTheme.titleMedium?.copyWith(color: colors.primary)),
         const SizedBox(height: 10),
         Text(
           tr(ref, 'origin_portrait_${originPortraitOf(_answers)}'),
@@ -442,9 +416,8 @@ class _OriginStoriesScreenState extends ConsumerState<OriginStoriesScreen> {
           ),
         Text(
           tr(ref, 'origin_summary_change_hint'),
-          style: theme.textTheme.bodyMedium?.copyWith(
-            color: colors.onSurface.withValues(alpha: 0.75),
-          ),
+          style: theme.textTheme.bodyMedium
+              ?.copyWith(color: colors.onSurface.withValues(alpha: 0.75)),
         ),
         const SizedBox(height: 4),
         TextButton.icon(
@@ -454,10 +427,8 @@ class _OriginStoriesScreenState extends ConsumerState<OriginStoriesScreen> {
           label: Text(tr(ref, 'origin_random_again')),
         ),
         const SizedBox(height: 20),
-        Text(
-          tr(ref, 'origin_summary_lessons'),
-          style: theme.textTheme.titleSmall,
-        ),
+        Text(tr(ref, 'origin_summary_lessons'),
+            style: theme.textTheme.titleSmall),
         const SizedBox(height: 8),
         Center(
           child: AbilityRadar(
@@ -502,11 +473,8 @@ class _OriginStoriesScreenState extends ConsumerState<OriginStoriesScreen> {
           children: [
             for (final entry in result.abilities.entries)
               Chip(
-                avatar: Icon(
-                  Icons.auto_awesome,
-                  size: IconSize.s16,
-                  color: colors.primary,
-                ),
+                avatar: Icon(Icons.auto_awesome,
+                    size: IconSize.s16, color: colors.primary),
                 label: Text('${tr(ref, '${entry.key}_label')} +${entry.value}'),
                 visualDensity: VisualDensity.compact,
               ),
@@ -515,11 +483,8 @@ class _OriginStoriesScreenState extends ConsumerState<OriginStoriesScreen> {
         const SizedBox(height: 20),
         Row(
           children: [
-            Icon(
-              Icons.balance_outlined,
-              size: IconSize.s16,
-              color: colors.primary,
-            ),
+            Icon(Icons.balance_outlined,
+                size: IconSize.s16, color: colors.primary),
             const SizedBox(width: 8),
             Expanded(
               child: Text(
@@ -530,9 +495,8 @@ class _OriginStoriesScreenState extends ConsumerState<OriginStoriesScreen> {
             Text(
               '${trAlignmentLabel(ref, starting.alignmentLabel)} '
               '(${starting.alignmentScore})',
-              style: theme.textTheme.titleSmall?.copyWith(
-                color: colors.primary,
-              ),
+              style:
+                  theme.textTheme.titleSmall?.copyWith(color: colors.primary),
             ),
           ],
         ),
@@ -561,11 +525,8 @@ class _OriginStoriesScreenState extends ConsumerState<OriginStoriesScreen> {
 /// The ages, one dot each, small under the picture: the memory on screen is
 /// ringed, answered ones are filled.
 class _AgeTimeline extends StatelessWidget {
-  const _AgeTimeline({
-    required this.ages,
-    required this.current,
-    required this.answered,
-  });
+  const _AgeTimeline(
+      {required this.ages, required this.current, required this.answered});
 
   final List<int> ages;
   final int current;
@@ -666,10 +627,8 @@ class _Outcome extends ConsumerWidget {
       curve: Curves.easeOutCubic,
       builder: (context, t, child) => Opacity(
         opacity: t,
-        child: Transform.translate(
-          offset: Offset(0, 12 * (1 - t)),
-          child: child,
-        ),
+        child:
+            Transform.translate(offset: Offset(0, 12 * (1 - t)), child: child),
       ),
       child: Column(
         key: const ValueKey('origin_outcome'),
@@ -680,16 +639,17 @@ class _Outcome extends ConsumerWidget {
             decoration: BoxDecoration(
               color: colors.primaryContainer.withValues(alpha: 0.35),
               borderRadius: BorderRadius.circular(14),
-              border: Border(left: BorderSide(color: colors.primary, width: 3)),
+              border: Border(
+                left: BorderSide(color: colors.primary, width: 3),
+              ),
             ),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
                   '“$answer”',
-                  style: theme.textTheme.titleSmall?.copyWith(
-                    color: colors.primary,
-                  ),
+                  style: theme.textTheme.titleSmall
+                      ?.copyWith(color: colors.primary),
                 ),
                 const SizedBox(height: 8),
                 StoryText(
@@ -709,10 +669,9 @@ class _Outcome extends ConsumerWidget {
                     runSpacing: 6,
                     children: [
                       _Tag(
-                        icon: Icons.auto_awesome,
-                        label: lesson,
-                        color: colors.primary,
-                      ),
+                          icon: Icons.auto_awesome,
+                          label: lesson,
+                          color: colors.primary),
                       _Tag(
                         icon: Icons.balance_outlined,
                         label: lean,
@@ -737,9 +696,7 @@ class _Outcome extends ConsumerWidget {
             const SizedBox(height: 4),
             Center(
               child: TextButton(
-                onPressed: onChooseAgain,
-                child: Text(chooseAgainLabel),
-              ),
+                  onPressed: onChooseAgain, child: Text(chooseAgainLabel)),
             ),
           ],
         ],
@@ -761,19 +718,18 @@ class _Tag extends StatelessWidget {
       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
       decoration: ShapeDecoration(
         shape: PixelChipBorder(
-          side: BorderSide(color: color.withValues(alpha: 0.6)),
-        ),
+            side: BorderSide(color: color.withValues(alpha: 0.6))),
       ),
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
           Icon(icon, size: IconSize.s16, color: color),
           const SizedBox(width: 5),
-          Text(
-            label,
-            style:
-                Theme.of(context).textTheme.labelMedium?.copyWith(color: color),
-          ),
+          Text(label,
+              style: Theme.of(context)
+                  .textTheme
+                  .labelMedium
+                  ?.copyWith(color: color)),
         ],
       ),
     );
@@ -887,12 +843,9 @@ class _SummaryRow extends StatelessWidget {
                   shape: BoxShape.circle,
                   border: Border.all(color: lean, width: 2),
                 ),
-                child: Text(
-                  '$age',
-                  style: theme.textTheme.labelLarge?.copyWith(
-                    fontWeight: FontWeight.w700,
-                  ),
-                ),
+                child: Text('$age',
+                    style: theme.textTheme.labelLarge
+                        ?.copyWith(fontWeight: FontWeight.w700)),
               ),
               const SizedBox(width: 12),
               Expanded(
@@ -901,9 +854,8 @@ class _SummaryRow extends StatelessWidget {
                   children: [
                     Text(
                       title,
-                      style: theme.textTheme.labelLarge?.copyWith(
-                        color: colors.primary,
-                      ),
+                      style: theme.textTheme.labelLarge
+                          ?.copyWith(color: colors.primary),
                     ),
                     const SizedBox(height: 3),
                     Text(
@@ -914,19 +866,15 @@ class _SummaryRow extends StatelessWidget {
                       const SizedBox(height: 3),
                       Text(
                         lesson!,
-                        style: theme.textTheme.labelSmall?.copyWith(
-                          color: colors.onSurfaceVariant,
-                        ),
+                        style: theme.textTheme.labelSmall
+                            ?.copyWith(color: colors.onSurfaceVariant),
                       ),
                     ],
                   ],
                 ),
               ),
-              Icon(
-                Icons.edit_outlined,
-                size: IconSize.s16,
-                color: colors.onSurfaceVariant,
-              ),
+              Icon(Icons.edit_outlined,
+                  size: IconSize.s16, color: colors.onSurfaceVariant),
             ],
           ),
         ),
@@ -965,13 +913,11 @@ class _AlignmentGauge extends StatelessWidget {
                 child: DecoratedBox(
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(2),
-                    gradient: LinearGradient(
-                      colors: [
-                        colors.error,
-                        colors.outlineVariant,
-                        colors.tertiary,
-                      ],
-                    ),
+                    gradient: LinearGradient(colors: [
+                      colors.error,
+                      colors.outlineVariant,
+                      colors.tertiary,
+                    ]),
                   ),
                 ),
               ),

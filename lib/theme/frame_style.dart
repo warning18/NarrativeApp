@@ -422,11 +422,7 @@ class FrameBorder extends OutlinedBorder {
             img,
             Rect.fromLTWH(0, 0, img.width.toDouble(), img.height.toDouble()),
             Rect.fromLTWH(
-              x,
-              bottom ? rect.bottom - h : rect.top,
-              img.width * k,
-              h,
-            ),
+                x, bottom ? rect.bottom - h : rect.top, img.width * k, h),
             paint,
           );
         }
@@ -491,13 +487,5 @@ class FrameBorder extends OutlinedBorder {
 
   @override
   int get hashCode => Object.hash(
-        piece,
-        material,
-        env,
-        pixel,
-        seed,
-        fillCenter,
-        plate,
-        envParts,
-      );
+      piece, material, env, pixel, seed, fillCenter, plate, envParts);
 }

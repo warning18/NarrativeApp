@@ -11,16 +11,13 @@ ChoiceTag? _stepTag(WidgetRef ref, _Step step, InkColors ink) {
     return ChoiceTag('${tags.cost} ${tr(ref, 'gold_label')}', ink.gold);
   }
   if (tags.alignment != 0) {
-    return ChoiceTag(
-      '${tr(ref, 'alignment_label')} ${signed(tags.alignment)}',
-      ink.voidColor,
-    );
+    return ChoiceTag('${tr(ref, 'alignment_label')} ${signed(tags.alignment)}',
+        ink.voidColor);
   }
   if (c.hasAbilityCheck) {
     return ChoiceTag(
-      '${tr(ref, '${c.checkAbility}_label')} DC ${c.checkDC ?? 10}',
-      ink.tide,
-    );
+        '${tr(ref, '${c.checkAbility}_label')} DC ${c.checkDC ?? 10}',
+        ink.tide);
   }
   if (step.shape.action == ChoiceAction.fight) {
     return ChoiceTag(tr(ref, 'journey_kind_fight'), ink.blood);
@@ -88,7 +85,7 @@ extension _JourneyChoices on _JourneyViewState {
               count: _ringSteps(steps, g.name).length,
               color: _groupColor(g, ink),
               icons: [
-                for (final i in _ringSteps(steps, g.name)) _iconOf(steps[i])
+                for (final i in _ringSteps(steps, g.name)) _iconOf(steps[i]),
               ],
             ),
       ];
@@ -128,22 +125,15 @@ extension _JourneyChoices on _JourneyViewState {
   /// The scene's vignette and question over a panel's cards (the scene
   /// panel, UX's in-place choices): for a scene whose choices a panel shows
   /// (not a hub, not the stage), when it has someone it faces or a question.
-  Widget? _vignetteFor(
-    StoryNode node,
-    List<_Step> steps,
-    StoryData story,
-    Geography world,
-    bool french, {
-    _Step? picked,
-  }) {
+  Widget? _vignetteFor(StoryNode node, List<_Step> steps, StoryData story,
+      Geography world, bool french,
+      {_Step? picked}) {
     if (_isHub(steps) || !steps.any((s) => s.onCard)) return null;
-    final mode = sceneChoiceMode(
-      node,
-      story: story,
-      geography: world,
-      choices: [for (final s in steps) s.choice],
-      hasSprite: sceneHasSprite,
-    );
+    final mode = sceneChoiceMode(node,
+        story: story,
+        geography: world,
+        choices: [for (final s in steps) s.choice],
+        hasSprite: sceneHasSprite);
     final prompt = node.promptFor(french);
     final faced = _facedOf(node.facing, french);
     if (mode == SceneChoiceMode.stage && faced != null) {
@@ -151,13 +141,8 @@ extension _JourneyChoices on _JourneyViewState {
       // speaks in a balloon, and the door shows where it leads.
       final door = picked == null
           ? null
-          : doorOf(
-              node,
-              picked.choice,
-              story: story,
-              geography: world,
-              shape: picked.shape,
-            );
+          : doorOf(node, picked.choice,
+              story: story, geography: world, shape: picked.shape);
       final doorLabel = door == null ? '' : doorName(door, french: french);
       return SceneStage(
         foeId: node.facing,
@@ -189,14 +174,8 @@ extension _JourneyChoices on _JourneyViewState {
   /// that list. In the scene view (and under the map of a written detour,
   /// which has no pins).
   Widget _choicePanel(
-    List<_Step> steps,
-    _Step? selected,
-    bool french,
-    StoryData story, {
-    bool shrinkWrap = false,
-    bool all = false,
-    Widget? lead,
-  }) {
+      List<_Step> steps, _Step? selected, bool french, StoryData story,
+      {bool shrinkWrap = false, bool all = false, Widget? lead}) {
     final ink = InkColors.of(context);
     final palette = ChartPalette.of(ref.watch(mapLookProvider));
     final enemies = ref.watch(localizedDbProvider(enemiesSchema)).value;
@@ -243,46 +222,30 @@ extension _JourneyChoices on _JourneyViewState {
             ),
             Padding(
               padding: const EdgeInsets.only(top: 8),
-              child: Text(
-                tr(ref, 'choice_hub_hint'),
-                textAlign: TextAlign.center,
-                style: Theme.of(context)
-                    .textTheme
-                    .bodySmall
-                    ?.copyWith(color: ink.ash, fontStyle: FontStyle.italic),
-              ),
+              child: Text(tr(ref, 'choice_hub_hint'),
+                  textAlign: TextAlign.center,
+                  style: Theme.of(context)
+                      .textTheme
+                      .bodySmall
+                      ?.copyWith(color: ink.ash, fontStyle: FontStyle.italic)),
             ),
           ] else
             for (var i = 0; i < steps.length; i++)
               if (steps[i].onCard || (all && steps[i].shape.here))
                 Padding(
                   padding: const EdgeInsets.only(bottom: 6),
-                  child: _cardFor(
-                    i,
-                    steps[i],
-                    french,
-                    ink,
-                    palette,
-                    enemies,
-                    identical(selected, steps[i]),
-                  ),
+                  child: _cardFor(i, steps[i], french, ink, palette, enemies,
+                      identical(selected, steps[i])),
                 )
               else if (all)
                 Padding(
                   padding: const EdgeInsets.only(bottom: 6),
-                  child: _cardFor(
-                    i,
-                    steps[i],
-                    french,
-                    ink,
-                    palette,
-                    enemies,
-                    identical(selected, steps[i]),
-                    onTap: () => _selected == i && !steps[i].locked
-                        ? _leaveByRoad(i, steps[i])
-                        : _update(() => _selected = i),
-                    onGo: () => _leaveByRoad(i, steps[i]),
-                  ),
+                  child: _cardFor(i, steps[i], french, ink, palette, enemies,
+                      identical(selected, steps[i]),
+                      onTap: () => _selected == i && !steps[i].locked
+                          ? _leaveByRoad(i, steps[i])
+                          : _update(() => _selected = i),
+                      onGo: () => _leaveByRoad(i, steps[i])),
                 ),
         ],
       ),
@@ -295,7 +258,7 @@ extension _JourneyChoices on _JourneyViewState {
         for (final i in _pinIdx)
           if (i < steps.length &&
               journeyPinCatOf(steps[i].kind, steps[i].questTie) != null)
-            i,
+            i
       ].isNotEmpty;
 
   /// The key button at the map's top right: what the banners mean.
@@ -315,11 +278,7 @@ extension _JourneyChoices on _JourneyViewState {
   /// the screen: a tap picks a card (a pin lights its road on the map above)
   /// and a second tap does it. The ring stays lit on the map meanwhile.
   Future<void> _openList(
-    String id,
-    List<_Step> steps,
-    bool french,
-    StoryData story,
-  ) async {
+      String id, List<_Step> steps, bool french, StoryData story) async {
     if (_busy) return;
     _update(() => _ringOpen = id);
     final ink = InkColors.of(context);
@@ -336,9 +295,8 @@ extension _JourneyChoices on _JourneyViewState {
       context: context,
       showDragHandle: true,
       isScrollControlled: true,
-      constraints: BoxConstraints(
-        maxHeight: MediaQuery.sizeOf(context).height * 0.5,
-      ),
+      constraints:
+          BoxConstraints(maxHeight: MediaQuery.sizeOf(context).height * 0.5),
       barrierColor: Colors.black26,
       builder: (sheet) => StatefulBuilder(
         builder: (sheet, setSheet) => SafeArea(
@@ -349,20 +307,16 @@ extension _JourneyChoices on _JourneyViewState {
                 padding: const EdgeInsets.fromLTRB(16, 0, 8, 6),
                 child: Row(
                   children: [
-                    Icon(
-                      Icons.circle_outlined,
-                      size: IconSize.s16,
-                      color: color,
-                    ),
+                    Icon(Icons.circle_outlined,
+                        size: IconSize.s16, color: color),
                     const SizedBox(width: 8),
                     Expanded(
-                      child: Text(
-                        '$title · ${members.length}',
-                        style: Theme.of(sheet).textTheme.titleMedium?.copyWith(
-                              fontFamily: InkFonts.display,
-                              color: color,
-                            ),
-                      ),
+                      child: Text('$title · ${members.length}',
+                          style: Theme.of(sheet)
+                              .textTheme
+                              .titleMedium
+                              ?.copyWith(
+                                  fontFamily: InkFonts.display, color: color)),
                     ),
                     IconButton(
                       key: const ValueKey('choice_sheet_close'),
@@ -413,17 +367,9 @@ extension _JourneyChoices on _JourneyViewState {
     }
   }
 
-  Widget _cardFor(
-    int i,
-    _Step step,
-    bool french,
-    InkColors ink,
-    ChartPalette palette,
-    Map<String, dynamic>? enemies,
-    bool picked, {
-    VoidCallback? onTap,
-    VoidCallback? onGo,
-  }) {
+  Widget _cardFor(int i, _Step step, bool french, InkColors ink,
+      ChartPalette palette, Map<String, dynamic>? enemies, bool picked,
+      {VoidCallback? onTap, VoidCallback? onGo}) {
     final choice = step.choice;
     final ids = choice.allTriggerEnemyIds;
     final roster =
@@ -435,13 +381,11 @@ extension _JourneyChoices on _JourneyViewState {
     // What the choice weighs and the clan it touches (Core's story_plates):
     // the card's frame follows.
     final clanData = ref.watch(clanDataProvider);
-    final clanId = choiceClanOf(
-      choice,
-      subclanClans: {
-        for (final sub in clanData.subclans.values) sub.id: sub.clanId,
-      },
-      clans: clanData.factions.keys.toSet(),
-    );
+    final clanId = choiceClanOf(choice,
+        subclanClans: {
+          for (final sub in clanData.subclans.values) sub.id: sub.clanId,
+        },
+        clans: clanData.factions.keys.toSet());
     final weight = choiceWeightOf(choice);
     final clanFaction = clanData.factions[clanId];
     return Opacity(
@@ -459,10 +403,8 @@ extension _JourneyChoices on _JourneyViewState {
             ? null
             : BannerPin(
                 cat: cat,
-                color: cat.colorOn(
-                  ink,
-                  dark: Theme.of(context).brightness == Brightness.dark,
-                ),
+                color: cat.colorOn(ink,
+                    dark: Theme.of(context).brightness == Brightness.dark),
                 dark: Theme.of(context).brightness == Brightness.dark,
                 scale: 0.8,
                 lit: picked,
@@ -470,9 +412,8 @@ extension _JourneyChoices on _JourneyViewState {
         // The card sits on the app's page, not on the map: the map's own pale
         // road colour would vanish on a light page.
         color: switch (step.kind) {
-          JourneyStepKind.road => Theme.of(
-              context,
-            ).colorScheme.onSurfaceVariant,
+          JourneyStepKind.road =>
+            Theme.of(context).colorScheme.onSurfaceVariant,
           JourneyStepKind.mainQuest => ink.gold,
           _ => _colorFor(step.kind, ink, palette, greyed: false),
         },
@@ -512,9 +453,7 @@ class _SceneFadeIn extends StatefulWidget {
 class _SceneFadeInState extends State<_SceneFadeIn>
     with SingleTickerProviderStateMixin {
   late final AnimationController _fade = AnimationController(
-    vsync: this,
-    duration: const Duration(milliseconds: 200),
-  );
+      vsync: this, duration: const Duration(milliseconds: 200));
   bool _started = false;
 
   @override

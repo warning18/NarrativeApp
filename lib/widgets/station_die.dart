@@ -41,9 +41,8 @@ class StationDie extends StatefulWidget {
 class _StationDieState extends State<StationDie>
     with SingleTickerProviderStateMixin {
   late final AnimationController _roll = AnimationController(
-    vsync: this,
-    duration: const Duration(milliseconds: 650),
-  )..addStatusListener((status) {
+      vsync: this, duration: const Duration(milliseconds: 650))
+    ..addStatusListener((status) {
       if (status == AnimationStatus.completed && mounted) {
         setState(() => _rolling = false);
       }
@@ -80,9 +79,9 @@ class _StationDieState extends State<StationDie>
     final s = widget.size;
     if (face == null) {
       return DieCubeFace(
-        glyph: Icon(FaceKind.empty.icon, size: s * 0.5, color: Palette.neutral),
-        color: Palette.neutral,
-      );
+          glyph:
+              Icon(FaceKind.empty.icon, size: s * 0.5, color: Palette.neutral),
+          color: Palette.neutral);
     }
     final kind = face.kind;
     final skill = face.face.type == 'Skill';
@@ -93,22 +92,18 @@ class _StationDieState extends State<StationDie>
               face.face.linkedSkillID.isEmpty
                   ? 'heavy_attack'
                   : face.face.linkedSkillID,
-              size: s * 0.7,
-            )
+              size: s * 0.7)
           : Column(
               mainAxisSize: MainAxisSize.min,
               children: [
                 Icon(kind.icon, size: s * 0.38, color: kind.color),
                 if (face.value > 0)
-                  Text(
-                    '${face.value}',
-                    style: TextStyle(
-                      fontSize: s * 0.26,
-                      fontWeight: FontWeight.bold,
-                      height: 1,
-                      color: kind.color,
-                    ),
-                  ),
+                  Text('${face.value}',
+                      style: TextStyle(
+                          fontSize: s * 0.26,
+                          fontWeight: FontWeight.bold,
+                          height: 1,
+                          color: kind.color)),
               ],
             ),
     );
@@ -122,7 +117,9 @@ class _StationDieState extends State<StationDie>
       return List.filled(6, _side(null));
     }
     final start = pool.indexOf(landed);
-    return [for (var i = 0; i < 6; i++) _side(pool[(start + i) % pool.length])];
+    return [
+      for (var i = 0; i < 6; i++) _side(pool[(start + i) % pool.length]),
+    ];
   }
 
   @override

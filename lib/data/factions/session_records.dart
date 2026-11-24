@@ -299,7 +299,10 @@ class Host {
   bool get mustered => chapter > 0;
 
   /// The factions that came: the banner first, then the allies.
-  List<String> get contingents => [if (banner.isNotEmpty) banner, ...allies];
+  List<String> get contingents => [
+        if (banner.isNotEmpty) banner,
+        ...allies,
+      ];
 
   /// Everyone who came: the contingents and the Houses.
   int get size => contingents.length + houses.length;

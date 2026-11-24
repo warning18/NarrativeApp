@@ -33,11 +33,8 @@ String formatStandingDelta(num delta, {AppLanguage? language}) {
 /// [language], the detail after it as written -- or as [describe] names
 /// it (an offer's gift id read as the gift's name, see offers.dart), when
 /// it gives a name; an unknown kind is shown as it is.
-String standingCauseLabel(
-  String cause,
-  AppLanguage language, {
-  String? Function(String kind, String detail)? describe,
-}) {
+String standingCauseLabel(String cause, AppLanguage language,
+    {String? Function(String kind, String detail)? describe}) {
   final split = cause.indexOf(':');
   final kind = split < 0 ? cause : cause.substring(0, split);
   final detail = split < 0 ? '' : cause.substring(split + 1).trim();

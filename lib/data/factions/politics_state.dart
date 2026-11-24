@@ -41,9 +41,7 @@ class PoliticsState {
   /// fact (it wants the piece of the Shroud your family kept), not a
   /// standing earned (nemesis.dart).
   static const PoliticsState storyStart = PoliticsState(
-    nemesis: storyNemesisClan,
-    nemesisReason: nemesisReasonStory,
-  );
+      nemesis: storyNemesisClan, nemesisReason: nemesisReasonStory);
 
   /// Each main clan's power (0..100, clan_power.dart) once it has moved;
   /// a clan not here stands at its `startPower`.
@@ -270,7 +268,7 @@ class PoliticsState {
         if (appliedKeys.isNotEmpty) 'applied': appliedKeys,
         if (firedEvents.isNotEmpty)
           'fired': {
-            for (final e in firedEvents.entries) e.key: e.value.toJson()
+            for (final e in firedEvents.entries) e.key: e.value.toJson(),
           },
         if (news.isNotEmpty) 'news': [for (final n in news) n.toJson()],
         if (claim.isNotEmpty) 'claim': claim,
@@ -337,9 +335,8 @@ class PoliticsState {
         if (json['fired'] is Map)
           for (final e in (json['fired'] as Map).entries)
             if (e.value is Map)
-              e.key.toString(): FiredEvent.fromJson(
-                (e.value as Map).cast<String, dynamic>(),
-              ),
+              e.key.toString():
+                  FiredEvent.fromJson((e.value as Map).cast<String, dynamic>()),
       },
       news: [
         for (final n in (json['news'] as List?) ?? const [])
@@ -389,8 +386,6 @@ class PoliticsState {
       return state;
     }
     return state.copyWith(
-      nemesis: storyNemesisClan,
-      nemesisReason: nemesisReasonStory,
-    );
+        nemesis: storyNemesisClan, nemesisReason: nemesisReasonStory);
   }
 }

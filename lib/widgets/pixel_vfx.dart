@@ -98,67 +98,57 @@ const Map<VfxStyle, List<PixelLayer>> pixelPlans = {
   // caster; Art's strip holds the flight (head to the lower left, turned
   // along the path) and the burst, cut in two layers.
   VfxStyle.arrow: [
-    PixelLayer(
-      'arrow',
-      motion: PixelMotion.travel,
-      span: 0.45,
-      loop: true,
-      anchor: Offset(8, 38),
-      frameFrom: 4,
-      tilt: _headLeft,
-    ),
+    PixelLayer('arrow',
+        motion: PixelMotion.travel,
+        span: 0.45,
+        loop: true,
+        anchor: Offset(8, 38),
+        frameFrom: 4,
+        tilt: _headLeft),
     PixelLayer('arrow', t0: 0.45, span: 0.55, frameTo: 4, fade: true),
   ],
   VfxStyle.volley: [
-    PixelLayer(
-      'volley',
-      motion: PixelMotion.travel,
-      span: 0.7,
-      anchor: Offset(8, 38),
-      tilt: _headLeft,
-    ),
+    PixelLayer('volley',
+        motion: PixelMotion.travel,
+        span: 0.7,
+        anchor: Offset(8, 38),
+        tilt: _headLeft),
     PixelLayer('volley', t0: 0.7, span: 0.3, frameFrom: 8, fade: true),
   ],
   VfxStyle.bolt: [
-    PixelLayer(
-      'orb',
-      motion: PixelMotion.travel,
-      span: 0.45,
-      loop: true,
-      anchor: Offset(32, 24),
-    ),
+    PixelLayer('orb',
+        motion: PixelMotion.travel,
+        span: 0.45,
+        loop: true,
+        anchor: Offset(32, 24)),
     PixelLayer('zap', t0: 0.45, span: 0.55),
   ],
   VfxStyle.lightning: [PixelLayer('lightning', anchor: Offset(24, 40))],
   VfxStyle.flame: [PixelLayer('flame', anchor: Offset(24, 40), fade: true)],
   VfxStyle.fireball: [
-    PixelLayer(
-      'fireball',
-      motion: PixelMotion.travel,
-      span: 0.45,
-      loop: true,
-      anchor: Offset(17, 28),
-      size: 1.3,
-      frameTo: 6,
-      tilt: _headLeft,
-    ),
+    PixelLayer('fireball',
+        motion: PixelMotion.travel,
+        span: 0.45,
+        loop: true,
+        anchor: Offset(17, 28),
+        size: 1.3,
+        frameTo: 6,
+        tilt: _headLeft),
     PixelLayer('fireball', t0: 0.45, span: 0.55, frameFrom: 6, size: 1.3),
   ],
   VfxStyle.meteor: [
-    PixelLayer(
-      'meteor_proj',
-      motion: PixelMotion.fall,
-      span: 0.4,
-      loop: true,
-      anchor: Offset(24, 30),
-      size: 1.3,
-      tilt: -pi / 4,
-    ),
+    PixelLayer('meteor_proj',
+        motion: PixelMotion.fall,
+        span: 0.4,
+        loop: true,
+        anchor: Offset(24, 30),
+        size: 1.3,
+        tilt: -pi / 4),
     PixelLayer('explosion', t0: 0.4, span: 0.6, size: 1.4),
     PixelLayer('quake', t0: 0.4, span: 0.6, anchor: Offset(24, 34)),
   ],
   VfxStyle.holyFire: [
-    PixelLayer('holy_fire', anchor: Offset(24, 40), fade: true),
+    PixelLayer('holy_fire', anchor: Offset(24, 40), fade: true)
   ],
   VfxStyle.frost: [PixelLayer('frost')],
   VfxStyle.splash: [PixelLayer('splash', anchor: Offset(24, 32), fade: true)],
@@ -173,7 +163,7 @@ const Map<VfxStyle, List<PixelLayer>> pixelPlans = {
   VfxStyle.heal: [PixelLayer('heal', anchor: Offset(24, 28), fade: true)],
   VfxStyle.shield: [PixelLayer('shield', anchor: Offset(24, 26))],
   VfxStyle.stoneShield: [
-    PixelLayer('stone_shield', anchor: Offset(24, 32), fade: true),
+    PixelLayer('stone_shield', anchor: Offset(24, 32), fade: true)
   ],
   VfxStyle.mana: [PixelLayer('mana', anchor: Offset(24, 26))],
   VfxStyle.shout: [PixelLayer('shout', anchor: Offset(24, 26))],
@@ -226,13 +216,11 @@ List<PixelLayer> _pixelTierLayers(VfxStyle style, VfxTier tier, bool hit) {
   }
   final at = vfxImpactAt(style);
   return [
-    PixelLayer(
-      'shock',
-      t0: at,
-      span: 0.5,
-      anchor: const Offset(24, 38),
-      size: tier == VfxTier.mighty ? 1.4 : 1.0,
-    ),
+    PixelLayer('shock',
+        t0: at,
+        span: 0.5,
+        anchor: const Offset(24, 38),
+        size: tier == VfxTier.mighty ? 1.4 : 1.0),
   ];
 }
 
@@ -335,15 +323,10 @@ class PixelVfxTints {
         bytes[i + 2] = tones[k] & 0xFF;
       }
       ui.decodeImageFromPixels(
-        bytes,
-        base.width,
-        base.height,
-        ui.PixelFormat.rgba8888,
-        (image) {
-          _images[key] = image;
-          PixelStrips.loaded.value++;
-        },
-      );
+          bytes, base.width, base.height, ui.PixelFormat.rgba8888, (image) {
+        _images[key] = image;
+        PixelStrips.loaded.value++;
+      });
     } catch (_) {
       _asked.remove(key);
     }
@@ -405,15 +388,13 @@ bool paintPixelBurst(
     layers.addAll(pixelPlans[style]!);
     final to = sourceRect?.center ?? Offset(c.dx, rect.top - s);
     extra.add((
-      const PixelLayer(
-        'orb',
-        motion: PixelMotion.travel,
-        t0: 0.3,
-        span: 0.5,
-        loop: true,
-        anchor: Offset(32, 24),
-        size: 0.6,
-      ),
+      const PixelLayer('orb',
+          motion: PixelMotion.travel,
+          t0: 0.3,
+          span: 0.5,
+          loop: true,
+          anchor: Offset(32, 24),
+          size: 0.6),
       c,
       to,
     ));
@@ -472,11 +453,7 @@ bool paintPixelBurst(
     final out = l.fade ? pixelFadeOut(lt) : 0.0;
     final kk = k * (1 - 0.3 * out);
     final dst = Rect.fromLTWH(
-      -l.anchor.dx * kk,
-      -l.anchor.dy * kk,
-      side * kk,
-      side * kk,
-    );
+        -l.anchor.dx * kk, -l.anchor.dy * kk, side * kk, side * kk);
     final drawPaint = out > 0
         ? (Paint()
           ..filterQuality = FilterQuality.none
@@ -484,11 +461,7 @@ bool paintPixelBurst(
           ..color = Color.fromRGBO(0, 0, 0, 1 - out))
         : paint;
     canvas.drawImageRect(
-      image,
-      Rect.fromLTWH(i * side, 0, side, side),
-      dst,
-      drawPaint,
-    );
+        image, Rect.fromLTWH(i * side, 0, side, side), dst, drawPaint);
     canvas.restore();
   }
 
@@ -505,12 +478,8 @@ bool paintPixelBurst(
 
 /// One strip of a [PixelMoment]: played over a share of its time.
 class PixelMomentLayer {
-  const PixelMomentLayer(
-    this.asset, {
-    this.t0 = 0,
-    this.span = 1,
-    this.scale = 3,
-  });
+  const PixelMomentLayer(this.asset,
+      {this.t0 = 0, this.span = 1, this.scale = 3});
 
   /// The strip's file under assets/visuals/pixel_fx/, without `.png`.
   final String asset;
@@ -542,11 +511,8 @@ class PixelMoment extends StatefulWidget {
   final Duration delay;
 
   /// The gold of a moment worth marking.
-  static const VfxPalette gold = VfxPalette(
-    0xFFF2C14E,
-    0xFFFFF6E0,
-    ApolloTones.gold,
-  );
+  static const VfxPalette gold =
+      VfxPalette(0xFFF2C14E, 0xFFFFF6E0, ApolloTones.gold);
 
   @override
   State<PixelMoment> createState() => _PixelMomentState();
@@ -555,9 +521,7 @@ class PixelMoment extends StatefulWidget {
 class _PixelMomentState extends State<PixelMoment>
     with SingleTickerProviderStateMixin {
   late final AnimationController _t = AnimationController(
-    vsync: this,
-    duration: widget.duration + widget.delay,
-  );
+      vsync: this, duration: widget.duration + widget.delay);
   bool _started = false;
 
   @override
@@ -636,10 +600,9 @@ class _MomentPainter extends CustomPainter {
         image,
         Rect.fromLTWH(i * side, 0, side, side),
         Rect.fromCenter(
-          center: size.center(Offset.zero),
-          width: side * l.scale,
-          height: side * l.scale,
-        ),
+            center: size.center(Offset.zero),
+            width: side * l.scale,
+            height: side * l.scale),
         paint,
       );
     }

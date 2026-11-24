@@ -32,8 +32,7 @@ class CoastNewsChip extends ConsumerWidget {
       style: ButtonStyle(
         visualDensity: VisualDensity.compact,
         padding: WidgetStateProperty.all(
-          const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
-        ),
+            const EdgeInsets.symmetric(horizontal: 12, vertical: 4)),
         side: WidgetStateProperty.all(BorderSide(color: ink.ember)),
       ),
       onPressed: () => showInkSheet<void>(
@@ -42,8 +41,7 @@ class CoastNewsChip extends ConsumerWidget {
       ),
       icon: Icon(Icons.campaign_outlined, size: IconSize.s16, color: ink.ember),
       label: Text(
-        trFor(lang, 'coast_news_chip').replaceAll('{n}', '${unread.length}'),
-      ),
+          trFor(lang, 'coast_news_chip').replaceAll('{n}', '${unread.length}')),
     );
   }
 }
@@ -65,10 +63,8 @@ class CoastNewsSheet extends ConsumerWidget {
         crossAxisAlignment: CrossAxisAlignment.stretch,
         mainAxisSize: MainAxisSize.min,
         children: [
-          Text(
-            trFor(lang, 'coast_news_title'),
-            style: theme.textTheme.titleMedium,
-          ),
+          Text(trFor(lang, 'coast_news_title'),
+              style: theme.textTheme.titleMedium),
           for (final news in unread)
             _NewsLine(news: news, language: lang, dated: true),
           const SizedBox(height: 8),
@@ -105,10 +101,8 @@ class CoastNewsList extends ConsumerWidget {
       return Center(
         child: Padding(
           padding: const EdgeInsets.all(24),
-          child: Text(
-            trFor(lang, 'journal_news_empty'),
-            textAlign: TextAlign.center,
-          ),
+          child: Text(trFor(lang, 'journal_news_empty'),
+              textAlign: TextAlign.center),
         ),
       );
     }
@@ -116,10 +110,8 @@ class CoastNewsList extends ConsumerWidget {
       key: const Key('journal_news_list'),
       padding: const EdgeInsets.fromLTRB(16, 12, 16, 24),
       children: [
-        Text(
-          trFor(lang, 'coast_news_title'),
-          style: theme.textTheme.titleMedium,
-        ),
+        Text(trFor(lang, 'coast_news_title'),
+            style: theme.textTheme.titleMedium),
         const SizedBox(height: 6),
         for (final n in news)
           Card(
@@ -144,10 +136,8 @@ class CoastNewsColumn extends ConsumerWidget {
     final lang = ref.watch(appLanguageProvider);
     final theme = Theme.of(context);
     if (news.isEmpty) {
-      return Text(
-        trFor(lang, 'journal_news_empty'),
-        style: theme.textTheme.bodySmall,
-      );
+      return Text(trFor(lang, 'journal_news_empty'),
+          style: theme.textTheme.bodySmall);
     }
     return Column(
       key: const Key('clans_news_column'),
@@ -193,16 +183,13 @@ class _NewsLine extends StatelessWidget {
                   .replaceAll('{d}', '${news.day}')
                   .toUpperCase(),
               style: theme.textTheme.labelSmall?.copyWith(
-                letterSpacing: 1.1,
-                color: theme.colorScheme.onSurfaceVariant,
-              ),
+                  letterSpacing: 1.1,
+                  color: theme.colorScheme.onSurfaceVariant),
             ),
           Text(
             news.textFor(language),
             style: theme.textTheme.bodyMedium?.copyWith(
-              fontStyle: FontStyle.italic,
-              fontFamily: InkFonts.prose,
-            ),
+                fontStyle: FontStyle.italic, fontFamily: InkFonts.prose),
           ),
         ],
       ),

@@ -33,13 +33,10 @@ class _DiceWeaveCardState extends ConsumerState<DiceWeaveCard> {
     _picked.removeWhere((id) => !weavable.contains(id));
     final owned = session.ownedDiceIds.contains(tallyDieId);
     final ready = _picked.length == 2 &&
-        canWeaveDice(
-          _picked[0],
-          _picked[1],
-          owned: session.ownedDiceIds,
-          builtHouseIds: session.builtHouseIds,
-          dice: dice,
-        );
+        canWeaveDice(_picked[0], _picked[1],
+            owned: session.ownedDiceIds,
+            builtHouseIds: session.builtHouseIds,
+            dice: dice);
     final note = owned
         ? tr(ref, 'weave_owned')
         : weavable.length < 2

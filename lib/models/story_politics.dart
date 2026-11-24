@@ -333,8 +333,7 @@ class RelationShiftSpec {
     final a = raw['a']?.toString().trim() ?? '';
     final b = raw['b']?.toString().trim() ?? '';
     final steps = StoryPolitics._int(
-      raw['steps'] ?? raw['step'] ?? raw['delta'] ?? raw['by'],
-    );
+        raw['steps'] ?? raw['step'] ?? raw['delta'] ?? raw['by']);
     if (a.isEmpty || b.isEmpty || steps == 0) return null;
     return RelationShiftSpec(a: a, b: b, steps: steps);
   }

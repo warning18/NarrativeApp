@@ -80,8 +80,8 @@ class _RaceProfessionScreenState extends ConsumerState<RaceProfessionScreen> {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text(tr(ref, _tower ? 'tower_name' : 'race_profession_title')),
-      ),
+          title:
+              Text(tr(ref, _tower ? 'tower_name' : 'race_profession_title'))),
       body: racesAsync.when(
         data: (races) => professionsAsync.when(
           data: (professions) => skillsAsync.when(
@@ -104,21 +104,15 @@ class _RaceProfessionScreenState extends ConsumerState<RaceProfessionScreen> {
             },
             loading: () => const InkLoading(),
             error: (error, stack) => InkErrorState(
-              message: tr(ref, 'failed_to_load_skills'),
-              detail: error,
-            ),
+                message: tr(ref, 'failed_to_load_skills'), detail: error),
           ),
           loading: () => const InkLoading(),
           error: (error, stack) => InkErrorState(
-            message: tr(ref, 'failed_to_load_professions'),
-            detail: error,
-          ),
+              message: tr(ref, 'failed_to_load_professions'), detail: error),
         ),
         loading: () => const InkLoading(),
         error: (error, stack) => InkErrorState(
-          message: tr(ref, 'failed_to_load_races'),
-          detail: error,
-        ),
+            message: tr(ref, 'failed_to_load_races'), detail: error),
       ),
     );
   }
@@ -164,33 +158,23 @@ class _RaceProfessionScreenState extends ConsumerState<RaceProfessionScreen> {
           onTap: () => pick(id),
         );
 
-    final hint = Row(
-      children: [
-        Expanded(
-          child: Text(
+    final hint = Row(children: [
+      Expanded(
+        child: Text(
             tr(
-              ref,
-              _step == 0
-                  ? (_tower ? 'tower_hint_people' : 'rp_hint_people')
-                  : 'rp_hint_calling',
-            ),
-            style: theme.textTheme.bodySmall?.copyWith(color: ink.ash),
-          ),
-        ),
-        const SizedBox(width: 6),
-        ActionChip(
-          key: const Key('rp_compare'),
-          avatar: Icon(
-            Icons.compare_arrows,
-            size: IconSize.s16,
-            color: ink.tide,
-          ),
-          label: Text(tr(ref, 'rp_compare'), style: TextStyle(color: ink.tide)),
-          visualDensity: VisualDensity.compact,
-          onPressed: () => showCompareSheet(
-            context,
-            ref,
-            book,
+                ref,
+                _step == 0
+                    ? (_tower ? 'tower_hint_people' : 'rp_hint_people')
+                    : 'rp_hint_calling'),
+            style: theme.textTheme.bodySmall?.copyWith(color: ink.ash)),
+      ),
+      const SizedBox(width: 6),
+      ActionChip(
+        key: const Key('rp_compare'),
+        avatar: Icon(Icons.compare_arrows, size: IconSize.s16, color: ink.tide),
+        label: Text(tr(ref, 'rp_compare'), style: TextStyle(color: ink.tide)),
+        visualDensity: VisualDensity.compact,
+        onPressed: () => showCompareSheet(context, ref, book,
             folder: folder,
             first: pickedHere ?? ids.first,
             showClans: !_tower,
@@ -203,27 +187,24 @@ class _RaceProfessionScreenState extends ConsumerState<RaceProfessionScreen> {
                       _selectedProfessionId = id;
                     }
                     _listAll = false;
-                  }),
-          ),
-        ),
-        IconButton(
-          key: const Key('rp_randomize'),
-          tooltip: tr(ref, 'randomize_character_button'),
-          icon: const Icon(Icons.casino_outlined),
-          onPressed: () => setState(() {
-            final raceOpen =
-                raceIds.where((i) => !widget.locks.containsKey(i)).toList();
-            final professionOpen = professionIds
-                .where((i) => !widget.locks.containsKey(i))
-                .toList();
-            _selectedRaceId = raceOpen[Random().nextInt(raceOpen.length)];
-            _selectedProfessionId =
-                professionOpen[Random().nextInt(professionOpen.length)];
-            _listAll = false;
-          }),
-        ),
-      ],
-    );
+                  })),
+      ),
+      IconButton(
+        key: const Key('rp_randomize'),
+        tooltip: tr(ref, 'randomize_character_button'),
+        icon: const Icon(Icons.casino_outlined),
+        onPressed: () => setState(() {
+          final raceOpen =
+              raceIds.where((i) => !widget.locks.containsKey(i)).toList();
+          final professionOpen =
+              professionIds.where((i) => !widget.locks.containsKey(i)).toList();
+          _selectedRaceId = raceOpen[Random().nextInt(raceOpen.length)];
+          _selectedProfessionId =
+              professionOpen[Random().nextInt(professionOpen.length)];
+          _listAll = false;
+        }),
+      ),
+    ]);
 
     // The step's plate under the page, the page colour over it (the Tower's
     // own climb keeps its plain page).
@@ -252,11 +233,10 @@ class _RaceProfessionScreenState extends ConsumerState<RaceProfessionScreen> {
               if (open) ...[
                 card(pickedHere),
                 OpenChoice(
-                  book: book,
-                  folder: folder,
-                  id: pickedHere,
-                  showClans: !_tower,
-                ),
+                    book: book,
+                    folder: folder,
+                    id: pickedHere,
+                    showClans: !_tower),
                 for (final id in ids)
                   if (id != pickedHere) card(id, compact: true),
               ] else
@@ -273,92 +253,77 @@ class _RaceProfessionScreenState extends ConsumerState<RaceProfessionScreen> {
             top: false,
             child: Padding(
               padding: const EdgeInsets.fromLTRB(12, 4, 12, 12),
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  if (both)
-                    SummaryCard(
+              child: Column(mainAxisSize: MainAxisSize.min, children: [
+                if (both)
+                  SummaryCard(
                       book: book,
                       raceId: _selectedRaceId!,
                       professionId: _selectedProfessionId!,
-                      showClans: !_tower,
-                    ),
-                  const SizedBox(height: 8),
-                  if (!both && pickedHere == null)
-                    Padding(
-                      padding: const EdgeInsets.only(bottom: 6),
-                      child: Text(
+                      showClans: !_tower),
+                const SizedBox(height: 8),
+                if (!both && pickedHere == null)
+                  Padding(
+                    padding: const EdgeInsets.only(bottom: 6),
+                    child: Text(
                         tr(
-                          ref,
-                          _selectedRaceId == null &&
-                                  _selectedProfessionId == null
-                              ? 'rp_missing_both'
-                              : _selectedRaceId == null
-                                  ? 'rp_missing_people'
-                                  : 'rp_missing_calling',
-                        ),
+                            ref,
+                            _selectedRaceId == null &&
+                                    _selectedProfessionId == null
+                                ? 'rp_missing_both'
+                                : _selectedRaceId == null
+                                    ? 'rp_missing_people'
+                                    : 'rp_missing_calling'),
                         key: const Key('rp_missing'),
-                        style: Theme.of(context).textTheme.labelMedium,
-                      ),
-                    ),
-                  SizedBox(
-                    width: double.infinity,
-                    child: both || pickedHere == null
-                        ? FilledButton.icon(
-                            key: const Key('rp_start'),
-                            onPressed: !both || _starting
-                                ? null
-                                : _tower
-                                    ? _climb
-                                    : () => _confirmStart(
-                                          context,
-                                          races[_selectedRaceId!]
-                                              as Map<String, dynamic>,
-                                          professions[_selectedProfessionId!]
-                                              as Map<String, dynamic>,
-                                        ),
-                            icon: const Icon(Icons.play_arrow),
-                            label: Text(
-                              tr(
-                                ref,
-                                _tower
-                                    ? 'tower_climb'
-                                    : 'start_new_game_button',
-                              ),
-                            ),
-                          )
-                        : FilledButton.tonalIcon(
-                            key: const Key('rp_next'),
-                            onPressed: () => setState(() {
-                              _step = _step == 0 ? 1 : 0;
-                              _listAll = false;
-                            }),
-                            icon: const Icon(Icons.arrow_forward),
-                            label: Text(
-                              tr(
-                                ref,
-                                _step == 0
-                                    ? 'rp_next_calling'
-                                    : 'rp_next_people',
-                              ),
-                            ),
-                          ),
+                        style: Theme.of(context).textTheme.labelMedium),
                   ),
-                ],
-              ),
+                SizedBox(
+                  width: double.infinity,
+                  child: both || pickedHere == null
+                      ? FilledButton.icon(
+                          key: const Key('rp_start'),
+                          onPressed: !both || _starting
+                              ? null
+                              : _tower
+                                  ? _climb
+                                  : () => _confirmStart(
+                                        context,
+                                        races[_selectedRaceId!]
+                                            as Map<String, dynamic>,
+                                        professions[_selectedProfessionId!]
+                                            as Map<String, dynamic>,
+                                      ),
+                          icon: const Icon(Icons.play_arrow),
+                          label: Text(tr(
+                              ref,
+                              _tower
+                                  ? 'tower_climb'
+                                  : 'start_new_game_button')),
+                        )
+                      : FilledButton.tonalIcon(
+                          key: const Key('rp_next'),
+                          onPressed: () => setState(() {
+                            _step = _step == 0 ? 1 : 0;
+                            _listAll = false;
+                          }),
+                          icon: const Icon(Icons.arrow_forward),
+                          label: Text(tr(
+                              ref,
+                              _step == 0
+                                  ? 'rp_next_calling'
+                                  : 'rp_next_people')),
+                        ),
+                ),
+              ]),
             ),
           ),
         ),
       ],
     );
     if (plate == null) return column;
-    return Stack(
-      fit: StackFit.expand,
-      children: [
-        Positioned.fill(child: ScreenPlate(asset: plate)),
-        column,
-      ],
-    );
+    return Stack(fit: StackFit.expand, children: [
+      Positioned.fill(child: ScreenPlate(asset: plate)),
+      column,
+    ]);
   }
 
   /// The Tower: the pick goes to the caller, nothing is asked or saved here.
@@ -473,18 +438,13 @@ class PresetMark extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final file = preset?['visualAsset']?.toString() ?? '';
-    final generic = Icon(
-      folder == 'races' ? raceIcon : professionIcon,
-      size: size,
-    );
+    final generic =
+        Icon(folder == 'races' ? raceIcon : professionIcon, size: size);
     if (file.isEmpty) return generic;
     // A preset whose picture the build does not carry (one added in the
     // Data tab) shows the generic mark rather than breaking the screen.
-    final mark = PixelIcon(
-      'assets/visuals/$folder/$file',
-      size: size,
-      fallback: generic,
-    );
+    final mark = PixelIcon('assets/visuals/$folder/$file',
+        size: size, fallback: generic);
     // The Tower's ink: the emblem in the ink greys.
     return TowerPanelStyle.of(context)
         ? ColorFiltered(colorFilter: _inkEmblem, child: mark)
@@ -518,13 +478,11 @@ class _BonusChip extends StatelessWidget {
         border: Border.all(color: color.withValues(alpha: 0.7)),
         color: color.withValues(alpha: 0.1),
       ),
-      child: Text(
-        '${value > 0 ? '+' : ''}$value $label',
-        style: Theme.of(context)
-            .textTheme
-            .labelSmall
-            ?.copyWith(color: color, fontWeight: FontWeight.w600),
-      ),
+      child: Text('${value > 0 ? '+' : ''}$value $label',
+          style: Theme.of(context)
+              .textTheme
+              .labelSmall
+              ?.copyWith(color: color, fontWeight: FontWeight.w600)),
     );
   }
 }
@@ -594,23 +552,16 @@ class _IdentityCard extends ConsumerWidget {
                         const SizedBox(height: 6),
                         Container(
                           padding: const EdgeInsets.symmetric(
-                            horizontal: 9,
-                            vertical: 3,
-                          ),
+                              horizontal: 9, vertical: 3),
                           decoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(6),
                             color: scheme.primary.withValues(alpha: 0.14),
                             border: Border.all(
-                              color: scheme.primary.withValues(alpha: 0.6),
-                            ),
+                                color: scheme.primary.withValues(alpha: 0.6)),
                           ),
-                          child: Text(
-                            tag.toUpperCase(),
-                            style: theme.textTheme.labelMedium?.copyWith(
-                              color: scheme.primary,
-                              letterSpacing: 0.8,
-                            ),
-                          ),
+                          child: Text(tag.toUpperCase(),
+                              style: theme.textTheme.labelMedium?.copyWith(
+                                  color: scheme.primary, letterSpacing: 0.8)),
                         ),
                       ],
                     ],
@@ -620,26 +571,20 @@ class _IdentityCard extends ConsumerWidget {
             ),
             if (lead.isNotEmpty) ...[
               const SizedBox(height: 14),
-              Text(
-                lead,
-                style: theme.textTheme.bodyLarge?.copyWith(
-                  fontSize: 17,
-                  fontWeight: FontWeight.w600,
-                  color: scheme.onSurface,
-                  height: 1.45,
-                ),
-              ),
+              Text(lead,
+                  style: theme.textTheme.bodyLarge?.copyWith(
+                      fontSize: 17,
+                      fontWeight: FontWeight.w600,
+                      color: scheme.onSurface,
+                      height: 1.45)),
             ],
             if (rest.isNotEmpty) ...[
               const SizedBox(height: 8),
-              Text(
-                rest,
-                style: theme.textTheme.bodyLarge?.copyWith(
-                  fontSize: 16,
-                  color: scheme.onSurface.withValues(alpha: 0.82),
-                  height: 1.6,
-                ),
-              ),
+              Text(rest,
+                  style: theme.textTheme.bodyLarge?.copyWith(
+                      fontSize: 16,
+                      color: scheme.onSurface.withValues(alpha: 0.82),
+                      height: 1.6)),
             ],
             if (preset != null) ...[
               const SizedBox(height: 12),
@@ -647,10 +592,8 @@ class _IdentityCard extends ConsumerWidget {
                 spacing: 6,
                 runSpacing: 6,
                 children: [
-                  for (final e in presetBonuses(
-                    preset!,
-                    withOffers: withOffers,
-                  ))
+                  for (final e
+                      in presetBonuses(preset!, withOffers: withOffers))
                     _BonusChip(label: tr(ref, e.key), value: e.value),
                 ],
               ),
@@ -695,8 +638,7 @@ class _ChoiceRow extends ConsumerWidget {
       builder: (context) => SafeArea(
         child: ConstrainedBox(
           constraints: BoxConstraints(
-            maxHeight: MediaQuery.of(context).size.height * 0.85,
-          ),
+              maxHeight: MediaQuery.of(context).size.height * 0.85),
           child: SingleChildScrollView(
             padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
             child: Column(
@@ -774,23 +716,16 @@ class _ChoiceRow extends ConsumerWidget {
                         if (tag.isNotEmpty)
                           Container(
                             padding: const EdgeInsets.symmetric(
-                              horizontal: 7,
-                              vertical: 2,
-                            ),
+                                horizontal: 7, vertical: 2),
                             decoration: BoxDecoration(
                               borderRadius: BorderRadius.circular(4),
                               color: scheme.primary.withValues(alpha: 0.14),
                               border: Border.all(
-                                color: scheme.primary.withValues(alpha: 0.6),
-                              ),
+                                  color: scheme.primary.withValues(alpha: 0.6)),
                             ),
-                            child: Text(
-                              tag.toUpperCase(),
-                              style: theme.textTheme.labelSmall?.copyWith(
-                                color: scheme.primary,
-                                letterSpacing: 0.8,
-                              ),
-                            ),
+                            child: Text(tag.toUpperCase(),
+                                style: theme.textTheme.labelSmall?.copyWith(
+                                    color: scheme.primary, letterSpacing: 0.8)),
                           ),
                       ],
                     ),
@@ -801,22 +736,17 @@ class _ChoiceRow extends ConsumerWidget {
                         runSpacing: 4,
                         children: [
                           if (preset != null)
-                            for (final e in presetBonuses(
-                              preset!,
-                              withOffers: withOffers,
-                            ))
+                            for (final e in presetBonuses(preset!,
+                                withOffers: withOffers))
                               _BonusChip(label: tr(ref, e.key), value: e.value),
                           if (_skillId.isNotEmpty)
                             Container(
                               padding: const EdgeInsets.symmetric(
-                                horizontal: 7,
-                                vertical: 2,
-                              ),
+                                  horizontal: 7, vertical: 2),
                               decoration: BoxDecoration(
                                 borderRadius: BorderRadius.circular(8),
-                                border: Border.all(
-                                  color: scheme.outlineVariant,
-                                ),
+                                border:
+                                    Border.all(color: scheme.outlineVariant),
                               ),
                               child: Row(
                                 mainAxisSize: MainAxisSize.min,
@@ -824,13 +754,11 @@ class _ChoiceRow extends ConsumerWidget {
                                   SkillPixelIcon(_skillId, size: IconSize.s16),
                                   const SizedBox(width: 4),
                                   Text(
-                                    _skillNameIn(
-                                      ref.watch(appLanguageProvider),
-                                    ),
-                                    style: theme.textTheme.labelSmall?.copyWith(
-                                      color: scheme.onSurfaceVariant,
-                                    ),
-                                  ),
+                                      _skillNameIn(
+                                          ref.watch(appLanguageProvider)),
+                                      style: theme.textTheme.labelSmall
+                                          ?.copyWith(
+                                              color: scheme.onSurfaceVariant)),
                                 ],
                               ),
                             ),
@@ -894,31 +822,20 @@ class _SkillCard extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(
-                  label.toUpperCase(),
-                  style: theme.textTheme.labelSmall?.copyWith(
-                    color: scheme.primary,
-                    letterSpacing: 1,
-                  ),
-                ),
+                Text(label.toUpperCase(),
+                    style: theme.textTheme.labelSmall
+                        ?.copyWith(color: scheme.primary, letterSpacing: 1)),
                 const SizedBox(height: 2),
-                Text(
-                  name,
-                  style: theme.textTheme.titleMedium?.copyWith(
-                    fontSize: 18,
-                    color: scheme.onSurface,
-                  ),
-                ),
+                Text(name,
+                    style: theme.textTheme.titleMedium
+                        ?.copyWith(fontSize: 18, color: scheme.onSurface)),
                 if (description.isNotEmpty) ...[
                   const SizedBox(height: 4),
-                  Text(
-                    description,
-                    style: theme.textTheme.bodyLarge?.copyWith(
-                      fontSize: 16,
-                      color: scheme.onSurface.withValues(alpha: 0.82),
-                      height: 1.45,
-                    ),
-                  ),
+                  Text(description,
+                      style: theme.textTheme.bodyLarge?.copyWith(
+                          fontSize: 16,
+                          color: scheme.onSurface.withValues(alpha: 0.82),
+                          height: 1.45)),
                 ],
               ],
             ),
@@ -993,28 +910,20 @@ class _CharacterSheet extends StatelessWidget {
           ),
           clipBehavior: Clip.antiAlias,
           child: Padding(
-            padding: padding ??
-                const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
-            child: child,
-          ),
+              padding: padding ??
+                  const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+              child: child),
         );
 
     /// A thin bar with its caption and numbers: health, experience.
-    Widget bar(
-      String label,
-      double value,
-      String numbers,
-      Color color, {
-      String? description,
-    }) {
+    Widget bar(String label, double value, String numbers, Color color,
+        {String? description}) {
       final body = Row(
         children: [
           SizedBox(
             width: 30,
-            child: Text(
-              label.toUpperCase(),
-              style: theme.textTheme.labelSmall?.copyWith(color: color),
-            ),
+            child: Text(label.toUpperCase(),
+                style: theme.textTheme.labelSmall?.copyWith(color: color)),
           ),
           Expanded(
             child: ClipRRect(
@@ -1039,13 +948,8 @@ class _CharacterSheet extends StatelessWidget {
       );
     }
 
-    Widget chip(
-      IconData icon,
-      String text,
-      String title,
-      String description, {
-      Key? key,
-    }) =>
+    Widget chip(IconData icon, String text, String title, String description,
+            {Key? key}) =>
         InkWell(
           key: key,
           borderRadius: BorderRadius.circular(4),
@@ -1083,7 +987,7 @@ class _CharacterSheet extends StatelessWidget {
       (t('gold_field_label'), '${session.gold}'),
       (
         t('alignment_label'),
-        '${t(_alignmentKey(session.alignmentLabel))} (${session.alignmentScore})',
+        '${t(_alignmentKey(session.alignmentLabel))} (${session.alignmentScore})'
       ),
       (t('stat_points_label'), '${session.statPoints}'),
       (t('offers_waiting_label'), '${session.pendingOffers.length}'),
@@ -1099,17 +1003,14 @@ class _CharacterSheet extends StatelessWidget {
           builder: (sheetContext) => SafeArea(
             child: ConstrainedBox(
               constraints: BoxConstraints(
-                maxHeight: MediaQuery.of(sheetContext).size.height * 0.8,
-              ),
+                  maxHeight: MediaQuery.of(sheetContext).size.height * 0.8),
               child: ListView(
                 key: const Key('sheet_belongings_list'),
                 shrinkWrap: true,
                 padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
                 children: [
-                  Text(
-                    t('sheet_belongings_title'),
-                    style: theme.textTheme.titleLarge,
-                  ),
+                  Text(t('sheet_belongings_title'),
+                      style: theme.textTheme.titleLarge),
                   const SizedBox(height: 6),
                   for (final (i, (label, value)) in counters.indexed)
                     Container(
@@ -1123,9 +1024,8 @@ class _CharacterSheet extends StatelessWidget {
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           Expanded(
-                            child:
-                                Text(label, style: theme.textTheme.bodyLarge),
-                          ),
+                              child: Text(label,
+                                  style: theme.textTheme.bodyLarge)),
                           const SizedBox(width: 12),
                           Text(value, style: theme.textTheme.titleSmall),
                         ],
@@ -1162,18 +1062,15 @@ class _CharacterSheet extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   if (session.characterName.isNotEmpty)
-                    Text(
-                      session.characterName,
+                    Text(session.characterName,
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        style: theme.textTheme.headlineSmall),
+                  Text('$raceName · $professionName',
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
-                      style: theme.textTheme.headlineSmall,
-                    ),
-                  Text(
-                    '$raceName · $professionName',
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                    style: theme.textTheme.bodyMedium?.copyWith(color: ink.ash),
-                  ),
+                      style:
+                          theme.textTheme.bodyMedium?.copyWith(color: ink.ash)),
                 ],
               ),
             ),
@@ -1182,17 +1079,13 @@ class _CharacterSheet extends StatelessWidget {
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(4),
                 color: scheme.primary.withValues(alpha: 0.14),
-                border: Border.all(
-                  color: scheme.primary.withValues(alpha: 0.6),
-                ),
+                border:
+                    Border.all(color: scheme.primary.withValues(alpha: 0.6)),
               ),
-              child: Text(
-                '${t('level_field_label')} ${session.level}',
-                key: const Key('sheet_level'),
-                style: theme.textTheme.labelLarge?.copyWith(
-                  color: scheme.primary,
-                ),
-              ),
+              child: Text('${t('level_field_label')} ${session.level}',
+                  key: const Key('sheet_level'),
+                  style: theme.textTheme.labelLarge
+                      ?.copyWith(color: scheme.primary)),
             ),
           ],
         ),
@@ -1244,19 +1137,14 @@ class _CharacterSheet extends StatelessWidget {
                 runSpacing: 6,
                 children: [
                   chip(
-                    Icons.gavel,
-                    '${t('damage_label')} ${session.baseDamage}',
-                    t('base_damage_label'),
-                    t('base_damage_desc'),
-                    key: const Key('sheet_damage'),
-                  ),
-                  chip(
-                    Icons.shield,
-                    '${t('arm_abbrev')} ${session.baseArmor}',
-                    t('base_armor_label'),
-                    t('base_armor_desc'),
-                    key: const Key('sheet_armor'),
-                  ),
+                      Icons.gavel,
+                      '${t('damage_label')} ${session.baseDamage}',
+                      t('base_damage_label'),
+                      t('base_damage_desc'),
+                      key: const Key('sheet_damage')),
+                  chip(Icons.shield, '${t('arm_abbrev')} ${session.baseArmor}',
+                      t('base_armor_label'), t('base_armor_desc'),
+                      key: const Key('sheet_armor')),
                 ],
               ),
             ],
@@ -1283,16 +1171,10 @@ class _CharacterSheet extends StatelessWidget {
                   children: [
                     for (final (i, (k, v)) in abilities.indexed)
                       InkWell(
-                        onTap: () => read(
-                          t('${k}_label'),
-                          t('${k}_desc'),
-                          icon: abilityIcon(k),
-                        ),
-                        onLongPress: () => read(
-                          t('${k}_label'),
-                          t('${k}_desc'),
-                          icon: abilityIcon(k),
-                        ),
+                        onTap: () => read(t('${k}_label'), t('${k}_desc'),
+                            icon: abilityIcon(k)),
+                        onLongPress: () => read(t('${k}_label'), t('${k}_desc'),
+                            icon: abilityIcon(k)),
                         child: Container(
                           padding: const EdgeInsets.symmetric(vertical: 4),
                           decoration: BoxDecoration(
@@ -1303,14 +1185,11 @@ class _CharacterSheet extends StatelessWidget {
                           child: Row(
                             children: [
                               Expanded(
-                                child: Text(
-                                  t('${k}_label'),
-                                  maxLines: 1,
-                                  overflow: TextOverflow.ellipsis,
-                                  style: theme.textTheme.bodyMedium?.copyWith(
-                                    color: ink.ash,
-                                  ),
-                                ),
+                                child: Text(t('${k}_label'),
+                                    maxLines: 1,
+                                    overflow: TextOverflow.ellipsis,
+                                    style: theme.textTheme.bodyMedium
+                                        ?.copyWith(color: ink.ash)),
                               ),
                               Text('$v', style: theme.textTheme.titleSmall),
                             ],
@@ -1325,10 +1204,8 @@ class _CharacterSheet extends StatelessWidget {
         ),
         Padding(
           padding: const EdgeInsets.only(top: 4, bottom: 8),
-          child: Text(
-            t('hold_stat_for_details_hint'),
-            style: theme.textTheme.labelSmall?.copyWith(color: ink.ash),
-          ),
+          child: Text(t('hold_stat_for_details_hint'),
+              style: theme.textTheme.labelSmall?.copyWith(color: ink.ash)),
         ),
         // The elements: a chip each, the chart a tap away.
         panel(
@@ -1342,26 +1219,20 @@ class _CharacterSheet extends StatelessWidget {
                 Row(
                   children: [
                     Expanded(
-                      child: Text(
-                        t('elements_title'),
-                        style: theme.textTheme.titleSmall,
-                      ),
+                      child: Text(t('elements_title'),
+                          style: theme.textTheme.titleSmall),
                     ),
                     if (!elements.isEmpty)
-                      Icon(
-                        Icons.chevron_right,
-                        size: IconSize.s16,
-                        color: ink.ash,
-                      ),
+                      Icon(Icons.chevron_right,
+                          size: IconSize.s16, color: ink.ash),
                   ],
                 ),
                 const SizedBox(height: 6),
                 if (elements.isEmpty)
-                  Text(
-                    t('elements_empty'),
-                    key: const Key('elements_empty'),
-                    style: theme.textTheme.bodySmall?.copyWith(color: ink.ash),
-                  )
+                  Text(t('elements_empty'),
+                      key: const Key('elements_empty'),
+                      style:
+                          theme.textTheme.bodySmall?.copyWith(color: ink.ash))
                 else
                   Wrap(
                     spacing: 6,
@@ -1396,10 +1267,8 @@ class _CharacterSheet extends StatelessWidget {
               child: Row(
                 children: [
                   Expanded(
-                    child: Text(
-                      t('sheet_belongings_title'),
-                      style: theme.textTheme.titleSmall,
-                    ),
+                    child: Text(t('sheet_belongings_title'),
+                        style: theme.textTheme.titleSmall),
                   ),
                   for (final (icon, count) in [
                     (Icons.monetization_on, session.gold),
@@ -1425,9 +1294,7 @@ class _CharacterSheet extends StatelessWidget {
         if (onStartGame != null) ...[
           const SizedBox(height: 14),
           FilledButton(
-            onPressed: onStartGame,
-            child: Text(t('continue_button')),
-          ),
+              onPressed: onStartGame, child: Text(t('continue_button'))),
         ],
       ],
     );
@@ -1460,9 +1327,8 @@ class _NameDialog extends ConsumerStatefulWidget {
 }
 
 class _NameDialogState extends ConsumerState<_NameDialog> {
-  late final TextEditingController _controller = TextEditingController(
-    text: widget.initialName,
-  );
+  late final TextEditingController _controller =
+      TextEditingController(text: widget.initialName);
 
   @override
   void dispose() {

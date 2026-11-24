@@ -22,13 +22,12 @@ import 'enemy_groups.dart';
 /// the element's icon and the factor. [lit] rings the weak mark while the
 /// picked die is of that element (the hint under the dice says the same).
 class FightMark {
-  const FightMark({
-    required this.icon,
-    required this.text,
-    required this.weak,
-    this.lit = false,
-    this.tip,
-  });
+  const FightMark(
+      {required this.icon,
+      required this.text,
+      required this.weak,
+      this.lit = false,
+      this.tip});
   final IconData icon;
   final String text;
   final bool weak;
@@ -115,30 +114,23 @@ class FightBlock extends StatelessWidget {
         : (m.weak ? Palette.hot : Palette.slate);
     final chip = Container(
       key: Key(
-        'fight_mark_${m.weak ? 'weak' : 'resist'}_${m.text}_${m.icon.codePoint}',
-      ),
+          'fight_mark_${m.weak ? 'weak' : 'resist'}_${m.text}_${m.icon.codePoint}'),
       margin: const EdgeInsets.only(left: 3),
       padding: const EdgeInsets.symmetric(horizontal: 3),
       decoration: BoxDecoration(
         color: Palette.apolloOutline,
         border: Border.all(color: colour, width: m.lit ? 2 : 1),
       ),
-      child: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Icon(m.icon, size: IconSize.inline, color: Palette.apolloCream),
-          const SizedBox(width: 1),
-          Text(
-            m.text,
+      child: Row(mainAxisSize: MainAxisSize.min, children: [
+        Icon(m.icon, size: IconSize.inline, color: Palette.apolloCream),
+        const SizedBox(width: 1),
+        Text(m.text,
             style: TextStyle(
-              fontSize: 9,
-              height: 1,
-              fontWeight: FontWeight.bold,
-              color: m.weak ? Palette.apolloCream : Palette.slate,
-            ),
-          ),
-        ],
-      ),
+                fontSize: 9,
+                height: 1,
+                fontWeight: FontWeight.bold,
+                color: m.weak ? Palette.apolloCream : Palette.slate)),
+      ]),
     );
     final tip = m.tip;
     return tip == null ? chip : Tooltip(message: tip, child: chip);
@@ -169,19 +161,16 @@ class FightBlock extends StatelessWidget {
           ? BoxDecoration(
               color: inkBlack,
               border: Border(
-                left: BorderSide(color: frame, width: 4),
-                top: const BorderSide(color: inkSlate),
-                right: const BorderSide(color: inkSlate),
-                bottom: const BorderSide(color: inkSlate),
-              ),
+                  left: BorderSide(color: frame, width: 4),
+                  top: const BorderSide(color: inkSlate),
+                  right: const BorderSide(color: inkSlate),
+                  bottom: const BorderSide(color: inkSlate)),
             )
           : ShapeDecoration(
               color: fill ?? scheme.surface,
               shape: PixelChipBorder(
                 side: BorderSide(
-                  color: frame,
-                  width: borderWidth ?? (ranked ? 3 : 2),
-                ),
+                    color: frame, width: borderWidth ?? (ranked ? 3 : 2)),
                 step: 3,
                 steps: 3,
               ),
@@ -192,204 +181,170 @@ class FightBlock extends StatelessWidget {
             : OrnamentPainter(
                 g.ornament,
                 Color.lerp(plateColor, Palette.apolloCream, 0.55)!,
-                Palette.apolloOutline,
-              ),
-        child: LayoutBuilder(
-          builder: (context, box) {
-            // The marks sit on the plate while the name stays readable beside
-            // them; otherwise they drop to the chip row under it.
-            final ranked = rank != FightRank.normal;
-            // A name that cannot stay readable on one line takes two, and its
-            // marks go under the plate.
-            final twoLines = !_nameFitsBeside(
-              box.maxWidth,
-              ranked: ranked,
-              marks: 0,
-            );
-            final onPlate = !twoLines &&
-                (marks.isEmpty ||
-                    _nameFitsBeside(
-                      box.maxWidth,
-                      ranked: ranked,
-                      marks: marks.length,
-                    ));
-            return Column(
-              children: [
-                Container(
-                  height: twoLines ? plateHeightTwoLines : plateHeight,
-                  margin: const EdgeInsets.fromLTRB(3, 3, 3, 0),
-                  padding: const EdgeInsets.symmetric(horizontal: 4),
-                  color: plate,
-                  child: Row(
-                    children: [
-                      if (g != null) ...[
-                        _emblem(g, plateInk),
-                        const SizedBox(width: 3),
-                      ] else if (order != null) ...[
-                        Text(
-                          '$order',
+                Palette.apolloOutline),
+        child: LayoutBuilder(builder: (context, box) {
+          // The marks sit on the plate while the name stays readable beside
+          // them; otherwise they drop to the chip row under it.
+          final ranked = rank != FightRank.normal;
+          // A name that cannot stay readable on one line takes two, and its
+          // marks go under the plate.
+          final twoLines =
+              !_nameFitsBeside(box.maxWidth, ranked: ranked, marks: 0);
+          final onPlate = !twoLines &&
+              (marks.isEmpty ||
+                  _nameFitsBeside(box.maxWidth,
+                      ranked: ranked, marks: marks.length));
+          return Column(
+            children: [
+              Container(
+                height: twoLines ? plateHeightTwoLines : plateHeight,
+                margin: const EdgeInsets.fromLTRB(3, 3, 3, 0),
+                padding: const EdgeInsets.symmetric(horizontal: 4),
+                color: plate,
+                child: Row(
+                  children: [
+                    if (g != null) ...[
+                      _emblem(g, plateInk),
+                      const SizedBox(width: 3),
+                    ] else if (order != null) ...[
+                      Text('$order',
                           style: TextStyle(
-                            fontSize: 9,
-                            fontWeight: FontWeight.bold,
-                            color: plateInk,
-                          ),
-                        ),
-                        const SizedBox(width: 3),
-                      ],
-                      Expanded(
-                        child: twoLines
-                            ? LayoutBuilder(
-                                builder: (context, line) => FittedBox(
-                                  fit: BoxFit.scaleDown,
-                                  alignment: Alignment.centerLeft,
-                                  child: ConstrainedBox(
-                                    constraints: BoxConstraints(
-                                      maxWidth: line.maxWidth,
-                                    ),
-                                    child: Text(
-                                      name,
-                                      maxLines: 3,
-                                      style: TextStyle(
+                              fontSize: 9,
+                              fontWeight: FontWeight.bold,
+                              color: plateInk)),
+                      const SizedBox(width: 3),
+                    ],
+                    Expanded(
+                      child: twoLines
+                          ? LayoutBuilder(
+                              builder: (context, line) => FittedBox(
+                                fit: BoxFit.scaleDown,
+                                alignment: Alignment.centerLeft,
+                                child: ConstrainedBox(
+                                  constraints:
+                                      BoxConstraints(maxWidth: line.maxWidth),
+                                  child: Text(
+                                    name,
+                                    maxLines: 3,
+                                    style: TextStyle(
                                         fontFamily: InkFonts.display,
                                         fontSize: 11,
                                         height: 1.02,
-                                        color: plateInk,
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                              )
-                            : FittedBox(
-                                fit: BoxFit.scaleDown,
-                                alignment: Alignment.centerLeft,
-                                child: Text(
-                                  name,
-                                  maxLines: 1,
-                                  style: TextStyle(
-                                    fontFamily: InkFonts.display,
-                                    fontSize: 13,
-                                    height: 1,
-                                    color: plateInk,
+                                        color: plateInk),
                                   ),
                                 ),
                               ),
-                      ),
-                      if (marks.isNotEmpty && onPlate)
-                        for (final m in marks) _markChip(context, m, plateInk),
-                      // A two-line plate keeps the badge's icon only: the frame says the rest.
-                      if (ranked) _rankMark(plateInk, iconOnly: twoLines),
-                    ],
-                  ),
+                            )
+                          : FittedBox(
+                              fit: BoxFit.scaleDown,
+                              alignment: Alignment.centerLeft,
+                              child: Text(
+                                name,
+                                maxLines: 1,
+                                style: TextStyle(
+                                    fontFamily: InkFonts.display,
+                                    fontSize: 13,
+                                    height: 1,
+                                    color: plateInk),
+                              ),
+                            ),
+                    ),
+                    if (marks.isNotEmpty && onPlate)
+                      for (final m in marks) _markChip(context, m, plateInk),
+                    // A two-line plate keeps the badge's icon only: the frame says the rest.
+                    if (ranked) _rankMark(plateInk, iconOnly: twoLines),
+                  ],
                 ),
-                Expanded(
-                  child: Padding(
-                    padding: const EdgeInsets.fromLTRB(5, 3, 5, 2),
-                    child: Row(
-                      children: [
-                        Stack(
-                          clipBehavior: Clip.none,
-                          children: [
-                            SizedBox(
+              ),
+              Expanded(
+                child: Padding(
+                  padding: const EdgeInsets.fromLTRB(5, 3, 5, 2),
+                  child: Row(
+                    children: [
+                      Stack(
+                        clipBehavior: Clip.none,
+                        children: [
+                          SizedBox(
                               width: 32,
                               height: 32,
                               child: inked
                                   // The Tower's ink: the portrait in greys.
                                   ? ColorFiltered(
-                                      colorFilter: _inkHead,
-                                      child: head,
-                                    )
-                                  : head,
+                                      colorFilter: _inkHead, child: head)
+                                  : head),
+                          if (armor != null)
+                            Positioned(
+                              left: -2,
+                              bottom: -12,
+                              child: _gem(context, Icons.shield_outlined,
+                                  '$armor', Palette.slate),
                             ),
-                            if (armor != null)
-                              Positioned(
-                                left: -2,
-                                bottom: -12,
-                                child: _gem(
-                                  context,
-                                  Icons.shield_outlined,
-                                  '$armor',
-                                  Palette.slate,
-                                ),
-                              ),
-                            if (damage != null)
-                              Positioned(
-                                right: -6,
-                                bottom: -12,
-                                child: _gem(
-                                  context,
-                                  Icons.bolt,
-                                  '$damage',
-                                  Palette.hot,
-                                ),
-                              ),
-                          ],
-                        ),
-                        const SizedBox(width: 10),
-                        Expanded(
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            crossAxisAlignment: CrossAxisAlignment.stretch,
-                            children: [
-                              bar,
-                              const SizedBox(height: 3),
-                              SizedBox(
-                                height: 20,
-                                child: Row(
-                                  children: [
-                                    if (!onPlate)
-                                      Flexible(
-                                        flex: 2,
-                                        child: ConstrainedBox(
-                                          constraints: const BoxConstraints(
-                                            maxWidth: 104,
-                                          ),
-                                          child: FittedBox(
-                                            fit: BoxFit.scaleDown,
-                                            alignment: Alignment.centerLeft,
-                                            child: Row(
-                                              children: [
-                                                if (!onPlate)
-                                                  for (final m in marks)
-                                                    _markChip(
-                                                      context,
-                                                      m,
-                                                      plateInk,
-                                                    ),
-                                              ],
-                                            ),
-                                          ),
+                          if (damage != null)
+                            Positioned(
+                              right: -6,
+                              bottom: -12,
+                              child: _gem(
+                                  context, Icons.bolt, '$damage', Palette.hot),
+                            ),
+                        ],
+                      ),
+                      const SizedBox(width: 10),
+                      Expanded(
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          crossAxisAlignment: CrossAxisAlignment.stretch,
+                          children: [
+                            bar,
+                            const SizedBox(height: 3),
+                            SizedBox(
+                              height: 20,
+                              child: Row(
+                                children: [
+                                  if (!onPlate)
+                                    Flexible(
+                                      flex: 2,
+                                      child: ConstrainedBox(
+                                        constraints:
+                                            const BoxConstraints(maxWidth: 104),
+                                        child: FittedBox(
+                                          fit: BoxFit.scaleDown,
+                                          alignment: Alignment.centerLeft,
+                                          child: Row(children: [
+                                            if (!onPlate)
+                                              for (final m in marks)
+                                                _markChip(context, m, plateInk),
+                                          ]),
                                         ),
-                                      ),
-                                    Expanded(
-                                      child: SingleChildScrollView(
-                                        scrollDirection: Axis.horizontal,
-                                        child: Row(children: chips),
                                       ),
                                     ),
-                                    if (intent != null)
-                                      Flexible(
-                                        flex: 0,
-                                        child: ConstrainedBox(
-                                          constraints: const BoxConstraints(
-                                            maxWidth: 92,
-                                          ),
-                                          child: intent,
-                                        ),
+                                  Expanded(
+                                    child: SingleChildScrollView(
+                                      scrollDirection: Axis.horizontal,
+                                      child: Row(children: chips),
+                                    ),
+                                  ),
+                                  if (intent != null)
+                                    Flexible(
+                                      flex: 0,
+                                      child: ConstrainedBox(
+                                        constraints:
+                                            const BoxConstraints(maxWidth: 92),
+                                        child: intent,
                                       ),
-                                  ],
-                                ),
+                                    ),
+                                ],
                               ),
-                            ],
-                          ),
+                            ),
+                          ],
                         ),
-                      ],
-                    ),
+                      ),
+                    ],
                   ),
                 ),
-              ],
-            );
-          },
-        ),
+              ),
+            ],
+          );
+        }),
       ),
     );
   }
@@ -411,9 +366,9 @@ class FightBlock extends StatelessWidget {
           decoration: BoxDecoration(
             color: inkBlack.withValues(alpha: 0.92),
             border: Border(
-              left: BorderSide(color: frame, width: 3),
-              bottom: BorderSide(color: frame == inkPaper ? inkSlate : frame),
-            ),
+                left: BorderSide(color: frame, width: 3),
+                bottom:
+                    BorderSide(color: frame == inkPaper ? inkSlate : frame)),
           ),
           child: Transform(
             transform: Matrix4.skewX(0.2),
@@ -421,56 +376,44 @@ class FightBlock extends StatelessWidget {
               mainAxisSize: MainAxisSize.min,
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
-                Row(
-                  children: [
-                    if (g != null) ...[
-                      _emblem(g, inkPaper),
-                      const SizedBox(width: 3),
-                    ] else if (order != null) ...[
-                      Text(
-                        '$order',
+                Row(children: [
+                  if (g != null) ...[
+                    _emblem(g, inkPaper),
+                    const SizedBox(width: 3),
+                  ] else if (order != null) ...[
+                    Text('$order',
                         style: const TextStyle(
-                          fontSize: 9,
-                          fontWeight: FontWeight.bold,
-                          color: inkGrey,
-                        ),
-                      ),
-                      const SizedBox(width: 3),
-                    ],
-                    Expanded(
-                      child: FittedBox(
-                        fit: BoxFit.scaleDown,
-                        alignment: Alignment.centerLeft,
-                        child: Text(
-                          name,
+                            fontSize: 9,
+                            fontWeight: FontWeight.bold,
+                            color: inkGrey)),
+                    const SizedBox(width: 3),
+                  ],
+                  Expanded(
+                    child: FittedBox(
+                      fit: BoxFit.scaleDown,
+                      alignment: Alignment.centerLeft,
+                      child: Text(name,
                           maxLines: 1,
                           style: const TextStyle(
-                            fontFamily: InkFonts.display,
-                            fontSize: 13,
-                            height: 1,
-                            color: inkPaper,
-                          ),
-                        ),
-                      ),
+                              fontFamily: InkFonts.display,
+                              fontSize: 13,
+                              height: 1,
+                              color: inkPaper)),
                     ),
-                    for (final m in marks) _markChip(context, m, inkPaper),
-                    if (ranked) _rankMark(inkPaper, iconOnly: true),
-                    // The numbers, the status marks and the intent are one tap
-                    // away (the fighter's sheet): the plate says so.
-                    if (armor != null ||
-                        damage != null ||
-                        chips.isNotEmpty ||
-                        intent != null)
-                      const Padding(
+                  ),
+                  for (final m in marks) _markChip(context, m, inkPaper),
+                  if (ranked) _rankMark(inkPaper, iconOnly: true),
+                  // The numbers, the status marks and the intent are one tap
+                  // away (the fighter's sheet): the plate says so.
+                  if (armor != null ||
+                      damage != null ||
+                      chips.isNotEmpty ||
+                      intent != null)
+                    const Padding(
                         padding: EdgeInsets.only(left: 4),
-                        child: Icon(
-                          Icons.info_outline,
-                          size: IconSize.inline,
-                          color: inkGrey,
-                        ),
-                      ),
-                  ],
-                ),
+                        child: Icon(Icons.info_outline,
+                            size: IconSize.inline, color: inkGrey)),
+                ]),
                 const SizedBox(height: 4),
                 bar,
               ],
@@ -484,20 +427,13 @@ class FightBlock extends StatelessWidget {
   /// Whether the name stays at a readable size (at least 85 % of its 13 sp,
   /// on one line) on a plate [width] wide with its emblem or number, [marks]
   /// marks and its rank beside it.
-  bool _nameFitsBeside(
-    double width, {
-    required bool ranked,
-    required int marks,
-  }) {
+  bool _nameFitsBeside(double width,
+      {required bool ranked, required int marks}) {
     final painter = TextPainter(
       text: TextSpan(
-        text: name,
-        style: const TextStyle(
-          fontFamily: InkFonts.display,
-          fontSize: 13,
-          height: 1,
-        ),
-      ),
+          text: name,
+          style: const TextStyle(
+              fontFamily: InkFonts.display, fontSize: 13, height: 1)),
       maxLines: 1,
       textDirection: TextDirection.ltr,
     )..layout();
@@ -509,22 +445,16 @@ class FightBlock extends StatelessWidget {
   Widget _rankMark(Color ink, {bool iconOnly = false}) => Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Icon(
-            rank == FightRank.boss ? Icons.workspace_premium : Icons.star,
-            size: IconSize.inline,
-            color: ink,
-          ),
+          Icon(rank == FightRank.boss ? Icons.workspace_premium : Icons.star,
+              size: IconSize.inline, color: ink),
           if (!iconOnly) ...[
             const SizedBox(width: 1),
-            Text(
-              rank == FightRank.boss ? 'BOSS' : 'ELITE',
-              style: TextStyle(
-                fontFamily: InkFonts.system,
-                fontSize: 8,
-                height: 1,
-                color: ink,
-              ),
-            ),
+            Text(rank == FightRank.boss ? 'BOSS' : 'ELITE',
+                style: TextStyle(
+                    fontFamily: InkFonts.system,
+                    fontSize: 8,
+                    height: 1,
+                    color: ink)),
           ],
         ],
       );
@@ -541,16 +471,13 @@ class FightBlock extends StatelessWidget {
       height: 19,
       decoration: inked
           ? BoxDecoration(
-              color: inkBlack,
-              border: Border.all(color: color, width: 1.5),
-            )
+              color: inkBlack, border: Border.all(color: color, width: 1.5))
           : ShapeDecoration(
               color: scheme.surface,
               shape: PixelChipBorder(
-                side: BorderSide(color: color, width: 1.5),
-                step: 2,
-                steps: 2,
-              ),
+                  side: BorderSide(color: color, width: 1.5),
+                  step: 2,
+                  steps: 2),
             ),
       alignment: Alignment.center,
       // A long number (a boss's armour, a big blow) shrinks to the gem.
@@ -562,18 +489,15 @@ class FightBlock extends StatelessWidget {
             mainAxisSize: MainAxisSize.min,
             children: [
               Icon(icon, size: IconSize.inline, color: color),
-              Text(
-                value,
-                maxLines: 1,
-                softWrap: false,
-                style: TextStyle(
-                  fontFamily: InkFonts.prose,
-                  fontWeight: FontWeight.w700,
-                  fontSize: 8,
-                  height: 1,
-                  color: scheme.onSurface,
-                ),
-              ),
+              Text(value,
+                  maxLines: 1,
+                  softWrap: false,
+                  style: TextStyle(
+                      fontFamily: InkFonts.prose,
+                      fontWeight: FontWeight.w700,
+                      fontSize: 8,
+                      height: 1,
+                      color: scheme.onSurface)),
             ],
           ),
         ),

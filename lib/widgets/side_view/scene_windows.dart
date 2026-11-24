@@ -52,11 +52,8 @@ double? pathXAt(List<double> path, double done) {
 /// version arrives block by block in an ordered dither. Painted as one layer
 /// (give it the scene's raw scroll: each inner layer takes its own share).
 /// Once the dissolve is over it is just [to].
-SideLayer sceneDissolve(
-  List<SideLayer> from,
-  List<SideLayer> to, {
-  double seconds = 0.9,
-}) {
+SideLayer sceneDissolve(List<SideLayer> from, List<SideLayer> to,
+    {double seconds = 0.9}) {
   double? started;
   return SideLayer(1, (canvas, size, scroll, t, u) {
     started ??= t;
@@ -98,10 +95,7 @@ SideLayer sceneDissolve(
 /// 'sea-open'..'sea-ashen', 'street-house'..'street-fort') in
 /// window [version] (0 to 3): the world window, then the landmark.
 List<SideLayer> withSceneWindow(
-  List<SideLayer> layers,
-  String kit,
-  int version,
-) {
+    List<SideLayer> layers, String kit, int version) {
   final v = version.clamp(0, sceneWindowCount - 1);
   if (v == 0 && !_marks.containsKey(kit)) {
     return layers;
@@ -110,12 +104,11 @@ List<SideLayer> withSceneWindow(
   return [
     for (final layer in layers)
       SideLayer(
-        layer.speed,
-        street || v == 0
-            ? layer.paint
-            : (c, s, scroll, t, u) =>
-                layer.paint(c, s, scroll + v * s.width, t, u),
-      ),
+          layer.speed,
+          street || v == 0
+              ? layer.paint
+              : (c, s, scroll, t, u) =>
+                  layer.paint(c, s, scroll + v * s.width, t, u)),
     if (v > 0 && _marks[kit] != null)
       SideLayer(0.8, (canvas, size, scroll, t, u) {
         final g = _G(canvas, size, u, _inkOf(kit));
@@ -138,24 +131,19 @@ List<SideLayer> withSceneWindow(
 /// strip is [sceneWindowSpan] wide, so moving the camera pans the land
 /// instead of cutting between windows), and the landmark of the window [x]
 /// is in, at [landmark] opacity (0 to 1: a camera on the move shows none).
-List<SideLayer> withSceneAt(
-  List<SideLayer> layers,
-  String kit,
-  double x, {
-  double landmark = 1,
-}) {
+List<SideLayer> withSceneAt(List<SideLayer> layers, String kit, double x,
+    {double landmark = 1}) {
   final v = sceneWindowAt(x);
   final offset = x / sceneWindowSpan;
   final street = kit.startsWith('street-');
   return [
     for (final layer in layers)
       SideLayer(
-        layer.speed,
-        street
-            ? layer.paint
-            : (c, s, scroll, t, u) =>
-                layer.paint(c, s, scroll + offset * s.width, t, u),
-      ),
+          layer.speed,
+          street
+              ? layer.paint
+              : (c, s, scroll, t, u) =>
+                  layer.paint(c, s, scroll + offset * s.width, t, u)),
     if (v > 0 && landmark > 0 && _marks[kit] != null)
       SideLayer(0.8, (canvas, size, scroll, t, u) {
         final g = _G(canvas, size, u, _inkOf(kit));
@@ -163,10 +151,8 @@ List<SideLayer> withSceneAt(
         final period = cols * 1.7;
         final shift = (-(scroll / u) % period + period) % period;
         if (landmark < 1) {
-          canvas.saveLayer(
-            Offset.zero & size,
-            Paint()..color = Colors.white.withValues(alpha: landmark),
-          );
+          canvas.saveLayer(Offset.zero & size,
+              Paint()..color = Colors.white.withValues(alpha: landmark));
         }
         for (final dx in [shift, shift - period]) {
           canvas.save();
@@ -192,26 +178,14 @@ _Ink _inkOf(String id) {
     return const _Ink(Color(0xFF2A211B), Palette.night28, Color(0xFFE0C089));
   }
   return switch (id) {
-    'desert' => const _Ink(
-        Color(0xFF4A2F22),
-        Color(0xFF7A5238),
-        Color(0xFFE2B078),
-      ),
-    'ruins' => const _Ink(
-        Color(0xFF1E1822),
-        Color(0xFF3B3040),
-        Color(0xFF8A7390),
-      ),
-    'frost' => const _Ink(
-        Color(0xFF24383A),
-        Color(0xFF4D6A6E),
-        Color(0xFFF2F8FF),
-      ),
-    'fen' => const _Ink(
-        Color(0xFF14201A),
-        Color(0xFF2F4A3A),
-        Color(0xFF8FB08A),
-      ),
+    'desert' =>
+      const _Ink(Color(0xFF4A2F22), Color(0xFF7A5238), Color(0xFFE2B078)),
+    'ruins' =>
+      const _Ink(Color(0xFF1E1822), Color(0xFF3B3040), Color(0xFF8A7390)),
+    'frost' =>
+      const _Ink(Color(0xFF24383A), Color(0xFF4D6A6E), Color(0xFFF2F8FF)),
+    'fen' =>
+      const _Ink(Color(0xFF14201A), Color(0xFF2F4A3A), Color(0xFF8FB08A)),
     _ => const _Ink(Color(0xFF2B342F), Color(0xFF55635A), Color(0xFFD8D6C4)),
   };
 }
@@ -226,14 +200,13 @@ class _G {
   final double cols;
 
   void r(Color colour, num x, num y, num w, num h) => sidePixels(
-        c,
-        u,
-        Paint()..color = colour,
-        x.toDouble(),
-        y.toDouble(),
-        w.toDouble(),
-        h.toDouble(),
-      );
+      c,
+      u,
+      Paint()..color = colour,
+      x.toDouble(),
+      y.toDouble(),
+      w.toDouble(),
+      h.toDouble());
 
   double rnd(int i, [int salt = 0]) {
     final x = math.sin(i * 12.9898 + salt * 78.233) * 43758.5453;
@@ -314,7 +287,7 @@ final Map<String, List<_Mark>> _marks = {
     'warehouse',
     'shop',
     'temple',
-    'fort',
+    'fort'
   ])
     'street-$s': [
       (g) {
@@ -349,13 +322,8 @@ void _deadTree(_G g, double x, double y) {
 void _bones(_G g, double x, double y) {
   final i = g.ink;
   for (var k = 0; k < 5; k++) {
-    g.r(
-      i.rim,
-      x + k * 2,
-      y - 3 + (k == 0 || k == 4 ? 2 : (k == 2 ? 0 : 1)),
-      1,
-      3,
-    );
+    g.r(i.rim, x + k * 2, y - 3 + (k == 0 || k == 4 ? 2 : (k == 2 ? 0 : 1)), 1,
+        3);
   }
   g.r(i.rim, x - 1, y, 12, 1);
   g.r(i.rim, x + 12, y - 2, 3, 3);
@@ -442,13 +410,8 @@ void _obelisk(_G g, double x, double y) {
   final i = g.ink;
   g.r(i.dark, x - 2, y - 2, 11, 2);
   for (var k = 0; k < 26; k++) {
-    g.r(
-      i.mid,
-      x + 1 + (k > 20 ? (k - 20) * 0.3 : 0),
-      y - 3 - k,
-      5 - (k > 20 ? (k - 20) * 0.6 : 0),
-      1,
-    );
+    g.r(i.mid, x + 1 + (k > 20 ? (k - 20) * 0.3 : 0), y - 3 - k,
+        5 - (k > 20 ? (k - 20) * 0.6 : 0), 1);
   }
   g.r(i.rim, x + 1, y - 28, 1, 25);
   g.r(i.rim, x + 7, y - 24, 6, 4);
@@ -503,13 +466,8 @@ void _wisps(_G g, double x, double y, int n) {
         if (d <= 1) {
           g.r(const Color(0xFFD8F5C8), wx + dx, wy + dy, 1, 1);
         } else if (d <= 9 && (dx + dy).isEven) {
-          g.r(
-            const Color(0xFF8FD6A0).withValues(alpha: 0.45),
-            wx + dx,
-            wy + dy,
-            1,
-            1,
-          );
+          g.r(const Color(0xFF8FD6A0).withValues(alpha: 0.45), wx + dx, wy + dy,
+              1, 1);
         }
       }
     }
@@ -579,13 +537,8 @@ void _farShip(_G g, double x, double y) {
     g.r(i.rim.withValues(alpha: 0.85), x + 6, y - 13 + k, 1 + k * 0.5, 1);
   }
   for (var k = 0; k < 6; k++) {
-    g.r(
-      i.rim.withValues(alpha: 0.7),
-      x + 4 - k * 0.6,
-      y - 12 + k,
-      1 + k * 0.4,
-      1,
-    );
+    g.r(i.rim.withValues(alpha: 0.7), x + 4 - k * 0.6, y - 12 + k, 1 + k * 0.4,
+        1);
   }
 }
 

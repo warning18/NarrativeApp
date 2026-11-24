@@ -67,9 +67,8 @@ class CampWorksList extends ConsumerWidget {
 
   String _itemName(String id) => itemNames[id] ?? id;
 
-  List<String> _zoneNames(WorkNeed need) => [
-        for (final id in need.zoneIds) _zoneName(id),
-      ];
+  List<String> _zoneNames(WorkNeed need) =>
+      [for (final id in need.zoneIds) _zoneName(id)];
 
   /// One short line for [need], as a card shows it.
   String _needLine(WidgetRef ref, WorkNeed need) {
@@ -77,10 +76,8 @@ class CampWorksList extends ConsumerWidget {
       case WorkNeedKind.chapter:
         return tr(ref, 'works_need_chapter').replaceAll('{n}', need.id);
       case WorkNeedKind.ally:
-        return tr(
-          ref,
-          'works_need_ally',
-        ).replaceAll('{name}', companionNames[need.id] ?? need.id);
+        return tr(ref, 'works_need_ally')
+            .replaceAll('{name}', companionNames[need.id] ?? need.id);
       case WorkNeedKind.flag:
         final names = _zoneNames(need);
         return names.isEmpty
@@ -168,8 +165,7 @@ class CampWorksList extends ConsumerWidget {
                   : theme.colorScheme.surfaceContainer,
               borderRadius: BorderRadius.circular(4),
               border: Border.all(
-                color: selected ? theme.colorScheme.primary : ink.seam,
-              ),
+                  color: selected ? theme.colorScheme.primary : ink.seam),
             ),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -187,25 +183,19 @@ class CampWorksList extends ConsumerWidget {
                           color: ink.seam.withValues(alpha: 0.5),
                           borderRadius: BorderRadius.circular(3),
                         ),
-                        child: Text(
-                          '?',
-                          style: theme.textTheme.titleMedium?.copyWith(
-                            color: ink.ash,
-                          ),
-                        ),
+                        child: Text('?',
+                            style: theme.textTheme.titleMedium
+                                ?.copyWith(color: ink.ash)),
                       ),
                       const SizedBox(width: 10),
                     ],
                     Expanded(
-                      child: Text(
-                        _nameOf(id),
-                        maxLines: 2,
-                        overflow: TextOverflow.ellipsis,
-                        style: theme.textTheme.bodyMedium?.copyWith(
-                          fontWeight: FontWeight.w500,
-                          color: locked ? ink.ash : null,
-                        ),
-                      ),
+                      child: Text(_nameOf(id),
+                          maxLines: 2,
+                          overflow: TextOverflow.ellipsis,
+                          style: theme.textTheme.bodyMedium?.copyWith(
+                              fontWeight: FontWeight.w500,
+                              color: locked ? ink.ash : null)),
                     ),
                     if (slotText(work.limit.built, work.limit.limit)
                         case final slot?) ...[
@@ -226,15 +216,11 @@ class CampWorksList extends ConsumerWidget {
                 // gives: no spoiler.
                 if (!locked) ...[
                   const SizedBox(height: 4),
-                  Text(
-                    detailOf(id),
-                    maxLines: 2,
-                    overflow: TextOverflow.ellipsis,
-                    style: theme.textTheme.bodySmall?.copyWith(
-                      color: ink.ash,
-                      height: 1.3,
-                    ),
-                  ),
+                  Text(detailOf(id),
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
+                      style: theme.textTheme.bodySmall
+                          ?.copyWith(color: ink.ash, height: 1.3)),
                 ],
                 if (showCost) ...[
                   const SizedBox(height: 6),
@@ -246,11 +232,8 @@ class CampWorksList extends ConsumerWidget {
                       for (final e in materials.entries)
                         _CostChip(
                           key: Key('town_material_${e.key}'),
-                          icon: ItemPixelIcon(
-                            e.key,
-                            'Material',
-                            size: IconSize.s16,
-                          ),
+                          icon: ItemPixelIcon(e.key, 'Material',
+                              size: IconSize.s16),
                           tooltip: _itemName(e.key),
                           text: short.containsKey(e.key)
                               ? '${e.value - short[e.key]!}/${e.value}'
@@ -259,12 +242,9 @@ class CampWorksList extends ConsumerWidget {
                         ),
                       _CostChip(
                         key: Key('town_gold_$id'),
-                        icon: Text(
-                          'G',
-                          style: theme.textTheme.labelMedium?.copyWith(
-                            color: ink.gold,
-                          ),
-                        ),
+                        icon: Text('G',
+                            style: theme.textTheme.labelMedium
+                                ?.copyWith(color: ink.gold)),
                         text: '$cost',
                         short: goldShort,
                       ),
@@ -273,15 +253,12 @@ class CampWorksList extends ConsumerWidget {
                 ],
                 if (work.state == WorkState.shown) ...[
                   const SizedBox(height: 6),
-                  Text(
-                    _needLine(ref, work.needs.first),
-                    key: Key('works_first_need_$id'),
-                    maxLines: 2,
-                    overflow: TextOverflow.ellipsis,
-                    style: theme.textTheme.labelMedium?.copyWith(
-                      color: ink.ember,
-                    ),
-                  ),
+                  Text(_needLine(ref, work.needs.first),
+                      key: Key('works_first_need_$id'),
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
+                      style: theme.textTheme.labelMedium
+                          ?.copyWith(color: ink.ember)),
                 ],
                 if (ready) ...[
                   const SizedBox(height: 8),
@@ -340,15 +317,12 @@ class CampWorksList extends ConsumerWidget {
               ),
             );
         Widget sources(String label, List<String> names) => Text.rich(
-              TextSpan(
-                children: [
-                  TextSpan(
+              TextSpan(children: [
+                TextSpan(
                     text: '$label: ',
-                    style: const TextStyle(fontWeight: FontWeight.w600),
-                  ),
-                  TextSpan(text: names.join(', ')),
-                ],
-              ),
+                    style: const TextStyle(fontWeight: FontWeight.w600)),
+                TextSpan(text: names.join(', ')),
+              ]),
               style: theme.textTheme.bodySmall,
             );
         return SafeArea(
@@ -362,13 +336,9 @@ class CampWorksList extends ConsumerWidget {
                 SheetHeader(title: _nameOf(id), padding: EdgeInsets.zero),
                 if (!locked) ...[
                   const SizedBox(height: 4),
-                  Text(
-                    detailOf(id),
-                    style: theme.textTheme.bodySmall?.copyWith(
-                      color: ink.ash,
-                      height: 1.3,
-                    ),
-                  ),
+                  Text(detailOf(id),
+                      style: theme.textTheme.bodySmall
+                          ?.copyWith(color: ink.ash, height: 1.3)),
                 ],
                 // A house that can be built has no missing need to list:
                 // say what it costs, as its card does.
@@ -379,16 +349,11 @@ class CampWorksList extends ConsumerWidget {
                     spacing: 10,
                     runSpacing: 4,
                     children: [
-                      for (final e in materialCountsOf(
-                        house,
-                        'materialCost',
-                      ).entries)
+                      for (final e
+                          in materialCountsOf(house, 'materialCost').entries)
                         _CostChip(
-                          icon: ItemPixelIcon(
-                            e.key,
-                            'Material',
-                            size: IconSize.s16,
-                          ),
+                          icon: ItemPixelIcon(e.key, 'Material',
+                              size: IconSize.s16),
                           tooltip: _itemName(e.key),
                           text: '${e.value}',
                           short: false,
@@ -404,20 +369,15 @@ class CampWorksList extends ConsumerWidget {
                       WorkNeedKind.material => Row(
                           mainAxisSize: MainAxisSize.min,
                           children: [
-                            ItemPixelIcon(
-                              need.id,
-                              'Material',
-                              size: IconSize.s16,
-                            ),
+                            ItemPixelIcon(need.id, 'Material',
+                                size: IconSize.s16),
                             const SizedBox(width: 4),
                             Flexible(
                               child: Text(
-                                '${_itemName(need.id)}\n'
-                                '${need.have}/${need.need}',
-                                style: theme.textTheme.labelMedium?.copyWith(
-                                  color: ink.ember,
-                                ),
-                              ),
+                                  '${_itemName(need.id)}\n'
+                                  '${need.have}/${need.need}',
+                                  style: theme.textTheme.labelMedium
+                                      ?.copyWith(color: ink.ember)),
                             ),
                           ],
                         ),
@@ -427,65 +387,47 @@ class CampWorksList extends ConsumerWidget {
                           fit: BoxFit.scaleDown,
                           alignment: Alignment.centerLeft,
                           child: Text(
-                            '${tr(ref, 'gold_field_label')} '
-                            '${need.have}/${need.need}',
-                            style: theme.textTheme.labelMedium?.copyWith(
-                              color: ink.ember,
-                            ),
-                          ),
+                              '${tr(ref, 'gold_field_label')} '
+                              '${need.have}/${need.need}',
+                              style: theme.textTheme.labelMedium
+                                  ?.copyWith(color: ink.ember)),
                         ),
-                      _ => Text(
-                          tr(ref, 'works_sheet_needs'),
-                          style: theme.textTheme.labelMedium?.copyWith(
-                            color: ink.ember,
-                          ),
-                        ),
+                      _ => Text(tr(ref, 'works_sheet_needs'),
+                          style: theme.textTheme.labelMedium
+                              ?.copyWith(color: ink.ember)),
                     },
                     switch (need.kind) {
                       WorkNeedKind.chapter || WorkNeedKind.ally => Text(
                           _needLine(ref, need),
-                          style: theme.textTheme.bodySmall,
-                        ),
+                          style: theme.textTheme.bodySmall),
                       WorkNeedKind.flag => Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(
-                              _zoneNames(need).isEmpty
-                                  ? tr(ref, 'works_need_flag_other')
-                                  : tr(ref, 'works_need_flag').replaceAll(
-                                      '{zones}',
-                                      _zoneNames(need).join(', '),
-                                    ),
-                              style: theme.textTheme.bodySmall,
-                            ),
+                                _zoneNames(need).isEmpty
+                                    ? tr(ref, 'works_need_flag_other')
+                                    : tr(ref, 'works_need_flag').replaceAll(
+                                        '{zones}', _zoneNames(need).join(', ')),
+                                style: theme.textTheme.bodySmall),
                           ],
                         ),
                       WorkNeedKind.gold => Text(
-                          tr(
-                            ref,
-                            'works_sheet_gold_more',
-                          ).replaceAll('{n}', '${need.need - need.have}'),
-                          style: theme.textTheme.bodySmall,
-                        ),
+                          tr(ref, 'works_sheet_gold_more')
+                              .replaceAll('{n}', '${need.need - need.have}'),
+                          style: theme.textTheme.bodySmall),
                       WorkNeedKind.material => Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             if (need.zoneIds.isNotEmpty)
-                              sources(
-                                tr(ref, 'works_sheet_expeditions'),
-                                _zoneNames(need),
-                              ),
+                              sources(tr(ref, 'works_sheet_expeditions'),
+                                  _zoneNames(need)),
                             if (need.shopIds.isNotEmpty)
-                              sources(tr(ref, 'works_sheet_shops'), [
-                                for (final s in need.shopIds) _shopName(s),
-                              ])
+                              sources(tr(ref, 'works_sheet_shops'),
+                                  [for (final s in need.shopIds) _shopName(s)])
                             else
-                              Text(
-                                tr(ref, 'works_sheet_no_shop'),
-                                style: theme.textTheme.bodySmall?.copyWith(
-                                  color: ink.ash,
-                                ),
-                              ),
+                              Text(tr(ref, 'works_sheet_no_shop'),
+                                  style: theme.textTheme.bodySmall
+                                      ?.copyWith(color: ink.ash)),
                           ],
                         ),
                     },
@@ -548,28 +490,18 @@ class _SectionHeader extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.end,
             children: [
               Expanded(
-                child: Text(
-                  title.toUpperCase(),
-                  style: theme.textTheme.labelLarge?.copyWith(
-                    letterSpacing: 1.2,
-                    color: ink.gold,
-                  ),
-                ),
+                child: Text(title.toUpperCase(),
+                    style: theme.textTheme.labelLarge
+                        ?.copyWith(letterSpacing: 1.2, color: ink.gold)),
               ),
-              Text(
-                count,
-                style: theme.textTheme.labelSmall?.copyWith(color: ink.ash),
-              ),
+              Text(count,
+                  style: theme.textTheme.labelSmall?.copyWith(color: ink.ash)),
             ],
           ),
           const SizedBox(height: 2),
-          Text(
-            blurb,
-            style: theme.textTheme.bodySmall?.copyWith(
-              color: ink.ash,
-              fontStyle: FontStyle.italic,
-            ),
-          ),
+          Text(blurb,
+              style: theme.textTheme.bodySmall
+                  ?.copyWith(color: ink.ash, fontStyle: FontStyle.italic)),
         ],
       ),
     );
@@ -601,12 +533,9 @@ class _CostChip extends StatelessWidget {
       children: [
         icon,
         const SizedBox(width: 3),
-        Text(
-          text,
-          style: theme.textTheme.labelMedium?.copyWith(
-            color: short ? ink.ember : ink.ash,
-          ),
-        ),
+        Text(text,
+            style: theme.textTheme.labelMedium
+                ?.copyWith(color: short ? ink.ember : ink.ash)),
       ],
     );
     return tooltip == null ? chip : Tooltip(message: tooltip, child: chip);

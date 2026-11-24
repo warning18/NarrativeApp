@@ -23,10 +23,7 @@ enum PartyMoveCause {
 /// one of the last scene's choices leads straight there (a way the player
 /// took on the map: the party walked it).
 PartyMoveCause? partyMoveCause(
-  StoryData story,
-  String? previousId,
-  String currentId,
-) {
+    StoryData story, String? previousId, String currentId) {
   final previous = previousId == null ? null : story.nodeFor(previousId);
   if (previous == null) return PartyMoveCause.carried;
   var lost = false;
@@ -43,12 +40,8 @@ PartyMoveCause? partyMoveCause(
 
 /// What the author wrote for the branch from [previousId] to [currentId]
 /// (see StoryChoice.loseNote and failNote), or null.
-String? partyMoveNote(
-  StoryData story,
-  String? previousId,
-  String currentId, {
-  required bool french,
-}) {
+String? partyMoveNote(StoryData story, String? previousId, String currentId,
+    {required bool french}) {
   final previous = previousId == null ? null : story.nodeFor(previousId);
   if (previous == null) return null;
   // A way the player picked is no forced move, whatever else leads there.

@@ -27,11 +27,10 @@ List<String> momentPartyOf(PlayerSession session) {
 /// [remark])`, a speech bubble over the screen, tapped away.
 CompanionRemark? speakUpOnMoment(WidgetRef ref, RemarkKind kind) {
   final said = momentRemark(
-    ref.read(remarkBookProvider),
-    ref.read(remarkMemoryProvider),
-    momentPartyOf(ref.read(playerSessionProvider)),
-    kind,
-  );
+      ref.read(remarkBookProvider),
+      ref.read(remarkMemoryProvider),
+      momentPartyOf(ref.read(playerSessionProvider)),
+      kind);
   ref.read(remarkMemoryProvider.notifier).state = said.memory;
   return said.remark;
 }

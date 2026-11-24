@@ -75,10 +75,7 @@ final landCrossingRandomProvider = Provider<Random?>((ref) => null);
 /// where it set out, and the story stays there. A route not on file is no
 /// crossing at all (true: the walk goes on as before).
 Future<bool> runLandCrossing(
-  BuildContext context,
-  WidgetRef ref,
-  String routeId,
-) async {
+    BuildContext context, WidgetRef ref, String routeId) async {
   final routes = await loadedGameDb(ref, landRoutesSchema);
   final events = await loadedGameDb(ref, landEventsSchema);
   final route = landRouteFor(routes, routeId);
@@ -93,22 +90,17 @@ Future<bool> runLandCrossing(
   final rise = ref.read(crossingRiseProvider);
   ref.read(crossingRiseProvider.notifier).state = false;
   Widget screen(BuildContext _) => LandCrossingScreen(
-        route: ruler.route,
-        events: known,
-        ruler: ruler.clanId,
-        rulers: rulerPool(known, ruler.clanId, ruler.band),
-        random: ref.read(landCrossingRandomProvider),
-        stripPath: stripPath,
-        camera: camera,
-      );
-  final arrived = await Navigator.of(context).push<bool>(
-    rise
-        ? CrossingRiseRoute<bool>(
-            builder: screen,
-            still: MediaQuery.of(context).disableAnimations,
-          )
-        : MaterialPageRoute(builder: screen),
-  );
+      route: ruler.route,
+      events: known,
+      ruler: ruler.clanId,
+      rulers: rulerPool(known, ruler.clanId, ruler.band),
+      random: ref.read(landCrossingRandomProvider),
+      stripPath: stripPath,
+      camera: camera);
+  final arrived = await Navigator.of(context).push<bool>(rise
+      ? CrossingRiseRoute<bool>(
+          builder: screen, still: MediaQuery.of(context).disableAnimations)
+      : MaterialPageRoute(builder: screen));
   return arrived ?? false;
 }
 
@@ -176,18 +168,21 @@ bool crossingIsStorm(String? eventId) =>
 
 /// The terrains a crossing draws a scene for (the route's `terrain`, which
 /// is a biome id).
-const crossingSceneTerrains = {'desert', 'ruins', 'frost', 'fen', 'sea_cliffs'};
+const crossingSceneTerrains = {
+  'desert',
+  'ruins',
+  'frost',
+  'fen',
+  'sea_cliffs',
+};
 
 /// The layers of the scene for [terrain]; the goal comes forward with
 /// [progress] 0 to 1.
 ///
 /// [version] (0 to 3, sceneWindowAt) is the stretch of that land shown: its
 /// own window of the world and its own landmark.
-List<SideLayer> crossingLayers(
-  String terrain,
-  double progress, {
-  int version = 0,
-}) {
+List<SideLayer> crossingLayers(String terrain, double progress,
+    {int version = 0}) {
   final layers = switch (terrain) {
     'ruins' => ruinsLayers(progress: progress),
     'frost' => frostLayers(progress: progress),
@@ -273,18 +268,13 @@ enum _Phase { event, result, arrived, failed, turnedBack }
 class _LandCrossingScreenState extends ConsumerState<LandCrossingScreen>
     with TickerProviderStateMixin {
   /// The jolt going into a fight on the road, the same as the map's.
-  late final AnimationController _jolt = AnimationController(
-    vsync: this,
-    duration: fightJoltDuration,
-  );
+  late final AnimationController _jolt =
+      AnimationController(vsync: this, duration: fightJoltDuration);
 
   late final Random _random = widget.random ?? Random();
   late final List<String> _drawn = drawCrossing(
-    widget.route,
-    widget.events.keys,
-    random: _random,
-    rulers: widget.rulers,
-  );
+      widget.route, widget.events.keys,
+      random: _random, rulers: widget.rulers);
   var _day = 0;
 
   /// The scene version on show, and the dissolve that brings the next one in
@@ -297,9 +287,7 @@ class _LandCrossingScreenState extends ConsumerState<LandCrossingScreen>
   /// along the strip, else the route's own window moving on a day at a time.
   int _windowOfDay() {
     final x = pathXAt(
-      widget.stripPath,
-      (_day + 0.5) / math.max(1, widget.route.days),
-    );
+        widget.stripPath, (_day + 0.5) / math.max(1, widget.route.days));
     return x == null
         ? (sceneWindowOfId(widget.route.id) + _day) % sceneWindowCount
         : sceneWindowAt(x);
@@ -314,10 +302,7 @@ class _LandCrossingScreenState extends ConsumerState<LandCrossingScreen>
   /// along the road while the day changes, where a crossing without the
   /// camera dissolves between windows.
   late final AnimationController _travel = AnimationController(
-    vsync: this,
-    duration: const Duration(milliseconds: 1100),
-    value: 1,
-  );
+      vsync: this, duration: const Duration(milliseconds: 1100), value: 1);
   double _travelFrom = 0;
 
   /// For tests: the camera is on its way to the next day's place, and the
@@ -340,10 +325,8 @@ class _LandCrossingScreenState extends ConsumerState<LandCrossingScreen>
   }
 
   List<SideLayer> _sceneLayers(
-    int version,
-    List<SideLayer> Function(int version) layersFor, {
-    required bool reduceMotion,
-  }) {
+      int version, List<SideLayer> Function(int version) layersFor,
+      {required bool reduceMotion}) {
     final shown = _shownVersion;
     if (shown != null && shown != version && !reduceMotion) {
       _dissolve = sceneDissolve(layersFor(shown), layersFor(version));
@@ -437,16 +420,13 @@ class _LandCrossingScreenState extends ConsumerState<LandCrossingScreen>
     if (_walkDay == _day) return _walk;
     _walkDay = _day;
     final fight = event.choices.where((c) => c.isFight).firstOrNull;
-    final figure = roadEncounterFigure(
-      event.id,
-      fightEnemyId: fight?.fightEnemyId,
-    );
+    final figure =
+        roadEncounterFigure(event.id, fightEnemyId: fight?.fightEnemyId);
     return _walk = figure == null
         ? null
         : EncounterWalk(
             sprite: figure.sprite,
-            animate: !MediaQuery.of(context).disableAnimations,
-          );
+            animate: !MediaQuery.of(context).disableAnimations);
   }
 
   Future<void> _choose(LandChoice choice) async {
@@ -547,26 +527,19 @@ class _LandCrossingScreenState extends ConsumerState<LandCrossingScreen>
     // The road's own ground (field_anomaly.dart's landRouteStage): a desert
     // road a caravan road, a mountain road a pass.
     final stage = landRouteStage(
-      terrain: widget.route.terrain,
-      biome: widget.route.biome,
-    );
-    final won = await Navigator.of(context).push<bool>(
-      MaterialPageRoute(
+        terrain: widget.route.terrain, biome: widget.route.biome);
+    final won = await Navigator.of(context).push<bool>(MaterialPageRoute(
         builder: (_) => FightScreen(
-          enemyId: choice.fightEnemyId!,
-          enemy: enemy,
-          landLayers: _landForFight(),
-          // Where the road leads (v1.921), for the fight's background.
-          modifiers: EncounterModifiers(
-            forcedStage: stage,
-            placeId: ref
-                .read(geographyProvider)
-                .placeOfLandmark(widget.route.to)
-                ?.id,
-          ),
-        ),
-      ),
-    );
+            enemyId: choice.fightEnemyId!,
+            enemy: enemy,
+            landLayers: _landForFight(),
+            // Where the road leads (v1.921), for the fight's background.
+            modifiers: EncounterModifiers(
+                forcedStage: stage,
+                placeId: ref
+                    .read(geographyProvider)
+                    .placeOfLandmark(widget.route.to)
+                    ?.id))));
     ref.read(combatActiveProvider.notifier).state = false;
     final retreated = ref.read(lastFightRetreatedProvider);
     ref.read(lastFightRetreatedProvider.notifier).state = false;
@@ -581,35 +554,26 @@ class _LandCrossingScreenState extends ConsumerState<LandCrossingScreen>
     }
     // A permadeath loss: the run is over, there is no road to go on.
     if (won == null) return Navigator.of(context).pop(false);
-    await _settle(
-      const LandOutcome(),
-      trFor(lang, 'crossing_fight_lost'),
-      lost: true,
-    );
+    await _settle(const LandOutcome(), trFor(lang, 'crossing_fight_lost'),
+        lost: true);
   }
 
   /// [outcome] on the party, told by [line] (the check or the fight) and
   /// the outcome's note, and a day gone; [lost] (a fight lost) or health
   /// run out loses the crossing.
-  Future<void> _settle(
-    LandOutcome outcome,
-    String line, {
-    bool lost = false,
-  }) async {
+  Future<void> _settle(LandOutcome outcome, String line,
+      {bool lost = false}) async {
     final lang = ref.read(appLanguageProvider);
     final notifier = ref.read(playerSessionProvider.notifier);
     final session = ref.read(playerSessionProvider);
     final change = afterLandStep(
-      health: session.currentHealth,
-      maxHealth: session.maxHealth,
-      change: outcome.healthChange(session.maxHealth),
-    );
+        health: session.currentHealth,
+        maxHealth: session.maxHealth,
+        change: outcome.healthChange(session.maxHealth));
     final step = lost ? (health: 0, failed: true) : change;
     final target = step.failed
-        ? turnBackHealth(
-            session.maxHealth,
-            departureHealth: _departureHealth ?? session.currentHealth,
-          )
+        ? turnBackHealth(session.maxHealth,
+            departureHealth: _departureHealth ?? session.currentHealth)
         : step.health;
     await notifier.applyChoiceEffects(
       goldMod: outcome.gold,
@@ -746,27 +710,23 @@ class _LandCrossingScreenState extends ConsumerState<LandCrossingScreen>
                   onPressed: _busy || choice.goldCost > session.gold
                       ? null
                       : () => _choose(choice),
-                  child: Text(
-                    [
-                      choice.textFor(fr),
-                      if (choice.hasCheck)
-                        '(${tr(ref, '${choice.check}_label')} '
-                            '${landCheckDc(choice.dc, _chapter)})',
-                      if (choice.isFight) tr(ref, 'crossing_fight_tag'),
-                      if (choice.goldCost > 0)
-                        '(${choice.goldCost} ${tr(ref, 'gold_label')})',
-                    ].join(' '),
-                  ),
+                  child: Text([
+                    choice.textFor(fr),
+                    if (choice.hasCheck)
+                      '(${tr(ref, '${choice.check}_label')} '
+                          '${landCheckDc(choice.dc, _chapter)})',
+                    if (choice.isFight) tr(ref, 'crossing_fight_tag'),
+                    if (choice.goldCost > 0)
+                      '(${choice.goldCost} ${tr(ref, 'gold_label')})',
+                  ].join(' ')),
                 ),
               ),
             if (_roll != null) _rollView(theme, rolling: true),
             if (_coinOffer case final offer?) ...[
               const SizedBox(height: 8),
-              Text(
-                tr(ref, 'fate_coin_offer'),
-                textAlign: TextAlign.center,
-                style: theme.textTheme.bodyMedium,
-              ),
+              Text(tr(ref, 'fate_coin_offer'),
+                  textAlign: TextAlign.center,
+                  style: theme.textTheme.bodyMedium),
               const SizedBox(height: 4),
               FilledButton(
                 key: const Key('crossing_fate_coin'),
@@ -844,18 +804,12 @@ class _LandCrossingScreenState extends ConsumerState<LandCrossingScreen>
         : _drawn.isEmpty
             ? 0.0
             : ((_day + (_phase == _Phase.result ? 1 : 0)) / _drawn.length)
-                .clamp(
-                0.0,
-                1.0,
-              );
+                .clamp(0.0, 1.0);
     final phase = ref.watch(dayPhaseProvider);
     final storm = _phase == _Phase.event && crossingIsStorm(event?.id);
     final sky = ref.watch(skyHereProvider)?.today().kind;
-    final particles = crossingParticles(
-      terrain: terrain,
-      storm: storm,
-      sky: sky,
-    );
+    final particles =
+        crossingParticles(terrain: terrain, storm: storm, sky: sky);
     // The road's ruler (Core's v1.512): its colour under the title, and its
     // name and flag on the screen, so the player sees why this road's events.
     final rulerClan =
@@ -875,17 +829,14 @@ class _LandCrossingScreenState extends ConsumerState<LandCrossingScreen>
                   borderRadius: BorderRadius.circular(4),
                 ),
                 child: Padding(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 8,
-                    vertical: 4,
-                  ),
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                   child: Text(
                     tr(ref, 'crossing_day')
                         .replaceAll('{n}', '${min(_day + 1, _drawn.length)}')
                         .replaceAll('{m}', '${_drawn.length}'),
-                    style: theme.textTheme.labelLarge?.copyWith(
-                      color: Colors.white,
-                    ),
+                    style: theme.textTheme.labelLarge
+                        ?.copyWith(color: Colors.white),
                   ),
                 ),
               ),
@@ -902,38 +853,26 @@ class _LandCrossingScreenState extends ConsumerState<LandCrossingScreen>
                       ),
                       child: Padding(
                         padding: const EdgeInsets.symmetric(
-                          horizontal: 8,
-                          vertical: 4,
-                        ),
-                        child: Row(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            const Icon(
-                              Icons.favorite,
-                              size: IconSize.s16,
-                              color: Colors.white,
-                            ),
-                            const SizedBox(width: 6),
-                            // Shrinks with the screen and the text, so large text on
-                            // a narrow phone keeps the numbers whole.
-                            Flexible(
-                              child: ConstrainedBox(
-                                constraints: const BoxConstraints(maxWidth: 96),
-                                child: LinearProgressIndicator(
+                            horizontal: 8, vertical: 4),
+                        child: Row(mainAxisSize: MainAxisSize.min, children: [
+                          const Icon(Icons.favorite,
+                              size: IconSize.s16, color: Colors.white),
+                          const SizedBox(width: 6),
+                          // Shrinks with the screen and the text, so large text on
+                          // a narrow phone keeps the numbers whole.
+                          Flexible(
+                            child: ConstrainedBox(
+                              constraints: const BoxConstraints(maxWidth: 96),
+                              child: LinearProgressIndicator(
                                   key: const Key('crossing_health'),
-                                  value: health,
-                                ),
-                              ),
+                                  value: health),
                             ),
-                            const SizedBox(width: 6),
-                            Text(
-                              '${session.currentHealth}/${session.maxHealth}',
-                              style: theme.textTheme.labelMedium?.copyWith(
-                                color: Colors.white,
-                              ),
-                            ),
-                          ],
-                        ),
+                          ),
+                          const SizedBox(width: 6),
+                          Text('${session.currentHealth}/${session.maxHealth}',
+                              style: theme.textTheme.labelMedium
+                                  ?.copyWith(color: Colors.white)),
+                        ]),
                       ),
                     ),
                   ),
@@ -952,22 +891,16 @@ class _LandCrossingScreenState extends ConsumerState<LandCrossingScreen>
               ),
               child: Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                child: Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    ClanFlag(factionId: widget.ruler, height: 16),
-                    const SizedBox(width: 6),
-                    Text(
-                      tr(ref, 'crossing_ruler').replaceAll(
-                        '{clan}',
-                        rulerClan.shortFor(ref.watch(appLanguageProvider)),
-                      ),
-                      style: theme.textTheme.labelMedium?.copyWith(
-                        color: Colors.white,
-                      ),
-                    ),
-                  ],
-                ),
+                child: Row(mainAxisSize: MainAxisSize.min, children: [
+                  ClanFlag(factionId: widget.ruler, height: 16),
+                  const SizedBox(width: 6),
+                  Text(
+                    tr(ref, 'crossing_ruler').replaceAll('{clan}',
+                        rulerClan.shortFor(ref.watch(appLanguageProvider))),
+                    style: theme.textTheme.labelMedium
+                        ?.copyWith(color: Colors.white),
+                  ),
+                ]),
               ),
             ),
           ],
@@ -994,10 +927,8 @@ class _LandCrossingScreenState extends ConsumerState<LandCrossingScreen>
                       child: ColoredBox(
                         key: const Key('crossing_ruler_band'),
                         color: rulerColour,
-                        child: const SizedBox(
-                          height: 3,
-                          width: double.infinity,
-                        ),
+                        child:
+                            const SizedBox(height: 3, width: double.infinity),
                       ),
                     ),
             ),
@@ -1018,22 +949,16 @@ class _LandCrossingScreenState extends ConsumerState<LandCrossingScreen>
                               : _sceneLayers(
                                   _windowOfDay(),
                                   (v) => withHourStars(
-                                    crossingLayers(
-                                      terrain,
-                                      progress,
-                                      version: v,
-                                    ),
-                                    phase,
-                                  ),
+                                      crossingLayers(terrain, progress,
+                                          version: v),
+                                      phase),
                                   reduceMotion:
-                                      MediaQuery.of(context).disableAnimations,
-                                ),
+                                      MediaQuery.of(context).disableAnimations),
                           overlay: hourWash(phase),
                           actors: desertActors(
-                            party: ref.watch(walkingPartyProvider),
-                            moving: _phase == _Phase.result,
-                            encounter: _encounterWalk(event),
-                          ),
+                              party: ref.watch(walkingPartyProvider),
+                              moving: _phase == _Phase.result,
+                              encounter: _encounterWalk(event)),
                           particles: particles,
                           intensity: storm ? 1 : 0.6,
                           moving: _phase == _Phase.result,

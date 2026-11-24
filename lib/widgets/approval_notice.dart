@@ -26,20 +26,17 @@ List<String> approvalReactionLines(
   for (final reaction in reactions) {
     final name = _nameOf(companions, reaction.companionId);
     lines.add(
-      t(reaction.delta > 0 ? 'approval_approves' : 'approval_disapproves')
-          .replaceAll('{name}', name),
-    );
+        t(reaction.delta > 0 ? 'approval_approves' : 'approval_disapproves')
+            .replaceAll('{name}', name));
     if (!reaction.tierChanged) continue;
     final after = reaction.tierAfter;
     if (reaction.leaves) {
       lines.add(t('approval_leaves_notice').replaceAll('{name}', name));
       final seat = reaction.replacedBy;
       if (seat != null) {
-        lines.add(
-          t('approval_replaced_notice')
-              .replaceAll('{name}', _nameOf(companions, seat))
-              .replaceAll('{left}', name),
-        );
+        lines.add(t('approval_replaced_notice')
+            .replaceAll('{name}', _nameOf(companions, seat))
+            .replaceAll('{left}', name));
       }
     } else if (after == ApprovalTier.devoted && reaction.delta > 0) {
       lines.add(t('approval_devoted_notice').replaceAll('{name}', name));
@@ -73,13 +70,11 @@ List<SpokenLine> approvalReactionWords(
         companions[reaction.companionId] as Map<String, dynamic>? ?? const {};
     final line = companion[field]?.toString() ?? '';
     if (line.isEmpty) continue;
-    words.add(
-      SpokenLine(
-        speaker: _nameOf(companions, reaction.companionId),
-        line: line,
-        companionId: reaction.companionId,
-      ),
-    );
+    words.add(SpokenLine(
+      speaker: _nameOf(companions, reaction.companionId),
+      line: line,
+      companionId: reaction.companionId,
+    ));
   }
   return words;
 }
@@ -130,11 +125,8 @@ Future<void> showApprovalReactions(
   final remarks = deed == null
       ? const <CompanionRemark>[]
       : speakUpAbout(ref, reactions: reactions, deed: deed);
-  final lines = approvalReactionLines(
-    reactions,
-    companions,
-    (key) => tr(ref, key),
-  );
+  final lines =
+      approvalReactionLines(reactions, companions, (key) => tr(ref, key));
   final warm = reactions.fold<int>(0, (sum, r) => sum + r.delta) >= 0;
   final someoneLeft = reactions.any((r) => r.leaves);
   await showImmersiveNotice(

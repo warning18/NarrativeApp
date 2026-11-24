@@ -53,10 +53,8 @@ class InkPanel extends StatelessWidget {
       decoration: BoxDecoration(
         color: scheme.surfaceContainer,
         borderRadius: BorderRadius.circular(10),
-        border: Border.all(
-          color: lit ? ink.gold : ink.seam,
-          width: lit ? 1.6 : 1,
-        ),
+        border:
+            Border.all(color: lit ? ink.gold : ink.seam, width: lit ? 1.6 : 1),
       ),
       child: Opacity(opacity: dim ? .5 : 1, child: child),
     );

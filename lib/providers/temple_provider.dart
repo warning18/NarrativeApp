@@ -12,13 +12,9 @@ import 'town_rulers_provider.dart';
 /// The clan that keeps the temple of [placeId] (a temple pin's
 /// TownServiceOpen id: its district, else its town) now, '' for a neutral
 /// one; it follows the politics, so a temple changes hands with its town.
-final templeClanProvider = Provider.family<String, String>(
-  (ref, placeId) => templeClanAt(
-    placeId,
-    ref.watch(townRulersProvider),
-    parent: ref.watch(geographyProvider).places[placeId]?.parent ?? '',
-  ),
-);
+final templeClanProvider = Provider.family<String, String>((ref, placeId) =>
+    templeClanAt(placeId, ref.watch(townRulersProvider),
+        parent: ref.watch(geographyProvider).places[placeId]?.parent ?? ''));
 
 /// What the temple of [placeId] offers now (temple.dart's TempleOffer):
 /// the keeper, the prices at the standing with them, what blocks each
@@ -26,10 +22,8 @@ final templeClanProvider = Provider.family<String, String>(
 /// Mending today), whether a blessing would replace one or bring standing.
 /// Buy with PlayerSessionNotifier.templeMend / templeBless, passing
 /// [TempleOffer.clanId].
-final templeOfferProvider = Provider.family<TempleOffer, String>((
-  ref,
-  placeId,
-) {
+final templeOfferProvider =
+    Provider.family<TempleOffer, String>((ref, placeId) {
   final session = ref.watch(playerSessionProvider);
   return templeOfferFor(
     clanId: ref.watch(templeClanProvider(placeId)),

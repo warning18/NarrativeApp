@@ -81,12 +81,9 @@ class ScenePresentation {
   void _index() {
     for (final node in _story.nodes.values) {
       for (final choice in node.choices) {
-        final card = choiceShape(
-          node,
-          choice,
-          story: _story,
-          geography: _geography,
-        ).here;
+        final card =
+            choiceShape(node, choice, story: _story, geography: _geography)
+                .here;
         void add(String? to, {required bool card}) {
           if (to == null || to.isEmpty) return;
           (_into[to] ??= []).add((from: node.id, card: card));

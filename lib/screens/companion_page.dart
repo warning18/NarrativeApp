@@ -61,13 +61,10 @@ class _CompanionBody extends ConsumerWidget {
         ref.watch(localizedDbProvider(housesSchema)).value ?? const {};
     final colour = tierColorOf(context, view.tier);
     final id = view.id;
-    final join = allyJoinState(
-      ref,
-      session,
-      companionId: id,
-      companion: view.record,
-      houses: houses.cast<String, dynamic>(),
-    );
+    final join = allyJoinState(ref, session,
+        companionId: id,
+        companion: view.record,
+        houses: houses.cast<String, dynamic>());
     final canBench = ref
         .read(playerSessionProvider.notifier)
         .canBench(id, companions.cast<String, dynamic>());
@@ -104,48 +101,36 @@ class _CompanionBody extends ConsumerWidget {
                   border: Border.all(color: c.withValues(alpha: 0.6)),
                   borderRadius: BorderRadius.circular(12),
                 ),
-                child: Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Icon(icon, size: IconSize.s16, color: c),
-                    const SizedBox(width: 4),
-                    Text(s,
-                        style: theme.textTheme.labelMedium?.copyWith(color: c)),
-                  ],
-                ),
+                child: Row(mainAxisSize: MainAxisSize.min, children: [
+                  Icon(icon, size: IconSize.s16, color: c),
+                  const SizedBox(width: 4),
+                  Text(s,
+                      style: theme.textTheme.labelMedium?.copyWith(color: c)),
+                ]),
               ),
           ],
         );
 
     Widget title(String text, {String? trailing}) => Padding(
           padding: const EdgeInsets.fromLTRB(2, 16, 2, 6),
-          child: Row(
-            children: [
-              Expanded(
-                child: Text(
-                  text.toUpperCase(),
-                  style: theme.textTheme.labelSmall?.copyWith(
-                    color: ink.ash,
-                    letterSpacing: 1.2,
-                  ),
-                ),
-              ),
-              if (trailing != null)
-                Text(
-                  trailing,
-                  style: theme.textTheme.labelSmall?.copyWith(color: ink.ash),
-                ),
-            ],
-          ),
+          child: Row(children: [
+            Expanded(
+              child: Text(text.toUpperCase(),
+                  style: theme.textTheme.labelSmall
+                      ?.copyWith(color: ink.ash, letterSpacing: 1.2)),
+            ),
+            if (trailing != null)
+              Text(trailing,
+                  style: theme.textTheme.labelSmall?.copyWith(color: ink.ash)),
+          ]),
         );
 
-    Widget tapRow({
-      required Widget leading,
-      required String heading,
-      required String line,
-      required VoidCallback onTap,
-      Key? key,
-    }) =>
+    Widget tapRow(
+            {required Widget leading,
+            required String heading,
+            required String line,
+            required VoidCallback onTap,
+            Key? key}) =>
         InkWell(
           key: key,
           borderRadius: BorderRadius.circular(10),
@@ -156,26 +141,22 @@ class _CompanionBody extends ConsumerWidget {
               borderRadius: BorderRadius.circular(10),
               border: Border.all(color: ink.seam),
             ),
-            child: Row(
-              children: [
-                SizedBox(width: 44, child: Center(child: leading)),
-                const SizedBox(width: 8),
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(heading, style: theme.textTheme.titleSmall),
-                      Text(
-                        line,
-                        style:
-                            theme.textTheme.bodySmall?.copyWith(color: ink.ash),
-                      ),
-                    ],
-                  ),
+            child: Row(children: [
+              SizedBox(width: 44, child: Center(child: leading)),
+              const SizedBox(width: 8),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(heading, style: theme.textTheme.titleSmall),
+                    Text(line,
+                        style: theme.textTheme.bodySmall
+                            ?.copyWith(color: ink.ash)),
+                  ],
                 ),
-                Icon(Icons.chevron_right, color: ink.ash),
-              ],
-            ),
+              ),
+              Icon(Icons.chevron_right, color: ink.ash),
+            ]),
           ),
         );
 
@@ -184,58 +165,42 @@ class _CompanionBody extends ConsumerWidget {
 
     final subtitle = view.isGuideDog
         ? tr(ref, 'companion_guide_dog')
-        : [
-            view.raceName,
-            view.professionName,
-          ].where((s) => s.isNotEmpty).join(' ');
+        : [view.raceName, view.professionName]
+            .where((s) => s.isNotEmpty)
+            .join(' ');
     final skills = view.ally.unlockedSkillIds;
     final points = view.ally.skillPoints;
 
     return ListView(
       padding: const EdgeInsets.fromLTRB(14, 12, 14, 24),
       children: [
-        Row(
-          children: [
-            CompanionPortrait(view, size: 64),
-            const SizedBox(width: 12),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    view.name,
-                    style: theme.textTheme.titleLarge?.copyWith(
-                      fontFamily: InkFonts.display,
-                    ),
-                  ),
-                  Text(
-                    subtitle,
-                    style: theme.textTheme.bodyMedium?.copyWith(color: ink.ash),
-                  ),
-                  const SizedBox(height: 4),
-                  Row(
-                    children: [
-                      Expanded(
-                        child: HealthBar(
-                          hp: view.hp,
-                          max: view.maxHp,
-                          height: 7,
-                        ),
-                      ),
-                      const SizedBox(width: 6),
-                      Text(
-                        '${view.hp}/${view.maxHp} ${tr(ref, 'hp_label')}',
-                        style: theme.textTheme.labelSmall?.copyWith(
-                          color: ink.ash,
-                        ),
-                      ),
-                    ],
-                  ),
-                ],
-              ),
+        Row(children: [
+          CompanionPortrait(view, size: 64),
+          const SizedBox(width: 12),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(view.name,
+                    style: theme.textTheme.titleLarge
+                        ?.copyWith(fontFamily: InkFonts.display)),
+                Text(subtitle,
+                    style:
+                        theme.textTheme.bodyMedium?.copyWith(color: ink.ash)),
+                const SizedBox(height: 4),
+                Row(children: [
+                  Expanded(
+                      child:
+                          HealthBar(hp: view.hp, max: view.maxHp, height: 7)),
+                  const SizedBox(width: 6),
+                  Text('${view.hp}/${view.maxHp} ${tr(ref, 'hp_label')}',
+                      style:
+                          theme.textTheme.labelSmall?.copyWith(color: ink.ash)),
+                ]),
+              ],
             ),
-          ],
-        ),
+          ),
+        ]),
         const SizedBox(height: 12),
         // The seat: Core's rules decide whether it can be taken or left.
         if (view.active)
@@ -243,14 +208,11 @@ class _CompanionBody extends ConsumerWidget {
             key: Key('party_toggle_$id'),
             onPressed: !canBench
                 ? null
-                : () => setAllyInParty(
-                      context,
-                      ref,
-                      companionId: id,
-                      active: false,
-                      partyCapacity: capacity,
-                      requiredHouseId: requiredHouse,
-                    ),
+                : () => setAllyInParty(context, ref,
+                    companionId: id,
+                    active: false,
+                    partyCapacity: capacity,
+                    requiredHouseId: requiredHouse),
             child: Text(tr(ref, 'companion_seat_bench')),
           )
         else
@@ -258,98 +220,69 @@ class _CompanionBody extends ConsumerWidget {
             key: Key('party_toggle_$id'),
             onPressed: !join.canJoin
                 ? null
-                : () => setAllyInParty(
-                      context,
-                      ref,
-                      companionId: id,
-                      active: true,
-                      partyCapacity: capacity,
-                      requiredHouseId: requiredHouse,
-                    ),
+                : () => setAllyInParty(context, ref,
+                    companionId: id,
+                    active: true,
+                    partyCapacity: capacity,
+                    requiredHouseId: requiredHouse),
             child: Text(tr(ref, 'companion_seat_take')),
           ),
         if (view.active && !canBench)
           Padding(
             padding: const EdgeInsets.only(top: 4),
-            child: Text(
-              tr(ref, 'companion_stays_alone'),
-              key: Key('companion_stays_$id'),
-              style: theme.textTheme.bodySmall?.copyWith(color: ink.ash),
-            ),
+            child: Text(tr(ref, 'companion_stays_alone'),
+                key: Key('companion_stays_$id'),
+                style: theme.textTheme.bodySmall?.copyWith(color: ink.ash)),
           ),
         if (!view.active && join.reason.isNotEmpty)
           Padding(
             padding: const EdgeInsets.only(top: 4),
-            child: Text(
-              join.reason,
-              style: theme.textTheme.bodySmall?.copyWith(color: ink.ash),
-            ),
+            child: Text(join.reason,
+                style: theme.textTheme.bodySmall?.copyWith(color: ink.ash)),
           ),
         title(tr(ref, 'companion_how_they_feel')),
-        Row(
-          children: [
-            TierChip(view.tier, textKey: Key('approval_tier_$id')),
-            const SizedBox(width: 8),
-            Expanded(
-              child: Text(
+        Row(children: [
+          TierChip(view.tier, textKey: Key('approval_tier_$id')),
+          const SizedBox(width: 8),
+          Expanded(
+            child: Text(
                 effectKey == null
                     ? tr(ref, 'companion_no_bonus')
                     : tr(ref, effectKey),
-                style: theme.textTheme.bodySmall?.copyWith(color: colour),
-              ),
-            ),
-          ],
-        ),
+                style: theme.textTheme.bodySmall?.copyWith(color: colour)),
+          ),
+        ]),
         const SizedBox(height: 6),
         ApprovalMeter(approval: view.approval),
         const SizedBox(height: 6),
-        Text(
-          tr(ref, 'companion_bench_note'),
-          key: const Key('companion_bench_note'),
-          style: theme.textTheme.bodySmall?.copyWith(
-            color: ink.ash,
-            fontStyle: FontStyle.italic,
-          ),
-        ),
+        Text(tr(ref, 'companion_bench_note'),
+            key: const Key('companion_bench_note'),
+            style: theme.textTheme.bodySmall
+                ?.copyWith(color: ink.ash, fontStyle: FontStyle.italic)),
         const SizedBox(height: 8),
-        Row(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Expanded(
+        Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
+          Expanded(
+              child:
+                  chips(deeds(true), Palette.green40, Icons.thumb_up_outlined)),
+          const SizedBox(width: 8),
+          Expanded(
               child: chips(
-                deeds(true),
-                Palette.green40,
-                Icons.thumb_up_outlined,
-              ),
-            ),
-            const SizedBox(width: 8),
-            Expanded(
-              child: chips(
-                deeds(false),
-                Palette.red46,
-                Icons.thumb_down_outlined,
-              ),
-            ),
-          ],
-        ),
+                  deeds(false), Palette.red46, Icons.thumb_down_outlined)),
+        ]),
         _DrinkButton(view: view),
         title(tr(ref, 'companion_their_die')),
         tapRow(
           key: Key('companion_die_$id'),
           leading: InventoryDieTile(dieId: view.dieId, faces: 6, size: 40),
-          heading: dieDisplayName(
-            view.dieId,
-            language: fr ? AppLanguage.fr : AppLanguage.en,
-          ),
+          heading: dieDisplayName(view.dieId,
+              language: fr ? AppLanguage.fr : AppLanguage.en),
           line: tr(ref, 'companion_dice_line'),
           onTap: () => open(DiceLoadoutScreen(allyId: id)),
         ),
-        title(
-          tr(ref, 'skills'),
-          trailing: points > 0
-              ? tr(ref, 'companion_to_learn').replaceAll('{n}', '$points')
-              : null,
-        ),
+        title(tr(ref, 'skills'),
+            trailing: points > 0
+                ? tr(ref, 'companion_to_learn').replaceAll('{n}', '$points')
+                : null),
         InkWell(
           key: Key('companion_skills_$id'),
           borderRadius: BorderRadius.circular(10),
@@ -357,27 +290,18 @@ class _CompanionBody extends ConsumerWidget {
           child: Padding(
             padding: const EdgeInsets.symmetric(vertical: 2),
             child: skills.isEmpty
-                ? Text(
-                    tr(ref, 'companion_starter_only'),
-                    style: theme.textTheme.bodySmall?.copyWith(color: ink.ash),
-                  )
-                : Wrap(
-                    spacing: 8,
-                    runSpacing: 4,
-                    children: [
-                      for (final s in skills.take(6))
-                        Chip(
-                          label: Text(
-                            skillDisplayName(
-                              s,
-                              language: fr ? AppLanguage.fr : AppLanguage.en,
-                            ),
-                            style: theme.textTheme.labelMedium,
-                          ),
-                          visualDensity: VisualDensity.compact,
-                        ),
-                    ],
-                  ),
+                ? Text(tr(ref, 'companion_starter_only'),
+                    style: theme.textTheme.bodySmall?.copyWith(color: ink.ash))
+                : Wrap(spacing: 8, runSpacing: 4, children: [
+                    for (final s in skills.take(6))
+                      Chip(
+                        label: Text(
+                            skillDisplayName(s,
+                                language: fr ? AppLanguage.fr : AppLanguage.en),
+                            style: theme.textTheme.labelMedium),
+                        visualDensity: VisualDensity.compact,
+                      ),
+                  ]),
           ),
         ),
         title(tr(ref, 'ally_gear_button')),
@@ -421,20 +345,13 @@ class _DrinkButton extends ConsumerWidget {
                 if (done && context.mounted) {
                   // They say something back (see companion_remarks.dart), in
                   // a speech bubble after the notice.
-                  final said = drinkRemark(
-                    ref.read(remarkBookProvider),
-                    ref.read(remarkMemoryProvider),
-                    id,
-                  );
+                  final said = drinkRemark(ref.read(remarkBookProvider),
+                      ref.read(remarkMemoryProvider), id);
                   ref.read(remarkMemoryProvider.notifier).state = said.memory;
-                  await showImmersiveNotice(
-                    context,
-                    icon: Icons.local_drink,
-                    message: tr(
-                      ref,
-                      'share_drink_notice',
-                    ).replaceAll('{name}', view.name),
-                  );
+                  await showImmersiveNotice(context,
+                      icon: Icons.local_drink,
+                      message: tr(ref, 'share_drink_notice')
+                          .replaceAll('{name}', view.name));
                   final remark = said.remark;
                   if (remark != null && context.mounted) {
                     await showCompanionRemarks(context, ref, [remark]);
@@ -442,11 +359,9 @@ class _DrinkButton extends ConsumerWidget {
                 }
               },
         icon: const Icon(Icons.local_drink_outlined, size: IconSize.s16),
-        label: Text(
-          shared
-              ? tr(ref, 'share_drink_done')
-              : tr(ref, 'share_drink_button').replaceAll('{cost}', '$cost'),
-        ),
+        label: Text(shared
+            ? tr(ref, 'share_drink_done')
+            : tr(ref, 'share_drink_button').replaceAll('{cost}', '$cost')),
       ),
     );
   }

@@ -1,7 +1,5 @@
 import 'frame_style.dart';
-
 import 'package:flutter/material.dart';
-
 import 'palette.dart';
 import 'pixel_chip.dart';
 
@@ -218,11 +216,9 @@ ColorScheme stitchedInkScheme(Brightness brightness) {
 }
 
 /// One transition on every platform: the app moves the same way everywhere.
-final PageTransitionsTheme _inkTransitions = PageTransitionsTheme(
-  builders: {
-    for (final p in TargetPlatform.values) p: const InkPageTransitions(),
-  },
-);
+final PageTransitionsTheme _inkTransitions = PageTransitionsTheme(builders: {
+  for (final p in TargetPlatform.values) p: const InkPageTransitions(),
+});
 
 /// The app's theme over [scheme]: Stitched Ink's type, shapes and
 /// components, in whatever colours the palette gives.
@@ -264,11 +260,8 @@ ThemeData buildAppTheme(ColorScheme scheme, {FrameStyle? frames}) {
     labelSmall: system(t.labelSmall),
     bodyLarge: t.bodyLarge?.copyWith(height: 1.5),
   );
-  const buttonText = TextStyle(
-    fontFamily: InkFonts.system,
-    fontSize: 15,
-    height: 1.2,
-  );
+  const buttonText =
+      TextStyle(fontFamily: InkFonts.system, fontSize: 15, height: 1.2);
   const buttonPadding = EdgeInsets.symmetric(horizontal: 16, vertical: 10);
 
   final framed = frames;
@@ -277,8 +270,7 @@ ThemeData buildAppTheme(ColorScheme scheme, {FrameStyle? frames}) {
         backgroundColor: const WidgetStatePropertyAll(Colors.transparent),
         shadowColor: const WidgetStatePropertyAll(Colors.transparent),
         foregroundColor: WidgetStatePropertyAll(
-          primary ? const Color(0xFFF4E8CF) : const Color(0xFFE8DCC0),
-        ),
+            primary ? const Color(0xFFF4E8CF) : const Color(0xFFE8DCC0)),
         shape: WidgetStateProperty.resolveWith((states) {
           final off = states.contains(WidgetState.disabled);
           final down = states.contains(WidgetState.pressed);
@@ -287,35 +279,33 @@ ThemeData buildAppTheme(ColorScheme scheme, {FrameStyle? frames}) {
           // and gilt wear the kit's steel face.
           final honey = primary && framed!.material == FrameMaterial.wood;
           return FrameBorder(
-            piece: honey
-                ? (off
-                    ? FramePiece.buttonPrimaryDisabled
-                    : down
-                        ? FramePiece.buttonPrimaryPressed
-                        : FramePiece.buttonPrimary)
-                : (off
-                    ? FramePiece.buttonSecondaryDisabled
-                    : down
-                        ? FramePiece.buttonSecondaryPressed
-                        : FramePiece.buttonSecondary),
-            material: framed!.material,
-            env: EnvDecor.none,
-            pixel: framed.compactScale,
-            fillCenter: true,
-            plate: switch (framed.material) {
-              FrameMaterial.wood =>
-                off ? Palette.brown13 : const Color(0xFF3B2814),
-              // The silver face has an engraved line across its middle,
-              // which would run through the label.
-              FrameMaterial.silver =>
-                off ? const Color(0xFF3A3F47) : const Color(0xFF3E4856),
-              _ => null,
-            },
-          );
+              piece: honey
+                  ? (off
+                      ? FramePiece.buttonPrimaryDisabled
+                      : down
+                          ? FramePiece.buttonPrimaryPressed
+                          : FramePiece.buttonPrimary)
+                  : (off
+                      ? FramePiece.buttonSecondaryDisabled
+                      : down
+                          ? FramePiece.buttonSecondaryPressed
+                          : FramePiece.buttonSecondary),
+              material: framed!.material,
+              env: EnvDecor.none,
+              pixel: framed.compactScale,
+              fillCenter: true,
+              plate: switch (framed.material) {
+                FrameMaterial.wood =>
+                  off ? Palette.brown13 : const Color(0xFF3B2814),
+                // The silver face has an engraved line across its middle,
+                // which would run through the label.
+                FrameMaterial.silver =>
+                  off ? const Color(0xFF3A3F47) : const Color(0xFF3E4856),
+                _ => null,
+              });
         }),
         padding: const WidgetStatePropertyAll(
-          EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-        ),
+            EdgeInsets.symmetric(horizontal: 16, vertical: 12)),
       );
   return base.copyWith(
     pageTransitionsTheme: _inkTransitions,
@@ -346,30 +336,23 @@ ThemeData buildAppTheme(ColorScheme scheme, {FrameStyle? frames}) {
       elevation: 0,
       indicatorColor: scheme.primaryContainer,
       indicatorShape: shape,
-      labelTextStyle: WidgetStateProperty.resolveWith(
-        (states) => TextStyle(
-          fontFamily: InkFonts.system,
-          fontSize: 12,
-          color: states.contains(WidgetState.selected)
-              ? scheme.primary
-              : scheme.onSurfaceVariant,
-        ),
-      ),
-      iconTheme: WidgetStateProperty.resolveWith(
-        (states) => IconThemeData(
-          color: states.contains(WidgetState.selected)
-              ? scheme.primary
-              : scheme.onSurfaceVariant,
-        ),
-      ),
+      labelTextStyle: WidgetStateProperty.resolveWith((states) => TextStyle(
+            fontFamily: InkFonts.system,
+            fontSize: 12,
+            color: states.contains(WidgetState.selected)
+                ? scheme.primary
+                : scheme.onSurfaceVariant,
+          )),
+      iconTheme: WidgetStateProperty.resolveWith((states) => IconThemeData(
+            color: states.contains(WidgetState.selected)
+                ? scheme.primary
+                : scheme.onSurfaceVariant,
+          )),
     ),
     filledButtonTheme: FilledButtonThemeData(
       style: framed != null
-          ? frameButton(true).merge(
-              FilledButton.styleFrom(
-                textStyle: buttonText.copyWith(fontWeight: FontWeight.w600),
-              ),
-            )
+          ? frameButton(true).merge(FilledButton.styleFrom(
+              textStyle: buttonText.copyWith(fontWeight: FontWeight.w600)))
           : FilledButton.styleFrom(
               shape: shape,
               padding: buttonPadding,
@@ -420,8 +403,7 @@ ThemeData buildAppTheme(ColorScheme scheme, {FrameStyle? frames}) {
                   parchment ? FramePiece.panelParchment : FramePiece.panelDark,
               material: framed.material,
               env: framed.env,
-              pixel: framed.compactScale,
-            )
+              pixel: framed.compactScale)
           : RoundedRectangleBorder(borderRadius: radius, side: seamSide),
     ),
     chipTheme: ChipThemeData(
@@ -431,10 +413,7 @@ ThemeData buildAppTheme(ColorScheme scheme, {FrameStyle? frames}) {
       // the parchment in the light theme); the chip keeps its own fill for
       // selected and disabled.
       labelStyle: TextStyle(
-        fontFamily: InkFonts.system,
-        fontSize: 12,
-        color: scheme.onSurface,
-      ),
+          fontFamily: InkFonts.system, fontSize: 12, color: scheme.onSurface),
     ),
     dialogTheme: DialogThemeData(
       backgroundColor: scheme.surfaceContainer,
@@ -444,8 +423,7 @@ ThemeData buildAppTheme(ColorScheme scheme, {FrameStyle? frames}) {
               piece: FramePiece.dialog,
               material: framed.material,
               env: framed.env,
-              pixel: framed.largeScale,
-            )
+              pixel: framed.largeScale)
           : RoundedRectangleBorder(borderRadius: radius, side: seamSide),
       titleTextStyle: TextStyle(
         fontFamily: InkFonts.display,
@@ -479,9 +457,7 @@ ThemeData buildAppTheme(ColorScheme scheme, {FrameStyle? frames}) {
     inputDecorationTheme: InputDecorationTheme(
       border: const OutlineInputBorder(borderRadius: radius),
       enabledBorder: OutlineInputBorder(
-        borderRadius: radius,
-        borderSide: BorderSide(color: scheme.outline),
-      ),
+          borderRadius: radius, borderSide: BorderSide(color: scheme.outline)),
     ),
     listTileTheme: ListTileThemeData(iconColor: scheme.onSurfaceVariant),
     expansionTileTheme: const ExpansionTileThemeData(
@@ -503,10 +479,8 @@ ThemeData buildAppTheme(ColorScheme scheme, {FrameStyle? frames}) {
         fontSize: 12,
         color: scheme.onInverseSurface,
       ),
-      decoration: BoxDecoration(
-        color: scheme.inverseSurface,
-        borderRadius: radius,
-      ),
+      decoration:
+          BoxDecoration(color: scheme.inverseSurface, borderRadius: radius),
     ),
   );
 }

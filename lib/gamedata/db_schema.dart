@@ -91,6 +91,9 @@ const List<String> equipSlotOptions = [
   'Weapon',
   'Bottom',
   'Foot',
+  // The Void Banner's own slot (v2.5.0, Wave 4 brief 5): worn beside a
+  // whole set, not in the body's place.
+  'Banner',
 ];
 
 /// A skill's rarity: how many faces of one die it may take.
@@ -133,7 +136,7 @@ const List<String> _diceTamperOptions = [
   'hex',
   'silence',
   'curse',
-  'mirror',
+  'mirror'
 ];
 
 /// The rule words a die face can carry (v1.182, see face_keywords.dart).
@@ -179,7 +182,7 @@ const List<String> spellScalingOptions = [
   '',
   'intelligence',
   'wisdom',
-  'strength',
+  'strength'
 ];
 
 const List<String> slotTypeOptions = ['Weapon', 'Shield', 'Utility', 'Sail'];

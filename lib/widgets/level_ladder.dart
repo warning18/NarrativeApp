@@ -91,20 +91,16 @@ class LevelLadder extends ConsumerWidget {
                 : null,
             border: Border(
               bottom: BorderSide(
-                color: on ? _ladderLitColour(palette) : Colors.transparent,
-                width: _ladderLitLineWidth,
-              ),
+                  color: on ? _ladderLitColour(palette) : Colors.transparent,
+                  width: _ladderLitLineWidth),
             ),
           ),
-          child: Text(
-            tr(ref, _labels[r]!),
-            style: TextStyle(
-              fontFamily: InkFonts.system,
-              fontSize: _ladderTextSize,
-              height: 1,
-              color: colour,
-            ),
-          ),
+          child: Text(tr(ref, _labels[r]!),
+              style: TextStyle(
+                  fontFamily: InkFonts.system,
+                  fontSize: _ladderTextSize,
+                  height: 1,
+                  color: colour)),
         ),
       );
     }
@@ -118,9 +114,7 @@ class LevelLadder extends ConsumerWidget {
         color: _ladderGroundColour(palette),
         shape: RoundedRectangleBorder(
           side: BorderSide(
-            color: _ladderBorderColour(palette),
-            width: _ladderBorderWidth,
-          ),
+              color: _ladderBorderColour(palette), width: _ladderBorderWidth),
         ),
         clipBehavior: Clip.antiAlias,
         child: Row(

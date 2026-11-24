@@ -67,12 +67,8 @@ int _rarityRank(String? rarity) => switch (rarity?.trim()) {
 /// [ids] (each once) ordered by [sort]; [pack] is the bag in the order the
 /// pieces came in, so the newest is the one last in it. Names are the
 /// localized ones of [items].
-List<String> sortInventoryIds(
-  List<String> ids,
-  Map<String, dynamic> items,
-  InventorySort sort,
-  List<String> pack,
-) {
+List<String> sortInventoryIds(List<String> ids, Map<String, dynamic> items,
+    InventorySort sort, List<String> pack) {
   String nameOf(String id) =>
       ((items[id] as Map<String, dynamic>?)?['itemName'] ?? id)
           .toString()
@@ -87,12 +83,9 @@ List<String> sortInventoryIds(
     case InventorySort.rarity:
       out.sort((a, b) {
         final c = _rarityRank(
-          (items[a] as Map<String, dynamic>?)?['rarity']?.toString(),
-        ).compareTo(
-          _rarityRank(
-            (items[b] as Map<String, dynamic>?)?['rarity']?.toString(),
-          ),
-        );
+                (items[a] as Map<String, dynamic>?)?['rarity']?.toString())
+            .compareTo(_rarityRank(
+                (items[b] as Map<String, dynamic>?)?['rarity']?.toString()));
         return c != 0 ? c : nameOf(a).compareTo(nameOf(b));
       });
     case InventorySort.name:
@@ -199,66 +192,51 @@ class InventoryTabBar extends StatelessWidget {
       height: 36,
       child: SingleChildScrollView(
         scrollDirection: Axis.horizontal,
-        child: Row(
-          children: [
-            for (final (tab, n) in counts)
-              Padding(
-                padding: EdgeInsets.only(right: narrow ? 4 : 6),
-                child: Semantics(
-                  button: true,
-                  selected: tab == selected,
-                  child: InkWell(
-                    key: Key('inv_tab_${tab.name}'),
-                    customBorder: const PixelChipBorder(),
-                    onTap: () => onSelect(tab),
-                    child: Container(
-                      padding: EdgeInsets.symmetric(
-                        horizontal: narrow ? 8 : 12,
-                        vertical: 6,
-                      ),
-                      decoration: ShapeDecoration(
-                        color: tab == selected
-                            ? theme.colorScheme.primary.withValues(alpha: 0.2)
-                            : Colors.transparent,
-                        shape: PixelChipBorder(
+        child: Row(children: [
+          for (final (tab, n) in counts)
+            Padding(
+              padding: EdgeInsets.only(right: narrow ? 4 : 6),
+              child: Semantics(
+                button: true,
+                selected: tab == selected,
+                child: InkWell(
+                  key: Key('inv_tab_${tab.name}'),
+                  customBorder: const PixelChipBorder(),
+                  onTap: () => onSelect(tab),
+                  child: Container(
+                    padding: EdgeInsets.symmetric(
+                        horizontal: narrow ? 8 : 12, vertical: 6),
+                    decoration: ShapeDecoration(
+                      color: tab == selected
+                          ? theme.colorScheme.primary.withValues(alpha: 0.2)
+                          : Colors.transparent,
+                      shape: PixelChipBorder(
                           side: BorderSide(
-                            color: tab == selected
-                                ? theme.colorScheme.primary
-                                : ink.seam,
-                          ),
-                        ),
-                      ),
-                      child: Row(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          Text(
-                            trFor(language, inventoryTabLabelKey(tab)),
-                            style: (narrow
-                                    ? theme.textTheme.bodySmall
-                                    : theme.textTheme.bodyMedium)
-                                ?.copyWith(
                               color: tab == selected
-                                  ? theme.colorScheme.onSurface
-                                  : ink.ash,
-                            ),
-                          ),
-                          const SizedBox(width: 5),
-                          Text(
-                            '$n',
-                            style: theme.textTheme.labelMedium?.copyWith(
-                              color: tab == selected
-                                  ? theme.colorScheme.onSurface
-                                  : ink.ash,
-                            ),
-                          ),
-                        ],
-                      ),
+                                  ? theme.colorScheme.primary
+                                  : ink.seam)),
                     ),
+                    child: Row(mainAxisSize: MainAxisSize.min, children: [
+                      Text(trFor(language, inventoryTabLabelKey(tab)),
+                          style: (narrow
+                                  ? theme.textTheme.bodySmall
+                                  : theme.textTheme.bodyMedium)
+                              ?.copyWith(
+                                  color: tab == selected
+                                      ? theme.colorScheme.onSurface
+                                      : ink.ash)),
+                      const SizedBox(width: 5),
+                      Text('$n',
+                          style: theme.textTheme.labelMedium?.copyWith(
+                              color: tab == selected
+                                  ? theme.colorScheme.onSurface
+                                  : ink.ash)),
+                    ]),
                   ),
                 ),
               ),
-          ],
-        ),
+            ),
+        ]),
       ),
     );
   }
@@ -266,12 +244,11 @@ class InventoryTabBar extends StatelessWidget {
 
 /// The sort, quiet, at the end of the tabs' line: a tap goes to the next.
 class InventorySortButton extends StatelessWidget {
-  const InventorySortButton({
-    super.key,
-    required this.sort,
-    required this.onChanged,
-    required this.language,
-  });
+  const InventorySortButton(
+      {super.key,
+      required this.sort,
+      required this.onChanged,
+      required this.language});
 
   final InventorySort sort;
   final ValueChanged<InventorySort> onChanged;
@@ -288,20 +265,15 @@ class InventorySortButton extends StatelessWidget {
       onTap: () => onChanged(next),
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 4),
-        child: Row(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Icon(Icons.sort, size: IconSize.s16, color: ink.ash),
-            const SizedBox(width: 3),
-            Text(
-              trFor(language, 'inv_sort_${sort.name}'),
+        child: Row(mainAxisSize: MainAxisSize.min, children: [
+          Icon(Icons.sort, size: IconSize.s16, color: ink.ash),
+          const SizedBox(width: 3),
+          Text(trFor(language, 'inv_sort_${sort.name}'),
               style: Theme.of(context)
                   .textTheme
                   .bodySmall
-                  ?.copyWith(color: ink.ash),
-            ),
-          ],
-        ),
+                  ?.copyWith(color: ink.ash)),
+        ]),
       ),
     );
   }
@@ -350,49 +322,40 @@ class InventorySlotTile extends StatelessWidget {
     final framed = filled && tier != null;
     final content = Tooltip(
       message: tip,
-      child: Stack(
-        children: [
-          Positioned.fill(
-            child: Padding(
-              padding: EdgeInsets.fromLTRB(
-                4,
-                framed ? 1 : 6,
-                4,
-                framed ? 1 : 6,
-              ),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Opacity(opacity: filled ? 1 : 0.5, child: icon),
-                  const SizedBox(height: 4),
-                  WholeWordText(
+      child: Stack(children: [
+        Positioned.fill(
+          child: Padding(
+            padding: EdgeInsets.fromLTRB(4, framed ? 1 : 6, 4, framed ? 1 : 6),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Opacity(opacity: filled ? 1 : 0.5, child: icon),
+                const SizedBox(height: 4),
+                WholeWordText(
                     text: worn ?? slotLabel,
                     maxLines: filled ? 3 : 1,
                     style: theme.textTheme.bodySmall?.copyWith(
-                      height: 1.15,
-                      color: filled ? null : ink.ash,
-                      fontStyle: filled ? null : FontStyle.italic,
-                    ),
-                  ),
-                ],
-              ),
+                        height: 1.15,
+                        color: filled ? null : ink.ash,
+                        fontStyle: filled ? null : FontStyle.italic)),
+              ],
             ),
           ),
-          if (onClear != null)
-            Positioned(
-              top: 0,
-              right: 0,
-              child: IconButton(
-                icon: const Icon(Icons.close, size: IconSize.s16),
-                tooltip: clearTip,
-                visualDensity: VisualDensity.compact,
-                constraints: const BoxConstraints(minWidth: 28, minHeight: 28),
-                padding: EdgeInsets.zero,
-                onPressed: onClear,
-              ),
+        ),
+        if (onClear != null)
+          Positioned(
+            top: 0,
+            right: 0,
+            child: IconButton(
+              icon: const Icon(Icons.close, size: IconSize.s16),
+              tooltip: clearTip,
+              visualDensity: VisualDensity.compact,
+              constraints: const BoxConstraints(minWidth: 28, minHeight: 28),
+              padding: EdgeInsets.zero,
+              onPressed: onClear,
             ),
-        ],
-      ),
+          ),
+      ]),
     );
     if (framed) {
       return StoryFrame(
@@ -411,13 +374,12 @@ class InventorySlotTile extends StatelessWidget {
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(8),
         side: BorderSide(
-          color: lit
-              ? ink.gold
-              : filled
-                  ? ink.gold.withValues(alpha: 0.6)
-                  : ink.seam,
-          width: lit ? 2 : 1,
-        ),
+            color: lit
+                ? ink.gold
+                : filled
+                    ? ink.gold.withValues(alpha: 0.6)
+                    : ink.seam,
+            width: lit ? 2 : 1),
       ),
       child: InkWell(
         borderRadius: BorderRadius.circular(8),
@@ -486,120 +448,95 @@ class InventoryRow extends StatelessWidget {
     final gear = isGear(item);
     final body = Padding(
       padding: const EdgeInsets.fromLTRB(10, 8, 10, 8),
-      child: Row(
-        children: [
-          ItemPixelIcon(itemId, type, size: IconSize.s32),
-          const SizedBox(width: 10),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Row(
-                  children: [
-                    Flexible(
-                      child: Text(
-                        name,
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
-                        style: theme.textTheme.bodyLarge?.copyWith(
-                          fontFamily: InkFonts.display,
-                        ),
-                      ),
-                    ),
-                    if (count != null && count! > 1) ...[
-                      const SizedBox(width: 6),
-                      Text(
-                        '×$count',
-                        style: theme.textTheme.labelMedium?.copyWith(
-                          color: ink.ash,
-                        ),
-                      ),
-                    ],
-                    if (fresh) ...[
-                      const SizedBox(width: 6),
-                      Tooltip(
-                        message: trFor(language, 'inv_new'),
-                        child: Container(
-                          key: Key('inv_new_$itemId'),
-                          width: 8,
-                          height: 8,
-                          decoration: BoxDecoration(
-                            shape: BoxShape.circle,
-                            color: ink.gold,
-                          ),
-                        ),
-                      ),
-                    ],
-                  ],
+      child: Row(children: [
+        ItemPixelIcon(itemId, type, size: IconSize.s32),
+        const SizedBox(width: 10),
+        Expanded(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(children: [
+                Flexible(
+                  child: Text(name,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: theme.textTheme.bodyLarge
+                          ?.copyWith(fontFamily: InkFonts.display)),
                 ),
-                const SizedBox(height: 2),
-                Row(
-                  children: [
-                    if (slot != null && slot!.isNotEmpty) ...[
-                      PixelGlyph(
-                        inventorySlotGlyph(slot!),
-                        size: IconSize.s16,
-                        color: ink.ash,
-                      ),
-                      const SizedBox(width: 3),
-                    ],
-                    Flexible(
-                      child: Text(
-                        line,
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
-                        style: theme.textTheme.bodySmall?.copyWith(
-                          color: ink.ash,
-                        ),
-                      ),
+                if (count != null && count! > 1) ...[
+                  const SizedBox(width: 6),
+                  Text('×$count',
+                      style: theme.textTheme.labelMedium
+                          ?.copyWith(color: ink.ash)),
+                ],
+                if (fresh) ...[
+                  const SizedBox(width: 6),
+                  Tooltip(
+                    message: trFor(language, 'inv_new'),
+                    child: Container(
+                      key: Key('inv_new_$itemId'),
+                      width: 8,
+                      height: 8,
+                      decoration: BoxDecoration(
+                          shape: BoxShape.circle, color: ink.gold),
                     ),
-                  ],
+                  ),
+                ],
+              ]),
+              const SizedBox(height: 2),
+              Row(children: [
+                if (slot != null && slot!.isNotEmpty) ...[
+                  PixelGlyph(inventorySlotGlyph(slot!),
+                      size: IconSize.s16, color: ink.ash),
+                  const SizedBox(width: 3),
+                ],
+                Flexible(
+                  child: Text(line,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style:
+                          theme.textTheme.bodySmall?.copyWith(color: ink.ash)),
                 ),
-                if (gear)
-                  Padding(
-                    padding: const EdgeInsets.only(top: 4),
-                    child: ItemStatChips(
+              ]),
+              if (gear)
+                Padding(
+                  padding: const EdgeInsets.only(top: 4),
+                  child: ItemStatChips(
                       item: item,
                       equipped: isWorn ? null : worn,
                       language: language,
                       compact: true,
                       maxChips: 3,
-                      deltaVsEmpty: false,
-                    ),
-                  ),
-              ],
-            ),
+                      deltaVsEmpty: false),
+                ),
+            ],
           ),
-          if (locked)
-            Padding(
-              padding: const EdgeInsets.only(left: 8),
-              child: PixelGlyph(PixelGlyphs.lock, color: ink.ash),
-            )
-          else if (actionLabel != null && onAction != null)
-            Padding(
-              padding: const EdgeInsets.only(left: 8),
-              child: isWorn
-                  ? OutlinedButton(
-                      key: Key('inv_action_$itemId'),
-                      style: OutlinedButton.styleFrom(
+        ),
+        if (locked)
+          Padding(
+            padding: const EdgeInsets.only(left: 8),
+            child: PixelGlyph(PixelGlyphs.lock, color: ink.ash),
+          )
+        else if (actionLabel != null && onAction != null)
+          Padding(
+            padding: const EdgeInsets.only(left: 8),
+            child: isWorn
+                ? OutlinedButton(
+                    key: Key('inv_action_$itemId'),
+                    style: OutlinedButton.styleFrom(
                         visualDensity: VisualDensity.compact,
-                        padding: const EdgeInsets.symmetric(horizontal: 10),
-                      ),
-                      onPressed: onAction,
-                      child: Text(actionLabel!),
-                    )
-                  : FilledButton(
-                      key: Key('inv_action_$itemId'),
-                      style: FilledButton.styleFrom(
+                        padding: const EdgeInsets.symmetric(horizontal: 10)),
+                    onPressed: onAction,
+                    child: Text(actionLabel!))
+                : FilledButton(
+                    key: Key('inv_action_$itemId'),
+                    style: FilledButton.styleFrom(
                         visualDensity: VisualDensity.compact,
-                        padding: const EdgeInsets.symmetric(horizontal: 12),
-                      ),
-                      onPressed: onAction,
-                      child: Text(actionLabel!),
-                    ),
-            ),
-        ],
-      ),
+                        padding: const EdgeInsets.symmetric(horizontal: 12)),
+                    onPressed: onAction,
+                    child: Text(actionLabel!)),
+          ),
+      ]),
     );
     final tier = itemTierOf(item);
     if (isWorn && tier != null && !selected) {
@@ -634,12 +571,11 @@ class InventoryRow extends StatelessWidget {
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(8),
           side: BorderSide(
-            color: selected
-                ? theme.colorScheme.tertiary
-                : isWorn
-                    ? ink.gold
-                    : ink.seam,
-          ),
+              color: selected
+                  ? theme.colorScheme.tertiary
+                  : isWorn
+                      ? ink.gold
+                      : ink.seam),
         ),
         child: InkWell(
           borderRadius: BorderRadius.circular(8),
@@ -675,13 +611,12 @@ const Map<int, String> _boneShapes = {
 /// small for it (under 28 px) keeps the stone with the mark cut in it and the
 /// shape's name.
 class InventoryDieTile extends StatelessWidget {
-  const InventoryDieTile({
-    super.key,
-    required this.dieId,
-    required this.faces,
-    this.size = 44,
-    this.lit = false,
-  });
+  const InventoryDieTile(
+      {super.key,
+      required this.dieId,
+      required this.faces,
+      this.size = 44,
+      this.lit = false});
 
   final String dieId;
   final int faces;
@@ -733,11 +668,9 @@ class InventoryDieTile extends StatelessWidget {
         boxShadow: [
           if (skin.glow != null || lit)
             BoxShadow(
-              color: (skin.glow ?? InkColors.of(context).gold).withValues(
-                alpha: lit ? 0.55 : 0.35,
-              ),
-              blurRadius: lit ? 12 : 8,
-            ),
+                color: (skin.glow ?? InkColors.of(context).gold)
+                    .withValues(alpha: lit ? 0.55 : 0.35),
+                blurRadius: lit ? 12 : 8),
         ],
       ),
       clipBehavior: Clip.antiAlias,
@@ -748,39 +681,28 @@ class InventoryDieTile extends StatelessWidget {
               ? (size >= 28
                   ? Center(
                       child: DieTile(
-                        dieId: dieId,
-                        faces: faces,
-                        size: size * 0.86,
-                        glowing: false,
-                      ),
-                    )
+                          dieId: dieId,
+                          faces: faces,
+                          size: size * 0.86,
+                          glowing: false))
                   : null)
               : OverflowBox(
                   minWidth: size,
                   maxWidth: size,
                   minHeight: size,
                   maxHeight: size,
-                  child: body,
-                )) ??
-          Stack(
-            alignment: Alignment.center,
-            children: [
-              Positioned.fill(
+                  child: body)) ??
+          Stack(alignment: Alignment.center, children: [
+            Positioned.fill(
                 child: CustomPaint(
-                  painter: DiePatternPainter(skin.pattern, skin.edge),
-                ),
-              ),
-              Text(
-                'd$faces',
+                    painter: DiePatternPainter(skin.pattern, skin.edge))),
+            Text('d$faces',
                 style: TextStyle(
-                  fontFamily: InkFonts.system,
-                  fontSize: size * 0.34,
-                  color: dark ? Palette.night8b : skin.edge,
-                  fontWeight: FontWeight.w600,
-                ),
-              ),
-            ],
-          ),
+                    fontFamily: InkFonts.system,
+                    fontSize: size * 0.34,
+                    color: dark ? Palette.night8b : skin.edge,
+                    fontWeight: FontWeight.w600)),
+          ]),
     );
   }
 }
@@ -833,87 +755,63 @@ class InventoryDieRow extends StatelessWidget {
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(8),
           side: BorderSide(
-            color: inHand ? ink.gold : ink.seam,
-            width: inHand ? 1.6 : 1,
-          ),
+              color: inHand ? ink.gold : ink.seam, width: inHand ? 1.6 : 1),
         ),
         child: InkWell(
           borderRadius: BorderRadius.circular(8),
           onTap: onOpen,
           child: Padding(
             padding: const EdgeInsets.fromLTRB(10, 9, 10, 9),
-            child: Row(
-              children: [
-                SizedBox(
+            child: Row(children: [
+              SizedBox(
                   width: 52,
                   child: Center(
-                    child: InventoryDieTile(
-                      dieId: dieId,
-                      faces: faces,
-                      lit: inHand,
-                    ),
-                  ),
-                ),
-                const SizedBox(width: 10),
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        name,
+                      child: InventoryDieTile(
+                          dieId: dieId, faces: faces, lit: inHand))),
+              const SizedBox(width: 10),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(name,
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
-                        style: theme.textTheme.bodyLarge?.copyWith(
-                          fontFamily: InkFonts.display,
-                        ),
-                      ),
-                      Text(
+                        style: theme.textTheme.bodyLarge
+                            ?.copyWith(fontFamily: InkFonts.display)),
+                    Text(
                         trFor(language, 'inv_die_line')
                             .replaceAll('{n}', '$faces')
                             .replaceAll('{material}', skin.material),
-                        style: theme.textTheme.bodySmall?.copyWith(
-                          color: ink.ash,
-                        ),
-                      ),
-                      if (gift != null) gift!,
-                      if (inHand)
-                        Text(
-                          trFor(language, 'inv_in_hand'),
+                        style: theme.textTheme.bodySmall
+                            ?.copyWith(color: ink.ash)),
+                    if (gift != null) gift!,
+                    if (inHand)
+                      Text(trFor(language, 'inv_in_hand'),
                           style: theme.textTheme.bodySmall?.copyWith(
-                            color: ink.gold,
-                            fontStyle: FontStyle.italic,
-                          ),
-                        )
-                      else if (locked && madeFor.isNotEmpty)
-                        Text(
-                          trFor(
-                            language,
-                            'inv_die_made_for',
-                          ).replaceAll('{who}', madeFor),
+                              color: ink.gold, fontStyle: FontStyle.italic))
+                    else if (locked && madeFor.isNotEmpty)
+                      Text(
+                          trFor(language, 'inv_die_made_for')
+                              .replaceAll('{who}', madeFor),
                           style: theme.textTheme.bodySmall?.copyWith(
-                            color: ink.ash,
-                            fontStyle: FontStyle.italic,
-                          ),
-                        ),
-                    ],
-                  ),
+                              color: ink.ash, fontStyle: FontStyle.italic)),
+                  ],
                 ),
-                if (inHand)
-                  Icon(Icons.chevron_right, color: ink.ash)
-                else if (locked)
-                  PixelGlyph(PixelGlyphs.lock, color: ink.ash)
-                else if (onEquip != null)
-                  FilledButton(
-                    key: Key('inv_equip_die_$dieId'),
-                    style: FilledButton.styleFrom(
+              ),
+              if (inHand)
+                Icon(Icons.chevron_right, color: ink.ash)
+              else if (locked)
+                PixelGlyph(PixelGlyphs.lock, color: ink.ash)
+              else if (onEquip != null)
+                FilledButton(
+                  key: Key('inv_equip_die_$dieId'),
+                  style: FilledButton.styleFrom(
                       visualDensity: VisualDensity.compact,
-                      padding: const EdgeInsets.symmetric(horizontal: 12),
-                    ),
-                    onPressed: onEquip,
-                    child: Text(trFor(language, 'equip_button')),
-                  ),
-              ],
-            ),
+                      padding: const EdgeInsets.symmetric(horizontal: 12)),
+                  onPressed: onEquip,
+                  child: Text(trFor(language, 'equip_button')),
+                ),
+            ]),
           ),
         ),
       ),

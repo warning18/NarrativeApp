@@ -15,13 +15,10 @@ extension _FightQueries on _FightScreenState {
   int? get _tideCap => fightTideCap([for (final e in _enemies) e.data]);
 
   /// What the Tide adds to the enemies' blows in [round], in percent.
-  int _tideEnemyPercent(int round) => ((tideEnemyMultiplier(
-                round,
-                bossFight: _enemies.any(
-                  (e) => isBossEnemy(e.enemyId, e.data),
-                ),
-                cap: _tideCap,
-              ) -
+  int _tideEnemyPercent(int round) => ((tideEnemyMultiplier(round,
+                  bossFight:
+                      _enemies.any((e) => isBossEnemy(e.enemyId, e.data)),
+                  cap: _tideCap) -
               1) *
           100)
       .round();
@@ -49,9 +46,7 @@ extension _FightQueries on _FightScreenState {
     }
     // Fog, dust and snow take from the party's read (v1.208).
     final tier = telegraphTierFor(
-      _bestPartyPerception() - _groundPerceptionPenalty,
-      enemy.guile,
-    );
+        _bestPartyPerception() - _groundPerceptionPenalty, enemy.guile);
     return _condition == BattlefieldCondition.dark ? darkenedTier(tier) : tier;
   }
 
@@ -62,8 +57,7 @@ extension _FightQueries on _FightScreenState {
   /// beaten its kind before; otherwise only the ones a hit has revealed
   /// this fight.
   ({List<String> weak, List<String> resist}) _knownElementsFor(
-    _EnemyMember enemy,
-  ) {
+      _EnemyMember enemy) {
     final tier = _effectiveTierFor(enemy);
     final knowsAll = tier == TelegraphTier.category ||
         tier == TelegraphTier.full ||
@@ -126,21 +120,20 @@ extension _FightQueries on _FightScreenState {
     // The day's sky and the ground's anomaly dampen or feed the element
     // (v1.208, v1.241).
     return _groundDamage(
-      strikeDamageFor(
-        baseDamage: actor.baseDamage,
-        equippedItemIds: actor.equippedItemIds,
-        items: items,
-        element: element,
-        gearAttack: actor.gear.attackDamage,
-        strength: actor.strength,
-        dexterity: actor.dexterity,
-        constitution: actor.constitution,
-        intelligence: actor.intelligence,
-        alignmentLabel: _alignmentLabel,
-      ),
-      element,
-      byParty: true,
-    );
+        strikeDamageFor(
+          baseDamage: actor.baseDamage,
+          equippedItemIds: actor.equippedItemIds,
+          items: items,
+          element: element,
+          gearAttack: actor.gear.attackDamage,
+          strength: actor.strength,
+          dexterity: actor.dexterity,
+          constitution: actor.constitution,
+          intelligence: actor.intelligence,
+          alignmentLabel: _alignmentLabel,
+        ),
+        element,
+        byParty: true);
   }
 
   /// The enemy a strike by [actor] lands on if confirmed now: the only
@@ -160,20 +153,15 @@ extension _FightQueries on _FightScreenState {
   /// What [move] from [enemy] hits for before the target's defences:
   /// Weaken on the enemy, Frenzied when it is low, and a standing pack
   /// leader's boost to the rest of the pack.
-  int _incomingDamage(
-    _EnemyMember enemy,
-    EnemyMoveResult move, {
-    required bool leaderStanding,
-    int? mirrorFrom,
-  }) {
+  int _incomingDamage(_EnemyMember enemy, EnemyMoveResult move,
+      {required bool leaderStanding, int? mirrorFrom}) {
     // A Mirror sends back the party's best blow of the round (see
     // dice_tamper.dart): the best landed, a spell's included, or while the
     // dice are still on the table, the best they would land.
     final base = move.tamper == DiceTamper.mirror
         ? mirrorDamage(
             bestPartyHit: mirrorFrom ?? _bestHitThisRound,
-            enemyDamage: enemy.damage,
-          )
+            enemyDamage: enemy.damage)
         : move.damage;
     var damage = applyWeaken(base, enemy.statusEffects);
     // The sky dampens or feeds the enemy's element too (v1.208).
@@ -188,25 +176,19 @@ extension _FightQueries on _FightScreenState {
     // Provoked by a heavy blow, or pressing a party that only defended
     // (v1.215, see enemy_response.dart).
     final answer = responseDamageMultiplier(
-      provoked: enemy.provoked,
-      pressing: enemy.pressing,
-    );
+        provoked: enemy.provoked, pressing: enemy.pressing);
     if (answer != 1.0) damage = (damage * answer).round();
     // A pact's curse, while it runs (see signs.dart); then the Tide and
     // the place's rule (context_rules.dart).
     // A beast tires (foe_kind.dart).
     return foeBlow(
-      _length.rule.blow(
-        _signs.enemyDamage(damage),
+        _length.rule.blow(_signs.enemyDamage(damage), _roundsStarted,
+            byParty: false,
+            bossFight: _enemies.any((e) => isBossEnemy(e.enemyId, e.data)),
+            enemyTideCap: _tideCap),
+        enemy.data,
         _roundsStarted,
-        byParty: false,
-        bossFight: _enemies.any((e) => isBossEnemy(e.enemyId, e.data)),
-        enemyTideCap: _tideCap,
-      ),
-      enemy.data,
-      _roundsStarted,
-      boss: isBossEnemy(enemy.enemyId, enemy.data),
-    );
+        boss: isBossEnemy(enemy.enemyId, enemy.data));
   }
 
   /// How much of a hit of [element] [target]'s armor soaks: base armor,
@@ -214,10 +196,7 @@ extension _FightQueries on _FightScreenState {
   /// an armed Iron Skin charm and the gear's resist to the element. Block
   /// comes on top of this.
   int _mitigationFor(
-    _PartyMember target,
-    String element,
-    Map<String, dynamic> items,
-  ) {
+      _PartyMember target, String element, Map<String, dynamic> items) {
     final scaling = equipmentScalingBonusFor(
       target.equippedItemIds,
       items,
@@ -226,11 +205,8 @@ extension _FightQueries on _FightScreenState {
       constitution: target.constitution,
       intelligence: target.intelligence,
     );
-    final aligned = alignmentGearBonusFor(
-      target.equippedItemIds,
-      items,
-      _alignmentLabel,
-    );
+    final aligned =
+        alignmentGearBonusFor(target.equippedItemIds, items, _alignmentLabel);
     return target.armor +
         equipmentBonusFor(target.equippedItemIds, items, 'armor') +
         scaling.armorBonus +
@@ -244,41 +220,30 @@ extension _FightQueries on _FightScreenState {
   /// its target, less the target's armor, resist and block -- the block
   /// already up, or the one the dice on the table would raise. Null when
   /// nothing is telegraphed.
-  ({int raw, int net})? _expectedHit(
-    _EnemyMember enemy,
-    Map<String, dynamic> skills,
-    Map<String, dynamic> items,
-  ) {
+  ({int raw, int net})? _expectedHit(_EnemyMember enemy,
+      Map<String, dynamic> skills, Map<String, dynamic> items) {
     final pending = enemy.pendingMove;
     if (pending == null) return null;
     final target = _memberById(pending.targetId);
     if (target == null || target.isKnockedOut) return null;
-    final leaderStanding = _enemies.any(
-      (e) => e.isAlive && e.hasAffix(EnemyAffix.packLeader),
-    );
+    final leaderStanding =
+        _enemies.any((e) => e.isAlive && e.hasAffix(EnemyAffix.packLeader));
     final previews = _awaitingDecision && !_rolling
         ? _previewRoll(skills, items, ref.read(appLanguageProvider))
         : const <String, _FacePreview>{};
-    final raw = _incomingDamage(
-      enemy,
-      pending.move,
-      leaderStanding: leaderStanding,
-      mirrorFrom: previews.isEmpty
-          ? null
-          : previews.values.fold<int>(
-              _bestHitThisRound,
-              (best, p) => max(best, p.damage),
-            ),
-    );
+    final raw = _incomingDamage(enemy, pending.move,
+        leaderStanding: leaderStanding,
+        mirrorFrom: previews.isEmpty
+            ? null
+            : previews.values.fold<int>(
+                _bestHitThisRound, (best, p) => max(best, p.damage)));
     var block = target.block;
     final planned = previews[target.id];
     if (planned != null) {
       block = max(block, planned.block + (_spellBlock[target.id] ?? 0));
     }
     final net = max(
-      0,
-      raw - block - _mitigationFor(target, pending.move.element, items),
-    );
+        0, raw - block - _mitigationFor(target, pending.move.element, items));
     return (raw: raw, net: net);
   }
 
@@ -355,8 +320,7 @@ extension _FightQueries on _FightScreenState {
     }
     return order
         .map(
-          (name) => (counts[name] ?? 1) > 1 ? '${counts[name]}x $name' : name,
-        )
+            (name) => (counts[name] ?? 1) > 1 ? '${counts[name]}x $name' : name)
         .join(', ');
   }
 
@@ -384,9 +348,7 @@ extension _FightQueries on _FightScreenState {
   }
 
   Map<String, dynamic> _availableSkillsFor(
-    _PartyMember actor,
-    Map<String, dynamic> skills,
-  ) {
+      _PartyMember actor, Map<String, dynamic> skills) {
     return <String, dynamic>{
       for (final entry in skills.entries)
         if (((entry.value as Map<String, dynamic>)['isUnlocked'] as bool? ??
@@ -404,16 +366,13 @@ extension _FightQueries on _FightScreenState {
   /// skipped for the round entirely, announced in [_startPartyRound]).
   /// In Dexterity order, the quickest first (v1.213, see turn_order.dart).
   List<_PartyMember> get _actingParty => actingOrder(
-        _party
-            .where(
-              (m) =>
-                  !m.isKnockedOut &&
-                  !isStunned(m.statusEffects) &&
-                  !_sittingOut.contains(m.id),
-            )
-            .toList(),
-        (m) => m.dexterity,
-      );
+      _party
+          .where((m) =>
+              !m.isKnockedOut &&
+              !isStunned(m.statusEffects) &&
+              !_sittingOut.contains(m.id))
+          .toList(),
+      (m) => m.dexterity);
 
   /// [member]'s place in this round's order (1 is first), or null when
   /// they act alone or not at all.

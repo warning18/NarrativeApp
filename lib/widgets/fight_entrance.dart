@@ -120,9 +120,8 @@ class _FightEntranceState extends State<FightEntrance>
       children: [
         Positioned.fill(
           child: IgnorePointer(
-            child: ColoredBox(
-              color: Colors.black.withValues(alpha: 0.5 * fade),
-            ),
+            child:
+                ColoredBox(color: Colors.black.withValues(alpha: 0.5 * fade)),
           ),
         ),
         Align(
@@ -142,9 +141,8 @@ class _FightEntranceState extends State<FightEntrance>
                   border: Border.all(color: accent, width: 2),
                   boxShadow: [
                     BoxShadow(
-                      color: accent.withValues(alpha: 0.35),
-                      blurRadius: widget.boss ? 22 : 10,
-                    ),
+                        color: accent.withValues(alpha: 0.35),
+                        blurRadius: widget.boss ? 22 : 10),
                   ],
                 ),
                 child: Column(
@@ -164,26 +162,20 @@ class _FightEntranceState extends State<FightEntrance>
                           ),
                     ),
                     const SizedBox(height: 10),
-                    Text(
-                      widget.name,
-                      key: const Key('fight_entrance_name'),
-                      textAlign: TextAlign.center,
-                      style: theme.textTheme.titleMedium?.copyWith(
-                        color: accent,
-                      ),
-                    ),
+                    Text(widget.name,
+                        key: const Key('fight_entrance_name'),
+                        textAlign: TextAlign.center,
+                        style: theme.textTheme.titleMedium
+                            ?.copyWith(color: accent)),
                     if (line.isNotEmpty) ...[
                       const SizedBox(height: 6),
-                      Text(
-                        line,
-                        key: const Key('fight_entrance_line'),
-                        textAlign: TextAlign.center,
-                        maxLines: 3,
-                        overflow: TextOverflow.ellipsis,
-                        style: theme.textTheme.bodySmall?.copyWith(
-                          fontStyle: FontStyle.italic,
-                        ),
-                      ),
+                      Text(line,
+                          key: const Key('fight_entrance_line'),
+                          textAlign: TextAlign.center,
+                          maxLines: 3,
+                          overflow: TextOverflow.ellipsis,
+                          style: theme.textTheme.bodySmall
+                              ?.copyWith(fontStyle: FontStyle.italic)),
                     ],
                   ],
                 ),

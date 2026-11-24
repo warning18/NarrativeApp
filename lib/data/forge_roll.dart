@@ -116,25 +116,22 @@ List<ForgeModifier> forgeModifiersFor({
     [
       if (raceId == _dwarfRaceId)
         const ForgeModifier(
-          source: 'dwarf',
-          labelKey: 'forge_mod_dwarf',
-          value: _dwarfForgeBonus,
-        ),
+            source: 'dwarf',
+            labelKey: 'forge_mod_dwarf',
+            value: _dwarfForgeBonus),
       if (holderId.isNotEmpty && holderTier != null)
         if (holderTier.isAtLeast(StandingTier.friendly))
           ForgeModifier(
-            source: 'standing',
-            labelKey: 'forge_mod_friends',
-            value: friendlyForgeBonus,
-            clanId: holderId,
-          )
+              source: 'standing',
+              labelKey: 'forge_mod_friends',
+              value: friendlyForgeBonus,
+              clanId: holderId)
         else if (!holderTier.isAtLeast(StandingTier.wary))
           ForgeModifier(
-            source: 'standing',
-            labelKey: 'forge_mod_distrust',
-            value: _unfriendlyForgePenalty,
-            clanId: holderId,
-          ),
+              source: 'standing',
+              labelKey: 'forge_mod_distrust',
+              value: _unfriendlyForgePenalty,
+              clanId: holderId),
     ];
 
 /// The chance of each tier over a fair d20 with [modifierTotal] added.
@@ -246,11 +243,8 @@ Map<String, dynamic> forgedVariantOf(
     'forgedFrom': baseId,
     'forgeTier': tier.name,
     stat: max(0, value + _forgeStatChange(tier)),
-    'itemName': forgedNameFor(
-      name,
-      tier,
-      french ? AppLanguage.fr : AppLanguage.en,
-    ),
+    'itemName':
+        forgedNameFor(name, tier, french ? AppLanguage.fr : AppLanguage.en),
     'itemName_fr': forgedNameFor(nameFr, tier, AppLanguage.fr),
     'sellValue': _forgedResalePrice(base, tier),
   };
@@ -279,12 +273,8 @@ class _ForgedItems extends MapBase<String, dynamic> {
     if (parsed == null || parsed.tier == ForgeTier.sound) return null;
     final record = base[parsed.baseId];
     if (record is! Map<String, dynamic>) return null;
-    return _variants[key] = forgedVariantOf(
-      parsed.baseId,
-      record,
-      parsed.tier,
-      french: french,
-    );
+    return _variants[key] =
+        forgedVariantOf(parsed.baseId, record, parsed.tier, french: french);
   }
 
   @override
@@ -314,15 +304,11 @@ class _ForgedItems extends MapBase<String, dynamic> {
 
 /// [records] as an items table that resolves forged variants (see
 /// [_ForgedItems]); [french] when its English fields hold the French text.
-Map<String, dynamic> withForgedVariants(
-  Map<String, dynamic> records, {
-  bool french = false,
-}) {
+Map<String, dynamic> withForgedVariants(Map<String, dynamic> records,
+    {bool french = false}) {
   if (records is _ForgedItems && records.french == french) return records;
-  return _ForgedItems(
-    records is _ForgedItems ? records.base : records,
-    french: french,
-  );
+  return _ForgedItems(records is _ForgedItems ? records.base : records,
+      french: french);
 }
 
 /// A piece before and after the forge's [tier]: the main number's field
@@ -338,9 +324,7 @@ typedef ForgedPieceChange = ({
 
 /// [base] as listed, and as forged at [tier] (see [ForgedPieceChange]).
 ForgedPieceChange forgedPieceBeforeAfter(
-  Map<String, dynamic> base,
-  ForgeTier tier,
-) {
+    Map<String, dynamic> base, ForgeTier tier) {
   final stat = forgeMainStatOf(base);
   final before = (base[stat] as num?)?.toInt() ?? 0;
   return (

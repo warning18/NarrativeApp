@@ -38,13 +38,8 @@ enum PixelGlyphs {
 }
 
 class PixelGlyph extends StatelessWidget {
-  const PixelGlyph(
-    this.glyph, {
-    super.key,
-    this.size = IconSize.s16,
-    this.color,
-    this.opacity = 1,
-  });
+  const PixelGlyph(this.glyph,
+      {super.key, this.size = IconSize.s16, this.color, this.opacity = 1});
 
   final PixelGlyphs glyph;
 

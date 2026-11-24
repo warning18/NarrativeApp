@@ -56,11 +56,7 @@ class _InkFigureState extends State<InkFigure> {
             ? null
             : CustomPaint(
                 painter: _InkFigurePainter(
-                  _image!,
-                  widget.set.frameWidth,
-                  widget.set.frameHeight,
-                ),
-              ),
+                    _image!, widget.set.frameWidth, widget.set.frameHeight)),
       );
 }
 
@@ -72,14 +68,13 @@ class _InkFigurePainter extends CustomPainter {
 
   @override
   void paint(Canvas canvas, Size size) => canvas.drawImageRect(
-        image,
-        // The recolour adds one pixel of ink on every side.
-        Rect.fromLTWH(0, 0, w + 2.0, h + 2.0),
-        Offset.zero & size,
-        Paint()
-          ..filterQuality = FilterQuality.none
-          ..isAntiAlias = false,
-      );
+      image,
+      // The recolour adds one pixel of ink on every side.
+      Rect.fromLTWH(0, 0, w + 2.0, h + 2.0),
+      Offset.zero & size,
+      Paint()
+        ..filterQuality = FilterQuality.none
+        ..isAntiAlias = false);
 
   @override
   bool shouldRepaint(_InkFigurePainter old) => old.image != image;

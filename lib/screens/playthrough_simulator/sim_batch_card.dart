@@ -88,10 +88,7 @@ class _BatchCardState extends ConsumerState<_BatchCard> {
   /// One collapsible list of [groups] (a place, a mood) and how many nodes
   /// of the runs fell in each.
   Widget _distributionTile(
-    BuildContext context,
-    String titleKey,
-    List<_GroupStat> groups,
-  ) {
+      BuildContext context, String titleKey, List<_GroupStat> groups) {
     return ExpansionTile(
       tilePadding: EdgeInsets.zero,
       title: Text(tr(ref, titleKey)),
@@ -102,11 +99,8 @@ class _BatchCardState extends ConsumerState<_BatchCard> {
             child: Row(
               children: [
                 Expanded(
-                  child: Text(
-                    g.label,
-                    style: Theme.of(context).textTheme.bodySmall,
-                  ),
-                ),
+                    child: Text(g.label,
+                        style: Theme.of(context).textTheme.bodySmall)),
                 Text(
                   '${g.nodeCount}',
                   style: Theme.of(context)
@@ -184,20 +178,15 @@ class _BatchCardState extends ConsumerState<_BatchCard> {
                     tooltip: tr(ref, 'export_all_runs_button'),
                     enabled: results.isNotEmpty,
                     onSelected: (format) {
-                      final strategyLabel = tr(
-                        ref,
-                        _strategyLabelKey(batch.strategy),
-                      );
+                      final strategyLabel =
+                          tr(ref, _strategyLabelKey(batch.strategy));
                       switch (format) {
                         case 'txt':
                           _exportToFile(
                             context,
                             ref,
-                            _fullBatchTranscript(
-                              strategyLabel,
-                              results,
-                              spells: widget.spells,
-                            ),
+                            _fullBatchTranscript(strategyLabel, results,
+                                spells: widget.spells),
                             'playthrough_batch_${batch.id}.txt',
                           );
                         case 'csv':
@@ -218,27 +207,22 @@ class _BatchCardState extends ConsumerState<_BatchCard> {
                     },
                     itemBuilder: (context) => [
                       PopupMenuItem(
-                        value: 'txt',
-                        child: Text(tr(ref, 'export_as_text')),
-                      ),
+                          value: 'txt', child: Text(tr(ref, 'export_as_text'))),
                       PopupMenuItem(
-                        value: 'csv',
-                        child: Text(tr(ref, 'export_as_csv')),
-                      ),
+                          value: 'csv', child: Text(tr(ref, 'export_as_csv'))),
                       PopupMenuItem(
-                        value: 'json',
-                        child: Text(tr(ref, 'export_as_json')),
-                      ),
+                          value: 'json',
+                          child: Text(tr(ref, 'export_as_json'))),
                     ],
                   ),
                   IconButton(
-                    icon: Icon(
-                      _expanded ? Icons.expand_less : Icons.expand_more,
-                    ),
+                    icon:
+                        Icon(_expanded ? Icons.expand_less : Icons.expand_more),
                     tooltip: tr(
-                      ref,
-                      _expanded ? 'collapse_batch_label' : 'expand_batch_label',
-                    ),
+                        ref,
+                        _expanded
+                            ? 'collapse_batch_label'
+                            : 'expand_batch_label'),
                     onPressed: () => setState(() => _expanded = !_expanded),
                   ),
                 ],
@@ -247,10 +231,8 @@ class _BatchCardState extends ConsumerState<_BatchCard> {
             if (_expanded) ...[
               if (batch.runCount > 1) ...[
                 const SizedBox(height: 8),
-                Text(
-                  tr(ref, 'filter_runs_label'),
-                  style: Theme.of(context).textTheme.labelLarge,
-                ),
+                Text(tr(ref, 'filter_runs_label'),
+                    style: Theme.of(context).textTheme.labelLarge),
                 const SizedBox(height: 8),
                 Wrap(
                   spacing: 8,
@@ -262,9 +244,8 @@ class _BatchCardState extends ConsumerState<_BatchCard> {
                       hint: Text(tr(ref, 'ending_filter_all')),
                       items: [
                         DropdownMenuItem(
-                          value: null,
-                          child: Text(tr(ref, 'ending_filter_all')),
-                        ),
+                            value: null,
+                            child: Text(tr(ref, 'ending_filter_all'))),
                         for (final e in endingOptions)
                           DropdownMenuItem(value: e, child: Text(e)),
                       ],
@@ -276,16 +257,12 @@ class _BatchCardState extends ConsumerState<_BatchCard> {
                         hint: Text(tr(ref, 'min_chapter_filter_label')),
                         items: [
                           DropdownMenuItem(
-                            value: null,
-                            child: Text(tr(ref, 'any_label')),
-                          ),
+                              value: null, child: Text(tr(ref, 'any_label'))),
                           for (var c = 1; c <= 5; c++)
                             DropdownMenuItem(
-                              value: c,
-                              child: Text(
-                                '${tr(ref, 'min_chapter_filter_label')} $c',
-                              ),
-                            ),
+                                value: c,
+                                child: Text(
+                                    '${tr(ref, 'min_chapter_filter_label')} $c')),
                         ],
                         onChanged: (v) => setState(() => _minChapterFilter = v),
                       ),
@@ -312,177 +289,152 @@ class _BatchCardState extends ConsumerState<_BatchCard> {
               if (results.isEmpty)
                 Text(tr(ref, 'no_runs_match_filter'))
               else ...[
-                Builder(
-                  builder: (context) {
-                    final avgAlignment = _avg(
-                      results.map((r) => r.finalAlignment),
-                    );
-                    final alignmentColor = avgAlignment > 0.5
-                        ? Colors.blue
-                        : (avgAlignment < -0.5 ? Palette.hot : Palette.slate);
-                    return Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
+                Builder(builder: (context) {
+                  final avgAlignment =
+                      _avg(results.map((r) => r.finalAlignment));
+                  final alignmentColor = avgAlignment > 0.5
+                      ? Colors.blue
+                      : (avgAlignment < -0.5 ? Palette.hot : Palette.slate);
+                  return Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      _StatLine(
+                        icon: Icons.route,
+                        color: Palette.slate,
+                        text:
+                            '${tr(ref, 'nodes_visited_label')}: ${_oneDecimal(_avg(results.map((r) => r.steps.length)))}',
+                      ),
+                      _StatLine(
+                        icon: Icons.paid,
+                        color: Palette.amberDeep,
+                        text:
+                            '${tr(ref, 'final_gold_label')}: ${_oneDecimal(_avg(results.map((r) => r.finalGold)))}',
+                      ),
+                      _StatLine(
+                        icon: Icons.balance,
+                        color: alignmentColor,
+                        text:
+                            '${tr(ref, 'final_alignment_label')}: ${_oneDecimal(avgAlignment)}',
+                      ),
+                      _StatLine(
+                        icon: Icons.sports_martial_arts,
+                        color: Colors.red.shade400,
+                        text:
+                            '${tr(ref, 'combat_encounters_label')}: ${_oneDecimal(_avg(results.map((r) => r.combatEncounters)))}',
+                      ),
+                      if (results.any((r) => r.hasCharacter)) ...[
                         _StatLine(
-                          icon: Icons.route,
-                          color: Palette.slate,
+                          icon: Icons.emoji_events_outlined,
+                          color: Palette.goodDeep,
                           text:
-                              '${tr(ref, 'nodes_visited_label')}: ${_oneDecimal(_avg(results.map((r) => r.steps.length)))}',
+                              '${tr(ref, 'sim_fights_label')}: ${_oneDecimal(_avg(results.map((r) => r.fightsWon)))} / '
+                              '${_oneDecimal(_avg(results.map((r) => r.fightsLost)))}',
                         ),
                         _StatLine(
-                          icon: Icons.paid,
-                          color: Palette.amberDeep,
+                          icon: manaIcon,
+                          color: manaColor,
                           text:
-                              '${tr(ref, 'final_gold_label')}: ${_oneDecimal(_avg(results.map((r) => r.finalGold)))}',
+                              '${tr(ref, 'sim_spells_cast_label')}: ${_oneDecimal(_avg(results.map((r) => r.totalCasts)))} '
+                              '(${tr(ref, 'sim_mana_from_dice_label').toLowerCase()} ${_oneDecimal(_avg(results.map((r) => r.manaGained)))})',
                         ),
-                        _StatLine(
-                          icon: Icons.balance,
-                          color: alignmentColor,
-                          text:
-                              '${tr(ref, 'final_alignment_label')}: ${_oneDecimal(avgAlignment)}',
-                        ),
-                        _StatLine(
-                          icon: Icons.sports_martial_arts,
-                          color: Colors.red.shade400,
-                          text:
-                              '${tr(ref, 'combat_encounters_label')}: ${_oneDecimal(_avg(results.map((r) => r.combatEncounters)))}',
-                        ),
-                        if (results.any((r) => r.hasCharacter)) ...[
-                          _StatLine(
-                            icon: Icons.emoji_events_outlined,
-                            color: Palette.goodDeep,
-                            text:
-                                '${tr(ref, 'sim_fights_label')}: ${_oneDecimal(_avg(results.map((r) => r.fightsWon)))} / '
-                                '${_oneDecimal(_avg(results.map((r) => r.fightsLost)))}',
-                          ),
-                          _StatLine(
-                            icon: manaIcon,
-                            color: manaColor,
-                            text:
-                                '${tr(ref, 'sim_spells_cast_label')}: ${_oneDecimal(_avg(results.map((r) => r.totalCasts)))} '
-                                '(${tr(ref, 'sim_mana_from_dice_label').toLowerCase()} ${_oneDecimal(_avg(results.map((r) => r.manaGained)))})',
-                          ),
-                        ],
                       ],
-                    );
-                  },
-                ),
+                    ],
+                  );
+                }),
                 if (results.where((r) => r.reachedStepCap).isNotEmpty)
                   Padding(
                     padding: const EdgeInsets.only(top: 4),
                     child: Text(
                       '${results.where((r) => r.reachedStepCap).length}/${results.length} '
                       '${tr(ref, 'exceeded_step_cap_label')}',
-                      style: TextStyle(
-                        color: Theme.of(context).colorScheme.error,
-                      ),
+                      style:
+                          TextStyle(color: Theme.of(context).colorScheme.error),
                     ),
                   ),
                 const SizedBox(height: 12),
-                Text(
-                  tr(ref, 'endings_label'),
-                  style: Theme.of(context).textTheme.titleSmall,
-                ),
+                Text(tr(ref, 'endings_label'),
+                    style: Theme.of(context).textTheme.titleSmall),
                 const SizedBox(height: 4),
                 for (final entry in _endingCounts(results).entries)
-                  Text(
-                    '${entry.value}× ${entry.key}',
-                    style: Theme.of(context).textTheme.bodySmall,
-                  ),
+                  Text('${entry.value}× ${entry.key}',
+                      style: Theme.of(context).textTheme.bodySmall),
                 const SizedBox(height: 12),
-                Text(
-                  tr(ref, 'companions_encountered_label'),
-                  style: Theme.of(context).textTheme.titleSmall,
-                ),
+                Text(tr(ref, 'companions_encountered_label'),
+                    style: Theme.of(context).textTheme.titleSmall),
                 const SizedBox(height: 4),
-                Builder(
-                  builder: (context) {
-                    final counts = _companionEncounterCounts(
-                      results,
-                      widget.quests,
+                Builder(builder: (context) {
+                  final counts =
+                      _companionEncounterCounts(results, widget.quests);
+                  if (counts.isEmpty) {
+                    return Text(
+                      tr(ref, 'none_label'),
+                      style: Theme.of(context).textTheme.bodySmall,
                     );
-                    if (counts.isEmpty) {
+                  }
+                  return Wrap(
+                    spacing: 6,
+                    runSpacing: 6,
+                    children: [
+                      for (final entry in counts.entries)
+                        Chip(
+                          avatar: CircleAvatar(
+                            backgroundColor: _companionColor(entry.key, counts),
+                          ),
+                          label: Text(
+                            '${widget.companions[entry.key]?['companionName']?.toString() ?? entry.key} '
+                            '· ${entry.value}/${results.length}',
+                          ),
+                        ),
+                    ],
+                  );
+                }),
+                if (results.any((r) => r.hasCharacter)) ...[
+                  const SizedBox(height: 12),
+                  Text(tr(ref, 'sim_spells_cast_label'),
+                      style: Theme.of(context).textTheme.titleSmall),
+                  const SizedBox(height: 4),
+                  Builder(builder: (context) {
+                    final totals = _spellCastTotals(results);
+                    if (totals.isEmpty) {
                       return Text(
-                        tr(ref, 'none_label'),
+                        tr(ref, 'sim_no_spells_cast'),
                         style: Theme.of(context).textTheme.bodySmall,
                       );
                     }
+                    final runsCasting = _runsCastingCounts(results);
+                    final lang = ref.watch(appLanguageProvider);
                     return Wrap(
                       spacing: 6,
                       runSpacing: 6,
                       children: [
-                        for (final entry in counts.entries)
-                          Chip(
-                            avatar: CircleAvatar(
-                              backgroundColor: _companionColor(
-                                entry.key,
-                                counts,
+                        for (final entry in totals.entries)
+                          Tooltip(
+                            message:
+                                '${runsCasting[entry.key] ?? 0}/${results.length} ${tr(ref, 'sim_runs_casting_label')}',
+                            child: Chip(
+                              avatar: Icon(
+                                widget.spells[entry.key] == null
+                                    ? manaIcon
+                                    : spellEffectIcon(
+                                        widget.spells[entry.key]!.effect),
+                                size: IconSize.s16,
+                                color: widget.spells[entry.key] == null
+                                    ? manaColor
+                                    : spellEffectColor(
+                                        widget.spells[entry.key]!.effect),
                               ),
-                            ),
-                            label: Text(
-                              '${widget.companions[entry.key]?['companionName']?.toString() ?? entry.key} '
-                              '· ${entry.value}/${results.length}',
+                              label: Text(
+                                '${_spellDisplayName(entry.key, widget.spells, lang)} '
+                                '· ${entry.value}',
+                              ),
                             ),
                           ),
                       ],
                     );
-                  },
-                ),
-                if (results.any((r) => r.hasCharacter)) ...[
+                  }),
                   const SizedBox(height: 12),
-                  Text(
-                    tr(ref, 'sim_spells_cast_label'),
-                    style: Theme.of(context).textTheme.titleSmall,
-                  ),
-                  const SizedBox(height: 4),
-                  Builder(
-                    builder: (context) {
-                      final totals = _spellCastTotals(results);
-                      if (totals.isEmpty) {
-                        return Text(
-                          tr(ref, 'sim_no_spells_cast'),
-                          style: Theme.of(context).textTheme.bodySmall,
-                        );
-                      }
-                      final runsCasting = _runsCastingCounts(results);
-                      final lang = ref.watch(appLanguageProvider);
-                      return Wrap(
-                        spacing: 6,
-                        runSpacing: 6,
-                        children: [
-                          for (final entry in totals.entries)
-                            Tooltip(
-                              message:
-                                  '${runsCasting[entry.key] ?? 0}/${results.length} ${tr(ref, 'sim_runs_casting_label')}',
-                              child: Chip(
-                                avatar: Icon(
-                                  widget.spells[entry.key] == null
-                                      ? manaIcon
-                                      : spellEffectIcon(
-                                          widget.spells[entry.key]!.effect,
-                                        ),
-                                  size: IconSize.s16,
-                                  color: widget.spells[entry.key] == null
-                                      ? manaColor
-                                      : spellEffectColor(
-                                          widget.spells[entry.key]!.effect,
-                                        ),
-                                ),
-                                label: Text(
-                                  '${_spellDisplayName(entry.key, widget.spells, lang)} '
-                                  '· ${entry.value}',
-                                ),
-                              ),
-                            ),
-                        ],
-                      );
-                    },
-                  ),
-                  const SizedBox(height: 12),
-                  Text(
-                    tr(ref, 'sim_by_profession_label'),
-                    style: Theme.of(context).textTheme.titleSmall,
-                  ),
+                  Text(tr(ref, 'sim_by_profession_label'),
+                      style: Theme.of(context).textTheme.titleSmall),
                   const SizedBox(height: 4),
                   for (final entry in _professionTotals(results).entries)
                     Text(
@@ -538,16 +490,10 @@ class _BatchCardState extends ConsumerState<_BatchCard> {
                       ),
                   ],
                 ),
-                _distributionTile(
-                  context,
-                  'by_location_label',
-                  _distributionBy(results, (s) => s.uiTheme),
-                ),
-                _distributionTile(
-                  context,
-                  'by_mood_label',
-                  _distributionBy(results, (s) => s.mood),
-                ),
+                _distributionTile(context, 'by_location_label',
+                    _distributionBy(results, (s) => s.uiTheme)),
+                _distributionTile(context, 'by_mood_label',
+                    _distributionBy(results, (s) => s.mood)),
                 if (single != null) ...[
                   const Divider(height: 24),
                   _SingleRunDetail(
@@ -560,10 +506,8 @@ class _BatchCardState extends ConsumerState<_BatchCard> {
                   ),
                 ] else ...[
                   const Divider(height: 24),
-                  Text(
-                    tr(ref, 'individual_runs_label'),
-                    style: Theme.of(context).textTheme.titleSmall,
-                  ),
+                  Text(tr(ref, 'individual_runs_label'),
+                      style: Theme.of(context).textTheme.titleSmall),
                   const SizedBox(height: 4),
                   for (var i = 0;
                       i <
@@ -573,9 +517,7 @@ class _BatchCardState extends ConsumerState<_BatchCard> {
                       i++)
                     InkWell(
                       onTap: () => _viewRun(
-                        results[i],
-                        batch.results.indexOf(results[i]),
-                      ),
+                          results[i], batch.results.indexOf(results[i])),
                       child: Padding(
                         padding: const EdgeInsets.symmetric(vertical: 4),
                         child: Row(

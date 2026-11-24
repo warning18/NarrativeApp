@@ -39,5 +39,4 @@ class _MapThemeNotifier extends StateNotifier<MapTheme?> {
 }
 
 final mapThemeProvider = StateNotifierProvider<_MapThemeNotifier, MapTheme?>(
-  (ref) => _MapThemeNotifier(),
-);
+    (ref) => _MapThemeNotifier());

@@ -76,11 +76,8 @@ class _DeathScreenState extends ConsumerState<DeathScreen> {
                   // The dark falls first, then the title bleeds in and
                   // the last words are written after it.
                   const RiseIn(
-                    child: Icon(
-                      Icons.dangerous,
-                      color: Colors.redAccent,
-                      size: IconSize.s64,
-                    ),
+                    child: Icon(Icons.dangerous,
+                        color: Colors.redAccent, size: IconSize.s64),
                   ),
                   const SizedBox(height: 16),
                   RiseIn(
@@ -188,9 +185,7 @@ class _StatLine extends StatelessWidget {
           Text(
             value,
             style: const TextStyle(
-              color: Colors.white,
-              fontWeight: FontWeight.bold,
-            ),
+                color: Colors.white, fontWeight: FontWeight.bold),
           ),
         ],
       ),

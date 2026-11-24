@@ -176,10 +176,8 @@ Map<String, List<WrittenStep>> writtenStepsFrom(Map<String, dynamic> raw) {
 
 /// How many events [zone] holds before its boss: its written [steps], else
 /// its `expeditionCount` (3 by default).
-int expeditionCountOf(
-  Map<String, dynamic> zone, [
-  List<WrittenStep> steps = const [],
-]) =>
+int expeditionCountOf(Map<String, dynamic> zone,
+        [List<WrittenStep> steps = const []]) =>
     steps.isNotEmpty
         ? steps.length
         : (zone['expeditionCount'] as num?)?.toInt() ?? 3;
@@ -267,39 +265,34 @@ ExpeditionStep buildWrittenStep(
     final gold = (choice.outcome?.gold ?? 0) +
         (choice.success?.gold ?? 0) +
         (step.type == 'discovery' && first ? discoveryGold : 0);
-    nodes.add(
-      StoryChoice(
-        text: choice.text,
-        textFr: choice.textFr.isEmpty ? null : choice.textFr,
-        nextId: '',
-        checkAbility: choice.check,
-        checkDC: choice.check == null
-            ? null
-            : dc + (choice.hard ? writtenHardDc : 0),
-        triggerEnemyIds: foes,
-        avoidFightOnSuccess: choice.check != null && foes.isNotEmpty,
-        goldMod: gold,
-        // A rest's first way heals as a detour's rest does; a discovery's
-        // first turns up one of the zone's materials.
-        healAmount: step.type == 'rest' && first ? heal : 0,
-        grantMaterials: found != null && first ? {found: 1} : const {},
-      ),
-    );
-    outcomes.add(
-      StepOutcome(
-        cargo: choice.outcome?.cargo ?? 0,
-        failCargo: choice.fail?.cargo ?? 0,
-        days: (choice.outcome?.days ?? 0) + (choice.success?.days ?? 0),
-        failDays: choice.fail?.days ?? 0,
-        hurtOnFail: min(100, max(0, -(choice.fail?.healthPct ?? 0))),
-        note: choice.outcome?.en ?? '',
-        noteFr: choice.outcome?.fr ?? '',
-        successNote: choice.success?.en ?? '',
-        successNoteFr: choice.success?.fr ?? '',
-        failNote: choice.fail?.en ?? '',
-        failNoteFr: choice.fail?.fr ?? '',
-      ),
-    );
+    nodes.add(StoryChoice(
+      text: choice.text,
+      textFr: choice.textFr.isEmpty ? null : choice.textFr,
+      nextId: '',
+      checkAbility: choice.check,
+      checkDC:
+          choice.check == null ? null : dc + (choice.hard ? writtenHardDc : 0),
+      triggerEnemyIds: foes,
+      avoidFightOnSuccess: choice.check != null && foes.isNotEmpty,
+      goldMod: gold,
+      // A rest's first way heals as a detour's rest does; a discovery's
+      // first turns up one of the zone's materials.
+      healAmount: step.type == 'rest' && first ? heal : 0,
+      grantMaterials: found != null && first ? {found: 1} : const {},
+    ));
+    outcomes.add(StepOutcome(
+      cargo: choice.outcome?.cargo ?? 0,
+      failCargo: choice.fail?.cargo ?? 0,
+      days: (choice.outcome?.days ?? 0) + (choice.success?.days ?? 0),
+      failDays: choice.fail?.days ?? 0,
+      hurtOnFail: min(100, max(0, -(choice.fail?.healthPct ?? 0))),
+      note: choice.outcome?.en ?? '',
+      noteFr: choice.outcome?.fr ?? '',
+      successNote: choice.success?.en ?? '',
+      successNoteFr: choice.success?.fr ?? '',
+      failNote: choice.fail?.en ?? '',
+      failNoteFr: choice.fail?.fr ?? '',
+    ));
   }
   final placeLine = step.place.isEmpty ? '' : '${step.place}. ';
   final placeLineFr = step.placeFr.isEmpty ? placeLine : '${step.placeFr}. ';

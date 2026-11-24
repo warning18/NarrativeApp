@@ -33,16 +33,13 @@ class RiskyOddsBar extends StatelessWidget {
         child: Row(
           children: [
             Expanded(
-              flex: odds.gift,
-              child: ColoredBox(color: ink.gold, child: const SizedBox()),
-            ),
+                flex: odds.gift,
+                child: ColoredBox(color: ink.gold, child: const SizedBox())),
             Expanded(
-              flex: odds.price,
-              child: ColoredBox(
-                color: Theme.of(context).colorScheme.error,
-                child: const SizedBox(),
-              ),
-            ),
+                flex: odds.price,
+                child: ColoredBox(
+                    color: Theme.of(context).colorScheme.error,
+                    child: const SizedBox())),
           ],
         ),
       ),
@@ -136,9 +133,7 @@ class _RiskyRollDialogState extends State<_RiskyRollDialog> {
                           .replaceAll('{roll}', '${widget.roll}')
                           .replaceAll('{bonus}', '${widget.bonus}')
                           .replaceAll(
-                            '{total}',
-                            '${widget.roll + widget.bonus}',
-                          )
+                              '{total}', '${widget.roll + widget.bonus}')
                       : '${widget.roll}',
                   key: const Key('risky_roll_sum'),
                   style: theme.textTheme.titleMedium,
@@ -146,16 +141,13 @@ class _RiskyRollDialogState extends State<_RiskyRollDialog> {
                 const SizedBox(height: 4),
                 Text(
                   trFor(
-                    lang,
-                    widget.won
-                        ? 'offer_risky_roll_gift'
-                        : 'offer_risky_roll_price',
-                  ),
+                      lang,
+                      widget.won
+                          ? 'offer_risky_roll_gift'
+                          : 'offer_risky_roll_price'),
                   key: const Key('risky_roll_verdict'),
-                  style: theme.textTheme.bodyMedium?.copyWith(
-                    color: colour,
-                    fontWeight: FontWeight.w700,
-                  ),
+                  style: theme.textTheme.bodyMedium
+                      ?.copyWith(color: colour, fontWeight: FontWeight.w700),
                 ),
               ],
             ),

@@ -110,17 +110,11 @@ class SkillsModel {
     required Map<String, dynamic> trees,
     ClanData clans = ClanData.empty,
   }) {
-    final branches = skillBranchesFor(
-      trees,
-      raceId: session.raceId,
-      professionId: session.professionId,
-    );
+    final branches = skillBranchesFor(trees,
+        raceId: session.raceId, professionId: session.professionId);
     final known = knownSkillIds(skills, session.unlockedSkillIds);
     final tiers = effectiveSkillTiers(
-      session.skillTiers,
-      trees,
-      session.masteredBranchId,
-    );
+        session.skillTiers, trees, session.masteredBranchId);
     final entries = <String, SkillEntry>{};
 
     SkillEntry entry(String id, {SkillBranch? branch, int index = 0}) {
@@ -130,13 +124,11 @@ class SkillsModel {
       String? after;
       if (known.contains(id)) {
         status = SkillStatus.known;
-      } else if (canLearnWithPoints(
-        id,
-        branches: branches,
-        known: known,
-        skills: skills,
-        alignmentScore: session.alignmentScore,
-      )) {
+      } else if (canLearnWithPoints(id,
+          branches: branches,
+          known: known,
+          skills: skills,
+          alignmentScore: session.alignmentScore)) {
         status = SkillStatus.ready;
       } else {
         status = SkillStatus.locked;
@@ -157,14 +149,12 @@ class SkillsModel {
         tierable: session.unlockedSkillIds.contains(id),
         sponsors: known.contains(id)
             ? const []
-            : sponsorsOfSkill(
-                id,
+            : sponsorsOfSkill(id,
                 data: clans,
                 skillTrees: trees,
                 skills: skills,
                 raceId: session.raceId,
-                professionId: session.professionId,
-              ),
+                professionId: session.professionId),
       );
     }
 
@@ -182,11 +172,8 @@ class SkillsModel {
             !entries.containsKey(e.key) &&
             isReputationSkill(e.value as Map<String, dynamic>) &&
             (e.value as Map<String, dynamic>)['enemyOnly'] != true &&
-            _fits(
-              e.value as Map<String, dynamic>,
-              session.raceId,
-              session.professionId,
-            ))
+            _fits(e.value as Map<String, dynamic>, session.raceId,
+                session.professionId))
           e.key,
     ]..sort();
     for (final id in reputationIds) {
@@ -212,7 +199,7 @@ class SkillsModel {
       reputationIds: reputationIds,
       knownIds: [
         for (final e in entries.values)
-          if (e.known) e.id,
+          if (e.known) e.id
       ],
     );
   }
@@ -226,11 +213,9 @@ class SkillsModel {
     required Map<String, dynamic> skills,
   }) {
     final known = knownSkillIds(skills, unlockedSkillIds);
-    final ids = allySkillIds(
-      skills,
-      professionId: professionId,
-      known: unlockedSkillIds,
-    )..sort((a, b) {
+    final ids = allySkillIds(skills,
+        professionId: professionId, known: unlockedSkillIds)
+      ..sort((a, b) {
         final k = (known.contains(a) ? 0 : 1) - (known.contains(b) ? 0 : 1);
         return k != 0 ? k : a.compareTo(b);
       });
@@ -254,7 +239,7 @@ class SkillsModel {
       reputationIds: const [],
       knownIds: [
         for (final e in entries.values)
-          if (e.known) e.id,
+          if (e.known) e.id
       ],
     );
   }
@@ -285,7 +270,7 @@ class SkillsModel {
   int? get nextUpgradeCost {
     final costs = [
       for (final e in entries.values)
-        if (e.known && e.upgradeCost != null) e.upgradeCost!,
+        if (e.known && e.upgradeCost != null) e.upgradeCost!
     ];
     if (costs.isEmpty) return null;
     return costs.reduce((a, b) => a < b ? a : b);
@@ -297,12 +282,10 @@ class SkillsModel {
 
   /// Whether [branch] can be mastered now (with essence, see
   /// branchMasteryEssenceCost).
-  bool canMaster(SkillBranch branch) => canMasterBranch(
-        branch,
-        known: knownIds.toSet(),
-        masteredBranchId: masteredBranchId,
-        essence: essence,
-      );
+  bool canMaster(SkillBranch branch) => canMasterBranch(branch,
+      known: knownIds.toSet(),
+      masteredBranchId: masteredBranchId,
+      essence: essence);
 
   bool isComplete(SkillBranch branch) =>
       branchComplete(branch, knownIds.toSet());
@@ -311,9 +294,7 @@ class SkillsModel {
 /// What the character knows: what they learned, and the skills everyone
 /// has from the start (`isUnlocked`).
 Set<String> knownSkillIds(
-  Map<String, dynamic> skills,
-  Iterable<String> unlockedSkillIds,
-) =>
+        Map<String, dynamic> skills, Iterable<String> unlockedSkillIds) =>
     {
       ...unlockedSkillIds,
       for (final entry in skills.entries)
@@ -333,10 +314,9 @@ bool _fits(Map<String, dynamic> skill, String raceId, String professionId) {
 /// it buys. Only the numbers the skill has (damage, multiplier, healing,
 /// mana) are listed.
 List<({String key, List<String> values})> tierTable(
-  Map<String, dynamic> skill,
-) {
+    Map<String, dynamic> skill) {
   final tiers = [
-    for (var t = 0; t <= maxSkillTier; t++) applySkillTier(skill, t),
+    for (var t = 0; t <= maxSkillTier; t++) applySkillTier(skill, t)
   ];
   num n(Map<String, dynamic> s, String k, num fallback) =>
       (s[k] as num?) ?? fallback;
@@ -352,7 +332,7 @@ List<({String key, List<String> values})> tierTable(
       key: 'damage_multiplier_label',
       values: [
         for (final s in tiers)
-          '×${n(s, 'damageMultiplier', 1).toDouble().toStringAsFixed(1)}',
+          '×${n(s, 'damageMultiplier', 1).toDouble().toStringAsFixed(1)}'
       ],
     ));
   }
@@ -368,10 +348,7 @@ List<({String key, List<String> values})> tierTable(
 /// A short line of what [skill] does at [tier]: "+6 damage · ×1.4",
 /// "heals 15 · Earth". [t] reads the labels.
 String skillSummary(
-  Map<String, dynamic> skill,
-  int tier,
-  String Function(String key) t,
-) {
+    Map<String, dynamic> skill, int tier, String Function(String key) t) {
   final s = applySkillTier(skill, tier);
   final damage = (s['damageMod'] as num?)?.toInt() ?? 0;
   final multiplier = (s['damageMultiplier'] as num?)?.toDouble() ?? 1.0;

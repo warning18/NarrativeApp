@@ -53,18 +53,12 @@ class _ClanCompassCardState extends ConsumerState<ClanCompassCard> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          Text(
-            tr(ref, 'clans_compass_title'),
-            style: theme.textTheme.titleSmall?.copyWith(
-              fontFamily: InkFonts.display,
-              color: ink.gold,
-            ),
-          ),
+          Text(tr(ref, 'clans_compass_title'),
+              style: theme.textTheme.titleSmall
+                  ?.copyWith(fontFamily: InkFonts.display, color: ink.gold)),
           const SizedBox(height: 2),
-          Text(
-            tr(ref, 'clans_compass_hint'),
-            style: theme.textTheme.bodySmall?.copyWith(color: ink.ash),
-          ),
+          Text(tr(ref, 'clans_compass_hint'),
+              style: theme.textTheme.bodySmall?.copyWith(color: ink.ash)),
           const SizedBox(height: 8),
           ClanCompass(
             clans: data.clans,
@@ -77,9 +71,8 @@ class _ClanCompassCardState extends ConsumerState<ClanCompassCard> {
               for (final c in data.clans)
                 c.patron.id: (
                   text: '${politics.standingOf(c.patron.id, data).round()}',
-                  color: Color(
-                    tierColor(politics.tierOf(c.patron.id, data)) | 0xFF000000,
-                  ),
+                  color: Color(tierColor(politics.tierOf(c.patron.id, data)) |
+                      0xFF000000),
                 ),
             },
             onTap: (id) => setState(() => _focus = _focus == id ? null : id),
@@ -93,75 +86,57 @@ class _ClanCompassCardState extends ConsumerState<ClanCompassCard> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
+                      Text(focus.nameFor(lang),
+                          key: const Key('clans_compass_focus'),
+                          style: theme.textTheme.titleSmall?.copyWith(
+                              color: Color(focus.color | 0xFF000000))),
                       Text(
-                        focus.nameFor(lang),
-                        key: const Key('clans_compass_focus'),
-                        style: theme.textTheme.titleSmall?.copyWith(
-                          color: Color(focus.color | 0xFF000000),
-                        ),
-                      ),
-                      Text(
-                        trFor(
-                          lang,
-                          standingTierKey(
-                            politics.tierOf(focus.patron.id, data),
-                          ),
-                        ),
-                        style: theme.textTheme.labelSmall?.copyWith(
-                          color: Color(
-                            tierColor(politics.tierOf(focus.patron.id, data)) |
-                                0xFF000000,
-                          ),
-                        ),
-                      ),
+                          trFor(
+                              lang,
+                              standingTierKey(
+                                  politics.tierOf(focus.patron.id, data))),
+                          style: theme.textTheme.labelSmall?.copyWith(
+                              color: Color(tierColor(
+                                      politics.tierOf(focus.patron.id, data)) |
+                                  0xFF000000))),
                       if (focus.standsForIn(lang).isNotEmpty)
                         Padding(
                           padding: const EdgeInsets.only(top: 4),
-                          child: Text(
-                            focus.standsForIn(lang),
-                            style: theme.textTheme.bodySmall?.copyWith(
-                              fontStyle: FontStyle.italic,
-                            ),
-                          ),
+                          child: Text(focus.standsForIn(lang),
+                              style: theme.textTheme.bodySmall
+                                  ?.copyWith(fontStyle: FontStyle.italic)),
                         ),
                       if (friends.isNotEmpty)
                         Padding(
                           padding: const EdgeInsets.only(top: 4),
                           child: Text.rich(
-                            TextSpan(
-                              children: [
-                                TextSpan(
+                            TextSpan(children: [
+                              TextSpan(
                                   text:
                                       '${tr(ref, 'clans_compass_friends')} · ',
-                                  style: TextStyle(color: ink.heal),
-                                ),
-                                TextSpan(text: names(friends)),
-                              ],
-                            ),
+                                  style: TextStyle(color: ink.heal)),
+                              TextSpan(text: names(friends)),
+                            ]),
                             style: theme.textTheme.bodySmall,
                           ),
                         ),
                       if (foes.isNotEmpty)
                         Text.rich(
-                          TextSpan(
-                            children: [
-                              TextSpan(
+                          TextSpan(children: [
+                            TextSpan(
                                 text: '${tr(ref, 'clans_compass_foes')} · ',
-                                style: TextStyle(color: ink.blood),
-                              ),
-                              TextSpan(text: names(foes)),
-                            ],
-                          ),
+                                style: TextStyle(color: ink.blood)),
+                            TextSpan(text: names(foes)),
+                          ]),
                           style: theme.textTheme.bodySmall,
                         ),
                     ],
                   ),
                 ),
                 ClanRadarChart(
-                  factionId: focus.patron.id,
-                  color: Color(focus.color | 0xFF000000),
-                  size: 116,
-                ),
+                    factionId: focus.patron.id,
+                    color: Color(focus.color | 0xFF000000),
+                    size: 116),
               ],
             ),
           ],

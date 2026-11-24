@@ -83,23 +83,21 @@ List<PlaceInfo>? placeInfosOf({
     covered.addAll(steps);
     final open = steps.where((s) => !stepLocked[s]).toList();
     final locked = open.isEmpty;
-    infos.add(
-      PlaceInfo(
-        id: entry.place.id,
-        name: nameOf(entry.place),
-        steps: steps,
-        count: open.length,
-        here: entry.place.isHere,
-        wayOut: entry.place.kind == WayPlaceKind.wayOut,
-        main: entry.main && !locked,
-        locked: locked,
-        note: locked
-            ? stepLabels[steps.first]
-            : entry.place.isHere
-                ? stepLabels[open.first]
-                : '',
-      ),
-    );
+    infos.add(PlaceInfo(
+      id: entry.place.id,
+      name: nameOf(entry.place),
+      steps: steps,
+      count: open.length,
+      here: entry.place.isHere,
+      wayOut: entry.place.kind == WayPlaceKind.wayOut,
+      main: entry.main && !locked,
+      locked: locked,
+      note: locked
+          ? stepLabels[steps.first]
+          : entry.place.isHere
+              ? stepLabels[open.first]
+              : '',
+    ));
   }
   if (!inView.every(covered.contains)) return null;
   return infos;
@@ -126,17 +124,10 @@ Widget _count(BuildContext context, int n) {
     height: 22,
     alignment: Alignment.center,
     decoration: BoxDecoration(
-      shape: BoxShape.circle,
-      border: Border.all(color: ink.ash, width: 1.3),
-    ),
-    child: Text(
-      '$n',
-      style: TextStyle(
-        fontFamily: InkFonts.system,
-        fontSize: 11,
-        color: ink.ash,
-      ),
-    ),
+        shape: BoxShape.circle, border: Border.all(color: ink.ash, width: 1.3)),
+    child: Text('$n',
+        style: TextStyle(
+            fontFamily: InkFonts.system, fontSize: 11, color: ink.ash)),
   );
 }
 
@@ -169,11 +160,8 @@ class PlaceRow extends StatelessWidget {
     final Widget lead = info.here
         ? Icon(Icons.my_location, size: IconSize.s16, color: ink.gold)
         : info.wayOut
-            ? Icon(
-                info.locked ? Icons.lock_outline : Icons.logout,
-                size: IconSize.s16,
-                color: ink.ash,
-              )
+            ? Icon(info.locked ? Icons.lock_outline : Icons.logout,
+                size: IconSize.s16, color: ink.ash)
             : BannerPin(
                 cat: cat,
                 color: info.locked ? ink.ash : cat.colorOn(ink, dark: dark),
@@ -195,54 +183,43 @@ class PlaceRow extends StatelessWidget {
         opacity: info.locked ? 0.55 : 1,
         child: Container(
           padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 8),
-          decoration: BoxDecoration(
-            border: Border(top: BorderSide(color: ink.seam)),
-          ),
-          child: Row(
-            children: [
-              SizedBox(width: 30, child: Center(child: lead)),
-              const SizedBox(width: 10),
-              Expanded(
-                child: Column(
+          decoration:
+              BoxDecoration(border: Border(top: BorderSide(color: ink.seam))),
+          child: Row(children: [
+            SizedBox(width: 30, child: Center(child: lead)),
+            const SizedBox(width: 10),
+            Expanded(
+              child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(
-                      named ? info.name : noName,
-                      maxLines: 2,
-                      overflow: TextOverflow.ellipsis,
-                      style: theme.textTheme.bodyMedium?.copyWith(
-                        color: named && !info.locked ? null : ink.ash,
-                        fontStyle: named ? FontStyle.normal : FontStyle.italic,
-                        height: 1.2,
-                      ),
-                    ),
-                    if (sub.isNotEmpty)
-                      Text(
-                        sub,
+                    Text(named ? info.name : noName,
                         maxLines: 2,
                         overflow: TextOverflow.ellipsis,
-                        style: theme.textTheme.bodySmall?.copyWith(
-                          color: info.main && !info.locked ? ink.gold : ink.ash,
-                          fontStyle: FontStyle.italic,
-                        ),
-                      ),
-                  ],
-                ),
-              ),
-              if (info.main)
-                Padding(
+                        style: theme.textTheme.bodyMedium?.copyWith(
+                            color: named && !info.locked ? null : ink.ash,
+                            fontStyle:
+                                named ? FontStyle.normal : FontStyle.italic,
+                            height: 1.2)),
+                    if (sub.isNotEmpty)
+                      Text(sub,
+                          maxLines: 2,
+                          overflow: TextOverflow.ellipsis,
+                          style: theme.textTheme.bodySmall?.copyWith(
+                              color: info.main && !info.locked
+                                  ? ink.gold
+                                  : ink.ash,
+                              fontStyle: FontStyle.italic)),
+                  ]),
+            ),
+            if (info.main)
+              Padding(
                   padding: const EdgeInsets.only(right: 8),
-                  child: Icon(Icons.flag, size: IconSize.s16, color: ink.gold),
-                ),
-              if (!info.locked) _count(context, info.count),
-              const SizedBox(width: 4),
-              Icon(
-                info.locked ? Icons.lock_outline : Icons.chevron_right,
-                size: IconSize.s16,
-                color: ink.ash,
-              ),
-            ],
-          ),
+                  child: Icon(Icons.flag, size: IconSize.s16, color: ink.gold)),
+            if (!info.locked) _count(context, info.count),
+            const SizedBox(width: 4),
+            Icon(info.locked ? Icons.lock_outline : Icons.chevron_right,
+                size: IconSize.s16, color: ink.ash),
+          ]),
         ),
       ),
     );
@@ -283,59 +260,41 @@ class PlaceCard extends StatelessWidget {
         borderRadius: BorderRadius.circular(8),
         border: Border.all(color: const Color(0xFFB8A9C9)),
       ),
-      child: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Flexible(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  named ? info.name : noName,
-                  maxLines: 2,
-                  overflow: TextOverflow.ellipsis,
-                  style: theme.textTheme.bodyMedium?.copyWith(
+      child: Row(mainAxisSize: MainAxisSize.min, children: [
+        Flexible(
+          child:
+              Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+            Text(named ? info.name : noName,
+                maxLines: 2,
+                overflow: TextOverflow.ellipsis,
+                style: theme.textTheme.bodyMedium?.copyWith(
                     color: Palette.amber86,
                     fontWeight: FontWeight.w600,
-                    fontStyle: named ? FontStyle.normal : FontStyle.italic,
-                  ),
-                ),
-                Text(
-                  things,
-                  style: theme.textTheme.bodySmall?.copyWith(
-                    color: Palette.stone61,
-                    fontStyle: FontStyle.italic,
-                  ),
-                ),
-              ],
-            ),
-          ),
-          const SizedBox(width: 8),
-          Material(
-            color: ink.gold,
+                    fontStyle: named ? FontStyle.normal : FontStyle.italic)),
+            Text(things,
+                style: theme.textTheme.bodySmall?.copyWith(
+                    color: Palette.stone61, fontStyle: FontStyle.italic)),
+          ]),
+        ),
+        const SizedBox(width: 8),
+        Material(
+          color: ink.gold,
+          borderRadius: BorderRadius.circular(4),
+          child: InkWell(
+            key: const Key('place_card_go'),
             borderRadius: BorderRadius.circular(4),
-            child: InkWell(
-              key: const Key('place_card_go'),
-              borderRadius: BorderRadius.circular(4),
-              onTap: onGo,
-              child: Padding(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 10,
-                  vertical: 6,
-                ),
-                child: Text(
-                  go,
+            onTap: onGo,
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+              child: Text(go,
                   style: const TextStyle(
-                    fontFamily: InkFonts.system,
-                    fontSize: 12.5,
-                    color: Palette.night9,
-                  ),
-                ),
-              ),
+                      fontFamily: InkFonts.system,
+                      fontSize: 12.5,
+                      color: Palette.night9)),
             ),
           ),
-        ],
-      ),
+        ),
+      ]),
     );
   }
 }
@@ -365,25 +324,16 @@ class PlacesHandle extends StatelessWidget {
         onTap: onTap,
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-          child: Row(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Icon(
-                open ? Icons.keyboard_arrow_down : Icons.keyboard_arrow_up,
-                size: IconSize.s16,
-                color: ink.gold,
-              ),
-              const SizedBox(width: 4),
-              Text(
-                label,
+          child: Row(mainAxisSize: MainAxisSize.min, children: [
+            Icon(open ? Icons.keyboard_arrow_down : Icons.keyboard_arrow_up,
+                size: IconSize.s16, color: ink.gold),
+            const SizedBox(width: 4),
+            Text(label,
                 style: const TextStyle(
-                  fontFamily: InkFonts.system,
-                  fontSize: 12.5,
-                  color: Palette.amber86,
-                ),
-              ),
-            ],
-          ),
+                    fontFamily: InkFonts.system,
+                    fontSize: 12.5,
+                    color: Palette.amber86)),
+          ]),
         ),
       ),
     );
@@ -407,13 +357,9 @@ List<Widget> placesRows(
   final ink = InkColors.of(context);
   Widget title(String text) => Padding(
         padding: const EdgeInsets.only(top: 8, bottom: 4),
-        child: Text(
-          text.toUpperCase(),
-          style: theme.textTheme.labelSmall?.copyWith(
-            color: ink.ash,
-            letterSpacing: 0.8,
-          ),
-        ),
+        child: Text(text.toUpperCase(),
+            style: theme.textTheme.labelSmall
+                ?.copyWith(color: ink.ash, letterSpacing: 0.8)),
       );
   if (standing != null) {
     return [
@@ -422,24 +368,19 @@ List<Widget> placesRows(
         onTap: onLeave,
         child: Padding(
           padding: const EdgeInsets.symmetric(vertical: 8),
-          child: Row(
-            children: [
-              Icon(Icons.arrow_back, size: IconSize.s16, color: ink.gold),
-              const SizedBox(width: 8),
-              Expanded(
-                child: Text(
+          child: Row(children: [
+            Icon(Icons.arrow_back, size: IconSize.s16, color: ink.gold),
+            const SizedBox(width: 8),
+            Expanded(
+              child: Text(
                   standing.name.isEmpty ? tr(ref, 'place_back') : standing.name,
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
-                  style: theme.textTheme.titleSmall,
-                ),
-              ),
-              Text(
-                tr(ref, 'place_back'),
-                style: theme.textTheme.labelSmall?.copyWith(color: ink.ash),
-              ),
-            ],
-          ),
+                  style: theme.textTheme.titleSmall),
+            ),
+            Text(tr(ref, 'place_back'),
+                style: theme.textTheme.labelSmall?.copyWith(color: ink.ash)),
+          ]),
         ),
       ),
       for (final i in standing.steps) wayRow(i),
@@ -494,55 +435,46 @@ class PlacesMapLayer extends ConsumerWidget {
       left: 12,
       right: 12,
       bottom: 8,
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          ValueListenableBuilder<String?>(
-            valueListenable: controller.card,
-            builder: (context, id, _) {
-              final info = infos.where((p) => p.id == id).firstOrNull;
-              if (info == null) return const SizedBox.shrink();
-              return Padding(
-                padding: const EdgeInsets.only(bottom: 8),
-                child: PlaceCard(
-                  info: info,
-                  noName: tr(ref, 'place_no_name'),
-                  things: info.count == 1
-                      ? tr(ref, 'place_things_one')
-                      : tr(
-                          ref,
-                          'place_things_many',
-                        ).replaceAll('{n}', '${info.count}'),
-                  go: tr(ref, 'place_go'),
-                  onGo: info.locked ? () {} : () => onGo(info),
-                ),
-              );
-            },
-          ),
-          if (showHandle)
-            ValueListenableBuilder<bool>(
-              valueListenable: camera.fullZoom,
-              builder: (context, full, _) => PlacesHandle(
-                key: const Key('places_handle'),
-                open: full,
-                label: full
-                    ? tr(ref, 'places_handle_map')
-                    : tr(
-                        ref,
-                        'places_handle',
-                      ).replaceAll('{n}', '${infos.length}'),
-                onTap: () {
-                  controller.card.value = null;
-                  camera.show(
-                    full
-                        ? CityCameraShot(districtId: districtId)
-                        : CityCameraShot.full(districtId, centre: partyAt),
-                  );
-                },
+      child: Column(mainAxisSize: MainAxisSize.min, children: [
+        ValueListenableBuilder<String?>(
+          valueListenable: controller.card,
+          builder: (context, id, _) {
+            final info = infos.where((p) => p.id == id).firstOrNull;
+            if (info == null) return const SizedBox.shrink();
+            return Padding(
+              padding: const EdgeInsets.only(bottom: 8),
+              child: PlaceCard(
+                info: info,
+                noName: tr(ref, 'place_no_name'),
+                things: info.count == 1
+                    ? tr(ref, 'place_things_one')
+                    : tr(ref, 'place_things_many')
+                        .replaceAll('{n}', '${info.count}'),
+                go: tr(ref, 'place_go'),
+                onGo: info.locked ? () {} : () => onGo(info),
               ),
+            );
+          },
+        ),
+        if (showHandle)
+          ValueListenableBuilder<bool>(
+            valueListenable: camera.fullZoom,
+            builder: (context, full, _) => PlacesHandle(
+              key: const Key('places_handle'),
+              open: full,
+              label: full
+                  ? tr(ref, 'places_handle_map')
+                  : tr(ref, 'places_handle')
+                      .replaceAll('{n}', '${infos.length}'),
+              onTap: () {
+                controller.card.value = null;
+                camera.show(full
+                    ? CityCameraShot(districtId: districtId)
+                    : CityCameraShot.full(districtId, centre: partyAt));
+              },
             ),
-        ],
-      ),
+          ),
+      ]),
     );
   }
 }

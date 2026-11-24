@@ -42,10 +42,8 @@ bool provokesPress({required int defenders, required int acting}) =>
 
 /// The damage multiplier an enemy's next blow carries while [provoked] by a
 /// counter or [pressing] a press; they do not stack.
-double responseDamageMultiplier({
-  required bool provoked,
-  required bool pressing,
-}) =>
+double responseDamageMultiplier(
+        {required bool provoked, required bool pressing}) =>
     provoked
         ? counterDamageMultiplier
         : pressing

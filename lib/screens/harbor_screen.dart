@@ -3,7 +3,6 @@ import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-
 import '../widgets/help_hint.dart';
 
 import '../combat/sea_beasts.dart';
@@ -55,10 +54,7 @@ class HarborScreen extends ConsumerStatefulWidget {
   /// Whether [part] is on offer: beast gear once a beast has been seen, a
   /// beast's trophy once it is slain (or already won), the rest always.
   static bool partOffered(
-    String partId,
-    Map<String, dynamic> part,
-    PlayerSession session,
-  ) {
+      String partId, Map<String, dynamic> part, PlayerSession session) {
     final trophyOf = part['trophyOf']?.toString() ?? '';
     if (trophyOf.isNotEmpty) {
       return (session.seaBeasts[trophyOf]?.slain ?? false) ||
@@ -74,12 +70,8 @@ class HarborScreen extends ConsumerStatefulWidget {
   /// Whether the story has come far enough for the shipwright to sell
   /// [part] (ship_parts.json `unlockChapter`; 0 or none is always); a part
   /// already aboard or stored stays unlocked.
-  static bool partUnlocked(
-    String partId,
-    Map<String, dynamic> part,
-    PlayerSession session,
-    int chapter,
-  ) {
+  static bool partUnlocked(String partId, Map<String, dynamic> part,
+      PlayerSession session, int chapter) {
     final from = (part['unlockChapter'] as num?)?.toInt() ?? 0;
     return from <= chapter ||
         session.shipPartIds.contains(partId) ||
@@ -112,13 +104,11 @@ class _HarborScreenState extends ConsumerState<HarborScreen> {
         .wearShipLook(look.category, look.id, price);
     if (!ok || !mounted) return;
     setState(() => _tryLooks.remove(look.category));
-    unawaited(
-      showImmersiveNotice(
-        context,
-        icon: Icons.palette_outlined,
-        message: '${tr(ref, 'look_worn_notice')}: ${look.name}',
-      ),
-    );
+    unawaited(showImmersiveNotice(
+      context,
+      icon: Icons.palette_outlined,
+      message: '${tr(ref, 'look_worn_notice')}: ${look.name}',
+    ));
   }
 
   /// Rebuilds the Eel on the hull [hullId] after saying which parts have no
@@ -134,10 +124,7 @@ class _HarborScreenState extends ConsumerState<HarborScreen> {
     final current = playerShipRecord(ships, session.shipHullId);
     if (next == null || current == null) return;
     final toStore = partsBeyondSlots(
-      ship: next,
-      parts: parts,
-      installedPartIds: session.shipPartIds,
-    );
+        ship: next, parts: parts, installedPartIds: session.shipPartIds);
     final hullName = _hullName(next, fr);
     final ok = await showInkConfirm(
       context,
@@ -148,11 +135,9 @@ class _HarborScreenState extends ConsumerState<HarborScreen> {
           : tr(ref, 'hull_confirm_body').replaceAll(
               '{parts}',
               toStore
-                  .map(
-                    (id) => shipPartName(parts[id] as Map<String, dynamic>, fr),
-                  )
-                  .join(', '),
-            ),
+                  .map((id) =>
+                      shipPartName(parts[id] as Map<String, dynamic>, fr))
+                  .join(', ')),
       cancel: tr(ref, 'cancel'),
       confirm: tr(ref, 'hull_confirm_yes'),
       confirmKey: const Key('rebuild_confirm_yes'),
@@ -160,22 +145,17 @@ class _HarborScreenState extends ConsumerState<HarborScreen> {
     if (ok != true || !mounted) return;
     // She keeps the share of her hull she has, on the new one.
     final now = buildPlayerShip(
-      ship: current,
-      parts: parts,
-      installedPartIds: session.shipPartIds,
-      currentHull: session.shipHull,
-    );
+        ship: current,
+        parts: parts,
+        installedPartIds: session.shipPartIds,
+        currentHull: session.shipHull);
     final share = now.maxHull == 0 ? 1.0 : now.hull / now.maxHull;
     final kept = [
       for (final id in session.shipPartIds)
         if (!toStore.contains(id)) id,
     ];
     final built = buildPlayerShip(
-      ship: next,
-      parts: parts,
-      installedPartIds: kept,
-      currentHull: -1,
-    );
+        ship: next, parts: parts, installedPartIds: kept, currentHull: -1);
     final hull = session.shipHull < 0
         ? -1
         : math.max(1, (share * built.maxHull).round());
@@ -188,13 +168,11 @@ class _HarborScreenState extends ConsumerState<HarborScreen> {
       _tryHullId = null;
       _tryPartId = null;
     });
-    unawaited(
-      showImmersiveNotice(
-        context,
-        icon: Icons.construction,
-        message: tr(ref, 'hull_rebuilt_notice').replaceAll('{hull}', hullName),
-      ),
-    );
+    unawaited(showImmersiveNotice(
+      context,
+      icon: Icons.construction,
+      message: tr(ref, 'hull_rebuilt_notice').replaceAll('{hull}', hullName),
+    ));
   }
 
   String _hullName(Map<String, dynamic> hull, bool fr) {
@@ -232,23 +210,14 @@ class _HarborScreenState extends ConsumerState<HarborScreen> {
         if (floor == null || cost < floor) familyFloor[family] = cost;
       }
       final partIds = parts.keys
-          .where(
-            (id) => HarborScreen.partOffered(
-              id,
-              parts[id] as Map<String, dynamic>,
-              session,
-            ),
-          )
+          .where((id) => HarborScreen.partOffered(
+              id, parts[id] as Map<String, dynamic>, session))
           .toList()
         ..sort((a, b) {
           final pa = parts[a] as Map<String, dynamic>;
           final pb = parts[b] as Map<String, dynamic>;
-          final sa = slotTypeOptions.indexOf(
-            pa['slotType']?.toString() ?? '',
-          );
-          final sb = slotTypeOptions.indexOf(
-            pb['slotType']?.toString() ?? '',
-          );
+          final sa = slotTypeOptions.indexOf(pa['slotType']?.toString() ?? '');
+          final sb = slotTypeOptions.indexOf(pb['slotType']?.toString() ?? '');
           if (sa != sb) return sa.compareTo(sb);
           final fa = familyFloor[pa['family']?.toString() ?? a] ?? 0;
           final fb = familyFloor[pb['family']?.toString() ?? b] ?? 0;
@@ -256,9 +225,8 @@ class _HarborScreenState extends ConsumerState<HarborScreen> {
           final ta = (pa['tier'] as num?)?.toInt() ?? 1;
           final tb = (pb['tier'] as num?)?.toInt() ?? 1;
           if (ta != tb) return ta.compareTo(tb);
-          return ((pa['cost'] as num?)?.toInt() ?? 0).compareTo(
-            (pb['cost'] as num?)?.toInt() ?? 0,
-          );
+          return ((pa['cost'] as num?)?.toInt() ?? 0)
+              .compareTo((pb['cost'] as num?)?.toInt() ?? 0);
         });
       final beastIds = enemyShips == null
           ? const <String>[]
@@ -291,8 +259,7 @@ class _HarborScreenState extends ConsumerState<HarborScreen> {
               ship: yardShip,
               parts: parts,
               installed: session.shipPartIds,
-              partId: _tryPartId!,
-            );
+              partId: _tryPartId!);
       final yardDress = lookRecords == null
           ? null
           : buildShipDress(
@@ -325,51 +292,36 @@ class _HarborScreenState extends ConsumerState<HarborScreen> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
-                    Text(
-                      tr(ref, 'yard_title'),
-                      style: theme.textTheme.titleMedium,
-                    ),
+                    Text(tr(ref, 'yard_title'),
+                        style: theme.textTheme.titleMedium),
                     const SizedBox(height: 2),
-                    Text(
-                      tr(ref, 'yard_hint'),
-                      style: theme.textTheme.bodySmall?.copyWith(
-                        color: ink.ash,
-                      ),
-                    ),
+                    Text(tr(ref, 'yard_hint'),
+                        style: theme.textTheme.bodySmall
+                            ?.copyWith(color: ink.ash)),
                     const SizedBox(height: 10),
                     ShipYardSideView(
-                      dress: yardDress,
-                      form: ShipForm.fromRecord(yardHullId, yardShip),
-                    ),
+                        dress: yardDress,
+                        form: ShipForm.fromRecord(yardHullId, yardShip)),
                     const SizedBox(height: 8),
                     ShipYardPreview(
-                      dress: yardDress,
-                      form: ShipForm.fromRecord(yardHullId, yardShip),
-                      refit: ShipCutaway.refitOf(
-                        buildPlayerShip(
-                          ship: ship,
-                          parts: parts,
-                          installedPartIds: session.shipPartIds,
-                          currentHull: -1,
-                        ),
-                      ),
-                    ),
+                        dress: yardDress,
+                        form: ShipForm.fromRecord(yardHullId, yardShip),
+                        refit: ShipCutaway.refitOf(buildPlayerShip(
+                            ship: ship,
+                            parts: parts,
+                            installedPartIds: session.shipPartIds,
+                            currentHull: -1))),
                     if (tryingPart != null) ...[
                       const SizedBox(height: 8),
                       Row(
                         children: [
-                          Icon(
-                            Icons.visibility_outlined,
-                            size: IconSize.s16,
-                            color: ink.gold,
-                          ),
+                          Icon(Icons.visibility_outlined,
+                              size: IconSize.s16, color: ink.gold),
                           const SizedBox(width: 6),
                           Expanded(
                             child: Text(
                               tr(ref, 'part_trying_label').replaceAll(
-                                '{part}',
-                                shipPartName(tryingPart, fr),
-                              ),
+                                  '{part}', shipPartName(tryingPart, fr)),
                               key: const Key('yard_trying'),
                               style: theme.textTheme.bodySmall,
                             ),
@@ -386,18 +338,13 @@ class _HarborScreenState extends ConsumerState<HarborScreen> {
                       const SizedBox(height: 8),
                       Row(
                         children: [
-                          Icon(
-                            Icons.visibility_outlined,
-                            size: IconSize.s16,
-                            color: ink.gold,
-                          ),
+                          Icon(Icons.visibility_outlined,
+                              size: IconSize.s16, color: ink.gold),
                           const SizedBox(width: 6),
                           Expanded(
                             child: Text(
-                              tr(
-                                ref,
-                                'hull_trying_label',
-                              ).replaceAll('{hull}', _hullName(tryHull, fr)),
+                              tr(ref, 'hull_trying_label')
+                                  .replaceAll('{hull}', _hullName(tryHull, fr)),
                               key: const Key('yard_trying_hull'),
                               style: theme.textTheme.bodySmall,
                             ),
@@ -411,10 +358,8 @@ class _HarborScreenState extends ConsumerState<HarborScreen> {
                       ),
                     ],
                     const SizedBox(height: 12),
-                    Text(
-                      tr(ref, 'looks_section'),
-                      style: theme.textTheme.titleSmall,
-                    ),
+                    Text(tr(ref, 'looks_section'),
+                        style: theme.textTheme.titleSmall),
                     const SizedBox(height: 8),
                     LookShelf(
                       looks: looks,
@@ -448,19 +393,15 @@ class _HarborScreenState extends ConsumerState<HarborScreen> {
               ),
             ),
           const SizedBox(height: 16),
-          Text(
-            tr(ref, 'hull_section'),
-            key: const Key('hull_section'),
-            style: Theme.of(context).textTheme.titleMedium,
-          ),
+          Text(tr(ref, 'hull_section'),
+              key: const Key('hull_section'),
+              style: Theme.of(context).textTheme.titleMedium),
           const SizedBox(height: 2),
-          Text(
-            tr(ref, 'hull_hint'),
-            style: Theme.of(context)
-                .textTheme
-                .bodySmall
-                ?.copyWith(color: InkColors.of(context).ash),
-          ),
+          Text(tr(ref, 'hull_hint'),
+              style: Theme.of(context)
+                  .textTheme
+                  .bodySmall
+                  ?.copyWith(color: InkColors.of(context).ash)),
           const SizedBox(height: 6),
           for (final hullId in hullIdsInOrder(ships))
             _HullCard(
@@ -468,30 +409,23 @@ class _HarborScreenState extends ConsumerState<HarborScreen> {
               record: ships[hullId] as Map<String, dynamic>,
               current: hullId == currentHullId,
               owned: session.ownedHullIds.contains(hullId),
-              unlocked: hullUnlocked(
-                ships[hullId] as Map<String, dynamic>,
-                chapter,
-                session.ownedHullIds.contains(hullId),
-              ),
+              unlocked: hullUnlocked(ships[hullId] as Map<String, dynamic>,
+                  chapter, session.ownedHullIds.contains(hullId)),
               gold: session.gold,
               trying: _tryHullId == hullId,
               fr: fr,
               onTry: () => setState(
-                () => _tryHullId = _tryHullId == hullId ? null : hullId,
-              ),
+                  () => _tryHullId = _tryHullId == hullId ? null : hullId),
               onRebuild: () => _rebuild(hullId, ships, parts, fr),
             ),
           const SizedBox(height: 16),
-          Text(
-            tr(ref, 'shipwright_section'),
-            style: Theme.of(context).textTheme.titleMedium,
-          ),
+          Text(tr(ref, 'shipwright_section'),
+              style: Theme.of(context).textTheme.titleMedium),
           // The shipwright's parts by the slot they fit, each slot saying
           // how many of hers are filled.
           for (final slot in slotTypeOptions)
-            if (partIds.any(
-              (id) => (parts[id] as Map<String, dynamic>)['slotType'] == slot,
-            )) ...[
+            if (partIds.any((id) =>
+                (parts[id] as Map<String, dynamic>)['slotType'] == slot)) ...[
               Padding(
                 key: Key('harbour_slot_$slot'),
                 padding: const EdgeInsets.only(top: 14, bottom: 4),
@@ -500,9 +434,7 @@ class _HarborScreenState extends ConsumerState<HarborScreen> {
                           '${tr(ref, 'slots_filled').replaceAll('{used}', '${slotsUsed(parts, session.shipPartIds, slot)}').replaceAll('{cap}', '${slotCapacity(ship, slot)}')}'
                       .toUpperCase(),
                   style: Theme.of(context).textTheme.labelSmall?.copyWith(
-                        letterSpacing: 1,
-                        color: InkColors.of(context).ash,
-                      ),
+                      letterSpacing: 1, color: InkColors.of(context).ash),
                 ),
               ),
               for (final partId in partIds)
@@ -517,29 +449,23 @@ class _HarborScreenState extends ConsumerState<HarborScreen> {
                     gold: session.gold,
                     fr: fr,
                     unlocked: HarborScreen.partUnlocked(
-                      partId,
-                      parts[partId] as Map<String, dynamic>,
-                      session,
-                      chapter,
-                    ),
+                        partId,
+                        parts[partId] as Map<String, dynamic>,
+                        session,
+                        chapter),
                     trying: _tryPartId == partId,
-                    onTry: () => setState(
-                      () => _tryPartId = _tryPartId == partId ? null : partId,
-                    ),
+                    onTry: () => setState(() =>
+                        _tryPartId = _tryPartId == partId ? null : partId),
                   ),
             ],
           if (enemyShips != null) ...[
             const Divider(height: 32),
-            Text(
-              tr(ref, 'beasts_section'),
-              style: Theme.of(context).textTheme.titleMedium,
-            ),
+            Text(tr(ref, 'beasts_section'),
+                style: Theme.of(context).textTheme.titleMedium),
             const SizedBox(height: 4),
             Text(
-              tr(
-                ref,
-                beastIds.isEmpty ? 'beasts_none_hint' : 'beasts_hint',
-              ).replaceAll('{of}', '$cluesNeeded'),
+              tr(ref, beastIds.isEmpty ? 'beasts_none_hint' : 'beasts_hint')
+                  .replaceAll('{of}', '$cluesNeeded'),
               style: Theme.of(context).textTheme.bodySmall,
             ),
             const SizedBox(height: 8),
@@ -564,7 +490,7 @@ class _HarborScreenState extends ConsumerState<HarborScreen> {
           title: Text(tr(ref, 'harbor_title')),
           actions: const [
             TourInfoButton(topic: TutorialTopic.boat),
-            GoldBadge(),
+            GoldBadge()
           ],
         ),
         body: body,
@@ -653,13 +579,12 @@ class _HullCard extends ConsumerWidget {
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(12),
           side: BorderSide(
-            color: current
-                ? ink.heal
-                : trying
-                    ? ink.gold
-                    : InkColors.of(context).seam,
-            width: current || trying ? 2 : 1,
-          ),
+              color: current
+                  ? ink.heal
+                  : trying
+                      ? ink.gold
+                      : InkColors.of(context).seam,
+              width: current || trying ? 2 : 1),
         ),
         child: Padding(
           padding: const EdgeInsets.fromLTRB(12, 10, 12, 10),
@@ -674,45 +599,30 @@ class _HullCard extends ConsumerWidget {
                     child: Align(
                       alignment: Alignment.centerRight,
                       child: current
-                          ? Text(
-                              tr(ref, 'hull_aboard_label'),
-                              style: theme.textTheme.labelMedium?.copyWith(
-                                color: ink.heal,
-                              ),
-                            )
+                          ? Text(tr(ref, 'hull_aboard_label'),
+                              style: theme.textTheme.labelMedium
+                                  ?.copyWith(color: ink.heal))
                           : !unlocked
                               ? Row(
                                   mainAxisSize: MainAxisSize.min,
                                   children: [
-                                    PixelGlyph(
-                                      PixelGlyphs.lock,
-                                      size: IconSize.s16,
-                                      color: ink.ash,
-                                    ),
+                                    PixelGlyph(PixelGlyphs.lock,
+                                        size: IconSize.s16, color: ink.ash),
                                     const SizedBox(width: 4),
                                     Flexible(
                                       child: Text(
-                                        tr(
-                                          ref,
-                                          'look_locked_note',
-                                        ).replaceAll('{n}', '$chapter'),
-                                        style: theme.textTheme.labelSmall
-                                            ?.copyWith(
-                                          color: ink.ash,
-                                        ),
-                                      ),
+                                          tr(ref, 'look_locked_note')
+                                              .replaceAll('{n}', '$chapter'),
+                                          style: theme.textTheme.labelSmall
+                                              ?.copyWith(color: ink.ash)),
                                     ),
                                   ],
                                 )
                               : owned
-                                  ? Text(
-                                      tr(ref, 'hull_owned_note'),
+                                  ? Text(tr(ref, 'hull_owned_note'),
                                       textAlign: TextAlign.end,
-                                      style:
-                                          theme.textTheme.labelSmall?.copyWith(
-                                        color: ink.heal,
-                                      ),
-                                    )
+                                      style: theme.textTheme.labelSmall
+                                          ?.copyWith(color: ink.heal))
                                   : const SizedBox.shrink(),
                     ),
                   ),
@@ -723,28 +633,20 @@ class _HullCard extends ConsumerWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   HullThumb(
-                    form: ShipForm.fromRecord(hullId, record),
-                    width: 150,
-                  ),
+                      form: ShipForm.fromRecord(hullId, record), width: 150),
                   const SizedBox(width: 12),
                   Expanded(
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text(
-                          chips.join(' · '),
-                          style: theme.textTheme.labelSmall?.copyWith(
-                            color: ink.gold,
-                          ),
-                        ),
+                        Text(chips.join(' · '),
+                            style: theme.textTheme.labelSmall
+                                ?.copyWith(color: ink.gold)),
                         if (description.isNotEmpty) ...[
                           const SizedBox(height: 4),
-                          Text(
-                            description,
-                            style: theme.textTheme.bodySmall?.copyWith(
-                              color: ink.ash,
-                            ),
-                          ),
+                          Text(description,
+                              style: theme.textTheme.bodySmall
+                                  ?.copyWith(color: ink.ash)),
                         ],
                       ],
                     ),
@@ -761,14 +663,12 @@ class _HullCard extends ConsumerWidget {
                       key: Key('try_hull_$hullId'),
                       onPressed: onTry,
                       icon: Icon(
-                        trying
-                            ? Icons.visibility_off_outlined
-                            : Icons.visibility_outlined,
-                        size: IconSize.s16,
-                      ),
-                      label: Text(
-                        tr(ref, trying ? 'part_try_clear' : 'part_try_button'),
-                      ),
+                          trying
+                              ? Icons.visibility_off_outlined
+                              : Icons.visibility_outlined,
+                          size: IconSize.s16),
+                      label: Text(tr(
+                          ref, trying ? 'part_try_clear' : 'part_try_button')),
                     ),
                     if (action != null) action,
                   ],
@@ -843,46 +743,34 @@ class _PartCard extends ConsumerWidget {
           '${tr(ref, 'ship_room_${entry.key}_title')} +${entry.value}',
       if (hull > 0) tr(ref, 'hull_bonus_label').replaceAll('{n}', '$hull'),
       if (((part['turnSecondsBonus'] as num?)?.toInt() ?? 0) > 0)
-        tr(
-          ref,
-          'turn_seconds_bonus_label',
-        ).replaceAll('{n}', '${part['turnSecondsBonus']}'),
+        tr(ref, 'turn_seconds_bonus_label')
+            .replaceAll('{n}', '${part['turnSecondsBonus']}'),
     ].join(' · ');
   }
 
   /// Fits the part, [replacing] what comes off for it, and says so.
-  Future<void> _fit(
-    BuildContext context,
-    WidgetRef ref,
-    int cost,
-    List<String> replacing,
-  ) async {
+  Future<void> _fit(BuildContext context, WidgetRef ref, int cost,
+      List<String> replacing) async {
     final ok = await ref
         .read(playerSessionProvider.notifier)
         .installShipPart(partId, cost, replacing: replacing);
     if (!ok || !context.mounted) return;
-    unawaited(
-      showImmersiveNotice(
-        context,
-        icon: Icons.handyman_outlined,
-        message: '${tr(ref, 'installed_label')}: ${shipPartName(part, fr)}',
-      ),
-    );
+    unawaited(showImmersiveNotice(
+      context,
+      icon: Icons.handyman_outlined,
+      message: '${tr(ref, 'installed_label')}: ${shipPartName(part, fr)}',
+    ));
   }
 
   /// Asks which part of the slot comes off for this one; null to keep
   /// things as they are.
   Future<String?> _pickSwap(
-    BuildContext context,
-    WidgetRef ref,
-    List<String> candidates,
-  ) {
+      BuildContext context, WidgetRef ref, List<String> candidates) {
     return showDialog<String>(
       context: context,
       builder: (context) => SimpleDialog(
         title: Text(
-          tr(ref, 'swap_title').replaceAll('{part}', shipPartName(part, fr)),
-        ),
+            tr(ref, 'swap_title').replaceAll('{part}', shipPartName(part, fr))),
         children: [
           for (final id in candidates)
             SimpleDialogOption(
@@ -927,11 +815,10 @@ class _PartCard extends ConsumerWidget {
             ? [sails.first.partId]
             : const <String>[];
     final fits = canInstallPart(
-          ship: ship,
-          parts: parts,
-          installedPartIds: installed,
-          partId: partId,
-        ) ||
+            ship: ship,
+            parts: parts,
+            installedPartIds: installed,
+            partId: partId) ||
         replacing.isNotEmpty;
     // A full slot takes the part in place of one aboard.
     final swapCandidates = fits || isInstalled
@@ -999,44 +886,34 @@ class _PartCard extends ConsumerWidget {
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(12),
           side: BorderSide(
-            color: trying ? ink.gold : shade.withValues(alpha: 0.3),
-            width: trying ? 2 : 1,
-          ),
+              color: trying ? ink.gold : shade.withValues(alpha: 0.3),
+              width: trying ? 2 : 1),
         ),
         child: ListTile(
           dense: true,
-          leading: PixelGlyph(
-            PixelGlyphs.lock,
-            size: IconSize.s16,
-            color: ink.ash,
-          ),
-          title: Text(
-            shipPartName(part, fr),
-            style: theme.textTheme.titleSmall?.copyWith(color: ink.ash),
-          ),
+          leading:
+              PixelGlyph(PixelGlyphs.lock, size: IconSize.s16, color: ink.ash),
+          title: Text(shipPartName(part, fr),
+              style: theme.textTheme.titleSmall?.copyWith(color: ink.ash)),
           subtitle: Text(
-            [
-              tr(ref, 'rarity_$rarity'),
-              if (slot != 'Sail' && !trophy)
-                tr(
-                  ref,
-                  'part_version_label',
-                ).replaceAll('{n}', romanVersion(tier)),
-              tr(ref, 'look_locked_note').replaceAll('{n}', '$unlockChapter'),
-            ].join(' · '),
-            style: theme.textTheme.labelSmall?.copyWith(color: ink.ash),
-          ),
+              [
+                tr(ref, 'rarity_$rarity'),
+                if (slot != 'Sail' && !trophy)
+                  tr(ref, 'part_version_label')
+                      .replaceAll('{n}', romanVersion(tier)),
+                tr(ref, 'look_locked_note').replaceAll('{n}', '$unlockChapter'),
+              ].join(' · '),
+              style: theme.textTheme.labelSmall?.copyWith(color: ink.ash)),
           trailing: IconButton(
             key: Key('try_$partId'),
             tooltip: tr(ref, trying ? 'part_try_clear' : 'part_try_button'),
             onPressed: onTry,
             icon: Icon(
-              trying
-                  ? Icons.visibility_off_outlined
-                  : Icons.visibility_outlined,
-              size: IconSize.s16,
-              color: trying ? ink.gold : ink.ash,
-            ),
+                trying
+                    ? Icons.visibility_off_outlined
+                    : Icons.visibility_outlined,
+                size: IconSize.s16,
+                color: trying ? ink.gold : ink.ash),
           ),
         ),
       );
@@ -1049,9 +926,8 @@ class _PartCard extends ConsumerWidget {
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(12),
           side: BorderSide(
-            color: trying ? ink.gold : shade.withValues(alpha: 0.45),
-            width: trying ? 2 : 1,
-          ),
+              color: trying ? ink.gold : shade.withValues(alpha: 0.45),
+              width: trying ? 2 : 1),
         ),
         child: Padding(
           padding: const EdgeInsets.fromLTRB(14, 10, 14, 10),
@@ -1061,39 +937,30 @@ class _PartCard extends ConsumerWidget {
               Row(
                 children: [
                   Icon(
-                    !unlocked
-                        ? Icons.lock_outline
-                        : isInstalled
-                            ? Icons.check_circle
-                            : trophy
-                                ? Icons.emoji_events_outlined
-                                : (slot == 'Sail'
-                                    ? Icons.brush_outlined
-                                    : Icons.handyman_outlined),
-                    size: IconSize.s16,
-                    color: isInstalled ? ink.heal : ink.ash,
-                  ),
+                      !unlocked
+                          ? Icons.lock_outline
+                          : isInstalled
+                              ? Icons.check_circle
+                              : trophy
+                                  ? Icons.emoji_events_outlined
+                                  : (slot == 'Sail'
+                                      ? Icons.brush_outlined
+                                      : Icons.handyman_outlined),
+                      size: IconSize.s16,
+                      color: isInstalled ? ink.heal : ink.ash),
                   const SizedBox(width: 10),
                   Expanded(
-                    child: Text(
-                      shipPartName(part, fr),
-                      style: theme.textTheme.titleMedium,
-                    ),
+                    child: Text(shipPartName(part, fr),
+                        style: theme.textTheme.titleMedium),
                   ),
                   if (isInstalled)
-                    Text(
-                      tr(ref, 'installed_label'),
-                      style: theme.textTheme.labelMedium?.copyWith(
-                        color: ink.heal,
-                      ),
-                    )
+                    Text(tr(ref, 'installed_label'),
+                        style: theme.textTheme.labelMedium
+                            ?.copyWith(color: ink.heal))
                   else if (action == null && unlocked)
-                    Text(
-                      tr(ref, 'slot_full_label'),
-                      style: theme.textTheme.labelMedium?.copyWith(
-                        color: ink.ash,
-                      ),
-                    ),
+                    Text(tr(ref, 'slot_full_label'),
+                        style: theme.textTheme.labelMedium
+                            ?.copyWith(color: ink.ash)),
                 ],
               ),
               const SizedBox(height: 4),
@@ -1104,19 +971,14 @@ class _PartCard extends ConsumerWidget {
                   _Tag(tr(ref, 'rarity_$rarity'), shade),
                   if (slot != 'Sail' && !trophy)
                     _Tag(
-                      tr(
-                        ref,
-                        'part_version_label',
-                      ).replaceAll('{n}', romanVersion(tier)),
-                      ink.ash,
-                    ),
+                        tr(ref, 'part_version_label')
+                            .replaceAll('{n}', romanVersion(tier)),
+                        ink.ash),
                 ],
               ),
               const SizedBox(height: 4),
-              Text(
-                subtitle,
-                style: theme.textTheme.bodySmall?.copyWith(color: ink.ash),
-              ),
+              Text(subtitle,
+                  style: theme.textTheme.bodySmall?.copyWith(color: ink.ash)),
               if (action != null || !isInstalled) ...[
                 const SizedBox(height: 8),
                 Wrap(
@@ -1128,17 +990,12 @@ class _PartCard extends ConsumerWidget {
                         key: Key('try_$partId'),
                         onPressed: onTry,
                         icon: Icon(
-                          trying
-                              ? Icons.visibility_off_outlined
-                              : Icons.visibility_outlined,
-                          size: IconSize.s16,
-                        ),
-                        label: Text(
-                          tr(
-                            ref,
-                            trying ? 'part_try_clear' : 'part_try_button',
-                          ),
-                        ),
+                            trying
+                                ? Icons.visibility_off_outlined
+                                : Icons.visibility_outlined,
+                            size: IconSize.s16),
+                        label: Text(tr(ref,
+                            trying ? 'part_try_clear' : 'part_try_button')),
                       ),
                     if (action != null) action,
                   ],
@@ -1165,13 +1022,11 @@ class _Tag extends StatelessWidget {
         borderRadius: BorderRadius.circular(8),
         border: Border.all(color: color.withValues(alpha: 0.7)),
       ),
-      child: Text(
-        text,
-        style: Theme.of(context)
-            .textTheme
-            .labelSmall
-            ?.copyWith(color: color, fontSize: 10),
-      ),
+      child: Text(text,
+          style: Theme.of(context)
+              .textTheme
+              .labelSmall
+              ?.copyWith(color: color, fontSize: 10)),
     );
   }
 }

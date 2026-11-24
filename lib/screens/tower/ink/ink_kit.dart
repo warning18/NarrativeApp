@@ -33,11 +33,10 @@ class _WideFramePainter extends CustomPainter {
       // Until the frame is there: a paper rectangle and a hairline.
       canvas.drawRect(Offset.zero & size, Paint()..color = inkPaper);
       canvas.drawRect(
-        (Offset.zero & size).deflate(0.5),
-        Paint()
-          ..style = PaintingStyle.stroke
-          ..color = inkDeep,
-      );
+          (Offset.zero & size).deflate(0.5),
+          Paint()
+            ..style = PaintingStyle.stroke
+            ..color = inkDeep);
       return;
     }
     const l = 26.0, t = 22.0, r = 24.0, b = 22.0;
@@ -52,11 +51,10 @@ class _WideFramePainter extends CustomPainter {
     for (var j = 0; j < 3; j++) {
       for (var i = 0; i < 3; i++) {
         canvas.drawImageRect(
-          img,
-          Rect.fromLTRB(xs[i], ys[j], xs[i + 1], ys[j + 1]),
-          Rect.fromLTRB(dx[i], dy[j], dx[i + 1], dy[j + 1]),
-          p,
-        );
+            img,
+            Rect.fromLTRB(xs[i], ys[j], xs[i + 1], ys[j + 1]),
+            Rect.fromLTRB(dx[i], dy[j], dx[i + 1], dy[j + 1]),
+            p);
       }
     }
   }
@@ -89,52 +87,36 @@ class InkPaperPanel extends StatelessWidget {
   Widget build(BuildContext context) {
     final base = Theme.of(context);
     final dark = base.copyWith(
-      textTheme: base.textTheme.apply(
-        bodyColor: inkOnPaper,
-        displayColor: inkOnPaper,
-      ),
+      textTheme:
+          base.textTheme.apply(bodyColor: inkOnPaper, displayColor: inkOnPaper),
     );
     final seed = inkSeedOf(key, title ?? seedText ?? '${padding.hashCode}');
     // The title tab sits outside the piece, so the cap lies behind it.
-    return Stack(
-      clipBehavior: Clip.none,
-      children: [
-        InkWeatherPiece(
+    return Stack(clipBehavior: Clip.none, children: [
+      InkWeatherPiece(
           seed: seed,
           child: InkWorn(
-            seed: seed,
-            tilt: false,
-            chip: false,
-            child: _body(dark, seed),
-          ),
-        ),
-        if (title != null)
-          Positioned(
+              seed: seed, tilt: false, chip: false, child: _body(dark, seed))),
+      if (title != null)
+        Positioned(
             left: -2,
             top: -10,
-            child: InkTab(title!, key: const Key('ink_tab')),
-          ),
-      ],
-    );
+            child: InkTab(title!, key: const Key('ink_tab'))),
+    ]);
   }
 
   Widget _body(ThemeData dark, InkSeed seed) {
-    return Stack(
-      clipBehavior: Clip.none,
-      children: [
-        Positioned.fill(child: CustomPaint(painter: _WideFramePainter(0.5))),
-        Padding(
-          padding: padding,
-          child: Theme(
-            data: dark,
-            child: DefaultTextStyle.merge(
-              style: const TextStyle(color: inkOnPaper),
-              child: child,
-            ),
-          ),
+    return Stack(clipBehavior: Clip.none, children: [
+      Positioned.fill(child: CustomPaint(painter: _WideFramePainter(0.5))),
+      Padding(
+        padding: padding,
+        child: Theme(
+          data: dark,
+          child: DefaultTextStyle.merge(
+              style: const TextStyle(color: inkOnPaper), child: child),
         ),
-      ],
-    );
+      ),
+    ]);
   }
 }
 
@@ -149,9 +131,7 @@ class InkTab extends StatelessWidget {
   Widget build(BuildContext context) {
     final seed = InkSeed.of(text);
     return InkWeatherPiece(
-      seed: seed,
-      child: InkWorn(seed: seed, tear: true, child: _tab(seed)),
-    );
+        seed: seed, child: InkWorn(seed: seed, tear: true, child: _tab(seed)));
   }
 
   Widget _tab(InkSeed seed) => Transform(
@@ -161,15 +141,12 @@ class InkTab extends StatelessWidget {
           color: color == inkRed ? seed.red : color,
           child: Transform(
             transform: Matrix4.skewX(inkSkew),
-            child: Text(
-              text,
-              style: const TextStyle(
-                fontFamily: InkFonts.display,
-                fontSize: 12.5,
-                height: 1.05,
-                color: inkPaper,
-              ),
-            ),
+            child: Text(text,
+                style: const TextStyle(
+                    fontFamily: InkFonts.display,
+                    fontSize: 12.5,
+                    height: 1.05,
+                    color: inkPaper)),
           ),
         ),
       );
@@ -205,9 +182,7 @@ class InkButton extends StatelessWidget {
     final fill = primary ? red : (onPaper ? inkOnPaper : inkBlack);
     final line = primary ? red : (onPaper ? inkOnPaper : seed.paper);
     return InkWeatherPiece(
-      seed: seed,
-      child: InkWorn(seed: seed, child: _button(fill, line)),
-    );
+        seed: seed, child: InkWorn(seed: seed, child: _button(fill, line)));
   }
 
   Widget _button(Color fill, Color line) {
@@ -223,21 +198,14 @@ class InkButton extends StatelessWidget {
           foregroundColor: inkPaper,
           disabledForegroundColor: inkGrey,
           shape: RoundedRectangleBorder(
-            side: BorderSide(
-              color: onPressed == null ? inkSlate : line,
-              width: 1.5,
-            ),
-          ),
+              side: BorderSide(
+                  color: onPressed == null ? inkSlate : line, width: 1.5)),
           textStyle: const TextStyle(
-            fontFamily: InkFonts.display,
-            fontSize: 14,
-            height: 1.05,
-          ),
+              fontFamily: InkFonts.display, fontSize: 14, height: 1.05),
         ),
         child: Transform(
-          transform: Matrix4.skewX(inkSkew),
-          child: Text(label, textAlign: TextAlign.center),
-        ),
+            transform: Matrix4.skewX(inkSkew),
+            child: Text(label, textAlign: TextAlign.center)),
       ),
     );
   }
@@ -253,15 +221,12 @@ class InkBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) => SizedBox(
         height: height,
-        child: Stack(
-          children: [
-            const Positioned.fill(child: ColoredBox(color: Color(0xFF2A2C34))),
-            FractionallySizedBox(
+        child: Stack(children: [
+          const Positioned.fill(child: ColoredBox(color: Color(0xFF2A2C34))),
+          FractionallySizedBox(
               widthFactor: value.clamp(0.0, 1.0),
-              child: const ColoredBox(color: inkRed, child: SizedBox.expand()),
-            ),
-          ],
-        ),
+              child: const ColoredBox(color: inkRed, child: SizedBox.expand())),
+        ]),
       );
 }
 
@@ -284,18 +249,14 @@ class InkSlantPanel extends StatelessWidget {
   Widget build(BuildContext context) => SizedBox(
         width: size.width,
         height: size.height,
-        child: Stack(
-          children: [
-            ClipPath(
+        child: Stack(children: [
+          ClipPath(
               clipper: _PolyClipper(points),
               child: SizedBox(
-                  width: size.width, height: size.height, child: child),
-            ),
-            IgnorePointer(
-              child: CustomPaint(size: size, painter: _PolyBorder(points)),
-            ),
-          ],
-        ),
+                  width: size.width, height: size.height, child: child)),
+          IgnorePointer(
+              child: CustomPaint(size: size, painter: _PolyBorder(points))),
+        ]),
       );
 }
 
@@ -320,21 +281,19 @@ class _PolyBorder extends CustomPainter {
   void paint(Canvas canvas, Size size) {
     final path = Path()..addPolygon(pts, true);
     canvas.drawPath(
-      path,
-      Paint()
-        ..style = PaintingStyle.stroke
-        ..strokeWidth = 12
-        ..strokeJoin = StrokeJoin.miter
-        ..color = inkBlack,
-    );
+        path,
+        Paint()
+          ..style = PaintingStyle.stroke
+          ..strokeWidth = 12
+          ..strokeJoin = StrokeJoin.miter
+          ..color = inkBlack);
     canvas.drawPath(
-      path,
-      Paint()
-        ..style = PaintingStyle.stroke
-        ..strokeWidth = 1.5
-        ..strokeJoin = StrokeJoin.miter
-        ..color = inkPaper.withValues(alpha: 0.85),
-    );
+        path,
+        Paint()
+          ..style = PaintingStyle.stroke
+          ..strokeWidth = 1.5
+          ..strokeJoin = StrokeJoin.miter
+          ..color = inkPaper.withValues(alpha: 0.85));
   }
 
   @override
@@ -356,13 +315,11 @@ class InkTag extends StatelessWidget {
           color: red ? inkRed : inkBlack,
           border: Border.all(color: red ? inkRed : inkPaper),
         ),
-        child: Text(
-          text,
-          style: Theme.of(context)
-              .textTheme
-              .labelSmall
-              ?.copyWith(color: inkPaper, fontWeight: FontWeight.w700),
-        ),
+        child: Text(text,
+            style: Theme.of(context)
+                .textTheme
+                .labelSmall
+                ?.copyWith(color: inkPaper, fontWeight: FontWeight.w700)),
       );
 }
 

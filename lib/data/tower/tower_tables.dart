@@ -55,7 +55,9 @@ double towerProfessionScaleOf(String professionId, {int events = 0}) =>
 /// with no unlocks to 22%. v1.922: 1.18 (was 1.14), with the humans' and
 /// voidkin's start (towerPeoplePoints): the top with no unlocks back near
 /// the curve review's (12.6%; 17.9% with the start alone).
-const double towerFoeScale = 1.18;
+/// 1.24 since the clans' offers (v2.6.0): the payback B (+0.06) on every
+/// version's foes, so a run with the floor events off is paid back too.
+const double towerFoeScale = 1.24;
 
 /// Every foe of the Tower in a run with the floor events on (floor events
 /// PR 2, docs/proposals/tower-snakes-and-ladders.md, TowerRun.events 1 or
@@ -66,7 +68,8 @@ const double towerFoeScale = 1.18;
 /// both 12.6% and 26.8%). The live curve since v1.944 (events version 1).
 /// 1.16 since a pack's shortcut is an Elite pack (towerShortcutFloor, no
 /// foe added): 13.2% and 24.9%, every ordinary floor under 9%.
-const double towerEventsFoeScale = 1.16;
+/// 1.22 since the clans' offers (v2.6.0, the payback B's +0.06).
+const double towerEventsFoeScale = 1.22;
 
 /// The floor events' version that adds the floors without a fight (floor
 /// events PR 3 and 4, docs/proposals/tower-peaceful-floors-and-stores.md:
@@ -81,7 +84,10 @@ const int towerPeacefulEvents = 2;
 /// 1.17 since the shortcut's Elite pack (v1.961), which made 1.15 give
 /// 16.1% and 28.2%: with [towerPeacefulExtras], 14.25% and 26.55%, every
 /// ordinary floor under 9% (seeds 1 to 2000).
-const double towerPeacefulFoeScale = 1.17;
+/// 1.23 since the clans' offers (v2.6.0, the user's payback B): their gifts
+/// had taken the top to 16.0% and 31.2% (seeds 1 to 2000); at 1.23, 11.3%
+/// and 23.75%, about the v2.4.0 curve.
+const double towerPeacefulFoeScale = 1.23;
 
 /// The floors' extras that differ in a run with the floor events on
 /// (floor -> extra, in place of its [towerBudgets] one): the floor-20 boss
@@ -129,7 +135,10 @@ const double towerHealthPerUnlock = .03;
 /// against dwarf and elf 20%): their races' bonuses go to stats the
 /// Tower's fights barely read. The story's races are unchanged (their
 /// 800-run spread is under 5 points).
-const Map<String, int> towerPeoplePoints = {'human': 2, 'voidkin': 3};
+const Map<String, int> towerPeoplePoints = {
+  'human': 2,
+  'voidkin': 3,
+};
 
 /// Every this many unlocks owned at the start: one more potion carried into
 /// each fight.
@@ -199,237 +208,165 @@ const List<TowerBudget> towerBudgets = [
   TowerBudget(1, 0.30, levelAfter: 2),
   TowerBudget(1, 0.30, levelAfter: 2),
   TowerBudget(1, 0.30, levelAfter: 3),
-  TowerBudget(
-    2,
-    0.30,
-    maxFoes: 2,
-    packChance: .30,
-    eliteChance: .12,
-    levelAfter: 3,
-  ),
+  TowerBudget(2, 0.30,
+      maxFoes: 2, packChance: .30, eliteChance: .12, levelAfter: 3),
   TowerBudget(2, 0.62, levelAfter: 4, kind: TowerFloorKind.warden),
-  TowerBudget(
-    2,
-    0.36,
-    maxFoes: 2,
-    packChance: .30,
-    maxAffixes: 1,
-    eliteChance: .12,
-    levelAfter: 4,
-  ),
-  TowerBudget(
-    2,
-    0.36,
-    maxFoes: 2,
-    packChance: .30,
-    maxAffixes: 1,
-    eliteChance: .12,
-    levelAfter: 5,
-  ),
-  TowerBudget(
-    3,
-    0.34,
-    maxFoes: 2,
-    packChance: .30,
-    maxAffixes: 1,
-    eliteChance: .12,
-    levelAfter: 5,
-  ),
-  TowerBudget(
-    3,
-    0.34,
-    maxFoes: 2,
-    packChance: .30,
-    maxAffixes: 1,
-    eliteChance: .12,
-    levelAfter: 6,
-  ),
+  TowerBudget(2, 0.36,
+      maxFoes: 2,
+      packChance: .30,
+      maxAffixes: 1,
+      eliteChance: .12,
+      levelAfter: 4),
+  TowerBudget(2, 0.36,
+      maxFoes: 2,
+      packChance: .30,
+      maxAffixes: 1,
+      eliteChance: .12,
+      levelAfter: 5),
+  TowerBudget(3, 0.34,
+      maxFoes: 2,
+      packChance: .30,
+      maxAffixes: 1,
+      eliteChance: .12,
+      levelAfter: 5),
+  TowerBudget(3, 0.34,
+      maxFoes: 2,
+      packChance: .30,
+      maxAffixes: 1,
+      eliteChance: .12,
+      levelAfter: 6),
   TowerBudget(3, 0.52, levelAfter: 7, kind: TowerFloorKind.boss),
-  TowerBudget(
-    4,
-    0.31,
-    maxFoes: 2,
-    packChance: .50,
-    minAffixes: 1,
-    maxAffixes: 1,
-    eliteChance: .12,
-    levelAfter: 7,
-  ),
-  TowerBudget(
-    4,
-    0.31,
-    maxFoes: 2,
-    packChance: .50,
-    minAffixes: 1,
-    maxAffixes: 1,
-    eliteChance: .12,
-    levelAfter: 8,
-  ),
-  TowerBudget(
-    4,
-    0.33,
-    maxFoes: 2,
-    packChance: .50,
-    minAffixes: 1,
-    maxAffixes: 1,
-    eliteChance: .12,
-    levelAfter: 8,
-  ),
-  TowerBudget(
-    4,
-    0.33,
-    maxFoes: 2,
-    packChance: .50,
-    minAffixes: 1,
-    maxAffixes: 1,
-    eliteChance: .12,
-    levelAfter: 9,
-  ),
-  TowerBudget(
-    4,
-    0.50,
-    minAffixes: 1,
-    maxAffixes: 1,
-    levelAfter: 10,
-    kind: TowerFloorKind.warden,
-  ),
-  TowerBudget(
-    4,
-    0.34,
-    maxFoes: 3,
-    packChance: .50,
-    minAffixes: 1,
-    maxAffixes: 1,
-    eliteChance: .15,
-    levelAfter: 10,
-  ),
-  TowerBudget(
-    5,
-    0.26,
-    maxFoes: 3,
-    packChance: .50,
-    minAffixes: 1,
-    maxAffixes: 1,
-    eliteChance: .15,
-    levelAfter: 11,
-  ),
-  TowerBudget(
-    5,
-    0.26,
-    maxFoes: 3,
-    packChance: .50,
-    minAffixes: 1,
-    maxAffixes: 1,
-    eliteChance: .15,
-    levelAfter: 11,
-  ),
-  TowerBudget(
-    5,
-    0.28,
-    maxFoes: 3,
-    packChance: .50,
-    minAffixes: 1,
-    maxAffixes: 1,
-    eliteChance: .15,
-    levelAfter: 12,
-  ),
+  TowerBudget(4, 0.31,
+      maxFoes: 2,
+      packChance: .50,
+      minAffixes: 1,
+      maxAffixes: 1,
+      eliteChance: .12,
+      levelAfter: 7),
+  TowerBudget(4, 0.31,
+      maxFoes: 2,
+      packChance: .50,
+      minAffixes: 1,
+      maxAffixes: 1,
+      eliteChance: .12,
+      levelAfter: 8),
+  TowerBudget(4, 0.33,
+      maxFoes: 2,
+      packChance: .50,
+      minAffixes: 1,
+      maxAffixes: 1,
+      eliteChance: .12,
+      levelAfter: 8),
+  TowerBudget(4, 0.33,
+      maxFoes: 2,
+      packChance: .50,
+      minAffixes: 1,
+      maxAffixes: 1,
+      eliteChance: .12,
+      levelAfter: 9),
+  TowerBudget(4, 0.50,
+      minAffixes: 1,
+      maxAffixes: 1,
+      levelAfter: 10,
+      kind: TowerFloorKind.warden),
+  TowerBudget(4, 0.34,
+      maxFoes: 3,
+      packChance: .50,
+      minAffixes: 1,
+      maxAffixes: 1,
+      eliteChance: .15,
+      levelAfter: 10),
+  TowerBudget(5, 0.26,
+      maxFoes: 3,
+      packChance: .50,
+      minAffixes: 1,
+      maxAffixes: 1,
+      eliteChance: .15,
+      levelAfter: 11),
+  TowerBudget(5, 0.26,
+      maxFoes: 3,
+      packChance: .50,
+      minAffixes: 1,
+      maxAffixes: 1,
+      eliteChance: .15,
+      levelAfter: 11),
+  TowerBudget(5, 0.28,
+      maxFoes: 3,
+      packChance: .50,
+      minAffixes: 1,
+      maxAffixes: 1,
+      eliteChance: .15,
+      levelAfter: 12),
   TowerBudget(5, 0.29, levelAfter: 13, kind: TowerFloorKind.boss),
-  TowerBudget(
-    6,
-    0.30,
-    minFoes: 2,
-    maxFoes: 3,
-    packChance: .70,
-    minAffixes: 1,
-    maxAffixes: 2,
-    eliteChance: .20,
-    levelAfter: 13,
-  ),
-  TowerBudget(
-    6,
-    0.31,
-    minFoes: 2,
-    maxFoes: 3,
-    packChance: .70,
-    minAffixes: 1,
-    maxAffixes: 2,
-    eliteChance: .20,
-    levelAfter: 14,
-  ),
-  TowerBudget(
-    6,
-    0.33,
-    minFoes: 2,
-    maxFoes: 3,
-    packChance: .70,
-    minAffixes: 1,
-    maxAffixes: 2,
-    eliteChance: .20,
-    levelAfter: 14,
-  ),
-  TowerBudget(
-    6,
-    0.32,
-    minFoes: 2,
-    maxFoes: 3,
-    packChance: .70,
-    minAffixes: 1,
-    maxAffixes: 2,
-    eliteChance: .20,
-    levelAfter: 15,
-  ),
-  TowerBudget(
-    7,
-    0.43,
-    minAffixes: 1,
-    maxAffixes: 1,
-    levelAfter: 16,
-    kind: TowerFloorKind.warden,
-  ),
-  TowerBudget(
-    7,
-    0.30,
-    minFoes: 2,
-    maxFoes: 3,
-    packChance: .70,
-    minAffixes: 2,
-    maxAffixes: 2,
-    eliteChance: .25,
-    levelAfter: 16,
-  ),
-  TowerBudget(
-    7,
-    0.31,
-    minFoes: 2,
-    maxFoes: 3,
-    packChance: .70,
-    minAffixes: 2,
-    maxAffixes: 2,
-    eliteChance: .25,
-    levelAfter: 17,
-  ),
-  TowerBudget(
-    8,
-    0.31,
-    minFoes: 2,
-    maxFoes: 3,
-    packChance: .70,
-    minAffixes: 2,
-    maxAffixes: 2,
-    eliteChance: .25,
-    levelAfter: 17,
-  ),
-  TowerBudget(
-    8,
-    0.30,
-    minFoes: 2,
-    maxFoes: 3,
-    packChance: .70,
-    minAffixes: 2,
-    maxAffixes: 2,
-    eliteChance: .25,
-    levelAfter: 18,
-  ),
+  TowerBudget(6, 0.30,
+      minFoes: 2,
+      maxFoes: 3,
+      packChance: .70,
+      minAffixes: 1,
+      maxAffixes: 2,
+      eliteChance: .20,
+      levelAfter: 13),
+  TowerBudget(6, 0.31,
+      minFoes: 2,
+      maxFoes: 3,
+      packChance: .70,
+      minAffixes: 1,
+      maxAffixes: 2,
+      eliteChance: .20,
+      levelAfter: 14),
+  TowerBudget(6, 0.33,
+      minFoes: 2,
+      maxFoes: 3,
+      packChance: .70,
+      minAffixes: 1,
+      maxAffixes: 2,
+      eliteChance: .20,
+      levelAfter: 14),
+  TowerBudget(6, 0.32,
+      minFoes: 2,
+      maxFoes: 3,
+      packChance: .70,
+      minAffixes: 1,
+      maxAffixes: 2,
+      eliteChance: .20,
+      levelAfter: 15),
+  TowerBudget(7, 0.43,
+      minAffixes: 1,
+      maxAffixes: 1,
+      levelAfter: 16,
+      kind: TowerFloorKind.warden),
+  TowerBudget(7, 0.30,
+      minFoes: 2,
+      maxFoes: 3,
+      packChance: .70,
+      minAffixes: 2,
+      maxAffixes: 2,
+      eliteChance: .25,
+      levelAfter: 16),
+  TowerBudget(7, 0.31,
+      minFoes: 2,
+      maxFoes: 3,
+      packChance: .70,
+      minAffixes: 2,
+      maxAffixes: 2,
+      eliteChance: .25,
+      levelAfter: 17),
+  TowerBudget(8, 0.31,
+      minFoes: 2,
+      maxFoes: 3,
+      packChance: .70,
+      minAffixes: 2,
+      maxAffixes: 2,
+      eliteChance: .25,
+      levelAfter: 17),
+  TowerBudget(8, 0.30,
+      minFoes: 2,
+      maxFoes: 3,
+      packChance: .70,
+      minAffixes: 2,
+      maxAffixes: 2,
+      eliteChance: .25,
+      levelAfter: 18),
   TowerBudget(8, 0.34, levelAfter: 18, kind: TowerFloorKind.boss),
 ];
 
@@ -503,10 +440,27 @@ const int towerNoRepeatFloors = 3;
 /// skill's.
 enum TowerRewardKind { die, skill, spell, clanOath, rankUp }
 
-/// A clan's oath on the table (v1.855): always on the first floor won, then
-/// on this share of the floors (not a boon's, v1.860) while a clan is left
-/// to swear to; one oath a floor at most.
+/// A clan's offer on the table (v1.855; since the clans' offers their gifts,
+/// docs/simulation/tower-clan-offers.md): always on the first floor won,
+/// then on this share of the other floors (not a boon's, v1.860).
 const double towerOathChance = 0.35;
+
+/// The clans' offers (docs/simulation/tower-clan-offers.md §1): at
+/// most this many suitors a floor, each a different clan of the run's pool.
+const int towerSuitorsPerOffer = 3;
+
+/// Standing with a clan in a run: 0 to [towerOathStep], rebuilt from the
+/// cards taken (towerStandingOf). A gift taken gives its clan
+/// [towerGiftStanding], each of its allies (relations.json step
+/// [towerAllyRelationStep] or more) [towerAllyStanding], and takes
+/// [towerRivalStanding] from each rival (step [towerRivalRelationStep] or
+/// less). At [towerOathStep] the clan's oath is dealt (the user's call: 6).
+const int towerOathStep = 6;
+const int towerGiftStanding = 2;
+const int towerAllyStanding = 1;
+const int towerRivalStanding = 1;
+const int towerAllyRelationStep = 6;
+const int towerRivalRelationStep = 3;
 
 /// The floors whose win offers a boon (v1.860, the main game's earning
 /// offers): a choose-one of a skill, a die and a spell. The other floors
@@ -727,36 +681,16 @@ const List<TowerUnlock> towerUnlocks = [
   TowerUnlock('crows', TowerUnlockKind.clan, 'crows', 10),
   TowerUnlock('shield_t5', TowerUnlockKind.startItem, 'shield_t5', 15),
   TowerUnlock('cleric', TowerUnlockKind.profession, 'cleric', 15),
-  TowerUnlock(
-    'tide_die',
-    TowerUnlockKind.startDie,
-    'tide_die',
-    20,
-    needs: 'flame_die',
-  ),
+  TowerUnlock('tide_die', TowerUnlockKind.startDie, 'tide_die', 20,
+      needs: 'flame_die'),
   TowerUnlock('vigil', TowerUnlockKind.clan, 'vigil', 20, needs: 'crows'),
-  TowerUnlock(
-    'sword_t4',
-    TowerUnlockKind.startItem,
-    'sword_t4',
-    25,
-    needs: 'shield_t5',
-  ),
-  TowerUnlock(
-    'ranger',
-    TowerUnlockKind.profession,
-    'ranger',
-    25,
-    needs: 'cleric',
-  ),
+  TowerUnlock('sword_t4', TowerUnlockKind.startItem, 'sword_t4', 25,
+      needs: 'shield_t5'),
+  TowerUnlock('ranger', TowerUnlockKind.profession, 'ranger', 25,
+      needs: 'cleric'),
   TowerUnlock('compact', TowerUnlockKind.clan, 'compact', 30, needs: 'vigil'),
-  TowerUnlock(
-    'tearglass_die',
-    TowerUnlockKind.startDie,
-    'tearglass_die',
-    40,
-    needs: 'tide_die',
-  ),
+  TowerUnlock('tearglass_die', TowerUnlockKind.startDie, 'tearglass_die', 40,
+      needs: 'tide_die'),
 ];
 
 /// The unlock [id], or null.

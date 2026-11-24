@@ -125,10 +125,8 @@ RewardCardData questRewardCard(
             label: 'XP',
             accent: ink.tide,
             sub: leveledUp
-                ? trFor(
-                    lang,
-                    'reward_level_reached',
-                  ).replaceAll('{n}', '$level')
+                ? trFor(lang, 'reward_level_reached')
+                    .replaceAll('{n}', '$level')
                 : '',
           ),
       ],
@@ -155,11 +153,8 @@ RewardCardData questRewardCard(
       if (xp > 0)
         RewardLine(
           key: const Key('reward_xp'),
-          icon: PixelGlyph(
-            PixelGlyphs.star,
-            size: IconSize.s32,
-            color: ink.tide,
-          ),
+          icon:
+              PixelGlyph(PixelGlyphs.star, size: IconSize.s32, color: ink.tide),
           accent: ink.tide,
           title: trFor(lang, 'reward_xp'),
           bar: leveledUp ? 1 : (xpNeeded <= 0 ? 0 : xpAfter / xpNeeded),

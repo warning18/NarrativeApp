@@ -96,10 +96,7 @@ class _ThroneRoomTabState extends ConsumerState<ThroneRoomTab> {
 
     final hung = <HungBanner>[
       for (final id in earnedClanBannerFactionIds(
-        data: data,
-        politics: politics,
-        flags: flags,
-      ))
+          data: data, politics: politics, flags: flags))
         HungBanner(
           id: clanBannerId(id)!,
           factionId: data.faction(id) == null ? null : id,
@@ -111,19 +108,18 @@ class _ThroneRoomTabState extends ConsumerState<ThroneRoomTab> {
                   // Its strength (Wave 12), and the red of a nemesis.
                   if (hasPower(id, data))
                     trFor(
-                      lang,
-                      powerTierKey(powerTierFor(powerOf(politics, id, data))),
-                    ),
+                        lang,
+                        powerTierKey(
+                            powerTierFor(powerOf(politics, id, data)))),
                   if (politics.nemesis == id) trFor(lang, 'clan_nemesis_tag'),
                 ].join(' · '),
         ),
       for (final id in shroudPieceIds)
         if (session.bannerPiecesCollected.contains(id))
           HungBanner(
-            id: id,
-            name: trFor(lang, 'banner_piece_$id'),
-            caption: trFor(lang, 'banner_pieces_title'),
-          ),
+              id: id,
+              name: trFor(lang, 'banner_piece_$id'),
+              caption: trFor(lang, 'banner_pieces_title')),
     ];
     HungBanner? picked;
     for (final b in hung) {
@@ -131,15 +127,11 @@ class _ThroneRoomTabState extends ConsumerState<ThroneRoomTab> {
     }
 
     final line = holder.isNotEmpty
-        ? trFor(
-            lang,
-            'throne_room_held',
-          ).replaceAll('{name}', throneFactionName(holder, data, lang))
+        ? trFor(lang, 'throne_room_held')
+            .replaceAll('{name}', throneFactionName(holder, data, lang))
         : claim.isNotEmpty
-            ? trFor(
-                lang,
-                'throne_your_claim',
-              ).replaceAll('{name}', throneFactionName(claim, data, lang))
+            ? trFor(lang, 'throne_your_claim')
+                .replaceAll('{name}', throneFactionName(claim, data, lang))
             : trFor(lang, 'throne_room_empty');
 
     return ListView(
@@ -150,27 +142,21 @@ class _ThroneRoomTabState extends ConsumerState<ThroneRoomTab> {
           padding: const EdgeInsets.symmetric(horizontal: 16),
           child: Column(
             children: [
-              Text(
-                trFor(lang, 'throne_room_title'),
-                style: theme.textTheme.titleLarge,
-              ),
+              Text(trFor(lang, 'throne_room_title'),
+                  style: theme.textTheme.titleLarge),
               const SizedBox(height: 2),
-              Text(
-                line,
-                key: const Key('throne_room_line'),
-                textAlign: TextAlign.center,
-                style: theme.textTheme.bodyMedium?.copyWith(
-                  color: theme.colorScheme.onSurfaceVariant,
-                ),
-              ),
+              Text(line,
+                  key: const Key('throne_room_line'),
+                  textAlign: TextAlign.center,
+                  style: theme.textTheme.bodyMedium
+                      ?.copyWith(color: theme.colorScheme.onSurfaceVariant)),
               const SizedBox(height: 4),
               Text(
-                hung.isEmpty
-                    ? trFor(lang, 'throne_room_none')
-                    : '${hung.length} ${trFor(lang, 'throne_room_count')}',
-                key: const Key('throne_room_count'),
-                style: theme.textTheme.labelMedium,
-              ),
+                  hung.isEmpty
+                      ? trFor(lang, 'throne_room_none')
+                      : '${hung.length} ${trFor(lang, 'throne_room_count')}',
+                  key: const Key('throne_room_count'),
+                  style: theme.textTheme.labelMedium),
               const SizedBox(height: 4),
               AnimatedSwitcher(
                 duration: Motion.base,
@@ -181,10 +167,9 @@ class _ThroneRoomTabState extends ConsumerState<ThroneRoomTab> {
                   key: ValueKey(picked?.id ?? 'hint'),
                   textAlign: TextAlign.center,
                   style: theme.textTheme.bodySmall?.copyWith(
-                    color: picked == null
-                        ? theme.colorScheme.onSurfaceVariant
-                        : theme.colorScheme.primary,
-                  ),
+                      color: picked == null
+                          ? theme.colorScheme.onSurfaceVariant
+                          : theme.colorScheme.primary),
                 ),
               ),
             ],
@@ -241,10 +226,8 @@ const double _hallRow = _standardTop + 128 + _poleInRows + _standardFoot + 8;
 
 class _ThroneRoomState extends State<ThroneRoom>
     with SingleTickerProviderStateMixin {
-  late final AnimationController _clock = AnimationController(
-    vsync: this,
-    duration: _windPeriod,
-  );
+  late final AnimationController _clock =
+      AnimationController(vsync: this, duration: _windPeriod);
   bool _still = false;
 
   /// One wind cycle: everything that moves loops seamlessly over it.
@@ -321,24 +304,20 @@ class _ThroneRoomState extends State<ThroneRoom>
             bottom: 0,
             width: 30,
             height: 12,
-            child: Image.asset(
-              'assets/visuals/throne/standard_foot.png',
-              fit: BoxFit.fill,
-              filterQuality: FilterQuality.none,
-              isAntiAlias: false,
-            ),
+            child: Image.asset('assets/visuals/throne/standard_foot.png',
+                fit: BoxFit.fill,
+                filterQuality: FilterQuality.none,
+                isAntiAlias: false),
           ),
           Positioned(
             left: (_standardWidth - 12) / 2,
             top: 0,
             width: 12,
             height: 16,
-            child: Image.asset(
-              'assets/visuals/throne/finial.png',
-              fit: BoxFit.fill,
-              filterQuality: FilterQuality.none,
-              isAntiAlias: false,
-            ),
+            child: Image.asset('assets/visuals/throne/finial.png',
+                fit: BoxFit.fill,
+                filterQuality: FilterQuality.none,
+                isAntiAlias: false),
           ),
           Positioned(
             left: 0,
@@ -359,23 +338,21 @@ class _ThroneRoomState extends State<ThroneRoom>
                       boxShadow: widget.pickedId == banner.id
                           ? [
                               BoxShadow(
-                                color: Palette.goldDark.withValues(alpha: 0.5),
-                                blurRadius: 16,
-                              ),
+                                  color:
+                                      Palette.goldDark.withValues(alpha: 0.5),
+                                  blurRadius: 16),
                             ]
                           : null,
                     ),
-                    child: marked(
-                      CustomPaint(
-                        size: const Size(_standardWidth, 128),
-                        painter: WindPainter(
-                          id: banner.id,
-                          clock: _clock,
-                          phase: index * 1.7,
-                          still: _still,
-                        ),
+                    child: marked(CustomPaint(
+                      size: const Size(_standardWidth, 128),
+                      painter: WindPainter(
+                        id: banner.id,
+                        clock: _clock,
+                        phase: index * 1.7,
+                        still: _still,
                       ),
-                    ),
+                    )),
                   ),
                 ),
               ),
@@ -432,11 +409,8 @@ class _ThroneRoomState extends State<ThroneRoom>
                         center: const Alignment(0, -0.2),
                         radius: 0.85,
                         colors: [
-                          Color.lerp(
-                            const Color(0xFF7A84A6),
-                            const Color(0xFFA6624A),
-                            pulse,
-                          )!
+                          Color.lerp(const Color(0xFF7A84A6),
+                                  const Color(0xFFA6624A), pulse)!
                               .withValues(alpha: 0.30),
                           Colors.transparent,
                         ],
@@ -578,10 +552,7 @@ class _BreezePainter extends CustomPainter {
       final wobble = math.sin(2 * math.pi * (u * 3 + h)) * 2;
       paint.color = Colors.white.withValues(alpha: 0.10 + 0.02 * (i % 4));
       canvas.drawLine(
-        Offset(x, y + wobble),
-        Offset(x + len, y + wobble * 0.5),
-        paint,
-      );
+          Offset(x, y + wobble), Offset(x + len, y + wobble * 0.5), paint);
     }
   }
 

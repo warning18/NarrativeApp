@@ -7,6 +7,5 @@ import 'player_session_provider.dart';
 /// night, from the session's watch (see [dayPhaseOf]). A screen drawn at
 /// the hour (the town's dusk wash, lit windows at night) watches this; it
 /// changes only when the watch does, not on every save.
-final dayPhaseProvider = Provider<DayPhase>(
-  (ref) => dayPhaseOf(ref.watch(playerSessionProvider.select((s) => s.watch))),
-);
+final dayPhaseProvider = Provider<DayPhase>((ref) =>
+    dayPhaseOf(ref.watch(playerSessionProvider.select((s) => s.watch))));

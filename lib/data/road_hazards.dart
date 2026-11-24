@@ -1,5 +1,4 @@
 import 'dart:math';
-
 import '../providers/climate_provider.dart';
 import 'weather_effects.dart';
 
@@ -65,10 +64,7 @@ Future<void> woundCompanionsOnRoad(WidgetRef ref, int wound) async {
     final maxHealth = scaledMaxHealth(base.maxHealth, session.level);
     final before = min(ally.currentHealth, maxHealth);
     final after = companionHealthAfterHazard(
-      stored: ally.currentHealth,
-      maxHealth: maxHealth,
-      wound: wound,
-    );
+        stored: ally.currentHealth, maxHealth: maxHealth, wound: wound);
     if (after == before) continue;
     await notifier.applyAllyCombatResult(ally.companionId, hpAfter: after);
   }
@@ -121,9 +117,7 @@ Future<HazardTaken?> meetRoadHazard(
   if (kind != RoadEventKind.hazard) return null;
   final session = ref.read(playerSessionProvider);
   if (hazardPushesOn(
-    health: session.currentHealth,
-    maxHealth: session.maxHealth,
-  )) {
+      health: session.currentHealth, maxHealth: session.maxHealth)) {
     final wound = hazardWoundFor(chapter);
     await ref
         .read(playerSessionProvider.notifier)

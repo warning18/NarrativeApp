@@ -138,15 +138,12 @@ List<LootRewardChanges> lootChanges(
 }) {
   final out = <LootRewardChanges>[];
   if (gold != 0) {
-    out.add(
-      LootRewardChanges(goldRewardId, [
-        LootChange(
+    out.add(LootRewardChanges(goldRewardId, [
+      LootChange(
           kind: LootChangeKind.gold,
           before: session.gold,
-          after: session.gold + gold,
-        ),
-      ]),
-    );
+          after: session.gold + gold),
+    ]));
   }
   var potions = session.potionCount;
   var antidotes = session.antidoteCount;
@@ -170,106 +167,73 @@ List<LootRewardChanges> lootChanges(
         // charges and spends one (consumePotion), so a Major Potion (two
         // charges) still leaves one.
         final healed = healthAfterDrinks(
-          health: hp,
-          maxHealth: hpMax,
-          drinks: 1,
-          potionBonus: potionBonus,
-        );
+            health: hp, maxHealth: hpMax, drinks: 1, potionBonus: potionBonus);
         changes.add(
-          LootChange(kind: LootChangeKind.health, before: hp, after: healed),
-        );
+            LootChange(kind: LootChangeKind.health, before: hp, after: healed));
         hp = healed;
         final kept = grant.potions - 1;
         if (kept > 0) {
-          changes.add(
-            LootChange(
+          changes.add(LootChange(
               kind: LootChangeKind.potions,
               before: potions,
-              after: potions + kept,
-            ),
-          );
+              after: potions + kept));
           potions += kept;
         }
       } else if (grant.potions > 0) {
-        changes.add(
-          LootChange(
+        changes.add(LootChange(
             kind: LootChangeKind.potions,
             before: potions,
-            after: potions + grant.potions,
-          ),
-        );
+            after: potions + grant.potions));
         potions += grant.potions;
       }
       if (grant.antidotes > 0) {
-        changes.add(
-          LootChange(
+        changes.add(LootChange(
             kind: LootChangeKind.antidotes,
             before: antidotes,
-            after: antidotes + grant.antidotes,
-          ),
-        );
+            after: antidotes + grant.antidotes));
         antidotes += grant.antidotes;
       }
     }
     if (grant.statPoints > 0) {
-      changes.add(
-        LootChange(
+      changes.add(LootChange(
           kind: LootChangeKind.statPoints,
           before: statPoints,
-          after: statPoints + grant.statPoints,
-        ),
-      );
+          after: statPoints + grant.statPoints));
       statPoints += grant.statPoints;
     }
     if (grant.offers.isNotEmpty) {
-      changes.add(
-        LootChange(
+      changes.add(LootChange(
           kind: LootChangeKind.offers,
           before: offers,
-          after: offers + grant.offers.length,
-        ),
-      );
+          after: offers + grant.offers.length));
       offers += grant.offers.length;
     }
     for (final spell in grant.spellsLearned) {
-      changes.add(
-        LootChange(
-          kind: LootChangeKind.spell,
-          subjectId: spell,
-          before: 0,
-          after: 1,
-        ),
-      );
+      changes.add(LootChange(
+          kind: LootChangeKind.spell, subjectId: spell, before: 0, after: 1));
       known.add(spell);
     }
     for (final carried in grant.carried) {
       final item = items[carried] as Map<String, dynamic>?;
       if (item?['isEquippable'] == true) continue;
       final before = carriedCount(carried);
-      changes.add(
-        LootChange(
+      changes.add(LootChange(
           kind: LootChangeKind.bagItem,
           subjectId: carried,
           before: before,
-          after: before + 1,
-        ),
-      );
+          after: before + 1));
       bag[carried] = before + 1;
       final extra = charmExtraRolls(carried);
       if (extra > 0) {
-        changes.add(
-          LootChange(
+        changes.add(LootChange(
             kind: LootChangeKind.rollsPerRound,
             before: rolls,
-            after: rolls + extra,
-          ),
-        );
+            after: rolls + extra));
       }
     }
     if (changes.isEmpty) {
       changes.add(
-        const LootChange(kind: LootChangeKind.nothing, before: 0, after: 0),
-      );
+          const LootChange(kind: LootChangeKind.nothing, before: 0, after: 0));
     }
     out.add(LootRewardChanges(id, changes));
   }

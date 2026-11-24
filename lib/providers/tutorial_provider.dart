@@ -42,12 +42,8 @@ class TutorialSettings {
   /// one at a time as each first comes up; see ShipBattlePanel).
   bool hasSeenTip(String id) => seen.contains('tip:$id');
 
-  TutorialSettings copyWith({
-    bool? enabled,
-    Set<String>? seen,
-    bool? voice,
-    bool? loaded,
-  }) =>
+  TutorialSettings copyWith(
+          {bool? enabled, Set<String>? seen, bool? voice, bool? loaded}) =>
       TutorialSettings(
         enabled: enabled ?? this.enabled,
         seen: seen ?? this.seen,
@@ -127,15 +123,13 @@ class _TutorialNotifier extends StateNotifier<TutorialSettings> {
 
 final tutorialProvider =
     StateNotifierProvider<_TutorialNotifier, TutorialSettings>(
-  (ref) => _TutorialNotifier(),
-);
+        (ref) => _TutorialNotifier());
 
 /// Whether tours start by themselves when a feature is first reached. Off
 /// under `flutter test`, where a tour would cover what a test taps; tests
 /// of the tours themselves override it.
 final tutorialAutoShowProvider = Provider<bool>(
-  (ref) => kIsWeb || !Platform.environment.containsKey('FLUTTER_TEST'),
-);
+    (ref) => kIsWeb || !Platform.environment.containsKey('FLUTTER_TEST'));
 
 /// A tour asked for from the Tutorials list: the screen it belongs to plays
 /// it once it is showing, then clears this.

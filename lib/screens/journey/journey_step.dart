@@ -243,12 +243,8 @@ String _kindKey(JourneyStepKind kind) => 'journey_kind_${kind.name}';
 /// The colour a step of [kind] is drawn in: danger in blood and ember,
 /// rolls and voyages in tide, what a place offers in gold. The Shroud
 /// look keeps colour for the Void alone, and the main quest's mark.
-Color _colorFor(
-  JourneyStepKind kind,
-  InkColors ink,
-  ChartPalette palette, {
-  required bool greyed,
-}) {
+Color _colorFor(JourneyStepKind kind, InkColors ink, ChartPalette palette,
+    {required bool greyed}) {
   if (greyed) {
     return switch (kind) {
       JourneyStepKind.ending => palette.voidColor,

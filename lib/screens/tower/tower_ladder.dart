@@ -38,10 +38,8 @@ const Duration towerStepDuration = Duration(milliseconds: 1000);
 
 class TowerLadderState extends State<TowerLadder>
     with SingleTickerProviderStateMixin {
-  late final AnimationController _step = AnimationController(
-    vsync: this,
-    duration: towerStepDuration,
-  );
+  late final AnimationController _step =
+      AnimationController(vsync: this, duration: towerStepDuration);
   late double _from = widget.floor.toDouble();
   late double _to = widget.floor.toDouble();
 
@@ -108,7 +106,9 @@ class TowerLadderState extends State<TowerLadder>
                 : Container(
                     width: w * 0.36,
                     height: 4,
-                    decoration: BoxDecoration(color: lit ? inkPaper : dark),
+                    decoration: BoxDecoration(
+                      color: lit ? inkPaper : dark,
+                    ),
                   ),
       );
     }
@@ -125,9 +125,7 @@ class TowerLadderState extends State<TowerLadder>
                 child: Center(
                   child: n == floor
                       ? KeyedSubtree(
-                          key: const Key('tower_ladder_here'),
-                          child: stone(n),
-                        )
+                          key: const Key('tower_ladder_here'), child: stone(n))
                       : stone(n),
                 ),
               ),
@@ -136,78 +134,60 @@ class TowerLadderState extends State<TowerLadder>
       ),
     );
     final jump = widget.jump;
-    return Stack(
-      children: [
-        rail,
-        if (jump != null)
-          Positioned.fill(
-            child: IgnorePointer(
-              child: CustomPaint(
-                painter: _JumpPainter(jump.$1, jump.$2, inkPaper, inkRed),
-              ),
-            ),
-          ),
-        // The hero's head on the rail: it walks up (or down) to its notch.
+    return Stack(children: [
+      rail,
+      if (jump != null)
         Positioned.fill(
-          child: IgnorePointer(
-            child: LayoutBuilder(
-              builder: (context, box) {
-                final row = box.maxHeight / towerTop;
-                final size = min(row * 1.15, 26.0);
-                return AnimatedBuilder(
-                  animation: _step,
-                  builder: (context, _) => Stack(
-                    children: [
-                      Positioned(
-                        key: const Key('tower_ladder_head'),
-                        left: (box.maxWidth - size) / 2,
-                        top: (towerTop - headFloor) * row + row / 2 - size / 2,
-                        width: size,
-                        height: size,
-                        child: HeadAvatar(id: 'hero', name: '', size: size),
+            child: IgnorePointer(
+                child: CustomPaint(
+                    painter:
+                        _JumpPainter(jump.$1, jump.$2, inkPaper, inkRed)))),
+      // The hero's head on the rail: it walks up (or down) to its notch.
+      Positioned.fill(
+        child: IgnorePointer(
+          child: LayoutBuilder(builder: (context, box) {
+            final row = box.maxHeight / towerTop;
+            final size = min(row * 1.15, 26.0);
+            return AnimatedBuilder(
+              animation: _step,
+              builder: (context, _) => Stack(children: [
+                Positioned(
+                  key: const Key('tower_ladder_head'),
+                  left: (box.maxWidth - size) / 2,
+                  top: (towerTop - headFloor) * row + row / 2 - size / 2,
+                  width: size,
+                  height: size,
+                  child: HeadAvatar(id: 'hero', name: '', size: size),
+                ),
+                // The floor the head stands on, as a small gold tag above
+                // it: the head covers the notch's own number.
+                Positioned(
+                  key: const Key('tower_ladder_number'),
+                  left: 0,
+                  right: 0,
+                  top: max(0,
+                      (towerTop - headFloor) * row + row / 2 - size / 2 - 15),
+                  child: Center(
+                    child: DecoratedBox(
+                      decoration: const BoxDecoration(color: inkRed),
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 3),
+                        child: Text('${headFloor.round()}',
+                            style: label?.copyWith(
+                                fontFamily: InkFonts.prose,
+                                fontWeight: FontWeight.w800,
+                                color: inkPaper,
+                                height: 1.2)),
                       ),
-                      // The floor the head stands on, as a small gold tag above
-                      // it: the head covers the notch's own number.
-                      Positioned(
-                        key: const Key('tower_ladder_number'),
-                        left: 0,
-                        right: 0,
-                        top: max(
-                          0,
-                          (towerTop - headFloor) * row +
-                              row / 2 -
-                              size / 2 -
-                              15,
-                        ),
-                        child: Center(
-                          child: DecoratedBox(
-                            decoration: const BoxDecoration(color: inkRed),
-                            child: Padding(
-                              padding: const EdgeInsets.symmetric(
-                                horizontal: 3,
-                              ),
-                              child: Text(
-                                '${headFloor.round()}',
-                                style: label?.copyWith(
-                                  fontFamily: InkFonts.prose,
-                                  fontWeight: FontWeight.w800,
-                                  color: inkPaper,
-                                  height: 1.2,
-                                ),
-                              ),
-                            ),
-                          ),
-                        ),
-                      ),
-                    ],
+                    ),
                   ),
-                );
-              },
-            ),
-          ),
+                ),
+              ]),
+            );
+          }),
         ),
-      ],
-    );
+      ),
+    ]);
   }
 }
 

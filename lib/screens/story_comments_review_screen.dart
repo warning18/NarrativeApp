@@ -58,40 +58,30 @@ class StoryCommentsReviewScreen extends ConsumerWidget {
                 switch (format) {
                   case 'json':
                     exportTextToFile(
-                      context,
-                      ref,
-                      asCommentExportJson(commented, chapterOfNode),
-                      'story_review_comments.json',
-                    );
+                        context,
+                        ref,
+                        asCommentExportJson(commented, chapterOfNode),
+                        'story_review_comments.json');
                   case 'csv':
                     exportTextToFile(
-                      context,
-                      ref,
-                      asCommentExportCsv(commented, chapterOfNode),
-                      'story_review_comments.csv',
-                    );
+                        context,
+                        ref,
+                        asCommentExportCsv(commented, chapterOfNode),
+                        'story_review_comments.csv');
                   default:
-                    exportTextToFile(
-                      context,
-                      ref,
-                      _asExportText(commented),
-                      'story_review_comments.txt',
-                    );
+                    exportTextToFile(context, ref, _asExportText(commented),
+                        'story_review_comments.txt');
                 }
               },
               itemBuilder: (context) => [
                 PopupMenuItem(
-                  value: 'txt',
-                  child: Text(tr(ref, 'export_as_text_option')),
-                ),
+                    value: 'txt',
+                    child: Text(tr(ref, 'export_as_text_option'))),
                 PopupMenuItem(
-                  value: 'json',
-                  child: Text(tr(ref, 'export_as_json_option')),
-                ),
+                    value: 'json',
+                    child: Text(tr(ref, 'export_as_json_option'))),
                 PopupMenuItem(
-                  value: 'csv',
-                  child: Text(tr(ref, 'export_as_csv_option')),
-                ),
+                    value: 'csv', child: Text(tr(ref, 'export_as_csv_option'))),
               ],
             ),
           ],

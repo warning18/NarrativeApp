@@ -817,23 +817,21 @@ class StoryNode {
       final flag = entry['flag']?.toString() ?? '';
       final en = entry['en']?.toString() ?? '';
       if (flag.isEmpty || en.isEmpty) continue;
-      out.add(
-        FlagCallback(
-          flag: flag,
-          line: NarrationLine(en: en, fr: entry['fr']?.toString()),
-          unlessFlags: (entry['unlessFlags'] as List?)
-                  ?.map((e) => e.toString())
-                  .toList() ??
-              const [],
-          andFlags:
-              (entry['andFlags'] as List?)?.map((e) => e.toString()).toList() ??
-                  const [],
-          priority: switch (entry['priority']) {
-            final num priority => priority.toInt(),
-            _ => 0,
-          },
-        ),
-      );
+      out.add(FlagCallback(
+        flag: flag,
+        line: NarrationLine(en: en, fr: entry['fr']?.toString()),
+        unlessFlags: (entry['unlessFlags'] as List?)
+                ?.map((e) => e.toString())
+                .toList() ??
+            const [],
+        andFlags:
+            (entry['andFlags'] as List?)?.map((e) => e.toString()).toList() ??
+                const [],
+        priority: switch (entry['priority']) {
+          final num priority => priority.toInt(),
+          _ => 0,
+        },
+      ));
     }
     return out;
   }
@@ -846,10 +844,8 @@ class StoryNode {
       if (value is! Map) continue;
       final en = value['en']?.toString() ?? '';
       if (en.isEmpty) continue;
-      out[entry.key.toString()] = NarrationLine(
-        en: en,
-        fr: value['fr']?.toString(),
-      );
+      out[entry.key.toString()] =
+          NarrationLine(en: en, fr: value['fr']?.toString());
     }
     return out;
   }
@@ -862,10 +858,8 @@ class StoryNode {
       if (value is! Map) continue;
       final en = value['en']?.toString() ?? '';
       if (en.isEmpty) continue;
-      out[entry.key.toString()] = AlignmentEpilogue(
-        en: en,
-        fr: value['fr']?.toString(),
-      );
+      out[entry.key.toString()] =
+          AlignmentEpilogue(en: en, fr: value['fr']?.toString());
     }
     return out;
   }
@@ -1027,11 +1021,10 @@ class StoryNode {
   }
 
   /// The persona sentences for this character, race first.
-  List<String> personaLinesFor({
-    required String raceId,
-    required String professionId,
-    required bool french,
-  }) {
+  List<String> personaLinesFor(
+      {required String raceId,
+      required String professionId,
+      required bool french}) {
     return [
       for (final key in ['race:$raceId', 'profession:$professionId'])
         if (personaVariants[key] != null) personaVariants[key]!.textFor(french),
@@ -1311,12 +1304,10 @@ class HubProgress {
       if (entry is! Map) continue;
       final en = entry['en']?.toString() ?? '';
       if (en.isEmpty) continue;
-      lines.add(
-        HubProgressLine(
-          after: (entry['after'] as num?)?.toInt() ?? 1,
-          line: NarrationLine(en: en, fr: entry['fr']?.toString()),
-        ),
-      );
+      lines.add(HubProgressLine(
+        after: (entry['after'] as num?)?.toInt() ?? 1,
+        line: NarrationLine(en: en, fr: entry['fr']?.toString()),
+      ));
     }
     if (prefix.isEmpty || lines.isEmpty) return null;
     lines.sort((a, b) => a.after.compareTo(b.after));

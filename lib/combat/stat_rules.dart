@@ -41,9 +41,7 @@ String damageStatOf(String? professionId) => switch (professionId) {
 /// per point of the damage stat, [healthPerConstitution] per point of
 /// Constitution. A lost point takes as much away.
 ({int baseDamage, int maxHealth}) abilityGainEffects(
-  Map<String, int> gains,
-  String? professionId,
-) {
+    Map<String, int> gains, String? professionId) {
   final stat = damageStatOf(professionId);
   return (
     baseDamage: stat.isEmpty ? 0 : gains[stat] ?? 0,
@@ -100,10 +98,8 @@ const double blockChanceMax = 50;
 /// [extra] from gear, signs and perks (GearEffects.blockChance), at most
 /// [blockChanceMax].
 double blockChanceWith(String? professionId, int perception, double extra) =>
-    min(
-      blockChanceMax,
-      max(0, blockChanceFor(professionId, perception) + extra),
-    );
+    min(blockChanceMax,
+        max(0, blockChanceFor(professionId, perception) + extra));
 
 /// What is left of a blow of [damage] a warrior blocks: half, rounded down.
 int blockedBlow(int damage) => damage ~/ 2;

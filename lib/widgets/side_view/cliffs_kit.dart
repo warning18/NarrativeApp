@@ -43,69 +43,47 @@ abstract final class _CliffsLook {
 /// The layers, back to front. [progress] brings the goal's lighthouse nearer.
 List<SideLayer> cliffsLayers({double progress = 0}) => [
       SideLayer(
-        0,
-        (c, s, scroll, t, u) =>
-            kitSky(c, s, u, bands: _CliffsLook.sky, ground: _CliffsLook.sea),
-      ),
+          0,
+          (c, s, scroll, t, u) =>
+              kitSky(c, s, u, bands: _CliffsLook.sky, ground: _CliffsLook.sea)),
       SideLayer(
-        0.05,
-        (c, s, scroll, t, u) => kitDisc(
-          c,
-          s,
-          u,
-          cx: 0.68,
-          cy: 14,
-          disc: _CliffsLook.sun.withValues(alpha: 0.95),
-          glow: _CliffsLook.sun.withValues(alpha: 0.2),
-          radius: 3,
-        ),
-      ),
+          0.05,
+          (c, s, scroll, t, u) => kitDisc(c, s, u,
+              cx: 0.68,
+              cy: 14,
+              disc: _CliffsLook.sun.withValues(alpha: 0.95),
+              glow: _CliffsLook.sun.withValues(alpha: 0.2),
+              radius: 3)),
       SideLayer(0.1, (c, s, scroll, t, u) {
         _sea(c, s, u, scroll, t);
         _lighthouse(c, s, u, progress);
       }),
       SideLayer(0.3, (c, s, scroll, t, u) {
-        sideHills(
-          c,
-          s,
-          u,
-          scroll,
-          base: 47,
-          amp: 3.4,
-          wave: 0.045,
-          phase: 0.8,
-          fill: _CliffsLook.headland,
-          rim: _CliffsLook.headlandRim,
-        );
+        sideHills(c, s, u, scroll,
+            base: 47,
+            amp: 3.4,
+            wave: 0.045,
+            phase: 0.8,
+            fill: _CliffsLook.headland,
+            rim: _CliffsLook.headlandRim);
         _gulls(c, s, u, scroll, t);
       }),
       SideLayer(0.8, (c, s, scroll, t, u) {
-        sideHills(
-          c,
-          s,
-          u,
-          scroll,
-          base: 55,
-          amp: 2.2,
-          wave: 0.05,
-          phase: 2.2,
-          fill: _CliffsLook.cliff,
-          rim: _CliffsLook.grass,
-        );
+        sideHills(c, s, u, scroll,
+            base: 55,
+            amp: 2.2,
+            wave: 0.05,
+            phase: 2.2,
+            fill: _CliffsLook.cliff,
+            rim: _CliffsLook.grass);
         _ledge(c, s, u, scroll);
       }),
       SideLayer(
-        1.0,
-        (c, s, scroll, t, u) => kitPath(
-          c,
-          s,
-          scroll,
-          u,
-          body: _CliffsLook.path,
-          light: _CliffsLook.pathLight,
-          dark: _CliffsLook.pathDark,
-        ),
-      ),
+          1.0,
+          (c, s, scroll, t, u) => kitPath(c, s, scroll, u,
+              body: _CliffsLook.path,
+              light: _CliffsLook.pathLight,
+              dark: _CliffsLook.pathDark)),
     ];
 
 /// The sea below the headlands: a band to the horizon with sparkles that
@@ -133,44 +111,16 @@ void _lighthouse(Canvas canvas, Size size, double u, double progress) {
   final bw = (5 * scale).round().toDouble();
   final bh = (18 * scale).round().toDouble();
   const base = 46.0;
-  sidePixels(
-    canvas,
-    u,
-    Paint()..color = _CliffsLook.tower,
-    x - bw / 2,
-    base - bh,
-    bw,
-    bh,
-  );
-  sidePixels(
-    canvas,
-    u,
-    Paint()..color = _CliffsLook.towerBand,
-    x - bw / 2,
-    base - bh * 0.55,
-    bw,
-    math.max(2, bh * 0.15),
-  );
+  sidePixels(canvas, u, Paint()..color = _CliffsLook.tower, x - bw / 2,
+      base - bh, bw, bh);
+  sidePixels(canvas, u, Paint()..color = _CliffsLook.towerBand, x - bw / 2,
+      base - bh * 0.55, bw, math.max(2, bh * 0.15));
   // The lamp room: a lit block under a small cap.
   final lamp = math.max(2, (3 * scale).round()).toDouble();
-  sidePixels(
-    canvas,
-    u,
-    Paint()..color = _CliffsLook.lamp,
-    x - lamp / 2,
-    base - bh - lamp,
-    lamp,
-    lamp,
-  );
-  sidePixels(
-    canvas,
-    u,
-    Paint()..color = _CliffsLook.towerBand,
-    x - lamp / 2 - 1,
-    base - bh - lamp - 1,
-    lamp + 2,
-    1,
-  );
+  sidePixels(canvas, u, Paint()..color = _CliffsLook.lamp, x - lamp / 2,
+      base - bh - lamp, lamp, lamp);
+  sidePixels(canvas, u, Paint()..color = _CliffsLook.towerBand,
+      x - lamp / 2 - 1, base - bh - lamp - 1, lamp + 2, 1);
 }
 
 /// Gulls turning above the headland: two pixels of wing that beat.

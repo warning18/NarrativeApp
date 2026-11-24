@@ -24,11 +24,7 @@ import 'tower_providers.dart';
 /// foe missing from the tables, or Back before the first roll). There is no
 /// retreat in the Tower: once begun, a fight is won or lost.
 Future<TowerFightResult?> towerFightFor(
-  Ref ref,
-  BuildContext context,
-  TowerRun run,
-  TowerData data,
-) async {
+    Ref ref, BuildContext context, TowerRun run, TowerData data) async {
   await ref.read(gameDbProvider(enemiesSchema).notifier).whenLoaded();
   final enemies =
       ref.read(localizedDbProvider(enemiesSchema)).value ?? const {};
@@ -47,47 +43,41 @@ Future<TowerFightResult?> towerFightFor(
   }
   final fight = TowerFightSession(run, data);
   ref.read(combatActiveProvider.notifier).state = true;
-  final won = await Navigator.of(context).push<bool>(
-    MaterialPageRoute(
-      builder: (_) {
-        final screen = fight.wrap(
-          FightScreen(
-            enemyId: floor.enemyIds.first,
-            enemy: records[floor.enemyIds.first]!,
-            additionalEnemyIds: floor.enemyIds.skip(1).toList(),
-            additionalEnemies: {
-              for (final id in floor.enemyIds.skip(1)) id: records[id]!,
-            },
-            modifiers: floor.modifiersFor(run.professionId),
-            onRound: fight.onRound,
-          ),
-        );
-        // The Tower's fights wear the Tower: a warden's or a boss's floor its
-        // own picture, the others their band's, the hall's stone under the dice
-        // and the floor named in the ground line (looks only).
-        // In the Tower's ink look (v1.1006): its dark theme and square buttons.
-        return TowerNight(
-          floor: run.floor,
-          frames: false,
-          child: FightPlateOverride(
+  final won = await Navigator.of(context).push<bool>(MaterialPageRoute(
+    builder: (_) {
+      final screen = fight.wrap(FightScreen(
+        enemyId: floor.enemyIds.first,
+        enemy: records[floor.enemyIds.first]!,
+        additionalEnemyIds: floor.enemyIds.skip(1).toList(),
+        additionalEnemies: {
+          for (final id in floor.enemyIds.skip(1)) id: records[id]!,
+        },
+        modifiers: floor.modifiersFor(run.professionId),
+        onRound: fight.onRound,
+      ));
+      // The Tower's fights wear the Tower: a warden's or a boss's floor its
+      // own picture, the others their band's, the hall's stone under the dice
+      // and the floor named in the ground line (looks only).
+      // In the Tower's ink look (v1.1006): its dark theme and square buttons.
+      return TowerNight(
+        floor: run.floor,
+        frames: false,
+        child: FightPlateOverride(
             asset: towerFloorPlate(run.floor) ??
                 towerBackdropAsset(towerBandOf(run.floor)),
             boardStage: FightStage.hall,
             floor: run.floor,
-            child: screen,
-          ),
-        );
-      },
-    ),
-  );
+            child: screen),
+      );
+    },
+  ));
   ref.read(combatActiveProvider.notifier).state = false;
   // Back before the first roll pops null: the floor was not fought.
   if (won == null) return null;
   return TowerFightResult(
-    won: won,
-    healthLeft: fight.healthLeft,
-    potionsLeft: fight.potionsLeft,
-    antidotesLeft: fight.antidotesLeft,
-    rounds: fight.rounds > 0 ? fight.rounds : null,
-  );
+      won: won,
+      healthLeft: fight.healthLeft,
+      potionsLeft: fight.potionsLeft,
+      antidotesLeft: fight.antidotesLeft,
+      rounds: fight.rounds > 0 ? fight.rounds : null);
 }

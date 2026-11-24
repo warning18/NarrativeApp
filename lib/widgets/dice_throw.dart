@@ -14,7 +14,6 @@ import 'dart:math' as math;
 import 'package:flutter/animation.dart';
 import 'package:flutter/foundation.dart' show Listenable;
 import 'package:flutter/rendering.dart' show CustomClipper;
-
 import 'dart:ui'
     show Offset, Path, PathOperation, RRect, Radius, Rect, Size, lerpDouble;
 
@@ -137,12 +136,11 @@ class DiceThrowPlan {
       for (var i = 0; i < 10; i++) {
         final mid = (lo + hi) / 2;
         final end = alone(
-          _Body(s.seat, s.radius, false)
-            ..x = b.x
-            ..y = b.y,
-          mid,
-          dir,
-        );
+            _Body(s.seat, s.radius, false)
+              ..x = b.x
+              ..y = b.y,
+            mid,
+            dir);
         final travelled = (end - Offset(b.x, b.y)).distance;
         if (travelled < to.distance) {
           lo = mid;
@@ -396,11 +394,11 @@ class DiceHoles extends CustomClipper<Path> {
     var path = Path()..addRect(Offset.zero & size);
     for (final hole in holes()) {
       path = Path.combine(
-        PathOperation.difference,
-        path,
-        Path()
-          ..addRRect(RRect.fromRectAndRadius(hole, const Radius.circular(16))),
-      );
+          PathOperation.difference,
+          path,
+          Path()
+            ..addRRect(
+                RRect.fromRectAndRadius(hole, const Radius.circular(16))));
     }
     return path;
   }

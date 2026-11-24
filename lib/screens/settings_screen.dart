@@ -1,5 +1,4 @@
 import 'dart:async';
-
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart' show Clipboard, ClipboardData;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -45,12 +44,10 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
   @override
   void initState() {
     super.initState();
-    _githubTokenController = TextEditingController(
-      text: ref.read(githubTokenProvider) ?? '',
-    );
-    _companionNameController = TextEditingController(
-      text: ref.read(companionNameProvider),
-    );
+    _githubTokenController =
+        TextEditingController(text: ref.read(githubTokenProvider) ?? '');
+    _companionNameController =
+        TextEditingController(text: ref.read(companionNameProvider));
   }
 
   @override
@@ -129,9 +126,8 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                 onPressed: () async {
                   await ref.read(tutorialProvider.notifier).reset();
                   if (!context.mounted) return;
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(content: Text(tr(ref, 'tutorial_reset_notice'))),
-                  );
+                  ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                      content: Text(tr(ref, 'tutorial_reset_notice'))));
                 },
                 icon: const Icon(Icons.replay),
                 label: Text(tr(ref, 'tutorial_replay_button')),
@@ -161,15 +157,13 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
             SegmentedButton<AppLanguage>(
               segments: const [
                 ButtonSegment(
-                  value: AppLanguage.en,
-                  label: Text('English'),
-                  icon: Text('🇬🇧'),
-                ),
+                    value: AppLanguage.en,
+                    label: Text('English'),
+                    icon: Text('🇬🇧')),
                 ButtonSegment(
-                  value: AppLanguage.fr,
-                  label: Text('Français'),
-                  icon: Text('🇫🇷'),
-                ),
+                    value: AppLanguage.fr,
+                    label: Text('Français'),
+                    icon: Text('🇫🇷')),
               ],
               selected: {language},
               onSelectionChanged: (selection) {
@@ -201,19 +195,14 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
               decoration: const InputDecoration(border: OutlineInputBorder()),
               items: [
                 DropdownMenuItem(
-                  value: null,
-                  child: Text(
-                    tr(ref, 'map_theme_auto_label'),
-                    overflow: TextOverflow.ellipsis,
-                  ),
-                ),
+                    value: null,
+                    child: Text(tr(ref, 'map_theme_auto_label'),
+                        overflow: TextOverflow.ellipsis)),
                 ...MapTheme.values.map(
                   (theme) => DropdownMenuItem(
                     value: theme,
-                    child: Text(
-                      tr(ref, mapThemeLabelKey(theme)),
-                      overflow: TextOverflow.ellipsis,
-                    ),
+                    child: Text(tr(ref, mapThemeLabelKey(theme)),
+                        overflow: TextOverflow.ellipsis),
                   ),
                 ),
               ],
@@ -263,9 +252,8 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                                 (color) => Container(
                                   width: 18,
                                   height: 18,
-                                  margin: const EdgeInsets.symmetric(
-                                    horizontal: 1,
-                                  ),
+                                  margin:
+                                      const EdgeInsets.symmetric(horizontal: 1),
                                   decoration: BoxDecoration(
                                     color: color,
                                     shape: BoxShape.circle,
@@ -307,25 +295,22 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                 ButtonSegment(
                   value: ThemeMode.system,
                   label: FittedBox(
-                    fit: BoxFit.scaleDown,
-                    child: Text(tr(ref, 'theme_mode_system'), maxLines: 1),
-                  ),
+                      fit: BoxFit.scaleDown,
+                      child: Text(tr(ref, 'theme_mode_system'), maxLines: 1)),
                   icon: const Icon(Icons.brightness_auto),
                 ),
                 ButtonSegment(
                   value: ThemeMode.light,
                   label: FittedBox(
-                    fit: BoxFit.scaleDown,
-                    child: Text(tr(ref, 'theme_mode_light'), maxLines: 1),
-                  ),
+                      fit: BoxFit.scaleDown,
+                      child: Text(tr(ref, 'theme_mode_light'), maxLines: 1)),
                   icon: const Icon(Icons.light_mode),
                 ),
                 ButtonSegment(
                   value: ThemeMode.dark,
                   label: FittedBox(
-                    fit: BoxFit.scaleDown,
-                    child: Text(tr(ref, 'theme_mode_dark'), maxLines: 1),
-                  ),
+                      fit: BoxFit.scaleDown,
+                      child: Text(tr(ref, 'theme_mode_dark'), maxLines: 1)),
                   icon: const Icon(Icons.dark_mode),
                 ),
               ],
@@ -387,9 +372,8 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
               segments: [
                 for (final value in AimedShots.values)
                   ButtonSegment(
-                    value: value,
-                    label: Text(tr(ref, 'aimed_shots_${value.name}')),
-                  ),
+                      value: value,
+                      label: Text(tr(ref, 'aimed_shots_${value.name}'))),
               ],
               selected: {aimedShots},
               showSelectedIcon: false,
@@ -552,17 +536,14 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                   border: const OutlineInputBorder(),
                   labelText: tr(ref, 'github_token_label'),
                   suffixIcon: IconButton(
-                    icon: Icon(
-                      _obscureGithubToken
-                          ? Icons.visibility
-                          : Icons.visibility_off,
-                    ),
+                    icon: Icon(_obscureGithubToken
+                        ? Icons.visibility
+                        : Icons.visibility_off),
                     tooltip: _obscureGithubToken
                         ? tr(ref, 'show_token_tooltip')
                         : tr(ref, 'hide_token_tooltip'),
                     onPressed: () => setState(
-                      () => _obscureGithubToken = !_obscureGithubToken,
-                    ),
+                        () => _obscureGithubToken = !_obscureGithubToken),
                   ),
                 ),
               ),
@@ -580,8 +561,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                         if (!context.mounted) return;
                         ScaffoldMessenger.of(context).showSnackBar(
                           SnackBar(
-                            content: Text(tr(ref, 'github_token_saved')),
-                          ),
+                              content: Text(tr(ref, 'github_token_saved'))),
                         );
                       },
                       child: Text(tr(ref, 'save')),
@@ -595,8 +575,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                       if (!context.mounted) return;
                       ScaffoldMessenger.of(context).showSnackBar(
                         SnackBar(
-                          content: Text(tr(ref, 'github_token_removed')),
-                        ),
+                            content: Text(tr(ref, 'github_token_removed'))),
                       );
                     },
                     child: Text(tr(ref, 'clear_button')),
@@ -613,8 +592,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                 onPressed: () {
                   Navigator.of(context).push(
                     MaterialPageRoute(
-                      builder: (_) => const PlaythroughSimulatorScreen(),
-                    ),
+                        builder: (_) => const PlaythroughSimulatorScreen()),
                   );
                 },
                 icon: const Icon(Icons.play_circle_outline),
@@ -711,10 +689,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
     setState(() => _pushingEdits = true);
     try {
       final result = await pushEditsToGitHub(
-        token: token,
-        branchName: branchName,
-        changes: changes,
-      );
+          token: token, branchName: branchName, changes: changes);
       if (!mounted) return;
       setState(() => _pushingEdits = false);
       await showDialog<void>(
@@ -722,8 +697,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
         builder: (dialogContext) => AlertDialog(
           title: Text(trFor(lang, 'push_success_title')),
           content: SelectableText(
-            '${trFor(lang, 'push_success_message')}\n\n${result.compareUrl}',
-          ),
+              '${trFor(lang, 'push_success_message')}\n\n${result.compareUrl}'),
           actions: [
             TextButton(
               onPressed: () async {
@@ -792,9 +766,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
     var failed = false;
     try {
       info = await checkForUpdate(
-        githubToken: githubToken,
-        fileExtension: updateFileExtension!,
-      );
+          githubToken: githubToken, fileExtension: updateFileExtension!);
     } catch (_) {
       failed = true;
     }
@@ -833,12 +805,8 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
           ),
           TextButton(
             onPressed: () => Navigator.pop(dialogContext, true),
-            child: Text(
-              trFor(
-                lang,
-                iphone ? 'download_open_button' : 'download_install_button',
-              ),
-            ),
+            child: Text(trFor(lang,
+                iphone ? 'download_open_button' : 'download_install_button')),
           ),
         ],
       ),
@@ -858,21 +826,19 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
 
     if (!mounted) return;
     StateSetter? dialogSetState;
-    unawaited(
-      showDialog<void>(
-        context: context,
-        barrierDismissible: false,
-        builder: (dialogContext) => StatefulBuilder(
-          builder: (context, setDialogState) {
-            dialogSetState = setDialogState;
-            return AlertDialog(
-              title: Text(trFor(lang, 'downloading_label')),
-              content: LinearProgressIndicator(value: _downloadProgress),
-            );
-          },
-        ),
+    unawaited(showDialog<void>(
+      context: context,
+      barrierDismissible: false,
+      builder: (dialogContext) => StatefulBuilder(
+        builder: (context, setDialogState) {
+          dialogSetState = setDialogState;
+          return AlertDialog(
+            title: Text(trFor(lang, 'downloading_label')),
+            content: LinearProgressIndicator(value: _downloadProgress),
+          );
+        },
       ),
-    );
+    ));
 
     try {
       final path = await downloadUpdate(
@@ -890,23 +856,19 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
         if (!mounted) return;
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text(
-              trFor(
-                lang,
-                updateFileExtension == '.ipa'
-                    ? 'ios_open_failed'
-                    : 'install_failed',
-              ),
-            ),
-          ),
+              content: Text(trFor(
+                  lang,
+                  updateFileExtension == '.ipa'
+                      ? 'ios_open_failed'
+                      : 'install_failed'))),
         );
       }
     } catch (_) {
       if (!mounted) return;
       Navigator.of(context, rootNavigator: true).pop();
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(SnackBar(content: Text(trFor(lang, 'download_failed'))));
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(trFor(lang, 'download_failed'))),
+      );
     } finally {
       if (mounted) {
         setState(() {

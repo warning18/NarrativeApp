@@ -100,128 +100,119 @@ class _ArrivalSheetState extends State<ArrivalSheet>
     final ink = InkColors.of(context);
     final still = MediaQuery.of(context).disableAnimations;
     final eased = CurvedAnimation(parent: _rise, curve: Curves.easeOutCubic);
-    return LayoutBuilder(
-      builder: (context, box) {
-        final panel = Material(
-          key: const Key('journey_arrival_panel'),
-          color: theme.colorScheme.surface,
-          elevation: 8,
-          borderRadius: const BorderRadius.vertical(top: Radius.circular(16)),
-          child: ConstrainedBox(
-            constraints: BoxConstraints(maxHeight: box.maxHeight * _share),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                // The handle: a drag on it makes the sheet smaller or larger.
-                GestureDetector(
-                  key: const Key('journey_arrival_handle'),
-                  behavior: HitTestBehavior.opaque,
-                  onVerticalDragUpdate: (d) => setState(() {
-                    _share = (_share - d.delta.dy / box.maxHeight).clamp(
-                      arrivalSheetMinShare,
-                      1.0,
-                    );
-                  }),
-                  child: SizedBox(
-                    width: 120,
-                    height: 26,
-                    child: Center(
-                      child: Container(
-                        width: 36,
-                        height: 4,
-                        decoration: BoxDecoration(
-                          color: theme.colorScheme.outlineVariant,
-                          borderRadius: BorderRadius.circular(2),
-                        ),
+    return LayoutBuilder(builder: (context, box) {
+      final panel = Material(
+        key: const Key('journey_arrival_panel'),
+        color: theme.colorScheme.surface,
+        elevation: 8,
+        borderRadius: const BorderRadius.vertical(top: Radius.circular(16)),
+        child: ConstrainedBox(
+          constraints: BoxConstraints(maxHeight: box.maxHeight * _share),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              // The handle: a drag on it makes the sheet smaller or larger.
+              GestureDetector(
+                key: const Key('journey_arrival_handle'),
+                behavior: HitTestBehavior.opaque,
+                onVerticalDragUpdate: (d) => setState(() {
+                  _share = (_share - d.delta.dy / box.maxHeight)
+                      .clamp(arrivalSheetMinShare, 1.0);
+                }),
+                child: SizedBox(
+                  width: 120,
+                  height: 26,
+                  child: Center(
+                    child: Container(
+                      width: 36,
+                      height: 4,
+                      decoration: BoxDecoration(
+                        color: theme.colorScheme.outlineVariant,
+                        borderRadius: BorderRadius.circular(2),
                       ),
                     ),
                   ),
                 ),
-                if (widget.title.isNotEmpty)
-                  Padding(
-                    padding: const EdgeInsets.fromLTRB(16, 0, 4, 6),
-                    child: Row(
-                      children: [
-                        Icon(
-                          Icons.place_outlined,
-                          size: IconSize.s16,
-                          color: ink.gold,
-                        ),
-                        const SizedBox(width: 8),
-                        Expanded(
-                          child: Text(
-                            widget.title,
-                            key: const Key('journey_arrival_title'),
-                            maxLines: 2,
-                            overflow: TextOverflow.ellipsis,
-                            style: theme.textTheme.titleMedium?.copyWith(
-                              fontFamily: InkFonts.display,
-                            ),
-                          ),
-                        ),
-                        IconButton(
-                          key: const Key('journey_arrival_close'),
-                          icon: const Icon(Icons.close, size: IconSize.s16),
-                          tooltip: widget.closeTip,
-                          visualDensity: VisualDensity.compact,
-                          onPressed: widget.onContinue,
-                        ),
-                      ],
-                    ),
-                  ),
-                Flexible(
-                  child: Padding(
-                    padding: const EdgeInsets.fromLTRB(12, 0, 12, 8),
-                    child: widget.child,
-                  ),
-                ),
+              ),
+              if (widget.title.isNotEmpty)
                 Padding(
-                  padding: const EdgeInsets.fromLTRB(16, 0, 16, 12),
-                  child: SizedBox(
-                    width: double.infinity,
-                    child: FilledButton.icon(
-                      key: const ValueKey('journey_continue'),
-                      onPressed: widget.onContinue,
-                      icon: const Icon(Icons.arrow_forward, size: IconSize.s16),
-                      label: Text(widget.continueLabel),
-                    ),
+                  padding: const EdgeInsets.fromLTRB(16, 0, 4, 6),
+                  child: Row(
+                    children: [
+                      Icon(Icons.place_outlined,
+                          size: IconSize.s16, color: ink.gold),
+                      const SizedBox(width: 8),
+                      Expanded(
+                        child: Text(
+                          widget.title,
+                          key: const Key('journey_arrival_title'),
+                          maxLines: 2,
+                          overflow: TextOverflow.ellipsis,
+                          style: theme.textTheme.titleMedium
+                              ?.copyWith(fontFamily: InkFonts.display),
+                        ),
+                      ),
+                      IconButton(
+                        key: const Key('journey_arrival_close'),
+                        icon: const Icon(Icons.close, size: IconSize.s16),
+                        tooltip: widget.closeTip,
+                        visualDensity: VisualDensity.compact,
+                        onPressed: widget.onContinue,
+                      ),
+                    ],
                   ),
                 ),
-              ],
-            ),
-          ),
-        );
-        return Stack(
-          key: const Key('journey_arrival_sheet'),
-          children: [
-            // The map, dimmed: a tap on it is Continue.
-            Positioned.fill(
-              child: GestureDetector(
-                behavior: HitTestBehavior.opaque,
-                onTap: widget.onContinue,
-                child: FadeTransition(
-                  opacity: eased,
-                  child: const ColoredBox(color: Color(0x73000000)),
+              Flexible(
+                child: Padding(
+                  padding: const EdgeInsets.fromLTRB(12, 0, 12, 8),
+                  child: widget.child,
                 ),
               ),
+              Padding(
+                padding: const EdgeInsets.fromLTRB(16, 0, 16, 12),
+                child: SizedBox(
+                  width: double.infinity,
+                  child: FilledButton.icon(
+                    key: const ValueKey('journey_continue'),
+                    onPressed: widget.onContinue,
+                    icon: const Icon(Icons.arrow_forward, size: IconSize.s16),
+                    label: Text(widget.continueLabel),
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+      );
+      return Stack(
+        key: const Key('journey_arrival_sheet'),
+        children: [
+          // The map, dimmed: a tap on it is Continue.
+          Positioned.fill(
+            child: GestureDetector(
+              behavior: HitTestBehavior.opaque,
+              onTap: widget.onContinue,
+              child: FadeTransition(
+                opacity: eased,
+                child: const ColoredBox(color: Color(0x73000000)),
+              ),
             ),
-            Positioned(
-              left: 0,
-              right: 0,
-              bottom: 0,
-              child: still
-                  ? FadeTransition(opacity: eased, child: panel)
-                  : SlideTransition(
-                      position: Tween<Offset>(
-                        begin: const Offset(0, 0.35),
-                        end: Offset.zero,
-                      ).animate(eased),
-                      child: FadeTransition(opacity: eased, child: panel),
-                    ),
-            ),
-          ],
-        );
-      },
-    );
+          ),
+          Positioned(
+            left: 0,
+            right: 0,
+            bottom: 0,
+            child: still
+                ? FadeTransition(opacity: eased, child: panel)
+                : SlideTransition(
+                    position: Tween<Offset>(
+                            begin: const Offset(0, 0.35), end: Offset.zero)
+                        .animate(eased),
+                    child: FadeTransition(opacity: eased, child: panel),
+                  ),
+          ),
+        ],
+      );
+    });
   }
 }

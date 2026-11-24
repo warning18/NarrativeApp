@@ -238,10 +238,8 @@ int conditionSeedFor({
 /// The condition of [chapter] in the run of [seed]: none outside chapters
 /// 2 to 6. The chapters draw in order, without repeats, so a run meets
 /// five different conditions.
-ChapterCondition? chapterConditionFor({
-  required int seed,
-  required int chapter,
-}) {
+ChapterCondition? chapterConditionFor(
+    {required int seed, required int chapter}) {
   if (chapter < _firstConditionChapter || chapter > _lastConditionChapter) {
     return null;
   }

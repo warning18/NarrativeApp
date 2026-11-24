@@ -155,9 +155,8 @@ class SavedGamesNotifier extends StateNotifier<List<SaveSlotSummary?>> {
     try {
       final data = json.decode(raw) as Map<String, dynamic>;
       return SavedGame(
-        session: PlayerSession.fromJson(
-          data['session'] as Map<String, dynamic>,
-        ),
+        session:
+            PlayerSession.fromJson(data['session'] as Map<String, dynamic>),
         currentNodeId: data['currentNodeId'] as String,
         history:
             (data['history'] as List?)?.map((e) => e.toString()).toList() ??
@@ -189,5 +188,4 @@ class SavedGamesNotifier extends StateNotifier<List<SaveSlotSummary?>> {
 
 final savedGamesProvider =
     StateNotifierProvider<SavedGamesNotifier, List<SaveSlotSummary?>>(
-  (ref) => SavedGamesNotifier(),
-);
+        (ref) => SavedGamesNotifier());

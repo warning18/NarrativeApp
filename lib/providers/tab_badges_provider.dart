@@ -37,15 +37,11 @@ List<String> affordableHouseIds(
     [
       for (final entry in houses.entries)
         if (entry.value is Map<String, dynamic> &&
-            houseDiscovered(
-              entry.value as Map<String, dynamic>,
-              session.recruitedAllies.map((a) => a.companionId),
-            ) &&
+            houseDiscovered(entry.value as Map<String, dynamic>,
+                session.recruitedAllies.map((a) => a.companionId)) &&
             !session.builtHouseIds.contains(entry.key) &&
             meetsRequiredFlags(
-              entry.value as Map<String, dynamic>,
-              session.flags,
-            ) &&
+                entry.value as Map<String, dynamic>, session.flags) &&
             session.gold >=
                 (((entry.value as Map<String, dynamic>)['buildCost'] as num?)
                         ?.toInt() ??
@@ -62,10 +58,7 @@ List<String> questsReadyToTurnIn(
       for (final questId in session.activeQuestIds)
         if (quests[questId] is Map<String, dynamic> &&
             allObjectivesMet(
-              questId,
-              quests[questId] as Map<String, dynamic>,
-              session,
-            ))
+                questId, quests[questId] as Map<String, dynamic>, session))
           questId,
     ];
 
@@ -113,10 +106,10 @@ final tabBadgesProvider = Provider<_TabBadges>((ref) {
   // A merge is ready: two skills known, the result not yet (the language
   // only names the skills, so any will do here).
   final mergeReady = craftRecipesFor(
-    merges: merges,
-    unlockedSkillIds: session.unlockedSkillIds,
-    language: AppLanguage.en,
-  ).any((recipe) => recipe.ready);
+          merges: merges,
+          unlockedSkillIds: session.unlockedSkillIds,
+          language: AppLanguage.en)
+      .any((recipe) => recipe.ready);
   final house = affordableHouseIds(session, houses).isNotEmpty;
   return _TabBadges(
     character: hasPointsToSpend(session) || hasSignWaiting(session),

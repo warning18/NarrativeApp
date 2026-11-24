@@ -52,8 +52,7 @@ class SlowFramesSettings extends ConsumerWidget {
                   await Clipboard.setData(ClipboardData(text: text));
                   if (!context.mounted) return;
                   ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(content: Text(tr(ref, 'slow_frames_copied'))),
-                  );
+                      SnackBar(content: Text(tr(ref, 'slow_frames_copied'))));
                 },
                 child: Text(tr(ref, 'slow_frames_copy')),
               ),

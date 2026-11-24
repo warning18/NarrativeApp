@@ -44,37 +44,27 @@ class InkWorn extends StatelessWidget {
   Widget build(BuildContext context) {
     Widget w = child;
     if (marks) {
-      w = Stack(
-        clipBehavior: Clip.none,
-        children: [
-          w,
-          Positioned.fill(
-            child: IgnorePointer(child: CustomPaint(painter: InkMarks(seed))),
-          ),
-          if (seed.pin)
-            Positioned(
+      w = Stack(clipBehavior: Clip.none, children: [
+        w,
+        Positioned.fill(
+            child: IgnorePointer(child: CustomPaint(painter: InkMarks(seed)))),
+        if (seed.pin)
+          Positioned(
               left: 4,
               top: 3,
               child: IgnorePointer(
                 child: Container(
-                  width: 6,
-                  height: 6,
-                  decoration: BoxDecoration(
-                    shape: BoxShape.circle,
-                    color: seed.n % 4 == 0 ? inkRedDeep : inkGrey,
-                    border: Border.all(color: inkBlack, width: 0.8),
-                  ),
-                ),
-              ),
-            ),
-        ],
-      );
+                    width: 6,
+                    height: 6,
+                    decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        color: seed.n % 4 == 0 ? inkRedDeep : inkGrey,
+                        border: Border.all(color: inkBlack, width: 0.8))),
+              )),
+      ]);
     }
     if (tear || (chip && seed.chip)) {
-      w = ClipPath(
-        clipper: InkTear(seed, tear: tear, chip: chip),
-        child: w,
-      );
+      w = ClipPath(clipper: InkTear(seed, tear: tear, chip: chip), child: w);
     }
     return tilt ? Transform.rotate(angle: seed.tilt, child: w) : w;
   }
@@ -124,32 +114,28 @@ class InkMarks extends CustomPainter {
     final r = math.Random(seed.n * 101 + 7);
     for (var i = 0; i < seed.stains; i++) {
       final c = Offset(r.nextDouble() * s.width, r.nextDouble() * s.height);
-      canvas.drawCircle(
-        c,
-        5 + r.nextDouble() * 9,
-        Paint()..color = Palette.night28.withValues(alpha: 0.13),
-      );
+      canvas.drawCircle(c, 5 + r.nextDouble() * 9,
+          Paint()..color = Palette.night28.withValues(alpha: 0.13));
     }
     for (var i = 0; i < seed.splatters; i++) {
       final c = Offset(r.nextDouble() * s.width, r.nextDouble() * s.height);
       canvas.drawCircle(
-        c,
-        0.6 + r.nextDouble() * 1.4,
-        Paint()
-          ..color = (i.isEven ? inkBlack : inkRedDeep).withValues(alpha: 0.55),
-      );
+          c,
+          0.6 + r.nextDouble() * 1.4,
+          Paint()
+            ..color =
+                (i.isEven ? inkBlack : inkRedDeep).withValues(alpha: 0.55));
     }
     if (seed.burn) {
       final c = Offset(s.width, s.height * 0.8);
       canvas.drawCircle(
-        c,
-        14,
-        Paint()
-          ..shader = ui.Gradient.radial(c, 14, [
-            Palette.night7.withValues(alpha: 0.67),
-            Palette.night7.withValues(alpha: 0),
-          ]),
-      );
+          c,
+          14,
+          Paint()
+            ..shader = ui.Gradient.radial(c, 14, [
+              Palette.night7.withValues(alpha: 0.67),
+              Palette.night7.withValues(alpha: 0),
+            ]));
     }
     if (seed.fold) {
       final p = Path()
@@ -159,12 +145,11 @@ class InkMarks extends CustomPainter {
         ..close();
       canvas.drawPath(p, Paint()..color = inkBlack.withValues(alpha: 0.45));
       canvas.drawLine(
-        Offset(s.width - 12, s.height),
-        Offset(s.width, s.height - 12),
-        Paint()
-          ..color = inkPaper.withValues(alpha: 0.5)
-          ..strokeWidth = 1,
-      );
+          Offset(s.width - 12, s.height),
+          Offset(s.width, s.height - 12),
+          Paint()
+            ..color = inkPaper.withValues(alpha: 0.5)
+            ..strokeWidth = 1);
     }
   }
 

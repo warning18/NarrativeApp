@@ -67,11 +67,8 @@ ChestTier? chestTierFromName(String? name) {
 
 ChestTier _maxTier(ChestTier a, ChestTier b) => a.index >= b.index ? a : b;
 
-ChestTier _shiftTier(ChestTier tier, int steps) =>
-    ChestTier.values[(tier.index + steps).clamp(
-      0,
-      ChestTier.values.length - 1,
-    )];
+ChestTier _shiftTier(ChestTier tier, int steps) => ChestTier
+    .values[(tier.index + steps).clamp(0, ChestTier.values.length - 1)];
 
 /// One line of the fortune roll's visible breakdown.
 class FortuneModifier {
@@ -101,6 +98,7 @@ class LootContext {
     this.conditionBonus = 0,
     this.tierFloor,
     this.tierShift = 0,
+    this.tierCeiling,
     this.preferredScalingStat = '',
     this.alignmentLabel = 'Neutral',
     this.ownedItemIds = const [],
@@ -147,6 +145,10 @@ class LootContext {
   /// Tier steps applied after floors -- negative for a chest a Skittish
   /// enemy fled with part of.
   final int tierShift;
+
+  /// A hard ceiling on the tier, applied last: with [tierFloor] the same,
+  /// the chest is exactly that tier (the chapter chest, chapter_goals.dart).
+  final ChestTier? tierCeiling;
 
   /// The player's profession's `preferredScalingStat`, for the loot
   /// affinity reweight: an item scaling with it weighs more.
@@ -208,12 +210,8 @@ List<FortuneModifier> fortuneModifiersFor(LootContext context) {
     mods.add(const FortuneModifier('fortune_elite', _eliteFortuneBonus));
   }
   if (context.enemyCount > 1) {
-    mods.add(
-      FortuneModifier(
-        'fortune_pack',
-        (context.enemyCount - 1) * _packFortuneBonusPerExtraEnemy,
-      ),
-    );
+    mods.add(FortuneModifier('fortune_pack',
+        (context.enemyCount - 1) * _packFortuneBonusPerExtraEnemy));
   }
   if (context.flawless) {
     mods.add(const FortuneModifier('fortune_flawless', _flawlessFortuneBonus));
@@ -222,31 +220,19 @@ List<FortuneModifier> fortuneModifiersFor(LootContext context) {
     mods.add(const FortuneModifier('fortune_swift', _swiftFortuneBonus));
   }
   if (context.finalBlowCritical) {
-    mods.add(
-      const FortuneModifier(
-        'fortune_critical_finish',
-        _criticalFinishFortuneBonus,
-      ),
-    );
+    mods.add(const FortuneModifier(
+        'fortune_critical_finish', _criticalFinishFortuneBonus));
   }
   if (context.affixCount > 0) {
-    mods.add(
-      FortuneModifier(
-        'fortune_affixes',
-        context.affixCount * _affixFortuneBonusEach,
-      ),
-    );
+    mods.add(FortuneModifier(
+        'fortune_affixes', context.affixCount * _affixFortuneBonusEach));
   }
   if (context.conditionBonus != 0) {
     mods.add(FortuneModifier('fortune_condition', context.conditionBonus));
   }
   if (context.pityStreak > 0) {
-    mods.add(
-      FortuneModifier(
-        'fortune_pity',
-        context.pityStreak * _pityFortuneBonusPerStreak,
-      ),
-    );
+    mods.add(FortuneModifier(
+        'fortune_pity', context.pityStreak * _pityFortuneBonusPerStreak));
   }
   return mods;
 }
@@ -288,7 +274,9 @@ ChestTier? _tierFloorFor(LootContext context) {
 ChestTier finalTierFor(LootContext context, ChestTier rolled) {
   final floor = _tierFloorFor(context);
   final floored = floor == null ? rolled : _maxTier(rolled, floor);
-  return _shiftTier(floored, context.tierShift);
+  final shifted = _shiftTier(floored, context.tierShift);
+  final ceiling = context.tierCeiling;
+  return ceiling != null && shifted.index > ceiling.index ? ceiling : shifted;
 }
 
 /// Slots a chest of [tier] holds (before the Perception extra slot).
@@ -301,12 +289,8 @@ int _slotCountFor(ChestTier tier, Random random) => switch (tier) {
     };
 
 /// Gold for a chest of [tier] in [chapter].
-int _chestGoldFor(
-  ChestTier tier,
-  int chapter,
-  Random random, {
-  bool isElite = false,
-}) {
+int _chestGoldFor(ChestTier tier, int chapter, Random random,
+    {bool isElite = false}) {
   final base = _chestBaseGold[tier] ?? 0;
   final variance = 0.7 + random.nextDouble() * 0.6;
   var gold = (base * variance * (1 + 0.25 * (chapter - 1))).round();
@@ -439,10 +423,7 @@ String? _pickWeighted(Map<String, double> weights, Random random) {
 }
 
 Map<String, double> _idsOfType(
-  Map<String, dynamic> items,
-  String itemType,
-  LootContext context,
-) {
+    Map<String, dynamic> items, String itemType, LootContext context) {
   final weights = <String, double>{};
   for (final entry in items.entries) {
     final item = entry.value as Map<String, dynamic>;
@@ -456,9 +437,7 @@ Map<String, double> _idsOfType(
 /// Consumable weights per tier -- a Wooden chest only ever holds a minor
 /// potion; a Gold chest is as likely to hold a major one.
 Map<String, double> _consumableWeightsFor(
-  ChestTier tier,
-  Map<String, dynamic> items,
-) {
+    ChestTier tier, Map<String, dynamic> items) {
   Map<String, double> only(Map<String, double> wanted) => {
         for (final e in wanted.entries)
           if (items.containsKey(e.key)) e.key: e.value,
@@ -466,16 +445,11 @@ Map<String, double> _consumableWeightsFor(
   return switch (tier) {
     ChestTier.wooden => only({'potion_minor': 1}),
     ChestTier.iron => only({'potion_minor': 7, 'antidote': 3}),
-    ChestTier.silver => only({
-        'potion_minor': 5,
-        'antidote': 2.5,
-        'potion_major': 2.5,
-      }),
-    ChestTier.gold || ChestTier.voidTier => only({
-        'potion_major': 6,
-        'antidote': 2,
-        'potion_minor': 2,
-      }),
+    ChestTier.silver =>
+      only({'potion_minor': 5, 'antidote': 2.5, 'potion_major': 2.5}),
+    ChestTier.gold ||
+    ChestTier.voidTier =>
+      only({'potion_major': 6, 'antidote': 2, 'potion_minor': 2}),
   };
 }
 
@@ -497,12 +471,8 @@ LootBoxResult rollLootBox(
   final floorApplied =
       floor != null && floor.index > rolled.index ? floor : null;
 
-  var gold = _chestGoldFor(
-    tier,
-    context.chapter,
-    random,
-    isElite: context.isElite,
-  );
+  var gold =
+      _chestGoldFor(tier, context.chapter, random, isElite: context.isElite);
   final slotCount =
       _slotCountFor(tier, random) + (context.fullTelegraphRead ? 1 : 0);
   final itemIds = <String>[];
@@ -534,13 +504,9 @@ LootBoxResult rollLootBox(
           continue;
         case _SlotKind.gear:
           final id = _pickWeighted(
-            gearWeightsFor(
-              context,
-              items,
-              tier,
-              rareOnly: tier == ChestTier.voidTier && slot == 0,
-              alreadyInChest: chestGear,
-            ),
+            gearWeightsFor(context, items, tier,
+                rareOnly: tier == ChestTier.voidTier && slot == 0,
+                alreadyInChest: chestGear),
             random,
           );
           if (id != null) {
@@ -599,11 +565,8 @@ int nextPityStreak(int current, ChestTier tier) => switch (tier) {
     };
 
 /// The last-[keep] drops list to persist after [dropped] joined it.
-List<String> nextRecentLootIds(
-  List<String> current,
-  List<String> dropped, {
-  int keep = 3,
-}) {
+List<String> nextRecentLootIds(List<String> current, List<String> dropped,
+    {int keep = 3}) {
   final merged = [...current, ...dropped];
   return merged.length <= keep ? merged : merged.sublist(merged.length - keep);
 }

@@ -61,14 +61,12 @@ class PortraitPixels {
       final out = Uint8List(side * side * 4);
       for (var y = 0; y < side; y++) {
         for (var x = 0; x < side; x++) {
-          final sx = ((x + 0.5) * image.width / side).floor().clamp(
-                0,
-                image.width - 1,
-              );
-          final sy = ((y + 0.5) * image.height / side).floor().clamp(
-                0,
-                image.height - 1,
-              );
+          final sx = ((x + 0.5) * image.width / side)
+              .floor()
+              .clamp(0, image.width - 1);
+          final sy = ((y + 0.5) * image.height / side)
+              .floor()
+              .clamp(0, image.height - 1);
           final from = (sy * image.width + sx) * 4;
           final to = (y * side + x) * 4;
           for (var k = 0; k < 4; k++) {
@@ -216,9 +214,8 @@ class _PixelEnemyPortraitState extends State<PixelEnemyPortrait>
       _dir = dir;
       _playing = true;
     });
-    _anim.duration = Duration(
-      milliseconds: portraitCueMs(cue, boss: widget.boss),
-    );
+    _anim.duration =
+        Duration(milliseconds: portraitCueMs(cue, boss: widget.boss));
     _anim.forward(from: 0);
   }
 
@@ -228,10 +225,7 @@ class _PixelEnemyPortraitState extends State<PixelEnemyPortrait>
     final size = widget.size;
     if (_gone) {
       return SizedBox(
-        key: const ValueKey('portrait_gone'),
-        width: size,
-        height: size,
-      );
+          key: const ValueKey('portrait_gone'), width: size, height: size);
     }
     if (pixels == null) {
       // Until the sprite is read (or with no file): the plain icon.
@@ -289,11 +283,7 @@ class _PortraitPainter extends CustomPainter {
   Color _at(int x, int y) {
     final i = (y * n + x) * 4;
     return Color.fromARGB(
-      pixels[i + 3],
-      pixels[i],
-      pixels[i + 1],
-      pixels[i + 2],
-    );
+        pixels[i + 3], pixels[i], pixels[i + 1], pixels[i + 2]);
   }
 
   @override
@@ -304,30 +294,24 @@ class _PortraitPainter extends CustomPainter {
     void dot(double x, double y, Color c, {double w = 1}) {
       paint.color = c;
       canvas.drawRect(
-        Rect.fromLTWH(
-          (x * u).roundToDouble(),
-          (y * u).roundToDouble(),
-          max(1, (w * u).roundToDouble()),
-          max(1, (w * u).roundToDouble()),
-        ),
-        paint,
-      );
+          Rect.fromLTWH((x * u).roundToDouble(), (y * u).roundToDouble(),
+              max(1, (w * u).roundToDouble()), max(1, (w * u).roundToDouble())),
+          paint);
     }
 
     /// The sprite shifted by ([dx], [dy]) pixels, scaled ([sx], [sy]) about
     /// its feet, each pixel lerped to [tint] by [amount] and kept at
     /// [opacity].
-    void sprite({
-      double dx = 0,
-      double dy = 0,
-      double sx = 1,
-      double sy = 1,
-      Color? tint,
-      double amount = 0,
-      double opacity = 1,
-      bool Function(int x, int y)? keep,
-      double lighten = 0,
-    }) {
+    void sprite(
+        {double dx = 0,
+        double dy = 0,
+        double sx = 1,
+        double sy = 1,
+        Color? tint,
+        double amount = 0,
+        double opacity = 1,
+        bool Function(int x, int y)? keep,
+        double lighten = 0}) {
       for (var y = 0; y < n; y++) {
         for (var x = 0; x < n; x++) {
           var c = _at(x, y);
@@ -340,14 +324,12 @@ class _PortraitPainter extends CustomPainter {
           final py = (n - 1) + (y - (n - 1)) * sy + dy;
           paint.color = c;
           canvas.drawRect(
-            Rect.fromLTWH(
-              (px * u).roundToDouble(),
-              (py * u).roundToDouble(),
-              max(1.0, (sx * u).ceilToDouble()),
-              max(1.0, (sy * u).ceilToDouble()),
-            ),
-            paint,
-          );
+              Rect.fromLTWH(
+                  (px * u).roundToDouble(),
+                  (py * u).roundToDouble(),
+                  max(1.0, (sx * u).ceilToDouble()),
+                  max(1.0, (sy * u).ceilToDouble())),
+              paint);
         }
       }
     }
@@ -360,20 +342,16 @@ class _PortraitPainter extends CustomPainter {
         const amount = [1.0, 0.7, 0.5, 0.3, 0.12, 0.0];
         const shake = [0.0, 2.0, -2.0, 1.0, -1.0, 0.0];
         sprite(
-          dx: shake[i],
-          tint: i == 0 ? Colors.white : const Color(0xFFFF6A5C),
-          amount: amount[i],
-        );
+            dx: shake[i],
+            tint: i == 0 ? Colors.white : const Color(0xFFFF6A5C),
+            amount: amount[i]);
         if (i < 4) {
           for (var k = 0; k < 7; k++) {
             final a = -0.9 + k * 0.55 + _hash(k, 2) * 0.4 - 1.5;
             final r = 8 + i * 4 + _hash(k, 3) * 5;
-            dot(
-              16 + cos(a) * r,
-              14 + sin(a) * r * 0.9,
-              k.isEven ? Colors.white : const Color(0xFFC9D1DC),
-              w: i < 2 && k % 3 == 0 ? 2 : 1,
-            );
+            dot(16 + cos(a) * r, 14 + sin(a) * r * 0.9,
+                k.isEven ? Colors.white : const Color(0xFFC9D1DC),
+                w: i < 2 && k % 3 == 0 ? 2 : 1);
           }
         }
       case PortraitCue.lunge:
@@ -385,12 +363,11 @@ class _PortraitPainter extends CustomPainter {
         final d = dir.distance == 0 ? const Offset(-1, 0) : dir / dir.distance;
         for (var g = ghosts[i]; g > 0; g--) {
           sprite(
-            dx: d.dx * (dy[i] - g * 6),
-            dy: d.dy * (dy[i] - g * 6),
-            sx: sx[i],
-            sy: sy[i],
-            opacity: 0.45 - g * 0.1,
-          );
+              dx: d.dx * (dy[i] - g * 6),
+              dy: d.dy * (dy[i] - g * 6),
+              sx: sx[i],
+              sy: sy[i],
+              opacity: 0.45 - g * 0.1);
         }
         sprite(dx: d.dx * dy[i], dy: d.dy * dy[i], sx: sx[i], sy: sy[i]);
         if (i >= 4 && i <= 6) {
@@ -398,11 +375,10 @@ class _PortraitPainter extends CustomPainter {
           for (var k = 0; k < 10; k++) {
             final side = k.isEven ? -1 : 1;
             dot(
-              16 + d.dx * dy[i] + side * (4 + e * 12 * _hash(k, 3)),
-              (n - 2) + d.dy * dy[i] - e * 5 * _hash(k, 4) - _hash(k, 5) * 3,
-              k % 3 == 0 ? const Color(0xFFF0E2D2) : const Color(0xFFB08C70),
-              w: e < 0.6 ? 2 : 1,
-            );
+                16 + d.dx * dy[i] + side * (4 + e * 12 * _hash(k, 3)),
+                (n - 2) + d.dy * dy[i] - e * 5 * _hash(k, 4) - _hash(k, 5) * 3,
+                k % 3 == 0 ? const Color(0xFFF0E2D2) : const Color(0xFFB08C70),
+                w: e < 0.6 ? 2 : 1);
           }
         }
       case PortraitCue.death:
@@ -410,10 +386,9 @@ class _PortraitPainter extends CustomPainter {
         final i = (t * steps).floor().clamp(0, steps - 1);
         if (i < 2) {
           sprite(
-            dx: i == 0 ? 2 : -2,
-            tint: Colors.white,
-            amount: i == 0 ? 1 : 0.55,
-          );
+              dx: i == 0 ? 2 : -2,
+              tint: Colors.white,
+              amount: i == 0 ? 1 : 0.55);
         } else {
           final p = (i - 1) / (steps - 1);
           double vanish(int x, int y) =>
@@ -442,12 +417,9 @@ class _PortraitPainter extends CustomPainter {
               if (_bayer[y % 4][x % 4] / 16 < fadeOut) continue;
               final ex = x + sin(age * 1.3 + x) * 2;
               final ey = y - age * (2.0 + _hash(x, 6) * 1.5);
-              dot(
-                ex,
-                ey,
-                age > 2 ? (age.isOdd ? Palette.amber77 : Colors.white) : c,
-                w: boss && age < 3 ? 2 : 1,
-              );
+              dot(ex, ey,
+                  age > 2 ? (age.isOdd ? Palette.amber77 : Colors.white) : c,
+                  w: boss && age < 3 ? 2 : 1);
             }
           }
           if (boss && i >= 1 && i <= 6) {
@@ -456,26 +428,19 @@ class _PortraitPainter extends CustomPainter {
             final steps2 = (r * 7).round();
             for (var s = 0; s < steps2; s++) {
               final a = s * 2 * pi / steps2;
-              dot(
-                16 + cos(a) * r,
-                14 + sin(a) * r,
-                const Color(0xFFFFF08A),
-                w: e < 0.35
-                    ? 3
-                    : e < 0.6
-                        ? 2
-                        : 1,
-              );
+              dot(16 + cos(a) * r, 14 + sin(a) * r, const Color(0xFFFFF08A),
+                  w: e < 0.35
+                      ? 3
+                      : e < 0.6
+                          ? 2
+                          : 1);
             }
             for (var k = 0; k < 12; k++) {
               final a = k * 2 * pi / 12 + _hash(k, 1) * 0.3;
               final rr = 10 + (1 - pow(1 - e, 3)) * (9 + _hash(k, 2) * 5);
-              dot(
-                16 + cos(a) * rr,
-                14 + sin(a) * rr,
-                k.isEven ? Colors.white : const Color(0xFFFFF08A),
-                w: 2,
-              );
+              dot(16 + cos(a) * rr, 14 + sin(a) * rr,
+                  k.isEven ? Colors.white : const Color(0xFFFFF08A),
+                  w: 2);
             }
           }
         }

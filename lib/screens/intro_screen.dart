@@ -78,9 +78,7 @@ class IntroScreen extends ConsumerStatefulWidget {
 class _IntroScreenState extends ConsumerState<IntroScreen>
     with SingleTickerProviderStateMixin {
   late final AnimationController _clock = AnimationController(
-    vsync: this,
-    duration: const Duration(milliseconds: 15000),
-  );
+      vsync: this, duration: const Duration(milliseconds: 15000));
   bool _still = false;
   bool _started = false;
   bool _done = false;
@@ -102,9 +100,8 @@ class _IntroScreenState extends ConsumerState<IntroScreen>
     _started = true;
     _still = MediaQuery.of(context).disableAnimations;
     if (_still) {
-      _clock.duration = Duration(
-        milliseconds: ((_stillHold + _stillFade) * 1000).round(),
-      );
+      _clock.duration =
+          Duration(milliseconds: ((_stillHold + _stillFade) * 1000).round());
     }
     _clock.forward();
   }
@@ -130,11 +127,9 @@ class _IntroScreenState extends ConsumerState<IntroScreen>
         : introBeatStarts.last / introSeconds;
     if (_clock.value < lastBeat - 0.001) {
       _clock
-          .animateTo(
-        lastBeat,
-        duration: const Duration(milliseconds: 350),
-        curve: Curves.easeOut,
-      )
+          .animateTo(lastBeat,
+              duration: const Duration(milliseconds: 350),
+              curve: Curves.easeOut)
           .then((_) {
         if (mounted && !_done) _clock.forward();
       });
@@ -162,54 +157,43 @@ class _IntroScreenState extends ConsumerState<IntroScreen>
         key: const Key('intro_tap'),
         behavior: HitTestBehavior.opaque,
         onTap: _skip,
-        child: Stack(
-          fit: StackFit.expand,
-          children: [
-            ClipRect(
-              child: FittedBox(
-                fit: BoxFit.cover,
-                child: SizedBox(
-                  width: _stageW,
-                  height: _stageH,
-                  child: Stack(
-                    fit: StackFit.expand,
-                    children: [
-                      if (beat > 0 && fade < 1) _beat(beat - 1, 1, seconds),
-                      Opacity(opacity: fade, child: _beat(beat, p, seconds)),
-                      _ash(seconds),
-                    ],
-                  ),
-                ),
+        child: Stack(fit: StackFit.expand, children: [
+          ClipRect(
+            child: FittedBox(
+              fit: BoxFit.cover,
+              child: SizedBox(
+                width: _stageW,
+                height: _stageH,
+                child: Stack(fit: StackFit.expand, children: [
+                  if (beat > 0 && fade < 1) _beat(beat - 1, 1, seconds),
+                  Opacity(opacity: fade, child: _beat(beat, p, seconds)),
+                  _ash(seconds),
+                ]),
               ),
             ),
-            // The last beat: the room fades into the game's own page.
-            if (endFade > 0)
-              ColoredBox(
-                color: theme.scaffoldBackgroundColor.withValues(
-                  alpha: endFade.clamp(0.0, 1.0),
-                ),
-              ),
-            _lineOver(context, seconds, endFade),
-            Positioned(
-              right: 16,
-              bottom: 14,
-              child: SafeArea(
-                child: AnimatedOpacity(
-                  duration: Motion.slow,
-                  opacity: seconds < 3.5 ? 0.7 : 0,
-                  child: Text(
-                    tr(ref, 'intro_skip'),
+          ),
+          // The last beat: the room fades into the game's own page.
+          if (endFade > 0)
+            ColoredBox(
+                color: theme.scaffoldBackgroundColor
+                    .withValues(alpha: endFade.clamp(0.0, 1.0))),
+          _lineOver(context, seconds, endFade),
+          Positioned(
+            right: 16,
+            bottom: 14,
+            child: SafeArea(
+              child: AnimatedOpacity(
+                duration: Motion.slow,
+                opacity: seconds < 3.5 ? 0.7 : 0,
+                child: Text(tr(ref, 'intro_skip'),
                     style: const TextStyle(
-                      fontFamily: InkFonts.system,
-                      fontSize: 11,
-                      color: Palette.stone61,
-                    ),
-                  ),
-                ),
+                        fontFamily: InkFonts.system,
+                        fontSize: 11,
+                        color: Palette.stone61)),
               ),
             ),
-          ],
-        ),
+          ),
+        ]),
       ),
     );
   }
@@ -238,24 +222,20 @@ class _IntroScreenState extends ConsumerState<IntroScreen>
     final dy = (seconds * 22) % _stageH;
     return IgnorePointer(
       child: ClipRect(
-        child: Stack(
-          children: [
-            Positioned(
+        child: Stack(children: [
+          Positioned(
               left: 0,
               top: dy - _stageH,
               width: _stageW,
               height: _stageH,
-              child: const CustomPaint(painter: IntroAsh(11)),
-            ),
-            Positioned(
+              child: const CustomPaint(painter: IntroAsh(11))),
+          Positioned(
               left: 0,
               top: dy,
               width: _stageW,
               height: _stageH,
-              child: const CustomPaint(painter: IntroAsh(11)),
-            ),
-          ],
-        ),
+              child: const CustomPaint(painter: IntroAsh(11))),
+        ]),
       ),
     );
   }
@@ -281,75 +261,60 @@ class _IntroScreenState extends ConsumerState<IntroScreen>
 
   // 1: the Great Shroud, burning (plate 1, a slow push in).
   Widget _shroud(double p, double seconds, {required bool burning}) {
-    return Stack(
-      fit: StackFit.expand,
-      children: [
-        IntroPlate(0, zoom: 1 + 0.05 * p, anchor: Alignment.bottomLeft),
-        ColoredBox(color: Colors.black.withValues(alpha: 0.72 - 0.72 * p)),
-      ],
-    );
+    return Stack(fit: StackFit.expand, children: [
+      IntroPlate(0, zoom: 1 + 0.05 * p, anchor: Alignment.bottomLeft),
+      ColoredBox(color: Colors.black.withValues(alpha: 0.72 - 0.72 * p)),
+    ]);
   }
 
   // 2: it burns away into six embers, one falling toward Alster.
   Widget _embers(double p, double seconds) {
-    return Stack(
-      fit: StackFit.expand,
-      children: [
-        IntroPlate(0, zoom: 1.05 + 0.05 * p, anchor: Alignment.bottomLeft),
-        ColoredBox(color: Colors.black.withValues(alpha: 0.28 * p)),
-        for (final (i, from, drift) in const [
-          (0, Offset(80, 150), Offset(-46, -110)),
-          (1, Offset(100, 140), Offset(0, -118)),
-          (2, Offset(120, 150), Offset(44, -96)),
-          (3, Offset(90, 170), Offset(-30, -70)),
-          (4, Offset(112, 168), Offset(36, -64)),
-        ])
-          Positioned(
-            left: from.dx + drift.dx * p,
-            top: from.dy + drift.dy * p,
-            child: Opacity(
+    return Stack(fit: StackFit.expand, children: [
+      IntroPlate(0, zoom: 1.05 + 0.05 * p, anchor: Alignment.bottomLeft),
+      ColoredBox(color: Colors.black.withValues(alpha: 0.28 * p)),
+      for (final (i, from, drift) in const [
+        (0, Offset(80, 150), Offset(-46, -110)),
+        (1, Offset(100, 140), Offset(0, -118)),
+        (2, Offset(120, 150), Offset(44, -96)),
+        (3, Offset(90, 170), Offset(-30, -70)),
+        (4, Offset(112, 168), Offset(36, -64)),
+      ])
+        Positioned(
+          left: from.dx + drift.dx * p,
+          top: from.dy + drift.dy * p,
+          child: Opacity(
               opacity: (p * 3).clamp(0.0, 1.0),
               child: IntroEmber(
-                id: shroudPieceIds[i],
-                height: 30,
-                tilt: (i - 2) * 0.35 + p,
-              ),
-            ),
-          ),
-        // The sixth, falling toward the roofs, with its trail.
-        for (var k = 0; k < 7; k++)
-          Positioned(
-            left: 88 + k * 3.0,
-            top: 120 + 160 * p - k * 11.0,
-            child: Opacity(
-              opacity:
-                  (p * 2).clamp(0.0, 1.0) * (0.9 - k * 0.12).clamp(0.0, 1.0),
-              child: Container(width: 3, height: 3, color: Palette.orange52b),
-            ),
-          ),
-        Positioned(
-          left: 96 + 12 * p,
-          top: 130 + 150 * p,
-          child: IntroEmber(id: shroudPieceIds[5], height: 34, tilt: 0.5),
+                  id: shroudPieceIds[i], height: 30, tilt: (i - 2) * 0.35 + p)),
         ),
-      ],
-    );
+      // The sixth, falling toward the roofs, with its trail.
+      for (var k = 0; k < 7; k++)
+        Positioned(
+          left: 88 + k * 3.0,
+          top: 120 + 160 * p - k * 11.0,
+          child: Opacity(
+            opacity: (p * 2).clamp(0.0, 1.0) * (0.9 - k * 0.12).clamp(0.0, 1.0),
+            child: Container(width: 3, height: 3, color: Palette.orange52b),
+          ),
+        ),
+      Positioned(
+        left: 96 + 12 * p,
+        top: 130 + 150 * p,
+        child: IntroEmber(id: shroudPieceIds[5], height: 34, tilt: 0.5),
+      ),
+    ]);
   }
 
   // 3: the city on alert: calm streets, the white ships far off (plate 2, a
   // slow pan down toward the street). No shell.
-  Widget _city(double p) => IntroPlate(
-        1,
-        zoom: 1.12,
-        anchor: Alignment(0, -0.9 + 1.8 * Curves.easeInOut.transform(p)),
-      );
+  Widget _city(double p) => IntroPlate(1,
+      zoom: 1.12,
+      anchor: Alignment(0, -0.9 + 1.8 * Curves.easeInOut.transform(p)));
 
   // 4: down to the Blind Beggar (plate 3, a slow push in on its door).
-  Widget _tavernFront(double p) => IntroPlate(
-        2,
-        zoom: 1.02 + 0.1 * Curves.easeInOut.transform(p),
-        anchor: const Alignment(-0.3, 0.6),
-      );
+  Widget _tavernFront(double p) => IntroPlate(2,
+      zoom: 1.02 + 0.1 * Curves.easeInOut.transform(p),
+      anchor: const Alignment(-0.3, 0.6));
 
   // 5: the die falls from the top, bounces on the floor, rolls to the middle.
   Widget _dieFalls(double p) {
@@ -376,102 +341,86 @@ class _IntroScreenState extends ConsumerState<IntroScreen>
         break;
       }
     }
-    return Stack(
-      fit: StackFit.expand,
-      children: [
-        const IntroPlate(3),
-        Align(
-          alignment: Alignment(x * 2, y * 2 - 1),
-          child: introDie(70, roll: 0.72 * p),
-        ),
-      ],
-    );
+    return Stack(fit: StackFit.expand, children: [
+      const IntroPlate(3),
+      Align(
+        alignment: Alignment(x * 2, y * 2 - 1),
+        child: introDie(70, roll: 0.72 * p),
+      ),
+    ]);
   }
 
   // 6: it turns slower and slower and stops on a six; the first shell lands.
   Widget _dieStops(double p) {
     final e = Curves.easeOut.transform(p);
     final stopped = p >= 0.97;
-    return Stack(
-      fit: StackFit.expand,
-      children: [
-        const IntroPlate(3),
-        if (p > 0.8 && p < 0.97) const CustomPaint(painter: IntroFlash()),
-        Align(
-          alignment: Alignment(0.24 * (1 - e), 0.64),
-          child: introDie(86, roll: stopped ? null : 0.72 + 0.28 * e),
-        ),
-      ],
-    );
+    return Stack(fit: StackFit.expand, children: [
+      const IntroPlate(3),
+      if (p > 0.8 && p < 0.97) const CustomPaint(painter: IntroFlash()),
+      Align(
+        alignment: Alignment(0.24 * (1 - e), 0.64),
+        child: introDie(86, roll: stopped ? null : 0.72 + 0.28 * e),
+      ),
+    ]);
   }
 
   // 7: the title over the resting die (and the 8th beat keeps it).
   Widget _title(double p) {
     final e = Curves.easeOut.transform(p);
-    return Stack(
-      fit: StackFit.expand,
-      children: [
-        const IntroPlate(3),
-        // The title over the plate's upper part: a veil so it reads.
-        Align(
-          alignment: Alignment.topCenter,
-          child: Container(
-            height: 300,
-            decoration: const BoxDecoration(
+    return Stack(fit: StackFit.expand, children: [
+      const IntroPlate(3),
+      // The title over the plate's upper part: a veil so it reads.
+      Align(
+        alignment: Alignment.topCenter,
+        child: Container(
+          height: 300,
+          decoration: const BoxDecoration(
               gradient: LinearGradient(
-                begin: Alignment.topCenter,
-                end: Alignment.bottomCenter,
-                stops: [0, 0.6, 1],
-                colors: [
-                  Color(0xE615110E),
-                  Color(0xB815110E),
-                  Color(0x0015110E),
-                ],
-              ),
-            ),
-          ),
+                  begin: Alignment.topCenter,
+                  end: Alignment.bottomCenter,
+                  stops: [
+                0,
+                0.6,
+                1
+              ],
+                  colors: [
+                Color(0xE615110E),
+                Color(0xB815110E),
+                Color(0x0015110E)
+              ])),
         ),
-        Align(alignment: const Alignment(0, 0.64), child: introDie(86)),
-        Align(
-          alignment: const Alignment(0, -0.62),
-          child: Opacity(
-            opacity: e,
-            child: Transform.translate(
-              offset: Offset(0, 14 * (1 - e)),
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Text(
-                    tr(ref, 'menu_title'),
-                    textAlign: TextAlign.center,
-                    style: const TextStyle(
+      ),
+      Align(alignment: const Alignment(0, 0.64), child: introDie(86)),
+      Align(
+        alignment: const Alignment(0, -0.62),
+        child: Opacity(
+          opacity: e,
+          child: Transform.translate(
+            offset: Offset(0, 14 * (1 - e)),
+            child: Column(mainAxisSize: MainAxisSize.min, children: [
+              Text(tr(ref, 'menu_title'),
+                  textAlign: TextAlign.center,
+                  style: const TextStyle(
                       fontFamily: InkFonts.system,
                       fontSize: 27,
                       fontWeight: FontWeight.w600,
-                      color: _cream,
-                    ),
-                  ),
-                  const SizedBox(height: 8),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 22),
-                    child: Text(
-                      tr(ref, 'menu_subtitle'),
-                      textAlign: TextAlign.center,
-                      style: const TextStyle(
+                      color: _cream)),
+              const SizedBox(height: 8),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 22),
+                child: Text(tr(ref, 'menu_subtitle'),
+                    textAlign: TextAlign.center,
+                    style: const TextStyle(
                         fontFamily: InkFonts.prose,
                         fontSize: 12,
                         fontStyle: FontStyle.italic,
-                        color: Palette.stone61,
-                      ),
-                    ),
-                  ),
-                ],
+                        color: Palette.stone61)),
               ),
-            ),
+            ]),
           ),
         ),
-      ],
-    );
+      ),
+    ]);
   }
 
   /// The line being written now, over the foot of the screen.
@@ -498,33 +447,26 @@ class _IntroScreenState extends ConsumerState<IntroScreen>
         child: Container(
           width: double.infinity,
           padding: EdgeInsets.fromLTRB(
-            24,
-            40,
-            24,
-            MediaQuery.of(context).padding.bottom + 44,
-          ),
+              24, 40, 24, MediaQuery.of(context).padding.bottom + 44),
           decoration: BoxDecoration(
-            gradient: LinearGradient(
-              begin: Alignment.topCenter,
-              end: Alignment.bottomCenter,
-              colors: [
+              gradient: LinearGradient(
+                  begin: Alignment.topCenter,
+                  end: Alignment.bottomCenter,
+                  colors: [
                 Palette.clear,
-                Colors.black.withValues(alpha: 0.85 * (1 - endFade)),
-              ],
-            ),
-          ),
+                Colors.black.withValues(alpha: 0.85 * (1 - endFade))
+              ])),
           child: Text(
             // The unwritten rest is kept invisible so the text does not jump.
             text.substring(0, write),
             key: Key(key),
             textAlign: TextAlign.center,
             style: TextStyle(
-              fontFamily: InkFonts.prose,
-              fontSize: 17,
-              height: 1.35,
-              fontStyle: FontStyle.italic,
-              color: Color.lerp(_cream, scaffold, endFade),
-            ),
+                fontFamily: InkFonts.prose,
+                fontSize: 17,
+                height: 1.35,
+                fontStyle: FontStyle.italic,
+                color: Color.lerp(_cream, scaffold, endFade)),
           ),
         ),
       ),

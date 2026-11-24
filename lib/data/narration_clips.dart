@@ -64,11 +64,8 @@ String narrationClipId({
 
 /// Fills a player's `{name}`/`{race}`/... tokens the way the story screen
 /// does (see `composeNarration`).
-String personalizeFor(
-  PlayerSession session,
-  String text, {
-  required bool french,
-}) {
+String personalizeFor(PlayerSession session, String text,
+    {required bool french}) {
   String? capitalized(String? id) => id == null || id.isEmpty
       ? null
       : '${id[0].toUpperCase()}${id.substring(1)}';
@@ -78,11 +75,9 @@ String personalizeFor(
     raceId: session.raceId,
     professionId: session.professionId,
     companionName: capitalized(
-      session.activeAllyIds.isEmpty ? null : session.activeAllyIds.first,
-    ),
+        session.activeAllyIds.isEmpty ? null : session.activeAllyIds.first),
     lostCompanionName: capitalized(
-      session.lostAllyIds.isEmpty ? null : session.lostAllyIds.last,
-    ),
+        session.lostAllyIds.isEmpty ? null : session.lostAllyIds.last),
     french: french,
   );
 }
@@ -94,19 +89,13 @@ String personalizeFor(
 /// character. [opening] is what the scene opens with on screen before its
 /// own text (the last fight's aftermath, a check's outcome, the party's
 /// remarks), read first.
-List<String> readAloudParagraphs(
-  StoryNode node,
-  PlayerSession session, {
-  required bool french,
-  List<String> opening = const [],
-  bool revisit = false,
-}) {
+List<String> readAloudParagraphs(StoryNode node, PlayerSession session,
+    {required bool french,
+    List<String> opening = const [],
+    bool revisit = false}) {
   String personal(String text) => personalizeFor(session, text, french: french);
-  final aside = allyAcknowledgmentFor(
-    node.id,
-    activeAllyIds: session.activeAllyIds,
-    french: french,
-  );
+  final aside = allyAcknowledgmentFor(node.id,
+      activeAllyIds: session.activeAllyIds, french: french);
   final progress = node.hubProgressLineFor(session.flags, french);
   final extras = [
     if (aside != null) aside,
@@ -121,15 +110,9 @@ List<String> readAloudParagraphs(
   return [
     for (final line in opening) ...narrationParagraphs(line),
     // One recording for the whole scene, its page breaks unspoken (v1.750).
-    ...narrationParagraphs(
-      storyBodyFor(
-        personal(
-          node
-              .descriptionFor(french, revisit: revisit)
-              .replaceAll(pageBreakMarker, ''),
-        ),
-      ),
-    ),
+    ...narrationParagraphs(storyBodyFor(personal(node
+        .descriptionFor(french, revisit: revisit)
+        .replaceAll(pageBreakMarker, '')))),
     for (final extra in extras) ...narrationParagraphs(personal(extra)),
   ];
 }
@@ -175,13 +158,8 @@ List<String> nodeNarrationScript(
 }) {
   final script = <String>{
     // Its page breaks unspoken, as in [readAloudParagraphs] (v1.750).
-    ...narrationParagraphs(
-      storyBodyFor(
-        personalize(
-          node.descriptionFor(french).replaceAll(pageBreakMarker, ''),
-        ),
-      ),
-    ),
+    ...narrationParagraphs(storyBodyFor(personalize(
+        node.descriptionFor(french).replaceAll(pageBreakMarker, '')))),
   };
   if (variations) {
     final extras = [
@@ -210,15 +188,9 @@ List<String> nodeRevisitNarrationScript(
   required String Function(String text) personalize,
 }) {
   if (node.revisitDescription?.isEmpty ?? true) return const [];
-  return narrationParagraphs(
-    storyBodyFor(
-      personalize(
-        node
-            .descriptionFor(french, revisit: true)
-            .replaceAll(pageBreakMarker, ''),
-      ),
-    ),
-  );
+  return narrationParagraphs(storyBodyFor(personalize(node
+      .descriptionFor(french, revisit: true)
+      .replaceAll(pageBreakMarker, ''))));
 }
 
 /// Every paragraph the story can read aloud to this player, for recording
@@ -234,18 +206,11 @@ List<String> narrationScript(
 }) {
   return {
     for (final node in nodes) ...[
-      ...nodeNarrationScript(
-        node,
-        french: french,
-        personalize: personalize,
-        variations: variations,
-      ),
+      ...nodeNarrationScript(node,
+          french: french, personalize: personalize, variations: variations),
       if (variations)
-        ...nodeRevisitNarrationScript(
-          node,
-          french: french,
-          personalize: personalize,
-        ),
+        ...nodeRevisitNarrationScript(node,
+            french: french, personalize: personalize),
     ],
   }.toList();
 }

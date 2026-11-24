@@ -17,11 +17,11 @@ const Map<int, ({List<String> commons, String? rare})> materialTiers = {
   1: (commons: ['material_timber', 'material_cut_stone'], rare: null),
   2: (
     commons: ['material_iron_ore', 'material_slag_glass'],
-    rare: 'material_ash_steel',
+    rare: 'material_ash_steel'
   ),
   3: (
     commons: ['material_rime_crystal', 'material_tear_glass'],
-    rare: 'material_shroud_thread',
+    rare: 'material_shroud_thread'
   ),
   4: (commons: ['material_lantern_brass'], rare: 'material_white_fleet_oak'),
 };
@@ -42,9 +42,7 @@ Map<String, int> materialCountsOf(Map<String, dynamic>? record, String key) {
 /// How many of [cost]'s materials [inventory] lacks, by item (empty when it
 /// holds them all). The pack is a list with one entry a copy.
 Map<String, int> missingMaterials(
-  Iterable<String> inventory,
-  Map<String, int> cost,
-) {
+    Iterable<String> inventory, Map<String, int> cost) {
   final held = <String, int>{};
   for (final id in inventory) {
     held[id] = (held[id] ?? 0) + 1;
