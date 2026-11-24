@@ -15,6 +15,7 @@ import '../data/climate.dart' show WeatherKind;
 import '../providers/fight_random_provider.dart';
 import '../providers/geography_provider.dart';
 import '../widgets/chapter_goals_card.dart' show ChapterGoalSetupLine, GoalTick;
+import '../widgets/fit_title.dart';
 import '../widgets/fight_backdrop.dart';
 import '../widgets/fight_plates.dart'
     show FightPlateImages, FightPlateOverride, fightPlateAsset;

@@ -1,6 +1,7 @@
 // The Tower's marks and unlocks (v1.847): the marks in hand, then the ten
 // unlocks by kind with their cost, "Buy" when affordable, "Owned" when held
 // (docs/proposals/the-tower-designs.md, screen 7).
+import '../../widgets/fit_title.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -47,7 +48,7 @@ class _TowerMarksBody extends ConsumerWidget {
         (ref.watch(towerProvider).value ?? const TowerState()).progress;
 
     return Scaffold(
-      appBar: AppBar(title: Text(tr(ref, 'tower_marks_title'))),
+      appBar: AppBar(title: FitTitle(tr(ref, 'tower_marks_title'))),
       body: SafeArea(
         child: ListView(
           padding: const EdgeInsets.fromLTRB(16, 4, 16, 24),
