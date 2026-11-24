@@ -8,9 +8,9 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
-## [1.1006.0+1042]
+## [1.1008.0+1044]
 
-- The Tower is moving to ink; the rest follows (part 3 of 4: the fight). A Tower fight is drawn in the ink look: the dark theme and square buttons (the one that goes on in red), the fighters' blocks black with a paper bar on the left (red for an Elite, a boss or the foe aimed at), the health bars slate for your side and red for the foe, the status tiles and the armour and damage gems square in paper white, the portraits and the two chibi on the stage in the ink greys, the die an ink die with a cold edge, the stage floor in dark greys with a square frame, and a darker veil on the plate so the text reads. The story's fights are unchanged. Still in colour for now: the aim line and the hit streaks, the potion button and the faces' tints. The foe band's tags (an affix, Elite) are paper text on a red block (they were red on red and hard to read), and a short floor sits at the top of the screen again instead of in the middle. Look only. UX (view only).
+- The Tower is moving to ink; the rest follows (part 3 of 4: the fight). A Tower fight is drawn in the approved ink layout: the foes and the party each stand in a slanted picture panel on the floor's plate, their chibi in ink and their skewed black nameplates over them, the 30-floor climb strip above, the real dice with the strip of their faces under the board, a red burst and speed lines behind the foe the picked die is aimed at. The dark theme with square buttons (red for the one that goes on), ink health bars (slate for your side, red for the foe), square status tiles and gems in paper white, an ink die and a dark stage floor, and a darker veil on the plate so the text reads. The foe band's tags (an affix, Elite) are paper text on a red block, and a short floor sits at the top of the climb screen again instead of in the middle. The story's fights are unchanged. Look only. UX (view only).
 
 ## [1.1005.0+1041]
 
