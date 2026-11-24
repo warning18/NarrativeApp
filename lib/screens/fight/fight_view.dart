@@ -755,6 +755,7 @@ extension _FightView on _FightScreenState {
     _FacePreview? preview, {
     double cube = 46,
     Animation<double>? roll,
+    bool hideName = false,
   }) {
     final accent = _accentFor(actor);
     final face = _currentFaces[actor.id];
@@ -929,16 +930,23 @@ extension _FightView on _FightScreenState {
           SizedBox(
             width: cube + 24,
             height: 14,
-            child: FittedBox(
-              fit: BoxFit.scaleDown,
-              child: Text(
-                actor.displayName,
-                maxLines: 1,
-                textAlign: TextAlign.center,
-                style: Theme.of(context).textTheme.labelSmall?.copyWith(
-                    color: accent, fontWeight: FontWeight.bold, fontSize: 10),
-              ),
-            ),
+            // On a board too short for the hint and the dice (the Tower at
+            // 320, French, big text) the name is left out: it is on the
+            // plate above, and the hint needs the room.
+            child: hideName
+                ? null
+                : FittedBox(
+                    fit: BoxFit.scaleDown,
+                    child: Text(
+                      actor.displayName,
+                      maxLines: 1,
+                      textAlign: TextAlign.center,
+                      style: Theme.of(context).textTheme.labelSmall?.copyWith(
+                          color: accent,
+                          fontWeight: FontWeight.bold,
+                          fontSize: 10),
+                    ),
+                  ),
           ),
           SizedBox(
             width: cube + 24,

@@ -637,6 +637,7 @@ class _FightScreenState extends ConsumerState<FightScreen>
 
   /// The thrown dice's plan for the roll under way (see dice_throw.dart).
   DiceThrowPlan? _throwPlan;
+  final GlobalKey _weatherKey = GlobalKey();
   String _throwKey = '';
 
   /// Reduced motion: the dice are not thrown, they are there.
