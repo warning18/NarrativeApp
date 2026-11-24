@@ -2,6 +2,7 @@
 // the-tower-designs.md, direction A): the marks and the best floor, a run
 // to continue, and the pick of a people, a calling and a clan for a new
 // one (the ones not bought yet lie locked), then Climb.
+import '../../widgets/fit_title.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -89,7 +90,7 @@ class _TowerStartScreenState extends ConsumerState<_TowerStartBody> {
     final progress = state.progress;
     final run = state.run;
     return Scaffold(
-      appBar: AppBar(title: Text(tr(ref, 'tower_name'))),
+      appBar: AppBar(title: FitTitle(tr(ref, 'tower_name'))),
       body: TowerBackdrop(
         floor: 1,
         child: SafeArea(
