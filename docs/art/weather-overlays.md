@@ -4,8 +4,8 @@ For the user's "weather on the UI" request: snow, sand and ash that sit on the t
 
 | Piece | Files | Widths (px) | Heights (px) | Palette |
 |---|---|---|---|---|
-| Snow, 4 stages | `snow_{dusting,light,medium,heavy}_{340,300,90}.png` | 340 (a panel, about 340), 300 (a wide button), 90 (a small button) | about 6, 10, 14, 20 | paper white EBEDE9, cold greys C7CFCC A8B5B2 |
-| Sand and dust, 4 stages | `sand_{dusting,light,medium,heavy}_{340,300,90}.png` | same | about 6, 9, 14, 8 | ochre and warm grey from Apollo: 884B2B AD7757 C09473 D7B594 E7D5B3, greys 819796 577277; no gold |
+| Snow, 4 stages | `snow_{dusting,light,medium,heavy}_{340,300,90}.png` | 340 (a panel, about 340), 300 (a wide button), 90 (a small button) | 30, 30, 32, 32 (340 px version; the narrower ones are shorter at the ends) | paper white EBEDE9, cold greys C7CFCC A8B5B2 |
+| Sand and dust, 4 stages | `sand_{dusting,light,medium,heavy}_{340,300,90}.png` | same | 30, 30, 27, 20 (340 px version) | ochre and warm grey from Apollo: 884B2B AD7757 C09473 D7B594 E7D5B3, greys 819796 577277; no gold |
 | Ash and soot, 2 stages | `ash_{dusting,heavy}_{340,300,90}.png` | same | 8 and 16 | dark greys 151D28 to 577277 |
 | Frost corners, 2 | `frost_corner_a.png`, `frost_corner_b.png` | 48 x 48 | | top-left corner; mirror it for the other corners |
 Sheet: `docs/art/boards/weather-overlays-1x.png` and `-2x.png` (each stage on a dark panel strip at 340 and 90 wide, the frost corners on a panel corner).
