@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../l10n/app_locale.dart';
 import '../l10n/app_strings.dart';
+import '../screens/tower/tower_look.dart' show TowerPanelStyle;
 import '../theme/stitched_ink.dart';
 import '../utils/pixel_icons/pixel_icon.dart';
 import '../theme/icon_sizes.dart';
@@ -141,7 +142,7 @@ class LootSheet extends StatelessWidget {
               padding: const EdgeInsets.fromLTRB(16, 8, 16, 12),
               children: [
                 Row(children: [
-                  PixelIcon(chestAsset, size: chestSize),
+                  _ink(context, PixelIcon(chestAsset, size: chestSize)),
                   const SizedBox(width: 12),
                   Expanded(
                     child: Column(
@@ -158,11 +159,12 @@ class LootSheet extends StatelessWidget {
                 const SizedBox(height: 14),
                 Text(_t('loot_sheet_changes'), style: label),
                 const SizedBox(height: 8),
-                for (final c in changes) _changeRow(theme, ink, c, label),
+                for (final c in changes)
+                  _changeRow(context, theme, ink, c, label),
                 const SizedBox(height: 6),
                 Text(_t('loot_sheet_details'), style: label),
                 const SizedBox(height: 6),
-                for (final r in rewards) _rewardRow(theme, ink, r),
+                for (final r in rewards) _rewardRow(context, theme, ink, r),
                 if (footer != null) ...[const SizedBox(height: 6), footer!],
               ],
             ),
@@ -185,8 +187,8 @@ class LootSheet extends StatelessWidget {
     );
   }
 
-  Widget _changeRow(
-      ThemeData theme, InkColors ink, LootSheetLine c, TextStyle? label) {
+  Widget _changeRow(BuildContext context, ThemeData theme, InkColors ink,
+      LootSheetLine c, TextStyle? label) {
     final scheme = theme.colorScheme;
     final tone = c.tone ?? ink.gold;
     return Container(
@@ -195,11 +197,12 @@ class LootSheet extends StatelessWidget {
       padding: const EdgeInsets.all(10),
       decoration: BoxDecoration(
         color: scheme.surfaceContainerHighest.withValues(alpha: 0.5),
-        borderRadius: BorderRadius.circular(10),
+        borderRadius:
+            BorderRadius.circular(TowerPanelStyle.of(context) ? 0 : 10),
         border: Border.all(color: tone.withValues(alpha: 0.5)),
       ),
       child: Row(children: [
-        SizedBox(width: 36, child: Center(child: c.icon)),
+        SizedBox(width: 36, child: Center(child: _ink(context, c.icon))),
         const SizedBox(width: 8),
         Expanded(
           child:
@@ -230,13 +233,14 @@ class LootSheet extends StatelessWidget {
     );
   }
 
-  Widget _rewardRow(ThemeData theme, InkColors ink, LootReward r) {
+  Widget _rewardRow(
+      BuildContext context, ThemeData theme, InkColors ink, LootReward r) {
     final scheme = theme.colorScheme;
     final row = Padding(
       key: Key('loot_reward_${r.id}'),
       padding: const EdgeInsets.only(bottom: 10),
       child: Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
-        SizedBox(width: 32, child: Center(child: r.icon)),
+        SizedBox(width: 32, child: Center(child: _ink(context, r.icon))),
         const SizedBox(width: 10),
         Expanded(
           child:
@@ -274,3 +278,15 @@ class LootSheet extends StatelessWidget {
     );
   }
 }
+
+/// In the Tower's ink (v1.1010) a picture is drawn in the ink greys.
+Widget _ink(BuildContext context, Widget child) => TowerPanelStyle.of(context)
+    ? ColorFiltered(colorFilter: _inkGreys, child: child)
+    : child;
+
+const ColorFilter _inkGreys = ColorFilter.matrix(<double>[
+  0.45, 0.45, 0.45, 0, 0, //
+  0.45, 0.45, 0.45, 0, 4,
+  0.47, 0.47, 0.47, 0, 8,
+  0, 0, 0, 1, 0,
+]);

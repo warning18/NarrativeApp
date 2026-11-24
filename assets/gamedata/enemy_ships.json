@@ -101,7 +101,7 @@
   "inquisition_cutter": {
     "shipName": "inquisition_cutter",
     "displayName": "Inquisition Cutter",
-    "displayName_fr": "Cotre de l'Inquisition",
+    "displayName_fr": "Cotre de l’Inquisition",
     "entranceCard": true,
     "description": "A cutter of the Crusade: a bulwark that holds a layer, a ballista, and fire arrows that go for the hold where the crew shelters. Keep someone near the fire. Her iron prow is made to ram: keep her off your side.",
     "description_fr": "Un cotre de la Croisade : un pavois qui tient une couche, une baliste, et des flèches enflammées qui visent la cale où l’équipage s’abrite. Gardez quelqu’un près du feu. Sa proue de fer est faite pour éperonner : tenez-la à distance.",
@@ -150,7 +150,7 @@
   "void_barge": {
     "shipName": "void_barge",
     "displayName": "Void Barge",
-    "displayName_fr": "Barge du Vide",
+    "displayName_fr": "Barge du Néant",
     "description": "Slow, armoured and hungry: two shield layers, three guns, and a void lance that ignores a bulwark altogether. Break its guns before its lance is charged, or lose the race. She comes alongside to board, again and again, shields or not.",
     "description_fr": "Lente, blindée et vorace : deux couches de bouclier, trois canons, et une lance du Néant qui ignore tout pavois. Brisez ses canons avant que la lance ne soit chargée, ou perdez la course. Elle vient bord à bord pour aborder, encore et encore, boucliers ou non.",
     "maxHull": 150,
@@ -163,7 +163,7 @@
     "weapons": [
       {
         "weaponName": "Void lance",
-        "weaponName_fr": "Lance du Vide",
+        "weaponName_fr": "Lance du Néant",
         "damage": 12,
         "chargeTurns": 3,
         "piercesShield": true,
@@ -205,7 +205,7 @@
     "boardingChance": 0.25,
     "prizePartId": "fire_pots",
     "prizeGold": 90,
-    "shipName_fr": "Barge du Vide",
+    "shipName_fr": "Barge du Néant",
     "habit": "boarder"
   },
   "brinejaw": {

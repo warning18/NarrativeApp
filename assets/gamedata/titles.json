@@ -884,7 +884,7 @@
     "name": "Watch-Friend",
     "name_fr": "Ami de la veille",
     "line": "The Grey Vigil nods as you pass the wall.",
-    "line_fr": "La Veille grise vous salue d’un signe quand vous passez le mur.",
+    "line_fr": "La Veille Grise vous salue d’un signe quand vous passez le mur.",
     "faction": "vigil",
     "source": "while:friendly",
     "negative": false,
