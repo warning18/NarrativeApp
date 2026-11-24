@@ -451,7 +451,9 @@ class _CityChartViewState extends State<CityChartView>
       widget.explored == null || widget.explored!.contains(id);
 
   CityChartPainter _painter(
-          {double pulse = 0, CityChartLayer layer = CityChartLayer.all}) =>
+          {double pulse = 0,
+          Animation<double>? beat,
+          CityChartLayer layer = CityChartLayer.all}) =>
       CityChartPainter(
         layer: layer,
         chart: widget.chart,
@@ -475,6 +477,7 @@ class _CityChartViewState extends State<CityChartView>
         banners: widget.banners,
         bannersDark: widget.bannersDark,
         pulse: pulse,
+        beat: beat,
         phase: widget.phase,
         buildingNames: widget.buildingNames,
       );
@@ -680,14 +683,13 @@ class _CityChartViewState extends State<CityChartView>
                   ),
                 ),
                 RepaintBoundary(
-                  child: AnimatedBuilder(
-                    animation: _breath,
-                    builder: (context, _) => CustomPaint(
-                      key: const Key('city_chart_party'),
-                      painter: _painter(
-                          pulse: _breath.value, layer: CityChartLayer.party),
-                      size: Size.infinite,
-                    ),
+                  // The painter follows the breath itself: no widget
+                  // is rebuilt on a beat.
+                  child: CustomPaint(
+                    key: const Key('city_chart_party'),
+                    painter:
+                        _painter(beat: _breath, layer: CityChartLayer.party),
+                    size: Size.infinite,
                   ),
                 ),
               ]),

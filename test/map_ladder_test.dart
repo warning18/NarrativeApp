@@ -7,6 +7,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import 'package:narrative_data_app/data/world_map.dart';
 import 'package:narrative_data_app/providers/story_providers.dart';
 import 'package:narrative_data_app/screens/full_map_screen.dart';
 import 'package:narrative_data_app/widgets/journey_fx.dart';
@@ -162,6 +163,41 @@ void main() {
     expect(find.byKey(const Key('journey_town_zoom_in')), findsOneWidget);
     expect(find.textContaining('step back out'), findsNothing);
     expect(tester.takeException(), isNull);
+  });
+
+  testWidgets('no Town rung on the World where the place has no town plan',
+      (tester) async {
+    TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
+        .setMockMethodCallHandler(
+            const MethodChannel('flutter_tts'), (call) async => 1);
+    SharedPreferences.setMockInitialValues({});
+    usePhone(tester, const Size(412, 915));
+    final container = await openGame(tester, overrides: [storedCityPlans]);
+    // The Spire of Judgment: a place with no town plan.
+    final ids = [
+      for (final l in worldMapLandmarks)
+        if (l.chapter <= 3 && l.scenes.isNotEmpty) l.scenes.first,
+    ];
+    container
+        .read(storyPlayProvider.notifier)
+        .loadState(ids.last, ids.sublist(0, ids.length - 1));
+    await settleApp(tester);
+    await tester.tap(find.text('Journey'));
+    await settleApp(tester);
+    await tester.pump(const Duration(seconds: 6));
+    for (var i = 0; i < 3; i++) {
+      Navigator.of(tester.element(find.byType(LevelLadder).first))
+          .popUntil((r) => r.isFirst || r.settings.name != null);
+      await tester.pump(const Duration(seconds: 1));
+    }
+    LevelLadder strip() => tester.widget<LevelLadder>(find.byType(LevelLadder));
+    expect(strip().open, isNot(contains(LadderRung.town)));
+    await press(tester, rung('world'));
+    expect(world, findsOneWidget);
+    expect(strip().lit, LadderRung.world);
+    // Still no Town to tap from up here.
+    expect(strip().open, isNot(contains(LadderRung.town)));
+    expect(strip().open, contains(LadderRung.district));
   });
 
   testWidgets('the strip fits a narrow phone on one line', (tester) async {

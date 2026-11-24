@@ -101,4 +101,46 @@ void main() {
     await _pump(
         tester, _painter(globe: close.turned(0.4, -0.2)), const Size(300, 300));
   });
+
+  testWidgets(
+      'the last sphere gone, its skins are let go but one; coming back draws',
+      (tester) async {
+    final near = GlobeView.at(const Offset(100, 70), 3, const Offset(150, 150));
+    final far =
+        GlobeView.at(const Offset(100, 70), 1.4, const Offset(150, 150));
+    final close =
+        GlobeView.at(const Offset(100, 70), 5, const Offset(150, 150));
+    ChartMapPainter.globeShown();
+    // The three details of one look, made and drawn.
+    for (final g in [far, near, close]) {
+      await tester.runAsync(_painter(globe: g).prepareSkin);
+      await _pump(tester, _painter(globe: g), const Size(300, 300));
+    }
+    await _pump(tester, _painter(globe: near), const Size(300, 300));
+    expect(ChartMapPainter.debugSkinCount, greaterThanOrEqualTo(3));
+    final opening = await tester.runAsync(_painter(globe: near).prepareSkin);
+    // The sphere leaves: one skin stays, the one the World opens with.
+    await tester.pumpWidget(const SizedBox());
+    ChartMapPainter.globeGone();
+    expect(ChartMapPainter.debugSkinCount, 1);
+    // Back: the opening view draws at once with the skin kept...
+    ChartMapPainter.globeShown();
+    expect(
+        identical(
+            opening, await tester.runAsync(_painter(globe: near).prepareSkin)),
+        isTrue);
+    await _pump(tester, _painter(globe: near), const Size(300, 300));
+    // ...and a detail that was let go draws with that one standing in, is
+    // made again, and draws with its own.
+    await _pump(tester, _painter(globe: close), const Size(300, 300));
+    final fine = await tester.runAsync(_painter(globe: close).prepareSkin);
+    expect(fine!.width, greaterThan(opening!.width));
+    await _pump(tester, _painter(globe: close), const Size(300, 300));
+    await _pump(tester, _painter(globe: far), const Size(300, 300));
+    await tester.runAsync(
+        () => Future<void>.delayed(const Duration(milliseconds: 500)));
+    await tester.pumpWidget(const SizedBox());
+    ChartMapPainter.globeGone();
+    expect(ChartMapPainter.debugSkinCount, 1);
+  });
 }

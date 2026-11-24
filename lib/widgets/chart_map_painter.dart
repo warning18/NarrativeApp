@@ -85,14 +85,16 @@ class ChartMapPainter extends CustomPainter {
     this.heardOf = const {},
     this.goalId,
     this.detail = true,
-    this.globe,
+    GlobeView? globe,
+    this.globeOf,
     this.sphereMaxScale = double.infinity,
     this.sphereScale,
     this.labelInsetRight = 0,
     this.zoomOf,
     this.fogOf,
     Listenable? view,
-  }) : super(
+  })  : _fixedGlobe = globe,
+        super(
             repaint: Listenable.merge(
                 [frame, walk, _ready, if (view != null) view]));
 
@@ -157,7 +159,13 @@ class ChartMapPainter extends CustomPainter {
   final bool detail;
 
   /// The chart as a sphere (v1.200, see chart_globe.dart), or flat.
-  final GlobeView? globe;
+  GlobeView? get globe => globeOf?.call() ?? _fixedGlobe;
+  final GlobeView? _fixedGlobe;
+
+  /// The sphere as it stands when it is painted, for a painter that
+  /// follows the turns and zooms itself (through `view`): the widget
+  /// holding it is not rebuilt on each of them.
+  final GlobeView Function()? globeOf;
 
   /// The most chart units to pixels a sphere is drawn at: on a wide box the
   /// ball stays the size it has at that scale (about 250 px across).
@@ -791,12 +799,56 @@ class ChartMapPainter extends CustomPainter {
   ui.Image? _globeSkin(ChartRelief relief) {
     final key = _skinKey(relief);
     final made = _skins[key];
-    if (made != null) return made;
+    if (made != null) {
+      _lastSkinKey = key;
+      return made;
+    }
     if (!_skinsPending.containsKey(key)) {
       prepareSkin().then((_) => _ready.value++);
     }
+    // Until it is made, the same look at another detail stands in (the
+    // coarse ball only where there is none): no flash on the way.
+    final family = _skinFamily(key);
+    for (final e in _skins.entries) {
+      if (_skinFamily(e.key) == family) return e.value;
+    }
     return null;
   }
+
+  /// A skin's key without its detail: the look and the layer it is of.
+  static String _skinFamily(String key) =>
+      key.substring(0, key.lastIndexOf(':'));
+
+  /// The spheres on screen, and the skin the last one was drawn with.
+  static int _globes = 0;
+  static String? _lastSkinKey;
+
+  /// A sphere came on screen ([globeGone] when it leaves).
+  static void globeShown() => _globes++;
+
+  /// A sphere left the screen. When it was the last, its skins are let go
+  /// (about 11 MB for a look) but one: the one the World opens with, in the
+  /// look last drawn, so coming back shows the same ball at once. The rest
+  /// are made again when they are next looked at.
+  static void globeGone() {
+    if (_globes > 0) _globes--;
+    if (_globes > 0) return;
+    String? keep;
+    final last = _lastSkinKey;
+    if (last != null) {
+      final opening = '${_skinFamily(last)}:1';
+      keep = _skins.containsKey(opening)
+          ? opening
+          : (_skins.containsKey(last) ? last : null);
+    }
+    for (final key in _skins.keys.toList()) {
+      if (key != keep) _skins.remove(key)!.dispose();
+    }
+  }
+
+  /// How many skins are kept (for the tests).
+  @visibleForTesting
+  static int get debugSkinCount => _skins.length;
 
   /// Renders the flat chart into the sphere's skin for this look and
   /// detail, and keeps it; done once per key, and a render already under
