@@ -30,7 +30,12 @@ void main() {
     'the_returned': ('2015', 'hub_2015_child_tongue', null, '4999_camp'),
     'admiraltys_silence': ('2015', 'hub_2015_survivor', null, '4999_camp'),
     'relic_road': ('2015', 'hub_2015_bundle', null, '4999_camp'),
-    'unwatched_hour': ('3005', 'hub_3100_new_moon', null, '6002_camp'),
+    'unwatched_hour': (
+      '3005_clan_vigil_1',
+      'hub_3100_new_moon',
+      null,
+      '6002_camp'
+    ),
     'lanternbearers_will': (
       '6002_camp',
       'hub_6100_will_scribe',

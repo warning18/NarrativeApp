@@ -3043,7 +3043,7 @@
       {
         "flag": "void_banner_bearer",
         "en": "The caravan master had said it on the way down, shouldering his pack: “Ask on the wharf who sells lamp-oil by the cask and burns none. Someone here is paying to keep a lantern shuttered.”",
-        "fr": "Le maître de caravane l’avait dit en descendant, en rajustant son paquetage : « Demandez sur le quai qui vend l’huile de lampe au tonneau et n’en brûle pas. Quelqu’un, ici, paie pour qu’une lanterne reste voilée. »",
+        "fr": "Le chef de caravane l’avait dit en descendant, en rajustant son paquetage : « Demandez sur le quai qui vend l’huile de lampe au tonneau et n’en brûle pas. Quelqu’un, ici, paie pour qu’une lanterne reste voilée. »",
         "unlessFlags": [
           "hub_2015_informant"
         ],
@@ -3581,7 +3581,7 @@
       {
         "flag": "void_banner_bearer",
         "en": "The caravan master had grumbled it on the road in: “My wagons carry cloth and salt. Lately they carry bundles I never packed, heavier going in than coming out.”",
-        "fr": "Le maître de caravane l’avait grommelé en chemin : « Mes chariots portent du tissu et du sel. Depuis peu ils portent des ballots que je n’ai pas faits, plus lourds à l’aller qu’au retour. »",
+        "fr": "Le chef de caravane l’avait grommelé en chemin : « Mes chariots portent du tissu et du sel. Depuis peu ils portent des ballots que je n’ai pas faits, plus lourds à l’aller qu’au retour. »",
         "unlessFlags": [
           "hub_2015_bundle"
         ],
@@ -5180,15 +5180,6 @@
         "flag": "scaffold_split",
         "en": "The breaker’s yard had gone back to work on half wages, the refugees said, which the Ledger called peace and the riggers called Tuesday.",
         "fr": "Le chantier des démolisseurs avait repris à demi-gages, disaient les réfugiés, ce que le Registre appelait la paix et les gréeurs un mardi."
-      },
-      {
-        "flag": "void_banner_bearer",
-        "en": "A sentry at the Quarter’s edge, not looking at me: “The watch changes at the new moon, and for one hour nobody looks at the Sigil. Count it, if you can stand to.”",
-        "fr": "Une sentinelle, au bord du Quartier, sans me regarder : « La relève se fait à la nouvelle lune, et pendant une heure personne ne regarde le Sceau. Comptez-la, si vous en avez le cœur. »",
-        "unlessFlags": [
-          "hub_3100_new_moon"
-        ],
-        "priority": -1
       }
     ],
     "hub_progress": {
@@ -5355,6 +5346,15 @@
         "flag": "hub_3005_grosh",
         "en": "The sergeant knew Grosh’s name, and spat when she said it, which in the Last Watch is a kind of fondness.",
         "fr": "La sergente connaissait le nom de Grosh, et cracha en le prononçant, ce qui, à la Dernière Veille, est une forme de tendresse."
+      },
+      {
+        "flag": "void_banner_bearer",
+        "en": "Their sergeant, not turning from the rubble: “The watch changes at the new moon, and for one hour nobody looks at the Sigil. Someone ought to count it.”",
+        "fr": "Leur sergente, sans se détourner des gravats : « La relève se fait à la nouvelle lune, et pendant une heure personne ne regarde le Sceau. Quelqu’un devrait la compter. »",
+        "unlessFlags": [
+          "hub_3100_new_moon"
+        ],
+        "priority": -1
       },
       {
         "flag": "void_banner_bearer",
@@ -7431,7 +7431,7 @@
       {
         "flag": "intrigue_hooded_lantern_stage_1",
         "en": "The caravan master’s riddle about the lamp-oil is still open. The shuttered lantern has a master, and he has not left Saltmouth.",
-        "fr": "L’énigme du maître de caravane sur l’huile de lampe reste ouverte. La lanterne voilée a un maître, et il n’a pas quitté Saltmouth.",
+        "fr": "L’énigme du chef de caravane sur l’huile de lampe reste ouverte. La lanterne voilée a un maître, et il n’a pas quitté Saltmouth.",
         "unlessFlags": [
           "intrigue_hooded_lantern_stage_2",
           "intrigue_hooded_lantern_stage_3",
