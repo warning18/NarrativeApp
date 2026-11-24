@@ -27,10 +27,17 @@ class ChartWeather extends StatefulWidget {
     required this.palette,
     required this.day,
     this.globe,
+    this.globeOf,
+    this.turned,
     this.sphereMaxScale = double.infinity,
     this.sphereScale,
     this.showOf,
   });
+
+  /// The sphere as it stands when painted, and what says it turned: the
+  /// sky follows the ball without this widget being rebuilt.
+  final GlobeView Function()? globeOf;
+  final Listenable? turned;
 
   final Size size;
   final ChartGeography geography;
@@ -87,6 +94,8 @@ class _ChartWeatherState extends State<ChartWeather>
               palette: widget.palette,
               day: widget.day,
               globe: widget.globe,
+              globeOf: widget.globeOf,
+              turned: widget.turned,
               sphereMaxScale: widget.sphereMaxScale,
               sphereScale: widget.sphereScale,
               showOf: widget.showOf,
@@ -104,16 +113,21 @@ class _ChartWeatherPainter extends CustomPainter {
     required this.geography,
     required this.palette,
     required this.day,
-    this.globe,
+    GlobeView? globe,
+    this.globeOf,
+    Listenable? turned,
     this.sphereMaxScale = double.infinity,
     this.sphereScale,
     this.showOf,
-  });
+  })  : _fixedGlobe = globe,
+        super(repaint: turned);
 
   final ChartGeography geography;
   final ChartPalette palette;
   final int day;
-  final GlobeView? globe;
+  GlobeView? get globe => globeOf?.call() ?? _fixedGlobe;
+  final GlobeView? _fixedGlobe;
+  final GlobeView Function()? globeOf;
   final double sphereMaxScale;
   final double? sphereScale;
   final bool Function()? showOf;
@@ -410,5 +424,8 @@ class _ChartWeatherPainter extends CustomPainter {
       old.geography != geography ||
       old.palette != palette ||
       old.day != day ||
+      // Following the ball itself, old and new read the same view: a
+      // rebuild may have reframed it, so it is drawn again.
+      globeOf != null ||
       old.globe?.key != globe?.key;
 }

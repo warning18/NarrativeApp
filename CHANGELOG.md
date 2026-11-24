@@ -8,6 +8,22 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.1001.0+1037]
+
+- **Cleanup: an unused forge-sheet class removed, seven test helpers
+  marked as such.** `ForgeSheet` and `forgeSheetFor` (nothing on screen
+  builds them: the forge sheet reads the roll and the piece directly) are
+  gone, and the two tests that used them read the live `ForgeRoll` and
+  `forgedPieceBeforeAfter` with the same checks. Seven public helpers that
+  only tests call (`eventVariantFor`, `eventDue`, `kindSceneKeys`,
+  `isMainSpec`, `towerStoreClanOf`, `towerParleyClanOf`, `statPickEffect`)
+  are marked `@visibleForTesting`, so the analyzer flags any use from the
+  game's own code. Nothing changes on screen or in a number.
+
+## [1.1000.0+1036]
+
+- Maps, wave 1 of the review. Seen by the player: on the World, "Town" is dim at a place with no town plan (the Spire of Judgment), as it already was on the District and the Room; a tap used to land on the District. Not seen, but lighter: turning, pinching or gliding the ball redraws the ball only and rebuilds nothing (it rebuilt about 89 widgets and repainted the whole screen each frame); the party's ring on a town or district redraws alone (each beat repainted the buttons, the strip and the weather line with it); when the last ball leaves the screen its ground pictures are let go, all but the one the World opens with, and made again when next looked at; while one is being made another stands in, so the plain coarse ball no longer flashes.
+
 ## [1.999.0+1035]
 
 - Settings at a big text size, in French (a follow-up to v1.997): the colour palette names (Horizon crépusculaire, Aurore crépusculaire, Prairie automnale) keep every word whole instead of breaking inside it, and so do the Appearance buttons (Système, Clair, Sombre). The inventory's tile names and the palette names now share one small widget that follows the text-size setting up to 15 % and shrinks only as far as the longest word needs. UX (view only).

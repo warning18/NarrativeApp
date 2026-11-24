@@ -2,6 +2,7 @@
 // (docs/proposals/stat-scale.md §5): "+1 DEX: +1 damage, +2% dodge" for a
 // rogue, "+1 DEX: +2% dodge" for a warrior. Pure: the numbers come from
 // stat_rules.dart and shop_pricing.dart, the words from app_strings.dart.
+import 'package:flutter/foundation.dart' show visibleForTesting;
 import '../combat/stat_rules.dart';
 import '../l10n/app_locale.dart';
 import '../l10n/app_strings.dart';
@@ -111,6 +112,7 @@ String statEffectText(StatEffect effect, AppLanguage language) {
 
 /// A pick card's line for [amount] points of [stat] in the hands of a hero
 /// of [professionId]: "+1 DEX: +1 damage, +2% dodge".
+@visibleForTesting
 String statPickEffect(
     String stat, String? professionId, int amount, AppLanguage language) {
   final effects = statPickEffects(stat, professionId, amount);

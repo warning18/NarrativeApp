@@ -2373,9 +2373,10 @@ class _JourneyViewState extends ConsumerState<_JourneyView>
         LadderRung.district,
         // From a room the party steps out first: the Town rung is open
         // wherever the town has a plan to show.
+        // On the World too: no Town where the place has no plan.
         if (_canTown ||
-            _level != JourneyMapLevel.place ||
-            (inRoomNow && cityChart != null))
+            ((_level != JourneyMapLevel.place || inRoomNow) &&
+                cityChart != null))
           LadderRung.town,
         if (_sceneInside) LadderRung.room,
       },
