@@ -31,13 +31,13 @@ extension _TowerPanels on _FightScreenState {
           // falls, so the two read as one cut picture.
           final pts = foes
               ? [
-                  Offset(6, 14),
+                  const Offset(6, 14),
                   Offset(w - 6, 6),
                   Offset(w - 6, height - 6),
                   Offset(6, height - 6),
                 ]
               : [
-                  Offset(6, 6),
+                  const Offset(6, 6),
                   Offset(w - 6, 6),
                   Offset(w - 6, height - 6),
                   Offset(6, height - 14),
