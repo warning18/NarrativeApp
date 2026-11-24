@@ -6,6 +6,10 @@ import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
 
+import '../screens/tower/ink/ink_palette.dart' show inkBlack, inkDeep, inkPaper;
+import '../screens/tower/tower_backdrop.dart' show towerFightDicePlate;
+import 'fight_plates.dart' show FightPlateOverride;
+import '../screens/tower/tower_look.dart' show TowerPanelStyle;
 import '../combat/field_anomaly.dart' show FightStage;
 import '../theme/palette.dart';
 import 'fight_plates.dart' show FightPlateImages;
@@ -479,28 +483,62 @@ class FightBoardSurface extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // The Tower's ink (v1.1006): a square frame, the floor in dark greys.
+    final inked = TowerPanelStyle.of(context);
     return DecoratedBox(
       decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(18),
-        border: Border.all(color: const Color(0xFF4D5B4A), width: 2),
+        borderRadius: BorderRadius.circular(inked ? 0 : 18),
+        border: Border.all(
+            color: inked ? inkPaper : const Color(0xFF4D5B4A), width: 2),
       ),
       child: ClipRRect(
-        borderRadius: BorderRadius.circular(16),
+        borderRadius: BorderRadius.circular(inked ? 0 : 16),
         child: Stack(
           fit: StackFit.expand,
           children: [
-            RepaintBoundary(
-              child: ValueListenableBuilder<int>(
-                valueListenable: FightPlateImages.loaded,
-                builder: (context, _, __) => CustomPaint(
-                  key: const Key('fight_board_skin'),
-                  painter: _FightBoardPainter(
-                      stage,
-                      plate == null ? null : FightPlateImages.tintOf(plate!),
-                      plate == null ? 0.38 : FightPlateImages.leanOf(plate!)),
+            if (inked)
+              // Art's dice plate of the band (the ground from above), under a
+              // veil that keeps the dice and the hint readable (v1.1008).
+              Positioned.fill(
+                child: RepaintBoundary(
+                  child: Stack(fit: StackFit.expand, children: [
+                    Image.asset(
+                      key: const Key('fight_board_skin'),
+                      towerFightDicePlate(
+                          FightPlateOverride.maybeOf(context)?.floor ?? 1),
+                      fit: BoxFit.cover,
+                      filterQuality: FilterQuality.none,
+                      errorBuilder: (c, e, s) =>
+                          const ColoredBox(color: inkDeep),
+                    ),
+                    DecoratedBox(
+                      decoration: BoxDecoration(
+                        gradient: LinearGradient(
+                          begin: Alignment.topCenter,
+                          end: Alignment.bottomCenter,
+                          colors: [
+                            inkBlack.withValues(alpha: 0.1),
+                            inkBlack.withValues(alpha: 0.55),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ]),
+                ),
+              )
+            else
+              RepaintBoundary(
+                child: ValueListenableBuilder<int>(
+                  valueListenable: FightPlateImages.loaded,
+                  builder: (context, _, __) => CustomPaint(
+                    key: const Key('fight_board_skin'),
+                    painter: _FightBoardPainter(
+                        stage,
+                        plate == null ? null : FightPlateImages.tintOf(plate!),
+                        plate == null ? 0.38 : FightPlateImages.leanOf(plate!)),
+                  ),
                 ),
               ),
-            ),
             if (event != null) Positioned.fill(child: event!),
             child,
           ],

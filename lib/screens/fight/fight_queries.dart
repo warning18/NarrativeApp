@@ -50,10 +50,12 @@ extension _FightQueries on _FightScreenState {
     return _condition == BattlefieldCondition.dark ? darkenedTier(tier) : tier;
   }
 
-  /// The elements [enemy] is known to be weak to or to resist: all of them
-  /// once the party reads it at the category tier or better, or has beaten
-  /// its kind before; otherwise only the ones a hit has revealed this
-  /// fight.
+  /// The elements [enemy] is known to be weak to or to resist. Its
+  /// weaknesses show from the start of the fight (v1.994, the user's call:
+  /// the ×3 is there to be aimed at). Its resistances are learned: all of
+  /// them once the party reads it at the category tier or better, or has
+  /// beaten its kind before; otherwise only the ones a hit has revealed
+  /// this fight.
   ({List<String> weak, List<String> resist}) _knownElementsFor(
       _EnemyMember enemy) {
     final tier = _effectiveTierFor(enemy);
@@ -63,7 +65,7 @@ extension _FightQueries on _FightScreenState {
             0;
     bool known(String e) => knowsAll || enemy.revealedElements.contains(e);
     return (
-      weak: enemyWeaknesses(enemy.data).where(known).toList(),
+      weak: enemyWeaknesses(enemy.data),
       resist: enemyResistances(enemy.data).where(known).toList(),
     );
   }

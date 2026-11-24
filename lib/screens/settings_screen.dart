@@ -23,6 +23,7 @@ import '../widgets/slow_frames_settings.dart';
 import 'intro_screen.dart';
 import 'playthrough_simulator_screen.dart';
 import '../theme/icon_sizes.dart';
+import '../widgets/whole_word_text.dart';
 
 class SettingsScreen extends ConsumerStatefulWidget {
   const SettingsScreen({super.key});
@@ -188,14 +189,20 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
               // dropdown (e.g. a reset elsewhere).
               // ignore: deprecated_member_use
               value: mapTheme,
+              // Expanded, with long labels cut short: a French label at a
+              // big text size no longer pushes the field past the screen.
+              isExpanded: true,
               decoration: const InputDecoration(border: OutlineInputBorder()),
               items: [
                 DropdownMenuItem(
-                    value: null, child: Text(tr(ref, 'map_theme_auto_label'))),
+                    value: null,
+                    child: Text(tr(ref, 'map_theme_auto_label'),
+                        overflow: TextOverflow.ellipsis)),
                 ...MapTheme.values.map(
                   (theme) => DropdownMenuItem(
                     value: theme,
-                    child: Text(tr(ref, mapThemeLabelKey(theme))),
+                    child: Text(tr(ref, mapThemeLabelKey(theme)),
+                        overflow: TextOverflow.ellipsis),
                   ),
                 ),
               ],
@@ -256,9 +263,11 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                               .toList(),
                         ),
                         const SizedBox(height: 6),
-                        Text(
-                          label,
-                          textAlign: TextAlign.center,
+                        // Whole words at a big text size (v1.999): "crépusculaire"
+                        // does not break inside itself.
+                        WholeWordText(
+                          text: label,
+                          maxLines: 3,
                           style: Theme.of(context).textTheme.labelSmall,
                         ),
                         if (selected) ...[
@@ -285,17 +294,23 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
               segments: [
                 ButtonSegment(
                   value: ThemeMode.system,
-                  label: Text(tr(ref, 'theme_mode_system')),
+                  label: FittedBox(
+                      fit: BoxFit.scaleDown,
+                      child: Text(tr(ref, 'theme_mode_system'), maxLines: 1)),
                   icon: const Icon(Icons.brightness_auto),
                 ),
                 ButtonSegment(
                   value: ThemeMode.light,
-                  label: Text(tr(ref, 'theme_mode_light')),
+                  label: FittedBox(
+                      fit: BoxFit.scaleDown,
+                      child: Text(tr(ref, 'theme_mode_light'), maxLines: 1)),
                   icon: const Icon(Icons.light_mode),
                 ),
                 ButtonSegment(
                   value: ThemeMode.dark,
-                  label: Text(tr(ref, 'theme_mode_dark')),
+                  label: FittedBox(
+                      fit: BoxFit.scaleDown,
+                      child: Text(tr(ref, 'theme_mode_dark'), maxLines: 1)),
                   icon: const Icon(Icons.dark_mode),
                 ),
               ],

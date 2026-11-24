@@ -45,10 +45,11 @@ class CityChartPainter extends CustomPainter {
     this.banners = const {},
     this.bannersDark = true,
     this.pulse = 0,
+    this.beat,
     this.layer = CityChartLayer.all,
     this.phase = DayPhase.day,
     this.buildingNames = true,
-  });
+  }) : super(repaint: beat);
 
   final CityChart chart;
   final ChartPalette palette;
@@ -98,6 +99,13 @@ class CityChartPainter extends CustomPainter {
 
   /// 0 to 1, repeating: the party's mark breathing.
   final double pulse;
+
+  /// The breath itself, when the painter follows it on its own: it is
+  /// redrawn on each beat without its widget being rebuilt (a rebuild under
+  /// the view's LayoutBuilder lays the view out again and repaints all that
+  /// shares its layer). Read in place of [pulse].
+  final Animation<double>? beat;
+  double get _pulse => beat?.value ?? pulse;
 
   /// What this painter draws: the whole plan, the plan without the party's
   /// mark (drawn once and kept), or the mark alone (redrawn as it breathes).
@@ -956,6 +964,7 @@ class CityChartPainter extends CustomPainter {
     canvas.save();
     canvas.translate(here.dx, here.dy);
     canvas.scale(1 / scale);
+    final pulse = _pulse;
     final r = 14 + 4 * pulse;
     canvas.drawCircle(
         Offset.zero,

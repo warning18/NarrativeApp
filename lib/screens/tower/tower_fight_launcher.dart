@@ -17,6 +17,7 @@ import '../fight_screen.dart';
 import '../../widgets/fight_plates.dart' show FightPlateOverride;
 import 'tower_backdrop.dart'
     show towerBackdropAsset, towerBandOf, towerFloorPlate;
+import 'tower_look.dart' show TowerNight;
 import 'tower_providers.dart';
 
 /// Plays [run]'s floor and says how it ended; null when it was not fought (a
@@ -57,12 +58,17 @@ Future<TowerFightResult?> towerFightFor(
       // The Tower's fights wear the Tower: a warden's or a boss's floor its
       // own picture, the others their band's, the hall's stone under the dice
       // and the floor named in the ground line (looks only).
-      return FightPlateOverride(
-          asset: towerFloorPlate(run.floor) ??
-              towerBackdropAsset(towerBandOf(run.floor)),
-          boardStage: FightStage.hall,
-          floor: run.floor,
-          child: screen);
+      // In the Tower's ink look (v1.1006): its dark theme and square buttons.
+      return TowerNight(
+        floor: run.floor,
+        frames: false,
+        child: FightPlateOverride(
+            asset: towerFloorPlate(run.floor) ??
+                towerBackdropAsset(towerBandOf(run.floor)),
+            boardStage: FightStage.hall,
+            floor: run.floor,
+            child: screen),
+      );
     },
   ));
   ref.read(combatActiveProvider.notifier).state = false;

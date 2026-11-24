@@ -491,7 +491,10 @@ extension _FightView on _FightScreenState {
           ),
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 12),
-            child: _buildSlots(items, previews),
+            // The Tower's ink: the slanted picture panels (fight_tower_panels).
+            child: TowerPanelStyle.of(context)
+                ? _buildTowerPanels(items, previews)
+                : _buildSlots(items, previews),
           ),
           const SizedBox(height: 8),
           // The dice board takes what is left; the aim line is drawn over the
@@ -518,7 +521,9 @@ extension _FightView on _FightScreenState {
           if (_spoils != null)
             FightSpoilsStrip(
                 spoils: _spoils!, goldLabel: tr(ref, 'gold_label')),
-          if (ref.watch(appModeProvider) != AppMode.inGame && !_shortPhone)
+          if (ref.watch(appModeProvider) != AppMode.inGame &&
+              !_shortPhone &&
+              !TowerPanelStyle.of(context))
             _buildLogTicker(),
           const SizedBox(height: 4),
           TutorialTarget(
@@ -771,7 +776,9 @@ extension _FightView on _FightScreenState {
       still: MediaQuery.of(context).disableAnimations,
       // The die's own skin, a gold ring when kept, and what the landed face
       // adds to the burst: its rule words, its element, a surge, a curse.
-      skin: dieSkinOf(actor.equippedDiceId),
+      skin: TowerPanelStyle.of(context)
+          ? inkDieSkin
+          : dieSkinOf(actor.equippedDiceId),
       shape: dieShapeOf(actor.dieFaces.length),
       artId: actor.equippedDiceId,
       held: locked,
@@ -911,15 +918,20 @@ extension _FightView on _FightScreenState {
             ),
           ),
           const SizedBox(height: 3),
+          // A fixed height: the name scales down with a big text setting
+          // instead of pushing the tile's column past its box (#1100).
           SizedBox(
             width: cube + 24,
-            child: Text(
-              actor.displayName,
-              maxLines: 1,
-              overflow: TextOverflow.ellipsis,
-              textAlign: TextAlign.center,
-              style: Theme.of(context).textTheme.labelSmall?.copyWith(
-                  color: accent, fontWeight: FontWeight.bold, fontSize: 10),
+            height: 14,
+            child: FittedBox(
+              fit: BoxFit.scaleDown,
+              child: Text(
+                actor.displayName,
+                maxLines: 1,
+                textAlign: TextAlign.center,
+                style: Theme.of(context).textTheme.labelSmall?.copyWith(
+                    color: accent, fontWeight: FontWeight.bold, fontSize: 10),
+              ),
             ),
           ),
           SizedBox(
@@ -1084,8 +1096,14 @@ extension _FightView on _FightScreenState {
                 ? cursedFace(assigned)
                 : assigned;
           }
+          // The Tower's ink: a blow's face in red, the others in grey.
+          final inkTint =
+              _faceKindOf(face) == FaceKind.attack ? inkRed : inkGrey;
           return DieCubeFace(
-              glyph: _cubeGlyph(face), color: _faceKindOf(face).color);
+              glyph: _cubeGlyph(face),
+              color: TowerPanelStyle.of(context)
+                  ? inkTint
+                  : _faceKindOf(face).color);
         }(),
     ];
   }
@@ -1095,7 +1113,9 @@ extension _FightView on _FightScreenState {
   /// the dark stone (v1.214); any other face, its type icon over its value.
   Widget _cubeGlyph(DiceFaceResult face) {
     if (face.type != 'Skill') return _buildFaceGlyph(face, size: 30);
-    final color = _faceKindOf(face).color;
+    final color = TowerPanelStyle.of(context)
+        ? (_faceKindOf(face) == FaceKind.attack ? inkRed : inkGrey)
+        : _faceKindOf(face).color;
     return Container(
       key: ValueKey('die_skill_${_effectiveSkillId(face)}'),
       width: 34,

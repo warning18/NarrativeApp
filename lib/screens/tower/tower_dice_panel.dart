@@ -11,11 +11,12 @@ import '../../data/tower/tower_dice.dart';
 import '../../l10n/app_locale.dart';
 import '../../l10n/app_strings.dart';
 import '../../theme/icon_sizes.dart';
-import '../../theme/pixel_chip.dart';
-import '../../theme/stitched_ink.dart';
 import '../../utils/face_style.dart';
 import '../../widgets/ink_panel.dart';
-import '../../widgets/die_tile.dart';
+import '../../widgets/die_3d.dart';
+import 'ink/ink_dice.dart';
+import 'ink/ink_kit.dart';
+import 'ink/ink_palette.dart';
 
 class TowerDicePanel extends ConsumerStatefulWidget {
   const TowerDicePanel({
@@ -48,7 +49,6 @@ class _TowerDicePanelState extends ConsumerState<TowerDicePanel> {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final ink = InkColors.of(context);
     final lang = ref.watch(appLanguageProvider);
     final open = widget.dice.where((d) => d.id == _open).firstOrNull;
     return InkPanel(
@@ -71,19 +71,15 @@ class _TowerDicePanelState extends ConsumerState<TowerDicePanel> {
                         child: Container(
                           margin: const EdgeInsets.symmetric(horizontal: 2),
                           padding: const EdgeInsets.fromLTRB(4, 8, 4, 6),
-                          decoration: ShapeDecoration(
-                            color: d.inPlay
-                                ? ink.gold.withValues(alpha: 0.12)
-                                : Colors.transparent,
-                            shape: PixelChipBorder(
-                              side: BorderSide(
-                                color: _open == d.id
-                                    ? ink.gold
-                                    : d.inPlay
-                                        ? ink.gold.withValues(alpha: 0.6)
-                                        : ink.seam,
-                                width: _open == d.id ? 2 : 1,
-                              ),
+                          decoration: BoxDecoration(
+                            color: d.inPlay ? inkDeep : Colors.transparent,
+                            border: Border.all(
+                              color: _open == d.id
+                                  ? inkPaper
+                                  : d.inPlay
+                                      ? inkRed
+                                      : inkSlate,
+                              width: _open == d.id || d.inPlay ? 2 : 1,
                             ),
                           ),
                           child: Column(
@@ -91,12 +87,7 @@ class _TowerDicePanelState extends ConsumerState<TowerDicePanel> {
                               Stack(
                                 clipBehavior: Clip.none,
                                 children: [
-                                  DieTile(
-                                    dieId: d.id,
-                                    faces: d.faces.length,
-                                    size: 48,
-                                    glowing: d.inPlay,
-                                  ),
+                                  _InkDie(d, lit: d.inPlay || d.resonates),
                                   if (d.isNew)
                                     Positioned(
                                       right: -4,
@@ -107,12 +98,9 @@ class _TowerDicePanelState extends ConsumerState<TowerDicePanel> {
                                           key: Key('tower_die_new_${d.id}'),
                                           width: 10,
                                           height: 10,
-                                          decoration: BoxDecoration(
-                                            color: ink.blood,
+                                          decoration: const BoxDecoration(
+                                            color: inkRed,
                                             shape: BoxShape.circle,
-                                            border: Border.all(
-                                              color: Colors.black,
-                                            ),
                                           ),
                                         ),
                                       ),
@@ -131,13 +119,13 @@ class _TowerDicePanelState extends ConsumerState<TowerDicePanel> {
                               if (d.inPlay)
                                 _tag(
                                   tr(ref, 'tower_dice_in_play'),
-                                  ink.gold,
+                                  inkRed,
                                   theme,
                                 ),
                               if (d.resonates)
                                 _tag(
                                   tr(ref, 'tower_dice_resonates'),
-                                  ink.heal,
+                                  inkPaper,
                                   theme,
                                 ),
                             ],
@@ -149,22 +137,26 @@ class _TowerDicePanelState extends ConsumerState<TowerDicePanel> {
                 ),
             ],
           ),
+          // The faces of the die shown, one chip each in a single strip: the
+          // opened die's, else the die in play's (v1.1005).
+          if (open ?? widget.dice.where((d) => d.inPlay).firstOrNull
+              case final shown?) ...[
+            const SizedBox(height: 10),
+            Row(
+              key: const Key('tower_die_strip'),
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [for (final f in shown.faces) _face(f, theme)],
+            ),
+          ],
           if (open != null) ...[
             const SizedBox(height: 10),
-            Wrap(
-              spacing: 6,
-              runSpacing: 6,
-              children: [for (final f in open.faces) _face(f, theme)],
-            ),
-            const SizedBox(height: 10),
-            FilledButton(
-              key: const Key('tower_die_roll'),
+            InkButton(
+              buttonKey: const Key('tower_die_roll'),
               onPressed: open.inPlay ? null : () => widget.onChoose(open.id),
-              child: Text(
-                open.inPlay
-                    ? tr(ref, 'tower_dice_in_play')
-                    : tr(ref, 'tower_dice_roll'),
-              ),
+              primary: true,
+              label: open.inPlay
+                  ? tr(ref, 'tower_dice_in_play')
+                  : tr(ref, 'tower_dice_roll'),
             ),
           ],
         ],
@@ -175,22 +167,25 @@ class _TowerDicePanelState extends ConsumerState<TowerDicePanel> {
   Widget _face(Map<String, dynamic> face, ThemeData theme) {
     final kind = faceKind('${face['type']}');
     final value = face['value'];
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 3),
-      decoration: ShapeDecoration(
-        shape: PixelChipBorder(
-          side: BorderSide(color: kind.color.withValues(alpha: 0.7)),
+    return Flexible(
+      child: Container(
+        margin: const EdgeInsets.symmetric(horizontal: 1.5),
+        padding: const EdgeInsets.symmetric(horizontal: 3, vertical: 3),
+        decoration:
+            BoxDecoration(border: Border.all(color: inkGrey), color: inkDeep),
+        child: FittedBox(
+          fit: BoxFit.scaleDown,
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Icon(kind.icon, size: IconSize.s16, color: inkPaper),
+              if (value != null) ...[
+                const SizedBox(width: 2),
+                Text('$value', style: theme.textTheme.labelMedium),
+              ],
+            ],
+          ),
         ),
-      ),
-      child: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Icon(kind.icon, size: IconSize.s16, color: kind.color),
-          if (value != null) ...[
-            const SizedBox(width: 3),
-            Text('$value', style: theme.textTheme.labelMedium),
-          ],
-        ],
       ),
     );
   }
@@ -199,20 +194,53 @@ class _TowerDicePanelState extends ConsumerState<TowerDicePanel> {
         padding: const EdgeInsets.only(top: 2),
         child: Container(
           padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 1),
-          decoration: ShapeDecoration(
-            color: color.withValues(alpha: 0.14),
-            shape: PixelChipBorder(
-              side: BorderSide(color: color.withValues(alpha: 0.7)),
-            ),
+          decoration: BoxDecoration(
+            color: inkBlack,
+            border: Border(left: BorderSide(color: color, width: 3)),
           ),
           child: FittedBox(
             fit: BoxFit.scaleDown,
             child: Text(
               text,
               maxLines: 1,
-              style: theme.textTheme.labelSmall?.copyWith(color: color),
+              style: theme.textTheme.labelSmall?.copyWith(color: inkPaper),
             ),
           ),
         ),
       );
+}
+
+/// The die as a real solid in ink (v1.1005), each face its own kind's mark; the
+/// die in play (or resonating) wears the red edge.
+class _InkDie extends StatelessWidget {
+  const _InkDie(this.die, {required this.lit});
+
+  final TowerDieView die;
+  final bool lit;
+
+  @override
+  Widget build(BuildContext context) {
+    final n = die.faces.length;
+    DieCubeFace face(int i) {
+      final f = die.faces[i % n];
+      final kind = faceKind('${f['type']}');
+      return DieCubeFace(
+          glyph: Icon(kind.icon,
+              size: IconSize.s16, color: lit ? inkPaper : inkGrey),
+          color: lit && i == 0 ? inkRed : inkGrey);
+    }
+
+    final shape = dieShapeOf(n);
+    return Die3D(
+      faces: [for (var i = 0; i < 6; i++) face(i)],
+      facets:
+          shape == DieShape.d6 ? null : [for (var i = 0; i < n; i++) face(i)],
+      accent: inkGrey,
+      size: 48,
+      shape: shape,
+      skin: lit ? inkDieSkinLit : inkDieSkin,
+      still: true,
+      element: 'None',
+    );
+  }
 }

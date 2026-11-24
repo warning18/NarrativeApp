@@ -105,10 +105,21 @@ void main() {
           w: w,
         ));
         expect(tester.takeException(), isNull, reason: '$w $rank');
-        expect(find.text('BOSS'),
+        // The rank's icon always shows; its word shows too while the name
+        // fits on one line (a long name takes two lines and keeps the icon
+        // only, #1100), and a rank never wears the other rank's word.
+        expect(find.byIcon(Icons.workspace_premium),
             rank == FightRank.boss ? findsOneWidget : findsNothing);
-        expect(find.text('ELITE'),
-            rank == FightRank.elite ? findsOneWidget : findsNothing);
+        expect(
+            find.text('BOSS'),
+            rank == FightRank.boss
+                ? anyOf(findsNothing, findsOneWidget)
+                : findsNothing);
+        expect(
+            find.text('ELITE'),
+            rank == FightRank.elite
+                ? anyOf(findsNothing, findsOneWidget)
+                : findsNothing);
       }
     }
   });

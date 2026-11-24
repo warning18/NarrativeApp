@@ -1,7 +1,7 @@
 name: narrative_data_app
 description: "An interactive narrative reader with a story map and AI-assisted generation."
 publish_to: 'none'
-version: 1.992.0+1028
+version: 1.1009.0+1045
 
 environment:
   sdk: '>=3.0.0 <4.0.0'
@@ -10,7 +10,7 @@ dependencies:
   audioplayers: ^6.1.0
   flutter:
     sdk: flutter
-  flutter_riverpod: ^3.4.3
+  flutter_riverpod: ^3.5.0
   flutter_tts: ^4.2.5
   graphview: ^1.2.0
   http: ^1.2.0
@@ -119,6 +119,9 @@ flutter:
     - assets/visuals/fighters/
     - assets/visuals/tower/
     - assets/visuals/tower/npc/
+    # The Tower's ink look (v1.1004): its plates in the ink greys, Art's brush frames.
+    - assets/visuals/tower_ink/
+    - assets/visuals/ink/
     - assets/visuals/crossing/desert/
     - assets/visuals/life/
     - assets/visuals/character/

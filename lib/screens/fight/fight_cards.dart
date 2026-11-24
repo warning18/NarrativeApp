@@ -29,40 +29,63 @@ extension _FightCards on _FightScreenState {
     return tooltip == null ? chip : Tooltip(message: tooltip, child: chip);
   }
 
-  /// The elements [enemy] is known to be weak to (green, ×2) and to
-  /// resist (grey, ×½) -- see [_knownElementsFor].
-  List<Widget> _elementChips(_EnemyMember enemy) {
-    if (!enemy.isAlive) return const [];
+  /// The name of a foe's group in the player's language, for its emblem: a
+  /// clan's is its faction's name, every other look has a string of its own
+  /// (`enemy_group_<id>`).
+  String _groupNameFor(EnemyGroup group) {
     final lang = ref.watch(appLanguageProvider);
-    final known = _knownElementsFor(enemy);
-    return [
-      for (final element in known.weak)
-        Tooltip(
-          message:
-              '${trFor(lang, 'weak_to_label')} ${elementLabel(element, lang)}',
-          child: _miniStat(elementIcon(element),
-              '×${weaknessMultiplier.round()}', Palette.goodDeep),
-        ),
-      for (final element in known.resist)
-        Tooltip(
-          message:
-              '${trFor(lang, 'resists_label')} ${elementLabel(element, lang)}',
-          child: _miniStat(elementIcon(element), '×½', Palette.slate),
-        ),
-    ];
+    // A clan's look (it wears the clan's banner) is named by the faction.
+    if (group.banner != null) {
+      final factions = ref.watch(localizedDbProvider(factionsSchema)).value;
+      final name = (factions?[group.id] as Map?)?['name']?.toString();
+      if (name != null && name.isNotEmpty) return name;
+    }
+    return trFor(lang, enemyGroupNameKey(group.id));
   }
 
-  Widget _miniStat(IconData icon, String value, Color color) {
-    return Row(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        Icon(icon, size: IconSize.inline, color: color),
-        const SizedBox(width: 2),
-        Text(value,
-            style: TextStyle(
-                fontSize: 11, fontWeight: FontWeight.bold, color: color)),
-      ],
-    );
+  /// The element of the die the player has picked, or null.
+  String? _pickedDieElement() {
+    final id = _dieLocks.selected;
+    final actor = id == null ? null : _memberById(id);
+    final face = id == null ? null : _currentFaces[id];
+    if (actor == null || face == null) return null;
+    final skills = ref.read(localizedDbProvider(skillsSchema)).value ??
+        const <String, dynamic>{};
+    final e = _elementFor(face, _availableSkillsFor(actor, skills));
+    return e == 'None' ? null : e;
+  }
+
+  /// The first living foe the picked die's element is weak against.
+  _EnemyMember? _weakFoeForPickedDie() {
+    final e = _pickedDieElement();
+    if (e == null) return null;
+    for (final foe in _enemies) {
+      if (foe.isAlive && enemyWeaknesses(foe.data).contains(e)) return foe;
+    }
+    return null;
+  }
+
+  /// The weakness (red, ×3) and resistance (grey, ×½) marks on [enemy]'s
+  /// nameplate. A weak mark is ringed while the picked die has its element.
+  List<FightMark> _elementMarks(_EnemyMember enemy) {
+    final lang = ref.watch(appLanguageProvider);
+    final known = _knownElementsFor(enemy);
+    final picked = _pickedDieElement();
+    return [
+      for (final e in known.weak)
+        FightMark(
+            icon: elementIcon(e),
+            text: '×${weaknessMultiplier.round()}',
+            weak: true,
+            lit: e == picked,
+            tip: '${trFor(lang, 'weak_to_label')} ${elementLabel(e, lang)}'),
+      for (final e in known.resist)
+        FightMark(
+            icon: elementIcon(e),
+            text: '×½',
+            weak: false,
+            tip: '${trFor(lang, 'resists_label')} ${elementLabel(e, lang)}'),
+    ];
   }
 
   /// What the blows aimed at [member] this round would take off, after
@@ -125,20 +148,27 @@ extension _FightCards on _FightScreenState {
       int pending = 0,
       bool executeLine = false,
       bool foe = false}) {
+    // The Tower's ink: a thin bar with no numbers (they are in the sheet).
+    final thin = TowerPanelStyle.of(context);
+    if (thin) height = 8;
     final rawRatio = maxValue <= 0 ? 0.0 : current / maxValue;
     final ratio = rawRatio.clamp(0.0, 1.0);
     final after = max(0, current - pending);
     final afterRatio = maxValue <= 0 ? 0.0 : (after / maxValue).clamp(0.0, 1.0);
     // A foe's bar reads red and orange, so it never passes for an ally's green.
-    final barColor = foe
-        ? (ratio > 0.5
-            ? Palette.alert
-            : (ratio > 0.25 ? Palette.hot : Palette.flame))
-        : (ratio > 0.5
-            ? Palette.good
-            : (ratio > 0.25 ? Palette.flame : Palette.alert));
+    final inked = TowerPanelStyle.of(context);
+    final barColor = inked
+        // The Tower's ink: a foe red, a friend slate grey, red when low.
+        ? (foe || ratio <= 0.25 || thin ? inkRed : inkSlate)
+        : foe
+            ? (ratio > 0.5
+                ? Palette.alert
+                : (ratio > 0.25 ? Palette.hot : Palette.flame))
+            : (ratio > 0.5
+                ? Palette.good
+                : (ratio > 0.25 ? Palette.flame : Palette.alert));
     return ClipRRect(
-      borderRadius: BorderRadius.circular(height / 2),
+      borderRadius: BorderRadius.circular(inked ? 0 : height / 2),
       child: Container(
         height: height,
         decoration: BoxDecoration(
@@ -173,7 +203,8 @@ extension _FightCards on _FightScreenState {
                       bottom: 0,
                       child: Container(
                         decoration: BoxDecoration(
-                          color: _previewColor.withValues(alpha: 0.9),
+                          color: (inked ? inkGrey : _previewColor)
+                              .withValues(alpha: 0.9),
                           border: Border(
                             left: BorderSide(
                                 color: Colors.white.withValues(alpha: 0.9)),
@@ -195,18 +226,19 @@ extension _FightCards on _FightScreenState {
                 ],
               ),
             ),
-            Text(
-              pending > 0
-                  ? '$current → $after / $maxValue'
-                  : '$current / $maxValue',
-              style: TextStyle(
-                fontWeight: FontWeight.bold,
-                fontSize: height * 0.68,
-                height: 1,
-                shadows: const [Shadow(color: Colors.black54, blurRadius: 2)],
-                color: Colors.white,
+            if (!thin)
+              Text(
+                pending > 0
+                    ? '$current → $after / $maxValue'
+                    : '$current / $maxValue',
+                style: TextStyle(
+                  fontWeight: FontWeight.bold,
+                  fontSize: height * 0.68,
+                  height: 1,
+                  shadows: const [Shadow(color: Colors.black54, blurRadius: 2)],
+                  color: Colors.white,
+                ),
               ),
-            ),
           ],
         ),
       ),

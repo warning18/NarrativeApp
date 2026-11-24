@@ -3736,5 +3736,1149 @@
       "Se place devant vous face à la porte, le poil hérissé, sans se retourner.",
       "Gémit une fois, bas, vers la fumée, puis se serre contre votre jambe."
     ]
+  },
+  "choice_refugees_aboard_vica": {
+    "remarkID": "choice_refugees_aboard_vica",
+    "companionID": "vica",
+    "trigger": "choice",
+    "choiceKey": "refugees_aboard",
+    "note": "The wharf, a boat for twenty and a hundred waiting: take everyone",
+    "lines": [
+      "Walks the length of the crowded deck and lies down at its edge, so that no child will lean past her."
+    ],
+    "lines_fr": [
+      "Parcourt le pont bondé d’un bout à l’autre et se couche contre le bastingage, pour qu’aucun enfant ne s’y penche."
+    ]
+  },
+  "choice_refugees_left_vica": {
+    "remarkID": "choice_refugees_left_vica",
+    "companionID": "vica",
+    "trigger": "choice",
+    "choiceKey": "refugees_left",
+    "note": "The wharf: take the twenty who can fight",
+    "lines": [
+      "Watches the people left on the wharf until they are only a line, and lies down facing it."
+    ],
+    "lines_fr": [
+      "Regarde ceux qu’on a laissés sur le quai jusqu’à ce qu’ils ne soient plus qu’un trait, et se couche face à eux."
+    ]
+  },
+  "choice_sailed_alone_vica": {
+    "remarkID": "choice_sailed_alone_vica",
+    "companionID": "vica",
+    "trigger": "choice",
+    "choiceKey": "sailed_alone",
+    "note": "The wharf: take no one",
+    "lines": [
+      "Sits very straight at the stern, and does not look at the shore."
+    ],
+    "lines_fr": [
+      "Se tient très droite à la poupe, et ne regarde pas la rive."
+    ]
+  },
+  "choice_skiff_cut_vica": {
+    "remarkID": "choice_skiff_cut_vica",
+    "companionID": "vica",
+    "trigger": "choice",
+    "choiceKey": "skiff_cut",
+    "note": "The storm: cut the tow-line to the refugees’ skiff",
+    "lines": [
+      "Whines once at the cut rope, and puts her chin on your boot."
+    ],
+    "lines_fr": [
+      "Gémit une fois devant la corde coupée, et pose son menton sur votre botte."
+    ]
+  },
+  "choice_tern_row_spared_vica": {
+    "remarkID": "choice_tern_row_spared_vica",
+    "companionID": "vica",
+    "trigger": "choice",
+    "choiceKey": "tern_row_spared",
+    "note": "Tern Row: the toll-man talked down",
+    "lines": [
+      "Sniffs the toll-man’s doorway, finds nothing worth a growl, and walks on, tail low and easy."
+    ],
+    "lines_fr": [
+      "Renifle le seuil du péager, n’y trouve rien qui vaille un grondement, et repart, la queue basse et tranquille."
+    ]
+  },
+  "choice_reckoning_wall_saved_vica": {
+    "remarkID": "choice_reckoning_wall_saved_vica",
+    "companionID": "vica",
+    "trigger": "choice",
+    "choiceKey": "reckoning_wall_saved",
+    "note": "The Reckoning Wall: the auxiliary out-argued",
+    "lines": [
+      "Lies at the foot of the wall in the sun, as if it were only a wall."
+    ],
+    "lines_fr": [
+      "Se couche au pied du mur, au soleil, comme si ce n’était qu’un mur."
+    ]
+  },
+  "choice_standard_cut_living_vica": {
+    "remarkID": "choice_standard_cut_living_vica",
+    "companionID": "vica",
+    "trigger": "choice",
+    "choiceKey": "standard_cut_living",
+    "note": "The standard stitched into a living man: cut it free while he lives",
+    "lines": [
+      "Turns her head from the standard, and keeps it turned until the cloth is gone."
+    ],
+    "lines_fr": [
+      "Détourne la tête de l’étendard, et la garde détournée jusqu’à ce que l’étoffe ait disparu."
+    ]
+  },
+  "choice_4999_standard_2_vica": {
+    "remarkID": "choice_4999_standard_2_vica",
+    "companionID": "vica",
+    "trigger": "choice",
+    "choiceKey": "4999_standard#2",
+    "note": "The standard: the mercy of the blade first",
+    "lines": [
+      "Stays at your heel, ears flat, until the Cathedral’s smoke is far behind."
+    ],
+    "lines_fr": [
+      "Reste à votre talon, les oreilles plaquées, jusqu’à ce que la fumée de la Cathédrale soit loin derrière."
+    ]
+  },
+  "choice_court_woken_vica": {
+    "remarkID": "choice_court_woken_vica",
+    "companionID": "vica",
+    "trigger": "choice",
+    "choiceKey": "court_woken",
+    "note": "The Court’s sleepers in the Shroud’s twin: wake them first",
+    "lines": [
+      "Waits at the edge of the sleepers’ circle, and does not move until the last of them has opened their eyes."
+    ],
+    "lines_fr": [
+      "Attend au bord du cercle des dormeurs, et ne bouge pas avant que le dernier ait ouvert les yeux."
+    ]
+  },
+  "choice_court_never_woke_vica": {
+    "remarkID": "choice_court_never_woke_vica",
+    "companionID": "vica",
+    "trigger": "choice",
+    "choiceKey": "court_never_woke",
+    "note": "The Court’s sleepers: cut the Shroud free without waking them",
+    "lines": [
+      "Walks the circle of sleepers once, softly, and does not look back."
+    ],
+    "lines_fr": [
+      "Fait une fois le tour des dormeurs, à pas feutrés, et ne se retourne pas."
+    ]
+  },
+  "choice_inquisition_pact_vica": {
+    "remarkID": "choice_inquisition_pact_vica",
+    "companionID": "vica",
+    "trigger": "choice",
+    "choiceKey": "inquisition_pact",
+    "note": "The Hollow Shore: take the legate’s pact",
+    "lines": [
+      "Will not step onto the legate’s boat. She stays on the sand until you call her twice."
+    ],
+    "lines_fr": [
+      "Refuse de monter sur la barque du légat. Elle reste sur le sable jusqu’à ce que vous l’appeliez deux fois."
+    ]
+  },
+  "choice_pact_refused_vica": {
+    "remarkID": "choice_pact_refused_vica",
+    "companionID": "vica",
+    "trigger": "choice",
+    "choiceKey": "pact_refused",
+    "note": "The Hollow Shore: refuse the pact",
+    "lines": [
+      "Barks once at the white sail as it goes, like a door being shut."
+    ],
+    "lines_fr": [
+      "Aboie une fois contre la voile blanche qui s’éloigne, comme on claque une porte."
+    ]
+  },
+  "choice_sovereign_took_companion_vica": {
+    "remarkID": "choice_sovereign_took_companion_vica",
+    "companionID": "vica",
+    "trigger": "choice",
+    "choiceKey": "sovereign_took_companion",
+    "note": "The tear’s price: one of the crew",
+    "lines": [
+      "Sits in the empty place by the rail, and will not be moved from it."
+    ],
+    "lines_fr": [
+      "S’assoit à la place vide contre le bastingage, et refuse d’en bouger."
+    ]
+  },
+  "choice_legate_given_vica": {
+    "remarkID": "choice_legate_given_vica",
+    "companionID": "vica",
+    "trigger": "choice",
+    "choiceKey": "legate_given",
+    "note": "The tear’s price: the legate",
+    "lines": [
+      "Keeps well away from the legate’s empty chair, ears back."
+    ],
+    "lines_fr": [
+      "Reste bien loin de la chaise vide du légat, les oreilles couchées."
+    ]
+  },
+  "choice_sovereign_blood_vica": {
+    "remarkID": "choice_sovereign_blood_vica",
+    "companionID": "vica",
+    "trigger": "choice",
+    "choiceKey": "sovereign_blood",
+    "note": "The tear’s price: your own blood",
+    "lines": [
+      "Licks your wrist where the knife went in, and stays pressed to your side all night."
+    ],
+    "lines_fr": [
+      "Lèche votre poignet là où le couteau est entré, et reste serrée contre vous toute la nuit."
+    ]
+  },
+  "choice_camp_given_vica": {
+    "remarkID": "choice_camp_given_vica",
+    "companionID": "vica",
+    "trigger": "choice",
+    "choiceKey": "camp_given",
+    "note": "The tear’s price: the camp",
+    "lines": [
+      "Circles the empty cove at dusk, as if the camp were still there to be counted."
+    ],
+    "lines_fr": [
+      "Fait le tour de la crique vide au crépuscule, comme si le camp s’y trouvait encore à compter."
+    ]
+  },
+  "choice_flagship_burned_vica": {
+    "remarkID": "choice_flagship_burned_vica",
+    "companionID": "vica",
+    "trigger": "choice",
+    "choiceKey": "flagship_burned",
+    "note": "The flagship’s sail: burn the flagship",
+    "lines": [
+      "Watches the flagship burn with the firelight in her eyes, and never once growls."
+    ],
+    "lines_fr": [
+      "Regarde brûler le vaisseau amiral, le feu dans les yeux, et ne grogne pas une seule fois."
+    ]
+  },
+  "choice_sail_bought_vica": {
+    "remarkID": "choice_sail_bought_vica",
+    "companionID": "vica",
+    "trigger": "choice",
+    "choiceKey": "sail_bought",
+    "note": "The flagship’s sail: pay the riggers",
+    "lines": [
+      "Sniffs the new sail, sneezes, and lies down on it."
+    ],
+    "lines_fr": [
+      "Renifle la voile neuve, éternue, et se couche dessus."
+    ]
+  },
+  "choice_greyhithe_names_read_vica": {
+    "remarkID": "choice_greyhithe_names_read_vica",
+    "companionID": "vica",
+    "trigger": "choice",
+    "choiceKey": "greyhithe_names_read",
+    "note": "Greyhithe’s eldest: read her the page",
+    "lines": [
+      "Listens with her chin on her paws as the names are read, her ears turning at each one."
+    ],
+    "lines_fr": [
+      "Écoute, le museau sur les pattes, pendant qu’on lit les noms, les oreilles tournées à chacun."
+    ]
+  },
+  "choice_7200_elder_later_1_vica": {
+    "remarkID": "choice_7200_elder_later_1_vica",
+    "companionID": "vica",
+    "trigger": "choice",
+    "choiceKey": "7200_elder_later#1",
+    "note": "Greyhithe’s eldest: tell her the ledger kept no names",
+    "lines": [
+      "Crosses the room to the eldest and lays her head in the woman’s lap, and the eldest lets her."
+    ],
+    "lines_fr": [
+      "Traverse la pièce jusqu’à l’aînée et pose sa tête sur ses genoux, et l’aînée la laisse faire."
+    ]
+  },
+  "choice_false_lamps_out_vica": {
+    "remarkID": "choice_false_lamps_out_vica",
+    "companionID": "vica",
+    "trigger": "choice",
+    "choiceKey": "false_lamps_out",
+    "note": "The wreckers’ false lamps: pay the headman to put them out",
+    "lines": [
+      "Pads out onto the dark shore, sits, and watches the water where the lamps were."
+    ],
+    "lines_fr": [
+      "S’avance sur la grève sombre, s’assoit, et surveille l’eau là où brillaient les lampes."
+    ]
+  },
+  "choice_standard_waited_kelda": {
+    "remarkID": "choice_standard_waited_kelda",
+    "companionID": "kelda",
+    "trigger": "choice",
+    "choiceKey": "standard_waited",
+    "note": "The standard stitched into a living man: wait for him to die",
+    "lines": [
+      "I’ve waited out a man’s last breath on a wall. You do it with your jaw shut. Nothing to say about it."
+    ],
+    "lines_fr": [
+      "J’ai attendu le dernier souffle d’un homme sur un rempart. On le fait la mâchoire serrée. Rien à en dire."
+    ]
+  },
+  "choice_standard_waited_maren": {
+    "remarkID": "choice_standard_waited_maren",
+    "companionID": "maren",
+    "trigger": "choice",
+    "choiceKey": "standard_waited",
+    "note": "The standard stitched into a living man: wait for him to die",
+    "lines": [
+      "He asked for no mercy and you gave him none. I will pray for the part that was owed him anyway."
+    ],
+    "lines_fr": [
+      "Il n’a demandé aucune pitié et vous ne lui en avez donné aucune. Je prierai pour la part qui lui était due malgré tout."
+    ]
+  },
+  "choice_standard_waited_sable": {
+    "remarkID": "choice_standard_waited_sable",
+    "companionID": "sable",
+    "trigger": "choice",
+    "choiceKey": "standard_waited",
+    "note": "The standard stitched into a living man: wait for him to die",
+    "lines": [
+      "Patience. Underrated in a knife, overrated in a priest. Cold, and I approve, and I’ll not say so again."
+    ],
+    "lines_fr": [
+      "De la patience. Sous-estimée chez un couteau, surestimée chez un prêtre. C’est froid, et j’approuve, et je ne le redirai pas."
+    ]
+  },
+  "choice_reliquary_opened_maren": {
+    "remarkID": "choice_reliquary_opened_maren",
+    "companionID": "maren",
+    "trigger": "choice",
+    "choiceKey": "reliquary_opened",
+    "note": "The fourth piece: open the reliquary yourself",
+    "lines": [
+      "A girl’s bones, and you opened it with your own hands. I’ll say the words over her, since you could not."
+    ],
+    "lines_fr": [
+      "Les os d’une fillette, et vous avez ouvert vous-même. Je dirai les mots sur elle, puisque vous ne le pouviez pas."
+    ]
+  },
+  "choice_reliquary_opened_tobin": {
+    "remarkID": "choice_reliquary_opened_tobin",
+    "companionID": "tobin",
+    "trigger": "choice",
+    "choiceKey": "reliquary_opened",
+    "note": "The fourth piece: open the reliquary yourself",
+    "lines": [
+      "You did it yourself, so no one else would have to carry it. That is how I would have done it. I will not forgive myself for the girl either."
+    ],
+    "lines_fr": [
+      "Vous l’avez fait vous-même, pour que nul autre n’ait à le porter. C’est ainsi que je l’aurais fait. Moi non plus, je ne me pardonnerai pas pour la fillette."
+    ]
+  },
+  "choice_reliquary_opened_malrik": {
+    "remarkID": "choice_reliquary_opened_malrik",
+    "companionID": "malrik",
+    "trigger": "choice",
+    "choiceKey": "reliquary_opened",
+    "note": "The fourth piece: open the reliquary yourself",
+    "lines": [
+      "Doing it yourself saves the chart-keeper’s fee. I notice that. I note it. I say nothing."
+    ],
+    "lines_fr": [
+      "Le faire soi-même épargne les honoraires de la gardienne des cartes. Je le remarque. Je le note. Je ne dis rien."
+    ]
+  },
+  "choice_chartkeeper_paid_malrik": {
+    "remarkID": "choice_chartkeeper_paid_malrik",
+    "companionID": "malrik",
+    "trigger": "choice",
+    "choiceKey": "chartkeeper_paid",
+    "note": "The fourth piece: pay the chart-keeper to cut it out",
+    "lines": [
+      "The chart-keeper named a price, you paid it, and the bones were left in peace. A better bargain than most. I am almost moved."
+    ],
+    "lines_fr": [
+      "La gardienne des cartes a nommé son prix, vous l’avez payé, et les os sont restés en paix. Un meilleur marché que la plupart. Je suis presque ému."
+    ]
+  },
+  "choice_chartkeeper_paid_sable": {
+    "remarkID": "choice_chartkeeper_paid_sable",
+    "companionID": "sable",
+    "trigger": "choice",
+    "choiceKey": "chartkeeper_paid",
+    "note": "The fourth piece: pay the chart-keeper to cut it out",
+    "lines": [
+      "Pay a man to do the grave-robbing. Neat. Clean hands, grubby purse. I’d have done the same."
+    ],
+    "lines_fr": [
+      "Payer un homme pour piller la tombe. Propre. Mains nettes, bourse sale. J’aurais fait pareil."
+    ]
+  },
+  "choice_chartkeeper_paid_kelda": {
+    "remarkID": "choice_chartkeeper_paid_kelda",
+    "companionID": "kelda",
+    "trigger": "choice",
+    "choiceKey": "chartkeeper_paid",
+    "note": "The fourth piece: pay the chart-keeper to cut it out",
+    "lines": [
+      "You paid a man to do what we would not. We are still the ones who asked."
+    ],
+    "lines_fr": [
+      "Vous avez payé un homme pour faire ce que nous ne voulions pas faire. C’est nous qui l’avons demandé, tout de même."
+    ]
+  },
+  "choice_penitent_seal_maren": {
+    "remarkID": "choice_penitent_seal_maren",
+    "companionID": "maren",
+    "trigger": "choice",
+    "choiceKey": "penitent_seal",
+    "note": "The fourth piece: give the penitent the seal to break",
+    "lines": [
+      "You gave the seal to the penitent to break. Some doors only open from inside a conscience. Thank you."
+    ],
+    "lines_fr": [
+      "Vous avez remis le sceau au pénitent pour qu’il le brise. Certaines portes ne s’ouvrent que de l’intérieur d’une conscience. Merci."
+    ]
+  },
+  "choice_penitent_seal_tobin": {
+    "remarkID": "choice_penitent_seal_tobin",
+    "companionID": "tobin",
+    "trigger": "choice",
+    "choiceKey": "penitent_seal",
+    "note": "The fourth piece: give the penitent the seal to break",
+    "lines": [
+      "Let the one who sinned break the seal. I have waited a long time to see someone allowed that."
+    ],
+    "lines_fr": [
+      "Que celui qui a péché brise le sceau. J’ai longtemps attendu de voir quelqu’un y être autorisé."
+    ]
+  },
+  "choice_penitent_seal_grosh": {
+    "remarkID": "choice_penitent_seal_grosh",
+    "companionID": "grosh",
+    "trigger": "choice",
+    "choiceKey": "penitent_seal",
+    "note": "The fourth piece: give the penitent the seal to break",
+    "lines": [
+      "Grosh would have smashed it. Penitent did it slower. Grosh sees why."
+    ],
+    "lines_fr": [
+      "Grosh aurait cassé. Le pénitent l’a fait plus lentement. Grosh comprend pourquoi."
+    ]
+  },
+  "choice_witness_lie_vess": {
+    "remarkID": "choice_witness_lie_vess",
+    "companionID": "vess",
+    "trigger": "choice",
+    "choiceKey": "witness_lie",
+    "note": "The Tribunal: swear that the voidkin let it through",
+    "lines": [
+      "He was fighting it. I felt him fighting it, through the chains. You said otherwise. I will remember what you said, and who it cost."
+    ],
+    "lines_fr": [
+      "Il le combattait. Je l’ai senti le combattre, à travers les chaînes. Vous avez dit le contraire. Je me souviendrai de ce que vous avez dit, et de ce que cela a coûté, et à qui."
+    ]
+  },
+  "choice_witness_lie_maren": {
+    "remarkID": "choice_witness_lie_maren",
+    "companionID": "maren",
+    "trigger": "choice",
+    "choiceKey": "witness_lie",
+    "note": "The Tribunal: swear that the voidkin let it through",
+    "lines": [
+      "A false oath to a true court. I will carry that one for you for a while. Not forever."
+    ],
+    "lines_fr": [
+      "Un faux serment devant un vrai tribunal. Je le porterai pour vous un moment. Pas toujours."
+    ]
+  },
+  "choice_witness_lie_kelda": {
+    "remarkID": "choice_witness_lie_kelda",
+    "companionID": "kelda",
+    "trigger": "choice",
+    "choiceKey": "witness_lie",
+    "note": "The Tribunal: swear that the voidkin let it through",
+    "lines": [
+      "I stood at a hanging I knew was wrong, once, and said nothing. I have never forgiven myself. I hope you find a way to."
+    ],
+    "lines_fr": [
+      "J’ai assisté un jour à une pendaison que je savais injuste, sans rien dire. Je ne me le suis jamais pardonné. J’espère que vous trouverez le moyen de vous le pardonner."
+    ]
+  },
+  "choice_vigil_hunt_inquisition_vess": {
+    "remarkID": "choice_vigil_hunt_inquisition_vess",
+    "companionID": "vess",
+    "trigger": "choice",
+    "choiceKey": "vigil_hunt_inquisition",
+    "note": "The Vigil: hunt the thing with the Inquisition’s party",
+    "lines": [
+      "The Inquisition will take one of mine off the wall to answer for it. You knew that. I am still here, so I suppose I am still on your list of friends."
+    ],
+    "lines_fr": [
+      "L’Inquisition emmènera l’un des miens hors du mur pour qu’il en réponde. Vous le saviez. Je suis toujours là, alors je suppose que je figure encore sur votre liste d’amis."
+    ]
+  },
+  "choice_vigil_hunt_inquisition_liora": {
+    "remarkID": "choice_vigil_hunt_inquisition_liora",
+    "companionID": "liora",
+    "trigger": "choice",
+    "choiceKey": "vigil_hunt_inquisition",
+    "note": "The Vigil: hunt the thing with the Inquisition’s party",
+    "lines": [
+      "A hunt is easier with more hands. It is harder to look at the hands afterwards."
+    ],
+    "lines_fr": [
+      "Une chasse est plus facile avec plus de mains. Il est plus dur de regarder ces mains ensuite."
+    ]
+  },
+  "choice_vigil_hunt_inquisition_tobin": {
+    "remarkID": "choice_vigil_hunt_inquisition_tobin",
+    "companionID": "tobin",
+    "trigger": "choice",
+    "choiceKey": "vigil_hunt_inquisition",
+    "note": "The Vigil: hunt the thing with the Inquisition’s party",
+    "lines": [
+      "They will ask who let it through. A fair price for a hunting party. I would have paid it in my own coin."
+    ],
+    "lines_fr": [
+      "Ils demanderont qui l’a laissé passer. Un juste prix pour une battue. Je l’aurais payé de ma propre monnaie."
+    ]
+  },
+  "choice_mire_child_given_maren": {
+    "remarkID": "choice_mire_child_given_maren",
+    "companionID": "maren",
+    "trigger": "choice",
+    "choiceKey": "mire_child_given",
+    "note": "The Mire: step out of the doorway",
+    "lines": [
+      "You stepped out of the doorway and the child went with them. I will ask you once, later, what you were thinking. Not now."
+    ],
+    "lines_fr": [
+      "Vous avez quitté l’embrasure et l’enfant est partie avec eux. Je vous demanderai une fois, plus tard, à quoi vous pensiez. Pas maintenant."
+    ]
+  },
+  "choice_mire_child_given_kelda": {
+    "remarkID": "choice_mire_child_given_kelda",
+    "companionID": "kelda",
+    "trigger": "choice",
+    "choiceKey": "mire_child_given",
+    "note": "The Mire: step out of the doorway",
+    "lines": [
+      "I would have held that door until it fell on me. You chose differently. I will have to live next to that."
+    ],
+    "lines_fr": [
+      "J’aurais tenu cette porte jusqu’à ce qu’elle me tombe dessus. Vous avez choisi autrement. Il faudra que je vive à côté de cela."
+    ]
+  },
+  "choice_mire_child_given_vess": {
+    "remarkID": "choice_mire_child_given_vess",
+    "companionID": "vess",
+    "trigger": "choice",
+    "choiceKey": "mire_child_given",
+    "note": "The Mire: step out of the doorway",
+    "lines": [
+      "The child looked at me through the window. I do not think she knew what I was. I knew what she was. I do not blame you. I remember it."
+    ],
+    "lines_fr": [
+      "L’enfant m’a regardée par la fenêtre. Je ne crois pas qu’elle savait ce que j’étais. Moi, je savais ce qu’elle était. Je ne vous en veux pas. Je m’en souviens."
+    ]
+  },
+  "choice_sail_climbed_liora": {
+    "remarkID": "choice_sail_climbed_liora",
+    "companionID": "liora",
+    "trigger": "choice",
+    "choiceKey": "sail_climbed",
+    "note": "The flagship’s sail: climb the mast and cut it down",
+    "lines": [
+      "You climbed it yourself. I watched your hands. They did not shake once. Mine did."
+    ],
+    "lines_fr": [
+      "Vous avez grimpé vous-même. J’ai regardé vos mains. Elles n’ont pas tremblé une seule fois. Les miennes, si."
+    ]
+  },
+  "choice_sail_climbed_kelda": {
+    "remarkID": "choice_sail_climbed_kelda",
+    "companionID": "kelda",
+    "trigger": "choice",
+    "choiceKey": "sail_climbed",
+    "note": "The flagship’s sail: climb the mast and cut it down",
+    "lines": [
+      "Up a rotten mast with a knife in your teeth. I would have gone first. I am glad I did not have to."
+    ],
+    "lines_fr": [
+      "En haut d’un mât pourri, un couteau entre les dents. J’aurais ouvert la voie. Je suis contente de ne pas avoir eu à le faire."
+    ]
+  },
+  "choice_sail_climbed_sable": {
+    "remarkID": "choice_sail_climbed_sable",
+    "companionID": "sable",
+    "trigger": "choice",
+    "choiceKey": "sail_climbed",
+    "note": "The flagship’s sail: climb the mast and cut it down",
+    "lines": [
+      "Thirty feet of rotten mast, and you went up it like it owed you coin. Don’t do that again. Do it again if you must."
+    ],
+    "lines_fr": [
+      "Dix mètres de mât pourri, et vous l’avez escaladé comme s’il vous devait de l’argent. Ne recommencez pas. Recommencez si vous devez."
+    ]
+  },
+  "choice_7100_clan_dominion_3_0_maren": {
+    "remarkID": "choice_7100_clan_dominion_3_0_maren",
+    "companionID": "maren",
+    "trigger": "choice",
+    "choiceKey": "7100_clan_dominion_3#0",
+    "note": "The Dominion: open the lamp, be the Lantern-Bearer to come",
+    "lines": [
+      "You opened the lamp. I have been afraid of that light all my life. It was warm. I did not expect that."
+    ],
+    "lines_fr": [
+      "Vous avez ouvert la lampe. J’ai eu peur de cette lumière toute ma vie. Elle était chaude. Je ne m’y attendais pas."
+    ]
+  },
+  "choice_7100_clan_dominion_3_0_tobin": {
+    "remarkID": "choice_7100_clan_dominion_3_0_tobin",
+    "companionID": "tobin",
+    "trigger": "choice",
+    "choiceKey": "7100_clan_dominion_3#0",
+    "note": "The Dominion: open the lamp, be the Lantern-Bearer to come",
+    "lines": [
+      "I left the Choir so I would never follow a light I had not chosen. This one, I chose."
+    ],
+    "lines_fr": [
+      "J’ai quitté le Chœur pour ne jamais suivre une lumière que je n’avais pas choisie. Celle-ci, je l’ai choisie."
+    ]
+  },
+  "choice_7100_clan_dominion_3_0_malrik": {
+    "remarkID": "choice_7100_clan_dominion_3_0_malrik",
+    "companionID": "malrik",
+    "trigger": "choice",
+    "choiceKey": "7100_clan_dominion_3#0",
+    "note": "The Dominion: open the lamp, be the Lantern-Bearer to come",
+    "lines": [
+      "Lantern-Bearer. The pension is good, the hours are terrible, and the competition is dead. I would have taken the post."
+    ],
+    "lines_fr": [
+      "Porte-Lanterne. La retraite est bonne, les horaires sont terribles, et la concurrence est morte. J’aurais pris le poste."
+    ]
+  },
+  "choice_7100_clan_crows_3_0_sable": {
+    "remarkID": "choice_7100_clan_crows_3_0_sable",
+    "companionID": "sable",
+    "trigger": "choice",
+    "choiceKey": "7100_clan_crows_3#0",
+    "note": "The Crows: take the master’s chair, be the Key of Keys",
+    "lines": [
+      "Key of Keys. They will never forgive you for sitting in that chair. I will never forgive you for not letting me sit in it first."
+    ],
+    "lines_fr": [
+      "Clef des Clefs. Ils ne vous pardonneront jamais d’avoir pris ce fauteuil. Moi, je ne vous pardonnerai jamais de ne pas m’y avoir laissée m’asseoir la première."
+    ]
+  },
+  "choice_7100_clan_crows_3_0_malrik": {
+    "remarkID": "choice_7100_clan_crows_3_0_malrik",
+    "companionID": "malrik",
+    "trigger": "choice",
+    "choiceKey": "7100_clan_crows_3#0",
+    "note": "The Crows: take the master’s chair, be the Key of Keys",
+    "lines": [
+      "The master’s chair, taken in a single afternoon. I have spent twelve years not asking how that is done. Please do not tell me."
+    ],
+    "lines_fr": [
+      "Le fauteuil du maître, pris en un seul après-midi. J’ai passé douze ans à ne pas demander comment on fait. Ne me le dites pas, je vous prie."
+    ]
+  },
+  "choice_7100_clan_crows_3_0_grosh": {
+    "remarkID": "choice_7100_clan_crows_3_0_grosh",
+    "companionID": "grosh",
+    "trigger": "choice",
+    "choiceKey": "7100_clan_crows_3#0",
+    "note": "The Crows: take the master’s chair, be the Key of Keys",
+    "lines": [
+      "Chair is big. You look good in it. Grosh will still stand."
+    ],
+    "lines_fr": [
+      "Le fauteuil est grand. Vous y êtes bien. Grosh restera debout, quand même."
+    ]
+  },
+  "choice_7100_clan_penitents_3_through_0_maren": {
+    "remarkID": "choice_7100_clan_penitents_3_through_0_maren",
+    "companionID": "maren",
+    "trigger": "choice",
+    "choiceKey": "7100_clan_penitents_3_through#0",
+    "note": "The Penitents: take the cloth, walk before them for good",
+    "lines": [
+      "You took the cloth. I wore it once, for a year, and it never stopped being heavy. I am glad you will not walk in it alone."
+    ],
+    "lines_fr": [
+      "Vous avez pris l’étoffe. Je l’ai portée un an et un jour, et elle n’a jamais cessé d’être lourde. Je suis heureuse que vous n’ayez pas à la porter en solitaire."
+    ]
+  },
+  "choice_7100_clan_penitents_3_through_0_tobin": {
+    "remarkID": "choice_7100_clan_penitents_3_through_0_tobin",
+    "companionID": "tobin",
+    "trigger": "choice",
+    "choiceKey": "7100_clan_penitents_3_through#0",
+    "note": "The Penitents: take the cloth, walk before them for good",
+    "lines": [
+      "To walk before them for good. It is a calling, and it is a cell. I know both."
+    ],
+    "lines_fr": [
+      "Marcher devant eux pour de bon. C’est une vocation, et c’est une cellule. Je connais les deux."
+    ]
+  },
+  "choice_7100_clan_penitents_3_through_0_kelda": {
+    "remarkID": "choice_7100_clan_penitents_3_through_0_kelda",
+    "companionID": "kelda",
+    "trigger": "choice",
+    "choiceKey": "7100_clan_penitents_3_through#0",
+    "note": "The Penitents: take the cloth, walk before them for good",
+    "lines": [
+      "Walk in front, then. I will walk behind and watch the road."
+    ],
+    "lines_fr": [
+      "Marchez devant, alors. Je marcherai derrière, et je surveillerai la route."
+    ]
+  },
+  "choice_7200_clan_vigil_3_sworn_0_kelda": {
+    "remarkID": "choice_7200_clan_vigil_3_sworn_0_kelda",
+    "companionID": "kelda",
+    "trigger": "choice",
+    "choiceKey": "7200_clan_vigil_3_sworn#0",
+    "note": "The Vigil: keep the cloth, be the Warden of the Wall",
+    "lines": [
+      "Warden of the Wall. I held a gate once. A wall is a gate that never opens. You will need someone who can stand there."
+    ],
+    "lines_fr": [
+      "Garde du Mur. J’ai tenu une porte, un jour. Un mur est une porte qui ne s’ouvre jamais. Il vous faudra quelqu’un qui sache y rester debout."
+    ]
+  },
+  "choice_7200_clan_vigil_3_sworn_0_liora": {
+    "remarkID": "choice_7200_clan_vigil_3_sworn_0_liora",
+    "companionID": "liora",
+    "trigger": "choice",
+    "choiceKey": "7200_clan_vigil_3_sworn#0",
+    "note": "The Vigil: keep the cloth, be the Warden of the Wall",
+    "lines": [
+      "The Vigil keeps its eye open all night. I know that watch. You will be tired. I will take the next one."
+    ],
+    "lines_fr": [
+      "La Veille garde l’œil ouvert toute la nuit. Je connais ce quart. La fatigue vous guettera. Je prendrai le suivant."
+    ]
+  },
+  "choice_7200_clan_vigil_3_sworn_0_tobin": {
+    "remarkID": "choice_7200_clan_vigil_3_sworn_0_tobin",
+    "companionID": "tobin",
+    "trigger": "choice",
+    "choiceKey": "7200_clan_vigil_3_sworn#0",
+    "note": "The Vigil: keep the cloth, be the Warden of the Wall",
+    "lines": [
+      "A warden swears to stay. I stayed once. It was the right oath, and the worst I ever made."
+    ],
+    "lines_fr": [
+      "Un gardien jure de rester. Je suis resté une fois. C’était le bon serment, et le pire que j’aie jamais prêté."
+    ]
+  },
+  "choice_7200_clan_mire_3_0_vess": {
+    "remarkID": "choice_7200_clan_mire_3_0_vess",
+    "companionID": "vess",
+    "trigger": "choice",
+    "choiceKey": "7200_clan_mire_3#0",
+    "note": "The Mire: drink, and sit as the fifth court",
+    "lines": [
+      "A fifth court under the fen. They drank, and you drank, and it did not kill you. I think that is how the fen says yes."
+    ],
+    "lines_fr": [
+      "Une cinquième cour sous le marais. Ils ont bu, vous avez bu, et cela ne vous a pas tué. Je crois que c’est ainsi que le marais dit oui."
+    ]
+  },
+  "choice_7200_clan_mire_3_0_sable": {
+    "remarkID": "choice_7200_clan_mire_3_0_sable",
+    "companionID": "sable",
+    "trigger": "choice",
+    "choiceKey": "7200_clan_mire_3#0",
+    "note": "The Mire: drink, and sit as the fifth court",
+    "lines": [
+      "Drink the fen’s wine, sit in a reed chair, call it a court. I have had worse nights. I have never had a better title."
+    ],
+    "lines_fr": [
+      "Boire le vin du marais, s’asseoir sur une chaise de roseaux, appeler cela une cour. J’ai eu de pires nuits. Je n’ai jamais eu de plus beau titre."
+    ]
+  },
+  "choice_7200_clan_mire_3_0_maren": {
+    "remarkID": "choice_7200_clan_mire_3_0_maren",
+    "companionID": "maren",
+    "trigger": "choice",
+    "choiceKey": "7200_clan_mire_3#0",
+    "note": "The Mire: drink, and sit as the fifth court",
+    "lines": [
+      "A court that was never meant to be, and you sat in it. May it keep you better than the fen keeps its dead."
+    ],
+    "lines_fr": [
+      "Une cour qui n’aurait jamais dû être, et vous avez pris place dedans. Puisse-t-elle vous garder mieux que le marais ne garde ses morts."
+    ]
+  },
+  "choice_6010_clan_compact_3_hammer_0_kelda": {
+    "remarkID": "choice_6010_clan_compact_3_hammer_0_kelda",
+    "companionID": "kelda",
+    "trigger": "choice",
+    "choiceKey": "6010_clan_compact_3_hammer#0",
+    "note": "The Compact: carry the hammer, speak for the Row",
+    "lines": [
+      "Carry the hammer, speak for the Row. That is a dwarf’s oath, and you made it without being born to it. I will not forget."
+    ],
+    "lines_fr": [
+      "Porter le marteau, parler pour la Rue. C’est un serment de nain, et vous l’avez prêté sans être né pour lui. Je ne l’oublierai pas."
+    ]
+  },
+  "choice_6010_clan_compact_3_hammer_0_grosh": {
+    "remarkID": "choice_6010_clan_compact_3_hammer_0_grosh",
+    "companionID": "grosh",
+    "trigger": "choice",
+    "choiceKey": "6010_clan_compact_3_hammer#0",
+    "note": "The Compact: carry the hammer, speak for the Row",
+    "lines": [
+      "Hammer is heavy. Grosh lifts, sometimes. Not today. You carry it. Good."
+    ],
+    "lines_fr": [
+      "Le marteau est lourd. Grosh soulève, parfois. Pas aujourd’hui. Vous le portez. Bien."
+    ]
+  },
+  "choice_6010_clan_compact_3_hammer_0_malrik": {
+    "remarkID": "choice_6010_clan_compact_3_hammer_0_malrik",
+    "companionID": "malrik",
+    "trigger": "choice",
+    "choiceKey": "6010_clan_compact_3_hammer#0",
+    "note": "The Compact: carry the hammer, speak for the Row",
+    "lines": [
+      "The Row’s votes for a hammer in your hand. The Compact will remember. I will write it down for them."
+    ],
+    "lines_fr": [
+      "Les voix de la Rue contre un marteau dans votre main. Le Pacte s’en souviendra. Je le noterai pour eux."
+    ]
+  },
+  "choice_7002_banner_0_liora": {
+    "remarkID": "choice_7002_banner_0_liora",
+    "companionID": "liora",
+    "trigger": "choice",
+    "choiceKey": "7002_banner#0",
+    "note": "The Open Hand’s banner: raise it, and see who comes to stand under it",
+    "lines": [
+      "You raised it. Every watcher on the coast saw it go up. So did I. I stood beneath it a long time."
+    ],
+    "lines_fr": [
+      "Vous l’avez levée. Chaque guetteur de la côte l’a vue monter. Moi aussi. Je suis restée longtemps dessous."
+    ]
+  },
+  "choice_7002_banner_0_kelda": {
+    "remarkID": "choice_7002_banner_0_kelda",
+    "companionID": "kelda",
+    "trigger": "choice",
+    "choiceKey": "7002_banner#0",
+    "note": "The Open Hand’s banner: raise it, and see who comes to stand under it",
+    "lines": [
+      "A banner is a promise you cannot take down. You raised it. I will stand under it."
+    ],
+    "lines_fr": [
+      "Une bannière est une promesse qu’on ne peut pas redescendre. Vous l’avez levée. Je me tiendrai dessous."
+    ]
+  },
+  "choice_7002_banner_0_maren": {
+    "remarkID": "choice_7002_banner_0_maren",
+    "companionID": "maren",
+    "trigger": "choice",
+    "choiceKey": "7002_banner#0",
+    "note": "The Open Hand’s banner: raise it, and see who comes to stand under it",
+    "lines": [
+      "The Open Hand, raised on a spar over the grey sand. I never thought I would see it again."
+    ],
+    "lines_fr": [
+      "La Main ouverte, hissée sur une vergue au-dessus du sable gris. Je ne pensais pas la revoir un jour."
+    ]
+  },
+  "choice_7002_banner_3_tobin": {
+    "remarkID": "choice_7002_banner_3_tobin",
+    "companionID": "tobin",
+    "trigger": "choice",
+    "choiceKey": "7002_banner#3",
+    "note": "The Open Hand’s banner: keep it furled; the tear is not a muster",
+    "lines": [
+      "You furled it. A wise king keeps his hand closed until he knows who is watching. I do not call that cowardice."
+    ],
+    "lines_fr": [
+      "Vous l’avez roulée. Un roi sage garde la main fermée jusqu’à savoir qui regarde. Je n’appelle pas cela de la lâcheté."
+    ]
+  },
+  "choice_7002_banner_3_malrik": {
+    "remarkID": "choice_7002_banner_3_malrik",
+    "companionID": "malrik",
+    "trigger": "choice",
+    "choiceKey": "7002_banner#3",
+    "note": "The Open Hand’s banner: keep it furled; the tear is not a muster",
+    "lines": [
+      "Furled. A valuable asset kept off the market until the price is right. Perfectly sound."
+    ],
+    "lines_fr": [
+      "Roulée. Un bien précieux gardé hors du marché jusqu’à ce que le prix soit bon. Parfaitement sensé."
+    ]
+  },
+  "choice_7002_banner_3_vess": {
+    "remarkID": "choice_7002_banner_3_vess",
+    "companionID": "vess",
+    "trigger": "choice",
+    "choiceKey": "7002_banner#3",
+    "note": "The Open Hand’s banner: keep it furled; the tear is not a muster",
+    "lines": [
+      "You kept it hidden. The tear did not care, and neither did I. It was a kindness to those who would have followed it to their deaths."
+    ],
+    "lines_fr": [
+      "Vous l’avez gardée cachée. La déchirure s’en moquait, et moi aussi. C’était une bonté envers ceux qui l’auraient suivie jusqu’à la mort."
+    ]
+  },
+  "choice_left_at_once_sable": {
+    "remarkID": "choice_left_at_once_sable",
+    "companionID": "sable",
+    "trigger": "choice",
+    "choiceKey": "left_at_once",
+    "note": "The tear’s throne: step back through the tear at once",
+    "lines": [
+      "Straight back through, no lingering. I like that in a thief and a hero."
+    ],
+    "lines_fr": [
+      "Retour direct, sans traîner. J’aime cela chez un voleur et chez un héros."
+    ]
+  },
+  "choice_left_at_once_grosh": {
+    "remarkID": "choice_left_at_once_grosh",
+    "companionID": "grosh",
+    "trigger": "choice",
+    "choiceKey": "left_at_once",
+    "note": "The tear’s throne: step back through the tear at once",
+    "lines": [
+      "Grosh does not like that place. You left. Good."
+    ],
+    "lines_fr": [
+      "Grosh n’aime pas cet endroit. Vous avez fait demi-tour. Bien."
+    ]
+  },
+  "choice_names_recovered_maren": {
+    "remarkID": "choice_names_recovered_maren",
+    "companionID": "maren",
+    "trigger": "choice",
+    "choiceKey": "names_recovered",
+    "note": "The tear’s throne: cut the taken’s names from the throne first",
+    "lines": [
+      "You cut the taken’s names from the throne before you left. It cost you time. It cost them nothing. Thank you."
+    ],
+    "lines_fr": [
+      "Vous avez arraché les noms des enlevés au trône avant de partir. Cela vous a coûté du temps. Cela ne leur a rien coûté. Merci."
+    ]
+  },
+  "choice_names_recovered_tobin": {
+    "remarkID": "choice_names_recovered_tobin",
+    "companionID": "tobin",
+    "trigger": "choice",
+    "choiceKey": "names_recovered",
+    "note": "The tear’s throne: cut the taken’s names from the throne first",
+    "lines": [
+      "Names are the first thing a throne eats. You took them back. I will say them tonight."
+    ],
+    "lines_fr": [
+      "Les noms sont la première chose qu’un trône dévore. Vous les avez repris. Je les dirai ce soir."
+    ]
+  },
+  "choice_names_recovered_liora": {
+    "remarkID": "choice_names_recovered_liora",
+    "companionID": "liora",
+    "trigger": "choice",
+    "choiceKey": "names_recovered",
+    "note": "The tear’s throne: cut the taken’s names from the throne first",
+    "lines": [
+      "I counted the seconds you stayed. I stopped counting at the third name. I would have stayed too."
+    ],
+    "lines_fr": [
+      "J’ai compté les secondes de votre séjour. J’ai cessé au troisième nom. Moi aussi, je serais restée."
+    ]
+  },
+  "choice_7500_7_maren": {
+    "remarkID": "choice_7500_7_maren",
+    "companionID": "maren",
+    "trigger": "choice",
+    "choiceKey": "7500#7",
+    "note": "The Throne: raise the grey hand, your own blood’s claim",
+    "lines": [
+      "The grey hand is yours by blood. I will not ask you to prove it. I saw you carry it."
+    ],
+    "lines_fr": [
+      "La main grise est la vôtre par le sang. Je ne vous demanderai pas de le prouver. Je vous ai vu la porter."
+    ]
+  },
+  "choice_7500_7_tobin": {
+    "remarkID": "choice_7500_7_tobin",
+    "companionID": "tobin",
+    "trigger": "choice",
+    "choiceKey": "7500#7",
+    "note": "The Throne: raise the grey hand, your own blood’s claim",
+    "lines": [
+      "Open hand, then. The only banner I have ever wanted to follow is one that asks nothing back."
+    ],
+    "lines_fr": [
+      "La main ouverte, donc. La seule bannière que j’aie jamais voulu suivre est une qui ne demande rien en retour."
+    ]
+  },
+  "choice_7500_8_kelda": {
+    "remarkID": "choice_7500_8_kelda",
+    "companionID": "kelda",
+    "trigger": "choice",
+    "choiceKey": "7500#8",
+    "note": "The Throne: claim it for the Dominion itself",
+    "lines": [
+      "Claiming the Dominion’s Throne for the Dominion. Bold. I have served under worse sergeants."
+    ],
+    "lines_fr": [
+      "Revendiquer le Trône du Dominion pour le Dominion. Audacieux. J’ai servi sous de pires sergents."
+    ]
+  },
+  "choice_7500_8_maren": {
+    "remarkID": "choice_7500_8_maren",
+    "companionID": "maren",
+    "trigger": "choice",
+    "choiceKey": "7500#8",
+    "note": "The Throne: claim it for the Dominion itself",
+    "lines": [
+      "The Lantern asked, and you answered. I pray it remembers who it was answering."
+    ],
+    "lines_fr": [
+      "La Lanterne a demandé, et vous avez répondu. Je prie pour qu’elle se souvienne à qui elle répondait."
+    ]
+  },
+  "choice_7500_9_liora": {
+    "remarkID": "choice_7500_9_liora",
+    "companionID": "liora",
+    "trigger": "choice",
+    "choiceKey": "7500#9",
+    "note": "The Throne: ask the Vigil to let you carry its eye",
+    "lines": [
+      "The Vigil’s eye on your shoulder. I know that watch. You will sleep less, and see more."
+    ],
+    "lines_fr": [
+      "L’œil de la Veille sur votre épaule. Je connais ce quart. Vous dormirez moins, et vous verrez plus."
+    ]
+  },
+  "choice_7500_9_tobin": {
+    "remarkID": "choice_7500_9_tobin",
+    "companionID": "tobin",
+    "trigger": "choice",
+    "choiceKey": "7500#9",
+    "note": "The Throne: ask the Vigil to let you carry its eye",
+    "lines": [
+      "To carry the Vigil’s eye. A weight, a duty. It sits well on you."
+    ],
+    "lines_fr": [
+      "Porter l’œil de la Veille. Un poids, un devoir. Il vous sied."
+    ]
+  },
+  "choice_7500_10_kelda": {
+    "remarkID": "choice_7500_10_kelda",
+    "companionID": "kelda",
+    "trigger": "choice",
+    "choiceKey": "7500#10",
+    "note": "The Throne: ask the Compact for its iron, and a reason",
+    "lines": [
+      "Iron and a reason. The Compact gives the first and demands the second. You gave both. They will honour it."
+    ],
+    "lines_fr": [
+      "Du fer et une raison. Le Pacte donne le premier et exige la seconde. Vous avez donné les deux. Ils l’honoreront."
+    ]
+  },
+  "choice_7500_10_grosh": {
+    "remarkID": "choice_7500_10_grosh",
+    "companionID": "grosh",
+    "trigger": "choice",
+    "choiceKey": "7500#10",
+    "note": "The Throne: ask the Compact for its iron, and a reason",
+    "lines": [
+      "Compact iron is heavy. Grosh likes heavy."
+    ],
+    "lines_fr": [
+      "Le fer du Pacte est lourd. Grosh aime lourd."
+    ]
+  },
+  "choice_7500_11_vess": {
+    "remarkID": "choice_7500_11_vess",
+    "companionID": "vess",
+    "trigger": "choice",
+    "choiceKey": "7500#11",
+    "note": "The Throne: ask the Mire Courts to lend you the heron",
+    "lines": [
+      "The heron, lent to you. The Courts do not lend lightly. They will want it back, and something besides."
+    ],
+    "lines_fr": [
+      "Le héron, prêté à vous. Les Cours ne prêtent pas à la légère. Elles voudront le récupérer, et autre chose avec."
+    ]
+  },
+  "choice_7500_11_sable": {
+    "remarkID": "choice_7500_11_sable",
+    "companionID": "sable",
+    "trigger": "choice",
+    "choiceKey": "7500#11",
+    "note": "The Throne: ask the Mire Courts to lend you the heron",
+    "lines": [
+      "A heron on loan. I would have asked for the marsh. You are kinder than I am, which is not a compliment."
+    ],
+    "lines_fr": [
+      "Un héron en prêt. J’aurais demandé le marais. Vous êtes plus aimable que moi, ce qui n’est pas un compliment."
+    ]
+  },
+  "choice_7500_12_sable": {
+    "remarkID": "choice_7500_12_sable",
+    "companionID": "sable",
+    "trigger": "choice",
+    "choiceKey": "7500#12",
+    "note": "The Throne: buy the Crows’ pennant for one last contract",
+    "lines": [
+      "A pennant for one last contract. Do not mind the last part. With the Crows, it is never the last."
+    ],
+    "lines_fr": [
+      "Un fanion pour un dernier contrat. Ne vous arrêtez pas au dernier. Avec les Corneilles, ce n’est jamais le dernier."
+    ]
+  },
+  "choice_7500_12_malrik": {
+    "remarkID": "choice_7500_12_malrik",
+    "companionID": "malrik",
+    "trigger": "choice",
+    "choiceKey": "7500#12",
+    "note": "The Throne: buy the Crows’ pennant for one last contract",
+    "lines": [
+      "A pennant bought is a pennant owed. I have read the terms. You will be paying until the tide stops."
+    ],
+    "lines_fr": [
+      "Un fanion acheté est un fanion dû. J’ai lu les conditions. Vous paierez jusqu’à ce que la marée s’arrête."
+    ]
+  },
+  "choice_7500_13_maren": {
+    "remarkID": "choice_7500_13_maren",
+    "companionID": "maren",
+    "trigger": "choice",
+    "choiceKey": "7500#13",
+    "note": "The Throne: ask the Penitents to walk behind you",
+    "lines": [
+      "To have them walk behind you. They have not walked behind anyone in a long time. Be worth it."
+    ],
+    "lines_fr": [
+      "Les avoir derrière vous. Ils n’ont suivi personne depuis longtemps. Soyez à la hauteur."
+    ]
+  },
+  "choice_7500_13_tobin": {
+    "remarkID": "choice_7500_13_tobin",
+    "companionID": "tobin",
+    "trigger": "choice",
+    "choiceKey": "7500#13",
+    "note": "The Throne: ask the Penitents to walk behind you",
+    "lines": [
+      "The Penitents at your back. I know how they sound. It is the loudest quiet there is."
+    ],
+    "lines_fr": [
+      "Les Pénitents dans votre dos. Je sais comment ils sonnent. C’est le plus bruyant des silences."
+    ]
   }
 }
