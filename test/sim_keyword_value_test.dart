@@ -117,7 +117,7 @@ void main() {
       final d4 = [
         for (var i = 0; i < 4; i++) _face('Attack', 2, ['growth'])
       ];
-      final uses = simFightRounds / 4;
+      const uses = simFightRounds / 4;
       expect(value(d4.first, faces: d4),
           closeTo(10 + growthStep * (uses - 1) / 2, 1e-9));
       // On a d12 a face is played less than once a fight: nothing gained.
