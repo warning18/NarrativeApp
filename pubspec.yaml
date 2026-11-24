@@ -119,6 +119,9 @@ flutter:
     - assets/visuals/fighters/
     - assets/visuals/tower/
     - assets/visuals/tower/npc/
+    # The Tower's ink look (v1.1004): its plates in the ink greys, Art's brush frames.
+    - assets/visuals/tower_ink/
+    - assets/visuals/ink/
     - assets/visuals/crossing/desert/
     - assets/visuals/life/
     - assets/visuals/character/
