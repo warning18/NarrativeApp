@@ -328,20 +328,20 @@ class _StoryView extends ConsumerWidget {
       if (loop != null && loop.title.isNotEmpty) {
         final lang = ref.read(appLanguageProvider);
         final cardNews = chapterCardNews(news, lang);
-        unawaited(showChapterCard(context,
+        // The chapter's chest comes right after its card closes (v2.5.0).
+        await showChapterCard(context,
             number: loop.label.isEmpty ? '$next' : loop.label,
             title: loop.title,
             colour: InkColors.of(context).ember,
             note: offered ? tr(ref, 'offer_chapter_note') : null,
             newsTitle: trFor(lang, 'coast_news_title'),
-            news: cardNews));
-        // The chapter's chest comes right after its card (v2.5.0).
-        await Future<void>.delayed(chapterCardDuration(cardNews.length) +
-            const Duration(milliseconds: 400));
+            news: cardNews);
         if (!context.mounted) return;
       }
-      final due =
-          ref.read(playerSessionProvider.notifier).chapterChestDue(next);
+      // Edit Mode jumps through the story to test it: no chest is owed there.
+      final due = ref.read(appModeProvider) == AppMode.edit
+          ? null
+          : ref.read(playerSessionProvider.notifier).chapterChestDue(next);
       if (due != null) await showChapterChest(context, ref, due);
     });
 

@@ -1139,11 +1139,11 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   },
   'chapter_goal_toast': {
     AppLanguage.en: 'Goal met: {goal} · {n}/3',
-    AppLanguage.fr: 'Objectif atteint : {goal} · {n}/3',
+    AppLanguage.fr: 'Objectif atteint\u00a0: {goal} · {n}/3',
   },
   'chapter_goal_setup': {
     AppLanguage.en: 'Goal: {goal}',
-    AppLanguage.fr: 'Objectif : {goal}',
+    AppLanguage.fr: 'Objectif\u00a0: {goal}',
   },
   'chapter_chest_title': {
     AppLanguage.en: 'Chapter {n} · your chest',
