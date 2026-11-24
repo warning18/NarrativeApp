@@ -555,7 +555,7 @@ extension _FightGround on _FightScreenState {
       crossAxisAlignment: CrossAxisAlignment.start,
       mainAxisSize: MainAxisSize.min,
       children: [
-        Text('${tr(ref, 'fight_prefix')}: ${_battleTitle()}'),
+        FitTitle('${tr(ref, 'fight_prefix')}: ${_battleTitle()}'),
         Text(
           '${_groundName(lang)}$sky',
           key: const Key('fight_ground_strip'),

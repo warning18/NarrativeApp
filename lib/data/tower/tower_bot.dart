@@ -20,6 +20,7 @@ import '../../combat/fight_numbers.dart';
 import '../factions.dart' show ClanData;
 import '../sim_combat.dart';
 import '../training.dart' show statPickForShares;
+import 'tower_clans.dart';
 import 'tower_dice.dart' show towerChooseDie;
 import 'tower_events.dart';
 import 'tower_floors.dart';
@@ -223,7 +224,8 @@ TowerRun playTowerRun({
       run = _botStatPicks(run, data);
       final hero = towerHeroOf(run, data);
       final owned = hero.ownedDice.keys.toSet();
-      final index = (choice ?? towerBotChoice)(run);
+      final index =
+          choice != null ? choice(run) : towerBotChoice(run, clans: data.clans);
       final card = index != null && index >= 0 && index < run.offer.length
           ? run.offer[index]
           : null;
@@ -372,9 +374,14 @@ TowerRun towerBotRollBest(TowerRun run, TowerData data, List<TowerFloor> floors,
 }
 
 /// The card the bot takes from [run]'s offer: the first of a clan's oath
-/// (a player's habit), a skill or a rank-up (a boon's first: the measure of v1.860, a
-/// die first left the ranger at 1 top in 70), a die, a spell.
-int? towerBotChoice(TowerRun run) {
+/// (a player's habit); else, among the clans' gifts (docs/simulation/
+/// tower-clan-offers.md), the gift of the clan it stands best with
+/// (towerStandingFrom over [run]'s cards, with [clans]' relations: those
+/// of assets/gamedata/ when not given; a tie, the first dealt), so it
+/// climbs toward an oath as the plan's bot did; else a skill or a rank-up
+/// (a boon's first: the measure of v1.860, a die first left the ranger at
+/// 1 top in 70), a die, a spell.
+int? towerBotChoice(TowerRun run, {TowerClanTables? clans}) {
   if (run.offer.isEmpty) return null;
   int? find(bool Function(TowerReward r) test) {
     for (var i = 0; i < run.offer.length; i++) {
@@ -383,14 +390,42 @@ int? towerBotChoice(TowerRun run) {
     return null;
   }
 
-  return find((r) => r.kind == TowerRewardKind.clanOath) ??
-      find((r) =>
+  final oath = find((r) => r.kind == TowerRewardKind.clanOath);
+  if (oath != null) return oath;
+  if (run.offer.any((r) => r.clan.isNotEmpty)) {
+    final standing = towerStandingFrom(
+        [for (final f in run.taken.keys.toList()..sort()) run.taken[f]!],
+        clans ?? _assetClanTables);
+    int? best;
+    for (var i = 0; i < run.offer.length; i++) {
+      final clan = run.offer[i].clan;
+      if (clan.isEmpty) continue;
+      if (best == null ||
+          (standing[clan] ?? 0) > (standing[run.offer[best].clan] ?? 0)) {
+        best = i;
+      }
+    }
+    if (best != null) return best;
+  }
+  return find((r) =>
           r.kind == TowerRewardKind.skill ||
           r.kind == TowerRewardKind.rankUp) ??
       find((r) => r.kind == TowerRewardKind.die) ??
       find((r) => r.kind == TowerRewardKind.spell) ??
       0;
 }
+
+/// The clans' tables of assets/gamedata/ (factions, relations, skill
+/// trees), read once, for [towerBotChoice] called with none.
+final TowerClanTables _assetClanTables = TowerClanTables.fromTables(
+  factions: _assetTable('factions'),
+  relations: _assetTable('relations'),
+  skillTrees: _assetTable('skill_trees'),
+);
+
+Map<String, dynamic> _assetTable(String name) =>
+    jsonDecode(File('assets/gamedata/$name.json').readAsStringSync())
+        as Map<String, dynamic>;
 
 /// A batch of [seeds] runs (QA's balance report): each run's floor
 /// reached, and whether it won.

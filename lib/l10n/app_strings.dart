@@ -1027,9 +1027,10 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.en: 'Win in {n} rounds or fewer',
     AppLanguage.fr: 'Gagner en {n} tours ou moins',
   },
+  // v2.6.1: {n} weakness hits in one fight (ch4 and ch5 read this line).
   'chapter_goal_weakness': {
-    AppLanguage.en: 'Win using a die on the foe’s weakness',
-    AppLanguage.fr: 'Gagner avec un dé sur le point faible de l’ennemi',
+    AppLanguage.en: 'Strike a weakness {n} times in one fight',
+    AppLanguage.fr: 'Frapper {n} fois un point faible en un seul combat',
   },
   'chapter_goal_first_try': {
     AppLanguage.en: 'Beat the boss on the first try',
@@ -1043,33 +1044,27 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.en: 'Win in {n} rounds, before the flood',
     AppLanguage.fr: 'Gagner en {n} tours, avant la crue',
   },
-  'chapter_goal_weakness_ch4': {
-    AppLanguage.en: 'Turn a robed foe’s weakness against it',
-    AppLanguage.fr: 'Viser le point faible d’un ennemi en robe',
-  },
   'chapter_goal_rounds_ch5': {
     AppLanguage.en: 'Win in {n} rounds, before the frost sets',
     AppLanguage.fr: 'Gagner en {n} tours, avant que le givre ne prenne',
-  },
-  'chapter_goal_weakness_ch5': {
-    AppLanguage.en: 'Crack a Reliquary guard on its weakness',
-    AppLanguage.fr: 'Briser un garde du Reliquaire sur son point faible',
   },
   'chapter_goal_rounds_ch6': {
     AppLanguage.en: 'Win in {n} rounds, before the glass wakes',
     AppLanguage.fr: 'Gagner en {n} tours, avant l’éveil du verre',
   },
+  // v2.6.1: {n} weakness hits in one fight (the plain line; Narrative's).
   'chapter_goal_weakness_ch6': {
-    AppLanguage.en: 'Use a reflection’s weakness against it',
-    AppLanguage.fr: 'Retourner contre lui le point faible d’un reflet',
+    AppLanguage.en: 'Turn a weakness against them {n} times in one fight',
+    AppLanguage.fr:
+        'Retourner {n} fois un point faible contre eux en un seul combat',
   },
   'chapter_goal_rounds_ch7': {
     AppLanguage.en: 'Win in {n} rounds, before the Hall burns',
     AppLanguage.fr: 'Gagner en {n} tours, avant que la Salle ne brûle',
   },
   'chapter_goal_weakness_ch7': {
-    AppLanguage.en: 'Hit a claimant’s guard where it is weak',
-    AppLanguage.fr: 'Frapper un prétendant sur son point faible',
+    AppLanguage.en: 'Strike a weakness, whoever stands before you',
+    AppLanguage.fr: 'Frapper un point faible, quel que soit l’adversaire',
   },
   'chapter_goal_first_try_ch7': {
     AppLanguage.en: 'Beat the rival claimant on the first try',
@@ -1126,6 +1121,36 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   'chapter_chest_line_ch8': {
     AppLanguage.en: 'Whatever the tear took, it left a share.',
     AppLanguage.fr: 'Ce que la déchirure a pris, elle en a laissé une part.',
+  },
+  // The goals' card, its toast, the fight's line and the chest's screen (UX,
+  // v2.5.0; Narrative may reword, never rename).
+  'chapter_goals_title': {
+    AppLanguage.en: 'Chapter {n} · Goals',
+    AppLanguage.fr: 'Chapitre {n} · Objectifs',
+  },
+  'chapter_goals_hint': {
+    AppLanguage.en: 'Each goal met makes the chapter chest better.',
+    AppLanguage.fr: 'Chaque objectif atteint améliore le coffre du chapitre.',
+  },
+  'chapter_goal_toast': {
+    AppLanguage.en: 'Goal met: {goal} · {n}/3',
+    AppLanguage.fr: 'Objectif atteint\u00a0: {goal} · {n}/3',
+  },
+  'chapter_goal_setup': {
+    AppLanguage.en: 'Goal: {goal}',
+    AppLanguage.fr: 'Objectif\u00a0: {goal}',
+  },
+  'chapter_chest_title': {
+    AppLanguage.en: 'Chapter {n} · your chest',
+    AppLanguage.fr: 'Chapitre {n} · votre coffre',
+  },
+  'chapter_chest_met': {
+    AppLanguage.en: '{m} of 3 goals met',
+    AppLanguage.fr: '{m} objectif(s) sur 3 atteint(s)',
+  },
+  'chapter_chest_open': {
+    AppLanguage.en: 'Open the chest',
+    AppLanguage.fr: 'Ouvrir le coffre',
   },
   'main_quest_label': {
     AppLanguage.en: 'Main quest',
@@ -2248,6 +2273,12 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.en: '{skill}: rank {from} to {to}',
     AppLanguage.fr: '{skill}\u00a0: rang {from} à {to}',
   },
+  // The step alone, which leads the rank-up card's words (the name is the
+  // skill; a long French name did not fit with the step in the plate).
+  'tower_rank_up_step': {
+    AppLanguage.en: 'Rank {from} to {to}',
+    AppLanguage.fr: 'Rang {from} à {to}',
+  },
   'tower_rank_up_text': {
     AppLanguage.en:
         'Your die has no free face for a new skill: this one on it grows '
@@ -2288,6 +2319,131 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   'tower_oath_text': {
     AppLanguage.en: 'Swear to them: their standing and their die.',
     AppLanguage.fr: 'Prêtez-leur serment : leur estime et leur dé.',
+  },
+  // The clans' offers (docs/simulation/tower-clan-offers.md): a clan's
+  // gift on a card, what it moves, the standing it stands at; Narrative's
+  // lines (docs/narrative/drafts/tower-offers-and-briefs.md §1) below.
+  'tower_kind_gift': {
+    AppLanguage.en: 'Gift · {clan}',
+    AppLanguage.fr: 'Don · {clan}',
+  },
+  'tower_standing_line': {
+    AppLanguage.en: 'Standing {n}/{max}',
+    AppLanguage.fr: 'Estime {n}/{max}',
+  },
+  'tower_standing_step': {
+    AppLanguage.en: 'Standing {from} to {to}',
+    AppLanguage.fr: 'Estime : {from} à {to}',
+  },
+  'tower_not_now': {
+    AppLanguage.en: 'Not now (+1 mark)',
+    AppLanguage.fr: 'Pas maintenant (+1 marque)',
+  },
+  'tower_one_oath': {
+    AppLanguage.en: 'One oath a climb.',
+    AppLanguage.fr: 'Un seul serment par ascension.',
+  },
+  'tower_offer_frame_title': {
+    AppLanguage.en: 'The clans come to you',
+    AppLanguage.fr: 'Les clans viennent à vous',
+  },
+  'tower_offer_frame_body': {
+    AppLanguage.en:
+        'Word travels up a staircase faster than a climber. Those who watched you pass have sent someone to the landing.',
+    AppLanguage.fr:
+        'La rumeur monte un escalier plus vite qu’un grimpeur. Ceux qui vous ont vu passer ont envoyé quelqu’un sur le palier.',
+  },
+  'tower_standing_toast_dominion': {
+    AppLanguage.en: 'The Dominion thinks more of you.',
+    AppLanguage.fr: 'Le Dominion vous estime davantage.',
+  },
+  'tower_unlock_banner_dominion': {
+    AppLanguage.en: 'A door opens: the Dominion thinks you worthy of its oath.',
+    AppLanguage.fr:
+        'Une porte s’ouvre\u00a0: le Dominion vous juge digne de son serment.',
+  },
+  'tower_oath_line_dominion': {
+    AppLanguage.en:
+        'The Dominion keeps the lamps lit and the books closed. Swear, and you are written in both.',
+    AppLanguage.fr:
+        'Le Dominion garde les lampes allumées et les livres fermés. Prêtez serment, et vous figurerez dans les deux.',
+  },
+  'tower_standing_toast_vigil': {
+    AppLanguage.en: 'The Vigil thinks more of you.',
+    AppLanguage.fr: 'La Veille vous estime davantage.',
+  },
+  'tower_unlock_banner_vigil': {
+    AppLanguage.en: 'A door opens: the Vigil think you worthy of their oath.',
+    AppLanguage.fr:
+        'Une porte s’ouvre\u00a0: la Veille vous juge digne de son serment.',
+  },
+  'tower_oath_line_vigil': {
+    AppLanguage.en:
+        'The Vigil keeps the count of the dead. Swear, and yours will be kept too.',
+    AppLanguage.fr:
+        'La Veille tient le compte des morts. Prêtez serment, et le vôtre sera tenu aussi.',
+  },
+  'tower_standing_toast_compact': {
+    AppLanguage.en: 'The Compact thinks more of you.',
+    AppLanguage.fr: 'Le Pacte vous estime davantage.',
+  },
+  'tower_unlock_banner_compact': {
+    AppLanguage.en: 'A door opens: the Compact thinks you worthy of its oath.',
+    AppLanguage.fr:
+        'Une porte s’ouvre\u00a0: le Pacte vous juge digne de son serment.',
+  },
+  'tower_oath_line_compact': {
+    AppLanguage.en:
+        'The Compact trades in what burns down. Swear, and it will not trade you.',
+    AppLanguage.fr:
+        'Le Pacte commerce ce qui brûle. Prêtez serment, et il ne vous vendra pas.',
+  },
+  'tower_standing_toast_mire': {
+    AppLanguage.en: 'The Mire Courts think more of you.',
+    AppLanguage.fr: 'Les Cours du Marais vous estiment davantage.',
+  },
+  'tower_unlock_banner_mire': {
+    AppLanguage.en:
+        'A door opens: the Mire Courts think you worthy of their oath.',
+    AppLanguage.fr:
+        'Une porte s’ouvre\u00a0: les Cours du Marais vous jugent dignes de leur serment.',
+  },
+  'tower_oath_line_mire': {
+    AppLanguage.en:
+        'The Courts of the Mire forgive nothing and forget nothing. Swear, and they will remember you kindly.',
+    AppLanguage.fr:
+        'Les Cours du Marais ne pardonnent rien et n’oublient rien. Prêtez serment, et elles se souviendront de vous avec bonté.',
+  },
+  'tower_standing_toast_crows': {
+    AppLanguage.en: 'The Crows think more of you.',
+    AppLanguage.fr: 'Les Corneilles vous estiment davantage.',
+  },
+  'tower_unlock_banner_crows': {
+    AppLanguage.en: 'A door opens: the Crows think you worthy of their oath.',
+    AppLanguage.fr:
+        'Une porte s’ouvre\u00a0: les Corneilles vous jugent digne de leur serment.',
+  },
+  'tower_oath_line_crows': {
+    AppLanguage.en:
+        'Salt on the rope and a debt on the tide: the Crows will carry you if you carry them.',
+    AppLanguage.fr:
+        'Du sel sur la corde, une dette sur la marée\u00a0: les Corneilles vous porteront si vous les portez.',
+  },
+  'tower_standing_toast_penitents': {
+    AppLanguage.en: 'The Penitents think more of you.',
+    AppLanguage.fr: 'Les Pénitents vous estiment davantage.',
+  },
+  'tower_unlock_banner_penitents': {
+    AppLanguage.en:
+        'A door opens: the Penitents think you worthy of their oath.',
+    AppLanguage.fr:
+        'Une porte s’ouvre\u00a0: les Pénitents vous jugent dignes de leur serment.',
+  },
+  'tower_oath_line_penitents': {
+    AppLanguage.en:
+        'The Penitents climb on their knees. Swear, and they will make room on the stair.',
+    AppLanguage.fr:
+        'Les Pénitents montent à genoux. Prêtez serment, et ils vous feront de la place dans l’escalier.',
   },
   // The Tower's dice bag (towerDiceOf): a die gained waits in it.
   'tower_dice_title': {
