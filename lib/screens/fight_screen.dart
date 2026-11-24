@@ -18,6 +18,7 @@ import '../widgets/fight_plates.dart'
     show FightPlateImages, FightPlateOverride, fightPlateAsset;
 import '../widgets/side_view/side_view.dart' show SideLayer, SideViewScene;
 import '../widgets/fight_board.dart';
+import '../data/enemy_groups.dart' show enemyGroupNameKey;
 import '../widgets/enemy_groups.dart';
 import '../widgets/fight_block.dart';
 import '../widgets/fight_effect_icons.dart';
@@ -131,6 +132,12 @@ import '../theme/motion.dart';
 import '../widgets/ink_loading.dart';
 import '../theme/icon_sizes.dart';
 import '../widgets/pixel_glyph.dart';
+import 'tower/ink/ink_palette.dart' show inkGrey, inkRed, inkSlate;
+import 'tower/ink/ink_dice.dart' show inkDieSkin;
+import 'tower/tower_backdrop.dart' show towerFightScene;
+import 'tower/ink/ink_kit.dart' show InkSlantPanel, InkSplashPainter;
+import 'tower/ink/ink_palette.dart' show inkBlack, inkDeep, inkPaper;
+import 'tower/tower_look.dart' show TowerPanelStyle;
 
 part 'fight/fight_actions.dart';
 part 'fight/fight_board_view.dart';
@@ -151,6 +158,7 @@ part 'fight/fight_rounds.dart';
 part 'fight/fight_setup.dart';
 part 'fight/fight_sign_rounds.dart';
 part 'fight/fight_squad.dart';
+part 'fight/fight_tower_panels.dart';
 part 'fight/fight_view.dart';
 part 'fight/fight_widgets.dart';
 

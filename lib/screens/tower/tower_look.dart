@@ -2,6 +2,7 @@
 // theme (the dark scheme of the app's palette, on the Tower's own screens
 // only), its panels in the double-ink-line and bevel style, the foe standing
 // in its panel when it has art.
+import 'dart:async';
 import 'dart:ui' as ui;
 
 import 'package:flutter/material.dart';
@@ -10,6 +11,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../providers/palette_provider.dart';
 import '../../theme/frame_style.dart';
 import '../../theme/stitched_ink.dart';
+import 'ink/ink_images.dart';
+import 'ink/ink_palette.dart';
 import 'tower_providers.dart';
 import '../../widgets/fight_sprites.dart';
 
@@ -40,10 +43,15 @@ FrameMaterial towerMaterialOf({required int floor, required bool climbed}) {
 /// and the dialogs it opens, are dark. [floor] overrides the run's floor (the
 /// end screen, where the run is already cleared).
 class TowerNight extends ConsumerWidget {
-  const TowerNight({super.key, required this.child, this.floor});
+  const TowerNight(
+      {super.key, required this.child, this.floor, this.frames = true});
 
   final Widget child;
   final int? floor;
+
+  /// Whether the theme carries the wood, iron and silver frame pieces (the
+  /// fight, in ink, has none).
+  final bool frames;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -64,21 +72,58 @@ class TowerNight extends ConsumerWidget {
     // there the Tower wears its plain bevel, so no panel is drawn bare.
     final ready = FrameImages.ready(material, env);
     if (!ready) FrameImages.preload(material, env);
+    // The ink frames (v1.1004), the same way: loaded once, ahead.
+    if (!InkImages.ready) unawaited(InkImages.preload());
     return ValueListenableBuilder<int>(
       valueListenable: FrameImages.loaded,
       builder: (context, _, __) => Theme(
-        data: buildAppTheme(palette.schemeFor(Brightness.dark),
-            frames: FrameImages.ready(material, env)
+        data: _inkButtons(buildAppTheme(palette.schemeFor(Brightness.dark),
+            frames: frames && FrameImages.ready(material, env)
                 ? FrameStyle(
                     material: material,
                     env: env,
                     compactScale: 2,
                     seed: floorNow)
-                : null),
+                : null)),
         child: TowerPanelStyle(child: child),
       ),
     );
   }
+}
+
+/// The Tower's buttons in ink (v1.1005): a flat red block with paper text for
+/// the one that matters, a black block with a paper line for the rest; square.
+ThemeData _inkButtons(ThemeData t) {
+  const square = RoundedRectangleBorder();
+  return t.copyWith(
+    filledButtonTheme: FilledButtonThemeData(
+      style: FilledButton.styleFrom(
+        backgroundColor: inkRed,
+        foregroundColor: inkPaper,
+        disabledBackgroundColor: inkSlate,
+        disabledForegroundColor: inkGrey,
+        shape: square,
+      ),
+    ),
+    elevatedButtonTheme: ElevatedButtonThemeData(
+      style: ElevatedButton.styleFrom(
+        backgroundColor: inkRed,
+        foregroundColor: inkPaper,
+        disabledBackgroundColor: inkSlate,
+        disabledForegroundColor: inkGrey,
+        elevation: 0,
+        shape: square,
+      ),
+    ),
+    outlinedButtonTheme: OutlinedButtonThemeData(
+      style: OutlinedButton.styleFrom(
+        backgroundColor: inkBlack,
+        foregroundColor: inkPaper,
+        side: const BorderSide(color: inkPaper),
+        shape: square,
+      ),
+    ),
+  );
 }
 
 /// A double ink line (an outer dark line, a gap, an inner seam) with a bevel

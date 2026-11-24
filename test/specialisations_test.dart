@@ -169,12 +169,12 @@ void main() {
     final runs = int.tryParse(Platform.environment['SPECS_RUNS'] ?? '') ?? 2;
     final infos = specInfosFrom(_table('specialisations'));
     ({double win, double rounds}) measure(String profession,
-        [List<String> specs = const []]) {
+        [List<String> specs = const [], int? times]) {
       final summaries = simulatePlaythroughs(story,
           tables: tables,
           gameConfig: _table('game_config'),
           plan: [
-            for (var i = 0; i < runs; i++)
+            for (var i = 0; i < (times ?? runs); i++)
               (
                 strategy: SimStrategy.random,
                 raceId: null,
@@ -198,6 +198,15 @@ void main() {
             Platform.environment['SPECS_ONLY']!.split(',').contains(i.id))
           i.professionId,
     };
+    // The weak links the autoplay never reaches: a warrior's die has no
+    // Mana face, a potion is drunk below 40%, a mage's spells seldom meet
+    // another element or leave a status.
+    const unreached = {
+      'burning_penance',
+      'brimming_draught',
+      'double_kindling',
+      'lingering_hex',
+    };
     final core = {for (final p in professions) p: measure(p)};
     final lines = <String>[];
     final silent = <String>[];
@@ -215,25 +224,26 @@ void main() {
           '${(spec.win - base.win) >= 0 ? '+' : ''}'
           '${(spec.win - base.win).toStringAsFixed(1)} | '
           '${spec.rounds.toStringAsFixed(1)} |');
-      // Every specialisation plays: its profession's fights change.
+      // Every specialisation plays: its profession's fights change. A weak
+      // link may not trigger in so few runs (Stitch-Thrust needs an
+      // overheal): one that seems silent is measured again on three times
+      // the runs before it counts as silent.
       if (spec.win == base.win && spec.rounds == base.rounds) {
-        silent.add(info.id);
+        if (unreached.contains(info.id)) {
+          silent.add(info.id);
+          continue;
+        }
+        final more = measure(info.professionId, const [], runs * 3);
+        final moreSpec = measure(info.professionId, [info.id], runs * 3);
+        if (moreSpec.win == more.win && moreSpec.rounds == more.rounds) {
+          silent.add(info.id);
+        }
       }
     }
     if (Platform.environment['SPECS_RUNS'] != null) {
       // ignore: avoid_print
       print(lines.join('\n'));
     }
-    // The weak links the autoplay never reaches: a warrior's die has no
-    // Mana face, a potion is drunk below 40%, a mage's spells seldom meet
-    // another element or leave a status.
-    expect(
-        silent.toSet().difference({
-          'burning_penance',
-          'brimming_draught',
-          'double_kindling',
-          'lingering_hex',
-        }),
-        isEmpty);
+    expect(silent.toSet().difference(unreached), isEmpty);
   });
 }

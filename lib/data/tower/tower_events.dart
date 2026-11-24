@@ -17,6 +17,8 @@
 
 import 'dart:math';
 
+import 'package:flutter/foundation.dart' show visibleForTesting;
+
 import '../../combat/fight_numbers.dart'
     show eliteStatMultiplier, potionHealAmount;
 import '../ability_check.dart' show checkBonusFor, checkChance, checkPasses;
@@ -457,6 +459,7 @@ TowerEventKind? towerStoreKindOf(TowerRun run) => _openStore(run)?.kind;
 
 /// The merchant's clan of the store open on [run]'s landing; null when no
 /// merchant is open.
+@visibleForTesting
 String? towerStoreClanOf(TowerRun run) {
   final store = _openStore(run);
   return store?.kind == TowerEventKind.merchant ? store!.clanId : null;
@@ -673,6 +676,7 @@ TowerRun towerChooseShortcut(TowerRun run, TowerData data, bool accept) {
 
 /// The guardian's clan of the parley on [run]'s floor; null when it holds
 /// none (towerEventOf).
+@visibleForTesting
 String? towerParleyClanOf(TowerRun run) {
   final event = _eventOf(run);
   return event?.kind == TowerEventKind.parley ? event!.clanId : null;

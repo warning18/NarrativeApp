@@ -1,6 +1,7 @@
 // The Tower's night theme (v1.900): the Tower's screens wear the dark scheme
 // and the bevel panels, the rest of the game keeps its panels and its theme;
 // the ladder is a stair of windows with the floor stood on marked.
+import 'package:narrative_data_app/screens/tower/ink/ink_panel_painter.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -34,8 +35,8 @@ void main() {
     expect(bevel, isTrue);
     // The panel is drawn with the Tower's painter.
     expect(
-        find.byWidgetPredicate((w) =>
-            w is CustomPaint && w.foregroundPainter is BevelPanelPainter),
+        find.byWidgetPredicate(
+            (w) => w is CustomPaint && w.foregroundPainter is InkPanelPainter),
         findsOneWidget);
   });
 
@@ -48,8 +49,8 @@ void main() {
     })));
     expect(seen, Brightness.light);
     expect(
-        find.byWidgetPredicate((w) =>
-            w is CustomPaint && w.foregroundPainter is BevelPanelPainter),
+        find.byWidgetPredicate(
+            (w) => w is CustomPaint && w.foregroundPainter is InkPanelPainter),
         findsNothing);
   });
 

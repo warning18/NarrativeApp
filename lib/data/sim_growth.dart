@@ -681,6 +681,18 @@ class SimGrowth {
         );
       }
 
+      // A gift alone (Wave 1): weighed against the usual cards "Not now"
+      // would deal, as it was weighed beside them before; declined when
+      // one of those is the bot's pick.
+      if (offer.solo) {
+        final alone = offer.suitors.first;
+        final usual = declinedOffer(offer, context, random);
+        if (usual != null) {
+          final pick = choose(
+              ClanOffer(ticket: ticket, suitors: [alone, ...usual.suitors]));
+          if (pick != null && !identical(pick, alone)) offer = usual;
+        }
+      }
       var chosen = choose(offer);
       // The camp's roll houses (sim_rolls.dart), on their own draw.
       final rolls = character.rolls;

@@ -8,9 +8,9 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 
 import '../../data/tower/tower_tables.dart';
-import '../../theme/palette.dart';
-import '../../theme/stitched_ink.dart';
 import '../../widgets/head_avatar.dart';
+import '../../theme/stitched_ink.dart' show InkFonts;
+import 'ink/ink_palette.dart';
 
 /// The width the ladder takes.
 const double towerLadderWidth = 40;
@@ -74,10 +74,9 @@ class TowerLadderState extends State<TowerLadder>
 
   @override
   Widget build(BuildContext context) {
-    final ink = InkColors.of(context);
     final label = Theme.of(context).textTheme.labelSmall;
-    const night = Color(0xFF211E28);
-    const dark = Palette.night8c;
+    const night = inkBlack;
+    const dark = inkSlate;
     final floor = widget.floor;
     const isBoss = TowerLadder.isBoss;
     const isWarden = TowerLadder.isWarden;
@@ -94,29 +93,21 @@ class TowerLadderState extends State<TowerLadder>
         alignment: Alignment.center,
         decoration: BoxDecoration(
           color: night,
-          borderRadius: const BorderRadius.vertical(top: Radius.circular(8)),
-          border: Border.all(color: isBoss(n) ? ink.blood : dark, width: 1.2),
-          boxShadow: here
-              ? [
-                  BoxShadow(
-                      color: ink.gold.withValues(alpha: .7), blurRadius: 9)
-                ]
-              : null,
+          border: Border.all(color: isBoss(n) ? inkRed : dark, width: 1.2),
+          boxShadow:
+              here ? const [BoxShadow(color: inkRed, blurRadius: 6)] : null,
         ),
         // The notch stood on shows no number of its own: the head's tag
         // above carries it.
         child: here
             ? const SizedBox.shrink()
             : isBoss(n)
-                ? Text('$n',
-                    style: label?.copyWith(color: Colors.white70, height: 1))
+                ? Text('$n', style: label?.copyWith(color: inkGrey, height: 1))
                 : Container(
                     width: w * 0.36,
                     height: 4,
                     decoration: BoxDecoration(
-                      color: lit ? ink.gold.withValues(alpha: .85) : dark,
-                      borderRadius:
-                          const BorderRadius.vertical(top: Radius.circular(3)),
+                      color: lit ? inkPaper : dark,
                     ),
                   ),
       );
@@ -150,7 +141,7 @@ class TowerLadderState extends State<TowerLadder>
             child: IgnorePointer(
                 child: CustomPaint(
                     painter:
-                        _JumpPainter(jump.$1, jump.$2, ink.gold, ink.blood)))),
+                        _JumpPainter(jump.$1, jump.$2, inkPaper, inkRed)))),
       // The hero's head on the rail: it walks up (or down) to its notch.
       Positioned.fill(
         child: IgnorePointer(
@@ -178,17 +169,14 @@ class TowerLadderState extends State<TowerLadder>
                       (towerTop - headFloor) * row + row / 2 - size / 2 - 15),
                   child: Center(
                     child: DecoratedBox(
-                      decoration: BoxDecoration(
-                        color: night.withValues(alpha: .9),
-                        borderRadius: BorderRadius.circular(4),
-                      ),
+                      decoration: const BoxDecoration(color: inkRed),
                       child: Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 3),
                         child: Text('${headFloor.round()}',
                             style: label?.copyWith(
                                 fontFamily: InkFonts.prose,
                                 fontWeight: FontWeight.w800,
-                                color: ink.gold,
+                                color: inkPaper,
                                 height: 1.2)),
                       ),
                     ),
