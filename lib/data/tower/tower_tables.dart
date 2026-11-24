@@ -105,12 +105,15 @@ const Map<int, double> towerPeacefulExtras = {25: .42, 30: .34};
 /// of runs with no unlocks and 26.9% with all, over the design's 5 to 12%
 /// and 15 to 25%. Held variant (not merged until the user decides): floors
 /// 11 to 20 ×1.10 (was ×1.08); the before/after is in the brief's section
-/// "Held variant: floors 11–20 ×1.10".
+/// "Held variant: floors 11–20 ×1.10". Plus the floor-30 boss ×1.06 (was
+/// ×1.0).
 double towerClimbScale(int floor) => floor >= 11 && floor <= 20
     ? 1.10
     : floor >= 21 && floor <= 29
         ? 1.06
-        : 1.0;
+        : floor == 30
+            ? 1.06
+            : 1.0;
 
 /// What the unlocks owned give a run (v1.848, the user's call: unlocks give
 /// some power, not options only). Each one owned at the start: this share
