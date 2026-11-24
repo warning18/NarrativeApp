@@ -8,6 +8,9 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [2.2.2+1055]
+
+- Solid dice, and a label that fits. In a fight the day's weather no longer falls across the dice: it is cut away round each die, in flight and at rest (the dice are opaque; the rain and the snow read through everything else as before), and the glyphs of the solids (d4 to d20) are never faded by the lamp. In the Tower's fight at 320 wide, in French or with big text, the die's tag (name, dN) now stands above the hint under the dice instead of on it, and on a board too short for both the die's own name is left out (the plate above shows it). Also a test fix: the shortcut card's test now sets its preferences mock first (it failed now and then on one shard). Look only. UX (view only).
 ## [2.2.1+1054]
 
 - **The Journey costs less to draw, no visible change.** The marks' idle glyphs (round marks: fights and rolls off the quests) breathe on their 12-second clock only while one is drawn, so a view of banners only (the prologue's ways, most rooms) asks for no frames; each glyph breathes on its own layer, so a breath repaints the glyph and not the chart. The town plan has its own layer on the Journey: a drag of the plan repaints 512 pieces a frame instead of 640 (Saltmouth, whole town). Maps' perf review (perf-2.md). Core.
