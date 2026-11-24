@@ -7,6 +7,7 @@
 // Slots for what Core has not defined yet are left clean: [tag] (a "new
 // synergy" mark, over the vignette's corner) and [footer] (a price, under the
 // words). Nothing draws in them today.
+import '../../theme/motion.dart';
 import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
@@ -264,7 +265,7 @@ class TowerTarotCard extends StatelessWidget {
       behavior: HitTestBehavior.opaque,
       onTap: onTap,
       child: AnimatedContainer(
-        duration: const Duration(milliseconds: 120),
+        duration: Motion.fast,
         transform: Matrix4.translationValues(0, held ? -6 : 0, 0),
         decoration: BoxDecoration(boxShadow: [
           if (held)

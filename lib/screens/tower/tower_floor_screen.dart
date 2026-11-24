@@ -3,6 +3,7 @@
 // and the way to fight it; once it is won, its cards (take one, or none).
 // A run is moved only through lib/data/tower/ and the controller; the fight
 // itself is played by the launcher (tower_providers.dart).
+import '../../theme/motion.dart';
 import 'dart:async';
 import 'dart:math';
 
@@ -278,7 +279,7 @@ class _TowerFloorScreenState extends ConsumerState<_TowerFloorBody> {
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
                 AnimatedContainer(
-                  duration: const Duration(milliseconds: 250),
+                  duration: Motion.base,
                   curve: Curves.easeInOut,
                   width: _railOut ? 0 : towerLadderWidth + 12,
                   child: ClipRect(
