@@ -40,9 +40,9 @@ Widget _sheet(WeatherKind kind, double fall, double w, String title) =>
                 onPressed: () {}),
           ]),
           const SizedBox(height: 26),
-          InkPaperPanel(
+          const InkPaperPanel(
               title: 'Floor 12',
-              child: const Text('A cold hall. The door opens on its own.',
+              child: Text('A cold hall. The door opens on its own.',
                   style: TextStyle(fontFamily: InkFonts.prose, fontSize: 14))),
         ]),
       ),
