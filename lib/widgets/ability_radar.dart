@@ -6,6 +6,8 @@ import 'package:flutter/material.dart';
 import '../data/element_points.dart';
 import '../combat/skill_vfx.dart';
 import 'radar_chart.dart';
+import '../screens/tower/ink/ink_palette.dart';
+import '../screens/tower/tower_look.dart' show TowerPanelStyle;
 import '../theme/palette.dart';
 
 /// The abilities in the order the radar draws them, clockwise from the top.
@@ -35,7 +37,8 @@ String abilityAbbrevKey(String ability) => switch (ability) {
 /// A shape's colour for the abilities, the change colours, and a quiet one
 /// for what a shape is compared with.
 const Color radarGold = Palette.goldDark;
-const Color radarMore = Palette.green63;
+const Color _more = Palette.green63;
+const Color radarMore = _more;
 const Color _radarLess = Color(0xFFEF5350);
 const Color _radarCompare = Palette.stone69;
 
@@ -84,6 +87,12 @@ class AbilityRadar extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final scheme = theme.colorScheme;
+    // The Tower's ink: the polygon in paper, a gain in paper, a loss in red.
+    final inked = TowerPanelStyle.of(context);
+    final radarMore = inked ? inkPaper : _more;
+    final radarLess = inked ? inkRed : _radarLess;
+    final shown = inked && color == radarGold ? inkPaper : color;
+
     final now = [
       for (final k in abilityRadarOrder) (values[k] ?? 0).toDouble()
     ];
@@ -117,7 +126,7 @@ class AbilityRadar extends StatelessWidget {
                     ? '${now[i] > was[i] ? '+' : '-'}${(now[i] - was[i]).abs().round()}'
                     : null,
             subColor: !picked && was != null && now[i] < was[i]
-                ? _radarLess
+                ? radarLess
                 : radarMore,
             onTap: onAxisTap == null ? null : () => onAxisTap!(k),
           );
@@ -171,7 +180,7 @@ class AbilityRadar extends StatelessWidget {
                 width: 5,
                 dots: false,
               ),
-            RadarLayer(values: now, color: color),
+            RadarLayer(values: now, color: shown),
           ],
           semanticsLabel: [
             for (final (i, k) in abilityRadarOrder.indexed)
@@ -199,7 +208,7 @@ class AbilityRadar extends StatelessWidget {
             spacing: 18,
             children: [
               legend(_radarCompare, beforeLabel!, dashed: true),
-              legend(color, nowLabel!),
+              legend(shown, nowLabel!),
             ],
           ),
         ],
