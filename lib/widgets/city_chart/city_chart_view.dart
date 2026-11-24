@@ -539,10 +539,6 @@ class _CityChartViewState extends State<CityChartView>
     return null;
   }
 
-  /// The id of the way whose pin was last picked, if one is.
-  @visibleForTesting
-  String? get debugPickedWayId => _pickedWay?.id;
-
   void _tap(Offset at) {
     final chart = widget.chart;
     final plan = (at - _offset) / _scale;

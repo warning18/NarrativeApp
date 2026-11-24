@@ -65,7 +65,9 @@ void main() {
         await tester.ensureVisible(f);
         await tester.pump();
         final r = tester.getRect(f);
-        expect(r.top >= 0 && r.bottom <= cfg.$1.height, isTrue,
+        // Half a pixel of room: the buttons are tilted a degree or two (v1.1010),
+        // so the box that holds a tilted button sticks out of its own by a hair.
+        expect(r.top >= -0.5 && r.bottom <= cfg.$1.height + 0.5, isTrue,
             reason: '$name: $key is on the screen after a scroll ($r)');
         expect(r.width, greaterThan(100), reason: '$name: $key is wide enough');
       }
