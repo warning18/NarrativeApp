@@ -8,6 +8,10 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.1004.0+1040]
+
+- The Tower is moving to ink; the rest follows (part 1 of 4). The Tower's plates, its door, its marks and unlocks, the end of a run and its button on the main menu are drawn in the ink look the user picked: near-black, cold greys and paper white, deep red only for the one button that goes on, text panels as paper in Art's brush frame, the Tower's own button on the menu in the same frame (nothing else on the menu changes). The Tower's 14 plates are the old ones recoloured into the ink greys. New: the kit the next parts draw with (the paper panel, the skewed button, the slanted picture panel, the chibi sprites recoloured at load time and cached). The climb, the fights, the spoils and the level up are still in the night look until the next parts. UX (view only).
+
 ## [1.1003.0+1039]
 
 - Fights: a foe's nameplate emblem now says its group in the player's language, as a tooltip (a long press) and as a screen-reader label. The groups of no clan read from their own strings, a clan's from its faction's name. The nine looks that had no names now have them in English and French (The Choir / Le Chœur, The Pit / La Fosse, The Giants / Les géants, The Tide-Kin / Les Gens de la Marée, The Dead / Les morts, The Void / Le Néant, Beasts / Les bêtes, Constructs / Les constructions, People of no clan / Les sans-clan), and the French of the void cults is now "Les cultes du Néant". UX (view and strings only).
