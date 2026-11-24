@@ -8,6 +8,15 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [2.1.4+1051]
+
+- **Cleanup: 36 names that only their own file uses are now private.**
+  Among them the level ladder's colours and sizes, the die's 3D frame
+  budget and glyph limits, the slow-frame report's names, the clan card's
+  size, the keeper's scale and a few helpers of the land crossing, the
+  character start and the offers. The analyzer proves none is used
+  elsewhere. Nothing changes on screen or in a number.
+
 ## [2.0.0+1046]
 
 - The Tower is in ink (part 4 of 4: the end of a floor and the start of a run; the set is complete). The level up, the spoils sheet, the cards after a floor, and the calling pick in the Tower now wear the ink look: paper white for the main action, healing and a gain, deep red only for blood, danger and a loss, cold greys for the rest; square cards with no wood frame, the emblems and the chest in the ink greys, the level up's radar polygon in paper. The parley's and the stall's figures are the same sprites recoloured to ink. It comes from the Tower's own colour set (what reads `InkColors` under the Tower is ink), so the story's screens are unchanged. The Tower moved to ink in four parts (v1.1004, v1.1005, v1.1009 and this one). Look only. UX (view only).
