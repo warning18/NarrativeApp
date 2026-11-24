@@ -91,10 +91,18 @@ class InkPaperPanel extends StatelessWidget {
           base.textTheme.apply(bodyColor: inkOnPaper, displayColor: inkOnPaper),
     );
     final seed = inkSeedOf(key, title ?? seedText ?? '${padding.hashCode}');
-    return InkWeatherPiece(
-        seed: seed,
-        child: InkWorn(
-            seed: seed, tilt: false, chip: false, child: _body(dark, seed)));
+    // The title tab sits outside the piece, so the cap lies behind it.
+    return Stack(clipBehavior: Clip.none, children: [
+      InkWeatherPiece(
+          seed: seed,
+          child: InkWorn(
+              seed: seed, tilt: false, chip: false, child: _body(dark, seed))),
+      if (title != null)
+        Positioned(
+            left: -2,
+            top: -10,
+            child: InkTab(title!, key: const Key('ink_tab'))),
+    ]);
   }
 
   Widget _body(ThemeData dark, InkSeed seed) {
@@ -108,11 +116,6 @@ class InkPaperPanel extends StatelessWidget {
               style: const TextStyle(color: inkOnPaper), child: child),
         ),
       ),
-      if (title != null)
-        Positioned(
-            left: -2,
-            top: -10,
-            child: InkTab(title!, key: const Key('ink_tab'))),
     ]);
   }
 }

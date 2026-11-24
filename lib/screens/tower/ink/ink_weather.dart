@@ -258,13 +258,13 @@ class InkWeatherPieceState extends State<InkWeatherPiece>
     final kind = clock.kind;
     Widget body = widget.child;
     if (kind == WeatherKind.fog) {
-      body = Opacity(opacity: 1 - 0.28 * clock.fall, child: body);
+      body = Opacity(opacity: 1 - 0.2 * clock.fall, child: body);
     } else if (kind == WeatherKind.rain) {
       body = ValueListenableBuilder<double>(
         valueListenable: clock.seconds,
         builder: (context, _, child) => ColorFiltered(
             colorFilter: ColorFilter.mode(
-                inkBlack.withValues(alpha: 0.3 * _wet), BlendMode.srcATop),
+                inkBlack.withValues(alpha: 0.16 * _wet), BlendMode.srcATop),
             child: child),
         child: body,
       );
