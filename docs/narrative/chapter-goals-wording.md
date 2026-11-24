@@ -12,7 +12,7 @@ For Core's chapter goals (`assets/gamedata/chapter_goals.json`, chapters 4 to 8,
 | `chapter_chest_line` | one line when the chapter's chest opens | none |
 | `chapter_chest_line_ch<N>` | the same flavoured to chapter N | `chapter_chest_line` |
 
-`{n}` in a `rounds` line is the round count (`value` in the data). The `weakness` goal reads "a win in which a die hit the foe's weakness". The boss names in the `first_try` lines are by place (the Drowned Stair, the Reliquary, the White Fleet's Admiral, the rival claimant, the Sovereign): **Core to confirm** each chapter's boss.
+`{n}` in a `rounds` line is the round count (`value` in the data). The `weakness` goal reads "a win in which a die hit the foe's weakness". `no_potion` means a close fight won without a potion (the hero ends under half health), so it has one line for every chapter. `first_try` is used only in chapter 7 (any claimant duel: Tallis, Morrow or Vane) and chapter 8 (the Sovereign, not the Tear Herald), so only those two chapters have a flavoured line. The `chapter_goal_<kind>_ch<N>` rows below are the ones Core uses.
 
 ## The four kinds, generic
 
@@ -21,7 +21,7 @@ For Core's chapter goals (`assets/gamedata/chapter_goals.json`, chapters 4 to 8,
 | `rounds` | Win in {n} rounds or fewer | Gagner en {n} tours ou moins |
 | `weakness` | Win using a die on the foe’s weakness | Gagner avec un dé sur le point faible de l’ennemi |
 | `first_try` | Beat the boss on the first try | Vaincre le chef du premier coup |
-| `no_potion` | Win a fight without a potion | Gagner un combat sans potion |
+| `no_potion` | Win at under half health, no potion | Gagner sous la moitié des PV, sans potion |
 
 ## By chapter
 
@@ -31,8 +31,6 @@ For Core's chapter goals (`assets/gamedata/chapter_goals.json`, chapters 4 to 8,
 |---|---|---|
 | `rounds` | Win in {n} rounds, before the flood | Gagner en {n} tours, avant la crue |
 | `weakness` | Turn a robed foe’s weakness against it | Viser le point faible d’un ennemi en robe |
-| `first_try` | Beat the Stair’s boss on the first try | Vaincre le chef de l’Escalier du premier coup |
-| `no_potion` | Win in the Court without a potion | Gagner dans la Cour sans potion |
 
 ### Chapter 5: The Shroud’s Truth
 
@@ -40,8 +38,6 @@ For Core's chapter goals (`assets/gamedata/chapter_goals.json`, chapters 4 to 8,
 |---|---|---|
 | `rounds` | Win in {n} rounds, before the frost sets | Gagner en {n} tours, avant que le givre ne prenne |
 | `weakness` | Crack a Reliquary guard on its weakness | Briser un garde du Reliquaire sur son point faible |
-| `first_try` | Beat the Reliquary’s boss on the first try | Vaincre le chef du Reliquaire du premier coup |
-| `no_potion` | Win in the frost without a potion | Gagner dans le givre sans potion |
 
 ### Chapter 6: The Hollow Shore
 
@@ -49,8 +45,6 @@ For Core's chapter goals (`assets/gamedata/chapter_goals.json`, chapters 4 to 8,
 |---|---|---|
 | `rounds` | Win in {n} rounds, before the glass wakes | Gagner en {n} tours, avant l’éveil du verre |
 | `weakness` | Use a reflection’s weakness against it | Retourner contre lui le point faible d’un reflet |
-| `first_try` | Beat the Admiral on the first try | Vaincre l’Amiral du premier coup |
-| `no_potion` | Win on the Shore without a potion | Gagner sur la Rive sans potion |
 
 ### Chapter 7: The Lantern Throne
 
@@ -59,7 +53,6 @@ For Core's chapter goals (`assets/gamedata/chapter_goals.json`, chapters 4 to 8,
 | `rounds` | Win in {n} rounds, before the Hall burns | Gagner en {n} tours, avant que la Salle ne brûle |
 | `weakness` | Hit a claimant’s guard where it is weak | Frapper un prétendant sur son point faible |
 | `first_try` | Beat the rival claimant on the first try | Vaincre le prétendant rival du premier coup |
-| `no_potion` | Win at Candlehold without a potion | Gagner à Candlehold sans potion |
 
 ### Chapter 8: Beyond the Tear
 
@@ -68,7 +61,6 @@ For Core's chapter goals (`assets/gamedata/chapter_goals.json`, chapters 4 to 8,
 | `rounds` | Win in {n} rounds; the tear is widening | Gagner en {n} tours : la déchirure s’élargit |
 | `weakness` | Hit a faceless foe where it is weak | Frapper un ennemi sans visage sur son point faible |
 | `first_try` | Beat the Sovereign on the first try | Vaincre le Souverain du premier coup |
-| `no_potion` | Win beyond the tear without a potion | Gagner au-delà de la déchirure sans potion |
 
 ## The chest
 
@@ -110,8 +102,8 @@ Next to the other chapter strings; the `\u00a0` escapes are the no-break spaces.
     AppLanguage.fr: 'Vaincre le chef du premier coup',
   },
   'chapter_goal_no_potion': {
-    AppLanguage.en: 'Win a fight without a potion',
-    AppLanguage.fr: 'Gagner un combat sans potion',
+    AppLanguage.en: 'Win at under half health, no potion',
+    AppLanguage.fr: 'Gagner sous la moitié des PV, sans potion',
   },
   'chapter_goal_rounds_ch4': {
     AppLanguage.en: 'Win in {n} rounds, before the flood',
@@ -121,14 +113,6 @@ Next to the other chapter strings; the `\u00a0` escapes are the no-break spaces.
     AppLanguage.en: 'Turn a robed foe’s weakness against it',
     AppLanguage.fr: 'Viser le point faible d’un ennemi en robe',
   },
-  'chapter_goal_first_try_ch4': {
-    AppLanguage.en: 'Beat the Stair’s boss on the first try',
-    AppLanguage.fr: 'Vaincre le chef de l’Escalier du premier coup',
-  },
-  'chapter_goal_no_potion_ch4': {
-    AppLanguage.en: 'Win in the Court without a potion',
-    AppLanguage.fr: 'Gagner dans la Cour sans potion',
-  },
   'chapter_goal_rounds_ch5': {
     AppLanguage.en: 'Win in {n} rounds, before the frost sets',
     AppLanguage.fr: 'Gagner en {n} tours, avant que le givre ne prenne',
@@ -137,14 +121,6 @@ Next to the other chapter strings; the `\u00a0` escapes are the no-break spaces.
     AppLanguage.en: 'Crack a Reliquary guard on its weakness',
     AppLanguage.fr: 'Briser un garde du Reliquaire sur son point faible',
   },
-  'chapter_goal_first_try_ch5': {
-    AppLanguage.en: 'Beat the Reliquary’s boss on the first try',
-    AppLanguage.fr: 'Vaincre le chef du Reliquaire du premier coup',
-  },
-  'chapter_goal_no_potion_ch5': {
-    AppLanguage.en: 'Win in the frost without a potion',
-    AppLanguage.fr: 'Gagner dans le givre sans potion',
-  },
   'chapter_goal_rounds_ch6': {
     AppLanguage.en: 'Win in {n} rounds, before the glass wakes',
     AppLanguage.fr: 'Gagner en {n} tours, avant l’éveil du verre',
@@ -152,14 +128,6 @@ Next to the other chapter strings; the `\u00a0` escapes are the no-break spaces.
   'chapter_goal_weakness_ch6': {
     AppLanguage.en: 'Use a reflection’s weakness against it',
     AppLanguage.fr: 'Retourner contre lui le point faible d’un reflet',
-  },
-  'chapter_goal_first_try_ch6': {
-    AppLanguage.en: 'Beat the Admiral on the first try',
-    AppLanguage.fr: 'Vaincre l’Amiral du premier coup',
-  },
-  'chapter_goal_no_potion_ch6': {
-    AppLanguage.en: 'Win on the Shore without a potion',
-    AppLanguage.fr: 'Gagner sur la Rive sans potion',
   },
   'chapter_goal_rounds_ch7': {
     AppLanguage.en: 'Win in {n} rounds, before the Hall burns',
@@ -173,10 +141,6 @@ Next to the other chapter strings; the `\u00a0` escapes are the no-break spaces.
     AppLanguage.en: 'Beat the rival claimant on the first try',
     AppLanguage.fr: 'Vaincre le prétendant rival du premier coup',
   },
-  'chapter_goal_no_potion_ch7': {
-    AppLanguage.en: 'Win at Candlehold without a potion',
-    AppLanguage.fr: 'Gagner à Candlehold sans potion',
-  },
   'chapter_goal_rounds_ch8': {
     AppLanguage.en: 'Win in {n} rounds; the tear is widening',
     AppLanguage.fr: 'Gagner en {n} tours\u00a0: la déchirure s’élargit',
@@ -188,10 +152,6 @@ Next to the other chapter strings; the `\u00a0` escapes are the no-break spaces.
   'chapter_goal_first_try_ch8': {
     AppLanguage.en: 'Beat the Sovereign on the first try',
     AppLanguage.fr: 'Vaincre le Souverain du premier coup',
-  },
-  'chapter_goal_no_potion_ch8': {
-    AppLanguage.en: 'Win beyond the tear without a potion',
-    AppLanguage.fr: 'Gagner au-delà de la déchirure sans potion',
   },
   'chapter_chest_wooden': {
     AppLanguage.en: 'Wooden Chapter Chest',
