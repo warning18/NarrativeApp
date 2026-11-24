@@ -1,0 +1,569 @@
+{
+ "nodes": {
+  "beat2_kelda": {
+   "id": "beat2_kelda",
+   "description": "Kelda was oiling her shield-strap by the fire, and had not stopped when I came near. “If I fall on that shore,” she said, “this goes to Highhearth. To my brother. He will not want it. Give it to him anyway.” She did not look up. “Nobody else will carry it who knows what it held.”",
+   "description_fr": "Kelda huilait la lanière de son bouclier près du feu, et n’avait pas cessé quand je m’étais approché. « Si je tombe sur cette grève, dit-elle, ceci va à Haut-Âtre. À mon frère. Il n’en voudra pas. Donnez-le-lui quand même.  » Elle ne leva pas les yeux. « Personne d’autre ne le portera en sachant ce qu’il a tenu.  »",
+   "context_taxonomy": {
+    "ui_theme": "cathedral",
+    "mood": "solemn",
+    "speaker": "Narrator"
+   },
+   "location": "candlehold_gates",
+   "choices": [
+    {
+     "text": "Take the strap",
+     "text_fr": "Prendre la lanière",
+     "next_id": "7516_eve",
+     "flagsToAdd": [
+      "kelda_strap_taken"
+     ]
+    },
+    {
+     "text": "Tell her she will carry it herself",
+     "text_fr": "Lui dire qu’elle le portera elle-même",
+     "next_id": "7516_eve",
+     "flagsToAdd": [
+      "kelda_strap_refused"
+     ]
+    }
+   ],
+   "prompt": "What do you tell Kelda?",
+   "prompt_fr": "Que dites-vous à Kelda ?",
+   "revisit_description": "The fire again. Kelda had said what she came to say.",
+   "revisit_description_fr": "Le feu de nouveau. Kelda avait dit ce qu’elle avait à dire."
+  },
+  "beat2_sable": {
+   "id": "beat2_sable",
+   "description": "A Crow’s runner had left a pennant-pin on Sable’s bedroll, and she held it at arm’s length, the way you hold a fish that has begun to speak. “They’ve priced me,” she said. “Not high. An insult, really.” The pin was a feather in iron. “I can answer it myself. Or you can answer it for me, and I’ll hate that, and be grateful.”",
+   "description_fr": "Un coureur des Corneilles avait laissé une épingle de fanion sur le couchage de Sable, et elle la tenait à bout de bras, comme on tient un poisson qui se met à parler. « Ils m’ont mise à prix, dit-elle. Pas cher. Une insulte, en fait.  » L’épingle était une plume de fer. « Je peux répondre moi-même. Ou vous répondez pour moi, et je détesterai ça, et je serai reconnaissante.  »",
+   "context_taxonomy": {
+    "ui_theme": "cathedral",
+    "mood": "solemn",
+    "speaker": "Narrator"
+   },
+   "location": "candlehold_gates",
+   "choices": [
+    {
+     "text": "Answer it for her",
+     "text_fr": "Répondre à sa place",
+     "next_id": "7516_eve",
+     "flagsToAdd": [
+      "sable_price_paid"
+     ]
+    },
+    {
+     "text": "Let her answer it herself",
+     "text_fr": "La laisser répondre elle-même",
+     "next_id": "7516_eve",
+     "flagsToAdd": [
+      "sable_price_alone"
+     ]
+    }
+   ],
+   "prompt": "How is the Crows’ price answered?",
+   "prompt_fr": "Comment répond-on au prix des Corneilles ?",
+   "revisit_description": "The fire again. Sable had turned the pennant-pin over once more and put it away.",
+   "revisit_description_fr": "Le feu de nouveau. Sable avait retourné l’épingle de fanion une dernière fois, puis l’avait rangée."
+  },
+  "beat2_maren": {
+   "id": "beat2_maren",
+   "description": "Maren had a new list on her knee, a short one, in a hand that did not shake. “The names of those who went down to the shore and did not come back,” she said. “Not the Court’s. Ours. The crews, the camp.” She folded it small. “I would like to read it at the muster, before anyone speaks for the Throne. Or I will keep it, and say them to myself, which I already do.”",
+   "description_fr": "Maren avait une nouvelle liste sur le genou, courte, d’une main qui ne tremblait pas. « Les noms de ceux qui sont descendus sur la grève et ne sont pas revenus, dit-elle. Pas ceux de la Cour. Les nôtres. Les équipages, le camp.  » Elle la plia en petit. « J’aimerais la lire au rassemblement, avant que quiconque parle pour le Trône. Ou je la garde, et je les dis pour moi seule, ce que je fais déjà.  »",
+   "context_taxonomy": {
+    "ui_theme": "cathedral",
+    "mood": "solemn",
+    "speaker": "Narrator"
+   },
+   "location": "candlehold_gates",
+   "choices": [
+    {
+     "text": "Ask her to read it at the muster",
+     "text_fr": "Lui demander de la lire au rassemblement",
+     "next_id": "7516_eve",
+     "flagsToAdd": [
+      "maren_list_read"
+     ]
+    },
+    {
+     "text": "Let her keep it",
+     "text_fr": "La laisser la garder",
+     "next_id": "7516_eve",
+     "flagsToAdd": [
+      "maren_list_kept"
+     ]
+    }
+   ],
+   "prompt": "What becomes of Maren’s list?",
+   "prompt_fr": "Que devient la liste de Maren ?",
+   "revisit_description": "The fire again, and Maren’s list folded small.",
+   "revisit_description_fr": "Le feu de nouveau, et la liste de Maren pliée en quatre."
+  },
+  "beat2_liora": {
+   "id": "beat2_liora",
+   "description": "Liora had come down off the ridge at dawn with frost on her hood and nothing to report. “That is what I am reporting,” she said. “The Hollow Shore does not move. It does not breathe. It watches the coast the way I watch it.” She turned her bow over in her hands. “Come up with me tonight. Or tell me to sleep, and I will, and I will not like it.”",
+   "description_fr": "Liora était redescendue de la crête à l’aube, du givre sur le capuchon et rien à signaler. « C’est cela que je signale, dit-elle. La Rive Creuse ne bouge pas. Elle ne respire pas. Elle regarde la côte comme je la regarde.  » Elle retournait son arc dans ses mains. « Montez avec moi cette nuit. Ou dites-moi de dormir, et je dormirai, et je n’aimerai pas ça.  »",
+   "context_taxonomy": {
+    "ui_theme": "cathedral",
+    "mood": "solemn",
+    "speaker": "Narrator"
+   },
+   "location": "candlehold_gates",
+   "choices": [
+    {
+     "text": "Climb the ridge with her",
+     "text_fr": "Monter sur la crête avec elle",
+     "next_id": "7516_eve",
+     "flagsToAdd": [
+      "liora_ridge_climbed"
+     ]
+    },
+    {
+     "text": "Tell her to sleep",
+     "text_fr": "Lui dire de dormir",
+     "next_id": "7516_eve",
+     "flagsToAdd": [
+      "liora_ridge_rested"
+     ]
+    }
+   ],
+   "prompt": "What do you do about Liora’s ridge?",
+   "prompt_fr": "Que faites-vous de la crête de Liora ?",
+   "revisit_description": "The fire again. The ridge was dark, and Liora was not looking at it.",
+   "revisit_description_fr": "Le feu de nouveau. La crête était noire, et Liora ne la regardait pas."
+  },
+  "beat2_vess": {
+   "id": "beat2_vess",
+   "description": "Vess sat apart from the fire with her hands folded, as one does in a church. “It has gone quiet,” she said. “Since the crowning was planned. I think it is waiting for you to choose, the way a creditor waits.” She looked at me with something nearer to fear than I had seen in her. “If you take me to the shore it will speak again. I would rather you asked first.”",
+   "description_fr": "Vess était assise à l’écart du feu, les mains jointes, comme on l’est à l’église. « Il s’est tu, dit-elle. Depuis qu’on a prévu le couronnement. Je crois qu’il attend que vous choisissiez, comme un créancier attend.  » Elle me regarda avec quelque chose de plus proche de la peur que tout ce que j’avais vu en elle. « Si vous m’emmenez à la grève, il parlera de nouveau. Je préférerais que vous me le demandiez d’abord.  »",
+   "context_taxonomy": {
+    "ui_theme": "cathedral",
+    "mood": "solemn",
+    "speaker": "Narrator"
+   },
+   "location": "candlehold_gates",
+   "choices": [
+    {
+     "text": "Ask her to come to the shore",
+     "text_fr": "Lui demander de venir à la grève",
+     "next_id": "7516_eve",
+     "flagsToAdd": [
+      "vess_shore_asked"
+     ]
+    },
+    {
+     "text": "Leave her at the camp",
+     "text_fr": "La laisser au camp",
+     "next_id": "7516_eve",
+     "flagsToAdd": [
+      "vess_camp_kept"
+     ]
+    }
+   ],
+   "prompt": "Where does Vess stand tomorrow?",
+   "prompt_fr": "Où Vess se tiendra-t-elle demain ?",
+   "revisit_description": "The fire again, and Vess apart from it, as before.",
+   "revisit_description_fr": "Le feu de nouveau, et Vess à l’écart, comme avant."
+  },
+  "beat2_grosh": {
+   "id": "beat2_grosh",
+   "description": "A letter had come up from Highhearth, and Grosh held it the way he held a sword he did not trust. “Old man who held the paper on my mother’s hall,” he said. “Dead. Heirs say the debt is gone.” He turned it over, as if there might be more on the back. “Grosh does not know what Grosh is for, if there is no debt. Tell Grosh.”",
+   "description_fr": "Une lettre était montée de Haut-Âtre, et Grosh la tenait comme une épée en laquelle il n’avait pas confiance. « Le vieux qui tenait le papier sur la salle de ma mère, dit-il. Mort. Les héritiers disent que la dette est partie.  » Il la retourna, comme s’il pouvait y avoir plus au dos. « Grosh ne sait pas à quoi Grosh sert, s’il n’y a plus de dette. Dites à Grosh.  »",
+   "context_taxonomy": {
+    "ui_theme": "cathedral",
+    "mood": "solemn",
+    "speaker": "Narrator"
+   },
+   "location": "candlehold_gates",
+   "choices": [
+    {
+     "text": "Tell him to go home",
+     "text_fr": "Lui dire de rentrer chez lui",
+     "next_id": "7516_eve",
+     "flagsToAdd": [
+      "grosh_sent_home"
+     ]
+    },
+    {
+     "text": "Ask him to stay for the Throne",
+     "text_fr": "Lui demander de rester pour le Trône",
+     "next_id": "7516_eve",
+     "flagsToAdd": [
+      "grosh_stays"
+     ]
+    }
+   ],
+   "prompt": "What do you tell Grosh?",
+   "prompt_fr": "Que dites-vous à Grosh ?",
+   "revisit_description": "The fire again. Grosh held whatever it was a little closer.",
+   "revisit_description_fr": "Le feu de nouveau. Grosh serrait ce qu’il tenait un peu plus fort."
+  },
+  "beat2_tobin": {
+   "id": "beat2_tobin",
+   "description": "A reply had come from the Choir, in a clerk’s hand, sealed with a note Tobin would not touch. “They have forgiven me,” he said. “That is the worst part.” He held it out. “Read it, if you like. Or put it in the fire. I cannot do either, and I would be grateful to have it done for me.”",
+   "description_fr": "Une réponse était venue du Chœur, d’une main de clerc, scellée d’une note que Tobin refusait de toucher. « Ils m’ont pardonné, dit-il. C’est le pire.  » Il la tendit. « Lisez-la, si vous voulez. Ou jetez-la au feu. Je ne peux faire ni l’un ni l’autre, et je vous serais reconnaissant de le faire pour moi.  »",
+   "context_taxonomy": {
+    "ui_theme": "cathedral",
+    "mood": "solemn",
+    "speaker": "Narrator"
+   },
+   "location": "candlehold_gates",
+   "choices": [
+    {
+     "text": "Read it aloud",
+     "text_fr": "La lire à voix haute",
+     "next_id": "7516_eve",
+     "flagsToAdd": [
+      "tobin_reply_read"
+     ]
+    },
+    {
+     "text": "Burn it unread",
+     "text_fr": "La brûler sans la lire",
+     "next_id": "7516_eve",
+     "flagsToAdd": [
+      "tobin_reply_burned"
+     ]
+    }
+   ],
+   "prompt": "What do you do with Tobin’s letter?",
+   "prompt_fr": "Que faites-vous de la lettre de Tobin ?",
+   "revisit_description": "The fire again, and Tobin’s letter in the ash or in his pocket.",
+   "revisit_description_fr": "Le feu de nouveau, et la lettre de Tobin dans les cendres ou dans sa poche."
+  },
+  "beat2_malrik": {
+   "id": "beat2_malrik",
+   "description": "Malrik set a ledger on the barrel and turned it so I could read it. “Your page,” he said. “Updated. One line added, one struck out.” He did not say which. “Wages, in advance, for the shore. I do not expect to be paid after.” He said it as a fact about the weather. “Pay me now, and I will know you do not mean to die. Pay me at dawn, and I will wonder.”",
+   "description_fr": "Malrik posa un registre sur le tonneau et le tourna pour que je puisse lire. « Votre page, dit-il. À jour. Une ligne ajoutée, une autre rayée.  » Il ne dit pas lesquelles. « Les gages, d’avance, pour la grève. Je ne compte pas être payé après.  » Il le dit comme on parle de la météo. « Payez-moi maintenant, et je saurai que vous ne comptez pas mourir. Payez-moi à l’aube, et je me poserai la question.  »",
+   "context_taxonomy": {
+    "ui_theme": "cathedral",
+    "mood": "solemn",
+    "speaker": "Narrator"
+   },
+   "location": "candlehold_gates",
+   "choices": [
+    {
+     "text": "Pay him now",
+     "text_fr": "Le payer maintenant",
+     "next_id": "7516_eve",
+     "flagsToAdd": [
+      "malrik_paid_now"
+     ]
+    },
+    {
+     "text": "Pay him at dawn",
+     "text_fr": "Le payer à l’aube",
+     "next_id": "7516_eve",
+     "flagsToAdd": [
+      "malrik_paid_dawn"
+     ]
+    }
+   ],
+   "prompt": "When is Malrik paid?",
+   "prompt_fr": "Quand Malrik est-il payé ?",
+   "revisit_description": "The fire again. Malrik’s ledger lay shut between us.",
+   "revisit_description_fr": "Le feu de nouveau. Le registre de Malrik restait fermé entre nous."
+  },
+  "beat2_vica": {
+   "id": "beat2_vica",
+   "description": "At dusk Vica stood in the shore path and would not let me by. Not growling: standing, the way a door stands. She had decided something, and she waited for me to ask what, and I understood she did not mean to answer in words. She looked at the boats, and at me.",
+   "description_fr": "Au crépuscule, Vica se tint dans le sentier de la grève et ne me laissa pas passer. Sans grogner  : debout, comme une porte est debout. Elle avait décidé quelque chose, et elle attendait que je demande quoi, et je compris qu’elle ne comptait pas répondre avec des mots. Elle regarda les barques, puis moi.",
+   "context_taxonomy": {
+    "ui_theme": "cathedral",
+    "mood": "solemn",
+    "speaker": "Narrator"
+   },
+   "location": "candlehold_gates",
+   "choices": [
+    {
+     "text": "Take her to the shore",
+     "text_fr": "L’emmener à la grève",
+     "next_id": "7516_eve",
+     "flagsToAdd": [
+      "vica_shore_taken"
+     ]
+    },
+    {
+     "text": "Ask her to guard the camp",
+     "text_fr": "Lui demander de garder le camp",
+     "next_id": "7516_eve",
+     "flagsToAdd": [
+      "vica_camp_guarded"
+     ]
+    }
+   ],
+   "prompt": "What does Vica ask of you?",
+   "prompt_fr": "Que vous demande Vica ?",
+   "revisit_description": "The shore path again, and Vica a little way off.",
+   "revisit_description_fr": "Le sentier de la grève de nouveau, et Vica un peu plus loin."
+  },
+  "1155_vica_follows": {
+   "id": "1155_vica_follows",
+   "description": "She did not follow me out of the hollow. She followed me out of the dark, which is not the same, and it took me until the fire to see the difference. By the water she lay down at the edge of the light, close enough to be mine, far enough to leave.",
+   "description_fr": "Elle ne me suivit pas hors du creux. Elle me suivit hors du noir, ce qui n’est pas pareil, et il me fallut attendre le feu pour voir la différence. Près de l’eau, elle se coucha au bord de la lumière, assez près pour être à moi, assez loin pour partir.",
+   "context_taxonomy": {
+    "ui_theme": "desert",
+    "mood": "tender",
+    "speaker": "Narrator"
+   },
+   "location": "white_wells",
+   "flag_callbacks": [
+    {
+     "flag": "vica_shared",
+     "en": "She ate what was left in the flask, which was nothing, and licked the flask.",
+     "fr": "Elle mangea ce qui restait dans la gourde, c’est-à-dire rien, et lécha la gourde.",
+     "priority": 2
+    },
+    {
+     "flag": "vica_paid",
+     "en": "She sat on the coins until I understood they were hers.",
+     "fr": "Elle s’assit sur les pièces jusqu’à ce que je comprenne qu’elles étaient à elle.",
+     "priority": 2
+    }
+   ],
+   "choices": [
+    {
+     "text": "Go to the fire",
+     "text_fr": "Aller au feu",
+     "next_id": "1200",
+     "flagsToAdd": [
+      "vica_at_the_fire"
+     ]
+    }
+   ]
+  },
+  "loyal_vica": {
+   "id": "loyal_vica",
+   "campErrand": true,
+   "showIfFlags": [
+    "devoted_vica",
+    "ally_vica"
+   ],
+   "hideIfFlags": [
+    "vica_watch_kept",
+    "vica_watch_left"
+   ],
+   "campErrandText": "Sit at the water with Vica",
+   "campErrandText_fr": "S’asseoir au bord de l’eau avec Vica",
+   "description": "Vica had been at the water’s edge since dusk, ears forward, facing the Hollow Shore. She did not look round when I came. She had smelled it for days: a wind from nowhere, cold, that carried no sound. She leaned back against my knee, once, so I would know she knew.",
+   "description_fr": "Vica était au bord de l’eau depuis le crépuscule, les oreilles en avant, face à la Rive Creuse. Elle ne se retourna pas quand j’arrivai. Elle le flairait depuis des jours  : un vent venu de nulle part, froid, qui ne portait aucun bruit. Elle s’appuya une fois contre mon genou, pour que je sache qu’elle savait.",
+   "context_taxonomy": {
+    "ui_theme": "docks",
+    "mood": "solemn",
+    "speaker": "Narrator"
+   },
+   "location": "cove_camp",
+   "choices": [
+    {
+     "text": "Keep the watch with her",
+     "text_fr": "Veiller avec elle",
+     "next_id": "4999_camp",
+     "returnToCamp": true,
+     "flagsToAdd": [
+      "vica_watch_kept",
+      "vica_loyal_done"
+     ]
+    },
+    {
+     "text": "Call her in",
+     "text_fr": "La rappeler au camp",
+     "next_id": "4999_camp",
+     "returnToCamp": true,
+     "flagsToAdd": [
+      "vica_watch_left",
+      "vica_loyal_done"
+     ]
+    }
+   ],
+   "prompt": "What do you do for Vica?",
+   "prompt_fr": "Que faites-vous pour Vica ?",
+   "flag_callbacks": [
+    {
+     "flag": "vica_at_the_fire",
+     "en": "She lay where she had lain the first night, at the edge of the light, and this time she looked back.",
+     "fr": "Elle était couchée là où elle s’était couchée la première nuit, au bord de la lumière, et cette fois elle regarda en arrière.",
+     "priority": 2
+    }
+   ]
+  }
+ },
+ "edits": [
+  {
+   "node": "loyal_kelda",
+   "add_flag_to_all_choices": "kelda_loyal_done"
+  },
+  {
+   "node": "loyal_sable",
+   "add_flag_to_all_choices": "sable_loyal_done"
+  },
+  {
+   "node": "loyal_maren",
+   "add_flag_to_all_choices": "maren_loyal_done"
+  },
+  {
+   "node": "loyal_liora",
+   "add_flag_to_all_choices": "liora_loyal_done"
+  },
+  {
+   "node": "loyal_vess",
+   "add_flag_to_all_choices": "vess_loyal_done"
+  },
+  {
+   "node": "loyal_grosh",
+   "add_flag_to_all_choices": "grosh_loyal_done"
+  },
+  {
+   "node": "loyal_tobin",
+   "add_flag_to_all_choices": "tobin_loyal_done"
+  },
+  {
+   "node": "loyal_malrik",
+   "add_flag_to_all_choices": "malrik_loyal_done"
+  },
+  {
+   "node": "1150_vica",
+   "set_all_next": "1155_vica_follows"
+  }
+ ],
+ "callbacks_add": [
+  {
+   "node": "7800",
+   "items": [
+    {
+     "flag": "vica_watch_kept",
+     "en": "Vica still lay at the edge of the camp’s light each night, facing the water, and I stopped asking what she was waiting for.",
+     "fr": "Vica restait chaque nuit au bord de la lumière du camp, face à l’eau, et je cessai de demander ce qu’elle attendait.",
+     "priority": 2
+    },
+    {
+     "flag": "vica_watch_left",
+     "en": "Vica slept in the camp after that, close to the fire, and kept one ear toward the water all the same.",
+     "fr": "Vica dormit désormais au camp, près du feu, et garda tout de même une oreille tournée vers l’eau.",
+     "priority": 2
+    }
+   ]
+  }
+ ],
+ "hub": {
+  "node": "7516_eve",
+  "insert_before_last_choice": [
+   {
+    "text": "Show Kelda the shield-strap",
+    "text_fr": "Kelda et la lanière",
+    "next_id": "beat2_kelda",
+    "showIfFlags": [
+     "kelda_loyal_done",
+     "ally_kelda"
+    ],
+    "hideIfFlags": [
+     "kelda_strap_taken",
+     "kelda_strap_refused"
+    ]
+   },
+   {
+    "text": "Hear what Sable found on her bedroll",
+    "text_fr": "Ce que Sable a trouvé sur son couchage",
+    "next_id": "beat2_sable",
+    "showIfFlags": [
+     "sable_loyal_done",
+     "ally_sable"
+    ],
+    "hideIfFlags": [
+     "sable_price_paid",
+     "sable_price_alone"
+    ]
+   },
+   {
+    "text": "Sit with Maren and her new list",
+    "text_fr": "S’asseoir avec Maren et sa nouvelle liste",
+    "next_id": "beat2_maren",
+    "showIfFlags": [
+     "maren_loyal_done",
+     "ally_maren"
+    ],
+    "hideIfFlags": [
+     "maren_list_read",
+     "maren_list_kept"
+    ]
+   },
+   {
+    "text": "Hear Liora’s report from the ridge",
+    "text_fr": "Le rapport de Liora, depuis la crête",
+    "next_id": "beat2_liora",
+    "showIfFlags": [
+     "liora_loyal_done",
+     "ally_liora"
+    ],
+    "hideIfFlags": [
+     "liora_ridge_climbed",
+     "liora_ridge_rested"
+    ]
+   },
+   {
+    "text": "Go to Vess, apart from the fire",
+    "text_fr": "Rejoindre Vess, à l’écart du feu",
+    "next_id": "beat2_vess",
+    "showIfFlags": [
+     "vess_loyal_done",
+     "ally_vess"
+    ],
+    "hideIfFlags": [
+     "vess_shore_asked",
+     "vess_camp_kept"
+    ]
+   },
+   {
+    "text": "Find out what Grosh is holding",
+    "text_fr": "Savoir ce que Grosh tient",
+    "next_id": "beat2_grosh",
+    "showIfFlags": [
+     "grosh_loyal_done",
+     "ally_grosh"
+    ],
+    "hideIfFlags": [
+     "grosh_sent_home",
+     "grosh_stays"
+    ]
+   },
+   {
+    "text": "Sit with Tobin and his letter",
+    "text_fr": "S’asseoir avec Tobin et sa lettre",
+    "next_id": "beat2_tobin",
+    "showIfFlags": [
+     "tobin_loyal_done",
+     "ally_tobin"
+    ],
+    "hideIfFlags": [
+     "tobin_reply_read",
+     "tobin_reply_burned"
+    ]
+   },
+   {
+    "text": "Look at Malrik’s ledger again",
+    "text_fr": "Revoir le registre de Malrik",
+    "next_id": "beat2_malrik",
+    "showIfFlags": [
+     "malrik_loyal_done",
+     "ally_malrik"
+    ],
+    "hideIfFlags": [
+     "malrik_paid_now",
+     "malrik_paid_dawn"
+    ]
+   },
+   {
+    "text": "Meet Vica on the shore path",
+    "text_fr": "Retrouver Vica sur le sentier de la grève",
+    "next_id": "beat2_vica",
+    "showIfFlags": [
+     "vica_loyal_done",
+     "ally_vica"
+    ],
+    "hideIfFlags": [
+     "vica_shore_taken",
+     "vica_camp_guarded"
+    ]
+   }
+  ]
+ }
+}

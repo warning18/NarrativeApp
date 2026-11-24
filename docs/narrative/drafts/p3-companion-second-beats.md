@@ -1,5 +1,16 @@
 # P3 draft: a second beat for each companion, and Vica's scenes
 
+> **WIRE-READY (supersedes the "Wiring" list below).** The scenes are built as data and tested; nothing here is in `assets/` yet because the user has not chosen to build P3.
+>
+> - `docs/narrative/drafts/p3-beat2-patch.json`: the eleven nodes (`beat2_<c>` ×9 incl. Vica, `1155_vica_follows`, `loyal_vica`), the loyalty-flag edits, the 9 hub choices and the `7800` echo lines, every one with EN/FR, prompt/prompt_fr and revisit text.
+> - `docs/narrative/drafts/apply_p3_beat2.py`: applies the patch (idempotent) and the three one-line `lib/data/world_map.dart` scene-list edits. Run from the repo root once `7516_eve` is on `main`, then `dart format lib/data/world_map.dart`.
+> - **Tested** on a scratch copy of `claude/core-ch7-scenes` (6f2d55a9) with the patch applied: `story_graph_integrity`, `story_rules`, `companion_remarks`, `french_data_lint`, `qa_story_fr`, `camp_errands`, `story_cap_revisit`, `french_address`, `companion_remark_story`, `story_text`, `world_map`, `world_map_edit`, `qa_story_blocking`, `chapter_eight`, `chapter_loop`, `app_strings_french_typography`: all green.
+> - **Design change from the first draft:** the eight beats are **not camp errands**. They are hub choices on `7516_eve` (“Sit with <name>”, shown while `<c>_loyal_done` and `ally_<c>` hold and neither outcome flag is set), the scenes sit at `candlehold_gates` (cathedral theme, as the hub) and return to `7516_eve`. So no `campErrand`, no `7400` return, and `7516_eve` stays a night of choices with “Sleep, and climb at dawn” last. Up to nine hub choices at once; the player can take any, in any order.
+> - **Flags:** each `loyal_<c>` choice also sets `<c>_loyal_done` (the one gate flag; the real outcome flags are unchanged). Each beat sets one of two new outcome flags (listed per scene below). They are *read* by the hub's own `hideIfFlags`, so the “every mark is read” rule is met without Muster lines; Vica’s loyalty flags are echoed at `7800` (two lines, priority 2, like the other eight) and `vica_at_the_fire` (set by `1155_vica_follows`, whose single choice needs an effect) is read by a callback in `loyal_vica`.
+> - **Prompts:** each beat has a `prompt`/`prompt_fr` line and a one-line `revisit_description` (EN/FR) in the patch; loyalty and recruit scenes follow the existing `loyal_*` shape.
+> - **Core still has to:** nothing but run the script (the world-map list edits are in it). **Not touched:** `companion_remarks.json` (an optional follow-up, same keys as the flags here); approvals (no `approvalMods`).
+> - **Gate for the user:** build all nine, a subset (delete entries from the patch), or none.
+
 **Why** (story review 3.3, 6.1): each of the eight story companions has a recruit scene and one loyalty scene, and the loyalty choice is read only at the Muster in chapter 8 (`7800`). There is no companion beat in chapters 6 or 7, where the party is largest and the player most invested. Vica has one scene (`1150_vica`) and nothing else.
 
 **Shape:** one camp scene per companion (70 to 90 words, two choices), offered in the chapter 7 camp. It is a companion asking for something the Throne will cost them. The choice sets one flag; the Muster can echo it (see "Echo", optional).
