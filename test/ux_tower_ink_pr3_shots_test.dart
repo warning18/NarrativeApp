@@ -16,12 +16,18 @@ import 'package:narrative_data_app/data/tower/tower_bot.dart';
 import 'package:narrative_data_app/data/tower/tower_run.dart';
 import 'package:narrative_data_app/data/tower/tower_save.dart';
 import 'package:narrative_data_app/main.dart';
+import 'package:narrative_data_app/screens/tower/ink/ink_sprites.dart';
 
 import 'support/fonts.dart';
 
 void main() {
   final shots = Platform.environment['UX_SHOTS'];
-  setUp(rootBundle.clear);
+  setUp(() {
+    rootBundle.clear();
+    // Each picture decodes its own sprites (a cached future from another
+    // test's clock would never run here).
+    InkSprites.reset();
+  });
 
   for (final width in [360.0, 320.0]) {
     testWidgets('the Tower fight in ink $width', skip: shots == null,
