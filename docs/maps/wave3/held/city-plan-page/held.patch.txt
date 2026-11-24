@@ -1,0 +1,260 @@
+diff --git a/lib/screens/city_chart_screen.dart b/lib/screens/city_chart_screen.dart
+index ccca15ae..6b6f3a6e 100644
+--- a/lib/screens/city_chart_screen.dart
++++ b/lib/screens/city_chart_screen.dart
+@@ -25,7 +25,9 @@ import '../providers/day_phase_provider.dart';
+ import '../providers/town_rulers_provider.dart';
+ import '../widgets/city_chart/city_chart.dart';
+ import '../widgets/city_chart/city_chart_view.dart';
++import '../data/map_charts.dart';
+ import '../widgets/ink_loading.dart';
++import '../widgets/level_ladder.dart';
+ 
+ CityWayKind _wayKindOf(JourneyStepKind kind) => switch (kind) {
+       JourneyStepKind.fight => CityWayKind.fight,
+@@ -37,10 +39,16 @@ CityWayKind _wayKindOf(JourneyStepKind kind) => switch (kind) {
+ 
+ class CityChartScreen extends ConsumerStatefulWidget {
+   /// [preview]: Saltmouth's stub plan, with no story behind it.
+-  const CityChartScreen({super.key, this.preview = false});
++  const CityChartScreen({super.key, this.preview = false, this.rungs});
+ 
+   final bool preview;
+ 
++  /// Opened from the Journey's Town rung: the other rungs that can be
++  /// taken from here. The level strip is then shown under the plan with
++  /// Town lit, and a tap on another rung closes the page with that rung
++  /// (a way picked closes it with its choice, as before).
++  final Set<LadderRung>? rungs;
++
+   @override
+   ConsumerState<CityChartScreen> createState() => _CityChartScreenState();
+ }
+@@ -163,24 +171,41 @@ class _CityChartScreenState extends ConsumerState<CityChartScreen> {
+             )
+           : live == null
+               ? const InkLoading(wordKey: 'loading_map')
+-              : CityChartView(
+-                  chart: live.chart,
+-                  look: look,
+-                  text: _text(),
+-                  hereDistrict: ref.watch(partyDistrictProvider),
+-                  explored: ref.watch(foundDistrictsProvider),
+-                  rulers: cityChartRulersOf(
+-                      live.chart, ref.watch(townRulersProvider)),
+-                  locked: ref.watch(lockedDistrictsProvider),
+-                  phase: ref.watch(dayPhaseProvider),
+-                  onWay: (way) {
+-                    final i = int.tryParse(way.id);
+-                    if (i != null && i < live.choices.length) {
+-                      Navigator.of(context).pop(live.choices[i]);
+-                    }
+-                  },
+-                  onWalk: (d) => walkToDistrict(ref, d.id),
+-                ),
++              : Column(children: [
++                  Expanded(
++                      child: CityChartView(
++                    controlsAtFoot: true,
++                    chart: live.chart,
++                    look: look,
++                    text: _text(),
++                    hereDistrict: ref.watch(partyDistrictProvider),
++                    explored: ref.watch(foundDistrictsProvider),
++                    rulers: cityChartRulersOf(
++                        live.chart, ref.watch(townRulersProvider)),
++                    locked: ref.watch(lockedDistrictsProvider),
++                    phase: ref.watch(dayPhaseProvider),
++                    onWay: (way) {
++                      final i = int.tryParse(way.id);
++                      if (i != null && i < live.choices.length) {
++                        Navigator.of(context).pop(live.choices[i]);
++                      }
++                    },
++                    onWalk: (d) => walkToDistrict(ref, d.id),
++                  )),
++                  if (widget.rungs case final rungs?)
++                    Padding(
++                      padding: const EdgeInsets.fromLTRB(10, 6, 10, 10),
++                      child: Align(
++                        alignment: AlignmentDirectional.centerStart,
++                        child: LevelLadder(
++                          lit: LadderRung.town,
++                          open: {LadderRung.town, ...rungs},
++                          palette: ChartPalette.of(look),
++                          onPick: (rung) => Navigator.of(context).pop(rung),
++                        ),
++                      ),
++                    ),
++                ]),
+     );
+   }
+ }
+diff --git a/lib/screens/journey_screen.dart b/lib/screens/journey_screen.dart
+index aea9ddca..0599e43f 100644
+--- a/lib/screens/journey_screen.dart
++++ b/lib/screens/journey_screen.dart
+@@ -684,11 +684,23 @@ class _JourneyViewState extends ConsumerState<_JourneyView>
+         tooltip: tr(ref, 'city_plan_tooltip'),
+         visualDensity: VisualDensity.compact,
+         onPressed: () async {
+-          final picked = await Navigator.of(context).push<StoryChoice>(
+-            MaterialPageRoute(builder: (_) => const CityChartScreen()),
++          // The page hands back a way picked on the plan, or a rung of
++          // its level strip.
++          final picked = await Navigator.of(context).push<Object>(
++            MaterialPageRoute(
++              builder: (_) => CityChartScreen(rungs: {
++                LadderRung.world,
++                LadderRung.district,
++                if (_sceneInside) LadderRung.room,
++              }),
++            ),
+           );
+           if (picked == null || !mounted) return;
+-          setState(() => _cityPick = picked);
++          if (picked is LadderRung) {
++            _goLevel(picked);
++          } else if (picked is StoryChoice) {
++            setState(() => _cityPick = picked);
++          }
+         },
+       ));
+     }
+diff --git a/lib/widgets/city_chart/city_chart_view.dart b/lib/widgets/city_chart/city_chart_view.dart
+index 074f45e4..049ad2c3 100644
+--- a/lib/widgets/city_chart/city_chart_view.dart
++++ b/lib/widgets/city_chart/city_chart_view.dart
+@@ -84,6 +84,7 @@ class CityChartView extends StatefulWidget {
+     this.locked = const {},
+     this.holds = const {},
+     this.controls = true,
++    this.controlsAtFoot = false,
+     this.cards = true,
+     this.numbers = const {},
+     this.banners = const {},
+@@ -141,6 +142,10 @@ class CityChartView extends StatefulWidget {
+   /// The "Whole city" chip and the zoom buttons, and the card at the foot:
+   /// off when a host has its own.
+   final bool controls;
++
++  /// The zoom buttons at the foot on the right, where the Journey's map
++  /// has them, in place of the top (the city plan page).
++  final bool controlsAtFoot;
+   final bool cards;
+ 
+   final CityChart chart;
+@@ -741,7 +746,8 @@ class _CityChartViewState extends State<CityChartView>
+         if (widget.controls)
+           Positioned(
+             right: 12,
+-            top: 12,
++            top: widget.controlsAtFoot ? null : 12,
++            bottom: widget.controlsAtFoot ? 12 : null,
+             child: Column(children: [
+               _round(
+                 key: const Key('city_chart_zoom_in'),
+@@ -764,7 +770,8 @@ class _CityChartViewState extends State<CityChartView>
+             (_pickedWay != null || _pickedFog != null || focus != null))
+           Positioned(
+             left: 12,
+-            right: 12,
++            // Clear of the buttons when they sit at the foot.
++            right: widget.controls && widget.controlsAtFoot ? 68 : 12,
+             bottom: 12,
+             child: _card(palette, text, focus),
+           ),
+@@ -854,7 +861,8 @@ class _CityChartViewState extends State<CityChartView>
+           customBorder: const PixelChipBorder(),
+           onTap: onTap,
+           child: Padding(
+-            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
++            // 44 px high: a thumb's size.
++            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 13),
+             child: Row(mainAxisSize: MainAxisSize.min, children: [
+               Icon(icon, size: IconSize.s16, color: palette.place),
+               const SizedBox(width: 6),
+diff --git a/test/city_chart_page_test.dart b/test/city_chart_page_test.dart
+new file mode 100644
+index 00000000..9b05df53
+--- /dev/null
++++ b/test/city_chart_page_test.dart
+@@ -0,0 +1,78 @@
++// The city plan page is the Town view enlarged (wave 3 of the Maps review):
++// its "+" and "−" sit at the foot on the right as on the Journey's map, the
++// level strip is under the plan with Town lit, and a rung picked there
++// closes the page and takes the Journey to that level.
++// (A file of its own: only the first test of a file is given the stored
++// city plans.)
++import 'package:flutter/material.dart';
++import 'package:flutter/services.dart';
++import 'package:flutter_test/flutter_test.dart';
++import 'package:shared_preferences/shared_preferences.dart';
++
++import 'package:narrative_data_app/providers/story_providers.dart';
++import 'package:narrative_data_app/screens/city_chart_screen.dart';
++import 'package:narrative_data_app/widgets/journey_world_map.dart';
++import 'package:narrative_data_app/widgets/level_ladder.dart';
++import 'support/open_game.dart';
++import 'support/pump.dart';
++
++void main() {
++  Future<void> openInTheBeggar(WidgetTester tester, Size size) async {
++    TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
++        .setMockMethodCallHandler(
++            const MethodChannel('flutter_tts'), (call) async => 1);
++    SharedPreferences.setMockInitialValues({});
++    usePhone(tester, size);
++    final container = await openGame(tester, overrides: [storedCityPlans]);
++    container.read(storyPlayProvider.notifier).jumpTo('100');
++    await settleApp(tester);
++    await tester.tap(find.text('Journey'));
++    await settleApp(tester);
++  }
++
++  final town = find.byKey(const ValueKey('journey_city_chart'));
++  final world = find.byType(JourneyWorldMap);
++  Finder rung(String name) => find.byKey(Key('journey_tab_$name'));
++
++  Future<void> press(WidgetTester tester, Finder f) async {
++    await tester.tap(f);
++    await tester.pump();
++    await tester.pump(const Duration(milliseconds: 500));
++    await settleApp(tester);
++  }
++
++  testWidgets(
++      'the city plan page is the Town enlarged: buttons at the foot, the strip, a rung back',
++      (tester) async {
++    await openInTheBeggar(tester, const Size(412, 915));
++    await press(tester, rung('town'));
++    expect(town, findsOneWidget);
++    await press(tester, find.byKey(const ValueKey('journey_city_plan')));
++    expect(find.byType(CityChartScreen), findsOneWidget);
++    // The strip, Town lit; the rungs the Journey can take from here open.
++    final strip = tester.widget<LevelLadder>(find.byType(LevelLadder));
++    expect(strip.lit, LadderRung.town);
++    expect(strip.open,
++        containsAll([LadderRung.world, LadderRung.town, LadderRung.district]));
++    // "+" and "−" at the foot on the right, as on the Journey's map.
++    final page = tester.getRect(find.byType(CityChartScreen));
++    final plus =
++        tester.getRect(find.byKey(const Key('city_chart_zoom_in')).last);
++    expect(plus.center.dy, greaterThan(page.center.dy));
++    expect(plus.center.dx, greaterThan(page.center.dx));
++    expect(plus.size, const Size(44, 44));
++    // A rung picked on the page closes it and the Journey goes there.
++    await press(tester, rung('world'));
++    expect(find.byType(CityChartScreen), findsNothing);
++    expect(world, findsOneWidget);
++    expect(tester.widget<LevelLadder>(find.byType(LevelLadder)).lit,
++        LadderRung.world);
++    // And back down: the page again, then the District.
++    await press(tester, rung('town'));
++    await press(tester, find.byKey(const ValueKey('journey_city_plan')));
++    await press(tester, rung('district'));
++    expect(find.byType(CityChartScreen), findsNothing);
++    expect(tester.widget<LevelLadder>(find.byType(LevelLadder)).lit,
++        LadderRung.district);
++  });
++}
