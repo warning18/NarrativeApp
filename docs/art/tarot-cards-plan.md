@@ -39,3 +39,6 @@ Staged in `art/pixellab-tarot/final/tower_cards/` (PNG8, ink palette: ten Apollo
 | "new" stamp | `stamp_new.png` | 48 x 48 |
 Board `docs/art/boards/tarot-cards-all.png`. Raw outputs and jobs in `art/pixellab-tarot/raw/` and `jobs2.json`.
 Notes: the Heal retry ("no card, no frame") worked; the frame came with a picture inside, which I cut out (the inside is transparent); the dots on the 4 and 5 seals are small (the 5 dots are faint at 1x), so UX may draw the dots itself over a blank seal if they must read. Retries not spent: 7 of the 25 cap.
+
+## d10 (QA issue #1144, 24 November): 2 generations
+The hook's die vignette is one picture for every die (`die`), so the vignette is not the gap: the card's small die icon is `assets/visuals/dice/die_d<faces>_bone_44.png` (`towerCardIcon`), and the dice folder has d4, d6, d8, d12 and d20 only, so a d10 falls back to the casino glyph. Missing: `die_d10_bone_44.png` (and `die_d10_bone_40.png`, the size `inventory_parts.dart` loads). Staged in `art/pixellab-v250/final/die_d10_bone_{44,40}.png`, to copy into `assets/visuals/dice/`. Made from the d8 bone die (the same bone colours and outline) with the zigzag equator and kite edges of a d10 drawn in code. Two PixelLab tries (img2img from the d12, 44 and 40 px) came out as a second d12 pentagon and were not used. Balance 1778.
