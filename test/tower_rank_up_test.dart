@@ -207,7 +207,8 @@ void main() {
       final error = tester.takeException();
       final fr = lang == AppLanguage.fr;
       expect(find.text(fr ? 'Montée en rang' : 'Rank up'), findsOneWidget);
-      expect(find.textContaining(fr ? ', rang 1' : ', rank 1'), findsOneWidget);
+      expect(find.textContaining(fr ? 'rang 1 à 2' : 'rank 1 to 2'),
+          findsOneWidget);
       expect(
           find.textContaining(
               fr ? 'Votre dé n’a plus de face libre' : 'Your die has no free'),

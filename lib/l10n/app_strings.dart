@@ -2137,9 +2137,11 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.en: 'Rank up',
     AppLanguage.fr: 'Montée en rang',
   },
+  // The step the card gives: the base skill is rank 1, the last rank 4
+  // ("to": the pixel font has no arrow).
   'tower_rank_up_name': {
-    AppLanguage.en: '{skill}, rank {n}',
-    AppLanguage.fr: '{skill}, rang {n}',
+    AppLanguage.en: '{skill}: rank {from} to {to}',
+    AppLanguage.fr: '{skill} : rang {from} à {to}',
   },
   'tower_rank_up_text': {
     AppLanguage.en:

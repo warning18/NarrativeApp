@@ -45,7 +45,8 @@ String towerDieName(WidgetRef ref, String id) {
 }
 
 /// The words of [reward] in the reader's language. [tier]: a rank-up's
-/// skill's tier now (the card names the next).
+/// skill's tier now (0 for the base skill, shown as rank 1); the card shows
+/// the step, "rank 1 to 2".
 TowerCardText towerCardText(WidgetRef ref, TowerReward reward, {int tier = 0}) {
   final lang = ref.watch(appLanguageProvider);
   Map<String, dynamic> row(DbSchema schema, String id) =>
@@ -72,7 +73,8 @@ TowerCardText towerCardText(WidgetRef ref, TowerReward reward, {int tier = 0}) {
           tr(ref, 'tower_rank_up_name')
               .replaceAll(
                   '{skill}', skillDisplayName(reward.id, language: lang))
-              .replaceAll('{n}', '${tier + 1}'),
+              .replaceAll('{from}', '${tier + 1}')
+              .replaceAll('{to}', '${tier + 2}'),
           tr(ref, 'tower_rank_up_text'));
     case TowerRewardKind.clanOath:
       // A clan offers its oath (Core's v1.855; UX-2 dresses the card).
