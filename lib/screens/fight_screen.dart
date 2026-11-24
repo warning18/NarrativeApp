@@ -134,6 +134,7 @@ import '../theme/icon_sizes.dart';
 import '../widgets/pixel_glyph.dart';
 import 'tower/ink/ink_palette.dart' show inkGrey, inkRed, inkSlate;
 import 'tower/ink/ink_dice.dart' show inkDieSkin;
+import 'tower/tower_backdrop.dart' show towerFightScene;
 import 'tower/ink/ink_kit.dart' show InkSlantPanel, InkSplashPainter;
 import 'tower/ink/ink_palette.dart' show inkBlack, inkDeep, inkPaper;
 import 'tower/tower_look.dart' show TowerPanelStyle;

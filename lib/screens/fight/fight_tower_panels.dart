@@ -10,7 +10,10 @@ extension _TowerPanels on _FightScreenState {
 
   Widget _buildTowerPanels(
       Map<String, dynamic> items, Map<String, _FacePreview> previews) {
-    final plate = _plateHere();
+    // Art's painted scene of the band: the foes' panel shows its middle, the
+    // hero's its floor (v1.1008).
+    final plate =
+        towerFightScene(FightPlateOverride.maybeOf(context)?.floor ?? 1);
     // A short phone has no room for the figures under the plates.
     final figures = !_shortPhone;
     // A tall phone gives the pictures more room, so the figures stand bigger.
@@ -54,7 +57,7 @@ extension _TowerPanels on _FightScreenState {
               Image.asset(plate,
                   fit: BoxFit.cover,
                   alignment:
-                      foes ? Alignment.topCenter : Alignment.bottomCenter,
+                      foes ? const Alignment(0, 0.25) : Alignment.bottomCenter,
                   filterQuality: FilterQuality.none,
                   errorBuilder: (c, e, s) => const ColoredBox(color: inkDeep)),
               if (figures && foes && aimed != null)
@@ -226,6 +229,35 @@ extension _TowerPanels on _FightScreenState {
             ),
           ),
       ]),
+    );
+  }
+
+  /// A die's tag on the plate, "name · d6 · Fire": the die's name, its faces,
+  /// and the element of the face on the table when it has one (the approved
+  /// A's tags under the dice).
+  Widget _buildTowerDieTag(_PartyMember actor, Map<String, dynamic> skills) {
+    final lang = ref.watch(appLanguageProvider);
+    final face = _currentFaces[actor.id];
+    final element = face == null ? 'None' : _elementFor(face, skills);
+    final id = actor.equippedDiceId;
+    final name = id == null ? '?' : dieDisplayName(id, language: lang);
+    final text = [
+      name,
+      'd${actor.dieFaces.length}',
+      if (element != 'None') elementLabel(element, lang),
+    ].join(' · ');
+    return Container(
+      key: Key('tower_die_tag_${actor.id}'),
+      padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+      color: inkBlack.withValues(alpha: 0.88),
+      child: Text(text,
+          maxLines: 1,
+          overflow: TextOverflow.ellipsis,
+          style: const TextStyle(
+              fontFamily: InkFonts.system,
+              fontSize: 9,
+              height: 1.1,
+              color: inkPaper)),
     );
   }
 }

@@ -591,6 +591,24 @@ extension _FightBoardView on _FightScreenState {
                                   cube: square),
                             );
                           }(),
+                        // The Tower's ink: the dice's tags on the plate.
+                        if (TowerPanelStyle.of(context) && onBoard.isNotEmpty)
+                          Positioned(
+                            left: 8,
+                            right: 8,
+                            bottom: 40,
+                            child: IgnorePointer(
+                              child: Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceEvenly,
+                                children: [
+                                  for (final a in onBoard)
+                                    Flexible(
+                                        child: _buildTowerDieTag(a, skills)),
+                                ],
+                              ),
+                            ),
+                          ),
                         Positioned(
                           left: 8,
                           right: 8,

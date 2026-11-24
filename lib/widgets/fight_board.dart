@@ -6,7 +6,9 @@ import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
 
-import '../screens/tower/ink/ink_palette.dart' show inkPaper;
+import '../screens/tower/ink/ink_palette.dart' show inkBlack, inkDeep, inkPaper;
+import '../screens/tower/tower_backdrop.dart' show towerFightDicePlate;
+import 'fight_plates.dart' show FightPlateOverride;
 import '../screens/tower/tower_look.dart' show TowerPanelStyle;
 import '../combat/field_anomaly.dart' show FightStage;
 import '../theme/palette.dart';
@@ -494,26 +496,49 @@ class FightBoardSurface extends StatelessWidget {
         child: Stack(
           fit: StackFit.expand,
           children: [
-            ColorFiltered(
-                colorFilter: inked
-                    ? _inkFloor
-                    : const ColorFilter.mode(Colors.transparent, BlendMode.dst),
+            if (inked)
+              // Art's dice plate of the band (the ground from above), under a
+              // veil that keeps the dice and the hint readable (v1.1008).
+              Positioned.fill(
                 child: RepaintBoundary(
-                  child: ValueListenableBuilder<int>(
-                    valueListenable: FightPlateImages.loaded,
-                    builder: (context, _, __) => CustomPaint(
+                  child: Stack(fit: StackFit.expand, children: [
+                    Image.asset(
                       key: const Key('fight_board_skin'),
-                      painter: _FightBoardPainter(
-                          stage,
-                          plate == null
-                              ? null
-                              : FightPlateImages.tintOf(plate!),
-                          plate == null
-                              ? 0.38
-                              : FightPlateImages.leanOf(plate!)),
+                      towerFightDicePlate(
+                          FightPlateOverride.maybeOf(context)?.floor ?? 1),
+                      fit: BoxFit.cover,
+                      filterQuality: FilterQuality.none,
+                      errorBuilder: (c, e, s) =>
+                          const ColoredBox(color: inkDeep),
                     ),
+                    DecoratedBox(
+                      decoration: BoxDecoration(
+                        gradient: LinearGradient(
+                          begin: Alignment.topCenter,
+                          end: Alignment.bottomCenter,
+                          colors: [
+                            inkBlack.withValues(alpha: 0.1),
+                            inkBlack.withValues(alpha: 0.55),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ]),
+                ),
+              )
+            else
+              RepaintBoundary(
+                child: ValueListenableBuilder<int>(
+                  valueListenable: FightPlateImages.loaded,
+                  builder: (context, _, __) => CustomPaint(
+                    key: const Key('fight_board_skin'),
+                    painter: _FightBoardPainter(
+                        stage,
+                        plate == null ? null : FightPlateImages.tintOf(plate!),
+                        plate == null ? 0.38 : FightPlateImages.leanOf(plate!)),
                   ),
-                )),
+                ),
+              ),
             if (event != null) Positioned.fill(child: event!),
             child,
           ],
@@ -660,11 +685,3 @@ class _AimPainter extends CustomPainter {
   bool shouldRepaint(_AimPainter old) =>
       old.a != a || old.b != b || old.color != color;
 }
-
-/// The stage's floor in ink: grey, and darker (a third of the light).
-const ColorFilter _inkFloor = ColorFilter.matrix(<double>[
-  0.20, 0.20, 0.20, 0, 6, //
-  0.20, 0.20, 0.20, 0, 8,
-  0.21, 0.21, 0.21, 0, 12,
-  0, 0, 0, 1, 0,
-]);
