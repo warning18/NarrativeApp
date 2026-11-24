@@ -21,4 +21,4 @@ Paper text must read on the fill (4.5+); a frame or accent text on ink black wan
 3. **The home menu's paint edges and the story's best clan**: shown on all five buttons, it is a lot of colour at once. Proposal: only the one primary button and the left bar take it; the edges of the others stay today's red.
 4. **Dark mode only**: these are ink-theme screens; the other (themed) screens keep Material's colours, so this applies to the ink kit and does not recolour the app.
 
-Build, if the user chooses it: one `inkAccent` on a provider (leading clan or red), the ~40 non-semantic uses of `inkRed` read it, the semantic ones stay `inkRed`. Needs Core's provider of the leading clan.
+Build, if the user chooses it: one `inkAccent` on a provider (leading clan or red), the non-semantic uses of `inkRed` (to be counted: 65 mention it today, many are health and danger) read it, the semantic ones stay `inkRed`. Needs Core's provider of the leading clan.
