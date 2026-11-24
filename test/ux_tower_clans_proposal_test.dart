@@ -1,6 +1,6 @@
 // PROPOSAL (pictures only, no PR): clans in the Tower, in the tarot style, at
 // 360 and 320, English and French (UX_SHOTS=<folder>):
-//   a  a clan offer (three clans, each a card with its gift; Accept / Not now)
+//   a  a clan offer (three clans, each a card with its gift; Accept / Refuse for a mark)
 //   b  the standing with a clan rising during the run: where it shows (the
 //      card, the hero sheet, a toast; the rail is shown as the option not
 //      chosen)
@@ -182,7 +182,9 @@ Widget _offer(double w, bool fr, {int held = 0, bool rows = false}) {
     const SizedBox(height: 12),
     Row(mainAxisAlignment: MainAxisAlignment.end, children: [
       InkButton(
-          label: fr ? 'Plus tard' : 'Not now', height: 38, onPressed: () {}),
+          label: fr ? 'Refuser (+1 marque)' : 'Refuse (+1 mark)',
+          height: 38,
+          onPressed: () {}),
       const SizedBox(width: 10),
       InkButton(
           label: fr ? 'Accepter' : 'Accept',
@@ -380,24 +382,24 @@ Widget _oath(double w, bool fr) {
     const SizedBox(height: 16),
     _title(fr ? 'Étage 5 vaincu' : 'Floor 5 cleared',
         fr ? 'Choisissez une récompense' : 'Choose one reward'),
+    // The oath is a fourth card, apart from the three of the floor (core's
+    // plan): wide, on top, in hand.
+    TowerRowCard(
+      kind: fr ? 'Serment' : 'Oath',
+      name: c.oath(fr),
+      text: trFor(lang, 'tower_oath_text'),
+      icon: ClanFlag(factionId: c.id, height: 28),
+      rarity: 4,
+      held: true,
+    ),
+    const SizedBox(height: 10),
     Row(crossAxisAlignment: CrossAxisAlignment.end, children: [
-      TowerTarotCard(
-        width: cardW,
-        kind: fr ? 'Serment' : 'Oath',
-        name: c.oath(fr),
-        text: trFor(lang, 'tower_oath_text'),
-        vignette: 'assets/visuals/cards/clans/backdrop_${c.id}.png',
-        icon: ClanFlag(factionId: c.id, height: 22),
-        rarity: 4,
-        held: true,
-      ),
-      const SizedBox(width: 8),
       TowerTarotCard(
         width: cardW,
         kind: fr ? 'Compétence' : 'Skill',
         name: fr ? 'Visée assurée' : 'Steady Aim',
         text: fr ? 'Prenez une seconde de plus.' : 'Take the extra second.',
-        vignette: 'assets/visuals/tower/tower_ward5.png',
+        vignette: 'assets/visuals/tower_cards/skill_none.png',
         icon: const SizedBox(width: 22, height: 22),
         rarity: 2,
         dim: true,
@@ -408,7 +410,17 @@ Widget _oath(double w, bool fr) {
         kind: fr ? 'Dé' : 'Die',
         name: fr ? 'Dé du chœur' : 'Chorus Die',
         text: 'd12',
-        vignette: 'assets/visuals/tower/tower_shop.png',
+        vignette: 'assets/visuals/tower_cards/die.png',
+        icon: const SizedBox(width: 22, height: 22),
+        dim: true,
+      ),
+      const SizedBox(width: 8),
+      TowerTarotCard(
+        width: cardW,
+        kind: fr ? 'Sort' : 'Spell',
+        name: fr ? 'Serrez les rangs' : 'Rally the Line',
+        text: fr ? 'Le groupe resserre les rangs.' : 'The party closes ranks.',
+        vignette: 'assets/visuals/tower_cards/spell_heal.png',
         icon: const SizedBox(width: 22, height: 22),
         dim: true,
       ),
@@ -437,10 +449,12 @@ Widget _oath(double w, bool fr) {
       ),
     ]),
     const SizedBox(height: 12),
-    Row(mainAxisAlignment: MainAxisAlignment.end, children: [
+    Wrap(alignment: WrapAlignment.end, spacing: 10, runSpacing: 8, children: [
       InkButton(
-          label: fr ? 'Plus tard' : 'Not now', height: 38, onPressed: () {}),
-      const SizedBox(width: 10),
+          label:
+              fr ? 'Ne rien prendre (+1 marque)' : 'Leave them all (+1 mark)',
+          height: 38,
+          onPressed: () {}),
       InkButton(
           label: trFor(lang, 'tower_swear'),
           primary: true,
