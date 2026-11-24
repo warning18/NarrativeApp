@@ -17,7 +17,7 @@ final slowFramesProvider = StateNotifierProvider<PersistedFlagNotifier, bool>(
     (ref) => PersistedFlagNotifier('slow_frames_enabled', defaultValue: false));
 
 /// Watches the navigator's routes so the meter knows which screen is on top.
-class SlowFrameRoutes extends NavigatorObserver {
+class _SlowFrameRoutes extends NavigatorObserver {
   final List<Route<dynamic>> stack = [];
 
   /// The route name of the screen on top ('/' is the main menu, the game's own
@@ -47,11 +47,11 @@ class SlowFrameRoutes extends NavigatorObserver {
 }
 
 final slowFrameRoutesProvider =
-    Provider<SlowFrameRoutes>((ref) => SlowFrameRoutes());
+    Provider<_SlowFrameRoutes>((ref) => _SlowFrameRoutes());
 
 /// The screen the player is on, in words for the report: a fight, one of the
 /// game's tabs, the main menu, or another screen on top of them.
-String slowFrameScreenName(Ref ref) {
+String _slowFrameScreenName(Ref ref) {
   if (ref.read(combatActiveProvider)) return 'Fight';
   final top = ref.read(slowFrameRoutesProvider).topName;
   if (top == '/') return 'Main menu';
@@ -77,7 +77,7 @@ String slowFrameScreenName(Ref ref) {
 /// The meter, one for the app. Starting and stopping it follows
 /// [slowFramesProvider] (see SlowFramesOverlay).
 final slowFrameMeterProvider = Provider<SlowFrameMeter>((ref) {
-  final meter = SlowFrameMeter(screen: () => slowFrameScreenName(ref));
+  final meter = SlowFrameMeter(screen: () => _slowFrameScreenName(ref));
   ref.onDispose(meter.stop);
   return meter;
 });

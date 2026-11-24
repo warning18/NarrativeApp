@@ -82,8 +82,8 @@ Future<bool> runLandCrossing(
   if (route == null) return true;
   final known = landEventsFrom(events);
   final ruler = await crossingRulerOf(ref, route);
-  final stripPath = await crossingStripPath(ref, route);
-  final camera = await crossingCamera(ref, stripPath);
+  final stripPath = await _crossingStripPath(ref, route);
+  final camera = await _crossingCamera(ref, stripPath);
   if (!context.mounted) return false;
   // After the Journey map's flight set out for it, the crossing rises over
   // the chart (crossing_rise_route.dart); anywhere else it is a plain page.
@@ -107,7 +107,7 @@ Future<bool> runLandCrossing(
 /// The x on the world's strip of [route]'s road, from its start to its end
 /// (RegionStrips.pathOn): what the crossing's windows follow. Empty when the
 /// strips cannot say (a road from the land to the sea, a place with no x).
-Future<List<double>> crossingStripPath(WidgetRef ref, LandRoute route) async {
+Future<List<double>> _crossingStripPath(WidgetRef ref, LandRoute route) async {
   try {
     final geo = await loadGeography(ref);
     final strips = await ref.read(regionStripsProvider.future);
@@ -125,7 +125,7 @@ const double crossingCameraReach = 100;
 
 /// The camera for a crossing along [path], null when the road is too long
 /// for it or the strips cannot say ([crossingCameraReach]).
-Future<WorldCamera?> crossingCamera(WidgetRef ref, List<double> path) async {
+Future<WorldCamera?> _crossingCamera(WidgetRef ref, List<double> path) async {
   if (path.length < 2) return null;
   if (path.reduce(math.max) - path.reduce(math.min) > crossingCameraReach) {
     return null;
@@ -138,7 +138,7 @@ Future<WorldCamera?> crossingCamera(WidgetRef ref, List<double> path) async {
   }
 }
 
-/// [crossingStripPath] with the strips and the geography in hand: the
+/// [_crossingStripPath] with the strips and the geography in hand: the
 /// route's `from` and `to` are landmark ids (world_map.dart), which
 /// [Geography.placeOfLandmark] puts on the strip.
 List<double> stripPathOf(RegionStrips strips, Geography geo, LandRoute route) {

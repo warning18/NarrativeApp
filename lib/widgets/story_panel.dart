@@ -31,8 +31,8 @@ const int _corner = 12;
 /// Where a tier's ornaments sit in the art (source pixels), if it has any:
 /// the top and bottom edges' middle (x ranges) and the side edges' leaves
 /// (y ranges, mirrored on the other side).
-class FrameOrnaments {
-  const FrameOrnaments({this.top, this.bottom, this.sides});
+class _FrameOrnaments {
+  const _FrameOrnaments({this.top, this.bottom, this.sides});
 
   final (int, int)? top;
   final (int, int)? bottom;
@@ -41,13 +41,13 @@ class FrameOrnaments {
 
 /// The ornaments of each tier's art (found by comparing each edge with its
 /// plain run).
-const Map<CardTier, FrameOrnaments> frameOrnaments = {
-  CardTier.common: FrameOrnaments(),
-  CardTier.uncommon: FrameOrnaments(),
-  CardTier.rare: FrameOrnaments(top: (45, 59)),
-  CardTier.epic: FrameOrnaments(top: (47, 57), bottom: (47, 57)),
+const Map<CardTier, _FrameOrnaments> _frameOrnaments = {
+  CardTier.common: _FrameOrnaments(),
+  CardTier.uncommon: _FrameOrnaments(),
+  CardTier.rare: _FrameOrnaments(top: (45, 59)),
+  CardTier.epic: _FrameOrnaments(top: (47, 57), bottom: (47, 57)),
   CardTier.legendary:
-      FrameOrnaments(top: (41, 63), bottom: (44, 60), sides: (25, 44)),
+      _FrameOrnaments(top: (41, 63), bottom: (44, 60), sides: (25, 44)),
 };
 
 /// The plain rows of a side edge and the plain columns of the top and bottom
@@ -71,7 +71,7 @@ class FrameSlice {
 /// ornament drawn at its own size when the edge is long enough to hold it
 /// with a plain run of at least a corner each side), the middle left empty.
 List<FrameSlice> frameSlices(CardTier tier, Size size, double k) {
-  final o = frameOrnaments[tier] ?? const FrameOrnaments();
+  final o = _frameOrnaments[tier] ?? const _FrameOrnaments();
   const c = _corner * 1.0;
   final d = c * k;
   final w = size.width, h = size.height;
