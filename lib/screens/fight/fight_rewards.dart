@@ -279,6 +279,26 @@ extension _FightRewards on _FightScreenState {
             defeated.where((e) => _isElite || e.affixes.isNotEmpty).length,
       ),
     );
+    // The chapter's goals (chapter_goals.dart, v2.5.0): a fight won may
+    // meet some; each makes the chapter's chest a tier better.
+    if (!widget.modifiers.isTest && !widget.modifiers.tower) {
+      final goals = chapterGoalTable[_chapter] ?? const <ChapterGoal>[];
+      if (goals.isNotEmpty) {
+        await notifier.noteChapterGoals(
+            _chapter,
+            goals,
+            ChapterFightFacts(
+              won: true,
+              rounds: max(1, _roundsStarted),
+              healthLeft: player.currentHealth,
+              maxHealth: player.maxHealth,
+              boss: bossBeaten,
+              firstTry: defeated.every(
+                  (e) => (session.bossDefeatCounts[e.enemyId] ?? 0) == 0),
+              weaknessStruck: _weaknessHits > 0,
+            ));
+      }
+    }
     final anyAllyRevived = await _settleAllies(notifier, leveledUp);
     final newlyUnlockedAchievement =
         anyAllyRevived && await notifier.unlockAchievement('ally_revival');

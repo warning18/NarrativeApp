@@ -296,6 +296,36 @@ mixin _SkillsCombatActions on _SessionNotifierBase {
     ];
   }
 
+  /// A fight of [chapter] won, read against the chapter's [goals]
+  /// (chapter_goals.dart, v2.5.0): the goals it meets are kept. Returns the
+  /// ids newly met (none once the chapter's chest was given).
+  Future<List<String>> noteChapterGoals(
+      int chapter, List<ChapterGoal> goals, ChapterFightFacts facts) async {
+    if (state.chapterChestsGiven.contains(chapter)) return const [];
+    final key = '$chapter';
+    final met = state.chapterGoalsMet[key] ?? const <String>[];
+    final fresh = chapterGoalsNewlyMet(goals, met, facts);
+    if (fresh.isEmpty) return const [];
+    state = state.copyWith(chapterGoalsMet: {
+      ...state.chapterGoalsMet,
+      key: [...met, ...fresh],
+    });
+    await _persist();
+    return fresh;
+  }
+
+  /// The goals of [chapter] met so far.
+  List<String> chapterGoalsMetIn(int chapter) =>
+      state.chapterGoalsMet['$chapter'] ?? const [];
+
+  /// [chapter]'s chest given: it comes once, and its goals stop counting.
+  Future<void> markChapterChestGiven(int chapter) async {
+    if (state.chapterChestsGiven.contains(chapter)) return;
+    state = state.copyWith(
+        chapterChestsGiven: [...state.chapterChestsGiven, chapter]);
+    await _persist();
+  }
+
   /// A lost boss fight: one more defeat on the books for each boss in it,
   /// read back as Resolve next time (see party_bonus.dart).
   Future<void> recordBossDefeat(List<String> enemyIds) async {

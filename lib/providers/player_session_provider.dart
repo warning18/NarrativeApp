@@ -21,6 +21,7 @@ import '../data/approval.dart';
 import '../data/story_companions.dart';
 import '../data/story_prices.dart';
 import '../data/character_start.dart';
+import '../data/chapter_goals.dart';
 import '../data/clan_crisis.dart' show mainClanOf, settleFallenLoyalty;
 import '../data/clan_power.dart' show territoryTurn;
 import '../data/city_districts.dart' show questAcceptedFlag;
