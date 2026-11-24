@@ -8,6 +8,10 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [2.6.1+1064]
+
+- **Chapter goals: the weakness goal of chapters 4 to 6 asks for 3 weakness hits in one fight** (the user's pick). It was met by 73 to 86% of the simulator's runs, as most mid-game dice strike a weakness at least once a fight; with 3 hits, 54 to 72%. Chapter 7's weakness goal stays at one hit. Narrative's lines: "Strike a weakness {n} times in one fight" (chapters 4 and 5), "Turn a weakness against them {n} times in one fight" (chapter 6), "Strike a weakness, whoever stands before you" (chapter 7).
+
 ## [2.5.1+1060]
 
 - **Chapter 7: the night before the Hall and the Stair of Tongues** (Narrative's scenes, the user's yes). Between the rest at Candlehold and the claimant's duel, two scenes: the last night before the Hall (`7516_eve`, at the gates; the rest's healing and supplies now come here, as "Sleep, and climb at dawn") and the climb of the Stair of Tongues (`7517_stair`, where the claimant is chosen). English and French, with their callbacks to earlier choices. No fight added: on 200 simulated runs per player the chapter's fights, levels and the hero's level entering chapter 8 are unchanged. The stair's building at Candlehold is named "The foot of the Stair of Tongues".
