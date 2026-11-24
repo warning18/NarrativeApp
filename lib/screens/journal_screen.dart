@@ -10,11 +10,14 @@ import '../data/story_repository.dart';
 import '../data/story_state.dart';
 import '../l10n/app_locale.dart';
 import '../l10n/app_strings.dart';
+import '../providers/chapter_loop_provider.dart' show reachedChapterProvider;
 import '../providers/player_session_provider.dart';
 import '../providers/story_providers.dart';
 import '../theme/stitched_ink.dart';
 import '../tutorial/guide_tour.dart';
 import '../tutorial/tutorial_topics.dart';
+import '../data/chapter_goals.dart' show chapterGoalTable;
+import '../widgets/chapter_goals_card.dart';
 import '../widgets/clan_widgets.dart' show standingTierColor;
 import '../widgets/coast_news.dart';
 import '../widgets/clan_offer_gifts.dart' show CardTier;
@@ -234,6 +237,12 @@ class _StorySoFarPage extends ConsumerWidget {
           key: const ValueKey('sofar_now'),
           Text(state.now, style: prose),
         ),
+        // The chapter's goals (chapters 4 to 8), with the chest they earn.
+        if (chapterGoalTable.containsKey(ref.watch(reachedChapterProvider)))
+          Padding(
+            padding: const EdgeInsets.only(top: 14),
+            child: ChapterGoalsCard(chapter: ref.watch(reachedChapterProvider)),
+          ),
       ] else ...[
         for (final entry in state.recent) ...[
           Text(

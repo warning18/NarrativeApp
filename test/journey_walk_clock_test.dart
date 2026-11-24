@@ -76,6 +76,8 @@ void main() {
           // Saltmouth's two locked districts open, so no way at its hub is
           // greyed (v1.616): this test is about the walk, not the locks.
           'completedQuestIds': ['q_ch2_terns_toll', 'q_ch2_informants_tip'],
+          // The chapters' chests are given: this test is about the walk.
+          'chapterChestsGiven': [4, 5, 6, 7, 8],
         })));
     await tester.runAsync(
         () => container.read(appModeProvider.notifier).setMode(AppMode.inGame));
