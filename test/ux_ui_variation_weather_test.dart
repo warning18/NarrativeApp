@@ -52,7 +52,7 @@ class _Seed {
   double get tilt => ((n % 3) + 1) * (n.isEven ? 1 : -1) * math.pi / 180;
   bool get fold => n % 3 == 0;
   bool get burn => n % 4 == 1;
-  bool get pin => n % 2 == 0;
+  bool get pin => n.isEven;
   bool get chip => n % 3 == 2;
   int get stains => 1 + n % 3;
   List<double> teeth(int count) => [
@@ -368,7 +368,7 @@ class _SkyPainter extends CustomPainter {
         cap.close();
         canvas.drawPath(cap, Paint()..color = inkPaper);
         for (final c in [
-          const Offset(0, 0),
+          Offset.zero,
           Offset(s.width, 0),
           Offset(0, s.height),
           Offset(s.width, s.height)
