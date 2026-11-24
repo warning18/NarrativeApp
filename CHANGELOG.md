@@ -12,6 +12,15 @@ isn't reconstructable from git history alone.
 
 - Maps, lighter with nothing changed on screen: the ball draws in about 40 % less time (its mesh's heights, the names' layout and the roads' bends were worked out again on every paint and are now kept), and a drag of the town plan repaints the plan only (9 pieces a frame, where each move repainted the whole page, 512). Twelve screens were compared pixel for pixel before and after: the same.
 
+## [2.1.4+1051]
+
+- **Cleanup: 36 names that only their own file uses are now private.**
+  Among them the level ladder's colours and sizes, the die's 3D frame
+  budget and glyph limits, the slow-frame report's names, the clan card's
+  size, the keeper's scale and a few helpers of the land crossing, the
+  character start and the offers. The analyzer proves none is used
+  elsewhere. Nothing changes on screen or in a number.
+
 ## [2.1.3+1050]
 
 - **Cleanup: dead code and unread strings removed.** Four intro painters

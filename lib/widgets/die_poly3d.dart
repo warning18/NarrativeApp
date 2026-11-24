@@ -52,10 +52,10 @@ double dieSolidScale(DieShape shape) => switch (shape) {
 
 /// The least side, in logical pixels, a facet's glyph box may have to be
 /// drawn (a plaque smaller than this does not read).
-const double dieGlyphMinSide = 12;
+const double _dieGlyphMinSide = 12;
 
 /// The widest angle from the viewer at which a facet still carries its glyph.
-final double dieGlyphCosLimit = math.cos(65 * math.pi / 180);
+final double _dieGlyphCosLimit = math.cos(65 * math.pi / 180);
 
 class PolyDie3D extends StatelessWidget {
   const PolyDie3D({
@@ -138,7 +138,7 @@ class PolyDie3D extends StatelessWidget {
       final box = _inradius(pts) * 1.7;
       final facing = -nr[2];
       final glyph =
-          showGlyphs && facing >= dieGlyphCosLimit && box >= dieGlyphMinSide
+          showGlyphs && facing >= _dieGlyphCosLimit && box >= _dieGlyphMinSide
               ? box
               : 0.0;
       final basis = Matrix4(u[0], u[1], u[2], 0, v[0], v[1], v[2], 0, n[0],
