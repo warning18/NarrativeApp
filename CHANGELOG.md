@@ -8,6 +8,26 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.1003.0+1039]
+
+- Fights: a foe's nameplate emblem now says its group in the player's language, as a tooltip (a long press) and as a screen-reader label. The groups of no clan read from their own strings, a clan's from its faction's name. The nine looks that had no names now have them in English and French (The Choir / Le Chœur, The Pit / La Fosse, The Giants / Les géants, The Tide-Kin / Les Gens de la Marée, The Dead / Les morts, The Void / Le Néant, Beasts / Les bêtes, Constructs / Les constructions, People of no clan / Les sans-clan), and the French of the void cults is now "Les cultes du Néant". UX (view and strings only).
+
+## [1.1002.0+1038]
+
+- **Dependencies: flutter_riverpod 3.4.3 → 3.5.0** (and riverpod with it; Dependabot #1043). No code change. The lock now needs Dart 3.13 and Flutter 3.47.0 or later (CI pins 3.47.9), and brings in material_ui, cupertino_ui, intl and flutter_localizations as transitive packages. Core.
+
+## [1.1001.0+1037]
+
+- **Cleanup: an unused forge-sheet class removed, seven test helpers
+  marked as such.** `ForgeSheet` and `forgeSheetFor` (nothing on screen
+  builds them: the forge sheet reads the roll and the piece directly) are
+  gone, and the two tests that used them read the live `ForgeRoll` and
+  `forgedPieceBeforeAfter` with the same checks. Seven public helpers that
+  only tests call (`eventVariantFor`, `eventDue`, `kindSceneKeys`,
+  `isMainSpec`, `towerStoreClanOf`, `towerParleyClanOf`, `statPickEffect`)
+  are marked `@visibleForTesting`, so the analyzer flags any use from the
+  game's own code. Nothing changes on screen or in a number.
+
 ## [1.1000.0+1036]
 
 - Maps, wave 1 of the review. Seen by the player: on the World, "Town" is dim at a place with no town plan (the Spire of Judgment), as it already was on the District and the Room; a tap used to land on the District. Not seen, but lighter: turning, pinching or gliding the ball redraws the ball only and rebuilds nothing (it rebuilt about 89 widgets and repainted the whole screen each frame); the party's ring on a town or district redraws alone (each beat repainted the buttons, the strip and the weather line with it); when the last ball leaves the screen its ground pictures are let go, all but the one the World opens with, and made again when next looked at; while one is being made another stands in, so the plain coarse ball no longer flashes.

@@ -48,6 +48,7 @@ class FightBlock extends StatelessWidget {
     this.order,
     this.rank = FightRank.normal,
     this.group,
+    this.groupName,
     this.marks = const [],
     this.armor,
     this.damage,
@@ -65,6 +66,10 @@ class FightBlock extends StatelessWidget {
   /// The enemy's group: its emblem on the nameplate and its corner ornament.
   /// Null for the party.
   final EnemyGroup? group;
+
+  /// The group's name in the player's language, said by the emblem's tooltip
+  /// and its screen-reader label (v1.1003).
+  final String? groupName;
 
   /// Weakness and resistance marks, on the nameplate after the name.
   final List<FightMark> marks;
@@ -86,6 +91,16 @@ class FightBlock extends StatelessWidget {
   final double? borderWidth;
 
   static const double plateHeight = 17;
+
+  Widget _emblem(EnemyGroup g, Color ink) {
+    final emblem = GroupEmblem(g, size: 13, color: ink);
+    final label = groupName;
+    if (label == null || label.isEmpty) return emblem;
+    return Tooltip(
+      message: label,
+      child: Semantics(label: label, child: emblem),
+    );
+  }
 
   /// A plate whose name takes two lines (#1100).
   static const double plateHeightTwoLines = 26;
@@ -166,7 +181,7 @@ class FightBlock extends StatelessWidget {
                 child: Row(
                   children: [
                     if (g != null) ...[
-                      GroupEmblem(g, size: 13, color: plateInk),
+                      _emblem(g, plateInk),
                       const SizedBox(width: 3),
                     ] else if (order != null) ...[
                       Text('$order',
