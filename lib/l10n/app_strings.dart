@@ -2687,6 +2687,7 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   'forge_slot_Bottom': {AppLanguage.en: 'Legs', AppLanguage.fr: 'Jambes'},
   'forge_slot_Foot': {AppLanguage.en: 'Feet', AppLanguage.fr: 'Pieds'},
   'forge_slot_Weapon': {AppLanguage.en: 'Weapon', AppLanguage.fr: 'Arme'},
+  'forge_slot_Banner': {AppLanguage.en: 'Banner', AppLanguage.fr: 'Bannière'},
   'forge_roll_line': {
     AppLanguage.en: 'Roll d20 {mod}',
     AppLanguage.fr: 'Jet de d20 {mod}',
