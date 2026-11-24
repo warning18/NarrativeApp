@@ -8,6 +8,10 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [2.1.5+1052]
+
+- Maps, lighter with nothing changed on screen: the ball draws in about 40 % less time (its mesh's heights, the names' layout and the roads' bends were worked out again on every paint and are now kept), and a drag of the town plan repaints the plan only (9 pieces a frame, where each move repainted the whole page, 512). Twelve screens were compared pixel for pixel before and after: the same.
+
 ## [2.1.4+1051]
 
 - **Cleanup: 36 names that only their own file uses are now private.**

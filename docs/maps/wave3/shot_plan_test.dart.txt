@@ -1,0 +1,228 @@
+// Throw-away picture test for docs/maps/sphere-and-locations. Not part of
+// the suite: it only runs with ATLAS=<folder>.
+//   ATLAS=docs/maps/atlas/shots ATLAS_THEME=dark ATLAS_W=412 \
+//     flutter test test/zz_atlas_shot_test.dart
+// It opens the real app, jumps the story to a scene, and walks the map
+// levels with the same buttons the player has, saving the screen each time.
+import 'dart:io';
+import 'dart:ui' as ui;
+
+import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
+import 'package:flutter/services.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_test/flutter_test.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+
+import 'package:narrative_data_app/data/map_charts.dart' show ChartPalette;
+import 'package:narrative_data_app/data/room_plan.dart';
+import 'package:narrative_data_app/data/world_map.dart';
+import 'package:narrative_data_app/theme/stitched_ink.dart';
+import 'package:narrative_data_app/widgets/room_plan_painter.dart';
+import 'package:narrative_data_app/l10n/app_locale.dart';
+import 'package:narrative_data_app/main.dart';
+import 'package:narrative_data_app/providers/app_mode_provider.dart';
+import 'package:narrative_data_app/providers/map_look_provider.dart';
+import 'package:narrative_data_app/providers/player_session_provider.dart';
+import 'package:narrative_data_app/providers/story_providers.dart';
+import 'package:narrative_data_app/providers/theme_mode_provider.dart';
+import 'package:narrative_data_app/screens/journey_screen.dart';
+import 'package:narrative_data_app/providers/home_tab_provider.dart'
+    show isGameRoute;
+
+import 'package:narrative_data_app/widgets/city_chart/city_chart_view.dart';
+import 'support/fonts.dart';
+import 'support/open_game.dart';
+import 'support/pump.dart';
+
+final _shotKey = GlobalKey();
+
+void main() {
+  final dir = Platform.environment['ATLAS'];
+  if (dir == null) {
+    test('the atlas pictures are taken only with ATLAS', () {});
+    return;
+  }
+  final theme = Platform.environment['ATLAS_THEME'] ?? 'dark';
+  final w = double.parse(Platform.environment['ATLAS_W'] ?? '412');
+  final only = Platform.environment['ATLAS_ONLY'];
+  final tag = '$theme-${w.round()}';
+  Directory(dir).createSync(recursive: true);
+  final log = File('$dir/log-$tag.txt');
+
+  Future<void> shoot(WidgetTester tester, String name) async {
+    await tester.runAsync(() async {
+      final boundary =
+          _shotKey.currentContext!.findRenderObject()! as RenderRepaintBoundary;
+      final image = await boundary.toImage(pixelRatio: 2);
+      final bytes = await image.toByteData(format: ui.ImageByteFormat.png);
+      File('$dir/$name-$tag.png').writeAsBytesSync(bytes!.buffer.asUint8List());
+    });
+  }
+
+  Future<void> settle(WidgetTester tester, [int seconds = 2]) async {
+    await settleApp(tester);
+    await tester.pump(Duration(seconds: seconds));
+    await tester.pump(const Duration(milliseconds: 400));
+  }
+
+  Future<bool> tap(WidgetTester tester, String key, {String? as}) async {
+    final f = find.byKey(ValueKey(key));
+    if (f.evaluate().isEmpty) {
+      log.writeAsStringSync('MISSING $key (${as ?? ''})\n',
+          mode: FileMode.append);
+      return false;
+    }
+    await tester.tap(f.first, warnIfMissed: false);
+    await settle(tester);
+    return true;
+  }
+
+  Future<ProviderContainer> open(WidgetTester tester, String scene,
+      {List<String> flags = const [], List<String> via = const []}) async {
+    TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
+        .setMockMethodCallHandler(
+            const MethodChannel('flutter_tts'), (call) async => 1);
+    SharedPreferences.setMockInitialValues({'tutorial_enabled': false});
+    usePhone(tester, Size(w, 915));
+    await tester.pumpWidget(ProviderScope(
+      overrides: [storedCityPlans],
+      child: RepaintBoundary(key: _shotKey, child: const MyApp()),
+    ));
+    await tester.runAsync(loadAppFonts);
+    await settleApp(tester);
+    await tester.tap(find.byKey(const Key('menu_edit_mode')));
+    await settleApp(tester);
+    final container =
+        ProviderScope.containerOf(tester.element(find.byType(MaterialApp)));
+    await tester.runAsync(() => container
+        .read(appLanguageProvider.notifier)
+        .setLanguage(AppLanguage.en));
+    await tester.runAsync(() => container
+        .read(themeModeProvider.notifier)
+        .setThemeMode(theme == 'light' ? ThemeMode.light : ThemeMode.dark));
+    await tester.runAsync(() => container
+        .read(mapLookProvider.notifier)
+        .choose(theme == 'light' ? MapLook.parchment : theme == 'shroud' ? MapLook.shroud : MapLook.night));
+    await tester.runAsync(() => container
+        .read(playerSessionProvider.notifier)
+        .loadSession(PlayerSession.fromJson({
+          'raceId': 'human',
+          'professionId': 'warrior',
+          'gold': 100,
+          'flags': ['journey_first_shown', ...flags],
+        })));
+    await tester.runAsync(
+        () => container.read(appModeProvider.notifier).setMode(AppMode.inGame));
+    await settleApp(tester);
+    await tester.tap(find.text('Journey'));
+    await settleApp(tester);
+    if (scene == 'mid') {
+      // A scene of each landmark of chapters 1 to 3: most lands charted.
+      final ids = [
+        for (final l in worldMapLandmarks)
+          if (l.chapter <= 3 && l.scenes.isNotEmpty) l.scenes.first,
+      ];
+      container
+          .read(storyPlayProvider.notifier)
+          .loadState(ids.last, ids.sublist(0, ids.length - 1));
+      await settleApp(tester);
+      await tester.pump(const Duration(seconds: 6));
+    }
+    for (final s in [...via, if (scene != 'mid') scene]) {
+      container.read(storyPlayProvider.notifier).jumpTo(s);
+      await settleApp(tester);
+      await tester.pump(const Duration(seconds: 6));
+      for (var i = 0; i < 3; i++) {
+        Navigator.of(tester.element(find.byType(JourneyScreen)))
+            .popUntil(isGameRoute);
+        await tester.pump(const Duration(seconds: 1));
+      }
+    }
+    if (Platform.environment['ATLAS_LANG'] == 'fr') {
+      await tester.runAsync(() => container
+          .read(appLanguageProvider.notifier)
+          .setLanguage(AppLanguage.fr));
+      await settleApp(tester);
+    }
+    await tester.pump(const Duration(milliseconds: 700));
+    return container;
+  }
+
+
+  // Sizes of everything keyed that can be tapped on the maps.
+  void sizes(WidgetTester tester, String where) {
+    final seen = <String>{};
+    void visit(Element e) {
+      final k = e.widget.key;
+      if (k is ValueKey && k.value is String) {
+        final name = k.value as String;
+        if (RegExp(r'^(journey_(tab|zoom|layers|full|city|recentre|globe|level|here|centre)|city_chart|full_map|map_|calque|chart_|legend)')
+                .hasMatch(name) &&
+            seen.add(name)) {
+          final r = e.renderObject;
+          if (r is RenderBox && r.hasSize) {
+            log.writeAsStringSync(
+                'SIZE $where $name ${r.size.width.toStringAsFixed(0)}x${r.size.height.toStringAsFixed(0)}\n',
+                mode: FileMode.append);
+          }
+        }
+      }
+      e.visitChildElements(visit);
+    }
+
+    WidgetsBinding.instance.rootElement!.visitChildElements(visit);
+  }
+
+  // What is painted while nothing is touched, over 30 frames, and how long
+  // a forced repaint of the whole screen takes.
+  Future<void> idle(WidgetTester tester, String where) async {
+    await tester.pump(const Duration(milliseconds: 500));
+    final counts = <String, int>{};
+    debugOnProfilePaint = (RenderObject r) {
+      var n = r.runtimeType.toString();
+      if (r is RenderCustomPaint) {
+        n = 'CustomPaint(${r.painter?.runtimeType ?? r.foregroundPainter?.runtimeType})';
+      }
+      counts[n] = (counts[n] ?? 0) + 1;
+    };
+    debugProfilePaintsEnabled = true;
+    final times = <int>[];
+    for (var i = 0; i < 30; i++) {
+      final sw = Stopwatch()..start();
+      await tester.pump(const Duration(milliseconds: 16));
+      times.add(sw.elapsedMicroseconds);
+    }
+    debugProfilePaintsEnabled = false;
+    debugOnProfilePaint = null;
+    times.sort();
+    final busy = tester.binding.hasScheduledFrame;
+    final top = counts.entries.where((e) => e.key.startsWith('CustomPaint')).toList()
+      ..sort((a, b) => b.value.compareTo(a.value));
+    log.writeAsStringSync(
+        'IDLE $where busy=$busy frame median ${(times[15] / 1000).toStringAsFixed(1)} ms worst ${(times.last / 1000).toStringAsFixed(1)} ms; painters in 30 frames: ${top.take(8).map((e) => '${e.key}x${e.value}').join(', ')}\n',
+        mode: FileMode.append);
+  }
+
+
+  testWidgets('wave3 plan page', (tester) async {
+    final which = Platform.environment['ATLAS_ONLY'] ?? 'alster';
+    final proto = Platform.environment['ATLAS_PROTO'] != null;
+    CityChartView.proto = proto;
+    final pre = 'w3p-$which-${proto ? 'after' : 'before'}';
+    if (which == 'saltmouth') {
+      await open(tester, '2015_cards', via: ['2010'], flags: ['lysa_survived']);
+    } else {
+      await open(tester, '100', flags: ['lysa_survived']);
+    }
+    await tap(tester, 'journey_tab_town');
+    await shoot(tester, '$pre-1-town');
+    if (await tap(tester, 'journey_city_plan')) {
+      await shoot(tester, '$pre-2-page');
+      await tap(tester, 'city_chart_zoom_in');
+      await shoot(tester, '$pre-3-page-in');
+    }
+    final e = tester.takeException();
+    if (e != null) log.writeAsStringSync('EXCEPTION $which $proto: $e\n', mode: FileMode.append);
+  });
+}
