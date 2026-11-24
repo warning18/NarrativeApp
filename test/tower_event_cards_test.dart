@@ -154,6 +154,10 @@ void main() {
 
   testWidgets('a shortcut is offered before the fight and chosen once',
       (tester) async {
+    // The card reads the preferences when it is pumped: the mock first, as
+    // the file's other tests do (it was set only further down, which made
+    // shard 3 fail now and then).
+    SharedPreferences.setMockInitialValues({});
     final (seed, floor) = floorWith(TowerEventKind.shortcut);
     final view = towerEventOf(run(seed, floor), data)!;
     // The card alone: the odds are Core's, the buttons only when asked for.
