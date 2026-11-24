@@ -12,6 +12,8 @@ import '../../../theme/stitched_ink.dart';
 import 'ink_images.dart';
 import 'ink_kit.dart';
 import 'ink_palette.dart';
+import 'ink_seed.dart';
+import 'ink_worn.dart';
 
 class InkMenuItem extends StatefulWidget {
   const InkMenuItem({
@@ -68,27 +70,30 @@ class _InkMenuItemState extends State<InkMenuItem> {
   @override
   Widget build(BuildContext context) {
     final enabled = widget.onPressed != null;
+    final seed = inkSeedOf(widget.itemKey, widget.label);
     if (widget.primary) {
       return Padding(
         padding: const EdgeInsets.only(bottom: 12),
-        child: Transform(
-          transform: Matrix4.skewX(-inkSkew),
-          child: FilledButton(
-            key: widget.itemKey,
-            onPressed: widget.onPressed,
-            style: FilledButton.styleFrom(
-              minimumSize: const Size(0, 58),
-              padding: const EdgeInsets.symmetric(horizontal: 26),
-              backgroundColor: inkRed,
-              disabledBackgroundColor: inkDark,
-              foregroundColor: inkPaper,
-              shape: const RoundedRectangleBorder(),
-            ),
+        child: InkWorn(
+            seed: seed,
             child: Transform(
-                transform: Matrix4.skewX(inkSkew),
-                child: _lines(inkPaper, inkPaper.withValues(alpha: 0.85))),
-          ),
-        ),
+              transform: Matrix4.skewX(-inkSkew),
+              child: FilledButton(
+                key: widget.itemKey,
+                onPressed: widget.onPressed,
+                style: FilledButton.styleFrom(
+                  minimumSize: const Size(0, 58),
+                  padding: const EdgeInsets.symmetric(horizontal: 26),
+                  backgroundColor: seed.red,
+                  disabledBackgroundColor: inkDark,
+                  foregroundColor: inkPaper,
+                  shape: const RoundedRectangleBorder(),
+                ),
+                child: Transform(
+                    transform: Matrix4.skewX(inkSkew),
+                    child: _lines(inkPaper, inkPaper.withValues(alpha: 0.85))),
+              ),
+            )),
       );
     }
     return Padding(
@@ -96,6 +101,7 @@ class _InkMenuItemState extends State<InkMenuItem> {
       child: Opacity(
         opacity: enabled ? 1 : 0.55,
         child: InkPaperPanel(
+          seedText: widget.label,
           padding: const EdgeInsets.fromLTRB(40, 12, 18, 12),
           child: Material(
             type: MaterialType.transparency,

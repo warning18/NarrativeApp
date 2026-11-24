@@ -8,6 +8,10 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [2.1.0+1047]
+
+- The ink buttons, panels and tabs are no two alike, and the Tower is snowing on them. Every ink piece is seeded from its key or label (the same piece looks the same every time): a red from six (rust, dried blood, faded), a paper warm or cold, a tilt of 1 to 3 degrees, a torn tab, a chipped or folded corner, a burn, stains, splatter, a pin; the labels stay AA on every tint. Weather piles up on them while a screen is open: snow, sand, ash and rain with drips, and fog as a veil; heavy after about 30 s in the hardest fall, never over the label. A tap knocks the pile off in a puff, then it builds again; the level is kept in memory through rebuilds and leaving (it melts 1 level per 120 s away); with reduce motion it is a fixed medium cap and nothing moves. One clock per screen. The Tower snows by band (fall 0.4, 0.7, 1.0); the home menu has the variations only; the story's screens are as before (`uiSkyProvider` reads the sky where the party stands, and nothing reads it today). Drawn in code, no Art overlays. UX (view only).
+
 ## [2.0.0+1046]
 
 - The Tower is in ink (part 4 of 4: the end of a floor and the start of a run; the set is complete). The level up, the spoils sheet, the cards after a floor, and the calling pick in the Tower now wear the ink look: paper white for the main action, healing and a gain, deep red only for blood, danger and a loss, cold greys for the rest; square cards with no wood frame, the emblems and the chest in the ink greys, the level up's radar polygon in paper. The parley's and the stall's figures are the same sprites recoloured to ink. It comes from the Tower's own colour set (what reads `InkColors` under the Tower is ink), so the story's screens are unchanged. The Tower moved to ink in four parts (v1.1004, v1.1005, v1.1009 and this one). Look only. UX (view only).

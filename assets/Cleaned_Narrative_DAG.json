@@ -6177,7 +6177,7 @@
   "6002_siege": {
     "id": "6002_siege",
     "description": "I heard the camp before I saw it: the storm bell we had hung on the wall, rung for something that was not a storm. **The Court’s remnants had followed the ledger home**, the ones who fled the altar and a few who had never been near it. They had brought the Void’s hounds on leashes of grey thread.\n\nTorches along the palisade. Children passed hand to hand toward the boats. The Eel was still coming about when the first of them reached the gate.",
-    "description_fr": "J’entendis le camp avant de le voir : la cloche de tempête pendue au mur, sonnée pour autre chose qu’une tempête. **Les restes de la Cour avaient suivi le registre jusque chez nous**, ceux qui avaient fui l’autel et quelques autres qui n’en avaient jamais approché. Ils avaient amené les chiens du Vide en laisse de fil gris.\n\nDes torches le long de la palissade. Des enfants passés de main en main vers les barques. L’Eel virait encore de bord quand les premiers atteignirent la porte.",
+    "description_fr": "J’entendis le camp avant de le voir : la cloche de tempête pendue au mur, sonnée pour autre chose qu’une tempête. **Les restes de la Cour avaient suivi le registre jusque chez nous**, ceux qui avaient fui l’autel et quelques autres qui n’en avaient jamais approché. Ils avaient amené les chiens du Néant en laisse de fil gris.\n\nDes torches le long de la palissade. Des enfants passés de main en main vers les barques. L’Eel virait encore de bord quand les premiers atteignirent la porte.",
     "context_taxonomy": {
       "ui_theme": "docks",
       "mood": "action",
@@ -6564,7 +6564,7 @@
     ],
     "noDetour": true,
     "prompt": "Do you take what the Void shows?",
-    "prompt_fr": "Acceptez-vous ce que le Vide montre ?"
+    "prompt_fr": "Acceptez-vous ce que le Néant montre ?"
   },
   "5004b": {
     "id": "5004b",
@@ -17840,7 +17840,7 @@
   "7002_approach": {
     "id": "7002_approach",
     "description": "The Herald fell, and the faces it had worn fell with it and lay on the sand like masks after a feast. The Host stood among them, breathing.\n\nAlong the waterline, where the tear’s light lay on the wet sand, the rest of the reflections still stood in their hundreds, each wearing a face the Void had taken, each turned toward the tear as if waiting to be called in.\n\n**The Host could hold the beach. It could not go into the water**: the tear was no door for an army, and everyone on the sand knew it. Between the water and me there was a last mile of them. None had turned its head my way yet.",
-    "description_fr": "Le Héraut tomba, et les visages qu’il portait tombèrent avec lui et restèrent sur le sable comme des masques après une fête. L’Ost se tenait au milieu, à reprendre son souffle.\n\nLe long de la ligne d’eau, là où la lumière de la déchirure s’étendait sur le sable mouillé, le reste des reflets se tenait encore par centaines, chacun portant un visage que le Vide avait pris, chacun tourné vers la déchirure comme s’il attendait qu’on l’appelle.\n\n**L’Ost pouvait tenir la plage. Il ne pouvait pas entrer dans l’eau** : la déchirure n’était pas une porte pour une armée, et tout le monde sur le sable le savait. Entre l’eau et moi, il en restait une dernière lieue. Aucun n’avait encore tourné la tête vers moi.",
+    "description_fr": "Le Héraut tomba, et les visages qu’il portait tombèrent avec lui et restèrent sur le sable comme des masques après une fête. L’Ost se tenait au milieu, à reprendre son souffle.\n\nLe long de la ligne d’eau, là où la lumière de la déchirure s’étendait sur le sable mouillé, le reste des reflets se tenait encore par centaines, chacun portant un visage que le Néant avait pris, chacun tourné vers la déchirure comme s’il attendait qu’on l’appelle.\n\n**L’Ost pouvait tenir la plage. Il ne pouvait pas entrer dans l’eau** : la déchirure n’était pas une porte pour une armée, et tout le monde sur le sable le savait. Entre l’eau et moi, il en restait une dernière lieue. Aucun n’avait encore tourné la tête vers moi.",
     "context_taxonomy": {
       "ui_theme": "epilogue",
       "mood": "tense",

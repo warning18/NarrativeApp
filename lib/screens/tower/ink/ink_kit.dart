@@ -11,6 +11,9 @@ import 'package:flutter/material.dart';
 import '../../../theme/stitched_ink.dart';
 import 'ink_images.dart';
 import 'ink_palette.dart';
+import 'ink_seed.dart';
+import 'ink_weather.dart';
+import 'ink_worn.dart';
 
 /// How far the brush lettering and the buttons lean.
 const double inkSkew = 0.2;
@@ -70,7 +73,11 @@ class InkPaperPanel extends StatelessWidget {
     required this.child,
     this.title,
     this.padding = const EdgeInsets.fromLTRB(46, 20, 22, 16),
+    this.seedText,
   });
+
+  /// What the panel's look is seeded from when it has no key or title.
+  final String? seedText;
 
   final Widget child;
   final String? title;
@@ -83,6 +90,22 @@ class InkPaperPanel extends StatelessWidget {
       textTheme:
           base.textTheme.apply(bodyColor: inkOnPaper, displayColor: inkOnPaper),
     );
+    final seed = inkSeedOf(key, title ?? seedText ?? '${padding.hashCode}');
+    // The title tab sits outside the piece, so the cap lies behind it.
+    return Stack(clipBehavior: Clip.none, children: [
+      InkWeatherPiece(
+          seed: seed,
+          child: InkWorn(
+              seed: seed, tilt: false, chip: false, child: _body(dark, seed))),
+      if (title != null)
+        Positioned(
+            left: -2,
+            top: -10,
+            child: InkTab(title!, key: const Key('ink_tab'))),
+    ]);
+  }
+
+  Widget _body(ThemeData dark, InkSeed seed) {
     return Stack(clipBehavior: Clip.none, children: [
       Positioned.fill(child: CustomPaint(painter: _WideFramePainter(0.5))),
       Padding(
@@ -93,11 +116,6 @@ class InkPaperPanel extends StatelessWidget {
               style: const TextStyle(color: inkOnPaper), child: child),
         ),
       ),
-      if (title != null)
-        Positioned(
-            left: -2,
-            top: -10,
-            child: InkTab(title!, key: const Key('ink_tab'))),
     ]);
   }
 }
@@ -110,11 +128,17 @@ class InkTab extends StatelessWidget {
   final Color color;
 
   @override
-  Widget build(BuildContext context) => Transform(
+  Widget build(BuildContext context) {
+    final seed = InkSeed.of(text);
+    return InkWeatherPiece(
+        seed: seed, child: InkWorn(seed: seed, tear: true, child: _tab(seed)));
+  }
+
+  Widget _tab(InkSeed seed) => Transform(
         transform: Matrix4.skewX(-inkSkew),
         child: Container(
           padding: const EdgeInsets.fromLTRB(10, 2, 12, 3),
-          color: color,
+          color: color == inkRed ? seed.red : color,
           child: Transform(
             transform: Matrix4.skewX(inkSkew),
             child: Text(text,
@@ -153,8 +177,15 @@ class InkButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final fill = primary ? inkRed : (onPaper ? inkOnPaper : inkBlack);
-    final line = primary ? inkRed : (onPaper ? inkOnPaper : inkPaper);
+    final seed = inkSeedOf(buttonKey ?? key, label);
+    final red = seed.red;
+    final fill = primary ? red : (onPaper ? inkOnPaper : inkBlack);
+    final line = primary ? red : (onPaper ? inkOnPaper : seed.paper);
+    return InkWeatherPiece(
+        seed: seed, child: InkWorn(seed: seed, child: _button(fill, line)));
+  }
+
+  Widget _button(Color fill, Color line) {
     return Transform(
       transform: Matrix4.skewX(-inkSkew),
       child: FilledButton(

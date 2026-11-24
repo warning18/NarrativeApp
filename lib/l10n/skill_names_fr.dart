@@ -140,7 +140,7 @@ const Map<String, String> skillNamesFr = {
   'venomous_ambush': 'Embuscade venimeuse',
   'void_blast': 'Déflagration du Néant',
   'void_drain': 'Ponction du Néant',
-  'void_gathering': 'Vide amassé',
+  'void_gathering': 'Néant amassé',
   'voidkin_entropy_touch': 'Toucher entropique',
   'voidkin_starless_gaze': 'Regard sans étoiles',
   'voidkin_umbral_veil': 'Voile ombral',
