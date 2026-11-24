@@ -8,6 +8,10 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.1007.0+1043]
+
+- **A specialisation or a clan's oath comes alone.** When an offer would hold a Sworn boon (else a specialisation), that gift comes on its own, with "Accept" or "Not now" ("Plus tard"). Not now deals the usual three cards instead, without that gift, which may come again in a later offer; nothing else moves. Before, it sat beside two cards it almost always beat (taken 82 to 100% of the time). A gift alone is never risky and brings no fourth card. On short phones the clan's banner shows at half size so the card fits 320 x 568. Core (rule, sheet from UX's mock).
+
 ## [1.1005.0+1041]
 
 - The Tower is moving to ink; the rest follows (part 2 of 4: the climb). The floor screen, its ladder, the foe's and the hero's pictures, the oaths row, the events (setback, rival, shortcut, parley, stall, bargain) and the dice panel are drawn in ink: black panels with a thin grey line and a bar on the left, paper white text, red only for what matters (danger, a loss, the die in play, the one button that goes on). The foe and the hero stand in slanted frames, their chibi recoloured to ink. The dice are real 3D solids in ink with the list of their faces under the open one. The climb's buttons are square, flat red or black. The fights, the spoils, the level up and the calling pick are still in the night look until the next parts. UX (view only).

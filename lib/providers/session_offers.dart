@@ -505,6 +505,28 @@ mixin _OfferActions on _SessionNotifierBase {
     return next;
   }
 
+  /// "Not now" on a gift offered alone (Wave 1, [ClanOffer.solo]): the
+  /// same offer dealt again as the usual cards, without that gift (see
+  /// declinedOffer); the gift may come in a later offer. Nothing else
+  /// moves: no standing, no charge, no ban kept. The offer unchanged when
+  /// it is not alone or nobody else can come.
+  Future<ClanOffer?> declineSoloOffer(OfferTables tables,
+      {Random? random, String placeHolder = ''}) async {
+    final s = state;
+    final offer = s.clanOffer;
+    if (offer == null || !offer.solo) return offer;
+    final next = declinedOffer(offer,
+        offerContextFor(tables, placeHolder: placeHolder), random ?? Random());
+    if (next == null) return offer;
+    state = s.copyWith(
+      clanOffer: next,
+      patronsMet:
+          {...s.patronsMet, for (final x in next.suitors) x.factionId}.toList(),
+    );
+    await _persist();
+    return next;
+  }
+
   /// Banish (the Warding Cairn): [factionId]'s gift on the offer warded off
   /// for [draws] fresh offers (5, 10 or 15, costing 1, 2 or 3 charges), its
   /// card replaced at once: the same clan with something else, else
