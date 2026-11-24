@@ -1043,25 +1043,28 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.en: 'Win in {n} rounds, before the flood',
     AppLanguage.fr: 'Gagner en {n} tours, avant la crue',
   },
+  // v2.6.1: {n} weakness hits in one fight (the plain line; Narrative's).
   'chapter_goal_weakness_ch4': {
-    AppLanguage.en: 'Turn a robed foe’s weakness against it',
-    AppLanguage.fr: 'Viser le point faible d’un ennemi en robe',
+    AppLanguage.en: 'Strike a weakness {n} times in one fight',
+    AppLanguage.fr: 'Frapper {n} fois un point faible en un seul combat',
   },
   'chapter_goal_rounds_ch5': {
     AppLanguage.en: 'Win in {n} rounds, before the frost sets',
     AppLanguage.fr: 'Gagner en {n} tours, avant que le givre ne prenne',
   },
+  // v2.6.1: {n} weakness hits in one fight (the plain line; Narrative's).
   'chapter_goal_weakness_ch5': {
-    AppLanguage.en: 'Crack a Reliquary guard on its weakness',
-    AppLanguage.fr: 'Briser un garde du Reliquaire sur son point faible',
+    AppLanguage.en: 'Strike a weakness {n} times in one fight',
+    AppLanguage.fr: 'Frapper {n} fois un point faible en un seul combat',
   },
   'chapter_goal_rounds_ch6': {
     AppLanguage.en: 'Win in {n} rounds, before the glass wakes',
     AppLanguage.fr: 'Gagner en {n} tours, avant l’éveil du verre',
   },
+  // v2.6.1: {n} weakness hits in one fight (the plain line; Narrative's).
   'chapter_goal_weakness_ch6': {
-    AppLanguage.en: 'Use a reflection’s weakness against it',
-    AppLanguage.fr: 'Retourner contre lui le point faible d’un reflet',
+    AppLanguage.en: 'Strike a weakness {n} times in one fight',
+    AppLanguage.fr: 'Frapper {n} fois un point faible en un seul combat',
   },
   'chapter_goal_rounds_ch7': {
     AppLanguage.en: 'Win in {n} rounds, before the Hall burns',
