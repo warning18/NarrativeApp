@@ -684,11 +684,23 @@ class _JourneyViewState extends ConsumerState<_JourneyView>
         tooltip: tr(ref, 'city_plan_tooltip'),
         visualDensity: VisualDensity.compact,
         onPressed: () async {
-          final picked = await Navigator.of(context).push<StoryChoice>(
-            MaterialPageRoute(builder: (_) => const CityChartScreen()),
+          // The page hands back a way picked on the plan, or a rung of
+          // its level strip.
+          final picked = await Navigator.of(context).push<Object>(
+            MaterialPageRoute(
+              builder: (_) => CityChartScreen(rungs: {
+                LadderRung.world,
+                LadderRung.district,
+                if (_sceneInside) LadderRung.room,
+              }),
+            ),
           );
           if (picked == null || !mounted) return;
-          setState(() => _cityPick = picked);
+          if (picked is LadderRung) {
+            _goLevel(picked);
+          } else if (picked is StoryChoice) {
+            setState(() => _cityPick = picked);
+          }
         },
       ));
     }

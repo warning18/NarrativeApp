@@ -25,7 +25,9 @@ import '../providers/day_phase_provider.dart';
 import '../providers/town_rulers_provider.dart';
 import '../widgets/city_chart/city_chart.dart';
 import '../widgets/city_chart/city_chart_view.dart';
+import '../data/map_charts.dart';
 import '../widgets/ink_loading.dart';
+import '../widgets/level_ladder.dart';
 
 CityWayKind _wayKindOf(JourneyStepKind kind) => switch (kind) {
       JourneyStepKind.fight => CityWayKind.fight,
@@ -37,9 +39,15 @@ CityWayKind _wayKindOf(JourneyStepKind kind) => switch (kind) {
 
 class CityChartScreen extends ConsumerStatefulWidget {
   /// [preview]: Saltmouth's stub plan, with no story behind it.
-  const CityChartScreen({super.key, this.preview = false});
+  const CityChartScreen({super.key, this.preview = false, this.rungs});
 
   final bool preview;
+
+  /// Opened from the Journey's Town rung: the other rungs that can be
+  /// taken from here. The level strip is then shown under the plan with
+  /// Town lit, and a tap on another rung closes the page with that rung
+  /// (a way picked closes it with its choice, as before).
+  final Set<LadderRung>? rungs;
 
   @override
   ConsumerState<CityChartScreen> createState() => _CityChartScreenState();
@@ -163,24 +171,41 @@ class _CityChartScreenState extends ConsumerState<CityChartScreen> {
             )
           : live == null
               ? const InkLoading(wordKey: 'loading_map')
-              : CityChartView(
-                  chart: live.chart,
-                  look: look,
-                  text: _text(),
-                  hereDistrict: ref.watch(partyDistrictProvider),
-                  explored: ref.watch(foundDistrictsProvider),
-                  rulers: cityChartRulersOf(
-                      live.chart, ref.watch(townRulersProvider)),
-                  locked: ref.watch(lockedDistrictsProvider),
-                  phase: ref.watch(dayPhaseProvider),
-                  onWay: (way) {
-                    final i = int.tryParse(way.id);
-                    if (i != null && i < live.choices.length) {
-                      Navigator.of(context).pop(live.choices[i]);
-                    }
-                  },
-                  onWalk: (d) => walkToDistrict(ref, d.id),
-                ),
+              : Column(children: [
+                  Expanded(
+                      child: CityChartView(
+                    controlsAtFoot: true,
+                    chart: live.chart,
+                    look: look,
+                    text: _text(),
+                    hereDistrict: ref.watch(partyDistrictProvider),
+                    explored: ref.watch(foundDistrictsProvider),
+                    rulers: cityChartRulersOf(
+                        live.chart, ref.watch(townRulersProvider)),
+                    locked: ref.watch(lockedDistrictsProvider),
+                    phase: ref.watch(dayPhaseProvider),
+                    onWay: (way) {
+                      final i = int.tryParse(way.id);
+                      if (i != null && i < live.choices.length) {
+                        Navigator.of(context).pop(live.choices[i]);
+                      }
+                    },
+                    onWalk: (d) => walkToDistrict(ref, d.id),
+                  )),
+                  if (widget.rungs case final rungs?)
+                    Padding(
+                      padding: const EdgeInsets.fromLTRB(10, 6, 10, 10),
+                      child: Align(
+                        alignment: AlignmentDirectional.centerStart,
+                        child: LevelLadder(
+                          lit: LadderRung.town,
+                          open: {LadderRung.town, ...rungs},
+                          palette: ChartPalette.of(look),
+                          onPick: (rung) => Navigator.of(context).pop(rung),
+                        ),
+                      ),
+                    ),
+                ]),
     );
   }
 }

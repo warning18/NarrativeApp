@@ -84,6 +84,7 @@ class CityChartView extends StatefulWidget {
     this.locked = const {},
     this.holds = const {},
     this.controls = true,
+    this.controlsAtFoot = false,
     this.cards = true,
     this.numbers = const {},
     this.banners = const {},
@@ -141,6 +142,10 @@ class CityChartView extends StatefulWidget {
   /// The "Whole city" chip and the zoom buttons, and the card at the foot:
   /// off when a host has its own.
   final bool controls;
+
+  /// The zoom buttons at the foot on the right, where the Journey's map
+  /// has them, in place of the top (the city plan page).
+  final bool controlsAtFoot;
   final bool cards;
 
   final CityChart chart;
@@ -741,7 +746,8 @@ class _CityChartViewState extends State<CityChartView>
         if (widget.controls)
           Positioned(
             right: 12,
-            top: 12,
+            top: widget.controlsAtFoot ? null : 12,
+            bottom: widget.controlsAtFoot ? 12 : null,
             child: Column(children: [
               _round(
                 key: const Key('city_chart_zoom_in'),
@@ -764,7 +770,8 @@ class _CityChartViewState extends State<CityChartView>
             (_pickedWay != null || _pickedFog != null || focus != null))
           Positioned(
             left: 12,
-            right: 12,
+            // Clear of the buttons when they sit at the foot.
+            right: widget.controls && widget.controlsAtFoot ? 68 : 12,
             bottom: 12,
             child: _card(palette, text, focus),
           ),
@@ -854,7 +861,8 @@ class _CityChartViewState extends State<CityChartView>
           customBorder: const PixelChipBorder(),
           onTap: onTap,
           child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+            // 44 px high: a thumb's size.
+            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 13),
             child: Row(mainAxisSize: MainAxisSize.min, children: [
               Icon(icon, size: IconSize.s16, color: palette.place),
               const SizedBox(width: 6),
