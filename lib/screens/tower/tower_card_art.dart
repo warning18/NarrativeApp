@@ -1,0 +1,91 @@
+// The picture on a Tower card (v2.3, UX-2): one lookup, so Art's own
+// vignettes replace the stand-ins without touching a card. The key is
+// "kind:variant" first, then "kind"; a card that finds neither keeps its
+// kind's stand-in, a plate of the Tower's own ink. Art's keys:
+//   skill:<element>  Fire, Earth, Wind, Water, Ice, Light, Electricity, Void, None
+//   die              one for every die
+//   spell:<family>   Damage, Ward, Heal, Hex (a spell's `effect`)
+//   oath             the clan banner on a plate (composed in code)
+//
+// To add Art's pictures: put the files in assets/visuals/tower_cards/, declare
+// the folder in pubspec.yaml, and add an entry to [towerCardArt].
+import '../../utils/pixel_icons/skill_icons.dart';
+
+/// Art's vignettes: "kind:variant" or "kind" to an asset path (Art's set,
+/// v2.3). The oath's is composed in code from the clan's banner.
+const Map<String, String> towerCardArt = {
+  'skill:Fire': '$_dir/skill_fire.png',
+  'skill:Earth': '$_dir/skill_earth.png',
+  'skill:Wind': '$_dir/skill_wind.png',
+  'skill:Water': '$_dir/skill_water.png',
+  'skill:Ice': '$_dir/skill_ice.png',
+  'skill:Light': '$_dir/skill_light.png',
+  'skill:Electricity': '$_dir/skill_electricity.png',
+  'skill:Void': '$_dir/skill_void.png',
+  'skill:None': '$_dir/skill_none.png',
+  'die': '$_dir/die.png',
+  'spell:Damage': '$_dir/spell_damage.png',
+  'spell:Ward': '$_dir/spell_ward.png',
+  'spell:Heal': '$_dir/spell_heal.png',
+  'spell:Hex': '$_dir/spell_hex.png',
+};
+
+/// Art's folder (assets/visuals/tower_cards/).
+const String towerCardsDir = _dir;
+const String _dir = 'assets/visuals/tower_cards';
+
+/// Art's frame (a nine-slice, 112 x 160, an 11 px border), the blank wax seal
+/// the rarity's pips are drawn over, and the "new" stamp (for the synergy slot,
+/// unused until Core defines it).
+const String towerCardFrame = '$_dir/frame_tarot.png';
+const String towerCardSealBlank = '$_dir/seal_blank.png';
+const String towerCardStamp = '$_dir/stamp_new.png';
+
+/// What a card shows until Art's picture is there, by kind.
+const Map<String, String> towerCardStandIn = {
+  'skill': 'assets/visuals/tower/tower_ward5.png',
+  'die': 'assets/visuals/tower/tower_shop.png',
+  'spell': 'assets/visuals/tower/tower_parley.png',
+  'oath': 'assets/visuals/tower/tower_bargain.png',
+};
+
+/// The vignette of a card of [kind] ('skill', 'die', 'spell' or 'oath') and,
+/// when it has one, its [variant]: a skill's element, a spell's family.
+String towerCardVignette(String kind,
+    {String? variant, Map<String, String> art = towerCardArt}) {
+  if (variant != null && variant.isNotEmpty) {
+    final own = art['$kind:$variant'];
+    if (own != null) return own;
+  }
+  return art[kind] ?? towerCardStandIn[kind] ?? towerCardStandIn['skill']!;
+}
+
+/// The small picture of a skill or a spell: its icon when it has one.
+String? towerCardIcon(String kind, String id, {int? faces}) {
+  switch (kind) {
+    case 'die':
+      return faces == null
+          ? null
+          : 'assets/visuals/dice/die_d${faces}_bone_44.png';
+    default:
+      return SkillIcons.allIds.contains(id) ? SkillIcons.pathFor(id) : null;
+  }
+}
+
+/// A skill's rarity as a number: 0 common to 4 legendary; null for anything
+/// that has none (dice and spells).
+int? towerRarityIndex(String? rarity) {
+  const order = ['common', 'uncommon', 'rare', 'epic', 'legendary'];
+  final i = order.indexOf((rarity ?? '').toLowerCase());
+  return i < 0 ? null : i;
+}
+
+/// A spell's family for the vignette: its `effect` in Art's words (Damage,
+/// Ward, Heal, Hex).
+String towerSpellFamily(String? effect) => switch (effect) {
+      'Block' => 'Ward',
+      'Status' => 'Hex',
+      'Cleanse' => 'Heal',
+      final e? when e.isNotEmpty => e,
+      _ => 'Damage',
+    };
