@@ -4,6 +4,8 @@
 // figures it shows, so Core's view fields (towerEventOf) can feed it as they
 // are: the parley's odds are the setback's d20 check, the stock and its
 // prices are the store's.
+import 'dart:ui' as ui;
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -18,6 +20,7 @@ import '../../widgets/ink_chip.dart';
 import '../../widgets/ink_panel.dart';
 import '../../widgets/race_profession_cards.dart' show ClanDisc;
 import 'tower_event_card.dart' show TowerEventOutcome, TowerEventTag;
+import 'ink/ink_sprites.dart';
 import 'tower_look.dart' show TowerFoeFigure;
 
 String _sub(WidgetRef ref, String key, Map<String, Object> values) {
@@ -62,18 +65,25 @@ class TowerNpcFigure extends StatelessWidget {
           alignment: Alignment.topLeft,
           minWidth: 0,
           minHeight: 0,
-          maxWidth: 64.0 * k,
-          maxHeight: 64.0 * k,
+          maxWidth: 66.0 * k,
+          maxHeight: 66.0 * k,
+          // In ink (v1.1010) the sprite is recoloured once and cached (one
+          // pixel of ink round it, so the crop shifts by one pixel); until it
+          // is ready, or if it fails, nothing stands there.
           child: Transform.translate(
-            offset: Offset(-_x0 * k.toDouble(), -_y0 * k.toDouble()),
-            child: Image.asset(
-              'assets/visuals/tower/npc/$name.png',
-              width: 64.0 * k,
-              height: 64.0 * k,
-              fit: BoxFit.fill,
-              filterQuality: FilterQuality.none,
-              isAntiAlias: false,
-              errorBuilder: (_, __, ___) => const SizedBox.shrink(),
+            offset:
+                Offset(-(_x0 - 1) * k.toDouble(), -(_y0 - 1) * k.toDouble()),
+            child: FutureBuilder<ui.Image>(
+              future: InkSprites.of('assets/visuals/tower/npc/$name.png'),
+              builder: (context, snap) => snap.data == null
+                  ? const SizedBox.shrink()
+                  : RawImage(
+                      image: snap.data,
+                      width: 66.0 * k,
+                      height: 66.0 * k,
+                      fit: BoxFit.fill,
+                      filterQuality: FilterQuality.none,
+                      isAntiAlias: false),
             ),
           ),
         ),
