@@ -266,3 +266,26 @@ class _PolyBorder extends CustomPainter {
   @override
   bool shouldRepaint(_PolyBorder old) => old.pts != pts;
 }
+
+/// A small tag in ink: paper text on a red block (a danger: an affix), or on a
+/// black block with a paper line (a plain mark: an Elite).
+class InkTag extends StatelessWidget {
+  const InkTag(this.text, {super.key, this.red = false});
+
+  final String text;
+  final bool red;
+
+  @override
+  Widget build(BuildContext context) => Container(
+        padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 2),
+        decoration: BoxDecoration(
+          color: red ? inkRed : inkBlack,
+          border: Border.all(color: red ? inkRed : inkPaper),
+        ),
+        child: Text(text,
+            style: Theme.of(context)
+                .textTheme
+                .labelSmall
+                ?.copyWith(color: inkPaper, fontWeight: FontWeight.w700)),
+      );
+}

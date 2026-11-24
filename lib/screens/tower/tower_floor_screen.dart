@@ -34,7 +34,6 @@ import 'tower_ladder.dart';
 import 'tower_offer_view.dart';
 import 'tower_providers.dart';
 import 'tower_spoils_view.dart';
-import '../../widgets/ink_chip.dart';
 import '../../theme/frame_style.dart' show EnvParts;
 import '../../widgets/ink_panel.dart';
 import '../../widgets/ink_confirm.dart';
@@ -239,6 +238,9 @@ class _TowerFloorScreenState extends ConsumerState<_TowerFloorBody> {
             // A tap anywhere puts the head on its notch at once.
             onPointerDown: (_) => _ladder.currentState?.skip(),
             child: Row(
+              // Tight height: the floor's scroll view fills it and starts at
+              // the top (a Row would centre a short one).
+              crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
                 Padding(
                   padding: const EdgeInsets.fromLTRB(8, 4, 4, 8),
@@ -442,12 +444,10 @@ class _FloorIntro extends ConsumerWidget {
                   runSpacing: 4,
                   children: [
                     for (final a in floor.affixes)
-                      InkChip(tr(ref, affixLabelKey(a)),
-                          color: inkRed, dense: true),
+                      InkTag(tr(ref, affixLabelKey(a)), red: true),
                     for (var i = 0; i < floor.enemyIds.length; i++)
                       if ((i == 0 && floor.elite) || floor.elitePack)
-                        InkChip(tr(ref, 'tower_floor_elite'),
-                            color: inkPaper, dense: true),
+                        InkTag(tr(ref, 'tower_floor_elite')),
                   ],
                 ),
               ),
