@@ -1,6 +1,6 @@
 # Tower wording (v2.6.0): clan offers and briefs (draft, for Core to paste)
 Draft only; nothing is in `lib/l10n/app_strings.dart`. Keys are proposals, to sit beside the `tower_oath_*` and `tower_merchant_*` blocks; no existing key is renamed. FR passes the lint rules.
-Notes: the game's Tower currency is *Ash Marks* (`tower_marks_name`), so the shop lines say marks, not coins. `tower_unlock_*` exists for three clans (Crows, Vigil, Compact); a fourth clan needs its three lines (toast, banner, oath line) written in the same pattern. In FR a clan is “la Veille”, “le Pacte”, “les Corneilles” (short forms of factions.json names).
+Notes: two currencies. *Ash Marks* (`tower_marks_name`) last between runs and buy unlocks; *Tower coins* are earned inside a run, lost at its end, and buy rerolls, banishes and the merchant's stock (Core spec `tower-briefs-6-7-8-spec.md`, option A). The shop lines below are in coins; `tower_merchant_wallet` keeps its key and changes its text to coins. `tower_unlock_*` exists for three clans (Crows, Vigil, Compact); a fourth clan needs its three lines (toast, banner, oath line) written in the same pattern. In FR a clan is “la Veille”, “le Pacte”, “les Corneilles” (short forms of factions.json names).
 ## 1. Clan offers
 All six clans of Core’s plan (Dominion, Vigil, Compact, Mire, Crows, Penitents). Offer cards read +2 for the clan, +1 allies, −1 rivals: the oath line is the only clan text on the card, the numbers are Core’s. Core keeps a refusal at +1 mark.
 
@@ -33,8 +33,13 @@ All six clans of Core’s plan (Dominion, Vigil, Compact, Mire, Crows, Penitents
 | `tower_heat_1` | Embers | Braises |
 | `tower_heat_2` | Flame | Flamme |
 | `tower_heat_3` | Pyre | Bûcher |
-| `tower_heat_1_line` | Foes fight as they are. | Les adversaires combattent tels qu’ils sont. |
-| `tower_heat_2_line` | Foes hit harder; marks come faster. | Les adversaires frappent plus fort ; les marques tombent plus vite. |
+| `tower_heat_0` | The plain climb | L’ascension simple |
+| `tower_heat_locked` | Win the top at {heat} to open | Gagnez au sommet (niveau {heat}) pour ouvrir |
+| `tower_heat_marks` | Marks +{n}% | Marques +{n} % |
+| `tower_heat_opened` | {heat} is open | Niveau ouvert : {heat} |
+| `tower_heat_chip` | {n} | {n} |
+| `tower_heat_1_line` | Foes hit a little harder; marks come a little faster. | Les adversaires frappent un peu plus fort ; les marques tombent un peu plus vite. |
+| `tower_heat_2_line` | Foes hit harder; marks come faster still. | Les adversaires frappent plus fort ; les marques tombent encore plus vite. |
 | `tower_heat_3_line` | Foes hit hardest; marks pay in full. | Les adversaires frappent au plus fort ; les marques paient plein tarif. |
 
 Draft lines `_line` match the names: the heat only describes what the numbers do (Core sets them); no number is quoted in the text.
@@ -44,19 +49,36 @@ Draft lines `_line` match the names: the heat only describes what the numbers do
 |---|---|---|---|
 | `tower_daily_entry` | Today’s climb: the same stairs for everyone. | L’ascension du jour : les mêmes escaliers pour tout le monde. | daily climb, entry line |
 | `tower_daily_done` | Today’s climb is done. The stairs reset at dawn. | L’ascension du jour est faite. Les escaliers se rebâtissent à l’aube. | after the run |
+| `tower_daily_button` | Daily climb | Ascension du jour | start screen panel action |
+| `tower_daily_one_attempt` | One attempt a day. Leaving counts. | Une tentative par jour. Partir compte. | daily panel |
+| `tower_daily_hero` | Today: {race} {profession} | Aujourd’hui : {race} {profession} | daily panel, the day's hero |
+| `tower_daily_chip` | Daily | Du jour | floor header chip |
+| `tower_record_new` | New record | Nouveau record | end screen |
+| `tower_record_time` | {m} min | {m} min | record time |
+| `tower_record_none` | No climb recorded yet. | Aucune ascension enregistrée. | empty record card |
 | `tower_record_best_floor` | Highest floor | Étage le plus haut | best-run label |
 | `tower_record_fastest` | Fastest climb | Ascension la plus rapide | best-run label |
-| `tower_record_marks` | Most marks in one climb | Plus de marques en une ascension | best-run label |
-| `tower_record_streak` | Longest streak of wins | Plus longue série de victoires | best-run label |
 | `tower_record_daily` | Best daily climb | Meilleure ascension du jour | best-run label |
 
 ## 4. Merchant lines (paid in Ash Marks)
 | key | EN | FR | where |
 |---|---|---|---|
-| `tower_shop_salve_line` | A salve, still warm from the candle. It costs marks; the Tower does not take silver. | Un onguent encore tiède de la chandelle. Il se paie en marques ; la Tour ne prend pas l’argent. | merchant: salve |
+| `tower_coins_name` | Tower coins | Pièces de la Tour | name of the in-run currency; lost when the run ends; not Ash Marks |
+| `tower_merchant_wallet` | Coins to spend: {n} | Pièces à dépenser : {n} | existing key, new text |
+| `tower_coins_chip` | {n} | {n} | run header chip |
+| `tower_coins_gained` | +{n} coins | +{n} pièces | spoils line |
+| `tower_coins_lost` | Coins left: {n} (lost) | Pièces restantes : {n} (perdues) | end screen, small type |
+| `tower_reroll` | Reroll | Retirer | table button |
+| `tower_reroll_price` | Reroll · {n} | Retirer · {n} | button with price |
+| `tower_banish` | Banish | Bannir | card action |
+| `tower_banish_confirm` | Banish this card for good? It will not return this climb. | Bannir cette carte ? Elle ne reviendra pas durant cette ascension. | confirm |
+| `tower_merchant_boon` | A boon | Une faveur | stall third line |
+| `tower_merchant_boon_text` | A skill, a die or a spell, your pick of three. | Une compétence, un dé ou un sort, au choix parmi trois. | stall third line, body |
+| `tower_shop_salve_line` | A salve, still warm from the candle. Coins only; the Tower takes no silver. | Un onguent encore tiède de la chandelle. Des pièces seulement ; la Tour ne prend pas l’argent. | merchant: salve |
 | `tower_shop_potion_line` | Potions, three to a tray. Take two and the third is for the next climber. | Des potions, trois par plateau. Prenez-en deux, la troisième est pour le prochain grimpeur. | merchant: potions |
-| `tower_shop_poor_line` | Not enough marks. Come back with ash on your hands. | Pas assez de marques. Revenez avec de la cendre sur les mains. | merchant: cannot afford |
-| `tower_shop_bought_line` | Marks counted, ash swept. It is yours. | Marques comptées, cendre balayée. C’est à vous. | merchant: after buying |
+| `tower_shop_boon_line` | Something stronger, if the purse allows. Choose with care: he will not take it back. | Quelque chose de plus fort, si la bourse le permet. Choisissez bien : il ne le reprendra pas. | merchant: boon |
+| `tower_shop_poor_line` | Not enough coins. Win another floor and come back. | Pas assez de pièces. Gagnez un étage de plus et revenez. | merchant: cannot afford (replaces the marks version) |
+| `tower_shop_bought_line` | Coins counted, dust swept. It is yours. | Pièces comptées, poussière balayée. C’est à vous. | merchant: after buying (replaces the marks version) |
 | `tower_shop_sworn_line` | You wear their colours; the price is halved, and he does not look up. | Vous portez leurs couleurs : le prix est divisé par deux, et il ne lève pas les yeux. | merchant: sworn half price |
 | `tower_shop_leave_line` | The candle gutters behind you. Climb well. | La chandelle vacille dans votre dos. Montez bien. | merchant: leaving |
 
