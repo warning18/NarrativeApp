@@ -1,0 +1,48 @@
+IDLE alster here busy=true frame median 0.6 ms worst 1.1 ms; painters in 30 frames: 
+IDLE alster district busy=true frame median 3.6 ms worst 8.0 ms; painters in 30 frames: CustomPaint(_ShapeBorderPainter)x90, CustomPaint(CityChartPainter)x30
+IDLE alster town busy=true frame median 2.5 ms worst 5.9 ms; painters in 30 frames: CustomPaint(_ShapeBorderPainter)x90, CustomPaint(CityChartPainter)x30
+IDLE alster plan page busy=true frame median 2.6 ms worst 7.6 ms; painters in 30 frames: CustomPaint(_ShapeBorderPainter)x120, CustomPaint(CityChartPainter)x30
+IDLE alster world open busy=false frame median 0.1 ms worst 0.1 ms; painters in 30 frames: 
+IDLE alster world in1 busy=false frame median 0.1 ms worst 0.1 ms; painters in 30 frames: 
+IDLE alster world whole busy=false frame median 0.1 ms worst 0.1 ms; painters in 30 frames: 
+DRAG alster whole ball: median 15.1 ms worst 31.5 ms
+IDLE alster full map busy=false frame median 0.1 ms worst 0.1 ms; painters in 30 frames: 
+IDLE saltmouth here busy=true frame median 2.6 ms worst 8.0 ms; painters in 30 frames: CustomPaint(_ShapeBorderPainter)x60, CustomPaint(CityChartPainter)x30
+IDLE saltmouth district busy=true frame median 2.5 ms worst 7.2 ms; painters in 30 frames: CustomPaint(_ShapeBorderPainter)x60, CustomPaint(CityChartPainter)x30
+IDLE saltmouth town busy=true frame median 2.6 ms worst 8.0 ms; painters in 30 frames: CustomPaint(_ShapeBorderPainter)x90, CustomPaint(CityChartPainter)x30
+IDLE saltmouth plan page busy=true frame median 2.2 ms worst 6.1 ms; painters in 30 frames: CustomPaint(_ShapeBorderPainter)x120, CustomPaint(CityChartPainter)x30
+IDLE saltmouth world open busy=false frame median 0.1 ms worst 0.3 ms; painters in 30 frames: 
+IDLE saltmouth world in1 busy=false frame median 0.1 ms worst 0.1 ms; painters in 30 frames: 
+IDLE saltmouth world whole busy=false frame median 0.1 ms worst 0.2 ms; painters in 30 frames: 
+DRAG saltmouth whole ball: median 15.8 ms worst 28.1 ms
+IDLE saltmouth full map busy=false frame median 0.1 ms worst 0.3 ms; painters in 30 frames: 
+IDLE ashen here busy=true frame median 0.4 ms worst 0.7 ms; painters in 30 frames: 
+IDLE ashen district busy=true frame median 2.3 ms worst 7.2 ms; painters in 30 frames: CustomPaint(_ShapeBorderPainter)x120, CustomPaint(CityChartPainter)x30
+IDLE ashen town busy=true frame median 3.6 ms worst 16.3 ms; painters in 30 frames: CustomPaint(_ShapeBorderPainter)x120, CustomPaint(CityChartPainter)x30
+IDLE ashen plan page busy=true frame median 2.1 ms worst 5.3 ms; painters in 30 frames: CustomPaint(_ShapeBorderPainter)x120, CustomPaint(CityChartPainter)x30
+IDLE ashen world open busy=false frame median 0.1 ms worst 0.1 ms; painters in 30 frames: 
+IDLE ashen world in1 busy=false frame median 0.1 ms worst 0.6 ms; painters in 30 frames: 
+IDLE ashen world whole busy=false frame median 0.1 ms worst 0.1 ms; painters in 30 frames: 
+DRAG ashen whole ball: median 14.1 ms worst 24.7 ms
+IDLE ashen full map busy=false frame median 0.1 ms worst 0.3 ms; painters in 30 frames: 
+IDLE mid here busy=true frame median 3.3 ms worst 8.0 ms; painters in 30 frames: CustomPaint(_FramePainter)x30, CustomPaint(_MomentPainter)x30, CustomPaint(BannerPainter)x30
+IDLE mid district busy=true frame median 3.5 ms worst 15.2 ms; painters in 30 frames: CustomPaint(_ShapeBorderPainter)x90, CustomPaint(JourneyFxPainter)x30
+IDLE mid town busy=true frame median 0.6 ms worst 0.7 ms; painters in 30 frames: 
+MISSING journey_city_plan ()
+IDLE mid world open busy=false frame median 0.1 ms worst 5.4 ms; painters in 30 frames: 
+IDLE mid world in1 busy=false frame median 0.1 ms worst 0.1 ms; painters in 30 frames: 
+IDLE mid world whole busy=false frame median 0.1 ms worst 0.1 ms; painters in 30 frames: 
+DRAG mid whole ball: median 21.8 ms worst 53.5 ms
+IDLE mid full map busy=false frame median 0.1 ms worst 0.1 ms; painters in 30 frames: 
+MID start: LadderRung.room open={LadderRung.world, LadderRung.district, LadderRung.room}
+MID world: LadderRung.world open={LadderRung.world, LadderRung.district, LadderRung.town, LadderRung.room}
+MID after Town tap: LadderRung.district open={LadderRung.world, LadderRung.district, LadderRung.room}
+BACK room before: LadderRung.room open={LadderRung.world, LadderRung.district, LadderRung.town, LadderRung.room}
+BACK room after: no strip journey=0
+DRAG2 zoomTaps=0 median 18.2 worst 31.4 ms; rebuilt 2664 widgets in 30 frames, top: GestureDetectorx144, RawGestureDetectorx144, Tooltipx120, RawTooltipx120, OverlayPortalx120, Materialx120, _MaterialInteriorx120, _ShapeBorderPaintx120, NotificationListener<LayoutChangedNotification>x120, AnimatedDefaultTextStylex120; painters: CustomPaint(_ShapeBorderPainter)x192, CustomPaint(null)x168, CustomPaint(_ChartWeatherPainter)x24, CustomPaint(ChartMapPainter)x24; all painted 14424
+PAINTONLY zoomTaps=0 median 4.8 worst 9.7 ms
+DRAG2 zoomTaps=1 median 13.8 worst 25.8 ms; rebuilt 2664 widgets in 30 frames, top: GestureDetectorx144, RawGestureDetectorx144, Tooltipx120, RawTooltipx120, OverlayPortalx120, Materialx120, _MaterialInteriorx120, _ShapeBorderPaintx120, NotificationListener<LayoutChangedNotification>x120, AnimatedDefaultTextStylex120; painters: CustomPaint(_ShapeBorderPainter)x192, CustomPaint(null)x168, CustomPaint(_ChartWeatherPainter)x24, CustomPaint(ChartMapPainter)x24; all painted 14424
+PAINTONLY zoomTaps=1 median 5.2 worst 14.7 ms
+run 1 exit 0 secs 78
+run 2 exit 0 secs 41
+run 3 exit 0 secs 39
