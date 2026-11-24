@@ -1127,6 +1127,36 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.en: 'Whatever the tear took, it left a share.',
     AppLanguage.fr: 'Ce que la déchirure a pris, elle en a laissé une part.',
   },
+  // The goals' card, its toast, the fight's line and the chest's screen (UX,
+  // v2.5.0; Narrative may reword, never rename).
+  'chapter_goals_title': {
+    AppLanguage.en: 'Chapter {n} · Goals',
+    AppLanguage.fr: 'Chapitre {n} · Objectifs',
+  },
+  'chapter_goals_hint': {
+    AppLanguage.en: 'Each goal met makes the chapter chest better.',
+    AppLanguage.fr: 'Chaque objectif atteint améliore le coffre du chapitre.',
+  },
+  'chapter_goal_toast': {
+    AppLanguage.en: 'Goal met: {goal} · {n}/3',
+    AppLanguage.fr: 'Objectif atteint : {goal} · {n}/3',
+  },
+  'chapter_goal_setup': {
+    AppLanguage.en: 'Goal: {goal}',
+    AppLanguage.fr: 'Objectif : {goal}',
+  },
+  'chapter_chest_title': {
+    AppLanguage.en: 'Chapter {n} · your chest',
+    AppLanguage.fr: 'Chapitre {n} · votre coffre',
+  },
+  'chapter_chest_met': {
+    AppLanguage.en: '{m} of 3 goals met',
+    AppLanguage.fr: '{m} objectif(s) sur 3 atteint(s)',
+  },
+  'chapter_chest_open': {
+    AppLanguage.en: 'Open the chest',
+    AppLanguage.fr: 'Ouvrir le coffre',
+  },
   'main_quest_label': {
     AppLanguage.en: 'Main quest',
     AppLanguage.fr: 'Quête principale',
