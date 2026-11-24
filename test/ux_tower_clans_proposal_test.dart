@@ -180,12 +180,11 @@ Widget _offer(double w, bool fr, {int held = 0, bool rows = false}) {
       ),
     ]),
     const SizedBox(height: 12),
-    Row(mainAxisAlignment: MainAxisAlignment.end, children: [
+    Wrap(alignment: WrapAlignment.end, spacing: 10, runSpacing: 8, children: [
       InkButton(
           label: fr ? 'Refuser (+1 marque)' : 'Refuse (+1 mark)',
           height: 38,
           onPressed: () {}),
-      const SizedBox(width: 10),
       InkButton(
           label: fr ? 'Accepter' : 'Accept',
           primary: true,
