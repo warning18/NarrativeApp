@@ -92,3 +92,33 @@ final clanPowerRankingProvider = Provider<List<ClanPowerRank>>((ref) =>
 final wardTargetsProvider = Provider<List<String>>((ref) => wardTargets(
     ref.watch(playerSessionProvider.select((s) => s.politics)),
     ref.watch(clanDataProvider)));
+
+/// The clan whose standing leads the story's (v2.6.0, the ink accent's
+/// colour, UX's): the highest standing of [factions], if it is Friendly or
+/// above ([leadingClanMinStanding]) and strictly ahead of every other;
+/// a tie at the top, or none high enough, is null, so a point near zero
+/// never recolours the game.
+String? storyLeadingClan(PoliticsState politics, ClanData data) {
+  String? best;
+  var top = double.negativeInfinity;
+  var tied = false;
+  for (final id in data.factions.keys) {
+    final value = politics.standingOf(id, data);
+    if (value > top) {
+      top = value;
+      best = id;
+      tied = false;
+    } else if (value == top) {
+      tied = true;
+    }
+  }
+  return best == null || tied || top < leadingClanMinStanding ? null : best;
+}
+
+/// The least standing a clan needs to lead: Friendly (the first tier its
+/// shops bring prices down).
+const double leadingClanMinStanding = 12;
+
+/// The story's leading clan now ([storyLeadingClan]), or null. Read-only.
+final leadingClanProvider = Provider<String?>((ref) => storyLeadingClan(
+    ref.watch(playerSessionProvider).politics, ref.watch(clanDataProvider)));

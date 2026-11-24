@@ -12,6 +12,15 @@ isn't reconstructable from git history alone.
 
 - **Chapter goals: the weakness goal of chapters 4 to 6 asks for 3 weakness hits in one fight** (the user's pick). It was met by 73 to 86% of the simulator's runs, as most mid-game dice strike a weakness at least once a fight; with 3 hits, 54 to 72%. Chapter 7's weakness goal stays at one hit. Narrative's lines: "Strike a weakness {n} times in one fight" (chapters 4 and 5), "Turn a weakness against them {n} times in one fight" (chapter 6), "Strike a weakness, whoever stands before you" (chapter 7).
 
+## [2.6.0+1063]
+
+- **The Tower: the clans court you** (the user's request: clan gifts as in the story, the oath kept for a clan you stand well with).
+  - On the oath's floors up to three clans each offer a gift, a skill from their own branches (a rank-up when the die has no free face). Taking one raises that clan's standing by 2, its allies' by 1, and lowers its rivals' by 1.
+  - At standing 6 the clan offers its oath, as a card of its own: its die, Friend in fights and its resonance, as before. One oath a climb.
+  - "Not now" still gives a mark. Runs saved mid-climb load and play on.
+  - To keep the climb as hard as before, the Tower's foes are a little stronger (1.17 to 1.23): on 2,000 simulated climbs the top is won by 11.3% of runs with no unlocks and 23.8% with all, as in 2.4.0.
+  - For the ink accent (UX): which clan leads the story or the climb, read-only.
+
 ## [2.5.1+1060]
 
 - **Chapter 7: the night before the Hall and the Stair of Tongues** (Narrative's scenes, the user's yes). Between the rest at Candlehold and the claimant's duel, two scenes: the last night before the Hall (`7516_eve`, at the gates; the rest's healing and supplies now come here, as "Sleep, and climb at dawn") and the climb of the Stair of Tongues (`7517_stair`, where the claimant is chosen). English and French, with their callbacks to earlier choices. No fight added: on 200 simulated runs per player the chapter's fights, levels and the hero's level entering chapter 8 are unchanged. The stair's building at Candlehold is named "The foot of the Stair of Tongues".

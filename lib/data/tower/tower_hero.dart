@@ -11,6 +11,7 @@ import '../../combat/stat_rules.dart' show levelHealthGain, levelStatPicks;
 import '../sim_combat.dart';
 import '../sim_policy.dart' show simSkillAssignments;
 import '../training.dart';
+import 'tower_clans.dart' show TowerClanTables;
 import 'tower_floors.dart' show TowerStream, towerRandom;
 import 'tower_rewards.dart';
 import 'tower_run.dart';
@@ -30,6 +31,7 @@ class TowerData {
     required Map<String, dynamic> enemies,
     required this.spells,
     this.trainingPaths = const {},
+    this.clans = const TowerClanTables(),
   })  : dice = towerDiceTable(dice),
         enemies = towerEnemyTable(enemies),
         spellSpecs = parseSpells(spells);
@@ -47,6 +49,11 @@ class TowerData {
         enemies: tables['enemies'] ?? const {},
         spells: tables['spells'] ?? const {},
         trainingPaths: trainingPathsFrom(tables['training_paths'] ?? const {}),
+        clans: TowerClanTables.fromTables(
+          factions: tables['factions'] ?? const {},
+          relations: tables['relations'] ?? const {},
+          skillTrees: tables['skill_trees'] ?? const {},
+        ),
       );
 
   /// The tables [TowerData.fromTables] reads.
@@ -60,6 +67,9 @@ class TowerData {
     'enemies',
     'spells',
     'training_paths',
+    'factions',
+    'relations',
+    'skill_trees',
   ];
 
   final Map<String, dynamic> races;
@@ -81,6 +91,12 @@ class TowerData {
   /// The level-up's training paths (training_paths.json): the stat picks
   /// the player takes (v1.857, the main game's level-up).
   final Map<String, TrainingPath> trainingPaths;
+
+  /// What the clans' offers read (docs/simulation/tower-clan-offers.md):
+  /// the branches each clan sponsors, the steps between the clans, the
+  /// skill trees. Empty, every clan's gift is a skill of the Tower's pool
+  /// and a gift moves its clan only.
+  final TowerClanTables clans;
 
   List<Map<String, dynamic>> facesOf(String dieId) =>
       ((dice[dieId] as Map?)?['faces'] as List?)

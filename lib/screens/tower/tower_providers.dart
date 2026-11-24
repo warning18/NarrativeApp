@@ -43,6 +43,13 @@ final towerDataProvider = FutureProvider<TowerData>((ref) async {
     'training_paths': jsonDecode(
             await rootBundle.loadString('assets/gamedata/training_paths.json'))
         as Map<String, dynamic>,
+    // The clans' offers (docs/simulation/tower-clan-offers.md): the
+    // branches each clan sponsors, the steps between them, the trees.
+    'factions': await table(factionsSchema),
+    for (final name in const ['relations', 'skill_trees'])
+      name:
+          jsonDecode(await rootBundle.loadString('assets/gamedata/$name.json'))
+              as Map<String, dynamic>,
   });
 });
 
