@@ -21,7 +21,10 @@ import '../../providers/game_db_providers.dart';
 import '../../providers/tower_level_up_session.dart';
 import '../level_up_screen.dart';
 import '../../widgets/race_profession_cards.dart' show ClanDisc;
-import '../../theme/stitched_ink.dart';
+import 'ink/ink_figure.dart';
+import 'ink/ink_kit.dart';
+import 'ink/ink_palette.dart';
+import '../../widgets/fight_sprites.dart';
 import 'tower_end_screen.dart';
 import 'tower_backdrop.dart';
 import 'tower_dice_panel.dart';
@@ -319,7 +322,6 @@ class _FloorIntro extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final theme = Theme.of(context);
-    final ink = InkColors.of(context);
     final floor = towerFloorOf(run, data);
     final hero = towerHeroOf(run, data);
     final enemies =
@@ -338,17 +340,18 @@ class _FloorIntro extends ConsumerWidget {
       padding: const EdgeInsets.fromLTRB(8, 4, 16, 24),
       children: [
         Text(tr(ref, 'tower_band_$band').toUpperCase(),
-            style: theme.textTheme.labelMedium?.copyWith(
-                letterSpacing: 1.2, color: theme.colorScheme.onSurfaceVariant)),
-        // The floor's number, large and gold (v1.900).
+            style: theme.textTheme.labelMedium
+                ?.copyWith(letterSpacing: 1.2, color: inkGrey)),
+        // The floor's number, large and paper white (v1.1005).
         Text(tr(ref, 'tower_floor_of').replaceAll('{n}', '${run.floor}'),
             key: const Key('tower_floor_label'),
             style: theme.textTheme.headlineMedium?.copyWith(
-                color: ink.gold,
-                shadows: const [Shadow(blurRadius: 8, color: Colors.black)])),
+                color: inkPaper,
+                fontWeight: FontWeight.w800,
+                shadows: const [Shadow(blurRadius: 8, color: inkBlack)])),
         Text(tr(ref, 'tower_floor_${run.floor}'),
             style: theme.textTheme.bodyLarge
-                ?.copyWith(fontStyle: FontStyle.italic)),
+                ?.copyWith(fontStyle: FontStyle.italic, color: inkGrey)),
         if (event case final e?) ...[
           const SizedBox(height: 10),
           if (e.result case final r? when r.to == run.floor)
@@ -381,10 +384,13 @@ class _FloorIntro extends ConsumerWidget {
           Container(
             key: const Key('tower_danger_band'),
             padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-            decoration: BoxDecoration(
-              color: ink.blood.withValues(alpha: .12),
-              border: Border.all(color: ink.blood),
-              borderRadius: BorderRadius.circular(8),
+            decoration: const BoxDecoration(
+              color: inkBlack,
+              border: Border(
+                  left: BorderSide(color: inkRed, width: 4),
+                  top: BorderSide(color: inkRed),
+                  right: BorderSide(color: inkRed),
+                  bottom: BorderSide(color: inkRed)),
             ),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -397,7 +403,7 @@ class _FloorIntro extends ConsumerWidget {
                                 : 'tower_floor_warden')
                         .replaceAll('{n}', '${run.floor}'),
                     style: theme.textTheme.labelLarge
-                        ?.copyWith(color: ink.blood, letterSpacing: 1)),
+                        ?.copyWith(color: inkRed, letterSpacing: 1)),
                 if (floor.kind == TowerFloorKind.boss)
                   Text(tr(ref, 'tower_boss_line_${run.floor}'),
                       style: theme.textTheme.bodyMedium),
@@ -427,7 +433,7 @@ class _FloorIntro extends ConsumerWidget {
                             style: theme.textTheme.titleSmall),
                       ),
                       // The foe stands in its panel when it has art (v1.900).
-                      if (id == floor.enemyIds.first) TowerFoeFigure(id),
+                      if (id == floor.enemyIds.first) _FoePicture(id),
                     ],
                   ),
                   // The marks wrap under the name: an Elite with an affix is
@@ -444,11 +450,11 @@ class _FloorIntro extends ConsumerWidget {
                         if (id == floor.enemyIds.first)
                           for (final a in floor.affixes)
                             InkChip(tr(ref, affixLabelKey(a)),
-                                color: ink.blood, dense: true),
+                                color: inkRed, dense: true),
                         if ((id == floor.enemyIds.first && floor.elite) ||
                             floor.elitePack)
                           InkChip(tr(ref, 'tower_floor_elite'),
-                              color: ink.gold, dense: true),
+                              color: inkPaper, dense: true),
                       ],
                     ),
                 ],
@@ -461,11 +467,22 @@ class _FloorIntro extends ConsumerWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              LinearProgressIndicator(value: hp, color: ink.heal, minHeight: 8),
-              const SizedBox(height: 4),
-              Text('${run.health} / ${hero.maxHealth}',
-                  key: const Key('tower_health'),
-                  style: theme.textTheme.bodySmall),
+              Row(children: [
+                _HeroPicture(run),
+                const SizedBox(width: 10),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      InkBar(value: hp, height: 8),
+                      const SizedBox(height: 4),
+                      Text('${run.health} / ${hero.maxHealth}',
+                          key: const Key('tower_health'),
+                          style: theme.textTheme.bodySmall),
+                    ],
+                  ),
+                ),
+              ]),
             ],
           ),
         ),
@@ -481,10 +498,11 @@ class _FloorIntro extends ConsumerWidget {
                 event?.accepted != null) &&
             !((event?.storeOpen ?? false) &&
                 event?.kind == TowerEventKind.merchant))
-          FilledButton(
-            key: const Key('tower_fight'),
+          InkButton(
+            buttonKey: const Key('tower_fight'),
+            label: tr(ref, 'tower_fight'),
             onPressed: busy ? null : onFight,
-            child: Text(tr(ref, 'tower_fight')),
+            primary: true,
           ),
       ],
     );
@@ -547,6 +565,59 @@ class _SwornRow extends ConsumerWidget {
                     ),
               ],
             ),
+    );
+  }
+}
+
+/// The foe in a slanted picture frame, recoloured to ink (v1.1005).
+class _FoePicture extends StatelessWidget {
+  const _FoePicture(this.enemyId);
+
+  final String enemyId;
+
+  @override
+  Widget build(BuildContext context) {
+    final set = enemyFightSprite(enemyId);
+    if (set == null) return const SizedBox.shrink();
+    return InkSlantPanel(
+      key: Key('tower_foe_$enemyId'),
+      size: const Size(72, 60),
+      points: const [
+        Offset(10, 6),
+        Offset(66, 2),
+        Offset(66, 54),
+        Offset(6, 54),
+      ],
+      child: Container(
+          color: inkDeep,
+          alignment: Alignment.bottomCenter,
+          child: InkFigure(set, size: 52)),
+    );
+  }
+}
+
+/// The hero beside its health, in ink: the calling's own figure, facing east.
+class _HeroPicture extends StatelessWidget {
+  const _HeroPicture(this.run);
+
+  final TowerRun run;
+
+  @override
+  Widget build(BuildContext context) {
+    final set = heroSpriteFor(run.raceId, run.professionId);
+    return InkSlantPanel(
+      key: const Key('tower_hero_figure'),
+      size: const Size(60, 52),
+      points: const [
+        Offset(8, 5),
+        Offset(55, 2),
+        Offset(55, 46),
+        Offset(5, 46),
+      ],
+      child: Container(
+          color: inkDeep,
+          alignment: Alignment.bottomCenter,
+          child: InkFigure(set, size: 44)),
     );
   }
 }

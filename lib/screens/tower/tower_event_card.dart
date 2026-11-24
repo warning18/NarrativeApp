@@ -9,7 +9,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../data/tower/tower_events.dart';
 import '../../l10n/app_strings.dart';
 import '../../theme/icon_sizes.dart';
-import '../../theme/stitched_ink.dart';
+import '../../theme/stitched_ink.dart' show InkFonts;
+import 'ink/ink_kit.dart' show InkBar;
+import 'ink/ink_palette.dart';
 import '../../widgets/ink_chip.dart';
 import '../../widgets/ink_panel.dart';
 import '../../data/tower/tower_tables.dart' show towerSalveShare;
@@ -177,7 +179,6 @@ class _TestCard extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final theme = Theme.of(context);
-    final ink = InkColors.of(context);
     final ability = tr(ref, '${view.ability}_label').toLowerCase();
     final chance = view.chance ?? 0;
     final modifier = view.modifier ?? 0;
@@ -194,7 +195,7 @@ class _TestCard extends ConsumerWidget {
       lit: true,
       child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
         TowerEventTag(
-            Icons.trending_down, tr(ref, 'tower_event_setback'), ink.blood),
+            Icons.trending_down, tr(ref, 'tower_event_setback'), inkRed),
         const SizedBox(height: 6),
         Text(sub('tower_event_test_title', {'ability': ability}),
             style: theme.textTheme.titleMedium
@@ -206,27 +207,23 @@ class _TestCard extends ConsumerWidget {
         Row(children: [
           Text('${(chance * 100).round()}%',
               key: const Key('tower_event_chance'),
-              style: theme.textTheme.headlineSmall?.copyWith(color: ink.gold)),
+              style: theme.textTheme.headlineSmall?.copyWith(color: inkPaper)),
           const SizedBox(width: 10),
           Expanded(
-            child: ClipRRect(
-              borderRadius: BorderRadius.circular(2),
-              child: LinearProgressIndicator(
-                  value: chance, minHeight: 8, color: ink.heal),
-            ),
+            child: InkBar(value: chance, height: 8),
           ),
         ]),
         Text(sub('tower_event_chance', {'mod': signed, 'dc': dc}),
             style: theme.textTheme.bodySmall),
         TowerEventOutcome(
             Icons.check_circle_outline,
-            ink.heal,
+            inkPaper,
             tr(ref, 'tower_event_pass'),
             tr(ref, 'tower_event_pass_text_${view.ability}') +
                 (bagFull ? ' ${tr(ref, 'tower_event_pass_full')}' : '')),
         TowerEventOutcome(
             Icons.south,
-            ink.blood,
+            inkRed,
             tr(ref, 'tower_event_fail'),
             sub('tower_event_fail_text_${view.ability}',
                 {'n': view.fallTo ?? view.floor})),
@@ -256,7 +253,6 @@ class _ShortcutCard extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final theme = Theme.of(context);
-    final ink = InkColors.of(context);
     final skip = view.skip ?? 1;
     final landsOn = view.landsOn ?? view.floor + skip + 1;
     if (view.accepted == false) return const SizedBox.shrink();
@@ -265,7 +261,7 @@ class _ShortcutCard extends ConsumerWidget {
         key: const Key('tower_event_shortcut_taken'),
         lit: true,
         child: Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
-          Icon(Icons.stairs, size: IconSize.s16, color: ink.gold),
+          const Icon(Icons.stairs, size: IconSize.s16, color: inkPaper),
           const SizedBox(width: 10),
           Expanded(
               child: Text(tr(ref, 'tower_event_shortcut_taken'),
@@ -281,7 +277,7 @@ class _ShortcutCard extends ConsumerWidget {
       key: const Key('tower_event_shortcut'),
       lit: true,
       child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-        TowerEventTag(Icons.stairs, tr(ref, 'tower_event_shortcut'), ink.gold),
+        TowerEventTag(Icons.stairs, tr(ref, 'tower_event_shortcut'), inkPaper),
         const SizedBox(height: 6),
         Text(tr(ref, 'tower_event_shortcut_title'),
             style: theme.textTheme.titleMedium
@@ -305,20 +301,20 @@ class _ShortcutCard extends ConsumerWidget {
             alignment: Alignment.centerLeft,
             child: InkChip(tr(ref, 'tower_floor_elite'),
                 key: const Key('tower_event_shortcut_elite_chip'),
-                color: ink.gold,
+                color: inkPaper,
                 dense: true),
           ),
         ],
         TowerEventOutcome(
             Icons.north,
-            ink.gold,
+            inkPaper,
             tr(ref, 'tower_event_shortcut_win'),
             sub(skip == 1
                 ? 'tower_event_shortcut_win_one'
                 : 'tower_event_shortcut_win_many')),
         TowerEventOutcome(
             Icons.south,
-            ink.blood,
+            inkRed,
             tr(ref, 'tower_event_shortcut_lose'),
             tr(ref, 'tower_event_shortcut_lose_text')),
         if (onChoose != null) ...[
@@ -357,11 +353,10 @@ class TowerShortcutWonLine extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final theme = Theme.of(context);
-    final ink = InkColors.of(context);
     return InkPanel(
       key: const Key('tower_event_shortcut_won'),
       child: Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
-        Icon(Icons.north, size: IconSize.s16, color: ink.gold),
+        const Icon(Icons.north, size: IconSize.s16, color: inkPaper),
         const SizedBox(width: 10),
         Expanded(
             child: Text(
@@ -381,7 +376,6 @@ class _RivalCard extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final theme = Theme.of(context);
-    final ink = InkColors.of(context);
     String sub(String key, Map<String, Object> values) {
       var text = tr(ref, key);
       values.forEach((k, v) => text = text.replaceAll('{$k}', '$v'));
@@ -392,7 +386,7 @@ class _RivalCard extends ConsumerWidget {
       key: const Key('tower_event_rival'),
       lit: true,
       child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-        TowerEventTag(Icons.bolt, tr(ref, 'tower_event_rival'), ink.gold),
+        TowerEventTag(Icons.bolt, tr(ref, 'tower_event_rival'), inkPaper),
         const SizedBox(height: 6),
         Text(tr(ref, 'tower_event_rival_title'),
             style: theme.textTheme.titleMedium
@@ -402,7 +396,7 @@ class _RivalCard extends ConsumerWidget {
                 ?.copyWith(color: theme.colorScheme.onSurfaceVariant)),
         TowerEventOutcome(
             Icons.timer_outlined,
-            ink.gold,
+            inkPaper,
             sub('tower_event_rival_win', {'n': view.rounds ?? 3}),
             sub('tower_event_rival_win_text',
                 {'n': view.landsOn ?? view.floor + 2})),
@@ -425,12 +419,11 @@ class TowerEventResultLine extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final theme = Theme.of(context);
-    final ink = InkColors.of(context);
     // A slip on the same floor is a failure too: the mark follows the roll.
     final failed = !result.passed;
     final fell = failed && result.kind == TowerEventKind.test;
     final skipped = result.to > result.from + 1;
-    final color = failed ? ink.blood : ink.gold;
+    final color = failed ? inkRed : inkPaper;
     String sub(String key) => tr(ref, key)
         .replaceAll('{from}', '${result.from}')
         .replaceAll('{to}', '${result.to}')
