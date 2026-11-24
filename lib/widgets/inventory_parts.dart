@@ -94,6 +94,11 @@ List<String> sortInventoryIds(List<String> ids, Map<String, dynamic> items,
   return out;
 }
 
+/// The Void Banner's slot and its one item (v2.5.0): the slot is shown, wide,
+/// once the banner is owned.
+const String bannerSlot = 'Banner';
+const String bannerItemId = 'void_banner';
+
 /// The pixel glyph of an equipment slot (its silhouette when the slot is
 /// empty, and the mark on a row's line); the Material one shows until Art's
 /// file is in the bundle (see pixel_glyph.dart).
@@ -103,6 +108,7 @@ PixelGlyphs inventorySlotGlyph(String slot) => switch (slot) {
       'Weapon' => PixelGlyphs.slotWeapon,
       'Bottom' => PixelGlyphs.slotLegs,
       'Foot' => PixelGlyphs.slotFeet,
+      'Banner' => PixelGlyphs.slotBanner,
       _ => PixelGlyphs.slotBag,
     };
 

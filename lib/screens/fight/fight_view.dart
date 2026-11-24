@@ -73,6 +73,11 @@ extension _FightView on _FightScreenState {
                     condition: condition),
                 holdRounds: _goal.rounds,
               ),
+              // The chapter's goals this fight can still settle (v2.5.0).
+              if (!widget.modifiers.tower && !widget.modifiers.isTest)
+                ChapterGoalSetupLine(
+                    chapter: _chapter,
+                    enemyIds: [for (final e in _enemies) e.enemyId]),
               if (!_goal.isSlay) ...[
                 _buildGoalBanner(),
                 const SizedBox(height: 12),

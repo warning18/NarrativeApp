@@ -20,6 +20,7 @@ enum PixelGlyphs {
   slotWeapon('slot_weapon', Icons.gavel),
   slotLegs('slot_legs', Icons.airline_seat_legroom_normal),
   slotFeet('slot_feet', Icons.hiking),
+  slotBanner('slot_banner', Icons.flag_outlined),
   slotBag('slot_bag', Icons.inventory_2_outlined);
 
   const PixelGlyphs(this.file, this.fallback, {this.tinted = true});

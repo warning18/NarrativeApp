@@ -496,6 +496,35 @@ class _InventoryBodyState extends ConsumerState<_InventoryBody> {
               hasFreeCopy(id);
         }).toList();
 
+    Widget slotTile(String slot) {
+      final equippedId = _equippedInSlot(equippedIds, slot);
+      final equippedItem = equippedId != null
+          ? items[equippedId] as Map<String, dynamic>?
+          : null;
+      final candidates = candidatesFor(slot);
+      return InventorySlotTile(
+        key: Key('slot_$slot'),
+        slotLabel: inventorySlotName(lang, slot),
+        icon: equippedId != null
+            ? ItemPixelIcon(equippedId, equippedItem?['itemType']?.toString(),
+                size: IconSize.s32)
+            : PixelGlyph(inventorySlotGlyph(slot),
+                size: IconSize.s32, color: ink.ash, opacity: 0.7),
+        worn: equippedItem?['itemName']?.toString(),
+        tier: itemTierOf(equippedItem),
+        lit: equippedId == null && candidates.isNotEmpty,
+        tip: tr(ref, 'choose_item'),
+        clearTip: tr(ref, 'unequip'),
+        onTap: candidates.isEmpty
+            ? null
+            : () => _pickForSlot(
+                context, ref, slot, candidates, equippedId, equipFn, canEquip),
+        onClear: equippedId == null ? null : () => unequipFn(equippedId),
+      );
+    }
+
+    final hasBanner = ownedIds.contains(bannerItemId) ||
+        equippedIds.any((id) => id == bannerItemId);
     final slotTiles = <Widget>[
       // An ally's signature die is fixed at recruitment and never
       // player-swappable, so no choosing in that case.
@@ -523,34 +552,10 @@ class _InventoryBodyState extends ConsumerState<_InventoryBody> {
                 ? () => _setTab(InventoryTab.dice)
                 : () => _openDice(context, equippedDiceId),
       ),
+      // The Void Banner's slot is its own wide tile under the grid, once a
+      // banner is owned (v2.5.0).
       for (final slot in equipSlotOptions)
-        () {
-          final equippedId = _equippedInSlot(equippedIds, slot);
-          final equippedItem = equippedId != null
-              ? items[equippedId] as Map<String, dynamic>?
-              : null;
-          final candidates = candidatesFor(slot);
-          return InventorySlotTile(
-            key: Key('slot_$slot'),
-            slotLabel: inventorySlotName(lang, slot),
-            icon: equippedId != null
-                ? ItemPixelIcon(
-                    equippedId, equippedItem?['itemType']?.toString(),
-                    size: IconSize.s32)
-                : PixelGlyph(inventorySlotGlyph(slot),
-                    size: IconSize.s32, color: ink.ash, opacity: 0.7),
-            worn: equippedItem?['itemName']?.toString(),
-            tier: itemTierOf(equippedItem),
-            lit: equippedId == null && candidates.isNotEmpty,
-            tip: tr(ref, 'choose_item'),
-            clearTip: tr(ref, 'unequip'),
-            onTap: candidates.isEmpty
-                ? null
-                : () => _pickForSlot(context, ref, slot, candidates, equippedId,
-                    equipFn, canEquip),
-            onClear: equippedId == null ? null : () => unequipFn(equippedId),
-          );
-        }(),
+        if (slot != bannerSlot) slotTile(slot),
     ];
 
     final shown = tab == InventoryTab.dice
@@ -730,6 +735,12 @@ class _InventoryBodyState extends ConsumerState<_InventoryBody> {
           physics: const NeverScrollableScrollPhysics(),
           children: slotTiles,
         ),
+        // Found, the Banner has its own row, wide (shown only once owned: most
+        // of the game never meets it).
+        if (hasBanner) ...[
+          const SizedBox(height: 8),
+          SizedBox(height: 76, child: slotTile(bannerSlot)),
+        ],
         const SizedBox(height: 16),
         if (ownedIds.isEmpty)
           Padding(
