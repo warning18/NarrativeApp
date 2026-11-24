@@ -440,18 +440,39 @@ extension _FightGround on _FightScreenState {
   }
 
   /// The day's weather over the whole screen, cards and board included: it
-  /// takes no touch and is read through.
+  /// takes no touch and is read through, except over the dice: they are solid
+  /// (v2.2.2), nothing falls across them, in flight or at rest.
   Widget _buildWeatherOverlay() {
     if (_sky.kind == WeatherKind.clear) return const SizedBox.shrink();
     return IgnorePointer(
-      child: FightBackdrop(
-        key: const Key('fight_weather'),
-        stage: _stage,
-        sky: _sky.kind,
-        ground: false,
-        events: false,
+      child: ClipPath(
+        key: _weatherKey,
+        clipper: DiceHoles(_diceHoles, _rollController),
+        child: FightBackdrop(
+          key: const Key('fight_weather'),
+          stage: _stage,
+          sky: _sky.kind,
+          ground: false,
+          events: false,
+        ),
       ),
     );
+  }
+
+  /// Where the dice are now, in the weather layer's own space (empty until
+  /// both are laid out).
+  List<Rect> _diceHoles() {
+    final layer = _weatherKey.currentContext?.findRenderObject();
+    if (layer is! RenderBox || !layer.attached) return const [];
+    final holes = <Rect>[];
+    for (final entry in _cardKeys.entries) {
+      if (!entry.key.startsWith('die:')) continue;
+      final box = entry.value.currentContext?.findRenderObject();
+      if (box is! RenderBox || !box.attached || !box.hasSize) continue;
+      final from = layer.globalToLocal(box.localToGlobal(Offset.zero));
+      holes.add((from & box.size).inflate(14));
+    }
+    return holes;
   }
 
   /// The anomaly (an earth break, a storm, a glare) on the dice board alone.

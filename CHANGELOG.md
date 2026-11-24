@@ -8,6 +8,9 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [2.1.1+1048]
+
+- **Code health: the Journey screen split into smaller files, no behaviour change.** `lib/screens/journey_screen.dart` (6,100 lines) is now the screen and its state, with seven part files beside the three it had in `lib/screens/journey/`: the step and its helpers, moving between views, taking a step, the step's detail, the town view, and the map chart in two files of its own (`journey_maps.dart`, `journey_maps_paint.dart`) for the Maps session. Code moved only: every declaration is the same, 22 methods of the state moved into extensions call `_update` (the folder's existing stand-in for `setState`). Core.
 ## [2.2.0+1053]
 
 - The dice are thrown. In a fight, each die flies in from the bottom edge of the board on an arc, bounces two or three times with damping, slides, and turns over as it slows, a little extra at each bounce; dice that meet push each other aside and never overlap; each ends on its seat on the face the rules picked (the throw is only motion: the faces are decided before it, as before, and no rule changed). It is the same board for the story's fights and the Tower's. With reduced motion, and on a phone that was slow, the dice keep their plain flight. Look only. UX (view only).
