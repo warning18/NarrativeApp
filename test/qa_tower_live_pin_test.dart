@@ -59,8 +59,13 @@ void main() {
   // Held variant (claude/core-tower-boss106): the floor-30 boss ×1.06 (was
   // ×1.0, towerClimbScale): these were 57 / 208 / 9160 and
   // 127 / 309 / 10750.
-  const none = (top: 50, floor20: 208, floorSum: 9160);
-  const all = (top: 122, floor20: 309, floorSum: 10750);
+  // The clans' offers (docs/simulation/tower-clan-offers.md, Core's PR,
+  // the user's calls): up to three clans' skill gifts on the oath's
+  // floors, the oath at standing 6, one a run; no Tower number moved,
+  // the bot takes 3 to 4 more skills a run: these were 50 / 208 / 9160 and
+  // 122 / 309 / 10750.
+  const none = (top: 70, floor20: 235, floorSum: 9545);
+  const all = (top: 161, floor20: 333, floorSum: 11240);
 
   test('the live Tower, no unlocks, is the pinned curve', () {
     final m = _measure(const TowerProgress());
