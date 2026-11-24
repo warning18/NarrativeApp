@@ -21,7 +21,8 @@ enum ChapterGoalKind {
   /// Won in [ChapterGoal.value] rounds or fewer.
   rounds('rounds'),
 
-  /// Won with a die striking a foe's weakness.
+  /// Won with a foe's weakness struck [ChapterGoal.value] times or more
+  /// (once at least).
   weakness('weakness'),
 
   /// One of [ChapterGoal.bossIds] beaten with no try lost to it before.
@@ -46,6 +47,10 @@ class ChapterGoal {
   final int value;
   final Set<String> bossIds;
 
+  /// The weakness hits a [ChapterGoalKind.weakness] goal asks: its value,
+  /// once at least.
+  int get weaknessHitsNeeded => max(1, value);
+
   /// Its id in the save: one goal of each kind a chapter.
   String get id => kind.key;
 
@@ -56,7 +61,7 @@ class ChapterGoal {
       case ChapterGoalKind.rounds:
         return facts.rounds <= value;
       case ChapterGoalKind.weakness:
-        return facts.weaknessStruck;
+        return facts.weaknessHits >= weaknessHitsNeeded;
       case ChapterGoalKind.firstTry:
         return facts.firstTry && facts.enemyIds.any(bossIds.contains);
       case ChapterGoalKind.noPotion:
@@ -76,7 +81,7 @@ class ChapterFightFacts {
     required this.maxHealth,
     this.enemyIds = const [],
     this.firstTry = true,
-    this.weaknessStruck = false,
+    this.weaknessHits = 0,
     this.potionUsed = false,
   });
 
@@ -91,8 +96,11 @@ class ChapterFightFacts {
   final List<String> enemyIds;
   final bool firstTry;
 
-  /// A die struck a foe's weakness in the fight.
-  final bool weaknessStruck;
+  /// The party's blows that struck a foe's weakness in the fight.
+  final int weaknessHits;
+
+  /// A foe's weakness was struck at least once in the fight.
+  bool get weaknessStruck => weaknessHits > 0;
 
   /// A potion was drunk in the fight.
   final bool potionUsed;
@@ -102,20 +110,22 @@ class ChapterFightFacts {
 /// to 70% of the simulator's runs (100 typical + 100 competent, v2.1.5;
 /// docs/simulation/chapter-goals.md). Chapter 7, the short one, keeps its
 /// duel: the rival claimant beaten first time is the likeliest of all.
+/// Chapters 4 to 6 ask the weakness struck 3 times in one fight: once was
+/// met by 73 to 86% of runs (docs/simulation/chapter-goals-weakness.md).
 const Map<int, List<ChapterGoal>> chapterGoalTable = {
   4: [
     ChapterGoal(ChapterGoalKind.rounds, value: 2),
-    ChapterGoal(ChapterGoalKind.weakness),
+    ChapterGoal(ChapterGoalKind.weakness, value: 3),
     ChapterGoal(ChapterGoalKind.noPotion, value: 50),
   ],
   5: [
     ChapterGoal(ChapterGoalKind.rounds, value: 3),
-    ChapterGoal(ChapterGoalKind.weakness),
+    ChapterGoal(ChapterGoalKind.weakness, value: 3),
     ChapterGoal(ChapterGoalKind.noPotion, value: 50),
   ],
   6: [
     ChapterGoal(ChapterGoalKind.rounds, value: 3),
-    ChapterGoal(ChapterGoalKind.weakness),
+    ChapterGoal(ChapterGoalKind.weakness, value: 3),
     ChapterGoal(ChapterGoalKind.noPotion, value: 50),
   ],
   7: [
