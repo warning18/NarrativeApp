@@ -8,6 +8,34 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [2.5.0+1059]
+
+- **The late game: the Void Banner's own slot, and chapter goals with a chest** (Wave 4 briefs 5 and 3, the user's choices). Rules and saves; the screens are UX's next PR.
+  - The Void Banner is worn in a sixth slot, "Banner", so a full gear set can be worn with it; old saves load with the banner in its slot and the body free.
+  - Chapters 4 to 8 each have three optional goals (win in a few rounds, strike a weakness, beat the chapter's boss on the first try, or win a close fight with no potion). Each is met by about a third to two thirds of the simulator's runs; chapter 7's claimant duel is easier (about 9 runs in 10).
+  - Each goal met makes the chapter's chest one tier better, Wooden to Gold; it is owed when the next chapter starts and given once. Missing goals costs nothing.
+
+## [2.4.0+1058]
+
+- **The Tower, harder above floor 10 and with more picks that count**
+  (the user's choices from the Tower roguelike briefs).
+  - Floors 11 to 20 are 8% tougher, floors 21 to 29 and the floor-30
+    boss 6% tougher; the first ten floors are unchanged.
+  - A skill card whose skill would find no free face on your die is now a
+    **Rank up** card: a skill already on the die grows a rank (+25% to its
+    numbers, up to rank 3), and the fight plays it at that rank.
+  - Three more reward floors, 13, 23 and 28 (a skill, a die or a spell).
+  - On 2,000 simulated climbs the top is won by 12.0% of runs with no
+    unlocks (was 14.5%) and 23.7% with all (was 26.8%); the median floor
+    reached falls from 19 to 17.
+
+## [2.3.1+1057]
+
+- Maps: the names of lands not yet reached read on every look. They were drawn at 60 % of a mid grey or brown (contrast 2.1 to 3.5 against the ground behind them); each look now has its own stronger ink for the lands' names, drawn at 85 % until the land is reached and at full strength after (contrast 4.7 or more on the fog, the land and the sea of Night, Parchment and Shroud). The biggest gain is on Parchment. Where the names sit and their size do not change.
+
+## [2.3.0+1056]
+
+- The Tower's cards are tarot cards. The three cards a won floor offers (a skill, a die, a spell, or a clan's oath) are drawn as tall cards: Art's painted vignette (a skill by its element, a spell by its family, one for the dice, the clan's own backdrop for an oath), a paper name band, the words on black, Art's frame over it, and a red wax seal whose pips (one to five) are the skill's rarity (a die and a spell have a plain black seal). The card in hand rises with a red frame and its full name and words show under the row at a readable size; Take and Leave them all work as before. When the offer is too narrow or the text too big (under about 88 px a card, or above 1.15x), the same cards are rows with a paper title band, so nothing is shrunk below a readable size. Once the head has climbed to its notch the ladder rail slides away while the cards show, giving them the room (about 106 px a card at 360). The Tower's title now fits at big text in French. The picture on a card comes from one lookup (`tower_card_art.dart`: kind and element or family, then kind, then a stand-in), and the card has clean slots for a tag (new synergy), a footer (a price) and the controls under the pick (reroll, banish) for when Core defines them. Look only; the pick logic is as it was. UX (view only).
 ## [2.2.2+1055]
 
 - Solid dice, and a label that fits. In a fight the day's weather no longer falls across the dice: it is cut away round each die, in flight and at rest (the dice are opaque; the rain and the snow read through everything else as before), and the glyphs of the solids (d4 to d20) are never faded by the lamp. In the Tower's fight at 320 wide, in French or with big text, the die's tag (name, dN) now stands above the hint under the dice instead of on it, and on a board too short for both the die's own name is left out (the plate above shows it). Also a test fix: the shortcut card's test now sets its preferences mock first (it failed now and then on one shard). Look only. UX (view only).

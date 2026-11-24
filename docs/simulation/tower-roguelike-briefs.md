@@ -13,6 +13,32 @@ a median floor of **13 to 18** (now 19) and floor 20 reached by **20 to 38%**
 choices: about **6 picks a run** with no unlocks, and **28%** of the skills
 taken land on no face of the die.
 
+## Built in v2.4.0 (briefs 1, 2 and 3, the user's choices)
+
+- **1, option B:** floors 11–20 ×1.08, 21–29 ×1.06 (`towerClimbScale`), and
+  the floor-30 boss ×1.06 (the user's pick of the late-floor variants below).
+- **2, option A:** a skill card that would sit on no face is a **Rank up**
+  card for the best skill on the die (`towerRankUpFor`); the tier is
+  `applySkillTier`'s, played by the fight screen and by the bot's fights.
+- **3, option B:** boons also on floors 13, 23 and 28.
+
+Measured together (the live bot, seeds 1–2000):
+
+| | top none | top all | median | floor 20 | mean floor | cards a run none / all | rank-ups a run |
+|---|---|---|---|---|---|---|---|
+| before (v2.1.5) | 14.5% | 26.8% | 19 | 48.2% | 19.3 | 6.0 / 8.7 | — |
+| v2.4.0 without the boss change | 12.9% | 25.4% | 17 | 42.3% | 18.3 | 6.9 / 9.9 | 1.5 / 2.0 |
+| **v2.4.0, boss ×1.06** | **12.0%** | **23.7%** | 17 | 42.3% | 18.35 | — | — |
+
+The rank-ups are worth more than this doc's calculation (+1 to +2 points):
+without the boss change both tops ended about a point above the design's
+bands (5–12% and 15–25%). Of the late-floor variants measured (below), the
+user chose the floor-30 boss ×1.06: both tops in band, nothing below floor
+30 changed, the boss ends 21.4% of the climbs that reach it (was 14.8%).
+
+The card as it reads (`tower-build-2.4.0/`): English at 412 px, French at
+360 px.
+
 ## Summary
 
 | # | Proposal | Effect from the sim | Risk | Size | Recommendation |
