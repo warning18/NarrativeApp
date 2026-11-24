@@ -239,10 +239,10 @@ Core wired 7516_eve and 7517_stair from this draft and found what it left out. T
 
 1. **Prompts** (the question under the scene, `prompt` / `prompt_fr`, as `7515_rest` has):
    - `7516_eve`: — the scene has one choice, so the prompt is a mood line rather than a question. Proposed: EN “The last night before the Hall.” / FR « La dernière nuit avant la Salle. »
-   - `7517_stair`: EN “Up the Stair of Tongues?” / FR « Monter l’escalier des Langues ? »
+   - `7517_stair`: EN “Up the Stair of Tongues?” / FR « Monter l’Escalier des Langues ? »
 2. **Revisit text** (`revisit_description` / `_fr`, shown when the player passes again; one line each):
    - `7516_eve`: EN “The fires on the terraces, one by one gone to embers. It was the same night, and no kinder.” / FR « Les feux des terrasses, un à un tombés en braise. C’était la même nuit, et pas plus douce. »
    - `7517_stair`: EN “The Stair of Tongues again, the flights crowded and the same eight Houses watching.” / FR « L’escalier des Langues de nouveau, les volées pleines et les mêmes huit Maisons qui regardent. »
 3. **`ui_theme`**: Core used `cathedral` for both, same as `7515_rest`. Confirmed: it fits (candlelight, stone, solemn mood).
 4. **“Sit with <name>” hub choices**: they belong to the P3 second beats, not to this scene. In this draft they were mentioned under “With the P3 second beats built”. Core’s wiring correctly leaves them out: `beat2_<c>` scenes do not exist yet, so `7516_eve` has its one choice only. When P3 is built, the hub choices are added then, each with `showIfFlags: [<c>_loyal_done, ally_<c>]` and a `hideIfFlags` on its two outcome flags. No action now.
-5. **City-plan anchors** (Core): `7515_rest` and `7516_eve` on `candlehold_b003`, “La terrasse de tous les feux” / “The terrace of every fire” (the name exists, good: the rest looks over the fires). `7517_stair` on `candlehold_b159` (district `candlehold_lantern_hall`): **it has no name in `names` yet**. Proposed: EN “The foot of the Stair of Tongues” / FR « Au pied de l’escalier des Langues ». Core adds it to `names` (text only).
+5. **City-plan anchors** (Core): `7515_rest` and `7516_eve` on `candlehold_b003`, “La terrasse de tous les feux” / “The terrace of every fire” (the name exists, good: the rest looks over the fires). `7517_stair` on `candlehold_b159` (district `candlehold_lantern_hall`): **it has no name in `names` yet**. Proposed: EN “The foot of the Stair of Tongues” / FR « Au pied de l’Escalier des Langues ». Core adds it to `names` (text only).
