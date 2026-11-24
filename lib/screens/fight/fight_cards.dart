@@ -148,6 +148,9 @@ extension _FightCards on _FightScreenState {
       int pending = 0,
       bool executeLine = false,
       bool foe = false}) {
+    // The Tower's ink: a thin bar with no numbers (they are in the sheet).
+    final thin = TowerPanelStyle.of(context);
+    if (thin) height = 8;
     final rawRatio = maxValue <= 0 ? 0.0 : current / maxValue;
     final ratio = rawRatio.clamp(0.0, 1.0);
     final after = max(0, current - pending);
@@ -156,7 +159,7 @@ extension _FightCards on _FightScreenState {
     final inked = TowerPanelStyle.of(context);
     final barColor = inked
         // The Tower's ink: a foe red, a friend slate grey, red when low.
-        ? (foe || ratio <= 0.25 ? inkRed : inkSlate)
+        ? (foe || ratio <= 0.25 || thin ? inkRed : inkSlate)
         : foe
             ? (ratio > 0.5
                 ? Palette.alert
@@ -223,18 +226,19 @@ extension _FightCards on _FightScreenState {
                 ],
               ),
             ),
-            Text(
-              pending > 0
-                  ? '$current → $after / $maxValue'
-                  : '$current / $maxValue',
-              style: TextStyle(
-                fontWeight: FontWeight.bold,
-                fontSize: height * 0.68,
-                height: 1,
-                shadows: const [Shadow(color: Colors.black54, blurRadius: 2)],
-                color: Colors.white,
+            if (!thin)
+              Text(
+                pending > 0
+                    ? '$current → $after / $maxValue'
+                    : '$current / $maxValue',
+                style: TextStyle(
+                  fontWeight: FontWeight.bold,
+                  fontSize: height * 0.68,
+                  height: 1,
+                  shadows: const [Shadow(color: Colors.black54, blurRadius: 2)],
+                  color: Colors.white,
+                ),
               ),
-            ),
           ],
         ),
       ),

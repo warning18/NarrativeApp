@@ -294,20 +294,35 @@ extension _FightBoardView on _FightScreenState {
     final icons = _partyEffectIcons(member);
     final card = GestureDetector(
       key: Key('party_slot_${member.id}'),
-      onTap: () => _update(() {
-        // With a heal die picked, a tap on a member aims the heal at them.
-        final aimed = _dieLocks.selected;
-        if (aimed != null && _healAimable(aimed)) {
-          _setHealTarget(aimed, member.id);
-          return;
+      onTap: () {
+        // The Tower's lighter nameplates: a tap on the hero opens its sheet
+        // (the numbers, the marks), unless a heal die is waiting to be aimed.
+        final healAim = _dieLocks.selected;
+        final aimingHeal = healAim != null && _healAimable(healAim);
+        if (TowerPanelStyle.of(context) && !aimingHeal) {
+          _showTowerHeroSheet(member, armor, damage, icons);
         }
-        if (_awaitingDecision &&
-            !_rolling &&
-            _currentFaces[member.id] != null) {
-          _dieLocks.selected = member.id;
-        }
-        if (canSelect) _selectedActorId = member.id;
-      }),
+        _update(() {
+          // With a heal die picked, a tap on a member aims the heal at them.
+          final aimed = _dieLocks.selected;
+          if (aimed != null && _healAimable(aimed)) {
+            _setHealTarget(aimed, member.id);
+            return;
+          }
+          if (_awaitingDecision &&
+              !_rolling &&
+              _currentFaces[member.id] != null) {
+            _dieLocks.selected = member.id;
+          }
+          if (canSelect) _selectedActorId = member.id;
+        });
+      },
+      // The Tower's lighter nameplates: the numbers and marks are one tap
+      // away, in the hero's sheet (a long press everywhere, a tap too when
+      // no die is waiting to be aimed).
+      onLongPress: TowerPanelStyle.of(context)
+          ? () => _showTowerHeroSheet(member, armor, damage, icons)
+          : null,
       child: FightBlock(
         name: member.displayName,
         order: _orderOf(member),

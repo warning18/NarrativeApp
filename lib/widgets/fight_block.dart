@@ -350,9 +350,10 @@ class FightBlock extends StatelessWidget {
   }
 
   /// The Tower's version (v1.1008): not a card but a skewed black nameplate
-  /// laid over the figure's picture: the name (its marks beside it), the bar,
-  /// and a row for the gems, the chips and the intent. The head is left out:
-  /// the chibi stands in the panel behind it.
+  /// laid over the figure's picture: the name (its weakness marks and rank
+  /// beside it) and a thin health bar, as in the approved A. The numbers, the
+  /// gems, the status chips and the intent are one tap away, in the fighter's
+  /// sheet. The head is left out: the chibi stands in the panel behind it.
   Widget _inkPlate(BuildContext context, {required Color frame}) {
     final ranked = rank != FightRank.normal;
     final g = group;
@@ -402,38 +403,19 @@ class FightBlock extends StatelessWidget {
                   ),
                   for (final m in marks) _markChip(context, m, inkPaper),
                   if (ranked) _rankMark(inkPaper, iconOnly: true),
-                  if (armor != null)
-                    Padding(
-                        padding: const EdgeInsets.only(left: 4),
-                        child: _gem(context, Icons.shield_outlined, '$armor',
-                            inkPaper)),
-                  if (damage != null)
-                    Padding(
-                        padding: const EdgeInsets.only(left: 4),
-                        child: _gem(context, Icons.bolt, '$damage', inkRed)),
+                  // The numbers, the status marks and the intent are one tap
+                  // away (the fighter's sheet): the plate says so.
+                  if (armor != null ||
+                      damage != null ||
+                      chips.isNotEmpty ||
+                      intent != null)
+                    const Padding(
+                        padding: EdgeInsets.only(left: 4),
+                        child: Icon(Icons.info_outline,
+                            size: IconSize.inline, color: inkGrey)),
                 ]),
-                const SizedBox(height: 3),
-                Row(children: [
-                  Expanded(child: bar),
-                  if (intent != null)
-                    ConstrainedBox(
-                      constraints: const BoxConstraints(maxWidth: 92),
-                      child: Padding(
-                          padding: const EdgeInsets.only(left: 4),
-                          child: intent),
-                    ),
-                ]),
-                if (chips.isNotEmpty)
-                  Padding(
-                    padding: const EdgeInsets.only(top: 3),
-                    child: SizedBox(
-                      height: 22,
-                      child: SingleChildScrollView(
-                        scrollDirection: Axis.horizontal,
-                        child: Row(children: chips),
-                      ),
-                    ),
-                  ),
+                const SizedBox(height: 4),
+                bar,
               ],
             ),
           ),

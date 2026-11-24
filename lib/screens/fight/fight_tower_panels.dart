@@ -260,4 +260,58 @@ extension _TowerPanels on _FightScreenState {
               color: inkPaper)),
     );
   }
+
+  /// The hero's sheet, one tap on its plate (the Tower's lighter nameplates
+  /// keep only the name and a thin bar): the health in numbers, the armour
+  /// and the damage, and the status marks with their own popins.
+  Future<void> _showTowerHeroSheet(
+      _PartyMember member, int armor, int damage, List<Widget> icons) {
+    final theme = Theme.of(context);
+    return showModalBottomSheet<void>(
+      context: context,
+      backgroundColor: inkBlack,
+      shape: const RoundedRectangleBorder(),
+      builder: (sheet) => Theme(
+        data: theme,
+        child: TowerPanelStyle(
+          child: SafeArea(
+            child: Padding(
+              key: Key('tower_hero_sheet_${member.id}'),
+              padding: const EdgeInsets.fromLTRB(20, 16, 20, 20),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(member.displayName,
+                      style: theme.textTheme.titleLarge
+                          ?.copyWith(color: inkPaper)),
+                  const SizedBox(height: 10),
+                  Text('${member.currentHealth} / ${member.maxHealth}',
+                      key: const Key('tower_hero_sheet_hp'),
+                      style: theme.textTheme.headlineSmall
+                          ?.copyWith(color: inkPaper)),
+                  const SizedBox(height: 8),
+                  Row(children: [
+                    const Icon(Icons.shield_outlined,
+                        size: IconSize.s16, color: inkPaper),
+                    Text(' $armor   ',
+                        style: theme.textTheme.titleMedium
+                            ?.copyWith(color: inkPaper)),
+                    const Icon(Icons.bolt, size: IconSize.s16, color: inkRed),
+                    Text(' $damage',
+                        style: theme.textTheme.titleMedium
+                            ?.copyWith(color: inkPaper)),
+                  ]),
+                  if (icons.isNotEmpty) ...[
+                    const SizedBox(height: 12),
+                    Wrap(spacing: 4, runSpacing: 4, children: icons),
+                  ],
+                ],
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
 }

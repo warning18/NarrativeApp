@@ -100,6 +100,15 @@ void main() {
         await settle(25);
       }
       await shoot('fight-2-rolled-${width.toInt()}');
+      // One tap on the hero's plate: its sheet.
+      final plate = find.byWidgetPredicate((w) =>
+          w.key is ValueKey<String> &&
+          (w.key! as ValueKey<String>).value.startsWith('party_slot_'));
+      if (plate.evaluate().isNotEmpty) {
+        await tester.tap(plate.first);
+        await settle(8);
+        await shoot('fight-3-hero-sheet-${width.toInt()}');
+      }
     });
   }
 }
