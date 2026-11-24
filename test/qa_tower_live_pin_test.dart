@@ -59,8 +59,11 @@ void main() {
   // Held variant (claude/core-tower-x110): floors 11 to 20 ×1.10 (was
   // ×1.08, towerClimbScale): these were 57 / 208 / 9160 and
   // 127 / 309 / 10750.
-  const none = (top: 56, floor20: 197, floorSum: 8969);
-  const all = (top: 123, floor20: 290, floorSum: 10511);
+  // Held variant (claude/core-tower-x110-late108): plus floors 21 to 29
+  // ×1.08 (was ×1.06, towerClimbScale): these were 56 / 197 / 8969 and
+  // 123 / 290 / 10511.
+  const none = (top: 50, floor20: 197, floorSum: 8943);
+  const all = (top: 118, floor20: 290, floorSum: 10469);
 
   test('the live Tower, no unlocks, is the pinned curve', () {
     final m = _measure(const TowerProgress());
