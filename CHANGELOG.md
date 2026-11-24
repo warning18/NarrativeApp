@@ -8,6 +8,10 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.1008.0+1044]
+
+- The home menu is in ink. The ground is near-black, the title in paper, the tagline in grey; the item that goes on (Continue, or New Game when there is nothing to continue) is a red block leaning like the brush lettering, the others (New Game after Continue, New Game+, Load, Settings, Edit Mode, The Tower) are paper panels in Art's wide frame with dark lettering; a dimmed one (Load with no save) stays dimmed. The waving banner is as it was, with a still pale glow behind it so its dark cloth reads on the ink ground; the drifting Shroud dots behind the title are gone. Same keys, same taps, same order. Look only. UX (view only).
+
 ## [1.1007.0+1043]
 
 - **A specialisation or a clan's oath comes alone.** When an offer would hold a Sworn boon (else a specialisation), that gift comes on its own, with "Accept" or "Not now" ("Plus tard"). Not now deals the usual three cards instead, without that gift, which may come again in a later offer; nothing else moves. Before, it sat beside two cards it almost always beat (taken 82 to 100% of the time). A gift alone is never risky and brings no fourth card. On short phones the clan's banner shows at half size so the card fits 320 x 568. Core (rule, sheet from UX's mock).
