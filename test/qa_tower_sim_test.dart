@@ -66,7 +66,15 @@ import 'package:narrative_data_app/data/tower/tower_tables.dart';
 const _medianFloor = (min: 14, max: 20);
 const _floor20 = (min: 0.33, max: 0.53);
 const _topNone = (min: 0.07, max: 0.20);
-const _topAll = (min: 0.23, max: 0.37);
+// Re-banded for the Tower briefs 1 to 3 (v2.4.0, docs/simulation/
+// tower-roguelike-briefs.md: floors 11 to 29 harder, a dead skill card a
+// rank-up, boons on floors 13, 23 and 28; Core's PR, the user's call).
+// On 2,000 seeds: no unlocks, the top 14.5% to 12.9%, median 19 to 17,
+// floor 20 48.2% to 42.3%; every unlock: the top 26.8% to 25.4%. On the
+// 500 guard seeds: median 17, floor 20 41.6%, the top 11.4%, and 25.4% with
+// every unlock. Every unlock's band re-centred, as wide as before (it was
+// 0.23 to 0.37); the others still hold the new numbers.
+const _topAll = (min: 0.18, max: 0.32);
 
 /// The floor events' version the batch and the guards play (TOWER_EVENTS):
 /// the foes' scale and the floors' extras of floor events PR 2 are set for

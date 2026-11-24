@@ -372,7 +372,7 @@ TowerRun towerBotRollBest(TowerRun run, TowerData data, List<TowerFloor> floors,
 }
 
 /// The card the bot takes from [run]'s offer: the first of a clan's oath
-/// (a player's habit), a skill (a boon's first: the measure of v1.860, a
+/// (a player's habit), a skill or a rank-up (a boon's first: the measure of v1.860, a
 /// die first left the ranger at 1 top in 70), a die, a spell.
 int? towerBotChoice(TowerRun run) {
   if (run.offer.isEmpty) return null;
@@ -384,7 +384,9 @@ int? towerBotChoice(TowerRun run) {
   }
 
   return find((r) => r.kind == TowerRewardKind.clanOath) ??
-      find((r) => r.kind == TowerRewardKind.skill) ??
+      find((r) =>
+          r.kind == TowerRewardKind.skill ||
+          r.kind == TowerRewardKind.rankUp) ??
       find((r) => r.kind == TowerRewardKind.die) ??
       find((r) => r.kind == TowerRewardKind.spell) ??
       0;

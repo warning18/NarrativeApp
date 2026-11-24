@@ -59,6 +59,8 @@ PlayerSession towerSessionOf(TowerRun run, TowerData data) {
     antidoteCount: run.antidotes,
     knownSpellIds: [for (final s in hero.knownSpells) s.id],
     trainingTaken: {...hero.trainingTaken},
+    // The skills ranked up (v2.4.0): the fight plays them at their tier.
+    skillTiers: {...hero.skillTiers},
     statPickOffer: towerStatPickOffer(run, data),
     politics: towerPoliticsOf(run),
   );

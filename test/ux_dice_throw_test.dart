@@ -86,6 +86,20 @@ void main() {
     }
   });
 
+  test('the weather is cut away round each die, and only there', () {
+    final clip = DiceHoles(
+        () => const [Rect.fromLTWH(40, 40, 60, 60)], ValueNotifier<int>(0));
+    final path = clip.getClip(const Size(200, 200));
+    expect(path.contains(const Offset(70, 70)), isFalse,
+        reason: 'over a die nothing falls');
+    expect(path.contains(const Offset(150, 150)), isTrue);
+    expect(path.contains(const Offset(10, 70)), isTrue);
+    // No dice yet: the whole layer.
+    final bare = DiceHoles(() => const [], ValueNotifier<int>(0))
+        .getClip(const Size(200, 200));
+    expect(bare.contains(const Offset(70, 70)), isTrue);
+  });
+
   test('the same seed throws the same, a kept die does not move', () {
     final a = DiceThrowPlan.build(seats: _seats, board: _board, seed: 7);
     final b = DiceThrowPlan.build(seats: _seats, board: _board, seed: 7);
