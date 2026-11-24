@@ -1,13 +1,17 @@
 // The picture on a Tower card (v2.3, UX-2): one lookup, so Art's own
 // vignettes replace the stand-ins without touching a card. The key is
-// "kind:school" first ("skill:warrior"), then "kind" ("skill"); a card that
-// finds neither keeps its kind's stand-in, a plate of the Tower's own ink.
+// "kind:variant" first, then "kind"; a card that finds neither keeps its
+// kind's stand-in, a plate of the Tower's own ink. Art's keys:
+//   skill:<element>  Fire, Earth, Wind, Water, Ice, Light, Electricity, Void, None
+//   die              one for every die
+//   spell:<family>   Damage, Ward, Heal, Hex (a spell's `effect`)
+//   oath             the clan banner on a plate (composed in code)
 //
 // To add Art's pictures: put the files in assets/visuals/tower_cards/, declare
 // the folder in pubspec.yaml, and add an entry to [towerCardArt].
 import '../../utils/pixel_icons/skill_icons.dart';
 
-/// Art's vignettes: "kind:school" or "kind" to an asset path. Empty until Art
+/// Art's vignettes: "kind:variant" or "kind" to an asset path. Empty until Art
 /// has drawn them.
 const Map<String, String> towerCardArt = {};
 
@@ -20,15 +24,14 @@ const Map<String, String> towerCardStandIn = {
 };
 
 /// The vignette of a card of [kind] ('skill', 'die', 'spell' or 'oath') and,
-/// when it has one, its [school] (the profession a skill belongs to).
-String towerCardVignette(String kind, {String? school}) {
-  if (school != null && school.isNotEmpty) {
-    final own = towerCardArt['$kind:$school'];
+/// when it has one, its [variant]: a skill's element, a spell's family.
+String towerCardVignette(String kind,
+    {String? variant, Map<String, String> art = towerCardArt}) {
+  if (variant != null && variant.isNotEmpty) {
+    final own = art['$kind:$variant'];
     if (own != null) return own;
   }
-  return towerCardArt[kind] ??
-      towerCardStandIn[kind] ??
-      towerCardStandIn['skill']!;
+  return art[kind] ?? towerCardStandIn[kind] ?? towerCardStandIn['skill']!;
 }
 
 /// The small picture of a skill or a spell: its icon when it has one.
@@ -50,3 +53,13 @@ int? towerRarityIndex(String? rarity) {
   final i = order.indexOf((rarity ?? '').toLowerCase());
   return i < 0 ? null : i;
 }
+
+/// A spell's family for the vignette: its `effect` in Art's words (Damage,
+/// Ward, Heal, Hex).
+String towerSpellFamily(String? effect) => switch (effect) {
+      'Block' => 'Ward',
+      'Status' => 'Hex',
+      'Cleanse' => 'Heal',
+      final e? when e.isNotEmpty => e,
+      _ => 'Damage',
+    };

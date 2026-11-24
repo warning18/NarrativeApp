@@ -156,8 +156,13 @@ class _TowerOfferViewState extends ConsumerState<TowerOfferView> {
       rarity = reward.kind == TowerRewardKind.skill
           ? towerRarityIndex('${row['rarity'] ?? ''}')
           : null;
+      // Art's keys: a skill by its element, a spell by its family (effect).
       art = towerCardVignette(k,
-          school: '${row['restrictedProfessionID'] ?? ''}');
+          variant: reward.kind == TowerRewardKind.skill
+              ? '${row['element'] ?? ''}'
+              : reward.kind == TowerRewardKind.spell
+                  ? towerSpellFamily('${row['effect'] ?? ''}')
+                  : null);
       icon = towerCardPicture(
           towerCardIcon(k, reward.id,
               faces: isDie ? int.tryParse(t.text) : null),
