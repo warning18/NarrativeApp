@@ -17,6 +17,7 @@ import '../../providers/clans_provider.dart';
 import '../../widgets/race_profession_cards.dart' show ClanDisc;
 import '../../providers/game_db_providers.dart';
 import '../../theme/stitched_ink.dart';
+import '../../data/tower/tower_clans.dart' show towerClanRipple;
 import '../../data/tower/tower_events.dart';
 import '../../widgets/ink_panel.dart';
 import 'tower_event_card.dart';
@@ -60,7 +61,9 @@ TowerCardText towerCardText(WidgetRef ref, TowerReward reward, {int tier = 0}) {
           '${row(diceSchema, reward.id)['numberOfFaces'] ?? ''}');
     case TowerRewardKind.skill:
       return TowerCardText(
-          tr(ref, 'tower_kind_skill'),
+          reward.clan.isEmpty
+              ? tr(ref, 'tower_kind_skill')
+              : towerGiftKind(ref, reward.clan),
           skillDisplayName(reward.id, language: lang),
           '${row(skillsSchema, reward.id)['description'] ?? ''}');
     case TowerRewardKind.spell:
@@ -69,7 +72,10 @@ TowerCardText towerCardText(WidgetRef ref, TowerReward reward, {int tier = 0}) {
           '${r['spellName'] ?? reward.id}', '${r['description'] ?? ''}');
     case TowerRewardKind.rankUp:
       return TowerCardText(
-          tr(ref, 'tower_kind_rank_up'),
+          reward.clan.isEmpty
+              ? tr(ref, 'tower_kind_rank_up')
+              : '${tr(ref, 'tower_kind_rank_up')} · '
+                  '${towerGiftKind(ref, reward.clan)}',
           tr(ref, 'tower_rank_up_name')
               .replaceAll(
                   '{skill}', skillDisplayName(reward.id, language: lang))
@@ -84,6 +90,36 @@ TowerCardText towerCardText(WidgetRef ref, TowerReward reward, {int tier = 0}) {
           tr(ref, 'tower_oath_text'));
   }
 }
+
+/// A clan's short name in the reader's language (factions.json).
+String towerClanName(WidgetRef ref, String clanId) =>
+    ref
+        .watch(factionsProvider)[clanId]
+        ?.shortFor(ref.watch(appLanguageProvider)) ??
+    clanId;
+
+/// A clan's gift's kind: "Gift · Crows".
+String towerGiftKind(WidgetRef ref, String clanId) =>
+    tr(ref, 'tower_kind_gift').replaceAll('{clan}', towerClanName(ref, clanId));
+
+/// What a gift of [clanId] moves, clan by clan: "Crows +2 · Dominion +1 ·
+/// Vigil -1" (towerClanRipple).
+String towerRippleLine(WidgetRef ref, String clanId, TowerData data) => [
+      for (final MapEntry(:key, :value)
+          in towerClanRipple(clanId, data.clans).entries)
+        '${towerClanName(ref, key)} ${value > 0 ? '+' : ''}$value',
+    ].join(' · ');
+
+/// The toast's lines when a clan's gift is taken: each clan whose standing
+/// moved, the one that rose with its Narrative line, "from to to".
+List<String> towerStandingToast(
+        WidgetRef ref, Map<String, int> before, Map<String, int> after) =>
+    [
+      for (final MapEntry(:key, :value) in after.entries)
+        if (value != (before[key] ?? 0))
+          '${value > (before[key] ?? 0) ? tr(ref, 'tower_standing_toast_$key') : towerClanName(ref, key)} '
+              '${tr(ref, 'tower_standing_step').replaceAll('{from}', '${before[key] ?? 0}').replaceAll('{to}', '$value')}',
+    ];
 
 class TowerOfferView extends ConsumerStatefulWidget {
   const TowerOfferView({
@@ -115,6 +151,24 @@ class _TowerOfferViewState extends ConsumerState<TowerOfferView> {
   void _pick(int? index) {
     if (_done) return;
     setState(() => _done = true);
+    final offer = widget.run.offer;
+    // A clan's gift taken: the standing it moved, as a toast.
+    if (index != null &&
+        index >= 0 &&
+        index < offer.length &&
+        offer[index].clan.isNotEmpty) {
+      final run = widget.run;
+      final before = towerStandingOf(run, widget.data);
+      final after = towerStandingOf(
+          run.copyWith(taken: {...run.taken, run.floor: offer[index]}),
+          widget.data);
+      final lines = towerStandingToast(ref, before, after);
+      if (lines.isNotEmpty) {
+        ScaffoldMessenger.maybeOf(context)?.showSnackBar(SnackBar(
+            key: const Key('tower_standing_toast'),
+            content: Text(lines.join('\n'))));
+      }
+    }
     widget.onPick(index);
   }
 
@@ -126,6 +180,13 @@ class _TowerOfferViewState extends ConsumerState<TowerOfferView> {
     final tiers = offer.any((r) => r.kind == TowerRewardKind.rankUp)
         ? towerHeroOf(widget.run, widget.data).skillTiers
         : const <String, int>{};
+    // The clans' offer (docs/simulation/tower-clan-offers.md): its frame,
+    // each gift's clan and what it moves, Not now for a mark.
+    final clans = offer
+        .any((r) => r.clan.isNotEmpty || r.kind == TowerRewardKind.clanOath);
+    final standing = clans
+        ? towerStandingOf(widget.run, widget.data)
+        : const <String, int>{};
     return ListView(
       padding: const EdgeInsets.fromLTRB(8, 4, 16, 24),
       children: [
@@ -135,6 +196,15 @@ class _TowerOfferViewState extends ConsumerState<TowerOfferView> {
         Text(tr(ref, 'tower_choose_one'),
             style: theme.textTheme.bodyMedium
                 ?.copyWith(color: theme.colorScheme.onSurfaceVariant)),
+        if (clans) ...[
+          const SizedBox(height: 8),
+          Text(tr(ref, 'tower_offer_frame_title'),
+              key: const Key('tower_offer_frame'),
+              style: theme.textTheme.titleSmall),
+          Text(tr(ref, 'tower_offer_frame_body'),
+              style: theme.textTheme.bodySmall
+                  ?.copyWith(color: theme.colorScheme.onSurfaceVariant)),
+        ],
         const SizedBox(height: 12),
         if (widget.event?.kind == TowerEventKind.test) ...[
           TowerEventCard(widget.event!,
@@ -160,6 +230,7 @@ class _TowerOfferViewState extends ConsumerState<TowerOfferView> {
                   held: held,
                   done: _done,
                   data: widget.data,
+                  standing: standing[offer[i].id] ?? 0,
                   onHold: () => setState(() => _held = i),
                   onSwear: () => _pick(i),
                 );
@@ -189,6 +260,16 @@ class _TowerOfferViewState extends ConsumerState<TowerOfferView> {
                         child:
                             Text(text.text, style: theme.textTheme.bodySmall),
                       ),
+                    if (offer[i].clan.isNotEmpty)
+                      Padding(
+                        padding: const EdgeInsets.only(top: 4),
+                        child: Text(
+                            '${towerRippleLine(ref, offer[i].clan, widget.data)}'
+                            '\n${tr(ref, 'tower_standing_line').replaceAll('{n}', '${standing[offer[i].clan] ?? 0}').replaceAll('{max}', '$towerOathStep')}',
+                            key: Key('tower_card_clan_$i'),
+                            style: theme.textTheme.bodySmall
+                                ?.copyWith(fontWeight: FontWeight.w700)),
+                      ),
                     if (held)
                       Align(
                         alignment: Alignment.centerRight,
@@ -211,8 +292,13 @@ class _TowerOfferViewState extends ConsumerState<TowerOfferView> {
           child: TextButton(
             key: const Key('tower_refuse'),
             onPressed: _done ? null : () => _pick(null),
-            child: Text(
-                tr(ref, offer.isEmpty ? 'tower_continue' : 'tower_refuse')),
+            child: Text(tr(
+                ref,
+                offer.isEmpty
+                    ? 'tower_continue'
+                    : clans
+                        ? 'tower_not_now'
+                        : 'tower_refuse')),
           ),
         ),
       ],
@@ -230,10 +316,13 @@ class _OathCard extends ConsumerWidget {
     required this.held,
     required this.done,
     required this.data,
+    this.standing = 0,
     required this.onHold,
     required this.onSwear,
   });
 
+  /// The run's standing with the clan (its oath comes at towerOathStep).
+  final int standing;
   final String clanId;
   final bool held;
   final bool done;
@@ -257,6 +346,16 @@ class _OathCard extends ConsumerWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
+          // The banner of a clan at the oath's step (the clans' offers).
+          if (standing >= towerOathStep)
+            Padding(
+              padding: const EdgeInsets.only(bottom: 6),
+              child: Text(
+                  '${tr(ref, 'tower_unlock_banner_$clanId')} '
+                  '${tr(ref, 'tower_standing_line').replaceAll('{n}', '$standing').replaceAll('{max}', '$towerOathStep')}',
+                  key: Key('tower_oath_banner_$clanId'),
+                  style: theme.textTheme.bodySmall?.copyWith(color: colour)),
+            ),
           Row(
             children: [
               if (faction != null) ...[
@@ -275,7 +374,11 @@ class _OathCard extends ConsumerWidget {
           ),
           Padding(
             padding: const EdgeInsets.only(top: 4),
-            child: Text(tr(ref, 'tower_oath_text'),
+            child: Text(
+                towerClans.contains(clanId)
+                    ? '${tr(ref, 'tower_oath_line_$clanId')} '
+                        '${tr(ref, 'tower_one_oath')}'
+                    : tr(ref, 'tower_oath_text'),
                 style: theme.textTheme.bodySmall),
           ),
           if (die != null)

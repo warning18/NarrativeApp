@@ -9,6 +9,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:narrative_data_app/data/tower/tower_hero.dart';
+import 'package:narrative_data_app/data/tower/tower_rewards.dart';
 import 'package:narrative_data_app/data/tower/tower_run.dart';
 import 'package:narrative_data_app/data/tower/tower_tables.dart';
 import 'package:narrative_data_app/data/tower/tower_save.dart';
@@ -197,7 +198,7 @@ void main() {
   });
 
   testWidgets(
-      'the first win offers a clan\'s oath; swearing shows it on the floor',
+      'the first win offers the clans\' gifts; a gift taken moves standing',
       (tester) async {
     await _open(tester,
         fight: (context, run, data) async =>
@@ -209,19 +210,56 @@ void main() {
     await _settle(tester);
     await _pastLevelUp(tester);
     await _takeSpoils(tester);
-    // Core's rule: the first floor won always offers an oath.
+    // Core's rule (docs/simulation/tower-clan-offers.md): the first floor
+    // won always deals the clans, each a gift; no clan stands at the
+    // oath's step yet, so no oath.
+    final offer = (await TowerSave.open()).loadRun()!.offer;
+    expect(offer, isNotEmpty);
+    expect(offer.every((r) => r.clan.isNotEmpty), isTrue);
+    expect(offer.where((r) => r.kind == TowerRewardKind.clanOath), isEmpty);
+    expect(find.byKey(const Key('tower_offer_frame')), findsOneWidget);
+    expect(find.byKey(const Key('tower_card_clan_0')), findsOneWidget);
+    expect(find.textContaining('Standing 0/$towerOathStep'), findsWidgets);
+    expect(find.text('Not now (+1 mark)'), findsOneWidget);
+    await tester.tap(find.byKey(const Key('tower_take')));
+    await _settle(tester);
+    final run = (await TowerSave.open()).loadRun()!;
+    expect(run.taken[1]?.clan, offer.first.clan);
+    expect(run.floor, 2);
+    expect(towerStandingOf(run, _data!)[offer.first.clan], towerGiftStanding);
+    expect(find.text('Unsworn'), findsOneWidget);
+  });
+
+  testWidgets(
+      'a clan at the oath\'s step deals its oath; sworn, the floor '
+      'shows it', (tester) async {
+    await _open(tester,
+        fight: (context, run, data) async =>
+            TowerFightResult(won: true, healthLeft: run.health),
+        // Three Mire gifts taken: standing 6, the oath due.
+        prefs: saved(_fresh.copyWith(floor: 4, taken: {
+          for (var f = 1; f <= 3; f++)
+            f: const TowerReward(TowerRewardKind.skill,
+                id: 'heavy_attack', clan: 'mire'),
+        })));
+    expect(find.text('Unsworn'), findsOneWidget);
+    await tester.tap(find.byKey(const Key('tower_fight')));
+    await _settle(tester);
+    await _pastLevelUp(tester);
+    await _takeSpoils(tester);
     final offer = (await TowerSave.open()).loadRun()!.offer;
     final at = offer.indexWhere((r) => r.kind == TowerRewardKind.clanOath);
-    expect(at, isNonNegative);
-    expect(offer[at].kind, TowerRewardKind.clanOath);
+    expect(at, 0, reason: 'the oath first');
+    expect(offer[at].id, 'mire');
+    expect(find.byKey(const Key('tower_oath_banner_mire')), findsOneWidget);
     await tester.tap(find.byKey(Key('tower_card_$at')));
     await tester.pump();
     expect(find.text('Swear'), findsOneWidget);
     await tester.tap(find.byKey(const Key('tower_take')));
     await _settle(tester);
     final run = (await TowerSave.open()).loadRun()!;
-    expect(run.clanIds, [offer[at].id]);
-    expect(run.floor, 2);
+    expect(run.clanIds, ['mire']);
+    expect(run.floor, 5);
     expect(find.text('Unsworn'), findsNothing);
   });
 }
