@@ -3,6 +3,7 @@
 // and the way to fight it; once it is won, its cards (take one, or none).
 // A run is moved only through lib/data/tower/ and the controller; the fight
 // itself is played by the launcher (tower_providers.dart).
+import 'dart:async';
 import 'dart:math';
 
 import 'package:flutter/material.dart';
@@ -64,6 +65,36 @@ class _TowerFloorScreenState extends ConsumerState<_TowerFloorBody> {
 
   /// The floor whose spoils sheet was taken: its boon or oath comes next.
   int _spoilsTaken = 0;
+
+  /// While the cards show, the rail gives its room to them once the head has
+  /// walked to its notch (the cards are three tarot cards wide, v2.3).
+  bool _railOut = false;
+  Timer? _railTimer;
+
+  void _railFor(bool cardsUp) {
+    if (cardsUp) {
+      if (_railOut || _railTimer != null) return;
+      _railTimer =
+          Timer(towerStepDuration + const Duration(milliseconds: 150), () {
+        _railTimer = null;
+        if (mounted) setState(() => _railOut = true);
+      });
+    } else {
+      _railTimer?.cancel();
+      _railTimer = null;
+      if (_railOut) {
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+          if (mounted) setState(() => _railOut = false);
+        });
+      }
+    }
+  }
+
+  @override
+  void dispose() {
+    _railTimer?.cancel();
+    super.dispose();
+  }
 
   /// The Level Up screen, the main game's own, under the run's hero: a pick
   /// is owed after a floor that gained a level (the engine holds the points,
@@ -180,6 +211,7 @@ class _TowerFloorScreenState extends ConsumerState<_TowerFloorBody> {
           body: const InkLoading());
     }
     final choosing = run.status == TowerStatus.choosing;
+    _railFor(choosing && _spoilsTaken == run.floor && run.offer.isNotEmpty);
     // The floor's event (off for a run that plays without them).
     final event = towerEventOf(run, data);
     // How the last event moved the run, for the rail: an arrow down a fall,
@@ -216,7 +248,10 @@ class _TowerFloorScreenState extends ConsumerState<_TowerFloorBody> {
     }
     return Scaffold(
       appBar: AppBar(
-        title: Text(tr(ref, 'tower_name')),
+        title: FittedBox(
+            fit: BoxFit.scaleDown,
+            alignment: Alignment.centerLeft,
+            child: Text(tr(ref, 'tower_name'))),
         actions: [
           IconButton(
             key: const Key('tower_leave'),
@@ -242,10 +277,22 @@ class _TowerFloorScreenState extends ConsumerState<_TowerFloorBody> {
               // the top (a Row would centre a short one).
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
-                Padding(
-                  padding: const EdgeInsets.fromLTRB(8, 4, 4, 8),
-                  child:
-                      TowerLadder(key: _ladder, floor: headFloor, jump: jump),
+                AnimatedContainer(
+                  duration: const Duration(milliseconds: 250),
+                  curve: Curves.easeInOut,
+                  width: _railOut ? 0 : towerLadderWidth + 12,
+                  child: ClipRect(
+                    child: OverflowBox(
+                      alignment: Alignment.centerLeft,
+                      minWidth: 0,
+                      maxWidth: towerLadderWidth + 12,
+                      child: Padding(
+                        padding: const EdgeInsets.fromLTRB(8, 4, 4, 8),
+                        child: TowerLadder(
+                            key: _ladder, floor: headFloor, jump: jump),
+                      ),
+                    ),
+                  ),
                 ),
                 Expanded(
                   child: choosing && _spoilsTaken != run.floor

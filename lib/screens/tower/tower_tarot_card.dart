@@ -187,13 +187,26 @@ class TowerTarotCard extends StatelessWidget {
             flex: 8,
             child: Padding(
               padding: const EdgeInsets.fromLTRB(5, 4, 5, 3),
-              // The words at a readable size, cut where the card ends; the
-              // card in hand shows all of them under the row.
-              child: Text(text,
-                  maxLines: 5,
-                  overflow: TextOverflow.ellipsis,
-                  textAlign: TextAlign.center,
-                  style: _prose(9.5, inkPaper)),
+              // The words at a readable size, cut by whole lines with an
+              // ellipsis (never a half line); the card in hand shows all of
+              // them under the row.
+              child: LayoutBuilder(builder: (context, box) {
+                final style = _prose(9.5, inkPaper);
+                // One line's real height (the font's own), for whole lines.
+                final probe = TextPainter(
+                  text: TextSpan(text: 'Ag', style: style),
+                  textDirection: TextDirection.ltr,
+                  textScaler: MediaQuery.textScalerOf(context),
+                )..layout();
+                final line = probe.height;
+                probe.dispose();
+                final lines = math.max(1, (box.maxHeight / line).floor());
+                return Text(text,
+                    maxLines: lines,
+                    overflow: TextOverflow.ellipsis,
+                    textAlign: TextAlign.center,
+                    style: style);
+              }),
             ),
           ),
           if (footer != null)

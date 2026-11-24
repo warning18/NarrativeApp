@@ -34,15 +34,18 @@ void main() {
   });
 
   for (final cfg in [
-    (const Size(360, 780), AppLanguage.en, 1.0, true),
-    (const Size(412, 860), AppLanguage.en, 1.0, true),
-    (const Size(320, 640), AppLanguage.en, 1.0, false),
-    (const Size(360, 780), AppLanguage.fr, 1.3, false),
-    (const Size(320, 640), AppLanguage.fr, 1.3, false),
+    // (size, language, text, tarot when the cards open, tarot once the rail
+    // has given its room)
+    (const Size(360, 780), AppLanguage.en, 1.0, true, true),
+    (const Size(412, 860), AppLanguage.en, 1.0, true, true),
+    (const Size(320, 640), AppLanguage.en, 1.0, false, true),
+    (const Size(360, 780), AppLanguage.fr, 1.3, false, false),
+    (const Size(320, 640), AppLanguage.fr, 1.3, false, false),
   ]) {
     final name = '${cfg.$1.width.toInt()}-${cfg.$2.name}-x${cfg.$3}';
-    testWidgets('the Tower cards $name: ${cfg.$4 ? 'tarot' : 'rows'}',
-        (tester) async {
+    testWidgets(
+        'the Tower cards $name: ${cfg.$4 ? 'tarot' : 'rows'}, then '
+        '${cfg.$5 ? 'tarot' : 'rows'}', (tester) async {
       await tester.runAsync(loadAppFonts);
       TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
           .setMockMethodCallHandler(
@@ -120,12 +123,22 @@ void main() {
       await tapKey('tower_continue');
       await tapKey('loot_sheet_take');
       expect(find.byKey(const Key('tower_card_0')), findsOneWidget);
-      expect(find.byType(TowerTarotCard),
-          cfg.$4 ? findsNWidgets(offer.length) : findsNothing,
-          reason: '$name: ${cfg.$4 ? 'tarot' : 'the rows'}');
-      expect(find.byType(TowerRowCard),
-          cfg.$4 ? findsNothing : findsNWidgets(offer.length));
-      expect(tester.takeException(), isNull, reason: 'no overflow: $name');
+      void kinds(bool tarot, String when) {
+        expect(find.byType(TowerTarotCard),
+            tarot ? findsNWidgets(offer.length) : findsNothing,
+            reason: '$name $when: ${tarot ? 'tarot' : 'the rows'}');
+        expect(find.byType(TowerRowCard),
+            tarot ? findsNothing : findsNWidgets(offer.length),
+            reason: '$name $when');
+        expect(tester.takeException(), isNull,
+            reason: 'no overflow: $name $when');
+      }
+
+      kinds(cfg.$4, 'as the cards open');
+      await shoot('cards-open');
+      // The head has walked: the rail gives its room to the cards.
+      await settle(18);
+      kinds(cfg.$5, 'with the rail gone');
       await shoot('cards');
       // A pick round trip: hold the second card, take it: the cards go and
       // the run moves on.
