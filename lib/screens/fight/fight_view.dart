@@ -749,6 +749,7 @@ extension _FightView on _FightScreenState {
     bool canLock,
     _FacePreview? preview, {
     double cube = 46,
+    Animation<double>? roll,
   }) {
     final accent = _accentFor(actor);
     final face = _currentFaces[actor.id];
@@ -768,7 +769,7 @@ extension _FightView on _FightScreenState {
           : _cubeFacesFor(actor, landing, accent, count: actor.dieFaces.length),
       accent: accent,
       size: cube,
-      roll: _rollController,
+      roll: roll ?? _rollController,
       rolling: spinning,
       fx: face == null ? null : dieFxOf(_faceKindOf(face)),
       big: face != null && (face.type == 'Skill' || face.value >= 8),

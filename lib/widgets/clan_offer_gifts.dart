@@ -79,8 +79,8 @@ String _asset(String piece, CardTier tier) =>
     'assets/visuals/cards/${piece}_${tier.name}.png';
 
 /// The card's size in dp (the frame is 104 x 172 art pixels at 2 dp each).
-const double clanCardWidth = 210;
-const double clanCardHeight = 346;
+const double _clanCardWidth = 210;
+const double _clanCardHeight = 346;
 
 Widget _art(String path, {double? width, double? height}) => Image.asset(
       path,
@@ -150,8 +150,8 @@ class ClanCardView extends StatelessWidget {
     final scheme = Theme.of(context).colorScheme;
     final glow = lit ? _core : color;
     return SizedBox(
-      width: clanCardWidth,
-      height: clanCardHeight,
+      width: _clanCardWidth,
+      height: _clanCardHeight,
       child: DecoratedBox(
         decoration: BoxDecoration(
           boxShadow: [
@@ -364,8 +364,8 @@ class ClanHandFan extends StatelessWidget {
   /// The hand's height: a card in hand, lifted; at rest the hand takes only
   /// what the three resting cards need (and grows, with a short ease, when
   /// one is touched), so no empty band sits above it.
-  static double get liftedHeight => clanCardHeight * _up + 42;
-  static double get restHeight => clanCardHeight * _rest + 22;
+  static double get liftedHeight => _clanCardHeight * _up + 42;
+  static double get restHeight => _clanCardHeight * _rest + 22;
 
   @override
   Widget build(BuildContext context) {
@@ -374,8 +374,8 @@ class ClanHandFan extends StatelessWidget {
         padding: const EdgeInsets.symmetric(horizontal: 8),
         child: LayoutBuilder(builder: (context, box) {
           final width = box.maxWidth;
-          const restW = clanCardWidth * _rest;
-          const upW = clanCardWidth * _up;
+          const restW = _clanCardWidth * _rest;
+          const upW = _clanCardWidth * _up;
           final step =
               n <= 1 ? 0.0 : ((width - restW) / (n - 1)).clamp(0.0, 104.0);
           final total = restW + step * (n - 1);
@@ -405,8 +405,8 @@ class ClanHandFan extends StatelessWidget {
                     angle: angle,
                     alignment: Alignment.bottomCenter,
                     child: SizedBox(
-                      width: clanCardWidth * k,
-                      height: clanCardHeight * k,
+                      width: _clanCardWidth * k,
+                      height: _clanCardHeight * k,
                       child: FittedBox(child: cards[i]),
                     ),
                   ),

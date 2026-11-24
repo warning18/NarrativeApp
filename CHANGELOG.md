@@ -8,6 +8,48 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [2.2.0+1053]
+
+- The dice are thrown. In a fight, each die flies in from the bottom edge of the board on an arc, bounces two or three times with damping, slides, and turns over as it slows, a little extra at each bounce; dice that meet push each other aside and never overlap; each ends on its seat on the face the rules picked (the throw is only motion: the faces are decided before it, as before, and no rule changed). It is the same board for the story's fights and the Tower's. With reduced motion, and on a phone that was slow, the dice keep their plain flight. Look only. UX (view only).
+## [2.1.5+1052]
+
+- Maps, lighter with nothing changed on screen: the ball draws in about 40 % less time (its mesh's heights, the names' layout and the roads' bends were worked out again on every paint and are now kept), and a drag of the town plan repaints the plan only (9 pieces a frame, where each move repainted the whole page, 512). Twelve screens were compared pixel for pixel before and after: the same.
+
+## [2.1.4+1051]
+
+- **Cleanup: 36 names that only their own file uses are now private.**
+  Among them the level ladder's colours and sizes, the die's 3D frame
+  budget and glyph limits, the slow-frame report's names, the clan card's
+  size, the keeper's scale and a few helpers of the land crossing, the
+  character start and the offers. The analyzer proves none is used
+  elsewhere. Nothing changes on screen or in a number.
+
+## [2.1.3+1050]
+
+- **Cleanup: dead code and unread strings removed.** Four intro painters
+  nothing draws any more (the burning city, the fire, the white ships and
+  the tavern floor) and the eight private helpers only they used, a
+  floating-shroud widget, an inventory slot-icon function and a debug getter
+  of the city chart are gone, with seven Tower strings (English and French)
+  that no screen reads, and the Tower's unused bevel-panel painter. Each
+  was checked unused (no caller, no name built at run time). Nothing changes on screen or in a number.
+
+## [2.1.2+1049]
+
+- **Simulator truth (Wave 5), no change to the game.** The simulator's bot now values a die's face keywords as its fights play them: Pain twice the blow less the health it costs, Cleave its splash, Pierce what a guard takes, Steady its point, Growth what it gains over a fight (constants measured on 200 runs). Its fights now play Growth, as the fight screen does. A batch can run on several cores (`test/sim_batch_test.dart`: 100 runs in 7.9 s instead of 21.2 s, the same runs). Before and after: fight wins about 1 point higher, the competent player's die trials agree with the values 5 points more often, and the Headsman, valued as it fights, becomes most runs' final die (see `docs/simulation/sim-truth.md`). QA's Tower pin moves by a hair and is re-pinned. Core.
+
+## [2.1.1+1048]
+
+- **Code health: the Journey screen split into smaller files, no behaviour change.** `lib/screens/journey_screen.dart` (6,100 lines) is now the screen and its state, with seven part files beside the three it had in `lib/screens/journey/`: the step and its helpers, moving between views, taking a step, the step's detail, the town view, and the map chart in two files of its own (`journey_maps.dart`, `journey_maps_paint.dart`) for the Maps session. Code moved only: every declaration is the same, 22 methods of the state moved into extensions call `_update` (the folder's existing stand-in for `setState`). Core.
+
+## [2.1.0+1047]
+
+- The ink buttons, panels and tabs are no two alike, and the Tower is snowing on them. Every ink piece is seeded from its key or label (the same piece looks the same every time): a red from six (rust, dried blood, faded), a paper warm or cold, a tilt of 1 to 3 degrees, a torn tab, a chipped or folded corner, a burn, stains, splatter, a pin; the labels stay AA on every tint. Weather piles up on them while a screen is open: snow, sand, ash and rain with drips, and fog as a veil; heavy after about 30 s in the hardest fall, never over the label. A tap knocks the pile off in a puff, then it builds again; the level is kept in memory through rebuilds and leaving (it melts 1 level per 120 s away); with reduce motion it is a fixed medium cap and nothing moves. One clock per screen. The Tower snows by band (fall 0.4, 0.7, 1.0); the home menu has the variations only; the story's screens are as before (`uiSkyProvider` reads the sky where the party stands, and nothing reads it today). Drawn in code, no Art overlays. UX (view only).
+
+## [2.0.0+1046]
+
+- The Tower is in ink (part 4 of 4: the end of a floor and the start of a run; the set is complete). The level up, the spoils sheet, the cards after a floor, and the calling pick in the Tower now wear the ink look: paper white for the main action, healing and a gain, deep red only for blood, danger and a loss, cold greys for the rest; square cards with no wood frame, the emblems and the chest in the ink greys, the level up's radar polygon in paper. The parley's and the stall's figures are the same sprites recoloured to ink. It comes from the Tower's own colour set (what reads `InkColors` under the Tower is ink), so the story's screens are unchanged. The Tower moved to ink in four parts (v1.1004, v1.1005, v1.1009 and this one). Look only. UX (view only).
+
 ## [1.1009.0+1045]
 
 - The Tower is moving to ink; the rest follows (part 3 of 4: the fight). A Tower fight is drawn in the approved ink layout: the foes and the party each stand in a slanted picture panel on the floor's plate, their chibi in ink and their skewed black nameplates over them, the 30-floor climb strip above, the real dice with the strip of their faces under the board, a red burst and speed lines behind the foe the picked die is aimed at. The dark theme with square buttons (red for the one that goes on), ink health bars (slate for your side, red for the foe), square status tiles and gems in paper white, an ink die and a dark stage floor, and a darker veil on the plate so the text reads. The foe band's tags (an affix, Elite) are paper text on a red block, and a short floor sits at the top of the climb screen again instead of in the middle. Art's painted scenes of the three bands (Lower Stairs, Middle Halls, the Crown) are cropped into the foe and hero panels, and the dice stand on the band's own plate (the ground seen from above) with a tag under them, "name · dN · element". In the Tower's fights the foe and hero plates are lighter, as in the approved picture: the name, the weakness and rank marks, and a thin health bar. The numbers, the armour and damage and the status marks are one tap away (the hero's sheet; a foe's own sheet as before), and a small (i) on the plate says so. The story's fights are unchanged. Look only. UX (view only).

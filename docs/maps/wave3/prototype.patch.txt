@@ -1,0 +1,359 @@
+diff --git a/lib/screens/city_chart_screen.dart b/lib/screens/city_chart_screen.dart
+index ccca15ae..08b44dc2 100644
+--- a/lib/screens/city_chart_screen.dart
++++ b/lib/screens/city_chart_screen.dart
+@@ -26,6 +26,8 @@ import '../providers/town_rulers_provider.dart';
+ import '../widgets/city_chart/city_chart.dart';
+ import '../widgets/city_chart/city_chart_view.dart';
+ import '../widgets/ink_loading.dart';
++import '../widgets/level_ladder.dart';
++import '../data/map_charts.dart';
+ 
+ CityWayKind _wayKindOf(JourneyStepKind kind) => switch (kind) {
+       JourneyStepKind.fight => CityWayKind.fight,
+@@ -163,24 +165,63 @@ class _CityChartScreenState extends ConsumerState<CityChartScreen> {
+             )
+           : live == null
+               ? const InkLoading(wordKey: 'loading_map')
+-              : CityChartView(
+-                  chart: live.chart,
+-                  look: look,
+-                  text: _text(),
+-                  hereDistrict: ref.watch(partyDistrictProvider),
+-                  explored: ref.watch(foundDistrictsProvider),
+-                  rulers: cityChartRulersOf(
+-                      live.chart, ref.watch(townRulersProvider)),
+-                  locked: ref.watch(lockedDistrictsProvider),
+-                  phase: ref.watch(dayPhaseProvider),
+-                  onWay: (way) {
+-                    final i = int.tryParse(way.id);
+-                    if (i != null && i < live.choices.length) {
+-                      Navigator.of(context).pop(live.choices[i]);
+-                    }
+-                  },
+-                  onWalk: (d) => walkToDistrict(ref, d.id),
+-                ),
++              : !CityChartView.proto
++                  ? CityChartView(
++                      chart: live.chart,
++                      look: look,
++                      text: _text(),
++                      hereDistrict: ref.watch(partyDistrictProvider),
++                      explored: ref.watch(foundDistrictsProvider),
++                      rulers: cityChartRulersOf(
++                          live.chart, ref.watch(townRulersProvider)),
++                      locked: ref.watch(lockedDistrictsProvider),
++                      phase: ref.watch(dayPhaseProvider),
++                      onWay: (way) {
++                        final i = int.tryParse(way.id);
++                        if (i != null && i < live.choices.length) {
++                          Navigator.of(context).pop(live.choices[i]);
++                        }
++                      },
++                      onWalk: (d) => walkToDistrict(ref, d.id),
++                    )
++                  // PROTOTYPE: the plan, then the level strip under it.
++                  : Column(children: [
++                      Expanded(
++                          child: CityChartView(
++                        chart: live.chart,
++                        look: look,
++                        text: _text(),
++                        hereDistrict: ref.watch(partyDistrictProvider),
++                        explored: ref.watch(foundDistrictsProvider),
++                        rulers: cityChartRulersOf(
++                            live.chart, ref.watch(townRulersProvider)),
++                        locked: ref.watch(lockedDistrictsProvider),
++                        phase: ref.watch(dayPhaseProvider),
++                        onWay: (way) {
++                          final i = int.tryParse(way.id);
++                          if (i != null && i < live.choices.length) {
++                            Navigator.of(context).pop(live.choices[i]);
++                          }
++                        },
++                        onWalk: (d) => walkToDistrict(ref, d.id),
++                      )),
++                      Padding(
++                        padding: const EdgeInsets.fromLTRB(10, 6, 10, 10),
++                        child: Align(
++                          alignment: AlignmentDirectional.centerStart,
++                          child: LevelLadder(
++                            lit: LadderRung.town,
++                            open: const {
++                              LadderRung.world,
++                              LadderRung.town,
++                              LadderRung.district,
++                            },
++                            palette: ChartPalette.of(look),
++                            onPick: (rung) => Navigator.of(context).pop(),
++                          ),
++                        ),
++                      ),
++                    ]),
+     );
+   }
+ }
+diff --git a/lib/screens/epilogue_map_screen.dart b/lib/screens/epilogue_map_screen.dart
+index 0da3461c..ddaea815 100644
+--- a/lib/screens/epilogue_map_screen.dart
++++ b/lib/screens/epilogue_map_screen.dart
+@@ -72,6 +72,9 @@ class _Road {
+ class EpilogueMapBody extends ConsumerStatefulWidget {
+   const EpilogueMapBody({super.key});
+ 
++  // PROTOTYPE (wave 3 pictures).
++  static bool proto = false;
++
+   @override
+   ConsumerState<EpilogueMapBody> createState() => _EpilogueMapBodyState();
+ }
+@@ -96,7 +99,11 @@ class _EpilogueMapBodyState extends ConsumerState<EpilogueMapBody> {
+     final rulers = ref.watch(townRulersProvider);
+     // The sphere's world: a town sits where the world map shows it.
+     final chart = chartOf(MapShape.story);
+-    final palette = ChartPalette.of(ref.watch(mapLookProvider));
++    // PROTOTYPE: the page's own light look.
++    final palette = EpilogueMapBody.proto &&
++            Theme.of(context).brightness == Brightness.light
++        ? ChartPalette.of(MapLook.parchment)
++        : ChartPalette.of(ref.watch(mapLookProvider));
+     final routes =
+         ref.watch(localizedDbProvider(landRoutesSchema)).value ?? const {};
+ 
+@@ -458,8 +465,37 @@ class _OverPainter extends CustomPainter {
+             ..style = PaintingStyle.stroke
+             ..strokeWidth = 1.4);
+     }
++    // PROTOTYPE: numbered marks that sit on each other are pushed apart,
++    // each tied to its town by a thin line.
++    final at = [for (final b in big) b.at * k];
++    if (EpilogueMapBody.proto) {
++      for (var pass = 0; pass < 30; pass++) {
++        for (var i = 0; i < at.length; i++) {
++          for (var j = i + 1; j < at.length; j++) {
++            var d = at[j] - at[i];
++            const gap = 27.0;
++            if (d.distance >= gap) continue;
++            if (d.distance < 0.01) d = const Offset(1, 0);
++            final push = d / d.distance * ((gap - d.distance) / 2);
++            at[i] -= push;
++            at[j] += push;
++          }
++        }
++      }
++      for (var i = 0; i < at.length; i++) {
++        final home = big[i].at * k;
++        if ((at[i] - home).distance > 3) {
++          canvas.drawLine(
++              home,
++              at[i],
++              Paint()
++                ..color = palette.place.withValues(alpha: 0.8)
++                ..strokeWidth = 1.2);
++        }
++      }
++    }
+     for (var i = 0; i < big.length; i++) {
+-      final c = big[i].at * k;
++      final c = at[i];
+       canvas.drawCircle(
+           c, 11.5, Paint()..color = Colors.black.withValues(alpha: 0.6));
+       canvas.drawCircle(c, 9.5, Paint()..color = big[i].fill);
+diff --git a/lib/widgets/chart_map_painter.dart b/lib/widgets/chart_map_painter.dart
+index f307d667..e7b93af5 100644
+--- a/lib/widgets/chart_map_painter.dart
++++ b/lib/widgets/chart_map_painter.dart
+@@ -217,6 +217,17 @@ class ChartMapPainter extends CustomPainter {
+   static const double minPlacePx = 12.5;
+   static const double minRegionPx = 10;
+ 
++  // PROTOTYPE (wave 3 pictures): 'ink', 'size', 'avoid'.
++  static Set<String> proto = {};
++  Color get _ink => !proto.contains('ink')
++      ? palette.label
++      : palette.land.computeLuminance() > 0.5
++          ? const Color(0xFF4A3B22)
++          : palette.fog == const Color(0xFF151518)
++              ? const Color(0xFFC4C4CE)
++              : const Color(0xFFC9C3D6);
++  double get _regionMin => proto.contains('size') ? 12 : minRegionPx;
++
+   /// [n] pixels on the screen, in chart units: what stays one size however
+   /// close the chart is looked at (the viewer scales the canvas by the zoom
+   /// on top of [_k]).
+@@ -1697,6 +1708,7 @@ class ChartMapPainter extends CustomPainter {
+   /// inside the chart and clear of the other names and marks), then the
+   /// regions' names where there is room for them.
+   void _names(Canvas canvas, Landmark? standing) {
++    if (proto.contains('nonames')) return; // PROTOTYPE
+     final bounds = Rect.fromLTRB(_whole.left + 1, _whole.top + 1,
+         _whole.right - 1 - labelInsetRight / _k, _whole.bottom - 1);
+     final reached = [
+@@ -1867,15 +1879,49 @@ class ChartMapPainter extends CustomPainter {
+ 
+     // The lands' names (v1.199): dim until the land is reached.
+     final reachedZones = _reachedZones();
++    // PROTOTYPE: what a land's name keeps clear of besides other names.
++    final busy = <Rect>[];
++    if (proto.contains('avoid')) {
++      void along(List<Offset> line, double r) {
++        for (var i = 0; i + 1 < line.length; i++) {
++          for (var k = 0; k < 4; k++) {
++            final q = Offset.lerp(line[i], line[i + 1], k / 4)!;
++            if (_vis(q)) busy.add(Rect.fromCircle(center: _at(q), radius: r));
++          }
++        }
++      }
++
++      for (final (a, b) in legs) {
++        if (!discovered.contains(a.id) || !discovered.contains(b.id)) continue;
++        final seaLeg =
++            a.atSea || b.atSea || (a.id == 'shore' && b.id == 'candlehold');
++        along(
++            windingRoad(geography.of(a), geography.of(b),
++                seed: chartSeed('${a.id}-${b.id}'),
++                bends: seaLeg ? 2 : 3,
++                amp: seaLeg ? 0.08 : 0.16),
++            _atLeast(1.6 * m, 6));
++      }
++      for (final river in geography.rivers) {
++        along(river, _atLeast(1.2 * m, 4));
++      }
++      for (final f in geography.features) {
++        if (_vis(f.at)) {
++          busy.add(
++              Rect.fromCircle(center: _at(f.at), radius: _atLeast(2.6 * m, 9)));
++        }
++      }
++    }
+     for (var i = 0; i < geography.zones.length; i++) {
+       final zone = geography.zones[i];
+       final named = reachedZones.contains(i);
+       final text = zone.name(language).toUpperCase();
+       final style = TextStyle(
+         fontFamily: InkFonts.system,
+-        fontSize: _font(5, minRegionPx),
++        fontSize: _font(5, _regionMin),
+         letterSpacing: 1.2 * t,
+-        color: palette.label.withValues(alpha: named ? 1 : 0.6),
++        color: _ink.withValues(
++            alpha: named ? 1 : (proto.contains('ink') ? 0.85 : 0.6)),
+       );
+       final painter = _layout(text, style);
+       final size = Size(painter.width, painter.height);
+@@ -1887,10 +1933,36 @@ class ChartMapPainter extends CustomPainter {
+         _within(zoneAt.dy - size.height / 2, bounds.top,
+             bounds.bottom - size.height),
+       );
+-      for (final nudge in const [
++      var landNudges = const [
+         Offset.zero, Offset(0, -7), Offset(0, 7), Offset(-12, 0),
+         Offset(12, 0), //
+-      ]) {
++      ];
++      if (proto.contains('avoid')) {
++        // A spot clear of marks and roads first, looked for further out;
++        // else the old rule, so no name is lost.
++        final h = size.height;
++        final wide = [
++          Offset.zero,
++          for (final k in [1.0, 2.0, 3.0, 4.0]) ...[
++            Offset(0, -h * 1.1 * k),
++            Offset(0, h * 1.1 * k),
++          ],
++          for (final k in [1.0, 2.0]) ...[
++            Offset(-size.width * 0.35 * k, 0),
++            Offset(size.width * 0.35 * k, 0),
++            Offset(-size.width * 0.35 * k, -h * 1.5),
++            Offset(size.width * 0.35 * k, -h * 1.5),
++            Offset(-size.width * 0.35 * k, h * 1.5),
++            Offset(size.width * 0.35 * k, h * 1.5),
++          ],
++        ];
++        final clear = wide.where((n) {
++          final r = (base + n) & size;
++          return fits(r) && !busy.any((b) => b.overlaps(r));
++        });
++        if (clear.isNotEmpty) landNudges = [clear.first];
++      }
++      for (final nudge in landNudges) {
+         final rect = (base + nudge) & size;
+         if (fits(rect)) {
+           taken.add(rect);
+@@ -1911,8 +1983,9 @@ class ChartMapPainter extends CustomPainter {
+         TextStyle(
+           fontFamily: InkFonts.prose,
+           fontStyle: FontStyle.italic,
+-          fontSize: 4.6 * t,
+-          color: const Color(0xFFA39DAE).withValues(alpha: 0.9),
++          fontSize: proto.contains('size') ? _font(4.6, 12) : 4.6 * t,
++          color: (proto.contains('ink') ? _ink : const Color(0xFFA39DAE))
++              .withValues(alpha: 0.9),
+         ),
+       );
+       final at = Offset(mid.dx - painter.width / 2, mid.dy + range.size * 0.5);
+@@ -1944,7 +2017,8 @@ class ChartMapPainter extends CustomPainter {
+             f.name(language),
+             TextStyle(
+               fontFamily: seat ? InkFonts.display : InkFonts.prose,
+-              fontSize: _font(seat ? 5.2 : 4.2, seat ? 12 : 11),
++              fontSize: _font(seat ? 5.2 : 4.2,
++                  proto.contains('size') ? 13 : (seat ? 12 : 11)),
+               color: colour.withValues(alpha: 0.9),
+               shadows: [Shadow(color: palette.land, blurRadius: 1.5 * t)],
+             )
+@@ -1954,8 +2028,8 @@ class ChartMapPainter extends CustomPainter {
+             f.note(language),
+             TextStyle(
+               fontFamily: InkFonts.system,
+-              fontSize: _font(3.2, 10),
+-              color: palette.label.withValues(alpha: 0.9),
++              fontSize: _font(3.2, proto.contains('size') ? 12 : 10),
++              color: _ink.withValues(alpha: 0.9),
+             )
+           ),
+       ];
+diff --git a/lib/widgets/city_chart/city_chart_view.dart b/lib/widgets/city_chart/city_chart_view.dart
+index b74a6ba9..d2d0ad1b 100644
+--- a/lib/widgets/city_chart/city_chart_view.dart
++++ b/lib/widgets/city_chart/city_chart_view.dart
+@@ -60,6 +60,9 @@ class CityChartText {
+ }
+ 
+ class CityChartView extends StatefulWidget {
++  // PROTOTYPE (wave 3 pictures).
++  static bool proto = false;
++
+   const CityChartView({
+     super.key,
+     required this.chart,
+@@ -719,7 +722,9 @@ class _CityChartViewState extends State<CityChartView>
+         if (widget.controls)
+           Positioned(
+             right: 12,
+-            top: 12,
++            // PROTOTYPE: at the foot, as on the Journey's map.
++            top: CityChartView.proto ? null : 12,
++            bottom: CityChartView.proto ? 12 : null,
+             child: Column(children: [
+               _round(
+                 key: const Key('city_chart_zoom_in'),
+@@ -742,7 +747,7 @@ class _CityChartViewState extends State<CityChartView>
+             (_pickedWay != null || _pickedFog != null || focus != null))
+           Positioned(
+             left: 12,
+-            right: 12,
++            right: CityChartView.proto && widget.controls ? 68 : 12,
+             bottom: 12,
+             child: _card(palette, text, focus),
+           ),
+@@ -832,7 +837,8 @@ class _CityChartViewState extends State<CityChartView>
+           customBorder: const PixelChipBorder(),
+           onTap: onTap,
+           child: Padding(
+-            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
++            padding: EdgeInsets.symmetric(
++                horizontal: 12, vertical: CityChartView.proto ? 13 : 8),
+             child: Row(mainAxisSize: MainAxisSize.min, children: [
+               Icon(icon, size: IconSize.s16, color: palette.place),
+               const SizedBox(width: 6),

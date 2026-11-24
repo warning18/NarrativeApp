@@ -388,7 +388,7 @@
     "hunterAlignment": "Good",
     "hunterTier": 1,
     "description": "A novice of the void cults, who prays to the tear and believes the Shroud belongs to it.",
-    "description_fr": "Un novice des cultes du vide, qui prie la déchirure et croit que le Linceul lui appartient.",
+    "description_fr": "Un novice des cultes du Néant, qui prie la déchirure et croit que le Linceul lui appartient.",
     "encounterText": [
       "A cultist acolyte kneels in the road, chanting at nothing. The chant stops as you pass. It turns its head toward what you carry and smiles, as if a prayer has been answered.",
       "Ash-drawn circles on the stones, and an acolyte in the middle of them. \"It told us you would bring it,\" it says, and lifts a hand that is already burning."
@@ -398,7 +398,7 @@
       "Des cercles tracés à la cendre sur les pavés, et un acolyte en leur centre. « Il nous a dit que vous l’apporteriez », dit-il, en levant une main qui brûle déjà."
     ],
     "packText": "The void cults gather where the Shroud passes. A knot of acolytes has been waiting at the crossroads, and every one of them turns toward you at once.",
-    "packText_fr": "Les cultes du vide se rassemblent là où passe le Linceul. Un groupe d’acolytes attendait au carrefour, et tous se tournent vers vous d’un seul mouvement.",
+    "packText_fr": "Les cultes du Néant se rassemblent là où passe le Linceul. Un groupe d’acolytes attendait au carrefour, et tous se tournent vers vous d’un seul mouvement.",
     "enemyName_fr": "Acolyte cultiste",
     "biomes": [
       "ashlands"
@@ -1138,7 +1138,7 @@
     "hunterOnly": false,
     "alignment": -25,
     "battleCry": "“Light, and law, and the hollow. You are on the wrong side of the third.”",
-    "battleCry_fr": "« La lumière, la loi, le vide. Vous êtes du mauvais côté du troisième. »"
+    "battleCry_fr": "« La lumière, la loi, le Néant. Vous êtes du mauvais côté du troisième. »"
   },
   "void_manifestation": {
     "enemyName": "Void Manifestation",
@@ -1813,7 +1813,7 @@
       {
         "healthThreshold": 50,
         "name": "Bone Storm",
-        "nameFr": "Tempête d'os",
+        "nameFr": "Tempête d’os",
         "message": "The Warden comes apart on purpose.",
         "messageFr": "Le Gardien se disloque, à dessein.",
         "damageMultiplier": 1.1,
@@ -2017,7 +2017,7 @@
       "Quelque chose suit la piste du Linceul depuis votre dernière traversée. Il l’a trouvé, et il a apporté ses crocs."
     ],
     "packText": "The void hounds hunt the Shroud in packs, and the pack has caught up. They spread out around you without a sound.",
-    "packText_fr": "Les chiens du vide chassent le Linceul en meute, et la meute vous a rattrapé. Ils se déploient autour de vous sans un bruit.",
+    "packText_fr": "Les chiens du Néant chassent le Linceul en meute, et la meute vous a rattrapé. Ils se déploient autour de vous sans un bruit.",
     "enemyName_fr": "Molosse du Néant",
     "biomes": [
       "frost",
@@ -2438,7 +2438,7 @@
       {
         "healthThreshold": 65,
         "name": "The Crown Wakes",
-        "nameFr": "La couronne s'éveille",
+        "nameFr": "La couronne s’éveille",
         "message": "The crown notices you. The throne room forgets which way is down.",
         "messageFr": "La couronne vous remarque. La salle du trône oublie où est le bas.",
         "damageMultiplier": 1.1,

@@ -235,7 +235,7 @@
   "sail_gulls_wing": {
     "partID": "sail_gulls_wing",
     "partName": "The Gull's Wing",
-    "partName_fr": "L'Aile de la Mouette",
+    "partName_fr": "L’Aile de la Mouette",
     "slotType": "Sail",
     "cost": 260,
     "battleActionLabel": "",
@@ -1567,7 +1567,7 @@
   "sail_tarred_void": {
     "partID": "sail_tarred_void",
     "partName": "The Tarred Void-Mark",
-    "partName_fr": "La Marque du Vide goudronnée",
+    "partName_fr": "La Marque du Néant goudronnée",
     "slotType": "Sail",
     "cost": 310,
     "battleActionLabel": "Loose the void volley",
@@ -1585,6 +1585,6 @@
     "rarity": "epic",
     "unlockChapter": 5,
     "description": "The tear’s mark copied in tar and orcish ink: a slower, heavier void volley that pierces any shield, and storms that do not bite.",
-    "description_fr": "La marque de la déchirure copiée au goudron et à l’encre orque : une bordée du vide plus lente et plus lourde qui perce tout bouclier, et des tempêtes qui ne mordent pas."
+    "description_fr": "La marque de la déchirure copiée au goudron et à l’encre orque : une bordée du Néant plus lente et plus lourde qui perce tout bouclier, et des tempêtes qui ne mordent pas."
   }
 }

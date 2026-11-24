@@ -1850,22 +1850,6 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.en: 'Bought with marks: {n}',
     AppLanguage.fr: 'S’achète en marques : {n}',
   },
-  'tower_pick_race': {
-    AppLanguage.en: 'People',
-    AppLanguage.fr: 'Peuple',
-  },
-  'tower_pick_profession': {
-    AppLanguage.en: 'Calling',
-    AppLanguage.fr: 'Vocation',
-  },
-  'tower_pick_clan': {
-    AppLanguage.en: 'Clan',
-    AppLanguage.fr: 'Clan',
-  },
-  'tower_locked': {
-    AppLanguage.en: 'Locked: buy it with marks',
-    AppLanguage.fr: 'Verrouillé : à acheter avec des marques',
-  },
   'tower_save_note': {
     AppLanguage.en: 'Nothing is taken from your story’s saves.',
     AppLanguage.fr: 'Rien n’est pris sur les sauvegardes de votre histoire.',
@@ -1877,10 +1861,6 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   'tower_runs_line': {
     AppLanguage.en: '{r} climbs, {w} won',
     AppLanguage.fr: '{r} ascensions, {w} victoires',
-  },
-  'tower_kit': {
-    AppLanguage.en: 'You begin with',
-    AppLanguage.fr: 'Vous commencez avec',
   },
   'tower_group_peoples': {
     AppLanguage.en: 'Callings and peoples',
@@ -1933,12 +1913,6 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   'tower_unlock_tearglass_die': {
     AppLanguage.en: 'Begin with a Tearglass Die.',
     AppLanguage.fr: 'Commencer avec un Dé de verre-larme.',
-  },
-  'tower_stub_floor': {
-    AppLanguage.en:
-        'The climb itself comes with the next release; here you can look at the screens.',
-    AppLanguage.fr:
-        'La montée elle-même arrive avec la prochaine version ; ici, vous pouvez regarder les écrans.',
   },
   'tower_floor_1': {
     AppLanguage.en: 'The Foot of the Stair',
@@ -2144,10 +2118,6 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   'tower_refuse': {
     AppLanguage.en: 'Leave them all (+1 mark)',
     AppLanguage.fr: 'Ne rien prendre (+1 marque)',
-  },
-  'tower_next_floor': {
-    AppLanguage.en: 'Next floor',
-    AppLanguage.fr: 'Étage suivant',
   },
   'tower_kind_die': {
     AppLanguage.en: 'Die',
@@ -5412,7 +5382,7 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   },
   'stat_src_open_hand': {
     AppLanguage.en: 'The Open Hand',
-    AppLanguage.fr: 'La Main ouverte'
+    AppLanguage.fr: 'La Main Ouverte'
   },
   'stat_src_earlier': {AppLanguage.en: 'Earlier', AppLanguage.fr: 'Avant'},
   'stat_src_gear': {AppLanguage.en: 'Gear', AppLanguage.fr: 'Équipement'},
@@ -14884,7 +14854,7 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.en:
         'A clan’s banner hangs here once it is your friend, the Open Hand’s once it is raised, and the Shroud’s pieces as you find them. Tap one for its name.',
     AppLanguage.fr:
-        'La bannière d’un clan pend ici dès qu’il est votre ami, celle de la Main ouverte une fois relevée, et les pièces du Linceul à mesure que vous les trouvez. Touchez-en une pour son nom.',
+        'La bannière d’un clan pend ici dès qu’il est votre ami, celle de la Main Ouverte une fois relevée, et les pièces du Linceul à mesure que vous les trouvez. Touchez-en une pour son nom.',
   },
   'throne_edit_hint': {
     AppLanguage.en:
