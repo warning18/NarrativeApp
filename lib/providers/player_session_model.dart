@@ -282,6 +282,8 @@ class PlayerSession {
     this.contractBoards = 0,
     this.seaBeasts = const {},
     this.bossDefeatCounts = const {},
+    this.chapterGoalsMet = const {},
+    this.chapterChestsGiven = const [],
     this.grandfatheredQuestIds = const [],
     this.talkedToNpcIds = const [],
     this.skillEssence = 0,
@@ -747,6 +749,14 @@ class PlayerSession {
   /// party_bonus.dart). Reset with everything else on a new game.
   final Map<String, int> bossDefeatCounts;
 
+  /// The chapter goals met (chapter number as a string -> goal ids;
+  /// chapter_goals.dart, v2.5.0): each one makes the chapter's chest a tier
+  /// better. Old saves start with none met.
+  final Map<String, List<String>> chapterGoalsMet;
+
+  /// The chapters whose chest was given, so each comes once.
+  final List<int> chapterChestsGiven;
+
   /// Quest ids grandfathered past objective-completion gating entirely —
   /// populated once, automatically, the first time a save from before this
   /// field existed loads (see [fromJson]), from whatever was in
@@ -1004,6 +1014,8 @@ class PlayerSession {
     int? contractBoards,
     Map<String, BeastState>? seaBeasts,
     Map<String, int>? bossDefeatCounts,
+    Map<String, List<String>>? chapterGoalsMet,
+    List<int>? chapterChestsGiven,
     List<String>? grandfatheredQuestIds,
     List<String>? talkedToNpcIds,
     int? skillEssence,
@@ -1137,6 +1149,8 @@ class PlayerSession {
       contractBoards: contractBoards ?? this.contractBoards,
       seaBeasts: seaBeasts ?? this.seaBeasts,
       bossDefeatCounts: bossDefeatCounts ?? this.bossDefeatCounts,
+      chapterGoalsMet: chapterGoalsMet ?? this.chapterGoalsMet,
+      chapterChestsGiven: chapterChestsGiven ?? this.chapterChestsGiven,
       grandfatheredQuestIds:
           grandfatheredQuestIds ?? this.grandfatheredQuestIds,
       talkedToNpcIds: talkedToNpcIds ?? this.talkedToNpcIds,
@@ -1369,6 +1383,8 @@ class PlayerSession {
           for (final e in seaBeasts.entries) e.key: e.value.toJson(),
         },
         'bossDefeatCounts': bossDefeatCounts,
+        'chapterGoalsMet': chapterGoalsMet,
+        'chapterChestsGiven': chapterChestsGiven,
         'grandfatheredQuestIds': grandfatheredQuestIds,
         'talkedToNpcIds': talkedToNpcIds,
         'skillEssence': skillEssence,
@@ -1721,6 +1737,15 @@ class PlayerSession {
             (key, value) => MapEntry(key.toString(), (value as num).toInt()),
           ) ??
           const {},
+      chapterGoalsMet: (json['chapterGoalsMet'] as Map?)?.map(
+            (key, value) => MapEntry(key.toString(),
+                [for (final id in (value as List?) ?? const []) '$id']),
+          ) ??
+          const {},
+      chapterChestsGiven: [
+        for (final c in (json['chapterChestsGiven'] as List?) ?? const [])
+          (c as num).toInt(),
+      ],
       grandfatheredQuestIds: isPreObjectiveTrackingSave
           ? ((json['activeQuestIds'] as List?)
                   ?.map((e) => e.toString())

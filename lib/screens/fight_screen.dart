@@ -8,6 +8,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../combat/battlefield_condition.dart';
 import '../combat/field_anomaly.dart';
 import '../combat/fight_ground_rule.dart';
+import '../data/chapter_goals.dart';
 import '../data/hunter_mercy.dart';
 import '../data/place_traits.dart';
 import '../data/climate.dart' show WeatherKind;
@@ -635,6 +636,7 @@ class _FightScreenState extends ConsumerState<FightScreen>
 
   /// The thrown dice's plan for the roll under way (see dice_throw.dart).
   DiceThrowPlan? _throwPlan;
+  final GlobalKey _weatherKey = GlobalKey();
   String _throwKey = '';
 
   /// Reduced motion: the dice are not thrown, they are there.
