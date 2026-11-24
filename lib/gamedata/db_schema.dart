@@ -91,6 +91,9 @@ const List<String> equipSlotOptions = [
   'Weapon',
   'Bottom',
   'Foot',
+  // The Void Banner's own slot (v2.5.0, Wave 4 brief 5): worn beside a
+  // whole set, not in the body's place.
+  'Banner',
 ];
 
 /// A skill's rarity: how many faces of one die it may take.
