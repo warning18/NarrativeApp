@@ -247,12 +247,23 @@ class _CityChartViewState extends State<CityChartView>
     widget.camera?.removeListener(_onCamera);
     _move.dispose();
     _breath.dispose();
+    _redrawn.dispose();
     super.dispose();
+  }
+
+  /// Says the view changed (its camera, what is picked): see [build].
+  final ValueNotifier<int> _redrawn = ValueNotifier<int>(0);
+
+  /// This view's setState: [fn], then the view's content is rebuilt.
+  void _redraw(VoidCallback fn) {
+    if (!mounted) return;
+    fn();
+    _redrawn.value++;
   }
 
   void _tick() {
     final t = Curves.easeInOutCubic.transform(_move.value);
-    setState(() {
+    _redraw(() {
       _scale = _fromScale + (_toScale - _fromScale) * t;
       _offset = Offset.lerp(_fromOffset, _toOffset, t)!;
     });
@@ -290,7 +301,7 @@ class _CityChartViewState extends State<CityChartView>
             : Offset(_size.width / 2, _size.height / 2) - centre * scale;
     if (shot.jump || !_animate) {
       final s = scale.clamp(_minScale, _maxScale);
-      setState(() {
+      _redraw(() {
         _scale = s;
         _offset = _clamped(offset, s);
       });
@@ -301,7 +312,7 @@ class _CityChartViewState extends State<CityChartView>
         ..removeStatusListener(_restoreMove)
         ..addStatusListener(_restoreMove);
     }
-    if (d != null) setState(() => _focus = d.id);
+    if (d != null) _redraw(() => _focus = d.id);
   }
 
   void _restoreMove(AnimationStatus status) {
@@ -386,7 +397,7 @@ class _CityChartViewState extends State<CityChartView>
     scale = scale.clamp(_minScale, _maxScale);
     offset = _clamped(offset, scale);
     if (!_animate) {
-      setState(() {
+      _redraw(() {
         _scale = scale;
         _offset = offset;
       });
@@ -410,7 +421,7 @@ class _CityChartViewState extends State<CityChartView>
     }
     final scale = (_scale * 1.6).clamp(_minScale, _maxScale);
     _animateTo(scale, _clamped(centre - party * scale, scale));
-    setState(
+    _redraw(
         () => _focus = scale / _fitted >= cityChartDetailZoom ? _focus : null);
   }
 
@@ -419,7 +430,7 @@ class _CityChartViewState extends State<CityChartView>
     final scale = (_scale * factor).clamp(_minScale, _maxScale);
     final plan = (focal - _offset) / _scale;
     _animateTo(scale, focal - plan * scale);
-    setState(
+    _redraw(
         () => _focus = scale / _fitted >= cityChartDetailZoom ? _focus : null);
   }
 
@@ -429,7 +440,7 @@ class _CityChartViewState extends State<CityChartView>
         _fitted,
         Offset((_size.width - b.width * _fitted) / 2,
             (_size.height - b.height * _fitted) / 2));
-    setState(() {
+    _redraw(() {
       _focus = null;
       _pickedWay = null;
       _pickedFog = null;
@@ -440,7 +451,7 @@ class _CityChartViewState extends State<CityChartView>
     // Framed with room for its banners and names.
     final (scale, offset) = _framed(d.box, _size, usable: 0.84);
     _animateTo(scale, offset);
-    setState(() {
+    _redraw(() {
       _focus = d.id;
       _pickedWay = null;
       _pickedFog = null;
@@ -537,7 +548,7 @@ class _CityChartViewState extends State<CityChartView>
       if (!painter.serviceShown(s)) continue;
       final pin = _offset + s.at * _scale;
       if ((pin - at).distance <= CityChartPainter.serviceRadius + 8) {
-        setState(() {
+        _redraw(() {
           _pickedService = s;
           _pickedWay = null;
           _pickedFog = null;
@@ -566,7 +577,7 @@ class _CityChartViewState extends State<CityChartView>
         }
       }
       if (nearest != null) {
-        setState(() {
+        _redraw(() {
           _pickedWay = nearest;
           _pickedFog = null;
         });
@@ -590,14 +601,14 @@ class _CityChartViewState extends State<CityChartView>
       }
     }
     if (hit == null) {
-      setState(() {
+      _redraw(() {
         _pickedWay = null;
         _pickedFog = null;
       });
       return;
     }
     if (!_known(hit.id)) {
-      setState(() {
+      _redraw(() {
         _pickedFog = hit;
         _pickedWay = null;
       });
@@ -605,7 +616,7 @@ class _CityChartViewState extends State<CityChartView>
       return;
     }
     if (_focus == hit.id) {
-      setState(() => _pickedWay = null);
+      _redraw(() => _pickedWay = null);
       return;
     }
     _showDistrict(hit);
@@ -615,7 +626,22 @@ class _CityChartViewState extends State<CityChartView>
   Widget build(BuildContext context) {
     final palette = ChartPalette.of(widget.look);
     final text = widget.text;
-    return LayoutBuilder(builder: (context, box) {
+    // On its own layer, and redrawn from inside it. A widget rebuilt under
+    // a LayoutBuilder makes that LayoutBuilder lay out again and repaint
+    // its layer. So what a pan, a zoom or a pick rebuilds is the builder
+    // below ([_redraw]), inside this view's own LayoutBuilder and paint
+    // boundary: the plan's layer is repainted, not the screen round it
+    // (a setState here would count under the page's LayoutBuilder).
+    return RepaintBoundary(child: LayoutBuilder(builder: (context, box) {
+      return ListenableBuilder(
+          listenable: _redrawn,
+          builder: (context, _) => _content(context, box, palette, text));
+    }));
+  }
+
+  Widget _content(BuildContext context, BoxConstraints box,
+      ChartPalette palette, CityChartText text) {
+    {
       _fit(Size(box.maxWidth, box.maxHeight));
       _reportZoom();
       final focus = _focus == null ? null : widget.chart.districtById(_focus!);
@@ -648,7 +674,7 @@ class _CityChartViewState extends State<CityChartView>
                 final scale =
                     (_startScale * d.scale).clamp(_minScale, _maxScale);
                 final plan = (_startFocal - _startOffset) / _startScale;
-                setState(() {
+                _redraw(() {
                   _scale = scale;
                   _offset = _clamped(d.localFocalPoint - plan * scale, scale);
                   if (scale / _fitted < cityChartDetailZoom) _focus = null;
@@ -743,7 +769,7 @@ class _CityChartViewState extends State<CityChartView>
             child: _card(palette, text, focus),
           ),
       ]);
-    });
+    }
   }
 
   Widget _card(
