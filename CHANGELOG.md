@@ -8,6 +8,36 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [2.3.0+1056]
+
+- The Tower's cards are tarot cards. The three cards a won floor offers (a skill, a die, a spell, or a clan's oath) are drawn as tall cards: Art's painted vignette (a skill by its element, a spell by its family, one for the dice, the clan's own backdrop for an oath), a paper name band, the words on black, Art's frame over it, and a red wax seal whose pips (one to five) are the skill's rarity (a die and a spell have a plain black seal). The card in hand rises with a red frame and its full name and words show under the row at a readable size; Take and Leave them all work as before. When the offer is too narrow or the text too big (under about 88 px a card, or above 1.15x), the same cards are rows with a paper title band, so nothing is shrunk below a readable size. Once the head has climbed to its notch the ladder rail slides away while the cards show, giving them the room (about 106 px a card at 360). The Tower's title now fits at big text in French. The picture on a card comes from one lookup (`tower_card_art.dart`: kind and element or family, then kind, then a stand-in), and the card has clean slots for a tag (new synergy), a footer (a price) and the controls under the pick (reroll, banish) for when Core defines them. Look only; the pick logic is as it was. UX (view only).
+
+## [2.2.0+1053]
+
+- The dice are thrown. In a fight, each die flies in from the bottom edge of the board on an arc, bounces two or three times with damping, slides, and turns over as it slows, a little extra at each bounce; dice that meet push each other aside and never overlap; each ends on its seat on the face the rules picked (the throw is only motion: the faces are decided before it, as before, and no rule changed). It is the same board for the story's fights and the Tower's. With reduced motion, and on a phone that was slow, the dice keep their plain flight. Look only. UX (view only).
+## [2.1.5+1052]
+
+- Maps, lighter with nothing changed on screen: the ball draws in about 40 % less time (its mesh's heights, the names' layout and the roads' bends were worked out again on every paint and are now kept), and a drag of the town plan repaints the plan only (9 pieces a frame, where each move repainted the whole page, 512). Twelve screens were compared pixel for pixel before and after: the same.
+
+## [2.1.4+1051]
+
+- **Cleanup: 36 names that only their own file uses are now private.**
+  Among them the level ladder's colours and sizes, the die's 3D frame
+  budget and glyph limits, the slow-frame report's names, the clan card's
+  size, the keeper's scale and a few helpers of the land crossing, the
+  character start and the offers. The analyzer proves none is used
+  elsewhere. Nothing changes on screen or in a number.
+
+## [2.1.3+1050]
+
+- **Cleanup: dead code and unread strings removed.** Four intro painters
+  nothing draws any more (the burning city, the fire, the white ships and
+  the tavern floor) and the eight private helpers only they used, a
+  floating-shroud widget, an inventory slot-icon function and a debug getter
+  of the city chart are gone, with seven Tower strings (English and French)
+  that no screen reads, and the Tower's unused bevel-panel painter. Each
+  was checked unused (no caller, no name built at run time). Nothing changes on screen or in a number.
+
 ## [2.1.2+1049]
 
 - **Simulator truth (Wave 5), no change to the game.** The simulator's bot now values a die's face keywords as its fights play them: Pain twice the blow less the health it costs, Cleave its splash, Pierce what a guard takes, Steady its point, Growth what it gains over a fight (constants measured on 200 runs). Its fights now play Growth, as the fight screen does. A batch can run on several cores (`test/sim_batch_test.dart`: 100 runs in 7.9 s instead of 21.2 s, the same runs). Before and after: fight wins about 1 point higher, the competent player's die trials agree with the values 5 points more often, and the Headsman, valued as it fights, becomes most runs' final die (see `docs/simulation/sim-truth.md`). QA's Tower pin moves by a hair and is re-pinned. Core.

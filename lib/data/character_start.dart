@@ -39,12 +39,12 @@ const String starterDiceId = 'starter_die';
 /// The starter die's face indexes reserved for the player's profession and
 /// race standard skills (see assets/gamedata/dice.json's starter_die).
 /// Every profession's starting die keeps them at the same indexes.
-const int starterDieProfessionFaceIndex = 4;
-const int starterDieRaceFaceIndex = 5;
+const int _starterDieProfessionFaceIndex = 4;
+const int _starterDieRaceFaceIndex = 5;
 
 /// The apprentice die's Channeling face, where a caster's mana skill sits
 /// from the start (see `manaSkillID` in professions.json).
-const int startingDieManaFaceIndex = 1;
+const int _startingDieManaFaceIndex = 1;
 
 /// A new character's numbers (R5 of core-improvements.md): the New Game
 /// Defaults ([defaults], game_config.json or its override) plus the
@@ -131,9 +131,10 @@ Map<String, String> starterFaceAssignments(
   final raceSkillId = race['standardSkillID']?.toString() ?? '';
   return {
     if (manaSkillId.isNotEmpty)
-      startingDieManaFaceIndex.toString(): manaSkillId,
+      _startingDieManaFaceIndex.toString(): manaSkillId,
     if (professionSkillId.isNotEmpty)
-      starterDieProfessionFaceIndex.toString(): professionSkillId,
-    if (raceSkillId.isNotEmpty) starterDieRaceFaceIndex.toString(): raceSkillId,
+      _starterDieProfessionFaceIndex.toString(): professionSkillId,
+    if (raceSkillId.isNotEmpty)
+      _starterDieRaceFaceIndex.toString(): raceSkillId,
   };
 }

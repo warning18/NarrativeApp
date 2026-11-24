@@ -17,28 +17,28 @@ enum LadderRung { world, town, district, room }
 // ---- The look, in one place (the map's own palette, no frame). ----
 
 /// A rung's height and side padding, and its text.
-const double ladderRungHeight = 36;
-const double ladderRungPadding = 12;
-const double ladderTextSize = 12;
+const double _ladderRungHeight = 36;
+const double _ladderRungPadding = 12;
+const double _ladderTextSize = 12;
 
 /// The strip's border, and the line under the lit rung.
-const double ladderBorderWidth = 2;
-const double ladderLitLineWidth = 2;
+const double _ladderBorderWidth = 2;
+const double _ladderLitLineWidth = 2;
 
 /// How strongly the lit rung is washed with its colour, how solid the
 /// strip's ground is, and how faint a rung that cannot be taken is.
-const double ladderLitWash = 0.18;
-const double ladderGroundAlpha = 0.92;
-const double ladderClosedAlpha = 0.5;
+const double _ladderLitWash = 0.18;
+const double _ladderGroundAlpha = 0.92;
+const double _ladderClosedAlpha = 0.5;
 
 /// The colours, by role, from the map's palette.
-Color ladderLitColour(ChartPalette p) => p.mark;
-Color ladderOpenColour(ChartPalette p) => p.place;
-Color ladderClosedColour(ChartPalette p) =>
-    p.label.withValues(alpha: ladderClosedAlpha);
-Color ladderGroundColour(ChartPalette p) =>
-    p.land.withValues(alpha: ladderGroundAlpha);
-Color ladderBorderColour(ChartPalette p) => p.coast;
+Color _ladderLitColour(ChartPalette p) => p.mark;
+Color _ladderOpenColour(ChartPalette p) => p.place;
+Color _ladderClosedColour(ChartPalette p) =>
+    p.label.withValues(alpha: _ladderClosedAlpha);
+Color _ladderGroundColour(ChartPalette p) =>
+    p.land.withValues(alpha: _ladderGroundAlpha);
+Color _ladderBorderColour(ChartPalette p) => p.coast;
 
 class LevelLadder extends ConsumerWidget {
   const LevelLadder({
@@ -74,31 +74,31 @@ class LevelLadder extends ConsumerWidget {
       final on = r == lit;
       final canTake = open.contains(r);
       final colour = on
-          ? ladderLitColour(palette)
+          ? _ladderLitColour(palette)
           : canTake
-              ? ladderOpenColour(palette)
-              : ladderClosedColour(palette);
+              ? _ladderOpenColour(palette)
+              : _ladderClosedColour(palette);
       return InkWell(
         key: Key('journey_tab_${r.name}'),
         onTap: canTake && !busy && !on ? () => onPick(r) : null,
         child: Container(
-          height: ladderRungHeight,
-          padding: const EdgeInsets.symmetric(horizontal: ladderRungPadding),
+          height: _ladderRungHeight,
+          padding: const EdgeInsets.symmetric(horizontal: _ladderRungPadding),
           alignment: Alignment.center,
           decoration: BoxDecoration(
             color: on
-                ? ladderLitColour(palette).withValues(alpha: ladderLitWash)
+                ? _ladderLitColour(palette).withValues(alpha: _ladderLitWash)
                 : null,
             border: Border(
               bottom: BorderSide(
-                  color: on ? ladderLitColour(palette) : Colors.transparent,
-                  width: ladderLitLineWidth),
+                  color: on ? _ladderLitColour(palette) : Colors.transparent,
+                  width: _ladderLitLineWidth),
             ),
           ),
           child: Text(tr(ref, _labels[r]!),
               style: TextStyle(
                   fontFamily: InkFonts.system,
-                  fontSize: ladderTextSize,
+                  fontSize: _ladderTextSize,
                   height: 1,
                   color: colour)),
         ),
@@ -111,10 +111,10 @@ class LevelLadder extends ConsumerWidget {
       fit: BoxFit.scaleDown,
       alignment: AlignmentDirectional.centerStart,
       child: Material(
-        color: ladderGroundColour(palette),
+        color: _ladderGroundColour(palette),
         shape: RoundedRectangleBorder(
           side: BorderSide(
-              color: ladderBorderColour(palette), width: ladderBorderWidth),
+              color: _ladderBorderColour(palette), width: _ladderBorderWidth),
         ),
         clipBehavior: Clip.antiAlias,
         child: Row(

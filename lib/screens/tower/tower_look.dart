@@ -156,55 +156,6 @@ ThemeData _inkButtons(ThemeData t) {
   );
 }
 
-/// A double ink line (an outer dark line, a gap, an inner seam) with a bevel
-/// (a light top-left edge and a shaded bottom-right edge just inside).
-class BevelPanelPainter extends CustomPainter {
-  BevelPanelPainter({
-    required this.outer,
-    required this.inner,
-    required this.light,
-    required this.shade,
-    required this.radius,
-  });
-
-  final Color outer, inner, light, shade;
-  final double radius;
-
-  @override
-  void paint(Canvas canvas, Size size) {
-    final r =
-        RRect.fromRectAndRadius(Offset.zero & size, Radius.circular(radius));
-    Paint stroke(double w, Color c) => Paint()
-      ..style = PaintingStyle.stroke
-      ..strokeWidth = w
-      ..color = c;
-    canvas.drawRRect(r.deflate(0.75), stroke(1.5, outer));
-    final inset = r.deflate(3.5);
-    canvas.drawRRect(inset, stroke(1, inner));
-    final b = inset.deflate(1.5);
-    final top = Path()
-      ..moveTo(b.left, b.bottom - radius)
-      ..lineTo(b.left, b.top + radius)
-      ..quadraticBezierTo(b.left, b.top, b.left + radius, b.top)
-      ..lineTo(b.right - radius, b.top);
-    final bottom = Path()
-      ..moveTo(b.right, b.top + radius)
-      ..lineTo(b.right, b.bottom - radius)
-      ..quadraticBezierTo(b.right, b.bottom, b.right - radius, b.bottom)
-      ..lineTo(b.left + radius, b.bottom);
-    canvas.drawPath(top, stroke(1.5, light));
-    canvas.drawPath(bottom, stroke(1.5, shade));
-  }
-
-  @override
-  bool shouldRepaint(BevelPanelPainter old) =>
-      old.outer != outer ||
-      old.inner != inner ||
-      old.light != light ||
-      old.shade != shade ||
-      old.radius != radius;
-}
-
 /// A foe standing: its sprite, as drawn (facing west, toward the hero).
 class TowerFoeFigure extends StatelessWidget {
   const TowerFoeFigure(this.enemyId, {super.key, this.size = 56});

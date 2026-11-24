@@ -11,9 +11,35 @@
 // the folder in pubspec.yaml, and add an entry to [towerCardArt].
 import '../../utils/pixel_icons/skill_icons.dart';
 
-/// Art's vignettes: "kind:variant" or "kind" to an asset path. Empty until Art
-/// has drawn them.
-const Map<String, String> towerCardArt = {};
+/// Art's vignettes: "kind:variant" or "kind" to an asset path (Art's set,
+/// v2.3). The oath's is composed in code from the clan's banner.
+const Map<String, String> towerCardArt = {
+  'skill:Fire': '$_dir/skill_fire.png',
+  'skill:Earth': '$_dir/skill_earth.png',
+  'skill:Wind': '$_dir/skill_wind.png',
+  'skill:Water': '$_dir/skill_water.png',
+  'skill:Ice': '$_dir/skill_ice.png',
+  'skill:Light': '$_dir/skill_light.png',
+  'skill:Electricity': '$_dir/skill_electricity.png',
+  'skill:Void': '$_dir/skill_void.png',
+  'skill:None': '$_dir/skill_none.png',
+  'die': '$_dir/die.png',
+  'spell:Damage': '$_dir/spell_damage.png',
+  'spell:Ward': '$_dir/spell_ward.png',
+  'spell:Heal': '$_dir/spell_heal.png',
+  'spell:Hex': '$_dir/spell_hex.png',
+};
+
+/// Art's folder (assets/visuals/tower_cards/).
+const String towerCardsDir = _dir;
+const String _dir = 'assets/visuals/tower_cards';
+
+/// Art's frame (a nine-slice, 112 x 160, an 11 px border), the blank wax seal
+/// the rarity's pips are drawn over, and the "new" stamp (for the synergy slot,
+/// unused until Core defines it).
+const String towerCardFrame = '$_dir/frame_tarot.png';
+const String towerCardSealBlank = '$_dir/seal_blank.png';
+const String towerCardStamp = '$_dir/stamp_new.png';
 
 /// What a card shows until Art's picture is there, by kind.
 const Map<String, String> towerCardStandIn = {

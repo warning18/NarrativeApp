@@ -13,6 +13,12 @@ import 'package:flutter/material.dart';
 
 import '../../theme/stitched_ink.dart';
 import 'ink/ink_palette.dart';
+import 'tower_card_art.dart';
+
+/// Art's frame is drawn at 1/1.5 of its pixels (an 11 px border becomes
+/// about 7), and the content stays inside it.
+const double _frameScale = 1.5;
+const double _frameInset = 6;
 
 /// The narrowest a tarot card is drawn, in logical pixels; narrower, or with
 /// text bigger than [towerTarotMaxTextScale], the offer is rows.
@@ -26,7 +32,9 @@ bool towerTarotFits(double width, double textScale,
     textScale <= towerTarotMaxTextScale &&
     (width - gap * (count - 1)) / count >= towerTarotMinWidth;
 
-/// The red seal: [rarity] 0 to 4 pips (null: a plain black seal, no pips).
+/// The wax seal: Art's blank seal with [rarity] 0 to 4 pips (1 to 5) drawn over
+/// it in paper colour, so they read at this size (null: a plain black seal,
+/// no pips). A seal whose picture is missing is drawn as a red disc.
 class TowerSeal extends StatelessWidget {
   const TowerSeal({super.key, this.rarity, this.size = 24});
 
@@ -34,18 +42,32 @@ class TowerSeal extends StatelessWidget {
   final double size;
 
   @override
-  Widget build(BuildContext context) => SizedBox(
-        width: size,
-        height: size,
-        child: DecoratedBox(
-          decoration: BoxDecoration(
-            shape: BoxShape.circle,
-            color: rarity == null ? inkBlack : inkRed,
-            border: Border.all(color: inkPaper, width: 1.5),
-          ),
-          child: CustomPaint(painter: _PipsPainter((rarity ?? -1) + 1)),
-        ),
-      );
+  Widget build(BuildContext context) {
+    final disc = DecoratedBox(
+      decoration: BoxDecoration(
+        shape: BoxShape.circle,
+        color: rarity == null ? inkBlack : inkRed,
+        border: Border.all(color: inkPaper, width: 1.5),
+      ),
+      child: const SizedBox.expand(),
+    );
+    return SizedBox(
+      width: size,
+      height: size,
+      child: Stack(fit: StackFit.expand, children: [
+        if (rarity == null)
+          disc
+        else
+          Image.asset(towerCardSealBlank,
+              width: size,
+              height: size,
+              filterQuality: FilterQuality.none,
+              fit: BoxFit.contain,
+              errorBuilder: (_, __, ___) => disc),
+        CustomPaint(painter: _PipsPainter((rarity ?? -1) + 1)),
+      ]),
+    );
+  }
 }
 
 class _PipsPainter extends CustomPainter {
@@ -132,87 +154,104 @@ class TowerTarotCard extends StatelessWidget {
               color: held ? inkRed : inkPaper.withValues(alpha: dim ? 0.55 : 1),
               width: held ? 3 : 1.5),
         ),
-        child: Column(children: [
-          Expanded(
-            flex: 9,
-            child: Stack(fit: StackFit.expand, children: [
-              Image.asset(vignette,
-                  fit: BoxFit.cover,
-                  filterQuality: FilterQuality.none,
-                  errorBuilder: (_, __, ___) =>
-                      const ColoredBox(color: inkDark)),
-              DecoratedBox(
-                decoration: BoxDecoration(
-                  gradient: LinearGradient(
-                    begin: Alignment.topCenter,
-                    end: Alignment.bottomCenter,
-                    colors: [
-                      inkBlack.withValues(alpha: 0.25),
-                      inkBlack.withValues(alpha: 0.7),
-                    ],
+        child: Stack(fit: StackFit.expand, children: [
+          // The content sits inside the frame's border.
+          Padding(
+              padding: const EdgeInsets.all(_frameInset),
+              child: Column(children: [
+                Expanded(
+                  flex: 9,
+                  child: Stack(fit: StackFit.expand, children: [
+                    Image.asset(vignette,
+                        fit: BoxFit.cover,
+                        filterQuality: FilterQuality.none,
+                        errorBuilder: (_, __, ___) =>
+                            const ColoredBox(color: inkDark)),
+                    DecoratedBox(
+                      decoration: BoxDecoration(
+                        gradient: LinearGradient(
+                          begin: Alignment.topCenter,
+                          end: Alignment.bottomCenter,
+                          colors: [
+                            inkBlack.withValues(alpha: 0.25),
+                            inkBlack.withValues(alpha: 0.7),
+                          ],
+                        ),
+                      ),
+                    ),
+                    Positioned(
+                      left: 5,
+                      top: 5,
+                      child: Container(
+                          padding: const EdgeInsets.all(3),
+                          color: inkBlack.withValues(alpha: 0.85),
+                          child: icon),
+                    ),
+                    Positioned(
+                      right: 5,
+                      top: 5,
+                      child: Text(kind.toUpperCase(),
+                          style: _prose(8, inkPaper).copyWith(
+                              letterSpacing: 0.6, fontWeight: FontWeight.w700)),
+                    ),
+                    Positioned(
+                        left: 5, bottom: 5, child: TowerSeal(rarity: rarity)),
+                    if (tag != null)
+                      Positioned(right: 4, bottom: 6, child: tag!),
+                  ]),
+                ),
+                Container(
+                  color: inkPaper,
+                  width: double.infinity,
+                  padding: const EdgeInsets.fromLTRB(5, 4, 5, 4),
+                  child: Text(name,
+                      key: nameKey,
+                      maxLines: 3,
+                      overflow: TextOverflow.ellipsis,
+                      textAlign: TextAlign.center,
+                      style: _display(12, inkOnPaper)),
+                ),
+                Expanded(
+                  flex: 8,
+                  child: Padding(
+                    padding: const EdgeInsets.fromLTRB(5, 4, 5, 3),
+                    // The words at a readable size, cut by whole lines with an
+                    // ellipsis (never a half line); the card in hand shows all of
+                    // them under the row.
+                    child: LayoutBuilder(builder: (context, box) {
+                      final style = _prose(9.5, inkPaper);
+                      // One line's real height (the font's own), for whole lines.
+                      final probe = TextPainter(
+                        text: TextSpan(text: 'Ag', style: style),
+                        textDirection: TextDirection.ltr,
+                        textScaler: MediaQuery.textScalerOf(context),
+                      )..layout();
+                      final line = probe.height;
+                      probe.dispose();
+                      final lines = math.max(1, (box.maxHeight / line).floor());
+                      return Text(text,
+                          maxLines: lines,
+                          overflow: TextOverflow.ellipsis,
+                          textAlign: TextAlign.center,
+                          style: style);
+                    }),
                   ),
                 ),
-              ),
-              Positioned(
-                left: 5,
-                top: 5,
-                child: Container(
-                    padding: const EdgeInsets.all(3),
-                    color: inkBlack.withValues(alpha: 0.85),
-                    child: icon),
-              ),
-              Positioned(
-                right: 5,
-                top: 5,
-                child: Text(kind.toUpperCase(),
-                    style: _prose(8, inkPaper).copyWith(
-                        letterSpacing: 0.6, fontWeight: FontWeight.w700)),
-              ),
-              Positioned(left: 5, bottom: 5, child: TowerSeal(rarity: rarity)),
-              if (tag != null) Positioned(right: 4, bottom: 6, child: tag!),
-            ]),
+                if (footer != null)
+                  SizedBox(
+                      width: double.infinity,
+                      child: FittedBox(fit: BoxFit.scaleDown, child: footer)),
+              ])),
+          // Art's frame over the card: its corner curls and thin border (a
+          // nine-slice, so it fits any card; a missing picture draws nothing).
+          IgnorePointer(
+            child: Image.asset(towerCardFrame,
+                scale: _frameScale,
+                fit: BoxFit.fill,
+                centerSlice: const Rect.fromLTRB(12, 12, 100, 148),
+                filterQuality: FilterQuality.none,
+                errorBuilder: (_, __, ___) => const SizedBox.shrink()),
           ),
-          Container(
-            color: inkPaper,
-            width: double.infinity,
-            padding: const EdgeInsets.fromLTRB(5, 4, 5, 4),
-            child: Text(name,
-                key: nameKey,
-                maxLines: 3,
-                overflow: TextOverflow.ellipsis,
-                textAlign: TextAlign.center,
-                style: _display(12, inkOnPaper)),
-          ),
-          Expanded(
-            flex: 8,
-            child: Padding(
-              padding: const EdgeInsets.fromLTRB(5, 4, 5, 3),
-              // The words at a readable size, cut by whole lines with an
-              // ellipsis (never a half line); the card in hand shows all of
-              // them under the row.
-              child: LayoutBuilder(builder: (context, box) {
-                final style = _prose(9.5, inkPaper);
-                // One line's real height (the font's own), for whole lines.
-                final probe = TextPainter(
-                  text: TextSpan(text: 'Ag', style: style),
-                  textDirection: TextDirection.ltr,
-                  textScaler: MediaQuery.textScalerOf(context),
-                )..layout();
-                final line = probe.height;
-                probe.dispose();
-                final lines = math.max(1, (box.maxHeight / line).floor());
-                return Text(text,
-                    maxLines: lines,
-                    overflow: TextOverflow.ellipsis,
-                    textAlign: TextAlign.center,
-                    style: style);
-              }),
-            ),
-          ),
-          if (footer != null)
-            SizedBox(
-                width: double.infinity,
-                child: FittedBox(fit: BoxFit.scaleDown, child: footer)),
         ]),
       ),
     );
