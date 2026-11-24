@@ -132,6 +132,9 @@ import '../theme/motion.dart';
 import '../widgets/ink_loading.dart';
 import '../theme/icon_sizes.dart';
 import '../widgets/pixel_glyph.dart';
+import 'tower/ink/ink_palette.dart' show inkGrey, inkRed, inkSlate;
+import 'tower/ink/ink_dice.dart' show inkDieSkin;
+import 'tower/tower_look.dart' show TowerPanelStyle;
 
 part 'fight/fight_actions.dart';
 part 'fight/fight_board_view.dart';

@@ -356,6 +356,8 @@ extension _FightGround on _FightScreenState {
     // The pictures are brighter and busier than the painted stages were: the
     // light theme's cream veil is stronger over them so names and cards read.
     if (scheme.brightness == Brightness.light) veil += 0.22;
+    // The Tower's ink: the plate sits further back, so the text reads on it.
+    if (TowerPanelStyle.of(context)) veil += 0.3;
     final plate = _plateHere();
     final floorVeil = FightPlateImages.floorVeilOf(plate);
     return Stack(

@@ -771,7 +771,9 @@ extension _FightView on _FightScreenState {
       still: MediaQuery.of(context).disableAnimations,
       // The die's own skin, a gold ring when kept, and what the landed face
       // adds to the burst: its rule words, its element, a surge, a curse.
-      skin: dieSkinOf(actor.equippedDiceId),
+      skin: TowerPanelStyle.of(context)
+          ? inkDieSkin
+          : dieSkinOf(actor.equippedDiceId),
       shape: dieShapeOf(actor.dieFaces.length),
       artId: actor.equippedDiceId,
       held: locked,

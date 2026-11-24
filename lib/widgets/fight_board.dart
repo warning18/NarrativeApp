@@ -6,6 +6,8 @@ import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
 
+import '../screens/tower/ink/ink_palette.dart' show inkPaper;
+import '../screens/tower/tower_look.dart' show TowerPanelStyle;
 import '../combat/field_anomaly.dart' show FightStage;
 import '../theme/palette.dart';
 import 'fight_plates.dart' show FightPlateImages;
@@ -479,28 +481,39 @@ class FightBoardSurface extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // The Tower's ink (v1.1006): a square frame, the floor in dark greys.
+    final inked = TowerPanelStyle.of(context);
     return DecoratedBox(
       decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(18),
-        border: Border.all(color: const Color(0xFF4D5B4A), width: 2),
+        borderRadius: BorderRadius.circular(inked ? 0 : 18),
+        border: Border.all(
+            color: inked ? inkPaper : const Color(0xFF4D5B4A), width: 2),
       ),
       child: ClipRRect(
-        borderRadius: BorderRadius.circular(16),
+        borderRadius: BorderRadius.circular(inked ? 0 : 16),
         child: Stack(
           fit: StackFit.expand,
           children: [
-            RepaintBoundary(
-              child: ValueListenableBuilder<int>(
-                valueListenable: FightPlateImages.loaded,
-                builder: (context, _, __) => CustomPaint(
-                  key: const Key('fight_board_skin'),
-                  painter: _FightBoardPainter(
-                      stage,
-                      plate == null ? null : FightPlateImages.tintOf(plate!),
-                      plate == null ? 0.38 : FightPlateImages.leanOf(plate!)),
-                ),
-              ),
-            ),
+            ColorFiltered(
+                colorFilter: inked
+                    ? _inkFloor
+                    : const ColorFilter.mode(Color(0x00000000), BlendMode.dst),
+                child: RepaintBoundary(
+                  child: ValueListenableBuilder<int>(
+                    valueListenable: FightPlateImages.loaded,
+                    builder: (context, _, __) => CustomPaint(
+                      key: const Key('fight_board_skin'),
+                      painter: _FightBoardPainter(
+                          stage,
+                          plate == null
+                              ? null
+                              : FightPlateImages.tintOf(plate!),
+                          plate == null
+                              ? 0.38
+                              : FightPlateImages.leanOf(plate!)),
+                    ),
+                  ),
+                )),
             if (event != null) Positioned.fill(child: event!),
             child,
           ],
@@ -647,3 +660,11 @@ class _AimPainter extends CustomPainter {
   bool shouldRepaint(_AimPainter old) =>
       old.a != a || old.b != b || old.color != color;
 }
+
+/// The stage's floor in ink: grey, and darker (a third of the light).
+const ColorFilter _inkFloor = ColorFilter.matrix(<double>[
+  0.20, 0.20, 0.20, 0, 6, //
+  0.20, 0.20, 0.20, 0, 8,
+  0.21, 0.21, 0.21, 0, 12,
+  0, 0, 0, 1, 0,
+]);

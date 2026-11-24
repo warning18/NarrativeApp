@@ -153,15 +153,19 @@ extension _FightCards on _FightScreenState {
     final after = max(0, current - pending);
     final afterRatio = maxValue <= 0 ? 0.0 : (after / maxValue).clamp(0.0, 1.0);
     // A foe's bar reads red and orange, so it never passes for an ally's green.
-    final barColor = foe
-        ? (ratio > 0.5
-            ? Palette.alert
-            : (ratio > 0.25 ? Palette.hot : Palette.flame))
-        : (ratio > 0.5
-            ? Palette.good
-            : (ratio > 0.25 ? Palette.flame : Palette.alert));
+    final inked = TowerPanelStyle.of(context);
+    final barColor = inked
+        // The Tower's ink: a foe red, a friend slate grey, red when low.
+        ? (foe || ratio <= 0.25 ? inkRed : inkSlate)
+        : foe
+            ? (ratio > 0.5
+                ? Palette.alert
+                : (ratio > 0.25 ? Palette.hot : Palette.flame))
+            : (ratio > 0.5
+                ? Palette.good
+                : (ratio > 0.25 ? Palette.flame : Palette.alert));
     return ClipRRect(
-      borderRadius: BorderRadius.circular(height / 2),
+      borderRadius: BorderRadius.circular(inked ? 0 : height / 2),
       child: Container(
         height: height,
         decoration: BoxDecoration(
@@ -196,7 +200,8 @@ extension _FightCards on _FightScreenState {
                       bottom: 0,
                       child: Container(
                         decoration: BoxDecoration(
-                          color: _previewColor.withValues(alpha: 0.9),
+                          color: (inked ? inkGrey : _previewColor)
+                              .withValues(alpha: 0.9),
                           border: Border(
                             left: BorderSide(
                                 color: Colors.white.withValues(alpha: 0.9)),

@@ -8,6 +8,10 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.1006.0+1042]
+
+- The Tower is moving to ink; the rest follows (part 3 of 4: the fight). A Tower fight is drawn in the ink look: the dark theme and square buttons (the one that goes on in red), the fighters' blocks black with a paper bar on the left (red for an Elite, a boss or the foe aimed at), the health bars slate for your side and red for the foe, the status tiles and the armour and damage gems square in paper white, the portraits and the two chibi on the stage in the ink greys, the die an ink die with a cold edge, the stage floor in dark greys with a square frame, and a darker veil on the plate so the text reads. The story's fights are unchanged. Still in colour for now: the aim line and the hit streaks, the potion button and the faces' tints. Look only. UX (view only).
+
 ## [1.1005.0+1041]
 
 - The Tower is moving to ink; the rest follows (part 2 of 4: the climb). The floor screen, its ladder, the foe's and the hero's pictures, the oaths row, the events (setback, rival, shortcut, parley, stall, bargain) and the dice panel are drawn in ink: black panels with a thin grey line and a bar on the left, paper white text, red only for what matters (danger, a loss, the die in play, the one button that goes on). The foe and the hero stand in slanted frames, their chibi recoloured to ink. The dice are real 3D solids in ink with the list of their faces under the open one. The climb's buttons are square, flat red or black. The fights, the spoils, the level up and the calling pick are still in the night look until the next parts. UX (view only).

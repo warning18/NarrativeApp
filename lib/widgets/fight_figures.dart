@@ -9,6 +9,8 @@ import 'dart:ui' as ui;
 
 import 'package:flutter/material.dart';
 
+import '../screens/tower/ink/ink_sprites.dart';
+import '../screens/tower/tower_look.dart' show TowerPanelStyle;
 import 'fight_sprites.dart';
 import 'hero_sprite.dart';
 
@@ -80,6 +82,7 @@ class _FightFiguresState extends State<FightFigures> {
     return ValueListenableBuilder<int>(
       valueListenable: FightSpriteImages.loaded,
       builder: (context, _, __) {
+        final inked = TowerPanelStyle.of(context);
         final image = FightSpriteImages.idleOf(set);
         final use = FightSpriteImages.effective(set);
         final k = widget.height / 48 * use.drawScale;
@@ -89,29 +92,39 @@ class _FightFiguresState extends State<FightFigures> {
           key: Key('fight_figure_$id'),
           width: w,
           height: widget.height,
-          child: image == null
-              ? null
-              : OverflowBox(
-                  alignment: Alignment.bottomCenter,
-                  minWidth: w,
-                  maxWidth: w,
-                  minHeight: h,
-                  maxHeight: h,
-                  child: Transform.translate(
-                    offset: Offset(0, use.footInset * k),
-                    child: Transform.scale(
-                      scaleX: (ally && !use.facesEast) ? -1 : 1,
-                      child: CustomPaint(
-                        size: Size(w, h),
-                        painter: _FigurePainter(image, use),
-                      ),
-                    ),
-                  ),
-                ),
+          child: inked
+              // The Tower's ink (v1.1006): the sprite recoloured, cached.
+              ? FutureBuilder<ui.Image>(
+                  future: InkSprites.of(use.idleAsset),
+                  builder: (context, snap) => snap.data == null
+                      ? const SizedBox.shrink()
+                      : _stand(w, h, use, ally,
+                          _InkFigurePainter(snap.data!, use, k)),
+                )
+              : image == null
+                  ? null
+                  : _stand(w, h, use, ally, _FigurePainter(image, use)),
         );
       },
     );
   }
+
+  Widget _stand(
+          double w, double h, FightSpriteSet use, bool ally, CustomPainter p) =>
+      OverflowBox(
+        alignment: Alignment.bottomCenter,
+        minWidth: w,
+        maxWidth: w,
+        minHeight: h,
+        maxHeight: h,
+        child: Transform.translate(
+          offset: Offset(0, use.footInset * (h / use.frameHeight)),
+          child: Transform.scale(
+            scaleX: (ally && !use.facesEast) ? -1 : 1,
+            child: CustomPaint(size: Size(w, h), painter: p),
+          ),
+        ),
+      );
 
   Widget _side(List<String> ids, {required bool ally}) => Expanded(
         child: Row(
@@ -163,5 +176,29 @@ class _FigurePainter extends CustomPainter {
 
   @override
   bool shouldRepaint(_FigurePainter old) =>
+      old.image != image || old.set != set;
+}
+
+/// The recoloured sprite (one pixel of ink round it, see ink_sprites.dart),
+/// drawn so the figure keeps its size: the ink ring spills over by one pixel.
+class _InkFigurePainter extends CustomPainter {
+  _InkFigurePainter(this.image, this.set, this.k);
+
+  final ui.Image image;
+  final FightSpriteSet set;
+  final double k;
+
+  @override
+  void paint(Canvas canvas, Size size) => canvas.drawImageRect(
+        image,
+        Rect.fromLTWH(0, 0, set.frameWidth + 2.0, set.frameHeight + 2.0),
+        Rect.fromLTWH(-k, -k, size.width + 2 * k, size.height + 2 * k),
+        Paint()
+          ..filterQuality = FilterQuality.none
+          ..isAntiAlias = false,
+      );
+
+  @override
+  bool shouldRepaint(_InkFigurePainter old) =>
       old.image != image || old.set != set;
 }
