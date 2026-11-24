@@ -737,3 +737,29 @@ TowerRun towerPick(TowerRun run, TowerData data, int? index,
 /// [run] left by the player: over, its marks earned.
 TowerRun towerAbandon(TowerRun run) =>
     run.isOver ? run : run.copyWith(status: TowerStatus.abandoned);
+
+/// The run's leading clan (v2.6.0, the ink accent's colour, UX's): the
+/// sworn clan once sworn; before, the clan with the highest run standing if
+/// it is [towerLeadingClanMinStanding] or more and strictly ahead of every
+/// other; else null.
+String? towerLeadingClan(TowerRun run, TowerData data) {
+  if (run.mainClanId.isNotEmpty) return run.mainClanId;
+  String? best;
+  var top = -1;
+  var tied = false;
+  for (final MapEntry(:key, :value) in towerStandingOf(run, data).entries) {
+    if (value > top) {
+      top = value;
+      best = key;
+      tied = false;
+    } else if (value == top) {
+      tied = true;
+    }
+  }
+  return best == null || tied || top < towerLeadingClanMinStanding
+      ? null
+      : best;
+}
+
+/// The least run standing a clan needs to lead: two gifts taken.
+const int towerLeadingClanMinStanding = 4;
