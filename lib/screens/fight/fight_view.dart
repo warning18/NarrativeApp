@@ -1096,8 +1096,14 @@ extension _FightView on _FightScreenState {
                 ? cursedFace(assigned)
                 : assigned;
           }
+          // The Tower's ink: a blow's face in red, the others in grey.
+          final inkTint =
+              _faceKindOf(face) == FaceKind.attack ? inkRed : inkGrey;
           return DieCubeFace(
-              glyph: _cubeGlyph(face), color: _faceKindOf(face).color);
+              glyph: _cubeGlyph(face),
+              color: TowerPanelStyle.of(context)
+                  ? inkTint
+                  : _faceKindOf(face).color);
         }(),
     ];
   }
@@ -1107,7 +1113,9 @@ extension _FightView on _FightScreenState {
   /// the dark stone (v1.214); any other face, its type icon over its value.
   Widget _cubeGlyph(DiceFaceResult face) {
     if (face.type != 'Skill') return _buildFaceGlyph(face, size: 30);
-    final color = _faceKindOf(face).color;
+    final color = TowerPanelStyle.of(context)
+        ? (_faceKindOf(face) == FaceKind.attack ? inkRed : inkGrey)
+        : _faceKindOf(face).color;
     return Container(
       key: ValueKey('die_skill_${_effectiveSkillId(face)}'),
       width: 34,

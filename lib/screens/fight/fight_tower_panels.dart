@@ -14,10 +14,10 @@ extension _TowerPanels on _FightScreenState {
     // A short phone has no room for the figures under the plates.
     final figures = !_shortPhone;
     // A tall phone gives the pictures more room, so the figures stand bigger.
-    final tall = MediaQuery.sizeOf(context).height >= 860;
-    final foeH = figures ? (tall ? 150.0 : 128.0) : 84.0;
-    final partyH = figures ? (tall ? 146.0 : 132.0) : 80.0;
-    final figureH = tall ? 76.0 : 56.0;
+    final tall = MediaQuery.sizeOf(context).height >= 740;
+    final foeH = figures ? (tall ? 172.0 : 128.0) : 84.0;
+    final partyH = figures ? (tall ? 148.0 : 132.0) : 80.0;
+    final figureH = tall ? 98.0 : 56.0;
     // The foe the picked die is aimed at (its index in the row), if any.
     final aimed = _towerAimedFoe();
     Widget panel(
@@ -66,7 +66,7 @@ extension _TowerPanels on _FightScreenState {
                 Positioned(
                   left: 8,
                   right: 8,
-                  bottom: 6,
+                  bottom: foes ? 18 : 12,
                   child: IgnorePointer(
                     child: FightFigures(
                       allies: foes
@@ -80,8 +80,11 @@ extension _TowerPanels on _FightScreenState {
                   ),
                 ),
               Positioned(
-                left: 12,
-                right: 12,
+                // One fighter's plate leaves its picture room to stand beside
+                // it (the hero left, a lone foe right), as in the approved A.
+                left: 12 + (!foes && figures && tall ? 70 : 0),
+                right: 12 +
+                    (foes && figures && tall && cards.length == 1 ? 70 : 0),
                 top: foes ? 18 : 10,
                 child: Row(
                   crossAxisAlignment: CrossAxisAlignment.start,

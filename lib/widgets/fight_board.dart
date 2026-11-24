@@ -497,7 +497,7 @@ class FightBoardSurface extends StatelessWidget {
             ColorFiltered(
                 colorFilter: inked
                     ? _inkFloor
-                    : const ColorFilter.mode(Color(0x00000000), BlendMode.dst),
+                    : const ColorFilter.mode(Colors.transparent, BlendMode.dst),
                 child: RepaintBoundary(
                   child: ValueListenableBuilder<int>(
                     valueListenable: FightPlateImages.loaded,

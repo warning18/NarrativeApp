@@ -628,7 +628,10 @@ extension _FightBoardView on _FightScreenState {
         if (plan.combos.isNotEmpty || plan.duos.isNotEmpty)
           _buildComboChips(plan),
         const SizedBox(height: 6),
-        _buildKeptRow(acting, canLock, colorScheme),
+        // The Tower's ink folds "Kept" away: a kept die wears its ring on the
+        // board, the room goes to the pictures above.
+        if (!TowerPanelStyle.of(context))
+          _buildKeptRow(acting, canLock, colorScheme),
       ],
     );
   }
@@ -802,7 +805,10 @@ extension _FightBoardView on _FightScreenState {
       from: _dieKey(id),
       to: to,
       space: _battleSpaceKey,
-      color: color,
+      // The Tower's ink: red for a blow, paper for the rest.
+      color: TowerPanelStyle.of(context)
+          ? (target != null ? inkRed : inkPaper)
+          : color,
       label: label,
     );
   }
