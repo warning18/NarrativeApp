@@ -12,14 +12,14 @@ isn't reconstructable from git history alone.
 
 - **The Tower, harder above floor 10 and with more picks that count**
   (the user's choices from the Tower roguelike briefs).
-  - Floors 11 to 20 are 8% tougher and floors 21 to 29 6% tougher; the
-    first ten floors and the floor-30 boss are unchanged.
+  - Floors 11 to 20 are 8% tougher, floors 21 to 29 and the floor-30
+    boss 6% tougher; the first ten floors are unchanged.
   - A skill card whose skill would find no free face on your die is now a
     **Rank up** card: a skill already on the die grows a rank (+25% to its
     numbers, up to rank 3), and the fight plays it at that rank.
   - Three more reward floors, 13, 23 and 28 (a skill, a die or a spell).
-  - On 2,000 simulated climbs the top is won by 12.9% of runs with no
-    unlocks (was 14.5%) and 25.4% with all (was 26.8%); the median floor
+  - On 2,000 simulated climbs the top is won by 12.0% of runs with no
+    unlocks (was 14.5%) and 23.7% with all (was 26.8%); the median floor
     reached falls from 19 to 17.
 
 ## [2.2.0+1053]

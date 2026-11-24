@@ -100,11 +100,11 @@ const Map<int, double> towerPeacefulExtras = {25: .42, 30: .34};
 
 /// The climb above floor 10 made harder (v2.4.0, docs/simulation/
 /// tower-roguelike-briefs.md brief 1, the user's option B): every floor's
-/// extra ×1.08 on floors 11 to 20 and ×1.06 on 21 to 29, the first ten
-/// floors and the top's boss as they were. The top had been won by 14.3%
-/// of runs with no unlocks and 26.9% with all, over the design's 5 to 12%
-/// and 15 to 25%. Held variant (not merged until the user decides): the
-/// floor-30 boss ×1.06 (was ×1.0).
+/// extra ×1.08 on floors 11 to 20 and ×1.06 on 21 to 29 and on the
+/// floor-30 boss (the user's pick of the late-floor variants), the first
+/// ten floors as they were. The top had been won by 14.3% of runs with no
+/// unlocks and 26.9% with all, over the design's 5 to 12% and 15 to 25%;
+/// now 11.95% and 23.65% (seeds 1 to 2000).
 double towerClimbScale(int floor) => floor >= 11 && floor <= 20
     ? 1.08
     : floor >= 21 && floor <= 29
