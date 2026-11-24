@@ -8,6 +8,16 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [2.1.3+1050]
+
+- **Cleanup: dead code and unread strings removed.** Four intro painters
+  nothing draws any more (the burning city, the fire, the white ships and
+  the tavern floor) and the eight private helpers only they used, a
+  floating-shroud widget, an inventory slot-icon function and a debug getter
+  of the city chart are gone, with seven Tower strings (English and French)
+  that no screen reads, and the Tower's unused bevel-panel painter. Each
+  was checked unused (no caller, no name built at run time). Nothing changes on screen or in a number.
+
 ## [2.1.2+1049]
 
 - **Simulator truth (Wave 5), no change to the game.** The simulator's bot now values a die's face keywords as its fights play them: Pain twice the blow less the health it costs, Cleave its splash, Pierce what a guard takes, Steady its point, Growth what it gains over a fight (constants measured on 200 runs). Its fights now play Growth, as the fight screen does. A batch can run on several cores (`test/sim_batch_test.dart`: 100 runs in 7.9 s instead of 21.2 s, the same runs). Before and after: fight wins about 1 point higher, the competent player's die trials agree with the values 5 points more often, and the Headsman, valued as it fights, becomes most runs' final die (see `docs/simulation/sim-truth.md`). QA's Tower pin moves by a hair and is re-pinned. Core.
