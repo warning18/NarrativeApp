@@ -15,8 +15,12 @@ isn't reconstructable from git history alone.
   the tavern floor) and the eight private helpers only they used, a
   floating-shroud widget, an inventory slot-icon function and a debug getter
   of the city chart are gone, with seven Tower strings (English and French)
-  that no screen reads. Each was checked unused (no caller, no name built at
+  that no screen reads, and the Tower's unused bevel-panel painter. Each was checked unused (no caller, no name built at
   run time). Nothing changes on screen or in a number.
+
+## [2.1.0+1047]
+
+- The ink buttons, panels and tabs are no two alike, and the Tower is snowing on them. Every ink piece is seeded from its key or label (the same piece looks the same every time): a red from six (rust, dried blood, faded), a paper warm or cold, a tilt of 1 to 3 degrees, a torn tab, a chipped or folded corner, a burn, stains, splatter, a pin; the labels stay AA on every tint. Weather piles up on them while a screen is open: snow, sand, ash and rain with drips, and fog as a veil; heavy after about 30 s in the hardest fall, never over the label. A tap knocks the pile off in a puff, then it builds again; the level is kept in memory through rebuilds and leaving (it melts 1 level per 120 s away); with reduce motion it is a fixed medium cap and nothing moves. One clock per screen. The Tower snows by band (fall 0.4, 0.7, 1.0); the home menu has the variations only; the story's screens are as before (`uiSkyProvider` reads the sky where the party stands, and nothing reads it today). Drawn in code, no Art overlays. UX (view only).
 
 ## [2.0.0+1046]
 

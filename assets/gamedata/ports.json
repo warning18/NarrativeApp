@@ -46,7 +46,7 @@
   "port_drowned_stair": {
     "portID": "port_drowned_stair",
     "portName": "The Drowned Stair",
-    "portName_fr": "L'Escalier Noyé",
+    "portName_fr": "L’Escalier Noyé",
     "chapter": 4,
     "description": "A flooded landing below the Spire where the catacombs meet the water. The Drowned Cloister’s deserters keep a lantern lit for boats that know the channel, and the Court’s own stair goes down from here.",
     "description_fr": "Un débarcadère inondé sous la Flèche, là où les catacombes rejoignent l’eau. Les déserteurs du Cloître noyé gardent une lanterne allumée pour les bateaux qui connaissent le chenal, et l’escalier même de la Cour descend d’ici.",
