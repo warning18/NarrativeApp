@@ -8,6 +8,10 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [2.1.1+1048]
+
+- **Code health: the Journey screen split into smaller files, no behaviour change.** `lib/screens/journey_screen.dart` (6,100 lines) is now the screen and its state, with seven part files beside the three it had in `lib/screens/journey/`: the step and its helpers, moving between views, taking a step, the step's detail, the town view, and the map chart in two files of its own (`journey_maps.dart`, `journey_maps_paint.dart`) for the Maps session. Code moved only: every declaration is the same, 22 methods of the state moved into extensions call `_update` (the folder's existing stand-in for `setState`). Core.
+
 ## [2.1.0+1047]
 
 - The ink buttons, panels and tabs are no two alike, and the Tower is snowing on them. Every ink piece is seeded from its key or label (the same piece looks the same every time): a red from six (rust, dried blood, faded), a paper warm or cold, a tilt of 1 to 3 degrees, a torn tab, a chipped or folded corner, a burn, stains, splatter, a pin; the labels stay AA on every tint. Weather piles up on them while a screen is open: snow, sand, ash and rain with drips, and fog as a veil; heavy after about 30 s in the hardest fall, never over the label. A tap knocks the pile off in a puff, then it builds again; the level is kept in memory through rebuilds and leaving (it melts 1 level per 120 s away); with reduce motion it is a fixed medium cap and nothing moves. One clock per screen. The Tower snows by band (fall 0.4, 0.7, 1.0); the home menu has the variations only; the story's screens are as before (`uiSkyProvider` reads the sky where the party stands, and nothing reads it today). Drawn in code, no Art overlays. UX (view only).
