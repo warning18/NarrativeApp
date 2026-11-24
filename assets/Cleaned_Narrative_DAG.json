@@ -2569,7 +2569,7 @@
       {
         "text": "Follow her down",
         "text_fr": "La suivre",
-        "next_id": "1155_vica_follows",
+        "next_id": "1200",
         "flagsToAdd": [
           "vica_follow"
         ]
@@ -2577,7 +2577,7 @@
       {
         "text": "Pour what is left of your flask for her",
         "text_fr": "Verser pour elle ce qui reste de votre gourde",
-        "next_id": "1155_vica_follows",
+        "next_id": "1200",
         "flagsToAdd": [
           "vica_shared"
         ],
@@ -2588,7 +2588,7 @@
       {
         "text": "Count coins into the sand for her",
         "text_fr": "Compter des pièces dans le sable",
-        "next_id": "1155_vica_follows",
+        "next_id": "1200",
         "goldMod": -10,
         "pays": true,
         "flagsToAdd": [
@@ -27277,8 +27277,8 @@
     "automations": {},
     "choices": [
       {
-        "text": "Show Kelda the shield-strap",
-        "text_fr": "Kelda et la lanière",
+        "text": "Sit with Kelda and her shield-strap",
+        "text_fr": "S’asseoir avec Kelda et sa lanière",
         "next_id": "beat2_kelda",
         "showIfFlags": [
           "kelda_loyal_done",
@@ -27291,7 +27291,7 @@
       },
       {
         "text": "Hear what Sable found on her bedroll",
-        "text_fr": "Ce que Sable a trouvé sur son couchage",
+        "text_fr": "Écouter ce que Sable a trouvé sur son couchage",
         "next_id": "beat2_sable",
         "showIfFlags": [
           "sable_loyal_done",
@@ -27317,7 +27317,7 @@
       },
       {
         "text": "Hear Liora’s report from the ridge",
-        "text_fr": "Le rapport de Liora, depuis la crête",
+        "text_fr": "Écouter le rapport de Liora, venu de la crête",
         "next_id": "beat2_liora",
         "showIfFlags": [
           "liora_loyal_done",
@@ -27343,7 +27343,7 @@
       },
       {
         "text": "Find out what Grosh is holding",
-        "text_fr": "Savoir ce que Grosh tient",
+        "text_fr": "Découvrir ce que Grosh tient",
         "next_id": "beat2_grosh",
         "showIfFlags": [
           "grosh_loyal_done",
@@ -27369,7 +27369,7 @@
       },
       {
         "text": "Look at Malrik’s ledger again",
-        "text_fr": "Revoir le registre de Malrik",
+        "text_fr": "Regarder de nouveau le registre de Malrik",
         "next_id": "beat2_malrik",
         "showIfFlags": [
           "malrik_loyal_done",
@@ -29903,41 +29903,6 @@
     "revisit_description": "The shore path again, and Vica a little way off.",
     "revisit_description_fr": "Le sentier de la grève de nouveau, et Vica un peu plus loin."
   },
-  "1155_vica_follows": {
-    "id": "1155_vica_follows",
-    "description": "She did not follow me out of the hollow. She followed me out of the dark, which is not the same, and it took me until the fire to see the difference. By the water she lay down at the edge of the light, close enough to be mine, far enough to leave.",
-    "description_fr": "Elle ne me suivit pas hors du creux. Elle me suivit hors du noir, ce qui n’est pas pareil, et il me fallut attendre le feu pour voir la différence. Près de l’eau, elle se coucha au bord de la lumière, assez près pour être à moi, assez loin pour partir.",
-    "context_taxonomy": {
-      "ui_theme": "desert",
-      "mood": "tender",
-      "speaker": "Narrator"
-    },
-    "location": "white_wells",
-    "flag_callbacks": [
-      {
-        "flag": "vica_shared",
-        "en": "She ate what was left in the flask, which was nothing, and licked the flask.",
-        "fr": "Elle mangea ce qui restait dans la gourde, c’est-à-dire rien, et lécha la gourde.",
-        "priority": 2
-      },
-      {
-        "flag": "vica_paid",
-        "en": "She sat on the coins until I understood they were hers.",
-        "fr": "Elle s’assit sur les pièces jusqu’à ce que je comprenne qu’elles étaient à elle.",
-        "priority": 2
-      }
-    ],
-    "choices": [
-      {
-        "text": "Go to the fire",
-        "text_fr": "Aller au feu",
-        "next_id": "1200",
-        "flagsToAdd": [
-          "vica_at_the_fire"
-        ]
-      }
-    ]
-  },
   "loyal_vica": {
     "id": "loyal_vica",
     "campErrand": true,
@@ -29982,14 +29947,6 @@
       }
     ],
     "prompt": "What do you do for Vica?",
-    "prompt_fr": "Que faites-vous pour Vica ?",
-    "flag_callbacks": [
-      {
-        "flag": "vica_at_the_fire",
-        "en": "She lay where she had lain the first night, at the edge of the light, and this time she looked back.",
-        "fr": "Elle était couchée là où elle s’était couchée la première nuit, au bord de la lumière, et cette fois elle regarda en arrière.",
-        "priority": 2
-      }
-    ]
+    "prompt_fr": "Que faites-vous pour Vica ?"
   }
 }
