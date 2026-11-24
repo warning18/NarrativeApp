@@ -154,6 +154,7 @@ class FightBlock extends StatelessWidget {
             : Palette.apolloCream;
     final plate = inked ? inkBlack : plateColor;
     final g = group;
+    if (inked) return _inkPlate(context, frame: frame);
     return DecoratedBox(
       key: Key('fight_block_${name}_${g?.id ?? 'ally'}'),
       decoration: inked
@@ -344,6 +345,99 @@ class FightBlock extends StatelessWidget {
             ],
           );
         }),
+      ),
+    );
+  }
+
+  /// The Tower's version (v1.1008): not a card but a skewed black nameplate
+  /// laid over the figure's picture: the name (its marks beside it), the bar,
+  /// and a row for the gems, the chips and the intent. The head is left out:
+  /// the chibi stands in the panel behind it.
+  Widget _inkPlate(BuildContext context, {required Color frame}) {
+    final ranked = rank != FightRank.normal;
+    final g = group;
+    return Container(
+      key: Key('fight_block_${name}_${g?.id ?? 'ally'}'),
+      child: Transform(
+        transform: Matrix4.skewX(-0.2),
+        child: Container(
+          padding: const EdgeInsets.fromLTRB(8, 3, 8, 4),
+          decoration: BoxDecoration(
+            color: inkBlack.withValues(alpha: 0.92),
+            border: Border(
+                left: BorderSide(color: frame, width: 3),
+                bottom:
+                    BorderSide(color: frame == inkPaper ? inkSlate : frame)),
+          ),
+          child: Transform(
+            transform: Matrix4.skewX(0.2),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                Row(children: [
+                  if (g != null) ...[
+                    _emblem(g, inkPaper),
+                    const SizedBox(width: 3),
+                  ] else if (order != null) ...[
+                    Text('$order',
+                        style: const TextStyle(
+                            fontSize: 9,
+                            fontWeight: FontWeight.bold,
+                            color: inkGrey)),
+                    const SizedBox(width: 3),
+                  ],
+                  Expanded(
+                    child: FittedBox(
+                      fit: BoxFit.scaleDown,
+                      alignment: Alignment.centerLeft,
+                      child: Text(name,
+                          maxLines: 1,
+                          style: const TextStyle(
+                              fontFamily: InkFonts.display,
+                              fontSize: 13,
+                              height: 1,
+                              color: inkPaper)),
+                    ),
+                  ),
+                  for (final m in marks) _markChip(context, m, inkPaper),
+                  if (ranked) _rankMark(inkPaper, iconOnly: true),
+                  if (armor != null)
+                    Padding(
+                        padding: const EdgeInsets.only(left: 4),
+                        child: _gem(context, Icons.shield_outlined, '$armor',
+                            inkPaper)),
+                  if (damage != null)
+                    Padding(
+                        padding: const EdgeInsets.only(left: 4),
+                        child: _gem(context, Icons.bolt, '$damage', inkRed)),
+                ]),
+                const SizedBox(height: 3),
+                Row(children: [
+                  Expanded(child: bar),
+                  if (intent != null)
+                    ConstrainedBox(
+                      constraints: const BoxConstraints(maxWidth: 92),
+                      child: Padding(
+                          padding: const EdgeInsets.only(left: 4),
+                          child: intent),
+                    ),
+                ]),
+                if (chips.isNotEmpty)
+                  Padding(
+                    padding: const EdgeInsets.only(top: 3),
+                    child: SizedBox(
+                      height: 22,
+                      child: SingleChildScrollView(
+                        scrollDirection: Axis.horizontal,
+                        child: Row(children: chips),
+                      ),
+                    ),
+                  ),
+              ],
+            ),
+          ),
+        ),
       ),
     );
   }

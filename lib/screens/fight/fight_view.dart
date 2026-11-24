@@ -491,7 +491,10 @@ extension _FightView on _FightScreenState {
           ),
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 12),
-            child: _buildSlots(items, previews),
+            // The Tower's ink: the slanted picture panels (fight_tower_panels).
+            child: TowerPanelStyle.of(context)
+                ? _buildTowerPanels(items, previews)
+                : _buildSlots(items, previews),
           ),
           const SizedBox(height: 8),
           // The dice board takes what is left; the aim line is drawn over the
@@ -518,7 +521,9 @@ extension _FightView on _FightScreenState {
           if (_spoils != null)
             FightSpoilsStrip(
                 spoils: _spoils!, goldLabel: tr(ref, 'gold_label')),
-          if (ref.watch(appModeProvider) != AppMode.inGame && !_shortPhone)
+          if (ref.watch(appModeProvider) != AppMode.inGame &&
+              !_shortPhone &&
+              !TowerPanelStyle.of(context))
             _buildLogTicker(),
           const SizedBox(height: 4),
           TutorialTarget(

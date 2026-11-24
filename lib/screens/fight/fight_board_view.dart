@@ -555,20 +555,22 @@ extension _FightBoardView on _FightScreenState {
                         ),
                         // The fighters stand along the top edge of the
                         // stage, under the dice (v1.911).
-                        Positioned(
-                          left: 6,
-                          right: 6,
-                          top: 4,
-                          child: IgnorePointer(
-                            child: FightFigures(
-                              allies: [
-                                for (final m in _party) _headIdFor(m),
-                              ],
-                              foes: [for (final e in _enemies) e.enemyId],
-                              height: fightFigureHeight(size.width),
+                        // (Under the Tower's ink they stand in the panels above.)
+                        if (!TowerPanelStyle.of(context))
+                          Positioned(
+                            left: 6,
+                            right: 6,
+                            top: 4,
+                            child: IgnorePointer(
+                              child: FightFigures(
+                                allies: [
+                                  for (final m in _party) _headIdFor(m),
+                                ],
+                                foes: [for (final e in _enemies) e.enemyId],
+                                height: fightFigureHeight(size.width),
+                              ),
                             ),
                           ),
-                        ),
                         for (final actor in onBoard)
                           () {
                             final i = acting.indexOf(actor);
@@ -619,6 +621,8 @@ extension _FightBoardView on _FightScreenState {
             ),
           ),
         ),
+        if (TowerPanelStyle.of(context) && acting.isNotEmpty)
+          _buildTowerFaceStrip(acting.first),
         if (_momentum >= _momentumNeeded && !_rolling)
           _buildSurgePicker(acting),
         if (plan.combos.isNotEmpty || plan.duos.isNotEmpty)
