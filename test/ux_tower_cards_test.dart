@@ -58,7 +58,7 @@ void main() {
         seed: at.seed,
         floor: 5,
         hero: towerHeroView(at, towerHeroOf(at, data)),
-        oaths: at.oathsLeft,
+        clanPool: at.oathsLeft,
         items: data.items,
         dice: data.dice,
         skills: data.skills,

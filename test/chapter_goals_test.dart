@@ -20,7 +20,7 @@ ChapterFightFacts _won({
   int health = 80,
   List<String> foes = const ['slum_thug'],
   bool firstTry = true,
-  bool weakness = false,
+  int weakness = 0,
   bool potion = false,
 }) =>
     ChapterFightFacts(
@@ -30,7 +30,7 @@ ChapterFightFacts _won({
       maxHealth: 100,
       enemyIds: foes,
       firstTry: firstTry,
-      weaknessStruck: weakness,
+      weaknessHits: weakness,
       potionUsed: potion,
     );
 
@@ -89,10 +89,29 @@ void main() {
       expect(g.metBy(_won(rounds: 4)), isFalse);
     });
 
-    test('weakness: a die struck one', () {
+    test('weakness: struck once with no count, else that many times', () {
       const g = ChapterGoal(ChapterGoalKind.weakness);
-      expect(g.metBy(_won(weakness: true)), isTrue);
+      expect(g.metBy(_won(weakness: 1)), isTrue);
       expect(g.metBy(_won()), isFalse);
+      const three = ChapterGoal(ChapterGoalKind.weakness, value: 3);
+      expect(three.metBy(_won(weakness: 2)), isFalse);
+      expect(three.metBy(_won(weakness: 3)), isTrue);
+      expect(three.metBy(_won(weakness: 5)), isTrue);
+      expect(_won(weakness: 2).weaknessStruck, isTrue);
+      expect(_won().weaknessStruck, isFalse);
+    });
+
+    test('weakness: chapters 4 to 6 ask 3 hits in one fight, 7 one', () {
+      for (final chapter in [4, 5, 6]) {
+        final g = chapterGoalTable[chapter]!
+            .firstWhere((g) => g.kind == ChapterGoalKind.weakness);
+        expect(g.weaknessHitsNeeded, 3, reason: 'chapter $chapter');
+        expect(g.metBy(_won(weakness: 2)), isFalse);
+        expect(g.metBy(_won(weakness: 3)), isTrue);
+      }
+      final ch7 = chapterGoalTable[7]!
+          .firstWhere((g) => g.kind == ChapterGoalKind.weakness);
+      expect(ch7.metBy(_won(weakness: 1)), isTrue);
     });
 
     test('first try: its boss, never beaten by it before', () {
@@ -148,8 +167,7 @@ void main() {
     // Met already: not again.
     expect(await notifier.noteChapterGoals(5, goals, _won(rounds: 2)), isEmpty);
     expect(
-        await notifier.noteChapterGoals(
-            5, goals, _won(rounds: 2, weakness: true)),
+        await notifier.noteChapterGoals(5, goals, _won(rounds: 2, weakness: 3)),
         ['weakness']);
     expect(notifier.chapterGoalsMetIn(5), ['rounds', 'weakness']);
     // Saved and read back.
@@ -176,8 +194,7 @@ void main() {
     expect(notifier.chapterChestDue(4), isNull);
     expect(notifier.chapterChestDue(5), 4);
     await notifier.noteChapterGoals(4, chapterGoalTable[4]!, _won(rounds: 1));
-    await notifier.noteChapterGoals(
-        4, chapterGoalTable[4]!, _won(weakness: true));
+    await notifier.noteChapterGoals(4, chapterGoalTable[4]!, _won(weakness: 3));
     final chest =
         await notifier.claimChapterChest(4, items: items, random: Random(3));
     expect(chest, isNotNull);

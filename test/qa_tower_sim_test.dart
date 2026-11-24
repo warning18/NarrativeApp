@@ -74,6 +74,19 @@ const _topNone = (min: 0.07, max: 0.20);
 // 500 guard seeds: median 17, floor 20 41.6%, the top 11.4%, and 25.4% with
 // every unlock. Every unlock's band re-centred, as wide as before (it was
 // 0.23 to 0.37); the others still hold the new numbers.
+// Re-banded for the clans' offers (docs/simulation/tower-clan-offers.md:
+// up to three clans' skill gifts on the oath's floors, the oath at
+// standing 6, one a run; Core's PR, the user's calls; no Tower number
+// moved). On 2,000 seeds: no unlocks, the top 11.95% to 16.0%, median 17
+// to 19, floor 20 42.3% to 48.0%; every unlock: the top 23.65% to 31.15%.
+// On the 500 guard seeds: median 19, floor 20 47.0%, the top 14.0%, and
+// 32.2% with every unlock (33.4% with the floor events off). Every
+// unlock's band re-centred, as wide as before (it was 0.18 to 0.32); the
+// others still hold the new numbers. With the user's payback B (the
+// Tower's foes 1.17 to 1.23, towerPeacefulFoeScale): on 2,000 seeds the
+// top 11.3% and 23.8%, median 17, floor 20 42.6%; on the guard seeds
+// median 17, floor 20 41.4%, the top 9.8% and 25.0%. Every unlock's band
+// back to 0.18 to 0.32 (it was 0.26 to 0.40 as first built).
 const _topAll = (min: 0.18, max: 0.32);
 
 /// The floor events' version the batch and the guards play (TOWER_EVENTS):
