@@ -16,7 +16,7 @@ No name on the ball is drawn under 12 px any more:
 | Name | Least size before | After |
 |---|---|---|
 | Lands | 10 px | 12 px |
-| Ranges and woods | none (they shrank with the zoom, to about 7 px) | 12 px |
+| Ranges and woods | none (they shrank with the zoom) | 12 px |
 | Villages and works | 11 px | 12 px |
 | A clan's seat | 12 px | 13 px |
 | The note under a mark | 10 px | 12 px |
