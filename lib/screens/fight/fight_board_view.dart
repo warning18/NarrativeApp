@@ -447,6 +447,7 @@ extension _FightBoardView on _FightScreenState {
           name: enemy.displayName,
           plateColor: group.color,
           group: group,
+          groupName: _groupNameFor(group),
           rank: boss
               ? FightRank.boss
               : (_isElite && enemy.isAlive)

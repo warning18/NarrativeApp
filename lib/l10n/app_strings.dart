@@ -7499,11 +7499,47 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   },
   'enemy_group_void_cults': {
     AppLanguage.en: 'The Void Cults',
-    AppLanguage.fr: 'Les cultes du vide',
+    AppLanguage.fr: 'Les cultes du Néant',
   },
   'enemy_group_common_folk': {
     AppLanguage.en: 'Common Folk',
     AppLanguage.fr: 'Le petit peuple',
+  },
+  'enemy_group_choir': {
+    AppLanguage.en: 'The Choir',
+    AppLanguage.fr: 'Le Chœur',
+  },
+  'enemy_group_pit': {
+    AppLanguage.en: 'The Pit',
+    AppLanguage.fr: 'La Fosse',
+  },
+  'enemy_group_giants': {
+    AppLanguage.en: 'The Giants',
+    AppLanguage.fr: 'Les géants',
+  },
+  'enemy_group_tidekin': {
+    AppLanguage.en: 'The Tide-Kin',
+    AppLanguage.fr: 'Les Gens de la Marée',
+  },
+  'enemy_group_undead': {
+    AppLanguage.en: 'The Dead',
+    AppLanguage.fr: 'Les morts',
+  },
+  'enemy_group_void': {
+    AppLanguage.en: 'The Void',
+    AppLanguage.fr: 'Le Néant',
+  },
+  'enemy_group_beast': {
+    AppLanguage.en: 'Beasts',
+    AppLanguage.fr: 'Les bêtes',
+  },
+  'enemy_group_construct': {
+    AppLanguage.en: 'Constructs',
+    AppLanguage.fr: 'Les constructions',
+  },
+  'enemy_group_people': {
+    AppLanguage.en: 'People of no clan',
+    AppLanguage.fr: 'Les sans-clan',
   },
   'enemy_recovers_word': {
     AppLanguage.en: 'recovers',
