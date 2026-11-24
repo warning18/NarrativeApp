@@ -1,1 +1,0 @@
-median 20.64 ms, p95 111.23 ms, max 140.11 ms over 33 frames (build+layout+paint of the whole screen, no raster, this machine)

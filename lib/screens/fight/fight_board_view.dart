@@ -587,6 +587,18 @@ extension _FightBoardView on _FightScreenState {
                         ? _throwPlanFor(acting, onBoard, size)
                         : null;
                     final u = _rollController.value;
+                    // At rest, the next throw is planned after the frame, so
+                    // the roll's first frame does not pay for it.
+                    if (!_rolling &&
+                        !disable &&
+                        !dieCheapSolids &&
+                        onBoard.isNotEmpty) {
+                      WidgetsBinding.instance.addPostFrameCallback((_) {
+                        if (mounted && !_rolling) {
+                          _throwPlanFor(acting, onBoard, size);
+                        }
+                      });
+                    }
                     return Stack(
                       clipBehavior: Clip.none,
                       children: [

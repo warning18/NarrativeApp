@@ -73,6 +73,19 @@ void main() {
     }
   });
 
+  test('the throw never rises above the highest seat', () {
+    final top = _seats.map((s) => s.seat.dy).reduce(math.min);
+    for (var seed = 0; seed < 20; seed++) {
+      final p = DiceThrowPlan.build(seats: _seats, board: _board, seed: seed);
+      for (var i = 0; i < 3; i++) {
+        for (var u = 0.0; u <= 1.0; u += 0.01) {
+          expect(p.position(i, u).dy, greaterThanOrEqualTo(top - 1.5),
+              reason: 'seed $seed die $i at $u');
+        }
+      }
+    }
+  });
+
   test('the same seed throws the same, a kept die does not move', () {
     final a = DiceThrowPlan.build(seats: _seats, board: _board, seed: 7);
     final b = DiceThrowPlan.build(seats: _seats, board: _board, seed: 7);

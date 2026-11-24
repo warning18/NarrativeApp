@@ -165,6 +165,9 @@ class DiceThrowPlan {
           math.max(1.0, (seats[i].seat - starts[i]).distance) *
           speeds[i];
     }
+    // The throw never rises above the highest seat: the dice stay below what
+    // stands along the top of the board.
+    final ceiling = seats.map((s) => s.seat.dy).reduce(math.min);
     final n = bodies.length;
     final steps = (diceThrowSeconds / dt).round();
     final posAt = <List<Offset>>[];
@@ -204,8 +207,8 @@ class DiceThrowPlan {
           b.x = board.width - b.r;
           b.vx = -b.vx.abs() * 0.5;
         }
-        if (b.y < b.r) {
-          b.y = b.r;
+        if (b.y < ceiling) {
+          b.y = ceiling;
           b.vy = b.vy.abs() * 0.5;
         }
         if (inside && b.y > board.height - b.r) {
