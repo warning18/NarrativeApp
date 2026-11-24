@@ -292,10 +292,11 @@ extension _FightRewards on _FightScreenState {
               rounds: max(1, _roundsStarted),
               healthLeft: player.currentHealth,
               maxHealth: player.maxHealth,
-              boss: bossBeaten,
+              enemyIds: [for (final e in defeated) e.enemyId],
               firstTry: defeated.every(
                   (e) => (session.bossDefeatCounts[e.enemyId] ?? 0) == 0),
               weaknessStruck: _weaknessHits > 0,
+              potionUsed: _potionUsed,
             ));
       }
     }

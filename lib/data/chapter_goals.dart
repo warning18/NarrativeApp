@@ -1,6 +1,6 @@
 // A chapter's optional goals and its chest (v2.5.0, Wave 4 brief 3 of
-// docs/simulation/wave4-briefs.md, the user's option B): each chapter lists
-// three goals (assets/gamedata/chapter_goals.json); every goal met in the
+// docs/simulation/wave4-briefs.md, the user's option B): chapters 4 to 8
+// list three goals each ([chapterGoalTable]); every goal met in the
 // chapter makes the chest given at its end one tier better, Wooden with
 // none met to Gold with all three. Missing them costs nothing: no clock,
 // no streak. The boss's own chest is untouched.
@@ -13,49 +13,54 @@ import 'dart:math';
 
 import '../combat/loot_box.dart';
 
-/// What a goal asks of one fight won.
+/// What a goal asks of one fight won (its words: `chapter_goal_<key>`,
+/// and `chapter_goal_<key>_ch<N>` for a chapter's own line).
 enum ChapterGoalKind {
   /// Won in [ChapterGoal.value] rounds or fewer.
-  swift,
+  rounds('rounds'),
 
-  /// Won with the hero at [ChapterGoal.value]% of max health or more.
-  unhurt,
+  /// Won with a die striking a foe's weakness.
+  weakness('weakness'),
 
-  /// A boss of the chapter beaten on the first try.
-  bossFirstTry,
+  /// One of [ChapterGoal.bossIds] beaten with no try lost to it before.
+  firstTry('first_try'),
 
-  /// Won with a face of the die in play striking a foe's weakness.
-  weakness,
+  /// A close fight won without a potion: no potion drunk, and the hero left
+  /// under [ChapterGoal.value]% of max health.
+  noPotion('no_potion');
+
+  const ChapterGoalKind(this.key);
+
+  /// The key of its words.
+  final String key;
 }
 
-/// One goal: its id (the key of its words in app_strings, `goal_<id>`),
-/// what it asks and its number (rounds, or a share of health).
+/// One goal: what it asks, its number (rounds, or a share of health) and,
+/// for [ChapterGoalKind.firstTry], the bosses it means.
 class ChapterGoal {
-  const ChapterGoal(this.id, this.kind, [this.value = 0]);
+  const ChapterGoal(this.kind, {this.value = 0, this.bossIds = const {}});
 
-  factory ChapterGoal.fromJson(Map<String, dynamic> json) => ChapterGoal(
-        json['id'].toString(),
-        ChapterGoalKind.values.byName(json['kind'].toString()),
-        (json['value'] as num?)?.toInt() ?? 0,
-      );
-
-  final String id;
   final ChapterGoalKind kind;
   final int value;
+  final Set<String> bossIds;
+
+  /// Its id in the save: one goal of each kind a chapter.
+  String get id => kind.key;
 
   /// Whether the fight won described by [facts] meets this goal.
   bool metBy(ChapterFightFacts facts) {
     if (!facts.won) return false;
     switch (kind) {
-      case ChapterGoalKind.swift:
+      case ChapterGoalKind.rounds:
         return facts.rounds <= value;
-      case ChapterGoalKind.unhurt:
-        return facts.maxHealth > 0 &&
-            facts.healthLeft * 100 >= value * facts.maxHealth;
-      case ChapterGoalKind.bossFirstTry:
-        return facts.boss && facts.firstTry;
       case ChapterGoalKind.weakness:
         return facts.weaknessStruck;
+      case ChapterGoalKind.firstTry:
+        return facts.firstTry && facts.enemyIds.any(bossIds.contains);
+      case ChapterGoalKind.noPotion:
+        return !facts.potionUsed &&
+            facts.maxHealth > 0 &&
+            facts.healthLeft * 100 < value * facts.maxHealth;
     }
   }
 }
@@ -67,9 +72,10 @@ class ChapterFightFacts {
     required this.rounds,
     required this.healthLeft,
     required this.maxHealth,
-    this.boss = false,
+    this.enemyIds = const [],
     this.firstTry = true,
     this.weaknessStruck = false,
+    this.potionUsed = false,
   });
 
   final bool won;
@@ -79,27 +85,49 @@ class ChapterFightFacts {
   final int healthLeft;
   final int maxHealth;
 
-  /// A boss among the foes, and no earlier try lost against it.
-  final bool boss;
+  /// The foes beaten, and whether none of them had beaten the party before.
+  final List<String> enemyIds;
   final bool firstTry;
 
-  /// A face of the die in play struck a foe's weakness.
+  /// A die struck a foe's weakness in the fight.
   final bool weaknessStruck;
+
+  /// A potion was drunk in the fight.
+  final bool potionUsed;
 }
 
-/// Each chapter's three goals, picked so each is met by 30 to 70% of the
-/// simulator's runs (docs/simulation/chapter-goals.md).
-const Map<int, List<ChapterGoal>> chapterGoalTable = {};
-
-/// chapter_goals.json: chapter number (as a string) -> its goals.
-Map<int, List<ChapterGoal>> chapterGoalsFrom(Map<String, dynamic> table) => {
-      for (final MapEntry(:key, :value) in table.entries)
-        if (int.tryParse(key) case final chapter? when value is List)
-          chapter: [
-            for (final g in value)
-              if (g is Map) ChapterGoal.fromJson(g.cast<String, dynamic>()),
-          ],
-    };
+/// Each chapter's three goals (4 to 8), picked so each is met by about 30
+/// to 70% of the simulator's runs (100 typical + 100 competent, v2.1.5;
+/// docs/simulation/chapter-goals.md). Chapter 7, the short one, keeps its
+/// duel: the rival claimant beaten first time is the likeliest of all.
+const Map<int, List<ChapterGoal>> chapterGoalTable = {
+  4: [
+    ChapterGoal(ChapterGoalKind.rounds, value: 2),
+    ChapterGoal(ChapterGoalKind.weakness),
+    ChapterGoal(ChapterGoalKind.noPotion, value: 50),
+  ],
+  5: [
+    ChapterGoal(ChapterGoalKind.rounds, value: 3),
+    ChapterGoal(ChapterGoalKind.weakness),
+    ChapterGoal(ChapterGoalKind.noPotion, value: 50),
+  ],
+  6: [
+    ChapterGoal(ChapterGoalKind.rounds, value: 3),
+    ChapterGoal(ChapterGoalKind.weakness),
+    ChapterGoal(ChapterGoalKind.noPotion, value: 50),
+  ],
+  7: [
+    ChapterGoal(ChapterGoalKind.rounds, value: 4),
+    ChapterGoal(ChapterGoalKind.weakness),
+    ChapterGoal(ChapterGoalKind.firstTry,
+        bossIds: {'claimant_tallis', 'claimant_morrow', 'claimant_vane'}),
+  ],
+  8: [
+    ChapterGoal(ChapterGoalKind.rounds, value: 4),
+    ChapterGoal(ChapterGoalKind.firstTry, bossIds: {'void_sovereign'}),
+    ChapterGoal(ChapterGoalKind.noPotion, value: 50),
+  ],
+};
 
 /// The ids of [goals] newly met by [facts], beyond those of [met].
 List<String> chapterGoalsNewlyMet(List<ChapterGoal> goals, Iterable<String> met,
