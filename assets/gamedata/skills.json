@@ -1990,12 +1990,12 @@
     "vfx": "void_rift",
     "enemyOnly": true,
     "intent": "charge",
-    "name_fr": "Vide amassé",
-    "description_fr": "Amasse le Vide pour une déflagration au tour suivant, sauf si son élan est brisé.",
-    "battleMessage_fr": "L’air s’assombrit tandis que le Vide s’amasse.",
+    "name_fr": "Néant amassé",
+    "description_fr": "Amasse le Néant pour une déflagration au tour suivant, sauf si son élan est brisé.",
+    "battleMessage_fr": "L’air s’assombrit tandis que le Néant s’amasse.",
     "chargeMultiplier": 1.8,
     "releaseMessage": "The gathered Void bursts outward!",
-    "releaseMessage_fr": "Le Vide amassé éclate d’un coup !"
+    "releaseMessage_fr": "Le Néant amassé éclate d’un coup !"
   },
   "rallying_cry": {
     "id": "rallying_cry",
