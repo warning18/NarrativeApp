@@ -84,9 +84,6 @@ void main() {
         .setMockMethodCallHandler(
             const MethodChannel('flutter_tts'), (call) async => 1);
     SharedPreferences.setMockInitialValues({});
-    final first = ProviderContainer();
-    final data =
-        (await tester.runAsync(() => first.read(towerDataProvider.future)))!;
 
     TowerRun runAt(int seed, int floor, {int events = 0}) => TowerRun(
         seed: seed,

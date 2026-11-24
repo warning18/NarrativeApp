@@ -226,7 +226,8 @@ class _InkDie extends StatelessWidget {
       final f = die.faces[i % n];
       final kind = faceKind('${f['type']}');
       return DieCubeFace(
-          glyph: Icon(kind.icon, size: 22, color: lit ? inkPaper : inkGrey),
+          glyph: Icon(kind.icon,
+              size: IconSize.s16, color: lit ? inkPaper : inkGrey),
           color: lit && i == 0 ? inkRed : inkGrey);
     }
 
