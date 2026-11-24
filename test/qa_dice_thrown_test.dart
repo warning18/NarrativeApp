@@ -190,13 +190,6 @@ void main() {
       await _settle(tester);
       FlutterError.onError = previous;
     }
-    // Known and filed (#1141, UX): at 320 wide in French with 1.3x text the
-    // elite foe's plate overflows 5 px and the board is too short for the
-    // die. Remove this filter when it is fixed.
-    bool known(String m) =>
-        m.startsWith('320 wide, fr, text x1.3') &&
-        (m.contains('5.0 pixels on the bottom') ||
-            m.contains('cut off by the board'));
-    expect(problems.where((m) => !known(m)).toSet().toList(), isEmpty);
+    expect(problems.toSet().toList(), isEmpty);
   }, timeout: const Timeout(Duration(minutes: 4)));
 }

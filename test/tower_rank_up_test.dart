@@ -221,7 +221,7 @@ void main() {
               (w) => w is Text && w.data?.toLowerCase() == kind.toLowerCase()),
           findsOneWidget);
       expect(
-          find.textContaining(fr ? 'rang 1 à 2' : 'rank 1 to 2'), findsWidgets);
+          find.textContaining(fr ? 'Rang 1 à 2' : 'Rank 1 to 2'), findsWidgets);
       expect(
           find.textContaining(
               fr ? 'Votre dé n’a plus de face libre' : 'Your die has no free'),
