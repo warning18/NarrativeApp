@@ -206,10 +206,8 @@ class _TowerDicePanelState extends ConsumerState<TowerDicePanel> {
       );
 }
 
-const _inkSkin =
-    DieSkin('Ink', Color(0xFF0B0C14), Color(0xFFB7C0C4), DiePattern.none);
-const _inkSkinLit = DieSkin('Ink', Color(0xFF0B0C14), Color(0xFFC1121A),
-    DiePattern.none, Color(0xFFC1121A));
+const _inkSkin = DieSkin('Ink', inkOnPaper, Color(0xFFB7C0C4), DiePattern.none);
+const _inkSkinLit = DieSkin('Ink', inkOnPaper, inkRed, DiePattern.none, inkRed);
 
 /// The die as a real solid in ink (v1.1005), each face its own kind's mark; the
 /// die in play (or resonating) wears the red edge.
