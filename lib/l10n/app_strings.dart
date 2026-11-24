@@ -2141,7 +2141,7 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   // ("to": the pixel font has no arrow).
   'tower_rank_up_name': {
     AppLanguage.en: '{skill}: rank {from} to {to}',
-    AppLanguage.fr: '{skill} : rang {from} à {to}',
+    AppLanguage.fr: '{skill}\u00a0: rang {from} à {to}',
   },
   'tower_rank_up_text': {
     AppLanguage.en:
