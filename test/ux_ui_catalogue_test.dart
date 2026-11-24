@@ -310,11 +310,11 @@ List<Widget> _sheets() {
           'Paper frame (built)',
           'menus, ink screens',
           ink: true,
-          SizedBox(
+          const SizedBox(
               width: 140,
               child: InkPaperPanel(
-                  padding: const EdgeInsets.fromLTRB(40, 8, 14, 8),
-                  child: const Text('Settings',
+                  padding: EdgeInsets.fromLTRB(40, 8, 14, 8),
+                  child: Text('Settings',
                       style: TextStyle(
                           fontFamily: InkFonts.display,
                           fontSize: 15,
@@ -322,7 +322,7 @@ List<Widget> _sheets() {
       _tile(
           'Text only',
           'dialogs, inline "Skip"',
-          Text('Skip',
+          const Text('Skip',
               style: TextStyle(
                   fontFamily: InkFonts.system,
                   fontSize: 13,
@@ -429,10 +429,9 @@ List<Widget> _sheets() {
           'Ink tag (built)',
           'Tower: Armoured, Elite',
           ink: true,
-          Wrap(spacing: 4, children: const [
-            InkTag('Armoured', red: true),
-            InkTag('Elite')
-          ])),
+          const Wrap(
+              spacing: 4,
+              children: [InkTag('Armoured', red: true), InkTag('Elite')])),
       _tile(
           'Weakness mark',
           'fight: ×3 / ×½',
@@ -494,13 +493,13 @@ List<Widget> _sheets() {
           ink: true,
           Container(
               padding: const EdgeInsets.all(8),
-              decoration: BoxDecoration(
+              decoration: const BoxDecoration(
                   color: inkBlack,
                   border: Border(
                       left: BorderSide(color: inkRed, width: 3),
-                      top: const BorderSide(color: inkSlate),
-                      right: const BorderSide(color: inkSlate),
-                      bottom: const BorderSide(color: inkSlate))),
+                      top: BorderSide(color: inkSlate),
+                      right: BorderSide(color: inkSlate),
+                      bottom: BorderSide(color: inkSlate))),
               child: Text('29 / 29 · armour 0 · damage 4',
                   style: _cap(inkPaper)))),
       _tile(
@@ -512,7 +511,7 @@ List<Widget> _sheets() {
               decoration: BoxDecoration(
                   color: const Color(0xFFE6D6B2),
                   border: Border.all(color: const Color(0xFF8A5A00))),
-              child: Text('“Not now is not never.”',
+              child: const Text('“Not now is not never.”',
                   style: TextStyle(
                       fontFamily: InkFonts.prose,
                       fontStyle: FontStyle.italic,
@@ -523,13 +522,13 @@ List<Widget> _sheets() {
       _tile(
           'Before: pixel font',
           'today, everywhere',
-          Text('+1,5  5 / 25  15',
+          const Text('+1,5  5 / 25  15',
               style: TextStyle(
                   fontFamily: InkFonts.system, fontSize: 16, color: _ink))),
       _tile(
           'After: Spectral digits',
           'same text, numerals in the prose face',
-          Text('+1,5  5 / 25  15',
+          const Text('+1,5  5 / 25  15',
               style: TextStyle(
                   fontFamily: InkFonts.prose,
                   fontWeight: FontWeight.w700,
@@ -595,7 +594,7 @@ List<Widget> _sheets() {
       _tile(
           'Stitched',
           'story cards',
-          SizedBox(
+          const SizedBox(
               width: 130, height: 8, child: CustomPaint(painter: _Dash(_ink)))),
       _tile(
           'Ink slash',
@@ -665,7 +664,7 @@ List<Widget> _sheets() {
       _tile(
           'Quiet line',
           'story lists: no saves',
-          Text('No saved game yet',
+          const Text('No saved game yet',
               style: TextStyle(
                   fontFamily: InkFonts.prose,
                   fontStyle: FontStyle.italic,
@@ -674,7 +673,7 @@ List<Widget> _sheets() {
           'Illustrated',
           'journal, codex, bag',
           art: true,
-          Column(mainAxisSize: MainAxisSize.min, children: const [
+          const Column(mainAxisSize: MainAxisSize.min, children: [
             Icon(Icons.menu_book_outlined, size: 30, color: _gold),
             Text('Nothing written yet',
                 style: TextStyle(fontSize: 10, color: _ink))
@@ -683,7 +682,7 @@ List<Widget> _sheets() {
           'Ink empty',
           'Tower: Unsworn, no dice',
           ink: true,
-          Text('Unsworn',
+          const Text('Unsworn',
               style: TextStyle(
                   fontFamily: InkFonts.prose,
                   fontStyle: FontStyle.italic,
@@ -736,7 +735,7 @@ List<Widget> _sheets() {
           'Banner tabs',
           'chapters, clans',
           ink: true,
-          Row(mainAxisSize: MainAxisSize.min, children: const [
+          const Row(mainAxisSize: MainAxisSize.min, children: [
             InkTab('Items'),
             SizedBox(width: 4),
             InkTab('Gear', color: inkSlate)
@@ -806,8 +805,8 @@ List<Widget> _sheets() {
           art: true,
           Container(
               padding: const EdgeInsets.all(10),
-              decoration: BoxDecoration(
-                  color: const Color(0xFF1B2A44),
+              decoration: const BoxDecoration(
+                  color: Color(0xFF1B2A44),
                   border: Border(
                       bottom: BorderSide(color: Palette.goldDark, width: 3))),
               child: _row(
