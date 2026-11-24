@@ -22,7 +22,7 @@ const Map<String, (int, int)> _keeperBox = {
 bool keeperHasFigure(String shopId) => _keeperBox.containsKey(shopId);
 
 /// The scale the figures are drawn at.
-const int keeperFigureScale = 2;
+const int _keeperFigureScale = 2;
 
 class KeeperFigure extends StatelessWidget {
   const KeeperFigure(this.shopId, {super.key});
@@ -36,7 +36,7 @@ class KeeperFigure extends StatelessWidget {
     final box = _keeperBox[shopId];
     if (box == null) return const SizedBox.shrink();
     final (x0, w) = box;
-    const k = keeperFigureScale;
+    const k = _keeperFigureScale;
     return SizedBox(
       key: Key('keeper_figure_$shopId'),
       width: w * k.toDouble(),

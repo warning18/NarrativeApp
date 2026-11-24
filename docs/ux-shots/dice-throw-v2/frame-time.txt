@@ -1,0 +1,7 @@
+Frame time of a roll, ms per pump: build + layout + paint of the whole screen, no raster, desktop test VM (not a phone). Same method on both runs.
+first = the roll's first frame; flight = the frames between (median / p95 / max); burst = the landing frame (the existing burst, same on main).
+
+tower  today (main flight)    first   47.1  flight median  13.2 p95  23.8 max  26.7  burst   63.2
+tower  the throw              first   73.1  flight median  11.8 p95  35.2 max  53.2  burst   73.1
+story  today (main flight)    first  103.2  flight median  22.2 p95  47.0 max  61.6  burst  130.0
+story  the throw              first  116.8  flight median  24.0 p95  62.6 max  63.9  burst  127.6

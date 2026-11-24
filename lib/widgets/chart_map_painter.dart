@@ -243,10 +243,15 @@ class ChartMapPainter extends CustomPainter {
 
   /// Text with a dark halo (a stroked copy under the fill): readable over
   /// land, sea, roads and the fog's edge alike.
+  static final Map<(String, TextStyle, double, Color), TextPainter> _halos = {};
+
   void _haloText(Canvas canvas, String text, TextStyle style, Offset at,
       {Color? halo, double? width}) {
     final line = width ?? 2.4 / (_k * _viewZoom);
-    final back = TextPainter(
+    final colour = (halo ?? palette.land).withValues(alpha: 0.92);
+    final key = (text, style, line, colour);
+    if (_halos.length > 300) _halos.clear();
+    final back = _halos[key] ??= (TextPainter(
       text: TextSpan(
         text: text,
         style: style.copyWith(
@@ -256,11 +261,11 @@ class ChartMapPainter extends CustomPainter {
             ..style = PaintingStyle.stroke
             ..strokeJoin = StrokeJoin.round
             ..strokeWidth = line
-            ..color = (halo ?? palette.land).withValues(alpha: 0.92),
+            ..color = colour,
         ),
       ),
       textDirection: TextDirection.ltr,
-    )..layout();
+    )..layout());
     back.paint(canvas, at);
     _layout(text, style.copyWith(shadows: const [])).paint(canvas, at);
   }
@@ -890,50 +895,83 @@ class ChartMapPainter extends CustomPainter {
   /// The sphere with the chart wrapped on it: the sky, the open sea, a
   /// mesh over the chart's rectangle textured with its skin (each vertex
   /// lifted by its height), then the parallels and meridians.
+  static const double _meshStep = 3.0;
+  static const int _meshCols =
+      worldMapWidth ~/ 3 + (worldMapWidth % 3 == 0 ? 1 : 2);
+  static const int _meshRows =
+      worldMapHeight ~/ 3 + (worldMapHeight % 3 == 0 ? 1 : 2);
+  static Offset _meshPoint(int i, int j) => Offset(
+      math.min(i * _meshStep, worldMapWidth * 1.0),
+      math.min(j * _meshStep, worldMapHeight * 1.0));
+  static final Map<ChartGeography, Float32List> _meshLifts = {};
+  static final Map<int, Float32List> _meshTexture = {};
+
+  static Float32List _liftsOf(ChartGeography geography) {
+    final climate = ChartClimate.of(geography);
+    final lifts = Float32List(_meshCols * _meshRows);
+    for (var j = 0; j < _meshRows; j++) {
+      for (var i = 0; i < _meshCols; i++) {
+        lifts[j * _meshCols + i] =
+            climate.elevationAt(_meshPoint(i, j)) * _reliefLift;
+      }
+    }
+    return lifts;
+  }
+
+  static Float32List _textureOf(double s) {
+    final texture = Float32List(_meshCols * _meshRows * 2);
+    for (var j = 0; j < _meshRows; j++) {
+      for (var i = 0; i < _meshCols; i++) {
+        final p = _meshPoint(i, j), k = j * _meshCols + i;
+        texture[k * 2] = p.dx * s;
+        texture[k * 2 + 1] = p.dy * s;
+      }
+    }
+    return texture;
+  }
+
   void _paintGlobeSkinned(Canvas canvas, GlobeView g, ui.Image skin) {
     canvas.drawRect(_whole, Paint()..color = palette.fog);
     canvas.drawCircle(g.centre, g.radius, Paint()..color = palette.sea);
-    final climate = ChartClimate.of(geography);
     final s = skin.width / worldMapWidth;
-    const step = 3.0;
-    final cols = (worldMapWidth / step).ceil() + 1;
-    final rows = (worldMapHeight / step).ceil() + 1;
+    const cols = _meshCols, rows = _meshRows;
+    // What does not change as the ball turns is worked out once: each
+    // point's height (per world) and its place in the skin (per skin size).
+    final lifts = _meshLifts[geography] ??= _liftsOf(geography);
+    final texture = _meshTexture[skin.width] ??= _textureOf(s);
     final positions = Float32List(cols * rows * 2);
-    final texture = Float32List(cols * rows * 2);
     final shown = List<bool>.filled(cols * rows, false);
     for (var j = 0; j < rows; j++) {
       for (var i = 0; i < cols; i++) {
-        final p = Offset(math.min(i * step, worldMapWidth * 1.0),
-            math.min(j * step, worldMapHeight * 1.0));
+        final p = _meshPoint(i, j);
         final k = j * cols + i;
-        texture[k * 2] = p.dx * s;
-        texture[k * 2 + 1] = p.dy * s;
         if (!g.visible(p)) continue;
         shown[k] = true;
         var q = g.clamp(p);
-        final lift = climate.elevationAt(p) * _reliefLift;
+        final lift = lifts[k];
         if (lift > 0) q = g.centre + (q - g.centre) * (1 + lift);
         positions[k * 2] = q.dx;
         positions[k * 2 + 1] = q.dy;
       }
     }
-    final indices = <int>[];
+    final indices = Uint16List((cols - 1) * (rows - 1) * 6);
+    var n = 0;
     for (var j = 0; j + 1 < rows; j++) {
       for (var i = 0; i + 1 < cols; i++) {
         final a = j * cols + i, b = a + 1, c = a + cols, d = c + 1;
         if (!shown[a] || !shown[b] || !shown[c] || !shown[d]) continue;
-        indices
-          ..add(a)
-          ..add(b)
-          ..add(c)
-          ..add(b)
-          ..add(d)
-          ..add(c);
+        indices[n++] = a;
+        indices[n++] = b;
+        indices[n++] = c;
+        indices[n++] = b;
+        indices[n++] = d;
+        indices[n++] = c;
       }
     }
-    if (indices.isNotEmpty) {
+    if (n > 0) {
       final vertices = ui.Vertices.raw(ui.VertexMode.triangles, positions,
-          textureCoordinates: texture, indices: Uint16List.fromList(indices));
+          textureCoordinates: texture,
+          indices: Uint16List.sublistView(indices, 0, n));
       canvas.drawVertices(
           vertices,
           BlendMode.srcOver,
@@ -1687,10 +1725,31 @@ class ChartMapPainter extends CustomPainter {
     }
   }
 
-  TextPainter _layout(String text, TextStyle style) => TextPainter(
-        text: TextSpan(text: text, style: style),
-        textDirection: TextDirection.ltr,
-      )..layout();
+  /// Names laid out, kept by their text and style: turning the ball draws
+  /// the same names at the same size frame after frame.
+  static final Map<(String, TextStyle), TextPainter> _laidOut = {};
+
+  /// A road's bends, kept: the same two ends and seed always wind the
+  /// same way, and the ball draws every road again on each turn.
+  static final Map<(Offset, Offset, int, int, double), List<Offset>> _wound =
+      {};
+  static List<Offset> _winding(Offset a, Offset b,
+          {required int seed, int bends = 3, double amp = 0.16}) =>
+      _wound[(a, b, seed, bends, amp)] ??=
+          windingRoad(a, b, seed: seed, bends: bends, amp: amp);
+
+  TextPainter _layout(String text, TextStyle style) {
+    final key = (text, style);
+    final made = _laidOut[key];
+    if (made != null) return made;
+    // A zoom lays every name out anew at each step: start over before the
+    // store grows without end.
+    if (_laidOut.length > 600) _laidOut.clear();
+    return _laidOut[key] = TextPainter(
+      text: TextSpan(text: text, style: style),
+      textDirection: TextDirection.ltr,
+    )..layout();
+  }
 
   /// Every name on the chart, set where it fits: each reached place's
   /// name beside its mark (right, left, above or below, the first spot
@@ -2174,7 +2233,7 @@ class ChartMapPainter extends CustomPainter {
           continue;
         }
         final seed = chartSeed('${a.dx},${a.dy}-${b.dx},${b.dy}');
-        final path = _line(windingRoad(a, b, seed: seed, amp: 0.12));
+        final path = _line(_winding(a, b, seed: seed, amp: 0.12));
         _road(canvas, path, palette.label.withValues(alpha: 0.95),
             width: 0.85 * w, cased: true, dash: 3.4 * w, gap: 2.4 * w);
       }
@@ -2231,7 +2290,7 @@ class ChartMapPainter extends CustomPainter {
         final seaLeg =
             a.atSea || b.atSea || (a.id == 'shore' && b.id == 'candlehold');
         canvas.drawPath(
-            _line(windingRoad(from, to,
+            _line(_winding(from, to,
                 seed: chartSeed('${a.id}-${b.id}'),
                 bends: seaLeg ? 2 : 3,
                 amp: seaLeg ? 0.08 : 0.16)),
@@ -2291,7 +2350,7 @@ class ChartMapPainter extends CustomPainter {
       final seaLeg =
           a.atSea || b.atSea || (a.id == 'shore' && b.id == 'candlehold');
       final seed = chartSeed('${a.id}-${b.id}');
-      final path = _line(windingRoad(from, to,
+      final path = _line(_winding(from, to,
           seed: seed, bends: seaLeg ? 2 : 3, amp: seaLeg ? 0.08 : 0.16));
       final colour = (chapterFilter == 0 || a.chapter == chapterFilter
               ? chapterColor(a.chapter)

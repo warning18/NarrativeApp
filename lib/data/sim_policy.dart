@@ -10,6 +10,7 @@ import '../combat/combat_engine.dart'
     show elementFieldPrefixes, elementMultiplierFor;
 import '../combat/dice_faces.dart' show isOpenSkillFace;
 import '../combat/face_element.dart' show faceHitElement;
+import '../combat/face_keywords.dart';
 import '../combat/gear_effects.dart';
 import '../models/ally_state.dart' show equipmentBonusFor;
 import 'sim_growth.dart' show simSkillScore;
@@ -237,20 +238,49 @@ double simDieValue(
   Map<String, dynamic> skills, {
   required int damage,
   bool caster = false,
+  int maxHealth = 0,
 }) {
   var total = 0.0, weights = 0.0;
   for (var i = 0; i < faces.length; i++) {
     final w = (faces[i]['weight'] as num?)?.toDouble() ?? 1.0;
     total += w *
         simFaceValue(faces, i, assignments, skills,
-            damage: damage, caster: caster);
+            damage: damage, caster: caster, maxHealth: maxHealth);
     weights += w;
   }
   return weights <= 0 ? 0 : total / weights;
 }
 
+// What the face keywords are worth in the simulator's fights (v1.1010,
+// measured on 100 typical + 100 competent runs, seed 1; see
+// docs/simulation/sim-truth.md).
+
+/// Other foes standing when the hero strikes, on average: what a Cleave
+/// splash reaches.
+const double simCleaveOthers = 0.17;
+
+/// The share of a strike a raised guard, a guard's cover and an Armored
+/// hide take off, on average: what a Pierce keeps.
+const double simPierceKept = 0.02;
+
+/// Rounds in a fight, on average: how often a Growth face is played.
+const double simFightRounds = 6.8;
+
+/// The hero's max health per point of damage, on average across the
+/// chapters (6.0 to 7.5): what a Pain strike's health costs.
+const double simHealthPerDamage = 6.5;
+
+/// What a point of health is worth in [simDieValue]'s units (a Heal face's).
+const double _simHealthWorth = 0.7;
+
 /// What face [i] of [faces] is worth when it lands, in [simDieValue]'s
-/// units ([simDieValue] is their weighted mean).
+/// units ([simDieValue] is their weighted mean), its keywords counted as
+/// the fights play them: a Pain strike twice the blow less the health it
+/// costs ([maxHealth], else [simHealthPerDamage] times [damage]); a
+/// Cleave strike its splash on the foes standing beside the target
+/// ([simCleaveOthers]); a Pierce strike what a guard would have taken
+/// ([simPierceKept]); Steady its +[steadyBonus]; Growth the mean of what
+/// it gains over a fight ([simFightRounds]). Echo counts as the face.
 double simFaceValue(
   List<Map<String, dynamic>> faces,
   int i,
@@ -258,11 +288,37 @@ double simFaceValue(
   Map<String, dynamic> skills, {
   required int damage,
   bool caster = false,
+  int maxHealth = 0,
 }) {
   final face = faces[i];
-  final v = (face['value'] as num?)?.toDouble() ?? 0;
-  return switch (face['type']?.toString()) {
-    'Attack' => damage + v,
+  final keywords = faceKeywordsOf(face);
+  var v = (face['value'] as num?)?.toDouble() ?? 0;
+  final type = face['type']?.toString();
+  // Steady and Growth on the face's own number (an Attack, Defend or Heal
+  // face, as the fights apply them).
+  if (type == 'Attack' || type == 'Defend' || type == 'Heal') {
+    if (keywords.contains(FaceKeyword.steady)) v += steadyBonus;
+    if (keywords.contains(FaceKeyword.growth)) {
+      v += _simGrowthMean(faces, i);
+    }
+  }
+  double strike(double blow) {
+    var worth = blow;
+    if (keywords.contains(FaceKeyword.pain)) {
+      final health =
+          maxHealth > 0 ? maxHealth.toDouble() : damage * simHealthPerDamage;
+      worth = blow * painDamageMultiplier -
+          painHealthShare * health * _simHealthWorth;
+    }
+    if (keywords.contains(FaceKeyword.cleave)) {
+      worth += blow * cleaveSplashShare * simCleaveOthers;
+    }
+    if (keywords.contains(FaceKeyword.pierce)) worth += blow * simPierceKept;
+    return worth;
+  }
+
+  return switch (type) {
+    'Attack' => strike(damage + v),
     'Defend' => v * 0.8,
     'Heal' => v * 0.7,
     'Mana' => caster ? v * 1.5 : 0.0,
@@ -271,10 +327,26 @@ double simFaceValue(
         final id =
             assignments['$i'] ?? (linked.isEmpty ? 'heavy_attack' : linked);
         if (_isManaSkill(skills, id)) return caster ? 2.0 : 0.0;
-        return damage + simSkillScore(skills[id] as Map<String, dynamic>?);
+        return strike(
+            damage + simSkillScore(skills[id] as Map<String, dynamic>?));
       }(),
     _ => 0.0,
   };
+}
+
+/// What a Growth face [i] of [faces] adds on average when it lands: it is
+/// played [simFightRounds] times its share of the die's weight in a fight,
+/// and each play after the first is [growthStep] stronger than the last.
+double _simGrowthMean(List<Map<String, dynamic>> faces, int i) {
+  var total = 0.0;
+  for (final f in faces) {
+    total += (f['weight'] as num?)?.toDouble() ?? 1.0;
+  }
+  if (total <= 0) return 0;
+  final uses = simFightRounds *
+      ((faces[i]['weight'] as num?)?.toDouble() ?? 1.0) /
+      total;
+  return uses <= 1 ? 0 : growthStep * (uses - 1) / 2;
 }
 
 /// The element face [i] of [faces] strikes with, its skill's own first
@@ -324,6 +396,7 @@ double simDieValueAgainst(
   List<Map<String, dynamic>> foes, {
   required int damage,
   bool caster = false,
+  int maxHealth = 0,
 }) {
   var total = 0.0, weights = 0.0;
   for (var i = 0; i < faces.length; i++) {
@@ -335,7 +408,7 @@ double simDieValueAgainst(
     total += w *
         factor *
         simFaceValue(faces, i, assignments, skills,
-            damage: damage, caster: caster);
+            damage: damage, caster: caster, maxHealth: maxHealth);
     weights += w;
   }
   return weights <= 0 ? 0 : total / weights;

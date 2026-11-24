@@ -94,16 +94,6 @@ List<String> sortInventoryIds(List<String> ids, Map<String, dynamic> items,
   return out;
 }
 
-/// The icon of an equipment slot, for its tile and for a row's line.
-IconData inventorySlotIcon(String slot) => switch (slot) {
-      'Head' => Icons.sports_motorsports_outlined,
-      'Top' => Icons.checkroom_outlined,
-      'Weapon' => Icons.gavel,
-      'Bottom' => Icons.airline_seat_legroom_normal,
-      'Foot' => Icons.hiking,
-      _ => Icons.inventory_2_outlined,
-    };
-
 /// The pixel glyph of an equipment slot (its silhouette when the slot is
 /// empty, and the mark on a row's line); the Material one shows until Art's
 /// file is in the bundle (see pixel_glyph.dart).
