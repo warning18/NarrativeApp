@@ -28,8 +28,20 @@ user says. Base: `main` at v2.2.0 (`ce5f6924f`).
 2. `city_plan_record_test` wants every Candlehold scene anchored on a
    building (Maps' `city_plans.json`; the generator is frozen): `7516_eve`
    on `candlehold_b003` (the terrace of every fire, as `7515_rest`),
-   `7517_stair` on `candlehold_b159`, a free lantern-hall building with no
-   name yet (Narrative may name it).
+   `7517_stair` on `candlehold_b159`, a free lantern-hall building.
+
+**Narrative's addendum, folded in** (`claude/narrative-drafts` `05bfc2fb`,
+same draft file):
+
+- `prompt` / `prompt_fr` and `revisit_description` / `_fr` on both scenes
+  (the keys `7515_rest` uses).
+- `candlehold_b159` named in `city_plans.json` `candlehold.names`: “The foot
+  of the Stair of Tongues” / « Au pied de l’Escalier des Langues ».
+- `ui_theme: cathedral` on both: confirmed, unchanged.
+
+**Still missing:** nothing for this variant. The “Sit with <name>” hub
+choices on `7516_eve` wait for the P3 second beats (`beat2_<c>` scenes do
+not exist yet); they are added with P3.
 
 ## Measurement
 

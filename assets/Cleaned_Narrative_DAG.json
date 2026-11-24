@@ -27356,7 +27356,11 @@
         "fr": "Malrik gardait le petit livre noir fermé sur son genou et les yeux sur le feu, un clerc sans rien à inscrire."
       }
     ],
-    "callback_cap": 5
+    "callback_cap": 5,
+    "prompt": "The last night before the Hall.",
+    "prompt_fr": "La dernière nuit avant la Salle.",
+    "revisit_description": "The fires on the terraces, one by one gone to embers. It was the same night, and no kinder.",
+    "revisit_description_fr": "Les feux des terrasses, un à un tombés en braise. C’était la même nuit, et pas plus douce."
   },
   "7517_stair": {
     "id": "7517_stair",
@@ -27478,7 +27482,11 @@
         "priority": 1
       }
     ],
-    "callback_cap": 6
+    "callback_cap": 6,
+    "prompt": "Up the Stair of Tongues?",
+    "prompt_fr": "Monter l’Escalier des Langues ?",
+    "revisit_description": "The Stair of Tongues again, the flights crowded and the same eight Houses watching.",
+    "revisit_description_fr": "L’Escalier des Langues de nouveau, les volées pleines et les mêmes huit Maisons qui regardent."
   },
   "6100_will_scribe": {
     "id": "6100_will_scribe",
