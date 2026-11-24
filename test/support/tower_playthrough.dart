@@ -448,6 +448,11 @@ Future<TowerPlay> playTower(
     }
     if (has('tower_take') || has('tower_refuse')) {
       await shot('offer');
+      final first = find.byKey(const Key('tower_card_0'));
+      if (first.evaluate().isNotEmpty) {
+        final size = tester.getSize(first.first);
+        note('OFFER card ${size.width.round()}x${size.height.round()}');
+      }
       note('OFFER ${seen()}');
       await tapKey(has('tower_take') ? 'tower_take' : 'tower_refuse');
       await settle(10);
