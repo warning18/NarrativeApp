@@ -162,4 +162,32 @@ void main() {
         await notifier.noteChapterGoals(5, goals, _won(health: 10)), isEmpty);
     expect(notifier.state.chapterChestsGiven, [5]);
   });
+
+  test('the chest is owed as the next chapter starts, and given once',
+      () async {
+    SharedPreferences.setMockInitialValues({});
+    final notifier = PlayerSessionNotifier();
+    await Future<void>.delayed(const Duration(milliseconds: 200));
+    await notifier.loadSession(PlayerSession.fromJson(const {'gold': 0}));
+    final items =
+        jsonDecode(File('assets/gamedata/items.json').readAsStringSync())
+            as Map<String, dynamic>;
+    // In chapter 4, nothing is owed; in chapter 5, chapter 4's chest.
+    expect(notifier.chapterChestDue(4), isNull);
+    expect(notifier.chapterChestDue(5), 4);
+    await notifier.noteChapterGoals(4, chapterGoalTable[4]!, _won(rounds: 1));
+    await notifier.noteChapterGoals(
+        4, chapterGoalTable[4]!, _won(weakness: true));
+    final chest =
+        await notifier.claimChapterChest(4, items: items, random: Random(3));
+    expect(chest, isNotNull);
+    expect(chest!.tier, ChestTier.silver);
+    expect(notifier.state.gold, chest.gold);
+    expect(notifier.state.chapterChestsGiven, [4]);
+    expect(notifier.chapterChestDue(5), isNull);
+    expect(await notifier.claimChapterChest(4, items: items, random: Random(3)),
+        isNull);
+    // Past the last chapter (the ending): chapters 5 to 8 owed in turn.
+    expect(notifier.chapterChestDue(9), 5);
+  });
 }

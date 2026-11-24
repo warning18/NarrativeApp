@@ -12,6 +12,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import '../combat/combat_engine.dart' show maxSkillTier, skillTierUpgradeCost;
 import '../combat/face_keywords.dart' show FaceKeyword;
 import '../combat/face_smithing.dart';
+import '../combat/loot_box.dart' show LootBoxResult;
 import '../combat/sea_beasts.dart' show BeastState;
 import '../combat/spells.dart' show maxManaFor, spellbookSpellIdFor;
 import '../combat/stat_rules.dart';
