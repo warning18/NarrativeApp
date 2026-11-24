@@ -103,6 +103,11 @@ class _SimFight {
   late int specGold;
   late final Set<_SimEnemy> specFed;
   late bool broadsideUsed;
+
+  /// How often each of the hero's Growth faces has been played this fight
+  /// (face index -> uses): each use adds growthStep to the next (the fight
+  /// screen's _growthUses).
+  final Map<int, int> growthUses = {};
   late final int baseMaxHealth;
   late final double packMultiplier;
   late final bool isElite;

@@ -2682,6 +2682,7 @@ List<SimRunSummary> simulatePlaythroughs(
   SimFightWatch? onFight,
   bool swapDiePerFight = false,
   SimDieWatch? onFightDie,
+  int firstRun = 0,
 }) {
   final sim = _simContextOf(tables, gameConfig,
       clashOff: clashOff,
@@ -2697,7 +2698,10 @@ List<SimRunSummary> simulatePlaythroughs(
   final enemies = tables['enemies'] ?? const {};
   final out = <SimRunSummary>[];
   for (var i = 0; i < plan.length; i++) {
-    final random = Random(seed * 100003 + i);
+    // [firstRun] numbers this plan's runs from there, so a batch split in
+    // slices (tool/sim_batch.sh) plays exactly the runs it would in one.
+    final run = firstRun + i;
+    final random = Random(seed * 100003 + run);
     final result = _simulate(story, random,
         enemies: enemies,
         strategy: plan[i].strategy,
@@ -2706,7 +2710,7 @@ List<SimRunSummary> simulatePlaythroughs(
         forceRaceId: plan[i].raceId,
         forceProfessionId: plan[i].professionId,
         coverage: coverage,
-        detourSalt: seed * 100003 + i,
+        detourSalt: seed * 100003 + run,
         transcribe: transcripts);
     final byChapter =
         <String, ({int attempts, int won, int fights, int firstTry})>{};
