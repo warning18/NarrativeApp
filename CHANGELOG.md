@@ -8,6 +8,10 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [2.1.5+1052]
+
+- Maps, lighter with nothing changed on screen: the ball draws in about 40 % less time (its mesh's heights, the names' layout and the roads' bends were worked out again on every paint and are now kept), and the town plan's view has its own layer, so a drag of the plan repaints less of the screen round it. Six screens were compared pixel for pixel before and after: the same.
+
 ## [2.0.0+1046]
 
 - The Tower is in ink (part 4 of 4: the end of a floor and the start of a run; the set is complete). The level up, the spoils sheet, the cards after a floor, and the calling pick in the Tower now wear the ink look: paper white for the main action, healing and a gain, deep red only for blood, danger and a loss, cold greys for the rest; square cards with no wood frame, the emblems and the chest in the ink greys, the level up's radar polygon in paper. The parley's and the stall's figures are the same sprites recoloured to ink. It comes from the Tower's own colour set (what reads `InkColors` under the Tower is ink), so the story's screens are unchanged. The Tower moved to ink in four parts (v1.1004, v1.1005, v1.1009 and this one). Look only. UX (view only).
