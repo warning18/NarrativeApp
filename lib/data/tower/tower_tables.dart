@@ -103,9 +103,11 @@ const Map<int, double> towerPeacefulExtras = {25: .42, 30: .34};
 /// extra ×1.08 on floors 11 to 20 and ×1.06 on 21 to 29, the first ten
 /// floors and the top's boss as they were. The top had been won by 14.3%
 /// of runs with no unlocks and 26.9% with all, over the design's 5 to 12%
-/// and 15 to 25%.
+/// and 15 to 25%. Held variant (not merged until the user decides): floors
+/// 11 to 20 ×1.10 (was ×1.08); the before/after is in the brief's section
+/// "Held variant: floors 11–20 ×1.10".
 double towerClimbScale(int floor) => floor >= 11 && floor <= 20
-    ? 1.08
+    ? 1.10
     : floor >= 21 && floor <= 29
         ? 1.06
         : 1.0;

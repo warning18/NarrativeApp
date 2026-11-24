@@ -56,8 +56,11 @@ void main() {
   // tower-roguelike-briefs.md): floors 11 to 29 harder (towerClimbScale),
   // a dead skill card a rank-up, three more boon floors: these were
   // 65 / 239 / 9607 and 143 / 323 / 11169.
-  const none = (top: 57, floor20: 208, floorSum: 9160);
-  const all = (top: 127, floor20: 309, floorSum: 10750);
+  // Held variant (claude/core-tower-x110): floors 11 to 20 ×1.10 (was
+  // ×1.08, towerClimbScale): these were 57 / 208 / 9160 and
+  // 127 / 309 / 10750.
+  const none = (top: 56, floor20: 197, floorSum: 8969);
+  const all = (top: 123, floor20: 290, floorSum: 10511);
 
   test('the live Tower, no unlocks, is the pinned curve', () {
     final m = _measure(const TowerProgress());

@@ -530,3 +530,35 @@ batch and nudges brief 1's numbers back into the bands.
   batch on the chosen numbers should check them.
 - The bot takes every boon and door the same way; a real player chooses,
   so dead picks and door losses are likely lower in play.
+
+## Held variant: floors 11–20 ×1.10
+
+Branch `claude/core-tower-x110`, held until the user decides: floors 11 to 20
+×1.10 in `towerClimbScale` (was ×1.08); 21 to 29 stay ×1.06, floors 1 to 10
+and the top's boss as they were. QA's batch, 2,000 seeds, live floor events
+(version 2), the base `claude/core-tower-build` against the variant:
+
+| Measure | Band | ×1.08 (base) | ×1.10 (variant) |
+|---|---|---|---|
+| Top won, no unlocks | 5–12% | 13.0% | 13.0% |
+| Top won, all unlocks | 15–25% | 25.4% | 24.7% |
+| Median floor reached, no unlocks | 13–18 | 17 | 17 |
+| Reached floor 20, no unlocks | 20–38% | 42.3% | 40.5% |
+| Mean floor reached, no unlocks | | 18.35 | 18.15 |
+
+Death rate per floor, no unlocks (deaths on it / runs reaching it; 15, 20
+and 25 are the warden and boss floors, not ordinary):
+
+| Floor | 11 | 12 | 13 | 14 | 16 | 17 | 18 | 19 | 21 | 22 | 23 | 24 | 26 | 27 | 28 | 29 |
+|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
+| ×1.08 | 6.9 | 6.6 | 6.8 | 5.5 | 7.5 | 9.0 | 7.2 | 7.7 | 9.5 | 7.4 | 8.2 | 9.3 | 9.6 | 8.3 | 6.8 | 7.3 |
+| ×1.10 | 7.2 | 6.7 | 7.5 | 5.8 | 8.1 | 9.5 | 7.2 | 9.3 | 8.1 | 7.1 | 7.6 | 9.2 | 8.1 | 7.2 | 6.6 | 6.8 |
+
+Floors 15 / 20 / 25: 9.2 / 15.5 / 14.8% at ×1.08, 9.3 / 18.0 / 14.1% at
+×1.10. No ordinary floor is over 10% in either. The variant moves the deaths
+forward (floors 16 to 20, the floor-20 boss most) rather than adding them:
+the same 259 runs win the top with no unlocks, the all-unlocks top comes back
+inside its band, and floor 20 reached falls about 2 points but stays over
+its band. QA's in-suite bands (`qa_tower_sim_test.dart`) still hold
+unchanged; `qa_tower_live_pin_test.dart` is re-pinned (seeds 1 to 500:
+56 / 197 / 8969 and 123 / 290 / 10511).
