@@ -8,6 +8,10 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.1002.0+1038]
+
+- **Dependencies: flutter_riverpod 3.4.3 → 3.5.0** (and riverpod with it; Dependabot #1043). No code change. The lock now needs Dart 3.13 and Flutter 3.47.0 or later (CI pins 3.47.9), and brings in material_ui, cupertino_ui, intl and flutter_localizations as transitive packages. Core.
+
 ## [1.1001.0+1037]
 
 - **Cleanup: an unused forge-sheet class removed, seven test helpers
