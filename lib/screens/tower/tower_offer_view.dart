@@ -137,7 +137,9 @@ class _TowerOfferViewState extends ConsumerState<TowerOfferView> {
         if (die != null)
           tr(ref, 'tower_oath_die').replaceAll('{die}', towerDieName(ref, die)),
       ].join(' ');
-      art = towerCardVignette('oath');
+      // The oath's vignette is the clan's own backdrop (the banner on its
+      // plate); a clan without one keeps the stand-in.
+      art = 'assets/visuals/cards/clans/backdrop_${reward.id}.png';
       icon = faction == null
           ? SizedBox(width: iconSize, height: iconSize)
           : ClanDisc(faction, size: iconSize);
