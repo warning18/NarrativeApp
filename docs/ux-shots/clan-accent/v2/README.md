@@ -7,7 +7,7 @@ Redrawn with the user's approved hues (Art, cut-paper direction): Dominion #2F6F
 - `change-fade.png` / `.gif`: neutral to Dominion, a 400 ms fade when the toast fires.
 
 ## Findings
-1. **Text on fills:** with these hues the label is **ink** on Vigil, Compact, Mire and Crows' fills and on the neutral paper, and **paper** on Dominion and Penitents. Dominion #2F6FE0 reaches 4.4 with paper text, so its fill is darkened one notch to #2264D9 (the frame keeps #2F6FE0). Every other hue passes as given.
-2. **Frames on ink black** all read 3+ with no adjustment (Dominion 4.1 is the lowest).
+1. **Text on fills:** ink text reads best on every hue as given: Vigil 11.7, Mire 7.4, Compact 6.9, Crows 5.4, Penitents 4.9; paper text fails on all of them (1.5 to 3.5). Only **Dominion** falls short: ink on #2F6FE0 is 4.3 and paper 4.0, so its fill is darkened one notch to #2264D9 (paper text, 4.5+), and its frame keeps #2F6FE0. The neutral paper button takes ink text.
+2. **Frames on ink black** all read 4.3 or more with no adjustment (Dominion 4.3 is the lowest).
 3. **Semantic red is alone again:** Crows' pink is far enough from the warning red, and nothing else is red. Two reds remain in the pictures that are not warnings: the wax seals on the cards (their rarity pips) and the banner's emblem. With this rule the seals should be paper or ink, not red wax; a decision for Art and the user.
 4. **Neutral** (no leader) reads as a paper button with ink text, and an ink-and-paper frame; the home menu's paint edges turn grey, which is quieter than today's red.
