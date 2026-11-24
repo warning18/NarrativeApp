@@ -213,13 +213,19 @@ void main() {
       }
       final error = tester.takeException();
       final fr = lang == AppLanguage.fr;
-      expect(find.text(fr ? 'Montée en rang' : 'Rank up'), findsOneWidget);
-      expect(find.textContaining(fr ? 'rang 1 à 2' : 'rank 1 to 2'),
+      // The tarot card shows its kind in capitals; the card in hand is
+      // repeated in full under the row.
+      final kind = fr ? 'Montée en rang' : 'Rank up';
+      expect(
+          find.byWidgetPredicate(
+              (w) => w is Text && w.data?.toLowerCase() == kind.toLowerCase()),
           findsOneWidget);
+      expect(
+          find.textContaining(fr ? 'rang 1 à 2' : 'rank 1 to 2'), findsWidgets);
       expect(
           find.textContaining(
               fr ? 'Votre dé n’a plus de face libre' : 'Your die has no free'),
-          findsOneWidget);
+          findsWidgets);
       if (shots != null) {
         Directory(shots).createSync(recursive: true);
         await tester.runAsync(() async {

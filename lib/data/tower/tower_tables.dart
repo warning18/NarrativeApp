@@ -81,7 +81,10 @@ const int towerPeacefulEvents = 2;
 /// 1.17 since the shortcut's Elite pack (v1.961), which made 1.15 give
 /// 16.1% and 28.2%: with [towerPeacefulExtras], 14.25% and 26.55%, every
 /// ordinary floor under 9% (seeds 1 to 2000).
-const double towerPeacefulFoeScale = 1.17;
+/// 1.23 since the clans' offers (v2.6.0, the user's payback B): their gifts
+/// had taken the top to 16.0% and 31.2% (seeds 1 to 2000); at 1.23, 11.3%
+/// and 23.75%, about the v2.4.0 curve.
+const double towerPeacefulFoeScale = 1.23;
 
 /// The floors' extras that differ in a run with the floor events on
 /// (floor -> extra, in place of its [towerBudgets] one): the floor-20 boss
