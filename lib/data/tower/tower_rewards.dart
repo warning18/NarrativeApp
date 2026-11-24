@@ -11,29 +11,37 @@ import '../../combat/combat_engine.dart' show applySkillTier, maxSkillTier;
 import '../../combat/loot_box.dart';
 import '../sim_growth.dart' show simSkillScore;
 import '../sim_policy.dart' show simSkillAssignments;
+import 'tower_clans.dart';
 import 'tower_floors.dart';
 import 'tower_tables.dart';
 
 /// One card: what it gives. [id] is the item, die, skill or spell (empty
 /// for a heal, and for a clan gift that is a stat point); [amount] is a
-/// heal's percent of max health, or a clan gift's stat points.
+/// heal's percent of max health, or a clan gift's stat points. [clan] is
+/// the clan whose gift it is (a skill or a rank-up of the clans' offers,
+/// docs/simulation/tower-clan-offers.md), '' for any other card: taken,
+/// it moves the run's standing (towerStandingOf). Saved only when set, so
+/// a card saved before reads as no clan's.
 class TowerReward {
-  const TowerReward(this.kind, {this.id = '', this.amount = 0});
+  const TowerReward(this.kind, {this.id = '', this.amount = 0, this.clan = ''});
 
   factory TowerReward.fromJson(Map<String, dynamic> json) => TowerReward(
         TowerRewardKind.values.byName(json['kind'] as String),
         id: json['id']?.toString() ?? '',
         amount: (json['amount'] as num?)?.toInt() ?? 0,
+        clan: json['clan']?.toString() ?? '',
       );
 
   final TowerRewardKind kind;
   final String id;
   final int amount;
+  final String clan;
 
   Map<String, dynamic> toJson() => {
         'kind': kind.name,
         if (id.isNotEmpty) 'id': id,
         if (amount != 0) 'amount': amount,
+        if (clan.isNotEmpty) 'clan': clan,
       };
 
   @override
@@ -41,14 +49,15 @@ class TowerReward {
       other is TowerReward &&
       other.kind == kind &&
       other.id == id &&
-      other.amount == amount;
+      other.amount == amount &&
+      other.clan == clan;
 
   @override
-  int get hashCode => Object.hash(kind, id, amount);
+  int get hashCode => Object.hash(kind, id, amount, clan);
 
   @override
   String toString() => 'TowerReward(${kind.name}${id.isEmpty ? '' : ' $id'}'
-      '${amount == 0 ? '' : ' $amount'})';
+      '${amount == 0 ? '' : ' $amount'}${clan.isEmpty ? '' : ' @$clan'})';
 }
 
 /// What the offer needs to know of the hero.
@@ -154,16 +163,24 @@ String? towerClanDieOf(String clanId, Map<String, dynamic> dice) {
 
 /// The cards on the table after floor [floor] is won (v1.860): on a boon
 /// floor ([towerBoonFloors]) a skill, a die and a spell, one of each while
-/// each has one to give; on another, a clan of [oaths] (the clans still to
-/// swear to) offering its oath (v1.855): always when [oathDue] (the first
-/// floor won), else on [towerOathChance] of the floors. Often nothing: the
-/// floor's spoils ([towerSpoilsFor]) are its reward.
+/// each has one to give. On another, the clans (docs/simulation/
+/// tower-clan-offers.md): always when [clansDue] (the first floor won),
+/// else on [towerOathChance] of the floors (the oath's stream, as the oath
+/// came before), up to [towerSuitorsPerOffer] clans of [clanPool], each a
+/// gift ([towerClanGiftFor]); and, whenever [oathOpen] (no oath sworn yet:
+/// one a run, the user's call), the oath of each clan of [clanPool] at
+/// [towerOathStep] in [standing] (a card of its own, first, beside the
+/// gifts or alone). Often nothing: the floor's spoils ([towerSpoilsFor])
+/// are its reward.
 List<TowerReward> towerOfferFor({
   required int seed,
   required int floor,
   required TowerHeroView hero,
-  List<String> oaths = const [],
-  bool oathDue = false,
+  List<String> clanPool = const [],
+  Map<String, int> standing = const {},
+  bool oathOpen = true,
+  bool clansDue = false,
+  TowerClanTables clans = const TowerClanTables(),
   required Map<String, dynamic> items,
   required Map<String, dynamic> dice,
   required Map<String, dynamic> skills,
@@ -171,15 +188,36 @@ List<TowerReward> towerOfferFor({
 }) {
   final random = towerRandom(seed, floor, TowerStream.offer);
 
-  TowerReward? draw(TowerRewardKind kind) {
-    String? pick(List<String> pool) {
-      final fresh = [
-        for (final id in pool)
-          if (!hero.takenIds.contains(id)) id,
-      ]..sort();
-      return fresh.isEmpty ? null : fresh[random.nextInt(fresh.length)];
-    }
+  String? pick(List<String> pool) {
+    final fresh = [
+      for (final id in pool)
+        if (!hero.takenIds.contains(id)) id,
+    ]..sort();
+    return fresh.isEmpty ? null : fresh[random.nextInt(fresh.length)];
+  }
 
+  // A skill of the Tower's pool at the floor's rarity (or below), none of
+  // [besides].
+  String? poolSkill({Set<String> besides = const {}}) {
+    for (var step = towerRarityStep(floor, random); step >= 0; step--) {
+      final id = pick([
+        for (final MapEntry(:key, :value) in skills.entries)
+          if (value is Map &&
+              !besides.contains(key) &&
+              towerSkillRarities[step].contains(value['rarity']) &&
+              !hero.unlockedSkillIds.contains(key) &&
+              _restrictionAllows(
+                  value['restrictedProfessionID'], hero.professionId) &&
+              _restrictionAllows(value['restrictedRaceID'], hero.raceId) &&
+              _prerequisiteMet(value['requiredSkillID'], hero))
+            key,
+      ]);
+      if (id != null) return id;
+    }
+    return null;
+  }
+
+  TowerReward? draw(TowerRewardKind kind) {
     switch (kind) {
       case TowerRewardKind.die:
         final id = pick([
@@ -195,26 +233,13 @@ List<TowerReward> towerOfferFor({
         ]);
         return id == null ? null : TowerReward(kind, id: id);
       case TowerRewardKind.skill:
-        for (var step = towerRarityStep(floor, random); step >= 0; step--) {
-          final id = pick([
-            for (final MapEntry(:key, :value) in skills.entries)
-              if (value is Map &&
-                  towerSkillRarities[step].contains(value['rarity']) &&
-                  !hero.unlockedSkillIds.contains(key) &&
-                  _restrictionAllows(
-                      value['restrictedProfessionID'], hero.professionId) &&
-                  _restrictionAllows(value['restrictedRaceID'], hero.raceId) &&
-                  _prerequisiteMet(value['requiredSkillID'], hero))
-                key,
-          ]);
-          if (id == null) continue;
-          // A skill with no face to land on: a tier for one on the die.
-          if (towerRankUpFor(id, hero, skills) case final up?) {
-            return TowerReward(TowerRewardKind.rankUp, id: up);
-          }
-          return TowerReward(kind, id: id);
+        final id = poolSkill();
+        if (id == null) return null;
+        // A skill with no face to land on: a tier for one on the die.
+        if (towerRankUpFor(id, hero, skills) case final up?) {
+          return TowerReward(TowerRewardKind.rankUp, id: up);
         }
-        return null;
+        return TowerReward(kind, id: id);
       case TowerRewardKind.spell:
         final id = pick([
           for (final MapEntry(:key, :value) in spells.entries)
@@ -224,8 +249,8 @@ List<TowerReward> towerOfferFor({
               key,
         ]);
         return id == null ? null : TowerReward(kind, id: id);
-      // A boon is a skill, a die or a spell (v1.860); an oath is dealt
-      // apart, below (its own stream).
+      // A boon is a skill, a die or a spell (v1.860); the clans' cards are
+      // dealt apart, below.
       case TowerRewardKind.clanOath:
       case TowerRewardKind.rankUp:
         return null;
@@ -238,18 +263,66 @@ List<TowerReward> towerOfferFor({
         if (draw(kind) case final card?) card,
     ];
   }
-  // A clan's oath, from its own stream.
-  final free = [
-    for (final clan in oaths)
-      if (!hero.clanIds.contains(clan)) clan,
-  ]..sort();
-  if (free.isEmpty) return const [];
-  final oathRandom = towerRandom(seed, floor, TowerStream.oath);
-  if (!oathDue && oathRandom.nextDouble() >= towerOathChance) return const [];
-  return [
-    TowerReward(TowerRewardKind.clanOath,
-        id: free[oathRandom.nextInt(free.length)]),
+  // The oaths due: a clan at the oath's step, while none is sworn.
+  final oaths = [
+    if (oathOpen && hero.clanIds.isEmpty)
+      for (final clan in clanPool)
+        if ((standing[clan] ?? 0) >= towerOathStep)
+          TowerReward(TowerRewardKind.clanOath, id: clan),
   ];
+  if (clanPool.isEmpty) return oaths;
+  // The clans' offer, on the oath's own stream (where the oath came).
+  final oathRandom = towerRandom(seed, floor, TowerStream.oath);
+  if (!clansDue && oathRandom.nextDouble() >= towerOathChance) return oaths;
+  final suitors = [...clanPool]..sort();
+  final cards = <TowerReward>[];
+  final given = <String>{};
+  while (suitors.isNotEmpty && cards.length < towerSuitorsPerOffer) {
+    final clan = suitors.removeAt(random.nextInt(suitors.length));
+    final id = towerClanGiftFor(clan,
+            hero: hero,
+            standing: standing[clan] ?? 0,
+            besides: given,
+            skills: skills,
+            tables: clans,
+            random: random) ??
+        poolSkill(besides: given);
+    if (id == null) continue;
+    given.add(id);
+    // A skill with no face to land on: a tier for one on the die, still
+    // the clan's gift (its standing moves the same).
+    cards.add(switch (towerRankUpFor(id, hero, skills)) {
+      final up? => TowerReward(TowerRewardKind.rankUp, id: up, clan: clan),
+      null => TowerReward(TowerRewardKind.skill, id: id, clan: clan),
+    });
+  }
+  return [...oaths, ...cards];
+}
+
+/// The skill [clanId] gives [hero] at [standing] (towerClanSkillsFor: the
+/// next on a branch it sponsors for the hero), drawn with [random] among
+/// those not in [besides]; null when it has none (the offer then gives one
+/// of the Tower's pool in its name).
+String? towerClanGiftFor(
+  String clanId, {
+  required TowerHeroView hero,
+  required int standing,
+  Set<String> besides = const {},
+  required Map<String, dynamic> skills,
+  required TowerClanTables tables,
+  required Random random,
+}) {
+  final options = [
+    for (final id in towerClanSkillsFor(clanId,
+        raceId: hero.raceId,
+        professionId: hero.professionId,
+        standing: standing,
+        unlocked: hero.unlockedSkillIds,
+        skills: skills,
+        tables: tables))
+      if (!besides.contains(id) && !hero.takenIds.contains(id)) id,
+  ];
+  return options.isEmpty ? null : options[random.nextInt(options.length)];
 }
 
 /// The spoils chest of floor [floor] won (v1.860): the story's own chest

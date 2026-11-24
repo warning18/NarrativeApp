@@ -434,10 +434,27 @@ const int towerNoRepeatFloors = 3;
 /// skill's.
 enum TowerRewardKind { die, skill, spell, clanOath, rankUp }
 
-/// A clan's oath on the table (v1.855): always on the first floor won, then
-/// on this share of the floors (not a boon's, v1.860) while a clan is left
-/// to swear to; one oath a floor at most.
+/// A clan's offer on the table (v1.855; since the clans' offers their gifts,
+/// docs/simulation/tower-clan-offers.md): always on the first floor won,
+/// then on this share of the other floors (not a boon's, v1.860).
 const double towerOathChance = 0.35;
+
+/// The clans' offers (docs/simulation/tower-clan-offers.md §1): at
+/// most this many suitors a floor, each a different clan of the run's pool.
+const int towerSuitorsPerOffer = 3;
+
+/// Standing with a clan in a run: 0 to [towerOathStep], rebuilt from the
+/// cards taken (towerStandingOf). A gift taken gives its clan
+/// [towerGiftStanding], each of its allies (relations.json step
+/// [towerAllyRelationStep] or more) [towerAllyStanding], and takes
+/// [towerRivalStanding] from each rival (step [towerRivalRelationStep] or
+/// less). At [towerOathStep] the clan's oath is dealt (the user's call: 6).
+const int towerOathStep = 6;
+const int towerGiftStanding = 2;
+const int towerAllyStanding = 1;
+const int towerRivalStanding = 1;
+const int towerAllyRelationStep = 6;
+const int towerRivalRelationStep = 3;
 
 /// The floors whose win offers a boon (v1.860, the main game's earning
 /// offers): a choose-one of a skill, a die and a spell. The other floors
