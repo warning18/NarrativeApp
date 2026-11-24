@@ -1969,9 +1969,38 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.en: 'Leave them all (+1 mark)',
     AppLanguage.fr: 'Ne rien prendre (+1 marque)',
   },
-  'tower_kind_die': {AppLanguage.en: 'Die', AppLanguage.fr: 'Dé'},
-  'tower_kind_skill': {AppLanguage.en: 'Skill', AppLanguage.fr: 'Compétence'},
-  'tower_kind_spell': {AppLanguage.en: 'Spell', AppLanguage.fr: 'Sort'},
+  'tower_kind_die': {
+    AppLanguage.en: 'Die',
+    AppLanguage.fr: 'Dé',
+  },
+  'tower_kind_skill': {
+    AppLanguage.en: 'Skill',
+    AppLanguage.fr: 'Compétence',
+  },
+  'tower_kind_spell': {
+    AppLanguage.en: 'Spell',
+    AppLanguage.fr: 'Sort',
+  },
+  // A skill card with no face to land on is a rank-up (v2.4.0): a skill
+  // already on the die grows a rank (the fights' skill tiers).
+  'tower_kind_rank_up': {
+    AppLanguage.en: 'Rank up',
+    AppLanguage.fr: 'Montée en rang',
+  },
+  // The step the card gives: the base skill is rank 1, the last rank 4
+  // ("to": the pixel font has no arrow).
+  'tower_rank_up_name': {
+    AppLanguage.en: 'Rank {from} to {to}',
+    AppLanguage.fr: 'Rang {from} à {to}',
+  },
+  'tower_rank_up_text': {
+    AppLanguage.en:
+        'Your die has no free face for a new skill: this one on it grows '
+            'a rank stronger (+25% to its numbers).',
+    AppLanguage.fr:
+        'Votre dé n’a plus de face libre pour une nouvelle compétence\u00a0: '
+            'celle-ci y gagne un rang (+25\u00a0% à ses valeurs).',
+  },
   // A clan offers its oath on the way up (v1.855).
   'tower_oath_title': {
     AppLanguage.en: '{clan} offer you their oath',

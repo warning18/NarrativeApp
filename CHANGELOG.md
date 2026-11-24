@@ -11,7 +11,21 @@ isn't reconstructable from git history alone.
 ## [2.5.3+1062]
 
 - **Tower text fits at 320 dp, French, 1.3x text (#1139).** The stat pick's gain cards keep each stat name whole ("Intelligence", "Perspicacité") by shrinking a word to its card instead of breaking it in two. The Tower's app-bar titles (door, floor, end, marks) and the fight's title shrink to their line instead of ending in "…". No rule or number changes.
-- **Small fixes from QA's L3 (#1141, #1144, #1145).** In a story fight at 320 dp, French and 1.3x text, the foe plate's intent box keeps its size in its row (it overflowed by 5 dp) and a die stays on a short dice board (it sat 12 dp above it). The d10 has its bone body at last (Art's). A card offered alone, such as the clan oath, is one third wide and centred, not a screen-high black tarot.
+- **Small fixes from QA's L3 (#1141, #1144, #1145).** In a story fight at 320 dp, French and 1.3x text, the foe plate's intent box keeps its size in its row (it overflowed by 5 dp) and a die stays on a short dice board (it sat 12 dp above it). The d10 has its bone body at last (Art's). A card offered alone, such as the clan oath, is one third wide and centred, not a screen-high black tarot. The rank-up card's name is the skill alone; the step ("Rank 1 to 2") leads its text, so a long French name no longer wraps tight in the plate.
+
+## [2.4.0+1058]
+
+- **The Tower, harder above floor 10 and with more picks that count**
+  (the user's choices from the Tower roguelike briefs).
+  - Floors 11 to 20 are 8% tougher, floors 21 to 29 and the floor-30
+    boss 6% tougher; the first ten floors are unchanged.
+  - A skill card whose skill would find no free face on your die is now a
+    **Rank up** card: a skill already on the die grows a rank (+25% to its
+    numbers, up to rank 3), and the fight plays it at that rank.
+  - Three more reward floors, 13, 23 and 28 (a skill, a die or a spell).
+  - On 2,000 simulated climbs the top is won by 12.0% of runs with no
+    unlocks (was 14.5%) and 23.7% with all (was 26.8%); the median floor
+    reached falls from 19 to 17.
 
 ## [2.3.1+1057]
 

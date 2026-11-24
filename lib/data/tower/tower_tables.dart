@@ -98,6 +98,21 @@ const Map<int, double> towerEventsExtras = {20: .30, 30: .35};
 /// 26.2%; at .43 and .35, 15.4% and 29.9%). The user's option 2, v1.963.
 const Map<int, double> towerPeacefulExtras = {25: .42, 30: .34};
 
+/// The climb above floor 10 made harder (v2.4.0, docs/simulation/
+/// tower-roguelike-briefs.md brief 1, the user's option B): every floor's
+/// extra ×1.08 on floors 11 to 20 and ×1.06 on 21 to 29 and on the
+/// floor-30 boss (the user's pick of the late-floor variants), the first
+/// ten floors as they were. The top had been won by 14.3% of runs with no
+/// unlocks and 26.9% with all, over the design's 5 to 12% and 15 to 25%;
+/// now 11.95% and 23.65% (seeds 1 to 2000).
+double towerClimbScale(int floor) => floor >= 11 && floor <= 20
+    ? 1.08
+    : floor >= 21 && floor <= 29
+        ? 1.06
+        : floor == 30
+            ? 1.06
+            : 1.0;
+
 /// What the unlocks owned give a run (v1.848, the user's call: unlocks give
 /// some power, not options only). Each one owned at the start: this share
 /// more max health. (Start levels were tried first and made the Tower
@@ -481,7 +496,12 @@ const int towerNoRepeatFloors = 3;
 /// hero holds its standing and its die (see [towerOathChance]). The item,
 /// heal and clan-gift cards of v1.845 are gone (v1.867): an old save's are
 /// brought up to date as it loads (TowerRun.fromJson).
-enum TowerRewardKind { die, skill, spell, clanOath }
+///
+/// [rankUp] (v2.4.0, brief 2): a skill card whose skill would sit on no
+/// face of the die in play becomes a tier for the best skill on it
+/// (combat_engine's applySkillTier, up to maxSkillTier): its id is that
+/// skill's.
+enum TowerRewardKind { die, skill, spell, clanOath, rankUp }
 
 /// A clan's oath on the table (v1.855): always on the first floor won, then
 /// on this share of the floors (not a boon's, v1.860) while a clan is left
@@ -491,7 +511,8 @@ const double towerOathChance = 0.35;
 /// The floors whose win offers a boon (v1.860, the main game's earning
 /// offers): a choose-one of a skill, a die and a spell. The other floors
 /// give their spoils only, and a clan's oath when one comes.
-const Set<int> towerBoonFloors = {5, 10, 15, 20, 25};
+/// v2.4.0 (brief 3, option B): three more late, on 13, 23 and 28.
+const Set<int> towerBoonFloors = {5, 10, 13, 15, 20, 23, 25, 28};
 
 /// What a boon's three cards are, one of each while each has one to give.
 const List<TowerRewardKind> towerBoonKinds = [

@@ -7,7 +7,10 @@
 
 import 'dart:math';
 
+import '../../combat/combat_engine.dart' show applySkillTier, maxSkillTier;
 import '../../combat/loot_box.dart';
+import '../sim_growth.dart' show simSkillScore;
+import '../sim_policy.dart' show simSkillAssignments;
 import 'tower_floors.dart';
 import 'tower_tables.dart';
 
@@ -61,6 +64,9 @@ class TowerHeroView {
     this.unlockedSkillIds = const {},
     this.knownSpellIds = const {},
     this.takenIds = const {},
+    this.diceFaces = const [],
+    this.diceSkillAssignments = const {},
+    this.skillTiers = const {},
   });
 
   final String raceId;
@@ -80,6 +86,42 @@ class TowerHeroView {
 
   /// The ids of every card taken this run (none is offered twice).
   final Set<String> takenIds;
+
+  /// The die in play's faces and the skills on them (face index -> skill
+  /// id), and the tiers of the skills ranked up (v2.4.0): a skill card
+  /// that would land on no face is a rank-up instead ([towerRankUpFor]).
+  final List<Map<String, dynamic>> diceFaces;
+  final Map<String, String> diceSkillAssignments;
+  final Map<String, int> skillTiers;
+}
+
+/// The skill a rank-up card raises instead of [skillId] (v2.4.0, brief 2 of
+/// docs/simulation/tower-roguelike-briefs.md), or null when [skillId]
+/// would sit on a face of [hero]'s die (simSkillAssignments, as it is
+/// placed when taken) or no skill on the die has a tier left: the best of
+/// the skills on the die now (simSkillScore at its tier, ties by id) below
+/// [maxSkillTier].
+String? towerRankUpFor(
+    String skillId, TowerHeroView hero, Map<String, dynamic> skills) {
+  if (hero.diceFaces.isEmpty) return null;
+  final placed = simSkillAssignments(
+      faces: hero.diceFaces,
+      current: hero.diceSkillAssignments,
+      unlocked: {...hero.unlockedSkillIds, skillId},
+      skills: skills);
+  if (placed.values.contains(skillId)) return null;
+  double score(String id) => simSkillScore(applySkillTier(
+      skills[id] as Map<String, dynamic>, hero.skillTiers[id] ?? 0));
+  final onDie = [
+    for (final id in hero.diceSkillAssignments.values.toSet())
+      if (skills[id] is Map<String, dynamic> &&
+          (hero.skillTiers[id] ?? 0) < maxSkillTier)
+        id,
+  ]..sort((a, b) {
+      final byScore = score(b).compareTo(score(a));
+      return byScore != 0 ? byScore : a.compareTo(b);
+    });
+  return onDie.isEmpty ? null : onDie.first;
 }
 
 /// The rarity step (0..3) a card of [floor] draws with [random].
@@ -167,7 +209,12 @@ List<TowerReward> towerOfferFor({
                   _prerequisiteMet(value['requiredSkillID'], hero))
                 key,
           ]);
-          if (id != null) return TowerReward(kind, id: id);
+          if (id == null) continue;
+          // A skill with no face to land on: a tier for one on the die.
+          if (towerRankUpFor(id, hero, skills) case final up?) {
+            return TowerReward(TowerRewardKind.rankUp, id: up);
+          }
+          return TowerReward(kind, id: id);
         }
         return null;
       case TowerRewardKind.spell:
@@ -182,6 +229,7 @@ List<TowerReward> towerOfferFor({
       // A boon is a skill, a die or a spell (v1.860); an oath is dealt
       // apart, below (its own stream).
       case TowerRewardKind.clanOath:
+      case TowerRewardKind.rankUp:
         return null;
     }
   }

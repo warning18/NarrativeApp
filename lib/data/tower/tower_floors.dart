@@ -151,11 +151,14 @@ TowerFloor _floorOf(
   int events,
 ) {
   final budget = towerBudgetOf(floor);
-  final extra = events >= towerPeacefulEvents
-      ? towerPeacefulExtras[floor] ?? towerEventsExtras[floor] ?? budget.extra
-      : events >= 1
-          ? towerEventsExtras[floor] ?? budget.extra
-          : budget.extra;
+  final extra = towerClimbScale(floor) *
+      (events >= towerPeacefulEvents
+          ? towerPeacefulExtras[floor] ??
+              towerEventsExtras[floor] ??
+              budget.extra
+          : events >= 1
+              ? towerEventsExtras[floor] ?? budget.extra
+              : budget.extra);
   final random = towerRandom(seed, floor, TowerStream.foes);
   final affixRandom = towerRandom(seed, floor, TowerStream.affix);
   List<EnemyAffix> affixes(bool pack) {

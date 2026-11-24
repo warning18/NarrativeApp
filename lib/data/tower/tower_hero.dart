@@ -5,6 +5,7 @@
 
 import 'dart:math';
 
+import '../../combat/combat_engine.dart' show maxSkillTier;
 import '../../combat/spells.dart';
 import '../../combat/stat_rules.dart' show levelHealthGain, levelStatPicks;
 import '../sim_combat.dart';
@@ -215,6 +216,10 @@ void towerApplyReward(
       if (spell != null && !hero.knownSpells.any((s) => s.id == reward.id)) {
         hero.knownSpells.add(spell);
       }
+    case TowerRewardKind.rankUp:
+      // A tier for a skill (v2.4.0), the fights' applySkillTier.
+      hero.skillTiers[reward.id] =
+          min((hero.skillTiers[reward.id] ?? 0) + 1, maxSkillTier);
     case TowerRewardKind.clanOath:
       // Sworn: the clan's die at once (the user's call: in the bag, with
       // [bag]); its standing is the session's (towerSessionOf).
@@ -409,6 +414,9 @@ TowerHeroView towerHeroView(TowerRun run, SimCharacter hero) => TowerHeroView(
       ownedDiceIds: hero.ownedDice.keys.toSet(),
       unlockedSkillIds: hero.unlockedSkillIds,
       knownSpellIds: {for (final s in hero.knownSpells) s.id},
+      diceFaces: hero.diceFaces,
+      diceSkillAssignments: hero.diceSkillAssignments,
+      skillTiers: hero.skillTiers,
       takenIds: {
         for (final r in run.taken.values)
           if (r.id.isNotEmpty) r.id,
