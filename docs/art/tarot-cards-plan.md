@@ -22,6 +22,6 @@ UX-2's notes (`claude/ux-2-tower-cards`, `docs/ux-shots/tower-cards/README.md`):
 
 ## Pilot, 8 generations (done): Fire, dice and Heal vignettes + the rare seal, 2 seeds each
 Board `docs/art/boards/tarot-pilot.png` (the pilot above; below it the plate UX uses today: crops of the ward, shop, parley and bargain plates). Files `art/pixellab-tarot/final/`: `vignette_fire.png`, `vignette_dice.png`, `vignette_heal.png`, `seal_rare_3dots.png` (and `alt_` for the other seed). Balance 1806.
-- What worked: the dice and the fire read well and are clearly in the ink style; the seals work (the second seed, `alt_seal_rare_3dots.png`, has the better wax edge; the first has the clearer three dots).
+- What worked: the dice and the fire read well and are clearly in the ink style; the seals work (`seal_rare_3dots.png` has the better wax edge; `alt_seal_rare_3dots.png` has the clearer three dots).
 - What did not: in the Fire second try and both Heal tries the model drew a tarot card inside the picture; I picked the first Fire and the first Heal (the cleanest), but Heal also has a card-like frame that needs a retry with "no card, no frame".
 - The vignettes are not tied to the Tower plates (no scene to crop): they are made as small paintings, so UX can drop the plate stand-ins.
