@@ -55,7 +55,9 @@ double towerProfessionScaleOf(String professionId, {int events = 0}) =>
 /// with no unlocks to 22%. v1.922: 1.18 (was 1.14), with the humans' and
 /// voidkin's start (towerPeoplePoints): the top with no unlocks back near
 /// the curve review's (12.6%; 17.9% with the start alone).
-const double towerFoeScale = 1.18;
+/// 1.24 since the clans' offers (v2.6.0): the payback B (+0.06) on every
+/// version's foes, so a run with the floor events off is paid back too.
+const double towerFoeScale = 1.24;
 
 /// Every foe of the Tower in a run with the floor events on (floor events
 /// PR 2, docs/proposals/tower-snakes-and-ladders.md, TowerRun.events 1 or
@@ -66,7 +68,8 @@ const double towerFoeScale = 1.18;
 /// both 12.6% and 26.8%). The live curve since v1.944 (events version 1).
 /// 1.16 since a pack's shortcut is an Elite pack (towerShortcutFloor, no
 /// foe added): 13.2% and 24.9%, every ordinary floor under 9%.
-const double towerEventsFoeScale = 1.16;
+/// 1.22 since the clans' offers (v2.6.0, the payback B's +0.06).
+const double towerEventsFoeScale = 1.22;
 
 /// The floor events' version that adds the floors without a fight (floor
 /// events PR 3 and 4, docs/proposals/tower-peaceful-floors-and-stores.md:

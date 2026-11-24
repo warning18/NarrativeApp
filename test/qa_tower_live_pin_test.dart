@@ -64,8 +64,11 @@ void main() {
   // floors, the oath at standing 6, one a run; no Tower number moved,
   // the bot takes 3 to 4 more skills a run: these were 50 / 208 / 9160 and
   // 122 / 309 / 10750.
-  const none = (top: 70, floor20: 235, floorSum: 9545);
-  const all = (top: 161, floor20: 333, floorSum: 11240);
+  // The user's payback B (the Tower's foes 1.17 to 1.23,
+  // towerPeacefulFoeScale): these were 70 / 235 / 9545 and
+  // 161 / 333 / 11240.
+  const none = (top: 49, floor20: 207, floorSum: 9088);
+  const all = (top: 125, floor20: 302, floorSum: 10775);
 
   test('the live Tower, no unlocks, is the pinned curve', () {
     final m = _measure(const TowerProgress());

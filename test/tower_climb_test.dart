@@ -218,7 +218,8 @@ void main() {
     expect(offer.every((r) => r.clan.isNotEmpty), isTrue);
     expect(offer.where((r) => r.kind == TowerRewardKind.clanOath), isEmpty);
     expect(find.byKey(const Key('tower_offer_frame')), findsOneWidget);
-    expect(find.byKey(const Key('tower_card_clan_0')), findsOneWidget);
+    // Each gift card says what it moves (its clan +2) and the standing.
+    expect(find.textContaining('+$towerGiftStanding'), findsWidgets);
     expect(find.textContaining('Standing 0/$towerOathStep'), findsWidgets);
     expect(find.text('Not now (+1 mark)'), findsOneWidget);
     await tester.tap(find.byKey(const Key('tower_take')));
@@ -251,7 +252,9 @@ void main() {
     final at = offer.indexWhere((r) => r.kind == TowerRewardKind.clanOath);
     expect(at, 0, reason: 'the oath first');
     expect(offer[at].id, 'mire');
-    expect(find.byKey(const Key('tower_oath_banner_mire')), findsOneWidget);
+    // The oath card shows the clan at the oath's step.
+    expect(find.textContaining('Standing $towerOathStep/$towerOathStep'),
+        findsWidgets);
     await tester.tap(find.byKey(Key('tower_card_$at')));
     await tester.pump();
     expect(find.text('Swear'), findsOneWidget);

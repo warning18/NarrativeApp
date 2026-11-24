@@ -142,3 +142,19 @@ None is applied. Each is one Tower-wide number, measured alone on the build abov
 - **B''** is the smallest single number that brings both tops back inside the bands; it scales every foe of the live Tower (the quiet floors' version) by about 5 %. B and B' sit 0.2 to 0.8 points above the bands' tops.
 - **C** gives the same as B for the floors above 10 only (the first ten untouched); probably about +0.05 instead of +0.03 would be needed to come inside (not measured).
 - Whichever is picked, the live pin and the guard bands are re-measured in its PR.
+
+## 11. Applied: payback B (the user's pick)
+
+The Tower's foes +0.06 in every floor-events version: `towerPeacefulFoeScale`
+1.17 → 1.23 (the live one), `towerEventsFoeScale` 1.16 → 1.22 and
+`towerFoeScale` 1.18 → 1.24, so a run with the events off is paid back too.
+Measured with the clans' offers, seeds 1–2000:
+
+| | top none | top all | median none | floor 20 none |
+|---|---|---|---|---|
+| v2.4.0 (no clan offers) | 11.95% | 23.65% | 17 | 42.3% |
+| clan offers, no payback | 16.00% | 31.15% | 19 | 48.0% |
+| **clan offers + payback B** | **11.3%** | **23.8%** | 17 | 42.6% |
+
+The cards as built (UX restyles them): `tower-clan-offers/`, the gifts and an
+oath at standing 6, English 412 px and French 360 px.

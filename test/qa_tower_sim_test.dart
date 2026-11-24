@@ -82,9 +82,12 @@ const _topNone = (min: 0.07, max: 0.20);
 // On the 500 guard seeds: median 19, floor 20 47.0%, the top 14.0%, and
 // 32.2% with every unlock (33.4% with the floor events off). Every
 // unlock's band re-centred, as wide as before (it was 0.18 to 0.32); the
-// others still hold the new numbers. The payback is the user's call
-// (the plan's "Payback candidates").
-const _topAll = (min: 0.26, max: 0.40);
+// others still hold the new numbers. With the user's payback B (the
+// Tower's foes 1.17 to 1.23, towerPeacefulFoeScale): on 2,000 seeds the
+// top 11.3% and 23.8%, median 17, floor 20 42.6%; on the guard seeds
+// median 17, floor 20 41.4%, the top 9.8% and 25.0%. Every unlock's band
+// back to 0.18 to 0.32 (it was 0.26 to 0.40 as first built).
+const _topAll = (min: 0.18, max: 0.32);
 
 /// The floor events' version the batch and the guards play (TOWER_EVENTS):
 /// the foes' scale and the floors' extras of floor events PR 2 are set for
