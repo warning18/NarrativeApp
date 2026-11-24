@@ -8,7 +8,7 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
-## [2.5.2+1061]
+## [2.5.1+1060]
 
 - **Chapter 7: the night before the Hall and the Stair of Tongues** (Narrative's scenes, the user's yes). Between the rest at Candlehold and the claimant's duel, two scenes: the last night before the Hall (`7516_eve`, at the gates; the rest's healing and supplies now come here, as "Sleep, and climb at dawn") and the climb of the Stair of Tongues (`7517_stair`, where the claimant is chosen). English and French, with their callbacks to earlier choices. No fight added: on 200 simulated runs per player the chapter's fights, levels and the hero's level entering chapter 8 are unchanged. The stair's building at Candlehold is named "The foot of the Stair of Tongues".
 
