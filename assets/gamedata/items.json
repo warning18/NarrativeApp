@@ -1827,7 +1827,7 @@
     "alignedArmorBonus": 0,
     "itemName_fr": "Parchemin de boule de feu",
     "description": "Imra of the Smoke sells these by the bundle: a fireball written out in a Cantor’s hand and good for one casting. The void cults’ acolytes carry them too, which says something about what the Cantors charge.",
-    "description_fr": "Imra de la Fumée les vend par liasses : une boule de feu copiée de la main d’un Chantre, bonne pour un seul lancer. Les acolytes des cultes du vide en portent aussi, ce qui en dit long sur les tarifs des Chantres."
+    "description_fr": "Imra de la Fumée les vend par liasses : une boule de feu copiée de la main d’un Chantre, bonne pour un seul lancer. Les acolytes des cultes du Néant en portent aussi, ce qui en dit long sur les tarifs des Chantres."
   },
   "material_iron_ore": {
     "id": "material_iron_ore",
@@ -2521,7 +2521,7 @@
     "alignedArmorBonus": 1,
     "itemName_fr": "Capuche de cultiste",
     "description": "Grey sackcloth cut with eyeholes, the void cults’ only vestment, soaked in enough ash-ink that the Spire’s confiscations never found the power under it. The Tide Cellar sells them to people who want to pray at the tear, or to be mistaken for someone who does.",
-    "description_fr": "Toile de sac grise percée pour les yeux, l’unique habit des cultes du vide, imbibée d’assez d’encre de cendre pour que les confiscations de la Flèche ne trouvent jamais le pouvoir dessous. La Cave aux Marées en vend à qui veut prier la déchirure, ou passer pour quelqu’un qui le fait."
+    "description_fr": "Toile de sac grise percée pour les yeux, l’unique habit des cultes du Néant, imbibée d’assez d’encre de cendre pour que les confiscations de la Flèche ne trouvent jamais le pouvoir dessous. La Cave aux Marées en vend à qui veut prier la déchirure, ou passer pour quelqu’un qui le fait."
   },
   "blackened_fang": {
     "id": "blackened_fang",

@@ -114,7 +114,7 @@
   "hull_void_lacquer": {
     "lookID": "hull_void_lacquer",
     "lookName": "Void Lacquer",
-    "lookName_fr": "Laque du Vide",
+    "lookName_fr": "Laque du Néant",
     "category": "hull",
     "cost": 400,
     "rarity": "epic",
@@ -549,7 +549,7 @@
   "ensign_void_banner": {
     "lookID": "ensign_void_banner",
     "lookName": "Void Banner",
-    "lookName_fr": "Bannière du Vide",
+    "lookName_fr": "Bannière du Néant",
     "category": "ensign",
     "cost": 280,
     "rarity": "epic",

@@ -5412,7 +5412,7 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   },
   'stat_src_open_hand': {
     AppLanguage.en: 'The Open Hand',
-    AppLanguage.fr: 'La Main ouverte'
+    AppLanguage.fr: 'La Main Ouverte'
   },
   'stat_src_earlier': {AppLanguage.en: 'Earlier', AppLanguage.fr: 'Avant'},
   'stat_src_gear': {AppLanguage.en: 'Gear', AppLanguage.fr: 'Équipement'},
@@ -14884,7 +14884,7 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.en:
         'A clan’s banner hangs here once it is your friend, the Open Hand’s once it is raised, and the Shroud’s pieces as you find them. Tap one for its name.',
     AppLanguage.fr:
-        'La bannière d’un clan pend ici dès qu’il est votre ami, celle de la Main ouverte une fois relevée, et les pièces du Linceul à mesure que vous les trouvez. Touchez-en une pour son nom.',
+        'La bannière d’un clan pend ici dès qu’il est votre ami, celle de la Main Ouverte une fois relevée, et les pièces du Linceul à mesure que vous les trouvez. Touchez-en une pour son nom.',
   },
   'throne_edit_hint': {
     AppLanguage.en:
