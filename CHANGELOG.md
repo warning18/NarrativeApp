@@ -8,6 +8,10 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [2.6.1+1064]
+
+- **Chapter goals: the weakness goal of chapters 4 to 6 asks for 3 weakness hits in one fight** (the user's pick). It was met by 73 to 86% of the simulator's runs, as most mid-game dice strike a weakness at least once a fight; with 3 hits, 54 to 72%. Chapter 7's weakness goal stays at one hit. Narrative's lines: "Strike a weakness {n} times in one fight" (chapters 4 and 5), "Turn a weakness against them {n} times in one fight" (chapter 6), "Strike a weakness, whoever stands before you" (chapter 7).
+
 ## [2.6.0+1063]
 
 - **The Tower: the clans court you** (the user's request: clan gifts as in the story, the oath kept for a clan you stand well with).

@@ -295,7 +295,7 @@ extension _FightRewards on _FightScreenState {
               enemyIds: [for (final e in defeated) e.enemyId],
               firstTry: defeated.every(
                   (e) => (session.bossDefeatCounts[e.enemyId] ?? 0) == 0),
-              weaknessStruck: _weaknessHits > 0,
+              weaknessHits: _weaknessHits,
               potionUsed: _potionUsed,
             ));
       }
