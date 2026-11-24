@@ -3,7 +3,7 @@
 
 Run from the repo root: python3 docs/narrative/drafts/apply_p3_beat2.py
 Then run `dart format lib/data/world_map.dart` (the map edit lists long lines).
-Adds the eight beat2_<companion> scenes, Vica's three scenes, the
+Adds the eight beat2_<companion> scenes, Vica's two scenes (loyal_vica, beat2_vica) and three callbacks on 1200, the
 <companion>_loyal_done flag on the eight loyal_* choices, and the
 "Sit with ..." hub choices on 7516_eve. Needs 7516_eve to exist.
 """
@@ -48,7 +48,6 @@ def add_after(src, anchor, extra):
     assert src.count(anchor) == 1, anchor
     return src.replace(anchor, anchor + extra)
 beats = "".join(f" 'beat2_{c}'," for c in ["kelda","sable","maren","liora","vess","grosh","tobin","malrik","vica"])
-src = add_after(src, "scenes: ['1150_vica',", " '1155_vica_follows',")
 src = add_after(src, "'loyal_kelda',", " 'loyal_vica',")
 src = add_after(src, "'7515_rest', '7516_eve', '7517_stair',", beats)
 wm.write_text(src, encoding="utf-8")
