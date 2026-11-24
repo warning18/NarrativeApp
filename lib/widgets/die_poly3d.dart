@@ -253,13 +253,12 @@ class _Facet extends StatelessWidget {
                   muted ? 1 - light * 0.7 : 1 - light, front)),
           if (glyphBox > 0)
             Center(
-              child: Opacity(
-                opacity: 0.55 + 0.45 * light,
-                child: SizedBox(
-                  width: glyphBox,
-                  height: glyphBox,
-                  child: FittedBox(fit: BoxFit.contain, child: face.glyph),
-                ),
+              // Solid (v2.2.2): a glyph is never faded, the lamp darkens the
+              // facet under it.
+              child: SizedBox(
+                width: glyphBox,
+                height: glyphBox,
+                child: FittedBox(fit: BoxFit.contain, child: face.glyph),
               ),
             ),
         ],
