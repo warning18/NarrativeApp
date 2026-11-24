@@ -2240,6 +2240,12 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   // The step the card gives: the base skill is rank 1, the last rank 4
   // ("to": the pixel font has no arrow).
   'tower_rank_up_name': {
+    AppLanguage.en: '{skill}: rank {from} to {to}',
+    AppLanguage.fr: '{skill}\u00a0: rang {from} à {to}',
+  },
+  // The step alone, which leads the rank-up card's words (the name is the
+  // skill; a long French name did not fit with the step in the plate).
+  'tower_rank_up_step': {
     AppLanguage.en: 'Rank {from} to {to}',
     AppLanguage.fr: 'Rang {from} à {to}',
   },

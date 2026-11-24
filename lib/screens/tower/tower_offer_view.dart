@@ -81,7 +81,7 @@ TowerCardText towerCardText(WidgetRef ref, TowerReward reward, {int tier = 0}) {
           // a long French name does not wrap tight in the plate (Core's note
           // on #1134).
           skillDisplayName(reward.id, language: lang),
-          '${tr(ref, 'tower_rank_up_name').replaceAll('{from}', '${tier + 1}').replaceAll('{to}', '${tier + 2}')}\n'
+          '${tr(ref, 'tower_rank_up_step').replaceAll('{from}', '${tier + 1}').replaceAll('{to}', '${tier + 2}')}\n'
           '${tr(ref, 'tower_rank_up_text')}');
     case TowerRewardKind.clanOath:
       // A clan offers its oath (Core's v1.855; UX-2 dresses the card).
