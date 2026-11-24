@@ -1934,7 +1934,8 @@ class ChartMapPainter extends CustomPainter {
         fontFamily: InkFonts.system,
         fontSize: _font(5, minRegionPx),
         letterSpacing: 1.2 * t,
-        color: palette.label.withValues(alpha: named ? 1 : 0.6),
+        color: palette.landName
+            .withValues(alpha: named ? 1 : ChartPalette.unreachedLandName),
       );
       final painter = _layout(text, style);
       final size = Size(painter.width, painter.height);
