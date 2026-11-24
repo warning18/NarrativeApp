@@ -29,17 +29,18 @@ extension _FightCards on _FightScreenState {
     return tooltip == null ? chip : Tooltip(message: tooltip, child: chip);
   }
 
-  /// The name of a foe's group in the player's language, for its emblem: the
-  /// groups of no clan have strings of their own (`enemy_group_<id>`), a clan's
-  /// is its faction's name; the English look name stays the last resort.
+  /// The name of a foe's group in the player's language, for its emblem: a
+  /// clan's is its faction's name, every other look has a string of its own
+  /// (`enemy_group_<id>`).
   String _groupNameFor(EnemyGroup group) {
     final lang = ref.watch(appLanguageProvider);
-    if (enemyGroupIds.contains(group.id)) {
-      return trFor(lang, enemyGroupNameKey(group.id));
+    // A clan's look (it wears the clan's banner) is named by the faction.
+    if (group.banner != null) {
+      final factions = ref.watch(localizedDbProvider(factionsSchema)).value;
+      final name = (factions?[group.id] as Map?)?['name']?.toString();
+      if (name != null && name.isNotEmpty) return name;
     }
-    final factions = ref.watch(localizedDbProvider(factionsSchema)).value;
-    final name = (factions?[group.id] as Map?)?['name']?.toString();
-    return name == null || name.isEmpty ? group.name : name;
+    return trFor(lang, enemyGroupNameKey(group.id));
   }
 
   /// The element of the die the player has picked, or null.

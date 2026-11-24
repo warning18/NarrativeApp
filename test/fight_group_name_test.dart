@@ -16,6 +16,10 @@ import 'package:narrative_data_app/combat/encounter.dart';
 import 'package:narrative_data_app/combat/enemy_affix.dart';
 import 'package:narrative_data_app/combat/fight_goal.dart';
 import 'package:narrative_data_app/l10n/app_locale.dart';
+import 'package:narrative_data_app/data/enemy_groups.dart'
+    show enemyGroupNameKey;
+import 'package:narrative_data_app/l10n/app_strings.dart' show trFor;
+import 'package:narrative_data_app/widgets/enemy_groups.dart' show enemyGroups;
 import 'package:narrative_data_app/main.dart';
 import 'package:narrative_data_app/providers/fight_random_provider.dart';
 import 'package:narrative_data_app/providers/player_session_provider.dart';
@@ -97,5 +101,15 @@ void main() {
       ..remove('group');
     await openFight(tester, AppLanguage.fr, foe);
     expect(find.byTooltip('Le Dominion de la Lanterne'), findsOneWidget);
+  });
+
+  test('every look that is not a clan\'s has its English and French name', () {
+    for (final g in enemyGroups.values.where((g) => g.banner == null)) {
+      final key = enemyGroupNameKey(g.id);
+      final en = trFor(AppLanguage.en, key), fr = trFor(AppLanguage.fr, key);
+      expect(en, isNot(key), reason: key);
+      expect(fr, isNot(key), reason: key);
+      expect(fr, isNot(en), reason: '$key has no French of its own');
+    }
   });
 }
