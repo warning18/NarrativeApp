@@ -605,72 +605,76 @@ class _CityDistrictView extends ConsumerWidget {
                         onPick: onOpen,
                       )
                     else
-                      ValueListenableBuilder<Offset?>(
-                        valueListenable: partyWalk,
-                        builder: (context, walkAt, _) => CityChartView(
-                          key: const ValueKey('journey_city_chart'),
-                          camera: places.camera,
-                          buildingNames: infos == null,
-                          partyAt:
-                              walkAt ?? (standing == null ? null : placeMark),
-                          chart: chart,
-                          look: look,
-                          text: text,
-                          explored: explored,
-                          hereDistrict: hereDistrict,
-                          focus: focus,
-                          focusToken: focusToken,
-                          controls: false,
-                          cards: false,
-                          numbers: numbers,
-                          banners: banners,
-                          bannersDark: chartDark,
-                          onFocus: focusOrExplain,
-                          locked: shutDistricts,
-                          holds: holds,
-                          onPick: (w) {
-                            final i = int.tryParse(w.id);
-                            if (i == null || i >= steps.length) return;
-                            // With places, a pin shows its place's card (a
-                            // second tap folds it); Go takes the party there.
-                            final place =
-                                infos?.where((p) => p.steps.contains(i));
-                            if (place == null || place.isEmpty) {
-                              final group = groups
-                                  .where((g) => g.members.contains(i))
-                                  .firstOrNull;
-                              if (group != null && group.isPin) {
-                                onOpenPin(group.members, pinName(group.lead));
+                      // Its own layer (Maps' perf review): a drag of the
+                      // plan repaints the plan, not the Journey around it.
+                      RepaintBoundary(
+                        child: ValueListenableBuilder<Offset?>(
+                          valueListenable: partyWalk,
+                          builder: (context, walkAt, _) => CityChartView(
+                            key: const ValueKey('journey_city_chart'),
+                            camera: places.camera,
+                            buildingNames: infos == null,
+                            partyAt:
+                                walkAt ?? (standing == null ? null : placeMark),
+                            chart: chart,
+                            look: look,
+                            text: text,
+                            explored: explored,
+                            hereDistrict: hereDistrict,
+                            focus: focus,
+                            focusToken: focusToken,
+                            controls: false,
+                            cards: false,
+                            numbers: numbers,
+                            banners: banners,
+                            bannersDark: chartDark,
+                            onFocus: focusOrExplain,
+                            locked: shutDistricts,
+                            holds: holds,
+                            onPick: (w) {
+                              final i = int.tryParse(w.id);
+                              if (i == null || i >= steps.length) return;
+                              // With places, a pin shows its place's card (a
+                              // second tap folds it); Go takes the party there.
+                              final place =
+                                  infos?.where((p) => p.steps.contains(i));
+                              if (place == null || place.isEmpty) {
+                                final group = groups
+                                    .where((g) => g.members.contains(i))
+                                    .firstOrNull;
+                                if (group != null && group.isPin) {
+                                  onOpenPin(group.members, pinName(group.lead));
+                                } else {
+                                  onOpen(i);
+                                }
                               } else {
-                                onOpen(i);
+                                final id = place.first.id;
+                                places.card.value =
+                                    places.card.value == id ? null : id;
                               }
-                            } else {
-                              final id = place.first.id;
-                              places.card.value =
-                                  places.card.value == id ? null : id;
-                            }
-                          },
-                          onPickFog: (_) {},
-                          rulers: rulers,
-                          phase: ref.watch(dayPhaseProvider),
-                          services: [
-                            for (final s in townServices)
-                              CityChartService(
-                                  id: s.id,
-                                  kind: s.kind,
-                                  at: s.pin.at,
-                                  district: s.pin.district,
-                                  opens: s.opensSomething,
-                                  // The notice board says what waits on it.
-                                  badge: s.kind == 'notice_board'
-                                      ? boardContracts.length
-                                      : 0,
-                                  urgent: boardContracts.any((c) => c.done)),
-                          ],
-                          onService: (picked) => showTownServiceSheet(
-                              context,
-                              townServices
-                                  .firstWhere((s) => s.id == picked.id)),
+                            },
+                            onPickFog: (_) {},
+                            rulers: rulers,
+                            phase: ref.watch(dayPhaseProvider),
+                            services: [
+                              for (final s in townServices)
+                                CityChartService(
+                                    id: s.id,
+                                    kind: s.kind,
+                                    at: s.pin.at,
+                                    district: s.pin.district,
+                                    opens: s.opensSomething,
+                                    // The notice board says what waits on it.
+                                    badge: s.kind == 'notice_board'
+                                        ? boardContracts.length
+                                        : 0,
+                                    urgent: boardContracts.any((c) => c.done)),
+                            ],
+                            onService: (picked) => showTownServiceSheet(
+                                context,
+                                townServices
+                                    .firstWhere((s) => s.id == picked.id)),
+                          ),
                         ),
                       ),
                     ...overlays,
