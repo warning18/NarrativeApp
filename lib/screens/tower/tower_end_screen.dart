@@ -10,6 +10,8 @@ import '../../data/tower/tower_run.dart';
 import '../../l10n/app_strings.dart';
 import '../../theme/stitched_ink.dart';
 import 'tower_backdrop.dart';
+import 'tower_end_tally.dart';
+import 'tower_heat_view.dart';
 import 'tower_look.dart';
 import 'tower_marks_screen.dart';
 import 'tower_start_screen.dart';
@@ -22,7 +24,16 @@ class TowerEndScreen extends StatelessWidget {
       {super.key,
       required this.run,
       required this.progress,
-      this.fightLeft = false});
+      this.fightLeft = false,
+      this.heatBefore = -1,
+      this.firstWinBonus = 0});
+
+  /// The first-win bonus this run banked (firstWinBonusOf, before end()).
+  final int firstWinBonus;
+
+  /// The record's highest Heat won before this run (a level opens when the
+  /// run won above it).
+  final int heatBefore;
 
   /// The run that ended (dead, won or left).
   final TowerRun run;
@@ -37,12 +48,24 @@ class TowerEndScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) => TowerNight(
       floor: run.floor,
-      child: _TowerEndBody(run: run, progress: progress, fightLeft: fightLeft));
+      child: _TowerEndBody(
+          run: run,
+          progress: progress,
+          fightLeft: fightLeft,
+          heatBefore: heatBefore,
+          firstWinBonus: firstWinBonus));
 }
 
 class _TowerEndBody extends ConsumerWidget {
   const _TowerEndBody(
-      {required this.run, required this.progress, this.fightLeft = false});
+      {required this.run,
+      required this.progress,
+      this.fightLeft = false,
+      this.heatBefore = -1,
+      this.firstWinBonus = 0});
+
+  final int heatBefore;
+  final int firstWinBonus;
 
   final TowerRun run;
   final TowerProgress progress;
@@ -118,6 +141,16 @@ class _TowerEndBody extends ConsumerWidget {
                         '${progress.marks} ${tr(ref, 'tower_marks_name')} · '
                         '${tr(ref, 'tower_best').replaceAll('{n}', '${progress.bestFloor}')}',
                         style: paper.bodySmall),
+                    const SizedBox(height: 4),
+                    TowerHeatEndLines(
+                        heat: run.heat,
+                        won: won,
+                        openedNew: won && run.heat > heatBefore),
+                    const SizedBox(height: 8),
+                    TowerEndTally(
+                        run: run,
+                        after: progress,
+                        firstWinBonus: firstWinBonus),
                   ],
                 ),
               ),

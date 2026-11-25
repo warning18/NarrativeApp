@@ -403,6 +403,50 @@ void main() {
     expect(towerPeoplePoints, {'human': 2, 'voidkin': 3});
   });
 
+  // The race trim (docs/simulation/tower-race-trim.md): with the unlocks,
+  // the dwarf takes half of their extra health and the elf a third; the
+  // others take it all, and with no unlock every people starts as before.
+  test('the dwarf and the elf take less of the unlocks\' health', () {
+    expect(towerPeopleHealthPerUnlock, {'dwarf': .015, 'elf': .01});
+    expect(towerHealthPerUnlockOf('dwarf'), .015);
+    expect(towerHealthPerUnlockOf('elf'), .01);
+    for (final race in ['human', 'orc', 'voidkin']) {
+      expect(towerHealthPerUnlockOf(race), towerHealthPerUnlock);
+    }
+    final all = towerUnlocks.length;
+    for (final race in data.races.keys) {
+      for (final profession in ['warrior', 'mage', 'rogue']) {
+        final bare = towerFreshHero(race, profession, const [], data);
+        // No unlock owned: the same hero as before the trim.
+        expect(
+            towerFreshHero(race, profession, const [], data, unlocksOwned: 0)
+                .maxHealth,
+            bare.maxHealth);
+        for (final owned in [1, 5, all]) {
+          final hero = towerFreshHero(race, profession, const [], data,
+              unlocksOwned: owned);
+          expect(
+              hero.maxHealth,
+              (bare.maxHealth * (1 + towerHealthPerUnlockOf(race) * owned))
+                  .round(),
+              reason: '$race $profession $owned');
+          expect(hero.currentHealth, hero.maxHealth);
+        }
+      }
+    }
+    // Every unlock: the dwarf ×1.15, the elf ×1.10, the others ×1.30.
+    final dwarf = towerFreshHero('dwarf', 'warrior', const [], data);
+    expect(
+        towerFreshHero('dwarf', 'warrior', const [], data, unlocksOwned: all)
+            .maxHealth,
+        (dwarf.maxHealth * 1.15).round());
+    final orc = towerFreshHero('orc', 'warrior', const [], data);
+    expect(
+        towerFreshHero('orc', 'warrior', const [], data, unlocksOwned: all)
+            .maxHealth,
+        (orc.maxHealth * 1.3).round());
+  });
+
   // The story's retuned foes (v1.926, enemies.json) keep their old stats in
   // the Tower (towerEnemyStats), so the climb is as it was.
   test('the Tower fights the retuned foes as they were', () {

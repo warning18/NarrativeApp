@@ -8,9 +8,44 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
-## [2.9.2+1078]
+## [2.10.4+1086]
 
-- **Tower: the clans' offer in the ink look (design A).** A clan's gift is a paper card: its picture on a black plate, its name in small caps, the clan and your standing under it, and the wax seal (the gift's rarity) as the only colour; the card in hand is ringed. A clan's oath is a paper row with the clan's banner on a black plate, its words and, when the oath comes late (after floor 15 with the clan below the oath's step), Narrative's late-oath line from that clan. Held cards, rules and numbers are unchanged.
+- **Tower: the clans' offer on paper cards (design A, rounder).** A clan's gift is a paper card with rounded corners (12 px): its picture on a black plate, its name in small caps, the clan's colour once as a short line under the name, the wax seal for its rarity, and all the information on the card: its tags (Gift, rarity), the clan and your standing, what it moves (clan by clan, with the Heat's rival ripple at Ash) and the clan's quote. A clan's oath is a rounded paper row with the clan's banner on a black plate, its tags, words, standing and, when the oath comes late (after floor 15 with the clan below the oath's step), Narrative's late-oath line from that clan. The card in hand is ringed in paper. Rules and numbers are unchanged.
+
+## [2.10.3+1085]
+
+- **Tower: Ashen Ink touch-ups.** Heat shows its level in one ember colour (the last level in ash) instead of five hues, and the Tower's newer rows, chips, tabs and dialogs (the Heat picker, the coin and Heat chips, the perk and trim rows, the marks tabs, the door's perk slot, the curse and banish dialogs) take the 4 px corner. The older ink panels and the slanted buttons are unchanged.
+
+## [2.10.2+1084]
+
+- **Tower: coins and the marks shop, the screens.** A coin chip (a gold disc and the number) shows under the floor number and on the card table, and the spoils sheet reads "+n coins". The card table has Reroll with its price (grey when the coins fall short) and Banish for the card in hand (asks first). The stall sells its boon as a third item; buying it opens its three cards, and the bag's cap follows Deep pockets. The marks screen has three tabs: Unlocks, Perks (buy a perk, wear it, take it off) and Looks (the five trims and the Ash trim). The door shows the perk slot (one, from the rules) once a perk is owned. The end screen tallies floors, wardens, bosses, refusals, Heat, the first-win bonus, the marks banked, the coins left (lost) and the next perk. Perk pictures are letters until Art draws them; Old friend's clan is still the seed's pick.
+
+## [2.10.1+1083]
+
+- **Epilogue map: the numbers read on every clan's colour.** The number on a big town's disc, on the map and in the list under it, was always white; on the Vigil's new yellow it could hardly be read, and on the Mire's green and the Compact's orange it leaned on its shadow. It is now written in dark ink on a light disc and in white on a dark one, whichever stands out more. No colour, rule or number changes.
+
+## [2.10.0+1082]
+
+- **Tower: coins for one climb.** Each floor won for the first time pays coins: 1, 2 or 3 an ordinary floor (floors 1-10, 11-20, 21-29), an Elite as much again, a warden 3 / 6 / 9, a boss 5 / 10. Coins are spent in the climb and lost at its end; Heat multiplies marks, never coins. The stall now takes coins, not marks: the salve 4, the potion bundle 5, and a new boon (three cards as a boon floor's) 15; a sworn clan's merchant halves them (2 / 3 / 8). A table can be rerolled (3 coins, then 5, 7…) and a card banished for the run (4 coins, one a table, five a run).
+- **Tower: the marks shop after the unlock tree.** Once the ten unlocks are bought, eight perks at 40 to 70 marks (Purse, Deep pockets, Early word, Old friend, Second wind, Keen eye, Free hand, Fourth card), one worn a climb, chosen at the door; five banner trims at 10 marks (no power) and the Ash trim for winning Heat 5; first-win bonuses: +30 marks the first time the top is won, +20 the first win at each Heat 1 to 5.
+- **The numbers (bot, 2000 climbs).** Top with every unlock at Heat 0: 23.8% before, 26.5% with the coins, 28.5% wearing Keen eye, the best perk (no unlocks: 11.1, 12.3, 13.5%). Every unlock, no perk: Heat 3 11.9%, Heat 4 8.9%, Heat 5 5.5%. A climb earns about 50 coins with every unlock (80 in a won climb). The whole shop (665 marks) takes about 18 climbs at Heat 0, 15 climbing the Heat.
+- **Until UX's screens in v2.10.1**, only the stall's salve and potion bundle can be bought with coins; the reroll, the banish, the stall's boon and the marks shop have no screen yet.
+
+## [2.9.5+1081]
+
+- **The clans' approved colours.** The six main clans' colours in the game data now match their banners and the Ashen Ink palette (the user's choice of 24 Nov): Dominion blue #2F6FE0, Crows rose #E0479E, Compact orange #E8782A, Mire green #3FB06A, Vigil yellow #E8C21A, Penitents violet #9B5DE5 (before: #2F62B5, #B0303F, #B86B3C, #3F8F5A, #8A8F98, #CBB68E). Crows is no longer the warning red; Vigil and Penitents are no longer grey and sand. Cards, the compass, title details, town tints and enemy groups all follow. No rule or number changes.
+
+## [2.9.4+1080]
+
+- **Tower: the peoples level with every unlock.** With every unlock the dwarf and the elf reached the top in about 28% of bot climbs, against 20 to 24% for the others: the unlocks' extra health (3% each, x1.30 with all ten) kept the sturdy dwarf and the dodging elf standing on floors 21 to 30. The dwarf now gains 1.5% an unlock and the elf 1%; the others keep 3%. Bot, every unlock: dwarf 27.5 to 23.6%, elf 28.9 to 23.5%, the spread 8.7 to 4.1 points, the overall top 24.6 to 22.8%. With no unlocks nothing changes.
+- **Tower Heat: Pyre's two floors give nothing, and its upper Tower hits harder.** At Heat 4 and above, floors 13 and 23 offer no card at all (no boon, no clan offer), the user's option (a), and the foes of floors 11 to 30 are x1.04 stronger on top of the other curses. Bot, every unlock: Heat 3 10.8%, Heat 4 7.4%, Heat 5 4.6%.
+## [2.9.3+1079]
+
+- **Tower: polish (the user's four).** The 30-rung climb strip above the fight is gone (the rail already shows the floor). Numbers are now set in the prose face everywhere: the pixel font's digits are replaced by Spectral's, so a 5 no longer reads as S, a 6 as G or a 0 as O, in every screen. The door's three zone rows are ink panels (a slanted picture panel, the zone's name in the display face, its floors) instead of rounded photo strips. The climb rail also folds away when a stall or a card offer opens, giving the cards the full width.
+
+## [2.9.1+1077]
+
+- **Tower: Heat, the screens.** The Tower's door shows a picker once Embers is open: the plain climb and each open level (its flames, name, one-line curse and marks factor), the next level locked ("Win the top at Smoke to open"). A chip with the level's name sits under the floor number and opens the list of curses in force, the newest tagged. The end screen reads "Flame · marks x1.75", the level a win opened, and "Ash conquered". Gifts' standing lines use the run's Heat (Ash's rival ripple). Ink and paper, the level's colour only on the picked ring and the chip's line; numbers in the prose face.
 
 ## [2.9.0+1076]
 

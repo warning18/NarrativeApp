@@ -75,8 +75,18 @@ void main() {
   // wardens' and bosses' floors, was 1.28; docs/simulation/
   // tower-cleric-retune.md; the cleric is an unlock, so no unlocks is
   // unchanged): all unlocks were 116 / 302 / 10758.
-  const none = (top: 51, floor20: 205, floorSum: 9083);
-  const all = (top: 124, floor20: 308, floorSum: 10862);
+  // The race trim (towerPeopleHealthPerUnlock: the dwarf .015 and the elf
+  // .01 of health an unlock, was .03; docs/simulation/tower-race-trim.md;
+  // health from the unlocks only, so no unlocks is unchanged): all
+  // unlocks were 124 / 308 / 10862.
+  // v2.10.0 (Tower coins, docs/simulation/tower-coins.md, the user's call):
+  // the stall takes coins, not marks, and the bot spends them
+  // (TowerBotCoins.full: the stall's boon at 15, a reroll of a boon table
+  // with no skill); no perk worn. On top of v2.9.4 (race trim, Pyre) these
+  // were 51 / 205 / 9083 and 106 / 294 / 10548; before the race trim,
+  // 59 / 209 / 9208 and 140 / 317 / 11037.
+  const none = (top: 59, floor20: 209, floorSum: 9208);
+  const all = (top: 128, floor20: 309, floorSum: 10812);
 
   test('the live Tower, no unlocks, is the pinned curve', () {
     final m = _measure(const TowerProgress());

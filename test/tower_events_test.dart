@@ -15,6 +15,8 @@ import 'package:narrative_data_app/combat/fight_numbers.dart'
 import 'package:narrative_data_app/combat/stat_rules.dart' show levelStatPicks;
 import 'package:narrative_data_app/data/ability_check.dart' show checkChance;
 import 'package:narrative_data_app/data/tower/tower_bot.dart';
+import 'package:narrative_data_app/data/tower/tower_coins.dart'
+    show towerBoonPrice;
 import 'package:narrative_data_app/data/tower/tower_events.dart';
 import 'package:narrative_data_app/data/tower/tower_floors.dart';
 import 'package:narrative_data_app/data/tower/tower_hero.dart';
@@ -1003,20 +1005,20 @@ void main() {
       expect(towerShopFloors, {10, 20});
     });
 
-    test('buying: the price, the wallet, the stock once, marks banked less',
-        () {
-      final landing = winAndMove(at(3, 10, events: v));
+    // v2.10.0 (brief 6's option A, docs/simulation/tower-coins.md): the
+    // stall takes the run's coins, not its marks.
+    test('buying: the price, the wallet, the stock once, in coins', () {
+      final landing = winAndMove(at(3, 10, events: v)).copyWith(coins: 20);
       final hero = towerHeroOf(landing, data);
       final hurt = landing.copyWith(health: hero.maxHealth ~/ 4, potions: 1);
-      final wallet = hurt.marks;
-      expect(wallet, hurt.marksEarned);
+      final wallet = hurt.coins;
       expect(wallet, greaterThanOrEqualTo(towerSalvePrice + towerBundlePrice));
       final salve = towerBuy(hurt, data, 'salve');
       final heal = (hero.maxHealth * towerSalveShare).round();
       expect(salve.health, hurt.health + heal);
-      expect(salve.marksSpent, towerSalvePrice);
-      expect(salve.marks, wallet - towerSalvePrice);
-      expect(salve.marksEarned, hurt.marksEarned);
+      expect(salve.coins, wallet - towerSalvePrice);
+      expect(salve.marksSpent, 0);
+      expect(salve.marks, hurt.marks);
       expect(salve.bought, {
         10: ['salve']
       });
@@ -1028,7 +1030,7 @@ void main() {
       expect(identical(towerBuy(salve, data, 'salve'), salve), isTrue);
       final both = towerBuy(salve, data, 'potions');
       expect(both.potions, 1 + towerBundlePotions);
-      expect(both.marksSpent, towerSalvePrice + towerBundlePrice);
+      expect(both.coins, wallet - towerSalvePrice - towerBundlePrice);
       expect(both.bought[10], ['salve', 'potions']);
       expect(both.lastEvent!.paid, towerSalvePrice + towerBundlePrice);
       expect(both.lastEvent!.healed, heal);
@@ -1045,33 +1047,32 @@ void main() {
       final brim = landing.copyWith(potions: towerBagCap);
       expect(identical(towerBuy(brim, data, 'potions'), brim), isTrue);
       // Never past the wallet.
-      final poor = hurt.copyWith(marksSpent: hurt.marksEarned - 2);
-      expect(poor.marks, 2);
+      final poor = hurt.copyWith(coins: 2);
       expect(identical(towerBuy(poor, data, 'salve'), poor), isTrue);
       expect(identical(towerBuy(poor, data, 'potions'), poor), isTrue);
-      // What is spent is not banked.
+      // The marks are all banked: the coins end with the run.
       final ended = towerAbandon(both);
-      expect(ended.marks, ended.marksEarned - ended.marksSpent);
-      expect(const TowerProgress().afterRun(ended).marks,
-          ended.marksEarned - towerSalvePrice - towerBundlePrice);
+      expect(ended.marks, ended.marksEarned);
+      expect(const TowerProgress().afterRun(ended).marks, ended.marksEarned);
     });
 
     test('sworn to the merchant\'s clan: half price, rounded up', () {
       final clan = towerStoreClanOf(winAndMove(at(3, 10, events: v)))!;
-      final landing = winAndMove(swornAt(3, 10, clan));
+      final landing = winAndMove(swornAt(3, 10, clan)).copyWith(coins: 20);
       expect(towerStoreClanOf(landing), clan);
       final view = towerEventOf(landing, data)!;
       expect(view.discount, isTrue);
-      expect([for (final s in view.stock!) s.price], [2, 2]);
+      expect([for (final s in view.stock!) s.price], [2, 3]);
+      expect(view.boon!.price, (towerBoonPrice + 1) ~/ 2);
       final hurt = landing.copyWith(health: 1);
       final bought = towerBuy(towerBuy(hurt, data, 'salve'), data, 'potions');
-      expect(bought.marksSpent, 4);
+      expect(bought.coins, 20 - 5);
       // Another clan's merchant: full price.
       final other = towerClans.firstWhere((c) => c != clan);
-      final full = winAndMove(swornAt(3, 10, other));
+      final full = winAndMove(swornAt(3, 10, other)).copyWith(coins: 20);
       expect(towerEventOf(full, data)!.discount, isFalse);
-      expect(towerBuy(full.copyWith(health: 1), data, 'salve').marksSpent,
-          towerSalvePrice);
+      expect(towerBuy(full.copyWith(health: 1), data, 'salve').coins,
+          20 - towerSalvePrice);
     });
 
     test('leaving, or the next fight, closes the store', () {
@@ -1144,7 +1145,7 @@ void main() {
     });
 
     test('the views: the merchant\'s stock and the bargain\'s offer', () {
-      final landing = winAndMove(at(3, 10, events: v));
+      final landing = winAndMove(at(3, 10, events: v)).copyWith(coins: 20);
       final view = towerEventOf(landing, data)!;
       expect(view.kind, TowerEventKind.merchant);
       expect(view.storeOpen, isTrue);
@@ -1152,7 +1153,7 @@ void main() {
       expect(view.floor, 11);
       expect(view.clanId, towerStoreClanOf(landing));
       expect(view.discount, isFalse);
-      expect(view.wallet, landing.marks);
+      expect(view.wallet, landing.coins);
       final hero = towerHeroOf(landing, data);
       final stock = view.stock!;
       expect([for (final s in stock) s.id], ['salve', 'potions']);
@@ -1166,13 +1167,14 @@ void main() {
       expect([for (final s in stock) s.affordable], [true, true]);
       final bought = towerBuy(landing.copyWith(health: 1), data, 'salve');
       final after = towerEventOf(bought, data)!;
-      expect(after.wallet, landing.marks - towerSalvePrice);
+      expect(after.wallet, landing.coins - towerSalvePrice);
       expect([for (final s in after.stock!) s.bought], [true, false]);
       expect(after.stock!.first.affordable, isFalse);
       expect(after.result, bought.lastEvent);
-      final poor = landing.copyWith(marksSpent: landing.marksEarned - 3);
+      final poor = landing.copyWith(coins: towerSalvePrice);
       expect([for (final s in towerEventOf(poor, data)!.stock!) s.affordable],
           [true, false]);
+      expect(towerEventOf(poor, data)!.boon!.affordable, isFalse);
       // The bargain's background, and the floor's own event once left.
       final (seed, floor) = storesOf(TowerEventKind.bargain, count: 1).first;
       final dark = towerEventOf(winAndMove(at(seed, floor, events: v)), data)!;
@@ -1218,16 +1220,16 @@ void main() {
       expect(TowerEventResult.fromJson(plain.toJson()), plain);
     });
 
-    test('the bot shops, strikes every bargain and leaves; spent not banked',
-        () {
+    test('the bot shops in coins, strikes every bargain and leaves', () {
       var shopped = 0, bargained = 0;
       for (var seed = 1; seed <= 20; seed++) {
         final run = playTowerRun(seed: seed, data: data, events: v);
         expect(run.isOver, isTrue);
         expect(run.store, isNull);
-        expect(run.marks, max(0, run.marksEarned - run.marksSpent));
+        expect(run.marksSpent, 0);
+        expect(run.marks, run.marksEarned);
         expect(run.bargains.values, everyElement(greaterThan(0)));
-        if (run.marksSpent > 0) shopped++;
+        if (run.bought.isNotEmpty) shopped++;
         if (run.bargains.isNotEmpty) bargained++;
       }
       expect(shopped, greaterThan(0));

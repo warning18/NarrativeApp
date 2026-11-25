@@ -106,7 +106,7 @@ class TowerData {
 
 /// A new hero of [raceId] and [professionId] with the start unlocks
 /// [unlockIds] in hand (their dice owned, their items worn): level 1, full
-/// health with [towerHealthPerUnlock] more for each of the [unlocksOwned]
+/// health with [towerHealthPerUnlockOf] more for each of the [unlocksOwned]
 /// unlocks, no potions (the flask and the bag come with the run,
 /// [towerHeroOf]). [bag]: the start's dice go to the bag, the calling's own
 /// die stays in play (a run with [TowerRun.dieChoice]); else the best is
@@ -141,7 +141,8 @@ SimCharacter towerFreshHero(String raceId, String professionId,
   if (people > 0) hero.addAbilities({hero.preferredStat: people});
   if (unlocksOwned > 0) {
     hero.maxHealth =
-        (hero.maxHealth * (1 + towerHealthPerUnlock * unlocksOwned)).round();
+        (hero.maxHealth * (1 + towerHealthPerUnlockOf(raceId) * unlocksOwned))
+            .round();
     hero.currentHealth = hero.maxHealth;
   }
   return hero;
@@ -317,7 +318,8 @@ SimCharacter towerHeroOf(TowerRun run, TowerData data) {
     final picks = run.statPicks.sublist(from, min(pick, run.statPicks.length));
     picksAt.add(picks);
     keys.add('${keys.last}#$floor:${picks.join(',')}:'
-        '${(run.spoils[floor] ?? const []).join(',')}:${run.taken[floor]}');
+        '${(run.spoils[floor] ?? const []).join(',')}:${run.taken[floor]}'
+        '${run.stallBoons[floor] == null ? '' : '+${run.stallBoons[floor]}'}');
   }
   // The longest run of floors already built.
   var floor = keys.length - 1;
@@ -357,6 +359,10 @@ SimCharacter towerHeroOf(TowerRun run, TowerData data) {
     towerWearSpoils(hero, run.spoils[floor] ?? const [], data);
     final card = run.taken[floor];
     if (card != null) towerApplyReward(hero, card, data, bag: bag);
+    // The boon bought at the stall on this floor's landing (v2.10.0).
+    if (run.stallBoons[floor] case final boon?) {
+      towerApplyReward(hero, boon, data, bag: bag);
+    }
     _keep(built, keys[floor], hero);
   }
   // The die the player chose (the floors' heroes are kept on the calling's
@@ -405,8 +411,13 @@ TowerHeroView towerHeroView(TowerRun run, SimCharacter hero) => TowerHeroView(
       diceFaces: hero.diceFaces,
       diceSkillAssignments: hero.diceSkillAssignments,
       skillTiers: hero.skillTiers,
+      // The cards taken, the stall's boons and the cards banished (v2.10.0):
+      // none is offered again.
       takenIds: {
         for (final r in run.taken.values)
           if (r.id.isNotEmpty) r.id,
+        for (final r in run.stallBoons.values)
+          if (r.id.isNotEmpty) r.id,
+        ...run.banishedIds,
       },
     );

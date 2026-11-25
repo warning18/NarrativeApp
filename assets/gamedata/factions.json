@@ -28,7 +28,7 @@
       "La lumière soigne ou brûle. À vous de choisir ce que vous en ferez.",
       "Une flamme, une loi, et pour une fois, la loi a quelque chose pour vous."
     ],
-    "color": "#2F62B5",
+    "color": "#2F6FE0",
     "icon": "church",
     "lean": 0,
     "riskStat": "charisma",
@@ -162,7 +162,7 @@
       "Nouvelle lune dans quatre nuits. Une paire d’yeux de plus ne serait pas de trop.",
       "Le compte des morts était juste, la nuit dernière. Faisons en sorte qu’il le reste."
     ],
-    "color": "#8A8F98",
+    "color": "#E8C21A",
     "icon": "visibility",
     "lean": 1,
     "riskStat": "perception",
@@ -282,7 +282,7 @@
       "Aucune forge ne s’allume sans le charbon des Charbonnières, et aucune ne s’allume pour n’importe qui.",
       "Nous avons bâti des gibets, autrefois. Demandez-nous mieux."
     ],
-    "color": "#B86B3C",
+    "color": "#E8782A",
     "icon": "hardware",
     "lean": 0,
     "riskStat": "strength",
@@ -409,7 +409,7 @@
       "De l’écorce à fièvre, au juste prix. Ou pour une juste raison.",
       "Asseyez-vous. Le héron a déjà décidé s’il vous fait confiance."
     ],
-    "color": "#3F8F5A",
+    "color": "#3FB06A",
     "icon": "eco",
     "lean": 0,
     "riskStat": "wisdom",
@@ -538,7 +538,7 @@
       "Le Coffre a encore déménagé. Heureusement pour vous, nous aussi.",
       "Payez maintenant, ou payez plus tard, intérêts compris. Nous préférons plus tard."
     ],
-    "color": "#B0303F",
+    "color": "#E0479E",
     "icon": "anchor",
     "lean": -1,
     "riskStat": "luck",
@@ -668,7 +668,7 @@
       "Encore un nom ce soir. Nous aiderez-vous à le porter ?",
       "Ce que nous avons fait sur la Flèche, nous le défaisons un village à la fois."
     ],
-    "color": "#CBB68E",
+    "color": "#9B5DE5",
     "icon": "whatshot",
     "lean": 1,
     "riskStat": "wisdom",

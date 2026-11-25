@@ -7,6 +7,7 @@ import 'package:flutter/rendering.dart' show ScrollCacheExtent;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../combat/dice_faces.dart' show skillDisplayName;
+import '../../data/tower/tower_coins.dart';
 import '../../data/tower/tower_hero.dart';
 import '../../data/tower/tower_rewards.dart';
 import '../../data/tower/tower_run.dart';
@@ -24,8 +25,11 @@ import '../../theme/icon_sizes.dart';
 import '../../theme/stitched_ink.dart';
 import '../../data/tower/tower_clans.dart' show towerClanRipple;
 import '../../data/tower/tower_events.dart';
+import 'ink/ink_palette.dart' show inkGrey;
 import 'tower_card_art.dart';
 import 'tower_clan_cards.dart';
+import 'tower_coin_view.dart';
+import 'tower_providers.dart';
 import 'tower_event_card.dart';
 import 'tower_tarot_card.dart';
 
@@ -111,9 +115,11 @@ String towerGiftKind(WidgetRef ref, String clanId) =>
 
 /// What a gift of [clanId] moves, clan by clan: "Crows +2 · Dominion +1 ·
 /// Vigil -1" (towerClanRipple).
-String towerRippleLine(WidgetRef ref, String clanId, TowerData data) => [
+String towerRippleLine(WidgetRef ref, String clanId, TowerData data,
+        {int heat = 0}) =>
+    [
       for (final MapEntry(:key, :value)
-          in towerClanRipple(clanId, data.clans).entries)
+          in towerClanRipple(clanId, data.clans, heat: heat).entries)
         '${towerClanName(ref, key)} ${value > 0 ? '+' : ''}$value',
     ].join(' · ');
 
@@ -289,7 +295,7 @@ class _TowerOfferViewState extends ConsumerState<TowerOfferView> {
     ];
     Color colourOf(String clanId) {
       final f = factions[clanId];
-      return f == null ? const Color(0xFF9AA3A7) : Color(f.color | 0xFF000000);
+      return f == null ? inkGrey : Color(f.color | 0xFF000000);
     }
 
     Widget flagOf(String clanId, Color colour) => clanCardFlag(
@@ -365,7 +371,8 @@ class _TowerOfferViewState extends ConsumerState<TowerOfferView> {
                   ],
                   greeting: faction?.mottoFor(lang) ?? '',
                   clanName: faction?.shortFor(lang) ?? reward.clan,
-                  ripple: towerRippleLine(ref, reward.clan, widget.data),
+                  ripple: towerRippleLine(ref, reward.clan, widget.data,
+                      heat: widget.run.heat),
                   standing:
                       towerStandingLabel(ref, _standing[reward.clan] ?? 0),
                   backdropId: reward.clan,
@@ -466,7 +473,7 @@ class _TowerOfferViewState extends ConsumerState<TowerOfferView> {
       ? text
       : [
           if (text.isNotEmpty) text,
-          towerRippleLine(ref, reward.clan, widget.data),
+          towerRippleLine(ref, reward.clan, widget.data, heat: widget.run.heat),
           towerStandingLabel(ref, _standing[reward.clan] ?? 0),
         ].join('\n');
 
@@ -511,6 +518,9 @@ class _TowerOfferViewState extends ConsumerState<TowerOfferView> {
         Text(tr(ref, 'tower_choose_one'),
             style: theme.textTheme.bodyMedium
                 ?.copyWith(color: theme.colorScheme.onSurfaceVariant)),
+        Align(
+            alignment: Alignment.centerLeft,
+            child: TowerCoinChip(coins: widget.run.coins)),
         // The clans' offer: its frame over the cards.
         if (clans) ...[
           const SizedBox(height: 8),
@@ -524,7 +534,7 @@ class _TowerOfferViewState extends ConsumerState<TowerOfferView> {
         const SizedBox(height: 12),
         if (widget.event?.kind == TowerEventKind.test) ...[
           TowerEventCard(widget.event!,
-              bagFull: widget.run.potions >= towerBagCap),
+              bagFull: widget.run.potions >= towerBagCapOf(widget.run)),
           const SizedBox(height: 12),
         ],
         if (widget.event?.kind == TowerEventKind.shortcut &&
@@ -599,6 +609,20 @@ class _TowerOfferViewState extends ConsumerState<TowerOfferView> {
                         ),
                       ),
                     ),
+                  TowerTableCoinRow(
+                    run: widget.run,
+                    held: _held.clamp(0, offer.length - 1),
+                    onReroll: () {
+                      setState(() => _held = 0);
+                      ref
+                          .read(towerProvider.notifier)
+                          .reroll(data: widget.data);
+                    },
+                    onBanish: (i) {
+                      setState(() => _held = 0);
+                      ref.read(towerProvider.notifier).banish(i);
+                    },
+                  ),
                   if (widget.controls != null) widget.controls!,
                 ]);
           }),

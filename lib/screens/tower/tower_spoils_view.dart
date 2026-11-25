@@ -16,9 +16,18 @@ import '../../utils/pixel_icons/game_pixel_icons.dart';
 import '../../widgets/item_stats.dart';
 import '../../widgets/loot_sheet.dart';
 import '../../theme/icon_sizes.dart';
+import 'ink/ink_palette.dart';
+import 'tower_coin_view.dart';
 
 class TowerSpoilsView extends ConsumerWidget {
-  const TowerSpoilsView({super.key, required this.run, required this.onTake});
+  const TowerSpoilsView(
+      {super.key,
+      required this.run,
+      required this.onTake,
+      this.coinsGained = 0});
+
+  /// The coins the floor paid (towerCoinsFor), a line when above 0.
+  final int coinsGained;
 
   final TowerRun run;
 
@@ -47,6 +56,15 @@ class TowerSpoilsView extends ConsumerWidget {
       // The chest at 96 px (72 on a narrow phone, so a French title fits).
       chestSize: MediaQuery.sizeOf(context).width >= 360 ? 96 : 72,
       changes: [
+        if (coinsGained > 0)
+          LootSheetLine(
+            label:
+                tr(ref, 'tower_coins_gained').replaceAll('{n}', '$coinsGained'),
+            before: '${run.coins - coinsGained}',
+            after: '${run.coins}',
+            icon: const TowerCoinDisc(size: IconSize.s32),
+            tone: inkPaper,
+          ),
         if (potions > 0)
           LootSheetLine(
             label: tr(ref, 'loot_line_potions'),
