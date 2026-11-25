@@ -6,6 +6,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../combat/field_anomaly.dart' show FightStage;
+import '../../data/tower/tower_events.dart'
+    show TowerEventKind, towerEventKindOf;
 import '../../data/tower/tower_hero.dart';
 import '../../data/tower/tower_run.dart';
 import '../../data/tower/tower_tables.dart' show towerEnemyRecord;
@@ -19,6 +21,12 @@ import 'tower_backdrop.dart'
     show towerBackdropAsset, towerBandOf, towerFloorPlate;
 import 'tower_look.dart' show TowerNight;
 import 'tower_providers.dart';
+
+/// Whether [run]'s floor is a rival's (TowerEventKind.rival: won within
+/// towerRivalRounds, the next floor is skipped): FightScreen's `rival`
+/// (UX's panels stand the two fighters side by side). Looks only.
+bool towerFightIsRival(TowerRun run) =>
+    towerEventKindOf(run) == TowerEventKind.rival;
 
 /// Plays [run]'s floor and says how it ended; null when it was not fought (a
 /// foe missing from the tables, or Back before the first roll). There is no
@@ -53,6 +61,8 @@ Future<TowerFightResult?> towerFightFor(
           for (final id in floor.enemyIds.skip(1)) id: records[id]!,
         },
         modifiers: floor.modifiersFor(run.professionId),
+        // HOOKUP(#1187): uncomment once FightScreen has `rival` (UX, v2.10.9).
+        // rival: towerFightIsRival(run),
         onRound: (round) {
           fight.onRound(round);
           // Begun: from here the fight is won or lost, even if the app closes.

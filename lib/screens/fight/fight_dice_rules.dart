@@ -494,7 +494,10 @@ extension _FightDiceRules on _FightScreenState {
       List<_LogEntry> entries,
       AppLanguage lang,
       {int limit = 0,
-      String logKey = 'splash_hits'}) {
+      String logKey = 'splash_hits',
+      DiceFaceResult? face,
+      Map<String, dynamic> skills = const {},
+      bool crit = false}) {
     final splash = (damage * share).round();
     if (splash <= 0) return;
     var reached = 0;
@@ -507,6 +510,17 @@ extension _FightDiceRules on _FightScreenState {
           pierce: pierce);
       if (landed <= 0) continue;
       other.currentHealth = max(0, other.currentHealth - landed);
+      if (face != null) {
+        _publishStrike(
+            kind: FightHitKind.splash,
+            actor: actor,
+            face: face,
+            skills: skills,
+            target: other,
+            amount: landed,
+            crit: crit,
+            element: element);
+      }
       _bestHitThisRound = max(_bestHitThisRound, landed);
       _fx(VfxStyle.whirl, _enemyCardKey(other.key),
           delayMs: 200, text: '-$landed', textKind: VfxTextKind.damage);
