@@ -133,3 +133,13 @@ The stall lines replace the earlier draft's `tower_shop_*` salve and potion line
 | tower_merchant_price_one | {n} coin | {n} pièce |
 
 `tower_merchant_body` now names the boon (the stall sells one since the coins change) and says the coins end with the climb, in words, no figure. The two price strings were already correct (plural and singular, EN and FR; the FR `pièce` takes no no-break space); I keep them as they are: a price chip wants the plain form, and `tower_coins_name` (“Tower coins”, « Pièces de la Tour ») carries the flavour.
+
+## H. Pyre's line, reworded (Core #1173)
+
+Pyre now removes its reward floors' prizes and makes foes tougher on the upper floors. One line says both, no figure. The key is `tower_heat_4_line` in this draft (the manager calls it `tower_heat_pyre_line`: use whichever key Core already has).
+
+| key | EN | FR |
+|---|---|---|
+| `tower_heat_4_line` / `tower_heat_pyre_line` | Floors that once rewarded you give nothing, and foes are tougher in the upper Tower. | Des étages qui vous récompensaient ne donnent plus rien, et les adversaires sont plus coriaces dans la haute Tour. |
+
+This replaces section A's Pyre line (“Some boons are gone from the stairs, and the late oath keeps you waiting”). Ash's line (“fiercer still”) still follows on from it.
