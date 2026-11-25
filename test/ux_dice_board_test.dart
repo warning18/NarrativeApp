@@ -23,7 +23,11 @@ import 'support/fonts.dart';
 
 /// The real app on a Tower fight at 412 wide: the app's container.
 Future<ProviderContainer> _bootFight(WidgetTester tester, GlobalKey key,
-    {int seed = 5, int? floor, int events = 0, double width = 412}) async {
+    {int seed = 5,
+    int? floor,
+    int events = 0,
+    double width = 412,
+    double height = 860}) async {
   await tester.runAsync(loadAppFonts);
   TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
       .setMockMethodCallHandler(
@@ -37,7 +41,7 @@ Future<ProviderContainer> _bootFight(WidgetTester tester, GlobalKey key,
     'tutorial_enabled': false,
   });
   tester.view.devicePixelRatio = 1;
-  tester.view.physicalSize = Size(width, 860);
+  tester.view.physicalSize = Size(width, height);
   addTearDown(tester.view.reset);
   await tester.pumpWidget(
       RepaintBoundary(key: key, child: const ProviderScope(child: MyApp())));
@@ -126,6 +130,57 @@ void main() {
     await shot('picked');
     // No solid disc behind the die in any state: its burst is rings and sparks.
     expect(find.byKey(const ValueKey('die_burst')), findsNothing);
+    expect(tester.takeException(), isNull);
+  });
+
+  // The state of the user's screenshot: floor 5, Overseer Renn, the dice rolled
+  // and settled, one die tapped once (its target shown). No disc behind the die.
+  testWidgets('a rolled die tapped once (Overseer Renn, floor 5)',
+      (tester) async {
+    final key = GlobalKey();
+    await _bootFight(tester, key,
+        seed: 2,
+        floor: 5,
+        height: double.tryParse(Platform.environment['SCREEN_H'] ?? '') ?? 860);
+    expect(tester.takeException(), isNull);
+    Future<void> shot(String name) async {
+      if (shots == null) return;
+      Directory(shots).createSync(recursive: true);
+      await tester.runAsync(() async {
+        final render =
+            key.currentContext!.findRenderObject() as RenderRepaintBoundary;
+        final image = await render.toImage(pixelRatio: 2);
+        final bytes = await image.toByteData(format: ui.ImageByteFormat.png);
+        File('$shots/dice-$name.png')
+            .writeAsBytesSync(bytes!.buffer.asUint8List());
+      });
+    }
+
+    await tester.tap(find.byIcon(Icons.casino));
+    for (var i = 0; i < 40; i++) {
+      await tester.runAsync(
+          () => Future<void>.delayed(const Duration(milliseconds: 30)));
+      await tester.pump(const Duration(milliseconds: 100));
+    }
+    await shot('state-1-rolled');
+    final tile = find.byWidgetPredicate((w) =>
+        w.key is ValueKey &&
+        '${(w.key as ValueKey).value}'.startsWith('die_tile_'));
+    await tester.tap(tile.first);
+    for (var i = 0; i < 12; i++) {
+      await tester.runAsync(
+          () => Future<void>.delayed(const Duration(milliseconds: 30)));
+      await tester.pump(const Duration(milliseconds: 100));
+    }
+    await shot('state-2-tapped-once');
+    // The plate under the dice is drawn larger from its foot: its dark archway
+    // (a black ball behind the die on a short board) is cut off.
+    expect(
+        find.ancestor(
+            of: find.byKey(const Key('fight_board_skin')),
+            matching: find.byWidgetPredicate((w) =>
+                w is Transform && w.transform.getMaxScaleOnAxis() > 1.3)),
+        findsOneWidget);
     expect(tester.takeException(), isNull);
   });
 }

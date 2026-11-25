@@ -502,14 +502,23 @@ class FightBoardSurface extends StatelessWidget {
               Positioned.fill(
                 child: RepaintBoundary(
                   child: Stack(fit: StackFit.expand, children: [
-                    Image.asset(
-                      key: const Key('fight_board_skin'),
-                      towerFightDicePlate(
-                          FightPlateOverride.maybeOf(context)?.floor ?? 1),
-                      fit: BoxFit.cover,
-                      filterQuality: FilterQuality.none,
-                      errorBuilder: (c, e, s) =>
-                          const ColoredBox(color: inkDeep),
+                    // The plate's top is a dark archway between two pillars:
+                    // behind a die it read as a black ball. The picture is
+                    // drawn a third larger from its foot, so the archway is cut
+                    // off and only the stone floor is left.
+                    Transform.scale(
+                      scale: 1.4,
+                      alignment: Alignment.bottomCenter,
+                      child: Image.asset(
+                        key: const Key('fight_board_skin'),
+                        towerFightDicePlate(
+                            FightPlateOverride.maybeOf(context)?.floor ?? 1),
+                        fit: BoxFit.cover,
+                        alignment: Alignment.bottomCenter,
+                        filterQuality: FilterQuality.none,
+                        errorBuilder: (c, e, s) =>
+                            const ColoredBox(color: inkDeep),
+                      ),
                     ),
                     DecoratedBox(
                       decoration: BoxDecoration(
