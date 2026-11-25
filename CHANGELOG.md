@@ -8,6 +8,10 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [2.10.11+1093]
+
+- **Shops: the keeper a little smaller.** On the user's feedback the shopkeeper stands at 0.85 of his size (the stall stays 25% bigger), snapped to whole device pixels, head and shoulders over the counter with the counter still hiding his legs, in the middle of the opening. No price, stock or rule changes.
+
 ## [2.10.10+1092]
 
 - **Fight hooks for UX's panels and effects (no rule change).** A Tower rival's floor now opens its fight with the rival layout (UX's v2.10.9 panels). The fight publishes each hit (who, how much, its size, a critical, the skill and its element) and each round's poison tick, for the skill effects to follow; listening changes nothing in a fight. Poison is the only status that deals damage each round.
