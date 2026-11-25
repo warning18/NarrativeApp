@@ -860,3 +860,155 @@ Map<String, dynamic> towerEnemyTable(Map<String, dynamic> enemies) {
       key: value is Map<String, dynamic> ? towerEnemyRecord(key, value) : value,
   };
 }
+
+// Heat (v2.9.0, docs/simulation/tower-heat.md, the user's call on Core's
+// docs/proposals/tower-heat.md): five named curses a climb may carry, each
+// level adding one to those below it. A run's heat is TowerRun.heat, fixed
+// for the climb; heat 0 is the plain climb, every number as it was.
+
+/// One level of Heat: its number (1..[towerHeatMax]), its id, and the keys
+/// of its name and curse line in app_strings.dart (`tower_heat_<id>`,
+/// `tower_heat_<id>_line`).
+class TowerHeatLevel {
+  const TowerHeatLevel(this.heat, this.id);
+
+  final int heat;
+  final String id;
+
+  String get nameKey => 'tower_heat_$id';
+  String get lineKey => 'tower_heat_${id}_line';
+}
+
+/// The five levels, in order (Narrative's names).
+const List<TowerHeatLevel> towerHeatLevels = [
+  TowerHeatLevel(towerHeatEmbers, 'embers'),
+  TowerHeatLevel(towerHeatSmoke, 'smoke'),
+  TowerHeatLevel(towerHeatFlame, 'flame'),
+  TowerHeatLevel(towerHeatPyre, 'pyre'),
+  TowerHeatLevel(towerHeatAsh, 'ash'),
+];
+
+/// The level of Heat [heat] (1..[towerHeatMax]), or null (0, the plain
+/// climb, has none).
+TowerHeatLevel? towerHeatLevelOf(int heat) =>
+    heat >= 1 && heat <= towerHeatMax ? towerHeatLevels[heat - 1] : null;
+
+/// The plain climb's name and line keys (heat 0, the picker's first step).
+const String towerHeatPlainKey = 'tower_heat_plain';
+const String towerHeatPlainLineKey = 'tower_heat_plain_line';
+
+/// The level each curse comes in at (a run at that heat or above has it).
+/// Embers: every foe [towerHeatFoeScale].
+const int towerHeatEmbers = 1;
+
+/// Smoke: [towerHeatPeakAffixes] more forced affix on every warden and boss
+/// (floors 5, 10, 15, 20, 25, 30).
+const int towerHeatSmoke = 2;
+
+/// Flame: [towerHeatRecoveryShare] of max health back after a floor (was
+/// towerRecoveryShare), and an Elite [towerHeatEliteBonus] more often on
+/// the ordinary floors from [towerHeatUpperFloor] to 29.
+const int towerHeatFlame = 3;
+
+/// Pyre: the boons of [towerHeatCutBoons] gone, the late oath from
+/// [towerHeatPityOathFloor] (was towerPityOathFloor).
+const int towerHeatPyre = 4;
+
+/// Ash: the foes [towerHeatAshFoeScale] from [towerHeatUpperFloor] up (in
+/// place of Embers' factor there), and a gift takes
+/// [towerHeatRivalStanding] from each rival (was towerRivalStanding).
+const int towerHeatAsh = 5;
+
+/// The highest level.
+const int towerHeatMax = towerHeatAsh;
+
+/// Embers' factor on every foe, every floor (brief 7's ×1.05, measured).
+const double towerHeatFoeScale = 1.05;
+
+/// Ash's factor on the foes of floors [towerHeatUpperFloor] to 30. The
+/// note's 1.10 left the top at 8.4% with every unlock (seeds 1 to 2000,
+/// over its 3 to 7% band); 1.12, with Flame's [towerHeatRecoveryShare],
+/// 6.8% (1.14 gave 6.2% and floor 26 over 13%).
+const double towerHeatAshFoeScale = 1.12;
+
+/// The first floor of the upper Tower, where Flame's Elites and Ash's
+/// factor begin (floors 1 to 10 stay gentle).
+const int towerHeatUpperFloor = 11;
+
+/// Smoke's affixes added on a warden's or boss's floor.
+const int towerHeatPeakAffixes = 1;
+
+/// Flame's share of max health back after a floor won. The note's .08 cost
+/// 2.8 points of top (15.4% to 12.6% with every unlock, seeds 1 to 2000,
+/// under the 3-point band); .05, 11.8%.
+const double towerHeatRecoveryShare = .05;
+
+/// Flame's Elite chance added on an ordinary floor of the upper Tower.
+const double towerHeatEliteBonus = .05;
+
+/// Pyre's boon floors taken away.
+const Set<int> towerHeatCutBoons = {13, 23};
+
+/// Pyre's late oath floor.
+const int towerHeatPityOathFloor = 18;
+
+/// Ash's standing a gift takes from each rival clan.
+const int towerHeatRivalStanding = 2;
+
+/// The marks a run banks, raised this share a level of Heat (rounded down,
+/// [towerHeatMarksOf]).
+const double towerHeatMarks = .25;
+
+/// The factor on floor [floor]'s foes at [heat] (1 at heat 0).
+double towerHeatScaleOf(int heat, int floor) =>
+    heat >= towerHeatAsh && floor >= towerHeatUpperFloor
+        ? towerHeatAshFoeScale
+        : heat >= towerHeatEmbers
+            ? towerHeatFoeScale
+            : 1.0;
+
+/// The affixes added to a floor of [kind] at [heat].
+int towerHeatAffixesOf(int heat, TowerFloorKind kind) =>
+    heat >= towerHeatSmoke && kind != TowerFloorKind.fight
+        ? towerHeatPeakAffixes
+        : 0;
+
+/// The share of max health back after a floor won at [heat].
+double towerRecoveryShareOf(int heat) =>
+    heat >= towerHeatFlame ? towerHeatRecoveryShare : towerRecoveryShare;
+
+/// The Elite chance of a lone foe on floor [floor] (its budget's [base])
+/// at [heat]: Flame's [towerHeatEliteBonus] on the ordinary floors from
+/// [towerHeatUpperFloor] (the top boss's floor has no Elite).
+double towerEliteChanceOf(int heat, int floor, double base) =>
+    heat >= towerHeatFlame && floor >= towerHeatUpperFloor && floor < towerTop
+        ? base + towerHeatEliteBonus
+        : base;
+
+/// The floors whose win offers a boon at [heat].
+Set<int> towerBoonFloorsOf(int heat) => heat >= towerHeatPyre
+    ? towerBoonFloors.difference(towerHeatCutBoons)
+    : towerBoonFloors;
+
+/// The late oath's floor at [heat].
+int towerPityOathFloorOf(int heat) =>
+    heat >= towerHeatPyre ? towerHeatPityOathFloor : towerPityOathFloor;
+
+/// The standing a gift takes from each rival clan at [heat].
+int towerRivalStandingOf(int heat) =>
+    heat >= towerHeatAsh ? towerHeatRivalStanding : towerRivalStanding;
+
+/// The marks multiplier at [heat]: 1, 1.25, 1.5 ... 2.25 (for the screens'
+/// "Marks ×1.25"; [towerHeatMarksOf] pays them).
+double towerHeatMarksFactor(int heat) => 1 + towerHeatMarks * heat;
+
+/// [marks] raised for [heat] ([towerHeatMarks] a level, rounded down).
+int towerHeatMarksOf(int marks, int heat) =>
+    heat <= 0 ? marks : (marks * towerHeatMarksFactor(heat)).floor();
+
+/// The curses in force at [heat], lowest first (the curse list's rows: its
+/// levels' line keys; the last is the one [heat] added).
+List<TowerHeatLevel> towerHeatCursesOf(int heat) => [
+      for (final level in towerHeatLevels)
+        if (level.heat <= heat) level,
+    ];
