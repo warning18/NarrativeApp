@@ -9,9 +9,8 @@
 // Tower chibi until Art draws theirs: one lookup each, so a swap is one line.
 import 'package:flutter/material.dart';
 
-import '../theme/palette.dart';
-
-/// The plate (assets/visuals/scenes/) behind each shop: its place.
+/// The plate (assets/visuals/scenes/`<id>_shop_dark.png`, Art's darker
+/// shop-only version of the place's scene) behind each shop: its place.
 const Map<String, String> shopScenes = {
   'blind_beggar_stall': 'blind_beggar',
   'weaponsmith_forge': 'saltmouth_yard',
@@ -29,9 +28,8 @@ const Map<String, String> shopScenes = {
   'wayfarer_caravan': 'the_crossing',
 };
 
-/// The NPC's 64 px frame for each shop: its own keeper where Art drew one
-/// (assets/visuals/keepers/), else a stand-in from the Tower's chibis
-/// (assets/visuals/tower/npc/).
+/// The NPC's 64 px frame for each shop: Art's keeper where one was drawn
+/// (assets/visuals/keepers/).
 const Map<String, String> shopKeeperFrames = {
   'weaponsmith_forge': 'assets/visuals/keepers/weaponsmith_forge.png',
   'arcane_bazaar': 'assets/visuals/keepers/arcane_bazaar.png',
@@ -41,13 +39,25 @@ const Map<String, String> shopKeeperFrames = {
   'last_lantern': 'assets/visuals/keepers/last_lantern.png',
   'anchorage_chandlery': 'assets/visuals/keepers/anchorage_chandlery.png',
   'black_market_docks': 'assets/visuals/keepers/black_market_docks.png',
-  // Stand-ins until Art draws these six keepers.
-  'blind_beggar_stall': 'assets/visuals/tower/npc/chandler.png',
-  'shieldwrights_hall': 'assets/visuals/tower/npc/guardian.png',
-  'hammersmith_forge': 'assets/visuals/tower/npc/guardian.png',
-  'smugglers_vault': 'assets/visuals/tower/npc/clerk.png',
-  'sharpweave_den': 'assets/visuals/tower/npc/clerk.png',
-  'wayfarer_caravan': 'assets/visuals/tower/npc/chandler.png',
+  // The six keepers drawn for the stalls (a 64 px figure, see below).
+  'blind_beggar_stall': 'assets/visuals/keepers/beggars_cellar_boy.png',
+  'shieldwrights_hall': 'assets/visuals/keepers/shieldwright.png',
+  'hammersmith_forge': 'assets/visuals/keepers/hammersmith.png',
+  'smugglers_vault': 'assets/visuals/keepers/vault_keeper.png',
+  'sharpweave_den': 'assets/visuals/keepers/needle_house_keeper.png',
+  'wayfarer_caravan': 'assets/visuals/keepers/caravan_master.png',
+};
+
+/// The keepers drawn big (64 px, bottom-aligned): centred at stall x 48, their
+/// top at stall y 2, clipped to the stall's box at y 60. The others are the
+/// smaller 48 px figures, feet at stall y 52.
+const Set<String> _bigKeepers = {
+  'blind_beggar_stall',
+  'shieldwrights_hall',
+  'hammersmith_forge',
+  'smugglers_vault',
+  'sharpweave_den',
+  'wayfarer_caravan',
 };
 
 /// Whether [shopId] has a stall to build the layers with.
@@ -70,6 +80,7 @@ class ShopLayers extends StatelessWidget {
       final height = width * 0.52;
       // The stall is 96 px of the strip's 150: about two thirds of its width.
       final k = width / 150;
+      final big = _bigKeepers.contains(shopId);
       return ClipRRect(
         borderRadius: BorderRadius.circular(4),
         child: SizedBox(
@@ -79,32 +90,39 @@ class ShopLayers extends StatelessWidget {
           child: Stack(children: [
             Positioned.fill(
               child: Image.asset(
-                'assets/visuals/scenes/${shopScenes[shopId]}.png',
+                'assets/visuals/scenes/${shopScenes[shopId]}_shop_dark.png',
                 fit: BoxFit.cover,
                 alignment: Alignment.bottomCenter,
                 filterQuality: FilterQuality.none,
                 errorBuilder: (_, __, ___) => const SizedBox.shrink(),
               ),
             ),
-            // Until the darker shop plates: a wash so the dark stall reads.
-            Positioned.fill(
-                child: ColoredBox(
-                    color: Palette.apolloOutline.withValues(alpha: 0.28))),
             Positioned(
               left: (width - 96 * k) / 2,
               bottom: height * 0.06,
               width: 96 * k,
               height: 64 * k,
               child: Stack(clipBehavior: Clip.none, children: [
-                Positioned(
-                  left: (48 - 32) * k,
-                  top: (52 - 56) * k,
-                  width: 64 * k,
-                  height: 64 * k,
-                  child: Image.asset(shopKeeperFrames[shopId]!,
-                      fit: BoxFit.fill,
-                      filterQuality: FilterQuality.none,
-                      errorBuilder: (_, __, ___) => const SizedBox.shrink()),
+                // The keeper: a 64 px figure (top at stall y 2, clipped to the
+                // stall's box at y 60) or a 48 px NPC (feet at stall y 52).
+                Positioned.fill(
+                  child: ClipRect(
+                    clipper: _KeeperClip(
+                        big ? Rect.fromLTWH(0, 0, 96 * k, 60 * k) : null),
+                    child: Stack(clipBehavior: Clip.none, children: [
+                      Positioned(
+                        left: (48 - 32) * k,
+                        top: (big ? 2 : 52 - 56) * k,
+                        width: 64 * k,
+                        height: 64 * k,
+                        child: Image.asset(shopKeeperFrames[shopId]!,
+                            fit: BoxFit.fill,
+                            filterQuality: FilterQuality.none,
+                            errorBuilder: (_, __, ___) =>
+                                const SizedBox.shrink()),
+                      ),
+                    ]),
+                  ),
                 ),
                 Positioned.fill(
                   child: Image.asset(shopStallAsset(shopId),
@@ -119,4 +137,18 @@ class ShopLayers extends StatelessWidget {
       );
     });
   }
+}
+
+/// Clips the keeper layer to [box] (null: no clip, a very large box).
+class _KeeperClip extends CustomClipper<Rect> {
+  _KeeperClip(this.box);
+
+  final Rect? box;
+
+  @override
+  Rect getClip(Size size) =>
+      box ?? const Rect.fromLTWH(-1000, -1000, 3000, 3000);
+
+  @override
+  bool shouldReclip(_KeeperClip old) => old.box != box;
 }

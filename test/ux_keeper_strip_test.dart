@@ -71,7 +71,7 @@ void main() {
     for (final id in shops.keys) {
       expect(shopHasLayers(id), isTrue, reason: id);
       for (final path in [
-        'assets/visuals/scenes/${shopScenes[id]}.png',
+        'assets/visuals/scenes/${shopScenes[id]}_shop_dark.png',
         shopKeeperFrames[id]!,
         shopStallAsset(id),
       ]) {
