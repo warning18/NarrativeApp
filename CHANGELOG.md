@@ -8,6 +8,10 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [2.8.1+1070]
+
+- Maps, three picks from the review. The epilogue map reads on a phone: on a light page the chart wears Parchment, it draws no names (they were about 4 px high; the list under it names the towns), numbers that sat on each other are pushed apart with a thin line to their town, and a tap on a number brings that town's line into view. On the ball no name is drawn under 12 px any more (lands, ranges, woods, villages, works and the notes under a mark; a clan's seat 13); where it is crowded a name is left off. And the party's ring on a town or a district breathes 20 times a second from a clock of its own: a town left alone asks for a third of the frames it did.
+
 ## [2.7.0+1066]
 
 - **The late game, on screen.** The Void Banner has its own wide tile in the Inventory, shown once the banner is owned. Chapters 4 to 8 show their three goals on a card in the Journal and at the start of a fight, a toast when a goal is met, and a chest screen when the next chapter begins, with the tier the goals earned (Wooden to Gold). The silver and void chests are redrawn at 32 x 32. No rule or number changes: this is the screens for v2.5.0.

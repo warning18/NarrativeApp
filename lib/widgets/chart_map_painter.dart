@@ -85,6 +85,7 @@ class ChartMapPainter extends CustomPainter {
     this.heardOf = const {},
     this.goalId,
     this.detail = true,
+    this.names = true,
     GlobeView? globe,
     this.globeOf,
     this.sphereMaxScale = double.infinity,
@@ -158,6 +159,10 @@ class ChartMapPainter extends CustomPainter {
   /// Terrain, features and the trade roads drawn (off for a small chart).
   final bool detail;
 
+  /// The names drawn (off for a chart shown too small to read them: the
+  /// epilogue's, whose towns are named in the list under it).
+  final bool names;
+
   /// The chart as a sphere (v1.200, see chart_globe.dart), or flat.
   GlobeView? get globe => globeOf?.call() ?? _fixedGlobe;
   final GlobeView? _fixedGlobe;
@@ -215,7 +220,14 @@ class ChartMapPainter extends CustomPainter {
   /// box, so a phone's map stays readable (v1.350).
   double _k = 1;
   static const double minPlacePx = 12.5;
-  static const double minRegionPx = 10;
+  static const double minRegionPx = 12;
+
+  /// The least the small print is drawn at on screen: the names of ranges
+  /// and woods, of villages and works, and the notes under a mark.
+  static const double minSmallPx = 12;
+
+  /// The least a clan's seat is named at.
+  static const double minSeatPx = 13;
 
   /// [n] pixels on the screen, in chart units: what stays one size however
   /// close the chart is looked at (the viewer scales the canvas by the zoom
@@ -1756,6 +1768,7 @@ class ChartMapPainter extends CustomPainter {
   /// inside the chart and clear of the other names and marks), then the
   /// regions' names where there is room for them.
   void _names(Canvas canvas, Landmark? standing) {
+    if (!names) return;
     final bounds = Rect.fromLTRB(_whole.left + 1, _whole.top + 1,
         _whole.right - 1 - labelInsetRight / _k, _whole.bottom - 1);
     final reached = [
@@ -1971,7 +1984,7 @@ class ChartMapPainter extends CustomPainter {
         TextStyle(
           fontFamily: InkFonts.prose,
           fontStyle: FontStyle.italic,
-          fontSize: 4.6 * t,
+          fontSize: _font(4.6, minSmallPx),
           color: const Color(0xFFA39DAE).withValues(alpha: 0.9),
         ),
       );
@@ -2004,7 +2017,7 @@ class ChartMapPainter extends CustomPainter {
             f.name(language),
             TextStyle(
               fontFamily: seat ? InkFonts.display : InkFonts.prose,
-              fontSize: _font(seat ? 5.2 : 4.2, seat ? 12 : 11),
+              fontSize: _font(seat ? 5.2 : 4.2, seat ? minSeatPx : minSmallPx),
               color: colour.withValues(alpha: 0.9),
               shadows: [Shadow(color: palette.land, blurRadius: 1.5 * t)],
             )
@@ -2014,7 +2027,7 @@ class ChartMapPainter extends CustomPainter {
             f.note(language),
             TextStyle(
               fontFamily: InkFonts.system,
-              fontSize: _font(3.2, 10),
+              fontSize: _font(3.2, minSmallPx),
               color: palette.label.withValues(alpha: 0.9),
             )
           ),
