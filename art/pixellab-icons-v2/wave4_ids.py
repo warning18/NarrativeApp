@@ -89,3 +89,7 @@ RETRY2={
 'void_manifestation':C("a tall wobbly dark purple shape like a melted candle, five small pale faces on it with open mouths, a violet glow, drips"),
 'hollow_reflection':B("a hero's exact mirror copy in grey, same cloak and short hair as an adventurer, flat grey face with no features, glowing violet outline, faint see-through look"),
 }
+
+RETRY3={
+'strand_colossus':C("a hulking mound-shaped wreck made of two dark wooden ship keels and teal glass shards, jagged spikes on top, one big glowing white eye in the middle, no arms, not a person, not a robot"),
+}
