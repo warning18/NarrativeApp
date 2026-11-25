@@ -618,8 +618,8 @@ const List<String> towerParleyAbilities = ['charisma', 'wisdom', 'dexterity'];
 /// The share of those floors whose landing holds a merchant (floor events
 /// PR 4): on the landing after the floor's win and its card, before the
 /// next fight, a merchant of a clan (drawn from [towerClans]) sells its
-/// stock ([towerSalvePrice], [towerBundlePrice]) for the run's own marks
-/// (TowerRun.marksSpent comes off what the run banks), at half price
+/// stock ([towerSalvePrice], [towerBundlePrice], towerBoonPrice) for the
+/// run's Tower coins (v2.10.0; TowerRun.coins; before, its marks), at half price
 /// (rounded up) to a hero sworn to its clan. It takes no floor of its own.
 const double towerMerchantShare = .05;
 
@@ -635,14 +635,16 @@ const double towerBargainShare = .10;
 /// which a gate floor never otherwise reads.
 const Set<int> towerShopFloors = {10, 20};
 
-/// The merchant's salve: its price in marks and the share of the max
-/// health it heals.
-const int towerSalvePrice = 3;
+/// The merchant's salve: its price in coins (v2.10.0, brief 6's option A:
+/// the stall takes Tower coins, TowerRun.coins; it was 3 marks) and the
+/// share of the max health it heals.
+const int towerSalvePrice = 4;
 const double towerSalveShare = .40;
 
-/// The merchant's potion bundle: its price in marks and the potions it puts
-/// in the bag (up to [towerBagCap]).
-const int towerBundlePrice = 4;
+/// The merchant's potion bundle: its price in coins (v2.10.0; it was 4
+/// marks) and the potions it puts in the bag (up to the bag's cap,
+/// towerBagCapOf).
+const int towerBundlePrice = 5;
 const int towerBundlePotions = 2;
 
 /// The bargain's price, a share of the max health as it stands when it is

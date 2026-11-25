@@ -31,6 +31,10 @@ enum TowerStream {
   /// docs/proposals/tower-snakes-and-ladders.md): which floor holds one,
   /// its fall, its roll (towerEventOf).
   board,
+
+  /// A reroll of a floor's table and a merchant's boon (v2.10.0,
+  /// tower_coins.dart): towerRandom(seed, floor x 16 + n, reroll).
+  reroll,
 }
 
 /// The stream [purpose] of floor [floor] in the run of [seed]. Mixed by

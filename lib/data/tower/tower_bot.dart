@@ -21,6 +21,7 @@ import '../factions.dart' show ClanData;
 import '../sim_combat.dart';
 import '../training.dart' show statPickForShares;
 import 'tower_clans.dart';
+import 'tower_coins.dart';
 import 'tower_dice.dart' show towerChooseDie;
 import 'tower_events.dart';
 import 'tower_floors.dart';
@@ -144,7 +145,9 @@ SimFightOutcome towerBotFight({
 /// given, picks its cards instead: an offer's index, or null to refuse).
 /// [events] is the floor events' version the run plays (towerStart; 0,
 /// none, every test's and band's climb as before them). [heat] is the
-/// run's Heat (TowerRun.heat; 0, the plain climb).
+/// run's Heat (TowerRun.heat; 0, the plain climb). [perks] are the perks
+/// worn (null: those [progress] wears, TowerProgress.wornPerks); [coins] is
+/// how the bot spends its coins ([TowerBotCoins]).
 TowerRun playTowerRun({
   required int seed,
   required TowerData data,
@@ -155,6 +158,8 @@ TowerRun playTowerRun({
   int? Function(TowerRun run)? choice,
   int events = 0,
   int heat = 0,
+  Iterable<String>? perks,
+  TowerBotCoins coins = TowerBotCoins.full,
 }) {
   final pick = towerRandom(seed, 0, TowerStream.start);
   T draw<T>(List<T> from) => from[pick.nextInt(from.length)];
@@ -171,6 +176,7 @@ TowerRun playTowerRun({
     unlocksOwned: progress.unlocksOwned,
     events: events,
     heat: heat,
+    perks: perks ?? progress.wornPerks,
     data: data,
   );
   final floors =
@@ -226,6 +232,7 @@ TowerRun playTowerRun({
     if (run.status == TowerStatus.choosing) {
       // The level-up first, as the story's bot takes its picks.
       run = _botStatPicks(run, data);
+      if (coins == TowerBotCoins.full) run = _botReroll(run, data);
       final hero = towerHeroOf(run, data);
       final owned = hero.ownedDice.keys.toSet();
       final index =
@@ -246,23 +253,73 @@ TowerRun playTowerRun({
       if (gained != null && !owned.contains(gained)) {
         run = towerBotRollBest(run, data, floors, [gained]);
       }
-      run = _botStore(run, data);
+      run = _botStore(run, data, floors, coins);
     }
   }
   return run;
 }
 
+/// How the bot spends its Tower coins (v2.10.0, tower_coins.dart): a policy
+/// simple enough to measure.
+enum TowerBotCoins {
+  /// The stall's salve and bundle only, as the bot bought them with marks
+  /// before coins (the base the coins' power is measured on).
+  stall,
+
+  /// The stall's salve and bundle, its boon whenever the coins are there
+  /// (taken as a boon floor's card), and one reroll of a boon table that
+  /// deals no new skill ([towerBotRerolls]). It never banishes: it has no
+  /// notion of a card it does not want.
+  full,
+}
+
+/// [run] after the bot's reroll (TowerBotCoins.full): a boon table with no
+/// skill card (only a rank-up, a die or a spell: the bot takes a skill
+/// first) is rerolled once, when the coins pay it.
+TowerRun _botReroll(TowerRun run, TowerData data) {
+  if (!towerBotRerolls ||
+      !towerBoonFloorsOf(run.heat).contains(run.floor) ||
+      (run.rerolls[run.floor] ?? 0) > 0 ||
+      run.offer.any((c) => c.kind == TowerRewardKind.skill) ||
+      !towerCanReroll(run) ||
+      towerRerollPriceOf(run) > run.coins) {
+    return run;
+  }
+  return towerReroll(run, data);
+}
+
+/// Whether the bot rerolls (TowerBotCoins.full).
+const bool towerBotRerolls = true;
+
 /// [run] after the store open on its landing, as the bot shops (floor
-/// events PR 4): at a merchant, the salve under [towerBotSalveHealth] of
-/// its health, then the bundle with [towerBotBundlePotions] potions or
-/// fewer in the bag (each within the marks left); a bargain always taken.
-/// Then it leaves.
-TowerRun _botStore(TowerRun run, TowerData data) {
+/// events PR 4; in coins from v2.10.0): at a merchant, the salve under
+/// [towerBotSalveHealth] of its health, then (TowerBotCoins.full) the boon
+/// when the coins are there, its card taken as a boon floor's
+/// (towerBotChoice) and a die gained tried, then the bundle with
+/// [towerBotBundlePotions] potions or fewer in the bag (each within the
+/// coins left); a bargain always taken. Then it leaves.
+TowerRun _botStore(TowerRun run, TowerData data, List<TowerFloor> floors,
+    TowerBotCoins coins) {
   switch (towerStoreKindOf(run)) {
     case TowerEventKind.merchant:
       final hero = towerHeroOf(run, data);
       if (hero.currentHealth < towerBotSalveHealth * hero.maxHealth) {
         run = towerBuy(run, data, 'salve', hero: hero);
+      }
+      if (coins == TowerBotCoins.full) {
+        final owned = hero.ownedDice.keys.toSet();
+        final bought = towerBuy(run, data, towerStallBoonId);
+        if (!identical(bought, run) && bought.stallOffer.isNotEmpty) {
+          final index = towerBotChoice(
+                  bought.copyWith(offer: bought.stallOffer),
+                  clans: data.clans) ??
+              0;
+          final card = bought.stallOffer[index];
+          run = towerTakeStallBoon(bought, index);
+          if (card.kind == TowerRewardKind.die && !owned.contains(card.id)) {
+            run = towerBotRollBest(run, data, floors, [card.id]);
+          }
+        }
       }
       if (run.potions <= towerBotBundlePotions) {
         run = towerBuy(run, data, 'potions');
@@ -397,9 +454,9 @@ int? towerBotChoice(TowerRun run, {TowerClanTables? clans}) {
   final oath = find((r) => r.kind == TowerRewardKind.clanOath);
   if (oath != null) return oath;
   if (run.offer.any((r) => r.clan.isNotEmpty)) {
-    final standing = towerStandingFrom([
-      for (final f in run.taken.keys.toList()..sort()) run.taken[f]!
-    ], clans ?? _assetClanTables, heat: run.heat);
+    final standing = towerStandingFrom(
+        towerStandingCardsOf(run), clans ?? _assetClanTables,
+        heat: run.heat);
     int? best;
     for (var i = 0; i < run.offer.length; i++) {
       final clan = run.offer[i].clan;
@@ -434,8 +491,17 @@ Map<String, dynamic> _assetTable(String name) =>
 /// A batch of [seeds] runs (QA's balance report): each run's floor
 /// reached, and whether it won.
 List<TowerRun> playTowerBatch(Iterable<int> seeds, TowerData data,
-        {TowerProgress progress = const TowerProgress(), int heat = 0}) =>
+        {TowerProgress progress = const TowerProgress(),
+        int heat = 0,
+        Iterable<String>? perks,
+        TowerBotCoins coins = TowerBotCoins.full}) =>
     [
       for (final seed in seeds)
-        playTowerRun(seed: seed, data: data, progress: progress, heat: heat),
+        playTowerRun(
+            seed: seed,
+            data: data,
+            progress: progress,
+            heat: heat,
+            perks: perks,
+            coins: coins),
     ];
