@@ -3,6 +3,60 @@ part of '../fight_screen.dart';
 /// Lookups over the party and the enemies, and the numbers worked out
 /// from them, shared by the rounds and the view.
 extension _FightQueries on _FightScreenState {
+  /// The fight's events (fight_events.dart): each hit and status tick, for
+  /// the screen's looks. Publishing reads nothing back into the fight.
+  FightEvents get _events => ref.read(fightEventsProvider);
+
+  /// [enemy] as an event's target.
+  FightTarget _foeTarget(_EnemyMember enemy) =>
+      FightTarget(FightSide.foe, _enemies.indexOf(enemy), enemy.key);
+
+  /// [member] as an event's target.
+  FightTarget _memberTarget(_PartyMember member) =>
+      FightTarget(FightSide.party, _party.indexOf(member), member.id);
+
+  /// Publishes a party member's strike (or its splash) on [target]: the
+  /// power worked out as _playFaceEffects plays it (the skill's rarity and
+  /// tier, else the weapon in hand), only when someone listens.
+  void _publishStrike({
+    required FightHitKind kind,
+    required _PartyMember actor,
+    required DiceFaceResult face,
+    required Map<String, dynamic> skills,
+    required _EnemyMember target,
+    required int amount,
+    required bool crit,
+    required String element,
+    int blows = 1,
+  }) {
+    final events = _events;
+    if (!events.hasHitListener) return;
+    final skillId = face.type == 'Skill' ? _effectiveSkillId(face) : null;
+    final skill =
+        skillId == null ? null : skills[skillId] as Map<String, dynamic>?;
+    final rarity = skill == null
+        ? _weaponOf(actor)?.$2
+        : skill['rarity']?.toString().toLowerCase();
+    events.hit(FightHitEvent(
+      kind: kind,
+      target: _foeTarget(target),
+      source: _memberTarget(actor),
+      amount: amount,
+      power: vfxPowerFor(
+        rarity: rarity,
+        tier: skill == null ? 0 : actor.skillTiers[skillId] ?? 0,
+        amount: amount,
+        targetMaxHealth: target.maxHealth,
+        critical: crit,
+      ),
+      crit: crit,
+      skillId: skillId,
+      element: element,
+      blows: blows,
+      round: _roundsStarted,
+    ));
+  }
+
   /// A log line's actor prefix — only shown once there's more than one
   /// combatant on the player's side, so a solo player (the common case
   /// through most of the game, before any ally is both recruited and

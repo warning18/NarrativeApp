@@ -386,6 +386,11 @@ extension _FightEnemyTurn on _FightScreenState {
             _LogKind.playerDamage,
           ));
         });
+        _events.tick(FightStatusTickEvent(
+            target: _foeTarget(enemy),
+            amount: poison,
+            status: StatusEffectType.poison,
+            round: _roundsStarted));
         if (!enemy.isAlive) continue;
         _advancePhasesNow(lang, skills);
       }
@@ -661,6 +666,25 @@ extension _FightEnemyTurn on _FightScreenState {
         }
         enemy.statusEffects = tickStatusEffects(enemy.statusEffects);
       });
+      if (_events.hasHitListener) {
+        _events.hit(FightHitEvent(
+          kind: FightHitKind.foeMove,
+          target: _memberTarget(target),
+          source: _foeTarget(enemy),
+          amount: damageTaken,
+          power: vfxPowerFor(
+            rarity: (skills[move.skillId] as Map?)?['rarity']?.toString(),
+            amount: damageTaken,
+            targetMaxHealth: target.maxHealth,
+            boss: isBossEnemy(enemy.enemyId, enemy.data),
+          ),
+          crit: false,
+          skillId: move.skillId,
+          element: move.skillId.isEmpty ? 'None' : move.element,
+          dodged: wasDodged,
+          round: _roundsStarted,
+        ));
+      }
       _playEnemyMoveEffects(
         enemy: enemy,
         target: target,

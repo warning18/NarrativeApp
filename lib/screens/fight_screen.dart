@@ -12,6 +12,7 @@ import '../data/chapter_goals.dart';
 import '../data/hunter_mercy.dart';
 import '../data/place_traits.dart';
 import '../data/climate.dart' show WeatherKind;
+import '../providers/fight_events_provider.dart';
 import '../providers/fight_random_provider.dart';
 import '../providers/geography_provider.dart';
 import '../widgets/chapter_goals_card.dart' show ChapterGoalSetupLine, GoalTick;
