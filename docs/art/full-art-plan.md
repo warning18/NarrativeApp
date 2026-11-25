@@ -17,7 +17,7 @@ PixelLab: every drawn picture (characters, heads, icons, plates, scenes, vignett
 | 5 | Dice shapes (blank faces; pips and numerals are code) | every roll | 6 (d4, d6, d8, d10, d12, d20) | 44 | PixelLab + code | approved; d10 made in code | 0 | done |
 | 6 | **Card frames**: UX's 6 manga frame shapes as pieces | cards | 6 (+ dim versions in code) | ~112x160, 9-slice | PixelLab (1 gen each, text only) + code slice | to make | ~18 | wave 1 |
 | 7 | **Ink kit**: panel, button (normal, pressed, disabled), chip, tab, bar frame, seal button | every screen | ~8 pieces | 24 to 48 px, 9-slice | PixelLab + code slice | to make (code-drawn kits exist) | ~22 | wave 1 |
-| 8 | **Icons: Tower items, coins, perks, stall** | Tower, shops | ~70 | 32 | PixelLab | to make, style to pick | ~90 | wave 2 |
+| 8 | **Icons: Tower items, coins, perks, stall** | Tower, shops | ~70 | 32 | PixelLab | to make, V2 chibi colour | ~90 | wave 2 |
 | 9 | Icons: the other items (equipment, consumables, keys) | inventory | ~62 | 32 | PixelLab | to make | ~80 | wave 3 |
 | 10 | Icons: foes | bestiary, fight | 64 | 32 | PixelLab | to make | ~83 | wave 4 |
 | 11 | Icons: shops and chests | city | 24 | 32 | PixelLab | to make | ~31 | wave 5 |
@@ -27,15 +27,16 @@ PixelLab: every drawn picture (characters, heads, icons, plates, scenes, vignett
 | 15 | Heroes, races, NPCs, fighters (full characters) | everywhere | existing | 48 | PixelLab | done; paper doll on hold | 0 | none |
 | 16 | Map pieces (painted plates, ground, props) | Maps session | not counted | n/a | PixelLab, asked through the Manager | none asked | 0 | on request |
 
-## Icons: the style is still to pick, and the two options cost the same
+## Icons: the user picked V2 chibi colour (25 November)
 
-- **V2 chibi colour** (palette of the Starter_basic_hero sprite forced): 1 generation per icon, text only. About 1.3 generations with retries.
-- **V1 chibi ink**: the text-only version failed (the word "chibi" drew tiny characters). V1 is made **from the V2 generation in code** (`art/pixellab-manga/inkify.py`), so it costs the same generations and nothing more. The user can also switch later by re-running the code on the same files.
-- Both options: about 220 icons, about 290 generations in 4 waves.
+- **Look:** chibi shapes (chunky, rounded, squat, oversized parts), the Starter_basic_hero palette forced, a thick dark outline, one highlight, one inner shadow, a material read (glass, steel, leather, wood, cloth).
+- **Cost:** 1 generation per icon, text only, about 1.3 with retries; the code pass is free. About 220 icons, about 290 generations in 4 waves, as in the table.
+- **Fixes noted from the test:** the key's bow came out busy (prompt: "a plain round ring bow, one simple shape"), the shield came out as a round badge (prompt: "a heater shield, pointed bottom"); the antidote's liquid takes the heal green only when the item is a healing one (the hero palette has plum and copper, so other liquids use those).
+- **Recipe:** `docs/art/style-brut.md`, section "Icon recipe: V2 chibi colour". The ink version (V1) stays available in code from the same files (`inkify.py`) if a screen needs a one-colour icon.
 
 ## Consistency method
 
-1. **One style reference**: the Starter_basic_hero sprite palette forced on every character-scale piece; ink, paper and the red token on every ink piece.
+1. **One style reference**: the Starter_basic_hero sprite palette forced on every icon and character-scale piece (the user's V2 pick); ink, paper and the red token on the ink pieces (Tower, tarot, plates).
 2. **Palette snap** after every call (free, in code): ink 090A14, paper E7E1CD, paper shadow C9C2A6, deep red A53030, heal 7DBE6A, tide 4FB0B0 and the clan hues, nothing else.
 3. **The detail rule from Ashen Ink**, with the relaxation for icons: no isolated specks, 2 px minimum region; silhouette edge always ink; plates keep 60 px minimum regions on new plates.
 4. **A sheet before any hand-off**, at 1x and 3x next to a Tower plate and a card, then the user picks.

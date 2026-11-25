@@ -53,3 +53,32 @@ Look: black outline, paper-white body, a few ink lines, one spot of colour. Rule
 1. Generate (PixelLab `create_image_pixflux`, 32x32, text only, 1 gen): the object alone, centred, "bold black outline, dark filled body with a few light highlights, one spot of colour, pixel art, no background".
 2. Code pass (0 gens): `art/pixellab-cutpaper/lighter.py` -> `v1_final(im, pre=0, min_area=2)`. Edge pixels become ink; dark interior becomes paper; light interior becomes ink lines; the spot pixels are classified to red/heal/tide; regions under 2 px are merged. For icons whose lines break into specks (helm) use `pre=4` (merge under 4 px first) or regenerate once.
 3. Output: `art/pixellab-cutpaper/hi/final/v1_<icon>32.png`; sheet `docs/art/boards/icons-v1-final.png`.
+
+## Icon recipe: V2 chibi colour (user's pick, 25 Nov 2026; replaces the V1 light ink recipe above for the full icon set)
+
+Look: chibi shapes (chunky, rounded, squat, oversized key features), a thick dark outline, a small flat colour palette from the Starter_basic_hero sprite, one light highlight, one dark inner shadow, a material read (glass, steel, leather, wood, cloth). No hatching, no gradients.
+
+1. **Generate** (PixelLab `create_image_pixflux`, 32x32, text only, `no_background`, `outline` "single color black outline", `shading` "basic shading", `detail` "medium detail", `color_image_base64` = the hero sprite, 1 gen): prompt `chibi game item pixel art, chunky rounded squat shape, thick dark outline, small flat colour palette, one light highlight, one dark inner shadow, <the object with its oversized part, e.g. "a chibi potion bottle with a huge round belly and a small cork">, game icon, no text, centred`. Never put the bare word "chibi" without an object: it draws tiny characters. Known fixes: key = "a plain round ring bow, one simple shape"; shield = "a heater shield, pointed bottom".
+2. **Hero-palette snap** (code, 0 gens): snap every pixel to the nearest colour of the object palette below.
+3. **No specks**: no isolated pixel, 2 px minimum region (`simplify.py`, min_area 2); the silhouette edge is always the outline colour.
+4. Output `art/pixellab-manga/chibi_final/` style names: `<icon>32.png`; one sheet per wave at 1x and 3x next to a Tower plate and a card before hand-off.
+
+### Object palette (the hero sprite's colours, named; for Ashen Ink)
+| Name | Hex | Use |
+|---|---|---|
+| outline | 010000 | the thick outline (also 010101) |
+| night | 23252A | darkest fill, deep shadow |
+| slate | 3B4043 | dark metal, dark cloth |
+| bark | 544443 | dark wood, dark leather |
+| leather dark | 6F5A4C | leather shadow, wood |
+| leather | 8F7665 | leather, wood |
+| stone | 8D8278 | mid grey: steel shadow, stone |
+| fog | B8ACA1 | light grey: steel, glass edge |
+| linen shadow | B6A48F | cloth and bone shadow |
+| linen | E1D7C0 | cloth, bone, parchment (the object's "paper") |
+| highlight | FDFCFC | the one highlight |
+| skin | EBBB9F | skin, pale wood |
+| skin shade | C9936F | skin shadow, tan leather |
+| copper | E99253 | warm accent: flame, copper, brass |
+| plum | 5E2D66 | the potion accent, magic |
+Plus the Ashen Ink spot tokens for status (red A53030, heal 7DBE6A, tide 4FB0B0) where an icon needs one.
