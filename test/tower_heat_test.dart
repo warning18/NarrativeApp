@@ -72,6 +72,7 @@ void main() {
     test('every lever reads as before', () {
       expect(towerRecoveryShareOf(0), towerRecoveryShare);
       expect(towerBoonFloorsOf(0), towerBoonFloors);
+      expect(towerHeatEmptyFloorsOf(0), isEmpty);
       expect(towerPityOathFloorOf(0), towerPityOathFloor);
       expect(towerRivalStandingOf(0), towerRivalStanding);
       expect(towerHeatMarksOf(61, 0), 61);
@@ -149,9 +150,12 @@ void main() {
       expect(towerEliteChanceOf(5, 10, .12), .12);
     });
 
-    test('Pyre: no boon on floors 13 and 23, from Heat 4', () {
+    test('Pyre: floors 13 and 23 give nothing, from Heat 4', () {
       expect(towerBoonFloorsOf(3), towerBoonFloors);
       expect(towerBoonFloorsOf(4), {5, 10, 15, 20, 25, 28});
+      expect(towerHeatEmptyFloorsOf(3), isEmpty);
+      expect(towerHeatEmptyFloorsOf(4), {13, 23});
+      expect(towerHeatEmptyFloorsOf(5), {13, 23});
       bool boon(TowerRun run) =>
           run.offer.isNotEmpty &&
           run.offer.every((r) => r.clan.isEmpty) &&
@@ -163,10 +167,55 @@ void main() {
             1: const TowerReward(TowerRewardKind.clanOath, id: 'mire'),
           });
           expect(boon(won(run)), isTrue, reason: 'seed $seed floor $floor');
-          final pyre = start(seed, 4).copyWith(floor: floor, taken: {
-            1: const TowerReward(TowerRewardKind.clanOath, id: 'mire'),
-          });
-          expect(boon(won(pyre)), isFalse, reason: 'seed $seed floor $floor');
+          // Option (a): no clan's offer in the boon's place either, nor the
+          // late oath (an oath still open, standing to swear).
+          for (final taken in [
+            {1: const TowerReward(TowerRewardKind.clanOath, id: 'mire')},
+            {1: gift('mire'), 2: gift('mire')},
+          ]) {
+            final pyre =
+                won(start(seed, 4).copyWith(floor: floor, taken: taken));
+            expect(pyre.offer, isEmpty, reason: 'seed $seed floor $floor');
+          }
+        }
+        // The floors around them deal as at Heat 3.
+        for (final floor in [12, 14, 22, 24]) {
+          final taken = {1: gift('mire'), 2: gift('mire')};
+          expect(
+              won(start(seed, 4).copyWith(floor: floor, taken: taken))
+                  .offer
+                  .length,
+              won(start(seed, 3).copyWith(floor: floor, taken: taken))
+                  .offer
+                  .length,
+              reason: 'seed $seed floor $floor');
+        }
+      }
+    });
+
+    test('Pyre: the foes ×1.04 on floors 11 to 30, from Heat 4', () {
+      expect(towerHeatPyreFoeScale, 1.04);
+      for (var f = 1; f <= towerTop; f++) {
+        final upper = f >= towerHeatUpperFloor;
+        expect(towerHeatScaleOf(3, f), towerHeatFoeScale, reason: 'floor $f');
+        expect(towerHeatScaleOf(4, f),
+            upper ? towerHeatFoeScale * 1.04 : towerHeatFoeScale,
+            reason: 'floor $f');
+        expect(towerHeatScaleOf(5, f),
+            upper ? towerHeatAshFoeScale * 1.04 : towerHeatFoeScale,
+            reason: 'floor $f');
+      }
+      for (var seed = 1; seed <= seeds; seed++) {
+        final three = floors(seed, 3), four = floors(seed, 4);
+        for (var i = 0; i < towerTop; i++) {
+          final floor = i + 1;
+          expect(
+              four[i].extra,
+              closeTo(
+                  three[i].extra * (floor >= towerHeatUpperFloor ? 1.04 : 1.0),
+                  1e-12),
+              reason: 'floor $floor');
+          expect(four[i].enemyIds, three[i].enemyIds);
         }
       }
     });
@@ -198,13 +247,21 @@ void main() {
         final five = floors(seed, 5);
         for (var i = 0; i < towerTop; i++) {
           final floor = i + 1;
-          expect(four[i].extra, closeTo(zero[i].extra * 1.05, 1e-12));
+          final upper = floor >= towerHeatUpperFloor;
+          expect(
+              four[i].extra,
+              closeTo(
+                  zero[i].extra *
+                      towerHeatFoeScale *
+                      (upper ? towerHeatPyreFoeScale : 1.0),
+                  1e-12));
+          // Ash's factor in place of Embers' there, Pyre's on top.
           expect(
               five[i].extra,
               closeTo(
                   zero[i].extra *
-                      (floor >= towerHeatUpperFloor
-                          ? towerHeatAshFoeScale
+                      (upper
+                          ? towerHeatAshFoeScale * towerHeatPyreFoeScale
                           : towerHeatFoeScale),
                   1e-12),
               reason: 'floor $floor');
@@ -246,6 +303,7 @@ void main() {
       expect(towerRecoveryShareOf(5), towerHeatRecoveryShare);
       expect(towerBoonFloorsOf(5), isNot(contains(13)));
       expect(towerBoonFloorsOf(5), isNot(contains(23)));
+      expect(towerHeatEmptyFloorsOf(5), towerHeatCutBoons);
       expect(towerPityOathFloorOf(5), towerHeatPityOathFloor);
       expect(towerRivalStandingOf(5), towerHeatRivalStanding);
     });

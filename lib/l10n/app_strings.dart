@@ -2516,9 +2516,9 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   },
   'tower_heat_pyre_line': {
     AppLanguage.en:
-        'Some boons are gone from the stairs, and the late oath keeps you waiting.',
+        'Floors that once rewarded you give nothing, and foes are tougher in the upper Tower.',
     AppLanguage.fr:
-        'Des faveurs ont disparu de l’escalier, et le serment tardif se fait attendre.',
+        'Des étages qui vous récompensaient ne donnent plus rien, et les adversaires sont plus coriaces dans la haute Tour.',
   },
   'tower_heat_ash': {
     AppLanguage.en: 'Ash',

@@ -75,8 +75,12 @@ void main() {
   // wardens' and bosses' floors, was 1.28; docs/simulation/
   // tower-cleric-retune.md; the cleric is an unlock, so no unlocks is
   // unchanged): all unlocks were 116 / 302 / 10758.
+  // The race trim (towerPeopleHealthPerUnlock: the dwarf .015 and the elf
+  // .01 of health an unlock, was .03; docs/simulation/tower-race-trim.md;
+  // health from the unlocks only, so no unlocks is unchanged): all
+  // unlocks were 124 / 308 / 10862.
   const none = (top: 51, floor20: 205, floorSum: 9083);
-  const all = (top: 124, floor20: 308, floorSum: 10862);
+  const all = (top: 106, floor20: 294, floorSum: 10548);
 
   test('the live Tower, no unlocks, is the pinned curve', () {
     final m = _measure(const TowerProgress());

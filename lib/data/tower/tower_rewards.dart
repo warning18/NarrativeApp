@@ -178,8 +178,8 @@ String? towerClanDieOf(String clanId, Map<String, dynamic> dice) {
 /// gifts or alone); from [towerPityOathFloor], with none of those due, the
 /// oath of the highest-standing clan ([towerPityOathClan]). Often nothing:
 /// the floor's spoils ([towerSpoilsFor]) are its reward. At Heat [heat]
-/// (TowerRun.heat), Pyre's boon floors and late oath (towerBoonFloorsOf,
-/// towerPityOathFloorOf).
+/// (TowerRun.heat), Pyre's empty floors and late oath
+/// (towerHeatEmptyFloorsOf, towerPityOathFloorOf).
 List<TowerReward> towerOfferFor({
   required int seed,
   required int floor,
@@ -266,6 +266,9 @@ List<TowerReward> towerOfferFor({
     }
   }
 
+  // Pyre's floors (towerHeatEmptyFloorsOf): nothing at all, no boon and
+  // no clan's card in its place.
+  if (towerHeatEmptyFloorsOf(heat).contains(floor)) return const [];
   if (towerBoonFloorsOf(heat).contains(floor)) {
     return [
       for (final kind in towerBoonKinds)
