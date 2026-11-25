@@ -13,7 +13,8 @@ import '../../l10n/app_locale.dart' show appLanguageProvider;
 import '../../l10n/app_strings.dart';
 import '../../providers/clans_provider.dart';
 import '../../theme/icon_sizes.dart';
-import '../../utils/pixel_icons/game_pixel_icons.dart' show ItemPixelIcon;
+import '../../utils/pixel_icons/item_icons.dart' show ItemIcons;
+import '../../utils/pixel_icons/pixel_icon.dart' show PixelIcon;
 import '../../theme/stitched_ink.dart' show InkFonts;
 import 'ink/ink_kit.dart' show InkBar;
 import 'ink/ink_palette.dart';
@@ -377,7 +378,8 @@ class TowerMerchantRoom extends ConsumerWidget {
             child: Row(children: [
               item.iconId == null
                   ? Icon(item.icon, size: IconSize.s32, color: inkPaper)
-                  : ItemPixelIcon(item.iconId, 'Potion', size: IconSize.s32),
+                  : PixelIcon(ItemIcons.pathFor(item.iconId!),
+                      size: IconSize.s32),
               const SizedBox(width: 10),
               Expanded(
                 child: Column(
