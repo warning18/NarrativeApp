@@ -69,8 +69,10 @@ void main() {
   // 161 / 333 / 11240.
   // The floor-15 oath (#1153, towerPityOathFloor): these were
   // 49 / 207 / 9088 and 125 / 302 / 10775.
-  const none = (top: 49, floor20: 208, floorSum: 9111);
-  const all = (top: 128, floor20: 305, floorSum: 10799);
+  // #1147 (a skill ranked up keeps its face): these were
+  // 49 / 208 / 9111 and 128 / 305 / 10799.
+  const none = (top: 51, floor20: 205, floorSum: 9083);
+  const all = (top: 116, floor20: 302, floorSum: 10758);
 
   test('the live Tower, no unlocks, is the pinned curve', () {
     final m = _measure(const TowerProgress());
