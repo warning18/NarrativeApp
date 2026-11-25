@@ -1,0 +1,2 @@
+# Art's dark foe icons (wave 4d), wired
+`old-new.png`: today's 16 px icons (top of each pair) and Art's 32 px dark ones (below) for all 64 foes (the gold frames are the old placeholder icons). 64 files into `assets/icons/enemies/` (palette PNG8, same ids); `PortraitPixels` already samples any size to its 32 x 32 grid, so the fight portraits read the new pictures as drawn; the fight sheet's header icon is drawn at 64 (2x) instead of 48 (no half pixels). `hollow_reflection` and `tear_spawn` are Art's redrawn versions.

@@ -8,6 +8,10 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [2.10.7+1089]
+
+- **Foes: Art's dark icons.** The 64 foe icons are now 32 px, muted and lit by faction (cold blue for the Dominion, angels and giants; ember gold for the Crows, Compact, Vigil, demons and beasts; sickly green for the Mire and the undead; void violet for the Penitents and the void). They show in the fights' portraits and the fight sheet (whose header icon is drawn at 64). No rule or number changes.
+
 ## [2.10.6+1088]
 
 - **Shops as layers.** Every shop screen opens on a picture built in layers (the user's call): a dark night or dusk scene of the shop's place behind, the shopkeeper standing in the middle, Art's dark stall in front, then the keeper's line and the wares. All 14 shops have their stall, their dark scene and their keeper (six new keepers: the Blind Beggar's cellar-boy, the Shieldwright, the Hammersmith, the Vault's Keyholder, the Needle House's Needle and the caravan's Old Pell). The shop list icons are Art's sign-board icons (32 px). No price, stock or rule changes.

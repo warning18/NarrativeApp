@@ -593,7 +593,7 @@ extension _FightCards on _FightScreenState {
               children: [
                 Row(
                   children: [
-                    EnemyPixelIcon(enemy.enemyId, size: IconSize.s48),
+                    EnemyPixelIcon(enemy.enemyId, size: IconSize.s64),
                     const SizedBox(width: 12),
                     Expanded(
                       child: Text(enemy.displayName,
