@@ -245,32 +245,41 @@ class _TowerStartScreenState extends ConsumerState<_TowerStartBody> {
         },
       );
 
-  /// One band of the tower as a pane of its own picture: its name and floors.
+  /// One band of the tower as a slanted ink panel of its own picture: its name
+  /// and floors, as the run to go on is drawn.
   Widget _bandPane(int band, ThemeData theme, InkColors ink) => Padding(
-        padding: const EdgeInsets.only(bottom: 6),
-        child: ClipRRect(
-          borderRadius: BorderRadius.circular(8),
-          child: SizedBox(
-            height: 70,
+        padding: const EdgeInsets.only(bottom: 8),
+        child: LayoutBuilder(builder: (context, box) {
+          final w = box.maxWidth;
+          const h = 76.0;
+          final up = band.isEven;
+          return InkSlantPanel(
+            size: Size(w, h),
+            points: [
+              Offset(8, up ? 10 : 4),
+              Offset(w - 8, up ? 4 : 10),
+              Offset(w - 8, h - 8),
+              const Offset(8, h - 6),
+            ],
             child: Stack(fit: StackFit.expand, children: [
               Image.asset(towerBackdropAsset(band),
                   fit: BoxFit.cover, filterQuality: FilterQuality.none),
-              ColoredBox(color: Colors.black.withValues(alpha: .45)),
+              ColoredBox(color: inkBlack.withValues(alpha: 0.6)),
               Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 14),
+                padding: const EdgeInsets.symmetric(horizontal: 22),
                 child: Row(children: [
                   Expanded(
                     child: Text(tr(ref, 'tower_band_$band'),
-                        style: theme.textTheme.titleMedium
-                            ?.copyWith(color: Colors.white)),
+                        style: theme.textTheme.titleMedium?.copyWith(
+                            fontFamily: InkFonts.display, color: inkPaper)),
                   ),
                   Text('${(band - 1) * 10 + 1}\u2013${band * 10}',
-                      style: theme.textTheme.titleMedium
-                          ?.copyWith(color: ink.gold)),
+                      style: theme.textTheme.titleMedium?.copyWith(
+                          fontFamily: InkFonts.display, color: inkPaper)),
                 ]),
               ),
             ]),
-          ),
-        ),
+          );
+        }),
       );
 }

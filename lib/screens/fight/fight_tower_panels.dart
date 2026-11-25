@@ -111,7 +111,6 @@ extension _TowerPanels on _FightScreenState {
         });
 
     return Column(children: [
-      _buildClimbStrip(),
       SizedBox(
         height: foeH,
         child: panel(foeH, true, [
@@ -156,38 +155,6 @@ extension _TowerPanels on _FightScreenState {
     if (target == null) return null;
     final i = _enemies.indexWhere((e) => e.key == target);
     return i < 0 ? null : i;
-  }
-
-  /// The 30 floors as a strip of ticks, those climbed in paper, this one in
-  /// red, the bosses' taller and outlined in red (the approved A's header).
-  Widget _buildClimbStrip() {
-    final floor = FightPlateOverride.maybeOf(context)?.floor ?? 1;
-    return Padding(
-      padding: const EdgeInsets.only(bottom: 6),
-      child: SizedBox(
-        key: const Key('tower_climb_strip'),
-        height: 20,
-        child: Row(children: [
-          for (var i = 1; i <= 30; i++)
-            Expanded(
-              child: Container(
-                margin: EdgeInsets.fromLTRB(0.8, i % 10 == 0 ? 0 : 6, 0.8, 0),
-                decoration: BoxDecoration(
-                  color: i < floor
-                      ? inkGrey
-                      : i == floor
-                          ? inkRed
-                          : inkBlack,
-                  border: Border.all(
-                      color: i % 10 == 0
-                          ? inkRed
-                          : inkGrey.withValues(alpha: 0.6)),
-                ),
-              ),
-            ),
-        ]),
-      ),
-    );
   }
 
   /// The faces of the first acting die in one strip under the board, the one
