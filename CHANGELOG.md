@@ -8,7 +8,7 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
-## [2.10.2+1084]
+## [2.10.1+1083]
 
 - **Epilogue map: the numbers read on every clan's colour.** The number on a big town's disc, on the map and in the list under it, was always white; on the Vigil's new yellow it could hardly be read, and on the Mire's green and the Compact's orange it leaned on its shadow. It is now written in dark ink on a light disc and in white on a dark one, whichever stands out more. No colour, rule or number changes.
 
