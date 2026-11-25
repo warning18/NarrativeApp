@@ -82,3 +82,13 @@ Look: chibi shapes (chunky, rounded, squat, oversized key features), a thick dar
 | copper | E99253 | warm accent: flame, copper, brass |
 | plum | 5E2D66 | the potion accent, magic |
 Plus the Ashen Ink spot tokens for status (red A53030, heal 7DBE6A, tide 4FB0B0) where an icon needs one.
+
+## The DARK chibi look (user's decision, 25 Nov 2026: "more Elden Ring like", mood only, no copying of any game's designs)
+
+Applies to foes, chests and shop stalls (items stay in the lighter V2 look unless the user decides otherwise). Grim dark fantasy: worn, weathered, ominous; muted desaturated tones, deep shadows, heavier silhouettes, still chibi proportions and readable at 32 px, **one strong rim or glow light** per piece (ember gold, cold blue, void violet, sickly green).
+
+**Dark palette** (`art/pixellab-icons-v2/palette_dark.py`, swatches `docs/art/boards/chibi-palette-dark.png`): the extended palette's hues, each ramp made darker: saturation x0.7, value x0.8 (shadow ramp step x0.62, light x0.9), plus three near-black tones 010000, 0E0F14, 1A1B22. 39 colours. Snap in code with `darksnap.py` (nearest colour, ink edge, no region under 2 px).
+
+**Prompt** (`create_image_pixflux`, 32 px, palette forced from `palette_dark_forced.png`, text only): `grim dark fantasy chibi pixel art, worn and weathered, ominous mood, muted desaturated colours, deep black shadows, heavy chunky silhouette, thick dark outline, one strong rim light of <cold blue | ember gold | void violet | sickly green>, <the subject: "a chibi bust, head and shoulders, big head, ..." or "a chibi whole small creature, chunky, ...">, game icon, no text, centred`. Rim light by faction or kind (`wave4d_ids.py rim()`). For a foe that has a full character: init from the darkened character's bust crop (strength 110 to 120), `gen_char4d.py`. For a beast, say "four legs, seen from the side, not a person". Open chests: "the lid raised open at the back, a glow inside".
+
+**Shop as an element** (stall): 96 x 64 PNG, transparent ground, straight from the front (two posts, a ragged awning, a counter with wares, a trade sign), the space between the posts above the counter see-through (`stalls_post.py hollow()`); layer order background -> NPC -> stall; anchors: opening about x 14..82, y 8..40, counter top about y 40, a 48 px NPC centred at x 48 with feet at about y 52; a 32 px list icon of each stall made in code (box-reduced, snapped; plain, the trade sign is not readable at that size).
