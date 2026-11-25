@@ -2679,9 +2679,10 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.fr: 'Possédé',
   },
   'tower_perks_hint': {
-    AppLanguage.en: 'One perk is worn on a climb, chosen at the door.',
+    AppLanguage.en:
+        'Perks are chosen at the door and worn for the whole climb.',
     AppLanguage.fr:
-        'Un seul atout se porte durant une ascension, choisi à la porte.',
+        'Les atouts se choisissent à la porte et se portent durant toute l’ascension.',
   },
   'tower_perk_next': {
     AppLanguage.en: 'Next perk: {perk}, {n} more marks',
