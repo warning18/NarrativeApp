@@ -248,24 +248,38 @@ class InkSlantPanel extends StatelessWidget {
     required this.size,
     required this.points,
     required this.child,
+    this.knockOn,
+    this.knockWhen,
   });
 
   final Size size;
   final List<Offset> points;
   final Widget child;
 
+  /// A signal that knocks the panel's snow off (a blow landing on it).
+  final Listenable? knockOn;
+  final bool Function()? knockWhen;
+
   @override
-  Widget build(BuildContext context) => SizedBox(
-        width: size.width,
-        height: size.height,
-        child: Stack(children: [
-          ClipPath(
-              clipper: _PolyClipper(points),
-              child: SizedBox(
-                  width: size.width, height: size.height, child: child)),
-          IgnorePointer(
-              child: CustomPaint(size: size, painter: _PolyBorder(points))),
-        ]),
+  Widget build(BuildContext context) => InkWeatherPiece(
+        // The snow rests on the panel's own (slanted) top edge: its first two
+        // points.
+        seed: InkSeed.of('slant${points.first}${size.width.round()}'),
+        edge: (points[0], points[1]),
+        knockOn: knockOn,
+        knockWhen: knockWhen,
+        child: SizedBox(
+          width: size.width,
+          height: size.height,
+          child: Stack(children: [
+            ClipPath(
+                clipper: _PolyClipper(points),
+                child: SizedBox(
+                    width: size.width, height: size.height, child: child)),
+            IgnorePointer(
+                child: CustomPaint(size: size, painter: _PolyBorder(points))),
+          ]),
+        ),
       );
 }
 

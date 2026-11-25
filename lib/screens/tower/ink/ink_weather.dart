@@ -1,5 +1,7 @@
-// Weather on the ink pieces (v2.1, UX-2): snow, sand, ash and rain build up on
-// a piece while a screen is open, a tap knocks them off, fog is a veil.
+// Weather on the ink pieces (v2.1, UX-2): snow, dust, ash and rain build up on
+// a piece while a screen is open, a tap knocks them off, fog is a veil. Snow
+// is a field since v2.10.17 (ink_snowfall.dart): the pieces register their top
+// edge with the scope, one painter draws the falling flakes and the drifts.
 //
 // - ONE clock per screen: a [WeatherScope] holds the seconds on screen and
 //   tells the pieces below it twice a second (a periodic timer, not a ticker:
@@ -26,6 +28,7 @@ import '../../../providers/climate_provider.dart' show skyHereProvider;
 import '../../../data/climate.dart' show WeatherKind;
 import 'ink_palette.dart';
 import 'ink_seed.dart';
+import 'ink_snowfall.dart';
 
 /// The tallest a cap grows, in logical pixels above the piece's top edge.
 const double inkCapMaxHeight = 12;
@@ -71,9 +74,22 @@ class InkWeatherStore {
 
 /// The one clock of a screen. The pieces below read it.
 class InkWeatherClock {
-  InkWeatherClock(this.kind, this.fall,
-      {required double start, required this.reduceMotion})
-      : seconds = ValueNotifier<double>(start);
+  InkWeatherClock._(
+      this.kind, this.fall, this.reduceMotion, this.snow, this.seconds);
+
+  factory InkWeatherClock(WeatherKind kind, double fall,
+      {required double start, required bool reduceMotion}) {
+    // Snow runs on the field's own clock.
+    final snow = kind == WeatherKind.snow
+        ? SnowField(fall: fall, reduceMotion: reduceMotion, start: start)
+        : null;
+    return InkWeatherClock._(kind, fall, reduceMotion, snow,
+        snow?.time ?? ValueNotifier<double>(start));
+  }
+
+  /// The snow of this screen (null for any other weather): its pieces and
+  /// its clock.
+  final SnowField? snow;
 
   final WeatherKind kind;
   final double fall;
@@ -158,10 +174,16 @@ class _WeatherScopeState extends State<WeatherScope> {
     _clock = clock;
     InkWeatherClock.live++;
     if (clock.active && !reduce) {
-      // Half a second a tick: time on screen, not wall time (a paused app
-      // builds nothing up), and a cap re-lays at most twice a second.
-      _timer = Timer.periodic(
-          const Duration(milliseconds: 500), (_) => clock.seconds.value += 0.5);
+      if (clock.snow != null) {
+        // The snow moves: thirty frames a second, time on screen.
+        _timer = Timer.periodic(const Duration(milliseconds: 33),
+            (_) => clock.seconds.value += 0.033);
+      } else {
+        // Half a second a tick: time on screen, not wall time (a paused app
+        // builds nothing up), and a cap re-lays at most twice a second.
+        _timer = Timer.periodic(const Duration(milliseconds: 500),
+            (_) => clock.seconds.value += 0.5);
+      }
     }
   }
 
@@ -186,28 +208,119 @@ class _WeatherScopeState extends State<WeatherScope> {
   }
 
   @override
-  Widget build(BuildContext context) =>
-      _InkWeather(clock: _clock!, child: widget.child);
+  Widget build(BuildContext context) {
+    final clock = _clock!;
+    final snow = clock.snow;
+    // The snow is drawn over everything under the scope, by one painter.
+    final child = snow == null
+        ? widget.child
+        : Stack(fit: StackFit.passthrough, children: [
+            widget.child,
+            Positioned.fill(child: SnowfallLayer(field: snow)),
+          ]);
+    return _InkWeather(clock: clock, child: child);
+  }
 }
 
 /// A piece under the weather: it draws the cap, the wet or the veil over its
 /// child, and a tap on it (which still goes on to the child) knocks the cap
 /// off. Without a [WeatherScope] above, or in clear weather, it is the child.
 class InkWeatherPiece extends StatefulWidget {
-  const InkWeatherPiece({super.key, required this.seed, required this.child});
+  const InkWeatherPiece({
+    super.key,
+    required this.seed,
+    required this.child,
+    this.edge,
+    this.knockOn,
+    this.knockWhen,
+  });
 
   final InkSeed seed;
   final Widget child;
+
+  /// The top edge the snow rests on, in the piece's own coordinates, from its
+  /// left end to its right; the whole top by default (a slanted panel gives
+  /// its slanted top).
+  final (Offset, Offset)? edge;
+
+  /// Knocks the snow off whenever [knockOn] notifies and [knockWhen] says so
+  /// (a blow landing on a panel).
+  final Listenable? knockOn;
+  final bool Function()? knockWhen;
 
   @override
   State<InkWeatherPiece> createState() => InkWeatherPieceState();
 }
 
 class InkWeatherPieceState extends State<InkWeatherPiece>
-    with TickerProviderStateMixin {
+    with TickerProviderStateMixin
+    implements SnowPiece {
   AnimationController? _knock;
   double _baseline = 0;
   InkWeatherClock? _clock;
+
+  // ---- Snow (the field of the scope; ink_snowfall.dart) ----
+
+  final GlobalKey _boxKey = GlobalKey(debugLabel: 'ink_weather_piece');
+  SnowField? _field;
+  ModalRoute<dynamic>? _route;
+  final List<double> _knocks = [];
+
+  /// The snow this piece is registered with (what the tests read).
+  SnowField? get snowField => _field;
+
+  @override
+  int get snowId => widget.seed.n;
+
+  @override
+  List<double> get snowKnocks => _knocks;
+
+  @override
+  (Offset, Offset)? snowEdge() {
+    // Not under a route that covers it (a dialog, another page).
+    if (_route != null && !_route!.isCurrent) return null;
+    final box = snowBox(_boxKey);
+    if (box == null) return null;
+    final e = widget.edge ??
+        (const Offset(2, 0), Offset(math.max(2.0, box.size.width - 2), 0));
+    return (box.localToGlobal(e.$1), box.localToGlobal(e.$2));
+  }
+
+  /// A tap, or a blow on a panel: the snow of this piece comes off.
+  void _snowKnock() {
+    final f = _field;
+    if (f == null || f.reduceMotion) return;
+    final now = f.time.value;
+    if (_knocks.isNotEmpty && now - _knocks.last < 0.6) return;
+    _knocks.add(now);
+    if (_knocks.length > 6) _knocks.removeAt(0);
+  }
+
+  void _onKnockSignal() {
+    if (widget.knockWhen?.call() ?? true) _snowKnock();
+  }
+
+  void _useField(SnowField? field) {
+    if (identical(field, _field)) return;
+    _field?.pieces.remove(this);
+    _field = field;
+    field?.pieces.add(this);
+  }
+
+  @override
+  void didUpdateWidget(InkWeatherPiece oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.knockOn != widget.knockOn) {
+      oldWidget.knockOn?.removeListener(_onKnockSignal);
+      widget.knockOn?.addListener(_onKnockSignal);
+    }
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    widget.knockOn?.addListener(_onKnockSignal);
+  }
 
   /// The level of this piece now (0 to 1): what the tests read.
   double get level {
@@ -246,6 +359,8 @@ class InkWeatherPieceState extends State<InkWeatherPiece>
 
   @override
   void dispose() {
+    widget.knockOn?.removeListener(_onKnockSignal);
+    _useField(null);
     _knock?.dispose();
     super.dispose();
   }
@@ -254,7 +369,18 @@ class InkWeatherPieceState extends State<InkWeatherPiece>
   Widget build(BuildContext context) {
     final clock = _InkWeather.maybeOf(context);
     _clock = clock;
+    _route = ModalRoute.of(context);
+    _useField(clock?.snow);
     if (clock == null || !clock.active) return widget.child;
+    // Snow: the piece only registers its edge and takes a tap as a knock; the
+    // scope draws the drift and the flakes.
+    if (clock.snow != null) {
+      return Listener(
+        behavior: HitTestBehavior.translucent,
+        onPointerDown: (_) => _snowKnock(),
+        child: KeyedSubtree(key: _boxKey, child: widget.child),
+      );
+    }
     final kind = clock.kind;
     Widget body = widget.child;
     if (kind == WeatherKind.fog) {
