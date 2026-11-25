@@ -565,12 +565,12 @@ class _OverPainter extends CustomPainter {
       final tp = TextPainter(
         text: TextSpan(
             text: '${i + 1}',
-            style: const TextStyle(
+            style: TextStyle(
                 fontFamily: InkFonts.system,
-                color: Colors.white,
+                color: discInk(big[i].fill),
                 fontSize: 11,
                 fontWeight: FontWeight.bold,
-                shadows: [Shadow(blurRadius: 2, color: Colors.black87)])),
+                shadows: discInkShadows(big[i].fill))),
         textDirection: TextDirection.ltr,
       )..layout();
       tp.paint(canvas, c - Offset(tp.width / 2, tp.height / 2));
@@ -675,11 +675,11 @@ class _TownRow extends ConsumerWidget {
             border: Border.all(color: accent, width: 2),
           ),
           child: Text('$number',
-              style: const TextStyle(
-                  color: Colors.white,
+              style: TextStyle(
+                  color: discInk(fill),
                   fontSize: 13,
                   fontWeight: FontWeight.bold,
-                  shadows: [Shadow(blurRadius: 2, color: Colors.black87)])),
+                  shadows: discInkShadows(fill))),
         ),
         const SizedBox(width: 10),
         Expanded(
@@ -737,3 +737,21 @@ class _TownRow extends ConsumerWidget {
     );
   }
 }
+
+/// The dark ink of a number on a light disc.
+const Color discDarkInk = Color(0xFF1A1410);
+
+/// The ink of a number written on a holder's disc: whichever of white and
+/// dark ink stands out more on [fill]. A clan's colour may be as light as
+/// the Vigil's yellow, where white cannot be read.
+Color discInk(Color fill) {
+  final l = fill.computeLuminance();
+  final onWhite = 1.05 / (l + 0.05);
+  final onDark = (l + 0.05) / (discDarkInk.computeLuminance() + 0.05);
+  return onWhite >= onDark ? Colors.white : discDarkInk;
+}
+
+/// White ink keeps its dark shadow; dark ink needs none.
+List<Shadow>? discInkShadows(Color fill) => discInk(fill) == Colors.white
+    ? const [Shadow(blurRadius: 2, color: Colors.black87)]
+    : null;

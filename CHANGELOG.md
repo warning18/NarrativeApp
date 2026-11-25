@@ -8,6 +8,10 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [2.10.2+1084]
+
+- **Epilogue map: the numbers read on every clan's colour.** The number on a big town's disc, on the map and in the list under it, was always white; on the Vigil's new yellow it could hardly be read, and on the Mire's green and the Compact's orange it leaned on its shadow. It is now written in dark ink on a light disc and in white on a dark one, whichever stands out more. No colour, rule or number changes.
+
 ## [2.9.5+1081]
 
 - **The clans' approved colours.** The six main clans' colours in the game data now match their banners and the Ashen Ink palette (the user's choice of 24 Nov): Dominion blue #2F6FE0, Crows rose #E0479E, Compact orange #E8782A, Mire green #3FB06A, Vigil yellow #E8C21A, Penitents violet #9B5DE5 (before: #2F62B5, #B0303F, #B86B3C, #3F8F5A, #8A8F98, #CBB68E). Crows is no longer the warning red; Vigil and Penitents are no longer grey and sand. Cards, the compass, title details, town tints and enemy groups all follow. No rule or number changes.
