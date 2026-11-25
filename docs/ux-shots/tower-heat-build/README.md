@@ -1,0 +1,2 @@
+# Tower Heat screens, built (EN; v2.9.1 after Core's v2.9.0)
+`heat-412-en.png`: the door's picker (Smoke won: Embers, Smoke open, Flame locked, Flame picked), the chip on a floor, the end screen (level, marks factor, level opened), Ash conquered. `heat-360-en.png` the same at 360. `test/ux_tower_heat_screens_test.dart` draws them (`UX_SHOTS=<dir>`). Ink and paper; the level's colour only on the picked ring and the chip's line.

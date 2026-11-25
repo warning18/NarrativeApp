@@ -9,6 +9,7 @@
 // oaths), then the warden of floor 5 falls and Return must work.
 import 'dart:convert';
 import 'dart:io';
+import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -20,7 +21,11 @@ import 'package:narrative_data_app/data/tower/tower_bot.dart';
 import 'package:narrative_data_app/data/tower/tower_run.dart';
 import 'package:narrative_data_app/data/tower/tower_save.dart';
 import 'package:narrative_data_app/main.dart';
+import 'package:narrative_data_app/providers/fight_random_provider.dart';
 import 'package:narrative_data_app/screens/level_up_screen.dart';
+
+/// The seed of every fight's dice (env QA_BOSS_SEED to try others).
+final fightSeed = int.tryParse(Platform.environment['QA_BOSS_SEED'] ?? '') ?? 7;
 
 void main() {
   testWidgets('a Tower warden won through the real launcher lets you leave',
@@ -50,7 +55,12 @@ void main() {
     addTearDown(tester.view.reset);
     tester.view.devicePixelRatio = 1;
     tester.view.physicalSize = const Size(412, 860);
-    await tester.pumpWidget(const ProviderScope(child: MyApp()));
+    // The fights' dice are seeded: an unseeded fight let a foe's lucky hit
+    // beat the hero on floor 1 once on CI (a lost floor is not what this
+    // guard is about), and the same seed rolls the same dice on every runner.
+    await tester.pumpWidget(ProviderScope(overrides: [
+      fightRandomProvider.overrideWithValue(() => Random(fightSeed)),
+    ], child: const MyApp()));
 
     Future<void> settle([int n = 6]) async {
       for (var i = 0; i < n; i++) {

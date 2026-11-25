@@ -8,6 +8,18 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [2.9.4+1080]
+
+- **Tower: the peoples level with every unlock.** With every unlock the dwarf and the elf reached the top in about 28% of bot climbs, against 20 to 24% for the others: the unlocks' extra health (3% each, x1.30 with all ten) kept the sturdy dwarf and the dodging elf standing on floors 21 to 30. The dwarf now gains 1.5% an unlock and the elf 1%; the others keep 3%. Bot, every unlock: dwarf 27.5 to 23.6%, elf 28.9 to 23.5%, the spread 8.7 to 4.1 points, the overall top 24.6 to 22.8%. With no unlocks nothing changes.
+- **Tower Heat: Pyre's two floors give nothing, and its upper Tower hits harder.** At Heat 4 and above, floors 13 and 23 offer no card at all (no boon, no clan offer), the user's option (a), and the foes of floors 11 to 30 are x1.04 stronger on top of the other curses. Bot, every unlock: Heat 3 10.8%, Heat 4 7.4%, Heat 5 4.6%.
+## [2.9.3+1079]
+
+- **Tower: polish (the user's four).** The 30-rung climb strip above the fight is gone (the rail already shows the floor). Numbers are now set in the prose face everywhere: the pixel font's digits are replaced by Spectral's, so a 5 no longer reads as S, a 6 as G or a 0 as O, in every screen. The door's three zone rows are ink panels (a slanted picture panel, the zone's name in the display face, its floors) instead of rounded photo strips. The climb rail also folds away when a stall or a card offer opens, giving the cards the full width.
+
+## [2.9.1+1077]
+
+- **Tower: Heat, the screens.** The Tower's door shows a picker once Embers is open: the plain climb and each open level (its flames, name, one-line curse and marks factor), the next level locked ("Win the top at Smoke to open"). A chip with the level's name sits under the floor number and opens the list of curses in force, the newest tagged. The end screen reads "Flame · marks x1.75", the level a win opened, and "Ash conquered". Gifts' standing lines use the run's Heat (Ash's rival ripple). Ink and paper, the level's colour only on the picked ring and the chip's line; numbers in the prose face.
+
 ## [2.9.0+1076]
 
 - **Tower: Heat, the rules (the user's five named curses).** After a win, the Tower can be climbed again at a higher Heat, each adding one curse to those below: Embers (foes x1.05), Smoke (one more affix on the wardens and bosses), Flame (healing after a floor 15% to 5%, more elites from floor 11), Pyre (no boon on floors 13 and 23, the late oath from floor 18), Ash (foes x1.12 from floor 11, a gift costs rival clans 2 standing). Heat N+1 opens with a win at Heat N; marks earned rise by a quarter a level (x2.25 at Ash). Bot, every unlock: the top falls 26 / 18 / 15 / 12 / 11 / 7% from Heat 0 to 5. Heat 0 is the climb as before. The picker on the Tower's door comes with UX's next version; until then every climb is Heat 0.

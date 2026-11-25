@@ -106,7 +106,7 @@ class TowerData {
 
 /// A new hero of [raceId] and [professionId] with the start unlocks
 /// [unlockIds] in hand (their dice owned, their items worn): level 1, full
-/// health with [towerHealthPerUnlock] more for each of the [unlocksOwned]
+/// health with [towerHealthPerUnlockOf] more for each of the [unlocksOwned]
 /// unlocks, no potions (the flask and the bag come with the run,
 /// [towerHeroOf]). [bag]: the start's dice go to the bag, the calling's own
 /// die stays in play (a run with [TowerRun.dieChoice]); else the best is
@@ -141,7 +141,8 @@ SimCharacter towerFreshHero(String raceId, String professionId,
   if (people > 0) hero.addAbilities({hero.preferredStat: people});
   if (unlocksOwned > 0) {
     hero.maxHealth =
-        (hero.maxHealth * (1 + towerHealthPerUnlock * unlocksOwned)).round();
+        (hero.maxHealth * (1 + towerHealthPerUnlockOf(raceId) * unlocksOwned))
+            .round();
     hero.currentHealth = hero.maxHealth;
   }
   return hero;

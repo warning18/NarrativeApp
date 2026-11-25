@@ -181,16 +181,16 @@ String? towerClanDieOf(String clanId, Map<String, dynamic> dice) {
 /// gifts or alone); from [towerPityOathFloor], with none of those due, the
 /// oath of the highest-standing clan ([towerPityOathClan]). Often nothing:
 /// the floor's spoils ([towerSpoilsFor]) are its reward. At Heat [heat]
-/// (TowerRun.heat), Pyre's boon floors and late oath (towerBoonFloorsOf,
-/// towerPityOathFloorOf).
+/// (TowerRun.heat), Pyre's boon floors, empty floors and late oath
+/// (towerBoonFloorsOf, towerHeatEmptyFloorsOf, towerPityOathFloorOf).
 ///
 /// Coins and perks (v2.10.0, docs/simulation/tower-coins.md): [random], when
 /// given, draws the cards in place of the floor's offer stream (a reroll's,
 /// a stall's); [avoid] are ids kept off the table while others are left (a
 /// reroll's last cards); [boon] deals a boon's three whatever the floor (the
-/// stall's); a boon table gets [extraSkills] more skill cards (Fourth
-/// card) and its skills [rarityBonus] rarity steps up (Keen eye); the late
-/// oath comes [oathSooner] floors sooner (Early word).
+/// stall's, even on Pyre's empty floors); a boon table gets [extraSkills]
+/// more skill cards (Fourth card) and its skills [rarityBonus] rarity steps
+/// up (Keen eye); the late oath comes [oathSooner] floors sooner (Early word).
 List<TowerReward> towerOfferFor({
   required int seed,
   required int floor,
@@ -291,6 +291,9 @@ List<TowerReward> towerOfferFor({
     }
   }
 
+  // Pyre's floors (towerHeatEmptyFloorsOf): nothing at all, no boon and
+  // no clan's card in its place (the stall's boon still deals).
+  if (!boon && towerHeatEmptyFloorsOf(heat).contains(floor)) return const [];
   if (boon || towerBoonFloorsOf(heat).contains(floor)) {
     final cards = [
       for (final kind in towerBoonKinds)
