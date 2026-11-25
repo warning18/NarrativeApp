@@ -10,6 +10,7 @@ import '../../data/tower/tower_run.dart';
 import '../../l10n/app_strings.dart';
 import '../../theme/stitched_ink.dart';
 import 'tower_backdrop.dart';
+import 'tower_end_tally.dart';
 import 'tower_heat_view.dart';
 import 'tower_look.dart';
 import 'tower_marks_screen.dart';
@@ -24,7 +25,11 @@ class TowerEndScreen extends StatelessWidget {
       required this.run,
       required this.progress,
       this.fightLeft = false,
-      this.heatBefore = -1});
+      this.heatBefore = -1,
+      this.firstWinBonus = 0});
+
+  /// The first-win bonus this run banked (firstWinBonusOf, before end()).
+  final int firstWinBonus;
 
   /// The record's highest Heat won before this run (a level opens when the
   /// run won above it).
@@ -47,7 +52,8 @@ class TowerEndScreen extends StatelessWidget {
           run: run,
           progress: progress,
           fightLeft: fightLeft,
-          heatBefore: heatBefore));
+          heatBefore: heatBefore,
+          firstWinBonus: firstWinBonus));
 }
 
 class _TowerEndBody extends ConsumerWidget {
@@ -55,9 +61,11 @@ class _TowerEndBody extends ConsumerWidget {
       {required this.run,
       required this.progress,
       this.fightLeft = false,
-      this.heatBefore = -1});
+      this.heatBefore = -1,
+      this.firstWinBonus = 0});
 
   final int heatBefore;
+  final int firstWinBonus;
 
   final TowerRun run;
   final TowerProgress progress;
@@ -138,6 +146,11 @@ class _TowerEndBody extends ConsumerWidget {
                         heat: run.heat,
                         won: won,
                         openedNew: won && run.heat > heatBefore),
+                    const SizedBox(height: 8),
+                    TowerEndTally(
+                        run: run,
+                        after: progress,
+                        firstWinBonus: firstWinBonus),
                   ],
                 ),
               ),

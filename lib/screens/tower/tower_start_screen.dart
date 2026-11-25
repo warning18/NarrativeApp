@@ -18,6 +18,7 @@ import 'tower_backdrop.dart';
 import 'tower_end_screen.dart';
 import 'tower_floor_screen.dart';
 import 'tower_heat_view.dart';
+import 'tower_marks_shop.dart' show TowerDoorPerks;
 import 'tower_look.dart';
 import 'tower_marks_screen.dart';
 import 'tower_providers.dart';
@@ -171,6 +172,10 @@ class _TowerStartScreenState extends ConsumerState<_TowerStartBody> {
                     open: progress.heatOpen,
                     selected: _heat ?? progress.heatOpen,
                     onChanged: (h) => setState(() => _heat = h)),
+              ],
+              if (progress.perks.isNotEmpty) ...[
+                const SizedBox(height: 14),
+                const TowerDoorPerks(),
               ],
               const SizedBox(height: 14),
               InkButton(

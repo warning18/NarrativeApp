@@ -12,6 +12,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../combat/enemy_affix.dart';
+import '../../data/tower/tower_coins.dart';
 import '../../data/tower/tower_dice.dart';
 import '../../data/tower/tower_events.dart';
 import '../../data/tower/tower_hero.dart';
@@ -32,6 +33,7 @@ import 'tower_end_screen.dart';
 import 'tower_backdrop.dart';
 import 'tower_dice_panel.dart';
 import 'tower_event_card.dart';
+import 'tower_coin_view.dart';
 import 'tower_heat_view.dart';
 import 'tower_look.dart';
 import 'tower_ladder.dart';
@@ -115,12 +117,17 @@ class _TowerFloorScreenState extends ConsumerState<_TowerFloorBody> {
 
   /// An ended run: its marks banked, its end screen in this one's place.
   Future<void> _finish(TowerRun over) async {
-    final heatBefore = ref.read(towerProvider).value?.progress.heatWon ?? -1;
+    final before = ref.read(towerProvider).value?.progress;
+    final heatBefore = before?.heatWon ?? -1;
+    final firstWin = before?.firstWinBonusOf(over) ?? 0;
     final progress = await ref.read(towerProvider.notifier).end(over);
     if (!mounted) return;
     await Navigator.of(context).pushReplacement(MaterialPageRoute(
         builder: (_) => TowerEndScreen(
-            run: over, progress: progress, heatBefore: heatBefore)));
+            run: over,
+            progress: progress,
+            heatBefore: heatBefore,
+            firstWinBonus: firstWin)));
   }
 
   Future<void> _fight(TowerRun run, TowerData data) async {
@@ -312,6 +319,7 @@ class _TowerFloorScreenState extends ConsumerState<_TowerFloorBody> {
                   child: choosing && _spoilsTaken != run.floor
                       ? TowerSpoilsView(
                           run: run,
+                          coinsGained: towerCoinsFor(towerFloorOf(run, data)),
                           onTake: () => run.offer.isEmpty &&
                                   event?.kind != TowerEventKind.test
                               ? _pick(run, data, null)
@@ -324,20 +332,33 @@ class _TowerFloorScreenState extends ConsumerState<_TowerFloorBody> {
                               event: event,
                               onPick: (i) => _pick(run, data, i),
                             )
-                          : _FloorIntro(
-                              run: run,
-                              data: data,
-                              event: event,
-                              busy: _busy,
-                              onFight: () => _fight(run, data),
-                              onParley: (talk) => _parley(run, data, talk),
-                              onBuy: (id) => _buy(run, data, id),
-                              onLeaveStore: () => _leaveStore(run),
-                              onBargain: (take) => _bargain(run, data, take),
-                              onShortcut: (take) => ref
-                                  .read(towerProvider.notifier)
-                                  .setRun(towerChooseShortcut(run, data, take)),
-                            ),
+                          : run.stallOffer.isNotEmpty
+                              ? TowerOfferView(
+                                  key: const Key('tower_stall_boon_table'),
+                                  run: run.copyWith(offer: run.stallOffer),
+                                  data: data,
+                                  onPick: (i) => i == null
+                                      ? _leaveStore(run)
+                                      : ref
+                                          .read(towerProvider.notifier)
+                                          .takeStallBoon(i),
+                                )
+                              : _FloorIntro(
+                                  run: run,
+                                  data: data,
+                                  event: event,
+                                  busy: _busy,
+                                  onFight: () => _fight(run, data),
+                                  onParley: (talk) => _parley(run, data, talk),
+                                  onBuy: (id) => _buy(run, data, id),
+                                  onLeaveStore: () => _leaveStore(run),
+                                  onBargain: (take) =>
+                                      _bargain(run, data, take),
+                                  onShortcut: (take) => ref
+                                      .read(towerProvider.notifier)
+                                      .setRun(
+                                          towerChooseShortcut(run, data, take)),
+                                ),
                 ),
               ],
             ),
@@ -416,7 +437,10 @@ class _FloorIntro extends ConsumerWidget {
                     color: inkPaper,
                     fontWeight: FontWeight.w800,
                     shadows: const [Shadow(blurRadius: 8, color: inkBlack)])),
-            if (run.heat > 0) TowerHeatChip(heat: run.heat),
+            Wrap(spacing: 8, children: [
+              TowerCoinChip(coins: run.coins),
+              if (run.heat > 0) TowerHeatChip(heat: run.heat),
+            ]),
             Text(tr(ref, 'tower_floor_${run.floor}'),
                 style: theme.textTheme.bodyLarge
                     ?.copyWith(fontStyle: FontStyle.italic, color: inkGrey)),

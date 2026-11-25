@@ -88,12 +88,17 @@ class TowerEventCard extends ConsumerWidget {
           clanId: view.clanId,
           discount: view.discount ?? false,
           stock: [
-            for (final item in view.stock ?? const <TowerStockView>[])
+            for (final item in [
+              ...?view.stock,
+              if (view.boon case final b?) b,
+            ])
               TowerStallItem(
                 id: item.id,
-                icon: item.kind == TowerStockKind.salve
-                    ? Icons.healing
-                    : Icons.local_drink_outlined,
+                icon: switch (item.kind) {
+                  TowerStockKind.salve => Icons.healing,
+                  TowerStockKind.boon => Icons.auto_awesome_outlined,
+                  _ => Icons.local_drink_outlined,
+                },
                 price: item.price,
                 // The salve's text says a share of the health, not points.
                 amount: item.kind == TowerStockKind.salve
