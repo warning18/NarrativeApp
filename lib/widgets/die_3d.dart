@@ -346,7 +346,11 @@ class _Die3DState extends State<Die3D> with SingleTickerProviderStateMixin {
                                   BlendMode.srcATop)
                               : const ColorFilter.mode(
                                   Colors.transparent, BlendMode.dst),
-                          child: PixelStrips.ready(_pixelNames(fx))
+                          // The Tower's ink draws the rings and sparks only: the
+                          // pixel strips' filled flash, flattened to one colour,
+                          // was a solid disc over the die.
+                          child: PixelStrips.ready(_pixelNames(fx)) &&
+                                  !TowerPanelStyle.of(context)
                               // The landing in pixel art.
                               ? CustomPaint(
                                   key: const ValueKey('die_burst'),
@@ -371,6 +375,7 @@ class _Die3DState extends State<Die3D> with SingleTickerProviderStateMixin {
                                     element: widget.element,
                                     surge: widget.surge,
                                     cursed: widget.cursed,
+                                    outline: TowerPanelStyle.of(context),
                                   ),
                                 )),
                 ),
@@ -653,8 +658,11 @@ class DieBurstPainter extends CustomPainter {
     this.element = 'None',
     this.surge = false,
     this.cursed = false,
+    this.outline = false,
   });
 
+  /// Rings and sparks only: the flashes are drawn as outlines, never filled.
+  final bool outline;
   final DieFx fx;
   final double t;
   final bool big;
@@ -679,6 +687,11 @@ class DieBurstPainter extends CustomPainter {
       ..style = PaintingStyle.stroke
       ..strokeCap = StrokeCap.round;
     final fill = Paint();
+    if (outline) {
+      fill
+        ..style = PaintingStyle.stroke
+        ..strokeWidth = 2;
+    }
     switch (fx) {
       case DieFx.strike:
         // A flash, a shock ring and sparks thrown out.

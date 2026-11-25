@@ -502,14 +502,23 @@ class FightBoardSurface extends StatelessWidget {
               Positioned.fill(
                 child: RepaintBoundary(
                   child: Stack(fit: StackFit.expand, children: [
-                    Image.asset(
-                      key: const Key('fight_board_skin'),
-                      towerFightDicePlate(
-                          FightPlateOverride.maybeOf(context)?.floor ?? 1),
-                      fit: BoxFit.cover,
-                      filterQuality: FilterQuality.none,
-                      errorBuilder: (c, e, s) =>
-                          const ColoredBox(color: inkDeep),
+                    // The plate's top is a dark archway between two pillars:
+                    // behind a die it read as a black ball. The picture is
+                    // drawn a third larger from its foot, so the archway is cut
+                    // off and only the stone floor is left.
+                    Transform.scale(
+                      scale: 1.4,
+                      alignment: Alignment.bottomCenter,
+                      child: Image.asset(
+                        key: const Key('fight_board_skin'),
+                        towerFightDicePlate(
+                            FightPlateOverride.maybeOf(context)?.floor ?? 1),
+                        fit: BoxFit.cover,
+                        alignment: Alignment.bottomCenter,
+                        filterQuality: FilterQuality.none,
+                        errorBuilder: (c, e, s) =>
+                            const ColoredBox(color: inkDeep),
+                      ),
                     ),
                     DecoratedBox(
                       decoration: BoxDecoration(
@@ -639,13 +648,7 @@ class _FightAimLineState extends State<FightAimLine> {
                   child: Padding(
                     padding:
                         const EdgeInsets.symmetric(horizontal: 7, vertical: 2),
-                    child: Text(widget.label,
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
-                        style: const TextStyle(
-                            fontSize: 11,
-                            color: Colors.white,
-                            fontWeight: FontWeight.w600)),
+                    child: _label(widget.label),
                   ),
                 ),
               ),
@@ -654,6 +657,24 @@ class _FightAimLineState extends State<FightAimLine> {
       ),
     );
   }
+}
+
+/// The text of the aim bubble. A block reads as a shield drawn as an icon
+/// ("⛨3" in the label): the glyph is not in every font and showed as an empty
+/// box.
+Widget _label(String label) {
+  const style =
+      TextStyle(fontSize: 11, color: Colors.white, fontWeight: FontWeight.w600);
+  if (label.startsWith('⛨')) {
+    return Row(mainAxisSize: MainAxisSize.min, children: [
+      const Icon(Icons.shield, size: 12, color: Colors.white),
+      const SizedBox(width: 3),
+      Text(label.substring(1),
+          maxLines: 1, overflow: TextOverflow.ellipsis, style: style),
+    ]);
+  }
+  return Text(label,
+      maxLines: 1, overflow: TextOverflow.ellipsis, style: style);
 }
 
 class _AimPainter extends CustomPainter {
