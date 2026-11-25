@@ -403,6 +403,26 @@ void main() {
     expect(towerPeoplePoints, {'human': 2, 'voidkin': 3});
   });
 
+  // docs/simulation/tower-race-gap.md: more points with the unlocks owned.
+  test('humans, orcs and voidkin gain Tower points with the unlocks', () {
+    expect(towerPeopleUnlockPoints, {'human': 1, 'orc': 1, 'voidkin': 2});
+    expect(towerPeoplePointsOf('dwarf', towerUnlocks.length), 0);
+    expect(towerPeoplePointsOf('human', 0), 2);
+    expect(towerPeoplePointsOf('human', towerUnlocks.length - 1), 2);
+    expect(towerPeoplePointsOf('human', towerUnlocks.length), 3);
+    expect(towerPeoplePointsOf('orc', towerUnlocks.length), 1);
+    expect(towerPeoplePointsOf('voidkin', 4), 3);
+    expect(towerPeoplePointsOf('voidkin', 5), 4);
+    expect(towerPeoplePointsOf('voidkin', towerUnlocks.length), 5);
+    for (final race in data.races.keys) {
+      final none = towerFreshHero(race, 'warrior', const [], data);
+      final all = towerFreshHero(race, 'warrior', const [], data,
+          unlocksOwned: towerUnlocks.length);
+      expect(all.strength - none.strength, towerPeopleUnlockPoints[race] ?? 0,
+          reason: race);
+    }
+  });
+
   // The story's retuned foes (v1.926, enemies.json) keep their old stats in
   // the Tower (towerEnemyStats), so the climb is as it was.
   test('the Tower fights the retuned foes as they were', () {

@@ -157,6 +157,30 @@ const Map<String, int> towerPeoplePoints = {
   'voidkin': 3,
 };
 
+/// More of the people's start ([towerPeoplePoints]) as the unlocks grow
+/// (docs/simulation/tower-race-gap.md): this many points more in the
+/// calling's damage stat with every unlock owned, a share of them with
+/// fewer (rounded down: voidkin 1 from 5 unlocks). The flat points carry
+/// the human and the voidkin through the first floors but not floors 21
+/// to 30, where the dwarf's and elf's health, armour and dexterity hold;
+/// with no unlocks few runs get there, with every unlock most do, and the
+/// top was dwarf 28.7%, elf 28.0%, human 24.0%, orc 22.7%, voidkin 20.7%
+/// (seeds 1 to 2000 and 10001 to 12000). With these: 28.7, 28.0, 27.0,
+/// 26.8 and 27.2%. No unlocks: unchanged.
+const Map<String, int> towerPeopleUnlockPoints = {
+  'human': 1,
+  'orc': 1,
+  'voidkin': 2,
+};
+
+/// The points of [towerPeoplePoints] and [towerPeopleUnlockPoints] a hero
+/// of [raceId] starts with, [unlocksOwned] unlocks owned.
+int towerPeoplePointsOf(String raceId, int unlocksOwned) =>
+    (towerPeoplePoints[raceId] ?? 0) +
+    (towerPeopleUnlockPoints[raceId] ?? 0) *
+        unlocksOwned.clamp(0, towerUnlocks.length) ~/
+        towerUnlocks.length;
+
 /// Every this many unlocks owned at the start: one more potion carried into
 /// each fight.
 const int towerUnlocksPerPotion = 5;

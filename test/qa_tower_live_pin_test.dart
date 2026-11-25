@@ -73,8 +73,12 @@ void main() {
   // wardens' and bosses' floors, was 1.28; docs/simulation/
   // tower-cleric-retune.md; the cleric is an unlock, so no unlocks is
   // unchanged): all unlocks were 128 / 305 / 10799.
+  // The people's points with the unlocks (towerPeopleUnlockPoints:
+  // human and orc 1, voidkin 2 more with every unlock; docs/simulation/
+  // tower-race-gap.md; no unlocks unchanged): all unlocks were
+  // 144 / 314 / 10984.
   const none = (top: 49, floor20: 208, floorSum: 9111);
-  const all = (top: 144, floor20: 314, floorSum: 10984);
+  const all = (top: 152, floor20: 332, floorSum: 11259);
 
   test('the live Tower, no unlocks, is the pinned curve', () {
     final m = _measure(const TowerProgress());
