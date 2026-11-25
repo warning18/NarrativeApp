@@ -69,9 +69,17 @@ bool shopHasLayers(String shopId) =>
 String shopStallAsset(String shopId) => 'assets/visuals/shops/$shopId.png';
 
 class ShopLayers extends StatelessWidget {
-  const ShopLayers(this.shopId, {super.key});
+  const ShopLayers(this.shopId,
+      {super.key, this.stallScale = 1, this.keeperScale = 1});
 
   final String shopId;
+
+  /// The stall's size against today's (1: two thirds of the strip's width).
+  final double stallScale;
+
+  /// The keeper's size against today's, drawn about its feet (the bottom of
+  /// its frame): the counter still hides the legs.
+  final double keeperScale;
 
   @override
   Widget build(BuildContext context) {
@@ -82,6 +90,9 @@ class ShopLayers extends StatelessWidget {
       // The stall is 96 px of the strip's 150: about two thirds of its width.
       final k = width / 150;
       final big = _bigKeepers.contains(shopId);
+      // The stall's own pixel, and the keeper's.
+      final ku = k * stallScale;
+      final kk = k * keeperScale;
       return ClipRRect(
         borderRadius: BorderRadius.circular(4),
         child: SizedBox(
@@ -99,23 +110,24 @@ class ShopLayers extends StatelessWidget {
               ),
             ),
             Positioned(
-              left: (width - 96 * k) / 2,
+              left: (width - 96 * ku) / 2,
               bottom: height * 0.06,
-              width: 96 * k,
-              height: 64 * k,
+              width: 96 * ku,
+              height: 64 * ku,
               child: Stack(clipBehavior: Clip.none, children: [
                 // The keeper: a 64 px figure (top at stall y 2, clipped to the
-                // stall's box at y 60) or a 48 px NPC (feet at stall y 52).
+                // stall's box at y 60) or a 48 px NPC (feet at stall y 52);
+                // scaled about its feet, so the counter still hides the legs.
                 Positioned.fill(
                   child: ClipRect(
                     clipper: _KeeperClip(
-                        big ? Rect.fromLTWH(0, 0, 96 * k, 60 * k) : null),
+                        big ? Rect.fromLTWH(0, 0, 96 * ku, 60 * ku) : null),
                     child: Stack(clipBehavior: Clip.none, children: [
                       Positioned(
-                        left: (48 - 32) * k,
-                        top: (big ? 2 : 52 - 56) * k,
-                        width: 64 * k,
-                        height: 64 * k,
+                        left: 48 * ku - 32 * kk,
+                        top: big ? 66 * ku - 64 * kk : 52 * ku - 56 * kk,
+                        width: 64 * kk,
+                        height: 64 * kk,
                         child: Image.asset(shopKeeperFrames[shopId]!,
                             fit: BoxFit.fill,
                             filterQuality: FilterQuality.none,
