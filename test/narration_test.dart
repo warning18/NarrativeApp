@@ -19,6 +19,8 @@ import 'package:narrative_data_app/data/city_districts.dart'
 import 'package:narrative_data_app/data/district_influence.dart';
 import 'package:narrative_data_app/data/map_themes.dart';
 import 'package:narrative_data_app/data/narration_tokens.dart';
+import 'package:narrative_data_app/data/politics_events.dart'
+    show intrigueStageFlag;
 import 'package:narrative_data_app/data/sub_node_engine.dart';
 import 'package:narrative_data_app/models/story_node.dart';
 import 'package:narrative_data_app/providers/player_session_provider.dart';
@@ -443,6 +445,14 @@ void main() {
         for (final choice in (node as Map)['choices'] as List)
           ...((choice as Map)['flagsToAdd'] as List? ?? const [])
               .map((f) => f.toString()),
+      // Set by a story choice's politics: an intrigue's stage n sets
+      // `intrigue_<id>_stage_<n>` (politics_events.dart), which the intrigue
+      // hints call back on (P1c).
+      for (final node in dag.values)
+        for (final choice in (node as Map)['choices'] as List)
+          if (((choice as Map)['politics'] as Map?)?['intrigue']
+              case {'id': final Object id, 'stage': final num stage})
+            intrigueStageFlag(id.toString(), stage.toInt()),
       for (final zone in zones.values)
         if ((zone as Map)['rewardFlag'] != null) zone['rewardFlag'].toString(),
       // Set when a camp house is built (see buildHouse).
