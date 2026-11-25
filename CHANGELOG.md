@@ -8,6 +8,10 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [2.10.7+1089]
+
+- **Foes: Art's dark icons.** The 64 foe icons are now 32 px, muted and lit by faction (cold blue for the Dominion, angels and giants; ember gold for the Crows, Compact, Vigil, demons and beasts; sickly green for the Mire and the undead; void violet for the Penitents and the void). They show in the fights' portraits and the fight sheet (whose header icon is drawn at 64). Two (the hollow reflection and the tear spawn) are placeholders until Art redraws them. No rule or number changes.
+
 ## [2.10.5+1087]
 
 - **Tower and items: Art's new icons (waves 2 and 3).** 137 pictures replace the old 16 px item icons with 32 px colour icons, so every item has its own: the potions and antidote, the fate coin and the boss trophy (now their own pictures), the five weapon types by tier (five looks, shared by neighbouring tiers), the other weapons, every armour piece, the relics, the spellbooks, materials, trophies, charms and tomes. The Tower's stall shows the salve and the potion bundle, and the marks screen shows the marks icon (an ash-grey paper scrap) on the balance and every price. No rule or number changes.
