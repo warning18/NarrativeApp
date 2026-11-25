@@ -11,6 +11,7 @@ import '../theme/stitched_ink.dart';
 import '../tutorial/guide_tour.dart';
 import '../tutorial/tutorial_topics.dart';
 import '../screens/tower/ink/ink_palette.dart';
+import '../data/stat_pick_text.dart' show StatPickPreview;
 import '../widgets/fight_sprites.dart' show heroWalkName;
 import '../widgets/level_up_art.dart';
 import '../widgets/level_up_stats.dart';
@@ -40,9 +41,13 @@ class _LevelUpScreenState extends ConsumerState<LevelUpScreen> {
   /// What the Take button does while an offer is picked (null: nothing yet).
   final ValueNotifier<VoidCallback?> _take = ValueNotifier(null);
 
+  /// What the picked offer changes, for the stats under the panel.
+  final ValueNotifier<StatPickPreview?> _preview = ValueNotifier(null);
+
   @override
   void dispose() {
     _take.dispose();
+    _preview.dispose();
     super.dispose();
   }
 
@@ -145,14 +150,17 @@ class _LevelUpScreenState extends ConsumerState<LevelUpScreen> {
                   ),
                   const SizedBox(height: 12),
                   StatPickPicker(
-                      art: true, tower: widget.tower, takeSlot: _take),
+                      art: true,
+                      tower: widget.tower,
+                      takeSlot: _take,
+                      previewSlot: _preview),
                 ],
               ),
             ),
             const SizedBox(height: 12),
-            const Padding(
-              padding: EdgeInsets.symmetric(horizontal: 16),
-              child: LevelUpStats(tutorialTargets: true),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16),
+              child: LevelUpStats(tutorialTargets: true, preview: _preview),
             ),
             const SizedBox(height: 16),
           ],

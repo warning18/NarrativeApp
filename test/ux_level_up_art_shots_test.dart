@@ -18,6 +18,8 @@ import 'package:narrative_data_app/data/training.dart';
 import 'package:narrative_data_app/providers/tower_level_up_session.dart';
 import 'package:narrative_data_app/providers/training_provider.dart';
 import 'package:narrative_data_app/screens/level_up_screen.dart';
+import 'package:narrative_data_app/screens/tower/tower_look.dart'
+    show TowerNight;
 import 'package:narrative_data_app/widgets/level_up_art.dart';
 
 import 'support/fonts.dart';
@@ -32,7 +34,7 @@ void main() {
         (tester) async {
       await tester.runAsync(loadAppFonts);
       SharedPreferences.setMockInitialValues({});
-      tester.view.physicalSize = const Size(412, 1500);
+      tester.view.physicalSize = const Size(412, 1250);
       tester.view.devicePixelRatio = 1;
       addTearDown(tester.view.reset);
       final data = towerDataFromAssets();
@@ -60,8 +62,9 @@ void main() {
           debugShowCheckedModeBanner: false,
           home: RepaintBoundary(
               key: key,
-              child: levelUp.wrap(const LevelUpScreen(
-                  doneLabelKey: 'tower_continue', tower: true))),
+              child: TowerNight(
+                  child: levelUp.wrap(const LevelUpScreen(
+                      doneLabelKey: 'tower_continue', tower: true)))),
         ),
       ));
       for (var i = 0; i < 10; i++) {
@@ -95,7 +98,7 @@ void main() {
             (tester) async {
           await tester.runAsync(loadAppFonts);
           SharedPreferences.setMockInitialValues({});
-          tester.view.physicalSize = Size(w, 1500);
+          tester.view.physicalSize = Size(w, 1250);
           tester.view.devicePixelRatio = 1;
           addTearDown(tester.view.reset);
           levelUpStatsView.value = view;
@@ -118,8 +121,9 @@ void main() {
               debugShowCheckedModeBanner: false,
               home: RepaintBoundary(
                   key: key,
-                  child: levelUp.wrap(const LevelUpScreen(
-                      doneLabelKey: 'tower_continue', tower: true))),
+                  child: TowerNight(
+                      child: levelUp.wrap(const LevelUpScreen(
+                          doneLabelKey: 'tower_continue', tower: true)))),
             ),
           ));
           Future<void> settle() async {

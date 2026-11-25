@@ -362,7 +362,7 @@ class _Radar extends StatelessWidget {
     return LayoutBuilder(
       builder: (context, c) {
         final side = math.min(c.maxWidth, 330.0);
-        final r = side / 2 - 46;
+        final r = side / 2 - 50;
         final centre = Offset(side / 2, side / 2 + 4);
         Offset corner(int i, double radius) {
           final a = -math.pi / 2 + i * 2 * math.pi / 8;
@@ -373,7 +373,7 @@ class _Radar extends StatelessWidget {
           child: SizedBox(
             key: const Key('stat_pick_radar'),
             width: side,
-            height: side,
+            height: side + 40,
             child: Stack(
               children: [
                 Positioned.fill(

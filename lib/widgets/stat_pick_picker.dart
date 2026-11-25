@@ -45,6 +45,7 @@ class StatPickPicker extends ConsumerStatefulWidget {
     this.art = false,
     this.tower = false,
     this.takeSlot,
+    this.previewSlot,
   });
 
   /// The Level Up screen's look (v2.10.19): paper cards with Art's symbols
@@ -61,6 +62,10 @@ class StatPickPicker extends ConsumerStatefulWidget {
   /// when none is). The Level Up screen shows its button at the foot of the
   /// screen, out of the scroll; without it the button sits under the stats.
   final ValueNotifier<VoidCallback?>? takeSlot;
+
+  /// With [art]: what the picked offer changes (null when none is), for the
+  /// screen's stats under the picker.
+  final ValueNotifier<StatPickPreview?>? previewSlot;
 
   @override
   ConsumerState<StatPickPicker> createState() => _StatPickPickerState();
@@ -258,6 +263,24 @@ class _StatPickPickerState extends ConsumerState<StatPickPicker> {
     final before = {
       for (final k in abilityRadarOrder) k: trainingStatNow(session, k),
     };
+    // What the chosen offer changes, told to the screen after the frame.
+    final slot = widget.previewSlot;
+    if (slot != null) {
+      final StatPickPreview? now = chosen == null
+          ? null
+          : statPickPreviewOf(session, chosen.gains,
+              tower: widget.tower,
+              items: items,
+              itemSets: itemSets,
+              signs: signs);
+      String sig(StatPickPreview? p) =>
+          p == null ? '' : p.rows.map((r) => '${r.labelKey}${r.after}').join();
+      if (sig(now) != sig(slot.value)) {
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+          if (mounted) slot.value = now;
+        });
+      }
+    }
     final after = chosen == null
         ? null
         : {
