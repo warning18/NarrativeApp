@@ -8,6 +8,10 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [2.8.5+1074]
+
+- **Tower: the cleric holds against wardens and bosses.** With every unlock the cleric reached the top in 13% of bot climbs, against 23 to 29% for the other callings, and 43% of clerics who reached floor 30 fell there: its foes' scale (x1.28, set when the cleric healed through every fight) outlasted its heals in the long warden and boss fights. On the wardens' and bosses' floors (5, 10, 15, 20, 25, 30) its foes are now x1.08; ordinary floors stay x1.28. Bot, every unlock: cleric top 13 to 24%, its floor-30 loss 43 to 20%. The other callings and the climb with no unlocks are unchanged.
+
 ## [2.8.4+1073]
 
 - **Tower: leaving a fight counts as losing it.** Closing the app during a Tower fight used to bring the floor back at its health before the fight, undoing a death. A fight is now marked as begun at its first round; a run reopened with a fight begun and never finished ends as a defeat on that floor, its marks banked, and the end screen says "You left the fight: it counts as lost."
