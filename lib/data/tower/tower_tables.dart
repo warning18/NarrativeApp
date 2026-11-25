@@ -31,13 +31,30 @@ const Map<String, double> towerProfessionScale = {
   'rogue': .98,
 };
 
-/// The foes' scale for [professionId] (1 for the others), with the
-/// Tower's own [towerFoeScale], [towerEventsFoeScale] in a run playing
-/// the floor events ([events] 1 or more, TowerRun.events), or
+/// The Tower's foes for a profession on the warden and boss floors (5,
+/// 10, 15, 20, 25, 30), in place of its [towerProfessionScale] there
+/// (docs/simulation/tower-cleric-retune.md). The cleric's 1.28 was set
+/// when it healed itself through every fight (v1.848); it still wins the
+/// ordinary floors as well as the others, but a warden's or boss's long
+/// fight at 1.28 outlasted its heals: 43% of the clerics reaching floor 30
+/// lost there (10 to 24% for the others) and its top with every unlock was
+/// 13.3% (24.0 to 28.9% for the others). At 1.08 on those floors, 23.8%
+/// (seeds 1 to 2000; 22.8% over 4,000 seeds, the mage 23.1%).
+const Map<String, double> towerProfessionPeakScale = {
+  'cleric': 1.08,
+};
+
+/// The foes' scale for [professionId] (1 for the others; on a warden's or
+/// boss's floor, [peak], its [towerProfessionPeakScale] if it has one),
+/// with the Tower's own [towerFoeScale], [towerEventsFoeScale] in a run
+/// playing the floor events ([events] 1 or more, TowerRun.events), or
 /// [towerPeacefulFoeScale] in one playing the floors without a fight too
 /// ([towerPeacefulEvents] or more).
-double towerProfessionScaleOf(String professionId, {int events = 0}) =>
-    (towerProfessionScale[professionId] ?? 1.0) *
+double towerProfessionScaleOf(String professionId,
+        {int events = 0, bool peak = false}) =>
+    ((peak ? towerProfessionPeakScale[professionId] : null) ??
+        towerProfessionScale[professionId] ??
+        1.0) *
     (events >= towerPeacefulEvents
         ? towerPeacefulFoeScale
         : events >= 1

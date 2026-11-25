@@ -69,8 +69,12 @@ void main() {
   // 161 / 333 / 11240.
   // The floor-15 oath (#1153, towerPityOathFloor): these were
   // 49 / 207 / 9088 and 125 / 302 / 10775.
+  // The cleric's peak scale (towerProfessionPeakScale 1.08 on the
+  // wardens' and bosses' floors, was 1.28; docs/simulation/
+  // tower-cleric-retune.md; the cleric is an unlock, so no unlocks is
+  // unchanged): all unlocks were 128 / 305 / 10799.
   const none = (top: 49, floor20: 208, floorSum: 9111);
-  const all = (top: 128, floor20: 305, floorSum: 10799);
+  const all = (top: 144, floor20: 314, floorSum: 10984);
 
   test('the live Tower, no unlocks, is the pinned curve', () {
     final m = _measure(const TowerProgress());

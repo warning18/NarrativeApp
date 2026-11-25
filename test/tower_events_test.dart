@@ -172,6 +172,18 @@ void main() {
         towerProfessionScale['warrior']! * towerFoeScale);
     expect(towerProfessionScaleOf('warrior', events: 1),
         towerProfessionScale['warrior']! * towerEventsFoeScale);
+    // The cleric's peak scale on the wardens' and bosses' floors only
+    // (docs/simulation/tower-cleric-retune.md); the others have none.
+    for (final floor in on) {
+      final scale = floor.kind == TowerFloorKind.fight
+          ? towerProfessionScale['cleric']!
+          : towerProfessionPeakScale['cleric']!;
+      expect(floor.extraFor('cleric'),
+          closeTo(floor.extra * scale * towerEventsFoeScale, 1e-9));
+      expect(floor.extraFor('warrior'),
+          floor.extra * towerProfessionScaleOf('warrior', events: 1));
+    }
+    expect(towerProfessionPeakScale.keys, ['cleric']);
     // The app's floor follows the run's events.
     expect(towerFloorOf(at(7, 20), data).extra, on[19].extra);
     expect(towerFloorOf(at(7, 20, events: 0), data).extra, off[19].extra);
