@@ -42,3 +42,7 @@ The user finds the icons too dark. Four icons (antidote, dagger, key, helm) in t
 ## Manga ink icon test (25 Nov 2026, 18 generations)
 
 User: review the icons from scratch in the new ink manga style. Text-only `create_image_pixflux`, 32x32, 6 icons x 3 variants (`art/pixellab-manga/gen.py`), raw in `art/pixellab-manga/raw32/`, token pass (ink, paper, one red, silhouette edge forced to ink, regions under 2 px merged) in `art/pixellab-manga/final.py`, files `art/pixellab-manga/final/<A|B|C>_<icon>32.png`, sheet `docs/art/boards/icons-manga-test.png`. A = clean pen line, no tone. B = brush line, solid black shadows. C = pen line plus one flat tone area. The manga rules go in style-brut.md after the user's pick.
+
+## Chibi icon test (25 Nov 2026, 12 generations)
+
+User: the manga test is too simple, give them a chibi style. `art/pixellab-manga/gen_chibi.py`: 6 icons x 2 variants, text only, 32 px. V2 chibi colour forces the palette of the Starter_basic_hero sprite and came out well. The generated V1 "chibi ink" came out as tiny characters (the word chibi drew people), so V1 is derived in code from the V2 shapes (`inkify.py`: dark to ink, light to paper, accents to the red token, ink contour, no region under 2 px), 0 extra generations. Files `art/pixellab-manga/chibi_final/`, sheet `docs/art/boards/icons-chibi-test.png`.
