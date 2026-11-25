@@ -85,8 +85,13 @@ void main() {
   // with no skill); no perk worn. On top of v2.9.4 (race trim, Pyre) these
   // were 51 / 205 / 9083 and 106 / 294 / 10548; before the race trim,
   // 59 / 209 / 9208 and 140 / 317 / 11037.
-  const none = (top: 59, floor20: 209, floorSum: 9208);
-  const all = (top: 128, floor20: 309, floorSum: 10812);
+  // Distinct cards on a table (the user's "3 times the same reward"): a
+  // clan's rank-up names the next best skill on the die when the best is
+  // on the table already; the bot takes the clan card of the highest
+  // standing, now and then a lesser rank-up: these were 59 / 209 / 9208
+  // and 128 / 309 / 10812.
+  const none = (top: 53, floor20: 209, floorSum: 9174);
+  const all = (top: 121, floor20: 305, floorSum: 10771);
 
   test('the live Tower, no unlocks, is the pinned curve', () {
     final m = _measure(const TowerProgress());
