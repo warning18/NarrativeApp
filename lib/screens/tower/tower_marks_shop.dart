@@ -11,6 +11,7 @@ import '../../l10n/app_strings.dart';
 import '../../theme/icon_sizes.dart';
 import '../../theme/stitched_ink.dart';
 import 'ink/ink_palette.dart';
+import 'tower_heat_view.dart' show towerSeamRadius;
 import 'tower_providers.dart';
 
 /// Unlocks | Perks | Looks.
@@ -40,6 +41,7 @@ class TowerMarksTabs extends ConsumerWidget {
                 height: 40,
                 alignment: Alignment.center,
                 decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(towerSeamRadius),
                     color: i == tab ? inkPaper : inkBlack,
                     border: Border.all(color: inkPaper, width: 1.2)),
                 child: Text(tr(ref, keys[i]),
@@ -107,6 +109,7 @@ class _ShopRow extends StatelessWidget {
           child: Container(
             padding: const EdgeInsets.all(10),
             decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(towerSeamRadius),
                 color: inkBlack,
                 border: Border.all(
                     color: on ? inkPaper : inkGrey, width: on ? 2.5 : 1)),
@@ -138,8 +141,9 @@ class _ShopRow extends StatelessWidget {
 
 Widget _status(BuildContext context, String text) => Container(
       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
-      decoration:
-          BoxDecoration(border: Border.all(color: inkPaper, width: 1.2)),
+      decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(towerSeamRadius),
+          border: Border.all(color: inkPaper, width: 1.2)),
       child: Text(text,
           style: Theme.of(context)
               .textTheme
@@ -172,8 +176,9 @@ class TowerPerksTab extends ConsumerWidget {
               width: 38,
               height: 38,
               alignment: Alignment.center,
-              decoration:
-                  BoxDecoration(border: Border.all(color: inkPaper, width: 1)),
+              decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(towerSeamRadius),
+                  border: Border.all(color: inkPaper, width: 1)),
               child: Text(name.substring(0, 1),
                   style: theme.textTheme.titleMedium?.copyWith(
                       fontFamily: InkFonts.display, color: inkPaper)),
@@ -259,8 +264,9 @@ class TowerDoorPerks extends ConsumerWidget {
       context: context,
       builder: (ctx) => SimpleDialog(
         backgroundColor: inkBlack,
-        shape: const RoundedRectangleBorder(
-            side: BorderSide(color: inkPaper, width: 1.2)),
+        shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(towerSeamRadius),
+            side: const BorderSide(color: inkPaper, width: 1.2)),
         children: [
           for (final id in progress.perks)
             SimpleDialogOption(
@@ -319,6 +325,7 @@ class TowerDoorPerks extends ConsumerWidget {
                 alignment: Alignment.centerLeft,
                 padding: const EdgeInsets.symmetric(horizontal: 10),
                 decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(towerSeamRadius),
                     color: inkBlack,
                     border: Border.all(
                         color: i < worn.length ? inkPaper : inkGrey,
