@@ -5,6 +5,11 @@ part of '../fight_screen.dart';
 /// their chibi in it and their nameplates (FightBlock's ink plate) laid over
 /// the top. The cards are the usual slots with their taps and keys; only
 /// their place changed. Used instead of [_buildSlots] under the Tower.
+/// PICTURE ONLY: stand-in frames for the boss seen from the front and the hero
+/// from behind (null in the game).
+final ValueNotifier<({ui.Image boss, ui.Image hero})?> towerBossFacingMock =
+    ValueNotifier(null);
+
 /// How one fighter panel is filled: [wide] today's (the plate beside the
 /// figure), [slim] the plate only, [stacked] the plate over a tall figure.
 enum _PanelMode { wide, slim, stacked }
@@ -54,6 +59,7 @@ extension _TowerPanels on _FightScreenState {
       double figBottom = 22,
       bool mirror = false,
       double plateInset = 0,
+      double plateRight = 0,
       List<Offset> Function(double w, double h)? shape,
     }) =>
         LayoutBuilder(builder: (context, box) {
@@ -131,6 +137,7 @@ extension _TowerPanels on _FightScreenState {
                       (!foes ? plateInset : 0) +
                       (wide && !foes && figures && cards.length == 1 ? 96 : 0),
                   right: 12 +
+                      plateRight +
                       (foes ? plateInset : 0) +
                       (wide && foes && figures && cards.length == 1 ? 96 : 0),
                   top: foes ? 18 : 10,
@@ -187,6 +194,60 @@ extension _TowerPanels on _FightScreenState {
               child: panel(total - fh - _panelGap, false, partyCards)),
         ]);
       case TowerPanelLayout.boss:
+        final mock = towerBossFacingMock.value;
+        if (mock != null) {
+          // PICTURE ONLY: the boss facing the viewer (south) standing big in its
+          // panel, the hero from behind (north) in the strip under it, his
+          // head and shoulders over the seam. Stand-in frames until Art's.
+          const stripH = 70.0;
+          final bh = total - stripH - _panelGap;
+          Widget sprite(ui.Image image, double size) => IgnorePointer(
+                child: ColorFiltered(
+                  colorFilter: const ColorFilter.matrix(<double>[
+                    0.55, 0.55, 0.55, 0, 0, //
+                    0.55, 0.55, 0.55, 0, 4,
+                    0.57, 0.57, 0.57, 0, 8,
+                    0, 0, 0, 1, 0,
+                  ]),
+                  child: RawImage(
+                      image: image,
+                      width: size,
+                      height: size,
+                      fit: BoxFit.contain,
+                      filterQuality: FilterQuality.none),
+                ),
+              );
+          return SizedBox(
+            height: total,
+            child: Stack(clipBehavior: Clip.none, children: [
+              Column(children: [
+                SizedBox(
+                    height: bh,
+                    child: panel(bh, true, foeCards, mode: _PanelMode.slim)),
+                const SizedBox(height: _panelGap),
+                SizedBox(
+                    height: stripH,
+                    child: LayoutBuilder(
+                        builder: (context, box) => panel(
+                            stripH, false, partyCards,
+                            mode: _PanelMode.slim,
+                            plateRight: box.maxWidth / 2 + 24))),
+              ]),
+              Positioned(
+                  left: 0,
+                  right: 0,
+                  top: 50,
+                  height: 150,
+                  child: Center(child: sprite(mock.boss, 150))),
+              Positioned(
+                  left: 0,
+                  right: 0,
+                  top: bh + _panelGap + stripH - 4 - 100,
+                  height: 100,
+                  child: Center(child: sprite(mock.hero, 100))),
+            ]),
+          );
+        }
         // The foe's panel one and a half times taller, "You" slim under it.
         final fh = foeH * 1.5;
         return Column(children: [
