@@ -223,6 +223,79 @@ void main() {
     });
   });
 
+  group('the floor-15 oath (#1153)', () {
+    Iterable<TowerReward> oathsOf(TowerRun run) =>
+        run.offer.where((r) => r.kind == TowerRewardKind.clanOath);
+    // Mire at 4, the others at 0: no oath due by standing.
+    TowerRun unsworn(int floor, {int seed = 17, List<String>? pool}) =>
+        start(seed, pool: pool)
+            .copyWith(floor: floor, taken: {1: gift('mire'), 2: gift('mire')});
+
+    test('below floor 15, standing under 6: no oath', () {
+      for (var seed = 1; seed <= 20; seed++) {
+        final run = unsworn(14, seed: seed);
+        expect(towerOathDue(run, data), isEmpty);
+        expect(oathsOf(won(run)), isEmpty, reason: 'seed $seed');
+      }
+    });
+
+    test('from floor 15: the highest-standing clan, first, every floor', () {
+      // Floor 15 is a boon floor: the boon only.
+      expect(towerBoonFloors, contains(towerPityOathFloor));
+      final boon = won(unsworn(15));
+      expect(oathsOf(boon), isEmpty);
+      expect(boon.offer.every((r) => r.clan.isEmpty), isTrue);
+      for (var floor = towerPityOathFloor; floor < towerTop; floor++) {
+        if (towerBoonFloors.contains(floor)) continue;
+        for (var seed = 1; seed <= 5; seed++) {
+          final run = won(unsworn(floor, seed: seed));
+          expect(run.offer.first,
+              const TowerReward(TowerRewardKind.clanOath, id: 'mire'),
+              reason: 'floor $floor seed $seed');
+          expect(oathsOf(run), hasLength(1));
+        }
+      }
+      // Declined, it comes back on the next floor won.
+      var run = towerPick(won(unsworn(16)), data, null);
+      run = won(run);
+      expect(run.offer.first,
+          const TowerReward(TowerRewardKind.clanOath, id: 'mire'));
+    });
+
+    test('a sworn run is offered none', () {
+      var run = won(unsworn(16));
+      run = towerPick(run, data, 0);
+      expect(run.clanIds, ['mire']);
+      for (var f = 0; f < 6 && run.status == TowerStatus.climbing; f++) {
+        run = won(run);
+        expect(oathsOf(run), isEmpty);
+        run = towerPick(run, data, null);
+      }
+    });
+
+    test('a tie goes to the first clan of the run, stably', () {
+      expect(towerPityOathClan(const [], const {}), isNull);
+      expect(towerPityOathClan(['a', 'b', 'c'], const {}), 'a');
+      expect(towerPityOathClan(['a', 'b', 'c'], {'b': 3, 'c': 3}), 'b');
+      expect(towerPityOathClan(['c', 'b', 'a'], {'b': 3, 'c': 3}), 'c');
+      // All at 0: the first of the run's pool (kept in towerClans' order,
+      // whatever order it was given in), on every seed.
+      for (final pool in [
+        towerStartClanPool,
+        towerStartClanPool.reversed.toList(),
+      ]) {
+        for (var seed = 1; seed <= 5; seed++) {
+          final run = won(start(seed, pool: pool).copyWith(floor: 16));
+          expect(
+              run.offer.first,
+              TowerReward(TowerRewardKind.clanOath,
+                  id: towerStartClanPool.first),
+              reason: 'seed $seed');
+        }
+      }
+    });
+  });
+
   group('old saves', () {
     test('a run halfway up, saved before: standing 0, it climbs on', () {
       final run = TowerRun.fromJson({
@@ -318,7 +391,8 @@ void main() {
           gifts += run.taken.values.where((r) => r.clan.isNotEmpty).length;
           if (run.clanIds.isNotEmpty) {
             sworn++;
-            // Sworn only once its clan stood at the oath's step.
+            // Sworn only once its clan stood at the oath's step, or from
+            // the floor-15 oath on, its highest-standing clan's.
             final f = run.taken.entries
                 .firstWhere((e) => e.value.kind == TowerRewardKind.clanOath)
                 .key;
@@ -326,8 +400,15 @@ void main() {
               for (final k in run.taken.keys.toList()..sort())
                 if (k < f) run.taken[k]!,
             ], data.clans);
-            expect(before[run.clanIds.single], towerOathStep,
-                reason: 'seed $seed');
+            final pool = {for (final c in run.clanPool) c: before[c] ?? 0};
+            if (f >= towerPityOathFloor &&
+                !pool.values.any((v) => v >= towerOathStep)) {
+              expect(run.clanIds.single, towerPityOathClan(run.clanPool, pool),
+                  reason: 'seed $seed');
+            } else {
+              expect(before[run.clanIds.single], towerOathStep,
+                  reason: 'seed $seed');
+            }
           }
         }
       }

@@ -170,7 +170,8 @@ String? towerClanDieOf(String clanId, Map<String, dynamic> dice) {
 /// gift ([towerClanGiftFor]); and, whenever [oathOpen] (no oath sworn yet:
 /// one a run, the user's call), the oath of each clan of [clanPool] at
 /// [towerOathStep] in [standing] (a card of its own, first, beside the
-/// gifts or alone). Often nothing: the floor's spoils ([towerSpoilsFor])
+/// gifts or alone); from [towerPityOathFloor], with none of those due, the
+/// oath of the highest-standing clan ([towerPityOathClan]). Often nothing: the floor's spoils ([towerSpoilsFor])
 /// are its reward.
 List<TowerReward> towerOfferFor({
   required int seed,
@@ -270,6 +271,16 @@ List<TowerReward> towerOfferFor({
         if ((standing[clan] ?? 0) >= towerOathStep)
           TowerReward(TowerRewardKind.clanOath, id: clan),
   ];
+  // From [towerPityOathFloor] (#1153, the user's call): a climb with no
+  // oath due nor sworn is offered the oath of its highest-standing clan.
+  if (oaths.isEmpty &&
+      oathOpen &&
+      hero.clanIds.isEmpty &&
+      floor >= towerPityOathFloor) {
+    if (towerPityOathClan(clanPool, standing) case final clan?) {
+      oaths.add(TowerReward(TowerRewardKind.clanOath, id: clan));
+    }
+  }
   if (clanPool.isEmpty) return oaths;
   // The clans' offer, on the oath's own stream (where the oath came).
   final oathRandom = towerRandom(seed, floor, TowerStream.oath);
@@ -297,6 +308,19 @@ List<TowerReward> towerOfferFor({
     });
   }
   return [...oaths, ...cards];
+}
+
+/// The clan whose oath a climb with none due is offered from
+/// [towerPityOathFloor]: the one of [clanPool] with the highest [standing],
+/// the first in [clanPool]'s order on a tie; null when the pool is empty.
+String? towerPityOathClan(List<String> clanPool, Map<String, int> standing) {
+  String? best;
+  for (final clan in clanPool) {
+    if (best == null || (standing[clan] ?? 0) > (standing[best] ?? 0)) {
+      best = clan;
+    }
+  }
+  return best;
 }
 
 /// The skill [clanId] gives [hero] at [standing] (towerClanSkillsFor: the
