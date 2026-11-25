@@ -139,7 +139,8 @@ import 'tower/ink/ink_palette.dart' show inkGrey, inkRed, inkSlate;
 import '../widgets/dice_throw.dart';
 import 'tower/ink/ink_dice.dart' show inkDieSkin;
 import 'tower/tower_backdrop.dart' show towerFightScene;
-import 'tower/ink/ink_kit.dart' show InkSlantPanel, InkSplashPainter;
+import 'tower/ink/ink_kit.dart'
+    show InkSlantPanel, InkSplashPainter, TowerPanelLayout, towerPanelLayout;
 import 'tower/ink/ink_palette.dart' show inkBlack, inkDeep, inkPaper;
 import 'tower/tower_look.dart' show TowerPanelStyle;
 
@@ -235,7 +236,13 @@ class FightScreen extends ConsumerStatefulWidget {
     this.random,
     this.landLayers,
     this.onRound,
+    this.rival = false,
   });
+
+  /// A rival's fight (the Tower's rival floor): the two fighters stand in two
+  /// tall panels side by side. False (every other fight) keeps the usual
+  /// layout.
+  final bool rival;
 
   /// Told the number of each round as it starts (1 when the battle begins):
   /// the Tower's rival counts the rounds a fight took. Null (every other
