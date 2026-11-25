@@ -1,0 +1,36 @@
+{
+  "group_id": "79eeba43-88ab-4752-817d-5e19ad276ac3",
+  "states": [
+    {
+      "character": {
+        "id": "210d0beb-d191-49bc-a64d-5d4e3139abb7",
+        "name": "The Ash Confessor -",
+        "prompt": "Add a white mask, dark toge \nIt should be a vilain from a dark church ",
+        "size": {
+          "width": 48,
+          "height": 48
+        },
+        "template_id": "mannequin",
+        "directions": 8,
+        "view": "low top-down",
+        "created_at": "2026-10-16T15:26:36.150048+00:00"
+      },
+      "folder": "The_Ash_Confessor_-",
+      "frames": {
+        "rotations": {
+          "south": "The_Ash_Confessor_-/rotations/south.png",
+          "south-east": "The_Ash_Confessor_-/rotations/south-east.png",
+          "east": "The_Ash_Confessor_-/rotations/east.png",
+          "north-east": "The_Ash_Confessor_-/rotations/north-east.png",
+          "north": "The_Ash_Confessor_-/rotations/north.png",
+          "north-west": "The_Ash_Confessor_-/rotations/north-west.png",
+          "west": "The_Ash_Confessor_-/rotations/west.png",
+          "south-west": "The_Ash_Confessor_-/rotations/south-west.png"
+        },
+        "animations": {}
+      }
+    }
+  ],
+  "export_version": "3.1",
+  "export_date": "2026-11-25T20:32:24.338701"
+}

@@ -1,0 +1,36 @@
+{
+  "group_id": "9738e8b9-8334-40a9-a6f5-92dfeea22b30",
+  "states": [
+    {
+      "character": {
+        "id": "10ca7941-1e96-453f-9e75-5a8243297ba7",
+        "name": "Idle",
+        "prompt": "City Wreck scavenger ",
+        "size": {
+          "width": 48,
+          "height": 48
+        },
+        "template_id": "mannequin",
+        "directions": 8,
+        "view": "side",
+        "created_at": "2026-10-27T13:15:39.139964+00:00"
+      },
+      "folder": "Idle",
+      "frames": {
+        "rotations": {
+          "south": "Idle/rotations/south.png",
+          "south-east": "Idle/rotations/south-east.png",
+          "east": "Idle/rotations/east.png",
+          "north-east": "Idle/rotations/north-east.png",
+          "north": "Idle/rotations/north.png",
+          "north-west": "Idle/rotations/north-west.png",
+          "west": "Idle/rotations/west.png",
+          "south-west": "Idle/rotations/south-west.png"
+        },
+        "animations": {}
+      }
+    }
+  ],
+  "export_version": "3.1",
+  "export_date": "2026-11-25T20:32:25.162884"
+}
