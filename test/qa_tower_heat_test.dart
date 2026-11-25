@@ -47,11 +47,13 @@ void main() {
       for (final h in heats) {
         final at = floors(seed, h);
         for (var f = 1; f <= towerTop; f++) {
-          final scale = h == 0
-              ? 1.0
-              : h == 5 && f >= 11
-                  ? 1.12
-                  : 1.05;
+          // Pyre's x1.04 on floors 11 to 30 from Heat 4, on top.
+          final scale = (h == 0
+                  ? 1.0
+                  : h == 5 && f >= 11
+                      ? 1.12
+                      : 1.05) *
+              (h >= 4 && f >= 11 ? 1.04 : 1.0);
           expect(at[f - 1].extra, closeTo(plain[f - 1].extra * scale, 1e-9),
               reason: 'seed $seed Heat $h floor $f');
         }

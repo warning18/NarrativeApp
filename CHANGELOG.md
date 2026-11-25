@@ -11,7 +11,7 @@ isn't reconstructable from git history alone.
 ## [2.9.4+1080]
 
 - **Tower: the peoples level with every unlock.** With every unlock the dwarf and the elf reached the top in about 28% of bot climbs, against 20 to 24% for the others: the unlocks' extra health (3% each, x1.30 with all ten) kept the sturdy dwarf and the dodging elf standing on floors 21 to 30. The dwarf now gains 1.5% an unlock and the elf 1%; the others keep 3%. Bot, every unlock: dwarf 27.5 to 23.6%, elf 28.9 to 23.5%, the spread 8.7 to 4.1 points, the overall top 24.6 to 22.8%. With no unlocks nothing changes.
-- **Tower Heat: Pyre's two floors give nothing.** At Heat 4 and above, floors 13 and 23 offer no card at all (no boon, no clan offer), the user's option (a).
+- **Tower Heat: Pyre's two floors give nothing, and its upper Tower hits harder.** At Heat 4 and above, floors 13 and 23 offer no card at all (no boon, no clan offer), the user's option (a), and the foes of floors 11 to 30 are x1.04 stronger on top of the other curses. Bot, every unlock: Heat 3 10.8%, Heat 4 7.4%, Heat 5 4.6%.
 
 ## [2.9.1+1077]
 

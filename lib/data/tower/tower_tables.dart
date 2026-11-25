@@ -931,7 +931,8 @@ const int towerHeatSmoke = 2;
 /// the ordinary floors from [towerHeatUpperFloor] to 29.
 const int towerHeatFlame = 3;
 
-/// Pyre: the floors of [towerHeatCutBoons] give nothing (no boon, no
+/// Pyre: the foes [towerHeatPyreFoeScale] from [towerHeatUpperFloor] up,
+/// the floors of [towerHeatCutBoons] give nothing (no boon, no
 /// clan's offer in its place), the late oath from
 /// [towerHeatPityOathFloor] (was towerPityOathFloor).
 const int towerHeatPyre = 4;
@@ -952,6 +953,13 @@ const double towerHeatFoeScale = 1.05;
 /// over its 3 to 7% band); 1.12, with Flame's [towerHeatRecoveryShare],
 /// 6.8% (1.14 gave 6.2% and floor 26 over 13%).
 const double towerHeatAshFoeScale = 1.12;
+
+/// Pyre's factor on the foes of floors [towerHeatUpperFloor] to 30, on top
+/// of Embers' (and of Ash's at Heat 5): the user's power lever beside
+/// option (a). Every unlock, seeds 1 to 2000: 1.03 cost 2.6 points of top
+/// (Heat 3 10.8% to 8.3%), 1.04 3.5 (7.35%; 4.2 on seeds 10001 to 12000),
+/// with Ash at 4.6%.
+const double towerHeatPyreFoeScale = 1.04;
 
 /// The first floor of the upper Tower, where Flame's Elites and Ash's
 /// factor begin (floors 1 to 10 stay gentle).
@@ -983,13 +991,17 @@ const int towerHeatRivalStanding = 2;
 /// [towerHeatMarksOf]).
 const double towerHeatMarks = .25;
 
-/// The factor on floor [floor]'s foes at [heat] (1 at heat 0).
+/// The factor on floor [floor]'s foes at [heat] (1 at heat 0): Embers'
+/// (Ash's on the upper Tower), times Pyre's on the upper Tower.
 double towerHeatScaleOf(int heat, int floor) =>
-    heat >= towerHeatAsh && floor >= towerHeatUpperFloor
+    (heat >= towerHeatAsh && floor >= towerHeatUpperFloor
         ? towerHeatAshFoeScale
         : heat >= towerHeatEmbers
             ? towerHeatFoeScale
-            : 1.0;
+            : 1.0) *
+    (heat >= towerHeatPyre && floor >= towerHeatUpperFloor
+        ? towerHeatPyreFoeScale
+        : 1.0);
 
 /// The affixes added to a floor of [kind] at [heat].
 int towerHeatAffixesOf(int heat, TowerFloorKind kind) =>

@@ -193,6 +193,33 @@ void main() {
       }
     });
 
+    test('Pyre: the foes ×1.04 on floors 11 to 30, from Heat 4', () {
+      expect(towerHeatPyreFoeScale, 1.04);
+      for (var f = 1; f <= towerTop; f++) {
+        final upper = f >= towerHeatUpperFloor;
+        expect(towerHeatScaleOf(3, f), towerHeatFoeScale, reason: 'floor $f');
+        expect(towerHeatScaleOf(4, f),
+            upper ? towerHeatFoeScale * 1.04 : towerHeatFoeScale,
+            reason: 'floor $f');
+        expect(towerHeatScaleOf(5, f),
+            upper ? towerHeatAshFoeScale * 1.04 : towerHeatFoeScale,
+            reason: 'floor $f');
+      }
+      for (var seed = 1; seed <= seeds; seed++) {
+        final three = floors(seed, 3), four = floors(seed, 4);
+        for (var i = 0; i < towerTop; i++) {
+          final floor = i + 1;
+          expect(
+              four[i].extra,
+              closeTo(
+                  three[i].extra * (floor >= towerHeatUpperFloor ? 1.04 : 1.0),
+                  1e-12),
+              reason: 'floor $floor');
+          expect(four[i].enemyIds, three[i].enemyIds);
+        }
+      }
+    });
+
     test('Pyre: the late oath from floor 18, not 15', () {
       expect(towerPityOathFloorOf(3), 15);
       expect(towerPityOathFloorOf(4), 18);
@@ -220,13 +247,21 @@ void main() {
         final five = floors(seed, 5);
         for (var i = 0; i < towerTop; i++) {
           final floor = i + 1;
-          expect(four[i].extra, closeTo(zero[i].extra * 1.05, 1e-12));
+          final upper = floor >= towerHeatUpperFloor;
+          expect(
+              four[i].extra,
+              closeTo(
+                  zero[i].extra *
+                      towerHeatFoeScale *
+                      (upper ? towerHeatPyreFoeScale : 1.0),
+                  1e-12));
+          // Ash's factor in place of Embers' there, Pyre's on top.
           expect(
               five[i].extra,
               closeTo(
                   zero[i].extra *
-                      (floor >= towerHeatUpperFloor
-                          ? towerHeatAshFoeScale
+                      (upper
+                          ? towerHeatAshFoeScale * towerHeatPyreFoeScale
                           : towerHeatFoeScale),
                   1e-12),
               reason: 'floor $floor');
