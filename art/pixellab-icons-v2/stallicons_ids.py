@@ -27,3 +27,18 @@ RETRY={
 'ossuary_relics':S2("sickly green","skull",", green candle glow"),
 'anchorage_chandlery':S2("cold blue","ship anchor"),
 }
+RETRY.update({
+'blind_beggar_stall':S2("cold blue","open eye"),
+'black_market_docks':S2("ember gold","fish hook",", a red lantern glow"),
+'shieldwrights_hall':S2("cold blue","round shield"),
+'arcane_bazaar':S2("void violet","five-point star",", violet glow"),
+'smugglers_vault':S2("ember gold","iron key"),
+'arcane_academy':S2("cold blue","open book",", blue candle glow"),
+'sharpweave_den':S2("void violet","needle and thread"),
+'last_lantern':S2("ember gold","glowing lantern",", warm yellow glow"),
+'wayfarer_caravan':S2("ember gold","wagon wheel"),
+'weaponsmith_forge':S2("ember gold","crossed sword and axe",", orange forge glow"),
+'apothecary_row':S2("sickly green","potion bottle and mortar",", green glow"),
+})
+
+IDS.update({k:RETRY[k] for k in ('weaponsmith_forge','apothecary_row')})
