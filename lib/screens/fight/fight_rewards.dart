@@ -284,7 +284,7 @@ extension _FightRewards on _FightScreenState {
     if (!widget.modifiers.isTest && !widget.modifiers.tower) {
       final goals = chapterGoalTable[_chapter] ?? const <ChapterGoal>[];
       if (goals.isNotEmpty) {
-        await notifier.noteChapterGoals(
+        final freshGoals = await notifier.noteChapterGoals(
             _chapter,
             goals,
             ChapterFightFacts(
@@ -295,9 +295,31 @@ extension _FightRewards on _FightScreenState {
               enemyIds: [for (final e in defeated) e.enemyId],
               firstTry: defeated.every(
                   (e) => (session.bossDefeatCounts[e.enemyId] ?? 0) == 0),
-              weaknessStruck: _weaknessHits > 0,
+              weaknessHits: _weaknessHits,
               potionUsed: _potionUsed,
             ));
+        // A goal met: a toast over the way out (the tick, the goal, how many).
+        if (freshGoals.isNotEmpty && mounted) {
+          final n = notifier.chapterGoalsMetIn(_chapter).length;
+          final lang0 = ref.read(appLanguageProvider);
+          for (final id in freshGoals) {
+            final goal = goals.firstWhere((g) => g.id == id);
+            ScaffoldMessenger.maybeOf(context)?.showSnackBar(SnackBar(
+              key: Key('chapter_goal_toast_$id'),
+              duration: const Duration(seconds: 4),
+              content: Row(children: [
+                const GoalTick(met: true, fresh: true),
+                const SizedBox(width: 10),
+                Expanded(
+                  child: Text(trFor(lang0, 'chapter_goal_toast')
+                      .replaceAll(
+                          '{goal}', chapterGoalLine(lang0, _chapter, goal))
+                      .replaceAll('{n}', '$n')),
+                ),
+              ]),
+            ));
+          }
+        }
       }
     }
     final anyAllyRevived = await _settleAllies(notifier, leveledUp);

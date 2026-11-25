@@ -9,6 +9,7 @@ import '../../combat/fight_numbers.dart' show potionHealAmount;
 import '../../combat/stat_rules.dart' show levelStatPicks;
 import '../sim_combat.dart' show SimCharacter;
 import '../training.dart' show StatPickOffer;
+import 'tower_clans.dart';
 import 'tower_events.dart';
 import 'tower_floors.dart';
 import 'tower_hero.dart';
@@ -194,11 +195,9 @@ class TowerRun {
   /// The main clan: the first sworn, '' while none is.
   String get mainClanId => clanIds.isEmpty ? '' : clanIds.first;
 
-  /// The clans still to swear to.
-  List<String> get oathsLeft => [
-        for (final c in clanPool)
-          if (!clanIds.contains(c)) c,
-      ];
+  /// The clans still to swear to: none once one is sworn (one oath a run,
+  /// the user's call with the clans' offers), else the pool.
+  List<String> get oathsLeft => clanIds.isNotEmpty ? const [] : clanPool;
 
   /// The unlocks the run started with (its start dice and items).
   final List<String> startUnlocks;
@@ -608,15 +607,41 @@ TowerRun towerAfterFight(TowerRun run, TowerData data,
       seed: run.seed,
       floor: run.floor,
       hero: towerHeroView(choosing, hero),
-      oaths: run.oathsLeft,
-      // The first floor won always offers a clan (the user's call).
-      oathDue: run.floor == 1 && run.clanIds.isEmpty,
+      clanPool: run.clanPool,
+      standing: towerStandingOf(run, data),
+      oathOpen: run.clanIds.isEmpty,
+      // The first floor won always offers the clans (the user's call).
+      clansDue: run.floor == 1 && run.clanIds.isEmpty,
+      clans: data.clans,
       items: data.items,
       dice: data.dice,
       skills: data.skills,
       spells: data.spells,
     ),
   );
+}
+
+/// [run]'s standing with each clan of its pool (docs/simulation/
+/// tower-clan-offers.md): replayed from the cards it took, floor by floor
+/// (towerStandingFrom), 0 to [towerOathStep]. A run saved before the clans'
+/// offers took no clan's card: 0 with every clan.
+Map<String, int> towerStandingOf(TowerRun run, TowerData data) {
+  final all = towerStandingFrom(
+      [for (final f in run.taken.keys.toList()..sort()) run.taken[f]!],
+      data.clans);
+  return {for (final c in run.clanPool) c: all[c] ?? 0};
+}
+
+/// The clans of [run]'s pool whose oath is due: at [towerOathStep], while
+/// no oath is sworn (one a run). Their oath is dealt on the next floor won
+/// that is not a boon's, and on each after it until one is sworn.
+List<String> towerOathDue(TowerRun run, TowerData data) {
+  if (run.clanIds.isNotEmpty) return const [];
+  final standing = towerStandingOf(run, data);
+  return [
+    for (final c in run.clanPool)
+      if ((standing[c] ?? 0) >= towerOathStep) c,
+  ];
 }
 
 /// The level the hero stands at with [floorsCleared] floors won.
@@ -712,3 +737,29 @@ TowerRun towerPick(TowerRun run, TowerData data, int? index,
 /// [run] left by the player: over, its marks earned.
 TowerRun towerAbandon(TowerRun run) =>
     run.isOver ? run : run.copyWith(status: TowerStatus.abandoned);
+
+/// The run's leading clan (v2.6.0, the ink accent's colour, UX's): the
+/// sworn clan once sworn; before, the clan with the highest run standing if
+/// it is [towerLeadingClanMinStanding] or more and strictly ahead of every
+/// other; else null.
+String? towerLeadingClan(TowerRun run, TowerData data) {
+  if (run.mainClanId.isNotEmpty) return run.mainClanId;
+  String? best;
+  var top = -1;
+  var tied = false;
+  for (final MapEntry(:key, :value) in towerStandingOf(run, data).entries) {
+    if (value > top) {
+      top = value;
+      best = key;
+      tied = false;
+    } else if (value == top) {
+      tied = true;
+    }
+  }
+  return best == null || tied || top < towerLeadingClanMinStanding
+      ? null
+      : best;
+}
+
+/// The least run standing a clan needs to lead: two gifts taken.
+const int towerLeadingClanMinStanding = 4;

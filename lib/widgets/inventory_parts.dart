@@ -94,6 +94,11 @@ List<String> sortInventoryIds(List<String> ids, Map<String, dynamic> items,
   return out;
 }
 
+/// The Void Banner's slot and its one item (v2.5.0): the slot is shown, wide,
+/// once the banner is owned.
+const String bannerSlot = 'Banner';
+const String bannerItemId = 'void_banner';
+
 /// The pixel glyph of an equipment slot (its silhouette when the slot is
 /// empty, and the mark on a row's line); the Material one shows until Art's
 /// file is in the bundle (see pixel_glyph.dart).
@@ -103,6 +108,7 @@ PixelGlyphs inventorySlotGlyph(String slot) => switch (slot) {
       'Weapon' => PixelGlyphs.slotWeapon,
       'Bottom' => PixelGlyphs.slotLegs,
       'Foot' => PixelGlyphs.slotFeet,
+      'Banner' => PixelGlyphs.slotBanner,
       _ => PixelGlyphs.slotBag,
     };
 
@@ -596,19 +602,19 @@ String inventoryRarityWord(AppLanguage lang, Map<String, dynamic>? item) {
 }
 
 /// The shapes that have a bone body (assets/visuals/dice, the Art pack): the
-/// d4, d6, d8, d12 and d20; the d10 keeps the tile's own drawing.
+/// d4, d6, d8, d10, d12 and d20 (the d10 joined in v2.5.4, #1144).
 const Map<int, String> _boneShapes = {
   4: 'd4',
   6: 'd6',
   8: 'd8',
+  10: 'd10',
   12: 'd12',
   20: 'd20',
 };
 
 /// A die as a tile in its own skin: the stone, its edge and its glow, with the
-/// die's bone body on it (v1.902, Art's pre-rendered 3D body); a d10 has no
-/// body: it is the live solid at rest (die_tile.dart); a tile too small for
-/// either (under 28 px) keeps the stone with the mark cut in it and the
+/// die's bone body on it (v1.902, Art's pre-rendered 3D body); a tile too
+/// small for it (under 28 px) keeps the stone with the mark cut in it and the
 /// shape's name.
 class InventoryDieTile extends StatelessWidget {
   const InventoryDieTile(
@@ -677,7 +683,7 @@ class InventoryDieTile extends StatelessWidget {
       // The body is drawn at the tile's full size (not shrunk by the border), so
       // its pixels keep their scale.
       child: (body == null
-              // A die with no bone body (the d10) is the live solid at rest.
+              // A shape with no bone body is the live solid at rest.
               ? (size >= 28
                   ? Center(
                       child: DieTile(

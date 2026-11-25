@@ -87,7 +87,8 @@ void main() {
       final data = Map<String, dynamic>.from(all[id] as Map);
       final weak = ((data['weakTo'] as List?) ?? const []).length;
       final resist = ((data['resists'] as List?) ?? const []).length;
-      for (final met in [false, true]) {
+      // Beating the kind teaches only resistances: a foe with none is met once.
+      for (final met in [false, if (resist > 0) true]) {
         await session(met ? {id: 1} : <String, int>{});
         tester
             .state<NavigatorState>(find.byType(Navigator).first)

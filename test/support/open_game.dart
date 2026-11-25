@@ -37,6 +37,9 @@ Future<ProviderContainer> openGame(
   Map<String, dynamic> session = const {
     'raceId': 'human',
     'professionId': 'warrior',
+    // The chapters' chests are given: a test that jumps through the story is
+    // not about the chest each new chapter owes (chapter_chest_dialog.dart).
+    'chapterChestsGiven': [4, 5, 6, 7, 8],
   },
 }) async {
   await tester

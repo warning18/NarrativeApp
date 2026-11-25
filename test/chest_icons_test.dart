@@ -1,6 +1,7 @@
-// The chests (v1.899): wooden, iron and gold are the 32 x 32 PixelLab pictures,
-// closed and open; the silver and void chests stay 16 x 16 until they are
-// redrawn. All are palette PNGs, and every tier has both.
+// The chests (v1.899, v2.5.0): wooden, iron, gold, silver and void are the
+// 32 x 32 PixelLab pictures, closed and open (the silver and void ones were
+// redrawn at 32 for the chapter chest). All are palette PNGs, and every tier
+// has both.
 import 'dart:io';
 import 'dart:typed_data';
 
@@ -17,8 +18,8 @@ void main() {
     ('wooden', 32),
     ('iron', 32),
     ('gold', 32),
-    ('silver', 16),
-    ('void', 16),
+    ('silver', 32),
+    ('void', 32),
   ]) {
     for (final state in ['closed', 'open']) {
       test('the $tier chest, $state: $size x $size, a palette PNG', () {
