@@ -85,7 +85,7 @@ class ShopLayers extends StatelessWidget {
     if (!shopHasLayers(shopId)) return const SizedBox.shrink();
     return LayoutBuilder(builder: (context, box) {
       final width = box.maxWidth;
-      final height = width * 0.6;
+      final height = width * 0.55;
       final dpr = MediaQuery.maybeDevicePixelRatioOf(context) ?? 1;
       // Snap to whole device pixels so the pixel art scales evenly.
       double snap(double v) => (v * dpr).round() / dpr;
@@ -112,7 +112,7 @@ class ShopLayers extends StatelessWidget {
             ),
             Positioned(
               left: snap((width - 96 * sk) / 2),
-              bottom: snap(height * 0.06),
+              bottom: snap(height * 0.03),
               width: 96 * sk,
               height: 64 * sk,
               child: Stack(clipBehavior: Clip.none, children: [

@@ -10,7 +10,7 @@ isn't reconstructable from git history alone.
 
 ## [2.10.8+1090]
 
-- **Shops: a bigger stall.** In the shop pictures the stall is 25% bigger (the user's pick) and the keeper keeps his size, standing at the same spot behind the counter. The strip is a little taller to fit it, and the stall and keeper snap to whole device pixels so the pixel art stays even. No price, stock or rule changes.
+- **Shops: a bigger stall.** In the shop pictures the stall is 25% bigger (the user's pick) and the keeper keeps his size, standing at the same spot behind the counter. The strip is a little taller (0.55 of its width) to fit it, and the stall and keeper snap to whole device pixels so the pixel art stays even. No price, stock or rule changes.
 
 ## [2.10.7+1089]
 
