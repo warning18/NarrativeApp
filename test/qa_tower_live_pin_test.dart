@@ -71,8 +71,12 @@ void main() {
   // 49 / 207 / 9088 and 125 / 302 / 10775.
   // #1147 (a skill ranked up keeps its face): these were
   // 49 / 208 / 9111 and 128 / 305 / 10799.
+  // The cleric's peak scale (towerProfessionPeakScale 1.08 on the
+  // wardens' and bosses' floors, was 1.28; docs/simulation/
+  // tower-cleric-retune.md; the cleric is an unlock, so no unlocks is
+  // unchanged): all unlocks were 116 / 302 / 10758.
   const none = (top: 51, floor20: 205, floorSum: 9083);
-  const all = (top: 116, floor20: 302, floorSum: 10758);
+  const all = (top: 124, floor20: 308, floorSum: 10862);
 
   test('the live Tower, no unlocks, is the pinned curve', () {
     final m = _measure(const TowerProgress());

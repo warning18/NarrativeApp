@@ -90,9 +90,12 @@ class TowerFloor {
   bool get isPack => enemyIds.length > 1;
 
   /// The multiplier on the curve the fight of a hero of [professionId] runs
-  /// at: the floor's extra and the profession's scale.
+  /// at: the floor's extra and the profession's scale (its peak scale on a
+  /// warden's or boss's floor, towerProfessionPeakScale).
   double extraFor(String professionId) =>
-      extra * towerProfessionScaleOf(professionId, events: events);
+      extra *
+      towerProfessionScaleOf(professionId,
+          events: events, peak: kind != TowerFloorKind.fight);
 
   /// What the fight screen is handed for this floor, for a hero of
   /// [professionId] (the Tower's context: no scene, no chest, no gold or
