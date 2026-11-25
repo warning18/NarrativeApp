@@ -11,7 +11,6 @@
 import 'package:flutter/material.dart';
 
 import '../../theme/stitched_ink.dart';
-import 'ink/ink_kit.dart';
 import 'ink/ink_palette.dart';
 import 'tower_tarot_card.dart' show TowerSeal;
 
@@ -22,7 +21,35 @@ const double towerClanCardHeight = 346;
 Color towerOnBand(Color colour) =>
     colour.computeLuminance() > 0.3 ? inkOnPaper : inkPaper;
 
-/// One gift of a clan, as a card (fanned by `ClanHandFan`).
+/// The Ashen Ink card corner (docs: radius-card 12) and its plate (6).
+const double towerCardRadius = 12;
+const double towerPlateRadius = 6;
+
+/// A tag on paper: ink words in a one-pixel ink line (the dark chip's twin).
+class _PaperTag extends StatelessWidget {
+  const _PaperTag(this.text);
+
+  final String text;
+
+  @override
+  Widget build(BuildContext context) => Container(
+        padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 1),
+        decoration: BoxDecoration(
+            border: Border.all(color: inkOnPaper, width: 1),
+            borderRadius: BorderRadius.circular(4)),
+        child: Text(text,
+            maxLines: 1,
+            style: Theme.of(context)
+                .textTheme
+                .labelSmall
+                ?.copyWith(color: inkOnPaper, fontWeight: FontWeight.w700)),
+      );
+}
+
+/// One gift of a clan, as a card (fanned by `ClanHandFan`). Design A, rounder
+/// (the user, 25 Nov): paper, the gift on a black plate, the name in small
+/// caps, the clan's hue once (a short line under the name), the wax seal, and
+/// all the information on the card: tags, standing, what it moves, the quote.
 class TowerClanCard extends StatelessWidget {
   const TowerClanCard({
     super.key,
@@ -33,6 +60,7 @@ class TowerClanCard extends StatelessWidget {
     required this.tags,
     required this.greeting,
     required this.clanName,
+    this.ripple = '',
     this.backdropId,
     this.standing,
     this.rarity,
@@ -46,6 +74,9 @@ class TowerClanCard extends StatelessWidget {
   final List<Widget> tags;
   final String greeting;
   final String clanName;
+
+  /// What the gift moves, clan by clan ("Mire +2 · Dominion -1").
+  final String ripple;
   final String? backdropId;
   final String? standing;
 
@@ -55,68 +86,97 @@ class TowerClanCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // Design A (the user's pick): a paper card, the gift's picture on a black
-    // plate, the name in small caps, the wax seal the only colour.
+    const prose = TextStyle(
+        fontFamily: InkFonts.prose,
+        fontSize: 11.5,
+        height: 1.2,
+        color: inkOnPaper);
     return Container(
       width: towerClanCardWidth,
       height: towerClanCardHeight,
-      padding: const EdgeInsets.all(5),
+      padding: const EdgeInsets.all(4),
       decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(towerCardRadius + 4),
           border: Border.all(
               color: lit ? inkPaper : const Color(0x00000000), width: 2)),
       child: DecoratedBox(
         decoration: BoxDecoration(
-            color: inkPaper, border: Border.all(color: inkBlack, width: 3)),
+            color: inkPaper,
+            borderRadius: BorderRadius.circular(towerCardRadius),
+            border: Border.all(color: inkBlack, width: 2)),
         child: Padding(
-          padding: const EdgeInsets.all(8),
-          child: DecoratedBox(
-            decoration:
-                BoxDecoration(border: Border.all(color: inkBlack, width: 1)),
-            child: Stack(children: [
-              Align(
-                alignment: const Alignment(0, -0.3),
-                child: Container(
-                  width: 124,
-                  height: 124,
-                  color: inkBlack,
-                  alignment: Alignment.center,
-                  child: SizedBox(
-                      width: 96,
-                      height: 96,
-                      child: FittedBox(fit: BoxFit.contain, child: icon)),
-                ),
+          padding: const EdgeInsets.fromLTRB(12, 12, 12, 10),
+          child: Column(children: [
+            Stack(alignment: Alignment.center, children: [
+              Container(
+                width: 96,
+                height: 96,
+                decoration: BoxDecoration(
+                    color: inkBlack,
+                    borderRadius: BorderRadius.circular(towerPlateRadius)),
+                alignment: Alignment.center,
+                child: SizedBox(
+                    width: 72,
+                    height: 72,
+                    child: FittedBox(fit: BoxFit.contain, child: icon)),
               ),
               if (rarity != null)
-                Positioned(right: 8, top: 8, child: TowerSeal(rarity: rarity)),
-              Positioned(
-                left: 8,
-                right: 8,
-                bottom: 14,
-                child: Column(mainAxisSize: MainAxisSize.min, children: [
-                  FittedBox(
-                    fit: BoxFit.scaleDown,
-                    child: Text(name.toUpperCase(),
-                        maxLines: 1,
-                        textAlign: TextAlign.center,
-                        style: const TextStyle(
-                            fontFamily: InkFonts.display,
-                            fontSize: 17,
-                            height: 1.05,
-                            color: inkOnPaper)),
-                  ),
-                  const SizedBox(height: 4),
-                  Text([clanName, if (standing != null) standing!].join(' · '),
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
-                      style: TextStyle(
-                          fontFamily: InkFonts.prose,
-                          fontSize: 11,
-                          height: 1.2,
-                          color: inkOnPaper.withValues(alpha: 0.7))),
-                ]),
-              ),
+                Align(
+                    alignment: Alignment.topRight,
+                    child: TowerSeal(rarity: rarity, size: 24)),
             ]),
-          ),
+            const SizedBox(height: 8),
+            FittedBox(
+              fit: BoxFit.scaleDown,
+              child: Text(name.toUpperCase(),
+                  maxLines: 1,
+                  style: const TextStyle(
+                      fontFamily: InkFonts.display,
+                      fontSize: 17,
+                      height: 1.05,
+                      color: inkOnPaper)),
+            ),
+            const SizedBox(height: 4),
+            // The clan's hue, once.
+            Container(
+                width: 44,
+                height: 3,
+                decoration: BoxDecoration(
+                    color: color, borderRadius: BorderRadius.circular(2))),
+            const SizedBox(height: 6),
+            FittedBox(
+              fit: BoxFit.scaleDown,
+              child: Row(mainAxisSize: MainAxisSize.min, children: [
+                for (var i = 0; i < tags.length; i++) ...[
+                  if (i > 0) const SizedBox(width: 4),
+                  tags[i],
+                ],
+              ]),
+            ),
+            const SizedBox(height: 4),
+            Text([clanName, if (standing != null) standing!].join(' · '),
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+                style: prose.copyWith(
+                    fontSize: 12.5, fontWeight: FontWeight.w700)),
+            if (ripple.isNotEmpty) ...[
+              const SizedBox(height: 3),
+              Text(ripple,
+                  textAlign: TextAlign.center,
+                  maxLines: 2,
+                  overflow: TextOverflow.ellipsis,
+                  style: prose.copyWith(
+                      color: inkOnPaper.withValues(alpha: 0.75))),
+            ],
+            const Spacer(),
+            Container(height: 1, color: inkOnPaper.withValues(alpha: 0.25)),
+            const SizedBox(height: 5),
+            Text(greeting.isEmpty ? '' : '“$greeting”',
+                textAlign: TextAlign.center,
+                maxLines: 3,
+                overflow: TextOverflow.ellipsis,
+                style: prose.copyWith(fontStyle: FontStyle.italic)),
+          ]),
         ),
       ),
     );
@@ -167,18 +227,24 @@ class TowerClanOathRow extends StatelessWidget {
       child: Container(
         padding: const EdgeInsets.all(4),
         decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(towerCardRadius + 4),
             border: Border.all(
                 color: selected ? inkPaper : const Color(0x00000000),
                 width: 2)),
         child: DecoratedBox(
           decoration: BoxDecoration(
-              color: inkPaper, border: Border.all(color: inkBlack, width: 3)),
+              color: inkPaper,
+              borderRadius: BorderRadius.circular(towerCardRadius),
+              border: Border.all(color: inkBlack, width: 2)),
           child: IntrinsicHeight(
             child:
                 Row(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
               Container(
                 width: 64,
-                color: inkBlack,
+                margin: const EdgeInsets.all(8),
+                decoration: BoxDecoration(
+                    color: inkBlack,
+                    borderRadius: BorderRadius.circular(towerPlateRadius)),
                 padding: const EdgeInsets.symmetric(vertical: 6),
                 alignment: Alignment.center,
                 child: SizedBox(
@@ -199,6 +265,8 @@ class TowerClanOathRow extends StatelessWidget {
                                 fontSize: 15,
                                 height: 1.05,
                                 color: inkOnPaper)),
+                        const SizedBox(height: 4),
+                        Wrap(spacing: 4, runSpacing: 2, children: tags),
                         const SizedBox(height: 4),
                         Text(text,
                             maxLines: 2,
@@ -233,4 +301,4 @@ class TowerClanOathRow extends StatelessWidget {
 }
 
 /// A gift's or an oath's small tag: paper text in a paper line (the ink look).
-Widget towerClanTag(String text) => InkTag(text);
+Widget towerClanTag(String text) => _PaperTag(text);

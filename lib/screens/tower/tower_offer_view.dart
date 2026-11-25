@@ -365,6 +365,7 @@ class _TowerOfferViewState extends ConsumerState<TowerOfferView> {
                   ],
                   greeting: faction?.mottoFor(lang) ?? '',
                   clanName: faction?.shortFor(lang) ?? reward.clan,
+                  ripple: towerRippleLine(ref, reward.clan, widget.data),
                   standing:
                       towerStandingLabel(ref, _standing[reward.clan] ?? 0),
                   backdropId: reward.clan,
