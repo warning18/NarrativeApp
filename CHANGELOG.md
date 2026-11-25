@@ -8,6 +8,10 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [2.10.15+1097]
+
+- Level Up: what a stat pick changes, before and after, for UX's new cards (no rule change).
+
 ## [2.10.13+1095]
 
 - **Tower boss fights: the boss faces you.** On a boss or warden floor the foe's tall panel now shows the boss facing the viewer (Art's south frame), standing whole, and your strip under it shows the hero from behind (Art's north frame), offset to the right with his head and shoulders over the seam, looking up at it, so the two panels read as one scene from top to bottom. All 20 bosses and wardens and all 7 heroes have their frames; a foe without one keeps its side view in the taller panel. The skill effects aim at the boss where it stands, and the shifts and flashes work as before. No rule or number changes.
