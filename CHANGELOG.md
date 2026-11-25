@@ -8,6 +8,9 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [2.7.2+1068]
+
+- **Intrigue hints (Narrative's P1c).** For a bearer of the Void Banner, the story now drops a line where each of the ten intrigues can be picked up: a memory of someone already met, at the scene where its clue lies, gone once the clue is found. Once an intrigue has begun, a camp reminds the player of its next step until that step is taken. 19 lines, English and French; no rule or number changes.
 ## [2.7.1+1067]
 
 - **The companions' second beats (Narrative's P3).** On the eve before the Stair of Tongues, in Candlehold, a companion whose camp errand is done and who is still with you can be sat with once more: nine short scenes (Kelda, Sable, Maren, Liora, Vess, Grosh, Tobin, Malrik, Vica), each with two choices whose outcome later scenes recall. Vica gains her own camp errand. No fight, gold, XP or approval changes.
