@@ -8,6 +8,10 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [2.9.2+1078]
+
+- **Tower: the clans' offer in the ink look (design A).** A clan's gift is a paper card: its picture on a black plate, its name in small caps, the clan and your standing under it, and the wax seal (the gift's rarity) as the only colour; the card in hand is ringed. A clan's oath is a paper row with the clan's banner on a black plate, its words and, when the oath comes late (after floor 15 with the clan below the oath's step), Narrative's late-oath line from that clan. Held cards, rules and numbers are unchanged.
+
 ## [2.9.0+1076]
 
 - **Tower: Heat, the rules (the user's five named curses).** After a win, the Tower can be climbed again at a higher Heat, each adding one curse to those below: Embers (foes x1.05), Smoke (one more affix on the wardens and bosses), Flame (healing after a floor 15% to 5%, more elites from floor 11), Pyre (no boon on floors 13 and 23, the late oath from floor 18), Ash (foes x1.12 from floor 11, a gift costs rival clans 2 standing). Heat N+1 opens with a win at Heat N; marks earned rise by a quarter a level (x2.25 at Ash). Bot, every unlock: the top falls 26 / 18 / 15 / 12 / 11 / 7% from Heat 0 to 5. Heat 0 is the climb as before. The picker on the Tower's door comes with UX's next version; until then every climb is Heat 0.
