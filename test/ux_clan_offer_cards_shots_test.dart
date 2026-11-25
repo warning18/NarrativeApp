@@ -127,6 +127,8 @@ void main() {
           if (take.evaluate().isNotEmpty) await tester.tap(take);
           await settle(5);
         }
+        // The head walks to its notch, then the rail gives the cards its room.
+        await settle(25);
         final error = tester.takeException();
         if (shots != null) {
           Directory(shots).createSync(recursive: true);
