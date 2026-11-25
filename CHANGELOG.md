@@ -8,6 +8,9 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [2.10.18+1100]
+
+- **Tower: no more three times the same reward (the user's report).** With a full die, every clan's gift became a rank-up of the same best skill on the die, so the three clan cards could offer one and the same reward. Each card on a table is now a different gift: the clans' rank-ups raise different skills on the die. **Always three:** a table never shows fewer cards either. When the draws come short, a clan left without a card offers another of its gifts (a skill that lands on a face, or a rank-up of another skill), then a boon card takes the place (a skill, a die, a spell); never a repeat. The same rule holds on boon floors (Fourth card's fourth on top), the stall's boon, rerolls and the landing table; a lone oath beside them stays as it was. Bot, 2000 climbs: a repeat on 24% of tables before, none now; about one clans' table in six needed a fill (mostly a die).
 ## [2.10.17+1099]
 - Snow in the Tower is now one field: flakes fall, drifts build on the top edge of every panel and button, and break off in irregular slabs when they are heavy (heavier on higher floors). A tap on a piece, or a blow on a fight panel, knocks its snow off. Reduce motion shows a still dusting.
 ## [2.10.16+1098]
