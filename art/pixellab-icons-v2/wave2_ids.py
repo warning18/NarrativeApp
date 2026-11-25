@@ -102,3 +102,13 @@ RETRY={
 'circlet_radiance':"a chibi gold ring crown with a big glowing gem, chunky, just a circlet"+N,
 'plate_emberproof':"a chibi red-orange metal leg plate, chunky, curved plate"+N,
 }
+
+# Round 3 (the 5 weak ones; extended palette forced)
+O=", the object alone, empty, no body, no head, no face, no person"
+RETRY2={
+'warden_signet':"a chibi round gold signet ring with a big flat shield-shaped stone, chunky, just a ring"+O,
+'hood_gravecloth':"a chibi folded pale grey cloth hood lying flat, chunky, soft folds"+O,
+'coat_last_watch':"a chibi grey tunic with a shield badge on the chest, chunky, laid flat like a folded garment"+O,
+'dagger_t8':"a chibi short dark dagger with a straight blade and a purple glowing gem in the guard, stubby and fat, lying diagonally"+O,
+'greaves_hide':"a chibi tan leather shin guard, chunky, curved leather plate with two straps"+O,
+}

@@ -3,10 +3,10 @@ import sys,json,io,base64,os
 sys.path.insert(0,'art/pixellab-backgrounds');sys.path.insert(0,'art/pixellab-icons-v2');import batchA_gen as A
 from PIL import Image
 wave=sys.argv[1];ids=__import__(f'{wave}_ids').IDS
-RET=os.environ.get('RETRY')=='1';ids={**ids,**getattr(__import__(f'{wave}_ids'),'RETRY',{})} if RET else ids
+RET=os.environ.get('RETRY');ids={**ids,**getattr(__import__(f'{wave}_ids'),'RETRY2' if RET=='2' else 'RETRY',{})} if RET else ids
 only=sys.argv[2].split(',') if len(sys.argv)>2 else list(ids)
 seed=int(sys.argv[3]) if len(sys.argv)>3 else None
-pal=io.BytesIO();Image.open('art/pixellab-combat-kits/skel/hero.png').convert('RGBA').save(pal,'PNG');PAL=base64.b64encode(pal.getvalue()).decode()
+pal=io.BytesIO();Image.open('art/pixellab-icons-v2/palette_forced.png').convert('RGBA').save(pal,'PNG');PAL=base64.b64encode(pal.getvalue()).decode()
 T="chibi game item pixel art, chunky rounded squat shape, thick dark outline, small flat colour palette, one light highlight, one dark inner shadow, "
 jf=f'art/pixellab-icons-v2/jobs_{wave}.json';jobs=json.load(open(jf)) if os.path.exists(jf) else {}
 for k in only:
