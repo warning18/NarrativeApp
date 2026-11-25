@@ -18,3 +18,7 @@ Sheets `docs/art/boards/stalls-all.png` (14 stalls and icons), `stalls-composite
 
 ## Known weak spots
 Foes: a few are murky or very similar (hollow_reflection, tear_spawn). Chests: the open ones are busy. Stall list icons: small and alike (the trade sign is not readable at 32 px); 12 proper 32 px icons would cost 12 generations.
+
+## Update (25 November): the stall list icons are now sign-first
+The 14 `art/pixellab-icons-v2/handoff_stalls/<shop id>_icon32.png` were replaced by proper 32 px icons: a bold trade symbol on a hanging sign board (eye, fish hook, crossed sword and axe, shield, star, potion and mortar, key, hammer, book, needle and thread, skull, lantern, anchor, wheel), readable at 1x. The first round (a small dark stall) was murky and is dropped. 23 generations (12 + 3 test + 11 redo, minus the 2 test ones reused earlier). Sheet `docs/art/boards/stall-icons-dark.png`. Weakest: black_market_docks, hammersmith_forge, smugglers_vault, arcane_academy (the symbol is vague).
+The chests: the user keeps the current (lighter) chests, so **ignore `handoff_chests_dark/`**; the wave 5a chests stay.
