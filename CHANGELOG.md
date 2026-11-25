@@ -8,6 +8,10 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [2.10.18+1100]
+
+- **Tower: no more three times the same reward (the user's report).** With a full die, every clan's gift became a rank-up of the same best skill on the die, so the three clan cards could offer one and the same reward. Each card on a table is now a different gift: the clans' rank-ups raise different skills on the die, and when nothing different is left the table shows fewer cards rather than a repeat. The same rule holds on boon floors (Fourth card), the stall's boon, rerolls and the landing table. Bot, 2000 climbs: a repeat on 24% of tables before, none now.
+
 ## [2.10.14+1096]
 
 - **Tower dice: the black ball behind the die is gone.** Three things painted a solid mass behind or over the die: its landing burst (flattened to one colour, so the flash showed as a disc), the picked die's blurred gold glow, and the dark archway at the top of Art's dice plate, which on a short board sat right behind the die. The landing burst is now rings and sparks only, a picked die keeps its gold outline without the glow, and the plate is drawn a third larger from its foot so the archway is cut off. No rule or number changes.
