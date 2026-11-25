@@ -22,3 +22,15 @@ def v2(im,body=SHADOW):
     o[dark,:3]=body;o[light,:3]=PAPER;o[edge&~spot,:3]=INK;return Image.fromarray(o,'RGBA')
 def v3(im,tint):
     return v2(im,np.array(tint))
+
+# ---- tokenised: snap to the Ashen Ink tokens and merge regions under 3 px (the design system's icon rule) ----
+import sys
+sys.path.insert(0,'art/pixellab-cutpaper')
+def tokenise(im,spot_hex,extra=()):
+    from simplify import simplify
+    a=np.array(im.convert('RGBA')).astype(float);al=a[...,3]>0
+    pal=[INK,PAPER,SHADOW,np.array([int(spot_hex[i:i+2],16) for i in (0,2,4)])]+[np.array(e) for e in extra]
+    pal=np.array(pal,float);rgb=a[...,:3]
+    d=((rgb[:,:,None,:]-pal[None,None])**2*np.array([2,4,3])).sum(3);idx=d.argmin(2)
+    a[...,:3]=pal[idx];out=Image.fromarray(a.astype(np.uint8),'RGBA')
+    return simplify(out,3)
