@@ -1,5 +1,13 @@
 # The clans' specialisations (v5.2, steps 2a to 3c)
 
+> **Re-run on v2.10.0 (date 2026-11-25).** Every figure below was measured again on `main` at v2.10.0 with the same commands, seeds and run counts (the old figures dated from before v1.915). What moved notably:
+> - **The cores fell and drew together:** fights won with the core alone are now 50.7% (warrior) to 54.7% (cleric), where they were 51.9% to 71.7%. Mage −18.4, ranger −16.3, rogue −10.2, warrior −9.6; cleric +2.8. The cleric's fights are shorter (11.9 rounds, was 14.5). This is the sum of the balance passes since v1.915 (the late-game chapter goals and weakness goal of v2.5.0–2.6.1 among them), not one change.
+> - **Most specialisations now read below the +3 to +6 target:** only Berserker, Long Vigil, Censer Mage and Ledger Knife are in range (nine were). Down by more than 3 points: Briar Guard (+5.0 → +1.5), Beacon (+3.5 → +0.1), Tempest Toll (+5.2 → +1.3), Fever Blade (+6.5 → +2.3), Corsair's Eye (+5.8 → +1.5), Trapwright (+6.6 → +0.4), Fen Guide (+5.3 → +1.4). Up: Censer Mage (+1.9 → +5.7).
+> - **Step 2b:** the gifts that read +4 to +7 now read −1 to +3 (Boarding Heart, Hand-Signed Wall, Briar Guard II, Debt Forgiven, One Witness, Once, Counted Breath); Relicbreaker II rose to +4.1.
+> - **Step 3c:** the four weak links that read 0 now move by −1 to +1 (noise at 60 runs); Second Broadside +2.9 and Pitch Hand +3.4 sit at the top of their target.
+> - **Step 3b:** rival hunters 0.77 a run (was 0.96), alignment hunters 2.80 (was 1.83). Step 3's loyalty table is unchanged.
+> - The "Taken in a run" figures had no committed harness; they were measured again with a throwaway one (see there).
+
 The design is in `docs/proposals/profession-clan-mechanics.md`; the words are Narrative's (`docs/proposals/specialisation-texts.md`).
 - Each profession's core (`lib/combat/profession_cores.dart`) is bent by its three main clans.
 - A clan offers its specialisation as a gift once you are its **Friend** (19+). It comes once, stays for the run, and several stack.
@@ -34,34 +42,36 @@ The design is in `docs/proposals/profession-clan-mechanics.md`; the words are Na
 
 | Profession | Specialisation | Won: core → with it | Over the core | Rounds |
 |---|---|---|---|---|
-| Warrior | Berserker | 60.3% → 65.3% | **+5.0** | 6.9 |
-| | Briar Guard | 60.3% → 65.3% | **+5.0** | 8.2 |
-| | Lantern Vanguard | 60.3% → 65.3% | **+5.0** | 9.2 |
-| Cleric | Long Vigil | 51.9% → 56.3% | **+4.3** | 14.5 |
-| | Ashen Hand | 51.9% → 54.0% | +2.0 | 14.3 |
-| | Beacon | 51.9% → 55.4% | **+3.5** | 13.6 |
-| Mage | Censer Mage | 71.7% → 73.6% | +1.9 | 6.9 |
-| | Burden-Bearer | 71.7% → 73.3% | +1.6 | 7.0 |
-| | Tempest Toll | 71.7% → 76.9% | **+5.2** | 7.1 |
-| Rogue | Fever Blade | 63.2% → 69.7% | +6.5 | 8.9 |
-| | Ledger Knife | 63.2% → 67.2% | **+4.0** | 9.1 |
-| | Relicbreaker | 63.2% → 66.1% | +2.9 | 9.3 |
-| Ranger | Corsair's Eye | 68.5% → 74.3% | **+5.8** | 9.4 |
-| | Trapwright | 68.5% → 75.1% | +6.6 | 10.0 |
-| | Fen Guide | 68.5% → 73.8% | **+5.3** | 9.3 |
+| Warrior | Berserker | 50.7% → 55.1% | **+4.4** | 7.3 |
+| | Briar Guard | 50.7% → 52.2% | +1.5 | 7.9 |
+| | Lantern Vanguard | 50.7% → 52.9% | +2.2 | 8.0 |
+| Cleric | Long Vigil | 54.7% → 59.8% | **+5.1** | 11.9 |
+| | Ashen Hand | 54.7% → 54.5% | −0.3 | 11.6 |
+| | Beacon | 54.7% → 54.8% | +0.1 | 11.5 |
+| Mage | Censer Mage | 53.3% → 59.1% | **+5.7** | 6.8 |
+| | Burden-Bearer | 53.3% → 55.7% | +2.3 | 6.9 |
+| | Tempest Toll | 53.3% → 54.6% | +1.3 | 7.0 |
+| Rogue | Fever Blade | 53.0% → 55.3% | +2.3 | 8.5 |
+| | Ledger Knife | 53.0% → 56.6% | **+3.7** | 8.4 |
+| | Relicbreaker | 53.0% → 55.4% | +2.4 | 8.6 |
+| Ranger | Corsair's Eye | 52.2% → 53.7% | +1.5 | 9.8 |
+| | Trapwright | 52.2% → 52.6% | +0.4 | 10.2 |
+| | Fen Guide | 52.2% → 53.6% | +1.4 | 9.9 |
 
 **How sure:** runs of 40 and 100 put the same line up to 2.5 points apart, so a figure here is ±2.
 
-**In range (+3 to +6):** nine specialisations. Fever Blade and Trapwright sit just above, Relicbreaker just below.
+**In range (+3 to +6):** four specialisations (Berserker, Long Vigil, Censer Mage, Ledger Knife). None is above. Lantern Vanguard, Burden-Bearer, Fever Blade and Relicbreaker (+2.2 to +2.4) sit within the noise of the range's floor.
 
 **Below range, and why:**
-- **Censer Mage and Burden-Bearer** reward a mage who fills the Well before spending it. The autoplay casts as soon as it can afford a spell, so it rarely overflows or casts from a full Well. The proposal said the same of the Inquisitor. A player who builds two Mana faces and holds a spell gets more.
 - **Ashen Hand** gives the cleric mana, whose pool is mostly full already in the simulator. The mend from the burn is what it measures.
+- **Beacon, Briar Guard, Tempest Toll and the ranger's three** read +0 to +2 on v2.10.0, where they read +3.5 to +6.6 before v1.915. Their rules have not changed; the cores they are set against have (see the note at the top). Why each fell is not measured here.
+- **Censer Mage**, which read +1.9 for want of overflowing mana, now reads +5.7: the mage's fights changed under it, not its rule. Burden-Bearer still rewards a mage who casts from a full Well, which the autoplay seldom does.
 
 **Taken in a run** (100 runs of the four strategies, offers on):
-- 95 of 100 runs took at least one specialisation.
-- On average a run took 1.4 (warrior) to 2.6 (ranger).
-- The boss curve (boss_balance_test) holds.
+- The harness that gave the old figures is not in the repository (the doc came in a squashed commit), and its seed is not recorded. On v2.10.0 a throwaway test (`simulatePlaythroughs`, `SimStrategy.values[i % 4]`, random race and profession, counting the ids of `specialisations.json` in each run's `specs`) gave, at seeds 17 and 11:
+- 95 and 96 of 100 runs took at least one specialisation (was 95).
+- On average a run took 1.4–1.7 (mage) to 1.8–2.1 (rogue); the cleric 1.5–1.6, the ranger 1.5, the warrior 1.9–2.0 (was 1.4, warrior, to 2.6, ranger). About 20 runs a profession, so a figure is ±0.3.
+- The boss curve (boss_balance_test) was not re-run here.
 
 ## Changes to Narrative's texts
 
@@ -84,11 +94,13 @@ The design is in `docs/proposals/profession-clan-mechanics.md`; the words are Na
 
 | Read | Gifts (over the specialisation alone) |
 |---|---|
-| In or near +3 to +6 | Berserker II +4.7, Boarding Heart +6.7, Bleeding Hull +6.5, Hand-Signed Wall +5.9, Briar Guard II +6.6, Counted Breath +3.9, Spear at the Wall +3.1, Long Vigil II +3.2, Debt Forgiven +6.2, Warm Hands +3.0, Trapwright II +3.8, Name on the List +2.5, Wading Step +2.6, One Witness, Once +5.2 (was +13.2 refilling the whole Well from round 2) |
-| Small or within the noise | Lantern Vanguard II, Fallen Knight’s Fire, Ashen Hand II, Honest Fire, Beacon II, Bell-Voiced, Keep the Light, Censer Mage II, The Accusing Smoke, Tempest Toll II, Tapped Sap, Fever Blade II, A Song Sung Over It, Ledger Knife II, Twice the Spoil, Corsair's Eye II, Relicbreaker II, Paid in the Deep, Take It Down, Fen Guide II, Burden-Bearer II, The Name Sung, Broken Sword, Open Hand (−2 to +2) |
-| Not seen by fights won | A Letter Opened, Entered in Full (gold), Broadside (the ship's guns), Seen From the Other Side (two faces ahead), Cut Stone, Stone Trap (guard breaks, rare in the simulator), One More Bed, One Door (the Ash Well already brings most spells to 1 mana) |
+| In or near +3 to +6 | Relicbreaker II +4.1, Wading Step +3.3, Corsair's Eye II +3.0, Trapwright II +3.0, Bleeding Hull +2.8, Broken Sword, Open Hand +2.8 |
+| Small or within the noise | Berserker II +2.2, Fever Blade II +2.2, A Song Sung Over It +2.3, Fen Guide II +2.0, Tapped Sap +1.5, Ledger Knife II +1.5, Twice the Spoil +1.5, Long Vigil II +1.4, Censer Mage II +1.3, Spear at the Wall +1.2, Boarding Heart +1.0, Burden-Bearer II +1.0, Tempest Toll II +1.0, The Accusing Smoke +0.8, Paid in the Deep +0.7, Briar Guard II +0.6, Lantern Vanguard II +0.4, Fallen Knight’s Fire +0.4, Honest Fire +0.3, Keep the Light +0.2, Hand-Signed Wall +0.1, The Name Sung 0.0, Ashen Hand II −0.1, Debt Forgiven −0.1, Name on the List −0.3, Warm Hands −0.3, One Witness, Once −0.5, Counted Breath −1.3, Beacon II −1.3, Take It Down −1.9, Bell-Voiced −1.9 |
+| Not seen by fights won | A Letter Opened +0.9, Entered in Full +0.5 (gold), Broadside 0.0 (the ship's guns), Seen From the Other Side +0.6 (two faces ahead), Cut Stone 0.0, Stone Trap +2.0 (guard breaks, rare in the simulator), One More Bed +1.5, One Door +1.5 (the Ash Well already brings most spells to 1 mana): all within the noise |
 
-**Why so many read small:** the mage's and cleric's gifts build on rules the autoplay seldom reaches (a full Well, an overflow, mana spent), as in 2a. Rank II on a specialisation worth +3 to +5 adds half of that, which is inside the noise at 60 runs. None of them makes fights longer; the boss curve (boss_balance_test) holds.
+On v2.10.0 the gifts that read +4 to +7 before v1.915 (Boarding Heart +6.7, Briar Guard II +6.6, Debt Forgiven +6.2, Hand-Signed Wall +5.9, One Witness, Once +5.2, Berserker II +4.7, Counted Breath +3.9) read −1.3 to +2.2. One Witness, Once was +13.2 when it refilled the whole Well from round 2.
+
+**Why so many read small:** the mage's and cleric's gifts build on rules the autoplay seldom reaches (a full Well, an overflow, mana spent), as in 2a. Rank II on a specialisation worth +3 to +5 adds half of that, which is inside the noise at 60 runs; on v2.10.0 most specialisations themselves read under +3 (step 2a), so their gifts have less to add to. None of them makes fights longer. The boss curve (boss_balance_test) was not re-run here.
 
 ### Changes to Narrative's texts (2b)
 
@@ -114,7 +126,7 @@ The design is in `docs/proposals/profession-clan-mechanics.md`; the words are Na
 - It comes with the chapter's offer, once a chapter, with no ripple. It is logged as "Loyalty's price · <patron>".
 - There is no combat penalty: the cost is the shops, the offers, and the specialisations above.
 
-**What a loyal run's rivals end at** (Trusted in chapter 3, Sworn in chapter 5, eight chapters; `LOYALTY_REPORT=1 flutter test test/loyalty_test.dart`). The drift adds −20 to each rival by the end, on top of the ripple and the swearing's cost.
+**What a loyal run's rivals end at** (Trusted in chapter 3, Sworn in chapter 5, eight chapters; `LOYALTY_REPORT=1 flutter test test/loyalty_test.dart`). The drift adds −20 to each rival by the end, on top of the ripple and the swearing's cost. Re-run on v2.10.0: every figure is the same.
 
 | Patron | Hunted by the end | The others |
 |---|---|---|
@@ -139,16 +151,18 @@ The words are Narrative's (`docs/proposals/specialisation-texts-2.md` §1). The 
 
 | Gift | Clan, profession | Rule | Won over the core (60 runs) |
 |---|---|---|---|
-| Standfast | Vigil, warrior | A Defend face adds 1 Fury | +2.3 |
-| Burning Penance | Penitents, warrior | A Mana face adds 1 Fury | 0 (the autoplay's warrior die has no Mana face) |
-| Brimming Draught | Mire, cleric | A potion's healing past full feeds the Watchfire | 0 (the autoplay drinks below 40% health) |
-| Double Kindling | Compact, mage | A Fire spell's reaction counts twice | 0 (the autoplay's spells seldom meet another element) |
-| Lingering Hex | Mire, mage | A spell's status lasts 1 turn more | 0 (the autoplay seldom casts a status spell) |
-| Stitch-Thrust | Vigil, rogue | Healing past full strikes the first foe for as much | −1.0 (noise: a rogue seldom heals past full) |
-| Pitch Hand | Compact, rogue | Flurry's second hit slows its target (Weaken 15%, 1 turn) | +1.6 (+6.4 with the Vanguard's 25%, 2-turn Weaken, so lightened) |
-| Second Broadside | Dominion, ranger | Once a fight, a drawn face that would not strike goes back, and the Trail draws again | +1.7 |
+| Standfast | Vigil, warrior | A Defend face adds 1 Fury | −1.1 (was +2.3) |
+| Burning Penance | Penitents, warrior | A Mana face adds 1 Fury | +0.5 (was 0: the autoplay's warrior die has no Mana face) |
+| Brimming Draught | Mire, cleric | A potion's healing past full feeds the Watchfire | +1.1 (was 0: the autoplay drinks below 40% health) |
+| Double Kindling | Compact, mage | A Fire spell's reaction counts twice | −0.7 (was 0: the autoplay's spells seldom meet another element) |
+| Lingering Hex | Mire, mage | A spell's status lasts 1 turn more | +0.4 (was 0: the autoplay seldom casts a status spell) |
+| Stitch-Thrust | Vigil, rogue | Healing past full strikes the first foe for as much | +0.6 (was −1.0; noise: a rogue seldom heals past full) |
+| Pitch Hand | Compact, rogue | Flurry's second hit slows its target (Weaken 15%, 1 turn) | +3.4 (was +1.6; +6.4 with the Vanguard's 25%, 2-turn Weaken, so lightened) |
+| Second Broadside | Dominion, ranger | Once a fight, a drawn face that would not strike goes back, and the Trail draws again | +2.9 (was +1.7) |
 
-**Target:** about half a main specialisation (+1 to +3). The four that read 0 are real for a player who builds for them: a warrior with a Mana die, a cleric drinking at full, a mage mixing elements or casting hexes.
+Measured on v2.10.0 with `SPECS_RUNS=60 SPECS_ONLY=<the eight ids> flutter test test/specialisations_test.dart` (seed 11, random strategy); at 60 runs a line is ±3–4.
+
+**Target:** about half a main specialisation (+1 to +3). The four that read 0 before now read −0.7 to +1.1, which is the noise at 60 runs, not a sign they fire. They are real for a player who builds for them: a warrior with a Mana die, a cleric drinking at full, a mage mixing elements or casting hexes.
 
 **Changed from Narrative's text:** Second Broadside plays itself, with no button: "Once a fight, a face that would not strike goes back to the bottom of the run, and you draw again."
 
@@ -161,7 +175,7 @@ Sworn to a clan, its rivals may send hunters onto the roads (`lib/data/rival_hun
   - **Vigil, Compact, Mire:** Narrative's six (`docs/proposals/rival-hunters.md`), with their battle cries. They are hunters only (`hunterOnly`), never an ordinary draw.
   - **Dominion, Crows, Penitents:** fighters already on the roads (the Inquisition Soldier and High Warden; the Smuggler Captain and Brine Jack; the Masked and Inquisition Penitents). They have no cry yet, so they use a generic line.
 - **The ambush:** "{name} bars the road. {cry}", with the reason "{clan}: your oath to {sworn} is not forgiven." Narrative may reword it (the words are in `rival_hunters.dart`).
-- **In the simulator** (`RIVALS_RUNS=100 flutter test test/rival_hunters_test.dart`, four strategies): 0.96 rival hunters a run, in 55 of 100 runs, beside 1.83 alignment hunters a run.
+- **In the simulator** (`RIVALS_RUNS=100 flutter test test/rival_hunters_test.dart`, four strategies, seed 17): 0.77 rival hunters a run, in 52 of 100 runs, beside 2.80 alignment hunters a run (v2.10.0; was 0.96 in 55 runs, beside 1.83).
 - **Not in this step:** sparing or talking a hunter down (Narrative's suggestion for the Vigil and Compact hunters). They fight.
 
 ## Not yet
