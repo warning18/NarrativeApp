@@ -506,9 +506,13 @@ extension _FightBoardView on _FightScreenState {
             : _seats;
     final rng = Random(_rollCount * 131 + _roundsStarted * 17 + index * 7);
     final base = seats[index % seats.length];
+    // The die stands at the top of its tile, so a seat higher than half a
+    // tile puts it above the board: on a short board (105 dp at 320 x 568,
+    // French, 1.3x text) it was cut by 12 dp (#1141).
+    final y = (base.dy + (rng.nextDouble() - 0.5) * 0.1) * board.height;
     return Offset(
       (base.dx + (rng.nextDouble() - 0.5) * 0.08) * board.width,
-      (base.dy + (rng.nextDouble() - 0.5) * 0.1) * board.height,
+      max(y, min(_dieCube - 4, board.height * 0.6)),
     );
   }
 

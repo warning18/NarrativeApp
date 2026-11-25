@@ -77,12 +77,12 @@ TowerCardText towerCardText(WidgetRef ref, TowerReward reward, {int tier = 0}) {
               ? tr(ref, 'tower_kind_rank_up')
               : '${tr(ref, 'tower_kind_rank_up')} · '
                   '${towerGiftKind(ref, reward.clan)}',
-          tr(ref, 'tower_rank_up_name')
-              .replaceAll(
-                  '{skill}', skillDisplayName(reward.id, language: lang))
-              .replaceAll('{from}', '${tier + 1}')
-              .replaceAll('{to}', '${tier + 2}'),
-          tr(ref, 'tower_rank_up_text'));
+          // The name is the skill; the step ("rank 1 to 2") leads the text, so
+          // a long French name does not wrap tight in the plate (Core's note
+          // on #1134).
+          skillDisplayName(reward.id, language: lang),
+          '${tr(ref, 'tower_rank_up_step').replaceAll('{from}', '${tier + 1}').replaceAll('{to}', '${tier + 2}')}\n'
+          '${tr(ref, 'tower_rank_up_text')}');
     case TowerRewardKind.clanOath:
       // A clan offers its oath (Core's v1.855; UX-2 dresses the card).
       return TowerCardText(
@@ -227,8 +227,10 @@ class _TowerOfferViewState extends ConsumerState<TowerOfferView> {
               size: iconSize, color: InkColors.of(context).gold));
     }
     if (tarot) {
-      final w =
-          (room - 8 * (widget.run.offer.length - 1)) / widget.run.offer.length;
+      // A lone card (the oath alone) is one of three, centred: not a
+      // screen-high black tarot (#1145).
+      final slots = widget.run.offer.length < 2 ? 3 : widget.run.offer.length;
+      final w = (room - 8 * (slots - 1)) / slots;
       return TowerTarotCard(
         key: key,
         width: w,
@@ -419,12 +421,17 @@ class _TowerOfferViewState extends ConsumerState<TowerOfferView> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   if (tarot)
-                    Row(crossAxisAlignment: CrossAxisAlignment.end, children: [
-                      for (var i = 0; i < cards.length; i++) ...[
-                        if (i > 0) const SizedBox(width: 8),
-                        cards[i],
-                      ],
-                    ])
+                    Row(
+                        mainAxisAlignment: offer.length < 2
+                            ? MainAxisAlignment.center
+                            : MainAxisAlignment.start,
+                        crossAxisAlignment: CrossAxisAlignment.end,
+                        children: [
+                          for (var i = 0; i < cards.length; i++) ...[
+                            if (i > 0) const SizedBox(width: 8),
+                            cards[i],
+                          ],
+                        ])
                   else
                     for (final c in cards)
                       Padding(
