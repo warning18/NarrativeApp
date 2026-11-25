@@ -17,6 +17,9 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:narrative_data_app/combat/combat_engine.dart' show maxSkillTier;
+import 'package:narrative_data_app/combat/dice_faces.dart' show isOpenSkillFace;
+import 'package:narrative_data_app/data/sim_growth.dart' show simSkillScore;
+import 'package:narrative_data_app/data/tower/tower_progress.dart';
 import 'package:narrative_data_app/data/tower/tower_bot.dart';
 import 'package:narrative_data_app/data/tower/tower_hero.dart';
 import 'package:narrative_data_app/data/tower/tower_rewards.dart';
@@ -85,13 +88,6 @@ void main() {
       }
     });
 
-    test('a skill at the last tier is not ranked up again', () {
-      final maxed = view(tiers: {
-        for (final id in hero.diceSkillAssignments.values) id: maxSkillTier,
-      });
-      expect(towerRankUpFor(newSkill, maxed, data.skills), isNull);
-    });
-
     test('the best skill on the die is the one ranked up', () {
       // All the skills of the game known: none new can find a face.
       final all = {
@@ -103,6 +99,147 @@ void main() {
       if (up != null) {
         expect(crowded.diceSkillAssignments.values, contains(up));
       }
+    });
+  });
+
+  // #1147 (the user's call: only skills on the die): a rank-up names a
+  // skill on the die in play, and the tier keeps that skill there when a
+  // later skill card, or a die rolled afresh, places the die's skills again.
+  group('a rank-up stays on the die (#1147)', () {
+    double score(String id) =>
+        simSkillScore(data.skills[id] as Map<String, dynamic>);
+    // The skills that fight from a face (no mana skill), best first.
+    final fighting = [
+      for (final MapEntry(:key, :value) in data.skills.entries)
+        if (value is Map<String, dynamic> &&
+            ((value['damageMultiplier'] as num?) ?? 1) > 0)
+          key,
+    ]..sort((a, b) {
+        final byScore = score(b).compareTo(score(a));
+        return byScore != 0 ? byScore : a.compareTo(b);
+      });
+    // The best of them not learned, the rest learned: the die is full, its
+    // faces held by the next best, and the best outranks every one of them
+    // (with no tier, it would push the weakest off its face).
+    final stronger = fighting.first;
+    final full = hero.copy()..unlockedSkillIds.addAll(fighting.skip(1));
+    towerApplyReward(
+        full, TowerReward(TowerRewardKind.skill, id: fighting.last), data);
+    final placedIds = full.diceSkillAssignments.values.toSet();
+    final weakest = (placedIds.toList()
+          ..sort((a, b) => score(a).compareTo(score(b))))
+        .first;
+    TowerHeroView view(
+            {Set<String>? unlocked, Map<String, int> tiers = const {}}) =>
+        TowerHeroView(
+          raceId: 'human',
+          professionId: 'warrior',
+          health: 30,
+          maxHealth: 30,
+          unlockedSkillIds: unlocked ?? full.unlockedSkillIds,
+          diceFaces: full.diceFaces,
+          diceSkillAssignments: full.diceSkillAssignments,
+          skillTiers: tiers,
+        );
+
+    test('the die is full and the stronger skill outranks it', () {
+      expect(placedIds.length, full.diceFaces.where(isOpenSkillFace).length);
+      expect(placedIds, isNot(contains(stronger)));
+      expect(placedIds.every((id) => score(stronger) > score(id)), isTrue);
+    });
+
+    test('a stronger skill taken later does not push a ranked one off', () {
+      // The control: with no tier the weakest gives its face up.
+      final plain = full.copy();
+      towerApplyReward(
+          plain, TowerReward(TowerRewardKind.skill, id: stronger), data);
+      expect(plain.diceSkillAssignments.values, isNot(contains(weakest)));
+      // Ranked once, it keeps its face.
+      final ranked = full.copy()..skillTiers[weakest] = 1;
+      towerApplyReward(
+          ranked, TowerReward(TowerRewardKind.skill, id: stronger), data);
+      expect(ranked.diceSkillAssignments.values, contains(weakest));
+    });
+
+    test('a rank-up never names a skill off the die', () {
+      // Every skill the hero has not learned, the die's skills ranked or
+      // not, a skill known but on no face (the stronger one) ranked too.
+      final known = {...full.unlockedSkillIds, stronger};
+      for (final tiers in [
+        <String, int>{},
+        {for (final id in placedIds) id: 1},
+        {stronger: 2, weakest: 1},
+      ]) {
+        final v = view(unlocked: known, tiers: tiers);
+        for (final id in data.skills.keys) {
+          if (placedIds.contains(id)) continue;
+          final up = towerRankUpFor(id, v, data.skills);
+          if (up != null) expect(placedIds, contains(up), reason: id);
+        }
+      }
+    });
+
+    test('a skill that would push a ranked one off is a rank-up instead', () {
+      // Every skill on the die ranked: the stronger one finds no face, so
+      // its card raises a skill on the die.
+      final allRanked = view(tiers: {for (final id in placedIds) id: 1});
+      final up = towerRankUpFor(stronger, allRanked, data.skills);
+      expect(up, isNotNull);
+      expect(placedIds, contains(up));
+      // With none ranked, it lands on a face: a skill card.
+      expect(towerRankUpFor(stronger, view(), data.skills), isNull);
+    });
+
+    test('over a batch, every skill ranked up is still on the die at the end',
+        () {
+      for (final progress in [const TowerProgress(), towerAllUnlocked]) {
+        for (var seed = 1; seed <= 40; seed++) {
+          final run = playTowerRun(
+              seed: seed,
+              data: data,
+              progress: progress,
+              events: towerEventsLive);
+          final end = towerHeroOf(run, data);
+          final onEnd = end.diceSkillAssignments.values.toSet();
+          final open = end.diceFaces.where(isOpenSkillFace).length;
+          final ranked = {
+            for (final card in run.taken.values)
+              if (card.kind == TowerRewardKind.rankUp) card.id,
+          };
+          // Each ranked skill is on the die at the end, or the die rolled
+          // (the bot's choice) has fewer open faces than the skills ranked,
+          // every one of them holding a ranked skill.
+          if (ranked.difference(onEnd).isNotEmpty) {
+            expect(onEnd.length, open, reason: 'seed $seed: a face left');
+            expect(ranked.containsAll(onEnd), isTrue,
+                reason: 'seed $seed: an unranked skill took a ranked face');
+          }
+        }
+      }
+    });
+  });
+
+  group('the fallback: nothing on the die to raise', () {
+    test('every skill on the die at the last tier: the skill card stays', () {
+      final maxed = view(tiers: {
+        for (final id in hero.diceSkillAssignments.values) id: maxSkillTier,
+      });
+      expect(towerRankUpFor(newSkill, maxed, data.skills), isNull);
+    });
+
+    test('a die with no open Skill face: the skill card stays', () {
+      final closed = TowerHeroView(
+        raceId: 'human',
+        professionId: 'warrior',
+        health: 30,
+        maxHealth: 30,
+        diceFaces: [
+          for (final face in hero.diceFaces)
+            if (!isOpenSkillFace(face)) face,
+        ],
+      );
+      expect(closed.diceFaces, isNotEmpty);
+      expect(towerRankUpFor(newSkill, closed, data.skills), isNull);
     });
   });
 

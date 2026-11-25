@@ -53,7 +53,11 @@ Future<TowerFightResult?> towerFightFor(
           for (final id in floor.enemyIds.skip(1)) id: records[id]!,
         },
         modifiers: floor.modifiersFor(run.professionId),
-        onRound: fight.onRound,
+        onRound: (round) {
+          fight.onRound(round);
+          // Begun: from here the fight is won or lost, even if the app closes.
+          if (round == 1) ref.read(towerProvider.notifier).beginFight();
+        },
       ));
       // The Tower's fights wear the Tower: a warden's or a boss's floor its
       // own picture, the others their band's, the hall's stone under the dice
@@ -72,8 +76,14 @@ Future<TowerFightResult?> towerFightFor(
     },
   ));
   ref.read(combatActiveProvider.notifier).state = false;
-  // Back before the first roll pops null: the floor was not fought.
-  if (won == null) return null;
+  // Back before the first roll pops null: the floor was not fought (a
+  // marker set all the same is taken back: the run as it was).
+  if (won == null) {
+    if (fight.rounds > 0) {
+      await ref.read(towerProvider.notifier).setRun(run);
+    }
+    return null;
+  }
   return TowerFightResult(
       won: won,
       healthLeft: fight.healthLeft,

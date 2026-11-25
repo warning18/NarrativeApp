@@ -15,6 +15,8 @@
 // each of the two cases; TOWER_OUT is where the batch's JSON goes.
 // TOWER_EVENTS (default 1) is the floor events' version the bot plays
 // (floor events PR 2: the curve is set with them on; 0, as before them).
+// TOWER_HEAT (default 0) is the Heat the batch's runs climb at (v2.9.0,
+// docs/simulation/tower-heat.md); the guards always climb at 0.
 import 'dart:convert';
 import 'dart:io';
 
@@ -95,20 +97,24 @@ const _topAll = (min: 0.18, max: 0.32);
 final _events =
     int.tryParse(Platform.environment['TOWER_EVENTS'] ?? '') ?? towerEventsLive;
 
+/// The Heat the batch plays (TOWER_HEAT; the guards play 0).
+final _heat = int.tryParse(Platform.environment['TOWER_HEAT'] ?? '') ?? 0;
+
 /// The first seeds of the in-suite batch (the full batch is TOWER_SEEDS).
 const _guardSeeds = 500;
 
 final _data = towerDataFromAssets();
 
 List<TowerRun> _play(int first, int count, TowerProgress progress,
-        {int? events}) =>
+        {int? events, int heat = 0}) =>
     [
       for (var seed = first; seed < first + count; seed++)
         playTowerRun(
             seed: seed,
             data: _data,
             progress: progress,
-            events: events ?? _events),
+            events: events ?? _events,
+            heat: heat),
     ];
 
 int _median(List<int> values) {
@@ -151,8 +157,8 @@ void main() {
         int.tryParse(Platform.environment['TOWER_SEEDS'] ?? '') ?? 500;
     final first = int.tryParse(Platform.environment['TOWER_FIRST'] ?? '') ?? 1;
     final cases = {
-      'none': _play(first, count, const TowerProgress()),
-      'all': _play(first, count, towerAllUnlocked),
+      'none': _play(first, count, const TowerProgress(), heat: _heat),
+      'all': _play(first, count, towerAllUnlocked, heat: _heat),
     };
     File(out)
       ..createSync(recursive: true)
@@ -161,6 +167,7 @@ void main() {
         'count': count,
         'top': towerTop,
         'events': _events,
+        'heat': _heat,
         'cases': {
           for (final e in cases.entries)
             e.key: [for (final r in e.value) _json(r)],
