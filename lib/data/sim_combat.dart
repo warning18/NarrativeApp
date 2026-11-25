@@ -306,7 +306,8 @@ class SimCharacter {
           faces: faces,
           current: const {},
           unlocked: unlockedSkillIds,
-          skills: skills);
+          skills: skills,
+          tiers: skillTiers);
       final v = simDieValue(faces, placed, skills,
           damage: baseDamage, caster: caster, maxHealth: maxHealth);
       if (v > now) better.add((id: id, faces: faces, placed: placed, value: v));
@@ -350,7 +351,8 @@ class SimCharacter {
           faces: faces,
           current: const {},
           unlocked: unlockedSkillIds,
-          skills: skills);
+          skills: skills,
+          tiers: skillTiers);
       if (!simDieHitsWeakness(faces, placed, skills, foes)) continue;
       matchOwned = true;
       final v = simDieValueAgainst(faces, placed, skills, foes,
@@ -380,7 +382,8 @@ class SimCharacter {
           faces: e.value,
           current: const {},
           unlocked: unlockedSkillIds,
-          skills: skills);
+          skills: skills,
+          tiers: skillTiers);
       if (simDieHitsWeakness(e.value, placed, skills, foes)) return true;
     }
     return false;
@@ -798,7 +801,8 @@ class SimCharacter {
               faces: faces,
               current: const {},
               unlocked: unlockedSkillIds,
-              skills: skills),
+              skills: skills,
+              tiers: skillTiers),
           skills,
           damage: baseDamage,
           caster: caster,
@@ -935,7 +939,8 @@ class SimCharacter {
           faces: faces,
           current: const {},
           unlocked: unlockedSkillIds,
-          skills: skills);
+          skills: skills,
+          tiers: skillTiers);
       final v = simDieValue(faces, placed, skills,
           damage: baseDamage, caster: caster, maxHealth: maxHealth);
       // Bought only when it would be rolled: worth more, and its trial
