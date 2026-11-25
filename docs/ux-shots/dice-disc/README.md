@@ -29,3 +29,11 @@ three are gone:
    is round, dark, with a violet-looking rim, and behind the upper half of the die). The
    plate is now drawn a third larger from its foot, so the arch is cut off and only the stone
    floor is left.
+
+`dice-archway-before-after-412.png`: the same state (floor 5, Overseer Renn, rolled), on
+boards 412 x 740 and 412 x 700 high, before and after. Before, the dark archway between
+the two pillars at the top of Art's plate sits right behind the die; after, only the stone
+floor. (The faces differ between the pictures: the die rolls at random.)
+
+The aim bubble's shield: the block's label was drawn with a "⛨" character that is missing in
+some fonts (an empty box before the number); it is now an icon.
