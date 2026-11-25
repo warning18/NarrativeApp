@@ -123,3 +123,13 @@ The stall lines replace the earlier draft's `tower_shop_*` salve and potion line
 - All keys are new proposals; none renames an existing key.
 - “Atout” is the one word for perks everywhere (tab, door, end line), “apparence” for looks.
 - Coins are “pièces”, marks are “marques”: the two currencies never share a word.
+
+## G. The stall's three placeholder strings (claude/core-coins, b0301edf)
+
+| key | EN | FR |
+|---|---|---|
+| tower_merchant_body | Salves, potions and the odd boon by candlelight, paid in Tower coins. Nothing here leaves the Tower, and neither do the coins. | Onguents, potions et parfois une faveur, à la lueur d’une chandelle, payés en pièces de la Tour. Rien d’ici ne quitte la Tour, pas même les pièces. |
+| tower_merchant_price | {n} coins | {n} pièces |
+| tower_merchant_price_one | {n} coin | {n} pièce |
+
+`tower_merchant_body` now names the boon (the stall sells one since the coins change) and says the coins end with the climb, in words, no figure. The two price strings were already correct (plural and singular, EN and FR; the FR `pièce` takes no no-break space); I keep them as they are: a price chip wants the plain form, and `tower_coins_name` (“Tower coins”, « Pièces de la Tour ») carries the flavour.
