@@ -5,8 +5,14 @@
 // (towerRankUpFor); each named the die's best skill, so the three clans of
 // floor 1 offered the same rank-up. A table now never holds two cards of
 // the same kind and id: a later rank-up names the next best skill on the
-// die, and when none is left the clan's next gift, a pool skill, or no card
-// at all takes its place.
+// die, and when none is left the clan's next gift or a pool skill takes its
+// place.
+//
+// Always three (the user's call, v2.10.18): a table meant to deal three
+// cards (the clans' offer, a boon floor's, the stall's boon, a reroll, a
+// shortcut's landing) never deals fewer. A clan left without a card tries
+// all its gifts, then a clan of the pool not dealt, then a boon card fills
+// the place (a skill, a die, a spell); never a repeat.
 import 'package:flutter_test/flutter_test.dart';
 
 import 'package:narrative_data_app/combat/combat_engine.dart' show maxSkillTier;
@@ -36,6 +42,11 @@ List<String> _duplicates(List<TowerReward> table) {
       if (!seen.add('${c.kind.name}:${c.id}')) '${c.kind.name}:${c.id}',
   ];
 }
+
+/// The cards of [table] beside its oaths (an oath is a card of its own,
+/// dealt beside the three).
+int _gifts(List<TowerReward> table) =>
+    table.where((c) => c.kind != TowerRewardKind.clanOath).length;
 
 void main() {
   final data = towerDataFromAssets();
@@ -72,6 +83,8 @@ void main() {
       final table = towerRunOfferFor(run, data, 1, hero, clansDue: true);
       final dup = _duplicates(table);
       if (dup.isNotEmpty) bad.add('seed $seed: $table');
+      // Always three.
+      expect(_gifts(table), 3, reason: 'seed $seed: $table');
       final ups = [
         for (final c in table)
           if (c.kind == TowerRewardKind.rankUp) c.id,
@@ -102,6 +115,13 @@ void main() {
         final floor = floors[seed % floors.length];
         final table = towerRunOfferFor(run, data, floor, hero);
         if (_duplicates(table).isNotEmpty) bad.add('seed $seed: $table');
+        // Always three; Fourth card's extra skill on top, when one is left.
+        if (seed.isEven) {
+          expect(_gifts(table), inInclusiveRange(3, 4),
+              reason: 'seed $seed: $table');
+        } else {
+          expect(_gifts(table), 3, reason: 'seed $seed: $table');
+        }
       }
       expect(bad, isEmpty, reason: bad.take(5).join('\n'));
     });
@@ -113,6 +133,7 @@ void main() {
         final hero = towerHeroOf(run, data);
         final table = towerStallBoonFor(run, data, 1 + seed % 29, hero);
         if (_duplicates(table).isNotEmpty) bad.add('seed $seed: $table');
+        expect(_gifts(table), 3, reason: 'seed $seed: $table');
       }
       expect(bad, isEmpty, reason: bad.take(5).join('\n'));
     });
@@ -132,6 +153,8 @@ void main() {
           if (_duplicates(choosing.offer).isNotEmpty) {
             bad.add('seed $seed reroll $i: ${choosing.offer}');
           }
+          expect(_gifts(choosing.offer), 3,
+              reason: 'seed $seed reroll $i: ${choosing.offer}');
         }
       }
       expect(bad, isEmpty, reason: bad.take(5).join('\n'));
@@ -146,13 +169,20 @@ void main() {
         final table =
             towerRunOfferFor(run, data, floor, hero, clansDue: seed.isOdd);
         if (_duplicates(table).isNotEmpty) bad.add('seed $seed: $table');
+        // A boon floor's or a clans' table: three (an oath alone, or no
+        // clans' offer by chance, is not one).
+        if (towerBoonFloors.contains(floor) ||
+            table.any((c) => c.clan.isNotEmpty)) {
+          expect(_gifts(table), 3, reason: 'seed $seed floor $floor: $table');
+        }
       }
       expect(bad, isEmpty, reason: bad.take(5).join('\n'));
     });
   });
 
   // (c) A die with a single skill that can still rank up: at most one
-  // rank-up on a table, the others another kind or no card.
+  // rank-up on a table, the others another gift (a skill that lands on a
+  // face, a die, a spell), still three cards.
   test('one rankable skill: at most one rank-up a table', () {
     var withRankUp = 0;
     for (var seed = 1; seed <= _seeds; seed++) {
@@ -190,6 +220,7 @@ void main() {
         spells: data.spells,
       );
       expect(_duplicates(table), isEmpty, reason: 'seed $seed: $table');
+      expect(_gifts(table), 3, reason: 'seed $seed: $table');
       final ups = table.where((c) => c.kind == TowerRewardKind.rankUp);
       expect(ups.length, lessThanOrEqualTo(1), reason: 'seed $seed: $table');
       for (final c in ups) {

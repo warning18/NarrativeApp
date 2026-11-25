@@ -89,9 +89,11 @@ void main() {
   // clan's rank-up names the next best skill on the die when the best is
   // on the table already; the bot takes the clan card of the highest
   // standing, now and then a lesser rank-up: these were 59 / 209 / 9208
-  // and 128 / 309 / 10812.
-  const none = (top: 53, floor20: 209, floorSum: 9174);
-  const all = (top: 121, floor20: 305, floorSum: 10771);
+  // and 128 / 309 / 10812. Always three (a short table filled: a clan's
+  // other gift, else a die or a spell): 53 / 209 / 9174 and
+  // 121 / 305 / 10771 before.
+  const none = (top: 53, floor20: 210, floorSum: 9176);
+  const all = (top: 119, floor20: 305, floorSum: 10754);
 
   test('the live Tower, no unlocks, is the pinned curve', () {
     final m = _measure(const TowerProgress());
