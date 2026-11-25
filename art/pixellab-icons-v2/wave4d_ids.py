@@ -1,0 +1,13 @@
+"""Wave 4 redo in the DARK look: 64 foe icons, 32 px. Same objects as wave4_ids.py with the dark prefix and a rim light by kind/faction."""
+import json,sys
+sys.path.insert(0,'art/pixellab-icons-v2');import wave4_ids as W4
+E4=json.load(open('assets/gamedata/enemies.json'))
+M="grim dark fantasy chibi pixel art, worn and weathered, ominous mood, muted desaturated colours, deep black shadows, heavy chunky silhouette, thick dark outline, one strong rim light of "
+RIM={'dominion':'cold blue','choir':'cold blue','crows':'ember gold','compact':'ember gold','vigil':'ember gold','mire':'sickly green','penitents':'void violet','pit':'ember gold','giants':'cold blue','tidekin':'sickly green'}
+KIND={'undead':'sickly green','void':'void violet','demon':'ember gold','beast':'ember gold','construct':'ember gold','angel':'cold blue','giant':'cold blue'}
+def rim(k):
+    e=E4[k];return RIM.get(e.get('faction') or '') or KIND.get(e.get('kind')) or 'cold blue'
+IDS={k:M+rim(k)+", "+v for k,v in W4.IDS.items()}
+SUFFIX=", game icon, no text, centred"
+T=""
+RETRY={}
