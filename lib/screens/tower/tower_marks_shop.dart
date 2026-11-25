@@ -243,3 +243,97 @@ class TowerLooksTab extends ConsumerWidget {
     ]);
   }
 }
+
+/// The door's perk slots (hidden while no perk is owned): one box a slot,
+/// the perk worn there or "Slot n: choose"; a tap picks among the owned ones.
+class TowerDoorPerks extends ConsumerWidget {
+  const TowerDoorPerks({super.key});
+
+  Future<void> _pick(
+      BuildContext context, WidgetRef ref, int slot, List<String> worn) async {
+    final progress = ref.read(towerProvider).value!.progress;
+    final chosen = await showDialog<String?>(
+      context: context,
+      builder: (ctx) => SimpleDialog(
+        backgroundColor: inkBlack,
+        shape: const RoundedRectangleBorder(
+            side: BorderSide(color: inkPaper, width: 1.2)),
+        children: [
+          for (final id in progress.perks)
+            SimpleDialogOption(
+              key: Key('tower_door_pick_$id'),
+              onPressed: () => Navigator.of(ctx).pop(id),
+              child: Text(tr(ref, 'tower_perk_$id'),
+                  style: Theme.of(ctx)
+                      .textTheme
+                      .titleSmall
+                      ?.copyWith(color: inkPaper)),
+            ),
+          SimpleDialogOption(
+            key: const Key('tower_door_pick_none'),
+            onPressed: () => Navigator.of(ctx).pop(''),
+            child: Text(tr(ref, 'tower_back'),
+                style: Theme.of(ctx)
+                    .textTheme
+                    .titleSmall
+                    ?.copyWith(color: inkGrey)),
+          ),
+        ],
+      ),
+    );
+    if (chosen == null) return;
+    final next = [...worn];
+    while (next.length < towerPerkSlots) {
+      next.add('');
+    }
+    next[slot] = chosen;
+    await ref.read(towerProvider.notifier).wearPerks([
+      for (final id in next)
+        if (id.isNotEmpty) id
+    ]);
+  }
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final progress = ref.watch(towerProvider).value!.progress;
+    if (progress.perks.isEmpty) return const SizedBox.shrink();
+    final worn = progress.wornPerks;
+    final theme = Theme.of(context);
+    return Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+      Text(tr(ref, 'tower_door_perks'),
+          style: theme.textTheme.titleSmall
+              ?.copyWith(fontFamily: InkFonts.display, color: inkPaper)),
+      const SizedBox(height: 6),
+      Row(children: [
+        for (var i = 0; i < towerPerkSlots; i++) ...[
+          if (i > 0) const SizedBox(width: 8),
+          Expanded(
+            child: InkWell(
+              key: Key('tower_door_slot_$i'),
+              onTap: () => _pick(context, ref, i, worn),
+              child: Container(
+                height: 44,
+                alignment: Alignment.centerLeft,
+                padding: const EdgeInsets.symmetric(horizontal: 10),
+                decoration: BoxDecoration(
+                    color: inkBlack,
+                    border: Border.all(
+                        color: i < worn.length ? inkPaper : inkGrey,
+                        width: i < worn.length ? 2.5 : 1)),
+                child: Text(
+                    i < worn.length
+                        ? tr(ref, 'tower_perk_${worn[i]}')
+                        : tr(ref, 'tower_door_slot')
+                            .replaceAll('{n}', '${i + 1}'),
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
+                    style: theme.textTheme.bodyMedium?.copyWith(
+                        color: i < worn.length ? inkPaper : inkGrey)),
+              ),
+            ),
+          ),
+        ],
+      ]),
+    ]);
+  }
+}

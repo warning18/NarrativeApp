@@ -117,12 +117,17 @@ class _TowerFloorScreenState extends ConsumerState<_TowerFloorBody> {
 
   /// An ended run: its marks banked, its end screen in this one's place.
   Future<void> _finish(TowerRun over) async {
-    final heatBefore = ref.read(towerProvider).value?.progress.heatWon ?? -1;
+    final before = ref.read(towerProvider).value?.progress;
+    final heatBefore = before?.heatWon ?? -1;
+    final firstWin = before?.firstWinBonusOf(over) ?? 0;
     final progress = await ref.read(towerProvider.notifier).end(over);
     if (!mounted) return;
     await Navigator.of(context).pushReplacement(MaterialPageRoute(
         builder: (_) => TowerEndScreen(
-            run: over, progress: progress, heatBefore: heatBefore)));
+            run: over,
+            progress: progress,
+            heatBefore: heatBefore,
+            firstWinBonus: firstWin)));
   }
 
   Future<void> _fight(TowerRun run, TowerData data) async {
