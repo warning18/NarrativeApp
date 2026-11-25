@@ -1,0 +1,36 @@
+{
+  "group_id": "2dc58b11-8aa3-4cf4-95c3-7c06c07a8e43",
+  "states": [
+    {
+      "character": {
+        "id": "e91f14cc-6f63-471b-bc1a-333eabeacbfb",
+        "name": "Idle",
+        "prompt": "a tall thin exorcist in a long dark grey robe with a white mask marked with a red line, carrying a big curved horn in one hand, a rope belt, chibi",
+        "size": {
+          "width": 48,
+          "height": 48
+        },
+        "template_id": "mannequin",
+        "directions": 8,
+        "view": "side",
+        "created_at": "2026-11-25T16:04:56.388219+00:00"
+      },
+      "folder": "Idle",
+      "frames": {
+        "rotations": {
+          "south": "Idle/rotations/south.png",
+          "south-east": "Idle/rotations/south-east.png",
+          "east": "Idle/rotations/east.png",
+          "north-east": "Idle/rotations/north-east.png",
+          "north": "Idle/rotations/north.png",
+          "north-west": "Idle/rotations/north-west.png",
+          "west": "Idle/rotations/west.png",
+          "south-west": "Idle/rotations/south-west.png"
+        },
+        "animations": {}
+      }
+    }
+  ],
+  "export_version": "3.1",
+  "export_date": "2026-11-25T16:06:58.285036"
+}
