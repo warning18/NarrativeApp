@@ -16,6 +16,7 @@ import 'package:narrative_data_app/data/tower/tower_tables.dart';
 import 'package:narrative_data_app/data/tower/tower_save.dart';
 import 'package:narrative_data_app/main.dart';
 import 'package:narrative_data_app/screens/tower/ink/ink_sprites.dart';
+import 'package:narrative_data_app/screens/tower/tower_clan_cards.dart';
 import 'package:narrative_data_app/screens/tower/tower_tarot_card.dart';
 
 import 'support/fonts.dart';
@@ -75,13 +76,14 @@ void main() {
       await settle(10);
     }
     await settle(18);
-    final card = find.byType(TowerTarotCard);
+    // The clan oath alone is the oath row of the clans' table (a wide, short
+    // paper row), never a screen-high black tarot (#1145).
+    final card = find.byType(TowerClanOathRow);
     expect(card, findsOneWidget);
+    expect(find.byType(TowerTarotCard), findsNothing);
     final size = tester.getSize(card);
-    expect(size.width, lessThan(130), reason: 'a third of 360, not all of it');
-    expect(size.height, lessThan(260));
-    final centre = tester.getCenter(card).dx;
-    expect(centre, closeTo(180, 6), reason: 'centred');
+    expect(size.height, lessThan(220), reason: 'short, not screen-high');
+    expect(size.width, lessThan(360));
     expect(tester.takeException(), isNull);
   });
 }
