@@ -1,6 +1,7 @@
 # Tower clan offers in the story's banner-and-card look (picture first, no PR)
 
-Toned down (user: "too colourful"): ink and paper only, the clan colour is one thin line; banner, late-oath line and wax seal kept. Sheet: `ink-cards.png` (EN 412, FR 360, a gift in hand).
+Design A (the user's pick): paper card, the gift's picture on a black plate, name in small caps, the wax seal the only colour; the oath row in the same spirit (banner on a black plate, paper body, late-oath line kept). Sheet: `ink-cards.png` (EN 412, FR 360, a gift in hand).
+
 
 The user's call: "for the propositions from clan keep the banner card style choice from story". Built on a branch (`claude/ux-2-clan-offer-cards`, from main v2.8.1) so the pictures are the real screen; no version, no PR until the user approves (the build would be v2.8.2+1071).
 

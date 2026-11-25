@@ -55,126 +55,69 @@ class TowerClanCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
+    // Design A (the user's pick): a paper card, the gift's picture on a black
+    // plate, the name in small caps, the wax seal the only colour.
+    return Container(
       width: towerClanCardWidth,
       height: towerClanCardHeight,
+      padding: const EdgeInsets.all(5),
+      decoration: BoxDecoration(
+          border: Border.all(
+              color: lit ? inkPaper : const Color(0x00000000), width: 2)),
       child: DecoratedBox(
         decoration: BoxDecoration(
-          color: inkBlack,
-          border: Border.all(
-              color: lit ? inkPaper : inkPaper.withValues(alpha: 0.45),
-              width: lit ? 3 : 2),
-          boxShadow: [
-            BoxShadow(
-                color: lit ? inkPaper : const Color(0xFF000000),
-                offset: const Offset(4, 4)),
-          ],
-        ),
-        child: Stack(children: [
-          // The art zone: plain ink, the banner and the plate on it.
-          const Positioned(
-            left: 0,
-            right: 0,
-            top: 0,
-            height: 150,
-            child: ColoredBox(color: inkDeep),
-          ),
-          Positioned(
-              left: 14,
-              top: 12,
-              width: 64,
-              height: 128,
-              child: FittedBox(fit: BoxFit.contain, child: flag)),
-          Positioned(
-            right: 14,
-            top: 38,
-            width: 78,
-            height: 78,
-            child: Container(
-              alignment: Alignment.center,
-              decoration: BoxDecoration(
-                  color: inkBlack.withValues(alpha: 0.85),
-                  border: Border.all(color: inkPaper, width: 1.5)),
-              child: icon,
-            ),
-          ),
-          if (rarity != null)
-            Positioned(
-                right: 8,
-                bottom: 196,
-                child: TowerSeal(rarity: rarity, size: 26)),
-          // The name on its band, in the clan's colour.
-          Positioned(
-            left: 0,
-            right: 0,
-            top: 150,
-            height: 34,
-            child: Container(
-              color: inkPaper,
-              alignment: Alignment.center,
-              padding: const EdgeInsets.symmetric(horizontal: 8),
-              child: FittedBox(
-                fit: BoxFit.scaleDown,
-                child: Text(name,
-                    maxLines: 1,
-                    style: const TextStyle(
-                        fontFamily: InkFonts.display,
-                        fontSize: 19,
-                        height: 1,
-                        color: inkOnPaper)),
+            color: inkPaper, border: Border.all(color: inkBlack, width: 3)),
+        child: Padding(
+          padding: const EdgeInsets.all(8),
+          child: DecoratedBox(
+            decoration:
+                BoxDecoration(border: Border.all(color: inkBlack, width: 1)),
+            child: Stack(children: [
+              Align(
+                alignment: const Alignment(0, -0.3),
+                child: Container(
+                  width: 124,
+                  height: 124,
+                  color: inkBlack,
+                  alignment: Alignment.center,
+                  child: SizedBox(
+                      width: 96,
+                      height: 96,
+                      child: FittedBox(fit: BoxFit.contain, child: icon)),
+                ),
               ),
-            ),
-          ),
-          // The clan's colour: one thin line under the name.
-          Positioned(
-              left: 0,
-              right: 0,
-              top: 184,
-              height: 4,
-              child: ColoredBox(color: color)),
-          Positioned(
-            left: 14,
-            right: 14,
-            top: 192,
-            bottom: 14,
-            child: Column(children: [
-              FittedBox(
-                fit: BoxFit.scaleDown,
-                child: Row(mainAxisSize: MainAxisSize.min, children: [
-                  for (var i = 0; i < tags.length; i++) ...[
-                    if (i > 0) const SizedBox(width: 4),
-                    tags[i],
-                  ],
+              if (rarity != null)
+                Positioned(right: 8, top: 8, child: TowerSeal(rarity: rarity)),
+              Positioned(
+                left: 8,
+                right: 8,
+                bottom: 14,
+                child: Column(mainAxisSize: MainAxisSize.min, children: [
+                  FittedBox(
+                    fit: BoxFit.scaleDown,
+                    child: Text(name.toUpperCase(),
+                        maxLines: 1,
+                        textAlign: TextAlign.center,
+                        style: const TextStyle(
+                            fontFamily: InkFonts.display,
+                            fontSize: 17,
+                            height: 1.05,
+                            color: inkOnPaper)),
+                  ),
+                  const SizedBox(height: 4),
+                  Text([clanName, if (standing != null) standing!].join(' · '),
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: TextStyle(
+                          fontFamily: InkFonts.prose,
+                          fontSize: 11,
+                          height: 1.2,
+                          color: inkOnPaper.withValues(alpha: 0.7))),
                 ]),
               ),
-              if (standing != null) ...[
-                const SizedBox(height: 8),
-                Text(standing!,
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                    style: const TextStyle(
-                        fontFamily: InkFonts.prose,
-                        fontWeight: FontWeight.w700,
-                        fontSize: 13,
-                        height: 1.1,
-                        color: inkPaper)),
-              ],
-              const Spacer(),
-              Container(height: 1, color: inkPaper.withValues(alpha: 0.3)),
-              const SizedBox(height: 6),
-              Text(greeting.isEmpty ? '' : '“$greeting”',
-                  textAlign: TextAlign.center,
-                  maxLines: 4,
-                  overflow: TextOverflow.ellipsis,
-                  style: const TextStyle(
-                      fontFamily: InkFonts.prose,
-                      fontStyle: FontStyle.italic,
-                      fontSize: 11.5,
-                      height: 1.25,
-                      color: inkPaper)),
             ]),
           ),
-        ]),
+        ),
       ),
     );
   }
@@ -211,113 +154,78 @@ class TowerClanOathRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // The same spirit as the cards: paper, the clan's banner on a black
+    // plate, the name in ink, the late-oath line or motto in italic.
+    const ink = TextStyle(
+        fontFamily: InkFonts.prose,
+        fontSize: 12,
+        height: 1.25,
+        color: inkOnPaper);
     return GestureDetector(
       behavior: HitTestBehavior.opaque,
       onTap: onTap,
-      child: DecoratedBox(
+      child: Container(
+        padding: const EdgeInsets.all(4),
         decoration: BoxDecoration(
-          color: inkBlack,
-          border: Border.all(
-              color: selected ? inkPaper : inkPaper.withValues(alpha: 0.45),
-              width: selected ? 3 : 2),
-          boxShadow: [
-            BoxShadow(
-                color: selected ? inkPaper : const Color(0xFF000000),
-                offset: const Offset(3, 3)),
-          ],
-        ),
-        child: IntrinsicHeight(
-          child: Row(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
-            // The banner on plain ink, the clan's colour one thin line beside it.
-            Container(
-              width: 4,
-              color: color,
-            ),
-            Container(
-              width: 52,
-              padding: const EdgeInsets.symmetric(vertical: 6),
-              color: inkDeep,
-              alignment: Alignment.center,
-              child: SizedBox(
-                  height: 88,
-                  child: FittedBox(fit: BoxFit.contain, child: flag)),
-            ),
-            Expanded(
-              child: Padding(
-                padding: const EdgeInsets.all(8),
-                child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Row(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Container(
-                              width: 40,
-                              height: 40,
-                              alignment: Alignment.center,
-                              decoration: BoxDecoration(
-                                  color: inkDeep,
-                                  border:
-                                      Border.all(color: inkPaper, width: 1.2)),
-                              child: FittedBox(child: icon),
-                            ),
-                            const SizedBox(width: 8),
-                            Expanded(
-                              child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Text(name,
-                                        maxLines: 2,
-                                        overflow: TextOverflow.ellipsis,
-                                        style: const TextStyle(
-                                            fontFamily: InkFonts.display,
-                                            fontSize: 15,
-                                            height: 1.05,
-                                            color: inkPaper)),
-                                    const SizedBox(height: 3),
-                                    Wrap(
-                                        spacing: 4,
-                                        runSpacing: 2,
-                                        children: tags),
-                                  ]),
-                            ),
-                          ]),
-                      const SizedBox(height: 6),
-                      Text(text,
-                          maxLines: 2,
-                          overflow: TextOverflow.ellipsis,
-                          style: const TextStyle(
-                              fontFamily: InkFonts.prose,
-                              fontSize: 12,
-                              height: 1.25,
-                              color: inkPaper)),
-                      if (standing != null)
-                        Padding(
-                          padding: const EdgeInsets.only(top: 3),
-                          child: Text(standing!,
-                              style: const TextStyle(
-                                  fontFamily: InkFonts.prose,
-                                  fontWeight: FontWeight.w700,
-                                  fontSize: 12.5,
-                                  color: inkPaper)),
-                        ),
-                      if (greeting.isNotEmpty)
-                        Padding(
-                          padding: const EdgeInsets.only(top: 4),
-                          child: Text('“$greeting”',
-                              maxLines: 3,
-                              overflow: TextOverflow.ellipsis,
-                              style: TextStyle(
-                                  fontFamily: InkFonts.prose,
-                                  fontStyle: FontStyle.italic,
-                                  fontSize: 11.5,
-                                  height: 1.25,
-                                  color: inkPaper.withValues(alpha: 0.8))),
-                        ),
-                    ]),
+            border: Border.all(
+                color: selected ? inkPaper : const Color(0x00000000),
+                width: 2)),
+        child: DecoratedBox(
+          decoration: BoxDecoration(
+              color: inkPaper, border: Border.all(color: inkBlack, width: 3)),
+          child: IntrinsicHeight(
+            child:
+                Row(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
+              Container(
+                width: 64,
+                color: inkBlack,
+                padding: const EdgeInsets.symmetric(vertical: 6),
+                alignment: Alignment.center,
+                child: SizedBox(
+                    height: 88,
+                    child: FittedBox(fit: BoxFit.contain, child: flag)),
               ),
-            ),
-          ]),
+              Expanded(
+                child: Padding(
+                  padding: const EdgeInsets.fromLTRB(10, 8, 10, 8),
+                  child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(name.toUpperCase(),
+                            maxLines: 2,
+                            overflow: TextOverflow.ellipsis,
+                            style: const TextStyle(
+                                fontFamily: InkFonts.display,
+                                fontSize: 15,
+                                height: 1.05,
+                                color: inkOnPaper)),
+                        const SizedBox(height: 4),
+                        Text(text,
+                            maxLines: 2,
+                            overflow: TextOverflow.ellipsis,
+                            style: ink),
+                        if (standing != null)
+                          Padding(
+                            padding: const EdgeInsets.only(top: 3),
+                            child: Text(standing!,
+                                style:
+                                    ink.copyWith(fontWeight: FontWeight.w700)),
+                          ),
+                        if (greeting.isNotEmpty)
+                          Padding(
+                            padding: const EdgeInsets.only(top: 4),
+                            child: Text('“$greeting”',
+                                maxLines: 3,
+                                overflow: TextOverflow.ellipsis,
+                                style: ink.copyWith(
+                                    fontStyle: FontStyle.italic,
+                                    color: inkOnPaper.withValues(alpha: 0.8))),
+                          ),
+                      ]),
+                ),
+              ),
+            ]),
+          ),
         ),
       ),
     );
