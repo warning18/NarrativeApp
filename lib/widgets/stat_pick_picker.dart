@@ -50,7 +50,7 @@ class StatPickPicker extends ConsumerStatefulWidget {
 
   /// The Level Up screen's look (v2.10.19): paper cards with Art's symbols
   /// and the before -> after of what a pick changes, then the stats area
-  /// (a bar per stat, or the radar: levelUpStatsView). The pop-up after a
+  /// (the ability radar, the pick ghosted over it). The pop-up after a
   /// fight keeps the plain look.
   final bool art;
 

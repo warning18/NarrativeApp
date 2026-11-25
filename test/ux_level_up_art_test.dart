@@ -34,8 +34,8 @@ void main() {
     expect(levelUpValueText(7), '7');
   });
 
-  for (final view in LevelUpStatsView.values) {
-    testWidgets('the stats area draws as ${view.name}, the pick over it',
+  {
+    testWidgets('the stats area draws as a radar, the pick over it',
         (tester) async {
       const before = {
         'strength': 1,
@@ -51,7 +51,6 @@ void main() {
         home: Scaffold(
           body: SingleChildScrollView(
             child: LevelUpStatsArea(
-              view: view,
               before: before,
               after: Map.of(before)..['dexterity'] = 11,
               label: (k) => k.substring(0, 3).toUpperCase(),
@@ -59,11 +58,7 @@ void main() {
           ),
         ),
       ));
-      expect(
-          find.byKey(Key(view == LevelUpStatsView.list
-              ? 'stat_pick_list'
-              : 'stat_pick_radar')),
-          findsOneWidget);
+      expect(find.byKey(const Key('stat_pick_radar')), findsOneWidget);
       // A negative reads with a real minus sign, the pick as before -> after.
       expect(find.text('−2'), findsWidgets);
       expect(

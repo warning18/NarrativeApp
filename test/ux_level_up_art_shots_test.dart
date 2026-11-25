@@ -1,6 +1,5 @@
 // PICTURES (UX_SHOTS=<folder>): the real Level Up screen of the Tower at 412
-// and 360 wide, in both versions of the stats area: the list (bars) and the
-// radar, with a pick chosen and not. Real numbers: the Tower hero's session
+// and 360 wide, in the radar stats area, with a pick chosen. Real numbers: the Tower hero's session
 // and statPickPreviewOf, not typed in.
 import 'dart:convert';
 import 'dart:io';
@@ -20,13 +19,11 @@ import 'package:narrative_data_app/providers/training_provider.dart';
 import 'package:narrative_data_app/screens/level_up_screen.dart';
 import 'package:narrative_data_app/screens/tower/tower_look.dart'
     show TowerNight;
-import 'package:narrative_data_app/widgets/level_up_art.dart';
 
 import 'support/fonts.dart';
 
 void main() {
   final shots = Platform.environment['UX_SHOTS'];
-  setUp(() => levelUpStatsView.value = LevelUpStatsView.list);
 
   // One plate each: the levels 3, 4 and 5 of a warrior.
   for (final level in [3, 4, 5]) {
@@ -92,16 +89,15 @@ void main() {
     ('human', 'warrior', 3),
     ('elf', 'mage', 4),
   ]) {
-    for (final view in LevelUpStatsView.values) {
+    {
       for (final w in [412.0, 360.0]) {
-        testWidgets('level up $calling ${view.name} $w', skip: shots == null,
+        testWidgets('level up $calling radar $w', skip: shots == null,
             (tester) async {
           await tester.runAsync(loadAppFonts);
           SharedPreferences.setMockInitialValues({});
           tester.view.physicalSize = Size(w, 1250);
           tester.view.devicePixelRatio = 1;
           addTearDown(tester.view.reset);
-          levelUpStatsView.value = view;
           final data = towerDataFromAssets();
           final paths = trainingPathsFrom(jsonDecode(
               File('assets/gamedata/training_paths.json')
@@ -150,7 +146,7 @@ void main() {
           await settle();
           await tester.tap(find.byKey(const Key('stat_pick_offer_1')));
           await settle();
-          await shoot('level-up-$calling-${view.name}-${w.toInt()}');
+          await shoot('level-up-$calling-radar-${w.toInt()}');
           expect(tester.takeException(), isNull);
         });
       }

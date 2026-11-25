@@ -2,9 +2,8 @@
 // (shrine, anvil, yard: one per level, level % 3, so the screen is the same
 // when it is reopened), the red ribbon with "Level N" drawn in code, the
 // hero's south frame standing in the plate, and Art's eight stat symbols.
-// Under it, the stats area in one of two versions: a bar per stat (the list)
-// or the ability radar with the symbols at its corners; [levelUpStatsView] is
-// the one-line switch.
+// Under it, the stats area: the ability radar with the symbols at its
+// corners, the hero's shape, the pick ghosted over it in red dashes.
 import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
@@ -12,14 +11,6 @@ import 'package:flutter/material.dart';
 import '../screens/tower/ink/ink_palette.dart';
 import '../theme/stitched_ink.dart' show InkFonts;
 import 'ability_radar.dart' show abilityAbbrevKey, abilityRadarOrder;
-
-/// The two versions of the stats area on the Level Up screen.
-enum LevelUpStatsView { list, radar }
-
-/// Which version the screen shows: the one-line switch (a toggle on the
-/// screen would set it too; the pictures set it for the radar).
-final ValueNotifier<LevelUpStatsView> levelUpStatsView =
-    ValueNotifier(LevelUpStatsView.list);
 
 const List<String> _plates = ['shrine', 'anvil', 'yard'];
 
@@ -203,139 +194,15 @@ class LevelUpStatsArea extends StatelessWidget {
     required this.before,
     required this.after,
     required this.label,
-    this.view,
   });
 
   final Map<String, int> before;
   final Map<String, int>? after;
   final String Function(String ability) label;
 
-  /// A version of its own, else [levelUpStatsView].
-  final LevelUpStatsView? view;
-
   @override
-  Widget build(BuildContext context) => view != null
-      ? _version(view!)
-      : ValueListenableBuilder<LevelUpStatsView>(
-          valueListenable: levelUpStatsView,
-          builder: (context, v, _) => _version(v),
-        );
-
-  Widget _version(LevelUpStatsView v) => v == LevelUpStatsView.radar
-      ? _Radar(before: before, after: after, label: label)
-      : _Bars(before: before, after: after, label: label);
-}
-
-/// A bar per stat: symbol, short name, a bar from the zero line, the number.
-/// The pick adds a red step and the number reads "10 → 11".
-class _Bars extends StatelessWidget {
-  const _Bars({required this.before, required this.after, required this.label});
-
-  final Map<String, int> before;
-  final Map<String, int>? after;
-  final String Function(String) label;
-
-  @override
-  Widget build(BuildContext context) {
-    final top = [12, ...before.values, ...?after?.values].reduce(math.max);
-    final hi = top + 1;
-    const lo = -3;
-    return Column(
-      key: const Key('stat_pick_list'),
-      children: [
-        for (final k in abilityRadarOrder)
-          Padding(
-            padding: const EdgeInsets.symmetric(vertical: 2),
-            child: Row(
-              children: [
-                LevelUpSymbol(k),
-                const SizedBox(width: 8),
-                SizedBox(
-                  width: 40,
-                  child: Text(
-                    label(k),
-                    style: const TextStyle(
-                      fontFamily: InkFonts.system,
-                      fontSize: 13,
-                      color: inkDeep,
-                    ),
-                  ),
-                ),
-                Expanded(
-                  child: LayoutBuilder(
-                    builder: (context, c) {
-                      double x(num v) => (v - lo) / (hi - lo) * c.maxWidth;
-                      final v = before[k] ?? 0;
-                      final moved = after != null && (after![k] ?? v) != v
-                          ? after![k]!
-                          : null;
-                      return SizedBox(
-                        height: 14,
-                        child: Stack(
-                          children: [
-                            Positioned.fill(
-                              child: ColoredBox(
-                                color: inkSlate.withValues(alpha: 0.18),
-                              ),
-                            ),
-                            Positioned(
-                              left: x(v < 0 ? v : 0),
-                              width: (x(v) - x(0)).abs().clamp(1.5, c.maxWidth),
-                              top: 2,
-                              bottom: 2,
-                              child: const ColoredBox(color: inkDeep),
-                            ),
-                            if (moved != null)
-                              Positioned(
-                                left: x(math.min(v, moved)),
-                                width: (x(moved) - x(v)).abs().clamp(
-                                      2.0,
-                                      200.0,
-                                    ),
-                                top: 2,
-                                bottom: 2,
-                                child: const ColoredBox(color: inkRed),
-                              ),
-                            Positioned(
-                              left: x(0),
-                              top: 0,
-                              bottom: 0,
-                              width: 1.5,
-                              child: const ColoredBox(color: inkDeep),
-                            ),
-                          ],
-                        ),
-                      );
-                    },
-                  ),
-                ),
-                SizedBox(
-                  width: 62,
-                  child: Builder(
-                    builder: (context) {
-                      final v = before[k] ?? 0;
-                      final n = after?[k] ?? v;
-                      final moved = n != v;
-                      return Text(
-                        moved
-                            ? '${levelUpValueText(v)} → ${levelUpValueText(n)}'
-                            : levelUpValueText(v),
-                        textAlign: TextAlign.right,
-                        style: _digits(
-                          14,
-                          moved ? inkRedDeep : inkDeep,
-                          weight: moved ? FontWeight.w700 : null,
-                        ),
-                      );
-                    },
-                  ),
-                ),
-              ],
-            ),
-          ),
-      ],
-    );
-  }
+  Widget build(BuildContext context) =>
+      _Radar(before: before, after: after, label: label);
 }
 
 /// The radar: Art's symbols at the eight corners with their numbers, a
