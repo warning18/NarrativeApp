@@ -142,6 +142,7 @@ import 'tower/ink/ink_dice.dart' show inkDieSkin;
 import 'tower/tower_backdrop.dart' show towerFightScene;
 import 'tower/ink/ink_kit.dart'
     show InkSlantPanel, InkSplashPainter, TowerPanelLayout, towerPanelLayout;
+import 'fight/fight_panel_fx.dart';
 import 'tower/ink/ink_palette.dart' show inkBlack, inkDeep, inkPaper;
 import 'tower/tower_look.dart' show TowerPanelStyle;
 
@@ -655,6 +656,11 @@ class _FightScreenState extends ConsumerState<FightScreen>
   /// The on-screen effects (see combat_vfx.dart): each card is anchored by
   /// a key so an effect lands on the fighter it belongs to.
   final CombatVfxController _vfx = CombatVfxController();
+
+  /// The fight's hits and poison ticks, as the Tower's panel effects play them
+  /// (fight_panel_fx.dart).
+  StreamSubscription<FightHitEvent>? _fxHitSub;
+  StreamSubscription<FightStatusTickEvent>? _fxTickSub;
   final Map<String, GlobalKey> _cardKeys = {};
 
   GlobalKey _memberCardKey(String id) =>
@@ -675,6 +681,7 @@ class _FightScreenState extends ConsumerState<FightScreen>
   void initState() {
     super.initState();
     _vfx.addImpactListener(_onVfxImpact);
+    _panelFxStart();
     final session = ref.read(playerSessionProvider);
     _playerLevel = session.level;
     _newGamePlusCycle = session.newGamePlusCycle;
@@ -704,6 +711,7 @@ class _FightScreenState extends ConsumerState<FightScreen>
     _luckyDieTourTimer?.cancel();
     _shakeController.dispose();
     _vfx.removeImpactListener(_onVfxImpact);
+    _panelFxStop();
     _vfx.dispose();
     _rollController.dispose();
     super.dispose();
