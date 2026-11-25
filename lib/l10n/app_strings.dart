@@ -2470,6 +2470,98 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.en: 'New',
     AppLanguage.fr: 'Nouveau',
   },
+  // Heat (v2.9.0, docs/simulation/tower-heat.md): the plain climb and the
+  // five levels (tower_tables.dart's towerHeatLevels: tower_heat_<id> and
+  // its curse line), then the picker's, the chip's, the curse list's and
+  // the end screen's lines. Narrative's wording
+  // (docs/narrative/drafts/tower-heat-and-coins-wording.md); no figure in
+  // the text, so Core can retune a curse without touching a string.
+  'tower_heat_plain': {
+    AppLanguage.en: 'The plain climb',
+    AppLanguage.fr: 'L’ascension simple',
+  },
+  'tower_heat_plain_line': {
+    AppLanguage.en: 'Today’s climb, as the Tower made it.',
+    AppLanguage.fr: 'L’ascension du jour, telle que la Tour l’a faite.',
+  },
+  'tower_heat_embers': {
+    AppLanguage.en: 'Embers',
+    AppLanguage.fr: 'Braises',
+  },
+  'tower_heat_embers_line': {
+    AppLanguage.en: 'Every foe hits a little harder.',
+    AppLanguage.fr: 'Chaque adversaire frappe un peu plus fort.',
+  },
+  'tower_heat_smoke': {
+    AppLanguage.en: 'Smoke',
+    AppLanguage.fr: 'Fumée',
+  },
+  'tower_heat_smoke_line': {
+    AppLanguage.en: 'Wardens and bosses carry one affix more.',
+    AppLanguage.fr: 'Les gardiens et les boss portent un affixe de plus.',
+  },
+  'tower_heat_flame': {
+    AppLanguage.en: 'Flame',
+    AppLanguage.fr: 'Flamme',
+  },
+  'tower_heat_flame_line': {
+    AppLanguage.en:
+        'You recover less after a floor, and Elites turn up more often in the upper Tower.',
+    AppLanguage.fr:
+        'Vous récupérez moins après un étage, et les Élites se montrent plus souvent dans la haute Tour.',
+  },
+  'tower_heat_pyre': {
+    AppLanguage.en: 'Pyre',
+    AppLanguage.fr: 'Bûcher',
+  },
+  'tower_heat_pyre_line': {
+    AppLanguage.en:
+        'Some boons are gone from the stairs, and the late oath keeps you waiting.',
+    AppLanguage.fr:
+        'Des faveurs ont disparu de l’escalier, et le serment tardif se fait attendre.',
+  },
+  'tower_heat_ash': {
+    AppLanguage.en: 'Ash',
+    AppLanguage.fr: 'Cendre',
+  },
+  'tower_heat_ash_line': {
+    AppLanguage.en:
+        'The upper Tower is fiercer still, and a gift turns the rival clans harder against you.',
+    AppLanguage.fr:
+        'La haute Tour est plus féroce encore, et un don braque plus fort les clans rivaux contre vous.',
+  },
+  'tower_heat_locked': {
+    AppLanguage.en: 'Win the top at {heat} to open',
+    AppLanguage.fr: 'Gagnez au sommet (niveau {heat}) pour ouvrir',
+  },
+  'tower_heat_marks': {
+    AppLanguage.en: 'Marks ×{n}',
+    AppLanguage.fr: 'Marques ×{n}',
+  },
+  'tower_heat_curses_title': {
+    AppLanguage.en: 'Curses in force this climb',
+    AppLanguage.fr: 'Malédictions en vigueur durant cette ascension',
+  },
+  'tower_heat_curse_new': {
+    AppLanguage.en: 'new',
+    AppLanguage.fr: 'nouvelle',
+  },
+  'tower_heat_end': {
+    AppLanguage.en: '{heat} · marks ×{n}',
+    AppLanguage.fr: '{heat} · marques ×{n}',
+  },
+  'tower_heat_opened': {
+    AppLanguage.en: '{heat} is open',
+    AppLanguage.fr: 'Niveau ouvert\u00a0: {heat}',
+  },
+  'tower_heat_record': {
+    AppLanguage.en: 'Your best climb',
+    AppLanguage.fr: 'Votre meilleure ascension',
+  },
+  'tower_heat_ash_done': {
+    AppLanguage.en: 'Ash conquered',
+    AppLanguage.fr: 'Cendre conquise',
+  },
   'menu_back_to_menu': {
     AppLanguage.en: 'Main menu',
     AppLanguage.fr: 'Menu principal',

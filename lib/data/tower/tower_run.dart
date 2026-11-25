@@ -67,6 +67,7 @@ class TowerRun {
     this.store,
     this.bargains = const {},
     this.fightBegun = false,
+    this.heat = 0,
   });
 
   /// A saved run. A save from an older version is brought up to date once,
@@ -167,6 +168,7 @@ class TowerRun {
           int.parse(key.toString()): (value as num).toInt(),
       },
       fightBegun: json['fighting'] == true,
+      heat: ((json['heat'] as num?)?.toInt() ?? 0).clamp(0, towerHeatMax),
     );
     if (json.containsKey('picks')) return run;
     final earned = (towerLevelAfter(run.floorsCleared) - 1) * levelStatPicks;
@@ -304,6 +306,12 @@ class TowerRun {
   /// towerAfterFight. False on a run saved before.
   final bool fightBegun;
 
+  /// The run's Heat (v2.9.0, docs/simulation/tower-heat.md): 0, the plain
+  /// climb; 1..[towerHeatMax], the curses of towerHeatLevels up to it, all
+  /// in force (tower_tables.dart's towerHeat*). Chosen at the start, fixed
+  /// for the climb. 0 on a run saved before.
+  final int heat;
+
   /// The height cleared: the levels, the stat picks earned, the hero's
   /// replay (towerHeroOf) and the marks read it, so a fall never takes a
   /// level or a mark away.
@@ -327,8 +335,10 @@ class TowerRun {
       status == TowerStatus.won ? towerTop : max(floor, crest);
 
   /// The marks the run has earned so far (§7), paid by the height cleared,
-  /// before the stores (floor events PR 4).
-  int get marksEarned => towerMarksOf(heightCleared, refused.length);
+  /// before the stores (floor events PR 4), raised for its [heat]
+  /// (towerHeatMarksOf).
+  int get marksEarned =>
+      towerMarksOf(heightCleared, refused.length, heat: heat);
 
   /// The marks the run banks when it ends: those it earned, less those it
   /// spent in the stores ([marksSpent]). Also what a store may still take.
@@ -396,6 +406,7 @@ class TowerRun {
         store: clearStore ? null : store ?? this.store,
         bargains: bargains ?? this.bargains,
         fightBegun: fightBegun ?? this.fightBegun,
+        heat: heat,
       );
 
   Map<String, dynamic> toJson() => {
@@ -442,13 +453,15 @@ class TowerRun {
               '$key': value,
           },
         if (fightBegun) 'fighting': true,
+        if (heat != 0) 'heat': heat,
       };
 }
 
 /// The marks of a run that cleared [floorsCleared] floors and refused
 /// [refusals] offers (§7): 1 a floor, 2 a warden, 5 a boss of 10 or 20, 15
-/// the top, 1 a refusal. A won run: 61 and its refusals.
-int towerMarksOf(int floorsCleared, int refusals) {
+/// the top, 1 a refusal. A won run: 61 and its refusals. At Heat [heat],
+/// raised [towerHeatMarks] a level, rounded down (towerHeatMarksOf).
+int towerMarksOf(int floorsCleared, int refusals, {int heat = 0}) {
   var marks =
       floorsCleared * towerMarksPerFloor + refusals * towerMarksPerRefusal;
   for (var floor = 1; floor <= floorsCleared; floor++) {
@@ -458,7 +471,7 @@ int towerMarksOf(int floorsCleared, int refusals) {
       marks += floor == towerTop ? towerMarksForTop : towerMarksPerBoss;
     }
   }
-  return marks;
+  return towerHeatMarksOf(marks, heat);
 }
 
 /// A new run of [seed]: floor 1, the hero at full health, with the power
@@ -468,7 +481,9 @@ int towerMarksOf(int floorsCleared, int refusals) {
 /// offer their oaths on the way up. A [clanId] swears one from the start:
 /// its oath taken on floor 0 (the bot's and the tests'). [events] is the
 /// floor events' version it plays (TowerRun.events; the app's
-/// towerEventsLive), 0 none.
+/// towerEventsLive), 0 none. [heat] is its Heat (TowerRun.heat, clamped
+/// to 0..towerHeatMax; the caller checks it is open,
+/// TowerProgress.heatOpen).
 TowerRun towerStart({
   required int seed,
   required String raceId,
@@ -478,6 +493,7 @@ TowerRun towerStart({
   Iterable<String> startUnlocks = const [],
   int unlocksOwned = 0,
   int events = 0,
+  int heat = 0,
   required TowerData data,
 }) {
   final unlocks = [
@@ -509,6 +525,7 @@ TowerRun towerStart({
     dieChoice: die,
     seenDieIds: {die},
     events: events,
+    heat: heat.clamp(0, towerHeatMax),
   );
 }
 
@@ -516,8 +533,8 @@ TowerRun towerStart({
 /// shortcut taken (TowerRun.shortcut, floor events PR 2), the tougher
 /// fight of towerShortcutFloor.
 TowerFloor towerFloorOf(TowerRun run, TowerData data) {
-  final floor =
-      towerFloorsFor(run.seed, data.enemies, events: run.events)[run.floor - 1];
+  final floor = towerFloorsFor(run.seed, data.enemies,
+      events: run.events, heat: run.heat)[run.floor - 1];
   return (run.shortcut ?? false) &&
           towerEventKindOf(run) == TowerEventKind.shortcut
       ? towerShortcutFloor(floor)
@@ -587,7 +604,8 @@ TowerRun towerAfterFight(TowerRun run, TowerData data,
   final drop = towerSpoilsFor(
     seed: run.seed,
     // The floor's own spoils, a shortcut's too.
-    floor: towerFloorsFor(run.seed, data.enemies)[run.floor - 1],
+    floor:
+        towerFloorsFor(run.seed, data.enemies, heat: run.heat)[run.floor - 1],
     luck: hero.luck,
     ownedItemIds: hero.ownedItemIds,
     preferredScalingStat:
@@ -610,7 +628,7 @@ TowerRun towerAfterFight(TowerRun run, TowerData data,
   final health = (healthLeft +
           hero.maxHealth -
           before +
-          (hero.maxHealth * towerRecoveryShare).round() +
+          (hero.maxHealth * towerRecoveryShareOf(run.heat)).round() +
           drunk * potionHealAmount)
       .clamp(1, hero.maxHealth);
   hero.currentHealth = health;
@@ -625,6 +643,7 @@ TowerRun towerAfterFight(TowerRun run, TowerData data,
       oathOpen: run.clanIds.isEmpty,
       // The first floor won always offers the clans (the user's call).
       clansDue: run.floor == 1 && run.clanIds.isEmpty,
+      heat: run.heat,
       clans: data.clans,
       items: data.items,
       dice: data.dice,
@@ -658,9 +677,9 @@ TowerRun towerFightLost(TowerRun run) => run.status != TowerStatus.climbing
 /// (towerStandingFrom), 0 to [towerOathStep]. A run saved before the clans'
 /// offers took no clan's card: 0 with every clan.
 Map<String, int> towerStandingOf(TowerRun run, TowerData data) {
-  final all = towerStandingFrom(
-      [for (final f in run.taken.keys.toList()..sort()) run.taken[f]!],
-      data.clans);
+  final all = towerStandingFrom([
+    for (final f in run.taken.keys.toList()..sort()) run.taken[f]!
+  ], data.clans, heat: run.heat);
   return {for (final c in run.clanPool) c: all[c] ?? 0};
 }
 
