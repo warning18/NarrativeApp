@@ -16,6 +16,7 @@ import '../../utils/pixel_icons/game_pixel_icons.dart';
 import '../../widgets/item_stats.dart';
 import '../../widgets/loot_sheet.dart';
 import '../../theme/icon_sizes.dart';
+import 'ink/ink_palette.dart';
 import 'tower_coin_view.dart';
 
 class TowerSpoilsView extends ConsumerWidget {
@@ -62,7 +63,7 @@ class TowerSpoilsView extends ConsumerWidget {
             before: '${run.coins - coinsGained}',
             after: '${run.coins}',
             icon: const TowerCoinDisc(size: IconSize.s32),
-            tone: ink.gold,
+            tone: inkPaper,
           ),
         if (potions > 0)
           LootSheetLine(

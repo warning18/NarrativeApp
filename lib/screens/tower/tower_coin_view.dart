@@ -14,6 +14,9 @@ import '../../theme/stitched_ink.dart';
 import 'ink/ink_kit.dart';
 import 'ink/ink_palette.dart';
 
+/// The coin's gold: the one warm spot of the coin chip and the spoils line.
+const Color _gold = Color(0xFFD9B44A);
+
 /// A gold disc: the coin.
 class TowerCoinDisc extends StatelessWidget {
   const TowerCoinDisc({super.key, this.size = IconSize.s16});
@@ -26,7 +29,7 @@ class TowerCoinDisc extends StatelessWidget {
         height: size,
         decoration: BoxDecoration(
             shape: BoxShape.circle,
-            color: InkColors.of(context).gold,
+            color: _gold,
             border: Border.all(color: inkBlack, width: 1.5)),
       );
 }

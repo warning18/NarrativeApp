@@ -392,6 +392,9 @@ class _TowerOfferViewState extends ConsumerState<TowerOfferView> {
         Text(tr(ref, 'tower_choose_one'),
             style: theme.textTheme.bodyMedium
                 ?.copyWith(color: theme.colorScheme.onSurfaceVariant)),
+        Align(
+            alignment: Alignment.centerLeft,
+            child: TowerCoinChip(coins: widget.run.coins)),
         // The clans' offer: its frame over the cards.
         if (clans) ...[
           const SizedBox(height: 8),
