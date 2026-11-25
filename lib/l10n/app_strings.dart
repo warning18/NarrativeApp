@@ -1759,13 +1759,13 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   },
   'tower_merchant_body': {
     AppLanguage.en:
-        'Salves and potions by candlelight, paid in marks. Nothing here leaves the Tower.',
+        'Salves, potions and the odd boon by candlelight, paid in Tower coins. Nothing here leaves the Tower, and neither do the coins.',
     AppLanguage.fr:
-        'Onguents et potions à la lueur d’une chandelle, payés en marques. Rien d’ici ne quitte la Tour.',
+        'Onguents, potions et parfois une faveur, à la lueur d’une chandelle, payés en pièces de la Tour. Rien d’ici ne quitte la Tour, pas même les pièces.',
   },
   'tower_merchant_wallet': {
-    AppLanguage.en: 'Marks to spend: {n}',
-    AppLanguage.fr: 'Marques à dépenser : {n}',
+    AppLanguage.en: 'Coins to spend: {n}',
+    AppLanguage.fr: 'Pièces à dépenser : {n}',
   },
   'tower_merchant_sworn': {
     AppLanguage.en: 'Half price: you are sworn to its clan',
@@ -1792,12 +1792,12 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.fr: '{n} potions dans le sac.',
   },
   'tower_merchant_price': {
-    AppLanguage.en: '{n} marks',
-    AppLanguage.fr: '{n} marques',
+    AppLanguage.en: '{n} coins',
+    AppLanguage.fr: '{n} pièces',
   },
   'tower_merchant_price_one': {
-    AppLanguage.en: '{n} mark',
-    AppLanguage.fr: '{n} marque',
+    AppLanguage.en: '{n} coin',
+    AppLanguage.fr: '{n} pièce',
   },
   'tower_merchant_buy': {
     AppLanguage.en: 'Buy',
@@ -2561,6 +2561,246 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   'tower_heat_ash_done': {
     AppLanguage.en: 'Ash conquered',
     AppLanguage.fr: 'Cendre conquise',
+  },
+  // Tower coins, perks and trims (v2.10.0, docs/simulation/tower-coins.md;
+  // Narrative's wording, tower-heat-and-coins-wording.md).
+  'tower_perk_purse': {
+    AppLanguage.en: 'Purse',
+    AppLanguage.fr: 'Bourse',
+  },
+  'tower_perk_purse_line': {
+    AppLanguage.en: 'Start the climb with coins in hand.',
+    AppLanguage.fr: 'Commencez l’ascension avec des pièces en poche.',
+  },
+  'tower_perk_deep_pockets': {
+    AppLanguage.en: 'Deep pockets',
+    AppLanguage.fr: 'Poches profondes',
+  },
+  'tower_perk_deep_pockets_line': {
+    AppLanguage.en: 'Room for one more potion in the bag.',
+    AppLanguage.fr: 'De la place pour une potion de plus dans le sac.',
+  },
+  'tower_perk_early_word': {
+    AppLanguage.en: 'Early word',
+    AppLanguage.fr: 'Mot d’avance',
+  },
+  'tower_perk_early_word_line': {
+    AppLanguage.en: 'The late oath comes sooner.',
+    AppLanguage.fr: 'Le serment tardif vient plus tôt.',
+  },
+  'tower_perk_old_friend': {
+    AppLanguage.en: 'Old friend',
+    AppLanguage.fr: 'Vieil ami',
+  },
+  'tower_perk_old_friend_line': {
+    AppLanguage.en: 'One clan of the climb starts out thinking better of you.',
+    AppLanguage.fr:
+        'Un clan de l’ascension vous estime déjà davantage au départ.',
+  },
+  'tower_perk_second_wind': {
+    AppLanguage.en: 'Second wind',
+    AppLanguage.fr: 'Second souffle',
+  },
+  'tower_perk_second_wind_line': {
+    AppLanguage.en: 'After a warden or a boss, you get your breath back.',
+    AppLanguage.fr: 'Après un gardien ou un boss, vous reprenez votre souffle.',
+  },
+  'tower_perk_keen_eye': {
+    AppLanguage.en: 'Keen eye',
+    AppLanguage.fr: 'Œil vif',
+  },
+  'tower_perk_keen_eye_line': {
+    AppLanguage.en: 'The first boon is a rarity better.',
+    AppLanguage.fr: 'La première faveur est d’une rareté supérieure.',
+  },
+  'tower_perk_free_hand': {
+    AppLanguage.en: 'Free hand',
+    AppLanguage.fr: 'Main libre',
+  },
+  'tower_perk_free_hand_line': {
+    AppLanguage.en: 'Your first reroll of each climb costs nothing.',
+    AppLanguage.fr: 'Votre premier retirage de chaque ascension ne coûte rien.',
+  },
+  'tower_perk_fourth_card': {
+    AppLanguage.en: 'Fourth card',
+    AppLanguage.fr: 'Quatrième carte',
+  },
+  'tower_perk_fourth_card_line': {
+    AppLanguage.en: 'The first boon tables show one card more.',
+    AppLanguage.fr:
+        'Les premières tables de faveurs montrent une carte de plus.',
+  },
+  'tower_trim_moth': {
+    AppLanguage.en: 'Moth trim',
+    AppLanguage.fr: 'Galon de mite',
+  },
+  'tower_trim_stitch': {
+    AppLanguage.en: 'Stitch trim',
+    AppLanguage.fr: 'Galon de fil',
+  },
+  'tower_trim_brass': {
+    AppLanguage.en: 'Brass trim',
+    AppLanguage.fr: 'Galon de laiton',
+  },
+  'tower_trim_bone': {
+    AppLanguage.en: 'Bone trim',
+    AppLanguage.fr: 'Galon d’os',
+  },
+  'tower_trim_lamp': {
+    AppLanguage.en: 'Lamp trim',
+    AppLanguage.fr: 'Galon de lampe',
+  },
+  'tower_trim_ash': {
+    AppLanguage.en: 'Ash trim: earned at Ash, never sold',
+    AppLanguage.fr: 'Galon de cendre\u00a0: gagné à Cendre, jamais vendu',
+  },
+  'tower_marks_tab_unlocks': {
+    AppLanguage.en: 'Unlocks',
+    AppLanguage.fr: 'Déblocages',
+  },
+  'tower_marks_tab_perks': {
+    AppLanguage.en: 'Perks',
+    AppLanguage.fr: 'Atouts',
+  },
+  'tower_marks_tab_looks': {
+    AppLanguage.en: 'Looks',
+    AppLanguage.fr: 'Apparences',
+  },
+  'tower_perk_worn': {
+    AppLanguage.en: 'Worn',
+    AppLanguage.fr: 'Porté',
+  },
+  'tower_perk_worn_n': {
+    AppLanguage.en: 'Worn {n}',
+    AppLanguage.fr: 'Porté {n}',
+  },
+  'tower_perk_owned': {
+    AppLanguage.en: 'Owned',
+    AppLanguage.fr: 'Possédé',
+  },
+  'tower_perks_hint': {
+    AppLanguage.en: 'One perk is worn on a climb, chosen at the door.',
+    AppLanguage.fr:
+        'Un seul atout se porte durant une ascension, choisi à la porte.',
+  },
+  'tower_perk_next': {
+    AppLanguage.en: 'Next perk: {perk}, {n} more marks',
+    AppLanguage.fr: 'Prochain atout\u00a0: {perk}, encore {n} marques',
+  },
+  'tower_tree_full': {
+    AppLanguage.en:
+        'Every unlock is owned: the tree is full. Marks now buy perks and looks.',
+    AppLanguage.fr:
+        'Tout est débloqué\u00a0: l’arbre est plein. Les marques achètent désormais des atouts et des apparences.',
+  },
+  'tower_door_perks': {
+    AppLanguage.en: 'Perks for this climb',
+    AppLanguage.fr: 'Atouts pour cette ascension',
+  },
+  'tower_door_slot': {
+    AppLanguage.en: 'Slot {n}: choose',
+    AppLanguage.fr: 'Emplacement {n}\u00a0: choisir',
+  },
+  'tower_stall_coins_only': {
+    AppLanguage.en: 'Coins only. The Tower takes no silver.',
+    AppLanguage.fr: 'Des pièces seulement. La Tour ne prend pas l’argent.',
+  },
+  'tower_stall_salve': {
+    AppLanguage.en: 'Salve',
+    AppLanguage.fr: 'Onguent',
+  },
+  'tower_stall_salve_line': {
+    AppLanguage.en: 'Heals a good part of your health.',
+    AppLanguage.fr: 'Rend une bonne part de vos forces.',
+  },
+  'tower_stall_potions': {
+    AppLanguage.en: 'Potion bundle',
+    AppLanguage.fr: 'Lot de potions',
+  },
+  'tower_stall_potions_line': {
+    AppLanguage.en: 'A few for the bag.',
+    AppLanguage.fr: 'Quelques-unes pour le sac.',
+  },
+  'tower_stall_boon': {
+    AppLanguage.en: 'A boon',
+    AppLanguage.fr: 'Une faveur',
+  },
+  'tower_stall_boon_line': {
+    AppLanguage.en: 'A skill, a die or a spell, your pick of three.',
+    AppLanguage.fr: 'Une compétence, un dé ou un sort, au choix parmi trois.',
+  },
+  'tower_end_fell': {
+    AppLanguage.en: 'You fell on floor {n}',
+    AppLanguage.fr: 'Vous tombez à l’étage {n}',
+  },
+  'tower_end_floors': {
+    AppLanguage.en: 'Floors',
+    AppLanguage.fr: 'Étages',
+  },
+  'tower_end_wardens': {
+    AppLanguage.en: 'Wardens',
+    AppLanguage.fr: 'Gardiens',
+  },
+  'tower_end_bosses': {
+    AppLanguage.en: 'Bosses',
+    AppLanguage.fr: 'Boss',
+  },
+  'tower_end_refusals': {
+    AppLanguage.en: 'Refusals',
+    AppLanguage.fr: 'Refus',
+  },
+  'tower_end_heat': {
+    AppLanguage.en: 'Heat: {heat} ×{n}',
+    AppLanguage.fr: 'Niveau\u00a0: {heat} ×{n}',
+  },
+  'tower_end_first_win': {
+    AppLanguage.en: 'First win at this heat',
+    AppLanguage.fr: 'Première victoire à ce niveau',
+  },
+  'tower_end_banked': {
+    AppLanguage.en: 'Ash Marks banked',
+    AppLanguage.fr: 'Marques de cendre mises de côté',
+  },
+  'tower_end_coins_lost': {
+    AppLanguage.en: 'Coins left: {n} (lost)',
+    AppLanguage.fr: 'Pièces restantes\u00a0: {n} (perdues)',
+  },
+  'tower_coins_name': {
+    AppLanguage.en: 'Tower coins',
+    AppLanguage.fr: 'Pièces de la Tour',
+  },
+  'tower_coins_chip': {
+    AppLanguage.en: '{n}',
+    AppLanguage.fr: '{n}',
+  },
+  'tower_coins_gained': {
+    AppLanguage.en: '+{n} coins',
+    AppLanguage.fr: '+{n} pièces',
+  },
+  'tower_reroll': {
+    AppLanguage.en: 'Reroll',
+    AppLanguage.fr: 'Retirer',
+  },
+  'tower_reroll_price': {
+    AppLanguage.en: 'Reroll · {n}',
+    AppLanguage.fr: 'Retirer · {n}',
+  },
+  'tower_banish': {
+    AppLanguage.en: 'Banish',
+    AppLanguage.fr: 'Bannir',
+  },
+  'tower_banish_confirm': {
+    AppLanguage.en: 'Banish this card for good? It will not return this climb.',
+    AppLanguage.fr:
+        'Bannir cette carte\u00a0? Elle ne reviendra pas durant cette ascension.',
+  },
+  'tower_merchant_boon': {
+    AppLanguage.en: 'A boon',
+    AppLanguage.fr: 'Une faveur',
+  },
+  'tower_merchant_boon_text': {
+    AppLanguage.en: 'A skill, a die or a spell, your pick of three.',
+    AppLanguage.fr: 'Une compétence, un dé ou un sort, au choix parmi trois.',
   },
   'menu_back_to_menu': {
     AppLanguage.en: 'Main menu',

@@ -10,6 +10,7 @@ import '../../combat/stat_rules.dart' show levelStatPicks;
 import '../sim_combat.dart' show SimCharacter;
 import '../training.dart' show StatPickOffer;
 import 'tower_clans.dart';
+import 'tower_coins.dart';
 import 'tower_events.dart';
 import 'tower_floors.dart';
 import 'tower_hero.dart';
@@ -68,6 +69,14 @@ class TowerRun {
     this.bargains = const {},
     this.fightBegun = false,
     this.heat = 0,
+    this.coins = 0,
+    this.coinsEarned = 0,
+    this.rerolls = const {},
+    this.banished = const {},
+    this.perks = const [],
+    this.friend = '',
+    this.stallBoons = const {},
+    this.stallOffer = const [],
   });
 
   /// A saved run. A save from an older version is brought up to date once,
@@ -169,6 +178,35 @@ class TowerRun {
       },
       fightBegun: json['fighting'] == true,
       heat: ((json['heat'] as num?)?.toInt() ?? 0).clamp(0, towerHeatMax),
+      // Coins and perks (v2.10.0, docs/simulation/tower-coins.md): absent in
+      // a run saved before, read as none.
+      coins: (json['coins'] as num?)?.toInt() ?? 0,
+      coinsEarned: (json['coinsEarned'] as num?)?.toInt() ?? 0,
+      rerolls: {
+        for (final MapEntry(:key, :value)
+            in ((json['rerolls'] as Map?) ?? const {}).entries)
+          int.parse(key.toString()): (value as num).toInt(),
+      },
+      banished: {
+        for (final MapEntry(:key, :value)
+            in ((json['banished'] as Map?) ?? const {}).entries)
+          int.parse(key.toString()): value.toString(),
+      },
+      perks: [
+        for (final p in (json['perks'] as List?) ?? const [])
+          if (towerPerkOf(p.toString()) != null) p.toString(),
+      ],
+      friend: json['friend']?.toString() ?? '',
+      stallBoons: {
+        for (final MapEntry(:key, :value)
+            in ((json['stallBoons'] as Map?) ?? const {}).entries)
+          int.parse(key.toString()):
+              TowerReward.fromJson(value as Map<String, dynamic>),
+      },
+      stallOffer: [
+        for (final r in (json['stallOffer'] as List?) ?? const [])
+          TowerReward.fromJson(r as Map<String, dynamic>),
+      ],
     );
     if (json.containsKey('picks')) return run;
     final earned = (towerLevelAfter(run.floorsCleared) - 1) * levelStatPicks;
@@ -312,6 +350,46 @@ class TowerRun {
   /// for the climb. 0 on a run saved before.
   final int heat;
 
+  /// The Tower coins in hand (v2.10.0, brief 6, docs/simulation/
+  /// tower-coins.md): earned on each floor won for the first time
+  /// (towerCoinsFor), spent on rerolls, banishes and the stall, lost when
+  /// the run ends (never marks). 0 on a run saved before.
+  final int coins;
+
+  /// The coins earned this run (the end tally; a perk's start purse is not
+  /// earned).
+  final int coinsEarned;
+
+  /// The rerolls bought on each floor's table (floor -> count): the next
+  /// reroll's price and its draw (towerReroll).
+  final Map<int, int> rerolls;
+
+  /// The card banished on each floor's table (floor -> its id, one a
+  /// table, towerBanishesPerRun a run): never offered again this run.
+  final Map<int, String> banished;
+
+  /// The perks worn this climb (tower_coins.dart's towerPerks, at most
+  /// towerPerkSlots), chosen at the door, fixed for the climb.
+  final List<String> perks;
+
+  /// Old friend's clan (one of [clanPool]): it starts the climb as if it
+  /// had given one gift. '' when the perk is not worn.
+  final String friend;
+
+  /// The boon bought at a merchant's stall, by the store's floor
+  /// (towerTakeStallBoon): replayed after that floor's own card.
+  final Map<int, TowerReward> stallBoons;
+
+  /// The stall's boon cards bought and not yet chosen (towerBuy 'boon'):
+  /// one is taken with towerTakeStallBoon; empty otherwise.
+  final List<TowerReward> stallOffer;
+
+  /// The ids banished ([banished]'s cards).
+  Set<String> get banishedIds => banished.values.toSet();
+
+  /// Whether perk [id] is worn this climb.
+  bool wears(String id) => perks.contains(id);
+
   /// The height cleared: the levels, the stat picks earned, the hero's
   /// replay (towerHeroOf) and the marks read it, so a fall never takes a
   /// level or a mark away.
@@ -375,6 +453,12 @@ class TowerRun {
     bool clearStore = false,
     Map<int, int>? bargains,
     bool? fightBegun,
+    int? coins,
+    int? coinsEarned,
+    Map<int, int>? rerolls,
+    Map<int, String>? banished,
+    Map<int, TowerReward>? stallBoons,
+    List<TowerReward>? stallOffer,
   }) =>
       TowerRun(
         seed: seed,
@@ -407,6 +491,14 @@ class TowerRun {
         bargains: bargains ?? this.bargains,
         fightBegun: fightBegun ?? this.fightBegun,
         heat: heat,
+        coins: coins ?? this.coins,
+        coinsEarned: coinsEarned ?? this.coinsEarned,
+        rerolls: rerolls ?? this.rerolls,
+        banished: banished ?? this.banished,
+        perks: perks,
+        friend: friend,
+        stallBoons: stallBoons ?? this.stallBoons,
+        stallOffer: stallOffer ?? this.stallOffer,
       );
 
   Map<String, dynamic> toJson() => {
@@ -454,6 +546,26 @@ class TowerRun {
           },
         if (fightBegun) 'fighting': true,
         if (heat != 0) 'heat': heat,
+        if (coins != 0) 'coins': coins,
+        if (coinsEarned != 0) 'coinsEarned': coinsEarned,
+        if (rerolls.isNotEmpty)
+          'rerolls': {
+            for (final MapEntry(:key, :value) in rerolls.entries) '$key': value,
+          },
+        if (banished.isNotEmpty)
+          'banished': {
+            for (final MapEntry(:key, :value) in banished.entries)
+              '$key': value,
+          },
+        if (perks.isNotEmpty) 'perks': perks,
+        if (friend.isNotEmpty) 'friend': friend,
+        if (stallBoons.isNotEmpty)
+          'stallBoons': {
+            for (final MapEntry(:key, :value) in stallBoons.entries)
+              '$key': value.toJson(),
+          },
+        if (stallOffer.isNotEmpty)
+          'stallOffer': [for (final r in stallOffer) r.toJson()],
       };
 }
 
@@ -483,7 +595,10 @@ int towerMarksOf(int floorsCleared, int refusals, {int heat = 0}) {
 /// floor events' version it plays (TowerRun.events; the app's
 /// towerEventsLive), 0 none. [heat] is its Heat (TowerRun.heat, clamped
 /// to 0..towerHeatMax; the caller checks it is open,
-/// TowerProgress.heatOpen).
+/// TowerProgress.heatOpen). [perks] are the perks worn (tower_coins.dart,
+/// the first towerPerkSlots known ones kept): Purse's coins in hand, Old
+/// friend's clan ([friend], one of the pool; else the pool's clan the seed
+/// points to).
 TowerRun towerStart({
   required int seed,
   required String raceId,
@@ -494,8 +609,11 @@ TowerRun towerStart({
   int unlocksOwned = 0,
   int events = 0,
   int heat = 0,
+  Iterable<String> perks = const [],
+  String friend = '',
   required TowerData data,
 }) {
+  final worn = towerWornPerks(perks);
   final unlocks = [
     for (final id in startUnlocks)
       if (towerUnlockOf(id)?.kind
@@ -507,6 +625,10 @@ TowerRun towerStart({
   // The die in play: the calling's own; the start's dice wait in
   // the bag.
   final die = hero.diceId;
+  final pool = [
+    for (final c in towerClans)
+      if (clanPool.contains(c)) c,
+  ];
   return TowerRun(
     seed: seed,
     raceId: raceId,
@@ -515,10 +637,7 @@ TowerRun towerStart({
       if (clanId.isNotEmpty)
         0: TowerReward(TowerRewardKind.clanOath, id: clanId),
     },
-    clanPool: [
-      for (final c in towerClans)
-        if (clanPool.contains(c)) c,
-    ],
+    clanPool: pool,
     startUnlocks: unlocks,
     unlocksOwned: unlocksOwned,
     health: hero.maxHealth,
@@ -526,6 +645,11 @@ TowerRun towerStart({
     seenDieIds: {die},
     events: events,
     heat: heat.clamp(0, towerHeatMax),
+    perks: worn,
+    coins: worn.contains(towerPerkPurse) ? towerPurseCoins : 0,
+    friend: worn.contains(towerPerkOldFriend) && pool.isNotEmpty
+        ? (pool.contains(friend) ? friend : pool[seed.abs() % pool.length])
+        : '',
   );
 }
 
@@ -568,8 +692,9 @@ TowerRun towerAfterFight(TowerRun run, TowerData data,
   if (!won) return towerFightLost(run);
   // The fight has ended: its marker goes (towerBeginFight).
   if (run.fightBegun) run = run.copyWith(fightBegun: false);
-  // The store on the landing closes with the fight (floor events PR 4).
-  if (run.store != null) run = run.copyWith(clearStore: true);
+  // The store on the landing closes with the fight (floor events PR 4), a
+  // stall's boon bought and not chosen given its first card.
+  if (run.store != null) run = towerLeaveStore(run);
   final rival = towerRivalResultOf(run, rounds);
   final potions =
       potionsLeft == null ? run.potions : min(run.potions, max(0, potionsLeft));
@@ -618,8 +743,13 @@ TowerRun towerAfterFight(TowerRun run, TowerData data,
   // drunk at once (v1.865).
   final looted =
       potions + drop.fold<int>(0, (n, id) => n + (towerSpoilsPotions[id] ?? 0));
-  final drunk = max(0, looted - towerBagCap);
+  final drunk = max(0, looted - towerBagCapOf(run));
+  // The floor's coins (brief 6): as the floor fought pays them (a
+  // shortcut's Elite too).
+  final coins = towerCoinsFor(towerFloorOf(run, data));
   final choosing = leveled.copyWith(
+    coins: run.coins + coins,
+    coinsEarned: run.coinsEarned + coins,
     spoils: {...run.spoils, run.floor: drop},
     potions: looted - drunk,
     antidotes: antidotes + drop.where((id) => id == towerSpoilsAntidote).length,
@@ -629,27 +759,15 @@ TowerRun towerAfterFight(TowerRun run, TowerData data,
           hero.maxHealth -
           before +
           (hero.maxHealth * towerRecoveryShareOf(run.heat)).round() +
+          (hero.maxHealth * towerSecondWindShareOf(run)).round() +
           drunk * potionHealAmount)
       .clamp(1, hero.maxHealth);
   hero.currentHealth = health;
   return choosing.copyWith(
     health: health,
-    offer: towerOfferFor(
-      seed: run.seed,
-      floor: run.floor,
-      hero: towerHeroView(choosing, hero),
-      clanPool: run.clanPool,
-      standing: towerStandingOf(run, data),
-      oathOpen: run.clanIds.isEmpty,
-      // The first floor won always offers the clans (the user's call).
-      clansDue: run.floor == 1 && run.clanIds.isEmpty,
-      heat: run.heat,
-      clans: data.clans,
-      items: data.items,
-      dice: data.dice,
-      skills: data.skills,
-      spells: data.spells,
-    ),
+    offer: towerRunOfferFor(choosing, data, run.floor, hero,
+        // The first floor won always offers the clans (the user's call).
+        clansDue: run.floor == 1 && run.clanIds.isEmpty),
   );
 }
 
@@ -677,11 +795,19 @@ TowerRun towerFightLost(TowerRun run) => run.status != TowerStatus.climbing
 /// (towerStandingFrom), 0 to [towerOathStep]. A run saved before the clans'
 /// offers took no clan's card: 0 with every clan.
 Map<String, int> towerStandingOf(TowerRun run, TowerData data) {
-  final all = towerStandingFrom([
-    for (final f in run.taken.keys.toList()..sort()) run.taken[f]!
-  ], data.clans, heat: run.heat);
+  final all =
+      towerStandingFrom(towerStandingCardsOf(run), data.clans, heat: run.heat);
   return {for (final c in run.clanPool) c: all[c] ?? 0};
 }
+
+/// The cards [run]'s standing is replayed from, in order: Old friend's
+/// start (one gift of [TowerRun.friend], towerClanRipple), then the cards
+/// taken floor by floor (a stall's boon is no clan's).
+List<TowerReward> towerStandingCardsOf(TowerRun run) => [
+      if (run.friend.isNotEmpty)
+        TowerReward(TowerRewardKind.skill, clan: run.friend),
+      for (final f in run.taken.keys.toList()..sort()) run.taken[f]!,
+    ];
 
 /// The clans of [run]'s pool whose oath is due: at [towerOathStep], while
 /// no oath is sworn (one a run). Their oath is dealt on the next floor won
