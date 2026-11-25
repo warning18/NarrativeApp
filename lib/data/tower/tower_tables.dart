@@ -462,6 +462,14 @@ const int towerRivalStanding = 1;
 const int towerAllyRelationStep = 6;
 const int towerRivalRelationStep = 3;
 
+/// From this floor won (#1153, the user's call: "floor-15 oath only"), a
+/// climb with no oath sworn and none due by standing is offered one anyway:
+/// the oath of its highest-standing clan (towerPityOathClan), on every
+/// floor won that is not a boon's until one is sworn (still one a run).
+/// Floor 15 is itself a boon floor ([towerBoonFloors]), so the first such
+/// offer comes after floor 16.
+const int towerPityOathFloor = 15;
+
 /// The floors whose win offers a boon (v1.860, the main game's earning
 /// offers): a choose-one of a skill, a die and a spell. The other floors
 /// give their spoils only, and a clan's oath when one comes.

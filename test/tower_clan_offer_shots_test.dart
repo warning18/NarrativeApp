@@ -1,6 +1,7 @@
 // The clans' offer as built (v2.6.0, docs/simulation/tower-clan-offers.md):
 // three clans' gifts on the cards (each its clan, what it moves and the
-// standing), and, with a clan at the oath's step, its oath. English at
+// standing), and, with a clan at the oath's step, its oath; and the floor-15
+// oath of a climb with none at that step (#1153). English at
 // 412 px, French at 360 px, with no overflow; pictures with
 // UX_SHOTS=<folder>. UX restyles the cards; this is the look as built.
 import 'dart:convert';
@@ -54,6 +55,19 @@ void main() {
     ],
   );
 
+  // The floor-15 oath (#1153): an unsworn run at floor 16 (floor 15 is a
+  // boon floor), the Mire at 4, none at the oath's step: the highest-standing
+  // clan's oath dealt as built by towerAfterFight.
+  final pity = towerAfterFight(
+      start.copyWith(floor: 16, taken: {
+        for (var f = 1; f <= 2; f++)
+          f: const TowerReward(TowerRewardKind.skill,
+              id: 'human_resolve', clan: 'mire'),
+      }),
+      data,
+      won: true,
+      healthLeft: start.health);
+
   testWidgets('the clans\' offer and the oath, English and French',
       (tester) async {
     await tester.runAsync(loadAppFonts);
@@ -64,7 +78,11 @@ void main() {
       (AppLanguage.en, 412.0),
       (AppLanguage.fr, 360.0)
     ]) {
-      for (final (name, run) in [('gifts', gifts), ('oath', oath)]) {
+      for (final (name, run) in [
+        ('gifts', gifts),
+        ('oath', oath),
+        ('pity', pity)
+      ]) {
         SharedPreferences.setMockInitialValues({
           'app_language': lang.name,
           'tower_run_v1': jsonEncode(run.toJson()),
@@ -127,9 +145,12 @@ void main() {
         if (name == 'gifts') {
           expect(find.byKey(const Key('tower_offer_frame')), findsOneWidget);
           expect(find.textContaining('+$towerGiftStanding'), findsWidgets);
-        } else {
+        } else if (name == 'oath') {
           expect(find.textContaining('$towerOathStep/$towerOathStep'),
               findsWidgets);
+        } else {
+          expect(run.offer.first,
+              const TowerReward(TowerRewardKind.clanOath, id: 'mire'));
         }
         expect(find.byKey(const Key('tower_refuse')), findsOneWidget,
             reason: fr ? 'Plus tard' : 'Not now');

@@ -162,9 +162,9 @@ void main() {
     expect(stops.hubsOfErrand('2015_bazaar'), {'2015'});
     expect(stops.isMainStoryScene('2015_bazaar'), isFalse);
     expect(stops.isMainStoryScene('3001_camp'), isFalse);
-    // The doc's count: 25 hubs, 124 main-story scenes (three page turns of chapter 1, Vica's scene, and chapter 7's night and stair among them).
+    // The doc's count: 25 hubs, 133 main-story scenes (three page turns of chapter 1, Vica's scene, chapter 7's night and stair, and the nine second beats of that night among them).
     expect(story.nodes.keys.where(stops.isHub).length, 25);
-    expect(story.nodes.keys.where(stops.isMainStoryScene).length, 124);
+    expect(story.nodes.keys.where(stops.isMainStoryScene).length, 133);
   });
 
   test('the services of a port town', () {

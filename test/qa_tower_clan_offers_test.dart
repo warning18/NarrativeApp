@@ -4,7 +4,8 @@
 //  - the standing with a clan comes from the gifts taken and nothing else
 //    (the cards with no clan move nothing), always between 0 and 6;
 //  - a clan's oath is taken only with that clan at standing 6 (from the cards
-//    taken on the floors before), and at most one oath is sworn a run;
+//    taken on the floors before), or from floor 15 with none at 6 the
+//    highest-standing clan's (#1153), and at most one oath is sworn a run;
 //  - the sworn clans are exactly the oaths taken, and the leading clan is the
 //    sworn one once sworn;
 //  - a card refused is a floor with no card taken, and the marks the run
@@ -41,9 +42,19 @@ void main() {
         if (card.kind == TowerRewardKind.clanOath) {
           // The standing before this floor's card.
           final before = towerStandingFrom(seen, data.clans);
-          expect(before[card.id] ?? 0, towerOathStep,
-              reason: 'seed ${run.seed}, floor $f: the oath of ${card.id} '
-                  'was taken at standing ${before[card.id]}');
+          final pool = {for (final c in run.clanPool) c: before[c] ?? 0};
+          // From towerPityOathFloor (#1153), with none at 6: the oath of
+          // the highest-standing clan.
+          if (f >= towerPityOathFloor &&
+              !pool.values.any((v) => v >= towerOathStep)) {
+            expect(card.id, towerPityOathClan(run.clanPool, pool),
+                reason: 'seed ${run.seed}, floor $f: the floor-15 oath of '
+                    '${card.id} at standing $pool');
+          } else {
+            expect(before[card.id] ?? 0, towerOathStep,
+                reason: 'seed ${run.seed}, floor $f: the oath of ${card.id} '
+                    'was taken at standing ${before[card.id]}');
+          }
           sworn++;
           oaths++;
         } else if (card.clan.isNotEmpty) {
