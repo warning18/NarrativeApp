@@ -19,3 +19,9 @@ STALLS={
 'stall_forge':ST+"a blacksmith's stall: a small glowing forge on the counter, swords, an axe and horseshoes laid out, an anvil, ember gold rim light, a crossed sword sign",
 'stall_apothecary':ST+"an apothecary's stall: rows of glowing potion bottles and jars of herbs on the counter, a mortar and pestle, sickly green rim light, a mortar sign",
 }
+
+# the 32 px list icon of each stall (the stall alone)
+STALL_ICONS={
+'stall_forge_icon':M+"ember gold, a chibi tiny market stall seen from the front, chunky, ragged purple awning, a glowing forge and an anvil on the counter, a crossed sword sign, no people, the object alone",
+'stall_apothecary_icon':M+"sickly green, a chibi tiny market stall seen from the front, chunky, ragged red awning, glowing potion bottles on the counter, a mortar sign, no people, the object alone",
+}
