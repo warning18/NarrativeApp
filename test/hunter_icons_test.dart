@@ -1,7 +1,8 @@
 // The six rival hunters (Narrative's rival-hunters.md) and the six nemesis
 // champions (nemesis-quests.md) have icons of their own, drawn by
-// tool/gen_hunter_icons.py: no more a borrowed picture, 16x16 like every
-// enemy icon (the game enlarges them), and none the same as another.
+// tool/gen_hunter_icons.py: no more a borrowed picture, 32x32 like every
+// enemy icon (Art's dark set, v2.10.7; 16x16 before), and none the same as
+// another.
 import 'dart:io';
 import 'dart:typed_data';
 
@@ -26,15 +27,15 @@ const hunters = [
 ];
 
 void main() {
-  test('each hunter and champion has an icon of its own, 16x16', () {
+  test('each hunter and champion has an icon of its own, 32x32', () {
     for (final id in hunters) {
       expect(EnemyIcons.allIds, contains(id), reason: id);
       expect(EnemyIcons.pathFor(id), 'assets/icons/enemies/$id.png',
           reason: '$id is not borrowed');
       final bytes = File(EnemyIcons.pathFor(id)).readAsBytesSync();
       final header = ByteData.sublistView(Uint8List.fromList(bytes));
-      expect(header.getUint32(16), 16, reason: '$id width');
-      expect(header.getUint32(20), 16, reason: '$id height');
+      expect(header.getUint32(16), 32, reason: '$id width');
+      expect(header.getUint32(20), 32, reason: '$id height');
     }
   });
 
