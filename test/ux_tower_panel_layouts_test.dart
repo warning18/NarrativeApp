@@ -5,6 +5,7 @@
 // border. Names, HP, the Heat chip and the info buttons stay where they are.
 import 'dart:convert';
 import 'dart:io';
+import 'dart:math';
 import 'dart:ui' as ui;
 
 import 'package:flutter/material.dart';
@@ -19,6 +20,7 @@ import 'package:narrative_data_app/data/tower/tower_run.dart';
 import 'package:narrative_data_app/data/tower/tower_save.dart';
 import 'package:narrative_data_app/l10n/app_locale.dart';
 import 'package:narrative_data_app/main.dart';
+import 'package:narrative_data_app/providers/fight_random_provider.dart';
 import 'package:narrative_data_app/screens/tower/ink/ink_kit.dart';
 import 'package:narrative_data_app/screens/tower/ink/ink_sprites.dart';
 
@@ -61,7 +63,14 @@ void main() {
       tester.view.physicalSize = Size(w, 860);
       addTearDown(tester.view.reset);
       await tester.pumpWidget(RepaintBoundary(
-          key: key, child: const ProviderScope(child: MyApp())));
+          key: key,
+          child: ProviderScope(
+              // A seeded roll: the foe is never an Elite by chance, so the
+              // fight's own layout is the same on every run.
+              overrides: [
+                fightRandomProvider.overrideWithValue(() => Random(1))
+              ],
+              child: const MyApp())));
       Future<void> settle([int n = 8]) async {
         for (var i = 0; i < n; i++) {
           await tester.runAsync(
