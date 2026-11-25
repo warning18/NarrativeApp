@@ -534,7 +534,9 @@ extension _FightBoardView on _FightScreenState {
   /// board gives the dice and kept until the next.
   DiceThrowPlan _throwPlanFor(
       List<_PartyMember> acting, List<_PartyMember> onBoard, Size size) {
-    final key = '$_rollCount|$_roundsStarted|${size.width.round()}x'
+    final style = diceThrowStyle.value;
+    final key =
+        '${style.name}|$_rollCount|$_roundsStarted|${size.width.round()}x'
         '${size.height.round()}|${[for (final a in onBoard) a.id].join(',')}';
     if (_throwPlan != null && _throwKey == key) return _throwPlan!;
     final seats = [
@@ -548,8 +550,14 @@ extension _FightBoardView on _FightScreenState {
                 0.95),
     ];
     _throwKey = key;
-    return _throwPlan = DiceThrowPlan.build(
-        seats: seats, board: size, seed: _rollCount * 131 + _roundsStarted);
+    final seed = _rollCount * 131 + _roundsStarted;
+    return _throwPlan = style == DiceThrowStyle.today
+        ? DiceThrowPlan.build(seats: seats, board: size, seed: seed)
+        : DiceThrowPlan.drop(
+            seats: seats,
+            board: size,
+            seed: seed,
+            strong: style == DiceThrowStyle.dropStrong);
   }
 
   Widget _buildDiceBoard(
@@ -648,7 +656,14 @@ extension _FightBoardView on _FightScreenState {
                               ),
                             ),
                           ),
-                        if (throwPlan != null)
+                        if (throwPlan != null && throwPlan.dropped)
+                          Positioned.fill(
+                            child: IgnorePointer(
+                              child: CustomPaint(
+                                  painter: DiceGroundPainter(throwPlan, u)),
+                            ),
+                          ),
+                        if (throwPlan != null && !throwPlan.dropped)
                           for (var k = 0; k < onBoard.length; k++)
                             Positioned(
                               left: throwPlan.position(k, u).dx -
