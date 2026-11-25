@@ -1,5 +1,15 @@
 > **Standing rule for everything Art draws (the user, 25 November):** "the art should not have too many details, like the backgrounds, but more an arty direction". Bold simple silhouettes, a few strong ink strokes, **no hatching, no shading ramps, no small texture**, lots of empty paper, one spot of colour, a recognisable shape at a glance: think a stamp or a woodcut, not a small illustration. Prompts must say "bold simple silhouette, no hatching, no shading" and must not ask for hatching.
 
+
+> **Detail level in numbers (the one rule for plates, tarot, icons, dice and banners; 25 November):**
+> | Piece | Canvas | Smallest region kept | Tones | Line weight | Code |
+> |---|---|---|---|---|---|
+> | Tower plate | 180 x 320 | **60 px** (the pass merges any region of one colour smaller than that into what surrounds it) | at most 5: ink, dark, paper shadow, paper, deep red | none (shapes, no outlines) | `art/pixellab-cutpaper/simplify.py` |
+> | Tarot vignette | 96 x 64 | **16 px** | at most 5, the same | none | same |
+> | Icon | 32 x 32 | **3 px** (about 2 x 2) | ink black, paper white, one spot hue, at most one grey | 1 px outline; 2 to 4 inner ink lines and one paper highlight for form; no hatching | by the prompt |
+> | Die, banner | 44 / 64 x 128 | 6 / 12 px | the five above plus the clan hue on a banner | none | same pass |
+> A piece with more regions than that is too detailed; a piece with larger flat areas and fewer than about 4 regions per 1,000 px is too bare. Merge, do not blur: no antialiasing, no gradients.
+
 # Style exploration "brut" (24 November 2026; 0 generations; waits for the user's pick)
 
 The user: "too much detail; something less detailed, more raw (brut), playing with shadows, with a unique colour for each clan. Globally the art should not be too complex, but have a style of its own."
