@@ -32,3 +32,11 @@ IDS={
 IDS={k:v+O for k,v in IDS.items()}
 assert len(IDS)==24,len(IDS)
 SUFFIX=", game icon, no text, centred"
+
+RETRY={
+'wooden_closed':"a chibi closed wooden treasure chest, warm brown planks with two dark iron bands and a gold lock, rounded lid, chunky"+O,
+'wooden_open':"a chibi wooden treasure chest seen from the front, the lid raised open at the back, gold coins and a red potion heaped inside, brown planks, chunky"+O,
+'iron_open':"a chibi iron-bound chest seen from the front, the lid raised open at the back, a sword hilt and coins inside, grey iron plates, chunky"+O,
+'silver_open':"a chibi silver chest seen from the front, the lid raised open at the back, blue gems and a blue glow inside, pale silver plates, chunky"+O,
+'void_open':"a chibi dark violet chest seen from the front, the lid raised open at the back, a bright purple glow and sparks inside, black plates, chunky"+O,
+}
