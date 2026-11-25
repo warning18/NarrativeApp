@@ -18,3 +18,8 @@ RETRY={
 'void_wisp':M+"void violet, a chibi whole small creature, chunky, a small floating flame wisp of cold pale blue-white fire with a dark hollow face and two small eyes, wisps of smoke below, not a ghost sheet",
 'hollow_reflection':M+"void violet, a chibi bust, head and shoulders, big head, the grey mirror copy of an adventurer, a plain grey cloak and hood, a smooth featureless pale face, a faint violet outline glow",
 }
+
+RETRY={
+'hollow_reflection':M+"void violet, a chibi bust, head and shoulders, big head, a pale silver mirror-copy of a hero: a bright pale grey face with a smooth blank mirror-like shine, silver armour shoulders, a thin violet outline glow, bright against the dark, not a hooded figure",
+'tear_spawn':M+"void violet, a chibi whole small creature, chunky, a lumpy purple blob with three big round pale yellow eyes of different sizes and a crooked stitched mouth, tiny crawling legs, tear-shaped drips, low and wide, not a ghost",
+}
