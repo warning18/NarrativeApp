@@ -8,6 +8,10 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [2.10.4+1086]
+
+- **Tower: the clans' offer on paper cards (design A, rounder).** A clan's gift is a paper card with rounded corners (12 px): its picture on a black plate, its name in small caps, the clan's colour once as a short line under the name, the wax seal for its rarity, and all the information on the card: its tags (Gift, rarity), the clan and your standing, what it moves (clan by clan, with the Heat's rival ripple at Ash) and the clan's quote. A clan's oath is a rounded paper row with the clan's banner on a black plate, its tags, words, standing and, when the oath comes late (after floor 15 with the clan below the oath's step), Narrative's late-oath line from that clan. The card in hand is ringed in paper. Rules and numbers are unchanged.
+
 ## [2.10.3+1085]
 
 - **Tower: Ashen Ink touch-ups.** Heat shows its level in one ember colour (the last level in ash) instead of five hues, and the Tower's newer rows, chips, tabs and dialogs (the Heat picker, the coin and Heat chips, the perk and trim rows, the marks tabs, the door's perk slot, the curse and banish dialogs) take the 4 px corner. The older ink panels and the slanted buttons are unchanged.
