@@ -79,7 +79,11 @@ extension _FightRounds on _FightScreenState {
     } else {
       _rollController.duration = _still
           ? const Duration(milliseconds: 1)
-          : diceTimeFor(diceThrowBase, ref.read(diceSpeedProvider));
+          : diceTimeFor(
+              diceThrowStyle.value == DiceThrowStyle.today
+                  ? diceThrowBase
+                  : const Duration(milliseconds: diceDropMs),
+              ref.read(diceSpeedProvider));
       await _rollController.forward(from: 0);
     }
     if (!mounted) return;

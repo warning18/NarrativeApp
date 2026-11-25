@@ -12,7 +12,7 @@
 import 'dart:math' as math;
 
 import 'package:flutter/animation.dart';
-import 'package:flutter/foundation.dart' show Listenable;
+import 'package:flutter/foundation.dart' show Listenable, ValueNotifier;
 import 'package:flutter/rendering.dart' show CustomClipper;
 import 'dart:ui'
     show Offset, Path, PathOperation, RRect, Radius, Rect, Size, lerpDouble;
@@ -29,6 +29,18 @@ class DiceThrowSeat {
 /// How long the simulated throw lasts, in seconds; the plan's 0 to 1 is this.
 const double diceThrowSeconds = 2.3;
 
+/// How the dice are thrown (a proposal for the pictures; [today] is the throw
+/// in the game): [drop] falls from above onto the floor of the scene, bounces
+/// once or twice with a puff of dust at each contact and settles; [dropStrong]
+/// bounces higher.
+enum DiceThrowStyle { today, drop, dropStrong }
+
+final ValueNotifier<DiceThrowStyle> diceThrowStyle =
+    ValueNotifier(DiceThrowStyle.today);
+
+/// How long the dropped throw lasts, in milliseconds (the controller's).
+const int diceDropMs = 880;
+
 /// How high a die flies at most above the board, in logical pixels.
 const double diceThrowMaxLift = 30;
 
@@ -43,7 +55,16 @@ class _Body {
 }
 
 class DiceThrowPlan {
-  DiceThrowPlan._(this._pos, this._lift, this._turn, this._radii, this.count);
+  DiceThrowPlan._(this._pos, this._lift, this._turn, this._radii, this.count,
+      {this.contacts = const [], this.dropped = false});
+
+  /// The moments (0 to 1 of the throw) each die touches the floor: a dropped
+  /// throw's puffs of dust.
+  final List<List<double>> contacts;
+
+  /// Whether this is the dropped throw (its shadow and dust are drawn by
+  /// [DiceGroundPainter]).
+  final bool dropped;
 
   final List<double> _radii;
 
@@ -307,6 +328,112 @@ class DiceThrowPlan {
       turn.add(row);
     }
     return DiceThrowPlan._(pos, liftAt, turn, radii, n);
+  }
+
+  /// The dropped throw: each die falls from above the board on a short arc,
+  /// touches the floor, bounces once or twice with decreasing height and
+  /// settles on its seat, turning as it goes; a pure plan like [build], 0 to 1
+  /// over [diceDropMs]. [strong] bounces higher (and longer).
+  factory DiceThrowPlan.drop({
+    required List<DiceThrowSeat> seats,
+    required Size board,
+    required int seed,
+    bool strong = false,
+  }) {
+    final rnd = math.Random(seed);
+    final n = seats.length;
+    const frames = 120;
+    final radii = [for (final s in seats) s.radius];
+    for (var i = 0; i < n; i++) {
+      for (var j = i + 1; j < n; j++) {
+        final d = (seats[i].seat - seats[j].seat).distance;
+        final need = radii[i] + radii[j];
+        if (need > d && need > 0) {
+          radii[i] *= d / need * 0.98;
+          radii[j] *= d / need * 0.98;
+        }
+      }
+    }
+    const total = diceDropMs / 1000;
+    final e = strong ? 0.5 : 0.36;
+    final tFall = strong ? 0.21 : 0.23;
+    final z0 = board.height * 0.62;
+    final g = 2 * z0 / (tFall * tFall);
+    final vz = g * tFall;
+    // One die: when it touches (tc0), bounces (tb1, tb2), is still (tEnd).
+    final tb1 = 2 * e * vz / g;
+    final tb2 = 2 * e * e * vz / g;
+    final pos = <List<Offset>>[];
+    final liftAt = <List<double>>[];
+    final turn = <List<double>>[];
+    final contacts = <List<double>>[];
+    final delay = [for (var i = 0; i < n; i++) i * 0.055];
+    final back = [
+      for (var i = 0; i < n; i++)
+        Offset((rnd.nextDouble() - 0.5) * 70, -(60 + rnd.nextDouble() * 50)),
+    ];
+    final tEnd = [
+      for (var i = 0; i < n; i++) delay[i] + tFall + tb1 + tb2 + 0.14
+    ];
+    for (var i = 0; i < n; i++) {
+      contacts.add([
+        (delay[i] + tFall) / total,
+        (delay[i] + tFall + tb1) / total,
+        if (!seats[i].fixed) (delay[i] + tFall + tb1 + tb2) / total,
+      ]);
+    }
+    for (var f = 0; f < frames; f++) {
+      final u = f / (frames - 1);
+      final time = u * total;
+      final p = <Offset>[], l = <double>[], t = <double>[];
+      for (var i = 0; i < n; i++) {
+        final seat = seats[i].seat;
+        if (seats[i].fixed) {
+          p.add(seat);
+          l.add(0);
+          t.add(1);
+          continue;
+        }
+        final tt = time - delay[i];
+        // Height above the floor.
+        double z;
+        if (tt < 0) {
+          z = z0 + 40;
+        } else if (tt < tFall) {
+          z = z0 - 0.5 * g * tt * tt;
+        } else if (tt < tFall + tb1) {
+          final x = tt - tFall;
+          z = e * vz * x - 0.5 * g * x * x;
+        } else if (tt < tFall + tb1 + tb2) {
+          final x = tt - tFall - tb1;
+          z = e * e * vz * x - 0.5 * g * x * x;
+        } else {
+          z = 0;
+        }
+        // The floor point slides from behind to the seat while it falls and a
+        // little after, then rests.
+        final slide =
+            Curves.easeOutQuad.transform((tt / (tFall * 1.08)).clamp(0.0, 1.0));
+        p.add(seat + back[i] * (1 - slide));
+        l.add(math.max(0.0, z));
+        // The turn: from the throw to a few frames after the last touch, with
+        // a small dip at each contact, exactly 1 at the end.
+        final s = (tt / (tEnd[i] - delay[i] - 0.08)).clamp(0.0, 1.0);
+        var dip = 0.0;
+        for (final c in contacts[i]) {
+          final x = (time - c * total) / 0.10;
+          if (x > 0 && x < 1) dip += 0.04 * math.sin(math.pi * x) * (1 - s);
+        }
+        t.add(u >= 1
+            ? 1.0
+            : (Curves.easeOutCubic.transform(s) - dip).clamp(0.0, 1.0));
+      }
+      pos.add(p);
+      liftAt.add(l);
+      turn.add(t);
+    }
+    return DiceThrowPlan._(pos, liftAt, turn, radii, n,
+        contacts: contacts, dropped: true);
   }
 
   static void _push(_Body a, _Body b) {
