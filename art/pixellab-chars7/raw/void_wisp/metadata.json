@@ -1,0 +1,36 @@
+{
+  "group_id": "9f39ba5d-0896-4a14-ad64-3abc309fc1ef",
+  "states": [
+    {
+      "character": {
+        "id": "8b0ac656-04f8-4880-9cab-ddd79bab30a0",
+        "name": "Idle",
+        "prompt": "a small humanoid figure made of pale blue-white cold flame, two tiny dark eyes, no clothes, a glowing flame head, chibi",
+        "size": {
+          "width": 48,
+          "height": 48
+        },
+        "template_id": "mannequin",
+        "directions": 8,
+        "view": "side",
+        "created_at": "2026-11-25T16:07:18.095055+00:00"
+      },
+      "folder": "Idle",
+      "frames": {
+        "rotations": {
+          "south": "Idle/rotations/south.png",
+          "south-east": "Idle/rotations/south-east.png",
+          "east": "Idle/rotations/east.png",
+          "north-east": "Idle/rotations/north-east.png",
+          "north": "Idle/rotations/north.png",
+          "north-west": "Idle/rotations/north-west.png",
+          "west": "Idle/rotations/west.png",
+          "south-west": "Idle/rotations/south-west.png"
+        },
+        "animations": {}
+      }
+    }
+  ],
+  "export_version": "3.1",
+  "export_date": "2026-11-25T16:11:56.637345"
+}

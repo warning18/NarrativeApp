@@ -1,0 +1,36 @@
+{
+  "group_id": "4bfb8960-d8bb-4dd8-80be-99c1d40c7989",
+  "states": [
+    {
+      "character": {
+        "id": "00047b97-42cb-48d1-82ac-60ae8be2f775",
+        "name": "Idle",
+        "prompt": "a humanoid shape of swirling dark purple smoke with several small pale faces on its body, glowing violet edges, chibi",
+        "size": {
+          "width": 48,
+          "height": 48
+        },
+        "template_id": "mannequin",
+        "directions": 8,
+        "view": "side",
+        "created_at": "2026-11-25T16:07:20.096603+00:00"
+      },
+      "folder": "Idle",
+      "frames": {
+        "rotations": {
+          "south": "Idle/rotations/south.png",
+          "south-east": "Idle/rotations/south-east.png",
+          "east": "Idle/rotations/east.png",
+          "north-east": "Idle/rotations/north-east.png",
+          "north": "Idle/rotations/north.png",
+          "north-west": "Idle/rotations/north-west.png",
+          "west": "Idle/rotations/west.png",
+          "south-west": "Idle/rotations/south-west.png"
+        },
+        "animations": {}
+      }
+    }
+  ],
+  "export_version": "3.1",
+  "export_date": "2026-11-25T16:11:57.610712"
+}

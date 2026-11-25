@@ -27,11 +27,13 @@ for f in sorted(glob.glob(R+'*_0/get_image_0.png')):
 # the current (lighter) versions for comparison
 cur={'inquisition_high_warden':'final_wave4','plague_hound':'final_wave4','bone_warden':'final_wave4','void_hound':'final_wave4','weaponsmith_forge':'final_wave5a','apothecary_row':'final_wave5a','iron_closed':'final_wave5a','iron_open':'final_wave5a'}
 PAPER=(231,225,205,255);S=3;order=list(cur)
-W=Image.new('RGBA',(1050,2*108+22+260+30),(26,28,38,255));g=ImageDraw.Draw(W);g.text((4,2),'current (top) / darker (bottom)',fill=(235,237,233))
+W=Image.new('RGBA',(1060,2*108+22+260+30),(26,28,38,255));g=ImageDraw.Draw(W);g.text((4,2),'current (top) / darker (bottom)',fill=(235,237,233))
 for i,k in enumerate(order):
     for r,im in enumerate((Image.open(f'art/pixellab-icons-v2/{cur[k]}/{k}32.png').convert('RGBA'),fin[k])):
         bg=Image.new('RGBA',(32,32),PAPER);bg.alpha_composite(im);W.alpha_composite(bg.resize((96,96),Image.NEAREST),(8+i*108,16+r*108))
     g.text((8+i*108,16+2*108-2),k[:14],fill=(150,150,170))
+for j,k in enumerate(('stall_forge_icon','stall_apothecary_icon')):
+    bg=Image.new('RGBA',(32,32),PAPER);bg.alpha_composite(fin[k]);W.alpha_composite(bg.resize((96,96),Image.NEAREST),(878+j*84,16+108));g.text((878+j*84,16+2*108-2),k[:13],fill=(150,150,170))
 # composites: each stall on 2 backgrounds with 2 NPCs behind (bg -> NPC -> stall), 2x
 y0=16+2*108+10;g.text((4,y0-14),'stall as an element: background -> NPC behind the counter -> stall (2x)',fill=(235,237,233))
 bgs=[Image.open('art/pixellab-cutpaper/tower/handoff/tower_shop.png').convert('RGBA'),Image.open('assets/visuals/fight_plates/cityroad.png').convert('RGBA')]

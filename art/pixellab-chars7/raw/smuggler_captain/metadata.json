@@ -1,0 +1,36 @@
+{
+  "group_id": "726a622a-8360-43df-a4c2-08a35819c68e",
+  "states": [
+    {
+      "character": {
+        "id": "6c192f81-f148-4bfc-9802-c41f3fe38b07",
+        "name": "Idle",
+        "prompt": "a smuggler captain in a long dark coat with a pink sash, a tricorn hat with a feather, a lantern in one hand, chibi",
+        "size": {
+          "width": 48,
+          "height": 48
+        },
+        "template_id": "mannequin",
+        "directions": 8,
+        "view": "side",
+        "created_at": "2026-11-25T16:07:16.087147+00:00"
+      },
+      "folder": "Idle",
+      "frames": {
+        "rotations": {
+          "south": "Idle/rotations/south.png",
+          "south-east": "Idle/rotations/south-east.png",
+          "east": "Idle/rotations/east.png",
+          "north-east": "Idle/rotations/north-east.png",
+          "north": "Idle/rotations/north.png",
+          "north-west": "Idle/rotations/north-west.png",
+          "west": "Idle/rotations/west.png",
+          "south-west": "Idle/rotations/south-west.png"
+        },
+        "animations": {}
+      }
+    }
+  ],
+  "export_version": "3.1",
+  "export_date": "2026-11-25T16:11:55.652682"
+}

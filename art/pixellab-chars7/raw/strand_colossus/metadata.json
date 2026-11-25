@@ -1,0 +1,36 @@
+{
+  "group_id": "7153e538-dce5-40bf-b454-ff53b98ac8d6",
+  "states": [
+    {
+      "character": {
+        "id": "73e95168-6246-4827-9075-7402f31aa45c",
+        "name": "Idle",
+        "prompt": "a huge stocky humanoid made of two wooden ship keels and teal glass panels fused together, one glowing white eye in the chest, blocky arms, chibi",
+        "size": {
+          "width": 48,
+          "height": 48
+        },
+        "template_id": "mannequin",
+        "directions": 8,
+        "view": "side",
+        "created_at": "2026-11-25T16:07:17.089575+00:00"
+      },
+      "folder": "Idle",
+      "frames": {
+        "rotations": {
+          "south": "Idle/rotations/south.png",
+          "south-east": "Idle/rotations/south-east.png",
+          "east": "Idle/rotations/east.png",
+          "north-east": "Idle/rotations/north-east.png",
+          "north": "Idle/rotations/north.png",
+          "north-west": "Idle/rotations/north-west.png",
+          "west": "Idle/rotations/west.png",
+          "south-west": "Idle/rotations/south-west.png"
+        },
+        "animations": {}
+      }
+    }
+  ],
+  "export_version": "3.1",
+  "export_date": "2026-11-25T16:11:56.195860"
+}
