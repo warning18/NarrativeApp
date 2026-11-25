@@ -12,6 +12,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../combat/enemy_affix.dart';
+import '../../data/tower/tower_coins.dart';
 import '../../data/tower/tower_dice.dart';
 import '../../data/tower/tower_events.dart';
 import '../../data/tower/tower_hero.dart';
@@ -32,6 +33,7 @@ import 'tower_end_screen.dart';
 import 'tower_backdrop.dart';
 import 'tower_dice_panel.dart';
 import 'tower_event_card.dart';
+import 'tower_coin_view.dart';
 import 'tower_heat_view.dart';
 import 'tower_look.dart';
 import 'tower_ladder.dart';
@@ -303,6 +305,7 @@ class _TowerFloorScreenState extends ConsumerState<_TowerFloorBody> {
                   child: choosing && _spoilsTaken != run.floor
                       ? TowerSpoilsView(
                           run: run,
+                          coinsGained: towerCoinsFor(towerFloorOf(run, data)),
                           onTake: () => run.offer.isEmpty &&
                                   event?.kind != TowerEventKind.test
                               ? _pick(run, data, null)
@@ -407,7 +410,10 @@ class _FloorIntro extends ConsumerWidget {
                     color: inkPaper,
                     fontWeight: FontWeight.w800,
                     shadows: const [Shadow(blurRadius: 8, color: inkBlack)])),
-            if (run.heat > 0) TowerHeatChip(heat: run.heat),
+            Wrap(spacing: 8, children: [
+              TowerCoinChip(coins: run.coins),
+              if (run.heat > 0) TowerHeatChip(heat: run.heat),
+            ]),
             Text(tr(ref, 'tower_floor_${run.floor}'),
                 style: theme.textTheme.bodyLarge
                     ?.copyWith(fontStyle: FontStyle.italic, color: inkGrey)),

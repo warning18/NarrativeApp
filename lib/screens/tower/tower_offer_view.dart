@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../combat/dice_faces.dart' show skillDisplayName;
+import '../../data/tower/tower_coins.dart';
 import '../../data/tower/tower_hero.dart';
 import '../../data/tower/tower_rewards.dart';
 import '../../data/tower/tower_run.dart';
@@ -20,6 +21,8 @@ import '../../theme/stitched_ink.dart';
 import '../../data/tower/tower_clans.dart' show towerClanRipple;
 import '../../data/tower/tower_events.dart';
 import 'tower_card_art.dart';
+import 'tower_coin_view.dart';
+import 'tower_providers.dart';
 import 'tower_event_card.dart';
 import 'tower_tarot_card.dart';
 
@@ -402,7 +405,7 @@ class _TowerOfferViewState extends ConsumerState<TowerOfferView> {
         const SizedBox(height: 12),
         if (widget.event?.kind == TowerEventKind.test) ...[
           TowerEventCard(widget.event!,
-              bagFull: widget.run.potions >= towerBagCap),
+              bagFull: widget.run.potions >= towerBagCapOf(widget.run)),
           const SizedBox(height: 12),
         ],
         if (widget.event?.kind == TowerEventKind.shortcut &&
@@ -455,6 +458,20 @@ class _TowerOfferViewState extends ConsumerState<TowerOfferView> {
                         ),
                       ),
                     ),
+                  TowerTableCoinRow(
+                    run: widget.run,
+                    held: _held.clamp(0, offer.length - 1),
+                    onReroll: () {
+                      setState(() => _held = 0);
+                      ref
+                          .read(towerProvider.notifier)
+                          .reroll(data: widget.data);
+                    },
+                    onBanish: (i) {
+                      setState(() => _held = 0);
+                      ref.read(towerProvider.notifier).banish(i);
+                    },
+                  ),
                   if (widget.controls != null) widget.controls!,
                 ]);
           }),
