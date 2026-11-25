@@ -14,8 +14,12 @@ import '../../gamedata/db_schema.dart';
 import '../../l10n/app_locale.dart';
 import '../../l10n/app_strings.dart';
 import '../../providers/clans_provider.dart';
+import '../../widgets/clan_offer_gifts.dart';
+import '../../widgets/item_lore.dart' show itemRarityLabelFor;
+import '../../widgets/pixel_banner.dart' show clanBannerId;
 import '../../widgets/race_profession_cards.dart' show ClanDisc;
 import '../../providers/game_db_providers.dart';
+import '../../theme/icon_sizes.dart';
 import '../../theme/stitched_ink.dart';
 import '../../data/tower/tower_clans.dart' show towerClanRipple;
 import '../../data/tower/tower_events.dart';
@@ -264,6 +268,127 @@ class _TowerOfferViewState extends ConsumerState<TowerOfferView> {
     );
   }
 
+  /// A small tag in the clan's colour (the story's offer card has the same).
+  Widget _tag(String text, Color color) => Container(
+        padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+        decoration: BoxDecoration(
+            color: color.withValues(alpha: 0.2),
+            border: Border.all(color: color.withValues(alpha: 0.8)),
+            borderRadius: BorderRadius.circular(4)),
+        child: Text(text,
+            style: const TextStyle(
+                fontFamily: InkFonts.system,
+                fontSize: 10,
+                height: 1.1,
+                color: Color(0xFFF1E8D2))),
+      );
+
+  /// The clans' offer in the story's look (offer_dialog.dart): the gifts as a
+  /// fanned hand of tier cards, each with its clan's banner and colour on the
+  /// name band, and the oath as a wide row under them. What a card says and
+  /// what a tap does are the Tower's own (the ripple and the standing stay
+  /// in the card in hand's words under the table).
+  Widget _clanTable(BuildContext context) {
+    final offer = widget.run.offer;
+    final lang = ref.watch(appLanguageProvider);
+    final factions = ref.watch(factionsProvider);
+    final gifts = <int>[
+      for (var i = 0; i < offer.length; i++)
+        if (offer[i].kind != TowerRewardKind.clanOath) i,
+    ];
+    final oaths = <int>[
+      for (var i = 0; i < offer.length; i++)
+        if (offer[i].kind == TowerRewardKind.clanOath) i,
+    ];
+    Color colourOf(String clanId) {
+      final f = factions[clanId];
+      return f == null ? const Color(0xFF9AA3A7) : Color(f.color | 0xFF000000);
+    }
+
+    Widget flagOf(String clanId, Color colour) => clanCardFlag(
+          clanBannerId(clanId),
+          plain:
+              SizedBox(width: 40, height: 80, child: ColoredBox(color: colour)),
+        );
+    return Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
+      for (final i in oaths) ...[
+        Builder(builder: (context) {
+          final reward = offer[i];
+          final colour = colourOf(reward.id);
+          final faction = factions[reward.id];
+          final clan = faction?.shortFor(lang) ?? reward.id;
+          final die = towerClanDieOf(reward.id, widget.data.dice);
+          return ClanRaiseRow(
+            key: Key('tower_card_$i'),
+            tier: CardTier.legendary,
+            color: colour,
+            flag: flagOf(reward.id, colour),
+            icon: faction == null
+                ? const SizedBox(width: 32, height: 32)
+                : ClanDisc(faction, size: 32),
+            name: tr(ref, 'tower_oath_title').replaceAll('{clan}', clan),
+            tags: [_tag(tr(ref, 'tower_kind_oath'), colour)],
+            raises: [
+              tr(ref, 'tower_oath_line_${reward.id}'),
+              if (die != null)
+                tr(ref, 'tower_oath_die')
+                    .replaceAll('{die}', towerDieName(ref, die)),
+            ].join(' '),
+            greeting: faction?.mottoFor(lang) ?? '',
+            clanName: clan,
+            standing:
+                towerStandingLabel(ref, _standing[reward.id] ?? towerOathStep),
+            selected: _held == i,
+            onTap: () => setState(() => _held = i),
+          );
+        }),
+        const SizedBox(height: 8),
+      ],
+      if (gifts.isNotEmpty)
+        ClanHandFan(
+          cards: [
+            for (final i in gifts)
+              Builder(builder: (context) {
+                final reward = offer[i];
+                final colour = colourOf(reward.clan);
+                final faction = factions[reward.clan];
+                final t = towerCardText(ref, reward, tier: _tierOf(reward));
+                final row = _row(reward);
+                final rarity = '${row['rarity'] ?? ''}';
+                final idx = towerRarityIndex(rarity) ?? 0;
+                final isSkill = reward.kind == TowerRewardKind.skill ||
+                    reward.kind == TowerRewardKind.rankUp;
+                return ClanCardView(
+                  tier: CardTier.values[idx.clamp(0, 4)],
+                  color: colour,
+                  flag: flagOf(reward.clan, colour),
+                  icon: towerCardPicture(
+                      towerCardIcon(isSkill ? 'skill' : 'die', reward.id),
+                      IconSize.s48,
+                      fallback: Icon(Icons.auto_awesome,
+                          size: IconSize.s48, color: colour)),
+                  name: t.name,
+                  tags: [
+                    _tag(t.kind.split(' · ').first, colour),
+                    if (rarity.isNotEmpty)
+                      _tag(itemRarityLabelFor(lang, rarity), colour),
+                  ],
+                  greeting: faction?.mottoFor(lang) ?? '',
+                  clanName: faction?.shortFor(lang) ?? reward.clan,
+                  standing:
+                      towerStandingLabel(ref, _standing[reward.clan] ?? 0),
+                  backdropId: reward.clan,
+                  lit: _held == i,
+                );
+              }),
+          ],
+          keys: [for (final i in gifts) Key('tower_card_$i')],
+          lit: gifts.indexOf(_held),
+          onTap: (k) => setState(() => _held = gifts[k]),
+        ),
+    ]);
+  }
+
   /// The card in hand, in full under the tarot row: its name and all its words
   /// at a readable size.
   Widget _detail(BuildContext context, int i) {
@@ -408,7 +533,29 @@ class _TowerOfferViewState extends ConsumerState<TowerOfferView> {
           TowerShortcutWonLine(widget.event!),
           const SizedBox(height: 12),
         ],
-        if (offer.isNotEmpty)
+        if (offer.isNotEmpty && clans)
+          Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+            _clanTable(context),
+            if (_held < offer.length) _detail(context, _held),
+            if (_held < offer.length)
+              Align(
+                alignment: Alignment.centerRight,
+                child: Padding(
+                  padding: const EdgeInsets.only(top: 12),
+                  child: FilledButton(
+                    key: const Key('tower_take'),
+                    onPressed: _done ? null : () => _pick(_held),
+                    child: Text(tr(
+                        ref,
+                        offer[_held].kind == TowerRewardKind.clanOath
+                            ? 'tower_swear'
+                            : 'tower_take')),
+                  ),
+                ),
+              ),
+            if (widget.controls != null) widget.controls!,
+          ])
+        else if (offer.isNotEmpty)
           LayoutBuilder(builder: (context, box) {
             final scale = MediaQuery.textScalerOf(context).scale(10) / 10;
             final tarot = towerTarotFits(box.maxWidth, scale,
