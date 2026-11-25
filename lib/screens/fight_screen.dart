@@ -139,6 +139,7 @@ import 'tower/ink/ink_palette.dart' show inkGrey, inkRed, inkSlate;
 import '../widgets/dice_throw.dart';
 import 'tower/ink/ink_dice.dart' show inkDieSkin;
 import 'tower/tower_backdrop.dart' show towerFightScene;
+import 'fight/fight_panel_fx.dart';
 import 'tower/ink/ink_kit.dart'
     show InkSlantPanel, InkSplashPainter, TowerPanelLayout, towerPanelLayout;
 import 'tower/ink/ink_palette.dart' show inkBlack, inkDeep, inkPaper;

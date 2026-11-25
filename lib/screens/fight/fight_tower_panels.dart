@@ -297,9 +297,17 @@ extension _TowerPanels on _FightScreenState {
     }
 
     return Column(children: [
-      SizedBox(height: foeH, child: panel(foeH, true, foeCards)),
+      PanelFxFoeShake(
+        child: SizedBox(
+            key: towerFoePanelKey,
+            height: foeH,
+            child: panel(foeH, true, foeCards)),
+      ),
       const SizedBox(height: _panelGap),
-      SizedBox(height: partyH, child: panel(partyH, false, partyCards)),
+      SizedBox(
+          key: towerPartyPanelKey,
+          height: partyH,
+          child: panel(partyH, false, partyCards)),
     ]);
   }
 
