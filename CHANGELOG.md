@@ -12,6 +12,9 @@ isn't reconstructable from git history alone.
 
 - **The dice land on the floor.** The dice board's throw is new, in the Tower and in the story's fights, for one die or several: each die falls from above on a short arc with a shadow on the floor that grows and sharpens, touches the floor with a puff of dust or snow, bounces once or twice, lower each time, tumbles a face or two and settles flat on its face. It takes 880 ms (the dice speed setting still scales it); several dice start a moment apart and land in a scatter. With reduced motion it is a short drop and a settle (about 200 ms), no bounce, no dust. No dark disc and no black shadow ellipse. No rule or number changes.
 
+## [2.10.15+1097]
+
+- Level Up: what a stat pick changes, before and after, for UX's new cards (no rule change).
 ## [2.10.14+1096]
 
 - **Tower dice: the black ball behind the die is gone.** Three things painted a solid mass behind or over the die: its landing burst (flattened to one colour, so the flash showed as a disc), the picked die's blurred gold glow, and the dark archway at the top of Art's dice plate, which on a short board sat right behind the die. The landing burst is now rings and sparks only, a picked die keeps its gold outline without the glow, and the plate is drawn a third larger from its foot so the archway is cut off. No rule or number changes.
