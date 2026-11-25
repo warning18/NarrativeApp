@@ -112,3 +112,8 @@ RETRY2={
 'dagger_t8':"a chibi short dark dagger with a straight blade and a purple glowing gem in the guard, stubby and fat, lying diagonally"+O,
 'greaves_hide':"a chibi tan leather shin guard, chunky, curved leather plate with two straps"+O,
 }
+
+# Round 4: marks must not read as a coin (Manager 25 Nov): an ash sigil on a scrap of ash-grey paper
+RETRY3={
+'marks':"a chibi scrap of ash-grey torn paper with a small round cinder sigil stamped on it, a few dark burnt edges, one tiny ochre spark, chunky, no coin, not round, no gold"+O,
+}

@@ -7,7 +7,7 @@ from palette import H,PAL,RAMPS
 PAL=PAL+[H('A53030'),H('4FB0B0')]
 OUT=PAL[0]
 # recolour a ramp of a snapped icon into another ramp by shade rank (user 25 Nov: more colour, same smooth range)
-RECOLOUR={'potion_minor':('copper','red'),'potion_major':('copper','red'),'marks':('copper','ochre'),'fate_coin':('copper','ochre'),'shield_t10':('copper','ochre'),
+RECOLOUR={'potion_minor':('copper','red'),'potion_major':('copper','red'),'fate_coin':('copper','ochre'),'shield_t10':('copper','ochre'),
  'circlet_radiance':('copper','ochre'),'saint_reliquary':('copper','ochre'),'sword_t5':('copper','ochre'),'sword_t10':('copper','ochre'),'spear_t10':('copper','ochre'),
  'phoenix_sigil':('copper','red'),'harborwatch_coat':('violet','blue'),'antidote':('linen','heal')}
 def recolour(im,src,dst):

@@ -18,3 +18,6 @@ warden_signet is a gold blob rather than a clear ring; coat_last_watch reads as 
 
 ## Sheets
 `docs/art/boards/icons-wave2-all.png` (all 68 looks at 3x), `icons-wave2-cards.png` (on cards, beside a Tower plate), `icons-wave2-fixes.png` (the five redraws and the antidote), `chibi-palette-test.png` (before and after the extended palette).
+
+## Update (25 November): marks
+`marks.png` replaced: the first one read like a gold coin next to the coin chip. The new one is a crumpled ash-grey paper scrap with a cinder sigil and one ochre spark (2 generations, `RETRY3` in `wave2_ids.py`).
