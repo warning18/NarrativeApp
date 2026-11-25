@@ -9,6 +9,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../data/tower/tower_coins.dart';
 import '../../l10n/app_strings.dart';
 import '../../theme/icon_sizes.dart';
+import '../../utils/pixel_icons/game_pixel_icons.dart' show ItemPixelIcon;
 import '../../theme/stitched_ink.dart';
 import 'ink/ink_palette.dart';
 import 'tower_heat_view.dart' show towerSeamRadius;
@@ -66,9 +67,8 @@ class _MarksCost extends StatelessWidget {
   @override
   Widget build(BuildContext context) =>
       Row(mainAxisSize: MainAxisSize.min, children: [
-        const SizedBox(
-            width: 10, height: 10, child: ColoredBox(color: inkGrey)),
-        const SizedBox(width: 5),
+        const ItemPixelIcon('marks', 'Material', size: IconSize.s16),
+        const SizedBox(width: 4),
         Text('$n',
             style: Theme.of(context)
                 .textTheme

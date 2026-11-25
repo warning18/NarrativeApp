@@ -13,6 +13,7 @@ import '../../l10n/app_locale.dart' show appLanguageProvider;
 import '../../l10n/app_strings.dart';
 import '../../providers/clans_provider.dart';
 import '../../theme/icon_sizes.dart';
+import '../../utils/pixel_icons/game_pixel_icons.dart' show ItemPixelIcon;
 import '../../theme/stitched_ink.dart' show InkFonts;
 import 'ink/ink_kit.dart' show InkBar;
 import 'ink/ink_palette.dart';
@@ -281,6 +282,7 @@ class TowerStallItem {
   const TowerStallItem({
     required this.id,
     required this.icon,
+    this.iconId,
     required this.price,
     required this.amount,
     this.bought = false,
@@ -290,6 +292,9 @@ class TowerStallItem {
   /// 'salve' or 'potions' (its strings are the tower_merchant_ keys ending in the id).
   final String id;
   final IconData icon;
+
+  /// The item icon that stands for it (Art's wave 2), when it has one.
+  final String? iconId;
 
   /// The marks it costs now (half, when sworn).
   final int price;
@@ -370,7 +375,9 @@ class TowerMerchantRoom extends ConsumerWidget {
             key: Key('tower_stall_${item.id}'),
             dim: item.bought,
             child: Row(children: [
-              Icon(item.icon, size: IconSize.s32, color: inkPaper),
+              item.iconId == null
+                  ? Icon(item.icon, size: IconSize.s32, color: inkPaper)
+                  : ItemPixelIcon(item.iconId, 'Potion', size: IconSize.s32),
               const SizedBox(width: 10),
               Expanded(
                 child: Column(

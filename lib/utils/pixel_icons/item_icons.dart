@@ -9,7 +9,6 @@ class ItemIcons {
   /// beast's trophy as an elite's.
   static const Map<String, String> _borrowed = {
     'boss_trophy': 'elite_trophy',
-    'fate_coin': 'charm_lucky_coin',
   };
 
   static const List<String> allIds = [
@@ -65,6 +64,7 @@ class ItemIcons {
     'hollow_court_mantle',
     'hollow_court_seal',
     'hood_gravecloth',
+    'marks',
     'material_ash_steel',
     'material_cut_stone',
     'material_iron_ore',
@@ -77,11 +77,13 @@ class ItemIcons {
     'material_white_fleet_oak',
     'phoenix_sigil',
     'plate_emberproof',
+    'potion_bundle',
     'potion_major',
     'potion_minor',
     'quest_sealed_letter',
     'rat_king_tooth',
     'saint_reliquary',
+    'salve',
     'scroll_fireball',
     'shield_t1',
     'shield_t10',
