@@ -138,6 +138,9 @@ String? towerRankUpFor(
   return onDie.isEmpty ? null : onDie.first;
 }
 
+/// The highest rarity step ([towerRarityOdds]' last).
+const int maxRarityStep = 3;
+
 /// The rarity step (0..3) a card of [floor] draws with [random].
 int towerRarityStep(int floor, Random random) {
   final band = ((floor - 1) ~/ 10).clamp(0, towerRarityOdds.length - 1);
@@ -180,6 +183,14 @@ String? towerClanDieOf(String clanId, Map<String, dynamic> dice) {
 /// the floor's spoils ([towerSpoilsFor]) are its reward. At Heat [heat]
 /// (TowerRun.heat), Pyre's boon floors and late oath (towerBoonFloorsOf,
 /// towerPityOathFloorOf).
+///
+/// Coins and perks (v2.10.0, docs/simulation/tower-coins.md): [random], when
+/// given, draws the cards in place of the floor's offer stream (a reroll's,
+/// a stall's); [avoid] are ids kept off the table while others are left (a
+/// reroll's last cards); [boon] deals a boon's three whatever the floor (the
+/// stall's); a boon table gets [extraSkills] more skill cards (Fourth
+/// card) and its skills [rarityBonus] rarity steps up (Keen eye); the late
+/// oath comes [oathSooner] floors sooner (Early word).
 List<TowerReward> towerOfferFor({
   required int seed,
   required int floor,
@@ -194,21 +205,35 @@ List<TowerReward> towerOfferFor({
   required Map<String, dynamic> dice,
   required Map<String, dynamic> skills,
   required Map<String, dynamic> spells,
+  Random? random,
+  Set<String> avoid = const {},
+  bool boon = false,
+  int extraSkills = 0,
+  int rarityBonus = 0,
+  int oathSooner = 0,
 }) {
-  final random = towerRandom(seed, floor, TowerStream.offer);
+  final drawn = random ?? towerRandom(seed, floor, TowerStream.offer);
 
   String? pick(List<String> pool) {
     final fresh = [
       for (final id in pool)
         if (!hero.takenIds.contains(id)) id,
     ]..sort();
-    return fresh.isEmpty ? null : fresh[random.nextInt(fresh.length)];
+    final kept = [
+      for (final id in fresh)
+        if (!avoid.contains(id)) id,
+    ];
+    final from = kept.isEmpty ? fresh : kept;
+    return from.isEmpty ? null : from[drawn.nextInt(from.length)];
   }
 
   // A skill of the Tower's pool at the floor's rarity (or below), none of
   // [besides].
   String? poolSkill({Set<String> besides = const {}}) {
-    for (var step = towerRarityStep(floor, random); step >= 0; step--) {
+    for (var step =
+            min(towerRarityStep(floor, drawn) + rarityBonus, maxRarityStep);
+        step >= 0;
+        step--) {
       final id = pick([
         for (final MapEntry(:key, :value) in skills.entries)
           if (value is Map &&
@@ -266,11 +291,22 @@ List<TowerReward> towerOfferFor({
     }
   }
 
-  if (towerBoonFloorsOf(heat).contains(floor)) {
-    return [
+  if (boon || towerBoonFloorsOf(heat).contains(floor)) {
+    final cards = [
       for (final kind in towerBoonKinds)
         if (draw(kind) case final card?) card,
     ];
+    // Fourth card: more skills, none already on the table.
+    for (var i = 0; i < extraSkills; i++) {
+      final id = poolSkill(besides: {for (final c in cards) c.id});
+      if (id == null) break;
+      final card = switch (towerRankUpFor(id, hero, skills)) {
+        final up? => TowerReward(TowerRewardKind.rankUp, id: up),
+        null => TowerReward(TowerRewardKind.skill, id: id),
+      };
+      if (!cards.contains(card)) cards.add(card);
+    }
+    return cards;
   }
   // The oaths due: a clan at the oath's step, while none is sworn.
   final oaths = [
@@ -284,7 +320,7 @@ List<TowerReward> towerOfferFor({
   if (oaths.isEmpty &&
       oathOpen &&
       hero.clanIds.isEmpty &&
-      floor >= towerPityOathFloorOf(heat)) {
+      floor >= towerPityOathFloorOf(heat) - oathSooner) {
     if (towerPityOathClan(clanPool, standing) case final clan?) {
       oaths.add(TowerReward(TowerRewardKind.clanOath, id: clan));
     }
@@ -297,14 +333,16 @@ List<TowerReward> towerOfferFor({
   final cards = <TowerReward>[];
   final given = <String>{};
   while (suitors.isNotEmpty && cards.length < towerSuitorsPerOffer) {
-    final clan = suitors.removeAt(random.nextInt(suitors.length));
-    final id = towerClanGiftFor(clan,
-            hero: hero,
-            standing: standing[clan] ?? 0,
-            besides: given,
-            skills: skills,
-            tables: clans,
-            random: random) ??
+    final clan = suitors.removeAt(drawn.nextInt(suitors.length));
+    String? gift(Set<String> besides) => towerClanGiftFor(clan,
+        hero: hero,
+        standing: standing[clan] ?? 0,
+        besides: besides,
+        skills: skills,
+        tables: clans,
+        random: drawn);
+    final id = (avoid.isEmpty ? null : gift({...given, ...avoid})) ??
+        gift(given) ??
         poolSkill(besides: given);
     if (id == null) continue;
     given.add(id);

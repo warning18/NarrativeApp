@@ -10,7 +10,9 @@ import 'package:flutter/services.dart' show rootBundle;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_riverpod/legacy.dart';
 
+import '../../data/tower/tower_coins.dart';
 import '../../data/tower/tower_dice.dart';
+import '../../data/tower/tower_events.dart';
 import '../../data/tower/tower_hero.dart';
 import '../../data/tower/tower_progress.dart';
 import '../../data/tower/tower_run.dart';
@@ -113,13 +115,16 @@ class TowerController extends StateNotifier<AsyncValue<TowerState>> {
   /// A new run begun with this people, calling and clan, at Heat [heat]
   /// (TowerRun.heat; 0, the plain climb, by default until the door's picker
   /// passes one): a Heat not open (TowerProgress.isHeatOpen) starts at the
-  /// highest open one.
+  /// highest open one. It wears the perks chosen at the door
+  /// (TowerProgress.wornPerks, [wear]); [friend] is Old friend's clan (one
+  /// of the pool; null, the one the seed points to).
   Future<TowerRun> start({
     required TowerData data,
     required String raceId,
     required String professionId,
     int? seed,
     int heat = 0,
+    String? friend,
   }) async {
     final save = await _opened();
     final progress = _now.progress;
@@ -133,6 +138,8 @@ class TowerController extends StateNotifier<AsyncValue<TowerState>> {
       unlocksOwned: progress.unlocksOwned,
       events: towerEventsLive,
       heat: progress.isHeatOpen(heat) ? heat : progress.heatOpen,
+      perks: progress.wornPerks,
+      friend: friend ?? '',
       data: data,
     );
     await save.saveRun(run);
@@ -175,13 +182,61 @@ class TowerController extends StateNotifier<AsyncValue<TowerState>> {
   }
 
   /// The unlock [id] bought, if its marks and its need are there.
-  Future<void> buy(String id) async {
-    final save = await _opened();
-    final progress = _now.progress.buy(id);
+  Future<void> buy(String id) => _setProgress(_now.progress.buy(id));
+
+  /// The record changed to [progress] (saved), nothing when it is the same.
+  Future<void> _setProgress(TowerProgress progress) async {
     if (identical(progress, _now.progress)) return;
+    final save = await _opened();
     await save.saveProgress(progress);
     state = AsyncValue.data(TowerState(progress: progress, run: _now.run));
   }
+
+  // The marks shop after the tree and the coins (v2.10.0,
+  // docs/simulation/tower-coins.md).
+
+  /// Perk [id] bought (TowerProgress.buyPerk: the tree full, its marks in
+  /// hand), worn at once when a slot is free.
+  Future<void> buyPerk(String id) => _setProgress(_now.progress.buyPerk(id));
+
+  /// The perks [ids] worn on the next climbs (owned ones, two at most).
+  Future<void> wearPerks(Iterable<String> ids) =>
+      _setProgress(_now.progress.wear(ids));
+
+  /// Perk [id] put on or taken off (TowerProgress.toggleWorn).
+  Future<void> toggleWorn(String id) =>
+      _setProgress(_now.progress.toggleWorn(id));
+
+  /// Trim [id] bought (TowerProgress.buyTrim) and shown.
+  Future<void> buyTrim(String id) => _setProgress(_now.progress.buyTrim(id));
+
+  /// Trim [id] shown on the banner (an owned one), or none (null).
+  Future<void> showTrim(String? id) => _setProgress(_now.progress.showTrim(id));
+
+  /// The run changed by [move] (saved), nothing when it is the same.
+  Future<void> _moveRun(TowerRun Function(TowerRun run) move) async {
+    final run = _now.run;
+    if (run == null) return;
+    final moved = move(run);
+    if (!identical(moved, run)) await setRun(moved);
+  }
+
+  /// The table rerolled for its price in coins (towerReroll).
+  Future<void> reroll({required TowerData data}) =>
+      _moveRun((run) => towerReroll(run, data));
+
+  /// Card [index] of the table banished for its price (towerBanish).
+  Future<void> banish(int index) => _moveRun((run) => towerBanish(run, index));
+
+  /// [stockId] ('salve', 'potions' or towerStallBoonId) bought at the open
+  /// stall for coins (towerBuy); the boon's cards then wait on
+  /// TowerRun.stallOffer for [takeStallBoon].
+  Future<void> buyAtStall(String stockId, {required TowerData data}) =>
+      _moveRun((run) => towerBuy(run, data, stockId));
+
+  /// Card [index] of the stall's boon taken (towerTakeStallBoon).
+  Future<void> takeStallBoon(int index) =>
+      _moveRun((run) => towerTakeStallBoon(run, index));
 }
 
 final towerProvider =

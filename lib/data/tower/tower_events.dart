@@ -9,7 +9,8 @@
 // adds the parley, on its own draw of that stream: talk past a floor's
 // guardian (a check, or no roll when sworn to its clan) or fight it. Floor
 // events PR 4 adds the stores on the same draw, on the landing after a won
-// floor: the merchant (a salve and a potion bundle for the run's marks; one
+// floor: the merchant (a salve, a potion bundle and, from v2.10.0, a boon,
+// for the run's Tower coins, tower_coins.dart; one
 // always after the bosses of towerShopFloors) and the bargain (max health
 // for a stat point). The parley and the stores play only from events
 // version towerPeacefulEvents. Pure: towerAfterFight and towerPick resolve
@@ -23,9 +24,9 @@ import '../../combat/fight_numbers.dart'
     show eliteStatMultiplier, potionHealAmount;
 import '../ability_check.dart' show checkBonusFor, checkChance, checkPasses;
 import '../sim_combat.dart' show SimCharacter;
+import 'tower_coins.dart';
 import 'tower_floors.dart';
 import 'tower_hero.dart';
-import 'tower_rewards.dart' show towerOfferFor;
 import 'tower_run.dart';
 import 'tower_tables.dart';
 
@@ -52,7 +53,8 @@ enum TowerEventKind {
   parley,
 
   /// The merchant (floor events PR 4), a store on the landing after the
-  /// floor's win and card: its stock (towerStockIds) for the run's marks,
+  /// floor's win and card: its stock (towerStockIds, and the boon) for the
+  /// run's coins (v2.10.0; its marks before),
   /// half price when sworn to its clan (towerBuy), until the player leaves
   /// (towerLeaveStore) or fights.
   merchant,
@@ -169,8 +171,13 @@ enum TowerStockKind {
   /// Heals [towerSalveShare] of the max health.
   salve,
 
-  /// Puts [towerBundlePotions] potions in the bag (up to [towerBagCap]).
+  /// Puts [towerBundlePotions] potions in the bag (up to towerBagCapOf).
   potions,
+
+  /// A boon (v2.10.0): a skill, a die and a spell to choose one from
+  /// (towerTakeStallBoon). Sold apart from [towerStockIds]
+  /// (TowerEventView.boon, the id towerStallBoonId).
+  boon,
 }
 
 /// The merchant's stock, by id (TowerRun.bought), in the order shown.
@@ -194,11 +201,12 @@ class TowerStockView {
   final String id;
   final TowerStockKind kind;
 
-  /// Its price in marks, the sworn discount applied (towerStockPriceOf).
+  /// Its price in coins (v2.10.0; marks before), the sworn discount applied
+  /// (towerStockPriceOf).
   final int price;
 
   /// What it gives: the health a salve heals (as the hero stands now), the
-  /// potions a bundle puts in the bag.
+  /// potions a bundle puts in the bag, the cards a boon shows (3).
   final int amount;
 
   /// Bought already at this store (one of each a store).
@@ -236,6 +244,7 @@ class TowerEventView {
     this.discount,
     this.wallet,
     this.stock,
+    this.boon,
     this.maxHealthCost,
     this.stat,
     this.points,
@@ -299,12 +308,14 @@ class TowerEventView {
   final List<String>? forgoes;
 
   /// A merchant (floor events PR 4): its clan ([clanId]), sworn to it
-  /// ([discount]: half price, rounded up), the marks left to spend
-  /// ([wallet]: TowerRun.marks, those earned less those spent) and its
-  /// [stock] (towerStockIds' order).
+  /// ([discount]: half price, rounded up), the coins in hand ([wallet]:
+  /// TowerRun.coins, v2.10.0; the run's marks before) and its [stock]
+  /// (towerStockIds' order). The [boon] (v2.10.0) is its own line, apart
+  /// from [stock] until the stall's screen shows it.
   final bool? discount;
   final int? wallet;
   final List<TowerStockView>? stock;
+  final TowerStockView? boon;
 
   /// A bargain (floor events PR 4): the max health it costs as the hero
   /// stands now ([maxHealthCost]), the stat it raises ([stat]: the
@@ -472,13 +483,14 @@ int towerStockPriceOf(TowerRun run, TowerStockKind kind, String clanId) {
   final price = switch (kind) {
     TowerStockKind.salve => towerSalvePrice,
     TowerStockKind.potions => towerBundlePrice,
+    TowerStockKind.boon => towerBoonPrice,
   };
   return run.clanIds.contains(clanId) ? (price + 1) ~/ 2 : price;
 }
 
 /// [run] can take [kind]: a bundle needs room in the bag.
 bool _canTake(TowerRun run, TowerStockKind kind) =>
-    kind != TowerStockKind.potions || run.potions < towerBagCap;
+    kind != TowerStockKind.potions || run.potions < towerBagCapOf(run);
 
 /// The health a salve heals [hero]: [towerSalveShare] of its max health.
 int towerSalveHealOf(SimCharacter hero) =>
@@ -489,18 +501,23 @@ int towerSalveHealOf(SimCharacter hero) =>
 int towerBargainCostOf(SimCharacter hero) =>
     max(1, (hero.maxHealth * towerBargainHealthShare).round());
 
-/// [run] buying [stockId] (towerStockIds) at the merchant open on its
-/// landing (floor events PR 4): only once a store, only within the marks it
-/// can spend (TowerRun.marks), a bundle only with room in the bag; [run] as
-/// it is otherwise. The salve heals ([towerSalveHealOf], up to the max
-/// health), the bundle fills the bag (up to [towerBagCap]). The price goes
-/// to TowerRun.marksSpent, the id to TowerRun.bought, and the store's sales
-/// so far to TowerRun.lastEvent. [hero], when given, is [run]'s hero
-/// already built (towerHeroOf).
+/// [run] buying [stockId] (towerStockIds, or towerStallBoonId) at the
+/// merchant open on its landing (floor events PR 4): only once a store, only
+/// within its coins (v2.10.0, TowerRun.coins; brief 6's option A: the stall
+/// takes coins, marks buy the lasting shop only), a bundle only with room in
+/// the bag; [run] as it is otherwise. The salve heals ([towerSalveHealOf],
+/// up to the max health), the bundle fills the bag (up to towerBagCapOf),
+/// the boon deals its three cards (TowerRun.stallOffer, towerStallBoonFor:
+/// one is taken with [towerTakeStallBoon]). The price comes off the coins,
+/// the id goes to TowerRun.bought, and the store's sales so far to
+/// TowerRun.lastEvent (its paid in coins). [hero], when given, is [run]'s
+/// hero already built (towerHeroOf).
 TowerRun towerBuy(TowerRun run, TowerData data, String stockId,
     {SimCharacter? hero}) {
   final store = _openStore(run);
-  final kind = towerStockIds[stockId];
+  final kind = stockId == towerStallBoonId
+      ? TowerStockKind.boon
+      : towerStockIds[stockId];
   if (store == null || store.kind != TowerEventKind.merchant || kind == null) {
     return run;
   }
@@ -508,15 +525,20 @@ TowerRun towerBuy(TowerRun run, TowerData data, String stockId,
   final sold = run.bought[floor] ?? const [];
   if (sold.contains(stockId) || !_canTake(run, kind)) return run;
   final price = towerStockPriceOf(run, kind, store.clanId);
-  if (price > run.marks) return run;
+  if (price > run.coins) return run;
   var health = run.health;
   var potions = run.potions;
+  var stallOffer = run.stallOffer;
   switch (kind) {
     case TowerStockKind.salve:
       final built = hero ?? towerHeroOf(run, data);
       health = min(built.maxHealth, run.health + towerSalveHealOf(built));
     case TowerStockKind.potions:
-      potions = min(towerBagCap, run.potions + towerBundlePotions);
+      potions = min(towerBagCapOf(run), run.potions + towerBundlePotions);
+    case TowerStockKind.boon:
+      stallOffer =
+          towerStallBoonFor(run, data, floor, hero ?? towerHeroOf(run, data));
+      if (stallOffer.isEmpty) return run;
   }
   final last = run.lastEvent;
   final before =
@@ -526,7 +548,8 @@ TowerRun towerBuy(TowerRun run, TowerData data, String stockId,
   return run.copyWith(
     health: health,
     potions: potions,
-    marksSpent: run.marksSpent + price,
+    coins: run.coins - price,
+    stallOffer: stallOffer,
     bought: {
       ...run.bought,
       floor: [...sold, stockId],
@@ -570,10 +593,35 @@ TowerRun towerChooseBargain(TowerRun run, TowerData data, bool accept,
   return chosen.copyWith(health: min(chosen.health, after));
 }
 
+/// [run] taking card [index] of the stall's boon it bought
+/// (TowerRun.stallOffer, v2.10.0): applied to the hero as a card of the
+/// store's floor (TowerRun.stallBoons, replayed by towerHeroOf after that
+/// floor's own card), the offer cleared. [run] as it is when no boon waits,
+/// the store is closed, or there is no such card. (A boon raises no max
+/// health away: the health stands.)
+TowerRun towerTakeStallBoon(TowerRun run, int index) {
+  final floor = run.store;
+  if (floor == null ||
+      run.stallOffer.isEmpty ||
+      index < 0 ||
+      index >= run.stallOffer.length) {
+    return run;
+  }
+  return run.copyWith(
+    stallBoons: {...run.stallBoons, floor: run.stallOffer[index]},
+    stallOffer: const [],
+  );
+}
+
 /// [run] with the store on its landing left (floor events PR 4): closed,
-/// the landing's own event next; [run] as it is when none is open.
-TowerRun towerLeaveStore(TowerRun run) =>
-    run.store == null ? run : run.copyWith(clearStore: true);
+/// the landing's own event next; [run] as it is when none is open. A
+/// stall's boon bought and not chosen is given its first card (so the
+/// climb never stalls).
+TowerRun towerLeaveStore(TowerRun run) {
+  if (run.store == null) return run;
+  if (run.stallOffer.isNotEmpty) run = towerTakeStallBoon(run, 0);
+  return run.copyWith(clearStore: true);
+}
 
 /// [run] choosing the card on a shortcut's landing (floor events PR 2):
 /// its floor the one below the landing, already counted in TowerRun.crest,
@@ -872,8 +920,9 @@ TowerEventView _storeView(
       result: run.lastEvent,
     );
   }
-  final wallet = run.marks;
+  final wallet = run.coins;
   final sold = run.bought[floor] ?? const [];
+  final boonPrice = towerStockPriceOf(run, TowerStockKind.boon, store.clanId);
   return TowerEventView(
     kind: TowerEventKind.merchant,
     floor: run.floor,
@@ -891,6 +940,7 @@ TowerEventView _storeView(
           amount: switch (kind) {
             TowerStockKind.salve => towerSalveHealOf(built),
             TowerStockKind.potions => towerBundlePotions,
+            TowerStockKind.boon => towerBoonKinds.length,
           },
           bought: sold.contains(id),
           affordable: !sold.contains(id) &&
@@ -898,6 +948,14 @@ TowerEventView _storeView(
               towerStockPriceOf(run, kind, store.clanId) <= wallet,
         ),
     ],
+    boon: TowerStockView(
+      id: towerStallBoonId,
+      kind: TowerStockKind.boon,
+      price: boonPrice,
+      amount: towerBoonKinds.length,
+      bought: sold.contains(towerStallBoonId),
+      affordable: !sold.contains(towerStallBoonId) && boonPrice <= wallet,
+    ),
     storeOpen: true,
     background: towerEventBackgroundOf(TowerEventKind.merchant),
     result: run.lastEvent,
@@ -966,20 +1024,7 @@ TowerRun towerAfterEvent(TowerRun won, TowerRun next, TowerData data) {
       // The card on landing (the proposal's "card on landing"): the floor
       // below the landing deals its offer, as the one just won would.
       final hero = towerHeroOf(landed, data);
-      final offer = towerOfferFor(
-        seed: landed.seed,
-        floor: to - 1,
-        hero: towerHeroView(landed, hero),
-        clanPool: landed.clanPool,
-        standing: towerStandingOf(landed, data),
-        oathOpen: landed.clanIds.isEmpty,
-        heat: landed.heat,
-        clans: data.clans,
-        items: data.items,
-        dice: data.dice,
-        skills: data.skills,
-        spells: data.spells,
-      );
+      final offer = towerRunOfferFor(landed, data, to - 1, hero);
       if (offer.isEmpty) return landed;
       return landed.copyWith(
           floor: to - 1, status: TowerStatus.choosing, offer: offer);
@@ -1000,7 +1045,7 @@ TowerRun towerAfterEvent(TowerRun won, TowerRun next, TowerData data) {
       );
       if (passed) {
         // The potion: to the bag, or drunk when it is full.
-        return next.potions < towerBagCap
+        return next.potions < towerBagCapOf(next)
             ? next.copyWith(potions: next.potions + 1, lastEvent: result)
             : next.copyWith(
                 health: min(hero.maxHealth, next.health + potionHealAmount),

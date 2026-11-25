@@ -75,8 +75,13 @@ void main() {
   // wardens' and bosses' floors, was 1.28; docs/simulation/
   // tower-cleric-retune.md; the cleric is an unlock, so no unlocks is
   // unchanged): all unlocks were 116 / 302 / 10758.
-  const none = (top: 51, floor20: 205, floorSum: 9083);
-  const all = (top: 124, floor20: 308, floorSum: 10862);
+  // v2.10.0 (Tower coins, docs/simulation/tower-coins.md, the user's call):
+  // the stall takes coins, not marks, and the bot spends them
+  // (TowerBotCoins.full: the stall's boon at 20, a reroll of a boon table
+  // with no skill); no perk worn. These were 51 / 205 / 9083 and
+  // 124 / 308 / 10862.
+  const none = (top: 54, floor20: 210, floorSum: 9159);
+  const all = (top: 141, floor20: 316, floorSum: 11053);
 
   test('the live Tower, no unlocks, is the pinned curve', () {
     final m = _measure(const TowerProgress());

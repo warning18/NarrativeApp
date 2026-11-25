@@ -317,7 +317,8 @@ SimCharacter towerHeroOf(TowerRun run, TowerData data) {
     final picks = run.statPicks.sublist(from, min(pick, run.statPicks.length));
     picksAt.add(picks);
     keys.add('${keys.last}#$floor:${picks.join(',')}:'
-        '${(run.spoils[floor] ?? const []).join(',')}:${run.taken[floor]}');
+        '${(run.spoils[floor] ?? const []).join(',')}:${run.taken[floor]}'
+        '${run.stallBoons[floor] == null ? '' : '+${run.stallBoons[floor]}'}');
   }
   // The longest run of floors already built.
   var floor = keys.length - 1;
@@ -357,6 +358,10 @@ SimCharacter towerHeroOf(TowerRun run, TowerData data) {
     towerWearSpoils(hero, run.spoils[floor] ?? const [], data);
     final card = run.taken[floor];
     if (card != null) towerApplyReward(hero, card, data, bag: bag);
+    // The boon bought at the stall on this floor's landing (v2.10.0).
+    if (run.stallBoons[floor] case final boon?) {
+      towerApplyReward(hero, boon, data, bag: bag);
+    }
     _keep(built, keys[floor], hero);
   }
   // The die the player chose (the floors' heroes are kept on the calling's
@@ -405,8 +410,13 @@ TowerHeroView towerHeroView(TowerRun run, SimCharacter hero) => TowerHeroView(
       diceFaces: hero.diceFaces,
       diceSkillAssignments: hero.diceSkillAssignments,
       skillTiers: hero.skillTiers,
+      // The cards taken, the stall's boons and the cards banished (v2.10.0):
+      // none is offered again.
       takenIds: {
         for (final r in run.taken.values)
           if (r.id.isNotEmpty) r.id,
+        for (final r in run.stallBoons.values)
+          if (r.id.isNotEmpty) r.id,
+        ...run.banishedIds,
       },
     );

@@ -4,6 +4,7 @@
 
 import 'dart:math';
 
+import 'tower_coins.dart';
 import 'tower_run.dart';
 import 'tower_tables.dart';
 
@@ -16,6 +17,10 @@ class TowerProgress {
     this.runs = 0,
     this.wins = 0,
     this.heatWon = -1,
+    this.perks = const {},
+    this.worn = const [],
+    this.trims = const {},
+    this.trim,
   });
 
   factory TowerProgress.fromJson(Map<String, dynamic> json) => TowerProgress(
@@ -31,6 +36,19 @@ class TowerProgress {
         heatWon: ((json['heatWon'] as num?)?.toInt() ??
                 (((json['wins'] as num?)?.toInt() ?? 0) > 0 ? 0 : -1))
             .clamp(-1, towerHeatMax),
+        // The marks shop (v2.10.0): absent in a save from before, none.
+        perks: {
+          for (final p in (json['perks'] as List?) ?? const [])
+            if (towerPerkOf(p.toString()) != null) p.toString(),
+        },
+        worn: towerWornPerks([
+          for (final p in (json['worn'] as List?) ?? const []) p.toString(),
+        ]),
+        trims: {
+          for (final t in (json['trims'] as List?) ?? const [])
+            if (towerTrimOf(t.toString()) != null) t.toString(),
+        },
+        trim: json['trim']?.toString(),
       );
 
   /// Marks to spend.
@@ -47,6 +65,122 @@ class TowerProgress {
   /// The highest Heat whose top was won (v2.9.0, TowerRun.heat): -1, none
   /// yet; 0, the plain climb's.
   final int heatWon;
+
+  /// The perks bought (v2.10.0, tower_coins.dart's towerPerks).
+  final Set<String> perks;
+
+  /// The perks chosen at the door for the next climbs (owned, at most
+  /// towerPerkSlots): what a new run wears ([wornPerks]).
+  final List<String> worn;
+
+  /// The banner trims bought (towerTrims; no power). The Ash trim is
+  /// earned, not bought: [trimsOwned].
+  final Set<String> trims;
+
+  /// The trim shown on the banner, or null (the plain one).
+  final String? trim;
+
+  /// Every unlock of the tree is bought: the perks and the trims are for
+  /// sale ([canBuyPerk], [canBuyTrim]).
+  bool get treeFull => towerUnlocks.every((u) => unlocked.contains(u.id));
+
+  /// The perks a new run wears: those of [worn] still owned.
+  List<String> get wornPerks => towerWornPerks([
+        for (final p in worn)
+          if (perks.contains(p)) p
+      ]);
+
+  /// The trims owned: those bought, and Ash's after a win at Heat 5.
+  Set<String> get trimsOwned => {
+        ...trims,
+        if (heatWon >= towerHeatMax) towerAshTrim.id,
+      };
+
+  /// Whether perk [id] can be bought now: the tree full, not owned, its
+  /// marks in hand.
+  bool canBuyPerk(String id) {
+    final perk = towerPerkOf(id);
+    return perk != null &&
+        treeFull &&
+        !perks.contains(id) &&
+        marks >= perk.cost;
+  }
+
+  /// This record with perk [id] bought ([canBuyPerk]), worn at once when a
+  /// slot is free; as it is otherwise.
+  TowerProgress buyPerk(String id) => canBuyPerk(id)
+      ? copyWith(
+          marks: marks - towerPerkOf(id)!.cost,
+          perks: {...perks, id},
+          worn: worn.length < towerPerkSlots ? [...worn, id] : worn,
+        )
+      : this;
+
+  /// This record wearing [ids] on the next climbs: the owned ones, at most
+  /// towerPerkSlots, in order.
+  TowerProgress wear(Iterable<String> ids) => copyWith(
+          worn: towerWornPerks([
+        for (final p in ids)
+          if (perks.contains(p)) p
+      ]));
+
+  /// This record with perk [id] put on (a free slot, else in place of the
+  /// first worn) or, when worn, taken off. As it is when [id] is not owned.
+  TowerProgress toggleWorn(String id) {
+    if (!perks.contains(id)) return this;
+    if (worn.contains(id)) return wear([...worn]..remove(id));
+    final kept = worn.length >= towerPerkSlots ? worn.sublist(1) : worn;
+    return wear([...kept, id]);
+  }
+
+  /// Whether trim [id] can be bought now: a sold one, the tree full, not
+  /// owned, its marks in hand.
+  bool canBuyTrim(String id) {
+    final trim = towerTrimOf(id);
+    return trim != null &&
+        trim.cost > 0 &&
+        treeFull &&
+        !trims.contains(id) &&
+        marks >= trim.cost;
+  }
+
+  /// This record with trim [id] bought ([canBuyTrim]) and shown; as it is
+  /// otherwise.
+  TowerProgress buyTrim(String id) => canBuyTrim(id)
+      ? copyWith(
+          marks: marks - towerTrimOf(id)!.cost,
+          trims: {...trims, id},
+          trim: id,
+        )
+      : this;
+
+  /// This record showing trim [id] (one owned, [trimsOwned]), or the plain
+  /// banner (null).
+  TowerProgress showTrim(String? id) => id == null
+      ? copyWith(clearTrim: true)
+      : trimsOwned.contains(id)
+          ? copyWith(trim: id)
+          : this;
+
+  /// The marks still to spend before everything is bought: the tree's
+  /// unlocks, the perks and the trims not owned (the pace's "to go").
+  int get marksToBuyAll => [
+        for (final u in towerUnlocks)
+          if (!unlocked.contains(u.id)) u.cost,
+        for (final p in towerPerks)
+          if (!perks.contains(p.id)) p.cost,
+        for (final t in towerTrims)
+          if (!trims.contains(t.id)) t.cost,
+      ].fold<int>(0, (n, c) => n + c);
+
+  /// The cheapest perk not owned (the end tally's "next perk: n more"), or
+  /// null when all are.
+  TowerPerk? get nextPerk {
+    for (final p in towerPerks) {
+      if (!perks.contains(p.id)) return p;
+    }
+    return null;
+  }
 
   /// The highest Heat a new run may take: one above [heatWon] (Heat n + 1
   /// opens with a win at Heat n), at most towerHeatMax; 0 until the top is
@@ -76,11 +210,18 @@ class TowerProgress {
         )
       : this;
 
-  /// This record with ended [run]'s marks banked and counted.
+  /// The first-win bonus ended [run] would add to this record
+  /// (towerFirstWinBonusOf: +30 the first win, +20 the first at each Heat).
+  int firstWinBonusOf(TowerRun run) =>
+      run.isOver ? towerFirstWinBonusOf(run, heatWon) : 0;
+
+  /// This record with ended [run]'s marks banked and counted, with its
+  /// first-win bonus ([firstWinBonusOf]). Its coins are not: they end
+  /// with it.
   TowerProgress afterRun(TowerRun run) => !run.isOver
       ? this
       : copyWith(
-          marks: marks + run.marks,
+          marks: marks + run.marks + firstWinBonusOf(run),
           bestFloor:
               run.floorReached > bestFloor ? run.floorReached : bestFloor,
           runs: runs + 1,
@@ -126,6 +267,11 @@ class TowerProgress {
     int? runs,
     int? wins,
     int? heatWon,
+    Set<String>? perks,
+    List<String>? worn,
+    Set<String>? trims,
+    String? trim,
+    bool clearTrim = false,
   }) =>
       TowerProgress(
         marks: marks ?? this.marks,
@@ -134,6 +280,10 @@ class TowerProgress {
         runs: runs ?? this.runs,
         wins: wins ?? this.wins,
         heatWon: heatWon ?? this.heatWon,
+        perks: perks ?? this.perks,
+        worn: worn ?? this.worn,
+        trims: trims ?? this.trims,
+        trim: clearTrim ? null : trim ?? this.trim,
       );
 
   Map<String, dynamic> toJson() => {
@@ -143,6 +293,10 @@ class TowerProgress {
         'runs': runs,
         'wins': wins,
         if (heatWon >= 0) 'heatWon': heatWon,
+        if (perks.isNotEmpty) 'perks': (perks.toList()..sort()),
+        if (worn.isNotEmpty) 'worn': worn,
+        if (trims.isNotEmpty) 'trims': (trims.toList()..sort()),
+        if (trim != null) 'trim': trim,
       };
 }
 
