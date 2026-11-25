@@ -167,7 +167,8 @@ void main() {
           w,
           TowerEndScreen(
               run: _run(3, status: TowerStatus.won),
-              progress: const TowerProgress(marks: 330, bestFloor: 30, heatWon: 3),
+              progress:
+                  const TowerProgress(marks: 330, bestFloor: 30, heatWon: 3),
               heatBefore: 2));
       await shot(
           t,
@@ -175,7 +176,8 @@ void main() {
           w,
           TowerEndScreen(
               run: _run(5, status: TowerStatus.won),
-              progress: const TowerProgress(marks: 330, bestFloor: 30, heatWon: 5),
+              progress:
+                  const TowerProgress(marks: 330, bestFloor: 30, heatWon: 5),
               heatBefore: 4));
     }
   });
