@@ -236,7 +236,13 @@ class FightScreen extends ConsumerStatefulWidget {
     this.random,
     this.landLayers,
     this.onRound,
+    this.rival = false,
   });
+
+  /// A rival's fight (the Tower's rival floor): the two fighters stand in two
+  /// tall panels side by side. False (every other fight) keeps the usual
+  /// layout.
+  final bool rival;
 
   /// Told the number of each round as it starts (1 when the battle begins):
   /// the Tower's rival counts the rounds a fight took. Null (every other

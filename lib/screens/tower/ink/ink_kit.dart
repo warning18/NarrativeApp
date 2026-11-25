@@ -233,20 +233,13 @@ class InkBar extends StatelessWidget {
 /// A picture panel cut on a slant: [pts] are the polygon's corners in the
 /// panel's own box; [child] shows inside, a thick black border and a thin
 /// paper line round it.
-/// How the Tower fight's two fighter panels are laid out (a proposal for the
-/// pictures; the look of each panel stays as it is). Null in
-/// [towerPanelLayout] means today's: the foe above, "You" under it.
-enum TowerPanelLayout {
-  ordinary,
-  elite,
-  bossTall,
-  bossFill,
-  bossSwap,
-  rivalPair,
-  rivalSlant,
-  rivalHead,
-}
+/// How the Tower fight's two fighter panels are laid out (the look of each
+/// panel is the same): [ordinary] the foe above and "You" under it, [elite] the
+/// foe's panel a fifth taller, [boss] one and a half times taller with "You"
+/// slim under it, [rival] two tall panels side by side with a slanted gutter.
+enum TowerPanelLayout { ordinary, elite, boss, rival }
 
+/// Forces a layout (pictures and tests); null lets the fight choose its own.
 final ValueNotifier<TowerPanelLayout?> towerPanelLayout = ValueNotifier(null);
 
 class InkSlantPanel extends StatelessWidget {

@@ -1,4 +1,4 @@
-// PICTURES (UX_SHOTS=<folder>): the Tower fight's two fighter panels (the
+// Layouts of the Tower fight's two panels by kind of fight; with UX_SHOTS=<folder> it also saves pictures. the Tower fight's two fighter panels (the
 // foe's and "You") in several layouts, on the real app at 412 wide:
 // today, cut corners, a slanted gutter, offset with the foe breaking out of
 // its frame, a burst edge (wardens and bosses: floor 5) and a brush-ink
@@ -32,21 +32,17 @@ void main() {
   });
   tearDown(() => towerPanelLayout.value = null);
 
+  // layout, floor, width, what the two panels look like (foe, you).
   for (final (shape, floor, w) in [
-    (TowerPanelLayout.ordinary, 1, 412.0),
+    (null, 1, 412.0),
     (TowerPanelLayout.elite, 1, 412.0),
-    (TowerPanelLayout.bossTall, 5, 412.0),
-    (TowerPanelLayout.bossFill, 5, 412.0),
-    (TowerPanelLayout.bossSwap, 5, 412.0),
-    (TowerPanelLayout.rivalPair, 1, 412.0),
-    (TowerPanelLayout.rivalSlant, 1, 412.0),
-    (TowerPanelLayout.rivalHead, 1, 412.0),
-    (TowerPanelLayout.ordinary, 5, 412.0),
-    (TowerPanelLayout.bossTall, 5, 360.0),
-    (TowerPanelLayout.rivalSlant, 1, 360.0),
+    (null, 5, 412.0),
+    (TowerPanelLayout.boss, 1, 360.0),
+    (TowerPanelLayout.rival, 1, 412.0),
+    (TowerPanelLayout.rival, 1, 360.0),
   ]) {
-    testWidgets('panel layout ${shape.name} (floor $floor, $w)',
-        skip: shots == null, (tester) async {
+    testWidgets('panel layout ${shape?.name ?? 'own'} (floor $floor, $w)',
+        (tester) async {
       await tester.runAsync(loadAppFonts);
       TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
           .setMockMethodCallHandler(
@@ -100,13 +96,37 @@ void main() {
         await settle(14);
       }
       expect(tester.takeException(), isNull);
-      Directory(shots!).createSync(recursive: true);
+      final panels = tester
+          .widgetList<InkSlantPanel>(find.byType(InkSlantPanel))
+          .map((p) => p.size)
+          .toList();
+      expect(panels.length, 2, reason: 'a foe panel and a party panel');
+      final total = panels[0].height + panels[1].height;
+      final kind = shape ?? (floor == 5 ? TowerPanelLayout.boss : null);
+      switch (kind) {
+        case null:
+          expect(panels[0].height, lessThan(140));
+        case TowerPanelLayout.ordinary:
+          break;
+        case TowerPanelLayout.elite:
+          expect(panels[0].height, greaterThan(150));
+          expect(panels[0].height, lessThan(panels[1].height * 1.6));
+        case TowerPanelLayout.boss:
+          expect(panels[0].height, greaterThan(panels[1].height * 2));
+        case TowerPanelLayout.rival:
+          // Side by side: the two panels as tall as the whole area.
+          expect(panels[0].height, panels[1].height);
+          expect(panels[0].height, greaterThan(total * 0.45));
+          expect(panels[0].width + panels[1].width, lessThan(w));
+      }
+      if (shots == null) return;
+      Directory(shots).createSync(recursive: true);
       await tester.runAsync(() async {
         final render =
             key.currentContext!.findRenderObject() as RenderRepaintBoundary;
         final image = await render.toImage(pixelRatio: 2);
         final bytes = await image.toByteData(format: ui.ImageByteFormat.png);
-        File('$shots/layout-${shape.name}-f$floor-${w.toInt()}.png')
+        File('$shots/layout-${shape?.name ?? 'own'}-f$floor-${w.toInt()}.png')
             .writeAsBytesSync(bytes!.buffer.asUint8List());
       });
     });

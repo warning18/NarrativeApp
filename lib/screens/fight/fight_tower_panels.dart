@@ -6,9 +6,8 @@ part of '../fight_screen.dart';
 /// the top. The cards are the usual slots with their taps and keys; only
 /// their place changed. Used instead of [_buildSlots] under the Tower.
 /// How one fighter panel is filled: [wide] today's (the plate beside the
-/// figure), [slim] the plate only, [stacked] the plate over a tall figure,
-/// [plain] the picture alone (the plate is drawn outside).
-enum _PanelMode { wide, slim, stacked, plain }
+/// figure), [slim] the plate only, [stacked] the plate over a tall figure.
+enum _PanelMode { wide, slim, stacked }
 
 extension _TowerPanels on _FightScreenState {
   static const double _panelGap = 4;
@@ -34,7 +33,17 @@ extension _TowerPanels on _FightScreenState {
     // The foe the picked die is aimed at (its index in the row), if any.
     final aimed = _towerAimedFoe();
     // The layout of the two panels (null: today's, foe above and "You" under).
-    final layout = towerPanelLayout.value ?? TowerPanelLayout.ordinary;
+    // The fight's own layout: a rival's two panels side by side (one foe), a
+    // boss's tall panel, an Elite's small step; a forced one wins (pictures,
+    // tests).
+    final layout = towerPanelLayout.value ??
+        (widget.rival && _enemies.length == 1
+            ? TowerPanelLayout.rival
+            : _enemies.any((e) => isBossEnemy(e.enemyId, e.data))
+                ? TowerPanelLayout.boss
+                : _isElite
+                    ? TowerPanelLayout.elite
+                    : TowerPanelLayout.ordinary);
     final total = foeH + _panelGap + partyH;
     Widget panel(
       double height,
@@ -67,8 +76,7 @@ extension _TowerPanels on _FightScreenState {
                     ]);
           final wide = mode == _PanelMode.wide;
           final stacked = mode == _PanelMode.stacked;
-          final showFigure =
-              figures && mode != _PanelMode.slim && mode != _PanelMode.plain;
+          final showFigure = figures && mode != _PanelMode.slim;
           Widget figure = FightFigures(
             allies: foes ? const [] : [for (final m in _party) _headIdFor(m)],
             foes: foes ? [for (final e in _enemies) e.enemyId] : const [],
@@ -109,28 +117,27 @@ extension _TowerPanels on _FightScreenState {
                     child: stacked ? Center(child: figure) : figure,
                   ),
                 ),
-              if (mode != _PanelMode.plain)
-                Positioned(
-                  // One fighter's plate leaves its picture room to stand
-                  // beside it (the hero left, a lone foe right), as in the
-                  // approved A.
-                  left: 12 +
-                      (!foes ? plateInset : 0) +
-                      (wide && !foes && figures && cards.length == 1 ? 96 : 0),
-                  right: 12 +
-                      (foes ? plateInset : 0) +
-                      (wide && foes && figures && cards.length == 1 ? 96 : 0),
-                  top: foes ? 18 : 10,
-                  child: Row(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      for (var i = 0; i < cards.length; i++) ...[
-                        if (i > 0) const SizedBox(width: 6),
-                        Expanded(child: cards[i]),
-                      ],
+              Positioned(
+                // One fighter's plate leaves its picture room to stand
+                // beside it (the hero left, a lone foe right), as in the
+                // approved A.
+                left: 12 +
+                    (!foes ? plateInset : 0) +
+                    (wide && !foes && figures && cards.length == 1 ? 96 : 0),
+                right: 12 +
+                    (foes ? plateInset : 0) +
+                    (wide && foes && figures && cards.length == 1 ? 96 : 0),
+                top: foes ? 18 : 10,
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    for (var i = 0; i < cards.length; i++) ...[
+                      if (i > 0) const SizedBox(width: 6),
+                      Expanded(child: cards[i]),
                     ],
-                  ),
+                  ],
                 ),
+              ),
             ]),
           );
         });
@@ -158,9 +165,6 @@ extension _TowerPanels on _FightScreenState {
           ),
         ),
     ];
-    // The party is one picture: its figure shows in the slim panels too.
-    const slimH = 62.0;
-
     switch (layout) {
       case TowerPanelLayout.ordinary:
         break;
@@ -175,8 +179,8 @@ extension _TowerPanels on _FightScreenState {
               height: total - fh - _panelGap,
               child: panel(total - fh - _panelGap, false, partyCards)),
         ]);
-      case TowerPanelLayout.bossTall:
-        // (a) The foe's panel about 1.5x taller, "You" slim under it.
+      case TowerPanelLayout.boss:
+        // The foe's panel one and a half times taller, "You" slim under it.
         final fh = foeH * 1.5;
         return Column(children: [
           SizedBox(height: fh, child: panel(fh, true, foeCards, figScale: 1.5)),
@@ -186,37 +190,9 @@ extension _TowerPanels on _FightScreenState {
               child: panel(total - fh - _panelGap, false, partyCards,
                   mode: _PanelMode.slim)),
         ]);
-      case TowerPanelLayout.bossFill:
-        // (b) The foe fills the fighter area; "You" is a strip on its edge.
-        return SizedBox(
-          height: total,
-          child: Stack(children: [
-            panel(total, true, foeCards, figScale: 1.7, figBottom: 22 + slimH),
-            Positioned(
-              left: 10,
-              right: 10,
-              bottom: 8,
-              height: slimH,
-              child: panel(slimH, false, partyCards, mode: _PanelMode.slim),
-            ),
-          ]),
-        );
-      case TowerPanelLayout.bossSwap:
-        // (c) "You" on top, slim; the boss under it, big, near the dice.
-        final fh = foeH * 1.5;
-        return Column(children: [
-          SizedBox(
-              height: total - fh - _panelGap,
-              child: panel(total - fh - _panelGap, false, partyCards,
-                  mode: _PanelMode.slim)),
-          const SizedBox(height: _panelGap),
-          SizedBox(height: fh, child: panel(fh, true, foeCards, figScale: 1.5)),
-        ]);
-      case TowerPanelLayout.rivalPair:
-      case TowerPanelLayout.rivalSlant:
-        // (a)/(b) Two tall panels side by side, facing each other; (b) with
-        // a slanted gutter.
-        final slant = layout == TowerPanelLayout.rivalSlant ? 16.0 : 0.0;
+      case TowerPanelLayout.rival:
+        // Two tall panels side by side, facing each other, a slanted gutter.
+        const slant = 16.0;
         List<Offset> left(double w, double h) => [
               const Offset(6, 6),
               Offset(w - 6, 6),
@@ -224,75 +200,35 @@ extension _TowerPanels on _FightScreenState {
               Offset(6, h - 6),
             ];
         List<Offset> right(double w, double h) => [
-              Offset(6 + slant, 6),
+              const Offset(6 + slant, 6),
               Offset(w - 6, 6),
               Offset(w - 6, h - 6),
               Offset(6, h - 6),
             ];
-        return SizedBox(
-          height: total,
-          child: Row(children: [
-            Expanded(
-              child: panel(total, true, foeCards,
-                  mode: _PanelMode.stacked,
-                  figScale: 2.3,
-                  figBottom: 12,
-                  mirror: true,
-                  plateInset: slant + 6,
-                  shape: left),
-            ),
-            SizedBox(width: slant > 0 ? 0 : _panelGap),
-            Expanded(
-              child: panel(total, false, partyCards,
-                  mode: _PanelMode.stacked,
-                  figScale: 2.3,
-                  figBottom: 12,
-                  mirror: true,
-                  plateInset: slant + 6,
-                  shape: right),
-            ),
-          ]),
-        );
-      case TowerPanelLayout.rivalHead:
-        // (c) Side by side, the names and HP bars on top of each.
-        const headH = 58.0;
-        final ph = total - headH - _panelGap;
-        return SizedBox(
-          height: total,
-          child: Column(children: [
-            SizedBox(
-              height: headH,
-              child:
-                  Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                Expanded(
-                    child: Padding(
-                        padding: const EdgeInsets.fromLTRB(8, 4, 4, 0),
-                        child: foeCards.first)),
-                Expanded(
-                    child: Padding(
-                        padding: const EdgeInsets.fromLTRB(4, 4, 8, 0),
-                        child: partyCards.first)),
-              ]),
-            ),
-            const SizedBox(height: _panelGap),
-            SizedBox(
-              height: ph,
-              child: Row(children: [
-                Expanded(
-                  child: panel(ph, true, foeCards,
-                      mode: _PanelMode.plain,
-                      figScale: 2.3,
-                      figBottom: 12,
-                      mirror: true),
-                ),
-                const SizedBox(width: _panelGap),
-                Expanded(
-                  child: panel(ph, false, partyCards,
-                      mode: _PanelMode.plain, figScale: 2.3, figBottom: 12),
-                ),
-              ]),
-            ),
-          ]),
+        return FightNameWrap(
+          child: SizedBox(
+            height: total,
+            child: Row(children: [
+              Expanded(
+                child: panel(total, true, foeCards,
+                    mode: _PanelMode.stacked,
+                    figScale: 2.3,
+                    figBottom: 12,
+                    mirror: true,
+                    plateInset: slant + 6,
+                    shape: left),
+              ),
+              Expanded(
+                child: panel(total, false, partyCards,
+                    mode: _PanelMode.stacked,
+                    figScale: 2.3,
+                    figBottom: 12,
+                    mirror: true,
+                    plateInset: slant + 6,
+                    shape: right),
+              ),
+            ]),
+          ),
         );
     }
 
