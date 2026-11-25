@@ -12,6 +12,10 @@ isn't reconstructable from git history alone.
 
 - **Tower: coins and the marks shop, the screens.** A coin chip (a gold disc and the number) shows under the floor number and on the card table, and the spoils sheet reads "+n coins". The card table has Reroll with its price (grey when the coins fall short) and Banish for the card in hand (asks first). The stall sells its boon as a third item; buying it opens its three cards, and the bag's cap follows Deep pockets. The marks screen has three tabs: Unlocks, Perks (buy a perk, wear it, take it off) and Looks (the five trims and the Ash trim). The door shows the perk slot (one, from the rules) once a perk is owned. The end screen tallies floors, wardens, bosses, refusals, Heat, the first-win bonus, the marks banked, the coins left (lost) and the next perk. Perk pictures are letters until Art draws them; Old friend's clan is still the seed's pick.
 
+## [2.10.1+1083]
+
+- **Epilogue map: the numbers read on every clan's colour.** The number on a big town's disc, on the map and in the list under it, was always white; on the Vigil's new yellow it could hardly be read, and on the Mire's green and the Compact's orange it leaned on its shadow. It is now written in dark ink on a light disc and in white on a dark one, whichever stands out more. No colour, rule or number changes.
+
 ## [2.10.0+1082]
 
 - **Tower: coins for one climb.** Each floor won for the first time pays coins: 1, 2 or 3 an ordinary floor (floors 1-10, 11-20, 21-29), an Elite as much again, a warden 3 / 6 / 9, a boss 5 / 10. Coins are spent in the climb and lost at its end; Heat multiplies marks, never coins. The stall now takes coins, not marks: the salve 4, the potion bundle 5, and a new boon (three cards as a boon floor's) 15; a sworn clan's merchant halves them (2 / 3 / 8). A table can be rerolled (3 coins, then 5, 7…) and a card banished for the run (4 coins, one a table, five a run).
