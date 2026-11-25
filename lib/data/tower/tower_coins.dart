@@ -6,7 +6,7 @@
 // floor won (towerCoinsFor), spent on a reroll of the table, a banished
 // card and the merchant's stall (tower_events.dart's towerBuy), lost when
 // the climb ends. Ash Marks last between climbs: the unlock tree, then the
-// perks (two worn a climb) and the banner trims (no power) of this file,
+// perks (one worn a climb) and the banner trims (no power) of this file,
 // and the first-win bonuses. Heat multiplies marks, never coins.
 //
 // Pure: the screens and the bot move a run through these functions.
@@ -68,12 +68,11 @@ const int towerBanishPrice = 4;
 const int towerBanishesPerRun = 5;
 
 /// The merchant's boon (a skill, a die or a spell, choose one): its price
-/// in coins, halved (rounded up) for one sworn to the merchant's clan. The
-/// note's 15 (the spec's 10 measured over both bands) raised to 20 by the
-/// note's own rule: at 15, with the two strongest perks worn (Keen eye,
-/// Second wind), the top with every unlock was 32.2% (seeds 1 to 2000), over
-/// QA's 18 to 32% band; at 20, 31.9% (docs/simulation/tower-coins.md).
-const int towerBoonPrice = 20;
+/// in coins, halved (rounded up) for one sworn to the merchant's clan (8).
+/// The note's 15: with one perk slot (the user's decision) the top with
+/// every unlock and the best perk stays inside QA's 18 to 32% band
+/// (docs/simulation/tower-coins.md).
+const int towerBoonPrice = 15;
 
 /// The stall's boon in the stock's ids (TowerRun.bought): beside 'salve'
 /// and 'potions' (towerStockIds), sold apart (TowerEventView.boon).
@@ -215,7 +214,7 @@ List<TowerReward> towerRunOfferFor(
 }
 
 // ---------------------------------------------------------------------------
-// Perks (marks, bought once after the tree, two worn a climb).
+// Perks (marks, bought once after the tree, one worn a climb).
 
 /// One perk of the marks shop (Narrative's names: `tower_perk_<id>` and
 /// `tower_perk_<id>_line`).
@@ -240,16 +239,17 @@ const String towerPerkKeenEye = 'keen_eye';
 const String towerPerkFreeHand = 'free_hand';
 const String towerPerkFourthCard = 'fourth_card';
 
-/// The eight perks, cheapest first (the note's prices: 325 marks in all).
+/// The eight perks, cheapest first (the note's prices +10 each, the user's
+/// decision: 405 marks in all).
 const List<TowerPerk> towerPerks = [
-  TowerPerk(towerPerkPurse, 30),
-  TowerPerk(towerPerkDeepPockets, 30),
-  TowerPerk(towerPerkEarlyWord, 35),
-  TowerPerk(towerPerkOldFriend, 40),
-  TowerPerk(towerPerkSecondWind, 40),
-  TowerPerk(towerPerkKeenEye, 45),
-  TowerPerk(towerPerkFreeHand, 45),
-  TowerPerk(towerPerkFourthCard, 60),
+  TowerPerk(towerPerkPurse, 40),
+  TowerPerk(towerPerkDeepPockets, 40),
+  TowerPerk(towerPerkEarlyWord, 45),
+  TowerPerk(towerPerkOldFriend, 50),
+  TowerPerk(towerPerkSecondWind, 50),
+  TowerPerk(towerPerkKeenEye, 55),
+  TowerPerk(towerPerkFreeHand, 55),
+  TowerPerk(towerPerkFourthCard, 70),
 ];
 
 /// The perk of [id], or null.
@@ -260,11 +260,12 @@ TowerPerk? towerPerkOf(String id) {
   return null;
 }
 
-/// The perks worn on a climb, whatever is owned.
-const int towerPerkSlots = 2;
+/// The perks worn on a climb, whatever is owned: one (the user's decision;
+/// the Heat targets are read without perks).
+const int towerPerkSlots = 1;
 
 /// [ids] as a climb wears them: known perks, no repeat, the first
-/// [towerPerkSlots].
+/// [towerPerkSlots] (a save or a list with more keeps the first).
 List<String> towerWornPerks(Iterable<String> ids) {
   final out = <String>[];
   for (final id in ids) {

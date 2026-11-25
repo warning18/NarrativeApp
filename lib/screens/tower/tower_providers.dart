@@ -199,7 +199,8 @@ class TowerController extends StateNotifier<AsyncValue<TowerState>> {
   /// hand), worn at once when a slot is free.
   Future<void> buyPerk(String id) => _setProgress(_now.progress.buyPerk(id));
 
-  /// The perks [ids] worn on the next climbs (owned ones, two at most).
+  /// The perks [ids] worn on the next climbs (owned ones, the first
+  /// towerPerkSlots: one).
   Future<void> wearPerks(Iterable<String> ids) =>
       _setProgress(_now.progress.wear(ids));
 

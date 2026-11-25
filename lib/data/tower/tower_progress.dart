@@ -125,7 +125,7 @@ class TowerProgress {
       ]));
 
   /// This record with perk [id] put on (a free slot, else in place of the
-  /// first worn) or, when worn, taken off. As it is when [id] is not owned.
+  /// first worn: with one slot, the one worn) or, when worn, taken off. As it is when [id] is not owned.
   TowerProgress toggleWorn(String id) {
     if (!perks.contains(id)) return this;
     if (worn.contains(id)) return wear([...worn]..remove(id));

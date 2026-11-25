@@ -17,8 +17,9 @@
 // (floor events PR 2: the curve is set with them on; 0, as before them).
 // TOWER_HEAT (default 0) is the Heat the batch's runs climb at (v2.9.0,
 // docs/simulation/tower-heat.md); the guards always climb at 0.
-// TOWER_PERKS (default none: a comma list of perk ids, v2.10.0,
-// docs/simulation/tower-coins.md) are the perks the batch's runs wear, and
+// TOWER_PERKS (default none: a perk id, v2.10.0,
+// docs/simulation/tower-coins.md) is the perk the batch's runs wear (one
+// slot: of a comma list only the first known id is worn), and
 // TOWER_BOT_COINS (default full; stall) how the bot spends its coins; the
 // guards wear none and spend in full.
 import 'dart:convert';
@@ -27,6 +28,7 @@ import 'dart:io';
 import 'package:flutter_test/flutter_test.dart';
 
 import 'package:narrative_data_app/data/tower/tower_bot.dart';
+import 'package:narrative_data_app/data/tower/tower_coins.dart';
 import 'package:narrative_data_app/data/tower/tower_progress.dart';
 import 'package:narrative_data_app/data/tower/tower_run.dart';
 import 'package:narrative_data_app/data/tower/tower_tables.dart';
@@ -104,12 +106,13 @@ final _events =
 /// The Heat the batch plays (TOWER_HEAT; the guards play 0).
 final _heat = int.tryParse(Platform.environment['TOWER_HEAT'] ?? '') ?? 0;
 
-/// The perks the batch wears (TOWER_PERKS) and the bot's coin policy
-/// (TOWER_BOT_COINS; the guards wear none and spend in full).
-final _perks = [
+/// The perk the batch wears (TOWER_PERKS, one slot: towerWornPerks keeps
+/// the first known id) and the bot's coin policy (TOWER_BOT_COINS; the
+/// guards wear none and spend in full).
+final _perks = towerWornPerks([
   for (final p in (Platform.environment['TOWER_PERKS'] ?? '').split(','))
     if (p.trim().isNotEmpty) p.trim(),
-];
+]);
 final _coins = TowerBotCoins.values
     .byName(Platform.environment['TOWER_BOT_COINS'] ?? TowerBotCoins.full.name);
 

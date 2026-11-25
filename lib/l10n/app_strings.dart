@@ -1759,9 +1759,9 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   },
   'tower_merchant_body': {
     AppLanguage.en:
-        'Salves and potions by candlelight, paid in Tower coins. Nothing here leaves the Tower.',
+        'Salves, potions and the odd boon by candlelight, paid in Tower coins. Nothing here leaves the Tower, and neither do the coins.',
     AppLanguage.fr:
-        'Onguents et potions à la lueur d’une chandelle, payés en pièces de la Tour. Rien d’ici ne quitte la Tour.',
+        'Onguents, potions et parfois une faveur, à la lueur d’une chandelle, payés en pièces de la Tour. Rien d’ici ne quitte la Tour, pas même les pièces.',
   },
   'tower_merchant_wallet': {
     AppLanguage.en: 'Coins to spend: {n}',
@@ -2679,9 +2679,9 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.fr: 'Possédé',
   },
   'tower_perks_hint': {
-    AppLanguage.en: 'Two perks are worn on a climb, chosen at the door.',
+    AppLanguage.en: 'One perk is worn on a climb, chosen at the door.',
     AppLanguage.fr:
-        'Deux atouts se portent durant une ascension, choisis à la porte.',
+        'Un seul atout se porte durant une ascension, choisi à la porte.',
   },
   'tower_perk_next': {
     AppLanguage.en: 'Next perk: {perk}, {n} more marks',

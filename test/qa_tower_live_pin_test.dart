@@ -77,11 +77,12 @@ void main() {
   // unchanged): all unlocks were 116 / 302 / 10758.
   // v2.10.0 (Tower coins, docs/simulation/tower-coins.md, the user's call):
   // the stall takes coins, not marks, and the bot spends them
-  // (TowerBotCoins.full: the stall's boon at 20, a reroll of a boon table
+  // (TowerBotCoins.full: the stall's boon at 15, a reroll of a boon table
   // with no skill); no perk worn. These were 51 / 205 / 9083 and
-  // 124 / 308 / 10862.
-  const none = (top: 54, floor20: 210, floorSum: 9159);
-  const all = (top: 141, floor20: 316, floorSum: 11053);
+  // 124 / 308 / 10862; with the boon at 20 (two perk slots, before the
+  // user's one), 54 / 210 / 9159 and 141 / 316 / 11053.
+  const none = (top: 59, floor20: 209, floorSum: 9208);
+  const all = (top: 140, floor20: 317, floorSum: 11037);
 
   test('the live Tower, no unlocks, is the pinned curve', () {
     final m = _measure(const TowerProgress());

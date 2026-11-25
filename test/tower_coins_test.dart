@@ -263,7 +263,7 @@ void main() {
     final full = TowerProgress(
         marks: 1000, unlocked: {for (final u in towerUnlocks) u.id});
 
-    test('bought with marks once the tree is full, two worn', () {
+    test('bought with marks once the tree is full, one worn', () {
       expect(towerPerks.map((p) => p.id), [
         'purse',
         'deep_pockets',
@@ -274,7 +274,10 @@ void main() {
         'free_hand',
         'fourth_card'
       ]);
-      expect(towerPerks.fold<int>(0, (n, p) => n + p.cost), 325);
+      expect([for (final p in towerPerks) p.cost],
+          [40, 40, 45, 50, 50, 55, 55, 70]);
+      expect(towerPerks.fold<int>(0, (n, p) => n + p.cost), 405);
+      expect(towerPerkSlots, 1);
       // The tree not full: not for sale.
       final partway = full.copyWith(unlocked: {'flame_die'});
       expect(partway.treeFull, isFalse);
@@ -282,25 +285,34 @@ void main() {
       expect(identical(partway.buyPerk('purse'), partway), isTrue);
       // Bought: its marks off, worn while a slot is free.
       final one = full.buyPerk('purse');
-      expect(one.marks, 970);
+      expect(one.marks, 960);
       expect(one.perks, {'purse'});
       expect(one.worn, ['purse']);
       expect(identical(one.buyPerk('purse'), one), isTrue);
+      // The slot taken: a perk bought later is owned, not worn.
       final three = one.buyPerk('keen_eye').buyPerk('fourth_card');
-      expect(three.worn, ['purse', 'keen_eye']);
-      expect(three.wornPerks, ['purse', 'keen_eye']);
-      // Two at most, owned ones only.
+      expect(three.perks, {'purse', 'keen_eye', 'fourth_card'});
+      expect(three.worn, ['purse']);
+      expect(three.wornPerks, ['purse']);
+      // One at most, owned ones only.
       expect(three.wear(['fourth_card', 'purse', 'keen_eye']).worn,
-          ['fourth_card', 'purse']);
+          ['fourth_card']);
       expect(three.wear(['free_hand', 'purse']).worn, ['purse']);
-      expect(three.toggleWorn('fourth_card').worn, ['keen_eye', 'fourth_card']);
-      expect(three.toggleWorn('purse').worn, ['keen_eye']);
+      expect(three.wear(['free_hand']).worn, isEmpty);
+      // Toggled: in place of the one worn, or off.
+      expect(three.toggleWorn('fourth_card').worn, ['fourth_card']);
+      expect(three.toggleWorn('purse').worn, isEmpty);
+      expect(
+          three.toggleWorn('purse').toggleWorn('keen_eye').worn, ['keen_eye']);
+      expect(three.toggleWorn('free_hand').worn, ['purse']);
       // Short of marks, an unknown id: nothing.
-      expect(full.copyWith(marks: 29).canBuyPerk('purse'), isFalse);
+      expect(full.copyWith(marks: 39).canBuyPerk('purse'), isFalse);
+      expect(full.copyWith(marks: 40).canBuyPerk('purse'), isTrue);
       expect(full.canBuyPerk('whetstone'), isFalse);
-      // A run wears two at most.
-      expect(start(1, perks: ['purse', 'keen_eye', 'free_hand']).perks,
-          ['purse', 'keen_eye']);
+      // A run wears one at most: the first known.
+      expect(
+          start(1, perks: ['purse', 'keen_eye', 'free_hand']).perks, ['purse']);
+      expect(start(1, perks: ['nope', 'keen_eye']).perks, ['keen_eye']);
       expect(start(1, perks: ['purse', 'nope']).perks, ['purse']);
     });
 
@@ -479,9 +491,9 @@ void main() {
       final ash = moth.copyWith(heatWon: towerHeatMax);
       expect(ash.trimsOwned, {'moth', 'ash'});
       expect(ash.showTrim('ash').trim, 'ash');
-      expect(towerShopMarksTotal, 375);
-      expect(full.marksToBuyAll, 375);
-      expect(const TowerProgress().marksToBuyAll, 585);
+      expect(towerShopMarksTotal, 455);
+      expect(full.marksToBuyAll, 455);
+      expect(const TowerProgress().marksToBuyAll, 665);
       expect(full.nextPerk!.id, 'purse');
     });
   });
@@ -541,10 +553,22 @@ void main() {
       final loaded =
           TowerProgress.fromJson(jsonDecode(jsonEncode(progress.toJson())));
       expect(loaded.perks, {'purse', 'fourth_card'});
-      expect(loaded.worn, ['purse', 'fourth_card']);
+      expect(loaded.worn, ['purse']);
       expect(loaded.trims, {'bone'});
       expect(loaded.trim, 'bone');
       expect(loaded.marks, progress.marks);
+      // A save from the two-slot build wearing two: the first only.
+      final two = TowerProgress.fromJson({
+        'marks': 0,
+        'unlocked': [for (final u in towerUnlocks) u.id],
+        'perks': ['keen_eye', 'second_wind'],
+        'worn': ['keen_eye', 'second_wind'],
+      });
+      expect(two.perks, {'keen_eye', 'second_wind'});
+      expect(two.worn, ['keen_eye']);
+      expect(two.wornPerks, ['keen_eye']);
+      expect(two.toJson()['worn'], ['keen_eye']);
+      expect(two.toggleWorn('second_wind').worn, ['second_wind']);
       final old = TowerProgress.fromJson({'marks': 12, 'wins': 0});
       expect(old.perks, isEmpty);
       expect(old.worn, isEmpty);
