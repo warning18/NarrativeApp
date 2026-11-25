@@ -30,6 +30,27 @@ Future<void> _settle(WidgetTester tester, {int n = 5}) async {
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
 
+  test('a number on a disc is in the ink that reads on its colour', () {
+    double contrast(Color a, Color b) {
+      final la = a.computeLuminance(), lb = b.computeLuminance();
+      return (la > lb ? la + 0.05 : lb + 0.05) /
+          (la > lb ? lb + 0.05 : la + 0.05);
+    }
+
+    // The six main clans' hues (factions.json, v2.9.5) and two extremes.
+    for (final hex in [
+      0xFF2F6FE0, 0xFFE0479E, 0xFFE8782A, 0xFF3FB06A, 0xFFE8C21A, //
+      0xFF9B5DE5, 0xFF000000, 0xFFFFFFFF,
+    ]) {
+      final fill = Color(hex);
+      expect(contrast(discInk(fill), fill), greaterThanOrEqualTo(4.4),
+          reason: hex.toRadixString(16));
+    }
+    expect(discInk(const Color(0xFFE8C21A)), discDarkInk);
+    expect(discInk(const Color(0xFF2F6FE0)), Colors.white);
+    expect(discInkShadows(const Color(0xFFE8C21A)), isNull);
+  });
+
   test('numbers that would sit on each other are pushed apart', () {
     const towns = [
       Offset(100, 100),
