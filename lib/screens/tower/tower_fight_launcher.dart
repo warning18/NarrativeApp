@@ -8,6 +8,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../combat/field_anomaly.dart' show FightStage;
 import '../../data/tower/tower_events.dart'
     show TowerEventKind, towerEventKindOf;
+import '../../data/tower/tower_floors.dart' show TowerFloor;
 import '../../data/tower/tower_hero.dart';
 import '../../data/tower/tower_run.dart';
 import '../../data/tower/tower_tables.dart' show towerEnemyRecord;
@@ -27,6 +28,26 @@ import 'tower_providers.dart';
 /// (UX's panels stand the two fighters side by side). Looks only.
 bool towerFightIsRival(TowerRun run) =>
     towerEventKindOf(run) == TowerEventKind.rival;
+
+/// The fight screen of [run]'s [floor], its foes' [records] by id: the
+/// floor's foes and settings, and `rival` on a rival's floor.
+FightScreen towerFightScreen(
+  TowerRun run,
+  TowerFloor floor,
+  Map<String, Map<String, dynamic>> records, {
+  void Function(int round)? onRound,
+}) =>
+    FightScreen(
+      enemyId: floor.enemyIds.first,
+      enemy: records[floor.enemyIds.first]!,
+      additionalEnemyIds: floor.enemyIds.skip(1).toList(),
+      additionalEnemies: {
+        for (final id in floor.enemyIds.skip(1)) id: records[id]!,
+      },
+      modifiers: floor.modifiersFor(run.professionId),
+      rival: towerFightIsRival(run),
+      onRound: onRound,
+    );
 
 /// Plays [run]'s floor and says how it ended; null when it was not fought (a
 /// foe missing from the tables, or Back before the first roll). There is no
@@ -53,16 +74,10 @@ Future<TowerFightResult?> towerFightFor(
   ref.read(combatActiveProvider.notifier).state = true;
   final won = await Navigator.of(context).push<bool>(MaterialPageRoute(
     builder: (_) {
-      final screen = fight.wrap(FightScreen(
-        enemyId: floor.enemyIds.first,
-        enemy: records[floor.enemyIds.first]!,
-        additionalEnemyIds: floor.enemyIds.skip(1).toList(),
-        additionalEnemies: {
-          for (final id in floor.enemyIds.skip(1)) id: records[id]!,
-        },
-        modifiers: floor.modifiersFor(run.professionId),
-        // HOOKUP(#1187): uncomment once FightScreen has `rival` (UX, v2.10.9).
-        // rival: towerFightIsRival(run),
+      final screen = fight.wrap(towerFightScreen(
+        run,
+        floor,
+        records,
         onRound: (round) {
           fight.onRound(round);
           // Begun: from here the fight is won or lost, even if the app closes.

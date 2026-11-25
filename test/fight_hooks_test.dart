@@ -59,6 +59,16 @@ void main() {
     expect(towerFightIsRival(other!), isFalse);
     // The same floors with the events off hold no rival.
     expect(towerFightIsRival(rival.copyWith(events: 0)), isFalse);
+    // The launcher's fight screen carries it (UX's FightScreen.rival).
+    FightScreen screenOf(TowerRun run) {
+      final floor = towerFloorOf(run, data);
+      return towerFightScreen(run, floor, {
+        for (final id in floor.enemyIds) id: <String, dynamic>{'id': id},
+      });
+    }
+
+    expect(screenOf(rival).rival, isTrue);
+    expect(screenOf(other).rival, isFalse);
   });
 
   testWidgets('a strike, a foe move and the poison ticks are published',
