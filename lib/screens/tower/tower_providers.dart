@@ -110,12 +110,16 @@ class TowerController extends StateNotifier<AsyncValue<TowerState>> {
 
   TowerState get _now => state.value ?? const TowerState();
 
-  /// A new run begun with this people, calling and clan.
+  /// A new run begun with this people, calling and clan, at Heat [heat]
+  /// (TowerRun.heat; 0, the plain climb, by default until the door's picker
+  /// passes one): a Heat not open (TowerProgress.isHeatOpen) starts at the
+  /// highest open one.
   Future<TowerRun> start({
     required TowerData data,
     required String raceId,
     required String professionId,
     int? seed,
+    int heat = 0,
   }) async {
     final save = await _opened();
     final progress = _now.progress;
@@ -128,6 +132,7 @@ class TowerController extends StateNotifier<AsyncValue<TowerState>> {
       startUnlocks: progress.startUnlocks,
       unlocksOwned: progress.unlocksOwned,
       events: towerEventsLive,
+      heat: progress.isHeatOpen(heat) ? heat : progress.heatOpen,
       data: data,
     );
     await save.saveRun(run);

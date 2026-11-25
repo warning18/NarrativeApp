@@ -143,7 +143,8 @@ SimFightOutcome towerBotFight({
 /// from the start) and takes the first oath it is offered ([choice], when
 /// given, picks its cards instead: an offer's index, or null to refuse).
 /// [events] is the floor events' version the run plays (towerStart; 0,
-/// none, every test's and band's climb as before them).
+/// none, every test's and band's climb as before them). [heat] is the
+/// run's Heat (TowerRun.heat; 0, the plain climb).
 TowerRun playTowerRun({
   required int seed,
   required TowerData data,
@@ -153,6 +154,7 @@ TowerRun playTowerRun({
   String? clanId,
   int? Function(TowerRun run)? choice,
   int events = 0,
+  int heat = 0,
 }) {
   final pick = towerRandom(seed, 0, TowerStream.start);
   T draw<T>(List<T> from) => from[pick.nextInt(from.length)];
@@ -168,9 +170,11 @@ TowerRun playTowerRun({
     startUnlocks: progress.startUnlocks,
     unlocksOwned: progress.unlocksOwned,
     events: events,
+    heat: heat,
     data: data,
   );
-  final floors = towerFloorsFor(seed, data.enemies, events: events);
+  final floors =
+      towerFloorsFor(seed, data.enemies, events: events, heat: run.heat);
   // The start's dice (its unlocks', a clan sworn at the start) tried
   // against the calling's own.
   final start = towerHeroOf(run, data);
@@ -393,9 +397,9 @@ int? towerBotChoice(TowerRun run, {TowerClanTables? clans}) {
   final oath = find((r) => r.kind == TowerRewardKind.clanOath);
   if (oath != null) return oath;
   if (run.offer.any((r) => r.clan.isNotEmpty)) {
-    final standing = towerStandingFrom(
-        [for (final f in run.taken.keys.toList()..sort()) run.taken[f]!],
-        clans ?? _assetClanTables);
+    final standing = towerStandingFrom([
+      for (final f in run.taken.keys.toList()..sort()) run.taken[f]!
+    ], clans ?? _assetClanTables, heat: run.heat);
     int? best;
     for (var i = 0; i < run.offer.length; i++) {
       final clan = run.offer[i].clan;
@@ -430,8 +434,8 @@ Map<String, dynamic> _assetTable(String name) =>
 /// A batch of [seeds] runs (QA's balance report): each run's floor
 /// reached, and whether it won.
 List<TowerRun> playTowerBatch(Iterable<int> seeds, TowerData data,
-        {TowerProgress progress = const TowerProgress()}) =>
+        {TowerProgress progress = const TowerProgress(), int heat = 0}) =>
     [
       for (final seed in seeds)
-        playTowerRun(seed: seed, data: data, progress: progress),
+        playTowerRun(seed: seed, data: data, progress: progress, heat: heat),
     ];

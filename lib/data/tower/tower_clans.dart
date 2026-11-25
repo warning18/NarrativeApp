@@ -62,9 +62,12 @@ String _pairKey(String a, String b) => a.compareTo(b) <= 0 ? '$a|$b' : '$b|$a';
 
 /// What a gift of [clanId] moves (§1 of the plan): [towerGiftStanding] to
 /// the clan, [towerAllyStanding] to each ally among [towerClans], and
-/// minus [towerRivalStanding] to each rival. The clan first, then the
-/// others in [towerClans]' order.
-Map<String, int> towerClanRipple(String clanId, TowerClanTables tables) => {
+/// minus [towerRivalStanding] to each rival (at Heat [heat], Ash's
+/// towerRivalStandingOf). The clan first, then the others in [towerClans]'
+/// order.
+Map<String, int> towerClanRipple(String clanId, TowerClanTables tables,
+        {int heat = 0}) =>
+    {
       clanId: towerGiftStanding,
       for (final other in towerClans)
         if (other != clanId)
@@ -72,19 +75,21 @@ Map<String, int> towerClanRipple(String clanId, TowerClanTables tables) => {
             if (step >= towerAllyRelationStep)
               other: towerAllyStanding
             else if (step <= towerRivalRelationStep)
-              other: -towerRivalStanding,
+              other: -towerRivalStandingOf(heat),
     };
 
 /// Standing with each of [towerClans] after [cards] (in the order they
 /// were taken): each clan's gift's ripple ([towerClanRipple]), clamped to
 /// 0..[towerOathStep] after each card. A card with no clan moves nothing.
+/// [heat] is the run's (TowerRun.heat: Ash's rival ripple).
 Map<String, int> towerStandingFrom(
-    Iterable<TowerReward> cards, TowerClanTables tables) {
+    Iterable<TowerReward> cards, TowerClanTables tables,
+    {int heat = 0}) {
   final standing = {for (final c in towerClans) c: 0};
   for (final card in cards) {
     if (card.clan.isEmpty) continue;
     for (final MapEntry(:key, :value)
-        in towerClanRipple(card.clan, tables).entries) {
+        in towerClanRipple(card.clan, tables, heat: heat).entries) {
       standing[key] = ((standing[key] ?? 0) + value).clamp(0, towerOathStep);
     }
   }
