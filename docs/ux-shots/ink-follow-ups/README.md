@@ -1,0 +1,2 @@
+# Ashen Ink follow-ups (picture first)
+`ink-follow-ups-412.png`: the door's Heat picker, a floor with the coin and Heat chips, the Perks tab and the card table with Reroll/Banish. What changed: Heat uses the system's `ember` (#E0762B, levels 1 to 4) and `ash` (#8A8478, level 5) instead of five hues; Heat rows, the Heat and coin chips, the perk and trim rows, the tabs, the door slot, the curse and banish dialogs use the 4 px corner (`radius-seam`). The old Tower ink panels and the kit's buttons (slanted) are untouched.
