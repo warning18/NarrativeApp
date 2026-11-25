@@ -2,7 +2,7 @@
 import sys,json,io,base64,os
 sys.path.insert(0,'art/pixellab-backgrounds');import batchA_gen as A
 from PIL import Image
-D="grim dark fantasy pixel art, a wide low scene, worn and weathered, ominous mood, muted desaturated colours, deep black shadows, one strong glow of light, no characters, no text, no UI, "
+D="grim dark fantasy pixel art, a wide low scene at night or deep dusk under a dark stormy sky, worn and weathered, ominous mood, muted desaturated colours, deep black shadows, one strong glow of light, no characters, no text, no UI, "
 S={
 'saltmouth_yard':"a salt town smithy yard at dusk, anvils, weapon racks and a glowing forge fire, ember gold glow",
 'saltmouth_tern_row':"a narrow salt-scoured quarter hung with lit paper boats, a footbridge over dark water, lanterns, dusk, cold blue glow",
