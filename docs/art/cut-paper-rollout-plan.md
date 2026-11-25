@@ -1,3 +1,5 @@
+> **Standing rule for everything Art draws (the user, 25 November):** "the art should not have too many details, like the backgrounds, but more an arty direction". Bold simple silhouettes, a few strong ink strokes, **no hatching, no shading ramps, no small texture**, lots of empty paper, one spot of colour, a recognisable shape at a glance: think a stamp or a woodcut, not a small illustration. Prompts must say "bold simple silhouette, no hatching, no shading" and must not ask for hatching.
+
 # Cut paper: how to extend it (plan, nothing generated; Art, 25 November 2026)
 
 The user approved cut paper as the direction (the second try: ink, paper, a paper shadow, one clan colour). What worked in the second try: **text-only prompts for flat subjects** (the fire, the dice) and a **very light init (strength about 80)** when an emblem must survive (the banner). Costs are in generations: one per piece, plus about 30 % for retries. Balance 1751. Rule: ask the user before any batch above about 30.

@@ -1,3 +1,5 @@
+> **Standing rule for everything Art draws (the user, 25 November):** "the art should not have too many details, like the backgrounds, but more an arty direction". Bold simple silhouettes, a few strong ink strokes, **no hatching, no shading ramps, no small texture**, lots of empty paper, one spot of colour, a recognisable shape at a glance: think a stamp or a woodcut, not a small illustration. Prompts must say "bold simple silhouette, no hatching, no shading" and must not ask for hatching.
+
 # Style exploration "brut" (24 November 2026; 0 generations; waits for the user's pick)
 
 The user: "too much detail; something less detailed, more raw (brut), playing with shadows, with a unique colour for each clan. Globally the art should not be too complex, but have a style of its own."
