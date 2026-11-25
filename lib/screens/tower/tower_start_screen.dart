@@ -14,6 +14,7 @@ import '../race_profession_screen.dart';
 import 'ink/ink_kit.dart';
 import 'ink/ink_palette.dart';
 import 'tower_backdrop.dart';
+import 'tower_end_screen.dart';
 import 'tower_floor_screen.dart';
 import 'tower_look.dart';
 import 'tower_marks_screen.dart';
@@ -37,6 +38,9 @@ class _TowerStartBody extends ConsumerStatefulWidget {
 
 class _TowerStartScreenState extends ConsumerState<_TowerStartBody> {
   bool _starting = false;
+
+  /// The end screen of a run lost by leaving its fight, once pushed.
+  bool _fightLeftShown = false;
 
   String _fill(String text, Map<String, Object> values) {
     var out = text;
@@ -89,6 +93,17 @@ class _TowerStartScreenState extends ConsumerState<_TowerStartBody> {
     final state = ref.watch(towerProvider).value ?? const TowerState();
     final progress = state.progress;
     final run = state.run;
+    // A run lost by leaving its fight (the app closed mid-fight): its end.
+    if (state.fightLeft case final lost? when !_fightLeftShown) {
+      _fightLeftShown = true;
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (!mounted) return;
+        ref.read(towerProvider.notifier).fightLeftSeen();
+        Navigator.of(context).pushReplacement(MaterialPageRoute(
+            builder: (_) => TowerEndScreen(
+                run: lost, progress: progress, fightLeft: true)));
+      });
+    }
     return Scaffold(
       appBar: AppBar(title: FitTitle(tr(ref, 'tower_name'))),
       body: TowerBackdrop(

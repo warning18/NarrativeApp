@@ -18,7 +18,11 @@ import 'ink/ink_palette.dart';
 
 /// The end of a run, in the Tower's night theme (its body below).
 class TowerEndScreen extends StatelessWidget {
-  const TowerEndScreen({super.key, required this.run, required this.progress});
+  const TowerEndScreen(
+      {super.key,
+      required this.run,
+      required this.progress,
+      this.fightLeft = false});
 
   /// The run that ended (dead, won or left).
   final TowerRun run;
@@ -26,16 +30,23 @@ class TowerEndScreen extends StatelessWidget {
   /// The Tower's record with this run's marks banked.
   final TowerProgress progress;
 
+  /// The run was lost by leaving its fight (the app closed mid-fight,
+  /// TowerRun.fightBegun): a line says so.
+  final bool fightLeft;
+
   @override
   Widget build(BuildContext context) => TowerNight(
-      floor: run.floor, child: _TowerEndBody(run: run, progress: progress));
+      floor: run.floor,
+      child: _TowerEndBody(run: run, progress: progress, fightLeft: fightLeft));
 }
 
 class _TowerEndBody extends ConsumerWidget {
-  const _TowerEndBody({required this.run, required this.progress});
+  const _TowerEndBody(
+      {required this.run, required this.progress, this.fightLeft = false});
 
   final TowerRun run;
   final TowerProgress progress;
+  final bool fightLeft;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -78,6 +89,11 @@ class _TowerEndBody extends ConsumerWidget {
                             fontFamily: InkFonts.display,
                             color: won ? inkOnPaper : inkRed)),
                     const SizedBox(height: 8),
+                    if (fightLeft)
+                      Text(tr(ref, 'tower_fight_left'),
+                          key: const Key('tower_end_fight_left'),
+                          style: paper.bodyLarge
+                              ?.copyWith(fontWeight: FontWeight.w700)),
                     Text(line,
                         key: const Key('tower_end_line'),
                         style: paper.bodyLarge

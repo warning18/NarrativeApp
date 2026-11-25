@@ -24,6 +24,7 @@ import 'package:narrative_data_app/data/tower/tower_hero.dart';
 import 'package:narrative_data_app/data/tower/tower_run.dart';
 import 'package:narrative_data_app/data/tower/tower_session.dart';
 import 'package:narrative_data_app/main.dart';
+import 'package:narrative_data_app/widgets/die_3d.dart';
 import 'package:narrative_data_app/providers/fight_random_provider.dart';
 import 'package:narrative_data_app/providers/player_session_provider.dart';
 import 'package:narrative_data_app/screens/fight_screen.dart';
@@ -114,11 +115,15 @@ void main() {
       });
       debugPrint('SAMPLE ${rows.last}');
     }
+    await tester.pumpWidget(const SizedBox());
+    await tester.pump(const Duration(seconds: 10));
     File(out)
       ..createSync(recursive: true)
       ..writeAsStringSync(const JsonEncoder.withIndent(' ').convert(rows));
   }, timeout: const Timeout(Duration(minutes: 40)));
 }
+
+final _play = Platform.environment['QA_SAMPLE_PLAY'] ?? 'naive';
 
 class _Result {
   _Result(this.won, this.healthLeft);
@@ -200,8 +205,46 @@ Future<_Result?> _realFight(WidgetTester tester, TowerRun run, TowerFloor floor,
     final roll = find.textContaining('Roll Dice');
     final confirm = find.text('Confirm');
     if (confirm.evaluate().isNotEmpty) {
+      // The bot's own rule: a die that landed empty is rolled again while
+      // the screen allows it (the Reroll button's enabled).
+      if (_play != 'naive') {
+        final cube = find.byKey(const ValueKey('die_cube_player'));
+        final empty = cube.evaluate().isNotEmpty &&
+            tester.widget<Die3D>(cube).fx == DieFx.fizzle;
+        final rollsLeftBtn = find.byWidgetPredicate((w) =>
+            w is OutlinedButton &&
+            w.onPressed != null &&
+            find
+                .descendant(
+                    of: find.byWidget(w),
+                    matching: find.textContaining('Reroll'))
+                .evaluate()
+                .isNotEmpty);
+        if (empty && rollsLeftBtn.evaluate().isNotEmpty) {
+          await tester.tap(rollsLeftBtn.first);
+          await tester.pump(const Duration(milliseconds: 400));
+          await tester.runAsync(
+              () => Future<void>.delayed(const Duration(milliseconds: 10)));
+          continue;
+        }
+      }
       await tester.tap(confirm.first);
     } else if (roll.evaluate().isNotEmpty) {
+      // The full player also casts a spell it can pay before it rolls.
+      if (_play == 'full') {
+        final spell = find.descendant(
+            of: find.byWidgetPredicate(
+                (w) => w is Tooltip && (w.message ?? '').contains(' · ')),
+            matching:
+                find.byWidgetPredicate((w) => w is InkWell && w.onTap != null));
+        if (spell.evaluate().isNotEmpty) {
+          await tester.tap(spell.first, warnIfMissed: false);
+          await tester.pump(const Duration(milliseconds: 400));
+          await tester.runAsync(
+              () => Future<void>.delayed(const Duration(milliseconds: 10)));
+          continue;
+        }
+      }
       await tester.tap(roll.first);
     }
     await tester.pump(const Duration(milliseconds: 400));

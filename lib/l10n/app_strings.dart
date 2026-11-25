@@ -1972,6 +1972,10 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.fr:
         'Le sommet. Pas de porte, seulement le ciel, et toute la montée derrière vous.',
   },
+  'tower_fight_left': {
+    AppLanguage.en: 'You left the fight: it counts as lost.',
+    AppLanguage.fr: 'Vous avez quitté le combat : il compte comme perdu.',
+  },
   'tower_left': {
     AppLanguage.en: 'You left the Tower on floor {n}.',
     AppLanguage.fr: 'Vous avez quitté la Tour à l’étage {n}.',
