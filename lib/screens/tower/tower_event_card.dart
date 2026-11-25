@@ -94,6 +94,11 @@ class TowerEventCard extends ConsumerWidget {
             ])
               TowerStallItem(
                 id: item.id,
+                iconId: switch (item.kind) {
+                  TowerStockKind.salve => 'salve',
+                  TowerStockKind.potions => 'potion_bundle',
+                  _ => null,
+                },
                 icon: switch (item.kind) {
                   TowerStockKind.salve => Icons.healing,
                   TowerStockKind.boon => Icons.auto_awesome_outlined,

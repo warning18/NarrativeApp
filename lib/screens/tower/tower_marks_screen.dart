@@ -15,6 +15,8 @@ import '../../widgets/ink_panel.dart' show InkLabel;
 import 'ink/ink_kit.dart';
 import 'ink/ink_palette.dart';
 import '../../theme/icon_sizes.dart';
+import '../../utils/pixel_icons/item_icons.dart' show ItemIcons;
+import '../../utils/pixel_icons/pixel_icon.dart' show PixelIcon;
 
 /// The marks and unlocks, in the Tower's night theme (its body below).
 class TowerMarksScreen extends StatelessWidget {
@@ -66,6 +68,8 @@ class _TowerMarksBodyState extends ConsumerState<_TowerMarksBody> {
             InkPaperPanel(
               child: Row(
                 children: [
+                  PixelIcon(ItemIcons.pathFor('marks'), size: IconSize.s32),
+                  const SizedBox(width: 8),
                   Text('${progress.marks}',
                       key: const Key('tower_marks_balance'),
                       style: paper.headlineMedium
