@@ -4,7 +4,7 @@
 > **Detail level in numbers (the one rule for plates, tarot, icons, dice and banners; 25 November):**
 > | Piece | Canvas | Smallest region kept | Tones | Line weight | Code |
 > |---|---|---|---|---|---|
-> | Tower plate | 180 x 320 | **60 px** (the pass merges any region of one colour smaller than that into what surrounds it) | at most 5: ink, dark, paper shadow, paper, deep red | none (shapes, no outlines) | `art/pixellab-cutpaper/simplify.py` |
+> | Tower plate (the approved plates are NOT simplified: they keep the text-only generation as it is; 60 px is for new plates only) | 180 x 320 | **60 px** (the pass merges any region of one colour smaller than that into what surrounds it) | at most 5: ink, dark, paper shadow, paper, deep red | none (shapes, no outlines) | `art/pixellab-cutpaper/simplify.py` |
 > | Tarot vignette | 96 x 64 | **16 px** | at most 5, the same | none | same |
 > | Icon | 32 x 32 | **3 px** (about 2 x 2) | ink black, paper white, one spot hue, at most one grey | 1 px outline; 2 to 4 inner ink lines and one paper highlight for form; no hatching | by the prompt |
 > | Die, banner | 44 / 64 x 128 | 6 / 12 px | the five above plus the clan hue on a banner | none | same pass |
