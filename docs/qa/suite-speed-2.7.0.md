@@ -59,3 +59,17 @@ to 11, merge_ready_plate 19 to 13, map_ladder 17 to 11.
   separate apps, so I did not merge them.
 - A whole-suite single baseline has about 5% noise (shard to shard on the same
   code: 389 to 455 s); do not read the last percent of the table.
+
+## Shard balance (the weights file, refreshed)
+
+CI's wall time is its slowest shard. `tool/shard_tests.py` splits the files by
+the seconds of `test/shard_weights.json`, and those weights were old (for
+instance `ability_radar_preview_test.dart` weighed 1.3 s and takes 17). With
+the per-file times of the two after-runs above, held out one against the other
+(weights from run 1, loads read in run 2): the old weights give the shards
+691 / 747 / 725 / 626 file-seconds (the slowest 7% over an even split), the
+refreshed ones 702 / 703 / 707 / 677 (1.3% over): **the slowest shard is 5%
+shorter, about 20 to 30 s of CI's wall time**, with no test touched. The
+refresh is `tool/qa_shard_weights.py RUN.json ...` (new, reads the JSON
+reporter's output of any runs, averages, keeps the weight of a file no run
+has); rerun it after a big change in the suite's time.
