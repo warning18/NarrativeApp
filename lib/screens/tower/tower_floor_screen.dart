@@ -318,20 +318,33 @@ class _TowerFloorScreenState extends ConsumerState<_TowerFloorBody> {
                               event: event,
                               onPick: (i) => _pick(run, data, i),
                             )
-                          : _FloorIntro(
-                              run: run,
-                              data: data,
-                              event: event,
-                              busy: _busy,
-                              onFight: () => _fight(run, data),
-                              onParley: (talk) => _parley(run, data, talk),
-                              onBuy: (id) => _buy(run, data, id),
-                              onLeaveStore: () => _leaveStore(run),
-                              onBargain: (take) => _bargain(run, data, take),
-                              onShortcut: (take) => ref
-                                  .read(towerProvider.notifier)
-                                  .setRun(towerChooseShortcut(run, data, take)),
-                            ),
+                          : run.stallOffer.isNotEmpty
+                              ? TowerOfferView(
+                                  key: const Key('tower_stall_boon_table'),
+                                  run: run.copyWith(offer: run.stallOffer),
+                                  data: data,
+                                  onPick: (i) => i == null
+                                      ? _leaveStore(run)
+                                      : ref
+                                          .read(towerProvider.notifier)
+                                          .takeStallBoon(i),
+                                )
+                              : _FloorIntro(
+                                  run: run,
+                                  data: data,
+                                  event: event,
+                                  busy: _busy,
+                                  onFight: () => _fight(run, data),
+                                  onParley: (talk) => _parley(run, data, talk),
+                                  onBuy: (id) => _buy(run, data, id),
+                                  onLeaveStore: () => _leaveStore(run),
+                                  onBargain: (take) =>
+                                      _bargain(run, data, take),
+                                  onShortcut: (take) => ref
+                                      .read(towerProvider.notifier)
+                                      .setRun(
+                                          towerChooseShortcut(run, data, take)),
+                                ),
                 ),
               ],
             ),
