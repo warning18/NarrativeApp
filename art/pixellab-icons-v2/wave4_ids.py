@@ -81,3 +81,11 @@ RETRY={
 'bone_warden':B("a skeleton knight head in a rusty iron helmet, white bones lashed with rope, glowing red eye sockets"),
 'void_stalker':C("a thin tall black four-legged creature, long thin legs, a pale bone mask for a face, glowing purple eyes"),
 }
+
+# Round 3: kraken arm as a real tentacle arm, colossus, manifestation, reflection
+RETRY2={
+'kraken_arm':"a chibi long thick grey-green tentacle arm coming up from the bottom edge, curving like a question mark with its tip in the air, two rows of round pale suckers along the inside, wet shine, only the tentacle, thick as a mast, no head, no eyes, no lizard"+SUFFIX,
+'strand_colossus':C("a huge stocky humanoid made of fused wooden ship keels, teal glass panels and a small chapel window, big blocky arms, thick legs, one glowing white eye, standing"),
+'void_manifestation':C("a tall wobbly dark purple shape like a melted candle, five small pale faces on it with open mouths, a violet glow, drips"),
+'hollow_reflection':B("a hero's exact mirror copy in grey, same cloak and short hair as an adventurer, flat grey face with no features, glowing violet outline, faint see-through look"),
+}
