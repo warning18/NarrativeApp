@@ -8,6 +8,10 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [2.10.1+1083]
+
+- **Epilogue map: the numbers read on every clan's colour.** The number on a big town's disc, on the map and in the list under it, was always white; on the Vigil's new yellow it could hardly be read, and on the Mire's green and the Compact's orange it leaned on its shadow. It is now written in dark ink on a light disc and in white on a dark one, whichever stands out more. No colour, rule or number changes.
+
 ## [2.10.0+1082]
 
 - **Tower: coins for one climb.** Each floor won for the first time pays coins: 1, 2 or 3 an ordinary floor (floors 1-10, 11-20, 21-29), an Elite as much again, a warden 3 / 6 / 9, a boss 5 / 10. Coins are spent in the climb and lost at its end; Heat multiplies marks, never coins. The stall now takes coins, not marks: the salve 4, the potion bundle 5, and a new boon (three cards as a boon floor's) 15; a sworn clan's merchant halves them (2 / 3 / 8). A table can be rerolled (3 coins, then 5, 7…) and a card banished for the run (4 coins, one a table, five a run).
