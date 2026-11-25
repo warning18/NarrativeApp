@@ -7,7 +7,7 @@
 // competent real player would, so its numbers read as "the game for
 // someone who plays it well"; [SimPolicy.typical] sits between them.
 import '../combat/combat_engine.dart'
-    show elementFieldPrefixes, elementMultiplierFor;
+    show applySkillTier, elementFieldPrefixes, elementMultiplierFor;
 import '../combat/dice_faces.dart' show isOpenSkillFace;
 import '../combat/face_element.dart' show faceHitElement;
 import '../combat/face_keywords.dart';
@@ -183,11 +183,18 @@ bool _isManaSkill(Map<String, dynamic> skills, String skillId) {
 /// on them: a mana skill on a face ([current]) keeps it, the rest go by
 /// [simSkillScore] (ties by id). The simulator's assignment
 /// (SimGrowth.assignSkills).
+///
+/// [tiers] (the Tower's rank-ups, v2.4.0; the story's simulator has none):
+/// a skill ranked up (tier above 0, a mana skill too) is placed before any
+/// skill with no tier, the ranked by their score at their tier, so a tier
+/// once given keeps its face while the die has one (#1147: a later skill,
+/// or the die rolled afresh, no longer pushes it off).
 Map<String, String> simSkillAssignments({
   required List<Map<String, dynamic>> faces,
   required Map<String, String> current,
   required Iterable<String> unlocked,
   required Map<String, dynamic> skills,
+  Map<String, int> tiers = const {},
 }) {
   final open = [
     for (var i = 0; i < faces.length; i++)
@@ -202,15 +209,19 @@ Map<String, String> simSkillAssignments({
       placed.add(id);
     }
   }
+  int tier(String id) => tiers[id] ?? 0;
+  double score(String id) => simSkillScore(
+      applySkillTier(skills[id] as Map<String, dynamic>, tier(id)));
   final ranked = [
     for (final id in unlocked)
       if (!placed.contains(id) &&
-          !_isManaSkill(skills, id) &&
+          (tier(id) > 0 || !_isManaSkill(skills, id)) &&
           skills[id] is Map<String, dynamic>)
         id,
   ]..sort((a, b) {
-      final byScore = simSkillScore(skills[b] as Map<String, dynamic>)
-          .compareTo(simSkillScore(skills[a] as Map<String, dynamic>));
+      final byRank = (tier(b) > 0 ? 1 : 0).compareTo(tier(a) > 0 ? 1 : 0);
+      if (byRank != 0) return byRank;
+      final byScore = score(b).compareTo(score(a));
       return byScore != 0 ? byScore : a.compareTo(b);
     });
   var next = 0;

@@ -212,7 +212,8 @@ void towerApplyReward(SimCharacter hero, TowerReward reward, TowerData data,
           faces: hero.diceFaces,
           current: hero.diceSkillAssignments,
           unlocked: hero.unlockedSkillIds,
-          skills: data.skills);
+          skills: data.skills,
+          tiers: hero.skillTiers);
     case TowerRewardKind.spell:
       final spell = data.spellSpecs[reward.id];
       if (spell != null && !hero.knownSpells.any((s) => s.id == reward.id)) {
@@ -279,7 +280,8 @@ void towerRollDie(SimCharacter hero, String dieId, TowerData data) {
         faces: faces,
         current: const {},
         unlocked: hero.unlockedSkillIds,
-        skills: data.skills);
+        skills: data.skills,
+        tiers: hero.skillTiers);
 }
 
 /// The run's hero now: rebuilt from [run]'s start, the levels of the
