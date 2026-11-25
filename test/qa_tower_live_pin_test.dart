@@ -67,8 +67,10 @@ void main() {
   // The user's payback B (the Tower's foes 1.17 to 1.23,
   // towerPeacefulFoeScale): these were 70 / 235 / 9545 and
   // 161 / 333 / 11240.
-  const none = (top: 49, floor20: 207, floorSum: 9088);
-  const all = (top: 125, floor20: 302, floorSum: 10775);
+  // The floor-15 oath (#1153, towerPityOathFloor): these were
+  // 49 / 207 / 9088 and 125 / 302 / 10775.
+  const none = (top: 49, floor20: 208, floorSum: 9111);
+  const all = (top: 128, floor20: 305, floorSum: 10799);
 
   test('the live Tower, no unlocks, is the pinned curve', () {
     final m = _measure(const TowerProgress());

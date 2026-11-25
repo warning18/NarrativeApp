@@ -158,3 +158,10 @@ Measured with the clans' offers, seeds 1–2000:
 
 The cards as built (UX restyles them): `tower-clan-offers/`, the gifts and an
 oath at standing 6, English 412 px and French 360 px.
+
+## 12. Applied: the floor-15 oath (#1153, the user's call)
+
+From `towerPityOathFloor` (15), a climb with no oath sworn and none due by
+standing is offered its highest-standing clan's oath on every non-boon floor
+won until it swears (one a run still). Measured in
+[tower-oath-floor15.md](tower-oath-floor15.md).

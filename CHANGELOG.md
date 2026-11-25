@@ -8,6 +8,10 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [2.8.0+1069]
+
+- **The Tower's late oath (#1153, the user's call).** From floor 15, a climb that has sworn no oath yet is offered the oath of its highest-standing clan on each floor won (not a boon's) until it swears one; still one oath a run. Floor 15 is a boon floor, so the first such offer comes after floor 16. Every climb reaching floor 20 is now sworn (98% / 91% before, no unlocks / all unlocks); the top of the tower and every floor's clear rate move by under a point. Floors 26 and 27 are unchanged.
+
 ## [2.7.2+1068]
 
 - **Intrigue hints (Narrative's P1c).** For a bearer of the Void Banner, the story now drops a line where each of the ten intrigues can be picked up: a memory of someone already met, at the scene where its clue lies, gone once the clue is found. Once an intrigue has begun, a camp reminds the player of its next step until that step is taken. 19 lines, English and French; no rule or number changes.
