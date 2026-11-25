@@ -127,8 +127,9 @@ List<SnowEdge> _edgesOf(WidgetTester tester) {
     final r = rectOf(e);
     if (r.width < 28 || r.top < 60) continue;
     if (out.any(
-        (o) => (o.a.dx - r.left - 2).abs() < 3 && (o.a.dy - r.top).abs() < 3))
+        (o) => (o.a.dx - r.left - 2).abs() < 3 && (o.a.dy - r.top).abs() < 3)) {
       continue;
+    }
     out.add(
         SnowEdge(id++, Offset(r.left + 2, r.top), Offset(r.right - 2, r.top)));
   }
