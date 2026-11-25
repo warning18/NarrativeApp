@@ -109,12 +109,28 @@ class TowerHeroView {
 /// would sit on a face of [hero]'s die (simSkillAssignments with the
 /// hero's tiers, as it is placed when taken) or no skill on the die has a
 /// tier left: the best of the skills on the die now (simSkillScore at its
-/// tier, ties by id) below [maxSkillTier]. Only a skill on the die (the
+/// tier, ties by id) below [maxSkillTier], none of [besides] (the rank-ups
+/// already on the table) while one is left. Only a skill on the die (the
 /// user's call, #1147), and the skill it raises stays there: the ranked
 /// keep their faces when the die's skills are placed again. With none to
 /// raise (every skill on the die at the last tier, or none on it) the card
 /// stays the skill card it was.
 String? towerRankUpFor(
+    String skillId, TowerHeroView hero, Map<String, dynamic> skills,
+    {Set<String> besides = const {}}) {
+  final ups = towerRankUpsFor(skillId, hero, skills);
+  if (ups == null || ups.isEmpty) return null;
+  for (final id in ups) {
+    if (!besides.contains(id)) return id;
+  }
+  return ups.first;
+}
+
+/// The skills on [hero]'s die a rank-up card could raise instead of
+/// [skillId], best first ([towerRankUpFor]'s order); null when [skillId]
+/// would sit on a face of the die (the card stays a skill card), empty
+/// when no skill on the die has a tier left (so does it).
+List<String>? towerRankUpsFor(
     String skillId, TowerHeroView hero, Map<String, dynamic> skills) {
   if (hero.diceFaces.isEmpty) return null;
   final placed = simSkillAssignments(
@@ -126,7 +142,7 @@ String? towerRankUpFor(
   if (placed.values.contains(skillId)) return null;
   double score(String id) => simSkillScore(applySkillTier(
       skills[id] as Map<String, dynamic>, hero.skillTiers[id] ?? 0));
-  final onDie = [
+  return [
     for (final id in hero.diceSkillAssignments.values.toSet())
       if (skills[id] is Map<String, dynamic> &&
           (hero.skillTiers[id] ?? 0) < maxSkillTier)
@@ -135,8 +151,12 @@ String? towerRankUpFor(
       final byScore = score(b).compareTo(score(a));
       return byScore != 0 ? byScore : a.compareTo(b);
     });
-  return onDie.isEmpty ? null : onDie.first;
 }
+
+/// How many skills one card of a table tries before it is left off: each
+/// further one a rank-up already on the table pushed aside (a die with
+/// fewer skills to rank than the table has cards).
+const int towerCardTries = 6;
 
 /// The highest rarity step ([towerRarityOdds]' last).
 const int maxRarityStep = 3;
@@ -191,6 +211,12 @@ String? towerClanDieOf(String clanId, Map<String, dynamic> dice) {
 /// stall's, even on Pyre's empty floors); a boon table gets [extraSkills]
 /// more skill cards (Fourth card) and its skills [rarityBonus] rarity steps
 /// up (Keen eye); the late oath comes [oathSooner] floors sooner (Early word).
+///
+/// Every card of a table is a different gift, and a boon's or the clans'
+/// table always deals three (v2.10.18, the user's call "Always three"):
+/// when the draws come short, a clan left without a card tries all its
+/// gifts, then a clan of the pool not dealt, then a boon card (a skill, a
+/// die, a spell) takes the place. Only a short table draws more.
 List<TowerReward> towerOfferFor({
   required int seed,
   required int floor,
@@ -227,6 +253,35 @@ List<TowerReward> towerOfferFor({
     return from.isEmpty ? null : from[drawn.nextInt(from.length)];
   }
 
+  // [ids] not taken, in an order drawn with [drawn], those of [avoid]
+  // after the others.
+  List<String> drawnOrder(Iterable<String> ids) {
+    final fresh = [
+      for (final id in ids.toSet())
+        if (!hero.takenIds.contains(id)) id,
+    ]
+      ..sort()
+      ..shuffle(drawn);
+    return [
+      for (final id in fresh)
+        if (!avoid.contains(id)) id,
+      for (final id in fresh)
+        if (avoid.contains(id)) id,
+    ];
+  }
+
+  // Whether skill [key] of rarity step [step] is one of the Tower's pool
+  // the hero could be given (not unlocked, its calling and race, its
+  // prerequisite met), none of [besides].
+  bool inPool(String key, Object? value, int step, Set<String> besides) =>
+      value is Map &&
+      !besides.contains(key) &&
+      towerSkillRarities[step].contains(value['rarity']) &&
+      !hero.unlockedSkillIds.contains(key) &&
+      _restrictionAllows(value['restrictedProfessionID'], hero.professionId) &&
+      _restrictionAllows(value['restrictedRaceID'], hero.raceId) &&
+      _prerequisiteMet(value['requiredSkillID'], hero);
+
   // A skill of the Tower's pool at the floor's rarity (or below), none of
   // [besides].
   String? poolSkill({Set<String> besides = const {}}) {
@@ -236,27 +291,56 @@ List<TowerReward> towerOfferFor({
         step--) {
       final id = pick([
         for (final MapEntry(:key, :value) in skills.entries)
-          if (value is Map &&
-              !besides.contains(key) &&
-              towerSkillRarities[step].contains(value['rarity']) &&
-              !hero.unlockedSkillIds.contains(key) &&
-              _restrictionAllows(
-                  value['restrictedProfessionID'], hero.professionId) &&
-              _restrictionAllows(value['restrictedRaceID'], hero.raceId) &&
-              _prerequisiteMet(value['requiredSkillID'], hero))
-            key,
+          if (inPool(key, value, step, besides)) key,
       ]);
       if (id != null) return id;
     }
     return null;
   }
 
-  TowerReward? draw(TowerRewardKind kind) {
+  // Every skill of the pool at the floor's rarity or below, none of
+  // [besides], in a drawn order (the ones of [avoid] last): a fill's
+  // candidates ("Always three", below).
+  List<String> poolSkillsAll(Set<String> besides) {
+    final top = min(towerRarityStep(floor, drawn) + rarityBonus, maxRarityStep);
+    return drawnOrder([
+      for (var step = top; step >= 0; step--)
+        for (final MapEntry(:key, :value) in skills.entries)
+          if (inPool(key, value, step, besides)) key,
+    ]);
+  }
+
+  // The card skill [id] makes on [table] (in [clan]'s name, if any): the
+  // skill, or, with no face for it, a rank-up of the best skill on the die
+  // not ranked up on [table] already. A skill card and a rank-up of one
+  // skill are the same gift. Null when that card would be on the table
+  // twice (no skill left to rank but those): never a duplicate.
+  TowerReward? cardOf(String id, List<TowerReward> table, {String clan = ''}) {
+    bool onTable(String id) => table.any((c) =>
+        (c.kind == TowerRewardKind.skill || c.kind == TowerRewardKind.rankUp) &&
+        c.id == id);
+    final ups = towerRankUpsFor(id, hero, skills);
+    if (ups == null || ups.isEmpty) {
+      return onTable(id)
+          ? null
+          : TowerReward(TowerRewardKind.skill, id: id, clan: clan);
+    }
+    for (final up in ups) {
+      if (!onTable(up)) {
+        return TowerReward(TowerRewardKind.rankUp, id: up, clan: clan);
+      }
+    }
+    return null;
+  }
+
+  // [besides]: the dice and spells already on the table (a fill's draw).
+  TowerReward? draw(TowerRewardKind kind, {Set<String> besides = const {}}) {
     switch (kind) {
       case TowerRewardKind.die:
         final id = pick([
           for (final MapEntry(:key, :value) in dice.entries)
             if (value is Map &&
+                !besides.contains(key) &&
                 key != 'starter_die' &&
                 !towerExcludedDice.contains(key) &&
                 (value['clan'] == null || value['clan'].toString().isEmpty) &&
@@ -269,15 +353,14 @@ List<TowerReward> towerOfferFor({
       case TowerRewardKind.skill:
         final id = poolSkill();
         if (id == null) return null;
-        // A skill with no face to land on: a tier for one on the die.
-        if (towerRankUpFor(id, hero, skills) case final up?) {
-          return TowerReward(TowerRewardKind.rankUp, id: up);
-        }
-        return TowerReward(kind, id: id);
+        // A skill with no face to land on: a tier for one on the die (the
+        // boon's first card: nothing on the table yet).
+        return cardOf(id, const []);
       case TowerRewardKind.spell:
         final id = pick([
           for (final MapEntry(:key, :value) in spells.entries)
             if (value is Map &&
+                !besides.contains(key) &&
                 value['professionID']?.toString() == hero.professionId &&
                 !hero.knownSpellIds.contains(key))
               key,
@@ -291,6 +374,20 @@ List<TowerReward> towerOfferFor({
     }
   }
 
+  // A boon card for [table] that is none of its cards ("Always three"'s
+  // second fill): a skill (or a rank-up) not on it, else a die, else a
+  // spell; null when none is left.
+  TowerReward? boonFill(List<TowerReward> table) {
+    final ids = {for (final c in table) c.id};
+    for (final id in poolSkillsAll(ids)) {
+      if (cardOf(id, table) case final card?) return card;
+    }
+    for (final kind in [TowerRewardKind.die, TowerRewardKind.spell]) {
+      if (draw(kind, besides: ids) case final card?) return card;
+    }
+    return null;
+  }
+
   // Pyre's floors (towerHeatEmptyFloorsOf): nothing at all, no boon and
   // no clan's card in its place (the stall's boon still deals).
   if (!boon && towerHeatEmptyFloorsOf(heat).contains(floor)) return const [];
@@ -299,15 +396,27 @@ List<TowerReward> towerOfferFor({
       for (final kind in towerBoonKinds)
         if (draw(kind) case final card?) card,
     ];
-    // Fourth card: more skills, none already on the table.
+    // Always three (the user's call): a kind with none left to give, or a
+    // skill already on the table, gives its place to another boon card.
+    // A table of three is dealt as it was; only a fill draws more.
+    while (cards.length < towerBoonKinds.length) {
+      final card = boonFill(cards);
+      if (card == null) break;
+      cards.add(card);
+    }
+    // Fourth card: more skills, none already on the table (a rank-up the
+    // next best skill on the die, or another skill while one is left).
     for (var i = 0; i < extraSkills; i++) {
-      final id = poolSkill(besides: {for (final c in cards) c.id});
-      if (id == null) break;
-      final card = switch (towerRankUpFor(id, hero, skills)) {
-        final up? => TowerReward(TowerRewardKind.rankUp, id: up),
-        null => TowerReward(TowerRewardKind.skill, id: id),
-      };
-      if (!cards.contains(card)) cards.add(card);
+      final tried = {for (final c in cards) c.id};
+      TowerReward? card;
+      for (var t = 0; t < towerCardTries && card == null; t++) {
+        final id = poolSkill(besides: tried);
+        if (id == null) break;
+        tried.add(id);
+        card = cardOf(id, cards);
+      }
+      if (card == null) break;
+      cards.add(card);
     }
     return cards;
   }
@@ -333,8 +442,12 @@ List<TowerReward> towerOfferFor({
   final oathRandom = towerRandom(seed, floor, TowerStream.oath);
   if (!clansDue && oathRandom.nextDouble() >= towerOathChance) return oaths;
   final suitors = [...clanPool]..sort();
+  // The cards the clans' table deals: one a suitor (three: a run's pool
+  // holds three clans or more).
+  final due = min(towerSuitorsPerOffer, suitors.length);
   final cards = <TowerReward>[];
   final given = <String>{};
+  final missed = <String>[];
   while (suitors.isNotEmpty && cards.length < towerSuitorsPerOffer) {
     final clan = suitors.removeAt(drawn.nextInt(suitors.length));
     String? gift(Set<String> besides) => towerClanGiftFor(clan,
@@ -344,17 +457,57 @@ List<TowerReward> towerOfferFor({
         skills: skills,
         tables: clans,
         random: drawn);
-    final id = (avoid.isEmpty ? null : gift({...given, ...avoid})) ??
-        gift(given) ??
-        poolSkill(besides: given);
-    if (id == null) continue;
-    given.add(id);
     // A skill with no face to land on: a tier for one on the die, still
-    // the clan's gift (its standing moves the same).
-    cards.add(switch (towerRankUpFor(id, hero, skills)) {
-      final up? => TowerReward(TowerRewardKind.rankUp, id: up, clan: clan),
-      null => TowerReward(TowerRewardKind.skill, id: id, clan: clan),
-    });
+    // the clan's gift (its standing moves the same). A rank-up already on
+    // the table (the die's skills to rank all taken by earlier clans): the
+    // clan's next gift, else a skill of the pool, else no card of its own.
+    TowerReward? card;
+    for (var t = 0; t < towerCardTries && card == null; t++) {
+      final id = (avoid.isEmpty ? null : gift({...given, ...avoid})) ??
+          gift(given) ??
+          poolSkill(besides: given);
+      if (id == null) break;
+      given.add(id);
+      card = cardOf(id, cards, clan: clan);
+    }
+    if (card != null) {
+      cards.add(card);
+    } else {
+      missed.add(clan);
+    }
+  }
+  // Always three (the user's call): a clan left without a card (every gift
+  // it drew already on the table) tries all its gifts, then the pool's
+  // skills in its name, for one that is not (a skill that lands on a face,
+  // or a rank-up of another skill); then a clan of the pool not dealt; a
+  // clan offers once. Then a boon card (a skill, a die, a spell). A table
+  // of three is dealt as it was; only a fill draws more.
+  for (final clan in [...missed, ...suitors]) {
+    if (cards.length >= due) break;
+    final options = towerClanSkillsFor(clan,
+        raceId: hero.raceId,
+        professionId: hero.professionId,
+        standing: standing[clan] ?? 0,
+        unlocked: hero.unlockedSkillIds,
+        skills: skills,
+        tables: clans);
+    TowerReward? card;
+    for (final id in [
+      ...drawnOrder(options.where((id) => !given.contains(id))),
+      ...poolSkillsAll(given),
+    ]) {
+      card = cardOf(id, cards, clan: clan);
+      if (card != null) {
+        given.add(id);
+        break;
+      }
+    }
+    if (card != null) cards.add(card);
+  }
+  while (cards.isNotEmpty && cards.length < due) {
+    final card = boonFill(cards);
+    if (card == null) break;
+    cards.add(card);
   }
   return [...oaths, ...cards];
 }
