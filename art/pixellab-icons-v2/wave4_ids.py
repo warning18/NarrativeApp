@@ -68,3 +68,16 @@ IDS={
 'white_soldier':B("a soldier in white armour and a smooth porcelain mask with no face, a blue tabard, a spear"),
 }
 assert len(IDS)==64,len(IDS)
+
+SUFFIX=", game icon, no text, centred"
+# Round 2: the weak ones (kraken arm drew a lizard, colossus and manifestation blobs, golem purple)
+RETRY={
+'kraken_arm':"a chibi single thick grey-green octopus tentacle rising straight up from the bottom, round suckers along it, a curled tip, no eyes, no head, no body",
+'strand_colossus':"a chibi huge stocky construct made of two wooden ship keels and teal glass shards, rough humanoid shape with arms and legs, a single glowing white eye",
+'iron_golem':B("a stocky iron golem made of grey riveted metal plates, a flat square head with two glowing orange eyes, big grey fists, no purple"),
+'hollow_reflection':B("a ghostly grey copy of an adventurer, smooth blank face, a grey cloak, a faint purple outline glow, translucent look"),
+'void_manifestation':C("a swirling dark purple cloud with five small pale faces pressed into it, glowing violet edges"),
+'bone_sexton':B("a skeleton head with a dark sexton's cap and a high collar, hollow black eyes, holding a small brass bell"),
+'bone_warden':B("a skeleton knight head in a rusty iron helmet, white bones lashed with rope, glowing red eye sockets"),
+'void_stalker':C("a thin tall black four-legged creature, long thin legs, a pale bone mask for a face, glowing purple eyes"),
+}

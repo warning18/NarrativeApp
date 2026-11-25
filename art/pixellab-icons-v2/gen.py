@@ -10,7 +10,7 @@ pal=io.BytesIO();Image.open('art/pixellab-icons-v2/palette_forced.png').convert(
 T="chibi game item pixel art, chunky rounded squat shape, thick dark outline, small flat colour palette, one light highlight, one dark inner shadow, "
 jf=f'art/pixellab-icons-v2/jobs_{wave}.json';jobs=json.load(open(jf)) if os.path.exists(jf) else {}
 for k in only:
-    a={"description":T+ids[k]+", a single object only, no character, no hands, game icon, no text, centred","width":32,"height":32,"no_background":True,"outline":"single color black outline","shading":"basic shading","detail":"medium detail","color_image_base64":PAL}
+    a={"description":T+ids[k]+getattr(__import__(f"{wave}_ids"),"SUFFIX",", a single object only, no character, no hands, game icon, no text, centred"),"width":32,"height":32,"no_background":True,"outline":"single color black outline","shading":"basic shading","detail":"medium detail","color_image_base64":PAL}
     if seed is not None:a["seed"]=seed
     r=A.call('create_image_pixflux',a);jobs.setdefault(k,[]).append(A.field(r,'job_id'));print(k,jobs[k][-1],flush=True)
     json.dump(jobs,open(jf,'w'))
