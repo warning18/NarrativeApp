@@ -70,14 +70,14 @@ String shopStallAsset(String shopId) => 'assets/visuals/shops/$shopId.png';
 
 class ShopLayers extends StatelessWidget {
   const ShopLayers(this.shopId,
-      {super.key, this.stallScale = 1.25, this.keeperScale = 1});
+      {super.key, this.stallScale = 1.25, this.keeperScale = 0.85});
 
   final String shopId;
 
   /// The stall's size against the strip's base scale (the user chose 1.25).
   final double stallScale;
 
-  /// The keeper's size against the strip's base scale (kept as before).
+  /// The keeper's size against the strip's base scale (the user asked for a bit smaller).
   final double keeperScale;
 
   @override
