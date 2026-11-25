@@ -15,7 +15,7 @@ PixelLab: every drawn picture (characters, heads, icons, plates, scenes, vignett
 | 3 | Seals 1 to 5 dots, tarot frame, "new" stamp | Tower cards | 7 | 32 / 112x160 / 48 | PixelLab | done (ink set), check against the icon look | 0 | done |
 | 4 | Clan banners | clan cards, Tower offers | 6 | 64x128 | PixelLab | approved | 0 | done |
 | 5 | Dice shapes (blank faces; pips and numerals are code) | every roll | 6 (d4, d6, d8, d10, d12, d20) | 44 | PixelLab + code | approved; d10 made in code | 0 | done |
-| 6 | **Card frames**: UX's 6 manga frame shapes as pieces | cards | 6 (+ dim versions in code) | ~112x160, 9-slice | PixelLab (1 gen each, text only) + code slice | to make | ~18 | wave 1 |
+| 6 | **Card frame**: the rounded card only (user's decision, 25 Nov; the other 5 manga frame shapes are dropped) | cards | 1 (+ dim version in code) | ~112x160, 9-slice | PixelLab (1 gen, text only) + code slice | to make | ~4 | wave 1 |
 | 7 | **Ink kit**: panel, button (normal, pressed, disabled), chip, tab, bar frame, seal button | every screen | ~8 pieces | 24 to 48 px, 9-slice | PixelLab + code slice | to make (code-drawn kits exist) | ~22 | wave 1 |
 | 8 | **Icons: Tower items, coins, perks, stall** | Tower, shops | ~70 | 32 | PixelLab | to make, V2 chibi colour | ~90 | wave 2 |
 | 9 | Icons: the other items (equipment, consumables, keys) | inventory | ~62 | 32 | PixelLab | to make | ~80 | wave 3 |
@@ -68,3 +68,9 @@ Total about **542 generations** of the 1573 left, about a third of the cycle's a
 - I state the cost before every call and ask the user's OK before each wave.
 - Each wave begins by listing the exact ids and the final count from the gamedata.
 - Hand-off to UX goes only through the Manager and only after the user picks; I change no layout, number or id.
+
+
+## Updates (25 November, later)
+- Row 6 (card frames) shrank to the rounded card alone; nothing to generate for the other five. Wave 1 is now the rounded frame (about 4 generations) plus the ink kit (row 7, still waiting for the user).
+- Waves 2 to 5 are done (see `docs/art/icons-wave2.md` to `icons-wave5a.md`, `chars7.md`, `dark-redo.md`, `dark-batch2.md`). Looks: items stay in the lighter chibi colour look; foes, shop stalls, keepers and shop scenes are dark; chests keep the lighter ones (`docs/art/style-brut.md`, "Which look for what"). Balance 1083.
+- Still to do: wave 1 (rounded frame, ink kit), wave 6 (fight plates, ~39), waves 7 and 8 (scenes, ~95), each on the user's OK.
