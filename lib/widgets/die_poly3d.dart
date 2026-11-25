@@ -9,6 +9,8 @@ import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
 
+import 'dice_throw.dart' show DieAngles;
+
 import 'die_3d.dart'
     show DieCubeFace, dieRestTipX, dieRestTurnY, dieUnrolledMark;
 import 'die_skins.dart';
@@ -69,6 +71,7 @@ class PolyDie3D extends StatelessWidget {
     this.turns,
     this.unrolled = false,
     this.landed = false,
+    this.angles,
   });
 
   final DieShape shape;
@@ -95,6 +98,10 @@ class PolyDie3D extends StatelessWidget {
   /// the others a little dimmer, so the result reads at a glance.
   final bool landed;
 
+  /// The board's own turn (DiceThrowPlan.angles), in place of the built-in
+  /// tumble; null for that.
+  final DieAngles? angles;
+
   @override
   Widget build(BuildContext context) {
     final solid = dieSolidOf(shape) ?? dieSolidOf(DieShape.d4)!;
@@ -102,10 +109,11 @@ class PolyDie3D extends StatelessWidget {
     final radius = size * dieSolidScale(shape) / 2;
     final e = Curves.easeOutCubic.transform(t.clamp(0.0, 1.0));
     final spin = (1 - e) * (turns ?? _tumbleTurns) * 2 * math.pi;
+    final own = angles;
     final model = Matrix4.identity()
-      ..rotateX(spin * 0.9)
-      ..rotateY(spin * 1.3)
-      ..rotateZ(spin * 0.35)
+      ..rotateX(own != null ? own.x : spin * 0.9)
+      ..rotateY(own != null ? own.y : spin * 1.3)
+      ..rotateZ(own != null ? own.z : spin * 0.35)
       ..rotateX(rest.tip)
       ..rotateY(rest.turn)
       ..rotateZ(rest.roll)

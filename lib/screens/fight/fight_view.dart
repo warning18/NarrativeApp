@@ -757,6 +757,7 @@ extension _FightView on _FightScreenState {
     _FacePreview? preview, {
     double cube = 46,
     Animation<double>? roll,
+    DieAngles? Function(double u)? tumbleAt,
     bool hideName = false,
   }) {
     final accent = _accentFor(actor);
@@ -778,6 +779,7 @@ extension _FightView on _FightScreenState {
       accent: accent,
       size: cube,
       roll: roll ?? _rollController,
+      tumbleAt: tumbleAt,
       rolling: spinning,
       fx: face == null ? null : dieFxOf(_faceKindOf(face)),
       big: face != null && (face.type == 'Skill' || face.value >= 8),

@@ -1,7 +1,7 @@
-// PICTURES (UX_SHOTS=<folder>): the dice landing on the floor (v2.10.16): a single
-// d6 on the real Tower fight board at 412 wide, a frame every 40 ms, and three
-// dice thrown together on the same floor; each with normal motion and with
-// reduced motion (a short drop and a settle, no bounce, no dust).
+// PICTURES (UX_SHOTS=<folder>): the dice thrown and rolling (v2.10.19): a single
+// d6 on the real Tower fight board at 412 wide in each of the five throws, a
+// frame every 50 ms, and three dice thrown together in mixed ways on the same
+// floor.
 import 'dart:convert';
 import 'dart:io';
 import 'dart:ui' as ui;
@@ -93,31 +93,25 @@ void main() {
     rootBundle.clear();
     InkSprites.reset();
   });
-  for (final reduce in [false, true]) {
-    testWidgets('a d6 thrown, ${reduce ? 'reduced motion' : 'normal'}',
-        skip: shots == null, (tester) async {
-      if (reduce) {
-        tester.platformDispatcher.accessibilityFeaturesTestValue =
-            const FakeAccessibilityFeatures(disableAnimations: true);
-        addTearDown(
-            tester.platformDispatcher.clearAccessibilityFeaturesTestValue);
-      }
+  for (final kind in DiceThrowKind.values) {
+    testWidgets('a d6 thrown, ${kind.name}', skip: shots == null,
+        (tester) async {
+      diceThrowKindsOverride = [kind];
+      addTearDown(() => diceThrowKindsOverride = null);
       final key = GlobalKey();
       await _bootFight(tester, key, floor: 1);
-      final dir = '$shots/land-d6-${reduce ? 'reduced' : 'normal'}';
+      final dir = '$shots/roll-d6-${kind.name}';
       Directory(dir).createSync(recursive: true);
       await tester.tap(find.byIcon(Icons.casino));
       await tester.pump(const Duration(milliseconds: 1));
-      // Reduced motion lasts 200 ms: a frame every 20 ms.
-      final step = reduce ? 20 : 40;
-      for (var i = 0; i < (reduce ? 14 : 30); i++) {
-        await tester.pump(Duration(milliseconds: step));
+      for (var i = 0; i < 38; i++) {
+        await tester.pump(const Duration(milliseconds: 50));
         await tester.runAsync(() async {
           final render =
               key.currentContext!.findRenderObject() as RenderRepaintBoundary;
           final image = await render.toImage(pixelRatio: 1);
           final bytes = await image.toByteData(format: ui.ImageByteFormat.png);
-          File('$dir/${(i * step).toString().padLeft(4, '0')}.png')
+          File('$dir/${(i * 50 + 50).toString().padLeft(4, '0')}.png')
               .writeAsBytesSync(bytes!.buffer.asUint8List());
         });
       }
@@ -132,9 +126,9 @@ void main() {
   // Three dice thrown together on the Tower's stone floor (the same plan, shadow,
   // dust and dice as the board, laid out here because the Tower fight has one
   // die): a scatter, not a stack.
-  for (final reduce in [false, true]) {
-    testWidgets('three dice thrown, ${reduce ? 'reduced motion' : 'normal'}',
-        skip: shots == null, (tester) async {
+  for (final reduce in [false]) {
+    testWidgets('three dice thrown, mixed', skip: shots == null,
+        (tester) async {
       await tester.runAsync(loadAppFonts);
       tester.view.devicePixelRatio = 1;
       tester.view.physicalSize = const Size(412, 330);
@@ -146,7 +140,15 @@ void main() {
         const DiceThrowSeat(Offset(300, 220), 22),
       ];
       final plan = DiceThrowPlan.build(
-          seats: seats, board: board, seed: 7, reduced: reduce);
+          seats: seats,
+          board: board,
+          seed: 7,
+          reduced: reduce,
+          kinds: const [
+            DiceThrowKind.fromLeft,
+            DiceThrowKind.dropRoll,
+            DiceThrowKind.wallBounce,
+          ]);
       final controller = AnimationController(
           vsync: tester,
           duration:
@@ -189,8 +191,8 @@ void main() {
                               ],
                               accent: const Color(0xFFB7C0C4),
                               size: 40,
-                              roll: CurvedAnimation(
-                                  parent: controller, curve: plan.turnCurve(k)),
+                              roll: controller,
+                              tumbleAt: (u) => plan.angles(k, u),
                               rolling: u < 1,
                               fx: DieFx.strike,
                               skin: inkDieSkin,
@@ -206,17 +208,17 @@ void main() {
           ),
         ),
       ));
-      final dir = '$shots/land-3dice-${reduce ? 'reduced' : 'normal'}';
+      final dir = '$shots/roll-3dice-mixed';
       Directory(dir).createSync(recursive: true);
       controller.forward(from: 0);
-      for (var i = 0; i < (reduce ? 10 : 30); i++) {
-        await tester.pump(const Duration(milliseconds: 40));
+      for (var i = 0; i < 38; i++) {
+        await tester.pump(const Duration(milliseconds: 50));
         await tester.runAsync(() async {
           final render =
               key.currentContext!.findRenderObject() as RenderRepaintBoundary;
           final image = await render.toImage(pixelRatio: 1);
           final bytes = await image.toByteData(format: ui.ImageByteFormat.png);
-          File('$dir/${(i * 40).toString().padLeft(4, '0')}.png')
+          File('$dir/${(i * 50 + 50).toString().padLeft(4, '0')}.png')
               .writeAsBytesSync(bytes!.buffer.asUint8List());
         });
       }
