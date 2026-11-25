@@ -34,3 +34,17 @@ def tokenise(im,spot_hex,extra=()):
     d=((rgb[:,:,None,:]-pal[None,None])**2*np.array([2,4,3])).sum(3);idx=d.argmin(2)
     a[...,:3]=pal[idx];out=Image.fromarray(a.astype(np.uint8),'RGBA')
     return simplify(out,3)
+
+# ---- V1 light ink, tokenised (chosen by the user, 25 Nov 2026): recipe in docs/art/style-brut.md ----
+TOK={'red':(165,48,48),'heal':(125,190,106),'tide':(79,176,176)}
+def v1_final(im,pre=0,min_area=2):
+    from simplify import simplify
+    if pre: im=simplify(im,pre)          # helm: merge the specks before the treatment
+    a,al,edge,spot,inside,L=parts(im);o=np.array(im.convert('RGBA'))
+    rgb=o[...,:3].astype(float)
+    dark=inside&~spot&(L<110);light=inside&~spot&(L>=110)
+    o[dark,:3]=PAPER;o[light,:3]=INK;o[edge&~spot,:3]=INK
+    for y,x in zip(*np.where(spot)):
+        r,g,b=rgb[y,x]
+        o[y,x,:3]=TOK['heal'] if (g>r and g>=b) else TOK['tide'] if (b>r*0.8 and g>r) else TOK['red']
+    return simplify(Image.fromarray(o,'RGBA'),min_area)

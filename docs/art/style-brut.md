@@ -45,3 +45,11 @@ The user picked A (cut paper) and the clan hues above. Board `docs/art/boards/st
 ## Second try, looser (25 November): 6 generations, balance 1766
 Text only for the fire and the dice (no skeleton), the original Dominion banner at init strength 80 for the banner; prompt: cut paper, shapes cut from black paper on cream paper, strong hard shadows, very simple bold shapes, one colour. Board `docs/art/boards/style-brut-pilot2.png` (original | seed 1 | seed 2 snapped to ink, paper, a paper shadow and the one clan colour | the two raw outputs). Files `art/pixellab-brut/final2/{fire,dice,banner}_seed{1,2}.png`, raw in `art/pixellab-brut/raw2/`.
 This time PixelLab drew: the fire is a black hand holding a flame (seed 2: inside a black laurel ring), the dice are black cubes with cream pips and a soft shadow (these have a little 3D shading), the banner keeps the lantern and the E in cream on black. It is a cut-paper look with one hue (orange, green, Dominion blue), less detailed than the first set. Caveats: the dice are drawn in a 3/4 view, not flat; seed 2 of the banner keeps a beige border where the grey ground did not key out; the paper-shadow level (a second cream) is mine.
+
+## Icon recipe: V1 light ink (user's pick, 25 Nov 2026)
+
+Look: black outline, paper-white body, a few ink lines, one spot of colour. Rule: no isolated specks, 2 px minimum region, colours only from the Ashen Ink tokens (ink 090A14, paper E7E1CD, one spot: red A53030, heal 7DBE6A, tide 4FB0B0).
+
+1. Generate (PixelLab `create_image_pixflux`, 32x32, text only, 1 gen): the object alone, centred, "bold black outline, dark filled body with a few light highlights, one spot of colour, pixel art, no background".
+2. Code pass (0 gens): `art/pixellab-cutpaper/lighter.py` -> `v1_final(im, pre=0, min_area=2)`. Edge pixels become ink; dark interior becomes paper; light interior becomes ink lines; the spot pixels are classified to red/heal/tide; regions under 2 px are merged. For icons whose lines break into specks (helm) use `pre=4` (merge under 4 px first) or regenerate once.
+3. Output: `art/pixellab-cutpaper/hi/final/v1_<icon>32.png`; sheet `docs/art/boards/icons-v1-final.png`.
