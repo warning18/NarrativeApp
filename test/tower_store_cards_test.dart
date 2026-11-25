@@ -80,7 +80,7 @@ void main() {
         TowerEventCard(view, onBuy: bought.add, onLeaveStore: () => left++)));
     await tester.pump();
     expect(find.byKey(const Key('tower_merchant')), findsOneWidget);
-    expect(find.text('Marks to spend: ${view.wallet}'), findsOneWidget);
+    expect(find.text('Coins to spend: ${view.wallet}'), findsOneWidget);
     for (final item in view.stock!) {
       expect(find.byKey(Key('tower_stall_${item.id}')), findsOneWidget);
       final buy = find.byKey(Key('tower_stall_buy_${item.id}'));
@@ -124,10 +124,10 @@ void main() {
     return container;
   }
 
-  testWidgets('the shop room: Buy spends marks, the fight waits for Leave',
+  testWidgets('the shop room: Buy spends coins, the fight waits for Leave',
       (tester) async {
     final run = storeOf(TowerEventKind.merchant);
-    final marks = run.marks;
+    final coins = run.coins;
     final container = await open(tester, run);
     expect(find.byKey(const Key('tower_merchant')), findsOneWidget);
     expect(find.byKey(const Key('tower_fight')), findsNothing);
@@ -137,7 +137,7 @@ void main() {
     await tester.tap(buy);
     await settle(tester);
     final after = container.read(towerProvider).value!.run!;
-    expect(after.marks, lessThan(marks));
+    expect(after.coins, lessThan(coins));
     expect(after.bought[after.store], contains('salve'));
     // Bought once; the stall is still open and the fight still waits.
     expect(find.byKey(const Key('tower_merchant')), findsOneWidget);

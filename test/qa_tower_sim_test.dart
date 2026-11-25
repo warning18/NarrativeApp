@@ -17,6 +17,10 @@
 // (floor events PR 2: the curve is set with them on; 0, as before them).
 // TOWER_HEAT (default 0) is the Heat the batch's runs climb at (v2.9.0,
 // docs/simulation/tower-heat.md); the guards always climb at 0.
+// TOWER_PERKS (default none: a comma list of perk ids, v2.10.0,
+// docs/simulation/tower-coins.md) are the perks the batch's runs wear, and
+// TOWER_BOT_COINS (default full; stall) how the bot spends its coins; the
+// guards wear none and spend in full.
 import 'dart:convert';
 import 'dart:io';
 
@@ -100,13 +104,25 @@ final _events =
 /// The Heat the batch plays (TOWER_HEAT; the guards play 0).
 final _heat = int.tryParse(Platform.environment['TOWER_HEAT'] ?? '') ?? 0;
 
+/// The perks the batch wears (TOWER_PERKS) and the bot's coin policy
+/// (TOWER_BOT_COINS; the guards wear none and spend in full).
+final _perks = [
+  for (final p in (Platform.environment['TOWER_PERKS'] ?? '').split(','))
+    if (p.trim().isNotEmpty) p.trim(),
+];
+final _coins = TowerBotCoins.values
+    .byName(Platform.environment['TOWER_BOT_COINS'] ?? TowerBotCoins.full.name);
+
 /// The first seeds of the in-suite batch (the full batch is TOWER_SEEDS).
 const _guardSeeds = 500;
 
 final _data = towerDataFromAssets();
 
 List<TowerRun> _play(int first, int count, TowerProgress progress,
-        {int? events, int heat = 0}) =>
+        {int? events,
+        int heat = 0,
+        List<String> perks = const [],
+        TowerBotCoins coins = TowerBotCoins.full}) =>
     [
       for (var seed = first; seed < first + count; seed++)
         playTowerRun(
@@ -114,7 +130,9 @@ List<TowerRun> _play(int first, int count, TowerProgress progress,
             data: _data,
             progress: progress,
             events: events ?? _events,
-            heat: heat),
+            heat: heat,
+            perks: perks,
+            coins: coins),
     ];
 
 int _median(List<int> values) {
@@ -142,6 +160,12 @@ Map<String, dynamic> _json(TowerRun run) => {
       'taken': {
         for (final e in run.taken.entries) '${e.key}': e.value.kind.name,
       },
+      'coinsEarned': run.coinsEarned,
+      'coinsLeft': run.coins,
+      'rerolls': run.rerolls.values.fold<int>(0, (n, r) => n + r),
+      'stallBoons': run.stallBoons.length,
+      'bought': [for (final ids in run.bought.values) ...ids],
+      'perks': run.perks,
     };
 
 void main() {
@@ -157,8 +181,10 @@ void main() {
         int.tryParse(Platform.environment['TOWER_SEEDS'] ?? '') ?? 500;
     final first = int.tryParse(Platform.environment['TOWER_FIRST'] ?? '') ?? 1;
     final cases = {
-      'none': _play(first, count, const TowerProgress(), heat: _heat),
-      'all': _play(first, count, towerAllUnlocked, heat: _heat),
+      'none': _play(first, count, const TowerProgress(),
+          heat: _heat, perks: _perks, coins: _coins),
+      'all': _play(first, count, towerAllUnlocked,
+          heat: _heat, perks: _perks, coins: _coins),
     };
     File(out)
       ..createSync(recursive: true)
@@ -168,6 +194,8 @@ void main() {
         'top': towerTop,
         'events': _events,
         'heat': _heat,
+        'perks': _perks,
+        'coins': _coins.name,
         'cases': {
           for (final e in cases.entries)
             e.key: [for (final r in e.value) _json(r)],
