@@ -2193,6 +2193,29 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.en: 'The Crown',
     AppLanguage.fr: 'La Couronne',
   },
+  // The Tower in cross-section (Maps).
+  'tower_cut_open': {
+    AppLanguage.en: 'The whole Tower',
+    AppLanguage.fr: 'Toute la Tour',
+  },
+  'tower_cut_legend': {
+    AppLanguage.en:
+        'Lit: a floor won. Struck through: passed without a fight. Dark: still ahead.',
+    AppLanguage.fr:
+        'Éclairé : étage gagné. Barré : passé sans combat. Sombre : encore à venir.',
+  },
+  'tower_cut_here': {
+    AppLanguage.en: 'Red: where you stand.',
+    AppLanguage.fr: 'En rouge : là où vous êtes.',
+  },
+  'tower_cut_ended': {
+    AppLanguage.en: 'Red: where the climb ended.',
+    AppLanguage.fr: 'En rouge : là où l’ascension a fini.',
+  },
+  'tower_cut_highest': {
+    AppLanguage.en: 'Highest reached',
+    AppLanguage.fr: 'Plus haut atteint',
+  },
   'tower_fight': {
     AppLanguage.en: 'Fight',
     AppLanguage.fr: 'Combattre',

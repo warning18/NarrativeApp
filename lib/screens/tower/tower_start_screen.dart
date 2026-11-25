@@ -2,6 +2,8 @@
 // the-tower-designs.md, direction A): the marks and the best floor, a run
 // to continue, and the pick of a people, a calling and a clan for a new
 // one (the ones not bought yet lie locked), then Climb.
+import '../../l10n/app_locale.dart';
+import '../../widgets/tower_on_globe.dart';
 import '../../widgets/fit_title.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -97,9 +99,21 @@ class _TowerStartScreenState extends ConsumerState<_TowerStartBody> {
           child: ListView(
             padding: const EdgeInsets.fromLTRB(16, 4, 16, 24),
             children: [
-              Text(tr(ref, 'tower_tagline'),
-                  style: theme.textTheme.bodyLarge
-                      ?.copyWith(fontStyle: FontStyle.italic)),
+              // Where the Tower stands in the world (Maps:
+              // tower_on_globe.dart), beside its tagline.
+              Row(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Expanded(
+                    child: Text(tr(ref, 'tower_tagline'),
+                        style: theme.textTheme.bodyLarge
+                            ?.copyWith(fontStyle: FontStyle.italic)),
+                  ),
+                  const SizedBox(width: 10),
+                  TowerOnGlobe(
+                      language: ref.watch(appLanguageProvider), size: 132),
+                ],
+              ),
               const SizedBox(height: 18),
               // The marks and the best floor, on paper (Art's wide frame).
               InkPaperPanel(

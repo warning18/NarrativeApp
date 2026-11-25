@@ -2,6 +2,7 @@
 // where it ended, the marks it earned and the total, and the way on (the
 // marks, another climb, the menu).
 import '../../widgets/fit_title.dart';
+import '../../widgets/tower_cut.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -67,21 +68,39 @@ class _TowerEndBody extends ConsumerWidget {
               // Where it ended and what it earned, on paper (Art's wide frame).
               InkPaperPanel(
                 padding: const EdgeInsets.fromLTRB(46, 20, 22, 16),
-                child: Column(
+                // The climb's trace beside the words (Maps: tower_cut.dart).
+                child: Row(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(
-                        tr(ref, 'tower_floor_of')
-                            .replaceAll('{n}', '${run.floorReached}'),
-                        key: const Key('tower_end_floor'),
-                        style: paper.headlineSmall?.copyWith(
-                            fontFamily: InkFonts.display,
-                            color: won ? inkOnPaper : inkRed)),
-                    const SizedBox(height: 8),
-                    Text(line,
-                        key: const Key('tower_end_line'),
-                        style: paper.bodyLarge
-                            ?.copyWith(fontStyle: FontStyle.italic)),
+                    Expanded(
+                        child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                            tr(ref, 'tower_floor_of')
+                                .replaceAll('{n}', '${run.floorReached}'),
+                            key: const Key('tower_end_floor'),
+                            style: paper.headlineSmall?.copyWith(
+                                fontFamily: InkFonts.display,
+                                color: won ? inkOnPaper : inkRed)),
+                        const SizedBox(height: 8),
+                        Text(line,
+                            key: const Key('tower_end_line'),
+                            style: paper.bodyLarge
+                                ?.copyWith(fontStyle: FontStyle.italic)),
+                      ],
+                    )),
+                    const SizedBox(width: 10),
+                    SizedBox(
+                      width: 70,
+                      child: TowerCut(
+                        key: const Key('tower_end_trace'),
+                        view: TowerCutView.of(run),
+                        rowHeight: 4.5,
+                        compact: true,
+                        onPaper: true,
+                      ),
+                    ),
                   ],
                 ),
               ),

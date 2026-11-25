@@ -3,6 +3,7 @@
 // and the way to fight it; once it is won, its cards (take one, or none).
 // A run is moved only through lib/data/tower/ and the controller; the fight
 // itself is played by the launcher (tower_providers.dart).
+import '../tower_cut_screen.dart';
 import '../../widgets/fit_title.dart';
 import '../../theme/motion.dart';
 import 'dart:async';
@@ -290,8 +291,21 @@ class _TowerFloorScreenState extends ConsumerState<_TowerFloorBody> {
                       maxWidth: towerLadderWidth + 12,
                       child: Padding(
                         padding: const EdgeInsets.fromLTRB(8, 4, 4, 8),
-                        child: TowerLadder(
-                            key: _ladder, floor: headFloor, jump: jump),
+                        // A tap on the rail opens the whole Tower in
+                        // cross-section (Maps: tower_cut_screen.dart).
+                        child: Semantics(
+                          button: true,
+                          label: tr(ref, 'tower_cut_open'),
+                          child: GestureDetector(
+                            key: const Key('tower_rail_open'),
+                            behavior: HitTestBehavior.opaque,
+                            onTap: () => Navigator.of(context).push(
+                                MaterialPageRoute(
+                                    builder: (_) => TowerCutScreen(run: run))),
+                            child: TowerLadder(
+                                key: _ladder, floor: headFloor, jump: jump),
+                          ),
+                        ),
                       ),
                     ),
                   ),
