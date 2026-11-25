@@ -239,11 +239,16 @@ class InkSlantPanel extends StatelessWidget {
     required this.size,
     required this.points,
     required this.child,
+    this.brush = false,
   });
 
   final Size size;
   final List<Offset> points;
   final Widget child;
+
+  /// A brush-ink border with speed lines at the corners, instead of the
+  /// straight one (a proposal, towerPanelShape).
+  final bool brush;
 
   @override
   Widget build(BuildContext context) => SizedBox(
@@ -255,7 +260,9 @@ class InkSlantPanel extends StatelessWidget {
               child: SizedBox(
                   width: size.width, height: size.height, child: child)),
           IgnorePointer(
-              child: CustomPaint(size: size, painter: _PolyBorder(points))),
+              child: CustomPaint(
+                  size: size,
+                  painter: brush ? _BrushBorder(points) : _PolyBorder(points))),
         ]),
       );
 }
@@ -360,4 +367,165 @@ class InkSplashPainter extends CustomPainter {
 
   @override
   bool shouldRepaint(InkSplashPainter old) => old.x != x || old.y != y;
+}
+
+/// A brush-ink border: the outline drawn as three loose strokes of changing
+/// width, and short speed lines flying off two corners.
+class _BrushBorder extends CustomPainter {
+  _BrushBorder(this.pts);
+
+  final List<Offset> pts;
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    final rnd = math.Random(7);
+    Offset jig(Offset o, double a) =>
+        o + Offset((rnd.nextDouble() - .5) * a, (rnd.nextDouble() - .5) * a);
+    for (var pass = 0; pass < 3; pass++) {
+      final path = Path();
+      for (var i = 0; i < pts.length; i++) {
+        final a = pts[i];
+        final b = pts[(i + 1) % pts.length];
+        const n = 6;
+        for (var k = 0; k <= n; k++) {
+          final p = jig(Offset.lerp(a, b, k / n)!, pass == 0 ? 0 : 3.5);
+          if (i == 0 && k == 0) {
+            path.moveTo(p.dx, p.dy);
+          } else {
+            path.lineTo(p.dx, p.dy);
+          }
+        }
+      }
+      path.close();
+      canvas.drawPath(
+          path,
+          Paint()
+            ..style = PaintingStyle.stroke
+            ..strokeJoin = StrokeJoin.round
+            ..strokeCap = StrokeCap.round
+            ..strokeWidth = pass == 0 ? 11 : (pass == 1 ? 5 : 3)
+            ..color = inkBlack);
+    }
+    canvas.drawPath(
+        Path()..addPolygon(pts, true),
+        Paint()
+          ..style = PaintingStyle.stroke
+          ..strokeWidth = 1.2
+          ..strokeJoin = StrokeJoin.miter
+          ..color = inkPaper.withValues(alpha: 0.8));
+    // Speed lines off the first and third corner.
+    final line = Paint()
+      ..strokeWidth = 2
+      ..strokeCap = StrokeCap.round
+      ..color = inkPaper.withValues(alpha: 0.75);
+    for (final c in [pts.first, pts[pts.length ~/ 2]]) {
+      final dir = c.dx < size.width / 2 ? -1.0 : 1.0;
+      for (var i = 0; i < 4; i++) {
+        final y = c.dy + (i - 1.5) * 5;
+        canvas.drawLine(Offset(c.dx + dir * 3, y),
+            Offset(c.dx + dir * (10 + i * 3), y - dir * 2), line);
+      }
+    }
+  }
+
+  @override
+  bool shouldRepaint(_BrushBorder old) => old.pts != pts;
+}
+
+/// The shapes the fighter panels can take (a proposal: `today` unless a
+/// picture sets another).
+enum TowerPanelShape { today, cut, gutter, offset, burst, brush }
+
+final ValueNotifier<TowerPanelShape> towerPanelShape =
+    ValueNotifier(TowerPanelShape.today);
+
+/// The outline of the foes' panel ([foes]) or the party's in a box [w] x [h],
+/// for [shape]. The foes' panel always goes above the party's.
+List<Offset> towerPanelPoints(
+    TowerPanelShape shape, bool foes, double w, double h) {
+  const c = 26.0;
+  switch (shape) {
+    case TowerPanelShape.today:
+    case TowerPanelShape.brush:
+      return foes
+          ? [
+              const Offset(6, 14),
+              Offset(w - 6, 6),
+              Offset(w - 6, h - 6),
+              Offset(6, h - 6)
+            ]
+          : [
+              const Offset(6, 6),
+              Offset(w - 6, 6),
+              Offset(w - 6, h - 6),
+              Offset(6, h - 14)
+            ];
+    case TowerPanelShape.cut:
+      return foes
+          ? [
+              const Offset(6, 6 + c),
+              const Offset(6 + c, 6),
+              Offset(w - 6, 6),
+              Offset(w - 6, h - 6),
+              Offset(6, h - 6),
+            ]
+          : [
+              const Offset(6, 6),
+              Offset(w - 6, 6),
+              Offset(w - 6, h - 6 - c),
+              Offset(w - 6 - c, h - 6),
+              Offset(6, h - 6),
+            ];
+    case TowerPanelShape.gutter:
+      return foes
+          ? [
+              const Offset(6, 6),
+              Offset(w - 6, 6),
+              Offset(w - 6, h - 32),
+              Offset(6, h - 6)
+            ]
+          : [
+              const Offset(6, 32),
+              Offset(w - 6, 6),
+              Offset(w - 6, h - 6),
+              Offset(6, h - 6)
+            ];
+    case TowerPanelShape.offset:
+      return foes
+          ? [
+              const Offset(6, 12),
+              Offset(w - 22, 6),
+              Offset(w - 22, h - 6),
+              Offset(6, h - 6)
+            ]
+          : [
+              const Offset(22, 6),
+              Offset(w - 6, 6),
+              Offset(w - 6, h - 6),
+              Offset(22, h - 12)
+            ];
+    case TowerPanelShape.burst:
+      if (!foes) {
+        return [
+          const Offset(6, 6),
+          Offset(w - 6, 6),
+          Offset(w - 6, h - 6),
+          Offset(6, h - 14)
+        ];
+      }
+      final out = <Offset>[
+        const Offset(6, 14),
+        Offset(w - 6, 6),
+        Offset(w - 6, h - 16)
+      ];
+      final n = (w / 24).round();
+      for (var i = 0; i < n; i++) {
+        final x0 = (w - 6) - (w - 12) * i / n;
+        final x1 = (w - 6) - (w - 12) * (i + 1) / n;
+        out
+          ..add(Offset((x0 + x1) / 2, h - 5))
+          ..add(Offset(x1, h - 16));
+      }
+      return out;
+  }
 }

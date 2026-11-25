@@ -35,24 +35,17 @@ extension _TowerPanels on _FightScreenState {
     ) =>
         LayoutBuilder(builder: (context, box) {
           final w = box.maxWidth;
-          // Slanted edges: the foes' panel rises to the right, the party's
-          // falls, so the two read as one cut picture.
-          final pts = foes
-              ? [
-                  const Offset(6, 14),
-                  Offset(w - 6, 6),
-                  Offset(w - 6, height - 6),
-                  Offset(6, height - 6),
-                ]
-              : [
-                  const Offset(6, 6),
-                  Offset(w - 6, 6),
-                  Offset(w - 6, height - 6),
-                  Offset(6, height - 14),
-                ];
-          return InkSlantPanel(
+          // The panel's cut (today: slanted edges, the foes' panel rising to
+          // the right, the party's falling, so the two read as one picture).
+          final shape = towerPanelShape.value;
+          final pts = towerPanelPoints(shape, foes, w, height);
+          // Offset: the foes' figures break out of their frame, the head over
+          // the border (drawn over the panel, unclipped).
+          final breakOut = shape == TowerPanelShape.offset && foes && figures;
+          final built = InkSlantPanel(
             size: Size(w, height),
             points: pts,
+            brush: shape == TowerPanelShape.brush,
             child: Stack(fit: StackFit.expand, children: [
               Image.asset(plate,
                   fit: BoxFit.cover,
@@ -70,7 +63,7 @@ extension _TowerPanels on _FightScreenState {
                     ),
                   ),
                 ),
-              if (figures)
+              if (figures && !breakOut)
                 Positioned(
                   // A lone fighter: a box 176 wide holds its half (84) at the
                   // panel's edge; several share the whole width.
@@ -108,6 +101,23 @@ extension _TowerPanels on _FightScreenState {
               ),
             ]),
           );
+          if (!breakOut) return built;
+          return Stack(clipBehavior: Clip.none, children: [
+            built,
+            Positioned(
+              left: _enemies.length == 1 ? null : 8,
+              right: 30,
+              width: _enemies.length == 1 ? 176 : null,
+              bottom: 22,
+              child: IgnorePointer(
+                child: FightFigures(
+                  allies: const [],
+                  foes: [for (final e in _enemies) e.enemyId],
+                  height: figureH + 40,
+                ),
+              ),
+            ),
+          ]);
         });
 
     return Column(children: [
