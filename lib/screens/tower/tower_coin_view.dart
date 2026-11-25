@@ -13,6 +13,7 @@ import '../../theme/icon_sizes.dart';
 import '../../theme/stitched_ink.dart';
 import 'ink/ink_kit.dart';
 import 'ink/ink_palette.dart';
+import 'tower_heat_view.dart' show towerSeamRadius;
 
 /// The coin's gold: the one warm spot of the coin chip and the spoils line.
 const Color _gold = Color(0xFFD9B44A);
@@ -46,7 +47,9 @@ class TowerCoinChip extends ConsumerWidget {
         margin: const EdgeInsets.only(top: 6),
         padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
         decoration: BoxDecoration(
-            color: inkBlack, border: Border.all(color: inkGrey, width: 1.5)),
+            borderRadius: BorderRadius.circular(towerSeamRadius),
+            color: inkBlack,
+            border: Border.all(color: inkGrey, width: 1.5)),
         child: Row(mainAxisSize: MainAxisSize.min, children: [
           const TowerCoinDisc(),
           const SizedBox(width: 6),
@@ -81,8 +84,9 @@ class TowerTableCoinRow extends ConsumerWidget {
       context: context,
       builder: (ctx) => AlertDialog(
         backgroundColor: inkBlack,
-        shape: const RoundedRectangleBorder(
-            side: BorderSide(color: inkPaper, width: 1.2)),
+        shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(towerSeamRadius),
+            side: const BorderSide(color: inkPaper, width: 1.2)),
         content: Text(tr(ref, 'tower_banish_confirm'),
             style:
                 Theme.of(ctx).textTheme.bodyMedium?.copyWith(color: inkPaper)),

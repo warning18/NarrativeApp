@@ -14,18 +14,19 @@ import '../../theme/stitched_ink.dart';
 import 'ink/ink_kit.dart';
 import 'ink/ink_palette.dart';
 
-/// The flame's colour by level (0 is the plain climb): amber to deep orange,
-/// then pale ash at 5.
-const List<Color> _flame = [
-  inkGrey,
-  Color(0xFFE8B23C),
-  Color(0xFFE8892A),
-  Color(0xFFE86A1E),
-  Color(0xFFD9531E),
-  Color(0xFFC9C6BE),
-];
+/// Ashen Ink's `ember` (the picked level's ring and the chip's line, levels 1
+/// to 4) and `ash` (the last level); the plain climb stays grey. Never red.
+const Color _ember = Color(0xFFE0762B);
+const Color _ash = Color(0xFF8A8478);
 
-Color towerHeatColor(int heat) => _flame[heat.clamp(0, towerHeatMax)];
+/// The Ashen Ink corner of panels, rows, chips and tabs (`radius-seam`, 4 px).
+const double towerSeamRadius = 4;
+
+Color towerHeatColor(int heat) => heat <= 0
+    ? inkGrey
+    : heat >= towerHeatMax
+        ? _ash
+        : _ember;
 
 /// A level's name; the plain climb for 0.
 String towerHeatName(WidgetRef ref, int heat) =>
@@ -98,6 +99,7 @@ class TowerHeatPicker extends ConsumerWidget {
         child: Container(
           padding: const EdgeInsets.fromLTRB(10, 8, 10, 8),
           decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(towerSeamRadius),
             color: inkBlack,
             border: Border.all(
               color: on ? towerHeatColor(h) : (locked ? inkSlate : inkGrey),
@@ -180,6 +182,7 @@ class TowerHeatChip extends ConsumerWidget {
           margin: const EdgeInsets.only(top: 6),
           padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
           decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(towerSeamRadius),
             color: inkBlack,
             border: Border.all(color: towerHeatColor(heat), width: 1.5),
           ),
@@ -217,8 +220,9 @@ Future<void> showTowerHeatCurses(
         final rows = towerHeatCursesOf(heat);
         return Dialog(
           backgroundColor: inkBlack,
-          shape: const RoundedRectangleBorder(
-            side: BorderSide(color: inkPaper, width: 1.2),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(towerSeamRadius),
+            side: const BorderSide(color: inkPaper, width: 1.2),
           ),
           child: Padding(
             padding: const EdgeInsets.fromLTRB(14, 12, 14, 12),
