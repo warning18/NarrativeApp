@@ -1,6 +1,6 @@
 # The Tower's real fights against the bot's numbers (v2.8.1)
 
-QA, asked by the Manager (Core's note: bot 68% against 43% for real play). `test/qa_tower_real_fight_sample_test.dart`, run with `QA_REAL_SAMPLE=<out.json> QA_SAMPLE_PLAY=naive|rerolls|full QA_SAMPLE_FLOORS=12 QA_SAMPLE_REAL=8 QA_SAMPLE_SIM=100`. No `lib/` edit. Raw rows: the three `.json` outputs are in the run's scratch folder; the table below is all of them.
+Measured on v2.8.1 (main since merged to v2.8.3, whose rank-up change moves the dead runs the sample draws; the numbers stand for v2.8.1). QA, asked by the Manager (Core's note: bot 68% against 43% for real play). `test/qa_tower_real_fight_sample_test.dart`, run with `QA_REAL_SAMPLE=<out.json> QA_SAMPLE_PLAY=naive|rerolls|full QA_SAMPLE_FLOORS=12 QA_SAMPLE_REAL=8 QA_SAMPLE_SIM=100`. No `lib/` edit. Raw rows: the three `.json` outputs are in the run's scratch folder; the table below is all of them.
 
 **Method.** 12 floors the bot died on (spread over floors 4 to 30, seeds 1 to 400); the hero as it stood there at full health. Each floor: 100 headless fights (the bot's own) and 8 fights on the real `FightScreen` (the floor's foes, affixes and Tower modifiers) for each of three ways to play:
 - **naive**: Roll Dice, then Confirm (what the old sample did, and what Core's 43% is);
