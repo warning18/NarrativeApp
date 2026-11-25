@@ -8,6 +8,10 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [2.10.8+1090]
+
+- **Shops: a bigger stall.** In the shop pictures the stall is 25% bigger (the user's pick) and the keeper keeps his size, standing at the same spot behind the counter. The strip is a little taller to fit it, and the stall and keeper snap to whole device pixels so the pixel art stays even. No price, stock or rule changes.
+
 ## [2.10.7+1089]
 
 - **Foes: Art's dark icons.** The 64 foe icons are now 32 px, muted and lit by faction (cold blue for the Dominion, angels and giants; ember gold for the Crows, Compact, Vigil, demons and beasts; sickly green for the Mire and the undead; void violet for the Penitents and the void). They show in the fights' portraits and the fight sheet (whose header icon is drawn at 64). No rule or number changes.
