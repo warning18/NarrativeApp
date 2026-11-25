@@ -2339,6 +2339,44 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.en: 'Not now (+1 mark)',
     AppLanguage.fr: 'Pas maintenant (+1 marque)',
   },
+  // The late oath (v2.8.0): why a climb with no oath is offered one below
+  // standing 6/6, in the clan's envoy's voice (Narrative).
+  'tower_oath_late_dominion': {
+    AppLanguage.en:
+        'You have climbed far with no banner. The Dominion does not leave a lamp unlit.',
+    AppLanguage.fr:
+        'Vous avez gravi bien des étages sans bannière. Le Dominion ne laisse aucune lampe éteinte.',
+  },
+  'tower_oath_late_vigil': {
+    AppLanguage.en:
+        'Halfway up the Tower, and nobody has kept your count. The Vigil will.',
+    AppLanguage.fr:
+        'À mi-hauteur de la Tour, et personne n’a tenu votre compte. La Veille le tiendra.',
+  },
+  'tower_oath_late_compact': {
+    AppLanguage.en:
+        'Whoever climbs with no sworn ledger is a debt nobody holds. The Compact will hold yours.',
+    AppLanguage.fr:
+        'Qui monte sans livre juré est une dette que personne ne tient. Le Pacte tiendra la vôtre.',
+  },
+  'tower_oath_late_mire': {
+    AppLanguage.en:
+        'You have climbed far without a banner. The Mire will not wait for you to ask.',
+    AppLanguage.fr:
+        'Vous avez gravi bien haut sans bannière. Les Cours du Marais n’attendront pas que vous demandiez.',
+  },
+  'tower_oath_late_crows': {
+    AppLanguage.en:
+        'Far up, with no flag to carry. The Crows keep a perch for that.',
+    AppLanguage.fr:
+        'Si haut, et sans pavillon à porter. Les Corneilles gardent un perchoir pour cela.',
+  },
+  'tower_oath_late_penitents': {
+    AppLanguage.en:
+        'You climb as if you owed someone. The Penitents know the feeling, and they have room to kneel.',
+    AppLanguage.fr:
+        'Vous montez comme si vous deviez quelque chose à quelqu’un. Les Pénitents connaissent cela, et ils ont de quoi s’agenouiller.',
+  },
   'tower_one_oath': {
     AppLanguage.en: 'One oath a climb.',
     AppLanguage.fr: 'Un seul serment par ascension.',

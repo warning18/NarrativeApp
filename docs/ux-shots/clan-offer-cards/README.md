@@ -15,3 +15,6 @@ The user's call: "for the propositions from clan keep the banner card style choi
 2. The fan overlaps its cards as in the story (a third of the middle card shows at rest), so the middle gift's name is cut until it is lifted; the first tap lifts it. On 320 the hand is narrow (the ladder rail takes the left 56 dp until the cards show).
 3. The tier frame follows the skill's own rarity (Common to Legendary), as the story's does.
 4. The Tower's other cards (boons, rank-ups) are untouched: tarot cards.
+
+## The late oath's line (Narrative, `tower_oath_late_<clan>`)
+`late-oath-360-en.png` and `late-oath-360-fr.png`: a floor-16 offer of the Mire's oath at standing 4/6. The envoy's line sits in the oath row as the clan's quote (in place of its motto) and leads the card in hand's words under the table. It shows only when the clan is below 6/6 (`_late`, read from the run's standing: no flag from Core was needed); an oath earned at 6/6 (`after-oath-*`) carries the clan's motto and no extra line. The six per-clan lines are in `app_strings.dart` (the shared fallback is not used).

@@ -334,7 +334,11 @@ class _TowerOfferViewState extends ConsumerState<TowerOfferView> {
                 tr(ref, 'tower_oath_die')
                     .replaceAll('{die}', towerDieName(ref, die)),
             ].join(' '),
-            greeting: faction?.mottoFor(lang) ?? '',
+            // A late oath (the clan below 6/6, v2.8.0) says why in the envoy's
+            // voice; an earned one carries the clan's motto.
+            greeting: _late(reward.id)
+                ? tr(ref, 'tower_oath_late_${reward.id}')
+                : faction?.mottoFor(lang) ?? '',
             clanName: clan,
             standing:
                 towerStandingLabel(ref, _standing[reward.id] ?? towerOathStep),
@@ -457,12 +461,18 @@ class _TowerOfferViewState extends ConsumerState<TowerOfferView> {
     if (!towerClans.contains(clanId)) return [tr(ref, 'tower_oath_text')];
     final n = _standing[clanId] ?? 0;
     return [
+      if (_late(clanId)) tr(ref, 'tower_oath_late_$clanId'),
       if (n >= towerOathStep)
         '${tr(ref, 'tower_unlock_banner_$clanId')} ${towerStandingLabel(ref, n)}.',
       tr(ref, 'tower_oath_line_$clanId'),
       tr(ref, 'tower_one_oath'),
     ];
   }
+
+  /// Whether [clanId]'s oath is offered early (v2.8.0): the clan is below the
+  /// oath's step.
+  bool _late(String clanId) =>
+      towerClans.contains(clanId) && (_standing[clanId] ?? 0) < towerOathStep;
 
   /// A clan's gift's words: what it moves and the clan's standing now.
   String _withClan(TowerReward reward, String text) => reward.clan.isEmpty
