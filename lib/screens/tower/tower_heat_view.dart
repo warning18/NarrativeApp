@@ -144,7 +144,8 @@ class TowerHeatPicker extends ConsumerWidget {
                     if (h > 0 && !locked)
                       Text(
                         towerHeatMarksLine(ref, h),
-                        style: theme.textTheme.labelMedium?.copyWith(
+                        style: theme.textTheme.bodySmall?.copyWith(
+                          fontFamily: InkFonts.prose,
                           color: inkGrey,
                           fontWeight: FontWeight.w700,
                         ),
