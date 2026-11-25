@@ -8,6 +8,10 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [2.9.3+1079]
+
+- **Tower: polish (the user's four).** The 30-rung climb strip above the fight is gone (the rail already shows the floor). Numbers are now set in the prose face everywhere: the pixel font's digits are replaced by Spectral's, so a 5 no longer reads as S, a 6 as G or a 0 as O, in every screen. The door's three zone rows are ink panels (a slanted picture panel, the zone's name in the display face, its floors) instead of rounded photo strips. The climb rail also folds away when a stall or a card offer opens, giving the cards the full width.
+
 ## [2.9.1+1077]
 
 - **Tower: Heat, the screens.** The Tower's door shows a picker once Embers is open: the plain climb and each open level (its flames, name, one-line curse and marks factor), the next level locked ("Win the top at Smoke to open"). A chip with the level's name sits under the floor number and opens the list of curses in force, the newest tagged. The end screen reads "Flame · marks x1.75", the level a win opened, and "Ash conquered". Gifts' standing lines use the run's Heat (Ash's rival ripple). Ink and paper, the level's colour only on the picked ring and the chip's line; numbers in the prose face.
