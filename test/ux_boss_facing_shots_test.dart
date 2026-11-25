@@ -1,5 +1,6 @@
-// PICTURES (UX_SHOTS=<folder>): a warden fight (Brine Jack, floor 5) with the
-// boss facing the viewer and the hero seen from behind, in stand-in frames.
+// PICTURES (UX_SHOTS=<folder>, ART_HANDOFF=<Art's handoff folder>): the floor-20
+// boss (Claimant Morrow) facing the viewer and the warrior seen from behind,
+// Art's own south and north frames.
 import 'dart:convert';
 import 'dart:io';
 import 'dart:ui' as ui;
@@ -87,21 +88,19 @@ void main() {
     towerBossFacingMock.value = null;
   });
 
-  // PICTURE ONLY: a warden fight (Brine Jack, floor 5) with the boss facing the
-  // viewer and the hero seen from behind, in stand-in frames (the High
-  // Warden's south and a coated figure's north) until Art's own arrive.
   for (final w in [412.0, 360.0]) {
-    testWidgets('boss facing the player at ${w.toInt()}', skip: shots == null,
+    testWidgets('boss facing the player at ${w.toInt()}',
+        skip: shots == null || Platform.environment['ART_HANDOFF'] == null,
         (tester) async {
       final boss = await tester.runAsync(() async => decodeImageFromList(File(
               'art/pixellab-enemies2/raw/inquisition_high_warden/Idle/rotations/south.png')
           .readAsBytesSync()));
       final hero = await tester.runAsync(() async => decodeImageFromList(
-          File('art/pixellab-pilots/round2/raw/renn_a/Idle/rotations/north.png')
+          File('${Platform.environment['ART_HANDOFF']}/warrior_north.png')
               .readAsBytesSync()));
       towerBossFacingMock.value = (boss: boss!, hero: hero!);
       final key = GlobalKey();
-      await _bootFight(tester, key, floor: 5, width: w);
+      await _bootFight(tester, key, floor: 20, width: w);
       expect(tester.takeException(), isNull);
       Directory(shots!).createSync(recursive: true);
       await tester.runAsync(() async {
