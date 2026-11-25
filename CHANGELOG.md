@@ -8,6 +8,10 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [2.10.5+1087]
+
+- **Tower and items: Art's new icons (wave 2).** 93 pictures replace the old 16 px item icons with 32 px colour icons: the potions and antidote, the fate coin (now its own picture), the five weapon types by tier (five looks, shared by neighbouring tiers), every armour piece and the eight relics. The Tower's stall shows the salve and the potion bundle, and the marks screen shows the marks icon on the balance and every price. No rule or number changes.
+
 ## [2.10.4+1086]
 
 - **Tower: the clans' offer on paper cards (design A, rounder).** A clan's gift is a paper card with rounded corners (12 px): its picture on a black plate, its name in small caps, the clan's colour once as a short line under the name, the wax seal for its rarity, and all the information on the card: its tags (Gift, rarity), the clan and your standing, what it moves (clan by clan, with the Heat's rival ripple at Ash) and the clan's quote. A clan's oath is a rounded paper row with the clan's banner on a black plate, its tags, words, standing and, when the oath comes late (after floor 15 with the clan below the oath's step), Narrative's late-oath line from that clan. The card in hand is ringed in paper. Rules and numbers are unchanged.
