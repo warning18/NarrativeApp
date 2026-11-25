@@ -77,8 +77,9 @@ extension _FightRounds on _FightScreenState {
     if (_quick) {
       _rollController.value = 1;
     } else {
+      // Reduced motion: a short drop and a settle, no bounce.
       _rollController.duration = _still
-          ? const Duration(milliseconds: 1)
+          ? const Duration(milliseconds: diceDropReducedMs)
           : diceTimeFor(diceThrowBase, ref.read(diceSpeedProvider));
       await _rollController.forward(from: 0);
     }

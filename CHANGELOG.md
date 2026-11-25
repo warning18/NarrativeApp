@@ -8,6 +8,10 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [2.10.16+1098]
+
+- **The dice land on the floor.** The dice board's throw is new, in the Tower and in the story's fights, for one die or several: each die falls from above on a short arc with a shadow on the floor that grows and sharpens, touches the floor with a puff of dust or snow, bounces once or twice, lower each time, tumbles a face or two and settles flat on its face. It takes 880 ms (the dice speed setting still scales it); several dice start a moment apart and land in a scatter. With reduced motion it is a short drop and a settle (about 200 ms), no bounce, no dust. No dark disc and no black shadow ellipse. No rule or number changes.
+
 ## [2.10.15+1097]
 
 - Level Up: what a stat pick changes, before and after, for UX's new cards (no rule change).

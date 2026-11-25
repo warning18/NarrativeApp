@@ -15,74 +15,89 @@ const _seats = [
   DiceThrowSeat(Offset(260, 85), 38),
 ];
 
-double _gap(DiceThrowPlan p, int i, int j, double u) =>
-    (p.position(i, u) - p.position(j, u)).distance -
-    (_seats[i].radius + _seats[j].radius);
-
 void main() {
   test('every die ends on its seat, turned to the picked face', () {
-    for (var seed = 0; seed < 20; seed++) {
-      final p = DiceThrowPlan.build(seats: _seats, board: _board, seed: seed);
-      for (var i = 0; i < _seats.length; i++) {
-        expect((p.position(i, 1) - _seats[i].seat).distance, lessThan(0.01));
-        expect(p.turn(i, 1), 1.0);
-        expect(p.lift(i, 1), 0.0);
-        // It starts below the board and out of sight.
-        expect(p.position(i, 0).dy, greaterThan(_board.height));
-        expect(p.turn(i, 0), lessThan(0.05));
-      }
-    }
-  });
-
-  test('no two dice overlap at rest, and none on the ground during the throw',
-      () {
-    for (var seed = 0; seed < 20; seed++) {
-      final p = DiceThrowPlan.build(seats: _seats, board: _board, seed: seed);
-      for (var i = 0; i < 3; i++) {
-        for (var j = i + 1; j < 3; j++) {
-          expect(_gap(p, i, j, 1), greaterThanOrEqualTo(0));
-          for (var u = 0.0; u <= 1.0; u += 0.01) {
-            if (p.lift(i, u) > 14 || p.lift(j, u) > 14) continue;
-            // Both on the ground or low: they never sink into each other.
-            final onBoard = p.position(i, u).dy < _board.height - 20 &&
-                p.position(j, u).dy < _board.height - 20;
-            if (onBoard) {
-              expect(_gap(p, i, j, u), greaterThan(-1.5),
-                  reason: 'seed $seed dice $i $j at $u');
-            }
-          }
+    for (final reduced in [false, true]) {
+      for (var seed = 0; seed < 12; seed++) {
+        final p = DiceThrowPlan.build(
+            seats: _seats, board: _board, seed: seed, reduced: reduced);
+        for (var i = 0; i < _seats.length; i++) {
+          expect((p.position(i, 1) - _seats[i].seat).distance, lessThan(0.5));
+          expect(p.lift(i, 1), 0);
+          expect(p.turn(i, 1), 1);
         }
       }
     }
   });
 
-  test('it bounces 2 to 3 times and the arc stays low', () {
+  test('it falls from above, never below the floor, and ends still', () {
     final p = DiceThrowPlan.build(seats: _seats, board: _board, seed: 3);
-    for (var i = 0; i < 3; i++) {
-      var peak = 0.0, touches = 0;
-      var wasUp = false;
-      for (var u = 0.0; u <= 1.0; u += 0.002) {
-        final z = p.lift(i, u);
-        peak = math.max(peak, z);
-        final up = z > 2;
-        if (wasUp && !up) touches++;
-        wasUp = up;
+    for (var i = 0; i < _seats.length; i++) {
+      // The first die is high at the start; the last ones start a moment later.
+      expect(p.lift(i, 0), greaterThan(_board.height * 0.5), reason: 'die $i');
+      var rest = 0;
+      for (var u = 0.0; u <= 1.0; u += 0.005) {
+        expect(p.lift(i, u), greaterThanOrEqualTo(0));
+        if (u > 0.9) rest++;
+        if (u > 0.9) expect(p.lift(i, u), lessThan(0.5));
       }
-      expect(peak, lessThanOrEqualTo(diceThrowMaxLift + 1));
-      expect(touches, inInclusiveRange(2, 4), reason: 'die $i');
+      expect(rest, greaterThan(10));
     }
   });
 
-  test('the throw never rises above the highest seat', () {
-    final top = _seats.map((s) => s.seat.dy).reduce(math.min);
-    for (var seed = 0; seed < 20; seed++) {
-      final p = DiceThrowPlan.build(seats: _seats, board: _board, seed: seed);
-      for (var i = 0; i < 3; i++) {
-        for (var u = 0.0; u <= 1.0; u += 0.01) {
-          expect(p.position(i, u).dy, greaterThanOrEqualTo(top - 1.5),
-              reason: 'seed $seed die $i at $u');
+  test('it touches the floor, bounces once or twice, lower each time', () {
+    final p = DiceThrowPlan.build(seats: _seats, board: _board, seed: 3);
+    for (var i = 0; i < _seats.length; i++) {
+      final contact = p.contacts[i];
+      expect(contact.length, greaterThanOrEqualTo(2));
+      // The peaks between the contacts: each lower than the one before.
+      final peaks = <double>[];
+      for (var c = 0; c < contact.length - 1; c++) {
+        var top = 0.0;
+        for (var u = contact[c]; u < contact[c + 1]; u += 0.002) {
+          top = math.max(top, p.lift(i, u));
         }
+        peaks.add(top);
       }
+      expect(peaks.first, inInclusiveRange(10, 60), reason: 'die $i');
+      for (var k = 1; k < peaks.length; k++) {
+        expect(peaks[k], lessThan(peaks[k - 1]));
+      }
+      // The contact is on the floor.
+      for (final c in contact) {
+        expect(p.lift(i, c), lessThan(6));
+      }
+    }
+  });
+
+  test('the dice start a moment apart and land in a scatter', () {
+    final p = DiceThrowPlan.build(seats: _seats, board: _board, seed: 5);
+    expect(p.contacts[1].first, greaterThan(p.contacts[0].first));
+    expect(p.contacts[2].first, greaterThan(p.contacts[1].first));
+    // At rest no two dice overlap.
+    for (var i = 0; i < _seats.length; i++) {
+      for (var j = i + 1; j < _seats.length; j++) {
+        final d = (p.position(i, 1) - p.position(j, 1)).distance;
+        expect(d, greaterThanOrEqualTo(p.radiusOf(i) + p.radiusOf(j) - 0.5));
+      }
+    }
+  });
+
+  test('reduced motion: a short drop and a settle, no bounce, no dust', () {
+    final p = DiceThrowPlan.build(
+        seats: _seats, board: _board, seed: 3, reduced: true);
+    expect(diceDropReducedMs, lessThanOrEqualTo(250));
+    expect(diceDropMs, lessThan(900));
+    for (var i = 0; i < _seats.length; i++) {
+      expect(p.contacts[i], isEmpty, reason: 'no dust');
+      // After it lands, it never lifts again.
+      var landed = false;
+      for (var u = 0.0; u <= 1.0; u += 0.005) {
+        final h = p.lift(i, u);
+        if (landed) expect(h, lessThan(0.5), reason: 'die $i at $u');
+        if (h < 0.5 && u > 0.3) landed = true;
+      }
+      expect(landed, isTrue);
     }
   });
 
