@@ -8,6 +8,10 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [2.9.0+1076]
+
+- **Tower: Heat, the rules (the user's five named curses).** After a win, the Tower can be climbed again at a higher Heat, each adding one curse to those below: Embers (foes x1.05), Smoke (one more affix on the wardens and bosses), Flame (healing after a floor 15% to 5%, more elites from floor 11), Pyre (no boon on floors 13 and 23, the late oath from floor 18), Ash (foes x1.12 from floor 11, a gift costs rival clans 2 standing). Heat N+1 opens with a win at Heat N; marks earned rise by a quarter a level (x2.25 at Ash). Bot, every unlock: the top falls 26 / 18 / 15 / 12 / 11 / 7% from Heat 0 to 5. Heat 0 is the climb as before. The picker on the Tower's door comes with UX's next version; until then every climb is Heat 0.
+
 ## [2.8.5+1074]
 
 - **Tower: the cleric holds against wardens and bosses.** With every unlock the cleric reached the top in 13% of bot climbs, against 23 to 29% for the other callings, and 43% of clerics who reached floor 30 fell there: its foes' scale (x1.28, set when the cleric healed through every fight) outlasted its heals in the long warden and boss fights. On the wardens' and bosses' floors (5, 10, 15, 20, 25, 30) its foes are now x1.08; ordinary floors stay x1.28. Bot, every unlock: cleric top 13 to 24%, its floor-30 loss 43 to 20%. The other callings and the climb with no unlocks are unchanged.
