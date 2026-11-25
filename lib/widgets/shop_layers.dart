@@ -9,8 +9,9 @@
 // Tower chibi until Art draws theirs: one lookup each, so a swap is one line.
 import 'package:flutter/material.dart';
 
-/// The plate (assets/visuals/scenes/`<id>_shop_dark.png`, Art's darker
-/// shop-only version of the place's scene) behind each shop: its place.
+/// The plate behind each shop: its place, in Art's darker shop-only version
+/// of the scene (assets/visuals/shop_scenes/ID.png; the story's own bands
+/// stay in assets/visuals/scenes/).
 const Map<String, String> shopScenes = {
   'blind_beggar_stall': 'blind_beggar',
   'weaponsmith_forge': 'saltmouth_yard',
@@ -90,7 +91,7 @@ class ShopLayers extends StatelessWidget {
           child: Stack(children: [
             Positioned.fill(
               child: Image.asset(
-                'assets/visuals/scenes/${shopScenes[shopId]}_shop_dark.png',
+                'assets/visuals/shop_scenes/${shopScenes[shopId]}.png',
                 fit: BoxFit.cover,
                 alignment: Alignment.bottomCenter,
                 filterQuality: FilterQuality.none,
