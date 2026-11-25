@@ -19,3 +19,11 @@ IDS={
 SUFFIX=", game icon, no text, centred"
 T=""
 RETRY={}
+
+# Round 2: the SIGN is the icon: a bold symbol on a hanging board under a small awning, bright glow behind it
+S2=lambda rim,sym,extra="":M+rim+", a chibi game icon: a big bold clear "+sym+" symbol filling the middle on a hanging wooden sign board, a tiny ragged awning above and a tiny counter below"+extra+", high contrast, readable at small size, no people, the object alone"
+RETRY={
+'hammersmith_forge':S2("ember gold","war hammer",", orange furnace glow behind"),
+'ossuary_relics':S2("sickly green","skull",", green candle glow"),
+'anchorage_chandlery':S2("cold blue","ship anchor"),
+}
