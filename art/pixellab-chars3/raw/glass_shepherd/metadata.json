@@ -1,0 +1,36 @@
+{
+  "group_id": "65c2c5ba-5580-4869-b5e9-39df9c8218e2",
+  "states": [
+    {
+      "character": {
+        "id": "f0b6b07c-ec4a-414f-a96e-91682286c0d7",
+        "name": "Idle",
+        "prompt": "grim dark fantasy chibi, worn and weathered, ominous, muted desaturated colours, deep shadows, a tall thin figure made of fused teal glass and pale sand, a faceless smooth head, long limbs, a long crook staff of fused sand in one hand, glowing white pinpoints for eyes, chibi",
+        "size": {
+          "width": 48,
+          "height": 48
+        },
+        "template_id": "mannequin",
+        "directions": 8,
+        "view": "side",
+        "created_at": "2026-11-25T20:32:10.835397+00:00"
+      },
+      "folder": "Idle",
+      "frames": {
+        "rotations": {
+          "south": "Idle/rotations/south.png",
+          "south-east": "Idle/rotations/south-east.png",
+          "east": "Idle/rotations/east.png",
+          "north-east": "Idle/rotations/north-east.png",
+          "north": "Idle/rotations/north.png",
+          "north-west": "Idle/rotations/north-west.png",
+          "west": "Idle/rotations/west.png",
+          "south-west": "Idle/rotations/south-west.png"
+        },
+        "animations": {}
+      }
+    }
+  ],
+  "export_version": "3.1",
+  "export_date": "2026-11-25T20:34:18.810704"
+}
