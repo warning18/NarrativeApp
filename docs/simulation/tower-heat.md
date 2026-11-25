@@ -14,7 +14,7 @@ bot and the marks. It has no screen: UX's picker, chip and curse list
 | 1 | `embers` | foes ×1.05 on every floor | `towerHeatScaleOf` in `_floorOf` (the floor's `extra`) |
 | 2 | `smoke` | +1 forced affix on the wardens and bosses (5, 10, 15, 20, 25, 30) | `towerHeatAffixesOf` in `_floorOf` (`affixes`; a boss gets one, it had none) |
 | 3 | `flame` | healing after a floor won 15% → **5%** of max health; Elite chance +.05 on the ordinary floors 11 to 29 | `towerRecoveryShareOf` in `towerAfterFight`; `towerEliteChanceOf` in `_floorOf` |
-| 4 | `pyre` | boons on 13 and 23 gone (8 → 6); the late oath from floor 18, not 15 | `towerBoonFloorsOf`, `towerPityOathFloorOf` in `towerOfferFor` |
+| 4 | `pyre` | floors 13 and 23 give **nothing**: no boon, no clans' offer, no oath (boon floors 8 → 6; the user's option (a), after v2.9.0); the late oath from floor 18, not 15 | `towerHeatEmptyFloorsOf`, `towerBoonFloorsOf`, `towerPityOathFloorOf` in `towerOfferFor` |
 | 5 | `ash` | foes ×**1.12** on floors 11 to 30 (in place of ×1.05 there); a gift takes 2 standing from each rival clan, not 1 | `towerHeatScaleOf`; `towerRivalStandingOf` in `towerClanRipple` |
 
 - **Floors 1 to 10 stay gentle**: Embers' ×1.05 only, plus Smoke's affix on
@@ -56,18 +56,64 @@ bot and the marks. It has no screen: UX's picker, chip and curse list
   7 measured 6.6 on v2.4.0. The ×1.05 is fixed by the note.
 - **Smoke costs 2.7**, just under 3 (within noise: about ±0.7 points on
   2,000 seeds, less between two Heats on the same seeds).
-- **Pyre costs 0.7** (11.8% → 11.1%; 0.0 with no unlocks), far under the
-  band. Why: on a floor that is no longer a boon's, the clans' offer is
-  dealt instead (35% of floors, three skill gifts that are about as good as
-  the boon), and the bot takes the first oath long before floor 15. Options
-  for the user (one-line rule changes, not built): (a) Pyre's two floors
-  give nothing at all, no clan offer either; (b) cut a third boon (28); (c)
-  late oath from floor 22. Heat 4 then sits on Heat 3's level, and the
-  ladder's 8% step is missing.
+- **Pyre costs 0.7** in v2.9.0 (11.8% → 11.1%; 0.0 with no unlocks), far
+  under the band. Why: on a floor that is no longer a boon's, the clans'
+  offer was dealt instead (35% of floors, three skill gifts that are about
+  as good as the boon), and the bot takes the first oath long before floor
+  15. The user chose option (a): **Pyre's two floors give nothing at all**
+  (`towerHeatEmptyFloorsOf`: no boon, no clans' offer, no oath; built in
+  `claude/core-races-trim`). Measured below, see "Pyre (a)".
+
+### Pyre (a): measured, still short of the band
+
+With (a), the bot takes no card on floors 13 and 23 at Heat 4 (it took one
+on 95% of its wins of those floors at Heat 3). The step it costs, all
+unlocks, seeds 1 to 2000:
+
+| | Heat 3 | Heat 4 | Pyre's step |
+|---|---|---|---|
+| v2.9.0 (clans' offer in the boon's place) | 11.8% | 11.1% | 0.7 |
+| (a), before the race trim | 11.75% | 10.90% | 0.85 |
+| (a), with the race trim (`tower-race-trim.md`) | 10.8% | 10.2% | 0.6 |
+
+**(a) does not reach the 3 to 6 point target.** The two floors' cards are
+worth under a point of top to the bot: floor 13 is cleared by 71% of runs,
+floor 23 by 27%, and one card among the 15 to 20 a run takes moves little.
+The other reward levers, measured at Heat 4 on top of (a) and the race
+trim (informational, not built):
+
+| Heat 4 variant | Top | Step from Heat 3 (10.8%) |
+|---|---|---|
+| (a) alone (built) | 10.2% | 0.6 |
+| (a) and floor 28 empty too (option b) | 10.0% | 0.8 |
+| (a) and the late oath from 22 (option c) | 9.8% | 1.0 |
+| floors 13, 18, 23 and 28 empty | 9.8% | 1.0 |
+| all eight boon floors empty | 6.0% | 4.8 (floor 26 loses 14.1%) |
+
+Only emptying the early boons (5, 10, 15, 20) moves the top, and that
+lands Heat 4 on Ash's level. A 3 to 6 point Pyre needs a power lever
+(for example a foe factor on some floors), which is the user's call.
 
 ## The numbers (the bot, seeds 1 to 2000, floor events v2, perks none)
 
-All unlocks:
+All unlocks, with Pyre (a) and the race trim (`tower-race-trim.md`: the
+dwarf's and the elf's health from the unlocks cut, so every Heat's top with
+the unlocks is about 1 to 2 points lower than in v2.9.0):
+
+| Heat | Top | Cost | Reach f20 | Clear f10 | Floor 30 lost (of those reaching it) | Worst ordinary floor | Marks a run | Marks a won run |
+|---|---|---|---|---|---|---|---|---|
+| 0 | **23.8%** | | 58.8% | 93.2% | 17.2% | f26 7.3% | 34.4 | 59.5 |
+| 1 Embers | **16.5%** | 7.3 | 53.1% | 91.4% | 25.7% | f21 9.6% | 39.2 | 74.2 |
+| 2 Smoke | **14.1%** | 2.4 | 50.2% | 86.2% | 29.8% | f21 8.8% | 45.0 | 89.2 |
+| 3 Flame | **10.8%** | 3.3 | 44.6% | 85.5% | 30.5% | f19 9.9% | 48.2 | 102.1 |
+| 4 Pyre | **10.2%** | 0.6 | 43.5% | 85.5% | 29.7% | f28 9.2% | 55.1 | 118.2 |
+| 5 Ash | **6.6%** | 3.6 | 37.8% | 85.4% | 39.4% | f26 11.6% | 57.9 | 132.7 |
+
+At Heat 3 by calling: cleric 11.0, mage 10.8, ranger 10.7, rogue 9.8,
+warrior 11.8%; at Heat 5: cleric 7.0, mage 6.2, ranger 8.0, rogue 4.4,
+warrior 7.0%.
+
+As built in v2.9.0 (before Pyre (a) and the race trim):
 
 | Heat | Top | Cost | Reach f20 | Clear f10 | Floor 30 lost (of those reaching it) | Worst ordinary floor | Marks a run | Marks a won run |
 |---|---|---|---|---|---|---|---|---|
@@ -78,14 +124,15 @@ All unlocks:
 | 4 Pyre | **11.1%** | 0.7 | 45.8% | 87.0% | 31.2% | f28 9.1% | 56.6 | 117.9 |
 | 5 Ash | **6.8%** | 4.3 | 40.0% | 86.9% | 40.6% | f26 12.4% | 59.2 | 132.5 |
 
-Target (the note): 24 / 19 / 15 / 11 / 8 / 5%. Every calling wins at least
+Target (the note): 24 / 19 / 15 / 11 / 8 / 5%. In v2.9.0 every calling won at least
 5% at Heat 3 (cleric 12.0, mage 11.2, ranger 12.1, rogue 10.8, warrior
 12.6). At Heat 5 the rogue falls to 4.2% (cleric 7.0, mage 6.0, ranger 9.2,
 warrior 7.5). No ordinary floor loses over 13% at Heat 3 or below. The
 worst peak is always floor 30's boss. Smoke's affix on warden 5 and boss 10
 is what takes "clear floor 10" from 93% to 87% (the note's guess was 92%).
 
-No unlocks (Heat is aimed at players who own them; for reference):
+No unlocks (Heat is aimed at players who own them; for reference; Heat 4
+and 5 with Pyre (a), the race trim does not touch them):
 
 | Heat | Top | Reach f20 | Clear f10 | Floor 30 lost | Worst ordinary floor | Marks a run |
 |---|---|---|---|---|---|---|
@@ -93,8 +140,8 @@ No unlocks (Heat is aimed at players who own them; for reference):
 | 1 | 6.9% | 34.6% | 77.6% | 31.7% | f26 12.1% | 29.1 |
 | 2 | 5.5% | 33.3% | 72.7% | 38.3% | f27 14.2% | 34.0 |
 | 3 | 3.4% | 26.2% | 68.7% | 42.2% | f29 16.5% | 35.4 |
-| 4 | 3.4% | 25.4% | 68.7% | 39.6% | f29 16.5% | 41.0 |
-| 5 | 1.6% | 20.3% | 68.7% | 50.8% | f24 16.3% | 43.0 |
+| 4 | 3.2% | 25.2% | 68.7% | 40.4% | f29 15.5% | 40.8 |
+| 5 | 1.5% | 19.8% | 68.7% | 54.0% | f24 17.3% | 42.8 |
 
 Heat 0 is unchanged: the same floors and the same bot runs as before
 (`test/tower_heat_test.dart`), and `qa_tower_live_pin_test.dart` passes

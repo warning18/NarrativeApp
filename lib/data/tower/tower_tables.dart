@@ -145,6 +145,27 @@ double towerClimbScale(int floor) => floor >= 11 && floor <= 20
 /// review (fix #5): .03 (the top with every unlock 31% to 29%).
 const double towerHealthPerUnlock = .03;
 
+/// The share of [towerHealthPerUnlock] a people takes, in place of it
+/// (docs/simulation/tower-race-trim.md, the user's call: trim the two
+/// ahead, lift no one). With every unlock the dwarf (28.7%) and the elf
+/// (28.0%) won the top far more than the human (24.0%), the orc (22.7%)
+/// and the voidkin (20.7%): with most runs reaching floor 20, the long
+/// fights of floors 21 to 30 decide, and there their health and armour
+/// (dwarf) and dexterity, perception and luck (elf) hold. The unlocks' extra
+/// health is what keeps them standing longest: half of it for the dwarf
+/// (×1.15 with every unlock, was ×1.30), a third for the elf (×1.10).
+/// Over 4,000 seeds the top with every unlock: dwarf 23.6%, elf 23.5%,
+/// human 24.3%, orc 22.2%, voidkin 20.2%. No unlocks: unchanged.
+const Map<String, double> towerPeopleHealthPerUnlock = {
+  'dwarf': .015,
+  'elf': .01,
+};
+
+/// The max health a hero of [raceId] gains per unlock owned
+/// ([towerPeopleHealthPerUnlock], else [towerHealthPerUnlock]).
+double towerHealthPerUnlockOf(String raceId) =>
+    towerPeopleHealthPerUnlock[raceId] ?? towerHealthPerUnlock;
+
 /// The Tower's start for a people (the difficulty review's finding 3, a
 /// Tower-only start): this many points in the calling's damage stat, with
 /// what they bring (its base damage). Human and voidkin climbed about half
@@ -910,7 +931,8 @@ const int towerHeatSmoke = 2;
 /// the ordinary floors from [towerHeatUpperFloor] to 29.
 const int towerHeatFlame = 3;
 
-/// Pyre: the boons of [towerHeatCutBoons] gone, the late oath from
+/// Pyre: the floors of [towerHeatCutBoons] give nothing (no boon, no
+/// clan's offer in its place), the late oath from
 /// [towerHeatPityOathFloor] (was towerPityOathFloor).
 const int towerHeatPyre = 4;
 
@@ -946,7 +968,9 @@ const double towerHeatRecoveryShare = .05;
 /// Flame's Elite chance added on an ordinary floor of the upper Tower.
 const double towerHeatEliteBonus = .05;
 
-/// Pyre's boon floors taken away.
+/// Pyre's boon floors taken away. Since v2.9.x (the user's option (a),
+/// docs/simulation/tower-heat.md) they give nothing at all: with the clans'
+/// offer dealt in the boon's place, Pyre cost 0.7 points of top.
 const Set<int> towerHeatCutBoons = {13, 23};
 
 /// Pyre's late oath floor.
@@ -989,6 +1013,11 @@ double towerEliteChanceOf(int heat, int floor, double base) =>
 Set<int> towerBoonFloorsOf(int heat) => heat >= towerHeatPyre
     ? towerBoonFloors.difference(towerHeatCutBoons)
     : towerBoonFloors;
+
+/// The floors whose win offers nothing at all at [heat] (Pyre's
+/// [towerHeatCutBoons]: no boon, no clan's offer, no oath).
+Set<int> towerHeatEmptyFloorsOf(int heat) =>
+    heat >= towerHeatPyre ? towerHeatCutBoons : const {};
 
 /// The late oath's floor at [heat].
 int towerPityOathFloorOf(int heat) =>
