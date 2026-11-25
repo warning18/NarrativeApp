@@ -52,3 +52,14 @@ IDS={
 }
 IDS={k:v+O for k,v in IDS.items()}
 assert len(IDS)==44,len(IDS)
+
+# Round 2 (the 7 weak ones, extended palette forced)
+RETRY={
+'thug_knuckle_wrap':"a chibi pair of brass knuckle dusters, four finger rings joined by a bar, chunky, seen from above, a few cloth wraps"+O,
+'halo_lance':"a chibi long lance lying diagonally with a pale gold spearhead and a thin gold ring around the head, chunky"+O,
+'material_white_fleet_oak':"a chibi flat pale oak plank board with visible wood grain lines, chunky, rectangular, a small rope knot at one end"+O,
+'charm_fourth_roll':"a chibi single cube bone die with four black dots on the top face, chunky, hanging from a short cord"+O,
+'tome_of_insight':"a chibi closed thick book lying flat with a blue cover and a gold eye emblem, chunky, brown page edges"+O,
+'dawnward_shield':"a chibi large round shield seen from the front, pale gold rim, a sunrise ray emblem on a cream face, chunky"+O,
+'elite_trophy':"a chibi round bronze medal with a ring at the top and a short red ribbon, a star in the middle, chunky"+O,
+}

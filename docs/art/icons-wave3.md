@@ -5,3 +5,6 @@
 Cost: 44 generations, no retries (cap 80). Balance 1483 -> 1483 - 5 (wave-2 redraws) - 44 = 1434.
 Files `art/pixellab-icons-v2/final_wave3/<id>32.png`; sheets `docs/art/boards/icons-wave3-all.png` and `icons-wave3-cards.png`.
 Weak: thug_knuckle_wrap (two blobs), halo_lance (a blob), material_white_fleet_oak (a round ball, not a plank), charm_fourth_roll (reads as a skull), tome_of_insight (a ghost shape), dawnward_shield and elite_trophy (small, unclear).
+
+## Round 2 (25 November): 7 redraws, 7 generations (cap 10)
+thug_knuckle_wrap, halo_lance, material_white_fleet_oak, charm_fourth_roll, tome_of_insight, dawnward_shield, elite_trophy redrawn (`RETRY` in `wave3_ids.py`, seed 5). Sheet `docs/art/boards/icons-wave3-fixes.png`. halo_lance (a lance now), the oak plank, the bone die, the tome, the round shield and the medal are good; thug_knuckle_wrap is still a dark bundle. Wave 3 total 51 generations. Balance 1427. Hand-off: `docs/art/handoff-ux-icons-wave3.md`, files `art/pixellab-icons-v2/handoff_wave3/`.
