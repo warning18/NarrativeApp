@@ -118,7 +118,8 @@ from them (below).
    user's decisions of 25 November 2026). The first build wore two perks
    and raised the boon to 20 to keep the top with the two strongest under
    QA's band (32.2% at 15, 31.9% at 20). With one slot the best single perk
-   (Keen eye) leaves 30.3% at 15, inside it, so the boon is back at 15.
+   (Keen eye) leaves 30.3% at 15, inside it, so the boon is back at 15
+   (28.5% on top of v2.9.4's race trim, below).
    **The Heat targets are read without perks** (the user's decision): no
    Heat retune (below).
 2. **The stall's boon is not in `TowerEventView.stock`** but its own line
@@ -148,34 +149,44 @@ known id only).
 
 ### Coins a run (Heat 0, boon 15, no perk)
 
+On top of v2.9.4 (the race trim, Pyre's empty floors), seeds 1 to 2000.
+
 | | earned, mean | median | 90th pct | a won run | left at the end (lost) | spent | boons bought | rerolls | salves | bundles |
 |---|---|---|---|---|---|---|---|---|---|---|
 | none | 39.4 | 33 | 80 | 80 | 19.8 | 19.5 | 0.73 | 2.26 | 0.33 | 0.38 |
-| all | 51.6 | 52 | 82 | 80 | 27.3 | 24.2 | 0.99 | 3.06 | 0.27 | 0.12 |
-| all, Keen eye | 53.4 | 56 | 82 | 80 | 28.3 | 25.0 | 1.07 | 2.99 | 0.24 | 0.11 |
+| all | 50.1 | 50 | 82 | 80 | 26.7 | 23.4 | 0.95 | 2.96 | 0.26 | 0.11 |
+| all, Keen eye | 51.8 | 53 | 82 | 80 | 27.6 | 24.3 | 1.04 | 2.91 | 0.22 | 0.10 |
+| all, Heat 3 | 40.3 | 35 | 80 | 80 | 21.4 | 19.0 | 0.64 | 2.43 | 0.59 | 0.16 |
+| all, Heat 4 | 38.4 | 33 | 78 | 80 | 21.9 | 16.4 | 0.61 | 1.73 | 0.58 | 0.17 |
+| all, Heat 5 | 34.7 | 30 | 74 | 81 | 20.0 | 14.7 | 0.52 | 1.59 | 0.56 | 0.17 |
 
-A won run ends with 41 (none) to 43 (all) coins unspent: floors 21 to 29 pay 3 a floor
-and no merchant stands after floor 20 save the 5% draw. That is the end
-tally's "coins left (lost)". The boon at 15 (was 20) is bought a third more
-often (0.99 a run with every unlock, was 0.75).
+A won run ends with about 41 (none) to 43 (all) coins unspent: floors 21 to
+29 pay 3 a floor and no merchant stands after floor 20 save the 5% draw.
+That is the end tally's "coins left (lost)". The boon at 15 (was 20) is
+bought a third more often (0.95 a run with every unlock, was 0.75). At Heat
+the climbs are shorter, so fewer coins: Heat never multiplies them.
 
 ### The top at Heat 0, coins and one perk
 
-QA's band for the top with every unlock: 18 to 32%.
+QA's band for the top with every unlock: 18 to 32%. Re-measured on top of
+v2.9.4 (main 6777b9e2: the race trim and Pyre), seeds 1 to 2000.
 
 | Variant | top none | top all | median none / all | reach f20 none / all | marks a run none / all |
 |---|---|---|---|---|---|
-| v2.9.0, before coins (`tower-heat.md`) | 11.1% | 25.9% | 17 / 22 | 42.2 / 61.8% | 25.9 / 35.4 |
-| stall in coins, salve and bundle only (`stall`) | 11.1% | 25.9% | 17 / 22 | 42.1 / 61.8% | 28.6 / 36.8 |
-| **(a) coins only, boon 15 (built)** | **12.3%** | **28.0%** | 17 / 22 | 42.8 / 62.9% | 29.0 / 37.4 |
-| **(b) + Keen eye, the best perk** | **13.5%** | **30.3%** | 18 / 23 | 45.1 / 65.5% | 30.0 / 38.6 |
-| (b) + Free hand, the second | 12.7% | 29.4% | 18 / 23 | 43.5 / 64.0% | 29.2 / 38.0 |
-| the two-slot build: boon 20, Keen eye + Second wind | 14.8% | 31.9% | 18 / 24 | 45.3 / 66.2% | 30.4 / 39.1 |
+| v2.9.4 main, before coins | 11.1% | 23.8% | 17 / 21 | 42.2 / 58.8% | 25.9 / 34.4 |
+| **(a) coins only, boon 15 (built)** | **12.3%** | **26.5%** | 17 / 21 | 42.8 / 60.5% | 29.0 / 36.5 |
+| **(b) + Keen eye, the best perk** | **13.5%** | **28.5%** | 18 / 22 | 45.1 / 63.0% | 30.0 / 37.6 |
 
-Both inside the band, with 1.7 points of room under its top for the best
-perk. The coins' power is the boon and the rerolls: +1.2 / +2.1 points.
+Both inside the band, 3.5 points under its top with the best perk. The
+coins' power is the boon and the rerolls: +1.2 / +2.7 points; Keen eye
++1.2 / +2.0 more. (The race trim touches only "all", so "none" is as
+before it.)
 
-Each perk alone (boon 15, Heat 0; coins only: 12.3% / 28.0%):
+Before v2.9.4 (the first measure, v2.9.0 base): before coins 11.1 / 25.9%;
+coins 12.3 / 28.0%; + Keen eye 13.5 / 30.3%; + Free hand 12.7 / 29.4%; the
+two-slot build (boon 20, Keen eye + Second wind) 14.8 / 31.9%.
+
+Each perk alone (boon 15, Heat 0, measured before v2.9.4's race trim; coins only: 12.3% / 28.0%):
 
 | Perk | top none | top all | change, all |
 |---|---|---|---|
@@ -195,22 +206,28 @@ fourth skill card or a head start with a seed-picked clan rarely changes its
 pick. A player who chooses the friend clan and reads a fourth card should do
 better. Both kept as they are (the user's decision).
 
-### Heat 3 and 5 (boon 15)
+### Heat 3, 4 and 5 (boon 15)
 
 **The Heat targets are read without perks** (the user's decision): the
-"no perk" column is the one held against them. No Heat retune.
+"no perk" column is the one held against them. No Heat retune. On top of
+v2.9.4 (Pyre's empty floors 13 and 23 and its foes ×1.04 from floor 11).
 
-| Heat | no perk, none / all | Keen eye, none / all | Free hand, none / all | v2.9.0 all (no coins) | the note's target |
-|---|---|---|---|---|---|
-| 0 | 12.3 / **28.0%** | 13.5 / 30.3% | 12.7 / 29.4% | 25.9% | 24% |
-| 3 Flame | 3.8 / **12.6%** | 4.2 / 13.7% | 3.7 / 12.7% | 11.8% | 11% |
-| 5 Ash | 1.7 / **7.3%** | 2.2 / 10.0% | 1.6 / 7.8% | 6.8% | 5% (band 3-7) |
+| Heat | no perk, none / all | Keen eye, none / all | v2.9.4 main all (no coins) | the note's target |
+|---|---|---|---|---|
+| 0 | 12.3 / **26.5%** | 13.5 / 28.5% | 23.8% | 24% |
+| 3 Flame | 3.8 / **11.9%** | 4.2 / 13.2% | 10.8% | 11% |
+| 4 Pyre | 2.3 / **8.9%** | 3.0 / 10.7% | 7.4% | — |
+| 5 Ash | 1.1 / **5.5%** | 1.6 / 6.5% | 4.6% | 5% (band 3-7) |
 
-Without perks Heat 3 is 1.6 points over its target and Heat 5 0.3 over its
-band's top (inside the noise); both moved up by the coins (+0.8 and +0.5 on
-v2.9.0), not by Heat. Per calling at Heat 5, every unlock, no perk: cleric
-10.2, mage 6.2, ranger 8.3, rogue 3.9, warrior 8.3% (Keen eye: 14.1, 9.0,
-11.7, 6.1, 9.3%).
+Without perks the coins lift every Heat by about a point (+2.7, +1.1,
++1.5, +0.9 on v2.9.4) and Heat 3 and 5 sit within a point of their targets,
+Heat 5 inside its band even with Keen eye. Per calling at Heat 5, every
+unlock, no perk: cleric 6.5, mage 6.2, ranger 7.3, rogue 2.7, warrior 4.5%
+(Keen eye: 8.6, 6.5, 8.0, 3.7, 5.5%).
+
+The stall's boon still deals on Pyre's empty floors (13, 23): those floors
+give no card of their own, but a merchant there sells the boon's three as
+anywhere (`towerOfferFor`'s `boon`).
 
 ### Pace
 
@@ -223,11 +240,14 @@ the 10th to 90th percentile.
 
 | | Heat 0 only | climbing Heat (the highest open each climb) |
 |---|---|---|
-| tree full (210) | climb 6 (5-9) | 6 (4-8) |
-| first perk | 8 (6-10) | 7 (5-10) |
-| **everything (665)** | **18** (16-21) | **15** (12-18) |
-| marks a climb, mean | 37.7 | 47.4 |
+| tree full (210) | climb 6 (5-9) | 6 (4-9) |
+| first perk | 8 (6-10) | 8 (5-10) |
+| **everything (665)** | **18** (16-22) | **15** (13-19) |
+| marks a climb, mean | 36.6 | 44.1 |
 | the two-slot build (585), everything | 16 (14-18) | 14 (11-16) |
+
+(Re-run on top of v2.9.4; before it 18 (16-21) and 15 (12-18), marks 37.7
+and 47.4 a climb: Pyre's empty floors and the race trim cost a few marks.)
 
 Target 15 to 25: inside both ways (climbing Heat at its floor). The first
 perk comes one to two climbs after the tree (target 1-2): the cheapest is
@@ -247,12 +267,14 @@ for a non-caster player, and the pace slower. The steps between variants
 ### The live pin
 
 `qa_tower_live_pin_test.dart` (QA's) re-pinned on purpose: the bot plays the
-coins (`full`, no perk) on the live Tower, seeds 1 to 500: none 51 / 205 /
-9083 before coins, 54 / 210 / 9159 with the boon at 20 → **59 / 209 / 9208**;
-all 124 / 308 / 10862, 141 / 316 / 11053 → **140 / 317 / 11037** (top,
-floor 20, floor sum). With `TowerBotCoins.stall` the climb plays as it did
-with marks (the table above). QA's guards (`qa_tower_sim_test.dart`, 500
-seeds, no perk) hold their bands.
+coins (`full`, no perk) on the live Tower, seeds 1 to 500 (top, floor 20,
+floor sum). On top of v2.9.4: none 51 / 205 / 9083 before coins →
+**59 / 209 / 9208** (no unlocks, so the race trim does not touch it); all
+106 / 294 / 10548 → **128 / 309 / 10812**. (Before v2.9.4: all 124 / 308 /
+10862 → 140 / 317 / 11037; with the boon at 20, 54 / 210 / 9159 and
+141 / 316 / 11053.) With `TowerBotCoins.stall` the climb plays as it did
+with marks. QA's guards (`qa_tower_sim_test.dart`, 500 seeds, no perk) hold
+their bands.
 
 ## Fields for UX
 

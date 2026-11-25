@@ -8,6 +8,13 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [2.10.0+1082]
+
+- **Tower: coins for one climb.** Each floor won for the first time pays coins: 1, 2 or 3 an ordinary floor (floors 1-10, 11-20, 21-29), an Elite as much again, a warden 3 / 6 / 9, a boss 5 / 10. Coins are spent in the climb and lost at its end; Heat multiplies marks, never coins. The stall now takes coins, not marks: the salve 4, the potion bundle 5, and a new boon (three cards as a boon floor's) 15; a sworn clan's merchant halves them (2 / 3 / 8). A table can be rerolled (3 coins, then 5, 7…) and a card banished for the run (4 coins, one a table, five a run).
+- **Tower: the marks shop after the unlock tree.** Once the ten unlocks are bought, eight perks at 40 to 70 marks (Purse, Deep pockets, Early word, Old friend, Second wind, Keen eye, Free hand, Fourth card), one worn a climb, chosen at the door; five banner trims at 10 marks (no power) and the Ash trim for winning Heat 5; first-win bonuses: +30 marks the first time the top is won, +20 the first win at each Heat 1 to 5.
+- **The numbers (bot, 2000 climbs).** Top with every unlock at Heat 0: 23.8% before, 26.5% with the coins, 28.5% wearing Keen eye, the best perk (no unlocks: 11.1, 12.3, 13.5%). Every unlock, no perk: Heat 3 11.9%, Heat 4 8.9%, Heat 5 5.5%. A climb earns about 50 coins with every unlock (80 in a won climb). The whole shop (665 marks) takes about 18 climbs at Heat 0, 15 climbing the Heat.
+- **Until UX's screens in v2.10.1**, only the stall's salve and potion bundle can be bought with coins; the reroll, the banish, the stall's boon and the marks shop have no screen yet.
+
 ## [2.9.5+1081]
 
 - **The clans' approved colours.** The six main clans' colours in the game data now match their banners and the Ashen Ink palette (the user's choice of 24 Nov): Dominion blue #2F6FE0, Crows rose #E0479E, Compact orange #E8782A, Mire green #3FB06A, Vigil yellow #E8C21A, Penitents violet #9B5DE5 (before: #2F62B5, #B0303F, #B86B3C, #3F8F5A, #8A8F98, #CBB68E). Crows is no longer the warning red; Vigil and Penitents are no longer grey and sand. Cards, the compass, title details, town tints and enemy groups all follow. No rule or number changes.
