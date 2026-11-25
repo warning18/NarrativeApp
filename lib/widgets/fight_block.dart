@@ -38,6 +38,18 @@ class FightMark {
 /// How a fighter ranks: an Elite's frame goes gold, a boss's too, with its mark.
 enum FightRank { normal, elite, boss }
 
+/// Lets the plates under it wrap a long name on two lines (a rival's half-width
+/// panels) instead of shrinking it.
+class FightNameWrap extends InheritedWidget {
+  const FightNameWrap({super.key, required super.child});
+
+  static bool of(BuildContext context) =>
+      context.dependOnInheritedWidgetOfExactType<FightNameWrap>() != null;
+
+  @override
+  bool updateShouldNotify(FightNameWrap old) => false;
+}
+
 class FightBlock extends StatelessWidget {
   const FightBlock({
     super.key,
@@ -357,6 +369,9 @@ class FightBlock extends StatelessWidget {
   Widget _inkPlate(BuildContext context, {required Color frame}) {
     final ranked = rank != FightRank.normal;
     final g = group;
+    // Half-width panels: the name wraps and the marks go on a line of their
+    // own, so the whole name reads.
+    final wrap = FightNameWrap.of(context);
     return Container(
       key: Key('fight_block_${name}_${g?.id ?? 'ally'}'),
       child: Transform(
@@ -389,20 +404,31 @@ class FightBlock extends StatelessWidget {
                     const SizedBox(width: 3),
                   ],
                   Expanded(
-                    child: FittedBox(
-                      fit: BoxFit.scaleDown,
-                      alignment: Alignment.centerLeft,
-                      child: Text(name,
-                          maxLines: 1,
-                          style: const TextStyle(
-                              fontFamily: InkFonts.display,
-                              fontSize: 13,
-                              height: 1,
-                              color: inkPaper)),
-                    ),
+                    child: wrap
+                        ? Text(name,
+                            maxLines: 3,
+                            overflow: TextOverflow.ellipsis,
+                            style: const TextStyle(
+                                fontFamily: InkFonts.display,
+                                fontSize: 12,
+                                height: 1.05,
+                                color: inkPaper))
+                        : FittedBox(
+                            fit: BoxFit.scaleDown,
+                            alignment: Alignment.centerLeft,
+                            child: Text(name,
+                                maxLines: 1,
+                                style: const TextStyle(
+                                    fontFamily: InkFonts.display,
+                                    fontSize: 13,
+                                    height: 1,
+                                    color: inkPaper)),
+                          ),
                   ),
-                  for (final m in marks) _markChip(context, m, inkPaper),
-                  if (ranked) _rankMark(inkPaper, iconOnly: true),
+                  if (!wrap) ...[
+                    for (final m in marks) _markChip(context, m, inkPaper),
+                    if (ranked) _rankMark(inkPaper, iconOnly: true),
+                  ],
                   // The numbers, the status marks and the intent are one tap
                   // away (the fighter's sheet): the plate says so.
                   if (armor != null ||
@@ -414,6 +440,14 @@ class FightBlock extends StatelessWidget {
                         child: Icon(Icons.info_outline,
                             size: IconSize.inline, color: inkGrey)),
                 ]),
+                if (wrap && (marks.isNotEmpty || ranked))
+                  Padding(
+                    padding: const EdgeInsets.only(top: 2),
+                    child: Row(children: [
+                      for (final m in marks) _markChip(context, m, inkPaper),
+                      if (ranked) _rankMark(inkPaper, iconOnly: true),
+                    ]),
+                  ),
                 const SizedBox(height: 4),
                 bar,
               ],

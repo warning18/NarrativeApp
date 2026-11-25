@@ -69,18 +69,30 @@ bool shopHasLayers(String shopId) =>
 String shopStallAsset(String shopId) => 'assets/visuals/shops/$shopId.png';
 
 class ShopLayers extends StatelessWidget {
-  const ShopLayers(this.shopId, {super.key});
+  const ShopLayers(this.shopId,
+      {super.key, this.stallScale = 1.25, this.keeperScale = 1});
 
   final String shopId;
+
+  /// The stall's size against the strip's base scale (the user chose 1.25).
+  final double stallScale;
+
+  /// The keeper's size against the strip's base scale (kept as before).
+  final double keeperScale;
 
   @override
   Widget build(BuildContext context) {
     if (!shopHasLayers(shopId)) return const SizedBox.shrink();
     return LayoutBuilder(builder: (context, box) {
       final width = box.maxWidth;
-      final height = width * 0.52;
-      // The stall is 96 px of the strip's 150: about two thirds of its width.
+      final height = width * 0.55;
+      final dpr = MediaQuery.maybeDevicePixelRatioOf(context) ?? 1;
+      // Snap to whole device pixels so the pixel art scales evenly.
+      double snap(double v) => (v * dpr).round() / dpr;
+      // The strip is 150 px wide at k = 1; the stall is 96 px of it.
       final k = width / 150;
+      final sk = snap(k * stallScale);
+      final kk = snap(k * keeperScale);
       final big = _bigKeepers.contains(shopId);
       return ClipRRect(
         borderRadius: BorderRadius.circular(4),
@@ -99,23 +111,25 @@ class ShopLayers extends StatelessWidget {
               ),
             ),
             Positioned(
-              left: (width - 96 * k) / 2,
-              bottom: height * 0.06,
-              width: 96 * k,
-              height: 64 * k,
+              left: snap((width - 96 * sk) / 2),
+              bottom: snap(height * 0.03),
+              width: 96 * sk,
+              height: 64 * sk,
               child: Stack(clipBehavior: Clip.none, children: [
                 // The keeper: a 64 px figure (top at stall y 2, clipped to the
                 // stall's box at y 60) or a 48 px NPC (feet at stall y 52).
                 Positioned.fill(
                   child: ClipRect(
                     clipper: _KeeperClip(
-                        big ? Rect.fromLTWH(0, 0, 96 * k, 60 * k) : null),
+                        big ? Rect.fromLTWH(0, 0, 96 * sk, 60 * sk) : null),
                     child: Stack(clipBehavior: Clip.none, children: [
                       Positioned(
-                        left: (48 - 32) * k,
-                        top: (big ? 2 : 52 - 56) * k,
-                        width: 64 * k,
-                        height: 64 * k,
+                        // Feet stay at the same spot of the stall (y 66
+                        // for the big keepers, 52 for the NPCs).
+                        left: 48 * sk - 32 * kk,
+                        top: (big ? 66 : 52) * sk - (big ? 64 : 56) * kk,
+                        width: 64 * kk,
+                        height: 64 * kk,
                         child: Image.asset(shopKeeperFrames[shopId]!,
                             fit: BoxFit.fill,
                             filterQuality: FilterQuality.none,
