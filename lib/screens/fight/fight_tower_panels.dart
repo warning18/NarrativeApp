@@ -93,6 +93,8 @@ extension _TowerPanels on _FightScreenState {
               key: foes ? towerFoePanelKey : towerPartyPanelKey,
               size: Size(w, height),
               points: pts,
+              knockOn: panelFx,
+              knockWhen: () => panelFx.hitOn(foes),
               child: Stack(fit: StackFit.expand, children: [
                 Image.asset(plate,
                     fit: BoxFit.cover,

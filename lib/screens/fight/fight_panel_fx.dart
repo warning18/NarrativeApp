@@ -140,6 +140,10 @@ class PanelFxPlayer extends ChangeNotifier {
     previewPoison.clear();
   }
 
+  /// Whether a blow has just landed on a side's panel (its snow comes off).
+  bool hitOn(bool foe) => active
+      .any((p) => p.kind == PanelFxKind.hit && p.onFoe == foe && msOf(p) < 150);
+
   /// How far the foes' panel moves now (a pixel or two, only that panel).
   Offset panelOffset(bool foe) {
     var dx = 0.0;

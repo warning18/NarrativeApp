@@ -16,8 +16,10 @@ Widget _app(Widget child, {bool reduce = false}) => MaterialApp(
       ),
     );
 
+// The caps are the weathers' other than snow (snow is a field, see
+// ux_snowfall_test.dart).
 Widget _scope(Widget child,
-        {WeatherKind kind = WeatherKind.snow, double fall = 1}) =>
+        {WeatherKind kind = WeatherKind.ash, double fall = 1}) =>
     WeatherScope(id: 't', kind: kind, fall: fall, child: child);
 
 InkWeatherPieceState _piece(WidgetTester t) =>
