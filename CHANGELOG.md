@@ -10,7 +10,7 @@ isn't reconstructable from git history alone.
 
 ## [2.10.5+1087]
 
-- **Tower and items: Art's new icons (wave 2).** 93 pictures replace the old 16 px item icons with 32 px colour icons: the potions and antidote, the fate coin (now its own picture), the five weapon types by tier (five looks, shared by neighbouring tiers), every armour piece and the eight relics. The Tower's stall shows the salve and the potion bundle, and the marks screen shows the marks icon on the balance and every price. No rule or number changes.
+- **Tower and items: Art's new icons (waves 2 and 3).** 137 pictures replace the old 16 px item icons with 32 px colour icons, so every item has its own: the potions and antidote, the fate coin and the boss trophy (now their own pictures), the five weapon types by tier (five looks, shared by neighbouring tiers), the other weapons, every armour piece, the relics, the spellbooks, materials, trophies, charms and tomes. The Tower's stall shows the salve and the potion bundle, and the marks screen shows the marks icon (an ash-grey paper scrap) on the balance and every price. No rule or number changes.
 
 ## [2.10.4+1086]
 
