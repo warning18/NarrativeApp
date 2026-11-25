@@ -213,9 +213,18 @@ class _TowerFloorScreenState extends ConsumerState<_TowerFloorBody> {
           body: const InkLoading());
     }
     final choosing = run.status == TowerStatus.choosing;
-    _railFor(choosing && _spoilsTaken == run.floor && run.offer.isNotEmpty);
     // The floor's event (off for a run that plays without them).
     final event = towerEventOf(run, data);
+    // The rail gives its room to the cards of the offer, and to a stall's, a
+    // bargain's or a parley's, once the head has walked to its notch.
+    final eventCards = !choosing &&
+        event != null &&
+        event.accepted == null &&
+        (event.kind == TowerEventKind.merchant ||
+            event.kind == TowerEventKind.bargain ||
+            event.kind == TowerEventKind.parley);
+    _railFor((choosing && _spoilsTaken == run.floor && run.offer.isNotEmpty) ||
+        eventCards);
     // How the last event moved the run, for the rail: an arrow down a fall,
     // up a skip, ending on this floor.
     final last = event?.result;
