@@ -8,6 +8,10 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [2.10.14+1096]
+
+- **Tower dice: the dark disc behind the die is gone.** When a die landed, its burst was flattened to one colour and filled, so a solid disc showed over and behind the die for a few frames. The Tower's landing burst is now rings and sparks only, and a picked die keeps its gold outline without the glow under it. No rule or number changes.
+
 ## [2.10.12+1094]
 
 - **Tower fights: skill effects that touch the screen.** A blow, a Fire skill or spell, and a poisoning skill now play on the fighter panels, from the fight's own events. A plain blow slashes across the target's panel, flashes its frame, nudges only that panel a pixel or two, and breaks a chunk off its HP bar; Fire sends an ember from your panel across the gutter, spills embers over the foe's frame and up over the app bar, with a warm vignette (and a short screen shake when strong); the poison fist splashes green, and a poisoned fighter keeps green drips on its frame and bar that pulse on every poison tick. Subtle by default, strong on a crit or a strong hit. The shifts, the shake, the tint and the crit flash follow the tremble setting and the system's reduce-motion; the effects follow the combat-effects setting. No rule or number changes.

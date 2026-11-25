@@ -830,9 +830,6 @@ extension _FightView on _FightScreenState {
                         decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(14),
                           border: Border.all(color: Palette.goldDark, width: 3),
-                          boxShadow: const [
-                            BoxShadow(color: Color(0x88F2C14E), blurRadius: 16)
-                          ],
                         ),
                       ),
                     ),
