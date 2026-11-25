@@ -5,6 +5,10 @@ part of '../fight_screen.dart';
 /// their chibi in it and their nameplates (FightBlock's ink plate) laid over
 /// the top. The cards are the usual slots with their taps and keys; only
 /// their place changed. Used instead of [_buildSlots] under the Tower.
+/// How one fighter panel is filled: [wide] today's (the plate beside the
+/// figure), [slim] the plate only, [stacked] the plate over a tall figure.
+enum _PanelMode { wide, slim, stacked }
+
 extension _TowerPanels on _FightScreenState {
   static const double _panelGap = 4;
 
@@ -28,28 +32,59 @@ extension _TowerPanels on _FightScreenState {
     final figureH = tall ? 84.0 : 56.0;
     // The foe the picked die is aimed at (its index in the row), if any.
     final aimed = _towerAimedFoe();
+    // The layout of the two panels (null: today's, foe above and "You" under).
+    // The fight's own layout: a rival's two panels side by side (one foe), a
+    // boss's tall panel, an Elite's small step; a forced one wins (pictures,
+    // tests).
+    final layout = towerPanelLayout.value ??
+        (widget.rival && _enemies.length == 1
+            ? TowerPanelLayout.rival
+            : _enemies.any((e) => isBossEnemy(e.enemyId, e.data))
+                ? TowerPanelLayout.boss
+                : _isElite
+                    ? TowerPanelLayout.elite
+                    : TowerPanelLayout.ordinary);
+    final total = foeH + _panelGap + partyH;
     Widget panel(
       double height,
       bool foes,
-      List<Widget> cards,
-    ) =>
+      List<Widget> cards, {
+      _PanelMode mode = _PanelMode.wide,
+      double figScale = 1,
+      double figBottom = 22,
+      bool mirror = false,
+      double plateInset = 0,
+      List<Offset> Function(double w, double h)? shape,
+    }) =>
         LayoutBuilder(builder: (context, box) {
           final w = box.maxWidth;
           // Slanted edges: the foes' panel rises to the right, the party's
           // falls, so the two read as one cut picture.
-          final pts = foes
-              ? [
-                  const Offset(6, 14),
-                  Offset(w - 6, 6),
-                  Offset(w - 6, height - 6),
-                  Offset(6, height - 6),
-                ]
-              : [
-                  const Offset(6, 6),
-                  Offset(w - 6, 6),
-                  Offset(w - 6, height - 6),
-                  Offset(6, height - 14),
-                ];
+          final pts = shape?.call(w, height) ??
+              (foes
+                  ? [
+                      const Offset(6, 14),
+                      Offset(w - 6, 6),
+                      Offset(w - 6, height - 6),
+                      Offset(6, height - 6),
+                    ]
+                  : [
+                      const Offset(6, 6),
+                      Offset(w - 6, 6),
+                      Offset(w - 6, height - 6),
+                      Offset(6, height - 14),
+                    ]);
+          final wide = mode == _PanelMode.wide;
+          final stacked = mode == _PanelMode.stacked;
+          final showFigure = figures && mode != _PanelMode.slim;
+          Widget figure = FightFigures(
+            allies: foes ? const [] : [for (final m in _party) _headIdFor(m)],
+            foes: foes ? [for (final e in _enemies) e.enemyId] : const [],
+            height: figureH * figScale,
+          );
+          if (mirror) {
+            figure = Transform.flip(flipX: true, child: figure);
+          }
           return InkSlantPanel(
             size: Size(w, height),
             points: pts,
@@ -70,31 +105,28 @@ extension _TowerPanels on _FightScreenState {
                     ),
                   ),
                 ),
-              if (figures)
+              if (showFigure)
                 Positioned(
                   // A lone fighter: a box 176 wide holds its half (84) at the
                   // panel's edge; several share the whole width.
-                  left: cards.length == 1 && foes ? null : 8,
-                  right: cards.length == 1 && !foes ? null : 8,
-                  width: cards.length == 1 ? 176 : null,
-                  bottom: 22,
+                  left: stacked || !(cards.length == 1 && foes) ? 8 : null,
+                  right: stacked || !(cards.length == 1 && !foes) ? 8 : null,
+                  width: cards.length == 1 && !stacked ? 176 * figScale : null,
+                  bottom: figBottom,
                   child: IgnorePointer(
-                    child: FightFigures(
-                      allies: foes
-                          ? const []
-                          : [for (final m in _party) _headIdFor(m)],
-                      foes: foes
-                          ? [for (final e in _enemies) e.enemyId]
-                          : const [],
-                      height: figureH,
-                    ),
+                    child: stacked ? Center(child: figure) : figure,
                   ),
                 ),
               Positioned(
-                // One fighter's plate leaves its picture room to stand beside
-                // it (the hero left, a lone foe right), as in the approved A.
-                left: 12 + (!foes && figures && cards.length == 1 ? 96 : 0),
-                right: 12 + (foes && figures && cards.length == 1 ? 96 : 0),
+                // One fighter's plate leaves its picture room to stand
+                // beside it (the hero left, a lone foe right), as in the
+                // approved A.
+                left: 12 +
+                    (!foes ? plateInset : 0) +
+                    (wide && !foes && figures && cards.length == 1 ? 96 : 0),
+                right: 12 +
+                    (foes ? plateInset : 0) +
+                    (wide && foes && figures && cards.length == 1 ? 96 : 0),
                 top: foes ? 18 : 10,
                 child: Row(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -110,37 +142,100 @@ extension _TowerPanels on _FightScreenState {
           );
         });
 
+    final foeCards = [
+      for (final e in _enemies)
+        KeyedSubtree(
+          key: _enemyCardKey(e.key),
+          child: VfxRecoil(
+            controller: _vfx,
+            anchor: _enemyCardKey(e.key),
+            flash: false,
+            child: _buildEnemySlot(e, previews),
+          ),
+        ),
+    ];
+    final partyCards = [
+      for (final m in _party)
+        KeyedSubtree(
+          key: _memberCardKey(m.id),
+          child: VfxRecoil(
+            controller: _vfx,
+            anchor: _memberCardKey(m.id),
+            child: _buildPartySlot(m, items),
+          ),
+        ),
+    ];
+    switch (layout) {
+      case TowerPanelLayout.ordinary:
+        break;
+      case TowerPanelLayout.elite:
+        // A small step: the foe's panel a fifth taller.
+        final fh = foeH * 1.2;
+        return Column(children: [
+          SizedBox(
+              height: fh, child: panel(fh, true, foeCards, figScale: 1.15)),
+          const SizedBox(height: _panelGap),
+          SizedBox(
+              height: total - fh - _panelGap,
+              child: panel(total - fh - _panelGap, false, partyCards)),
+        ]);
+      case TowerPanelLayout.boss:
+        // The foe's panel one and a half times taller, "You" slim under it.
+        final fh = foeH * 1.5;
+        return Column(children: [
+          SizedBox(height: fh, child: panel(fh, true, foeCards, figScale: 1.5)),
+          const SizedBox(height: _panelGap),
+          SizedBox(
+              height: total - fh - _panelGap,
+              child: panel(total - fh - _panelGap, false, partyCards,
+                  mode: _PanelMode.slim)),
+        ]);
+      case TowerPanelLayout.rival:
+        // Two tall panels side by side, facing each other, a slanted gutter.
+        const slant = 16.0;
+        List<Offset> left(double w, double h) => [
+              const Offset(6, 6),
+              Offset(w - 6, 6),
+              Offset(w - 6 - slant, h - 6),
+              Offset(6, h - 6),
+            ];
+        List<Offset> right(double w, double h) => [
+              const Offset(6 + slant, 6),
+              Offset(w - 6, 6),
+              Offset(w - 6, h - 6),
+              Offset(6, h - 6),
+            ];
+        return FightNameWrap(
+          child: SizedBox(
+            height: total,
+            child: Row(children: [
+              Expanded(
+                child: panel(total, true, foeCards,
+                    mode: _PanelMode.stacked,
+                    figScale: 2.3,
+                    figBottom: 12,
+                    mirror: true,
+                    plateInset: slant + 6,
+                    shape: left),
+              ),
+              Expanded(
+                child: panel(total, false, partyCards,
+                    mode: _PanelMode.stacked,
+                    figScale: 2.3,
+                    figBottom: 12,
+                    mirror: true,
+                    plateInset: slant + 6,
+                    shape: right),
+              ),
+            ]),
+          ),
+        );
+    }
+
     return Column(children: [
-      SizedBox(
-        height: foeH,
-        child: panel(foeH, true, [
-          for (final e in _enemies)
-            KeyedSubtree(
-              key: _enemyCardKey(e.key),
-              child: VfxRecoil(
-                controller: _vfx,
-                anchor: _enemyCardKey(e.key),
-                flash: false,
-                child: _buildEnemySlot(e, previews),
-              ),
-            ),
-        ]),
-      ),
+      SizedBox(height: foeH, child: panel(foeH, true, foeCards)),
       const SizedBox(height: _panelGap),
-      SizedBox(
-        height: partyH,
-        child: panel(partyH, false, [
-          for (final m in _party)
-            KeyedSubtree(
-              key: _memberCardKey(m.id),
-              child: VfxRecoil(
-                controller: _vfx,
-                anchor: _memberCardKey(m.id),
-                child: _buildPartySlot(m, items),
-              ),
-            ),
-        ]),
-      ),
+      SizedBox(height: partyH, child: panel(partyH, false, partyCards)),
     ]);
   }
 

@@ -8,6 +8,10 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [2.10.9+1091]
+
+- **Tower fights: the panels change with the fight.** The two fighter panels keep their look; only their layout follows the kind of fight. A boss floor gives the foe a panel one and a half times taller, with your panel slim under it; an Elite a fifth taller; an ordinary floor stays as it was. A rival's fight (when the fight is told it is one) puts the two fighters in two tall panels side by side with a slanted gutter, facing each other, long names wrapping on two lines. Rival floors keep today's layout until the game passes that flag. No rule or number changes.
+
 ## [2.10.8+1090]
 
 - **Shops: a bigger stall.** In the shop pictures the stall is 25% bigger (the user's pick) and the keeper keeps his size, standing at the same spot behind the counter. The strip is a little taller (0.55 of its width) to fit it, and the stall and keeper snap to whole device pixels so the pixel art stays even. No price, stock or rule changes.
