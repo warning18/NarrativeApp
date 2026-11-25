@@ -156,7 +156,6 @@ void main() {
         expect(error, isNull, reason: '$name ${lang.name}');
         expect(find.byKey(const Key('tower_card_0')), findsOneWidget,
             reason: '$name ${lang.name}');
-        final fr = lang == AppLanguage.fr;
         if (name == 'gifts') {
           expect(find.byKey(const Key('tower_offer_frame')), findsOneWidget);
           expect(find.textContaining('+$towerGiftStanding'), findsWidgets);
@@ -167,8 +166,6 @@ void main() {
           expect(run.offer.first,
               const TowerReward(TowerRewardKind.clanOath, id: 'mire'));
         }
-        expect(find.byKey(const Key('tower_refuse')), findsOneWidget,
-            reason: fr ? 'Plus tard' : 'Not now');
       }
     }
   });

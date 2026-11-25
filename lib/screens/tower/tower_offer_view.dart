@@ -24,6 +24,7 @@ import '../../theme/stitched_ink.dart';
 import '../../data/tower/tower_clans.dart' show towerClanRipple;
 import '../../data/tower/tower_events.dart';
 import 'tower_card_art.dart';
+import 'tower_clan_cards.dart';
 import 'tower_event_card.dart';
 import 'tower_tarot_card.dart';
 
@@ -268,21 +269,6 @@ class _TowerOfferViewState extends ConsumerState<TowerOfferView> {
     );
   }
 
-  /// A small tag in the clan's colour (the story's offer card has the same).
-  Widget _tag(String text, Color color) => Container(
-        padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
-        decoration: BoxDecoration(
-            color: color.withValues(alpha: 0.2),
-            border: Border.all(color: color.withValues(alpha: 0.8)),
-            borderRadius: BorderRadius.circular(4)),
-        child: Text(text,
-            style: const TextStyle(
-                fontFamily: InkFonts.system,
-                fontSize: 10,
-                height: 1.1,
-                color: Color(0xFFF1E8D2))),
-      );
-
   /// The clans' offer in the story's look (offer_dialog.dart): the gifts as a
   /// fanned hand of tier cards, each with its clan's banner and colour on the
   /// name band, and the oath as a wide row under them. What a card says and
@@ -318,17 +304,16 @@ class _TowerOfferViewState extends ConsumerState<TowerOfferView> {
           final faction = factions[reward.id];
           final clan = faction?.shortFor(lang) ?? reward.id;
           final die = towerClanDieOf(reward.id, widget.data.dice);
-          return ClanRaiseRow(
+          return TowerClanOathRow(
             key: Key('tower_card_$i'),
-            tier: CardTier.legendary,
             color: colour,
             flag: flagOf(reward.id, colour),
             icon: faction == null
                 ? const SizedBox(width: 32, height: 32)
                 : ClanDisc(faction, size: 32),
             name: tr(ref, 'tower_oath_title').replaceAll('{clan}', clan),
-            tags: [_tag(tr(ref, 'tower_kind_oath'), colour)],
-            raises: [
+            tags: [towerClanTag(tr(ref, 'tower_kind_oath'))],
+            text: [
               tr(ref, 'tower_oath_line_${reward.id}'),
               if (die != null)
                 tr(ref, 'tower_oath_die')
@@ -362,8 +347,8 @@ class _TowerOfferViewState extends ConsumerState<TowerOfferView> {
                 final idx = towerRarityIndex(rarity) ?? 0;
                 final isSkill = reward.kind == TowerRewardKind.skill ||
                     reward.kind == TowerRewardKind.rankUp;
-                return ClanCardView(
-                  tier: CardTier.values[idx.clamp(0, 4)],
+                return TowerClanCard(
+                  rarity: idx.clamp(0, 4),
                   color: colour,
                   flag: flagOf(reward.clan, colour),
                   icon: towerCardPicture(
@@ -373,9 +358,9 @@ class _TowerOfferViewState extends ConsumerState<TowerOfferView> {
                           size: IconSize.s48, color: colour)),
                   name: t.name,
                   tags: [
-                    _tag(t.kind.split(' · ').first, colour),
+                    towerClanTag(t.kind.split(' · ').first),
                     if (rarity.isNotEmpty)
-                      _tag(itemRarityLabelFor(lang, rarity), colour),
+                      towerClanTag(itemRarityLabelFor(lang, rarity)),
                   ],
                   greeting: faction?.mottoFor(lang) ?? '',
                   clanName: faction?.shortFor(lang) ?? reward.clan,
@@ -514,6 +499,8 @@ class _TowerOfferViewState extends ConsumerState<TowerOfferView> {
     final clans = offer
         .any((r) => r.clan.isNotEmpty || r.kind == TowerRewardKind.clanOath);
     return ListView(
+      // The clans' table is tall: its Not now stays built below the fold.
+      cacheExtent: 1600,
       padding: const EdgeInsets.fromLTRB(8, 4, 16, 24),
       children: [
         Text(tr(ref, 'tower_cleared').replaceAll('{n}', '${widget.run.floor}'),
