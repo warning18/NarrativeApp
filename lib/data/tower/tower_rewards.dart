@@ -171,8 +171,8 @@ String? towerClanDieOf(String clanId, Map<String, dynamic> dice) {
 /// one a run, the user's call), the oath of each clan of [clanPool] at
 /// [towerOathStep] in [standing] (a card of its own, first, beside the
 /// gifts or alone); from [towerPityOathFloor], with none of those due, the
-/// oath of the highest-standing clan ([towerPityOathClan]). Often nothing: the floor's spoils ([towerSpoilsFor])
-/// are its reward.
+/// oath of the highest-standing clan ([towerPityOathClan]). Often nothing:
+/// the floor's spoils ([towerSpoilsFor]) are its reward.
 List<TowerReward> towerOfferFor({
   required int seed,
   required int floor,
