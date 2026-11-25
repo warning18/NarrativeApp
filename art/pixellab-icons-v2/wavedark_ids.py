@@ -12,3 +12,10 @@ IDS={
 }
 SUFFIX=", game icon, no text, centred"
 T=""
+
+# Shop ELEMENT: a stall that sits in front of any background, with a transparent gap behind the counter for a 48 px NPC (96 x 64, transparent)
+ST="grim dark fantasy chibi pixel art, worn and weathered, ominous mood, muted desaturated colours, deep black shadows, thick dark outline, a market stall seen straight from the front: two wooden posts holding a ragged awning on top, a heavy wooden counter across the bottom with wares on it, a trade sign hanging from the awning, the open space between the posts above the counter completely empty and transparent, no shopkeeper, no people, "
+STALLS={
+'stall_forge':ST+"a blacksmith's stall: a small glowing forge on the counter, swords, an axe and horseshoes laid out, an anvil, ember gold rim light, a crossed sword sign",
+'stall_apothecary':ST+"an apothecary's stall: rows of glowing potion bottles and jars of herbs on the counter, a mortar and pestle, sickly green rim light, a mortar sign",
+}
