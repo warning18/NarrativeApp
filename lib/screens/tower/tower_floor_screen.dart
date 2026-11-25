@@ -109,8 +109,8 @@ class _TowerFloorScreenState extends ConsumerState<_TowerFloorBody> {
     final session = TowerLevelUpSession(run, data);
     await Navigator.of(context).push(MaterialPageRoute(
         builder: (_) => TowerNight(
-            child: session
-                .wrap(const LevelUpScreen(doneLabelKey: 'tower_continue')))));
+            child: session.wrap(const LevelUpScreen(
+                doneLabelKey: 'tower_continue', tower: true)))));
     if (!mounted) return;
     await ref.read(towerProvider.notifier).setRun(session.run);
   }

@@ -73,7 +73,7 @@ void main() {
     expect(find.text('5 picks'), findsOneWidget);
     // One radar while a pick waits: the picker's, the plain one is gone.
     expect(find.byKey(const Key('level_up_radar')), findsNothing);
-    expect(find.byKey(const Key('stat_pick_radar')), findsOneWidget);
+    expect(find.byKey(const Key('stat_pick_list')), findsOneWidget);
     expect(find.textContaining('Stat picks left'), findsNothing);
     expect(find.text('Hold a stat to see what it does'), findsNothing);
     expect(find.text('Pick a gain'), findsOneWidget);
@@ -94,7 +94,7 @@ void main() {
     await tester.tap(find.byKey(const Key('stat_pick_offer_0')));
     await settle(tester);
     expect(find.byKey(Key('stat_pick_detail_${offer.pathId}')), findsOneWidget);
-    expect(find.byKey(const Key('stat_pick_radar')), findsOneWidget);
+    expect(find.byKey(const Key('stat_pick_list')), findsOneWidget);
     expect(container.read(playerSessionProvider).statPoints, 5);
     await tester.tap(find.byKey(const Key('stat_pick_take')));
     await settle(tester);
