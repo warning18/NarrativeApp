@@ -466,6 +466,16 @@ extension _FightRounds on _FightScreenState {
           }
         }
         dealt = landed;
+        _publishStrike(
+            kind: FightHitKind.strike,
+            actor: actor,
+            face: face,
+            skills: availableSkills,
+            target: target,
+            amount: landed,
+            crit: result.isCritical,
+            element: element,
+            blows: blows);
         _bestHitThisRound = max(_bestHitThisRound, landed);
         if (landed > target.topHitDamage) {
           target.topHitDamage = landed;
@@ -510,9 +520,11 @@ extension _FightRounds on _FightScreenState {
           _splashFrom(actor, target, damage, extras.splashShare, element,
               pierce, newEntries, lang,
               limit: extras.splashTargets,
-              logKey: extras.splashTargets > 0
-                  ? 'skill_chain_hits'
-                  : 'splash_hits');
+              logKey:
+                  extras.splashTargets > 0 ? 'skill_chain_hits' : 'splash_hits',
+              face: face,
+              skills: availableSkills,
+              crit: result.isCritical);
         } else if (damage > 0 &&
             (cleave || combos.contains(PartyCombo.volley))) {
           _splashFrom(
@@ -523,7 +535,10 @@ extension _FightRounds on _FightScreenState {
               element,
               pierce,
               newEntries,
-              lang);
+              lang,
+              face: face,
+              skills: availableSkills,
+              crit: result.isCritical);
         }
         final rawInflicted = result.inflictedStatus;
         // The Fen's Terms: a poison the player inflicts runs longer.
@@ -765,6 +780,11 @@ extension _FightRounds on _FightScreenState {
         _fx(VfxStyle.poison, _memberCardKey(member.id),
             text: '-$poison', textKind: VfxTextKind.hurt);
         member.currentHealth = max(0, member.currentHealth - poison);
+        _events.tick(FightStatusTickEvent(
+            target: _memberTarget(member),
+            amount: poison,
+            status: StatusEffectType.poison,
+            round: _roundsStarted));
         newEntries.add(_LogEntry(
           member.isPlayer
               ? '${trFor(lang, 'you_take_damage_prefix')} $poison '

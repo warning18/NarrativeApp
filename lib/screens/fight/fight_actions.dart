@@ -221,6 +221,17 @@ extension _FightActions on _FightScreenState {
             power: spellPower(amount: damage, maxHealth: enemy.maxHealth));
         final wasAlive = enemy.isAlive;
         enemy.currentHealth = max(0, enemy.currentHealth - damage);
+        _events.hit(FightHitEvent(
+          kind: FightHitKind.spell,
+          target: _foeTarget(enemy),
+          source: _memberTarget(player),
+          amount: damage,
+          power: spellPower(amount: damage, maxHealth: enemy.maxHealth),
+          crit: false,
+          skillId: spell.id,
+          element: spell.element,
+          round: _roundsStarted,
+        ));
         // The Tempest Toll: the spell takes back a share as health.
         // (and the Spire-Fallen's full-Well spell; the Whisper Ledger
         // steals a few coins).

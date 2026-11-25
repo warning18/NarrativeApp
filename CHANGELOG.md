@@ -8,6 +8,10 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [2.10.10+1092]
+
+- **Fight hooks for UX's panels and effects (no rule change).** A Tower rival's floor now opens its fight with the rival layout (UX's v2.10.9 panels). The fight publishes each hit (who, how much, its size, a critical, the skill and its element) and each round's poison tick, for the skill effects to follow; listening changes nothing in a fight. Poison is the only status that deals damage each round.
+
 ## [2.10.9+1091]
 
 - **Tower fights: the panels change with the fight.** The two fighter panels keep their look; only their layout follows the kind of fight. A boss floor gives the foe a panel one and a half times taller, with your panel slim under it; an Elite a fifth taller; an ordinary floor stays as it was. A rival's fight (when the fight is told it is one) puts the two fighters in two tall panels side by side with a slanted gutter, facing each other, long names wrapping on two lines. Rival floors keep today's layout until the game passes that flag. No rule or number changes.
