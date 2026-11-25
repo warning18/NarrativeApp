@@ -9,6 +9,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:narrative_data_app/data/world_map.dart';
 import 'package:narrative_data_app/theme/stitched_ink.dart';
 import 'package:narrative_data_app/widgets/city_chart/city_chart.dart';
+import 'package:narrative_data_app/widgets/city_chart/city_chart_painter.dart';
 import 'package:narrative_data_app/widgets/city_chart/city_chart_view.dart';
 import 'package:narrative_data_app/widgets/motion.dart';
 
@@ -89,13 +90,27 @@ void main() {
     await tester.pump(const Duration(milliseconds: 100));
     expect(SchedulerBinding.instance.transientCallbackCount, 0,
         reason: 'no ticker runs while the platform asks for no motion');
+    // The ring's breath (a clock of its own since v2.8.1, 20 beats a
+    // second, not a ticker) stands still too.
+    double beat() => (tester
+            .widget<CustomPaint>(find.byKey(const Key('city_chart_party')))
+            .painter! as CityChartPainter)
+        .beat!
+        .value;
+    final still = beat();
+    await tester.pump(const Duration(milliseconds: 300));
+    expect(beat(), still, reason: 'no breath while motion is off');
 
     tester.platformDispatcher.accessibilityFeaturesTestValue =
         const FakeAccessibilityFeatures();
     await tester.pumpWidget(const SizedBox());
     await tester.pumpWidget(view());
     await tester.pump(const Duration(milliseconds: 100));
-    expect(SchedulerBinding.instance.transientCallbackCount, greaterThan(0),
-        reason: 'the breath loops otherwise');
+    final first = beat();
+    await tester.pump(const Duration(milliseconds: 300));
+    expect(beat(), isNot(first), reason: 'the breath loops otherwise');
+    expect(SchedulerBinding.instance.transientCallbackCount, 0,
+        reason: 'and it holds no ticker: the screen is not asked for a '
+            'frame at every refresh');
   });
 }

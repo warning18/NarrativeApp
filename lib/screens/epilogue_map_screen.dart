@@ -12,6 +12,7 @@
 import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart' show ScrollCacheExtent;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../data/town_rulers.dart';
@@ -79,6 +80,9 @@ class EpilogueMapBody extends ConsumerStatefulWidget {
 class _EpilogueMapBodyState extends ConsumerState<EpilogueMapBody> {
   final ValueNotifier<int> _frame = ValueNotifier<int>(0);
 
+  /// Each big town's line, to scroll to from its number on the chart.
+  final Map<String, GlobalKey> _rows = {};
+
   @override
   void dispose() {
     _frame.dispose();
@@ -96,7 +100,11 @@ class _EpilogueMapBodyState extends ConsumerState<EpilogueMapBody> {
     final rulers = ref.watch(townRulersProvider);
     // The sphere's world: a town sits where the world map shows it.
     final chart = chartOf(MapShape.story);
-    final palette = ChartPalette.of(ref.watch(mapLookProvider));
+    // The page's own look: Parchment on a light page, so the chart is not
+    // a dark slab in it; the chosen look on a dark one.
+    final palette = theme.brightness == Brightness.light
+        ? ChartPalette.of(MapLook.parchment)
+        : ChartPalette.of(ref.watch(mapLookProvider));
     final routes =
         ref.watch(localizedDbProvider(landRoutesSchema)).value ?? const {};
 
@@ -137,6 +145,9 @@ class _EpilogueMapBodyState extends ConsumerState<EpilogueMapBody> {
 
     return ListView(
       padding: const EdgeInsets.fromLTRB(12, 10, 12, 20),
+      // The whole page is built at once (a chart, seven lines): a number
+      // tapped on the chart can then scroll to a line still off screen.
+      scrollCacheExtent: const ScrollCacheExtent.pixels(4000),
       children: [
         Text(tr(ref, 'epilogue_map_subtitle'),
             style: theme.textTheme.bodySmall
@@ -159,6 +170,16 @@ class _EpilogueMapBodyState extends ConsumerState<EpilogueMapBody> {
                 if (spots.any((s) => s.townId == t.townId))
                   (t.townId, spots.firstWhere((s) => s.townId == t.townId)),
             ],
+            // A tap on a town's number brings its line into view.
+            onTown: (townId) {
+              final row = _rows[townId]?.currentContext;
+              if (row == null) return;
+              Scrollable.ensureVisible(row,
+                  alignment: 0.1,
+                  duration: MediaQuery.of(context).disableAnimations
+                      ? Duration.zero
+                      : const Duration(milliseconds: 250));
+            },
           ),
         ),
         const SizedBox(height: 8),
@@ -182,12 +203,15 @@ class _EpilogueMapBodyState extends ConsumerState<EpilogueMapBody> {
                 ?.copyWith(color: ink.ash, letterSpacing: 1.2)),
         const SizedBox(height: 6),
         for (var i = 0; i < big.length; i++)
-          _TownRow(
-            number: i + 1,
-            town: big[i],
-            spot: spots.where((s) => s.townId == big[i].townId).firstOrNull,
-            onDistricts: () => _showDistricts(
-                context, big[i], geography, data, rulers, language, colours),
+          KeyedSubtree(
+            key: _rows[big[i].townId] ??= GlobalKey(),
+            child: _TownRow(
+              number: i + 1,
+              town: big[i],
+              spot: spots.where((s) => s.townId == big[i].townId).firstOrNull,
+              onDistricts: () => _showDistricts(
+                  context, big[i], geography, data, rulers, language, colours),
+            ),
           ),
         const SizedBox(height: 6),
         Text(tr(ref, 'epilogue_map_legend'),
@@ -288,7 +312,11 @@ class _MapBox extends StatelessWidget {
     required this.roads,
     required this.spots,
     required this.big,
+    this.onTown,
   });
+
+  /// A big town's number was tapped.
+  final ValueChanged<String>? onTown;
 
   final ValueNotifier<int> frame;
   final ChartGeography chart;
@@ -335,70 +363,119 @@ class _MapBox extends StatelessWidget {
       final k = w / view.width;
       final full = Size(worldMapWidth * k, worldMapHeight * k);
       final h = view.height * k;
-      return ClipRRect(
-        borderRadius: BorderRadius.circular(12),
-        child: Container(
-          width: w,
-          height: h,
-          color: palette.sea,
-          child: OverflowBox(
-            alignment: Alignment.topLeft,
-            minWidth: full.width,
-            maxWidth: full.width,
-            minHeight: full.height,
-            maxHeight: full.height,
-            child: Transform.translate(
-              offset: Offset(-view.left * k, -view.top * k),
-              child: SizedBox(
-                width: full.width,
-                height: full.height,
-                child: Stack(fit: StackFit.expand, children: [
-                  CustomPaint(
-                    painter: ChartMapPainter(
-                      frame: frame,
-                      walk: const AlwaysStoppedAnimation<double>(0),
-                      geography: chart,
-                      palette: palette,
-                      language: language,
-                      discovered: const {},
-                      legs: const [],
-                      ahead: null,
-                      selectedId: '',
-                      here: null,
-                      walking: false,
-                      walkPath: const [],
-                      chapterFilter: 0,
-                      reduceMotion: true,
-                      chapterColor: (_) => palette.road,
-                      fog: ChartFog.none,
-                      clanColours: colours,
-                      townTints: tints,
-                      zoomOf: () => k * 2,
-                    ),
+      final marks = spreadMarks([for (final b in big) b.$2.at * k]);
+      return GestureDetector(
+          key: const Key('epilogue_map_taps'),
+          behavior: HitTestBehavior.opaque,
+          onTapUp: onTown == null
+              ? null
+              : (d) {
+                  // The number under the finger, within a thumb's reach.
+                  final at =
+                      d.localPosition + Offset(view.left * k, view.top * k);
+                  var best = -1;
+                  var bestD = 24.0;
+                  for (var i = 0; i < marks.length; i++) {
+                    final dist = (marks[i] - at).distance;
+                    if (dist < bestD) {
+                      bestD = dist;
+                      best = i;
+                    }
+                  }
+                  if (best >= 0) onTown!(big[best].$1);
+                },
+          child: ClipRRect(
+            borderRadius: BorderRadius.circular(12),
+            child: Container(
+              width: w,
+              height: h,
+              color: palette.sea,
+              child: OverflowBox(
+                alignment: Alignment.topLeft,
+                minWidth: full.width,
+                maxWidth: full.width,
+                minHeight: full.height,
+                maxHeight: full.height,
+                child: Transform.translate(
+                  offset: Offset(-view.left * k, -view.top * k),
+                  child: SizedBox(
+                    width: full.width,
+                    height: full.height,
+                    child: Stack(fit: StackFit.expand, children: [
+                      CustomPaint(
+                        painter: ChartMapPainter(
+                          frame: frame,
+                          walk: const AlwaysStoppedAnimation<double>(0),
+                          geography: chart,
+                          palette: palette,
+                          language: language,
+                          discovered: const {},
+                          legs: const [],
+                          ahead: null,
+                          selectedId: '',
+                          here: null,
+                          walking: false,
+                          walkPath: const [],
+                          chapterFilter: 0,
+                          reduceMotion: true,
+                          chapterColor: (_) => palette.road,
+                          fog: ChartFog.none,
+                          clanColours: colours,
+                          townTints: tints,
+                          zoomOf: () => k * 2,
+                          // Too small to read here: the list names the towns.
+                          names: false,
+                        ),
+                      ),
+                      CustomPaint(
+                        painter: _OverPainter(
+                            roads: roads,
+                            big: [for (final b in big) b.$2],
+                            marks: marks,
+                            all: spots,
+                            k: k,
+                            palette: palette),
+                      ),
+                    ]),
                   ),
-                  CustomPaint(
-                    painter: _OverPainter(
-                        roads: roads,
-                        big: [for (final b in big) b.$2],
-                        all: spots,
-                        k: k,
-                        palette: palette),
-                  ),
-                ]),
+                ),
               ),
             ),
-          ),
-        ),
-      );
+          ));
     });
   }
 }
 
 /// The clans' roads and the big towns' numbered discs, over the chart.
+/// The big towns' numbers, pushed apart where two would sit on each other:
+/// each pair closer than [gap] moves away along the line between them,
+/// half each, until none overlap. A number alone stays on its town.
+@visibleForTesting
+List<Offset> spreadMarks(List<Offset> towns, {double gap = 27}) {
+  final at = [...towns];
+  for (var pass = 0; pass < 40; pass++) {
+    var moved = false;
+    for (var i = 0; i < at.length; i++) {
+      for (var j = i + 1; j < at.length; j++) {
+        var d = at[j] - at[i];
+        if (d.distance >= gap) continue;
+        if (d.distance < 0.01) d = const Offset(1, 0);
+        final push = d / d.distance * ((gap - d.distance) / 2 + 0.01);
+        at[i] -= push;
+        at[j] += push;
+        moved = true;
+      }
+    }
+    if (!moved) break;
+  }
+  return at;
+}
+
 class _OverPainter extends CustomPainter {
   const _OverPainter({
     required this.roads,
     required this.big,
+    required this.marks,
     required this.all,
     required this.k,
     required this.palette,
@@ -406,6 +483,9 @@ class _OverPainter extends CustomPainter {
 
   final List<_Road> roads;
   final List<_Spot> big;
+
+  /// Where each big town's number is drawn (see [spreadMarks]).
+  final List<Offset> marks;
 
   /// Every town: a small dot in its holder's colour (the big ones are
   /// numbered over it).
@@ -458,8 +538,20 @@ class _OverPainter extends CustomPainter {
             ..style = PaintingStyle.stroke
             ..strokeWidth = 1.4);
     }
+    // A number pushed off its town is tied to it by a thin line.
     for (var i = 0; i < big.length; i++) {
-      final c = big[i].at * k;
+      final home = big[i].at * k;
+      if ((marks[i] - home).distance > 3) {
+        canvas.drawLine(
+            home,
+            marks[i],
+            Paint()
+              ..color = palette.place.withValues(alpha: 0.85)
+              ..strokeWidth = 1.2);
+      }
+    }
+    for (var i = 0; i < big.length; i++) {
+      final c = marks[i];
       canvas.drawCircle(
           c, 11.5, Paint()..color = Colors.black.withValues(alpha: 0.6));
       canvas.drawCircle(c, 9.5, Paint()..color = big[i].fill);
@@ -487,7 +579,11 @@ class _OverPainter extends CustomPainter {
 
   @override
   bool shouldRepaint(_OverPainter old) =>
-      old.roads != roads || old.big != big || old.all != all || old.k != k;
+      old.roads != roads ||
+      old.big != big ||
+      old.all != all ||
+      old.k != k ||
+      old.palette != palette;
 }
 
 class _HolderChip extends StatelessWidget {

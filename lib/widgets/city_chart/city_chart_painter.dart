@@ -5,7 +5,8 @@
 // chart colours.
 import 'dart:math' as math;
 
-import 'package:flutter/foundation.dart' show mapEquals, setEquals;
+import 'package:flutter/foundation.dart'
+    show ValueListenable, mapEquals, setEquals;
 import 'package:flutter/material.dart';
 
 import '../../data/map_charts.dart';
@@ -104,7 +105,7 @@ class CityChartPainter extends CustomPainter {
   /// redrawn on each beat without its widget being rebuilt (a rebuild under
   /// the view's LayoutBuilder lays the view out again and repaints all that
   /// shares its layer). Read in place of [pulse].
-  final Animation<double>? beat;
+  final ValueListenable<double>? beat;
   double get _pulse => beat?.value ?? pulse;
 
   /// What this painter draws: the whole plan, the plan without the party's

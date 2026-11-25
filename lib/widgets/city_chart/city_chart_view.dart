@@ -4,8 +4,10 @@
 // and its ways their pins. Districts the party has not found lie under fog.
 // No separate hub: the whole city is the zoomed-out view, and "Whole city"
 // is the way back to it.
+import 'dart:async';
 import 'dart:math' as math;
 
+import 'package:flutter/foundation.dart' show ValueListenable;
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
@@ -174,8 +176,32 @@ class _CityChartViewState extends State<CityChartView>
     with TickerProviderStateMixin {
   late final AnimationController _move = AnimationController(
       vsync: this, duration: const Duration(milliseconds: 420));
-  late final AnimationController _breath =
-      AnimationController(vsync: this, duration: const Duration(seconds: 2));
+
+  /// The party's ring breathing: 0 to 1 over two seconds, again and again,
+  /// in [breathSteps] steps. A clock of its own, 20 beats a second, not a
+  /// ticker: a ticker asks for a frame at every refresh of the screen for
+  /// as long as it runs, and the ring is the only thing moving on a town
+  /// left alone. The eye does not tell the two apart on so slow a move.
+  final ValueNotifier<double> _breath = ValueNotifier<double>(0);
+  Timer? _breathClock;
+  int _breathStep = 0;
+
+  /// How many times a second the ring is redrawn, and its steps in a breath.
+  static const int breathsPerSecond = 20;
+  static const int breathSteps = 2 * breathsPerSecond;
+
+  void _breathe(bool on) {
+    if (!on) {
+      _breathClock?.cancel();
+      _breathClock = null;
+      return;
+    }
+    _breathClock ??= Timer.periodic(
+        const Duration(milliseconds: 1000 ~/ breathsPerSecond), (_) {
+      _breathStep = (_breathStep + 1) % breathSteps;
+      _breath.value = _breathStep / breathSteps;
+    });
+  }
 
   // The view: canvas = _offset + plan point * _scale.
   double _scale = 1;
@@ -235,17 +261,16 @@ class _CityChartViewState extends State<CityChartView>
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    if (_animate) {
-      if (!_breath.isAnimating) _breath.repeat();
-    } else {
-      _breath.stop();
-    }
+    // Not under another page either (a ticker is muted there by itself;
+    // this clock has to be told).
+    _breathe(_animate && TickerMode.valuesOf(context).enabled);
   }
 
   @override
   void dispose() {
     widget.camera?.removeListener(_onCamera);
     _move.dispose();
+    _breathe(false);
     _breath.dispose();
     _redrawn.dispose();
     super.dispose();
@@ -463,7 +488,7 @@ class _CityChartViewState extends State<CityChartView>
 
   CityChartPainter _painter(
           {double pulse = 0,
-          Animation<double>? beat,
+          ValueListenable<double>? beat,
           CityChartLayer layer = CityChartLayer.all}) =>
       CityChartPainter(
         layer: layer,

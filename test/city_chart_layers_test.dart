@@ -64,6 +64,29 @@ void main() {
     expect(planAfter.beat, isNull);
     expect(identical(planAfter, plan), isTrue);
 
+    // The ring is redrawn 20 times a second, not at every refresh of the
+    // screen: over one second of 60 refreshes it moves 20 times, and only
+    // those ask for a frame.
+    var beats = 0, frames = 0;
+    void onBeat() => beats++;
+    ring.beat!.addListener(onBeat);
+    for (var i = 0; i < 60; i++) {
+      // A refresh's worth of time goes by; was a frame asked for?
+      await tester.binding.delayed(const Duration(microseconds: 16667));
+      if (tester.binding.hasScheduledFrame) frames++;
+      await tester.pump();
+    }
+    ring.beat!.removeListener(onBeat);
+    expect(beats, inInclusiveRange(19, 21));
+    expect(frames, inInclusiveRange(19, 21));
+    // A whole breath still takes two seconds, from 0 up to 1 and round.
+    final seen = <double>{};
+    void onStep() => seen.add(ring.beat!.value);
+    ring.beat!.addListener(onStep);
+    await tester.pump(const Duration(seconds: 2));
+    ring.beat!.removeListener(onStep);
+    expect(seen.every((v) => v >= 0 && v < 1), isTrue);
+
     // The party is on the plan, and + closes in on its place.
     final party = plan.partyPoint;
     expect(party, isNotNull);
