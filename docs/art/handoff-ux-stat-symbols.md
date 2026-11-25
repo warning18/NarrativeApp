@@ -1,0 +1,4 @@
+# Hand-off to UX: the 8 stat symbols for the Level Up screen (Art, 25 November 2026)
+
+Files: `art/pixellab-stats/handoff/<stat>_32.png` and `<stat>_24.png` (stat = str, dex, con, int, wis, per, luck, cha), transparent ground. Apollo palette (48 colours: the 46 plus the two core brights), snapped in code, ink outline 090A14, no region under 2 px, one spot colour each: STR a red clenched fist, DEX a green feather, CON an orange heart on a shield, INT a blue open book with a quill, WIS a purple owl, PER a teal eye, LUCK a gold four-leaf clover, CHA a pink mask with a crown.
+The 32 px ones are generated (text only, palette forced, 1 generation each, 8 in all, no retries; `art/pixellab-stats/gen.py`). The 24 px ones are the 32 px reduced in code (box filter, then snapped): they stay readable. Sheet `docs/art/boards/stat-symbols.png`. The STR fist is the darkest (dark red); the rest are bright.
