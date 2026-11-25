@@ -11,3 +11,10 @@ IDS={k:M+rim(k)+", "+v for k,v in W4.IDS.items()}
 SUFFIX=", game icon, no text, centred"
 T=""
 RETRY={}
+
+RETRY={
+'harbor_rat':M+"ember gold, a chibi whole small creature, chunky, a fat grey harbour rat seen from the side, big round body, long pink tail, red eyes, sharp teeth, filling the whole frame, not a person",
+'kraken_arm':M+"sickly green, a long thick dark grey-green tentacle rising up from the bottom edge, curved at the tip, rows of pale round suckers, wet shine, filling the frame, only a tentacle, no eyes, no face, not cute",
+'void_wisp':M+"void violet, a chibi whole small creature, chunky, a small floating flame wisp of cold pale blue-white fire with a dark hollow face and two small eyes, wisps of smoke below, not a ghost sheet",
+'hollow_reflection':M+"void violet, a chibi bust, head and shoulders, big head, the grey mirror copy of an adventurer, a plain grey cloak and hood, a smooth featureless pale face, a faint violet outline glow",
+}
