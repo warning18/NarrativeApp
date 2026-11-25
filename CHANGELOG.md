@@ -8,6 +8,9 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [2.10.15+1097]
+
+- Level Up: what a stat pick changes, before and after, for UX's new cards (no rule change).
 ## [2.10.14+1096]
 
 - **Tower dice: the black ball behind the die is gone.** Three things painted a solid mass behind or over the die: its landing burst (flattened to one colour, so the flash showed as a disc), the picked die's blurred gold glow, and the dark archway at the top of Art's dice plate, which on a short board sat right behind the die. The landing burst is now rings and sparks only, a picked die keeps its gold outline without the glow, and the plate is drawn a third larger from its foot so the archway is cut off. No rule or number changes.

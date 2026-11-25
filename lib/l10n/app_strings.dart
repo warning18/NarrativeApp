@@ -6089,6 +6089,74 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.en: 'story checks',
     AppLanguage.fr: 'épreuves du récit',
   },
+  'stat_effect_tower_checks': {
+    AppLanguage.en: 'Tower checks',
+    AppLanguage.fr: 'épreuves de la Tour',
+  },
+  'stat_preview_damage': {
+    AppLanguage.en: 'Damage',
+    AppLanguage.fr: 'Dégâts',
+  },
+  'stat_preview_max_health': {
+    AppLanguage.en: 'Max health',
+    AppLanguage.fr: 'Santé max',
+  },
+  'stat_preview_dodge': {
+    AppLanguage.en: 'Dodge',
+    AppLanguage.fr: 'Esquive',
+  },
+  'stat_preview_crit': {
+    AppLanguage.en: 'Critical hit',
+    AppLanguage.fr: 'Coup critique',
+  },
+  'stat_preview_block': {
+    AppLanguage.en: 'Block',
+    AppLanguage.fr: 'Blocage',
+  },
+  'stat_preview_max_mana': {
+    AppLanguage.en: 'Max mana',
+    AppLanguage.fr: 'Mana max',
+  },
+  'stat_preview_heal': {
+    AppLanguage.en: 'Healing bonus',
+    AppLanguage.fr: 'Bonus de soin',
+  },
+  'stat_preview_mana': {
+    AppLanguage.en: 'Mana bonus',
+    AppLanguage.fr: 'Bonus de mana',
+  },
+  'stat_preview_spells': {
+    AppLanguage.en: 'Stat-scaled spells',
+    AppLanguage.fr: 'Sorts liés à la caractéristique',
+  },
+  'stat_preview_story_checks': {
+    AppLanguage.en: 'Story checks',
+    AppLanguage.fr: 'Épreuves du récit',
+  },
+  'stat_preview_tower_setback': {
+    AppLanguage.en: 'Tower setbacks',
+    AppLanguage.fr: 'Revers de la Tour',
+  },
+  'stat_preview_tower_parley': {
+    AppLanguage.en: 'Tower parleys',
+    AppLanguage.fr: 'Pourparlers de la Tour',
+  },
+  'stat_preview_rare_picks': {
+    AppLanguage.en: 'Rarer picks',
+    AppLanguage.fr: 'Choix plus rares',
+  },
+  'stat_preview_shop': {
+    AppLanguage.en: 'Shop discount',
+    AppLanguage.fr: 'Remise en boutique',
+  },
+  'stat_preview_read_foes': {
+    AppLanguage.en: 'Reading foes',
+    AppLanguage.fr: 'Lecture de l’ennemi',
+  },
+  'stat_preview_no_tower_effect': {
+    AppLanguage.en: 'No effect in the Tower',
+    AppLanguage.fr: 'Aucun effet dans la Tour',
+  },
   'training_taken_label': {
     AppLanguage.en: 'Training',
     AppLanguage.fr: 'Entraînement',
