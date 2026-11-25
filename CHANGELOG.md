@@ -8,6 +8,10 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [2.7.2+1068]
+
+- **Intrigue hints (Narrative's P1c).** For a bearer of the Void Banner, the story now drops a line where each of the ten intrigues can be picked up: a memory of someone already met, at the scene where its clue lies, gone once the clue is found. Once an intrigue has begun, a camp reminds the player of its next step until that step is taken. 19 lines, English and French; no rule or number changes.
+
 ## [2.7.0+1066]
 
 - **The late game, on screen.** The Void Banner has its own wide tile in the Inventory, shown once the banner is owned. Chapters 4 to 8 show their three goals on a card in the Journal and at the start of a fight, a toast when a goal is met, and a chest screen when the next chapter begins, with the tier the goals earned (Wooden to Gold). The silver and void chests are redrawn at 32 x 32. No rule or number changes: this is the screens for v2.5.0.
