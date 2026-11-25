@@ -12,6 +12,10 @@ isn't reconstructable from git history alone.
 
 - **Tower dice: the black ball behind the die is gone.** Three things painted a solid mass behind or over the die: its landing burst (flattened to one colour, so the flash showed as a disc), the picked die's blurred gold glow, and the dark archway at the top of Art's dice plate, which on a short board sat right behind the die. The landing burst is now rings and sparks only, a picked die keeps its gold outline without the glow, and the plate is drawn a third larger from its foot so the archway is cut off. No rule or number changes.
 
+## [2.10.13+1095]
+
+- **Tower boss fights: the boss faces you.** On a boss or warden floor the foe's tall panel now shows the boss facing the viewer (Art's south frame), standing whole, and your strip under it shows the hero from behind (Art's north frame), offset to the right with his head and shoulders over the seam, looking up at it, so the two panels read as one scene from top to bottom. All 20 bosses and wardens and all 7 heroes have their frames; a foe without one keeps its side view in the taller panel. The skill effects aim at the boss where it stands, and the shifts and flashes work as before. No rule or number changes.
+
 ## [2.10.12+1094]
 
 - **Tower fights: skill effects that touch the screen.** A blow, a Fire skill or spell, and a poisoning skill now play on the fighter panels, from the fight's own events. A plain blow slashes across the target's panel, flashes its frame, nudges only that panel a pixel or two, and breaks a chunk off its HP bar; Fire sends an ember from your panel across the gutter, spills embers over the foe's frame and up over the app bar, with a warm vignette (and a short screen shake when strong); the poison fist splashes green, and a poisoned fighter keeps green drips on its frame and bar that pulse on every poison tick. Subtle by default, strong on a crit or a strong hit. The shifts, the shake, the tint and the crit flash follow the tremble setting and the system's reduce-motion; the effects follow the combat-effects setting. No rule or number changes.

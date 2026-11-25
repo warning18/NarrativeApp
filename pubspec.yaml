@@ -138,6 +138,8 @@ flutter:
     - assets/visuals/heads/
     - assets/visuals/keepers/
     - assets/visuals/heroes/
+    - assets/visuals/hero_north/
+    - assets/visuals/boss_south/
     - assets/visuals/quests/
     - assets/visuals/shops/
     - assets/visuals/races/
