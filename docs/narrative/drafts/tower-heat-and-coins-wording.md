@@ -62,7 +62,7 @@ French terms: `gardien`, `boss`, `affixe`, `Élite`, `rareté`, `faveur` (boon),
 | tower_perk_fourth_card | Fourth card | Quatrième carte |
 | tower_perk_fourth_card_line | The first boon tables show one card more. | Les premières tables de faveurs montrent une carte de plus. |
 
-Perks are chosen at the door and worn two at a time; the lines state the effect without a figure, which Core can tune (the start purse, the bag size, the oath floor, the standing, the healing, the card count).
+Perks are chosen at the door and worn for the climb (how many at a time is Core's number and appears in no line); the lines state the effect without a figure, which Core can tune (the start purse, the bag size, the oath floor, the standing, the healing, the card count).
 
 ## D. Coins: the five trims and the Ash trim
 
@@ -87,7 +87,7 @@ Names only (the trims are looks, no power). The Ash trim's label is UX's own phr
 | tower_perk_worn | Worn | Porté |
 | tower_perk_worn_n | Worn {n} | Porté {n} |
 | tower_perk_owned | Owned | Possédé |
-| tower_perks_hint | Two perks are worn on a climb, chosen at the door. | Deux atouts se portent durant une ascension, choisis à la porte. |
+| tower_perks_hint | Perks are chosen at the door and worn for the whole climb. | Les atouts se choisissent à la porte et se portent durant toute l’ascension. |
 | tower_perk_next | Next perk: {perk}, {n} more marks | Prochain atout : {perk}, encore {n} marques |
 | tower_tree_full | Every unlock is owned: the tree is full. Marks now buy perks and looks. | Tout est débloqué : l’arbre est plein. Les marques achètent désormais des atouts et des apparences. |
 | tower_door_perks | Perks for this climb | Atouts pour cette ascension |
