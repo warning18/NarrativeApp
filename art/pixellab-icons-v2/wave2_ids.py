@@ -75,3 +75,30 @@ IDS={
 'phoenix_sigil':"a chibi phoenix sigil, a chunky round orange and red badge with a bird mark",
 }
 assert len(IDS)==68,len(IDS)
+
+# Retry prompts (round 1 drew small characters for worn pieces and for "knight's"/"sovereign" words): the piece alone, empty.
+N=", the piece alone, empty inside, nothing wearing it, no body, no head, no face, no person"
+RETRY={
+'sword_t5':"a chibi curved bright sabre with a gold guard, stubby and fat, lying diagonally, just a sword, no person",
+'sword_t10':"a chibi huge straight greatsword, chunky, pale glowing blade, gold crossguard, lying diagonally, just a sword, no person",
+'spear_t10':"a chibi long lance with a golden winged spearhead, chunky, lying diagonally, just a weapon, no person",
+'shield_t5':"a chibi silver heater shield with a pointed bottom and a red cross, chunky, front view, just a shield, no person",
+'warden_signet':"a chibi steel head band with a big shield badge, chunky"+N,
+'cultist_hood':"a chibi dark red pointed hood laid flat, chunky"+N,
+'archon_mantle':"a chibi white and gold shoulder cape with a clasp, chunky, hanging"+N,
+'hollow_court_mantle':"a chibi dark purple cape with a black clasp, chunky, hanging"+N,
+'thornmail_hauberk':"a chibi steel mail shirt covered in sharp thorns, chunky"+N,
+'greaves_iron':"a chibi grey iron shin guard plate, chunky, curved metal plate"+N,
+'greaves_bone_plated':"a chibi shin guard made of white bone plates, chunky, curved"+N,
+'helm_drowned_sallet':"a chibi rusty sallet helmet with green weed and a visor slit, chunky"+N,
+'coat_brigandine':"a chibi brown brigandine coat with riveted plates, chunky, laid flat"+N,
+'coat_iron_scale':"a chibi torso armour of grey iron scales, chunky, laid flat"+N,
+'coat_last_watch':"a chibi grey coat with a shield badge, chunky, laid flat"+N,
+'hauberk_saltcrust':"a chibi mail shirt with white salt crust, chunky, laid flat"+N,
+'cloak_frostward':"a chibi blue-white cloak with a fur collar, chunky, hanging"+N,
+'hood_gravecloth':"a chibi pale grey cloth hood laid flat, chunky"+N,
+'void_banner':"a chibi grey pennant flag on a short pole with a dark tear mark, chunky, just a flag"+N,
+'antidote':"a chibi vial of bright green glowing liquid with a huge round belly and a small cork, green glass",
+'circlet_radiance':"a chibi gold ring crown with a big glowing gem, chunky, just a circlet"+N,
+'plate_emberproof':"a chibi red-orange metal leg plate, chunky, curved plate"+N,
+}

@@ -12,3 +12,8 @@ Left for wave 3: the 11 other equippables (unique weapons and charms), the 13 sp
 
 ## Cost
 68 generations at 1 each, about 88 with retries (cap 90). Balance before: 1573.
+
+## Result (25 November)
+68 first tries + 22 retries = **90 generations (the cap)**; balance 1573 -> 1483. Round 1: 22 of the 68 came out as tiny characters wearing the piece (worn armour, "knight's", "sovereign") or the wrong colour; round 2 redrew exactly those, with "the piece alone, empty inside, no body, no head, no face, no person" (`RETRY` in `wave2_ids.py`), seed 7. Code pass `art/pixellab-icons-v2/post.py` (hero palette + red/heal/tide tokens, ink silhouette edge, no region under 2 px). Files `art/pixellab-icons-v2/final_wave2/<id>32.png` (32x32 PNG), raw in `raw_wave2/`. Sheets: `docs/art/boards/icons-wave2-all.png` (all 68 at 3x), `icons-wave2-cards.png` (6 icons on cards at 3x, 2x, 1x beside a Tower plate).
+- Good: weapons (all five types), potions, marks, fate coin, boots, helms, relics, shields, the capes.
+- Weak (no retry budget left): antidote reads beige, not green (the model ignored "green"; the palette has no green, needs the heal token or one more go); warden_signet (a pig-faced round helmet), hood_gravecloth and coat_last_watch (still small figures), dagger_t8 (a shard, not a dagger), greaves_hide (unclear shape).
