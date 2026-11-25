@@ -10,7 +10,7 @@ isn't reconstructable from git history alone.
 
 ## [2.10.7+1089]
 
-- **Foes: Art's dark icons.** The 64 foe icons are now 32 px, muted and lit by faction (cold blue for the Dominion, angels and giants; ember gold for the Crows, Compact, Vigil, demons and beasts; sickly green for the Mire and the undead; void violet for the Penitents and the void). They show in the fights' portraits and the fight sheet (whose header icon is drawn at 64). Two (the hollow reflection and the tear spawn) are placeholders until Art redraws them. No rule or number changes.
+- **Foes: Art's dark icons.** The 64 foe icons are now 32 px, muted and lit by faction (cold blue for the Dominion, angels and giants; ember gold for the Crows, Compact, Vigil, demons and beasts; sickly green for the Mire and the undead; void violet for the Penitents and the void). They show in the fights' portraits and the fight sheet (whose header icon is drawn at 64). No rule or number changes.
 
 ## [2.10.5+1087]
 
