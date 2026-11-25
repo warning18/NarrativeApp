@@ -6,10 +6,17 @@ import 'dart:ui' show Size;
 
 import 'package:flutter_test/flutter_test.dart';
 
+final _settled = Expando<bool>();
+
 Future<void> settleApp(WidgetTester tester) async {
+  // The first settle of a test waits as long as the game data takes to load
+  // from the bundle; the later ones only let the screen catch up (a real
+  // pause of 30 ms a round was enough in every test: QA's speed pass).
+  final first = _settled[tester] == null;
+  _settled[tester] = true;
   for (var i = 0; i < 3; i++) {
     await tester.runAsync(
-        () => Future<void>.delayed(const Duration(milliseconds: 100)));
+        () => Future<void>.delayed(Duration(milliseconds: first ? 100 : 30)));
     await tester.pump(const Duration(milliseconds: 100));
   }
 }

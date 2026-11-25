@@ -8,6 +8,16 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [2.7.0+1066]
+
+- **The late game, on screen.** The Void Banner has its own wide tile in the Inventory, shown once the banner is owned. Chapters 4 to 8 show their three goals on a card in the Journal and at the start of a fight, a toast when a goal is met, and a chest screen when the next chapter begins, with the tier the goals earned (Wooden to Gold). The silver and void chests are redrawn at 32 x 32. No rule or number changes: this is the screens for v2.5.0.
+
+## [2.6.2+1065]
+
+- **Tower text fits at 320 dp, French, 1.3x text (#1139).** The stat pick's gain cards keep each stat name whole ("Intelligence", "Perspicacité") by shrinking a word to its card instead of breaking it in two. The Tower's app-bar titles (door, floor, end, marks) and the fight's title shrink to their line instead of ending in "…".
+- **Small fixes from QA's L3 (#1141, #1144, #1145).** In a story fight at 320 dp, French and 1.3x text, the foe plate's intent box keeps its size in its row (it overflowed by 5 dp) and a die stays on a short dice board (it sat 12 dp above it). The d10 has its bone body at last (Art's). A card offered alone, such as the clan oath, is one third wide and centred, not a screen-high black tarot.
+- The rank-up card's name is the skill alone; the step ("Rank 1 to 2") leads its text, so a long French name no longer wraps tight in the plate.
+
 ## [2.6.1+1064]
 
 - **Chapter goals: the weakness goal of chapters 4 to 6 asks for 3 weakness hits in one fight** (the user's pick). It was met by 73 to 86% of the simulator's runs, as most mid-game dice strike a weakness at least once a fight; with 3 hits, 54 to 72%. Chapter 7's weakness goal stays at one hit. Narrative's lines: "Strike a weakness {n} times in one fight" (chapters 4 and 5), "Turn a weakness against them {n} times in one fight" (chapter 6), "Strike a weakness, whoever stands before you" (chapter 7).
@@ -56,6 +66,7 @@ isn't reconstructable from git history alone.
 ## [2.2.2+1055]
 
 - Solid dice, and a label that fits. In a fight the day's weather no longer falls across the dice: it is cut away round each die, in flight and at rest (the dice are opaque; the rain and the snow read through everything else as before), and the glyphs of the solids (d4 to d20) are never faded by the lamp. In the Tower's fight at 320 wide, in French or with big text, the die's tag (name, dN) now stands above the hint under the dice instead of on it, and on a board too short for both the die's own name is left out (the plate above shows it). Also a test fix: the shortcut card's test now sets its preferences mock first (it failed now and then on one shard). Look only. UX (view only).
+
 ## [2.2.1+1054]
 
 - **The Journey costs less to draw, no visible change.** The marks' idle glyphs (round marks: fights and rolls off the quests) breathe on their 12-second clock only while one is drawn, so a view of banners only (the prologue's ways, most rooms) asks for no frames; each glyph breathes on its own layer, so a breath repaints the glyph and not the chart. The town plan has its own layer on the Journey: a drag of the plan repaints 512 pieces a frame instead of 640 (Saltmouth, whole town). Maps' perf review (perf-2.md). Core.

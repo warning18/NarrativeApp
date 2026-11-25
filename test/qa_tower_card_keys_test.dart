@@ -53,7 +53,7 @@ void main() {
     expect(towerRarityIndex(null), isNull);
   });
 
-  test('every die size has the bone icon the card shows (d10: filed gap)', () {
+  test('every die size has the bone icon the card shows', () {
     final sizes = {
       for (final d in _records('dice')) (d['faces'] as List).length
     };
@@ -63,10 +63,8 @@ void main() {
       expect(path, isNotNull, reason: 'd$n');
       if (!File(path!).existsSync()) missing.add(n);
     }
-    // Known and filed (#1144): there is no d10 picture yet, so those cards
-    // show the casino glyph. When Art adds die_d10_bone_44.png this fails:
-    // empty the set.
-    expect(missing, {10}, reason: 'the die sizes with no bone picture');
+    // The d10's came with #1144 (Art's die_d10_bone_44.png).
+    expect(missing, isEmpty, reason: 'the die sizes with no bone picture');
   });
 
   test('every kind has a stand-in and the frame, seal and stamp are there', () {
