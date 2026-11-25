@@ -8,6 +8,10 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [2.10.6+1088]
+
+- **Shops as layers.** Every shop screen opens on a picture built in layers (the user's call): the plate of the shop's place behind, the shopkeeper standing in the middle, Art's dark stall in front, then the keeper's line and the wares. All 14 shops have their stall; a darker wash over the plate lets the dark stalls read. The six shops without a drawn keeper (the Blind Beggar's cellar-boy, the Shieldwright, the Hammersmith, the Vault, the Needle House, the caravan) use a Tower chibi until Art draws theirs. The shop list icons are Art's stall icons (32 px). No price, stock or rule changes.
+
 ## [2.10.5+1087]
 
 - **Tower and items: Art's new icons (waves 2 and 3).** 137 pictures replace the old 16 px item icons with 32 px colour icons, so every item has its own: the potions and antidote, the fate coin and the boss trophy (now their own pictures), the five weapon types by tier (five looks, shared by neighbouring tiers), the other weapons, every armour piece, the relics, the spellbooks, materials, trophies, charms and tomes. The Tower's stall shows the salve and the potion bundle, and the marks screen shows the marks icon (an ash-grey paper scrap) on the balance and every price. No rule or number changes.

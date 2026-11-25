@@ -30,6 +30,7 @@ import '../utils/pixel_icons/game_pixel_icons.dart';
 import '../widgets/immersive_notice.dart';
 import '../widgets/item_stats.dart';
 import '../widgets/keeper_figure.dart';
+import '../widgets/shop_layers.dart';
 import '../widgets/item_detail_view.dart';
 import '../widgets/dice_smithing_sheet.dart';
 import '../widgets/shop_trade_sheets.dart';
@@ -734,42 +735,52 @@ class _KeeperStrip extends StatelessWidget {
   Widget build(BuildContext context) {
     final name = shopKeeperName(shop, language);
     final line = shopKeeperLine(shop, language, tier: tier);
-    if (name == null && line == null) return const SizedBox.shrink();
+    // A shop with its layers (plate, keeper, stall) shows them above the words.
+    final layered = shopHasLayers(shopId);
+    if (name == null && line == null && !layered) {
+      return const SizedBox.shrink();
+    }
     final theme = Theme.of(context);
+    final words = Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        if (line != null)
+          Text('“$line”',
+              key: const ValueKey('shop_keeper_line'),
+              style: theme.textTheme.bodySmall
+                  ?.copyWith(fontStyle: FontStyle.italic)),
+        if (name != null)
+          Text(name.toUpperCase(),
+              key: const ValueKey('shop_keeper_name'),
+              style: theme.textTheme.labelSmall?.copyWith(
+                  color: theme.colorScheme.primary, letterSpacing: 0.8)),
+      ],
+    );
     return Padding(
       key: const ValueKey('shop_keeper_strip'),
       padding: const EdgeInsets.only(bottom: 8),
-      child: Row(
-        crossAxisAlignment: keeperHasFigure(shopId)
-            ? CrossAxisAlignment.center
-            : CrossAxisAlignment.start,
-        children: [
-          // The keeper standing, when there is a figure; else the shop's sign.
-          if (keeperHasFigure(shopId))
-            KeeperFigure(shopId)
-          else
-            ShopPixelIcon(shopId, size: IconSize.s48),
-          const SizedBox(width: 10),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
+      child: layered
+          ? Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+              ShopLayers(shopId),
+              if (name != null || line != null) ...[
+                const SizedBox(height: 8),
+                words,
+              ],
+            ])
+          : Row(
+              crossAxisAlignment: keeperHasFigure(shopId)
+                  ? CrossAxisAlignment.center
+                  : CrossAxisAlignment.start,
               children: [
-                if (line != null)
-                  Text('“$line”',
-                      key: const ValueKey('shop_keeper_line'),
-                      style: theme.textTheme.bodySmall
-                          ?.copyWith(fontStyle: FontStyle.italic)),
-                if (name != null)
-                  Text(name.toUpperCase(),
-                      key: const ValueKey('shop_keeper_name'),
-                      style: theme.textTheme.labelSmall?.copyWith(
-                          color: theme.colorScheme.primary,
-                          letterSpacing: 0.8)),
+                // The keeper standing, when there is a figure; else the sign.
+                if (keeperHasFigure(shopId))
+                  KeeperFigure(shopId)
+                else
+                  ShopPixelIcon(shopId, size: IconSize.s48),
+                const SizedBox(width: 10),
+                Expanded(child: words),
               ],
             ),
-          ),
-        ],
-      ),
     );
   }
 }

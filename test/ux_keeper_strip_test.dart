@@ -12,6 +12,7 @@ import 'package:narrative_data_app/providers/game_db_providers.dart';
 import 'package:narrative_data_app/providers/player_session_provider.dart';
 import 'package:narrative_data_app/screens/shop_detail_screen.dart';
 import 'package:narrative_data_app/widgets/keeper_figure.dart';
+import 'package:narrative_data_app/widgets/shop_layers.dart';
 
 import 'qa_smoke_harness.dart';
 
@@ -52,14 +53,31 @@ void main() {
             },
             bare: true,
             after: (tester) async {
-              expect(find.byKey(Key('keeper_figure_$id')),
-                  keeperHasFigure(id) ? findsOneWidget : findsNothing,
+              // A shop with its layers (plate, keeper, stall) shows them; the
+              // keeper strip's own figure or sign is the fallback.
+              expect(find.byKey(Key('shop_layers_$id')),
+                  shopHasLayers(id) ? findsOneWidget : findsNothing,
+                  reason: id);
+              expect(find.byKey(Key('keeper_figure_$id')), findsNothing,
                   reason: id);
             },
           ),
       ],
       sizes: const [Size(360, 900)],
     );
+  });
+
+  test('every shop has its layers and their pictures', () {
+    for (final id in shops.keys) {
+      expect(shopHasLayers(id), isTrue, reason: id);
+      for (final path in [
+        'assets/visuals/scenes/${shopScenes[id]}.png',
+        shopKeeperFrames[id]!,
+        shopStallAsset(id),
+      ]) {
+        expect(File(path).existsSync(), isTrue, reason: '$id: $path');
+      }
+    }
   });
 
   test('every figure has its picture', () {
