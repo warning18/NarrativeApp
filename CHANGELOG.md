@@ -8,6 +8,10 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [2.8.3+1072]
+
+- **Tower: a ranked skill stays on the die (#1147).** A rank-up raised a skill the die rolled, but a stronger skill taken later, or a new die, could push it off its face and the rank was lost. Ranked skills now keep their faces first; a skill that would push one off is offered as a rank-up instead. At the end of a climb 99% of rank-ups are still on the die (77% / 72% before, no unlocks / all). When no skill on the die can be raised, the card stays the skill card. Balance unchanged within noise.
+
 ## [2.8.1+1070]
 
 - Maps, three picks from the review. The epilogue map reads on a phone: on a light page the chart wears Parchment, it draws no names (they were about 4 px high; the list under it names the towns), numbers that sat on each other are pushed apart with a thin line to their town, and a tap on a number brings that town's line into view. On the ball no name is drawn under 12 px any more (lands, ranges, woods, villages, works and the notes under a mark; a clan's seat 13); where it is crowded a name is left off. And the party's ring on a town or a district breathes 20 times a second from a clock of its own: a town left alone asks for a third of the frames it did.
