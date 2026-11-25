@@ -9,6 +9,7 @@ import '../../data/tower/tower_tables.dart';
 import '../../l10n/app_strings.dart';
 import '../../theme/stitched_ink.dart';
 import 'tower_look.dart';
+import 'tower_marks_shop.dart';
 import 'tower_providers.dart';
 import '../../widgets/ink_panel.dart' show InkLabel;
 import 'ink/ink_kit.dart';
@@ -24,8 +25,16 @@ class TowerMarksScreen extends StatelessWidget {
       const TowerNight(child: _TowerMarksBody());
 }
 
-class _TowerMarksBody extends ConsumerWidget {
+class _TowerMarksBody extends ConsumerStatefulWidget {
   const _TowerMarksBody();
+
+  @override
+  ConsumerState<_TowerMarksBody> createState() => _TowerMarksBodyState();
+}
+
+class _TowerMarksBodyState extends ConsumerState<_TowerMarksBody> {
+  /// 0 unlocks, 1 perks, 2 looks.
+  int _tab = 0;
 
   static const _groups = <(String, Set<TowerUnlockKind>)>[
     (
@@ -40,7 +49,7 @@ class _TowerMarksBody extends ConsumerWidget {
   ];
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final paper =
         theme.textTheme.apply(bodyColor: inkOnPaper, displayColor: inkOnPaper);
@@ -69,59 +78,73 @@ class _TowerMarksBody extends ConsumerWidget {
                 ],
               ),
             ),
-            for (final (labelKey, kinds) in _groups) ...[
-              InkLabel(tr(ref, labelKey)),
-              for (final u in towerUnlocks.where((u) => kinds.contains(u.kind)))
-                Padding(
-                  padding: const EdgeInsets.only(bottom: 6),
-                  child: Opacity(
-                    opacity: !progress.unlocked.contains(u.id) &&
-                            u.needs != null &&
-                            !progress.unlocked.contains(u.needs)
-                        ? 0.55
-                        : 1,
-                    child: InkPaperPanel(
-                      key: Key('tower_unlock_${u.id}'),
-                      padding: const EdgeInsets.fromLTRB(46, 16, 20, 14),
-                      child: Row(
-                        children: [
-                          Expanded(
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(tr(ref, 'tower_unlock_${u.id}'),
-                                    style: paper.bodyMedium),
-                                Text(
-                                    tr(ref, 'tower_marks_cost')
-                                        .replaceAll('{n}', '${u.cost}'),
-                                    style: paper.bodySmall
-                                        ?.copyWith(color: inkSlate)),
-                              ],
+            TowerMarksTabs(tab: _tab, onTab: (i) => setState(() => _tab = i)),
+            if (_tab == 1) const TowerPerksTab(),
+            if (_tab == 2) const TowerLooksTab(),
+            if (_tab == 0 && progress.treeFull)
+              Padding(
+                padding: const EdgeInsets.only(bottom: 8),
+                child: Text(tr(ref, 'tower_tree_full'),
+                    key: const Key('tower_tree_full'),
+                    style:
+                        theme.textTheme.bodyMedium?.copyWith(color: inkGrey)),
+              ),
+            if (_tab == 0)
+              for (final (labelKey, kinds) in _groups) ...[
+                InkLabel(tr(ref, labelKey)),
+                for (final u
+                    in towerUnlocks.where((u) => kinds.contains(u.kind)))
+                  Padding(
+                    padding: const EdgeInsets.only(bottom: 6),
+                    child: Opacity(
+                      opacity: !progress.unlocked.contains(u.id) &&
+                              u.needs != null &&
+                              !progress.unlocked.contains(u.needs)
+                          ? 0.55
+                          : 1,
+                      child: InkPaperPanel(
+                        key: Key('tower_unlock_${u.id}'),
+                        padding: const EdgeInsets.fromLTRB(46, 16, 20, 14),
+                        child: Row(
+                          children: [
+                            Expanded(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(tr(ref, 'tower_unlock_${u.id}'),
+                                      style: paper.bodyMedium),
+                                  Text(
+                                      tr(ref, 'tower_marks_cost')
+                                          .replaceAll('{n}', '${u.cost}'),
+                                      style: paper.bodySmall
+                                          ?.copyWith(color: inkSlate)),
+                                ],
+                              ),
                             ),
-                          ),
-                          if (progress.unlocked.contains(u.id))
-                            Row(mainAxisSize: MainAxisSize.min, children: [
-                              const Icon(Icons.check, size: IconSize.s16),
-                              const SizedBox(width: 4),
-                              Text(tr(ref, 'tower_owned')),
-                            ])
-                          else
-                            InkButton(
-                              buttonKey: Key('tower_buy_${u.id}'),
-                              onPaper: true,
-                              primary: progress.canBuy(u.id),
-                              label: tr(ref, 'tower_buy'),
-                              onPressed: progress.canBuy(u.id)
-                                  ? () =>
-                                      ref.read(towerProvider.notifier).buy(u.id)
-                                  : null,
-                            ),
-                        ],
+                            if (progress.unlocked.contains(u.id))
+                              Row(mainAxisSize: MainAxisSize.min, children: [
+                                const Icon(Icons.check, size: IconSize.s16),
+                                const SizedBox(width: 4),
+                                Text(tr(ref, 'tower_owned')),
+                              ])
+                            else
+                              InkButton(
+                                buttonKey: Key('tower_buy_${u.id}'),
+                                onPaper: true,
+                                primary: progress.canBuy(u.id),
+                                label: tr(ref, 'tower_buy'),
+                                onPressed: progress.canBuy(u.id)
+                                    ? () => ref
+                                        .read(towerProvider.notifier)
+                                        .buy(u.id)
+                                    : null,
+                              ),
+                          ],
+                        ),
                       ),
                     ),
                   ),
-                ),
-            ],
+              ],
           ],
         ),
       ),
