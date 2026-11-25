@@ -3,6 +3,7 @@
 // the one in hand ringed and the others dimmed, Take for the card in hand,
 // or leave them all for a mark.
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart' show ScrollCacheExtent;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../combat/dice_faces.dart' show skillDisplayName;
@@ -500,7 +501,7 @@ class _TowerOfferViewState extends ConsumerState<TowerOfferView> {
         .any((r) => r.clan.isNotEmpty || r.kind == TowerRewardKind.clanOath);
     return ListView(
       // The clans' table is tall: its Not now stays built below the fold.
-      cacheExtent: 1600,
+      scrollCacheExtent: const ScrollCacheExtent.pixels(1600),
       padding: const EdgeInsets.fromLTRB(8, 4, 16, 24),
       children: [
         Text(tr(ref, 'tower_cleared').replaceAll('{n}', '${widget.run.floor}'),

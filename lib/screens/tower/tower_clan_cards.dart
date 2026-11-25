@@ -1,11 +1,13 @@
 // The Tower's clan offer cards in the ink look (the user: "update the card
-// design and look to match the ink design"): the story's banner card laid out
+// design and look to match the ink design", then "too colourful: ink and paper
+// only, the clan colour as one small spot"): the story's banner card laid out
 // the same way (the clan's banner at the left, the gift's plate at the right,
-// the name on a band in the clan's colour, the tags, the standing, the clan's
-// quote), but drawn as the Tower draws: a black body, a hard paper line, the
-// painted backdrop in greys, an ink plate for the picture and the rarity as
-// the tarot cards' wax seal. They are drawn at the story card's own 210 x 346
-// so the story's hand (clan_offer_gifts.dart, ClanHandFan) fans them.
+// the name on a band, the tags, the standing, the clan's quote), drawn as the
+// Tower draws: a black body, a hard paper line, an ink plate for the picture
+// and the rarity as the tarot cards' wax seal. The clan's colour is one thin
+// line under the name, and the banner's own. They are drawn at the story
+// card's own 210 x 346 so the story's hand (clan_offer_gifts.dart,
+// ClanHandFan) fans them.
 import 'package:flutter/material.dart';
 
 import '../../theme/stitched_ink.dart';
@@ -15,13 +17,6 @@ import 'tower_tarot_card.dart' show TowerSeal;
 
 const double towerClanCardWidth = 210;
 const double towerClanCardHeight = 346;
-
-const ColorFilter _grey = ColorFilter.matrix(<double>[
-  0.33, 0.33, 0.33, 0, 0, //
-  0.33, 0.33, 0.33, 0, 0, //
-  0.33, 0.33, 0.33, 0, 0, //
-  0, 0, 0, 1, 0,
-]);
 
 /// The text colour on a band of [colour]: ink on a light one, paper on a dark.
 Color towerOnBand(Color colour) =>
@@ -67,45 +62,22 @@ class TowerClanCard extends StatelessWidget {
         decoration: BoxDecoration(
           color: inkBlack,
           border: Border.all(
-              color: lit ? color : inkPaper.withValues(alpha: 0.6),
-              width: lit ? 4 : 2),
+              color: lit ? inkPaper : inkPaper.withValues(alpha: 0.45),
+              width: lit ? 3 : 2),
           boxShadow: [
             BoxShadow(
-                color: lit ? color : const Color(0xFF000000),
+                color: lit ? inkPaper : const Color(0xFF000000),
                 offset: const Offset(4, 4)),
           ],
         ),
         child: Stack(children: [
-          // The art zone: the clan's backdrop in greys under its colour.
-          Positioned(
+          // The art zone: plain ink, the banner and the plate on it.
+          const Positioned(
             left: 0,
             right: 0,
             top: 0,
             height: 150,
-            child: Stack(fit: StackFit.expand, children: [
-              if (backdropId != null)
-                ColorFiltered(
-                  colorFilter: _grey,
-                  child: Image.asset(
-                      'assets/visuals/cards/clans/backdrop_$backdropId.png',
-                      fit: BoxFit.cover,
-                      filterQuality: FilterQuality.none,
-                      errorBuilder: (_, __, ___) =>
-                          const ColoredBox(color: inkDark)),
-                ),
-              DecoratedBox(
-                decoration: BoxDecoration(
-                  gradient: LinearGradient(
-                    begin: Alignment.topCenter,
-                    end: Alignment.bottomCenter,
-                    colors: [
-                      color.withValues(alpha: 0.3),
-                      inkBlack.withValues(alpha: 0.8),
-                    ],
-                  ),
-                ),
-              ),
-            ]),
+            child: ColoredBox(color: inkDeep),
           ),
           Positioned(
               left: 14,
@@ -138,21 +110,28 @@ class TowerClanCard extends StatelessWidget {
             top: 150,
             height: 34,
             child: Container(
-              color: color,
+              color: inkPaper,
               alignment: Alignment.center,
               padding: const EdgeInsets.symmetric(horizontal: 8),
               child: FittedBox(
                 fit: BoxFit.scaleDown,
                 child: Text(name,
                     maxLines: 1,
-                    style: TextStyle(
+                    style: const TextStyle(
                         fontFamily: InkFonts.display,
                         fontSize: 19,
                         height: 1,
-                        color: towerOnBand(color))),
+                        color: inkOnPaper)),
               ),
             ),
           ),
+          // The clan's colour: one thin line under the name.
+          Positioned(
+              left: 0,
+              right: 0,
+              top: 184,
+              height: 4,
+              child: ColoredBox(color: color)),
           Positioned(
             left: 14,
             right: 14,
@@ -173,15 +152,15 @@ class TowerClanCard extends StatelessWidget {
                 Text(standing!,
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
-                    style: TextStyle(
+                    style: const TextStyle(
                         fontFamily: InkFonts.prose,
                         fontWeight: FontWeight.w700,
                         fontSize: 13,
                         height: 1.1,
-                        color: Color.lerp(color, inkPaper, 0.35))),
+                        color: inkPaper)),
               ],
               const Spacer(),
-              Container(height: 1.5, color: color),
+              Container(height: 1, color: inkPaper.withValues(alpha: 0.3)),
               const SizedBox(height: 6),
               Text(greeting.isEmpty ? '' : '“$greeting”',
                   textAlign: TextAlign.center,
@@ -193,16 +172,6 @@ class TowerClanCard extends StatelessWidget {
                       fontSize: 11.5,
                       height: 1.25,
                       color: inkPaper)),
-              const SizedBox(height: 6),
-              Text(clanName.toUpperCase(),
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                  style: TextStyle(
-                      fontFamily: InkFonts.prose,
-                      fontWeight: FontWeight.w700,
-                      fontSize: 10,
-                      letterSpacing: 0.8,
-                      color: Color.lerp(color, inkPaper, 0.4))),
             ]),
           ),
         ]),
@@ -249,20 +218,25 @@ class TowerClanOathRow extends StatelessWidget {
         decoration: BoxDecoration(
           color: inkBlack,
           border: Border.all(
-              color: selected ? color : inkPaper.withValues(alpha: 0.6),
+              color: selected ? inkPaper : inkPaper.withValues(alpha: 0.45),
               width: selected ? 3 : 2),
           boxShadow: [
             BoxShadow(
-                color: selected ? color : const Color(0xFF000000),
+                color: selected ? inkPaper : const Color(0xFF000000),
                 offset: const Offset(3, 3)),
           ],
         ),
         child: IntrinsicHeight(
           child: Row(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
+            // The banner on plain ink, the clan's colour one thin line beside it.
             Container(
-              width: 56,
+              width: 4,
+              color: color,
+            ),
+            Container(
+              width: 52,
               padding: const EdgeInsets.symmetric(vertical: 6),
-              color: color.withValues(alpha: 0.9),
+              color: inkDeep,
               alignment: Alignment.center,
               child: SizedBox(
                   height: 88,
@@ -310,7 +284,7 @@ class TowerClanOathRow extends StatelessWidget {
                           ]),
                       const SizedBox(height: 6),
                       Text(text,
-                          maxLines: 3,
+                          maxLines: 2,
                           overflow: TextOverflow.ellipsis,
                           style: const TextStyle(
                               fontFamily: InkFonts.prose,
@@ -321,11 +295,11 @@ class TowerClanOathRow extends StatelessWidget {
                         Padding(
                           padding: const EdgeInsets.only(top: 3),
                           child: Text(standing!,
-                              style: TextStyle(
+                              style: const TextStyle(
                                   fontFamily: InkFonts.prose,
                                   fontWeight: FontWeight.w700,
                                   fontSize: 12.5,
-                                  color: Color.lerp(color, inkPaper, 0.35))),
+                                  color: inkPaper)),
                         ),
                       if (greeting.isNotEmpty)
                         Padding(
@@ -338,18 +312,8 @@ class TowerClanOathRow extends StatelessWidget {
                                   fontStyle: FontStyle.italic,
                                   fontSize: 11.5,
                                   height: 1.25,
-                                  color: Color.lerp(color, inkPaper, 0.6))),
+                                  color: inkPaper.withValues(alpha: 0.8))),
                         ),
-                      Padding(
-                        padding: const EdgeInsets.only(top: 4),
-                        child: Text(clanName.toUpperCase(),
-                            style: TextStyle(
-                                fontFamily: InkFonts.prose,
-                                fontWeight: FontWeight.w700,
-                                fontSize: 10,
-                                letterSpacing: 0.8,
-                                color: Color.lerp(color, inkPaper, 0.4))),
-                      ),
                     ]),
               ),
             ),

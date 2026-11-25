@@ -1,5 +1,7 @@
 # Tower clan offers in the story's banner-and-card look (picture first, no PR)
 
+Toned down (user: "too colourful"): ink and paper only, the clan colour is one thin line; banner, late-oath line and wax seal kept. Sheet: `ink-cards.png` (EN 412, FR 360, a gift in hand).
+
 The user's call: "for the propositions from clan keep the banner card style choice from story". Built on a branch (`claude/ux-2-clan-offer-cards`, from main v2.8.1) so the pictures are the real screen; no version, no PR until the user approves (the build would be v2.8.2+1071).
 
 `compare-<width>-<lang>.png` (412 and 360, English and French): the floor-16 table (the oath and three gifts) before (the dark rows) | after | after with a gift in hand. `before-*`, `after-*` are the same screens alone; `after-pity-fr-320-1.3x.png` is the tightest case (320 wide, French, text 1.3x): no overflow.
