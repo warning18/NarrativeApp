@@ -8,6 +8,10 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [2.8.4+1073]
+
+- **Tower: leaving a fight counts as losing it.** Closing the app during a Tower fight used to bring the floor back at its health before the fight, undoing a death. A fight is now marked as begun at its first round; a run reopened with a fight begun and never finished ends as a defeat on that floor, its marks banked, and the end screen says "You left the fight: it counts as lost."
+
 ## [2.8.1+1070]
 
 - Maps, three picks from the review. The epilogue map reads on a phone: on a light page the chart wears Parchment, it draws no names (they were about 4 px high; the list under it names the towns), numbers that sat on each other are pushed apart with a thin line to their town, and a tap on a number brings that town's line into view. On the ball no name is drawn under 12 px any more (lands, ranges, woods, villages, works and the notes under a mark; a clan's seat 13); where it is crowded a name is left off. And the party's ring on a town or a district breathes 20 times a second from a clock of its own: a town left alone asks for a third of the frames it did.
