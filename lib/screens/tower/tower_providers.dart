@@ -56,10 +56,16 @@ final towerDataProvider = FutureProvider<TowerData>((ref) async {
 /// What the Tower holds now: the marks and unlocks, and the run in
 /// progress (null between runs).
 class TowerState {
-  const TowerState({this.progress = const TowerProgress(), this.run});
+  const TowerState(
+      {this.progress = const TowerProgress(), this.run, this.fightLeft});
 
   final TowerProgress progress;
   final TowerRun? run;
+
+  /// A run that loaded with its fight begun and never finished (the app
+  /// closed mid-fight, TowerRun.fightBegun): lost on that floor, its marks
+  /// banked, its end screen still to show (once, [TowerController.fightLeftSeen]).
+  final TowerRun? fightLeft;
 }
 
 /// Loads the Tower's save and changes it: a run started, a card picked,
@@ -73,8 +79,31 @@ class TowerController extends StateNotifier<AsyncValue<TowerState>> {
 
   Future<void> _load() async {
     final save = _save = await TowerSave.open();
-    state = AsyncValue.data(
-        TowerState(progress: save.loadProgress(), run: save.loadRun()));
+    final run = save.loadRun();
+    // A fight begun and never finished counts as lost: the run ends there.
+    if (run != null && run.fightBegun) {
+      final lost = towerFightLost(run);
+      final progress = await save.endRun(lost);
+      state = AsyncValue.data(TowerState(progress: progress, fightLeft: lost));
+      return;
+    }
+    state =
+        AsyncValue.data(TowerState(progress: save.loadProgress(), run: run));
+  }
+
+  /// The fight of the run's floor begun (its first round): saved at once,
+  /// so that leaving the app mid-fight loses it (towerBeginFight).
+  Future<void> beginFight() async {
+    final run = _now.run;
+    if (run == null) return;
+    final begun = towerBeginFight(run);
+    if (!identical(begun, run)) await setRun(begun);
+  }
+
+  /// The end screen of [TowerState.fightLeft] shown: it is not shown again.
+  void fightLeftSeen() {
+    if (_now.fightLeft == null) return;
+    state = AsyncValue.data(TowerState(progress: _now.progress, run: _now.run));
   }
 
   Future<TowerSave> _opened() async => _save ??= await TowerSave.open();

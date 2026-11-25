@@ -66,6 +66,7 @@ class TowerRun {
     this.bought = const {},
     this.store,
     this.bargains = const {},
+    this.fightBegun = false,
   });
 
   /// A saved run. A save from an older version is brought up to date once,
@@ -165,6 +166,7 @@ class TowerRun {
             in ((json['bargains'] as Map?) ?? const {}).entries)
           int.parse(key.toString()): (value as num).toInt(),
       },
+      fightBegun: json['fighting'] == true,
     );
     if (json.containsKey('picks')) return run;
     final earned = (towerLevelAfter(run.floorsCleared) - 1) * levelStatPicks;
@@ -296,6 +298,12 @@ class TowerRun {
   /// 0 when it was refused.
   final Map<int, int> bargains;
 
+  /// The floor's fight has begun and not yet ended (towerBeginFight, saved
+  /// at its first round): a run loaded with it set was left mid-fight (the
+  /// app closed) and counts as having lost it (towerFightLost). Cleared by
+  /// towerAfterFight. False on a run saved before.
+  final bool fightBegun;
+
   /// The height cleared: the levels, the stat picks earned, the hero's
   /// replay (towerHeroOf) and the marks read it, so a fall never takes a
   /// level or a mark away.
@@ -356,6 +364,7 @@ class TowerRun {
     int? store,
     bool clearStore = false,
     Map<int, int>? bargains,
+    bool? fightBegun,
   }) =>
       TowerRun(
         seed: seed,
@@ -386,6 +395,7 @@ class TowerRun {
         bought: bought ?? this.bought,
         store: clearStore ? null : store ?? this.store,
         bargains: bargains ?? this.bargains,
+        fightBegun: fightBegun ?? this.fightBegun,
       );
 
   Map<String, dynamic> toJson() => {
@@ -431,6 +441,7 @@ class TowerRun {
             for (final MapEntry(:key, :value) in bargains.entries)
               '$key': value,
           },
+        if (fightBegun) 'fighting': true,
       };
 }
 
@@ -537,9 +548,11 @@ TowerRun towerAfterFight(TowerRun run, TowerData data,
     int? maxHealthBefore,
     int? rounds}) {
   if (run.status != TowerStatus.climbing) return run;
+  if (!won) return towerFightLost(run);
+  // The fight has ended: its marker goes (towerBeginFight).
+  if (run.fightBegun) run = run.copyWith(fightBegun: false);
   // The store on the landing closes with the fight (floor events PR 4).
   if (run.store != null) run = run.copyWith(clearStore: true);
-  if (!won) return run.copyWith(status: TowerStatus.dead, health: 0);
   final rival = towerRivalResultOf(run, rounds);
   final potions =
       potionsLeft == null ? run.potions : min(run.potions, max(0, potionsLeft));
@@ -620,6 +633,25 @@ TowerRun towerAfterFight(TowerRun run, TowerData data,
     ),
   );
 }
+
+/// [run] with its floor's fight begun (saved at the fight's first round):
+/// should the app close before the fight ends, the run loads as having lost
+/// it ([towerFightLost]). [run] as it is when it is not climbing.
+TowerRun towerBeginFight(TowerRun run) =>
+    run.status != TowerStatus.climbing || run.fightBegun
+        ? run
+        : run.copyWith(fightBegun: true);
+
+/// [run] having lost its floor's fight (towerAfterFight's defeat, and a
+/// fight begun and never finished, [TowerRun.fightBegun]): over, dead, its
+/// store closed. [run] as it is when it is not climbing.
+TowerRun towerFightLost(TowerRun run) => run.status != TowerStatus.climbing
+    ? run
+    : run.copyWith(
+        status: TowerStatus.dead,
+        health: 0,
+        clearStore: true,
+        fightBegun: false);
 
 /// [run]'s standing with each clan of its pool (docs/simulation/
 /// tower-clan-offers.md): replayed from the cards it took, floor by floor

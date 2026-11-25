@@ -8,6 +8,9 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [2.8.4+1073]
+
+- **Tower: leaving a fight counts as losing it.** Closing the app during a Tower fight used to bring the floor back at its health before the fight, undoing a death. A fight is now marked as begun at its first round; a run reopened with a fight begun and never finished ends as a defeat on that floor, its marks banked, and the end screen says "You left the fight: it counts as lost."
 ## [2.8.3+1072]
 
 - **Tower: a ranked skill stays on the die (#1147).** A rank-up raised a skill the die rolled, but a stronger skill taken later, or a new die, could push it off its face and the rank was lost. Ranked skills now keep their faces first; a skill that would push one off is offered as a rank-up instead. At the end of a climb 99% of rank-ups are still on the die (77% / 72% before, no unlocks / all). When no skill on the die can be raised, the card stays the skill card. Balance unchanged within noise.
