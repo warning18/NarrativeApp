@@ -1,0 +1,3 @@
+# Card frames and seals (pictures only, no build)
+The user's older asks plus "add more frame manga forms, to add diversity". `frames-en-412.png` (EN) and `frames-fr-412.png` (FR): the clan gift card (Focus Mind) in six frames: rounded (today), plain hard-edged, cut corners, slanted (like the Tower's slanted panels), split panel (a diagonal gutter) and burst edge (an action panel); then the wax seal in red (today) and in black and paper. `test/ux_card_frames_shots_test.dart` draws them (`UX_SHOTS=<dir>`).
+Guesses: the frame shape could vary by card kind (gift, die, spell, oath) or by rarity; one shape per kind keeps the hand readable. The black-and-paper seal loses the red that the Ashen Ink system keeps for seals, so it would change that rule.
