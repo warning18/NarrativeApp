@@ -8,6 +8,14 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [2.8.5+1074]
+
+- **Tower: the cleric holds against wardens and bosses.** With every unlock the cleric reached the top in 13% of bot climbs, against 23 to 29% for the other callings, and 43% of clerics who reached floor 30 fell there: its foes' scale (x1.28, set when the cleric healed through every fight) outlasted its heals in the long warden and boss fights. On the wardens' and bosses' floors (5, 10, 15, 20, 25, 30) its foes are now x1.08; ordinary floors stay x1.28. Bot, every unlock: cleric top 13 to 24%, its floor-30 loss 43 to 20%. The other callings and the climb with no unlocks are unchanged.
+
+## [2.8.3+1072]
+
+- **Tower: a ranked skill stays on the die (#1147).** A rank-up raised a skill the die rolled, but a stronger skill taken later, or a new die, could push it off its face and the rank was lost. Ranked skills now keep their faces first; a skill that would push one off is offered as a rank-up instead. At the end of a climb 99% of rank-ups are still on the die (77% / 72% before, no unlocks / all). When no skill on the die can be raised, the card stays the skill card. Balance unchanged within noise.
+
 ## [2.8.1+1070]
 
 - Maps, three picks from the review. The epilogue map reads on a phone: on a light page the chart wears Parchment, it draws no names (they were about 4 px high; the list under it names the towns), numbers that sat on each other are pushed apart with a thin line to their town, and a tap on a number brings that town's line into view. On the ball no name is drawn under 12 px any more (lands, ranges, woods, villages, works and the notes under a mark; a clan's seat 13); where it is crowded a name is left off. And the party's ring on a town or a district breathes 20 times a second from a clock of its own: a town left alone asks for a third of the frames it did.
