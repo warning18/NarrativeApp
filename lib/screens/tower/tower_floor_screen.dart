@@ -32,6 +32,7 @@ import 'tower_end_screen.dart';
 import 'tower_backdrop.dart';
 import 'tower_dice_panel.dart';
 import 'tower_event_card.dart';
+import 'tower_heat_view.dart';
 import 'tower_look.dart';
 import 'tower_ladder.dart';
 import 'tower_offer_view.dart';
@@ -114,10 +115,12 @@ class _TowerFloorScreenState extends ConsumerState<_TowerFloorBody> {
 
   /// An ended run: its marks banked, its end screen in this one's place.
   Future<void> _finish(TowerRun over) async {
+    final heatBefore = ref.read(towerProvider).value?.progress.heatWon ?? -1;
     final progress = await ref.read(towerProvider.notifier).end(over);
     if (!mounted) return;
     await Navigator.of(context).pushReplacement(MaterialPageRoute(
-        builder: (_) => TowerEndScreen(run: over, progress: progress)));
+        builder: (_) => TowerEndScreen(
+            run: over, progress: progress, heatBefore: heatBefore)));
   }
 
   Future<void> _fight(TowerRun run, TowerData data) async {
@@ -213,9 +216,18 @@ class _TowerFloorScreenState extends ConsumerState<_TowerFloorBody> {
           body: const InkLoading());
     }
     final choosing = run.status == TowerStatus.choosing;
-    _railFor(choosing && _spoilsTaken == run.floor && run.offer.isNotEmpty);
     // The floor's event (off for a run that plays without them).
     final event = towerEventOf(run, data);
+    // The rail gives its room to the cards of the offer, and to a stall's, a
+    // bargain's or a parley's, once the head has walked to its notch.
+    final eventCards = !choosing &&
+        event != null &&
+        event.accepted == null &&
+        (event.kind == TowerEventKind.merchant ||
+            event.kind == TowerEventKind.bargain ||
+            event.kind == TowerEventKind.parley);
+    _railFor((choosing && _spoilsTaken == run.floor && run.offer.isNotEmpty) ||
+        eventCards);
     // How the last event moved the run, for the rail: an arrow down a fall,
     // up a skip, ending on this floor.
     final last = event?.result;
@@ -404,6 +416,7 @@ class _FloorIntro extends ConsumerWidget {
                     color: inkPaper,
                     fontWeight: FontWeight.w800,
                     shadows: const [Shadow(blurRadius: 8, color: inkBlack)])),
+            if (run.heat > 0) TowerHeatChip(heat: run.heat),
             Text(tr(ref, 'tower_floor_${run.floor}'),
                 style: theme.textTheme.bodyLarge
                     ?.copyWith(fontStyle: FontStyle.italic, color: inkGrey)),

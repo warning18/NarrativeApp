@@ -10,6 +10,7 @@ import '../../data/tower/tower_run.dart';
 import '../../l10n/app_strings.dart';
 import '../../theme/stitched_ink.dart';
 import 'tower_backdrop.dart';
+import 'tower_heat_view.dart';
 import 'tower_look.dart';
 import 'tower_marks_screen.dart';
 import 'tower_start_screen.dart';
@@ -18,7 +19,16 @@ import 'ink/ink_palette.dart';
 
 /// The end of a run, in the Tower's night theme (its body below).
 class TowerEndScreen extends StatelessWidget {
-  const TowerEndScreen({super.key, required this.run, required this.progress});
+  const TowerEndScreen(
+      {super.key,
+      required this.run,
+      required this.progress,
+      this.fightLeft = false,
+      this.heatBefore = -1});
+
+  /// The record's highest Heat won before this run (a level opens when the
+  /// run won above it).
+  final int heatBefore;
 
   /// The run that ended (dead, won or left).
   final TowerRun run;
@@ -26,16 +36,32 @@ class TowerEndScreen extends StatelessWidget {
   /// The Tower's record with this run's marks banked.
   final TowerProgress progress;
 
+  /// The run was lost by leaving its fight (the app closed mid-fight,
+  /// TowerRun.fightBegun): a line says so.
+  final bool fightLeft;
+
   @override
   Widget build(BuildContext context) => TowerNight(
-      floor: run.floor, child: _TowerEndBody(run: run, progress: progress));
+      floor: run.floor,
+      child: _TowerEndBody(
+          run: run,
+          progress: progress,
+          fightLeft: fightLeft,
+          heatBefore: heatBefore));
 }
 
 class _TowerEndBody extends ConsumerWidget {
-  const _TowerEndBody({required this.run, required this.progress});
+  const _TowerEndBody(
+      {required this.run,
+      required this.progress,
+      this.fightLeft = false,
+      this.heatBefore = -1});
+
+  final int heatBefore;
 
   final TowerRun run;
   final TowerProgress progress;
+  final bool fightLeft;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -78,6 +104,11 @@ class _TowerEndBody extends ConsumerWidget {
                             fontFamily: InkFonts.display,
                             color: won ? inkOnPaper : inkRed)),
                     const SizedBox(height: 8),
+                    if (fightLeft)
+                      Text(tr(ref, 'tower_fight_left'),
+                          key: const Key('tower_end_fight_left'),
+                          style: paper.bodyLarge
+                              ?.copyWith(fontWeight: FontWeight.w700)),
                     Text(line,
                         key: const Key('tower_end_line'),
                         style: paper.bodyLarge
@@ -102,6 +133,11 @@ class _TowerEndBody extends ConsumerWidget {
                         '${progress.marks} ${tr(ref, 'tower_marks_name')} · '
                         '${tr(ref, 'tower_best').replaceAll('{n}', '${progress.bestFloor}')}',
                         style: paper.bodySmall),
+                    const SizedBox(height: 4),
+                    TowerHeatEndLines(
+                        heat: run.heat,
+                        won: won,
+                        openedNew: won && run.heat > heatBefore),
                   ],
                 ),
               ),

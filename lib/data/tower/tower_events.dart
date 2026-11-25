@@ -660,6 +660,7 @@ TowerFloor towerShortcutFloor(TowerFloor floor) => TowerFloor(
       elite: !floor.isPack,
       elitePack: floor.isPack,
       events: floor.events,
+      heat: floor.heat,
     );
 
 /// [run] with its shortcut taken ([accept]) or declined: only before the
@@ -794,8 +795,8 @@ TowerEventView? towerEventOf(TowerRun run, TowerData data,
         result: run.lastEvent,
       );
     case TowerEventKind.shortcut:
-      final tough =
-          towerShortcutFloor(towerFloorsFor(run.seed, data.enemies)[floor - 1]);
+      final tough = towerShortcutFloor(
+          towerFloorsFor(run.seed, data.enemies, heat: run.heat)[floor - 1]);
       final landsOn = towerShortcutLandsOn(floor, event!.fall);
       return TowerEventView(
         kind: TowerEventKind.shortcut,
@@ -972,6 +973,7 @@ TowerRun towerAfterEvent(TowerRun won, TowerRun next, TowerData data) {
         clanPool: landed.clanPool,
         standing: towerStandingOf(landed, data),
         oathOpen: landed.clanIds.isEmpty,
+        heat: landed.heat,
         clans: data.clans,
         items: data.items,
         dice: data.dice,

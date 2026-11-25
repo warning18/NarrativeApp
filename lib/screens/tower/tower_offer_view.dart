@@ -105,9 +105,11 @@ String towerGiftKind(WidgetRef ref, String clanId) =>
 
 /// What a gift of [clanId] moves, clan by clan: "Crows +2 · Dominion +1 ·
 /// Vigil -1" (towerClanRipple).
-String towerRippleLine(WidgetRef ref, String clanId, TowerData data) => [
+String towerRippleLine(WidgetRef ref, String clanId, TowerData data,
+        {int heat = 0}) =>
+    [
       for (final MapEntry(:key, :value)
-          in towerClanRipple(clanId, data.clans).entries)
+          in towerClanRipple(clanId, data.clans, heat: heat).entries)
         '${towerClanName(ref, key)} ${value > 0 ? '+' : ''}$value',
     ].join(' · ');
 
@@ -344,7 +346,7 @@ class _TowerOfferViewState extends ConsumerState<TowerOfferView> {
       ? text
       : [
           if (text.isNotEmpty) text,
-          towerRippleLine(ref, reward.clan, widget.data),
+          towerRippleLine(ref, reward.clan, widget.data, heat: widget.run.heat),
           towerStandingLabel(ref, _standing[reward.clan] ?? 0),
         ].join('\n');
 

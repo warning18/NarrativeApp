@@ -6,6 +6,7 @@ import '../../widgets/fit_title.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../data/tower/tower_progress.dart';
 import '../../data/tower/tower_run.dart';
 import '../../data/tower/tower_tables.dart';
 import '../../l10n/app_strings.dart';
@@ -14,7 +15,9 @@ import '../race_profession_screen.dart';
 import 'ink/ink_kit.dart';
 import 'ink/ink_palette.dart';
 import 'tower_backdrop.dart';
+import 'tower_end_screen.dart';
 import 'tower_floor_screen.dart';
+import 'tower_heat_view.dart';
 import 'tower_look.dart';
 import 'tower_marks_screen.dart';
 import 'tower_providers.dart';
@@ -37,6 +40,12 @@ class _TowerStartBody extends ConsumerStatefulWidget {
 
 class _TowerStartScreenState extends ConsumerState<_TowerStartBody> {
   bool _starting = false;
+
+  /// The Heat picked at the door (null: the highest open).
+  int? _heat;
+
+  /// The end screen of a run lost by leaving its fight, once pushed.
+  bool _fightLeftShown = false;
 
   String _fill(String text, Map<String, Object> values) {
     var out = text;
@@ -71,9 +80,13 @@ class _TowerStartScreenState extends ConsumerState<_TowerStartBody> {
     if (_starting) return;
     setState(() => _starting = true);
     final data = await ref.read(towerDataProvider.future);
-    await ref
-        .read(towerProvider.notifier)
-        .start(data: data, raceId: race, professionId: profession);
+    final progress =
+        ref.read(towerProvider).value?.progress ?? const TowerProgress();
+    await ref.read(towerProvider.notifier).start(
+        data: data,
+        raceId: race,
+        professionId: profession,
+        heat: _heat ?? progress.heatOpen);
     if (!mounted) return;
     setState(() => _starting = false);
     await Navigator.of(context).pushReplacement(
@@ -89,6 +102,17 @@ class _TowerStartScreenState extends ConsumerState<_TowerStartBody> {
     final state = ref.watch(towerProvider).value ?? const TowerState();
     final progress = state.progress;
     final run = state.run;
+    // A run lost by leaving its fight (the app closed mid-fight): its end.
+    if (state.fightLeft case final lost? when !_fightLeftShown) {
+      _fightLeftShown = true;
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (!mounted) return;
+        ref.read(towerProvider.notifier).fightLeftSeen();
+        Navigator.of(context).pushReplacement(MaterialPageRoute(
+            builder: (_) => TowerEndScreen(
+                run: lost, progress: progress, fightLeft: true)));
+      });
+    }
     return Scaffold(
       appBar: AppBar(title: FitTitle(tr(ref, 'tower_name'))),
       body: TowerBackdrop(
@@ -140,6 +164,13 @@ class _TowerStartScreenState extends ConsumerState<_TowerStartBody> {
                 const SizedBox(height: 14),
                 // A run to go on with: a slanted panel of its band's plate.
                 _continuePanel(run, theme),
+              ],
+              if (progress.heatOpen > 0) ...[
+                const SizedBox(height: 14),
+                TowerHeatPicker(
+                    open: progress.heatOpen,
+                    selected: _heat ?? progress.heatOpen,
+                    onChanged: (h) => setState(() => _heat = h)),
               ],
               const SizedBox(height: 14),
               InkButton(
@@ -214,32 +245,41 @@ class _TowerStartScreenState extends ConsumerState<_TowerStartBody> {
         },
       );
 
-  /// One band of the tower as a pane of its own picture: its name and floors.
+  /// One band of the tower as a slanted ink panel of its own picture: its name
+  /// and floors, as the run to go on is drawn.
   Widget _bandPane(int band, ThemeData theme, InkColors ink) => Padding(
-        padding: const EdgeInsets.only(bottom: 6),
-        child: ClipRRect(
-          borderRadius: BorderRadius.circular(8),
-          child: SizedBox(
-            height: 70,
+        padding: const EdgeInsets.only(bottom: 8),
+        child: LayoutBuilder(builder: (context, box) {
+          final w = box.maxWidth;
+          const h = 76.0;
+          final up = band.isEven;
+          return InkSlantPanel(
+            size: Size(w, h),
+            points: [
+              Offset(8, up ? 10 : 4),
+              Offset(w - 8, up ? 4 : 10),
+              Offset(w - 8, h - 8),
+              const Offset(8, h - 6),
+            ],
             child: Stack(fit: StackFit.expand, children: [
               Image.asset(towerBackdropAsset(band),
                   fit: BoxFit.cover, filterQuality: FilterQuality.none),
-              ColoredBox(color: Colors.black.withValues(alpha: .45)),
+              ColoredBox(color: inkBlack.withValues(alpha: 0.6)),
               Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 14),
+                padding: const EdgeInsets.symmetric(horizontal: 22),
                 child: Row(children: [
                   Expanded(
                     child: Text(tr(ref, 'tower_band_$band'),
-                        style: theme.textTheme.titleMedium
-                            ?.copyWith(color: Colors.white)),
+                        style: theme.textTheme.titleMedium?.copyWith(
+                            fontFamily: InkFonts.display, color: inkPaper)),
                   ),
                   Text('${(band - 1) * 10 + 1}\u2013${band * 10}',
-                      style: theme.textTheme.titleMedium
-                          ?.copyWith(color: ink.gold)),
+                      style: theme.textTheme.titleMedium?.copyWith(
+                          fontFamily: InkFonts.display, color: inkPaper)),
                 ]),
               ),
             ]),
-          ),
-        ),
+          );
+        }),
       );
 }

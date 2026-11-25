@@ -146,17 +146,17 @@ Color _c(int rgb) => Color(0xFF000000 | rgb);
 /// Every group the fight knows. Clan colours are the clans' own
 /// (factions.json); the others are Apollo (docs/art/palette-apollo.md).
 final Map<String, EnemyGroup> enemyGroups = {
-  'dominion': EnemyGroup('dominion', 'Lantern Dominion', _c(0x2F62B5),
+  'dominion': EnemyGroup('dominion', 'Lantern Dominion', _c(0x2F6FE0),
       banner: clanBannerId('dominion')),
-  'crows': EnemyGroup('crows', 'Salt Crows', _c(0xB0303F),
+  'crows': EnemyGroup('crows', 'Salt Crows', _c(0xE0479E),
       banner: clanBannerId('crows')),
-  'compact': EnemyGroup('compact', 'Cinder Compact', _c(0xB86B3C),
+  'compact': EnemyGroup('compact', 'Cinder Compact', _c(0xE8782A),
       banner: clanBannerId('compact')),
-  'mire': EnemyGroup('mire', 'Mire Courts', _c(0x3F8F5A),
+  'mire': EnemyGroup('mire', 'Mire Courts', _c(0x3FB06A),
       banner: clanBannerId('mire')),
-  'vigil': EnemyGroup('vigil', 'Grey Vigil', _c(0x8A8F98),
+  'vigil': EnemyGroup('vigil', 'Grey Vigil', _c(0xE8C21A),
       banner: clanBannerId('vigil')),
-  'penitents': EnemyGroup('penitents', 'Ashen Penitents', _c(0xCBB68E),
+  'penitents': EnemyGroup('penitents', 'Ashen Penitents', _c(0x9B5DE5),
       banner: clanBannerId('penitents')),
   'choir': EnemyGroup('choir', 'The Choir', _c(0xAD8A10), glyph: 'halo'),
   'pit': EnemyGroup('pit', 'The Pit', _c(0xA94BB4),

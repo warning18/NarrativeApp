@@ -106,10 +106,14 @@ class TowerHeroView {
 
 /// The skill a rank-up card raises instead of [skillId] (v2.4.0, brief 2 of
 /// docs/simulation/tower-roguelike-briefs.md), or null when [skillId]
-/// would sit on a face of [hero]'s die (simSkillAssignments, as it is
-/// placed when taken) or no skill on the die has a tier left: the best of
-/// the skills on the die now (simSkillScore at its tier, ties by id) below
-/// [maxSkillTier].
+/// would sit on a face of [hero]'s die (simSkillAssignments with the
+/// hero's tiers, as it is placed when taken) or no skill on the die has a
+/// tier left: the best of the skills on the die now (simSkillScore at its
+/// tier, ties by id) below [maxSkillTier]. Only a skill on the die (the
+/// user's call, #1147), and the skill it raises stays there: the ranked
+/// keep their faces when the die's skills are placed again. With none to
+/// raise (every skill on the die at the last tier, or none on it) the card
+/// stays the skill card it was.
 String? towerRankUpFor(
     String skillId, TowerHeroView hero, Map<String, dynamic> skills) {
   if (hero.diceFaces.isEmpty) return null;
@@ -117,7 +121,8 @@ String? towerRankUpFor(
       faces: hero.diceFaces,
       current: hero.diceSkillAssignments,
       unlocked: {...hero.unlockedSkillIds, skillId},
-      skills: skills);
+      skills: skills,
+      tiers: hero.skillTiers);
   if (placed.values.contains(skillId)) return null;
   double score(String id) => simSkillScore(applySkillTier(
       skills[id] as Map<String, dynamic>, hero.skillTiers[id] ?? 0));
@@ -172,7 +177,9 @@ String? towerClanDieOf(String clanId, Map<String, dynamic> dice) {
 /// [towerOathStep] in [standing] (a card of its own, first, beside the
 /// gifts or alone); from [towerPityOathFloor], with none of those due, the
 /// oath of the highest-standing clan ([towerPityOathClan]). Often nothing:
-/// the floor's spoils ([towerSpoilsFor]) are its reward.
+/// the floor's spoils ([towerSpoilsFor]) are its reward. At Heat [heat]
+/// (TowerRun.heat), Pyre's empty floors and late oath
+/// (towerHeatEmptyFloorsOf, towerPityOathFloorOf).
 List<TowerReward> towerOfferFor({
   required int seed,
   required int floor,
@@ -181,6 +188,7 @@ List<TowerReward> towerOfferFor({
   Map<String, int> standing = const {},
   bool oathOpen = true,
   bool clansDue = false,
+  int heat = 0,
   TowerClanTables clans = const TowerClanTables(),
   required Map<String, dynamic> items,
   required Map<String, dynamic> dice,
@@ -258,7 +266,10 @@ List<TowerReward> towerOfferFor({
     }
   }
 
-  if (towerBoonFloors.contains(floor)) {
+  // Pyre's floors (towerHeatEmptyFloorsOf): nothing at all, no boon and
+  // no clan's card in its place.
+  if (towerHeatEmptyFloorsOf(heat).contains(floor)) return const [];
+  if (towerBoonFloorsOf(heat).contains(floor)) {
     return [
       for (final kind in towerBoonKinds)
         if (draw(kind) case final card?) card,
@@ -276,7 +287,7 @@ List<TowerReward> towerOfferFor({
   if (oaths.isEmpty &&
       oathOpen &&
       hero.clanIds.isEmpty &&
-      floor >= towerPityOathFloor) {
+      floor >= towerPityOathFloorOf(heat)) {
     if (towerPityOathClan(clanPool, standing) case final clan?) {
       oaths.add(TowerReward(TowerRewardKind.clanOath, id: clan));
     }

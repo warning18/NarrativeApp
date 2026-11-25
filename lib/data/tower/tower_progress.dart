@@ -2,6 +2,8 @@
 // §7): the marks banked, the unlocks bought, and a few counts; what a new
 // run may start with.
 
+import 'dart:math';
+
 import 'tower_run.dart';
 import 'tower_tables.dart';
 
@@ -13,6 +15,7 @@ class TowerProgress {
     this.bestFloor = 0,
     this.runs = 0,
     this.wins = 0,
+    this.heatWon = -1,
   });
 
   factory TowerProgress.fromJson(Map<String, dynamic> json) => TowerProgress(
@@ -23,6 +26,11 @@ class TowerProgress {
         bestFloor: (json['bestFloor'] as num?)?.toInt() ?? 0,
         runs: (json['runs'] as num?)?.toInt() ?? 0,
         wins: (json['wins'] as num?)?.toInt() ?? 0,
+        // A save from before Heat (v2.9.0): its wins were all at heat 0, so
+        // one with a win opens Heat 1 at once.
+        heatWon: ((json['heatWon'] as num?)?.toInt() ??
+                (((json['wins'] as num?)?.toInt() ?? 0) > 0 ? 0 : -1))
+            .clamp(-1, towerHeatMax),
       );
 
   /// Marks to spend.
@@ -35,6 +43,21 @@ class TowerProgress {
   final int bestFloor;
   final int runs;
   final int wins;
+
+  /// The highest Heat whose top was won (v2.9.0, TowerRun.heat): -1, none
+  /// yet; 0, the plain climb's.
+  final int heatWon;
+
+  /// The highest Heat a new run may take: one above [heatWon] (Heat n + 1
+  /// opens with a win at Heat n), at most towerHeatMax; 0 until the top is
+  /// won once. The picker's default.
+  int get heatOpen => min(towerHeatMax, heatWon + 1);
+
+  /// The Heats a new run may take: 0 to [heatOpen].
+  List<int> get heatsOpen => [for (var h = 0; h <= heatOpen; h++) h];
+
+  /// Whether a new run may take Heat [heat].
+  bool isHeatOpen(int heat) => heat >= 0 && heat <= heatOpen;
 
   /// Whether [id] can be bought now: not owned, its need bought, its cost
   /// in hand.
@@ -62,6 +85,9 @@ class TowerProgress {
               run.floorReached > bestFloor ? run.floorReached : bestFloor,
           runs: runs + 1,
           wins: wins + (run.status == TowerStatus.won ? 1 : 0),
+          heatWon: run.status == TowerStatus.won && run.heat > heatWon
+              ? run.heat
+              : heatWon,
         );
 
   /// The professions a new run may take.
@@ -99,6 +125,7 @@ class TowerProgress {
     int? bestFloor,
     int? runs,
     int? wins,
+    int? heatWon,
   }) =>
       TowerProgress(
         marks: marks ?? this.marks,
@@ -106,6 +133,7 @@ class TowerProgress {
         bestFloor: bestFloor ?? this.bestFloor,
         runs: runs ?? this.runs,
         wins: wins ?? this.wins,
+        heatWon: heatWon ?? this.heatWon,
       );
 
   Map<String, dynamic> toJson() => {
@@ -114,6 +142,7 @@ class TowerProgress {
         'bestFloor': bestFloor,
         'runs': runs,
         'wins': wins,
+        if (heatWon >= 0) 'heatWon': heatWon,
       };
 }
 

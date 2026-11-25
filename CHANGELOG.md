@@ -8,6 +8,37 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [2.9.5+1081]
+
+- **The clans' approved colours.** The six main clans' colours in the game data now match their banners and the Ashen Ink palette (the user's choice of 24 Nov): Dominion blue #2F6FE0, Crows rose #E0479E, Compact orange #E8782A, Mire green #3FB06A, Vigil yellow #E8C21A, Penitents violet #9B5DE5 (before: #2F62B5, #B0303F, #B86B3C, #3F8F5A, #8A8F98, #CBB68E). Crows is no longer the warning red; Vigil and Penitents are no longer grey and sand. Cards, the compass, title details, town tints and enemy groups all follow. No rule or number changes.
+
+## [2.9.4+1080]
+
+- **Tower: the peoples level with every unlock.** With every unlock the dwarf and the elf reached the top in about 28% of bot climbs, against 20 to 24% for the others: the unlocks' extra health (3% each, x1.30 with all ten) kept the sturdy dwarf and the dodging elf standing on floors 21 to 30. The dwarf now gains 1.5% an unlock and the elf 1%; the others keep 3%. Bot, every unlock: dwarf 27.5 to 23.6%, elf 28.9 to 23.5%, the spread 8.7 to 4.1 points, the overall top 24.6 to 22.8%. With no unlocks nothing changes.
+- **Tower Heat: Pyre's two floors give nothing, and its upper Tower hits harder.** At Heat 4 and above, floors 13 and 23 offer no card at all (no boon, no clan offer), the user's option (a), and the foes of floors 11 to 30 are x1.04 stronger on top of the other curses. Bot, every unlock: Heat 3 10.8%, Heat 4 7.4%, Heat 5 4.6%.
+## [2.9.3+1079]
+
+- **Tower: polish (the user's four).** The 30-rung climb strip above the fight is gone (the rail already shows the floor). Numbers are now set in the prose face everywhere: the pixel font's digits are replaced by Spectral's, so a 5 no longer reads as S, a 6 as G or a 0 as O, in every screen. The door's three zone rows are ink panels (a slanted picture panel, the zone's name in the display face, its floors) instead of rounded photo strips. The climb rail also folds away when a stall or a card offer opens, giving the cards the full width.
+
+## [2.9.1+1077]
+
+- **Tower: Heat, the screens.** The Tower's door shows a picker once Embers is open: the plain climb and each open level (its flames, name, one-line curse and marks factor), the next level locked ("Win the top at Smoke to open"). A chip with the level's name sits under the floor number and opens the list of curses in force, the newest tagged. The end screen reads "Flame · marks x1.75", the level a win opened, and "Ash conquered". Gifts' standing lines use the run's Heat (Ash's rival ripple). Ink and paper, the level's colour only on the picked ring and the chip's line; numbers in the prose face.
+
+## [2.9.0+1076]
+
+- **Tower: Heat, the rules (the user's five named curses).** After a win, the Tower can be climbed again at a higher Heat, each adding one curse to those below: Embers (foes x1.05), Smoke (one more affix on the wardens and bosses), Flame (healing after a floor 15% to 5%, more elites from floor 11), Pyre (no boon on floors 13 and 23, the late oath from floor 18), Ash (foes x1.12 from floor 11, a gift costs rival clans 2 standing). Heat N+1 opens with a win at Heat N; marks earned rise by a quarter a level (x2.25 at Ash). Bot, every unlock: the top falls 26 / 18 / 15 / 12 / 11 / 7% from Heat 0 to 5. Heat 0 is the climb as before. The picker on the Tower's door comes with UX's next version; until then every climb is Heat 0.
+
+## [2.8.5+1074]
+
+- **Tower: the cleric holds against wardens and bosses.** With every unlock the cleric reached the top in 13% of bot climbs, against 23 to 29% for the other callings, and 43% of clerics who reached floor 30 fell there: its foes' scale (x1.28, set when the cleric healed through every fight) outlasted its heals in the long warden and boss fights. On the wardens' and bosses' floors (5, 10, 15, 20, 25, 30) its foes are now x1.08; ordinary floors stay x1.28. Bot, every unlock: cleric top 13 to 24%, its floor-30 loss 43 to 20%. The other callings and the climb with no unlocks are unchanged.
+
+## [2.8.4+1073]
+
+- **Tower: leaving a fight counts as losing it.** Closing the app during a Tower fight used to bring the floor back at its health before the fight, undoing a death. A fight is now marked as begun at its first round; a run reopened with a fight begun and never finished ends as a defeat on that floor, its marks banked, and the end screen says "You left the fight: it counts as lost."
+## [2.8.3+1072]
+
+- **Tower: a ranked skill stays on the die (#1147).** A rank-up raised a skill the die rolled, but a stronger skill taken later, or a new die, could push it off its face and the rank was lost. Ranked skills now keep their faces first; a skill that would push one off is offered as a rank-up instead. At the end of a climb 99% of rank-ups are still on the die (77% / 72% before, no unlocks / all). When no skill on the die can be raised, the card stays the skill card. Balance unchanged within noise.
+
 ## [2.8.1+1070]
 
 - Maps, three picks from the review. The epilogue map reads on a phone: on a light page the chart wears Parchment, it draws no names (they were about 4 px high; the list under it names the towns), numbers that sat on each other are pushed apart with a thin line to their town, and a tap on a number brings that town's line into view. On the ball no name is drawn under 12 px any more (lands, ranges, woods, villages, works and the notes under a mark; a clan's seat 13); where it is crowded a name is left off. And the party's ring on a town or a district breathes 20 times a second from a clock of its own: a town left alone asks for a third of the frames it did.

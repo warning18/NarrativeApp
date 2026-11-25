@@ -69,8 +69,18 @@ void main() {
   // 161 / 333 / 11240.
   // The floor-15 oath (#1153, towerPityOathFloor): these were
   // 49 / 207 / 9088 and 125 / 302 / 10775.
-  const none = (top: 49, floor20: 208, floorSum: 9111);
-  const all = (top: 128, floor20: 305, floorSum: 10799);
+  // #1147 (a skill ranked up keeps its face): these were
+  // 49 / 208 / 9111 and 128 / 305 / 10799.
+  // The cleric's peak scale (towerProfessionPeakScale 1.08 on the
+  // wardens' and bosses' floors, was 1.28; docs/simulation/
+  // tower-cleric-retune.md; the cleric is an unlock, so no unlocks is
+  // unchanged): all unlocks were 116 / 302 / 10758.
+  // The race trim (towerPeopleHealthPerUnlock: the dwarf .015 and the elf
+  // .01 of health an unlock, was .03; docs/simulation/tower-race-trim.md;
+  // health from the unlocks only, so no unlocks is unchanged): all
+  // unlocks were 124 / 308 / 10862.
+  const none = (top: 51, floor20: 205, floorSum: 9083);
+  const all = (top: 106, floor20: 294, floorSum: 10548);
 
   test('the live Tower, no unlocks, is the pinned curve', () {
     final m = _measure(const TowerProgress());
