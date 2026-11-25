@@ -702,9 +702,12 @@ class _FightScreenState extends ConsumerState<FightScreen>
     // The dice tumble in 3D for a beat before a roll's result is applied
     // (see Die3D), so a tap reads as "rolling" rather than an instant stat
     // swap; with reduced motion the roll is instant (see _rollDice).
+    // With reduced motion the controller would run 20 times faster by itself;
+    // the reduced throw (a drop of 200 ms) sets its own length.
     _rollController = AnimationController(
       vsync: this,
       duration: const Duration(milliseconds: 650),
+      animationBehavior: AnimationBehavior.preserve,
     );
   }
 

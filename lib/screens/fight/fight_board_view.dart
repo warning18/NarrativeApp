@@ -534,9 +534,8 @@ extension _FightBoardView on _FightScreenState {
   /// board gives the dice and kept until the next.
   DiceThrowPlan _throwPlanFor(
       List<_PartyMember> acting, List<_PartyMember> onBoard, Size size) {
-    final style = diceThrowStyle.value;
-    final key =
-        '${style.name}|$_rollCount|$_roundsStarted|${size.width.round()}x'
+    final reduced = MediaQuery.of(context).disableAnimations;
+    final key = '$reduced|$_rollCount|$_roundsStarted|${size.width.round()}x'
         '${size.height.round()}|${[for (final a in onBoard) a.id].join(',')}';
     if (_throwPlan != null && _throwKey == key) return _throwPlan!;
     final seats = [
@@ -550,14 +549,11 @@ extension _FightBoardView on _FightScreenState {
                 0.95),
     ];
     _throwKey = key;
-    final seed = _rollCount * 131 + _roundsStarted;
-    return _throwPlan = style == DiceThrowStyle.today
-        ? DiceThrowPlan.build(seats: seats, board: size, seed: seed)
-        : DiceThrowPlan.drop(
-            seats: seats,
-            board: size,
-            seed: seed,
-            strong: style == DiceThrowStyle.dropStrong);
+    return _throwPlan = DiceThrowPlan.build(
+        seats: seats,
+        board: size,
+        seed: _rollCount * 131 + _roundsStarted,
+        reduced: reduced);
   }
 
   Widget _buildDiceBoard(
@@ -606,19 +602,14 @@ extension _FightBoardView on _FightScreenState {
                     // The throw (v2.2): bounces, a slide, a turn, the dice
                     // pushing each other aside; on the cheap profile and
                     // with reduced motion, the plain flight above.
-                    final throwPlan = _rolling &&
-                            !disable &&
-                            !dieCheapSolids &&
-                            onBoard.isNotEmpty
-                        ? _throwPlanFor(acting, onBoard, size)
-                        : null;
+                    final throwPlan =
+                        _rolling && !dieCheapSolids && onBoard.isNotEmpty
+                            ? _throwPlanFor(acting, onBoard, size)
+                            : null;
                     final u = _rollController.value;
                     // At rest, the next throw is planned after the frame, so
                     // the roll's first frame does not pay for it.
-                    if (!_rolling &&
-                        !disable &&
-                        !dieCheapSolids &&
-                        onBoard.isNotEmpty) {
+                    if (!_rolling && !dieCheapSolids && onBoard.isNotEmpty) {
                       WidgetsBinding.instance.addPostFrameCallback((_) {
                         if (mounted && !_rolling) {
                           _throwPlanFor(acting, onBoard, size);
@@ -656,35 +647,15 @@ extension _FightBoardView on _FightScreenState {
                               ),
                             ),
                           ),
-                        if (throwPlan != null && throwPlan.dropped)
+                        // The floor under the throw: each die's shadow and the
+                        // dust of its contacts.
+                        if (throwPlan != null)
                           Positioned.fill(
                             child: IgnorePointer(
                               child: CustomPaint(
                                   painter: DiceGroundPainter(throwPlan, u)),
                             ),
                           ),
-                        if (throwPlan != null && !throwPlan.dropped)
-                          for (var k = 0; k < onBoard.length; k++)
-                            Positioned(
-                              left: throwPlan.position(k, u).dx -
-                                  throwPlan.radiusOf(k),
-                              top: throwPlan.position(k, u).dy +
-                                  throwPlan.radiusOf(k) * 0.55,
-                              width: 2 * throwPlan.radiusOf(k),
-                              height: throwPlan.radiusOf(k) * 0.5,
-                              child: IgnorePointer(
-                                child: DecoratedBox(
-                                  decoration: BoxDecoration(
-                                    shape: BoxShape.circle,
-                                    color: Colors.black.withValues(
-                                        alpha: 0.4 *
-                                            (1 -
-                                                throwPlan.lift(k, u) /
-                                                    (diceThrowMaxLift * 2))),
-                                  ),
-                                ),
-                              ),
-                            ),
                         for (final actor in onBoard)
                           () {
                             final i = acting.indexOf(actor);

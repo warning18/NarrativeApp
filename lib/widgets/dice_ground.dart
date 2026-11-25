@@ -45,7 +45,7 @@ class DiceGroundPainter extends CustomPainter {
       // A soft wide shadow while it falls, a sharp small one near the floor.
       shadow(k * 1.3, 0.14 * near + 0.04);
       shadow(k, 0.12 + 0.34 * near);
-      // The dust of each contact.
+      // The dust of each contact (none when motion is reduced).
       final spots = plan.contacts[i];
       for (var c = 0; c < spots.length; c++) {
         final dt = (u - spots[c]) * seconds;
