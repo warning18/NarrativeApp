@@ -3,6 +3,87 @@ part of '../fight_screen.dart';
 /// The on-screen effects: screen shake, and the effects played for
 /// faces, enemy moves and spells.
 extension _FightEffects on _FightScreenState {
+  // ---- The Tower's panel effects (fight_panel_fx.dart) ----
+
+  /// Listens to the fight's hits and poison ticks.
+  void _panelFxStart() {
+    panelFx.clear();
+    final events = ref.read(fightEventsProvider);
+    _fxHitSub = events.hits.listen(_onFxHit);
+    _fxTickSub = events.ticks.listen(_onFxTick);
+  }
+
+  void _panelFxStop() {
+    _fxHitSub?.cancel();
+    _fxTickSub?.cancel();
+    panelFx.clear();
+  }
+
+  /// Plays a hit on the panel it landed on: Fire for a Fire skill or spell, the
+  /// poison fist for a poisoning skill, else the plain blow; strong on a crit
+  /// or a strong or mighty hit.
+  void _onFxHit(FightHitEvent e) {
+    if (!mounted || !_effectsOn || !TowerPanelStyle.of(context)) return;
+    if (e.dodged) return;
+    final onFoe = e.target.isFoe;
+    var skill = PanelFxSkill.basic;
+    if (onFoe) {
+      final skills = ref.read(localizedDbProvider(skillsSchema)).value;
+      final data =
+          e.skillId == null || e.skillId!.isEmpty ? null : skills?[e.skillId];
+      final poisons = data is Map &&
+          (data['inflictsStatus'] == 'Poison' || data['vfx'] == 'poison');
+      if (e.element == 'Fire') {
+        skill = PanelFxSkill.fire;
+      } else if (poisons) {
+        skill = PanelFxSkill.poison;
+      }
+    }
+    panelFx.play(
+      skill: skill,
+      onFoe: onFoe,
+      index: e.target.index,
+      count: onFoe ? _enemies.length : _party.length,
+      strong: e.crit || e.tier == VfxTier.strong || e.tier == VfxTier.mighty,
+      crit: e.crit,
+      text: e.amount > 0 ? '-${e.amount}' : '',
+    );
+  }
+
+  /// Pulses the bar of a poisoned fighter when its poison ticks.
+  void _onFxTick(FightStatusTickEvent e) {
+    if (!mounted || !_effectsOn || !TowerPanelStyle.of(context)) return;
+    panelFx.play(
+      skill: PanelFxSkill.poison,
+      kind: PanelFxKind.tick,
+      onFoe: e.target.isFoe,
+      index: e.target.index,
+      count: e.target.isFoe ? _enemies.length : _party.length,
+      text: e.amount > 0 ? '-${e.amount}' : '',
+    );
+  }
+
+  /// What the effect layer draws on: the fighters' cards and who is poisoned.
+  PanelFxTargets get _panelFxTargets => PanelFxTargets(
+        cardOf: (foe, i) => foe
+            ? (i < _enemies.length
+                ? globalRectOf(_enemyCardKey(_enemies[i].key))
+                : null)
+            : (i < _party.length
+                ? globalRectOf(_memberCardKey(_party[i].id))
+                : null),
+        poisoned: (foe, i) => foe
+            ? i < _enemies.length &&
+                _enemies[i].isAlive &&
+                _enemies[i]
+                    .statusEffects
+                    .any((s) => s.type == StatusEffectType.poison)
+            : i < _party.length &&
+                _party[i]
+                    .statusEffects
+                    .any((s) => s.type == StatusEffectType.poison),
+      );
+
   bool get _effectsOn => ref.read(combatEffectsEnabledProvider) && !_quick;
 
   void _triggerShake() {

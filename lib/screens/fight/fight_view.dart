@@ -548,8 +548,10 @@ extension _FightView on _FightScreenState {
       child: Stack(
         children: [
           Positioned.fill(child: IgnorePointer(child: _buildBackdrop())),
-          Positioned.fill(child: battle),
+          Positioned.fill(child: PanelFxScreenShake(child: battle)),
           Positioned.fill(child: _buildWeatherOverlay()),
+          if (TowerPanelStyle.of(context))
+            Positioned.fill(child: PanelFxLayer(targets: _panelFxTargets)),
           Positioned.fill(
             child: IgnorePointer(
               child: CombatVfxLayer(
