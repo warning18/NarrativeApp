@@ -10,7 +10,7 @@ isn't reconstructable from git history alone.
 
 ## [2.10.14+1096]
 
-- **Tower dice: the dark disc behind the die is gone.** When a die landed, its burst was flattened to one colour and filled, so a solid disc showed over and behind the die for a few frames. The Tower's landing burst is now rings and sparks only, and a picked die keeps its gold outline without the glow under it. No rule or number changes.
+- **Tower dice: the black ball behind the die is gone.** Three things painted a solid mass behind or over the die: its landing burst (flattened to one colour, so the flash showed as a disc), the picked die's blurred gold glow, and the dark archway at the top of Art's dice plate, which on a short board sat right behind the die. The landing burst is now rings and sparks only, a picked die keeps its gold outline without the glow, and the plate is drawn a third larger from its foot so the archway is cut off. No rule or number changes.
 
 ## [2.10.12+1094]
 
