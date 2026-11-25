@@ -135,6 +135,7 @@ import '../theme/palette.dart';
 import '../theme/motion.dart';
 import '../widgets/ink_loading.dart';
 import '../theme/icon_sizes.dart';
+import '../widgets/hero_sprite.dart' show heroWalkOf;
 import '../widgets/pixel_glyph.dart';
 import 'tower/ink/ink_palette.dart' show inkGrey, inkRed, inkSlate;
 import '../widgets/dice_throw.dart';
@@ -142,6 +143,7 @@ import 'tower/ink/ink_dice.dart' show inkDieSkin;
 import 'tower/tower_backdrop.dart' show towerFightScene;
 import 'tower/ink/ink_kit.dart'
     show InkSlantPanel, InkSplashPainter, TowerPanelLayout, towerPanelLayout;
+import 'fight/fight_boss_scene.dart';
 import 'fight/fight_panel_fx.dart';
 import 'tower/ink/ink_palette.dart' show inkBlack, inkDeep, inkPaper;
 import 'tower/tower_look.dart' show TowerPanelStyle;

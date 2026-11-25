@@ -86,6 +86,10 @@ class PanelFxPlayer extends ChangeNotifier {
   /// A fixed time (pictures): every effect shows at [frozenMs] after its start.
   double? frozenMs;
 
+  /// Where a lone foe stands across its panel (the boss scene stands it in the
+  /// middle).
+  double loneFoeX = 0.74;
+
   /// Foes shown poisoned whatever their status (pictures).
   final Set<int> previewPoison = {};
 
@@ -336,6 +340,7 @@ class _PanelFxLayerState extends ConsumerState<PanelFxLayer>
                 cardOf: card,
                 poisoned: _poisoned,
                 tint: tint,
+                loneFoeX: panelFx.loneFoeX,
               ),
             );
           },
@@ -355,9 +360,11 @@ class _FxPainter extends CustomPainter {
     required this.cardOf,
     required this.poisoned,
     required this.tint,
+    required this.loneFoeX,
   });
 
   final List<PanelFxPlay> plays;
+  final double loneFoeX;
   final double Function(PanelFxPlay) msOf;
   final double nowMs;
   final Rect foe;
@@ -414,7 +421,7 @@ class _FxPainter extends CustomPainter {
     final panel = _panel(p.onFoe);
     final y = panel.top + panel.height * .62;
     if (!p.onFoe) return Offset(panel.left + panel.width * .2, y);
-    if (p.count <= 1) return Offset(panel.left + panel.width * .74, y);
+    if (p.count <= 1) return Offset(panel.left + panel.width * loneFoeX, y);
     return Offset(panel.left + panel.width * (p.index + .5) / p.count, y);
   }
 

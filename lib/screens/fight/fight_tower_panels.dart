@@ -54,6 +54,8 @@ extension _TowerPanels on _FightScreenState {
       double figBottom = 22,
       bool mirror = false,
       double plateInset = 0,
+      double plateRight = 0,
+      Widget? overlay,
       List<Offset> Function(double w, double h)? shape,
     }) =>
         LayoutBuilder(builder: (context, box) {
@@ -110,6 +112,7 @@ extension _TowerPanels on _FightScreenState {
                       ),
                     ),
                   ),
+                if (overlay != null) overlay,
                 if (showFigure)
                   Positioned(
                     // A lone fighter: a box 176 wide holds its half (84) at the
@@ -131,6 +134,7 @@ extension _TowerPanels on _FightScreenState {
                       (!foes ? plateInset : 0) +
                       (wide && !foes && figures && cards.length == 1 ? 96 : 0),
                   right: 12 +
+                      plateRight +
                       (foes ? plateInset : 0) +
                       (wide && foes && figures && cards.length == 1 ? 96 : 0),
                   top: foes ? 18 : 10,
@@ -187,6 +191,63 @@ extension _TowerPanels on _FightScreenState {
               child: panel(total - fh - _panelGap, false, partyCards)),
         ]);
       case TowerPanelLayout.boss:
+        // The boss scene: the boss facing the viewer in its tall panel, the hero
+        // from behind in the strip under it, offset to the right so he never
+        // covers the boss, his head and shoulders over the seam.
+        final bossFrame = _enemies.length == 1
+            ? bossSouthAsset(_enemies.first.enemyId)
+            : null;
+        final heroFrame = heroNorthAsset(heroWalkOf(context));
+        if (bossFrame != null && heroFrame != null && figures) {
+          const stripH = 70.0;
+          final bh = total - stripH - _panelGap;
+          panelFx.loneFoeX = 0.5;
+          return SizedBox(
+            height: total,
+            child: Stack(clipBehavior: Clip.none, children: [
+              Column(children: [
+                SizedBox(
+                    height: bh,
+                    child: panel(bh, true, foeCards,
+                        mode: _PanelMode.slim,
+                        overlay: Positioned(
+                            left: 0,
+                            right: 0,
+                            bottom: 10,
+                            child: Center(
+                                child: BossSceneFigure(
+                                    key: const Key('boss_scene_foe'),
+                                    asset: bossFrame,
+                                    height: bh - 62))))),
+                const SizedBox(height: _panelGap),
+                SizedBox(
+                    height: stripH,
+                    child: LayoutBuilder(
+                        builder: (context, box) => panel(
+                            stripH, false, partyCards,
+                            mode: _PanelMode.slim,
+                            plateRight: box.maxWidth * 0.3))),
+              ]),
+              // The hero, over the seam (outside the panels' clip).
+              Positioned(
+                left: 0,
+                right: 0,
+                bottom: 6,
+                child: PanelFxShake(
+                  foe: false,
+                  child: Align(
+                    alignment: const Alignment(0.62, 0),
+                    child: BossSceneFigure(
+                        key: const Key('boss_scene_hero'),
+                        asset: heroFrame,
+                        height: 92),
+                  ),
+                ),
+              ),
+            ]),
+          );
+        }
+        panelFx.loneFoeX = 0.74;
         // The foe's panel one and a half times taller, "You" slim under it.
         final fh = foeH * 1.5;
         return Column(children: [
