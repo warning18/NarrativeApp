@@ -147,6 +147,7 @@ void main() {
       expect(tester.takeException(), isNull);
       await shoot('cards-held');
       await tapKey('tower_take');
+      await tapKey('tower_confirm');
       expect(find.byKey(const Key('tower_card_0')), findsNothing);
       expect(tester.takeException(), isNull);
     });

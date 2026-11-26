@@ -5,7 +5,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../../data/tower/tower_hero.dart' show TowerData;
+import '../../data/tower/tower_hero.dart' show TowerData, towerHeroOf;
+import '../../data/tower/tower_levelup_loot.dart' show towerNudgeOn;
 import '../../data/tower/tower_rewards.dart' show TowerReward;
 import '../../data/tower/tower_run.dart';
 import '../../data/tower/tower_tables.dart';
@@ -153,6 +154,9 @@ class TowerPickConfirm extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final theme = Theme.of(context);
     final t = towerCardText(ref, reward);
+    // The stat a skill raises, as on the table's card.
+    final String? nudge =
+        styled ? towerNudgeOn(towerHeroOf(run, data), reward, data) : null;
     // The card is a reveal: it grows in over the floor (reduce motion: it is
     // simply there).
     final reduced = MediaQuery.of(context).disableAnimations;
@@ -190,8 +194,9 @@ class TowerPickConfirm extends ConsumerWidget {
                 BoxShadow(
                     color: inkBlack.withValues(alpha: 0.55), blurRadius: 36),
               ]),
-              child:
-                  FittedBox(child: towerStyledCardFor(ref, run, data, reward)),
+              child: FittedBox(
+                  child:
+                      towerStyledCardFor(ref, run, data, reward, nudge: nudge)),
             )),
           )
         else

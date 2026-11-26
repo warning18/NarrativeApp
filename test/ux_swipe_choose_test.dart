@@ -195,6 +195,15 @@ void main() {
             () => Future<void>.delayed(const Duration(milliseconds: 20)));
         await t.pump(const Duration(milliseconds: 100));
       }
+      // The swipe opens the confirm sheet; Confirm takes the card.
+      expect(find.byKey(const Key('tower_pick_confirm')), findsOneWidget);
+      expect(c.read(towerProvider).value?.run?.taken.containsKey(6), isFalse);
+      await t.tap(find.byKey(const Key('tower_confirm')));
+      for (var i = 0; i < 10; i++) {
+        await t.runAsync(
+            () => Future<void>.delayed(const Duration(milliseconds: 20)));
+        await t.pump(const Duration(milliseconds: 100));
+      }
       final taken = c.read(towerProvider).value?.run?.taken[6];
       expect(taken?.id, 'fireball', reason: 'the swiped card was taken');
     });
