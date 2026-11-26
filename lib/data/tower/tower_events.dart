@@ -22,6 +22,7 @@ import 'package:flutter/foundation.dart' show visibleForTesting;
 
 import '../../combat/fight_numbers.dart'
     show eliteStatMultiplier, potionHealAmount;
+import '../../combat/stat_rules.dart' show levelStatPicks;
 import '../ability_check.dart' show checkBonusFor, checkChance, checkPasses;
 import '../sim_combat.dart' show SimCharacter;
 import 'tower_coins.dart';
@@ -89,6 +90,9 @@ class TowerEventResult {
     required this.kind,
     this.roll,
     this.total,
+    this.ability,
+    this.modifier,
+    this.dc,
     required this.passed,
     required this.from,
     required this.to,
@@ -102,6 +106,9 @@ class TowerEventResult {
         kind: TowerEventKind.values.byName(json['kind'] as String),
         roll: (json['roll'] as num?)?.toInt(),
         total: (json['total'] as num?)?.toInt(),
+        ability: json['ability'] as String?,
+        modifier: (json['mod'] as num?)?.toInt(),
+        dc: (json['dc'] as num?)?.toInt(),
         passed: json['passed'] == true,
         from: (json['from'] as num).toInt(),
         to: (json['to'] as num).toInt(),
@@ -118,6 +125,17 @@ class TowerEventResult {
   /// for a rival, a shortcut, a parley passed on the oath.
   final int? roll;
   final int? total;
+
+  /// The check's ability, the modifier the roll was given and its DC, as
+  /// the rule used them (saved since the check plumbing, JSON 'ability',
+  /// 'mod', 'dc';
+  /// the check plumbing, docs/simulation/tower-check-plumbing.md). Null
+  /// with no roll, and on a result saved before: towerCheckResultOf then
+  /// rebuilds them (the floor's ability and DC, the modifier
+  /// [total] - [roll]).
+  final String? ability;
+  final int? modifier;
+  final int? dc;
 
   /// The test passed, the rival beaten in time, the parley talked past.
   final bool passed;
@@ -140,6 +158,9 @@ class TowerEventResult {
         'kind': kind.name,
         if (roll != null) 'roll': roll,
         if (total != null) 'total': total,
+        if (ability != null) 'ability': ability,
+        if (modifier != null) 'mod': modifier,
+        if (dc != null) 'dc': dc,
         'passed': passed,
         'from': from,
         'to': to,
@@ -154,6 +175,9 @@ class TowerEventResult {
       other.kind == kind &&
       other.roll == roll &&
       other.total == total &&
+      other.ability == ability &&
+      other.modifier == modifier &&
+      other.dc == dc &&
       other.passed == passed &&
       other.from == from &&
       other.to == to &&
@@ -162,8 +186,8 @@ class TowerEventResult {
       other.healed == healed;
 
   @override
-  int get hashCode => Object.hash(
-      kind, roll, total, passed, from, to, bought.join(','), paid, healed);
+  int get hashCode => Object.hash(kind, roll, total, ability, modifier, dc,
+      passed, from, to, bought.join(','), paid, healed);
 }
 
 /// What a merchant sells (TowerStockView.kind).
@@ -227,6 +251,7 @@ class TowerEventView {
     this.ability,
     this.dc,
     this.modifier,
+    this.picksBeforeCheck,
     this.chance,
     this.fallTo,
     this.gain,
@@ -275,6 +300,18 @@ class TowerEventView {
   final String? ability;
   final int? dc;
   final int? modifier;
+
+  /// A test or a parley: the stat picks still to be taken before the check
+  /// is rolled (towerPicksBeforeSetback). [modifier] is read from the hero
+  /// as it stands now with towerCheckModifierOf, the very read the roll
+  /// makes; it is the roll's modifier exactly when this is 0. A setback is
+  /// rolled after the floor's win, its Level Up picks and its card
+  /// (towerAfterEvent): a card never moves an ability (towerApplyReward),
+  /// but a pick of that Level Up that raises the checked ability raises the
+  /// modifier between a preview shown before the fight and the roll. Once
+  /// the picks are taken (the Level Up opens before the cards), it is 0. A
+  /// parley is rolled at the talk, on the hero as it stands: always 0.
+  final int? picksBeforeCheck;
   final double? chance;
   final int? fallTo;
   final int? gain;
@@ -676,6 +713,22 @@ String towerParleyAbilityOf(int floor) =>
 int towerSetbackDcOf(int floor) =>
     towerSetbackDcBase + (floor - 1) ~/ towerSetbackDcFloors;
 
+/// The modifier [hero] brings to a setback's or a parley's check of
+/// [ability] (checkBonusFor its score): the one read the roll
+/// (towerAfterEvent, towerChooseParley) and the view (towerEventOf) share.
+int towerCheckModifierOf(SimCharacter hero, String ability) =>
+    checkBonusFor(hero.abilityScore(ability));
+
+/// The stat picks [run] will take before the setback on its floor is
+/// rolled (TowerEventView.picksBeforeCheck): those its height earns once
+/// the floor is won, less those it took. 0 when the floor's win gives no
+/// level and none waits, or once the Level Up is done (choosing).
+int towerPicksBeforeSetback(TowerRun run) {
+  final height = max(run.floor, run.crest);
+  final earned = (towerLevelAfter(height) - 1) * levelStatPicks;
+  return max(0, earned - run.statPicks.length);
+}
+
 /// The first gate (warden or boss) above [floor], or the top.
 int _nextGate(int floor) {
   for (var g = floor + 1; g < towerTop; g++) {
@@ -754,14 +807,18 @@ TowerRun towerChooseParley(TowerRun run, TowerData data, bool talk,
     result = TowerEventResult(
         kind: TowerEventKind.parley, passed: true, from: from, to: from + 1);
   } else {
+    final ability = towerParleyAbilityOf(from);
     final dc = towerSetbackDcOf(from);
-    final modifier = checkBonusFor((hero ?? towerHeroOf(run, data))
-        .abilityScore(towerParleyAbilityOf(from)));
+    final modifier =
+        towerCheckModifierOf(hero ?? towerHeroOf(run, data), ability);
     final passed = checkPasses(event.roll, modifier, dc);
     result = TowerEventResult(
       kind: TowerEventKind.parley,
       roll: event.roll,
       total: event.roll + modifier,
+      ability: ability,
+      modifier: modifier,
+      dc: dc,
       passed: passed,
       from: from,
       to: passed ? from + 1 : from,
@@ -816,7 +873,7 @@ TowerEventView? towerEventOf(TowerRun run, TowerData data,
       final ability = towerSetbackAbilityOf(floor);
       final dc = towerSetbackDcOf(floor);
       final modifier =
-          checkBonusFor((hero ?? towerHeroOf(run, data)).abilityScore(ability));
+          towerCheckModifierOf(hero ?? towerHeroOf(run, data), ability);
       return TowerEventView(
         kind: TowerEventKind.test,
         floor: floor,
@@ -825,6 +882,7 @@ TowerEventView? towerEventOf(TowerRun run, TowerData data,
         ability: ability,
         dc: dc,
         modifier: modifier,
+        picksBeforeCheck: towerPicksBeforeSetback(run),
         chance: checkChance(modifier: modifier, dc: dc),
         fallTo: towerSetbackFallTo(floor, event!.fall),
         gain: 1,
@@ -865,7 +923,7 @@ TowerEventView? towerEventOf(TowerRun run, TowerData data,
       final ability = towerParleyAbilityOf(floor);
       final dc = towerSetbackDcOf(floor);
       final modifier =
-          checkBonusFor((hero ?? towerHeroOf(run, data)).abilityScore(ability));
+          towerCheckModifierOf(hero ?? towerHeroOf(run, data), ability);
       return TowerEventView(
         kind: TowerEventKind.parley,
         floor: floor,
@@ -874,6 +932,7 @@ TowerEventView? towerEventOf(TowerRun run, TowerData data,
         ability: ability,
         dc: dc,
         modifier: modifier,
+        picksBeforeCheck: 0,
         chance: checkChance(modifier: modifier, dc: dc),
         clanId: event!.clanId,
         oathPass: run.clanIds.contains(event.clanId),
@@ -1032,13 +1091,19 @@ TowerRun towerAfterEvent(TowerRun won, TowerRun next, TowerData data) {
       final hero = towerHeroOf(next, data);
       final ability = towerSetbackAbilityOf(from);
       final dc = towerSetbackDcOf(from);
-      final modifier = checkBonusFor(hero.abilityScore(ability));
+      // The hero after the floor's Level Up picks, spoils and card (the
+      // view's modifier is the same read: towerCheckModifierOf; see
+      // TowerEventView.picksBeforeCheck).
+      final modifier = towerCheckModifierOf(hero, ability);
       final passed = checkPasses(event.roll, modifier, dc);
       final to = passed ? from + 1 : towerSetbackFallTo(from, event.fall);
       final result = TowerEventResult(
         kind: TowerEventKind.test,
         roll: event.roll,
         total: event.roll + modifier,
+        ability: ability,
+        modifier: modifier,
+        dc: dc,
         passed: passed,
         from: from,
         to: to,
