@@ -12,7 +12,7 @@ import 'package:flutter/material.dart';
 
 import '../../theme/stitched_ink.dart';
 import 'ink/ink_palette.dart';
-import 'tower_tarot_card.dart' show TowerSeal;
+import 'tower_tarot_card.dart' show TowerOutlinedIcon, TowerSeal;
 
 const double towerClanCardWidth = 210;
 const double towerClanCardHeight = 346;
@@ -245,7 +245,7 @@ class _VignetteBand extends StatelessWidget {
                     color: light ? inkPaper : inkBlack.withValues(alpha: 0.9),
                     border: Border.all(
                         color: light ? inkBlack : inkPaper, width: 1)),
-                child: icon),
+                child: light ? TowerOutlinedIcon(child: icon) : icon),
           ),
           if (rarity != null)
             Positioned(

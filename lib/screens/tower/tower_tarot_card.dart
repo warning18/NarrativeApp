@@ -102,6 +102,38 @@ TextStyle _display(double s, Color c) => TextStyle(
 TextStyle _prose(double s, Color c) =>
     TextStyle(fontFamily: InkFonts.prose, fontSize: s, height: 1.2, color: c);
 
+/// An icon with a 1 px ink outline (the icon drawn in ink, shifted a pixel to
+/// each side, under itself): a pale icon reads on a paper badge.
+class TowerOutlinedIcon extends StatelessWidget {
+  const TowerOutlinedIcon({super.key, required this.child});
+
+  final Widget child;
+
+  @override
+  Widget build(BuildContext context) {
+    const shifts = [
+      Offset(-1, 0),
+      Offset(1, 0),
+      Offset(0, -1),
+      Offset(0, 1),
+      Offset(-1, -1),
+      Offset(1, -1),
+      Offset(-1, 1),
+      Offset(1, 1),
+    ];
+    return Stack(clipBehavior: Clip.none, children: [
+      for (final d in shifts)
+        Transform.translate(
+          offset: d,
+          child: ColorFiltered(
+              colorFilter: const ColorFilter.mode(inkBlack, BlendMode.srcIn),
+              child: child),
+        ),
+      child,
+    ]);
+  }
+}
+
 /// The picture in a card's corner or frame: an asset, or [fallback].
 Widget towerCardPicture(String? asset, double size, {Widget? fallback}) =>
     asset == null
@@ -185,7 +217,9 @@ class TowerTarotCard extends StatelessWidget {
                           color: lightBadge
                               ? inkPaper
                               : inkBlack.withValues(alpha: 0.85),
-                          child: icon),
+                          child: lightBadge
+                              ? TowerOutlinedIcon(child: icon)
+                              : icon),
                     ),
                     // A die or a spell has no rarity: no blank seal on the art.
                     if (rarity != null)
