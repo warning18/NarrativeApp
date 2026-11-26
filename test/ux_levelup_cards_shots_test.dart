@@ -30,7 +30,6 @@ const _clan = UxCardSpec(
     vignette: '${uxV}skill_void.png',
     icon: Icons.groups,
     stock: inkDark,
-    shape: UxShape.swallow,
     stripe: _clanHue,
     band: inkDark,
     bandInk: inkPaper,
@@ -65,7 +64,6 @@ const _spell = UxCardSpec(
     stock: Color(0xFF1B1533),
     edge: inkPaper,
     twin: true,
-    shape: UxShape.chamfer,
     band: inkPaper,
     nudge: '+1 WIS');
 const _die = UxCardSpec('Die', 'Die', 'Ash Die', 'A d6 with two faces of 4.',
@@ -88,7 +86,6 @@ const _bundle = UxCardSpec(
     ink: inkOnPaper,
     edge: inkOnPaper,
     dashed: true,
-    shape: UxShape.notch,
     band: inkOnPaper,
     bandInk: inkPaper);
 const _purse = UxCardSpec(
@@ -140,9 +137,10 @@ Widget _red(String label, {bool on = true}) => FilledButton(
     onPressed: on ? () {} : null,
     child: Text(label));
 
-/// Today's offer screen: the Tower floor behind, a title, the real fanned
-/// hand (the middle card in front, none in hand until one is touched), the
-/// held card's words under it, Take in red, then [below].
+/// Today's offer screen: the Tower floor behind, the ribbon (Level Up) or a
+/// title, the real fanned hand (the middle card in front, none in hand until
+/// one is touched), the held card's words under it (with [detailRight] beside
+/// them), Take in red, then [below].
 class _Offer extends StatelessWidget {
   const _Offer({
     required this.title,
@@ -151,27 +149,58 @@ class _Offer extends StatelessWidget {
     required this.held,
     required this.detail,
     this.below = const [],
+    this.detailRight,
     this.notNow,
+    this.ribbon = false,
   });
   final String title, hint;
   final List<UxCardSpec> cards;
   final int held;
   final List<String> detail;
   final List<Widget> below;
+  final Widget? detailRight;
   final String? notNow;
+  final bool ribbon;
 
   @override
   Widget build(BuildContext context) {
     final t = Theme.of(context).textTheme;
+    final words = held >= 0
+        ? Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+            Text(detail[0], style: t.titleSmall),
+            for (final l in detail.skip(1)) Text(l, style: t.bodyMedium),
+          ])
+        : Text('Tap a card, or swipe it up to take it.', style: t.bodySmall);
     return TowerBackdrop(
       floor: 4,
       child: ListView(
         physics: const NeverScrollableScrollPhysics(),
-        padding: const EdgeInsets.fromLTRB(8, 12, 16, 24),
+        padding: const EdgeInsets.fromLTRB(8, 10, 16, 24),
         children: [
-          Text(title, style: t.headlineSmall),
-          Text(hint, style: t.bodyMedium?.copyWith(color: t.bodySmall?.color)),
-          const SizedBox(height: 14),
+          if (ribbon)
+            Padding(
+              padding: const EdgeInsets.only(left: 8, bottom: 2),
+              child: SizedBox(
+                height: 44,
+                child: Stack(alignment: Alignment.center, children: [
+                  Positioned.fill(
+                    child: Image.asset('assets/visuals/levelup/ribbon.png',
+                        fit: BoxFit.fill,
+                        filterQuality: FilterQuality.none,
+                        isAntiAlias: false),
+                  ),
+                  Text(title, style: _d(24, Colors.white)),
+                ]),
+              ),
+            )
+          else
+            Text(title, style: t.headlineSmall),
+          Padding(
+            padding: const EdgeInsets.only(top: 4),
+            child: Text(hint,
+                style: t.bodyMedium?.copyWith(color: t.bodySmall?.color)),
+          ),
+          const SizedBox(height: 12),
           ClanHandFan(
             cards: [for (final c in cards) UxCard(c, 122, heightK: 1.65)],
             keys: [for (var i = 0; i < cards.length; i++) Key('c$i')],
@@ -179,23 +208,16 @@ class _Offer extends StatelessWidget {
             front: 1,
             onTap: null,
           ),
-          if (held >= 0)
-            Padding(
-              padding: const EdgeInsets.only(top: 6),
-              child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(detail[0], style: t.titleSmall),
-                    for (final l in detail.skip(1))
-                      Text(l, style: t.bodyMedium),
+          Padding(
+            padding: const EdgeInsets.only(top: 6),
+            child: detailRight == null
+                ? words
+                : Row(crossAxisAlignment: CrossAxisAlignment.center, children: [
+                    Expanded(child: words),
+                    const SizedBox(width: 6),
+                    detailRight!,
                   ]),
-            )
-          else
-            Padding(
-              padding: const EdgeInsets.only(top: 12),
-              child: Text('Tap a card, or swipe it up to take it.',
-                  style: t.bodySmall),
-            ),
+          ),
           Align(
             alignment: Alignment.centerRight,
             child: Padding(
@@ -219,25 +241,32 @@ class _Offer extends StatelessWidget {
   }
 }
 
-Widget _radar(String? stat, String label) {
+/// A compact radar on the floor under a soft ink scrim (no hard panel):
+/// the 8 symbols and values round a small shape, the nudge ghosted.
+Widget _radar(String? stat, String label, {double side = 230}) {
   final after = stat == null ? null : {..._before, stat: _before[stat]! + 1};
-  // A black panel over the floor, so the radar reads on black.
   return Container(
-    margin: const EdgeInsets.only(top: 14),
-    padding: const EdgeInsets.fromLTRB(8, 12, 8, 8),
+    width: side,
     decoration: BoxDecoration(
-        color: inkBlack,
-        border: Border.all(color: inkSlate),
-        borderRadius: BorderRadius.circular(4)),
-    child: Column(children: [
-      SizedBox(
-        height: 20,
-        child: stat == null
-            ? null
-            : Text(label, style: _p(13, inkRed, w: FontWeight.w700)),
-      ),
+        gradient: RadialGradient(colors: [
+      inkBlack.withValues(alpha: 0.82),
+      inkBlack.withValues(alpha: 0.55),
+      inkBlack.withValues(alpha: 0),
+    ], stops: const [
+      0.0,
+      0.6,
+      1.0
+    ])),
+    padding: const EdgeInsets.symmetric(vertical: 6),
+    child: Column(mainAxisSize: MainAxisSize.min, children: [
       LevelUpStatsArea(
-          before: _before, after: after, label: (k) => _abbr[k]!, dark: true),
+          before: _before,
+          after: after,
+          label: (k) => _abbr[k]!,
+          dark: true,
+          compact: true),
+      if (stat != null)
+        Text(label, style: _p(12, inkPaper, w: FontWeight.w700)),
     ]),
   );
 }
@@ -336,61 +365,79 @@ void main() {
         await _shot(tester, key, '$shots/$name-$n.png');
       }
 
+      const hint = 'Choose one card. A skill also raises a stat by 1.';
+      const skillWords = [
+        'Ember Lash',
+        'Hit one foe for 6 fire. Raises Intelligence by 1.'
+      ];
+      const clanWords = [
+        'Shadow Step',
+        'Strike first in the next fight. Raises Dexterity by 1.',
+        'Mire +2 · Dominion -1 · Compact +1 · Penitents -1',
+      ];
+      // Variant A: the radar beside the held card's words.
       await shot(
-          'levelup-start',
-          980,
+          'levelup-A-start',
+          700,
           _Offer(
+              ribbon: true,
               title: 'Level 4',
-              hint: 'Choose one card. A skill also raises a stat by 1.',
+              hint: hint,
               cards: lvl,
               held: -1,
               detail: const [],
-              below: [_radar(null, '')]));
+              detailRight: _radar(null, '', side: 150)));
       await shot(
-          'levelup-held',
-          1030,
+          'levelup-A-skill',
+          700,
           _Offer(
+              ribbon: true,
               title: 'Level 4',
-              hint: 'Choose one card. A skill also raises a stat by 1.',
+              hint: hint,
               cards: lvl,
               held: 1,
-              detail: const [
-                'Ember Lash',
-                'Hit one foe for 6 fire. Raises Intelligence by 1.',
-              ],
-              below: [
-                _radar('intelligence', 'Ember Lash: +1 INT')
-              ]));
+              detail: skillWords,
+              detailRight: _radar('intelligence', '+1 INT', side: 150)));
       await shot(
-          'levelup-clan-held',
-          1030,
+          'levelup-A-clan',
+          700,
           _Offer(
+              ribbon: true,
               title: 'Level 4',
-              hint: 'Choose one card. A skill also raises a stat by 1.',
+              hint: hint,
               cards: lvl,
               held: 0,
-              detail: const [
-                'Shadow Step',
-                'Strike first in the next fight. Raises Dexterity by 1.',
-                'Mire +2 · Dominion -1 · Compact +1 · Penitents -1',
-              ],
+              detail: clanWords,
+              detailRight: _radar('dexterity', '+1 DEX', side: 150)));
+      // Variant B: the radar under the words, centred, larger.
+      await shot(
+          'levelup-B-skill',
+          860,
+          _Offer(
+              ribbon: true,
+              title: 'Level 4',
+              hint: hint,
+              cards: lvl,
+              held: 1,
+              detail: skillWords,
               below: [
-                _radar('dexterity', 'Shadow Step: +1 DEX')
+                Center(child: _radar('intelligence', 'Ember Lash: +1 INT'))
               ]));
       await shot(
-          'levelup-rankup-die',
-          1030,
+          'levelup-B-rankup-die',
+          860,
           _Offer(
+              ribbon: true,
               title: 'Level 4',
-              hint: 'Choose one card. A skill also raises a stat by 1.',
+              hint: hint,
               cards: lvl2,
               held: 1,
               detail: const [
                 'Ember Lash II',
-                'Rank 2: 9 fire. Raises Intelligence by 1.',
+                'Rank 2: 9 fire. Raises Intelligence by 1.'
               ],
               below: [
-                _radar('intelligence', 'Ember Lash II: +1 INT')
+                Center(child: _radar('intelligence', 'Ember Lash II: +1 INT'))
               ]));
       const loot = [_gear, _bundle, _purse];
       await shot(

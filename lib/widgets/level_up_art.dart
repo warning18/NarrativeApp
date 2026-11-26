@@ -195,18 +195,22 @@ class LevelUpStatsArea extends StatelessWidget {
     required this.after,
     required this.label,
     this.dark = false,
+    this.compact = false,
   });
 
   final Map<String, int> before;
   final Map<String, int>? after;
   final String Function(String ability) label;
 
+  /// Smaller: the symbols and values round a compact shape, no names.
+  final bool compact;
+
   /// Drawn for a black ground (paper lines and numbers) instead of paper.
   final bool dark;
 
   @override
-  Widget build(BuildContext context) =>
-      _Radar(before: before, after: after, label: label, dark: dark);
+  Widget build(BuildContext context) => _Radar(
+      before: before, after: after, label: label, dark: dark, compact: compact);
 }
 
 /// The radar: Art's symbols at the eight corners with their numbers, a
@@ -218,12 +222,14 @@ class _Radar extends StatelessWidget {
     required this.after,
     required this.label,
     this.dark = false,
+    this.compact = false,
   });
 
   final Map<String, int> before;
   final Map<String, int>? after;
   final String Function(String) label;
   final bool dark;
+  final bool compact;
 
   static const double _lo = -4;
   static const List<int> _rings = [-2, 0, 4, 8, 12];
@@ -234,9 +240,12 @@ class _Radar extends StatelessWidget {
     final hi = (top + 1).toDouble();
     return LayoutBuilder(
       builder: (context, c) {
-        final side = math.min(c.maxWidth, 330.0);
-        final r = side / 2 - 50;
-        final centre = Offset(side / 2, side / 2 + 4);
+        final side = math.min(c.maxWidth, compact ? 230.0 : 330.0);
+        final r = side / 2 - (compact ? 36 : 50);
+        final extra = compact ? 16.0 : 40.0;
+        final centre = compact
+            ? Offset(side / 2, side / 2 + 8)
+            : Offset(side / 2, side / 2 + 4);
         Offset corner(int i, double radius) {
           final a = -math.pi / 2 + i * 2 * math.pi / 8;
           return centre + Offset(math.cos(a), math.sin(a)) * radius;
@@ -246,7 +255,7 @@ class _Radar extends StatelessWidget {
           child: SizedBox(
             key: const Key('stat_pick_radar'),
             width: side,
-            height: side + 40,
+            height: side + extra,
             child: Stack(
               children: [
                 Positioned.fill(
@@ -266,19 +275,20 @@ class _Radar extends StatelessWidget {
                 ),
                 for (final (i, k) in abilityRadarOrder.indexed)
                   Positioned(
-                    left: corner(i, r + 30).dx - 24,
-                    top: corner(i, r + 30).dy - 25,
+                    left: corner(i, r + (compact ? 22 : 30)).dx - 24,
+                    top: corner(i, r + (compact ? 22 : 30)).dy -
+                        (compact ? 19 : 25),
                     width: 48,
                     child: Column(
                       mainAxisSize: MainAxisSize.min,
                       children: [
-                        LevelUpSymbol(k, size: 24),
+                        LevelUpSymbol(k, size: compact ? 20 : 24),
                         Text(
                           after != null && (after![k] ?? 0) != (before[k] ?? 0)
                               ? '${levelUpValueText(before[k] ?? 0)}→${levelUpValueText(after![k] ?? 0)}'
                               : levelUpValueText(before[k] ?? 0),
                           style: _digits(
-                            13,
+                            compact ? 11 : 13,
                             after != null &&
                                     (after![k] ?? 0) != (before[k] ?? 0)
                                 ? (dark ? inkRed : inkRedDeep)
@@ -286,15 +296,16 @@ class _Radar extends StatelessWidget {
                             weight: FontWeight.w700,
                           ),
                         ),
-                        Text(
-                          label(k),
-                          style: TextStyle(
-                            fontFamily: InkFonts.system,
-                            fontSize: 10,
-                            height: 1,
-                            color: dark ? inkGrey : inkSlate,
+                        if (!compact)
+                          Text(
+                            label(k),
+                            style: TextStyle(
+                              fontFamily: InkFonts.system,
+                              fontSize: 10,
+                              height: 1,
+                              color: dark ? inkGrey : inkSlate,
+                            ),
                           ),
-                        ),
                       ],
                     ),
                   ),

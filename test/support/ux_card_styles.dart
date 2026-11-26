@@ -201,48 +201,9 @@ class UxShapeClipper extends CustomClipper<Path> {
   const UxShapeClipper(this.shape);
   final UxShape shape;
   @override
-  Path getClip(Size s) {
-    const c = 12.0;
-    final w = s.width, h = s.height;
-    return switch (shape) {
-      UxShape.square => (Path()..addRect(Offset.zero & s)),
-      UxShape.chamfer => Path()
-        ..moveTo(c, 0)
-        ..lineTo(w - c, 0)
-        ..lineTo(w, c)
-        ..lineTo(w, h - c)
-        ..lineTo(w - c, h)
-        ..lineTo(c, h)
-        ..lineTo(0, h - c)
-        ..lineTo(0, c)
-        ..close(),
-      UxShape.swallow => Path()
-        ..moveTo(0, 0)
-        ..lineTo(w, 0)
-        ..lineTo(w, h)
-        ..lineTo(w / 2, h - 16)
-        ..lineTo(0, h)
-        ..close(),
-      UxShape.notch => Path()
-        ..moveTo(0, 0)
-        ..lineTo(w, 0)
-        ..lineTo(w, h * 0.5 - 8)
-        ..arcToPoint(
-          Offset(w, h * 0.5 + 8),
-          radius: const Radius.circular(8),
-          clockwise: false,
-        )
-        ..lineTo(w, h)
-        ..lineTo(0, h)
-        ..lineTo(0, h * 0.5 + 8)
-        ..arcToPoint(
-          Offset(0, h * 0.5 - 8),
-          radius: const Radius.circular(8),
-          clockwise: false,
-        )
-        ..close(),
-    };
-  }
+  Path getClip(Size s) => Path()
+    ..addRRect(
+        RRect.fromRectAndRadius(Offset.zero & s, const Radius.circular(10)));
 
   @override
   bool shouldReclip(UxShapeClipper old) => old.shape != shape;
@@ -451,8 +412,7 @@ class UxCard extends StatelessWidget {
               Expanded(
                 flex: 8,
                 child: Padding(
-                  padding: EdgeInsets.fromLTRB(
-                      6, 4, 6, spec.shape == UxShape.swallow ? 20 : 8),
+                  padding: const EdgeInsets.fromLTRB(6, 4, 6, 8),
                   child: Column(
                     children: [
                       Text(
