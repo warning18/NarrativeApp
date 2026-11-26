@@ -122,7 +122,12 @@ TowerCardText towerCardText(WidgetRef ref, TowerReward reward, {int tier = 0}) {
     case TowerRewardKind.purse:
       return TowerCardText(
           tr(ref, 'tower_kind_purse'),
-          tr(ref, 'tower_purse_name').replaceAll('{n}', '${reward.amount}'),
+          tr(
+                  ref,
+                  reward.amount == 1
+                      ? 'tower_purse_name_one'
+                      : 'tower_purse_name')
+              .replaceAll('{n}', '${reward.amount}'),
           '');
   }
 }
@@ -269,6 +274,22 @@ Widget towerStyledCardFor(
     stamp: reward.kind == TowerRewardKind.rankUp ? '+1' : null,
     nudge: nudge == null ? null : '+1 ${tr(ref, abilityAbbrevKey(nudge))}',
   );
+}
+
+/// A clan's gift taken: the standing it moved, as a toast (shown when the
+/// choice is confirmed).
+void towerShowStandingToast(BuildContext context, WidgetRef ref, TowerRun run,
+    TowerData data, TowerReward? card) {
+  if (card == null || card.clan.isEmpty) return;
+  final before = towerStandingOf(run, data);
+  final after = towerStandingOf(
+      run.copyWith(taken: {...run.taken, run.floor: card}), data);
+  final lines = towerStandingToast(ref, before, after);
+  if (lines.isNotEmpty) {
+    ScaffoldMessenger.maybeOf(context)?.showSnackBar(SnackBar(
+        key: const Key('tower_standing_toast'),
+        content: Text(lines.join('\n'))));
+  }
 }
 
 class TowerOfferView extends ConsumerStatefulWidget {
@@ -668,24 +689,6 @@ class _TowerOfferViewState extends ConsumerState<TowerOfferView> {
   void _pick(int? index) {
     if (_done) return;
     setState(() => _done = true);
-    final offer = widget.run.offer;
-    // A clan's gift taken: the standing it moved, as a toast.
-    if (index != null &&
-        index >= 0 &&
-        index < offer.length &&
-        offer[index].clan.isNotEmpty) {
-      final run = widget.run;
-      final before = towerStandingOf(run, widget.data);
-      final after = towerStandingOf(
-          run.copyWith(taken: {...run.taken, run.floor: offer[index]}),
-          widget.data);
-      final lines = towerStandingToast(ref, before, after);
-      if (lines.isNotEmpty) {
-        ScaffoldMessenger.maybeOf(context)?.showSnackBar(SnackBar(
-            key: const Key('tower_standing_toast'),
-            content: Text(lines.join('\n'))));
-      }
-    }
     widget.onPick(index);
   }
 

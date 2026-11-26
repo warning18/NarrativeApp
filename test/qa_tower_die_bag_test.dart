@@ -102,6 +102,7 @@ void main() {
     // take the die card
     await tapKey('tower_card_0');
     await tapKey('tower_take');
+    await tapKey('tower_confirm');
     await settle(10);
 
     // the panel: the gained die is in the bag, new, and not in play

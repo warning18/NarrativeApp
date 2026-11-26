@@ -221,6 +221,10 @@ void main() {
             await tapKey('tower_card_0');
           }
           await tapKey('tower_take');
+          // The pick counts at Confirm.
+          if (find.byKey(const Key('tower_confirm')).evaluate().isNotEmpty) {
+            await tapKey('tower_confirm');
+          }
         }
         await settle(10);
         debugPrint('STEP $floor.$i ${visible()}');

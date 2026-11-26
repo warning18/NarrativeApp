@@ -459,6 +459,8 @@ Future<TowerPlay> playTower(
         await tapKey('tower_card_0');
       }
       await tapKey(has('tower_take') ? 'tower_take' : 'tower_refuse');
+      // The pick counts at Confirm.
+      if (has('tower_confirm')) await tapKey('tower_confirm');
       await settle(10);
       continue;
     }

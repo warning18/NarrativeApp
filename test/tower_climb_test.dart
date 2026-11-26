@@ -125,6 +125,9 @@ void main() {
     await tester.tap(find.byKey(const Key('tower_card_0')));
     await tester.pump();
     await tester.tap(find.byKey(const Key('tower_take')));
+    await tester.pump();
+    // The pick counts at Confirm.
+    await tester.tap(find.byKey(const Key('tower_confirm')));
     await _settle(tester);
     final run = (await TowerSave.open()).loadRun()!;
     expect(run.floor, 6);
@@ -233,6 +236,9 @@ void main() {
     await tester.tap(find.byKey(const Key('tower_card_0')));
     await tester.pump();
     await tester.tap(find.byKey(const Key('tower_take')));
+    await tester.pump();
+    // The pick counts at Confirm.
+    await tester.tap(find.byKey(const Key('tower_confirm')));
     await _settle(tester);
     final run = (await TowerSave.open()).loadRun()!;
     expect(run.taken[1]?.clan, offer.first.clan);
@@ -269,6 +275,9 @@ void main() {
     await tester.pump();
     expect(find.text('Swear'), findsOneWidget);
     await tester.tap(find.byKey(const Key('tower_take')));
+    await tester.pump();
+    // The pick counts at Confirm.
+    await tester.tap(find.byKey(const Key('tower_confirm')));
     await _settle(tester);
     final run = (await TowerSave.open()).loadRun()!;
     expect(run.clanIds, ['mire']);
