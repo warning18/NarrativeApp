@@ -11,7 +11,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:narrative_data_app/data/tower/tower_bot.dart';
 import 'package:narrative_data_app/data/tower/tower_levelup_loot.dart'
-    show towerNudgeClimbCap;
+    show towerNudgeClimbCapOf;
 import 'package:narrative_data_app/data/tower/tower_rewards.dart';
 import 'package:narrative_data_app/data/tower/tower_run.dart';
 import 'package:narrative_data_app/data/tower/tower_tables.dart';
@@ -21,7 +21,11 @@ import 'support/pump.dart';
 void main() {
   final data = towerDataFromAssets();
   final start = towerStart(
-      seed: 5, raceId: 'human', professionId: 'warrior', data: data, rules: 2);
+      seed: 5,
+      raceId: 'human',
+      professionId: 'warrior',
+      data: data,
+      rules: towerSurvivalRules);
   final run = start.copyWith(floor: 7, taken: {
     1: const TowerReward(TowerRewardKind.gear, id: 'sword_001'),
     5: const TowerReward(TowerRewardKind.die, id: 'flame_die'),
@@ -60,7 +64,9 @@ void main() {
     await tester.tap(find.byKey(const Key('tower_bookmark_stats')));
     await settle();
     expect(find.byKey(const Key('tower_bookmark_panel_stats')), findsOneWidget);
-    expect(find.text('Level Up nudges: +1 of +$towerNudgeClimbCap this climb'),
+    expect(
+        find.text(
+            'Level Up nudges: +1 of +${towerNudgeClimbCapOf(run.rules)} this climb'),
         findsOneWidget);
 
     // Gear: the weapon worn, and a tile for every slot.

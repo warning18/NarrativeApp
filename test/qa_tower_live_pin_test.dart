@@ -105,8 +105,15 @@ void main() {
   // ×0.85 and the calling pass (towerLootFoeScale,
   // towerLootProfessionScale). On rules 1 these were 53 / 210 / 9176 and
   // 119 / 305 / 10754.
-  const none = (top: 66, floor20: 253, floorSum: 10117);
-  const all = (top: 109, floor20: 307, floorSum: 11127);
+  // Rules 3 (Core's PR, docs/simulation/tower-difficulty-survival.md, the
+  // user's call: a survival climb, for new climbs only): no Tower XP at the
+  // start and a level costing 5, 6, 6, 7 ..., the nudges at most +3 a stat
+  // and +6 a climb, the loot's tier shift 0 / 0 / +1, 10% health back
+  // after a floor, the foes' survival curve by floor (towerSurvivalScale)
+  // and a new calling pass, 5.33 times the health an unlock. On rules 2
+  // these were 66 / 253 / 10117 and 109 / 307 / 11127.
+  const none = (top: 0, floor20: 22, floorSum: 3981);
+  const all = (top: 51, floor20: 217, floorSum: 8991);
 
   test('the live Tower, no unlocks, is the pinned curve', () {
     final m = _measure(const TowerProgress());

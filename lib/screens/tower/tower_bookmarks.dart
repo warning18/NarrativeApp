@@ -12,7 +12,7 @@ import '../../combat/dice_faces.dart' show skillDisplayName;
 import '../../data/sim_combat.dart';
 import '../../data/tower/tower_hero.dart' show TowerData, towerHeroOf;
 import '../../data/tower/tower_levelup_loot.dart'
-    show towerNudgeClimbCap, towerNudgeStatCap;
+    show towerNudgeClimbCapOf, towerNudgeStatCapOf;
 import '../../data/tower/tower_run.dart';
 import '../../gamedata/db_schema.dart';
 import '../../l10n/app_locale.dart';
@@ -230,7 +230,7 @@ class _StatsView extends ConsumerWidget {
           Text(
               tr(ref, 'tower_bm_nudges')
                   .replaceAll('{n}', '$total')
-                  .replaceAll('{cap}', '$towerNudgeClimbCap'),
+                  .replaceAll('{cap}', '${towerNudgeClimbCapOf(run.rules)}'),
               key: const Key('tower_bm_nudges'),
               style: _prose(12, inkPaper, w: FontWeight.w700)),
           const SizedBox(height: 6),
@@ -240,7 +240,7 @@ class _StatsView extends ConsumerWidget {
                 Row(mainAxisSize: MainAxisSize.min, children: [
                   LevelUpSymbol(k, size: 16),
                   const SizedBox(width: 4),
-                  _pips(nudge[k]!, towerNudgeStatCap),
+                  _pips(nudge[k]!, towerNudgeStatCapOf(run.rules)),
                 ]),
           ]),
         ],

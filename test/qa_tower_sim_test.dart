@@ -22,10 +22,11 @@
 // slot: of a comma list only the first known id is worn), and
 // TOWER_BOT_COINS (default full; stall) how the bot spends its coins; the
 // guards wear none and spend in full.
-// TOWER_RULES (default towerRulesLive, 2: Tower XP, the Level Up card table
-// and the loot table; 1, the stat picks and the spoils chest, Core's rules
-// PR, docs/simulation/tower-levelup-loot.md) is the rules the batch and the
-// guards play.
+// TOWER_RULES (default towerRulesLive, 3: rules 2 with the survival curve,
+// docs/simulation/tower-difficulty-survival.md; 2, Tower XP, the Level Up
+// card table and the loot table; 1, the stat picks and the spoils chest,
+// Core's rules PR, docs/simulation/tower-levelup-loot.md) is the rules the
+// batch and the guards play (the bands are set for the live rules).
 import 'dart:convert';
 import 'dart:io';
 
@@ -76,9 +77,17 @@ import 'package:narrative_data_app/data/tower/tower_tables.dart';
 // 13.6%; every unlock: the top 38.5% to 28.7%. On the 500 guard seeds:
 // median 17, floor 20 43.2%, the top 13.2%, and 30.8% with every unlock.
 // The bands sit around those, as wide as before.
-const _medianFloor = (min: 14, max: 20);
-const _floor20 = (min: 0.33, max: 0.53);
-const _topNone = (min: 0.07, max: 0.20);
+// Re-banded for rules 3, the survival curve (docs/simulation/
+// tower-difficulty-survival.md, the user's call: a struggle from floor 1,
+// really hard to finish on a first try; Core's PR, for new climbs only).
+// On 2,000 seeds: no unlocks, median 20 to 8, floor 20 50.1% to 4.2%, the
+// top 13.9% to 0.1%; every unlock: the top 22.7% to 10.5%. On the 500
+// guard seeds: median 8, floor 20 4.4%, the top 0.0%, and 10.2% with every
+// unlock (events off: 8, 2.6%, 0.4%, 8.4%). The bands were 14 to 20, 0.33
+// to 0.53 and 0.07 to 0.20 (rules 2).
+const _medianFloor = (min: 6, max: 10);
+const _floor20 = (min: 0.02, max: 0.08);
+const _topNone = (min: 0.0, max: 0.01);
 // Re-banded for the Tower briefs 1 to 3 (v2.4.0, docs/simulation/
 // tower-roguelike-briefs.md: floors 11 to 29 harder, a dead skill card a
 // rank-up, boons on floors 13, 23 and 28; Core's PR, the user's call).
@@ -100,7 +109,9 @@ const _topNone = (min: 0.07, max: 0.20);
 // top 11.3% and 23.8%, median 17, floor 20 42.6%; on the guard seeds
 // median 17, floor 20 41.4%, the top 9.8% and 25.0%. Every unlock's band
 // back to 0.18 to 0.32 (it was 0.26 to 0.40 as first built).
-const _topAll = (min: 0.18, max: 0.32);
+// Rules 3 (above): every unlock's top 10.2% on the guard seeds (8.4% with
+// the floor events off); the band was 0.18 to 0.32.
+const _topAll = (min: 0.06, max: 0.15);
 
 /// The floor events' version the batch and the guards play (TOWER_EVENTS):
 /// the foes' scale and the floors' extras of floor events PR 2 are set for
@@ -238,14 +249,22 @@ void main() {
     }
   });
 
+  // Rules 3 (the survival curve): with no unlocks the top is rare (2 wins
+  // in 2,000 seeds, none in the 500 guard seeds), so the top is read with
+  // every unlock, and a climb with none must still reach floor 20 (it was
+  // "the top is reachable with no unlock" on rules 1 and 2).
   test(
-      'the top is reachable: some run wins floor $towerTop, and no unlock '
-      'is needed', () {
-    expect(none.where((r) => r.status == TowerStatus.won), isNotEmpty,
-        reason: 'no run of $_guardSeeds seeds, with no unlocks, wins the top');
-    expect(all.where((r) => r.status == TowerStatus.won), isNotEmpty);
-    // Every floor is fought by someone: the climb has no wall.
-    final reached = {for (final r in none) r.floorReached};
+      'the top is reachable with every unlock; with none, floor 20 is '
+      'reached', () {
+    expect(all.where((r) => r.status == TowerStatus.won), isNotEmpty,
+        reason: 'no run of $_guardSeeds seeds, with every unlock, wins the '
+            'top');
+    expect(none.where((r) => r.floorReached >= 20), isNotEmpty,
+        reason: 'no run of $_guardSeeds seeds, with no unlocks, reaches '
+            'floor 20');
+    // Every floor is fought by someone with every unlock: the climb has no
+    // wall.
+    final reached = {for (final r in all) r.floorReached};
     for (var floor = 1; floor <= towerTop; floor++) {
       expect(reached.any((f) => f >= floor), isTrue,
           reason: 'floor $floor is never reached');
