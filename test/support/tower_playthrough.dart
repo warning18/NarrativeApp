@@ -454,6 +454,10 @@ Future<TowerPlay> playTower(
         note('OFFER card ${size.width.round()}x${size.height.round()}');
       }
       note('OFFER ${seen()}');
+      // None is in hand until a card is tapped.
+      if (has('tower_take') && has('tower_card_0')) {
+        await tapKey('tower_card_0');
+      }
       await tapKey(has('tower_take') ? 'tower_take' : 'tower_refuse');
       await settle(10);
       continue;

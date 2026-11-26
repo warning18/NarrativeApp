@@ -216,6 +216,10 @@ void main() {
         if (take.evaluate().isEmpty) {
           await tapKey('tower_refuse');
         } else {
+          // None is in hand until a card is tapped.
+          if (find.byKey(const Key('tower_card_0')).evaluate().isNotEmpty) {
+            await tapKey('tower_card_0');
+          }
           await tapKey('tower_take');
         }
         await settle(10);

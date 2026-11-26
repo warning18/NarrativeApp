@@ -18,6 +18,7 @@ import '../theme/motion.dart';
 import '../theme/palette.dart';
 import '../theme/pixel_chip.dart';
 import '../theme/stitched_ink.dart';
+import '../screens/tower/tower_swipe_card.dart';
 import 'pixel_banner.dart';
 
 /// A card's tier: the frame, the plate and the backdrop it wears.
@@ -345,6 +346,9 @@ class ClanHandFan extends StatelessWidget {
     required this.lit,
     required this.onTap,
     this.dimOthers = true,
+    this.front = -1,
+    this.onLift,
+    this.onSwipeUp,
   });
 
   /// The cards, left to right ([ClanCardView]s drawn at their own size).
@@ -357,6 +361,22 @@ class ClanHandFan extends StatelessWidget {
   final int lit;
   final void Function(int index)? onTap;
   final bool dimOthers;
+
+  /// The card drawn in front while none is in hand ([lit] -1): not lifted, not
+  /// chosen.
+  final int front;
+
+  /// A card starts to lift under a drag, and one is swiped up to choose it.
+  final void Function(int index)? onLift;
+  final void Function(int index)? onSwipeUp;
+
+  Widget _swipable(int i, Widget card) => onSwipeUp == null
+      ? card
+      : TowerSwipeToChoose(
+          onLift: onLift == null ? null : () => onLift!(i),
+          onChosen: () => onSwipeUp!(i),
+          child: card,
+        );
 
   static const double _rest = 0.66;
   static const double _up = 0.84;
@@ -394,31 +414,34 @@ class ClanHandFan extends StatelessWidget {
               curve: Curves.easeOut,
               left: left,
               bottom: isUp ? 24 : 0,
-              child: GestureDetector(
-                key: keys[i],
-                behavior: HitTestBehavior.opaque,
-                onTap: onTap == null ? null : () => onTap!(i),
-                child: AnimatedOpacity(
-                  duration: Motion.fast,
-                  opacity: dim ? 0.72 : 1,
-                  child: Transform.rotate(
-                    angle: angle,
-                    alignment: Alignment.bottomCenter,
-                    child: SizedBox(
-                      width: _clanCardWidth * k,
-                      height: _clanCardHeight * k,
-                      child: FittedBox(child: cards[i]),
+              child: _swipable(
+                  i,
+                  GestureDetector(
+                    key: keys[i],
+                    behavior: HitTestBehavior.opaque,
+                    onTap: onTap == null ? null : () => onTap!(i),
+                    child: AnimatedOpacity(
+                      duration: Motion.fast,
+                      opacity: dim ? 0.72 : 1,
+                      child: Transform.rotate(
+                        angle: angle,
+                        alignment: Alignment.bottomCenter,
+                        child: SizedBox(
+                          width: _clanCardWidth * k,
+                          height: _clanCardHeight * k,
+                          child: FittedBox(child: cards[i]),
+                        ),
+                      ),
                     ),
-                  ),
-                ),
-              ),
+                  )),
             );
           }
 
+          final top = lit >= 0 ? lit : front;
           final order = [
             for (var i = 0; i < n; i++)
-              if (i != lit) i,
-            if (lit >= 0 && lit < n) lit,
+              if (i != top) i,
+            if (top >= 0 && top < n) top,
           ];
           return AnimatedContainer(
             duration: Motion.fast,
