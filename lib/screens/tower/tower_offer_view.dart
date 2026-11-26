@@ -253,6 +253,16 @@ Widget towerStyledCardFor(
             gift),
     round: reward.kind == TowerRewardKind.purse,
     hue: gift && faction != null ? Color(faction.color | 0xFF000000) : null,
+    flag: gift
+        ? clanCardFlag(clanBannerId(reward.clan),
+            plain: SizedBox(
+                width: 40,
+                height: 80,
+                child: ColoredBox(
+                    color: faction == null
+                        ? inkGrey
+                        : Color(faction.color | 0xFF000000))))
+        : null,
     note: gift
         ? towerStandingLabel(ref, towerStandingOf(run, data)[reward.clan] ?? 0)
         : null,
@@ -779,8 +789,8 @@ class _TowerOfferViewState extends ConsumerState<TowerOfferView> {
         final stat = _nudgeOf(offer[_held]);
         if (stat != null) after = {...before, stat: before[stat]! + 1};
       }
-      radar = SizedBox(
-        width: 150,
+      radar = Align(
+        alignment: Alignment.centerLeft,
         child: LevelUpStatsArea(
             key: const Key('tower_levelup_radar'),
             before: before,
@@ -849,52 +859,63 @@ class _TowerOfferViewState extends ConsumerState<TowerOfferView> {
                 ),
                 Padding(
                   padding: const EdgeInsets.only(top: 6),
-                  child: radar == null
-                      ? words
-                      : Row(
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          children: [
-                              Expanded(child: words),
-                              const SizedBox(width: 6),
-                              radar,
-                            ]),
+                  child: words,
                 ),
-                Align(
-                  alignment: Alignment.centerRight,
-                  child: Padding(
-                    padding: const EdgeInsets.only(top: 12),
-                    child: FilledButton(
-                      key: const Key('tower_take'),
-                      onPressed: _done || !_has ? null : () => _pick(_held),
-                      child: Text(tr(ref, 'tower_take')),
-                    ),
-                  ),
+                // The radar (a Level Up) on the left, the buttons on its right:
+                // Take, Reroll (and Banish), and Not now on the loot.
+                Padding(
+                  padding: const EdgeInsets.only(top: 8),
+                  child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        if (radar != null) Expanded(child: radar),
+                        if (radar == null) const Spacer(),
+                        const SizedBox(width: 8),
+                        SizedBox(
+                          width: 132,
+                          child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.stretch,
+                              children: [
+                                FilledButton(
+                                  key: const Key('tower_take'),
+                                  onPressed: _done || !_has
+                                      ? null
+                                      : () => _pick(_held),
+                                  child: Text(tr(ref, 'tower_take')),
+                                ),
+                                TowerTableCoinRow(
+                                  run: run,
+                                  held: _held,
+                                  onReroll: () {
+                                    if (mounted) setState(() => _held = -1);
+                                    tower.reroll(data: widget.data);
+                                  },
+                                  onBanish: (i) {
+                                    if (mounted) setState(() => _held = -1);
+                                    tower.banish(i);
+                                  },
+                                ),
+                                if (widget.controls != null) widget.controls!,
+                                // No skip on a Level Up; the loot keeps its mark.
+                                if (!levelUp)
+                                  Padding(
+                                    padding: const EdgeInsets.only(top: 8),
+                                    child: TextButton(
+                                      key: const Key('tower_refuse'),
+                                      onPressed:
+                                          _done ? null : () => _pick(null),
+                                      // One line: the label shrinks to the column.
+                                      child: FittedBox(
+                                        fit: BoxFit.scaleDown,
+                                        child: Text(tr(ref, 'tower_not_now'),
+                                            maxLines: 1),
+                                      ),
+                                    ),
+                                  ),
+                              ]),
+                        ),
+                      ]),
                 ),
-                TowerTableCoinRow(
-                  run: run,
-                  held: _held,
-                  onReroll: () {
-                    if (mounted) setState(() => _held = -1);
-                    tower.reroll(data: widget.data);
-                  },
-                  onBanish: (i) {
-                    if (mounted) setState(() => _held = -1);
-                    tower.banish(i);
-                  },
-                ),
-                if (widget.controls != null) widget.controls!,
-                // No skip on a Level Up; the loot keeps its mark.
-                if (!levelUp)
-                  Center(
-                    child: Padding(
-                      padding: const EdgeInsets.only(top: 8),
-                      child: TextButton(
-                        key: const Key('tower_refuse'),
-                        onPressed: _done ? null : () => _pick(null),
-                        child: Text(tr(ref, 'tower_not_now')),
-                      ),
-                    ),
-                  ),
               ],
             )));
   }

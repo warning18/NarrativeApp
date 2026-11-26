@@ -8,6 +8,8 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [2.10.27+1109]
+- Tower tables, after your feedback. The spoils after the loot table is now a reveal: the card you took, large and centred over the floor, with the floor's coins under it and a red Continue (no cream box). Every clan gift card wears its clan's banner as a small bookmark hanging from the top-right edge. Under the held card's words, the radar (the big one, on the left) now sits beside a column of buttons: Take, Reroll, and on the loot "Not now (+1 mark)" on one line.
 ## [2.10.26+1108]
 - The Tower's new Level Up and loot tables get their screens. A Level Up is the red "Level N" ribbon over the fanned hand, with no hero and no painted stage: the middle card in front, none in hand, tap and Take or swipe it up, the held card's words under the fan and a small radar beside them showing the +1 a skill gives, ghosted in red dashes. There is no skip on a Level Up. The floor loot is the same fan with "Not now (+1 mark)", and answering it shows a short spoils sheet with the card you took and one Continue (no more empty chest). Every card is the same rounded card, told apart by its style and label: skill cream, rank-up with a gold edge and a "+1" stamp, die black, spell violet with a double line, a clan's gift slate with the clan's hue, gear iron with rivets, supplies tan with a stitched edge, a purse black with a gold stitched edge. Loot wears Art's new vignettes. Climbs begun before this version keep their old screens.
 ## [2.10.25+1107]
