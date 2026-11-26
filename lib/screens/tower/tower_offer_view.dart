@@ -217,7 +217,7 @@ Widget towerStyledCardFor(
           TowerRewardKind.bundle => Icons.local_pharmacy,
           _ => Icons.monetization_on,
         },
-        size: 15,
+        size: IconSize.s16,
         color: inkOnPaper);
   } else {
     vignette = towerCardVignette(k,
