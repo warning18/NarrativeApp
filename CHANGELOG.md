@@ -8,6 +8,8 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [2.10.32+1114]
+- The Tower's loot cards count properly: "2 potions, 1 antidote" and "1 potion" (no more "potion(s)"), and the level-up note under a setback says "1 pick" or "2 picks"; English and French, each with its own singular and plural string.
 ## [2.10.31+1113]
 - Three bookmarks hang from the top right of the Tower floor (Stats, Gear, Dice), in the clan bookmarks' style; the open one is red and its view drops over the floor (the floor's pieces step aside, so nothing lies over it). Stats shows HP, level, the abilities on the big radar and the Level Up nudges against their caps; Gear shows the hero with a tile for each slot (tap one for what it gives); Dice shows the climb's dice like the Journey's (tap a die, tap a face). All read-only. On the Level Up and loot tables the header leaves room for the tabs.
 ## [2.10.30+1112]

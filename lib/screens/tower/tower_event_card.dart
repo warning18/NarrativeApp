@@ -264,7 +264,11 @@ class _TestCard extends ConsumerWidget {
           Padding(
             padding: const EdgeInsets.only(top: 4),
             child: Text(
-                sub('tower_event_picks_note', {'n': view.picksBeforeCheck!}),
+                sub(
+                    view.picksBeforeCheck == 1
+                        ? 'tower_event_picks_note_one'
+                        : 'tower_event_picks_note',
+                    {'n': view.picksBeforeCheck!}),
                 key: const Key('tower_event_picks_note'),
                 style: theme.textTheme.bodySmall?.copyWith(
                     fontStyle: FontStyle.italic,
