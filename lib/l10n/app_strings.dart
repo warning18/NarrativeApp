@@ -1879,6 +1879,31 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.en: 'Failed',
     AppLanguage.fr: 'Raté',
   },
+  'tower_levelup_hint': {
+    AppLanguage.en: 'Choose one card. A skill also raises a stat by 1.',
+    AppLanguage.fr:
+        'Choisissez une carte. Une compétence augmente aussi une caractéristique de 1.',
+  },
+  'tower_nudge_line': {
+    AppLanguage.en: 'Raises {stat} by 1.',
+    AppLanguage.fr: 'Augmente {stat} de 1.',
+  },
+  'tower_spoils_loot_title': {
+    AppLanguage.en: 'Floor {n}: spoils',
+    AppLanguage.fr: 'Étage {n}\u00a0: butin',
+  },
+  'tower_spoils_loot_took': {
+    AppLanguage.en: 'You took one card from the loot table.',
+    AppLanguage.fr: 'Vous avez pris une carte de la table de butin.',
+  },
+  'tower_spoils_loot_none': {
+    AppLanguage.en: 'You left the loot table.',
+    AppLanguage.fr: 'Vous avez laissé la table de butin.',
+  },
+  'tower_spoils_continue': {
+    AppLanguage.en: 'Continue',
+    AppLanguage.fr: 'Continuer',
+  },
   'tower_event_shortcut_landed': {
     AppLanguage.en: 'The shortcut holds: you land on floor {to}',
     AppLanguage.fr: 'Le raccourci tient : vous arrivez à l’étage {to}',

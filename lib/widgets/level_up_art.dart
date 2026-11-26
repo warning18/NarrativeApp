@@ -181,6 +181,48 @@ class LevelUpStage extends StatelessWidget {
       );
 }
 
+/// The red ribbon with "Level N" drawn in code, on its own (the Tower's Level
+/// Up table wears it over the fan).
+class LevelUpRibbon extends StatelessWidget {
+  const LevelUpRibbon(
+      {super.key, required this.level, required this.levelLabel});
+
+  final int level;
+  final String levelLabel;
+
+  @override
+  Widget build(BuildContext context) => SizedBox(
+        height: 44,
+        child: Stack(alignment: Alignment.center, children: [
+          Positioned.fill(
+            child: Image.asset(
+              'assets/visuals/levelup/ribbon.png',
+              fit: BoxFit.fill,
+              filterQuality: FilterQuality.none,
+              isAntiAlias: false,
+            ),
+          ),
+          Text.rich(
+            key: const Key('level_up_ribbon'),
+            TextSpan(children: [
+              TextSpan(
+                text: '$levelLabel ',
+                style: const TextStyle(
+                    fontFamily: InkFonts.display,
+                    fontSize: 24,
+                    height: 1.1,
+                    color: Colors.white),
+              ),
+              TextSpan(
+                text: '$level',
+                style: _digits(24, Colors.white, weight: FontWeight.w700),
+              ),
+            ]),
+          ),
+        ]),
+      );
+}
+
 /// The value of an ability as the stats area shows it, a minus sign that
 /// reads (an en dash is too faint at this size).
 String levelUpValueText(int v) => v < 0 ? '−${-v}' : '$v';

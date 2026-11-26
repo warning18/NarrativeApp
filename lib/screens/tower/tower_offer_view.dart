@@ -9,7 +9,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../combat/dice_faces.dart' show skillDisplayName;
 import '../../data/tower/tower_coins.dart';
 import '../../data/tower/tower_hero.dart';
-import '../../data/tower/tower_levelup_loot.dart' show towerBundleOf;
+import '../../data/tower/tower_levelup_loot.dart'
+    show towerBundleOf, towerLevelUpsTaken, towerNudgeOn;
 import '../../data/tower/tower_rewards.dart';
 import '../../data/tower/tower_run.dart';
 import '../../data/tower/tower_tables.dart';
@@ -18,7 +19,9 @@ import '../../l10n/app_locale.dart';
 import '../../theme/motion.dart';
 import '../../l10n/app_strings.dart';
 import '../../providers/clans_provider.dart';
+import '../../widgets/ability_radar.dart' show abilityAbbrevKey;
 import '../../widgets/clan_offer_gifts.dart';
+import '../../widgets/level_up_art.dart' show LevelUpRibbon, LevelUpStatsArea;
 import '../../widgets/item_lore.dart' show itemRarityLabelFor;
 import '../../widgets/pixel_banner.dart' show clanBannerId;
 import '../../widgets/race_profession_cards.dart' show ClanDisc;
@@ -27,7 +30,7 @@ import '../../theme/icon_sizes.dart';
 import '../../theme/stitched_ink.dart';
 import '../../data/tower/tower_clans.dart' show towerClanRipple;
 import '../../data/tower/tower_events.dart';
-import 'ink/ink_palette.dart' show inkGrey;
+import 'ink/ink_palette.dart' show inkGrey, inkOnPaper;
 import 'tower_card_art.dart';
 import 'tower_clan_cards.dart';
 import 'tower_coin_view.dart';
@@ -35,6 +38,7 @@ import 'tower_providers.dart';
 import 'tower_event_card.dart';
 import 'tower_swipe_card.dart';
 import 'tower_tarot_card.dart';
+import 'tower_styled_card.dart';
 
 /// What a card reads: its kind, its name and what it does.
 class TowerCardText {
@@ -160,6 +164,102 @@ String towerStandingLabel(WidgetRef ref, int n) =>
     tr(ref, 'tower_standing_line')
         .replaceAll('{n}', '$n')
         .replaceAll('{max}', '$towerOathStep');
+
+/// [reward] as its styled card (the tables of rules 2 and the spoils sheet
+/// draw it). [nudge]: the stat a skill raises, shown as a chip.
+Widget towerStyledCardFor(
+    WidgetRef ref, TowerRun run, TowerData data, TowerReward reward,
+    {Key? key, String? nudge}) {
+  Map<String, dynamic> row(DbSchema schema) =>
+      ((ref.watch(localizedDbProvider(schema)).value ?? const {})[reward.id]
+              as Map?)
+          ?.cast<String, dynamic>() ??
+      const {};
+  final factions = ref.watch(factionsProvider);
+  final tier = reward.kind == TowerRewardKind.rankUp
+      ? towerHeroOf(run, data).skillTiers[reward.id] ?? 0
+      : 0;
+  final t = towerCardText(ref, reward, tier: tier);
+  final gift = reward.clan.isNotEmpty;
+  final skillLike = reward.kind == TowerRewardKind.skill ||
+      reward.kind == TowerRewardKind.rankUp;
+  final k = switch (reward.kind) {
+    TowerRewardKind.skill || TowerRewardKind.rankUp => 'skill',
+    TowerRewardKind.spell => 'spell',
+    _ => 'die',
+  };
+  final data0 = switch (reward.kind) {
+    TowerRewardKind.skill || TowerRewardKind.rankUp => row(skillsSchema),
+    TowerRewardKind.spell => row(spellsSchema),
+    TowerRewardKind.die => row(diceSchema),
+    _ => const <String, dynamic>{},
+  };
+  final style = switch (reward.kind) {
+    _ when gift => TowerCardStyle.gift,
+    TowerRewardKind.skill => TowerCardStyle.skill,
+    TowerRewardKind.rankUp => TowerCardStyle.rankUp,
+    TowerRewardKind.spell => TowerCardStyle.spell,
+    TowerRewardKind.gear => TowerCardStyle.gear,
+    TowerRewardKind.bundle => TowerCardStyle.bundle,
+    TowerRewardKind.purse => TowerCardStyle.purse,
+    _ => TowerCardStyle.die,
+  };
+  final loot = reward.kind == TowerRewardKind.gear ||
+      reward.kind == TowerRewardKind.bundle ||
+      reward.kind == TowerRewardKind.purse;
+  final String vignette;
+  final Widget badge;
+  if (loot) {
+    vignette = towerCardVignette(reward.kind.name);
+    badge = Icon(
+        switch (reward.kind) {
+          TowerRewardKind.gear => Icons.shield,
+          TowerRewardKind.bundle => Icons.local_pharmacy,
+          _ => Icons.monetization_on,
+        },
+        size: 15,
+        color: inkOnPaper);
+  } else {
+    vignette = towerCardVignette(k,
+        variant: skillLike
+            ? '${data0['element'] ?? ''}'
+            : reward.kind == TowerRewardKind.spell
+                ? towerSpellFamily('${data0['effect'] ?? ''}')
+                : null);
+    final icon = towerCardPicture(
+        towerCardIcon(k, reward.id,
+            faces: reward.kind == TowerRewardKind.die
+                ? int.tryParse(t.text)
+                : null),
+        16,
+        fallback: const Icon(Icons.casino, size: 16, color: inkOnPaper));
+    badge = skillLike && !gift ? TowerOutlinedIcon(child: icon) : icon;
+  }
+  final faction = factions[reward.clan];
+  final text = reward.kind == TowerRewardKind.die && t.text.isNotEmpty
+      ? 'd${t.text}'
+      : t.text;
+  return TowerStyledCard(
+    key: key,
+    style: style,
+    kind: t.kind,
+    name: t.name,
+    text: text,
+    vignette: vignette,
+    badge: badge,
+    darkBadge: !loot &&
+        (reward.kind == TowerRewardKind.die ||
+            reward.kind == TowerRewardKind.spell ||
+            gift),
+    round: reward.kind == TowerRewardKind.purse,
+    hue: gift && faction != null ? Color(faction.color | 0xFF000000) : null,
+    note: gift
+        ? towerStandingLabel(ref, towerStandingOf(run, data)[reward.clan] ?? 0)
+        : null,
+    stamp: reward.kind == TowerRewardKind.rankUp ? '+1' : null,
+    nudge: nudge == null ? null : '+1 ${tr(ref, abilityAbbrevKey(nudge))}',
+  );
+}
 
 class TowerOfferView extends ConsumerStatefulWidget {
   const TowerOfferView({
@@ -579,6 +679,226 @@ class _TowerOfferViewState extends ConsumerState<TowerOfferView> {
     widget.onPick(index);
   }
 
+  // -------------------------------------------------------------------------
+  // The tables of the Level Up and loot rules (rules 2): the fanned hand in
+  // the approved card styles, the Level Up's ribbon, the radar beside the
+  // held card's words, Take, and "Not now" on the loot only.
+
+  bool get _styled {
+    final run = widget.run;
+    return run.rules >= 2 &&
+        run.offer.isNotEmpty &&
+        (run.table == TowerTableKind.loot ||
+            run.table == TowerTableKind.levelUp);
+  }
+
+  /// The stat each card of the table raises for this hero (null: none, or its
+  /// cap is reached), worked out once: the hero is replayed from the run, so
+  /// it is not rebuilt on every frame.
+  late final List<String?> _nudges = [
+    for (final card in widget.run.offer)
+      card.kind == TowerRewardKind.skill || card.kind == TowerRewardKind.rankUp
+          ? towerNudgeOn(
+              towerHeroOf(widget.run, widget.data), card, widget.data)
+          : null,
+  ];
+
+  String? _nudgeOf(TowerReward reward) {
+    final i = widget.run.offer.indexOf(reward);
+    return i < 0 ? null : _nudges[i];
+  }
+
+  /// The hero's abilities now, once.
+  late final Map<String, int> _base =
+      _abilities(towerHeroOf(widget.run, widget.data));
+
+  Map<String, int> _abilities(dynamic hero) => {
+        'strength': hero.strength as int,
+        'dexterity': hero.dexterity as int,
+        'constitution': hero.constitution as int,
+        'intelligence': hero.intelligence as int,
+        'wisdom': hero.wisdom as int,
+        'perception': hero.perception as int,
+        'luck': hero.luck as int,
+        'charisma': hero.charisma as int,
+      };
+
+  Widget _styledCard(int i) =>
+      towerStyledCardFor(ref, widget.run, widget.data, widget.run.offer[i],
+          key: Key('tower_styled_$i'), nudge: _nudgeOf(widget.run.offer[i]));
+
+  /// The held card's words under the fan (a gift adds what it moves).
+  List<Widget> _styledWords(BuildContext context) {
+    final theme = Theme.of(context);
+    if (!_has) {
+      return [
+        Text(tr(ref, 'tower_swipe_hint'),
+            key: const Key('tower_card_hint'),
+            style: theme.textTheme.bodySmall?.copyWith(
+                color: theme.colorScheme.onSurfaceVariant,
+                fontStyle: FontStyle.italic)),
+      ];
+    }
+    final reward = widget.run.offer[_held];
+    final t = towerCardText(ref, reward, tier: _tierOf(reward));
+    final nudge = _nudgeOf(reward);
+    final text = reward.kind == TowerRewardKind.die && t.text.isNotEmpty
+        ? 'd${t.text}'
+        : t.text;
+    return [
+      Text(t.name,
+          key: const Key('tower_card_detail'),
+          style: theme.textTheme.titleSmall),
+      if (text.isNotEmpty) Text(text, style: theme.textTheme.bodyMedium),
+      if (nudge != null)
+        Text(
+            tr(ref, 'tower_nudge_line')
+                .replaceAll('{stat}', tr(ref, '${nudge}_label')),
+            style: theme.textTheme.bodyMedium),
+      if (reward.clan.isNotEmpty) ...[
+        Text(
+            towerRippleLine(ref, reward.clan, widget.data,
+                heat: widget.run.heat),
+            style: theme.textTheme.bodySmall),
+        Text(towerStandingLabel(ref, _standing[reward.clan] ?? 0),
+            style: theme.textTheme.bodySmall),
+      ],
+    ];
+  }
+
+  Widget _styledTable(BuildContext context, TowerController tower) {
+    final theme = Theme.of(context);
+    final run = widget.run;
+    final offer = run.offer;
+    final levelUp = run.table == TowerTableKind.levelUp;
+    Widget? radar;
+    if (levelUp) {
+      final before = _base;
+      Map<String, int>? after;
+      if (_has) {
+        final stat = _nudgeOf(offer[_held]);
+        if (stat != null) after = {...before, stat: before[stat]! + 1};
+      }
+      radar = SizedBox(
+        width: 150,
+        child: LevelUpStatsArea(
+            key: const Key('tower_levelup_radar'),
+            before: before,
+            after: after,
+            label: (k) => tr(ref, abilityAbbrevKey(k)),
+            dark: true,
+            compact: true),
+      );
+    }
+    final words = Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: _styledWords(context));
+    return IgnorePointer(
+        ignoring: _done,
+        child: AnimatedOpacity(
+            opacity: _done ? 0.35 : 1,
+            duration: Motion.base,
+            child: ListView(
+              scrollCacheExtent: const ScrollCacheExtent.pixels(1600),
+              padding: const EdgeInsets.fromLTRB(8, 4, 16, 24),
+              children: [
+                if (levelUp)
+                  Padding(
+                    padding: const EdgeInsets.only(left: 8),
+                    child: LevelUpRibbon(
+                        level: towerLevelUpsTaken(run) + 2,
+                        levelLabel: tr(ref, 'level_field_label')),
+                  )
+                else
+                  Text(
+                      tr(ref, 'tower_cleared')
+                          .replaceAll('{n}', '${run.floor}'),
+                      key: const Key('tower_cleared'),
+                      style: theme.textTheme.headlineSmall),
+                Padding(
+                  padding: const EdgeInsets.only(top: 4),
+                  child: Text(
+                      tr(ref,
+                          levelUp ? 'tower_levelup_hint' : 'tower_choose_one'),
+                      style: theme.textTheme.bodyMedium?.copyWith(
+                          color: theme.colorScheme.onSurfaceVariant)),
+                ),
+                if (widget.event?.kind == TowerEventKind.test) ...[
+                  const SizedBox(height: 8),
+                  TowerEventCard(widget.event!,
+                      bagFull: run.potions >= towerBagCapOf(run)),
+                ],
+                if (widget.event?.kind == TowerEventKind.shortcut &&
+                    (widget.event?.accepted ?? false)) ...[
+                  const SizedBox(height: 8),
+                  TowerShortcutWonLine(widget.event!),
+                ],
+                const SizedBox(height: 12),
+                ClanHandFan(
+                  cards: [
+                    for (var i = 0; i < offer.length; i++) _styledCard(i),
+                  ],
+                  keys: [
+                    for (var i = 0; i < offer.length; i++) Key('tower_card_$i')
+                  ],
+                  lit: _has ? _held : -1,
+                  front: offer.length ~/ 2,
+                  onTap: (k) => setState(() => _held = k),
+                  onLift: (k) => setState(() => _held = k),
+                  onSwipeUp: _choose,
+                ),
+                Padding(
+                  padding: const EdgeInsets.only(top: 6),
+                  child: radar == null
+                      ? words
+                      : Row(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                              Expanded(child: words),
+                              const SizedBox(width: 6),
+                              radar,
+                            ]),
+                ),
+                Align(
+                  alignment: Alignment.centerRight,
+                  child: Padding(
+                    padding: const EdgeInsets.only(top: 12),
+                    child: FilledButton(
+                      key: const Key('tower_take'),
+                      onPressed: _done || !_has ? null : () => _pick(_held),
+                      child: Text(tr(ref, 'tower_take')),
+                    ),
+                  ),
+                ),
+                TowerTableCoinRow(
+                  run: run,
+                  held: _held,
+                  onReroll: () {
+                    if (mounted) setState(() => _held = -1);
+                    tower.reroll(data: widget.data);
+                  },
+                  onBanish: (i) {
+                    if (mounted) setState(() => _held = -1);
+                    tower.banish(i);
+                  },
+                ),
+                if (widget.controls != null) widget.controls!,
+                // No skip on a Level Up; the loot keeps its mark.
+                if (!levelUp)
+                  Center(
+                    child: Padding(
+                      padding: const EdgeInsets.only(top: 8),
+                      child: TextButton(
+                        key: const Key('tower_refuse'),
+                        onPressed: _done ? null : () => _pick(null),
+                        child: Text(tr(ref, 'tower_not_now')),
+                      ),
+                    ),
+                  ),
+              ],
+            )));
+  }
+
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
@@ -588,6 +908,7 @@ class _TowerOfferViewState extends ConsumerState<TowerOfferView> {
     final offer = widget.run.offer;
     final clans = offer
         .any((r) => r.clan.isNotEmpty || r.kind == TowerRewardKind.clanOath);
+    if (_styled) return _styledTable(context, tower);
     // A card taken (a swipe, or Take): the offer quiets and takes no more touches
     // while the floor moves on.
     return IgnorePointer(

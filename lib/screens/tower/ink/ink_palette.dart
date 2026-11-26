@@ -29,3 +29,11 @@ const Color inkRedDeep = Color(0xFF8E141A);
 
 /// The dust and the sand of the weather on a piece.
 const Color inkSand = Color(0xFFB9A27A);
+
+/// The card styles of the Tower's tables (v2.10.26, the user's pick): the
+/// gold edge and band of a rank-up and of a purse, the violet stock of a spell
+/// and the iron stock of gear. Gift cards use the clan's own hue; a bundle
+/// uses [inkSand].
+const Color inkGold = Color(0xFFC9A24B);
+const Color inkViolet = Color(0xFF1B1533);
+const Color inkIron = Color(0xFF454E53);
