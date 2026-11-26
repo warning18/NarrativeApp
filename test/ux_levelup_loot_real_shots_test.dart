@@ -111,11 +111,21 @@ void main() {
           await tester.tap(find.byKey(const Key('tower_card_0')));
           await settle(8);
           await shot('levelup-clan-held');
+          // Skill in hand and Take: the confirm sheet, not yet applied.
+          await tester.tap(find.byKey(const Key('tower_card_1')));
+          await settle(6);
+          await tester.tap(find.byKey(const Key('tower_take')));
+          await settle(12);
+          await shot('levelup-confirm');
         }
         if (e.key == 'loot') {
           await tester.tap(find.byKey(const Key('tower_take')));
           await settle(12);
-          await shot('loot-spoils');
+          await shot('loot-confirm');
+          // Change: back to the three cards, nothing taken.
+          await tester.tap(find.byKey(const Key('tower_change')));
+          await settle(12);
+          await shot('loot-after-change');
         }
       });
     }

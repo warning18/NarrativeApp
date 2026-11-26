@@ -16,7 +16,6 @@ import '../../data/tower/tower_coins.dart';
 import '../../data/tower/tower_dice.dart';
 import '../../data/tower/tower_events.dart';
 import '../../data/tower/tower_hero.dart';
-import '../../data/tower/tower_rewards.dart' show TowerReward;
 import '../../data/tower/tower_run.dart';
 import '../../data/tower/tower_tables.dart';
 import '../../gamedata/db_schema.dart';
@@ -72,9 +71,9 @@ class _TowerFloorScreenState extends ConsumerState<_TowerFloorBody> {
   /// The floor whose spoils sheet was taken: its boon or oath comes next.
   int _spoilsTaken = 0;
 
-  /// Rules 2: the loot table's summary after it was answered (the floor, the
-  /// card taken or null for none), until Continue.
-  (int, TowerReward?)? _lootSummary;
+  /// The card picked on a table, waiting for Confirm (its index in the offer):
+  /// the choice only counts then, and Change goes back to the cards.
+  int? _pending;
 
   /// While the cards show, the rail gives its room to them once the head has
   /// walked to its notch (the cards are three tarot cards wide, v2.3).
@@ -167,14 +166,7 @@ class _TowerFloorScreenState extends ConsumerState<_TowerFloorBody> {
 
   Future<void> _pick(TowerRun run, TowerData data, int? index) async {
     final next = towerPick(run, data, index);
-    final lootTable = run.rules >= 2 && run.table == TowerTableKind.loot;
-    final lootCard = index == null || index < 0 || index >= run.offer.length
-        ? null
-        : run.offer[index];
     await ref.read(towerProvider.notifier).setRun(next);
-    if (lootTable && mounted) {
-      setState(() => _lootSummary = (run.floor, lootCard));
-    }
     // A rival's skip lands two floors up and the skipped floor's level-ups
     // wait there: their pick opens on the landing floor.
     if (!next.isOver &&
@@ -248,7 +240,7 @@ class _TowerFloorScreenState extends ConsumerState<_TowerFloorBody> {
     _railFor((choosing &&
             (run.rules >= 2 || _spoilsTaken == run.floor) &&
             run.offer.isNotEmpty) ||
-        _lootSummary != null ||
+        _pending != null ||
         eventCards);
     // How the last event moved the run, for the rail: an arrow down a fall,
     // up a skip, ending on this floor.
@@ -331,14 +323,27 @@ class _TowerFloorScreenState extends ConsumerState<_TowerFloorBody> {
                   ),
                 ),
                 Expanded(
-                  child: _lootSummary != null
-                      ? TowerLootSummary(
+                  child: choosing &&
+                          _pending != null &&
+                          _pending! < run.offer.length
+                      ? TowerPickConfirm(
                           run: run,
                           data: data,
-                          floor: _lootSummary!.$1,
-                          taken: _lootSummary!.$2,
+                          reward: run.offer[_pending!],
+                          loot: run.rules >= 2 &&
+                              run.table == TowerTableKind.loot,
+                          styled: run.rules >= 2 &&
+                              (run.table == TowerTableKind.loot ||
+                                  run.table == TowerTableKind.levelUp),
                           coinsGained: towerCoinsFor(towerFloorOf(run, data)),
-                          onContinue: () => setState(() => _lootSummary = null),
+                          onChange: () => setState(() => _pending = null),
+                          onConfirm: () {
+                            final i = _pending!;
+                            setState(() => _pending = null);
+                            towerShowStandingToast(
+                                context, ref, run, data, run.offer[i]);
+                            _pick(run, data, i);
+                          },
                         )
                       : choosing && run.rules < 2 && _spoilsTaken != run.floor
                           ? TowerSpoilsView(
@@ -363,7 +368,11 @@ class _TowerFloorScreenState extends ConsumerState<_TowerFloorBody> {
                                   run: run,
                                   data: data,
                                   event: event,
-                                  onPick: (i) => _pick(run, data, i),
+                                  // A card picked waits for Confirm; leaving the
+                                  // table (Not now) is final at once.
+                                  onPick: (i) => i == null
+                                      ? _pick(run, data, null)
+                                      : setState(() => _pending = i),
                                 )
                               : run.stallOffer.isNotEmpty
                                   ? TowerOfferView(

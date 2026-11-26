@@ -118,34 +118,41 @@ class TowerSpoilsView extends ConsumerWidget {
   }
 }
 
-/// The spoils of rules 2 (the loot table's summary, v2.10.26): the card taken
-/// from the table, in its style, with what it is and the coins the floor paid,
-/// closed by Continue. Shown once the table is answered; no chest.
-class TowerLootSummary extends ConsumerWidget {
-  const TowerLootSummary({
+/// The confirm sheet of a table's choice (v2.10.28): the card picked, large
+/// over the floor, with Change (back to the cards) and Confirm; the choice
+/// only counts at Confirm. On the loot table it is the floor's spoils sheet
+/// (its title and the floor's coins). A table of the Level Up and loot rules
+/// shows the styled card; an older table shows the card's words.
+class TowerPickConfirm extends ConsumerWidget {
+  const TowerPickConfirm({
     super.key,
     required this.run,
     required this.data,
-    required this.floor,
-    required this.taken,
+    required this.reward,
+    required this.loot,
+    required this.styled,
     required this.coinsGained,
-    required this.onContinue,
+    required this.onConfirm,
+    required this.onChange,
   });
 
   final TowerRun run;
   final TowerData data;
-  final int floor;
+  final TowerReward reward;
 
-  /// The loot card taken; null when the table was left.
-  final TowerReward? taken;
+  /// The loot table (its spoils title and coins), or another table.
+  final bool loot;
+
+  /// Draw the styled card (rules 2's tables), or only the words.
+  final bool styled;
   final int coinsGained;
-  final VoidCallback onContinue;
+  final VoidCallback onConfirm;
+  final VoidCallback onChange;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final theme = Theme.of(context);
-    final card = taken;
-    final t = card == null ? null : towerCardText(ref, card);
+    final t = towerCardText(ref, reward);
     // The card is a reveal: it grows in over the floor (reduce motion: it is
     // simply there).
     final reduced = MediaQuery.of(context).disableAnimations;
@@ -161,75 +168,90 @@ class TowerLootSummary extends ConsumerWidget {
                 child: Transform.scale(scale: v, child: c)),
             child: child);
     return ListView(
-      key: const Key('tower_loot_summary'),
+      key: const Key('tower_pick_confirm'),
       padding: const EdgeInsets.fromLTRB(16, 12, 16, 24),
       children: [
-        Text(tr(ref, 'tower_spoils_loot_title').replaceAll('{n}', '$floor'),
-            style: theme.textTheme.headlineSmall),
         Text(
-            tr(
-                ref,
-                card == null
-                    ? 'tower_spoils_loot_none'
-                    : 'tower_spoils_loot_took'),
+            loot
+                ? tr(ref, 'tower_spoils_loot_title')
+                    .replaceAll('{n}', '${run.floor}')
+                : tr(ref, 'tower_confirm_title'),
+            style: theme.textTheme.headlineSmall),
+        Text(tr(ref, 'tower_confirm_hint'),
             style: theme.textTheme.bodyMedium
                 ?.copyWith(color: theme.colorScheme.onSurfaceVariant)),
-        if (card != null && t != null) ...[
-          const SizedBox(height: 16),
+        const SizedBox(height: 16),
+        if (styled)
           Center(
             child: reveal(Container(
               width: width,
               height: width * towerStyledCardHeight / towerStyledCardWidth,
               decoration: BoxDecoration(boxShadow: [
                 BoxShadow(
-                    color: inkBlack.withValues(alpha: 0.55),
-                    blurRadius: 36,
-                    spreadRadius: 0),
+                    color: inkBlack.withValues(alpha: 0.55), blurRadius: 36),
               ]),
-              child: FittedBox(child: towerStyledCardFor(ref, run, data, card)),
-            )),
-          ),
-          if (coinsGained > 0) ...[
-            const SizedBox(height: 14),
-            // The floor's coins on a soft ink scrim over the floor.
-            Container(
-              padding: const EdgeInsets.fromLTRB(12, 8, 12, 8),
-              decoration: BoxDecoration(
-                  color: inkBlack.withValues(alpha: 0.72),
-                  border: Border.all(color: inkSlate),
-                  borderRadius: BorderRadius.circular(8)),
               child:
-                  Row(mainAxisAlignment: MainAxisAlignment.center, children: [
-                const TowerCoinDisc(size: IconSize.s32),
-                const SizedBox(width: 10),
-                Text(
-                    tr(ref, 'tower_coins_gained')
-                        .replaceAll('{n}', '$coinsGained'),
-                    style: theme.textTheme.bodyMedium),
-              ]),
-            ),
-          ],
-        ] else if (coinsGained > 0)
-          Padding(
-            padding: const EdgeInsets.only(top: 16),
-            child: Row(children: [
+                  FittedBox(child: towerStyledCardFor(ref, run, data, reward)),
+            )),
+          )
+        else
+          Container(
+            padding: const EdgeInsets.all(12),
+            decoration: BoxDecoration(
+                color: inkBlack.withValues(alpha: 0.72),
+                border: Border.all(color: inkSlate),
+                borderRadius: BorderRadius.circular(8)),
+            child:
+                Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+              Text(t.kind.toUpperCase(), style: theme.textTheme.labelMedium),
+              Text(t.name,
+                  style: theme.textTheme.titleMedium
+                      ?.copyWith(fontFamily: InkFonts.display)),
+              if (t.text.isNotEmpty)
+                Text(t.text, style: theme.textTheme.bodyMedium),
+            ]),
+          ),
+        if (loot && coinsGained > 0) ...[
+          const SizedBox(height: 14),
+          // The floor's coins on a soft ink scrim over the floor.
+          Container(
+            padding: const EdgeInsets.fromLTRB(12, 8, 12, 8),
+            decoration: BoxDecoration(
+                color: inkBlack.withValues(alpha: 0.72),
+                border: Border.all(color: inkSlate),
+                borderRadius: BorderRadius.circular(8)),
+            child: Row(mainAxisAlignment: MainAxisAlignment.center, children: [
               const TowerCoinDisc(size: IconSize.s32),
               const SizedBox(width: 10),
               Text(
-                  tr(ref, 'tower_coins_gained')
+                  tr(
+                          ref,
+                          coinsGained == 1
+                              ? 'tower_coins_gained_one'
+                              : 'tower_coins_gained')
                       .replaceAll('{n}', '$coinsGained'),
                   style: theme.textTheme.bodyMedium),
             ]),
           ),
+        ],
         const SizedBox(height: 16),
-        SizedBox(
-          width: double.infinity,
-          child: FilledButton(
-            key: const Key('tower_loot_continue'),
-            onPressed: onContinue,
-            child: Text(tr(ref, 'tower_spoils_continue')),
+        Row(children: [
+          Expanded(
+            child: OutlinedButton(
+              key: const Key('tower_change'),
+              onPressed: onChange,
+              child: Text(tr(ref, 'tower_change')),
+            ),
           ),
-        ),
+          const SizedBox(width: 10),
+          Expanded(
+            child: FilledButton(
+              key: const Key('tower_confirm'),
+              onPressed: onConfirm,
+              child: Text(tr(ref, 'tower_confirm')),
+            ),
+          ),
+        ]),
       ],
     );
   }

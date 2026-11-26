@@ -1879,6 +1879,30 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.en: 'Failed',
     AppLanguage.fr: 'Raté',
   },
+  'tower_purse_name_one': {
+    AppLanguage.en: '{n} coin',
+    AppLanguage.fr: '{n} pièce',
+  },
+  'tower_coins_gained_one': {
+    AppLanguage.en: '+{n} coin',
+    AppLanguage.fr: '+{n} pièce',
+  },
+  'tower_confirm_title': {
+    AppLanguage.en: 'Your choice',
+    AppLanguage.fr: 'Votre choix',
+  },
+  'tower_confirm_hint': {
+    AppLanguage.en: 'Keep this card, or go back and choose again.',
+    AppLanguage.fr: 'Gardez cette carte, ou revenez choisir à nouveau.',
+  },
+  'tower_confirm': {
+    AppLanguage.en: 'Confirm',
+    AppLanguage.fr: 'Confirmer',
+  },
+  'tower_change': {
+    AppLanguage.en: 'Change',
+    AppLanguage.fr: 'Changer',
+  },
   'tower_levelup_hint': {
     AppLanguage.en: 'Choose one card. A skill also raises a stat by 1.',
     AppLanguage.fr:
