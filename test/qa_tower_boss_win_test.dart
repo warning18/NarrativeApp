@@ -221,6 +221,8 @@ void main() {
           await tapKey('tower_card_0');
         }
         await tapKey(has('tower_take') ? 'tower_take' : 'tower_refuse');
+        // The pick counts at Confirm.
+        if (has('tower_confirm')) await tapKey('tower_confirm');
         continue;
       }
       fail('stuck on an unknown screen at step $step (floor $floor)');

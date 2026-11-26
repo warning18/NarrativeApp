@@ -80,6 +80,10 @@ void main() {
     await g.up();
     await t.pump(const Duration(milliseconds: 400));
     await settle(10);
+    // The swipe opens the confirm sheet; Confirm takes the gift.
+    expect(find.byKey(const Key('tower_pick_confirm')), findsOneWidget);
+    await t.tap(find.byKey(const Key('tower_confirm')));
+    await settle(10);
     final after = c.read(towerProvider).value?.run;
     expect(after?.taken[1]?.id, 'shadow_step');
     expect(after?.status, isNot(TowerStatus.choosing),
