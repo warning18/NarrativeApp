@@ -26,7 +26,7 @@ import 'support/ux_card_styles.dart';
 const _clanHue = Color(0xFF3F7F6B);
 
 const _clan = UxCardSpec(
-    'Clan gift', 'Clan gift', 'Shadow Step', 'Strike first in the next fight.',
+    'Clan gift', 'Clan gift', 'Shadow Step', 'Strike first.',
     vignette: '${uxV}skill_void.png',
     icon: Icons.groups,
     stock: inkDark,
