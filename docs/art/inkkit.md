@@ -1,3 +1,5 @@
+> **ON HOLD / NOT WANTED (the user, 26 November 2026: "Keep the actual background and fight style.").** Kept as a record only; do not hand to UX and generate nothing more for it until the Manager asks again.
+
 # The ink kit (Art, 26 November 2026): sheet first, nothing handed to UX until the user approves
 
 **Generations: 18** (12 first pass: 6 pieces x 2 seeds; 6 retries for the chip, tab and bar; cap 28), text only, small pixflux calls with the five tones plus red forced (`art/pixellab-inkkit/gen.py`), then snapped again in code. Balance 1034 -> 1016.

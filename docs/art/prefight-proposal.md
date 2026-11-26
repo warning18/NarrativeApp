@@ -1,3 +1,5 @@
+> **ON HOLD / NOT WANTED (the user, 26 November 2026: "Keep the actual background and fight style.").** Kept as a record only; do not hand to UX and generate nothing more for it until the Manager asks again.
+
 # The pre-fight screen, painted like the boss scene and Level Up (proposal; Art, 26 November 2026)
 
 Source: `docs/feedback/pre-fight-screen.jpg` (ccr-76229db7-131ulj @ 4bb8362e): a header, a teal hint card, a red Doctrine card, the foe's name, text and numbers, the hero's numbers, the equipped die, the red Enter Battle button, and the two fighters side on at the bottom, over a dark stone wall.

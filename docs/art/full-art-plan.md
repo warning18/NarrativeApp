@@ -76,3 +76,11 @@ Total about **542 generations** of the 1573 left, about a third of the cycle's a
 - Still to do: wave 1 (rounded frame, ink kit), wave 6 (fight plates, ~39), waves 7 and 8 (scenes, ~95), each on the user's OK.
 
 - Fight plates (row 13, wave 6): **cancelled** by the user on 26 November ("the actual backgrounds were better"). 27 generations were spent on a 22-plate cut-paper test batch (kept, not handed off: `docs/art/handoff-ux-fightplates.md`). Nothing more is planned for fight plates.
+
+## Decision of 26 November 2026: keep the actual background and fight style
+The user: "Keep the actual background and fight style." Not wanted or on hold, files kept as a record, nothing more generated for them:
+- **Fight plates** (row 13, wave 6): not wanted (22 cut-paper plates, 27 generations, `docs/art/handoff-ux-fightplates.md`).
+- **The cut-paper Tower floor plates swap**: not wanted; the current Tower floor plates stay.
+- **The pre-fight screen proposal** and its **3 glyphs** (lantern, gavel): not wanted (`docs/art/prefight-proposal.md`); no generation.
+- **The ink kit** (row 7, wave 1): on hold (`docs/art/inkkit.md`, `art/pixellab-inkkit/`, 18 generations); not handed to UX.
+Open rows now: the rounded card frame (row 6) and the scenes (rows 14, waves 7 and 8) still wait for the user. Balance 992; no spending until a new ask from the Manager.
