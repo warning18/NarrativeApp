@@ -194,15 +194,19 @@ class LevelUpStatsArea extends StatelessWidget {
     required this.before,
     required this.after,
     required this.label,
+    this.dark = false,
   });
 
   final Map<String, int> before;
   final Map<String, int>? after;
   final String Function(String ability) label;
 
+  /// Drawn for a black ground (paper lines and numbers) instead of paper.
+  final bool dark;
+
   @override
   Widget build(BuildContext context) =>
-      _Radar(before: before, after: after, label: label);
+      _Radar(before: before, after: after, label: label, dark: dark);
 }
 
 /// The radar: Art's symbols at the eight corners with their numbers, a
@@ -213,11 +217,13 @@ class _Radar extends StatelessWidget {
     required this.before,
     required this.after,
     required this.label,
+    this.dark = false,
   });
 
   final Map<String, int> before;
   final Map<String, int>? after;
   final String Function(String) label;
+  final bool dark;
 
   static const double _lo = -4;
   static const List<int> _rings = [-2, 0, 4, 8, 12];
@@ -254,6 +260,7 @@ class _Radar extends StatelessWidget {
                           : [for (final k in abilityRadarOrder) after![k] ?? 0],
                       radius: r,
                       hi: hi,
+                      dark: dark,
                     ),
                   ),
                 ),
@@ -274,18 +281,18 @@ class _Radar extends StatelessWidget {
                             13,
                             after != null &&
                                     (after![k] ?? 0) != (before[k] ?? 0)
-                                ? inkRedDeep
-                                : inkDeep,
+                                ? (dark ? inkRed : inkRedDeep)
+                                : (dark ? inkPaper : inkDeep),
                             weight: FontWeight.w700,
                           ),
                         ),
                         Text(
                           label(k),
-                          style: const TextStyle(
+                          style: TextStyle(
                             fontFamily: InkFonts.system,
                             fontSize: 10,
                             height: 1,
-                            color: inkSlate,
+                            color: dark ? inkGrey : inkSlate,
                           ),
                         ),
                       ],
@@ -306,12 +313,14 @@ class _RadarPainter extends CustomPainter {
     required this.after,
     required this.radius,
     required this.hi,
+    this.dark = false,
   });
 
   final List<int> before;
   final List<int>? after;
   final double radius;
   final double hi;
+  final bool dark;
 
   double _r(num v) =>
       ((v - _Radar._lo) / (hi - _Radar._lo)).clamp(0.02, 1.0) * radius;
@@ -335,20 +344,22 @@ class _RadarPainter extends CustomPainter {
     // The rings: the first at -2, the zero ring heavier.
     for (final ring in _Radar._rings) {
       line
-        ..color = ring == 0 ? inkDeep : inkSlate.withValues(alpha: 0.45)
+        ..color = ring == 0
+            ? (dark ? inkPaper : inkDeep)
+            : (dark ? inkGrey : inkSlate).withValues(alpha: 0.45)
         ..strokeWidth = ring == 0 ? 2 : 1;
       canvas.drawPath(_shape(c, List.filled(8, ring)), line);
       final tp = TextPainter(
         text: TextSpan(
           text: ring < 0 ? '−${-ring}' : '$ring',
-          style: _digits(10, inkSlate),
+          style: _digits(10, dark ? inkGrey : inkSlate),
         ),
         textDirection: TextDirection.ltr,
       )..layout();
       tp.paint(canvas, c + Offset(3, -_r(ring) - tp.height + 1));
     }
     line
-      ..color = inkSlate.withValues(alpha: 0.45)
+      ..color = (dark ? inkGrey : inkSlate).withValues(alpha: 0.45)
       ..strokeWidth = 1;
     for (var i = 0; i < 8; i++) {
       final a = -math.pi / 2 + i * 2 * math.pi / 8;
@@ -359,7 +370,8 @@ class _RadarPainter extends CustomPainter {
     canvas.drawPath(
       shape,
       Paint()
-        ..color = inkSlate.withValues(alpha: 0.5)
+        ..color =
+            (dark ? inkGrey : inkSlate).withValues(alpha: dark ? 0.35 : 0.5)
         ..isAntiAlias = false,
     );
     canvas.drawPath(
@@ -367,7 +379,7 @@ class _RadarPainter extends CustomPainter {
       Paint()
         ..style = PaintingStyle.stroke
         ..strokeWidth = 2
-        ..color = inkDeep
+        ..color = dark ? inkPaper : inkDeep
         ..isAntiAlias = false,
     );
     // The pick, ghosted in red dashes.
@@ -400,7 +412,8 @@ class _RadarPainter extends CustomPainter {
       old.before != before ||
       old.after != after ||
       old.radius != radius ||
-      old.hi != hi;
+      old.hi != hi ||
+      old.dark != dark;
 }
 
 /// The short name of an ability is the app's own string; this lists its key

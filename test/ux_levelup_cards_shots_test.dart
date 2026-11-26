@@ -15,6 +15,9 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:narrative_data_app/screens/tower/ink/ink_palette.dart';
 import 'package:narrative_data_app/theme/stitched_ink.dart'
     show InkFonts, buildAppTheme, stitchedInkScheme;
+import 'package:narrative_data_app/screens/tower/tower_backdrop.dart';
+import 'package:narrative_data_app/widgets/clan_offer_gifts.dart'
+    show ClanHandFan;
 import 'package:narrative_data_app/widgets/level_up_art.dart';
 
 import 'support/fonts.dart';
@@ -129,141 +132,153 @@ const _before = {
   'charisma': 4,
 };
 
-/// A card in hand: lifted a little, with a red outline.
-Widget _hand(UxCardSpec s, double w, {bool held = false, double k = 1.95}) =>
-    Transform.translate(
-        offset: Offset(0, held ? -6 : 0),
-        child: Container(
-          decoration: BoxDecoration(
-              boxShadow: held
-                  ? const [
-                      BoxShadow(
-                          color: Color(0x99000000),
-                          blurRadius: 10,
-                          offset: Offset(0, 6))
-                    ]
-                  : null),
-          foregroundDecoration: held
-              ? BoxDecoration(border: Border.all(color: inkRed, width: 3))
-              : null,
-          child: UxCard(s, w, held: held, heightK: k),
-        ));
+Widget _red(String label, {bool on = true}) => FilledButton(
+    style: FilledButton.styleFrom(
+        backgroundColor: inkRed,
+        foregroundColor: inkPaper,
+        disabledBackgroundColor: inkRed.withValues(alpha: 0.35)),
+    onPressed: on ? () {} : null,
+    child: Text(label));
 
-Widget _row(List<UxCardSpec> cards, double width,
-    {int held = -1, double k = 1.95}) {
-  final w = (width - 32 - 16) / 3;
-  return Padding(
-    padding: const EdgeInsets.fromLTRB(16, 12, 16, 8),
-    child: Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: [
-        for (final (i, c) in cards.indexed) _hand(c, w, held: i == held, k: k),
-      ],
-    ),
-  );
-}
-
-Widget _heading(String title, String hint) => Padding(
-      padding: const EdgeInsets.fromLTRB(16, 14, 16, 0),
-      child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-        Text(title, style: _d(18, inkPaper)),
-        const SizedBox(height: 2),
-        Text(hint, style: _p(12, inkGrey)),
-      ]),
-    );
-
-Widget _take(String label, {bool on = true}) => Padding(
-      padding: const EdgeInsets.fromLTRB(16, 4, 16, 14),
-      child: SizedBox(
-        width: double.infinity,
-        child: FilledButton(
-            style:
-                FilledButton.styleFrom(minimumSize: const Size.fromHeight(48)),
-            onPressed: on ? () {} : null,
-            child: Text(label)),
-      ),
-    );
-
-class _LevelUp extends StatelessWidget {
-  const _LevelUp(this.cards, this.width, this.nudgeStat);
+/// Today's offer screen: the Tower floor behind, a title, the real fanned
+/// hand (the middle card in front, none in hand until one is touched), the
+/// held card's words under it, Take in red, then [below].
+class _Offer extends StatelessWidget {
+  const _Offer({
+    required this.title,
+    required this.hint,
+    required this.cards,
+    required this.held,
+    required this.detail,
+    this.below = const [],
+    this.notNow,
+  });
+  final String title, hint;
   final List<UxCardSpec> cards;
-  final double width;
-  final String nudgeStat;
+  final int held;
+  final List<String> detail;
+  final List<Widget> below;
+  final String? notNow;
 
   @override
   Widget build(BuildContext context) {
-    final after = {..._before, nudgeStat: _before[nudgeStat]! + 1};
-    return Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
-      const LevelUpStage(level: 4, heroName: 'warrior', levelLabel: 'Level'),
-      _heading('Take one card',
-          'Tap a card, or swipe it up to take it. A skill also raises a stat by 1.'),
-      _row(cards, width, held: 1, k: 2.15),
-      Container(
-        margin: const EdgeInsets.fromLTRB(8, 4, 8, 8),
-        padding: const EdgeInsets.all(10),
-        decoration: BoxDecoration(
-            color: inkPaper, border: Border.all(color: inkDeep, width: 3)),
-        child: Column(children: [
-          Row(children: [
-            Text('XP 8 / 12', style: _p(12, inkSlate)),
-            const Spacer(),
-            Text('${cards[1].name}: +1 ${_abbr[nudgeStat]}',
-                style: _p(12, inkRedDeep, w: FontWeight.w700)),
-          ]),
-          const SizedBox(height: 6),
-          LevelUpStatsArea(
-              before: _before, after: after, label: (k) => _abbr[k]!),
-        ]),
+    final t = Theme.of(context).textTheme;
+    return TowerBackdrop(
+      floor: 4,
+      child: ListView(
+        physics: const NeverScrollableScrollPhysics(),
+        padding: const EdgeInsets.fromLTRB(8, 12, 16, 24),
+        children: [
+          Text(title, style: t.headlineSmall),
+          Text(hint, style: t.bodyMedium?.copyWith(color: t.bodySmall?.color)),
+          const SizedBox(height: 14),
+          ClanHandFan(
+            cards: [for (final c in cards) UxCard(c, 122, heightK: 1.65)],
+            keys: [for (var i = 0; i < cards.length; i++) Key('c$i')],
+            lit: held,
+            front: 1,
+            onTap: null,
+          ),
+          if (held >= 0)
+            Padding(
+              padding: const EdgeInsets.only(top: 6),
+              child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(detail[0], style: t.titleSmall),
+                    for (final l in detail.skip(1))
+                      Text(l, style: t.bodyMedium),
+                  ]),
+            )
+          else
+            Padding(
+              padding: const EdgeInsets.only(top: 12),
+              child: Text('Tap a card, or swipe it up to take it.',
+                  style: t.bodySmall),
+            ),
+          Align(
+            alignment: Alignment.centerRight,
+            child: Padding(
+              padding: const EdgeInsets.only(top: 12),
+              child: _red('Take', on: held >= 0),
+            ),
+          ),
+          if (notNow != null)
+            Center(
+              child: Padding(
+                padding: const EdgeInsets.only(top: 14),
+                child: Text(notNow!,
+                    style:
+                        t.titleSmall?.copyWith(color: const Color(0xFFC9A24B))),
+              ),
+            ),
+          ...below,
+        ],
       ),
-      _take('Take'),
-    ]);
+    );
   }
 }
 
+Widget _radar(String? stat, String label) {
+  final after = stat == null ? null : {..._before, stat: _before[stat]! + 1};
+  // A black panel over the floor, so the radar reads on black.
+  return Container(
+    margin: const EdgeInsets.only(top: 14),
+    padding: const EdgeInsets.fromLTRB(8, 12, 8, 8),
+    decoration: BoxDecoration(
+        color: inkBlack,
+        border: Border.all(color: inkSlate),
+        borderRadius: BorderRadius.circular(4)),
+    child: Column(children: [
+      SizedBox(
+        height: 20,
+        child: stat == null
+            ? null
+            : Text(label, style: _p(13, inkRed, w: FontWeight.w700)),
+      ),
+      LevelUpStatsArea(
+          before: _before, after: after, label: (k) => _abbr[k]!, dark: true),
+    ]),
+  );
+}
+
 class _Spoils extends StatelessWidget {
-  const _Spoils(this.width);
-  final double width;
+  const _Spoils();
   @override
-  Widget build(BuildContext context) => Padding(
-        padding: const EdgeInsets.all(16),
-        child: Container(
-          padding: const EdgeInsets.all(14),
-          decoration: BoxDecoration(
-              color: inkPaper, border: Border.all(color: inkDeep, width: 3)),
-          child:
-              Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-            Text('Floor 7: spoils', style: _d(20, inkOnPaper)),
-            Text('You took one card from the loot table.',
-                style: _p(12, inkSlate)),
-            const SizedBox(height: 12),
-            Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
-              UxCard(_gear, 96, heightK: 1.75),
-              const SizedBox(width: 14),
-              Expanded(
-                child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text('Iron Bracers', style: _d(16, inkOnPaper)),
-                      Text('Worn: armour 3 → 5', style: _p(13, inkOnPaper)),
-                      const SizedBox(height: 10),
-                      Text('Left on the table', style: _p(11, inkSlate)),
-                      Text('Potion bundle · 2 coins', style: _p(12, inkSlate)),
-                      const SizedBox(height: 10),
-                      Text('Coins 12 → 12 · Potions ×1 → ×1',
-                          style: _p(11, inkSlate)),
-                    ]),
-              ),
+  Widget build(BuildContext context) => TowerBackdrop(
+        floor: 4,
+        child: Padding(
+          padding: const EdgeInsets.all(16),
+          child: Container(
+            padding: const EdgeInsets.all(14),
+            decoration: BoxDecoration(
+                color: inkPaper, border: Border.all(color: inkDeep, width: 3)),
+            child:
+                Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+              Text('Floor 7: spoils', style: _d(20, inkOnPaper)),
+              Text('You took one card from the loot table.',
+                  style: _p(12, inkSlate)),
+              const SizedBox(height: 12),
+              Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                const UxCard(_gear, 96, heightK: 1.75),
+                const SizedBox(width: 14),
+                Expanded(
+                  child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text('Iron Bracers', style: _d(16, inkOnPaper)),
+                        Text('Worn: armour 3 → 5', style: _p(13, inkOnPaper)),
+                        const SizedBox(height: 10),
+                        Text('Left on the table', style: _p(11, inkSlate)),
+                        Text('Potion bundle · 2 coins',
+                            style: _p(12, inkSlate)),
+                      ]),
+                ),
+              ]),
+              const SizedBox(height: 14),
+              SizedBox(width: double.infinity, child: _red('Continue')),
             ]),
-            const SizedBox(height: 14),
-            SizedBox(
-              width: double.infinity,
-              child: FilledButton(
-                  style: FilledButton.styleFrom(
-                      minimumSize: const Size.fromHeight(48)),
-                  onPressed: () {},
-                  child: const Text('Take')),
-            ),
-          ]),
+          ),
         ),
       );
 }
@@ -294,9 +309,7 @@ Future<void> _show(
             color: inkBlack,
             child: Material(
                 color: inkBlack,
-                child: SingleChildScrollView(
-                    physics: const NeverScrollableScrollPhysics(),
-                    child: body)))),
+                child: SizedBox(width: w, height: h, child: body)))),
   )));
   for (var i = 0; i < 10; i++) {
     await tester
@@ -316,26 +329,94 @@ void main() {
     final key = GlobalKey();
     for (final w in [412.0, 360.0]) {
       final n = w.toInt();
-      await _show(tester, key, w, w > 400 ? 1330 : 1250,
-          _LevelUp(const [_clan, _skill, _spell], w, 'intelligence'));
-      await _shot(tester, key, '$shots/levelup-cards-$n.png');
-      await _show(tester, key, w, w > 400 ? 1330 : 1250,
-          _LevelUp(const [_clan, _rank, _die], w, 'intelligence'));
-      await _shot(tester, key, '$shots/levelup-cards-rankup-die-$n.png');
-      await _show(
-          tester,
-          key,
-          w,
-          420,
-          Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
-            _heading(
-                'Loot: take one', 'Tap a card, or swipe it up to take it.'),
-            _row(const [_gear, _bundle, _purse], w, held: 0),
-            _take('Take'),
-          ]));
-      await _shot(tester, key, '$shots/loot-table-$n.png');
-      await _show(tester, key, w, 335, _Spoils(w));
-      await _shot(tester, key, '$shots/spoils-sheet-$n.png');
+      const lvl = [_clan, _skill, _spell];
+      const lvl2 = [_clan, _rank, _die];
+      Future<void> shot(String name, double h, Widget body) async {
+        await _show(tester, key, w, h, body);
+        await _shot(tester, key, '$shots/$name-$n.png');
+      }
+
+      await shot(
+          'levelup-start',
+          980,
+          _Offer(
+              title: 'Level 4',
+              hint: 'Choose one card. A skill also raises a stat by 1.',
+              cards: lvl,
+              held: -1,
+              detail: const [],
+              below: [_radar(null, '')]));
+      await shot(
+          'levelup-held',
+          1030,
+          _Offer(
+              title: 'Level 4',
+              hint: 'Choose one card. A skill also raises a stat by 1.',
+              cards: lvl,
+              held: 1,
+              detail: const [
+                'Ember Lash',
+                'Hit one foe for 6 fire. Raises Intelligence by 1.',
+              ],
+              below: [
+                _radar('intelligence', 'Ember Lash: +1 INT')
+              ]));
+      await shot(
+          'levelup-clan-held',
+          1030,
+          _Offer(
+              title: 'Level 4',
+              hint: 'Choose one card. A skill also raises a stat by 1.',
+              cards: lvl,
+              held: 0,
+              detail: const [
+                'Shadow Step',
+                'Strike first in the next fight. Raises Dexterity by 1.',
+                'Mire +2 · Dominion -1 · Compact +1 · Penitents -1',
+              ],
+              below: [
+                _radar('dexterity', 'Shadow Step: +1 DEX')
+              ]));
+      await shot(
+          'levelup-rankup-die',
+          1030,
+          _Offer(
+              title: 'Level 4',
+              hint: 'Choose one card. A skill also raises a stat by 1.',
+              cards: lvl2,
+              held: 1,
+              detail: const [
+                'Ember Lash II',
+                'Rank 2: 9 fire. Raises Intelligence by 1.',
+              ],
+              below: [
+                _radar('intelligence', 'Ember Lash II: +1 INT')
+              ]));
+      const loot = [_gear, _bundle, _purse];
+      await shot(
+          'loot-start',
+          640,
+          const _Offer(
+              title: 'Floor 7 cleared',
+              hint: 'Choose one reward',
+              cards: loot,
+              held: -1,
+              detail: [],
+              notNow: 'Not now (+1 mark)'));
+      await shot(
+          'loot-held',
+          640,
+          const _Offer(
+              title: 'Floor 7 cleared',
+              hint: 'Choose one reward',
+              cards: loot,
+              held: 0,
+              detail: [
+                'Iron Bracers',
+                '+2 armour while worn. Worn if it beats yours.'
+              ],
+              notNow: 'Not now (+1 mark)'));
+      await shot('spoils-sheet', 350, const _Spoils());
     }
   });
 }
