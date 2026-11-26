@@ -8,6 +8,9 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [2.10.23+1105]
+
+- **Tower checks: the roll in full, for UX's d20 (no rule change).** A setback's or a parley's result now keeps the ability, the bonus and the target it was rolled with, so the screen can show the story's d20 roll; each event's choices also list their outcome (a potion, the floor you fall to or land on, a price, the fight) for the buttons to say plainly. The odds are unchanged.
 ## [2.10.22+1104]
 - Every card choice in the Tower (the clan offer, the boon and tarot rewards, the rank-ups, the oath) starts with no card in hand: the middle one is in front, the others behind, Take is off and a line says "Tap a card, or swipe it up to take it". Tap a card to hold it and Take to confirm, as before; or swipe a card up (past a third of its height, or a quick flick) and it flies off and is taken at once. A shorter swipe springs back. With reduce motion the card only fades.
 
