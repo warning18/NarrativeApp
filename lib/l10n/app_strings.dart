@@ -1903,6 +1903,30 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.en: 'Change',
     AppLanguage.fr: 'Changer',
   },
+  'tower_bm_stats': {AppLanguage.en: 'Stats', AppLanguage.fr: 'Stats'},
+  'tower_bm_gear': {AppLanguage.en: 'Gear', AppLanguage.fr: 'Équip.'},
+  'tower_bm_dice': {AppLanguage.en: 'Dice', AppLanguage.fr: 'Dés'},
+  'tower_bm_title_stats': {
+    AppLanguage.en: 'Stats',
+    AppLanguage.fr: 'Caractéristiques',
+  },
+  'tower_bm_title_gear': {
+    AppLanguage.en: 'Equipment',
+    AppLanguage.fr: 'Équipement',
+  },
+  'tower_bm_title_dice': {AppLanguage.en: 'Dice', AppLanguage.fr: 'Dés'},
+  'tower_bm_hp': {
+    AppLanguage.en: 'HP {a} / {b}',
+    AppLanguage.fr: 'PV {a} / {b}'
+  },
+  'tower_bm_level': {AppLanguage.en: 'Level {n}', AppLanguage.fr: 'Niveau {n}'},
+  'tower_bm_nudges': {
+    AppLanguage.en: 'Level Up nudges: +{n} of +{cap} this climb',
+    AppLanguage.fr:
+        'Bonus de montée de niveau\u00a0: +{n} sur +{cap} cette ascension',
+  },
+  'tower_bm_empty': {AppLanguage.en: 'empty', AppLanguage.fr: 'vide'},
+  'tower_bm_in_play': {AppLanguage.en: 'In play', AppLanguage.fr: 'En jeu'},
   'tower_levelup_hint': {
     AppLanguage.en: 'Choose one card. A skill also raises a stat by 1.',
     AppLanguage.fr:

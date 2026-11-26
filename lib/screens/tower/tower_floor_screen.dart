@@ -38,6 +38,7 @@ import 'tower_look.dart';
 import 'tower_ladder.dart';
 import 'tower_offer_view.dart';
 import 'tower_providers.dart';
+import 'tower_bookmarks.dart';
 import 'tower_spoils_view.dart';
 import '../../theme/frame_style.dart' show EnvParts;
 import '../../widgets/ink_panel.dart';
@@ -73,6 +74,9 @@ class _TowerFloorScreenState extends ConsumerState<_TowerFloorBody> {
   /// The card picked on a table, waiting for Confirm (its index in the offer):
   /// the choice only counts then, and Change goes back to the cards.
   int? _pending;
+
+  /// The open bookmark's view (stats, gear, dice), or null.
+  TowerBookmark? _bookmark;
 
   @override
   void dispose() {
@@ -250,125 +254,179 @@ class _TowerFloorScreenState extends ConsumerState<_TowerFloorBody> {
           ),
         ],
       ),
-      body: TowerBackdrop(
-        floor: run.floor,
-        // The picture of the event on offer (the parley's guardian), until it
-        // is chosen; the floor's own otherwise.
-        asset: event != null && event.accepted == null
-            ? towerEventPlate(event.background)
-            : null,
-        child: SafeArea(
-          child: Listener(
-            // A tap anywhere puts the head on its notch at once.
-            onPointerDown: (_) => _ladder.currentState?.skip(),
-            child: Row(
-              // Tight height: the floor's scroll view fills it and starts at
-              // the top (a Row would centre a short one).
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                // The rail keeps its place and its width on every screen of the
-                // floor, the card choices included: nothing jumps when they open.
-                SizedBox(
-                  width: towerLadderWidth + 12,
-                  child: ClipRect(
-                    child: OverflowBox(
-                      alignment: Alignment.centerLeft,
-                      minWidth: 0,
-                      maxWidth: towerLadderWidth + 12,
-                      child: Padding(
-                        padding: const EdgeInsets.fromLTRB(8, 4, 4, 8),
-                        child: TowerLadder(
-                            key: _ladder, floor: headFloor, jump: jump),
-                      ),
-                    ),
-                  ),
-                ),
-                Expanded(
-                  child: choosing &&
-                          _pending != null &&
-                          _pending! < run.offer.length
-                      ? TowerPickConfirm(
-                          run: run,
-                          data: data,
-                          reward: run.offer[_pending!],
-                          loot: run.rules >= 2 &&
-                              run.table == TowerTableKind.loot,
-                          styled: run.rules >= 2 &&
-                              (run.table == TowerTableKind.loot ||
-                                  run.table == TowerTableKind.levelUp),
-                          coinsGained: towerCoinsFor(towerFloorOf(run, data)),
-                          onChange: () => setState(() => _pending = null),
-                          onConfirm: () {
-                            final i = _pending!;
-                            setState(() => _pending = null);
-                            towerShowStandingToast(
-                                context, ref, run, data, run.offer[i]);
-                            _pick(run, data, i);
-                          },
-                        )
-                      : choosing && run.rules < 2 && _spoilsTaken != run.floor
-                          ? TowerSpoilsView(
-                              run: run,
-                              coinsGained:
-                                  towerCoinsFor(towerFloorOf(run, data)),
-                              onTake: () => run.offer.isEmpty &&
-                                      event?.kind != TowerEventKind.test
-                                  ? _pick(run, data, null)
-                                  : setState(() => _spoilsTaken = run.floor),
-                            )
-                          : choosing
-                              ? TowerOfferView(
-                                  // Rules 2 deals tables one after another on a
-                                  // floor (loot, Level Ups): each its own view.
-                                  key: run.rules >= 2
-                                      ? ValueKey('tower_table_${run.floor}_'
-                                          '${run.table?.name}_'
-                                          '${run.levelUps[run.floor]?.length ?? 0}_'
-                                          '${run.rerolls[run.floor] ?? 0}')
-                                      : null,
-                                  run: run,
-                                  data: data,
-                                  event: event,
-                                  // A card picked waits for Confirm; leaving the
-                                  // table (Not now) is final at once.
-                                  onPick: (i) => i == null
-                                      ? _pick(run, data, null)
-                                      : setState(() => _pending = i),
-                                )
-                              : run.stallOffer.isNotEmpty
-                                  ? TowerOfferView(
-                                      key: const Key('tower_stall_boon_table'),
-                                      run: run.copyWith(offer: run.stallOffer),
-                                      data: data,
-                                      onPick: (i) => i == null
-                                          ? _leaveStore(run)
-                                          : ref
-                                              .read(towerProvider.notifier)
-                                              .takeStallBoon(i),
-                                    )
-                                  : _FloorIntro(
-                                      run: run,
-                                      data: data,
-                                      event: event,
-                                      busy: _busy,
-                                      onFight: () => _fight(run, data),
-                                      onParley: (talk) =>
-                                          _parley(run, data, talk),
-                                      onBuy: (id) => _buy(run, data, id),
-                                      onLeaveStore: () => _leaveStore(run),
-                                      onBargain: (take) =>
-                                          _bargain(run, data, take),
-                                      onShortcut: (take) => ref
-                                          .read(towerProvider.notifier)
-                                          .setRun(towerChooseShortcut(
-                                              run, data, take)),
+      body: Stack(children: [
+        TowerBackdrop(
+          floor: run.floor,
+          // The picture of the event on offer (the parley's guardian), until it
+          // is chosen; the floor's own otherwise.
+          asset: event != null && event.accepted == null
+              ? towerEventPlate(event.background)
+              : null,
+          child: SafeArea(
+            child: Listener(
+              // A tap anywhere puts the head on its notch at once.
+              onPointerDown: (_) => _ladder.currentState?.skip(),
+              child: Stack(children: [
+                Positioned.fill(
+                    // While a bookmark is open the floor's pieces are not built, so
+                    // the snow field's drifts (it draws over everything) leave with
+                    // them instead of lying over the panel.
+                    child: _bookmark != null
+                        ? const SizedBox.shrink()
+                        : Row(
+                            // Tight height: the floor's scroll view fills it and starts at
+                            // the top (a Row would centre a short one).
+                            crossAxisAlignment: CrossAxisAlignment.stretch,
+                            children: [
+                              // The rail keeps its place and its width on every screen of the
+                              // floor, the card choices included: nothing jumps when they open.
+                              SizedBox(
+                                width: towerLadderWidth + 12,
+                                child: ClipRect(
+                                  child: OverflowBox(
+                                    alignment: Alignment.centerLeft,
+                                    minWidth: 0,
+                                    maxWidth: towerLadderWidth + 12,
+                                    child: Padding(
+                                      padding:
+                                          const EdgeInsets.fromLTRB(8, 4, 4, 8),
+                                      child: TowerLadder(
+                                          key: _ladder,
+                                          floor: headFloor,
+                                          jump: jump),
                                     ),
-                ),
-              ],
+                                  ),
+                                ),
+                              ),
+                              Expanded(
+                                child: choosing &&
+                                        _pending != null &&
+                                        _pending! < run.offer.length
+                                    ? TowerPickConfirm(
+                                        run: run,
+                                        data: data,
+                                        reward: run.offer[_pending!],
+                                        loot: run.rules >= 2 &&
+                                            run.table == TowerTableKind.loot,
+                                        styled: run.rules >= 2 &&
+                                            (run.table == TowerTableKind.loot ||
+                                                run.table ==
+                                                    TowerTableKind.levelUp),
+                                        coinsGained: towerCoinsFor(
+                                            towerFloorOf(run, data)),
+                                        onChange: () =>
+                                            setState(() => _pending = null),
+                                        onConfirm: () {
+                                          final i = _pending!;
+                                          setState(() => _pending = null);
+                                          towerShowStandingToast(context, ref,
+                                              run, data, run.offer[i]);
+                                          _pick(run, data, i);
+                                        },
+                                      )
+                                    : choosing &&
+                                            run.rules < 2 &&
+                                            _spoilsTaken != run.floor
+                                        ? TowerSpoilsView(
+                                            run: run,
+                                            coinsGained: towerCoinsFor(
+                                                towerFloorOf(run, data)),
+                                            onTake: () => run.offer.isEmpty &&
+                                                    event?.kind !=
+                                                        TowerEventKind.test
+                                                ? _pick(run, data, null)
+                                                : setState(() =>
+                                                    _spoilsTaken = run.floor),
+                                          )
+                                        : choosing
+                                            ? TowerOfferView(
+                                                // Rules 2 deals tables one after another on a
+                                                // floor (loot, Level Ups): each its own view.
+                                                key: run.rules >= 2
+                                                    ? ValueKey(
+                                                        'tower_table_${run.floor}_'
+                                                        '${run.table?.name}_'
+                                                        '${run.levelUps[run.floor]?.length ?? 0}_'
+                                                        '${run.rerolls[run.floor] ?? 0}')
+                                                    : null,
+                                                run: run,
+                                                data: data,
+                                                event: event,
+                                                // A card picked waits for Confirm; leaving the
+                                                // table (Not now) is final at once.
+                                                onPick: (i) => i == null
+                                                    ? _pick(run, data, null)
+                                                    : setState(
+                                                        () => _pending = i),
+                                              )
+                                            : run.stallOffer.isNotEmpty
+                                                ? TowerOfferView(
+                                                    key: const Key(
+                                                        'tower_stall_boon_table'),
+                                                    run: run.copyWith(
+                                                        offer: run.stallOffer),
+                                                    data: data,
+                                                    onPick: (i) => i == null
+                                                        ? _leaveStore(run)
+                                                        : ref
+                                                            .read(towerProvider
+                                                                .notifier)
+                                                            .takeStallBoon(i),
+                                                  )
+                                                : _FloorIntro(
+                                                    run: run,
+                                                    data: data,
+                                                    event: event,
+                                                    busy: _busy,
+                                                    onFight: () =>
+                                                        _fight(run, data),
+                                                    onParley: (talk) => _parley(
+                                                        run, data, talk),
+                                                    onBuy: (id) =>
+                                                        _buy(run, data, id),
+                                                    onLeaveStore: () =>
+                                                        _leaveStore(run),
+                                                    onBargain: (take) =>
+                                                        _bargain(
+                                                            run, data, take),
+                                                    onShortcut: (take) => ref
+                                                        .read(towerProvider
+                                                            .notifier)
+                                                        .setRun(
+                                                            towerChooseShortcut(
+                                                                run,
+                                                                data,
+                                                                take)),
+                                                  ),
+                              ),
+                            ],
+                          )),
+              ]),
             ),
           ),
         ),
-      ),
+        // The bookmarks sit over the whole floor (the weather too).
+        Positioned(
+          top: 0,
+          right: 6,
+          child: TowerBookmarkTabs(
+              open: _bookmark,
+              onTap: (b) =>
+                  setState(() => _bookmark = _bookmark == b ? null : b)),
+        ),
+        if (_bookmark != null)
+          Positioned(
+            top: 82,
+            left: 8,
+            right: 8,
+            bottom: 8 + MediaQuery.paddingOf(context).bottom,
+            child: TowerBookmarkPanel(
+                run: run,
+                data: data,
+                which: _bookmark!,
+                onClose: () => setState(() => _bookmark = null)),
+          ),
+      ]),
     );
   }
 }
