@@ -116,6 +116,7 @@ class TowerStyledCard extends StatelessWidget {
     this.hue,
     this.round = false,
     this.darkBadge = false,
+    this.flag,
   });
 
   final TowerCardStyle style;
@@ -148,6 +149,9 @@ class TowerStyledCard extends StatelessWidget {
   /// A black badge, for pale icons (a die's, a spell's).
   final bool darkBadge;
 
+  /// A clan's own banner, hung from the top edge at the right as a bookmark.
+  final Widget? flag;
+
   @override
   Widget build(BuildContext context) {
     final look = _lookOf(style);
@@ -178,7 +182,8 @@ class TowerStyledCard extends StatelessWidget {
           if (stamp != null)
             Positioned(
               right: 5,
-              top: 5,
+              top: flag == null ? 5 : null,
+              bottom: flag == null ? null : 5,
               child: Container(
                 padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 2),
                 decoration: BoxDecoration(
@@ -252,6 +257,28 @@ class TowerStyledCard extends StatelessWidget {
           ),
         ),
         IgnorePointer(child: CustomPaint(painter: _EdgePainter(look, radius))),
+        // The clan's banner, a bookmark hanging from the top edge.
+        if (flag != null)
+          Positioned(
+            top: look.edgeWidth,
+            right: 10,
+            child: Container(
+              width: 28,
+              height: 52,
+              decoration: BoxDecoration(boxShadow: [
+                BoxShadow(
+                    color: inkBlack.withValues(alpha: 0.6),
+                    blurRadius: 3,
+                    offset: const Offset(0, 2))
+              ]),
+              child: ClipRect(
+                child: FittedBox(
+                    fit: BoxFit.cover,
+                    alignment: Alignment.topCenter,
+                    child: flag),
+              ),
+            ),
+          ),
       ]),
     );
   }

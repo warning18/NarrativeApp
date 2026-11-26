@@ -19,6 +19,7 @@ import '../../widgets/item_stats.dart';
 import '../../widgets/loot_sheet.dart';
 import '../../theme/icon_sizes.dart';
 import 'ink/ink_palette.dart';
+import '../../theme/motion.dart';
 import 'tower_coin_view.dart';
 import 'tower_offer_view.dart' show towerCardText, towerStyledCardFor;
 import 'tower_styled_card.dart';
@@ -145,75 +146,89 @@ class TowerLootSummary extends ConsumerWidget {
     final theme = Theme.of(context);
     final card = taken;
     final t = card == null ? null : towerCardText(ref, card);
-    const width = 96.0;
+    // The card is a reveal: it grows in over the floor (reduce motion: it is
+    // simply there).
+    final reduced = MediaQuery.of(context).disableAnimations;
+    const width = 216.0;
+    Widget reveal(Widget child) => reduced
+        ? child
+        : TweenAnimationBuilder<double>(
+            tween: Tween(begin: 0.86, end: 1),
+            duration: Motion.slow,
+            curve: Curves.easeOutBack,
+            builder: (context, v, c) => Opacity(
+                opacity: ((v - 0.86) / 0.14).clamp(0.0, 1.0),
+                child: Transform.scale(scale: v, child: c)),
+            child: child);
     return ListView(
-      padding: const EdgeInsets.all(16),
+      key: const Key('tower_loot_summary'),
+      padding: const EdgeInsets.fromLTRB(16, 12, 16, 24),
       children: [
-        Container(
-          key: const Key('tower_loot_summary'),
-          padding: const EdgeInsets.all(14),
-          decoration: BoxDecoration(
-              color: inkPaper, border: Border.all(color: inkDeep, width: 3)),
-          child:
-              Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-            Text(tr(ref, 'tower_spoils_loot_title').replaceAll('{n}', '$floor'),
-                style: theme.textTheme.titleLarge?.copyWith(
-                    fontFamily: InkFonts.display, color: inkOnPaper)),
-            Text(
-                tr(
-                    ref,
-                    card == null
-                        ? 'tower_spoils_loot_none'
-                        : 'tower_spoils_loot_took'),
-                style: theme.textTheme.bodySmall?.copyWith(color: inkSlate)),
-            const SizedBox(height: 12),
-            if (card != null && t != null)
-              Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                SizedBox(
-                  width: width,
-                  height: width * towerStyledCardHeight / towerStyledCardWidth,
-                  child: FittedBox(
-                      child: towerStyledCardFor(ref, run, data, card)),
-                ),
-                const SizedBox(width: 14),
-                Expanded(
-                  child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(t.name,
-                            style: theme.textTheme.titleMedium?.copyWith(
-                                fontFamily: InkFonts.display,
-                                color: inkOnPaper)),
-                        if (t.text.isNotEmpty)
-                          Text(t.text,
-                              style: theme.textTheme.bodyMedium
-                                  ?.copyWith(color: inkOnPaper)),
-                      ]),
-                ),
+        Text(tr(ref, 'tower_spoils_loot_title').replaceAll('{n}', '$floor'),
+            style: theme.textTheme.headlineSmall),
+        Text(
+            tr(
+                ref,
+                card == null
+                    ? 'tower_spoils_loot_none'
+                    : 'tower_spoils_loot_took'),
+            style: theme.textTheme.bodyMedium
+                ?.copyWith(color: theme.colorScheme.onSurfaceVariant)),
+        if (card != null && t != null) ...[
+          const SizedBox(height: 16),
+          Center(
+            child: reveal(Container(
+              width: width,
+              height: width * towerStyledCardHeight / towerStyledCardWidth,
+              decoration: BoxDecoration(boxShadow: [
+                BoxShadow(
+                    color: inkBlack.withValues(alpha: 0.55),
+                    blurRadius: 36,
+                    spreadRadius: 0),
               ]),
-            if (coinsGained > 0)
-              Padding(
-                padding: const EdgeInsets.only(top: 12),
-                child: Row(children: [
-                  const TowerCoinDisc(size: IconSize.s32),
-                  const SizedBox(width: 10),
-                  Text(
-                      tr(ref, 'tower_coins_gained')
-                          .replaceAll('{n}', '$coinsGained'),
-                      style: theme.textTheme.bodyMedium
-                          ?.copyWith(color: inkOnPaper)),
-                ]),
-              ),
+              child: FittedBox(child: towerStyledCardFor(ref, run, data, card)),
+            )),
+          ),
+          if (coinsGained > 0) ...[
             const SizedBox(height: 14),
-            SizedBox(
-              width: double.infinity,
-              child: FilledButton(
-                key: const Key('tower_loot_continue'),
-                onPressed: onContinue,
-                child: Text(tr(ref, 'tower_spoils_continue')),
-              ),
+            // The floor's coins on a soft ink scrim over the floor.
+            Container(
+              padding: const EdgeInsets.fromLTRB(12, 8, 12, 8),
+              decoration: BoxDecoration(
+                  color: inkBlack.withValues(alpha: 0.72),
+                  border: Border.all(color: inkSlate),
+                  borderRadius: BorderRadius.circular(8)),
+              child:
+                  Row(mainAxisAlignment: MainAxisAlignment.center, children: [
+                const TowerCoinDisc(size: IconSize.s32),
+                const SizedBox(width: 10),
+                Text(
+                    tr(ref, 'tower_coins_gained')
+                        .replaceAll('{n}', '$coinsGained'),
+                    style: theme.textTheme.bodyMedium),
+              ]),
             ),
-          ]),
+          ],
+        ] else if (coinsGained > 0)
+          Padding(
+            padding: const EdgeInsets.only(top: 16),
+            child: Row(children: [
+              const TowerCoinDisc(size: IconSize.s32),
+              const SizedBox(width: 10),
+              Text(
+                  tr(ref, 'tower_coins_gained')
+                      .replaceAll('{n}', '$coinsGained'),
+                  style: theme.textTheme.bodyMedium),
+            ]),
+          ),
+        const SizedBox(height: 16),
+        SizedBox(
+          width: double.infinity,
+          child: FilledButton(
+            key: const Key('tower_loot_continue'),
+            onPressed: onContinue,
+            child: Text(tr(ref, 'tower_spoils_continue')),
+          ),
         ),
       ],
     );

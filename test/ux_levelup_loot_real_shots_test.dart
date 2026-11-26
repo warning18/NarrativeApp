@@ -59,7 +59,7 @@ void main() {
           'tower_run_v1': jsonEncode(e.value.toJson()),
           'tutorial_enabled': false,
         });
-        usePhone(tester, Size(width, 900));
+        usePhone(tester, Size(width, width > 400 ? 900 : 800));
         final container = ProviderContainer();
         addTearDown(container.dispose);
         await container
@@ -106,6 +106,12 @@ void main() {
         await tester.tap(find.byKey(const Key('tower_card_1')));
         await settle(8);
         await shot('${e.key}-held');
+        if (e.key == 'levelup') {
+          // The clan gift in hand, with its banner as a bookmark.
+          await tester.tap(find.byKey(const Key('tower_card_0')));
+          await settle(8);
+          await shot('levelup-clan-held');
+        }
         if (e.key == 'loot') {
           await tester.tap(find.byKey(const Key('tower_take')));
           await settle(12);
