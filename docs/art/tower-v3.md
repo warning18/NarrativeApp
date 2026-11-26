@@ -1,4 +1,4 @@
-> **RECORD ONLY, NOT WANTED (the user, 26 November 2026, after the A/B/C fight mock-ups): version B, today's Tower backgrounds, stays.** Versions A (raw cut paper) and C (new) are kept as a record; do not hand them to UX and generate nothing more for them.
+> **26 November 2026, the user:** version B (today's backgrounds in `assets/visuals/tower_ink/`) stays in the game for now. **A (the raw cut-paper set) is PARKED FOR LATER ("keep these for later"), not rejected: keep all its files.** **C (the blend, 18 generations) is only a record: it was not picked.** No more generations for the Tower backgrounds until a new ask.
 
 # The 14 Tower backgrounds: three versions side by side (Art, 26 November 2026)
 

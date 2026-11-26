@@ -1,3 +1,5 @@
+> **PARKED FOR LATER (the user, 26 November 2026: "keep these for later").** The cut-paper Tower set described here (the 14 plates, snapped | raw) is not rejected and not in the game for now: today's `tower_ink` backgrounds (B) stay. Keep all files.
+
 # Cut paper, wave 3: hand-offs and tests (25 November 2026)
 Balance 1635 (16 generations: tarot redo 8, icon test 8).
 

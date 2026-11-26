@@ -1,3 +1,5 @@
+> **PARKED FOR LATER (the user, 26 November 2026: "keep these for later").** The cut-paper Tower set described here (the 14 plates, snapped | raw) is not rejected and not in the game for now: today's `tower_ink` backgrounds (B) stay. Keep all files.
+
 # Hand-off to UX: Tower plates, tarot vignettes, heads (Art, 25 November 2026)
 
 All three are approved by the user. Files only; nothing in the game was changed. Copy them in; the names match what the code already looks for.
