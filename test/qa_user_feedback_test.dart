@@ -161,7 +161,7 @@ void main() {
 
   group('the dice are thrown slower, with a speed setting (v1.679)', () {
     test('the numbers: 0.88 s a throw, 0.45 s at rest, 1x 2x 4x', () {
-      expect(diceThrowBase, const Duration(milliseconds: 880));
+      expect(diceThrowBase, const Duration(milliseconds: 1700));
       expect(diceLandBase, const Duration(milliseconds: 450));
       expect([for (final s in DiceSpeed.values) s.factor], [1, 2, 4]);
       expect(DiceSpeed.values.first, DiceSpeed.normal,

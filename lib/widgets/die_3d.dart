@@ -17,6 +17,8 @@
 import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
+
+import 'dice_throw.dart' show DieAngles;
 import 'package:flutter/scheduler.dart';
 
 import '../screens/tower/ink/ink_palette.dart' show inkPaper, inkRed;
@@ -140,6 +142,7 @@ class Die3D extends StatefulWidget {
     this.shape = DieShape.d6,
     this.artId,
     this.facets,
+    this.tumbleAt,
   }) : assert(faces.length == 6);
 
   /// The six sides, the front one (the face that lands) first.
@@ -153,6 +156,11 @@ class Die3D extends StatefulWidget {
 
   /// The roll's progress, 0 to 1 (the die is at rest at 1); null at rest.
   final Animation<double>? roll;
+
+  /// The die's own turn at a roll progress, in angles about x, y and z (the
+  /// board's throw plans it: DiceThrowPlan.angles); it replaces the built-in
+  /// tumble and its hop, [roll] being the throw's own time.
+  final DieAngles? Function(double u)? tumbleAt;
 
   /// Whether the die is in the air: it tumbles by [roll]. When it stops,
   /// a landed [fx] bursts.
@@ -391,15 +399,17 @@ class _Die3DState extends State<Die3D> with SingleTickerProviderStateMixin {
     final size = widget.size;
     final e = Curves.easeOutCubic.transform(t.clamp(0.0, 1.0));
     final spin = (1 - e) * _tumbleTurns * 2 * math.pi;
+    // The board's own throw: its angles, no built-in tumble or hop.
+    final own = widget.tumbleAt?.call(t);
     // The tumble decays to nothing, leaving the rest tilt.
     final model = Matrix4.identity()
-      ..rotateX(spin * 0.9)
-      ..rotateY(spin * 1.3)
-      ..rotateZ(spin * 0.35)
+      ..rotateX(own != null ? own.x : spin * 0.9)
+      ..rotateY(own != null ? own.y : spin * 1.3)
+      ..rotateZ(own != null ? own.z : spin * 0.35)
       ..rotateX(dieRestTipX)
       ..rotateY(dieRestTurnY);
     // A hop that dies away as it settles, with the shadow shrinking under it.
-    final hop = widget.rolling && widget.roll != null
+    final hop = own == null && widget.rolling && widget.roll != null
         ? size *
             0.7 *
             math.pow(math.sin(math.pi * math.min(1, t * 1.6)), 2) *
@@ -440,6 +450,7 @@ class _Die3DState extends State<Die3D> with SingleTickerProviderStateMixin {
                   // without them (and turns a little less).
                   showGlyphs: !_cheap && size >= _dieSolidMinSize,
                   turns: _cheap ? 1.2 : null,
+                  angles: own,
                   unrolled: _unrolled,
                   landed: widget.fx != null && !widget.dim && t >= 1,
                 )

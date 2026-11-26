@@ -684,10 +684,19 @@ extension _FightBoardView on _FightScreenState {
                                               _hintHeight(tr(ref, hintKey),
                                                   size.width - 16) +
                                               16,
+                                  // A thrown die turns by the plan's own
+                                  // angles (the throw's time is the roll);
+                                  // a reduced one keeps its short settle.
                                   roll: throwPlan == null
                                       ? null
-                                      : _rollController.drive(CurveTween(
-                                          curve: throwPlan.turnCurve(k)))),
+                                      : throwPlan.reduced
+                                          ? _rollController.drive(CurveTween(
+                                              curve: throwPlan.turnCurve(k)))
+                                          : _rollController,
+                                  tumbleAt:
+                                      throwPlan == null || throwPlan.reduced
+                                          ? null
+                                          : (u) => throwPlan.angles(k, u)),
                             );
                           }(),
                         // The Tower's ink: the dice's tags on the plate, over

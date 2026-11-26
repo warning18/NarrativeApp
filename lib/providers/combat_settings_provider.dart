@@ -123,9 +123,11 @@ enum DiceSpeed {
   final int factor;
 }
 
-/// The throw of the dice, before the faces read: they fall, bounce and settle
-/// (v2.10.16; it was 650 ms before v1.679 and 1.4 s until v2.10.15).
-const Duration diceThrowBase = Duration(milliseconds: 880);
+/// The throw of the dice, before the faces read: they are flung, bounce, roll
+/// over their edges at least a full turn and settle, at a pace the eye can
+/// follow (v2.10.19; 880 ms for the drop of v2.10.16, 650 ms before v1.679 and
+/// 1.4 s until v2.10.15).
+const Duration diceThrowBase = Duration(milliseconds: 1700);
 
 /// How long the dice rest on the board with their faces up before they can
 /// be tapped.
