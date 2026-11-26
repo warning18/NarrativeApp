@@ -1,0 +1,122 @@
+{
+ "panel": {
+  "size": [
+   40,
+   42
+  ],
+  "slice_margins_ltrb": [
+   10,
+   10,
+   10,
+   10
+  ]
+ },
+ "button": {
+  "size": [
+   42,
+   17
+  ],
+  "slice_margins_ltrb": [
+   8,
+   7,
+   8,
+   7
+  ]
+ },
+ "button_pressed": {
+  "size": [
+   42,
+   17
+  ],
+  "slice_margins_ltrb": [
+   8,
+   7,
+   8,
+   7
+  ]
+ },
+ "button_disabled": {
+  "size": [
+   42,
+   17
+  ],
+  "slice_margins_ltrb": [
+   8,
+   7,
+   8,
+   7
+  ]
+ },
+ "chip": {
+  "size": [
+   48,
+   20
+  ],
+  "slice_margins_ltrb": [
+   8,
+   8,
+   8,
+   8
+  ]
+ },
+ "tab": {
+  "size": [
+   48,
+   28
+  ],
+  "slice_margins_ltrb": [
+   10,
+   10,
+   10,
+   0
+  ]
+ },
+ "bar": {
+  "size": [
+   60,
+   9
+  ],
+  "slice_margins_ltrb": [
+   5,
+   4,
+   5,
+   4
+  ]
+ },
+ "seal": {
+  "size": [
+   24,
+   24
+  ],
+  "slice_margins_ltrb": [
+   0,
+   0,
+   0,
+   0
+  ]
+ },
+ "seal_pressed": {
+  "size": [
+   24,
+   24
+  ],
+  "slice_margins_ltrb": [
+   0,
+   0,
+   0,
+   0
+  ]
+ },
+ "seal_disabled": {
+  "size": [
+   24,
+   24
+  ],
+  "slice_margins_ltrb": [
+   0,
+   0,
+   0,
+   0
+  ]
+ }
+}
