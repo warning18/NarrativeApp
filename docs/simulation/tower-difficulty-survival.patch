@@ -1,0 +1,253 @@
+diff --git a/lib/data/tower/tower_floors.dart b/lib/data/tower/tower_floors.dart
+index 47fa5d2dd..adc0b226c 100644
+--- a/lib/data/tower/tower_floors.dart
++++ b/lib/data/tower/tower_floors.dart
+@@ -110,7 +110,7 @@ class TowerFloor {
+       extra *
+       towerProfessionScaleOf(professionId,
+           events: events, peak: kind != TowerFloorKind.fight) *
+-      towerRulesScaleOf(rules, professionId);
++      towerRulesScaleOf(rules, professionId, floor: floor);
+ 
+   /// What the fight screen is handed for this floor, for a hero of
+   /// [professionId] (the Tower's context: no scene, no chest, no gold or
+diff --git a/lib/data/tower/tower_hero.dart b/lib/data/tower/tower_hero.dart
+index e14c014b8..332b4ae70 100644
+--- a/lib/data/tower/tower_hero.dart
++++ b/lib/data/tower/tower_hero.dart
+@@ -114,7 +114,7 @@ class TowerData {
+ /// rolled (simDieValue, a run saved before).
+ SimCharacter towerFreshHero(String raceId, String professionId,
+     Iterable<String> unlockIds, TowerData data,
+-    {int unlocksOwned = 0, bool bag = false}) {
++    {int unlocksOwned = 0, bool bag = false, int rules = 1}) {
+   final hero = SimCharacter.create(
+     raceId: raceId,
+     race: data.races[raceId] as Map<String, dynamic>? ?? const {},
+@@ -141,9 +141,11 @@ SimCharacter towerFreshHero(String raceId, String professionId,
+   final people = towerPeoplePoints[raceId] ?? 0;
+   if (people > 0) hero.addAbilities({hero.preferredStat: people});
+   if (unlocksOwned > 0) {
+-    hero.maxHealth =
+-        (hero.maxHealth * (1 + towerHealthPerUnlockOf(raceId) * unlocksOwned))
+-            .round();
++    hero.maxHealth = (hero.maxHealth *
++            (1 +
++                towerHealthPerUnlockFor(raceId, professionId, rules: rules) *
++                    unlocksOwned))
++        .round();
+     hero.currentHealth = hero.maxHealth;
+   }
+   return hero;
+@@ -365,7 +367,7 @@ SimCharacter towerHeroOf(TowerRun run, TowerData data) {
+     }
+   } else {
+     hero = towerFreshHero(run.raceId, run.professionId, run.startUnlocks, data,
+-        unlocksOwned: run.unlocksOwned, bag: bag);
++        unlocksOwned: run.unlocksOwned, bag: bag, rules: run.rules);
+     // A clan sworn at the start: its oath on floor 0 (towerStart).
+     if (run.taken[0] case final oath?) {
+       towerApplyReward(hero, oath, data, bag: bag);
+diff --git a/lib/data/tower/tower_levelup_loot.dart b/lib/data/tower/tower_levelup_loot.dart
+index 23887e5a3..a63cab0d0 100644
+--- a/lib/data/tower/tower_levelup_loot.dart
++++ b/lib/data/tower/tower_levelup_loot.dart
+@@ -38,14 +38,19 @@ import 'tower_tables.dart';
+ // ---------------------------------------------------------------------------
+ // Tower XP and the levels.
+ 
+-/// The Tower XP a climb starts with: with [towerXpPerLevel] 4, the first
+-/// floor won is the first level, and the climb gains about today's 17
+-/// levels by floor 29.
+-const int towerXpStart = 2;
++/// The Tower XP a climb starts with (the survival curve, docs/simulation/
++/// tower-difficulty-survival.md: none, so the first Level Up comes after
++/// floor 3; it was 2, a level on floor 1 and another on floor 3).
++const int towerXpStart = 0;
+ 
+-/// The Tower XP a level costs: the power knob of rules 2 (3, about 23 Level
+-/// Ups a climb; 4, today's 17; 5, about 14).
+-const int towerXpPerLevel = 4;
++/// The Tower XP the first level costs, and each level after it costs one
++/// more every [towerXpGrowthEvery] levels (5, 6, 6, 7, 7, 8 ...): about 9
++/// Level Ups for a climb that wins (it was 4 flat, 17).
++const int towerXpPerLevel = 5;
++const int towerXpGrowthEvery = 2;
++
++/// The Tower XP level [level] costs to leave (level 1 to 2 is level 1's).
++int towerXpCostOf(int level) => towerXpPerLevel + level ~/ towerXpGrowthEvery;
+ 
+ /// The Tower XP an ordinary floor won pays, an Elite's (a lone foe made
+ /// Elite by the floor, a shortcut's Elite or Elite pack), a warden's and a
+@@ -66,7 +71,14 @@ int towerXpFor(TowerFloor floor) => switch (floor.kind) {
+     };
+ 
+ /// The level a climb stands at with [xp] Tower XP (its start included).
+-int towerXpLevelOf(int xp) => 1 + max(0, xp) ~/ towerXpPerLevel;
++int towerXpLevelOf(int xp) {
++  var level = 1, need = towerXpCostOf(1);
++  while (xp >= need) {
++    level++;
++    need += towerXpCostOf(level);
++  }
++  return level;
++}
+ 
+ /// [run]'s Tower XP: the start and every floor's.
+ int towerXpOf(TowerRun run) =>
+@@ -89,9 +101,10 @@ int towerLevelUpDraw(TowerRun run) => towerLevelUpsTaken(run) + 1;
+ // ---------------------------------------------------------------------------
+ // The stat nudges.
+ 
+-/// The most points the nudges give one stat, and a climb.
+-const int towerNudgeStatCap = 4;
+-const int towerNudgeClimbCap = 10;
++/// The most points the nudges give one stat, and a climb (the survival
++/// curve: 3 and 6, were 4 and 10).
++const int towerNudgeStatCap = 3;
++const int towerNudgeClimbCap = 6;
+ 
+ /// The stat a skill of [skill]'s record nudges for a hero of
+ /// [professionId] (the first rule that matches): a support skill (it heals,
+@@ -188,8 +201,9 @@ const int towerLootBundleWeight = 35;
+ const int towerLootPurseWeight = 15;
+ 
+ /// The tier steps a loot table's chest roll is raised, by band (floors
+-/// 1-10, 11-20, 21-29): the gear knob.
+-const List<int> towerLootTierShift = [0, 1, 2];
++/// 1-10, 11-20, 21-29): the gear knob (the survival curve: 0 / 0 / +1,
++/// was 0 / +1 / +2).
++const List<int> towerLootTierShift = [0, 0, 1];
+ 
+ /// The bundles by chest tier (wooden to void): two of each, the second
+ /// dealt only beside the first. Potions as the story counts them (a major
+@@ -387,7 +401,7 @@ TowerRun towerAfterFightRules2(TowerRun run, TowerRun leveled, TowerData data,
+   final health = (healthLeft +
+           hero.maxHealth -
+           maxHealthBefore +
+-          (hero.maxHealth * towerRecoveryShareOf(run.heat)).round() +
++          (hero.maxHealth * towerLootRecoveryShareOf(run.heat)).round() +
+           (hero.maxHealth * towerSecondWindShareOf(run)).round())
+       .clamp(1, hero.maxHealth);
+   hero.currentHealth = health;
+diff --git a/lib/data/tower/tower_run.dart b/lib/data/tower/tower_run.dart
+index ed5f56fb8..64f0afc51 100644
+--- a/lib/data/tower/tower_run.dart
++++ b/lib/data/tower/tower_run.dart
+@@ -703,7 +703,7 @@ TowerRun towerStart({
+         id,
+   ];
+   final hero = towerFreshHero(raceId, professionId, unlocks, data,
+-      unlocksOwned: unlocksOwned, bag: true);
++      unlocksOwned: unlocksOwned, bag: true, rules: rules);
+   // The die in play: the calling's own; the start's dice wait in
+   // the bag.
+   final die = hero.diceId;
+diff --git a/lib/data/tower/tower_tables.dart b/lib/data/tower/tower_tables.dart
+index 06593861f..165c70a7d 100644
+--- a/lib/data/tower/tower_tables.dart
++++ b/lib/data/tower/tower_tables.dart
+@@ -60,22 +60,90 @@ const int towerRulesLive = 2;
+ const double towerLootFoeScale = .85;
+ 
+ /// The calling pass of rules 2 (as [towerProfessionScale], on top of it and
+-/// of [towerLootFoeScale]): the cleric heals better with gear worn than with
+-/// stat points; the ranger, with every unlock, led by 4 points; the rogue
+-/// lost most from the stat picks (its Dexterity and Luck). With every
+-/// unlock the five within about 5 points (seeds 1 to 2000).
++/// of [towerLootFoeScale]). The survival curve (docs/simulation/
++/// tower-difficulty-survival.md): with no unlocks the mage, the rogue and
++/// the warrior within about 3 points at floors 10, 15 and 20; the cleric
++/// and the ranger (unlocks) set with every unlock.
+ const Map<String, double> towerLootProfessionScale = {
+-  'cleric': 1.05,
+-  'ranger': 1.02,
+-  'rogue': .97,
++  'cleric': .95,
++  'ranger': .96,
++  'rogue': .93,
++  'mage': .96,
++  'warrior': 1.04,
+ };
+ 
+-/// The factor rules [rules] put on the foes of a hero of [professionId]: 1
+-/// on rules 1; [towerLootFoeScale] times the calling's
+-/// [towerLootProfessionScale] on rules 2.
+-double towerRulesScaleOf(int rules, String professionId) => rules >= 2
+-    ? towerLootFoeScale * (towerLootProfessionScale[professionId] ?? 1.0)
+-    : 1.0;
++/// The calling pass of rules 2 from floor [towerLootUpperFloor] (the first
++/// boss) on, on top of [towerLootProfessionScale]: the warrior fell behind
++/// at the first boss and after it, the mage pulled ahead.
++const Map<String, double> towerLootProfessionUpperScale = {
++  'warrior': .90,
++  'mage': 1.04,
++};
++const int towerLootUpperFloor = 10;
++
++/// The survival curve of rules 2 (the user's call: a roguelike climb, hard
++/// from floor 1, harder going up): every foe of floor n (index n - 1) this
++/// much more, on top of the floor's extra and the rest. Floors 1 to 4 about
++/// 4 rounds a fight (they fell in 1 or 2), floors 6 to 9 a step up, the
++/// wardens and bosses peaks. Measured with the slower levels
++/// ([towerXpPerLevel]): fewer levels mean foes that grow less
++/// (enemyScaledMaxHealth), so the curve is set with them.
++const List<double> towerSurvivalScale = [
++  3.0, 4.2, 4.5, 3.0, 2.1, // 1-5 (5: warden)
++  2.1, 2.1, 2.1, 2.1, 1.8, // 6-10 (10: boss)
++  1.5, 1.5, 1.5, 1.5, 1.6, // 11-15 (15: warden)
++  1.53, 1.53, 1.53, 1.53, 1.78, // 16-20 (20: boss)
++  1.56, 1.56, 1.56, 1.56, 1.66, // 21-25 (25: warden)
++  1.56, 1.56, 1.56, 1.56, 1.75, // 26-30 (30: boss)
++];
++
++/// The factor rules [rules] put on the foes of floor [floor] for a hero of
++/// [professionId]: 1 on rules 1; on rules 2 [towerLootFoeScale], the
++/// calling's [towerLootProfessionScale] (and [towerLootProfessionUpperScale]
++/// from [towerLootUpperFloor]) and the floor's [towerSurvivalScale] (none
++/// for a [floor] of 0).
++double towerRulesScaleOf(int rules, String professionId, {int floor = 0}) =>
++    rules >= 2
++        ? towerLootFoeScale *
++            (towerLootProfessionScale[professionId] ?? 1.0) *
++            (floor >= towerLootUpperFloor
++                ? towerLootProfessionUpperScale[professionId] ?? 1.0
++                : 1.0) *
++            (floor >= 1 && floor <= towerSurvivalScale.length
++                ? towerSurvivalScale[floor - 1]
++                : 1.0)
++        : 1.0;
++
++/// The max health an unlock gives on rules 2: [towerHealthPerUnlockOf]
++/// this many times (the marks' unlocks make the top reachable: about 10%
++/// with all of them, under 0.5% with none), and the calling's share of it
++/// ([towerLootProfessionHealthPerUnlock]).
++const double towerLootHealthPerUnlockScale = 5.33;
++const Map<String, double> towerLootProfessionHealthPerUnlock = {
++  'cleric': .90,
++  'rogue': .75,
++  'mage': 1.15,
++  'warrior': .85,
++};
++
++/// The share of max health a hero of [raceId] and [professionId] gains per
++/// unlock owned on rules [rules].
++double towerHealthPerUnlockFor(String raceId, String professionId,
++        {int rules = 1}) =>
++    towerHealthPerUnlockOf(raceId) *
++    (rules >= 2
++        ? towerLootHealthPerUnlockScale *
++            (towerLootProfessionHealthPerUnlock[professionId] ?? 1.0)
++        : 1.0);
++
++/// The share of max health back after a floor won on rules 2 (rules 1:
++/// [towerRecoveryShare]): HP is the climb's resource. Heat 3 and up keep
++/// [towerHeatRecoveryShare].
++const double towerLootRecoveryShare = .10;
++
++/// The share of max health back after a floor won at [heat] on rules 2.
++double towerLootRecoveryShareOf(int heat) =>
++    heat >= towerHeatFlame ? towerHeatRecoveryShare : towerLootRecoveryShare;
+ 
+ /// The foes' scale for [professionId] (1 for the others; on a warden's or
+ /// boss's floor, [peak], its [towerProfessionPeakScale] if it has one),
