@@ -1,0 +1,9 @@
+# The 14 Tower backgrounds: three versions side by side (Art, 26 November 2026)
+
+The user: "Keep only the right version of each, then compare them to the actual background and create a 3rd version. Put all 3 versions aside each other."
+- **A** = the raw cut-paper generation (not the snapped one) that became the approved plate; `art/pixellab-cutpaper/tower-v3/A/<name>.png` (180 x 320; band1_a, band2_t, ... and the two `_v2` redos for ward15 and lose). Colours are the model's own, so some are warm.
+- **B** = today's file in the game, `assets/visuals/tower_ink/tower_<name>.png` on main (the ink grey recolours of the first plates); `.../B/<name>.png`.
+- **C** = new, `.../C/<name>.png` (snapped to the five tones plus red) and `.../Craw/` (as generated): B as the init image at strength 75 (110 for the four retries), the five tones forced, and a cut-paper prompt describing B's scene (`art/pixellab-cutpaper/tower-v3/gen.py`, `gen_retry.py`).
+Cost **18 generations** (14 + 4 retries: lose, boss20, ward15, shop, which had drifted to a tower exterior), at the cap. Balance 992 -> 974.
+Sheets: `docs/art/boards/tower-bg-abc.png` (one row per background, A | B | C at the same size, labelled, two columns of seven), `docs/art/boards/tower-bg-abc-phone.png` (three rows A, B, C, all 14 side by side at 1x, 180 px per plate, about phone size). Hand-off folder `art/pixellab-cutpaper/tower-v3/handoff/tower_<name>_<A|B|C>.png` (42 files, 180 x 320).
+What C is: B's composition and depth survive (the same room, the same arch, bell, stair), redrawn as cream paper with black outlines and red as the spot colour. It is **much lighter** than B and less bold than A (more line drawing than cut shapes): the dark mood of B did not carry over even with "dark" in the prompt. Best: ward15 (the bell), boss20 (the banners on the round tower), band3, band2 (the stair), ward25. Weakest: shop and lose (loose interiors), win, boss30 (an exterior tower in cream).
