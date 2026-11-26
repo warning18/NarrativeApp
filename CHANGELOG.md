@@ -10,7 +10,7 @@ isn't reconstructable from git history alone.
 
 ## [2.10.31+1113]
 - Three bookmarks hang from the top right of the Tower floor (Stats, Gear, Dice), in the clan bookmarks' style; the open one is red and its view drops over the floor (the floor's pieces step aside, so nothing lies over it). Stats shows HP, level, the abilities on the big radar and the Level Up nudges against their caps; Gear shows the hero with a tile for each slot (tap one for what it gives); Dice shows the climb's dice like the Journey's (tap a die, tap a face). All read-only. On the Level Up and loot tables the header leaves room for the tabs.
-## [2.10.30+1112]
+## [2.10.29+1111]
 - A card chosen on a Tower table (loot, Level Up, a clan's offer) no longer counts at once: Take or a swipe up opens a sheet with the card large, and only Confirm takes it; Change goes back to the cards with nothing taken. The Level Up sheet shows the +1 stat chip. The floor rail on the left now stays put when the cards open, so the screen no longer jumps and the Tower is never hidden (the radar and the buttons fit beside it). "1 coin" and "1 pièce" are no longer plural.
 ## [2.10.28+1110]
 
