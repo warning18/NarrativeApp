@@ -6,9 +6,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../data/tower/tower_event_outcomes.dart' show towerCheckResultOf;
 import '../../data/tower/tower_events.dart';
+import '../../widgets/d20_roll.dart';
 import '../../l10n/app_strings.dart';
 import '../../theme/icon_sizes.dart';
+import '../../theme/motion.dart';
 import '../../theme/stitched_ink.dart' show InkFonts;
 import 'ink/ink_kit.dart' show InkBar;
 import 'ink/ink_palette.dart';
@@ -150,6 +153,36 @@ class TowerEventTag extends StatelessWidget {
   }
 }
 
+/// One choice of an event card: its button, then under it what it asks and
+/// what it leads to ([pre] the stat and odds, [lines] the outcomes), so each
+/// button says for itself what it does, costs and risks.
+class TowerChoiceBlock extends StatelessWidget {
+  const TowerChoiceBlock(
+      {super.key,
+      required this.button,
+      this.pre = const [],
+      this.lines = const []});
+
+  final Widget button;
+  final List<Widget> pre, lines;
+
+  @override
+  Widget build(BuildContext context) => Container(
+        margin: const EdgeInsets.only(top: 10),
+        padding: const EdgeInsets.fromLTRB(10, 10, 10, 8),
+        decoration: BoxDecoration(
+          border: Border.all(color: inkSlate),
+          borderRadius: BorderRadius.circular(8),
+        ),
+        child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+          SizedBox(width: double.infinity, child: button),
+          if (pre.isNotEmpty) const SizedBox(height: 8),
+          ...pre,
+          ...lines,
+        ]),
+      );
+}
+
 class TowerEventOutcome extends StatelessWidget {
   const TowerEventOutcome(this.icon, this.color, this.label, this.text,
       {super.key});
@@ -223,8 +256,20 @@ class _TestCard extends ConsumerWidget {
             child: InkBar(value: chance, height: 8),
           ),
         ]),
-        Text(sub('tower_event_chance', {'mod': signed, 'dc': dc}),
+        Text(
+            '${tr(ref, '${view.ability}_label')} · '
+            '${sub('tower_event_chance', {'mod': signed, 'dc': dc})}',
             style: theme.textTheme.bodySmall),
+        if ((view.picksBeforeCheck ?? 0) > 0)
+          Padding(
+            padding: const EdgeInsets.only(top: 4),
+            child: Text(
+                sub('tower_event_picks_note', {'n': view.picksBeforeCheck!}),
+                key: const Key('tower_event_picks_note'),
+                style: theme.textTheme.bodySmall?.copyWith(
+                    fontStyle: FontStyle.italic,
+                    color: theme.colorScheme.onSurfaceVariant)),
+          ),
         TowerEventOutcome(
             Icons.check_circle_outline,
             inkPaper,
@@ -259,6 +304,23 @@ class _ShortcutCard extends ConsumerWidget {
 
   final TowerEventView view;
   final void Function(bool take)? onChoose;
+
+  List<Widget> _stairLines(
+          WidgetRef ref, String Function(String) sub, int skip) =>
+      [
+        TowerEventOutcome(
+            Icons.north,
+            inkPaper,
+            tr(ref, 'tower_event_shortcut_win'),
+            sub(skip == 1
+                ? 'tower_event_shortcut_win_one'
+                : 'tower_event_shortcut_win_many')),
+        TowerEventOutcome(
+            Icons.south,
+            inkRed,
+            tr(ref, 'tower_event_shortcut_lose'),
+            tr(ref, 'tower_event_shortcut_lose_text')),
+      ];
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -315,40 +377,29 @@ class _ShortcutCard extends ConsumerWidget {
                 dense: true),
           ),
         ],
-        TowerEventOutcome(
-            Icons.north,
-            inkPaper,
-            tr(ref, 'tower_event_shortcut_win'),
-            sub(skip == 1
-                ? 'tower_event_shortcut_win_one'
-                : 'tower_event_shortcut_win_many')),
-        TowerEventOutcome(
-            Icons.south,
-            inkRed,
-            tr(ref, 'tower_event_shortcut_lose'),
-            tr(ref, 'tower_event_shortcut_lose_text')),
         if (onChoose != null) ...[
-          const SizedBox(height: 12),
-          // Full width, the stair first and the door under it: neither wraps
-          // and both stand as tall.
-          SizedBox(
-            width: double.infinity,
-            child: FilledButton(
+          // The stair and the door, each with its own outcome under it.
+          TowerChoiceBlock(
+            button: FilledButton(
               key: const Key('tower_shortcut_take'),
               onPressed: () => onChoose!(true),
               child: Text(tr(ref, 'tower_event_shortcut_take')),
             ),
+            lines: _stairLines(ref, sub, skip),
           ),
-          const SizedBox(height: 8),
-          SizedBox(
-            width: double.infinity,
-            child: OutlinedButton(
+          TowerChoiceBlock(
+            button: OutlinedButton(
               key: const Key('tower_shortcut_decline'),
               onPressed: () => onChoose!(false),
               child: Text(tr(ref, 'tower_event_shortcut_decline')),
             ),
+            lines: [
+              TowerEventOutcome(Icons.check, inkPaper,
+                  tr(ref, 'tower_event_shortcut_door_text'), ''),
+            ],
           ),
-        ],
+        ] else
+          ..._stairLines(ref, sub, skip),
       ]),
     );
   }
@@ -421,14 +472,32 @@ class _RivalCard extends ConsumerWidget {
 }
 
 /// How the last event ended, and where the run now stands.
-class TowerEventResultLine extends ConsumerWidget {
+///
+/// A check (a setback, a parley) plays the real d20 first: it tumbles, lands on
+/// the roll with the bonus, the total and the DC beside it, and only then do
+/// the verdict and the result line show. Reduce motion sets the die down at
+/// once, as the die does everywhere.
+class TowerEventResultLine extends ConsumerStatefulWidget {
   const TowerEventResultLine(this.result, {super.key});
 
   final TowerEventResult result;
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<TowerEventResultLine> createState() =>
+      _TowerEventResultLineState();
+}
+
+class _TowerEventResultLineState extends ConsumerState<TowerEventResultLine> {
+  late bool _landed = widget.result.roll == null ||
+      WidgetsBinding
+          .instance.platformDispatcher.accessibilityFeatures.disableAnimations;
+
+  @override
+  Widget build(BuildContext context) {
+    final result = widget.result;
+    final ref = this.ref;
     final theme = Theme.of(context);
+    final check = towerCheckResultOf(result);
     // A slip on the same floor is a failure too: the mark follows the roll.
     final failed = !result.passed;
     final fell = failed && result.kind == TowerEventKind.test;
@@ -468,37 +537,81 @@ class TowerEventResultLine extends ConsumerWidget {
             .replaceAll('{roll}', '${result.roll}')
             .replaceAll('{total}', '${result.total}')
             .replaceAll('{dc}', '${towerSetbackDcOf(result.from)}');
+    final signedMod = check == null
+        ? ''
+        : (check.modifier >= 0
+            ? '+ ${check.modifier}'
+            : '- ${-check.modifier}');
+    final row = Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
+      Icon(
+          result.kind == TowerEventKind.shortcut
+              ? Icons.north
+              : failed
+                  ? (fell ? Icons.south : Icons.close)
+                  : (skipped ? Icons.north : Icons.check),
+          color: color,
+          size: IconSize.s16),
+      const SizedBox(width: 10),
+      Expanded(
+        child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+          // The stair's notes (taken, won, landed) share one face.
+          Text(headline,
+              style: result.kind == TowerEventKind.shortcut
+                  ? theme.textTheme.bodyMedium
+                  : theme.textTheme.titleSmall?.copyWith(color: color)),
+          if (rolled != null)
+            Text(rolled,
+                style: theme.textTheme.bodySmall
+                    ?.copyWith(color: theme.colorScheme.onSurfaceVariant)),
+          if (fell)
+            Text(tr(ref, 'tower_event_nothing_again'),
+                style: theme.textTheme.bodySmall
+                    ?.copyWith(color: theme.colorScheme.onSurfaceVariant)),
+        ]),
+      ),
+    ]);
     return InkPanel(
       key: const Key('tower_event_result'),
-      child: Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
-        Icon(
-            result.kind == TowerEventKind.shortcut
-                ? Icons.north
-                : failed
-                    ? (fell ? Icons.south : Icons.close)
-                    : (skipped ? Icons.north : Icons.check),
-            color: color,
-            size: IconSize.s16),
-        const SizedBox(width: 10),
-        Expanded(
-          child:
-              Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-            // The stair's notes (taken, won, landed) share one face.
-            Text(headline,
-                style: result.kind == TowerEventKind.shortcut
-                    ? theme.textTheme.bodyMedium
-                    : theme.textTheme.titleSmall?.copyWith(color: color)),
-            if (rolled != null)
-              Text(rolled,
-                  style: theme.textTheme.bodySmall
-                      ?.copyWith(color: theme.colorScheme.onSurfaceVariant)),
-            if (fell)
-              Text(tr(ref, 'tower_event_nothing_again'),
-                  style: theme.textTheme.bodySmall
-                      ?.copyWith(color: theme.colorScheme.onSurfaceVariant)),
-          ]),
-        ),
-      ]),
+      child: check == null
+          ? row
+          : Column(children: [
+              D20Roll(
+                key: const Key('tower_event_d20'),
+                roll: check.roll,
+                success: result.passed,
+                size: 110,
+                onLanded: () {
+                  if (mounted) setState(() => _landed = true);
+                },
+              ),
+              // The roll, the bonus, the total and the DC, once it lands.
+              AnimatedOpacity(
+                opacity: _landed ? 1 : 0,
+                duration: Motion.base,
+                child: Column(children: [
+                  Text(
+                      tr(ref, 'tower_event_roll_line')
+                          .replaceAll('{roll}', '${check.roll}')
+                          .replaceAll('{mod}', signedMod)
+                          .replaceAll('{total}', '${check.total}')
+                          .replaceAll('{dc}', '${check.dc}'),
+                      key: const Key('tower_event_roll_line'),
+                      style:
+                          theme.textTheme.titleMedium?.copyWith(color: color)),
+                  Text(
+                      tr(
+                              ref,
+                              result.passed
+                                  ? 'tower_event_passed'
+                                  : 'tower_event_failed')
+                          .toUpperCase(),
+                      style: theme.textTheme.titleSmall
+                          ?.copyWith(color: color, letterSpacing: 2)),
+                  const SizedBox(height: 8),
+                  row,
+                ]),
+              ),
+            ]),
     );
   }
 }
