@@ -43,6 +43,8 @@ void main() {
       TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
           .setMockMethodCallHandler(
               const MethodChannel('flutter_tts'), (call) async => 1);
+      // No debug ribbon over the header's corner.
+      WidgetsApp.debugAllowBannerOverride = false;
       towerPanelLayout.value = shape;
       final data = towerDataFromAssets();
       var run = towerStart(
