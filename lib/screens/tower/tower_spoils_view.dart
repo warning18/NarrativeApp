@@ -155,8 +155,9 @@ class TowerPickConfirm extends ConsumerWidget {
     final theme = Theme.of(context);
     final t = towerCardText(ref, reward);
     // The stat a skill raises, as on the table's card.
-    final String? nudge =
-        styled ? towerNudgeOn(towerHeroOf(run, data), reward, data) : null;
+    final String? nudge = styled
+        ? towerNudgeOn(towerHeroOf(run, data), reward, data, rules: run.rules)
+        : null;
     // The card is a reveal: it grows in over the floor (reduce motion: it is
     // simply there).
     final reduced = MediaQuery.of(context).disableAnimations;
