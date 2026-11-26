@@ -35,9 +35,9 @@ void main() {
     await tester.runAsync(loadAppFonts);
     TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
         .setMockMethodCallHandler(
-          const MethodChannel('flutter_tts'),
-          (call) async => 1,
-        );
+      const MethodChannel('flutter_tts'),
+      (call) async => 1,
+    );
     final data = towerDataFromAssets();
     final run = towerStart(
       seed: 5,
