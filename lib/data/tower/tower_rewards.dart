@@ -237,6 +237,8 @@ List<TowerReward> towerOfferFor({
   int extraSkills = 0,
   int rarityBonus = 0,
   int oathSooner = 0,
+  bool levelUp = false,
+  bool levelUpOaths = true,
 }) {
   final drawn = random ?? towerRandom(seed, floor, TowerStream.offer);
 
@@ -370,6 +372,10 @@ List<TowerReward> towerOfferFor({
       // dealt apart, below.
       case TowerRewardKind.clanOath:
       case TowerRewardKind.rankUp:
+      // The loot cards are rules 2's loot table's (towerLootFor).
+      case TowerRewardKind.gear:
+      case TowerRewardKind.bundle:
+      case TowerRewardKind.purse:
         return null;
     }
   }
@@ -386,6 +392,88 @@ List<TowerReward> towerOfferFor({
       if (draw(kind, besides: ids) case final card?) return card;
     }
     return null;
+  }
+
+  // The oaths due: a clan at the oath's step, while none is sworn; from
+  // [towerPityOathFloor] the highest-standing clan's (towerOathCardsFor).
+  List<TowerReward> oathsDue() => towerOathCardsFor(
+      hero: hero,
+      clanPool: clanPool,
+      standing: standing,
+      oathOpen: oathOpen,
+      floor: floor,
+      heat: heat,
+      oathSooner: oathSooner);
+
+  // Rules 2's Level Up table (docs/simulation/tower-levelup-loot.md): one
+  // clan's card (its gift, else a skill of the pool in its name), a skill
+  // or a rank-up, a die or a spell; always three, all different (the fills
+  // of a boon's table); Fourth card's extra skills; the oaths due in front
+  // when [levelUpOaths]. Dealt whatever the floor (Pyre's too).
+  if (levelUp) {
+    final cards = <TowerReward>[];
+    final given = <String>{};
+    final suitors = [...clanPool]..sort();
+    while (suitors.isNotEmpty && cards.isEmpty) {
+      final clan = suitors.removeAt(drawn.nextInt(suitors.length));
+      String? gift(Set<String> besides) => towerClanGiftFor(clan,
+          hero: hero,
+          standing: standing[clan] ?? 0,
+          besides: besides,
+          skills: skills,
+          tables: clans,
+          random: drawn);
+      TowerReward? card;
+      for (var t = 0; t < towerCardTries && card == null; t++) {
+        final id = (avoid.isEmpty ? null : gift({...given, ...avoid})) ??
+            gift(given) ??
+            poolSkill(besides: given);
+        if (id == null) break;
+        given.add(id);
+        card = cardOf(id, cards, clan: clan);
+      }
+      if (card != null) cards.add(card);
+    }
+    // The skill (or its rank-up), none on the table already.
+    final tried = {...given};
+    for (var t = 0; t < towerCardTries; t++) {
+      final id = poolSkill(besides: tried);
+      if (id == null) break;
+      tried.add(id);
+      if (cardOf(id, cards) case final card?) {
+        cards.add(card);
+        break;
+      }
+    }
+    // A die or a spell, even odds; the other when the first has none.
+    final ids = {for (final c in cards) c.id};
+    final kinds = drawn.nextBool()
+        ? [TowerRewardKind.die, TowerRewardKind.spell]
+        : [TowerRewardKind.spell, TowerRewardKind.die];
+    for (final kind in kinds) {
+      if (draw(kind, besides: ids) case final card?) {
+        cards.add(card);
+        break;
+      }
+    }
+    while (cards.length < towerLevelUpCards) {
+      final card = boonFill(cards);
+      if (card == null) break;
+      cards.add(card);
+    }
+    for (var i = 0; i < extraSkills; i++) {
+      final tried = {for (final c in cards) c.id};
+      TowerReward? card;
+      for (var t = 0; t < towerCardTries && card == null; t++) {
+        final id = poolSkill(besides: tried);
+        if (id == null) break;
+        tried.add(id);
+        card = cardOf(id, cards);
+      }
+      if (card == null) break;
+      cards.add(card);
+    }
+    return [if (levelUpOaths) ...oathsDue(), ...cards];
   }
 
   // Pyre's floors (towerHeatEmptyFloorsOf): nothing at all, no boon and
@@ -420,23 +508,7 @@ List<TowerReward> towerOfferFor({
     }
     return cards;
   }
-  // The oaths due: a clan at the oath's step, while none is sworn.
-  final oaths = [
-    if (oathOpen && hero.clanIds.isEmpty)
-      for (final clan in clanPool)
-        if ((standing[clan] ?? 0) >= towerOathStep)
-          TowerReward(TowerRewardKind.clanOath, id: clan),
-  ];
-  // From [towerPityOathFloor] (#1153, the user's call): a climb with no
-  // oath due nor sworn is offered the oath of its highest-standing clan.
-  if (oaths.isEmpty &&
-      oathOpen &&
-      hero.clanIds.isEmpty &&
-      floor >= towerPityOathFloorOf(heat) - oathSooner) {
-    if (towerPityOathClan(clanPool, standing) case final clan?) {
-      oaths.add(TowerReward(TowerRewardKind.clanOath, id: clan));
-    }
-  }
+  final oaths = oathsDue();
   if (clanPool.isEmpty) return oaths;
   // The clans' offer, on the oath's own stream (where the oath came).
   final oathRandom = towerRandom(seed, floor, TowerStream.oath);
@@ -510,6 +582,43 @@ List<TowerReward> towerOfferFor({
     cards.add(card);
   }
   return [...oaths, ...cards];
+}
+
+/// The cards a Level Up table of rules 2 deals (before Fourth card's and
+/// the oaths in front).
+const int towerLevelUpCards = 3;
+
+/// The oaths due on [floor] won for [hero] (towerOfferFor's): while
+/// [oathOpen] and none is sworn, the oath of each clan of [clanPool] at
+/// [towerOathStep] in [standing]; with none of those, from the late oath's
+/// floor (towerPityOathFloorOf at [heat], [oathSooner] floors sooner) the
+/// oath of the highest-standing clan ([towerPityOathClan]).
+List<TowerReward> towerOathCardsFor({
+  required TowerHeroView hero,
+  required List<String> clanPool,
+  required Map<String, int> standing,
+  required bool oathOpen,
+  required int floor,
+  int heat = 0,
+  int oathSooner = 0,
+}) {
+  final oaths = [
+    if (oathOpen && hero.clanIds.isEmpty)
+      for (final clan in clanPool)
+        if ((standing[clan] ?? 0) >= towerOathStep)
+          TowerReward(TowerRewardKind.clanOath, id: clan),
+  ];
+  // From [towerPityOathFloor] (#1153, the user's call): a climb with no
+  // oath due nor sworn is offered the oath of its highest-standing clan.
+  if (oaths.isEmpty &&
+      oathOpen &&
+      hero.clanIds.isEmpty &&
+      floor >= towerPityOathFloorOf(heat) - oathSooner) {
+    if (towerPityOathClan(clanPool, standing) case final clan?) {
+      oaths.add(TowerReward(TowerRewardKind.clanOath, id: clan));
+    }
+  }
+  return oaths;
 }
 
 /// The clan whose oath a climb with none due is offered from

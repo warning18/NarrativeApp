@@ -14,6 +14,7 @@ import 'tower_coins.dart';
 import 'tower_events.dart';
 import 'tower_floors.dart';
 import 'tower_hero.dart';
+import 'tower_levelup_loot.dart';
 import 'tower_rewards.dart';
 import 'tower_tables.dart';
 
@@ -77,6 +78,11 @@ class TowerRun {
     this.friend = '',
     this.stallBoons = const {},
     this.stallOffer = const [],
+    this.rules = 1,
+    this.xp = const {},
+    this.levelUps = const {},
+    this.loot = const {},
+    this.table,
   });
 
   /// A saved run. A save from an older version is brought up to date once,
@@ -207,6 +213,33 @@ class TowerRun {
         for (final r in (json['stallOffer'] as List?) ?? const [])
           TowerReward.fromJson(r as Map<String, dynamic>),
       ],
+      // Rules 2 (docs/simulation/tower-levelup-loot.md): a climb saved
+      // before the field plays out on rules 1.
+      rules: (json['rules'] as num?)?.toInt() ?? 1,
+      xp: {
+        for (final MapEntry(:key, :value)
+            in ((json['xp'] as Map?) ?? const {}).entries)
+          int.parse(key.toString()): (value as num).toInt(),
+      },
+      levelUps: {
+        for (final MapEntry(:key, :value)
+            in ((json['levelUps'] as Map?) ?? const {}).entries)
+          int.parse(key.toString()): [
+            for (final c in value as List)
+              c == null
+                  ? null
+                  : TowerReward.fromJson(c as Map<String, dynamic>),
+          ],
+      },
+      loot: {
+        for (final MapEntry(:key, :value)
+            in ((json['loot'] as Map?) ?? const {}).entries)
+          int.parse(key.toString()):
+              TowerReward.fromJson(value as Map<String, dynamic>),
+      },
+      table: json['table'] == null
+          ? null
+          : TowerTableKind.values.byName(json['table'] as String),
     );
     if (json.containsKey('picks')) return run;
     final earned = (towerLevelAfter(run.floorsCleared) - 1) * levelStatPicks;
@@ -384,6 +417,28 @@ class TowerRun {
   /// one is taken with towerTakeStallBoon; empty otherwise.
   final List<TowerReward> stallOffer;
 
+  /// The rules the climb plays (docs/simulation/tower-levelup-loot.md,
+  /// towerRulesLive for a new climb): 1, the stat picks, the spoils chest,
+  /// the boon floors and the clans' tables; 2, Tower XP, the Level Up card
+  /// table, the loot table. A save without it reads as 1.
+  final int rules;
+
+  /// Rules 2: the Tower XP each floor paid (floor -> XP, towerXpFor), on its
+  /// first win or, for a floor skipped, on the landing.
+  final Map<int, int> xp;
+
+  /// Rules 2: the Level Up cards taken on each floor's landing (floor -> one
+  /// entry a Level Up, in order; null a Level Up whose card was refused or
+  /// whose place an oath took).
+  final Map<int, List<TowerReward?>> levelUps;
+
+  /// Rules 2: the loot card taken on each floor (floor -> card).
+  final Map<int, TowerReward> loot;
+
+  /// Rules 2: what [offer] is ([TowerStatus.choosing]): the loot table, a
+  /// Level Up table or an oath alone; null otherwise.
+  final TowerTableKind? table;
+
   /// The ids banished ([banished]'s cards).
   Set<String> get banishedIds => banished.values.toSet();
 
@@ -459,6 +514,11 @@ class TowerRun {
     Map<int, String>? banished,
     Map<int, TowerReward>? stallBoons,
     List<TowerReward>? stallOffer,
+    Map<int, int>? xp,
+    Map<int, List<TowerReward?>>? levelUps,
+    Map<int, TowerReward>? loot,
+    TowerTableKind? table,
+    bool clearTable = false,
   }) =>
       TowerRun(
         seed: seed,
@@ -499,6 +559,11 @@ class TowerRun {
         friend: friend,
         stallBoons: stallBoons ?? this.stallBoons,
         stallOffer: stallOffer ?? this.stallOffer,
+        rules: rules,
+        xp: xp ?? this.xp,
+        levelUps: levelUps ?? this.levelUps,
+        loot: loot ?? this.loot,
+        table: clearTable ? null : table ?? this.table,
       );
 
   Map<String, dynamic> toJson() => {
@@ -566,6 +631,22 @@ class TowerRun {
           },
         if (stallOffer.isNotEmpty)
           'stallOffer': [for (final r in stallOffer) r.toJson()],
+        if (rules != 1) 'rules': rules,
+        if (xp.isNotEmpty)
+          'xp': {
+            for (final MapEntry(:key, :value) in xp.entries) '$key': value,
+          },
+        if (levelUps.isNotEmpty)
+          'levelUps': {
+            for (final MapEntry(:key, :value) in levelUps.entries)
+              '$key': [for (final c in value) c?.toJson()],
+          },
+        if (loot.isNotEmpty)
+          'loot': {
+            for (final MapEntry(:key, :value) in loot.entries)
+              '$key': value.toJson(),
+          },
+        if (table != null) 'table': table!.name,
       };
 }
 
@@ -611,6 +692,7 @@ TowerRun towerStart({
   int heat = 0,
   Iterable<String> perks = const [],
   String friend = '',
+  int rules = 1,
   required TowerData data,
 }) {
   final worn = towerWornPerks(perks);
@@ -650,6 +732,7 @@ TowerRun towerStart({
     friend: worn.contains(towerPerkOldFriend) && pool.isNotEmpty
         ? (pool.contains(friend) ? friend : pool[seed.abs() % pool.length])
         : '',
+    rules: rules.clamp(1, towerRulesLive),
   );
 }
 
@@ -658,7 +741,7 @@ TowerRun towerStart({
 /// fight of towerShortcutFloor.
 TowerFloor towerFloorOf(TowerRun run, TowerData data) {
   final floor = towerFloorsFor(run.seed, data.enemies,
-      events: run.events, heat: run.heat)[run.floor - 1];
+      events: run.events, heat: run.heat, rules: run.rules)[run.floor - 1];
   return (run.shortcut ?? false) &&
           towerEventKindOf(run) == TowerEventKind.shortcut
       ? towerShortcutFloor(floor)
@@ -723,6 +806,15 @@ TowerRun towerAfterFight(TowerRun run, TowerData data,
     );
   }
   final before = maxHealthBefore ?? towerHeroOf(run, data).maxHealth;
+  // Rules 2 (tower_levelup_loot.dart): the floor's XP, then its loot table
+  // and its Level Ups, in place of the spoils chest and the boons.
+  if (run.rules >= 2) {
+    return towerAfterFightRules2(run, leveled, data,
+        healthLeft: healthLeft,
+        maxHealthBefore: before,
+        potions: potions,
+        antidotes: antidotes);
+  }
   // The hero with the floor's levels: built once, then given the spoils
   // (as towerHeroOf would replay them).
   final hero = towerHeroOf(leveled, data);
@@ -803,10 +895,16 @@ Map<String, int> towerStandingOf(TowerRun run, TowerData data) {
 /// The cards [run]'s standing is replayed from, in order: Old friend's
 /// start (one gift of [TowerRun.friend], towerClanRipple), then the cards
 /// taken floor by floor (a stall's boon is no clan's).
+/// On rules 2 a floor's Level Up cards come after its own (an oath).
 List<TowerReward> towerStandingCardsOf(TowerRun run) => [
       if (run.friend.isNotEmpty)
         TowerReward(TowerRewardKind.skill, clan: run.friend),
-      for (final f in run.taken.keys.toList()..sort()) run.taken[f]!,
+      for (final f in {...run.taken.keys, ...run.levelUps.keys}.toList()
+        ..sort()) ...[
+        if (run.taken[f] case final card?) card,
+        for (final card in run.levelUps[f] ?? const <TowerReward?>[])
+          if (card != null) card,
+      ],
     ];
 
 /// The clans of [run]'s pool whose oath is due: at [towerOathStep], while
@@ -830,7 +928,8 @@ int towerLevelAfter(int floorsCleared) => floorsCleared <= 0
 /// main game's level-up: [levelStatPicks] a level gained). Held by the run
 /// itself: the picks earned by its level, less those it took.
 int towerPendingPicks(TowerRun run) {
-  if (run.isOver) return 0;
+  // Rules 2 has no stat picks: its Level Up is a card table.
+  if (run.isOver || run.rules >= 2) return 0;
   final earned = (towerLevelAfter(run.heightCleared) - 1) * levelStatPicks;
   return max(0, earned - run.statPicks.length);
 }
@@ -870,6 +969,8 @@ TowerRun towerTakeStatPick(TowerRun run, TowerData data, int index,
 TowerRun towerPick(TowerRun run, TowerData data, int? index,
     {SimCharacter? hero}) {
   if (run.status != TowerStatus.choosing) return run;
+  // Rules 2: the loot table, then the Level Ups, then on.
+  if (run.rules >= 2) return towerPickRules2(run, data, index, hero: hero);
   for (var guard = 0; towerPendingPicks(run) > 0 && guard < 64; guard++) {
     final taken = towerTakeStatPick(run, data, 0);
     if (identical(taken, run)) break;

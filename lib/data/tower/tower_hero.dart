@@ -13,6 +13,7 @@ import '../sim_policy.dart' show simSkillAssignments;
 import '../training.dart';
 import 'tower_clans.dart' show TowerClanTables;
 import 'tower_floors.dart' show TowerStream, towerRandom;
+import 'tower_levelup_loot.dart';
 import 'tower_rewards.dart';
 import 'tower_run.dart';
 import 'tower_tables.dart';
@@ -230,6 +231,14 @@ void towerApplyReward(SimCharacter hero, TowerReward reward, TowerData data,
       if (towerClanDieOf(reward.id, data.dice) case final die?) {
         _takeDie(hero, die, data, bag: bag);
       }
+    // Rules 2's loot (tower_levelup_loot.dart): gear worn when better; a
+    // bundle's potions and a purse's coins are the run's (TowerRun.potions,
+    // TowerRun.coins), nothing of the hero's.
+    case TowerRewardKind.gear:
+      _wear(hero, reward.id, data);
+    case TowerRewardKind.bundle:
+    case TowerRewardKind.purse:
+      break;
   }
 }
 
@@ -252,6 +261,11 @@ void _wear(SimCharacter hero, String itemId, TowerData data) {
     hero.equippedBySlot[slot] = itemId;
   }
 }
+
+/// The flat score the hero wears gear by (its damage and its armour): a
+/// piece is worn when it scores at least the one in its slot. The bot's
+/// loot choice reads it too (tower_bot.dart).
+int towerGearScore(String itemId, TowerData data) => _gearScore(itemId, data);
 
 int _gearScore(String itemId, TowerData data) {
   final item = data.items[itemId] as Map?;
@@ -309,12 +323,28 @@ SimCharacter towerHeroOf(TowerRun run, TowerData data) {
         '${bag ? '|bag' : ''}',
   ];
   final picksAt = <List<int>>[const []];
-  var level = 1, pick = 0;
+  // Rules 2 (tower_levelup_loot.dart): each floor's level from the Tower XP
+  // paid up to it; no stat picks.
+  final rules2 = run.rules >= 2;
+  final levelAt = <int>[1];
+  var level = 1, pick = 0, xp = towerXpStart;
   for (var floor = 1; floor <= run.heightCleared; floor++) {
+    if (rules2) {
+      xp += run.xp[floor] ?? 0;
+      level = max(level, towerXpLevelOf(xp));
+      levelAt.add(level);
+      picksAt.add(const []);
+      keys.add('${keys.last}#$floor:x${run.xp[floor] ?? 0}:'
+          '${run.loot[floor]}:${run.taken[floor]}:'
+          '${(run.levelUps[floor] ?? const []).join(',')}'
+          '${run.stallBoons[floor] == null ? '' : '+${run.stallBoons[floor]}'}');
+      continue;
+    }
     final next = max(level, towerBudgetOf(floor).levelAfter);
     final from = min(pick, run.statPicks.length);
     pick += (next - level) * levelStatPicks;
     level = next;
+    levelAt.add(level);
     final picks = run.statPicks.sublist(from, min(pick, run.statPicks.length));
     picksAt.add(picks);
     keys.add('${keys.last}#$floor:${picks.join(',')}:'
@@ -345,7 +375,29 @@ SimCharacter towerHeroOf(TowerRun run, TowerData data) {
     pick = 0;
   }
   for (floor++; floor <= run.heightCleared; floor++) {
-    towerLevelTo(hero, towerBudgetOf(floor).levelAfter);
+    towerLevelTo(hero, levelAt[floor]);
+    if (rules2) {
+      // The floor's loot card, its oath, its Level Up cards (each skill or
+      // rank-up its stat nudge, towerNudgeOn), the stall's boon (a Level Up
+      // table bought).
+      if (run.loot[floor] case final card?) {
+        towerApplyReward(hero, card, data, bag: bag);
+      }
+      if (run.taken[floor] case final card?) {
+        towerApplyReward(hero, card, data, bag: bag);
+      }
+      for (final card in run.levelUps[floor] ?? const <TowerReward?>[]) {
+        if (card == null) continue;
+        towerApplyReward(hero, card, data, bag: bag);
+        towerNudgeOn(hero, card, data);
+      }
+      if (run.stallBoons[floor] case final boon?) {
+        towerApplyReward(hero, boon, data, bag: bag);
+        towerNudgeOn(hero, boon, data);
+      }
+      _keep(built, keys[floor], hero);
+      continue;
+    }
     // The floor's level-up picks, taken before its cards (towerPick waits
     // for them): each drawn as the hero stands then.
     for (final index in picksAt[floor]) {
@@ -418,6 +470,10 @@ TowerHeroView towerHeroView(TowerRun run, SimCharacter hero) => TowerHeroView(
           if (r.id.isNotEmpty) r.id,
         for (final r in run.stallBoons.values)
           if (r.id.isNotEmpty) r.id,
+        // Rules 2's Level Up cards.
+        for (final cards in run.levelUps.values)
+          for (final r in cards)
+            if (r != null && r.id.isNotEmpty) r.id,
         ...run.banishedIds,
       },
     );

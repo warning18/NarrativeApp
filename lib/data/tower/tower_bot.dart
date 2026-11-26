@@ -26,6 +26,7 @@ import 'tower_dice.dart' show towerChooseDie;
 import 'tower_events.dart';
 import 'tower_floors.dart';
 import 'tower_hero.dart';
+import 'tower_levelup_loot.dart';
 import 'tower_progress.dart';
 import 'tower_rewards.dart';
 import 'tower_run.dart';
@@ -147,7 +148,10 @@ SimFightOutcome towerBotFight({
 /// none, every test's and band's climb as before them). [heat] is the
 /// run's Heat (TowerRun.heat; 0, the plain climb). [perks] are the perks
 /// worn (null: those [progress] wears, TowerProgress.wornPerks); [coins] is
-/// how the bot spends its coins ([TowerBotCoins]).
+/// how the bot spends its coins ([TowerBotCoins]). [rules] is the rules the
+/// climb plays (TowerRun.rules; 1, the stat picks and the spoils chest, as
+/// every test's climb before rules 2; towerRulesLive, the app's): on rules
+/// 2 the bot takes its loot by [towerBotLootChoice].
 TowerRun playTowerRun({
   required int seed,
   required TowerData data,
@@ -160,6 +164,7 @@ TowerRun playTowerRun({
   int heat = 0,
   Iterable<String>? perks,
   TowerBotCoins coins = TowerBotCoins.full,
+  int rules = 1,
 }) {
   final pick = towerRandom(seed, 0, TowerStream.start);
   T draw<T>(List<T> from) => from[pick.nextInt(from.length)];
@@ -177,10 +182,11 @@ TowerRun playTowerRun({
     events: events,
     heat: heat,
     perks: perks ?? progress.wornPerks,
+    rules: rules,
     data: data,
   );
-  final floors =
-      towerFloorsFor(seed, data.enemies, events: events, heat: run.heat);
+  final floors = towerFloorsFor(seed, data.enemies,
+      events: events, heat: run.heat, rules: run.rules);
   // The start's dice (its unlocks', a clan sworn at the start) tried
   // against the calling's own.
   final start = towerHeroOf(run, data);
@@ -235,8 +241,11 @@ TowerRun playTowerRun({
       if (coins == TowerBotCoins.full) run = _botReroll(run, data);
       final hero = towerHeroOf(run, data);
       final owned = hero.ownedDice.keys.toSet();
-      final index =
-          choice != null ? choice(run) : towerBotChoice(run, clans: data.clans);
+      final index = choice != null
+          ? choice(run)
+          : run.table == TowerTableKind.loot
+              ? towerBotLootChoice(run, hero, data)
+              : towerBotChoice(run, clans: data.clans);
       final card = index != null && index >= 0 && index < run.offer.length
           ? run.offer[index]
           : null;
@@ -277,6 +286,18 @@ enum TowerBotCoins {
 /// skill card (only a rank-up, a die or a spell: the bot takes a skill
 /// first) is rerolled once, when the coins pay it.
 TowerRun _botReroll(TowerRun run, TowerData data) {
+  // Rules 2: a Level Up table with no skill card, once a floor.
+  if (run.rules >= 2) {
+    if (!towerBotRerolls ||
+        run.table != TowerTableKind.levelUp ||
+        (run.rerolls[run.floor] ?? 0) > 0 ||
+        run.offer.any((c) => c.kind == TowerRewardKind.skill) ||
+        !towerCanReroll(run) ||
+        towerRerollPriceOf(run) > run.coins) {
+      return run;
+    }
+    return towerReroll(run, data);
+  }
   if (!towerBotRerolls ||
       !towerBoonFloorsOf(run.heat).contains(run.floor) ||
       (run.rerolls[run.floor] ?? 0) > 0 ||
@@ -476,6 +497,45 @@ int? towerBotChoice(TowerRun run, {TowerClanTables? clans}) {
       0;
 }
 
+/// The loot card the bot takes from [run]'s loot table (rules 2), [hero] as
+/// it stands: the piece of gear that most improves its slot (towerGearScore
+/// over the piece worn there, an empty slot counting 0); else, with
+/// [towerBotBundlePotions] potions or fewer in the bag, the bundle with the
+/// most potions; else the purse; else the first card.
+int? towerBotLootChoice(TowerRun run, SimCharacter hero, TowerData data) {
+  if (run.offer.isEmpty) return null;
+  int? gear;
+  var gain = 0;
+  for (var i = 0; i < run.offer.length; i++) {
+    final card = run.offer[i];
+    if (card.kind != TowerRewardKind.gear) continue;
+    final slot = (data.items[card.id] as Map?)?['equipSlot']?.toString() ?? '';
+    final worn = hero.equippedBySlot[slot];
+    final better = towerGearScore(card.id, data) -
+        (worn == null ? 0 : towerGearScore(worn, data));
+    if (better > gain || (worn == null && gear == null && better >= 0)) {
+      if (better > gain) gain = better;
+      gear = i;
+    }
+  }
+  if (gear != null) return gear;
+  int? bundle;
+  for (var i = 0; i < run.offer.length; i++) {
+    final card = run.offer[i];
+    if (card.kind != TowerRewardKind.bundle) continue;
+    if (bundle == null ||
+        towerBundleOf(card.id).potions >
+            towerBundleOf(run.offer[bundle].id).potions) {
+      bundle = i;
+    }
+  }
+  if (bundle != null && run.potions <= towerBotBundlePotions) return bundle;
+  for (var i = 0; i < run.offer.length; i++) {
+    if (run.offer[i].kind == TowerRewardKind.purse) return i;
+  }
+  return bundle ?? 0;
+}
+
 /// The clans' tables of assets/gamedata/ (factions, relations, skill
 /// trees), read once, for [towerBotChoice] called with none.
 final TowerClanTables _assetClanTables = TowerClanTables.fromTables(
@@ -494,7 +554,8 @@ List<TowerRun> playTowerBatch(Iterable<int> seeds, TowerData data,
         {TowerProgress progress = const TowerProgress(),
         int heat = 0,
         Iterable<String>? perks,
-        TowerBotCoins coins = TowerBotCoins.full}) =>
+        TowerBotCoins coins = TowerBotCoins.full,
+        int rules = 1}) =>
     [
       for (final seed in seeds)
         playTowerRun(
@@ -503,5 +564,6 @@ List<TowerRun> playTowerBatch(Iterable<int> seeds, TowerData data,
             progress: progress,
             heat: heat,
             perks: perks,
-            coins: coins),
+            coins: coins,
+            rules: rules),
     ];
