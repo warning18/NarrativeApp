@@ -818,17 +818,25 @@ class _TowerOfferViewState extends ConsumerState<TowerOfferView> {
               children: [
                 if (levelUp)
                   Padding(
-                    padding: const EdgeInsets.only(left: 8),
+                    // Room for the bookmark tabs at the top right.
+                    padding: const EdgeInsets.only(left: 8, right: 150),
                     child: LevelUpRibbon(
                         level: towerLevelUpsTaken(run) + 2,
                         levelLabel: tr(ref, 'level_field_label')),
                   )
                 else
-                  Text(
-                      tr(ref, 'tower_cleared')
-                          .replaceAll('{n}', '${run.floor}'),
-                      key: const Key('tower_cleared'),
-                      style: theme.textTheme.headlineSmall),
+                  Padding(
+                    padding: const EdgeInsets.only(right: 150),
+                    child: FittedBox(
+                      fit: BoxFit.scaleDown,
+                      alignment: Alignment.centerLeft,
+                      child: Text(
+                          tr(ref, 'tower_cleared')
+                              .replaceAll('{n}', '${run.floor}'),
+                          key: const Key('tower_cleared'),
+                          style: theme.textTheme.headlineSmall),
+                    ),
+                  ),
                 Padding(
                   padding: const EdgeInsets.only(top: 4),
                   child: Text(

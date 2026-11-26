@@ -8,6 +8,8 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [2.10.31+1113]
+- Three bookmarks hang from the top right of the Tower floor (Stats, Gear, Dice), in the clan bookmarks' style; the open one is red and its view drops over the floor (the floor's pieces step aside, so nothing lies over it). Stats shows HP, level, the abilities on the big radar and the Level Up nudges against their caps; Gear shows the hero with a tile for each slot (tap one for what it gives); Dice shows the climb's dice like the Journey's (tap a die, tap a face). All read-only. On the Level Up and loot tables the header leaves room for the tabs.
 ## [2.10.30+1112]
 
 - **Tower: a roguelike survival (new climbs only).** The climb is now a struggle from the first floor and harder going up. Floors 1 to 4 are real fights: foes take several rounds and cost about a fifth of your health. The first Level Up comes after about floor 3, and each level costs more XP than the last (about 9 Level Ups for a winning climb, down from 17). Stat nudges, loot tiers and the health back between floors are smaller. Wardens and bosses are real spikes. The marks unlocks now make the difference: with none, about 3 climbs in 10 reach the first boss; with every unlock, about 1 in 10 reaches the top. Climbs already in progress finish on the rules they started with.
