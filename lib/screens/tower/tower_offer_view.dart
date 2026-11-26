@@ -562,6 +562,9 @@ class _TowerOfferViewState extends ConsumerState<TowerOfferView> {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    // Held before the dialogs of Reroll and Banish open: they answer after the
+    // table may have changed under them.
+    final tower = ref.read(towerProvider.notifier);
     final offer = widget.run.offer;
     final clans = offer
         .any((r) => r.clan.isNotEmpty || r.kind == TowerRewardKind.clanOath);
@@ -691,14 +694,12 @@ class _TowerOfferViewState extends ConsumerState<TowerOfferView> {
                             run: widget.run,
                             held: _held,
                             onReroll: () {
-                              setState(() => _held = -1);
-                              ref
-                                  .read(towerProvider.notifier)
-                                  .reroll(data: widget.data);
+                              if (mounted) setState(() => _held = -1);
+                              tower.reroll(data: widget.data);
                             },
                             onBanish: (i) {
-                              setState(() => _held = -1);
-                              ref.read(towerProvider.notifier).banish(i);
+                              if (mounted) setState(() => _held = -1);
+                              tower.banish(i);
                             },
                           ),
                           if (widget.controls != null) widget.controls!,
