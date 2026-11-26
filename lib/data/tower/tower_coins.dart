@@ -16,6 +16,7 @@ import 'dart:math';
 import '../sim_combat.dart' show SimCharacter;
 import 'tower_floors.dart';
 import 'tower_hero.dart';
+import 'tower_levelup_loot.dart';
 import 'tower_rewards.dart';
 import 'tower_run.dart';
 import 'tower_tables.dart';
@@ -111,6 +112,26 @@ TowerRun towerReroll(TowerRun run, TowerData data, {SimCharacter? hero}) {
   final price = towerRerollPriceOf(run);
   if (price > run.coins) return run;
   final done = run.rerolls[run.floor] ?? 0;
+  // Rules 2: the loot table or the Level Up table drawn again
+  // (tower_levelup_loot.dart), the oaths in front kept.
+  if (run.rules >= 2) {
+    final redrawn = towerRedrawTable(
+        run,
+        data,
+        hero ?? towerHeroOf(run, data),
+        towerRandom(
+            run.seed, _rerollDraw(run.floor, done), TowerStream.reroll));
+    return run.copyWith(
+      coins: run.coins - price,
+      rerolls: {...run.rerolls, run.floor: done + 1},
+      offer: [
+        for (final c in run.offer)
+          if (c.kind == TowerRewardKind.clanOath) c,
+        for (final c in redrawn)
+          if (c.kind != TowerRewardKind.clanOath) c,
+      ],
+    );
+  }
   final drawn = towerRunOfferFor(
       run, data, run.floor, hero ?? towerHeroOf(run, data),
       clansDue: run.offer.any((c) => c.clan.isNotEmpty),
@@ -160,11 +181,13 @@ TowerRun towerBanish(TowerRun run, int index) {
 
 /// The stall's boon for [run] at the merchant of [storeFloor]: three cards
 /// (a skill, a die and a spell, as a boon floor's), drawn on
-/// TowerStream.reroll.
+/// TowerStream.reroll. On rules 2, a Level Up table bought: no clan's card
+/// (a stall's boon is no clan's), so its first place is a second skill.
 List<TowerReward> towerStallBoonFor(
         TowerRun run, TowerData data, int storeFloor, SimCharacter hero) =>
     towerRunOfferFor(run, data, storeFloor, hero,
         boon: true,
+        levelUp: run.rules >= 2,
         random:
             towerRandom(run.seed, _stallDraw(storeFloor), TowerStream.reroll));
 
@@ -182,7 +205,42 @@ List<TowerReward> towerRunOfferFor(
   Random? random,
   Set<String> avoid = const {},
   bool boon = false,
+  bool levelUp = false,
+  bool levelUpOaths = true,
 }) {
+  // Rules 2's Level Up table (tower_levelup_loot.dart): Fourth card on the
+  // climb's first [towerFourthCardTables] Level Ups, Keen eye on its first
+  // (a stall's boon is neither).
+  if (levelUp) {
+    final rank = boon ? -1 : towerLevelUpsTaken(run);
+    return towerOfferFor(
+      seed: run.seed,
+      floor: floor,
+      hero: towerHeroView(run, hero),
+      clanPool: boon ? const [] : run.clanPool,
+      standing: towerStandingOf(run, data),
+      oathOpen: run.clanIds.isEmpty,
+      heat: run.heat,
+      clans: data.clans,
+      items: data.items,
+      dice: data.dice,
+      skills: data.skills,
+      spells: data.spells,
+      random: random ??
+          towerRandom(run.seed, towerLevelUpDraw(run), TowerStream.boon),
+      avoid: avoid,
+      levelUp: true,
+      levelUpOaths: levelUpOaths && !boon,
+      extraSkills: run.wears(towerPerkFourthCard) &&
+              rank >= 0 &&
+              rank < towerFourthCardTables
+          ? towerFourthCardExtra
+          : 0,
+      rarityBonus:
+          run.wears(towerPerkKeenEye) && rank == 0 ? towerKeenEyeSteps : 0,
+      oathSooner: run.wears(towerPerkEarlyWord) ? towerEarlyWordFloors : 0,
+    );
+  }
   final boons = towerBoonFloorsOf(run.heat).toList()..sort();
   final rank = boon ? -1 : boons.indexOf(floor);
   return towerOfferFor(
@@ -289,11 +347,12 @@ const int towerEarlyWordFloors = 3;
 /// won, on top of the floor's recovery.
 const double towerSecondWindShare = .15;
 
-/// Keen eye: the first boon table's skill this many rarity steps up.
+/// Keen eye: the first boon table's skill this many rarity steps up (rules
+/// 2: the first Level Up table's skill card).
 const int towerKeenEyeSteps = 1;
 
 /// Fourth card: the first this many boon tables show [towerFourthCardExtra]
-/// card more (a skill).
+/// card more (a skill); rules 2, the first Level Up tables.
 const int towerFourthCardTables = 2;
 const int towerFourthCardExtra = 1;
 

@@ -30,6 +30,11 @@ void main() {
         TowerRewardKind.die => 'die:${c.id}',
         TowerRewardKind.spell => 'spell:${c.id}',
         TowerRewardKind.clanOath => 'oath:${c.id}',
+        // Rules 2's loot cards (Core's rules PR): never on these tables.
+        TowerRewardKind.gear ||
+        TowerRewardKind.bundle ||
+        TowerRewardKind.purse =>
+          '${c.kind.name}:${c.id}:${c.amount}',
       };
 
   final problems = <String>[];

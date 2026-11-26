@@ -28,6 +28,7 @@ import '../sim_combat.dart' show SimCharacter;
 import 'tower_coins.dart';
 import 'tower_floors.dart';
 import 'tower_hero.dart';
+import 'tower_levelup_loot.dart';
 import 'tower_run.dart';
 import 'tower_tables.dart';
 
@@ -722,6 +723,8 @@ int towerCheckModifierOf(SimCharacter hero, String ability) =>
 /// the floor is won, less those it took. 0 when the floor's win gives no
 /// level and none waits, or once the Level Up is done (choosing).
 int towerPicksBeforeSetback(TowerRun run) {
+  // Rules 2 has no stat picks (its Level Up is a card table).
+  if (run.rules >= 2) return 0;
   final height = max(run.floor, run.crest);
   final earned = (towerLevelAfter(height) - 1) * levelStatPicks;
   return max(0, earned - run.statPicks.length);
@@ -760,6 +763,7 @@ TowerFloor towerShortcutFloor(TowerFloor floor) => TowerFloor(
       elitePack: floor.isPack,
       events: floor.events,
       heat: floor.heat,
+      rules: floor.rules,
     );
 
 /// [run] with its shortcut taken ([accept]) or declined: only before the
@@ -899,8 +903,8 @@ TowerEventView? towerEventOf(TowerRun run, TowerData data,
         result: run.lastEvent,
       );
     case TowerEventKind.shortcut:
-      final tough = towerShortcutFloor(
-          towerFloorsFor(run.seed, data.enemies, heat: run.heat)[floor - 1]);
+      final tough = towerShortcutFloor(towerFloorsFor(run.seed, data.enemies,
+          heat: run.heat, rules: run.rules)[floor - 1]);
       final landsOn = towerShortcutLandsOn(floor, event!.fall);
       return TowerEventView(
         kind: TowerEventKind.shortcut,
@@ -1022,9 +1026,22 @@ TowerEventView _storeView(
 /// [next] (climbing) landed on floor [to], the floors below it counted in
 /// TowerRun.crest: their level-ups arrive (their max health added; their
 /// picks wait), their spoils and cards are lost.
+///
+/// On rules 2 the floors passed pay their Tower XP here (towerXpFor): their
+/// levels' max health arrives, their Level Up tables wait for the next
+/// floor won (towerDealTable).
 TowerRun _land(TowerRun next, int to, TowerData data) {
   final before = towerHeroOf(next, data).maxHealth;
-  final landed = next.copyWith(floor: to, crest: max(next.crest, to - 1));
+  var landed = next.copyWith(floor: to, crest: max(next.crest, to - 1));
+  if (next.rules >= 2) {
+    final floors = towerFloorsFor(next.seed, data.enemies,
+        events: next.events, heat: next.heat, rules: next.rules);
+    landed = landed.copyWith(xp: {
+      ...next.xp,
+      for (var f = next.heightCleared + 1; f <= to - 1; f++)
+        if (!next.xp.containsKey(f)) f: towerXpFor(floors[f - 1]),
+    });
+  }
   final after = towerHeroOf(landed, data).maxHealth;
   return landed.copyWith(
       health: (next.health + after - before).clamp(1, after));
@@ -1081,6 +1098,16 @@ TowerRun towerAfterEvent(TowerRun won, TowerRun next, TowerData data) {
       // The card on landing (the proposal's "card on landing"): the floor
       // below the landing deals its offer, as the one just won would.
       final hero = towerHeroOf(landed, data);
+      // Rules 2: the floor below the landing deals its loot table (and the
+      // Level Ups waiting), as a floor won does.
+      if (landed.rules >= 2) {
+        final dealt = towerDealTable(
+            landed.copyWith(floor: to - 1, status: TowerStatus.choosing),
+            data,
+            hero,
+            TowerTableKind.loot);
+        return dealt.offer.isEmpty ? landed : dealt;
+      }
       final offer = towerRunOfferFor(landed, data, to - 1, hero);
       if (offer.isEmpty) return landed;
       return landed.copyWith(

@@ -44,6 +44,39 @@ const Map<String, double> towerProfessionPeakScale = {
   'cleric': 1.08,
 };
 
+/// The rules a new climb plays (TowerRun.rules, docs/simulation/
+/// tower-levelup-loot.md): 1, the stat picks, the spoils chest, the boon
+/// floors and the clans' tables (every climb saved before the field); 2,
+/// Tower XP and the Level Up card table, the stat nudges, the loot table.
+/// A climb keeps the rules it began with.
+const int towerRulesLive = 2;
+
+/// Every foe of a rules-2 climb, on top of the rest (the retune of
+/// docs/simulation/tower-levelup-loot.md): the hero no longer grows a stat
+/// point a level, so the foes come down to keep today's tops. .85 (the
+/// proposal's prototype .82, re-measured with the loot table built: seeds
+/// 1 to 2000, the top 14.0% with no unlocks and 22.4% with all, today 11.6%
+/// and 24.7%).
+const double towerLootFoeScale = .85;
+
+/// The calling pass of rules 2 (as [towerProfessionScale], on top of it and
+/// of [towerLootFoeScale]): the cleric heals better with gear worn than with
+/// stat points; the ranger, with every unlock, led by 4 points; the rogue
+/// lost most from the stat picks (its Dexterity and Luck). With every
+/// unlock the five within about 5 points (seeds 1 to 2000).
+const Map<String, double> towerLootProfessionScale = {
+  'cleric': 1.05,
+  'ranger': 1.02,
+  'rogue': .97,
+};
+
+/// The factor rules [rules] put on the foes of a hero of [professionId]: 1
+/// on rules 1; [towerLootFoeScale] times the calling's
+/// [towerLootProfessionScale] on rules 2.
+double towerRulesScaleOf(int rules, String professionId) => rules >= 2
+    ? towerLootFoeScale * (towerLootProfessionScale[professionId] ?? 1.0)
+    : 1.0;
+
 /// The foes' scale for [professionId] (1 for the others; on a warden's or
 /// boss's floor, [peak], its [towerProfessionPeakScale] if it has one),
 /// with the Tower's own [towerFoeScale], [towerEventsFoeScale] in a run
@@ -476,7 +509,26 @@ const int towerNoRepeatFloors = 3;
 /// face of the die in play becomes a tier for the best skill on it
 /// (combat_engine's applySkillTier, up to maxSkillTier): its id is that
 /// skill's.
-enum TowerRewardKind { die, skill, spell, clanOath, rankUp }
+///
+/// The loot cards of rules 2 (TowerRun.rules, tower_levelup_loot.dart): a
+/// piece of gear ([TowerReward.id] the item), a bundle of potions and
+/// antidotes ([TowerReward.id] its contents, towerBundleOf) and a purse of
+/// coins ([TowerReward.amount] the coins). Added last, so a save's names
+/// keep their meaning.
+enum TowerRewardKind {
+  die,
+  skill,
+  spell,
+  clanOath,
+  rankUp,
+  gear,
+  bundle,
+  purse,
+}
+
+/// The table on a rules-2 run's floor won (TowerRun.table): the loot table,
+/// a Level Up table, or a clan's oath alone (tower_levelup_loot.dart).
+enum TowerTableKind { loot, levelUp, oath }
 
 /// A clan's offer on the table (v1.855; since the clans' offers their gifts,
 /// docs/simulation/tower-clan-offers.md): always on the first floor won,

@@ -17,7 +17,8 @@ import '../../data/tower/tower_hero.dart';
 import '../../data/tower/tower_progress.dart';
 import '../../data/tower/tower_run.dart';
 import '../../data/tower/tower_save.dart';
-import '../../data/tower/tower_tables.dart' show towerEventsLive;
+import '../../data/tower/tower_tables.dart'
+    show towerEventsLive, towerRulesLive;
 import '../../gamedata/db_schema.dart';
 import '../../providers/game_config_provider.dart';
 import '../../providers/game_db_providers.dart';
@@ -137,6 +138,8 @@ class TowerController extends StateNotifier<AsyncValue<TowerState>> {
       startUnlocks: progress.startUnlocks,
       unlocksOwned: progress.unlocksOwned,
       events: towerEventsLive,
+      // The Level Up and loot rules (Core's rules 2).
+      rules: towerRulesLive,
       heat: progress.isHeatOpen(heat) ? heat : progress.heatOpen,
       perks: progress.wornPerks,
       friend: friend ?? '',

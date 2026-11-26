@@ -2326,6 +2326,33 @@ const Map<String, Map<AppLanguage, String>> _strings = {
         'Votre dé n’a plus de face libre pour une nouvelle compétence\u00a0: '
             'celle-ci y gagne un rang (+25\u00a0% à ses valeurs).',
   },
+  // Rules 2's loot cards (Core's rules PR, placeholder words: Narrative
+  // words them, UX draws them): a piece of gear, a bundle of potions and
+  // antidotes, a purse of coins.
+  'tower_kind_gear': {
+    AppLanguage.en: 'Gear',
+    AppLanguage.fr: 'Équipement',
+  },
+  'tower_kind_bundle': {
+    AppLanguage.en: 'Supplies',
+    AppLanguage.fr: 'Provisions',
+  },
+  'tower_bundle_name': {
+    AppLanguage.en: 'Flasks',
+    AppLanguage.fr: 'Fioles',
+  },
+  'tower_bundle_text': {
+    AppLanguage.en: '{potions} potion(s), {antidotes} antidote(s)',
+    AppLanguage.fr: '{potions} potion(s), {antidotes} antidote(s)',
+  },
+  'tower_kind_purse': {
+    AppLanguage.en: 'Purse',
+    AppLanguage.fr: 'Bourse',
+  },
+  'tower_purse_name': {
+    AppLanguage.en: '{n} coins',
+    AppLanguage.fr: '{n} pièces',
+  },
   // A clan offers its oath on the way up (v1.855).
   'tower_oath_title': {
     AppLanguage.en: '{clan} offer you their oath',

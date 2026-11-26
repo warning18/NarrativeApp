@@ -8,6 +8,10 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [2.10.25+1107]
+
+- **Tower: Level Up and loot (new climbs only).** Each level now deals a table of three different cards: one clan's gift, a skill or a rank-up, and a die or a spell. Taking a skill or a rank-up nudges the stat it uses by +1 (at most +4 a stat and +10 a climb); the Tower's stat picks are gone, while race points, bargains and +3 HP a level stay. XP comes from floors (2 an ordinary floor, 3 an Elite, 4 a warden or boss, a level every 4). Every floor won deals three loot cards from a random mix of gear, a bundle of items and a coin purse, never the same item twice; Pyre's empty floors deal none. Floor clan tables and boon floors go. Foes and the callings are retuned so the top rate stays close to today's. The oath works as today. Climbs saved before this version keep the old rules to the end.
+
 ## [2.10.24+1106]
 - The Tower's event cards say what each button does. The shortcut, the parley and the bargain put each choice in its own box: the button, then what it asks (the stat, the bonus, the target and the odds) and what it leads to (the floor you land on, what you give up, the fight kept as it is, nothing changes) written under that button instead of one shared Win/Lose block. A setback that waits on a Level Up pick says "May change with your Level Up". A check (setback, parley) now plays the transparent d20: it tumbles, lands on the roll, shows "14 + 3 = 17 · DC 12" and Passed or Failed, then the result line; reduce motion sets the die down at once.
 ## [2.10.23+1105]
