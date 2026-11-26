@@ -8,6 +8,9 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [2.10.21+1103]
+- The Tower's reward and clan cards carry Art's cut-paper tarot vignettes as their art, shown as drawn: full colour, pixel-crisp, with no veil or dimming over them and no blank seal on a die or a spell. A clan's gift card has the vignette across the top of the rounded paper card, the skill's icon as a small badge on one corner and the rarity's wax seal on the other. The card's kind label moved under the art.
+
 ## [2.10.20+1102]
 - The dice are thrown and roll instead of dropping on their face: five throws (from the left, from the right, dropped from above then rolling sideways, tossed from the bottom-left corner up the board, flung at the side edge and rolling back), a different one for each die and each roll, 1.7 s at normal speed. A die turns over its edges two full turns or more, fast at first and slowing, then a final rock. The shadow and the puff at each contact stay; reduce motion keeps the short drop.
 ## [2.10.19+1101]
