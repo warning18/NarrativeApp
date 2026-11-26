@@ -712,7 +712,8 @@ class _TowerOfferViewState extends ConsumerState<TowerOfferView> {
     for (final card in widget.run.offer)
       card.kind == TowerRewardKind.skill || card.kind == TowerRewardKind.rankUp
           ? towerNudgeOn(
-              towerHeroOf(widget.run, widget.data), card, widget.data)
+              towerHeroOf(widget.run, widget.data), card, widget.data,
+              rules: widget.run.rules)
           : null,
   ];
 

@@ -97,8 +97,9 @@ class TowerFloor {
   /// in [extra], [affixes] and [elite]; the screens read it.
   final int heat;
 
-  /// The rules of the run it is in (TowerRun.rules): on rules 2 its foes
-  /// take towerRulesScaleOf (the retune of the Level Up and loot rules).
+  /// The rules of the run it is in (TowerRun.rules): on rules 2 and 3 its
+  /// foes take towerRulesScaleOf (the retune of the Level Up and loot rules;
+  /// on rules 3 the survival curve by floor too).
   final int rules;
 
   bool get isPack => enemyIds.length > 1;
@@ -110,7 +111,7 @@ class TowerFloor {
       extra *
       towerProfessionScaleOf(professionId,
           events: events, peak: kind != TowerFloorKind.fight) *
-      towerRulesScaleOf(rules, professionId);
+      towerRulesScaleOf(rules, professionId, floor: floor);
 
   /// What the fight screen is handed for this floor, for a hero of
   /// [professionId] (the Tower's context: no scene, no chest, no gold or

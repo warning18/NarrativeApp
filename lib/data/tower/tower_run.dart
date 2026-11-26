@@ -420,7 +420,8 @@ class TowerRun {
   /// The rules the climb plays (docs/simulation/tower-levelup-loot.md,
   /// towerRulesLive for a new climb): 1, the stat picks, the spoils chest,
   /// the boon floors and the clans' tables; 2, Tower XP, the Level Up card
-  /// table, the loot table. A save without it reads as 1.
+  /// table, the loot table; 3, rules 2's with the survival curve
+  /// (towerSurvivalRules). A save without it reads as 1.
   final int rules;
 
   /// Rules 2: the Tower XP each floor paid (floor -> XP, towerXpFor), on its
@@ -703,7 +704,7 @@ TowerRun towerStart({
         id,
   ];
   final hero = towerFreshHero(raceId, professionId, unlocks, data,
-      unlocksOwned: unlocksOwned, bag: true);
+      unlocksOwned: unlocksOwned, bag: true, rules: rules);
   // The die in play: the calling's own; the start's dice wait in
   // the bag.
   final die = hero.diceId;

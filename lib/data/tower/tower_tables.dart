@@ -47,16 +47,22 @@ const Map<String, double> towerProfessionPeakScale = {
 /// The rules a new climb plays (TowerRun.rules, docs/simulation/
 /// tower-levelup-loot.md): 1, the stat picks, the spoils chest, the boon
 /// floors and the clans' tables (every climb saved before the field); 2,
-/// Tower XP and the Level Up card table, the stat nudges, the loot table.
-/// A climb keeps the rules it began with.
-const int towerRulesLive = 2;
+/// Tower XP and the Level Up card table, the stat nudges, the loot table;
+/// 3, rules 2's systems with the survival curve (docs/simulation/
+/// tower-difficulty-survival.md: slower levels, harder foes from floor 1,
+/// more health an unlock). A climb keeps the rules it began with.
+const int towerRulesLive = 3;
+
+/// The first rules of the survival curve (towerRulesLive since it shipped):
+/// rules 2 keeps its numbers for the climbs begun on it.
+const int towerSurvivalRules = 3;
 
 /// Every foe of a rules-2 climb, on top of the rest (the retune of
 /// docs/simulation/tower-levelup-loot.md): the hero no longer grows a stat
 /// point a level, so the foes come down to keep today's tops. .85 (the
 /// proposal's prototype .82, re-measured with the loot table built: seeds
 /// 1 to 2000, the top 14.0% with no unlocks and 22.4% with all, today 11.6%
-/// and 24.7%).
+/// and 24.7%). Rules 3 keeps it.
 const double towerLootFoeScale = .85;
 
 /// The calling pass of rules 2 (as [towerProfessionScale], on top of it and
@@ -70,12 +76,99 @@ const Map<String, double> towerLootProfessionScale = {
   'rogue': .97,
 };
 
-/// The factor rules [rules] put on the foes of a hero of [professionId]: 1
-/// on rules 1; [towerLootFoeScale] times the calling's
-/// [towerLootProfessionScale] on rules 2.
-double towerRulesScaleOf(int rules, String professionId) => rules >= 2
-    ? towerLootFoeScale * (towerLootProfessionScale[professionId] ?? 1.0)
-    : 1.0;
+/// The calling pass of rules 3, in place of [towerLootProfessionScale]
+/// (docs/simulation/tower-difficulty-survival.md): with no unlocks the
+/// mage, the rogue and the warrior within about 3 points at floors 10, 15
+/// and 20; the cleric and the ranger (unlocks) set with every unlock.
+const Map<String, double> towerSurvivalProfessionScale = {
+  'cleric': .95,
+  'ranger': .96,
+  'rogue': .93,
+  'mage': .96,
+  'warrior': 1.04,
+};
+
+/// The calling pass of rules 3 from floor [towerSurvivalUpperFloor] (the
+/// first boss) on, on top of [towerSurvivalProfessionScale]: the warrior
+/// fell behind at the first boss and after it, the mage pulled ahead.
+const Map<String, double> towerSurvivalProfessionUpperScale = {
+  'warrior': .90,
+  'mage': 1.04,
+};
+const int towerSurvivalUpperFloor = 10;
+
+/// The survival curve of rules 3 (the user's call: a roguelike climb, hard
+/// from floor 1, harder going up): every foe of floor n (index n - 1) this
+/// much more, on top of the floor's extra and the rest. Floors 1 to 4 about
+/// 4 rounds a fight (they fell in 1 or 2), floors 6 to 9 a step up, the
+/// wardens and bosses peaks. Measured with the slower levels
+/// (towerXpCostOf): fewer levels mean foes that grow less
+/// (enemyScaledMaxHealth), so the curve is set with them.
+const List<double> towerSurvivalScale = [
+  3.0, 4.2, 4.5, 3.0, 2.1, // 1-5 (5: warden)
+  2.1, 2.1, 2.1, 2.1, 1.8, // 6-10 (10: boss)
+  1.5, 1.5, 1.5, 1.5, 1.6, // 11-15 (15: warden)
+  1.53, 1.53, 1.53, 1.53, 1.78, // 16-20 (20: boss)
+  1.56, 1.56, 1.56, 1.56, 1.66, // 21-25 (25: warden)
+  1.56, 1.56, 1.56, 1.56, 1.75, // 26-30 (30: boss)
+];
+
+/// The factor rules [rules] put on the foes of floor [floor] for a hero of
+/// [professionId]: 1 on rules 1; [towerLootFoeScale] times the calling's
+/// [towerLootProfessionScale] on rules 2; on rules 3 [towerLootFoeScale],
+/// the calling's [towerSurvivalProfessionScale] (and
+/// [towerSurvivalProfessionUpperScale] from [towerSurvivalUpperFloor]) and
+/// the floor's [towerSurvivalScale] (none for a [floor] of 0).
+double towerRulesScaleOf(int rules, String professionId, {int floor = 0}) {
+  if (rules < 2) return 1.0;
+  if (rules < towerSurvivalRules) {
+    return towerLootFoeScale * (towerLootProfessionScale[professionId] ?? 1.0);
+  }
+  return towerLootFoeScale *
+      (towerSurvivalProfessionScale[professionId] ?? 1.0) *
+      (floor >= towerSurvivalUpperFloor
+          ? towerSurvivalProfessionUpperScale[professionId] ?? 1.0
+          : 1.0) *
+      (floor >= 1 && floor <= towerSurvivalScale.length
+          ? towerSurvivalScale[floor - 1]
+          : 1.0);
+}
+
+/// The max health an unlock gives on rules 3: [towerHealthPerUnlockOf]
+/// this many times (the marks' unlocks make the top reachable: about 10%
+/// with all of them, under 0.5% with none), and the calling's share of it
+/// ([towerSurvivalProfessionHealthPerUnlock]).
+const double towerSurvivalHealthPerUnlockScale = 5.33;
+const Map<String, double> towerSurvivalProfessionHealthPerUnlock = {
+  'cleric': .90,
+  'rogue': .75,
+  'mage': 1.15,
+  'warrior': .85,
+};
+
+/// The share of max health a hero of [raceId] and [professionId] gains per
+/// unlock owned on rules [rules] (rules 1 and 2: [towerHealthPerUnlockOf]).
+double towerHealthPerUnlockFor(String raceId, String professionId,
+        {required int rules}) =>
+    towerHealthPerUnlockOf(raceId) *
+    (rules >= towerSurvivalRules
+        ? towerSurvivalHealthPerUnlockScale *
+            (towerSurvivalProfessionHealthPerUnlock[professionId] ?? 1.0)
+        : 1.0);
+
+/// The share of max health back after a floor won on rules 3 (rules 1 and
+/// 2: [towerRecoveryShare]): HP is the climb's resource. Heat 3 and up
+/// keep [towerHeatRecoveryShare].
+const double towerSurvivalRecoveryShare = .10;
+
+/// The share of max health back after a floor won at [heat] on rules
+/// [rules] (rules 1 and 2: [towerRecoveryShareOf]).
+double towerRecoveryShareFor(int heat, {required int rules}) =>
+    rules < towerSurvivalRules
+        ? towerRecoveryShareOf(heat)
+        : heat >= towerHeatFlame
+            ? towerHeatRecoveryShare
+            : towerSurvivalRecoveryShare;
 
 /// The foes' scale for [professionId] (1 for the others; on a warden's or
 /// boss's floor, [peak], its [towerProfessionPeakScale] if it has one),

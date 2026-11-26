@@ -38,14 +38,34 @@ import 'tower_tables.dart';
 // ---------------------------------------------------------------------------
 // Tower XP and the levels.
 
-/// The Tower XP a climb starts with: with [towerXpPerLevel] 4, the first
-/// floor won is the first level, and the climb gains about today's 17
-/// levels by floor 29.
+/// The Tower XP a climb starts with on rules 2: with [towerXpPerLevel] 4,
+/// the first floor won is the first level, and the climb gains about
+/// today's 17 levels by floor 29.
 const int towerXpStart = 2;
 
-/// The Tower XP a level costs: the power knob of rules 2 (3, about 23 Level
+/// The Tower XP a level costs on rules 2: the power knob (3, about 23 Level
 /// Ups a climb; 4, today's 17; 5, about 14).
 const int towerXpPerLevel = 4;
+
+/// Rules 3, the survival curve (docs/simulation/tower-difficulty-survival.md):
+/// no Tower XP at the start, so the first Level Up comes after floor 3; the
+/// first level costs [towerSurvivalXpPerLevel] and each level after it one
+/// more every [towerSurvivalXpGrowthEvery] levels (5, 6, 6, 7, 7, 8 ...):
+/// about 9 Level Ups for a climb that wins.
+const int towerSurvivalXpStart = 0;
+const int towerSurvivalXpPerLevel = 5;
+const int towerSurvivalXpGrowthEvery = 2;
+
+/// The Tower XP a climb on rules [rules] starts with.
+int towerXpStartOf(int rules) =>
+    rules >= towerSurvivalRules ? towerSurvivalXpStart : towerXpStart;
+
+/// The Tower XP level [level] costs to leave on rules [rules] (level 1 to 2
+/// is level 1's): [towerXpPerLevel] on rules 2, growing on rules 3.
+int towerXpCostOf(int level, {required int rules}) =>
+    rules >= towerSurvivalRules
+        ? towerSurvivalXpPerLevel + level ~/ towerSurvivalXpGrowthEvery
+        : towerXpPerLevel;
 
 /// The Tower XP an ordinary floor won pays, an Elite's (a lone foe made
 /// Elite by the floor, a shortcut's Elite or Elite pack), a warden's and a
@@ -65,12 +85,21 @@ int towerXpFor(TowerFloor floor) => switch (floor.kind) {
         floor.elite || floor.elitePack ? towerXpElite : towerXpFight,
     };
 
-/// The level a climb stands at with [xp] Tower XP (its start included).
-int towerXpLevelOf(int xp) => 1 + max(0, xp) ~/ towerXpPerLevel;
+/// The level a climb on rules [rules] stands at with [xp] Tower XP (its
+/// start included).
+int towerXpLevelOf(int xp, {required int rules}) {
+  if (rules < towerSurvivalRules) return 1 + max(0, xp) ~/ towerXpPerLevel;
+  var level = 1, need = towerXpCostOf(1, rules: rules);
+  while (xp >= need) {
+    level++;
+    need += towerXpCostOf(level, rules: rules);
+  }
+  return level;
+}
 
 /// [run]'s Tower XP: the start and every floor's.
 int towerXpOf(TowerRun run) =>
-    towerXpStart + run.xp.values.fold<int>(0, (n, x) => n + x);
+    towerXpStartOf(run.rules) + run.xp.values.fold<int>(0, (n, x) => n + x);
 
 /// The Level Ups [run] has been dealt (each a card taken, refused, or an
 /// oath in its place).
@@ -80,7 +109,11 @@ int towerLevelUpsTaken(TowerRun run) =>
 /// The Level Ups [run] has earned and not yet been dealt: on rules 2 only.
 int towerLevelUpsPending(TowerRun run) => run.rules < 2 || run.isOver
     ? 0
-    : max(0, towerXpLevelOf(towerXpOf(run)) - 1 - towerLevelUpsTaken(run));
+    : max(
+        0,
+        towerXpLevelOf(towerXpOf(run), rules: run.rules) -
+            1 -
+            towerLevelUpsTaken(run));
 
 /// The draw of [run]'s next Level Up table on TowerStream.boon (its number
 /// in the climb): the same table on a reload.
@@ -89,9 +122,22 @@ int towerLevelUpDraw(TowerRun run) => towerLevelUpsTaken(run) + 1;
 // ---------------------------------------------------------------------------
 // The stat nudges.
 
-/// The most points the nudges give one stat, and a climb.
+/// The most points the nudges give one stat, and a climb, on rules 2.
 const int towerNudgeStatCap = 4;
 const int towerNudgeClimbCap = 10;
+
+/// The same on rules 3 (the survival curve: 3 and 6).
+const int towerSurvivalNudgeStatCap = 3;
+const int towerSurvivalNudgeClimbCap = 6;
+
+/// The most points the nudges give one stat on rules [rules].
+int towerNudgeStatCapOf(int rules) =>
+    rules >= towerSurvivalRules ? towerSurvivalNudgeStatCap : towerNudgeStatCap;
+
+/// The most points the nudges give a climb on rules [rules].
+int towerNudgeClimbCapOf(int rules) => rules >= towerSurvivalRules
+    ? towerSurvivalNudgeClimbCap
+    : towerNudgeClimbCap;
 
 /// The stat a skill of [skill]'s record nudges for a hero of
 /// [professionId] (the first rule that matches): a support skill (it heals,
@@ -149,10 +195,11 @@ String towerNudgeStatOf(Map<String, dynamic> skill, String professionId,
 
 /// [hero] given the nudge of [card] (a skill or a rank-up; any other card
 /// none): one point to its stat ([towerNudgeStatOf]) while that stat has
-/// had fewer than [towerNudgeStatCap] and the climb fewer than
-/// [towerNudgeClimbCap] (counted in SimCharacter.pickedPoints, which rules
+/// had fewer than its cap and the climb fewer than its cap on rules
+/// [rules] ([towerNudgeStatCapOf], [towerNudgeClimbCapOf]; counted in SimCharacter.pickedPoints, which rules
 /// 2 keeps for the nudges alone). Returns the stat raised, or null.
-String? towerNudgeOn(SimCharacter hero, TowerReward card, TowerData data) {
+String? towerNudgeOn(SimCharacter hero, TowerReward card, TowerData data,
+    {required int rules}) {
   if (card.kind != TowerRewardKind.skill &&
       card.kind != TowerRewardKind.rankUp) {
     return null;
@@ -162,8 +209,8 @@ String? towerNudgeOn(SimCharacter hero, TowerReward card, TowerData data) {
   final stat =
       towerNudgeStatOf(skill, hero.professionId, fallback: hero.preferredStat);
   final total = hero.pickedPoints.values.fold<int>(0, (n, p) => n + p);
-  if (total >= towerNudgeClimbCap ||
-      (hero.pickedPoints[stat] ?? 0) >= towerNudgeStatCap) {
+  if (total >= towerNudgeClimbCapOf(rules) ||
+      (hero.pickedPoints[stat] ?? 0) >= towerNudgeStatCapOf(rules)) {
     return null;
   }
   hero.pickedPoints[stat] = (hero.pickedPoints[stat] ?? 0) + 1;
@@ -188,8 +235,16 @@ const int towerLootBundleWeight = 35;
 const int towerLootPurseWeight = 15;
 
 /// The tier steps a loot table's chest roll is raised, by band (floors
-/// 1-10, 11-20, 21-29): the gear knob.
+/// 1-10, 11-20, 21-29) on rules 2: the gear knob.
 const List<int> towerLootTierShift = [0, 1, 2];
+
+/// The same on rules 3 (the survival curve).
+const List<int> towerSurvivalLootTierShift = [0, 0, 1];
+
+/// The tier shift by band on rules [rules].
+List<int> towerLootTierShiftOf(int rules) => rules >= towerSurvivalRules
+    ? towerSurvivalLootTierShift
+    : towerLootTierShift;
 
 /// The bundles by chest tier (wooden to void): two of each, the second
 /// dealt only beside the first. Potions as the story counts them (a major
@@ -226,7 +281,7 @@ int towerLootBandOf(int floor) => ((floor - 1) ~/ 10).clamp(0, 2);
 
 /// The chest context of [floor]'s loot for a hero of [luck] (the story's
 /// chest roll: an Elite or a warden as an Elite, a boss's never below
-/// Gold), its tier raised [towerLootTierShift] for the band.
+/// Gold), its tier raised [towerLootTierShiftOf] its rules for the band.
 LootContext towerLootContextOf(TowerFloor floor,
         {int luck = 0,
         Iterable<String> ownedItemIds = const [],
@@ -239,7 +294,8 @@ LootContext towerLootContextOf(TowerFloor floor,
       hasBossOrUnique: floor.kind == TowerFloorKind.boss,
       enemyCount: floor.enemyIds.length,
       affixCount: floor.affixes.length,
-      tierShift: towerLootTierShift[towerLootBandOf(floor.floor)],
+      tierShift:
+          towerLootTierShiftOf(floor.rules)[towerLootBandOf(floor.floor)],
       preferredScalingStat: preferredScalingStat,
       ownedItemIds: ownedItemIds.toList(),
     );
@@ -387,7 +443,8 @@ TowerRun towerAfterFightRules2(TowerRun run, TowerRun leveled, TowerData data,
   final health = (healthLeft +
           hero.maxHealth -
           maxHealthBefore +
-          (hero.maxHealth * towerRecoveryShareOf(run.heat)).round() +
+          (hero.maxHealth * towerRecoveryShareFor(run.heat, rules: run.rules))
+              .round() +
           (hero.maxHealth * towerSecondWindShareOf(run)).round())
       .clamp(1, hero.maxHealth);
   hero.currentHealth = health;
@@ -526,7 +583,7 @@ TowerRun towerPickRules2(TowerRun run, TowerData data, int? index,
         level.add(card);
         if (card != null) {
           towerApplyReward(built, card, data, bag: run.dieChoice != null);
-          towerNudgeOn(built, card, data);
+          towerNudgeOn(built, card, data, rules: run.rules);
         }
       }
       next = next.copyWith(levelUps: {...run.levelUps, run.floor: level});
