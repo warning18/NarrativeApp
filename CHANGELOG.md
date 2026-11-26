@@ -8,6 +8,10 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [2.10.23+1105]
+
+- **Tower checks: the roll in full, for UX's d20 (no rule change).** A setback's or a parley's result now keeps the ability, the bonus and the target it was rolled with, so the screen can show the story's d20 roll; each event's choices also list their outcome (a potion, the floor you fall to or land on, a price, the fight) for the buttons to say plainly. The odds are unchanged.
+
 ## [2.10.21+1103]
 - The Tower's reward and clan cards carry Art's cut-paper tarot vignettes as their art, shown as drawn: full colour, pixel-crisp, with no veil or dimming over them and no blank seal on a die or a spell. A clan's gift card has the vignette across the top of the rounded paper card, the skill's icon as a small badge on one corner and the rarity's wax seal on the other. The card's kind label moved under the art.
 
