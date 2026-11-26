@@ -116,6 +116,14 @@ void main() {
     expect(find.byKey(const Key('tower_card_0')), findsOneWidget);
     expect(find.byKey(const Key('tower_card_2')), findsOneWidget);
 
+    // None is in hand until one is tapped: Take is off.
+    expect(
+        tester
+            .widget<FilledButton>(find.byKey(const Key('tower_take')))
+            .onPressed,
+        isNull);
+    await tester.tap(find.byKey(const Key('tower_card_0')));
+    await tester.pump();
     await tester.tap(find.byKey(const Key('tower_take')));
     await _settle(tester);
     final run = (await TowerSave.open()).loadRun()!;
@@ -222,6 +230,8 @@ void main() {
     expect(find.textContaining('+$towerGiftStanding'), findsWidgets);
     expect(find.textContaining('Standing 0/$towerOathStep'), findsWidgets);
     expect(find.text('Not now (+1 mark)'), findsOneWidget);
+    await tester.tap(find.byKey(const Key('tower_card_0')));
+    await tester.pump();
     await tester.tap(find.byKey(const Key('tower_take')));
     await _settle(tester);
     final run = (await TowerSave.open()).loadRun()!;

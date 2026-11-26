@@ -109,6 +109,9 @@ void main() {
     await _settle(t);
     expect(c.read(towerProvider).value!.run!.coins, lessThan(20));
     final after = c.read(towerProvider).value!.run!.coins;
+    // Banish works on the card in hand: none is until one is tapped.
+    await t.tap(find.byKey(const Key('tower_card_0')));
+    await _settle(t);
     await t.tap(find.byKey(const Key('tower_banish')));
     await _settle(t);
     await t.tap(find.byKey(const Key('tower_banish_yes')));
