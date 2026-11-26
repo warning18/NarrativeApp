@@ -177,9 +177,11 @@ class TowerTarotCard extends StatelessWidget {
                         gradient: LinearGradient(
                           begin: Alignment.topCenter,
                           end: Alignment.bottomCenter,
+                          // A light veil: the cut-paper vignettes are paper
+                          // and ink, and read as they are.
                           colors: [
-                            inkBlack.withValues(alpha: 0.25),
-                            inkBlack.withValues(alpha: 0.7),
+                            inkBlack.withValues(alpha: 0.0),
+                            inkBlack.withValues(alpha: 0.28),
                           ],
                         ),
                       ),

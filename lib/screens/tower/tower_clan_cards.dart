@@ -64,6 +64,7 @@ class TowerClanCard extends StatelessWidget {
     this.backdropId,
     this.standing,
     this.rarity,
+    this.vignette,
     this.lit = false,
   });
 
@@ -82,6 +83,11 @@ class TowerClanCard extends StatelessWidget {
 
   /// 0 to 4, the seal's pips; null draws none.
   final int? rarity;
+
+  /// Art's cut-paper vignette (assets/visuals/tower_cards/): it fills the
+  /// top band of the card edge to edge, with [icon] as a small badge on its
+  /// corner. Null keeps the small icon on a black plate.
+  final String? vignette;
   final bool lit;
 
   @override
@@ -104,83 +110,135 @@ class TowerClanCard extends StatelessWidget {
             color: inkPaper,
             borderRadius: BorderRadius.circular(towerCardRadius),
             border: Border.all(color: inkBlack, width: 2)),
-        child: Padding(
-          padding: const EdgeInsets.fromLTRB(12, 12, 12, 10),
+        child: ClipRRect(
+          borderRadius: BorderRadius.circular(towerCardRadius - 2),
           child: Column(children: [
-            Stack(alignment: Alignment.center, children: [
-              Container(
-                width: 96,
-                height: 96,
-                decoration: BoxDecoration(
-                    color: inkBlack,
-                    borderRadius: BorderRadius.circular(towerPlateRadius)),
-                alignment: Alignment.center,
-                child: SizedBox(
-                    width: 72,
-                    height: 72,
-                    child: FittedBox(fit: BoxFit.contain, child: icon)),
+            // Art's vignette fills the top band edge to edge.
+            if (vignette != null)
+              _VignetteBand(vignette: vignette!, icon: icon, rarity: rarity),
+            Expanded(
+              child: Padding(
+                padding:
+                    EdgeInsets.fromLTRB(12, vignette == null ? 12 : 8, 12, 10),
+                child: Column(children: [
+                  if (vignette == null)
+                    Stack(alignment: Alignment.center, children: [
+                      Container(
+                        width: 96,
+                        height: 96,
+                        decoration: BoxDecoration(
+                            color: inkBlack,
+                            borderRadius:
+                                BorderRadius.circular(towerPlateRadius)),
+                        alignment: Alignment.center,
+                        child: SizedBox(
+                            width: 72,
+                            height: 72,
+                            child: FittedBox(fit: BoxFit.contain, child: icon)),
+                      ),
+                      if (rarity != null)
+                        Align(
+                            alignment: Alignment.topRight,
+                            child: TowerSeal(rarity: rarity, size: 24)),
+                    ]),
+                  const SizedBox(height: 8),
+                  FittedBox(
+                    fit: BoxFit.scaleDown,
+                    child: Text(name.toUpperCase(),
+                        maxLines: 1,
+                        style: const TextStyle(
+                            fontFamily: InkFonts.display,
+                            fontSize: 17,
+                            height: 1.05,
+                            color: inkOnPaper)),
+                  ),
+                  const SizedBox(height: 4),
+                  // The clan's hue, once.
+                  Container(
+                      width: 44,
+                      height: 3,
+                      decoration: BoxDecoration(
+                          color: color,
+                          borderRadius: BorderRadius.circular(2))),
+                  const SizedBox(height: 6),
+                  FittedBox(
+                    fit: BoxFit.scaleDown,
+                    child: Row(mainAxisSize: MainAxisSize.min, children: [
+                      for (var i = 0; i < tags.length; i++) ...[
+                        if (i > 0) const SizedBox(width: 4),
+                        tags[i],
+                      ],
+                    ]),
+                  ),
+                  const SizedBox(height: 4),
+                  Text([clanName, if (standing != null) standing!].join(' · '),
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: prose.copyWith(
+                          fontSize: 12.5, fontWeight: FontWeight.w700)),
+                  if (ripple.isNotEmpty) ...[
+                    const SizedBox(height: 3),
+                    Text(ripple,
+                        textAlign: TextAlign.center,
+                        maxLines: 2,
+                        overflow: TextOverflow.ellipsis,
+                        style: prose.copyWith(
+                            color: inkOnPaper.withValues(alpha: 0.75))),
+                  ],
+                  const Spacer(),
+                  Container(
+                      height: 1, color: inkOnPaper.withValues(alpha: 0.25)),
+                  const SizedBox(height: 5),
+                  Text(greeting.isEmpty ? '' : '“$greeting”',
+                      textAlign: TextAlign.center,
+                      maxLines: 3,
+                      overflow: TextOverflow.ellipsis,
+                      style: prose.copyWith(fontStyle: FontStyle.italic)),
+                ]),
               ),
-              if (rarity != null)
-                Align(
-                    alignment: Alignment.topRight,
-                    child: TowerSeal(rarity: rarity, size: 24)),
-            ]),
-            const SizedBox(height: 8),
-            FittedBox(
-              fit: BoxFit.scaleDown,
-              child: Text(name.toUpperCase(),
-                  maxLines: 1,
-                  style: const TextStyle(
-                      fontFamily: InkFonts.display,
-                      fontSize: 17,
-                      height: 1.05,
-                      color: inkOnPaper)),
             ),
-            const SizedBox(height: 4),
-            // The clan's hue, once.
-            Container(
-                width: 44,
-                height: 3,
-                decoration: BoxDecoration(
-                    color: color, borderRadius: BorderRadius.circular(2))),
-            const SizedBox(height: 6),
-            FittedBox(
-              fit: BoxFit.scaleDown,
-              child: Row(mainAxisSize: MainAxisSize.min, children: [
-                for (var i = 0; i < tags.length; i++) ...[
-                  if (i > 0) const SizedBox(width: 4),
-                  tags[i],
-                ],
-              ]),
-            ),
-            const SizedBox(height: 4),
-            Text([clanName, if (standing != null) standing!].join(' · '),
-                maxLines: 1,
-                overflow: TextOverflow.ellipsis,
-                style: prose.copyWith(
-                    fontSize: 12.5, fontWeight: FontWeight.w700)),
-            if (ripple.isNotEmpty) ...[
-              const SizedBox(height: 3),
-              Text(ripple,
-                  textAlign: TextAlign.center,
-                  maxLines: 2,
-                  overflow: TextOverflow.ellipsis,
-                  style: prose.copyWith(
-                      color: inkOnPaper.withValues(alpha: 0.75))),
-            ],
-            const Spacer(),
-            Container(height: 1, color: inkOnPaper.withValues(alpha: 0.25)),
-            const SizedBox(height: 5),
-            Text(greeting.isEmpty ? '' : '“$greeting”',
-                textAlign: TextAlign.center,
-                maxLines: 3,
-                overflow: TextOverflow.ellipsis,
-                style: prose.copyWith(fontStyle: FontStyle.italic)),
           ]),
         ),
       ),
     );
   }
+}
+
+/// The top band of a clan card: Art's cut-paper vignette (96 x 64) edge to
+/// edge, the rarity's wax seal in its top corner and the gift's own icon as a
+/// small badge on the lower one.
+class _VignetteBand extends StatelessWidget {
+  const _VignetteBand(
+      {required this.vignette, required this.icon, required this.rarity});
+
+  final String vignette;
+  final Widget icon;
+  final int? rarity;
+
+  @override
+  Widget build(BuildContext context) => SizedBox(
+        height: 116,
+        width: double.infinity,
+        child: Stack(fit: StackFit.expand, children: [
+          Image.asset(vignette,
+              fit: BoxFit.cover,
+              filterQuality: FilterQuality.none,
+              errorBuilder: (_, __, ___) => const ColoredBox(color: inkDark)),
+          Positioned(
+            left: 6,
+            bottom: 6,
+            child: Container(
+                padding: const EdgeInsets.all(2),
+                decoration: BoxDecoration(
+                    color: inkBlack.withValues(alpha: 0.9),
+                    border: Border.all(color: inkPaper, width: 1)),
+                child: icon),
+          ),
+          if (rarity != null)
+            Positioned(
+                right: 6, top: 6, child: TowerSeal(rarity: rarity, size: 24)),
+        ]),
+      );
 }
 
 /// A clan's oath, as a wide row under the hand.
