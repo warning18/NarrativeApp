@@ -10,6 +10,8 @@ isn't reconstructable from git history alone.
 
 ## [2.10.20+1102]
 - The dice are thrown and roll instead of dropping on their face: five throws (from the left, from the right, dropped from above then rolling sideways, tossed from the bottom-left corner up the board, flung at the side edge and rolling back), a different one for each die and each roll, 1.7 s at normal speed. A die turns over its edges two full turns or more, fast at first and slowing, then a final rock. The shadow and the puff at each contact stay; reduce motion keeps the short drop.
+## [2.10.19+1101]
+- The Level Up screen is painted like the rest of the Tower: Art's plate behind the hero (shrine, anvil or yard, turning with the level), the red ribbon with the level, the hero's south frame. The three offers are paper cards with Art's stat symbols and the numbers each pick changes, before and after (from the same rules the fight uses), or "No effect in the Tower". The stats are one radar with the symbols at its corners and the pick ghosted over it in red dashes. The base stats show the pick's change too, and Take stays at the foot of the screen.
 
 ## [2.10.18+1100]
 
