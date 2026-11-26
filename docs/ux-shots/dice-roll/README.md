@@ -1,4 +1,4 @@
-# The dice thrown and rolling (picture, v2.10.19 to come)
+# The dice thrown and rolling (v2.10.20)
 
 User feedback on v2.10.16: the dice dropped on their face too fast. They are now thrown and roll, 1.7 s at normal speed (the speed setting still scales it): each die turns over its edges two full turns or more, fast at first and slowing over the last turn, then a final rock and rest. Shadow on the floor and a puff at each contact are kept. Reduce motion stays a short drop and settle.
 

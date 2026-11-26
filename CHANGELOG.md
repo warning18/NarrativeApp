@@ -8,6 +8,9 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [2.10.20+1102]
+- The dice are thrown and roll instead of dropping on their face: five throws (from the left, from the right, dropped from above then rolling sideways, tossed from the bottom-left corner up the board, flung at the side edge and rolling back), a different one for each die and each roll, 1.7 s at normal speed. A die turns over its edges two full turns or more, fast at first and slowing, then a final rock. The shadow and the puff at each contact stay; reduce motion keeps the short drop.
+
 ## [2.10.18+1100]
 
 - **Tower: no more three times the same reward (the user's report).** With a full die, every clan's gift became a rank-up of the same best skill on the die, so the three clan cards could offer one and the same reward. Each card on a table is now a different gift: the clans' rank-ups raise different skills on the die. **Always three:** a table never shows fewer cards either. When the draws come short, a clan left without a card offers another of its gifts (a skill that lands on a face, or a rank-up of another skill), then a boon card takes the place (a skill, a die, a spell); never a repeat. The same rule holds on boon floors (Fourth card's fourth on top), the stall's boon, rerolls and the landing table; a lone oath beside them stays as it was. Bot, 2000 climbs: a repeat on 24% of tables before, none now; about one clans' table in six needed a fill (mostly a die).
