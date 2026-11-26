@@ -1,0 +1,36 @@
+{
+  "group_id": "f0b0e705-5aa7-46ef-b656-1ab0abb0444a",
+  "states": [
+    {
+      "character": {
+        "id": "d99ac24a-ee73-448c-bdf4-dea1e3c29096",
+        "name": "Idle",
+        "prompt": "grim dark fantasy chibi, worn and weathered, ominous, muted desaturated colours, deep shadows, a gaunt inquisitor in a long black coat with a white collar and a blue sash, short grey hair, a glowing red brand mark scar on his cheek, a branding iron with a red-hot tip in one hand, a thin cruel smile, chibi",
+        "size": {
+          "width": 48,
+          "height": 48
+        },
+        "template_id": "mannequin",
+        "directions": 8,
+        "view": "side",
+        "created_at": "2026-11-26T15:17:24.496709+00:00"
+      },
+      "folder": "Idle",
+      "frames": {
+        "rotations": {
+          "south": "Idle/rotations/south.png",
+          "south-east": "Idle/rotations/south-east.png",
+          "east": "Idle/rotations/east.png",
+          "north-east": "Idle/rotations/north-east.png",
+          "north": "Idle/rotations/north.png",
+          "north-west": "Idle/rotations/north-west.png",
+          "west": "Idle/rotations/west.png",
+          "south-west": "Idle/rotations/south-west.png"
+        },
+        "animations": {}
+      }
+    }
+  ],
+  "export_version": "3.1",
+  "export_date": "2026-11-26T15:19:19.816514"
+}
