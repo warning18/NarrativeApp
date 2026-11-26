@@ -1849,6 +1849,36 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.en: 'Refuse',
     AppLanguage.fr: 'Refuser',
   },
+  'tower_bargain_refuse_text': {
+    AppLanguage.en: 'Nothing changes',
+    AppLanguage.fr: 'Rien ne change',
+  },
+  'tower_parley_fight_keep': {
+    AppLanguage.en: 'No roll: the fight as it is, its spoils kept',
+    AppLanguage.fr: 'Pas de jet : le combat tel quel, son butin gardé',
+  },
+  'tower_event_shortcut_door_text': {
+    AppLanguage.en: 'The floor as it is: no risk, no floor skipped',
+    AppLanguage.fr: 'L’étage tel quel : aucun risque, aucun étage sauté',
+  },
+  'tower_event_picks_note': {
+    AppLanguage.en:
+        'May change with your Level Up: {n} pick(s) still to take before this check.',
+    AppLanguage.fr:
+        'Peut changer avec votre montée de niveau : {n} choix à faire avant ce jet.',
+  },
+  'tower_event_roll_line': {
+    AppLanguage.en: '{roll} {mod} = {total}  ·  DC {dc}',
+    AppLanguage.fr: '{roll} {mod} = {total}  ·  DD {dc}',
+  },
+  'tower_event_passed': {
+    AppLanguage.en: 'Passed',
+    AppLanguage.fr: 'Réussi',
+  },
+  'tower_event_failed': {
+    AppLanguage.en: 'Failed',
+    AppLanguage.fr: 'Raté',
+  },
   'tower_event_shortcut_landed': {
     AppLanguage.en: 'The shortcut holds: you land on floor {to}',
     AppLanguage.fr: 'Le raccourci tient : vous arrivez à l’étage {to}',

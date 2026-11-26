@@ -8,6 +8,8 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [2.10.24+1106]
+- The Tower's event cards say what each button does. The shortcut, the parley and the bargain put each choice in its own box: the button, then what it asks (the stat, the bonus, the target and the odds) and what it leads to (the floor you land on, what you give up, the fight kept as it is, nothing changes) written under that button instead of one shared Win/Lose block. A setback that waits on a Level Up pick says "May change with your Level Up". A check (setback, parley) now plays the transparent d20: it tumbles, lands on the roll, shows "14 + 3 = 17 · DC 12" and Passed or Failed, then the result line; reduce motion sets the die down at once.
 ## [2.10.23+1105]
 
 - **Tower checks: the roll in full, for UX's d20 (no rule change).** A setback's or a parley's result now keeps the ability, the bonus and the target it was rolled with, so the screen can show the story's d20 roll; each event's choices also list their outcome (a potion, the floor you fall to or land on, a price, the fight) for the buttons to say plainly. The odds are unchanged.

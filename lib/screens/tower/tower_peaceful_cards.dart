@@ -21,7 +21,8 @@ import 'ink/ink_palette.dart';
 import '../../widgets/ink_chip.dart';
 import '../../widgets/ink_panel.dart';
 import '../../widgets/race_profession_cards.dart' show ClanDisc;
-import 'tower_event_card.dart' show TowerEventOutcome, TowerEventTag;
+import 'tower_event_card.dart'
+    show TowerChoiceBlock, TowerEventOutcome, TowerEventTag;
 import 'ink/ink_sprites.dart';
 import 'tower_look.dart' show TowerFoeFigure;
 
@@ -115,8 +116,9 @@ class _Head extends StatelessWidget {
   }
 }
 
-/// The two buttons of a choice, stacked full width: the first is the way
-/// the card pushes, the second the way out.
+/// The two choices of a card, stacked full width, each a button with what it
+/// costs and gives written under it (the first is the way the card pushes,
+/// the second the way out).
 class _Choice extends StatelessWidget {
   const _Choice({
     required this.firstKey,
@@ -125,6 +127,9 @@ class _Choice extends StatelessWidget {
     required this.secondKey,
     required this.second,
     required this.onSecond,
+    this.firstPre = const [],
+    this.firstLines = const [],
+    this.secondLines = const [],
   });
 
   final Key firstKey;
@@ -133,20 +138,21 @@ class _Choice extends StatelessWidget {
   final Key secondKey;
   final String second;
   final VoidCallback? onSecond;
+  final List<Widget> firstPre, firstLines, secondLines;
 
   @override
   Widget build(BuildContext context) {
     return Column(children: [
-      SizedBox(
-        width: double.infinity,
-        child:
+      TowerChoiceBlock(
+        button:
             FilledButton(key: firstKey, onPressed: onFirst, child: Text(first)),
+        pre: firstPre,
+        lines: firstLines,
       ),
-      const SizedBox(height: 8),
-      SizedBox(
-        width: double.infinity,
-        child: OutlinedButton(
+      TowerChoiceBlock(
+        button: OutlinedButton(
             key: secondKey, onPressed: onSecond, child: Text(second)),
+        lines: secondLines,
       ),
     ]);
   }
@@ -189,6 +195,31 @@ class TowerParleyCard extends ConsumerWidget {
   final VoidCallback? onTalk;
   final VoidCallback? onFight;
 
+  Widget _odds(WidgetRef ref, ThemeData theme, String signed) =>
+      Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+        Row(children: [
+          Text('${(chance * 100).round()}%',
+              key: const Key('tower_parley_chance'),
+              style: theme.textTheme.headlineSmall?.copyWith(color: inkPaper)),
+          const SizedBox(width: 10),
+          Expanded(child: InkBar(value: chance, height: 8)),
+        ]),
+        Text(
+            '${tr(ref, '${ability}_label')} · '
+            '${_sub(ref, 'tower_event_chance', {'mod': signed, 'dc': dc})}',
+            style: theme.textTheme.bodySmall),
+      ]);
+
+  List<Widget> _passFail(WidgetRef ref) => [
+        TowerEventOutcome(
+            Icons.check_circle_outline,
+            inkPaper,
+            tr(ref, 'tower_parley_pass'),
+            _sub(ref, 'tower_parley_pass_text', {'n': landsOn})),
+        TowerEventOutcome(Icons.sports_mma, inkRed,
+            tr(ref, 'tower_parley_fail'), tr(ref, 'tower_parley_fail_text')),
+      ];
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final theme = Theme.of(context);
@@ -220,7 +251,7 @@ class TowerParleyCard extends ConsumerWidget {
           const SizedBox(height: 8),
           ClanDisc(faction, size: 28, name: true),
         ],
-        const SizedBox(height: 10),
+        const SizedBox(height: 4),
         if (oathPass)
           Row(children: [
             const Icon(Icons.verified_outlined,
@@ -231,46 +262,43 @@ class TowerParleyCard extends ConsumerWidget {
                     key: const Key('tower_parley_sworn'),
                     style:
                         theme.textTheme.bodyMedium?.copyWith(color: inkPaper))),
-          ])
-        else ...[
-          Row(children: [
-            Text('${(chance * 100).round()}%',
-                key: const Key('tower_parley_chance'),
-                style:
-                    theme.textTheme.headlineSmall?.copyWith(color: inkPaper)),
-            const SizedBox(width: 10),
-            Expanded(
-              child: InkBar(value: chance, height: 8),
-            ),
           ]),
-          Text(
-              '${tr(ref, '${ability}_label')} · '
-              '${_sub(ref, 'tower_event_chance', {'mod': signed, 'dc': dc})}',
-              style: theme.textTheme.bodySmall),
-          TowerEventOutcome(
-              Icons.check_circle_outline,
-              inkPaper,
-              tr(ref, 'tower_parley_pass'),
-              _sub(ref, 'tower_parley_pass_text', {'n': landsOn})),
-          TowerEventOutcome(Icons.sports_mma, inkRed,
-              tr(ref, 'tower_parley_fail'), tr(ref, 'tower_parley_fail_text')),
-        ],
-        const SizedBox(height: 8),
-        Text(tr(ref, 'tower_parley_forgo'),
-            key: const Key('tower_parley_forgo'),
-            style: theme.textTheme.bodySmall?.copyWith(
-                fontStyle: FontStyle.italic,
-                color: theme.colorScheme.onSurfaceVariant)),
-        if (onTalk != null || onFight != null) ...[
-          const SizedBox(height: 12),
+        // Each way shows what it costs and what it gives under its own
+        // button: the talk its stat, odds and both branches, the fight what
+        // it keeps.
+        if (onTalk != null || onFight != null)
           _Choice(
             firstKey: const Key('tower_parley_talk'),
-            first: tr(ref, 'tower_parley_talk'),
+            first: oathPass
+                ? tr(ref, 'tower_parley_talk')
+                : '${tr(ref, 'tower_parley_talk')}  ·  '
+                    '${tr(ref, '${ability}_label')} $signed',
             onFirst: onTalk,
+            firstPre: oathPass ? const [] : [_odds(ref, theme, signed)],
+            firstLines: [
+              if (!oathPass) ..._passFail(ref),
+              Text(tr(ref, 'tower_parley_forgo'),
+                  key: const Key('tower_parley_forgo'),
+                  style: theme.textTheme.bodySmall?.copyWith(
+                      fontStyle: FontStyle.italic,
+                      color: theme.colorScheme.onSurfaceVariant)),
+            ],
             secondKey: const Key('tower_parley_fight'),
             second: tr(ref, 'tower_parley_fight'),
             onSecond: onFight,
-          ),
+            secondLines: [
+              TowerEventOutcome(Icons.check, inkPaper,
+                  tr(ref, 'tower_parley_fight_keep'), ''),
+            ],
+          )
+        else ...[
+          if (!oathPass) ...[_odds(ref, theme, signed), ..._passFail(ref)],
+          const SizedBox(height: 8),
+          Text(tr(ref, 'tower_parley_forgo'),
+              key: const Key('tower_parley_forgo'),
+              style: theme.textTheme.bodySmall?.copyWith(
+                  fontStyle: FontStyle.italic,
+                  color: theme.colorScheme.onSurfaceVariant)),
         ],
       ]),
     );
@@ -461,6 +489,20 @@ class TowerBargainCard extends ConsumerWidget {
   final VoidCallback? onAccept;
   final VoidCallback? onRefuse;
 
+  List<Widget> _lines(WidgetRef ref) => [
+        TowerEventOutcome(
+            Icons.north,
+            inkPaper,
+            tr(ref, 'tower_bargain_gain'),
+            _sub(ref, 'tower_bargain_gain_text',
+                {'stat': tr(ref, '${stat}_label').toLowerCase()})),
+        TowerEventOutcome(
+            Icons.favorite_border,
+            inkRed,
+            tr(ref, 'tower_bargain_cost'),
+            _sub(ref, 'tower_bargain_cost_text', {'n': maxHealthCost})),
+      ];
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final theme = Theme.of(context);
@@ -481,28 +523,22 @@ class TowerBargainCard extends ConsumerWidget {
                     ?.copyWith(color: theme.colorScheme.onSurfaceVariant)),
           ],
         ),
-        TowerEventOutcome(
-            Icons.north,
-            inkPaper,
-            tr(ref, 'tower_bargain_gain'),
-            _sub(ref, 'tower_bargain_gain_text',
-                {'stat': tr(ref, '${stat}_label').toLowerCase()})),
-        TowerEventOutcome(
-            Icons.favorite_border,
-            inkRed,
-            tr(ref, 'tower_bargain_cost'),
-            _sub(ref, 'tower_bargain_cost_text', {'n': maxHealthCost})),
-        if (onAccept != null || onRefuse != null) ...[
-          const SizedBox(height: 12),
+        if (onAccept != null || onRefuse != null)
           _Choice(
             firstKey: const Key('tower_bargain_accept'),
             first: tr(ref, 'tower_bargain_accept'),
             onFirst: onAccept,
+            firstLines: _lines(ref),
             secondKey: const Key('tower_bargain_refuse'),
             second: tr(ref, 'tower_bargain_refuse'),
             onSecond: onRefuse,
-          ),
-        ],
+            secondLines: [
+              TowerEventOutcome(Icons.check, inkPaper,
+                  tr(ref, 'tower_bargain_refuse_text'), ''),
+            ],
+          )
+        else
+          ..._lines(ref),
       ]),
     );
   }
