@@ -5,10 +5,13 @@
 // Since v1.475 they open as the ability radar (a tap on a corner says where
 // it comes from), the fight numbers under it, and a Detail tab that opens the
 // list of rows.
+import 'package:flutter/foundation.dart' show ValueListenable;
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../data/stat_pick_text.dart' show StatPickPreview, StatPreviewRow;
 import '../l10n/app_strings.dart';
+import '../screens/tower/ink/ink_palette.dart' show inkRed;
 import '../providers/player_session_provider.dart';
 import '../theme/stitched_ink.dart';
 import '../tutorial/guide_tour.dart';
@@ -18,7 +21,11 @@ import 'stat_sheet.dart';
 import '../theme/icon_sizes.dart';
 
 class LevelUpStats extends ConsumerStatefulWidget {
-  const LevelUpStats({super.key, this.tutorialTargets = false});
+  const LevelUpStats({super.key, this.tutorialTargets = false, this.preview});
+
+  /// What the picked offer changes (the Level Up screen): the damage and the
+  /// health under the radar then read before -> after.
+  final ValueListenable<StatPickPreview?>? preview;
 
   /// Marks the stats for the Level Up screen's tour.
   final bool tutorialTargets;
@@ -26,6 +33,8 @@ class LevelUpStats extends ConsumerStatefulWidget {
   @override
   ConsumerState<LevelUpStats> createState() => _LevelUpStatsState();
 }
+
+final ValueNotifier<StatPickPreview?> _noPreview = ValueNotifier(null);
 
 class _LevelUpStatsState extends ConsumerState<LevelUpStats> {
   /// The Detail tab: the whole list under the radar.
@@ -53,16 +62,28 @@ class _LevelUpStatsState extends ConsumerState<LevelUpStats> {
 
     // What the eight abilities add up to in a fight, in a line under the
     // radar: the radar only draws the abilities.
-    Widget fighting(String key, IconData icon, String value, String label) =>
+    Widget fighting(String key, IconData icon, String value, String label,
+            [String? after]) =>
         Expanded(
           child: Column(
             key: Key(key),
             children: [
               Icon(icon, size: IconSize.s16, color: ink.gold),
               const SizedBox(height: 2),
-              Text(value,
+              // Lining figures (the display face draws a 0 as a circle).
+              Text.rich(
+                  TextSpan(children: [
+                    TextSpan(text: value),
+                    if (after != null)
+                      TextSpan(
+                          text: ' \u2192 $after',
+                          style: const TextStyle(
+                              color: inkRed, fontWeight: FontWeight.w700)),
+                  ]),
                   style: theme.textTheme.titleSmall?.copyWith(
-                      fontFamily: InkFonts.display, color: ink.gold)),
+                      fontFamily: InkFonts.prose,
+                      fontFeatures: const [FontFeature.liningFigures()],
+                      color: ink.gold)),
               Text(label,
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
@@ -74,6 +95,41 @@ class _LevelUpStatsState extends ConsumerState<LevelUpStats> {
     // While a pick waits, the picker's own radar is the one on the page (it
     // draws the pick over the hero's shape): this one is for when none waits.
     final showRadar = session.pendingStatPicks <= 0;
+    final fightingRow = ValueListenableBuilder<StatPickPreview?>(
+      valueListenable: widget.preview ?? _noPreview,
+      builder: (context, pick, _) {
+        num moved(String key, num now) {
+          for (final r in pick?.rows ?? const <StatPreviewRow>[]) {
+            if (r.labelKey == key) return now + (r.after - r.before);
+          }
+          return now;
+        }
+
+        final dmg = moved('stat_preview_damage', session.baseDamage);
+        final hp = moved('stat_preview_max_health', session.maxHealth);
+        return Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            fighting(
+                'level_up_fight_damage',
+                Icons.gavel,
+                '${session.baseDamage}',
+                tr(ref, 'base_damage_label'),
+                dmg != session.baseDamage ? '${dmg.round()}' : null),
+            fighting('level_up_fight_armor', Icons.shield,
+                '${session.baseArmor}', tr(ref, 'base_armor_label')),
+            fighting(
+                'level_up_fight_health',
+                Icons.favorite,
+                '${session.currentHealth}/${session.maxHealth}',
+                tr(ref, 'max_health_label'),
+                hp != session.maxHealth
+                    ? '${session.currentHealth}/${hp.round()}'
+                    : null),
+          ],
+        );
+      },
+    );
     final radar = Column(
       children: [
         if (showRadar) ...[
@@ -103,20 +159,7 @@ class _LevelUpStatsState extends ConsumerState<LevelUpStats> {
                   ?.copyWith(color: ink.ash, fontStyle: FontStyle.italic)),
           const SizedBox(height: 10),
         ],
-        Row(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            fighting('level_up_fight_damage', Icons.gavel,
-                '${session.baseDamage}', tr(ref, 'base_damage_label')),
-            fighting('level_up_fight_armor', Icons.shield,
-                '${session.baseArmor}', tr(ref, 'base_armor_label')),
-            fighting(
-                'level_up_fight_health',
-                Icons.favorite,
-                '${session.currentHealth}/${session.maxHealth}',
-                tr(ref, 'max_health_label')),
-          ],
-        ),
+        fightingRow,
       ],
     );
 

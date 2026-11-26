@@ -10,11 +10,22 @@ import '../providers/player_session_provider.dart';
 import '../theme/stitched_ink.dart';
 import '../tutorial/guide_tour.dart';
 import '../tutorial/tutorial_topics.dart';
+import '../screens/tower/ink/ink_palette.dart';
+import '../data/stat_pick_text.dart' show StatPickPreview;
+import '../widgets/fight_sprites.dart' show heroWalkName;
+import '../widgets/level_up_art.dart';
 import '../widgets/level_up_stats.dart';
 import '../widgets/stat_pick_picker.dart';
 
-class LevelUpScreen extends ConsumerWidget {
-  const LevelUpScreen({super.key, this.doneLabelKey = 'level_up_done'});
+class LevelUpScreen extends ConsumerStatefulWidget {
+  const LevelUpScreen({
+    super.key,
+    this.doneLabelKey = 'level_up_done',
+    this.tower = false,
+  });
+
+  /// The Tower hero's level-up: the preview reads the Tower's checks.
+  final bool tower;
 
   /// The string key of the button that closes the screen once no pick is
   /// waiting (v1.910, the user's report from the Tower: after the pick the
@@ -23,11 +34,26 @@ class LevelUpScreen extends ConsumerWidget {
   final String doneLabelKey;
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final session = ref.watch(playerSessionProvider);
-    final theme = Theme.of(context);
-    final ink = InkColors.of(context);
+  ConsumerState<LevelUpScreen> createState() => _LevelUpScreenState();
+}
 
+class _LevelUpScreenState extends ConsumerState<LevelUpScreen> {
+  /// What the Take button does while an offer is picked (null: nothing yet).
+  final ValueNotifier<VoidCallback?> _take = ValueNotifier(null);
+
+  /// What the picked offer changes, for the stats under the panel.
+  final ValueNotifier<StatPickPreview?> _preview = ValueNotifier(null);
+
+  @override
+  void dispose() {
+    _take.dispose();
+    _preview.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final session = ref.watch(playerSessionProvider);
     final xpRatio = session.xpToNextLevel == 0
         ? 0.0
         : (session.currentXP / session.xpToNextLevel).clamp(0.0, 1.0);
@@ -48,22 +74,36 @@ class LevelUpScreen extends ConsumerWidget {
                 style: FilledButton.styleFrom(
                     minimumSize: const Size.fromHeight(48)),
                 onPressed: () => Navigator.of(context).maybePop(),
-                child: Text(tr(ref, doneLabelKey)),
+                child: Text(tr(ref, widget.doneLabelKey)),
               ),
             )
-          : null,
+          // While a pick waits, its red Take button stays at the foot.
+          : SafeArea(
+              minimum: const EdgeInsets.fromLTRB(8, 6, 8, 10),
+              child: ValueListenableBuilder<VoidCallback?>(
+                valueListenable: _take,
+                builder: (context, take, _) => LevelUpTakeButton(
+                    label: tr(ref, 'stat_pick_take'), onPressed: take),
+              ),
+            ),
       body: TutorialTrigger(
         topic: TutorialTopic.levelUp,
         child: ListView(
-          padding: const EdgeInsets.all(16),
+          padding: EdgeInsets.zero,
           children: [
-            // The level and the road to the next.
+            // Art's plate (one of three by level), the ribbon, the hero.
+            LevelUpStage(
+              level: session.level,
+              heroName: heroWalkName(session.raceId, session.professionId),
+              levelLabel: tr(ref, 'level_field_label'),
+            ),
+            // The pick, on paper in an ink frame.
             Container(
-              padding: const EdgeInsets.all(14),
+              margin: const EdgeInsets.fromLTRB(8, 0, 8, 0),
+              padding: const EdgeInsets.all(10),
               decoration: BoxDecoration(
-                color: theme.colorScheme.surfaceContainerLow,
-                borderRadius: BorderRadius.circular(4),
-                border: Border.all(color: ink.seam),
+                color: inkPaper,
+                border: Border.all(color: inkDeep, width: 3),
               ),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -72,52 +112,57 @@ class LevelUpScreen extends ConsumerWidget {
                     crossAxisAlignment: CrossAxisAlignment.end,
                     children: [
                       Text(
-                        '${tr(ref, 'level_field_label')} ${session.level}',
-                        style: theme.textTheme.headlineSmall
-                            ?.copyWith(fontFamily: InkFonts.display),
+                        '${tr(ref, 'xp_label')} ${session.currentXP} / ${session.xpToNextLevel}',
+                        style: const TextStyle(
+                            fontFamily: InkFonts.prose,
+                            fontSize: 12,
+                            color: inkSlate,
+                            fontFeatures: [FontFeature.liningFigures()]),
                       ),
                       const Spacer(),
-                      Text(
-                        '${tr(ref, 'xp_label')} ${session.currentXP} / ${session.xpToNextLevel}',
-                        style: theme.textTheme.labelMedium
-                            ?.copyWith(color: ink.ash),
+                      // With more than one pick waiting, a quiet count; with
+                      // one, nothing (the tour's first line still points
+                      // here).
+                      TutorialTarget(
+                        id: 'levelUp.points',
+                        child: session.pendingStatPicks > 1
+                            ? Text(
+                                tr(ref, 'stat_picks_count').replaceAll(
+                                    '{n}', '${session.pendingStatPicks}'),
+                                key: const Key('level_up_points'),
+                                style: const TextStyle(
+                                    fontFamily: InkFonts.prose,
+                                    fontSize: 12,
+                                    color: inkSlate),
+                              )
+                            : const SizedBox.shrink(),
                       ),
                     ],
                   ),
-                  const SizedBox(height: 8),
+                  const SizedBox(height: 4),
                   ClipRRect(
-                    borderRadius: BorderRadius.circular(2),
                     child: LinearProgressIndicator(
                       value: xpRatio,
-                      minHeight: 8,
-                      color: ink.gold,
-                      backgroundColor: ink.seam,
+                      minHeight: 6,
+                      color: inkRed,
+                      backgroundColor: inkSlate.withValues(alpha: 0.25),
                     ),
                   ),
-                  // With more than one pick waiting, a quiet count; with one,
-                  // nothing (the tour's first line still points here).
-                  TutorialTarget(
-                    id: 'levelUp.points',
-                    child: session.pendingStatPicks > 1
-                        ? Padding(
-                            padding: const EdgeInsets.only(top: 8),
-                            child: Text(
-                              tr(ref, 'stat_picks_count').replaceAll(
-                                  '{n}', '${session.pendingStatPicks}'),
-                              key: const Key('level_up_points'),
-                              style: theme.textTheme.bodySmall
-                                  ?.copyWith(color: ink.ash),
-                            ),
-                          )
-                        : const SizedBox.shrink(),
-                  ),
+                  const SizedBox(height: 12),
+                  StatPickPicker(
+                      art: true,
+                      tower: widget.tower,
+                      takeSlot: _take,
+                      previewSlot: _preview),
                 ],
               ),
             ),
-            const SizedBox(height: 18),
-            const StatPickPicker(),
             const SizedBox(height: 12),
-            const LevelUpStats(tutorialTargets: true),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16),
+              child: LevelUpStats(tutorialTargets: true, preview: _preview),
+            ),
+            const SizedBox(height: 16),
           ],
         ),
       ),
