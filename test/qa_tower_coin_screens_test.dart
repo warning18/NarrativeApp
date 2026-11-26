@@ -177,6 +177,9 @@ void main() {
       }
       await whole('tower_coin_chip', 'the table', tappable: false);
       await whole('tower_reroll', 'the table');
+      // Banish works on the card in hand: none is until one is tapped.
+      await tester.tap(find.byKey(const Key('tower_card_0')));
+      await settle();
       await whole('tower_banish', 'the table');
       await tester.tap(find.byKey(const Key('tower_banish')));
       await settle();

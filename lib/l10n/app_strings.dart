@@ -2249,6 +2249,11 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.en: 'Take',
     AppLanguage.fr: 'Prendre',
   },
+  'tower_swipe_hint': {
+    AppLanguage.en: 'Tap a card, or swipe it up to take it.',
+    AppLanguage.fr:
+        'Touchez une carte, ou glissez-la vers le haut pour la prendre.',
+  },
   'tower_refuse': {
     AppLanguage.en: 'Leave them all (+1 mark)',
     AppLanguage.fr: 'Ne rien prendre (+1 marque)',
