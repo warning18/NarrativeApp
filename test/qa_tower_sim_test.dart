@@ -22,6 +22,10 @@
 // slot: of a comma list only the first known id is worn), and
 // TOWER_BOT_COINS (default full; stall) how the bot spends its coins; the
 // guards wear none and spend in full.
+// TOWER_RULES (default towerRulesLive, 2: Tower XP, the Level Up card table
+// and the loot table; 1, the stat picks and the spoils chest, Core's rules
+// PR, docs/simulation/tower-levelup-loot.md) is the rules the batch and the
+// guards play.
 import 'dart:convert';
 import 'dart:io';
 
@@ -29,6 +33,7 @@ import 'package:flutter_test/flutter_test.dart';
 
 import 'package:narrative_data_app/data/tower/tower_bot.dart';
 import 'package:narrative_data_app/data/tower/tower_coins.dart';
+import 'package:narrative_data_app/data/tower/tower_levelup_loot.dart';
 import 'package:narrative_data_app/data/tower/tower_progress.dart';
 import 'package:narrative_data_app/data/tower/tower_run.dart';
 import 'package:narrative_data_app/data/tower/tower_tables.dart';
@@ -116,6 +121,10 @@ final _perks = towerWornPerks([
 final _coins = TowerBotCoins.values
     .byName(Platform.environment['TOWER_BOT_COINS'] ?? TowerBotCoins.full.name);
 
+/// The rules the batch and the guards play (TOWER_RULES).
+final _rules =
+    int.tryParse(Platform.environment['TOWER_RULES'] ?? '') ?? towerRulesLive;
+
 /// The first seeds of the in-suite batch (the full batch is TOWER_SEEDS).
 const _guardSeeds = 500;
 
@@ -135,7 +144,8 @@ List<TowerRun> _play(int first, int count, TowerProgress progress,
             events: events ?? _events,
             heat: heat,
             perks: perks,
-            coins: coins),
+            coins: coins,
+            rules: _rules),
     ];
 
 int _median(List<int> values) {
@@ -169,6 +179,13 @@ Map<String, dynamic> _json(TowerRun run) => {
       'stallBoons': run.stallBoons.length,
       'bought': [for (final ids in run.bought.values) ...ids],
       'perks': run.perks,
+      'rules': run.rules,
+      'levelUps':
+          run.rules >= 2 ? towerLevelUpsTaken(run) : run.statPicks.length,
+      'loot': {
+        for (final kind in {for (final c in run.loot.values) c.kind.name})
+          kind: run.loot.values.where((c) => c.kind.name == kind).length,
+      },
     };
 
 void main() {
@@ -199,6 +216,7 @@ void main() {
         'heat': _heat,
         'perks': _perks,
         'coins': _coins.name,
+        'rules': _rules,
         'cases': {
           for (final e in cases.entries)
             e.key: [for (final r in e.value) _json(r)],

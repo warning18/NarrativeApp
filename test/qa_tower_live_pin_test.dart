@@ -6,7 +6,8 @@
 // the live curve (a foe's scale, a floor's extras, the heal between floors)
 // shows here even when the bands still hold.
 //
-// The bot plays the LIVE version (towerEventsLive), so it moves only on the
+// The bot plays the LIVE version (towerEventsLive, and towerRulesLive since
+// Core's rules PR), so it moves only on the
 // day that constant does (2 adds the quiet floors): the test then asks for
 // the new numbers, on purpose. (It was named qa_tower_events_off_pin_test.dart
 // while the events were off.)
@@ -30,7 +31,11 @@ _Pin _measure(TowerProgress progress) {
   var top = 0, floor20 = 0, floorSum = 0;
   for (var seed = 1; seed <= 500; seed++) {
     final run = playTowerRun(
-        seed: seed, data: data, progress: progress, events: towerEventsLive);
+        seed: seed,
+        data: data,
+        progress: progress,
+        events: towerEventsLive,
+        rules: towerRulesLive);
     if (run.status == TowerStatus.won) top++;
     if (run.floorReached >= 20) floor20++;
     floorSum += run.floorReached;
@@ -92,8 +97,16 @@ void main() {
   // and 128 / 309 / 10812. Always three (a short table filled: a clan's
   // other gift, else a die or a spell): 53 / 209 / 9174 and
   // 121 / 305 / 10771 before.
-  const none = (top: 53, floor20: 210, floorSum: 9176);
-  const all = (top: 119, floor20: 305, floorSum: 10754);
+  // Rules 2 (Core's rules PR, docs/simulation/tower-levelup-loot.md, the
+  // user's calls): the live Tower plays Tower XP and the Level Up card
+  // table (a clan's gift, a skill or rank-up, a die or spell; +1 to a
+  // skill's stat, at most +4 a stat and +10 a climb), the loot table in
+  // place of the spoils chest, no boon floors nor clans' tables, the foes
+  // ×0.85 and the calling pass (towerLootFoeScale,
+  // towerLootProfessionScale). On rules 1 these were 53 / 210 / 9176 and
+  // 119 / 305 / 10754.
+  const none = (top: 66, floor20: 253, floorSum: 10117);
+  const all = (top: 109, floor20: 307, floorSum: 11127);
 
   test('the live Tower, no unlocks, is the pinned curve', () {
     final m = _measure(const TowerProgress());
