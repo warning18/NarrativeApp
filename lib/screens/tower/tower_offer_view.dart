@@ -9,6 +9,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../combat/dice_faces.dart' show skillDisplayName;
 import '../../data/tower/tower_coins.dart';
 import '../../data/tower/tower_hero.dart';
+import '../../data/tower/tower_levelup_loot.dart' show towerBundleOf;
 import '../../data/tower/tower_rewards.dart';
 import '../../data/tower/tower_run.dart';
 import '../../data/tower/tower_tables.dart';
@@ -101,6 +102,24 @@ TowerCardText towerCardText(WidgetRef ref, TowerReward reward, {int tier = 0}) {
           tr(ref, 'tower_kind_oath'),
           ref.watch(factionsProvider)[reward.id]?.shortFor(lang) ?? reward.id,
           tr(ref, 'tower_oath_text'));
+    // Rules 2's loot cards (Core's placeholder words; UX draws them).
+    case TowerRewardKind.gear:
+      final item = row(itemsSchema, reward.id);
+      return TowerCardText(tr(ref, 'tower_kind_gear'),
+          '${item['itemName'] ?? reward.id}', '${item['description'] ?? ''}');
+    case TowerRewardKind.bundle:
+      final bundle = towerBundleOf(reward.id);
+      return TowerCardText(
+          tr(ref, 'tower_kind_bundle'),
+          tr(ref, 'tower_bundle_name'),
+          tr(ref, 'tower_bundle_text')
+              .replaceAll('{potions}', '${bundle.potions}')
+              .replaceAll('{antidotes}', '${bundle.antidotes}'));
+    case TowerRewardKind.purse:
+      return TowerCardText(
+          tr(ref, 'tower_kind_purse'),
+          tr(ref, 'tower_purse_name').replaceAll('{n}', '${reward.amount}'),
+          '');
   }
 }
 

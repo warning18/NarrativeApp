@@ -327,6 +327,14 @@ class _TowerFloorScreenState extends ConsumerState<_TowerFloorBody> {
                         )
                       : choosing
                           ? TowerOfferView(
+                              // Rules 2 deals tables one after another on a
+                              // floor (loot, Level Ups): each its own view.
+                              key: run.rules >= 2
+                                  ? ValueKey('tower_table_${run.floor}_'
+                                      '${run.table?.name}_'
+                                      '${run.levelUps[run.floor]?.length ?? 0}_'
+                                      '${run.rerolls[run.floor] ?? 0}')
+                                  : null,
                               run: run,
                               data: data,
                               event: event,
