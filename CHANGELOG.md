@@ -8,6 +8,8 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [2.10.30+1112]
+- A card chosen on a Tower table (loot, Level Up, a clan's offer) no longer counts at once: Take or a swipe up opens a sheet with the card large, and only Confirm takes it; Change goes back to the cards with nothing taken. The Level Up sheet shows the +1 stat chip. The floor rail on the left now stays put when the cards open, so the screen no longer jumps and the Tower is never hidden (the radar and the buttons fit beside it). "1 coin" and "1 pièce" are no longer plural.
 ## [2.10.28+1110]
 
 - **Tower: a resumed climb no longer seems to roll its check again.** After a setback or a parley, going back to the menu and pressing Continue climb tumbled the d20 again each time, as if a new test were made. The roll was always the same and never applied twice; now a result read back shows its die already set down, and only a check just made tumbles.

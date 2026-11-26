@@ -57,7 +57,7 @@ void main() {
     expect(find.byType(TowerStyledCard), findsNWidgets(3));
     expect(find.byKey(const Key('tower_refuse')), findsOneWidget);
     expect(find.byKey(const Key('level_up_ribbon')), findsNothing);
-    await tester.tap(find.byKey(const Key('tower_card_2')));
+    await tester.tap(find.byKey(const Key('tower_card_1')));
     await tester.pump(const Duration(milliseconds: 400));
     await tester.tap(find.byKey(const Key('tower_take')));
     for (var i = 0; i < 10; i++) {
@@ -74,9 +74,9 @@ void main() {
     await tester.tap(find.byKey(const Key('tower_change')));
     await tester.pump(const Duration(milliseconds: 300));
     expect(find.byKey(const Key('tower_pick_confirm')), findsNothing);
-    expect(find.byKey(const Key('tower_card_2')), findsOneWidget);
+    expect(find.byKey(const Key('tower_card_1')), findsOneWidget);
     // Pick again and Confirm: now it counts.
-    await tester.tap(find.byKey(const Key('tower_card_2')));
+    await tester.tap(find.byKey(const Key('tower_card_1')));
     await tester.pump(const Duration(milliseconds: 400));
     await tester.tap(find.byKey(const Key('tower_take')));
     await tester.pump(const Duration(milliseconds: 400));
@@ -87,6 +87,6 @@ void main() {
       await tester.pump(const Duration(milliseconds: 100));
     }
     saved = (await TowerSave.open()).loadRun()!;
-    expect(saved.loot[6]?.kind, TowerRewardKind.purse);
+    expect(saved.loot[6]?.kind, TowerRewardKind.bundle);
   });
 }

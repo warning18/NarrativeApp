@@ -4,7 +4,6 @@
 // A run is moved only through lib/data/tower/ and the controller; the fight
 // itself is played by the launcher (tower_providers.dart).
 import '../../widgets/fit_title.dart';
-import '../../theme/motion.dart';
 import 'dart:async';
 import 'dart:math';
 
@@ -75,33 +74,8 @@ class _TowerFloorScreenState extends ConsumerState<_TowerFloorBody> {
   /// the choice only counts then, and Change goes back to the cards.
   int? _pending;
 
-  /// While the cards show, the rail gives its room to them once the head has
-  /// walked to its notch (the cards are three tarot cards wide, v2.3).
-  bool _railOut = false;
-  Timer? _railTimer;
-
-  void _railFor(bool cardsUp) {
-    if (cardsUp) {
-      if (_railOut || _railTimer != null) return;
-      _railTimer =
-          Timer(towerStepDuration + const Duration(milliseconds: 150), () {
-        _railTimer = null;
-        if (mounted) setState(() => _railOut = true);
-      });
-    } else {
-      _railTimer?.cancel();
-      _railTimer = null;
-      if (_railOut) {
-        WidgetsBinding.instance.addPostFrameCallback((_) {
-          if (mounted) setState(() => _railOut = false);
-        });
-      }
-    }
-  }
-
   @override
   void dispose() {
-    _railTimer?.cancel();
     super.dispose();
   }
 
@@ -229,19 +203,6 @@ class _TowerFloorScreenState extends ConsumerState<_TowerFloorBody> {
     final choosing = run.status == TowerStatus.choosing;
     // The floor's event (off for a run that plays without them).
     final event = towerEventOf(run, data);
-    // The rail gives its room to the cards of the offer, and to a stall's, a
-    // bargain's or a parley's, once the head has walked to its notch.
-    final eventCards = !choosing &&
-        event != null &&
-        event.accepted == null &&
-        (event.kind == TowerEventKind.merchant ||
-            event.kind == TowerEventKind.bargain ||
-            event.kind == TowerEventKind.parley);
-    _railFor((choosing &&
-            (run.rules >= 2 || _spoilsTaken == run.floor) &&
-            run.offer.isNotEmpty) ||
-        _pending != null ||
-        eventCards);
     // How the last event moved the run, for the rail: an arrow down a fall,
     // up a skip, ending on this floor.
     final last = event?.result;
@@ -305,10 +266,10 @@ class _TowerFloorScreenState extends ConsumerState<_TowerFloorBody> {
               // the top (a Row would centre a short one).
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
-                AnimatedContainer(
-                  duration: Motion.base,
-                  curve: Curves.easeInOut,
-                  width: _railOut ? 0 : towerLadderWidth + 12,
+                // The rail keeps its place and its width on every screen of the
+                // floor, the card choices included: nothing jumps when they open.
+                SizedBox(
+                  width: towerLadderWidth + 12,
                   child: ClipRect(
                     child: OverflowBox(
                       alignment: Alignment.centerLeft,

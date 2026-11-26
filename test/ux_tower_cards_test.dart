@@ -136,9 +136,10 @@ void main() {
 
       kinds(cfg.$4, 'as the cards open');
       await shoot('cards-open');
-      // The head has walked: the rail gives its room to the cards.
+      // The head has walked: the rail stays (v2.10.30), so the cards keep the
+      // layout they opened with.
       await settle(18);
-      kinds(cfg.$5, 'with the rail gone');
+      kinds(cfg.$4, 'with the rail kept');
       await shoot('cards');
       // A pick round trip: hold the second card, take it: the cards go and
       // the run moves on.
