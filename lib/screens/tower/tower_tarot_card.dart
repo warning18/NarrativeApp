@@ -102,6 +102,38 @@ TextStyle _display(double s, Color c) => TextStyle(
 TextStyle _prose(double s, Color c) =>
     TextStyle(fontFamily: InkFonts.prose, fontSize: s, height: 1.2, color: c);
 
+/// An icon with a 1 px ink outline (the icon drawn in ink, shifted a pixel to
+/// each side, under itself): a pale icon reads on a paper badge.
+class TowerOutlinedIcon extends StatelessWidget {
+  const TowerOutlinedIcon({super.key, required this.child});
+
+  final Widget child;
+
+  @override
+  Widget build(BuildContext context) {
+    const shifts = [
+      Offset(-1, 0),
+      Offset(1, 0),
+      Offset(0, -1),
+      Offset(0, 1),
+      Offset(-1, -1),
+      Offset(1, -1),
+      Offset(-1, 1),
+      Offset(1, 1),
+    ];
+    return Stack(clipBehavior: Clip.none, children: [
+      for (final d in shifts)
+        Transform.translate(
+          offset: d,
+          child: ColorFiltered(
+              colorFilter: const ColorFilter.mode(inkBlack, BlendMode.srcIn),
+              child: child),
+        ),
+      child,
+    ]);
+  }
+}
+
 /// The picture in a card's corner or frame: an asset, or [fallback].
 Widget towerCardPicture(String? asset, double size, {Widget? fallback}) =>
     asset == null
@@ -125,6 +157,7 @@ class TowerTarotCard extends StatelessWidget {
     required this.vignette,
     required this.icon,
     this.rarity,
+    this.lightBadge = true,
     this.held = false,
     this.dim = false,
     this.onTap,
@@ -138,6 +171,10 @@ class TowerTarotCard extends StatelessWidget {
   final String vignette;
   final Widget icon;
   final int? rarity;
+
+  /// The icon's badge on the vignette: paper for a skill, black for a die or
+  /// a spell (their icons are light).
+  final bool lightBadge;
   final bool held, dim;
   final VoidCallback? onTap;
   final Widget? tag, footer;
@@ -147,7 +184,7 @@ class TowerTarotCard extends StatelessWidget {
   Widget build(BuildContext context) {
     // A footer (a price, a standing) takes its own band under the words.
     final height = width * 1.75 + (footer != null ? _footerBand : 0);
-    Widget card = SizedBox(
+    final Widget card = SizedBox(
       width: width,
       height: height,
       child: DecoratedBox(
@@ -172,35 +209,22 @@ class TowerTarotCard extends StatelessWidget {
                         filterQuality: FilterQuality.none,
                         errorBuilder: (_, __, ___) =>
                             const ColoredBox(color: inkDark)),
-                    DecoratedBox(
-                      decoration: BoxDecoration(
-                        gradient: LinearGradient(
-                          begin: Alignment.topCenter,
-                          end: Alignment.bottomCenter,
-                          colors: [
-                            inkBlack.withValues(alpha: 0.25),
-                            inkBlack.withValues(alpha: 0.7),
-                          ],
-                        ),
-                      ),
-                    ),
                     Positioned(
                       left: 5,
                       top: 5,
                       child: Container(
                           padding: const EdgeInsets.all(3),
-                          color: inkBlack.withValues(alpha: 0.85),
-                          child: icon),
+                          color: lightBadge
+                              ? inkPaper
+                              : inkBlack.withValues(alpha: 0.85),
+                          child: lightBadge
+                              ? TowerOutlinedIcon(child: icon)
+                              : icon),
                     ),
-                    Positioned(
-                      right: 5,
-                      top: 5,
-                      child: Text(kind.toUpperCase(),
-                          style: _prose(8, inkPaper).copyWith(
-                              letterSpacing: 0.6, fontWeight: FontWeight.w700)),
-                    ),
-                    Positioned(
-                        left: 5, bottom: 5, child: TowerSeal(rarity: rarity)),
+                    // A die or a spell has no rarity: no blank seal on the art.
+                    if (rarity != null)
+                      Positioned(
+                          left: 5, bottom: 5, child: TowerSeal(rarity: rarity)),
                     if (tag != null)
                       Positioned(right: 4, bottom: 6, child: tag!),
                   ]),
@@ -223,23 +247,38 @@ class TowerTarotCard extends StatelessWidget {
                     // The words at a readable size, cut by whole lines with an
                     // ellipsis (never a half line); the card in hand shows all of
                     // them under the row.
-                    child: LayoutBuilder(builder: (context, box) {
-                      final style = _prose(9.5, inkPaper);
-                      // One line's real height (the font's own), for whole lines.
-                      final probe = TextPainter(
-                        text: TextSpan(text: 'Ag', style: style),
-                        textDirection: TextDirection.ltr,
-                        textScaler: MediaQuery.textScalerOf(context),
-                      )..layout();
-                      final line = probe.height;
-                      probe.dispose();
-                      final lines = math.max(1, (box.maxHeight / line).floor());
-                      return Text(text,
-                          maxLines: lines,
-                          overflow: TextOverflow.ellipsis,
-                          textAlign: TextAlign.center,
-                          style: style);
-                    }),
+                    child: Column(children: [
+                      // The kind (it sat over the vignette): under the art,
+                      // where the picture stays as drawn.
+                      Text(kind.toUpperCase(),
+                          maxLines: 1,
+                          style: _prose(8, inkPaper.withValues(alpha: 0.7))
+                              .copyWith(
+                                  letterSpacing: 0.6,
+                                  fontWeight: FontWeight.w700)),
+                      const SizedBox(height: 2),
+                      Expanded(
+                        child: LayoutBuilder(builder: (context, box) {
+                          final style = _prose(9.5, inkPaper);
+                          // One line's real height (the font's own), for
+                          // whole lines.
+                          final probe = TextPainter(
+                            text: TextSpan(text: 'Ag', style: style),
+                            textDirection: TextDirection.ltr,
+                            textScaler: MediaQuery.textScalerOf(context),
+                          )..layout();
+                          final line = probe.height;
+                          probe.dispose();
+                          final lines =
+                              math.max(1, (box.maxHeight / line).floor());
+                          return Text(text,
+                              maxLines: lines,
+                              overflow: TextOverflow.ellipsis,
+                              textAlign: TextAlign.center,
+                              style: style);
+                        }),
+                      ),
+                    ]),
                   ),
                 ),
                 if (footer != null)
@@ -260,7 +299,6 @@ class TowerTarotCard extends StatelessWidget {
         ]),
       ),
     );
-    if (dim) card = Opacity(opacity: 0.72, child: card);
     return GestureDetector(
       behavior: HitTestBehavior.opaque,
       onTap: onTap,

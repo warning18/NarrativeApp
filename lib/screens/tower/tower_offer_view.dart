@@ -276,6 +276,8 @@ class _TowerOfferViewState extends ConsumerState<TowerOfferView> {
             vignette: art,
             icon: icon,
             rarity: rarity,
+            lightBadge: reward.kind == TowerRewardKind.skill ||
+                reward.kind == TowerRewardKind.rankUp,
             held: held,
             dim: dimmed,
             tag: tag,
@@ -387,9 +389,24 @@ class _TowerOfferViewState extends ConsumerState<TowerOfferView> {
                   flag: flagOf(reward.clan, colour),
                   icon: towerCardPicture(
                       towerCardIcon(isSkill ? 'skill' : 'die', reward.id),
-                      IconSize.s48,
+                      IconSize.s32,
                       fallback: Icon(Icons.auto_awesome,
-                          size: IconSize.s48, color: colour)),
+                          size: IconSize.s32, color: colour)),
+                  // Art's cut-paper vignette fills the card's top: a skill's
+                  // by its element, a spell's by its family, a die's own.
+                  vignette: towerCardVignette(
+                      isSkill
+                          ? 'skill'
+                          : reward.kind == TowerRewardKind.spell
+                              ? 'spell'
+                              : 'die',
+                      variant: isSkill
+                          ? '${row['element'] ?? ''}'
+                          : reward.kind == TowerRewardKind.spell
+                              ? towerSpellFamily('${row['effect'] ?? ''}')
+                              : null),
+                  lightBadge: reward.kind == TowerRewardKind.skill ||
+                      reward.kind == TowerRewardKind.rankUp,
                   name: t.name,
                   tags: [
                     towerClanTag(t.kind.split(' · ').first),
