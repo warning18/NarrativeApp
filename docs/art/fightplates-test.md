@@ -1,3 +1,5 @@
+> NOT WANTED (the user, 26 November): the current fight backgrounds stay.
+
 # Fight backgrounds in cut paper, test of 3 (Art, 26 November 2026)
 
 3 generations (cap 4), text only, 180 x 320, `art/pixellab-fightplates/gen.py`, snapped to the five tones (`art/pixellab-cutpaper/snap.py`): a band floor (a tall stone tower hall with a shaft of cream light), a warden (a cellar chamber with an iron gate, chains and a red lantern), a boss (a vast throne hall with torn red banners and a dark doorway). Files `art/pixellab-fightplates/final/fight_{band,warden,boss}.png`; sheet `docs/art/boards/fightplates-test.png` (each with a foe south frame at the top, the warrior's north frame at the bottom, and the boss panel and the slim strip as paper blocks, like the v2.10.9 layout).

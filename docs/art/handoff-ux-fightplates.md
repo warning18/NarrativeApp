@@ -1,3 +1,5 @@
+> **NOT WANTED (the user, 26 November: "No, the actual backgrounds were better.").** Do not hand these plates to UX and do not generate more. They are kept in the repo only as a record; the current backgrounds stay. 27 generations were spent on the batch (3 for the test, 19 first tries and 5 redraws for the rest).
+
 # Hand-off to UX: the Tower fight backgrounds in cut paper (Art, 26 November 2026)
 
 The user approved the test and the rest. 22 plates, 180 x 320 PNG, cut paper in the Tower plates' five tones (ink 090A14, dark 28283A, paper shadow C9C2A6, paper E7E1CD, deep red A53030), no text, no people. Files `art/pixellab-fightplates/handoff/fight_<name>.png`; suggested target `assets/visuals/tower_fight/` (UX's call). Sheet `docs/art/boards/fightplates-all.png` (each plate with a foe's south frame at the top, the warrior's north frame at the bottom and the boss panel and the slim strip as paper blocks, like the v2.10.9 layout; the 3 dice plates below).

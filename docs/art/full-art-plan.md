@@ -74,3 +74,5 @@ Total about **542 generations** of the 1573 left, about a third of the cycle's a
 - Row 6 (card frames) shrank to the rounded card alone; nothing to generate for the other five. Wave 1 is now the rounded frame (about 4 generations) plus the ink kit (row 7, still waiting for the user).
 - Waves 2 to 5 are done (see `docs/art/icons-wave2.md` to `icons-wave5a.md`, `chars7.md`, `dark-redo.md`, `dark-batch2.md`). Looks: items stay in the lighter chibi colour look; foes, shop stalls, keepers and shop scenes are dark; chests keep the lighter ones (`docs/art/style-brut.md`, "Which look for what"). Balance 1083.
 - Still to do: wave 1 (rounded frame, ink kit), wave 6 (fight plates, ~39), waves 7 and 8 (scenes, ~95), each on the user's OK.
+
+- Fight plates (row 13, wave 6): **cancelled** by the user on 26 November ("the actual backgrounds were better"). 27 generations were spent on a 22-plate cut-paper test batch (kept, not handed off: `docs/art/handoff-ux-fightplates.md`). Nothing more is planned for fight plates.
