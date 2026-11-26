@@ -253,6 +253,8 @@ class _TowerOfferViewState extends ConsumerState<TowerOfferView> {
         vignette: art,
         icon: icon,
         rarity: rarity,
+        lightBadge: reward.kind == TowerRewardKind.skill ||
+            reward.kind == TowerRewardKind.rankUp,
         held: held,
         dim: !held,
         tag: tag,
@@ -376,6 +378,8 @@ class _TowerOfferViewState extends ConsumerState<TowerOfferView> {
                           : reward.kind == TowerRewardKind.spell
                               ? towerSpellFamily('${row['effect'] ?? ''}')
                               : null),
+                  lightBadge: reward.kind == TowerRewardKind.skill ||
+                      reward.kind == TowerRewardKind.rankUp,
                   name: t.name,
                   tags: [
                     towerClanTag(t.kind.split(' · ').first),

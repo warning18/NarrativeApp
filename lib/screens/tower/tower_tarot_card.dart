@@ -125,6 +125,7 @@ class TowerTarotCard extends StatelessWidget {
     required this.vignette,
     required this.icon,
     this.rarity,
+    this.lightBadge = true,
     this.held = false,
     this.dim = false,
     this.onTap,
@@ -138,6 +139,10 @@ class TowerTarotCard extends StatelessWidget {
   final String vignette;
   final Widget icon;
   final int? rarity;
+
+  /// The icon's badge on the vignette: paper for a skill, black for a die or
+  /// a spell (their icons are light).
+  final bool lightBadge;
   final bool held, dim;
   final VoidCallback? onTap;
   final Widget? tag, footer;
@@ -177,7 +182,9 @@ class TowerTarotCard extends StatelessWidget {
                       top: 5,
                       child: Container(
                           padding: const EdgeInsets.all(3),
-                          color: inkBlack.withValues(alpha: 0.85),
+                          color: lightBadge
+                              ? inkPaper
+                              : inkBlack.withValues(alpha: 0.85),
                           child: icon),
                     ),
                     // A die or a spell has no rarity: no blank seal on the art.

@@ -65,6 +65,7 @@ class TowerClanCard extends StatelessWidget {
     this.standing,
     this.rarity,
     this.vignette,
+    this.lightBadge = true,
     this.lit = false,
   });
 
@@ -88,6 +89,9 @@ class TowerClanCard extends StatelessWidget {
   /// top band of the card edge to edge, with [icon] as a small badge on its
   /// corner. Null keeps the small icon on a black plate.
   final String? vignette;
+
+  /// The icon's badge: paper for a skill, black for a die or a spell (their icons are light).
+  final bool lightBadge;
   final bool lit;
 
   @override
@@ -115,7 +119,11 @@ class TowerClanCard extends StatelessWidget {
           child: Column(children: [
             // Art's vignette fills the top band edge to edge.
             if (vignette != null)
-              _VignetteBand(vignette: vignette!, icon: icon, rarity: rarity),
+              _VignetteBand(
+                  vignette: vignette!,
+                  icon: icon,
+                  rarity: rarity,
+                  light: lightBadge),
             Expanded(
               child: Padding(
                 padding:
@@ -209,11 +217,15 @@ class TowerClanCard extends StatelessWidget {
 /// small badge on the lower one.
 class _VignetteBand extends StatelessWidget {
   const _VignetteBand(
-      {required this.vignette, required this.icon, required this.rarity});
+      {required this.vignette,
+      required this.icon,
+      required this.rarity,
+      required this.light});
 
   final String vignette;
   final Widget icon;
   final int? rarity;
+  final bool light;
 
   @override
   Widget build(BuildContext context) => SizedBox(
@@ -230,8 +242,9 @@ class _VignetteBand extends StatelessWidget {
             child: Container(
                 padding: const EdgeInsets.all(2),
                 decoration: BoxDecoration(
-                    color: inkBlack.withValues(alpha: 0.9),
-                    border: Border.all(color: inkPaper, width: 1)),
+                    color: light ? inkPaper : inkBlack.withValues(alpha: 0.9),
+                    border: Border.all(
+                        color: light ? inkBlack : inkPaper, width: 1)),
                 child: icon),
           ),
           if (rarity != null)
