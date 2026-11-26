@@ -481,7 +481,8 @@ class _FloorIntro extends ConsumerWidget {
             if (event case final e?) ...[
               const SizedBox(height: 10),
               if (e.result case final r? when r.to == run.floor)
-                TowerEventResultLine(r),
+                TowerEventResultLine(r,
+                    onShown: ref.read(towerProvider.notifier).markEventShown),
               if (e.revisit) ...[
                 const SizedBox(height: 6),
                 const TowerRevisitLine(),

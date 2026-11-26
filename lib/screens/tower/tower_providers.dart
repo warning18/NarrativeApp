@@ -175,6 +175,15 @@ class TowerController extends StateNotifier<AsyncValue<TowerState>> {
     if (!identical(seen, run)) await setRun(seen);
   }
 
+  /// The last event's d20 shown (towerMarkEventShown), saved at once: a
+  /// resumed climb sets it down instead of rolling it again.
+  Future<void> markEventShown() async {
+    final run = _now.run;
+    if (run == null) return;
+    final shown = towerMarkEventShown(run);
+    if (!identical(shown, run)) await setRun(shown);
+  }
+
   /// [run] ended: its marks banked, the run cleared. Returns the record
   /// with them.
   Future<TowerProgress> end(TowerRun run) async {
