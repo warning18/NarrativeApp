@@ -1,3 +1,5 @@
+> **RECORD ONLY, NOT WANTED (the user, 26 November 2026, after the A/B/C fight mock-ups): version B, today's Tower backgrounds, stays.** Versions A (raw cut paper) and C (new) are kept as a record; do not hand them to UX and generate nothing more for them.
+
 # The 14 Tower backgrounds: three versions side by side (Art, 26 November 2026)
 
 The user: "Keep only the right version of each, then compare them to the actual background and create a 3rd version. Put all 3 versions aside each other."

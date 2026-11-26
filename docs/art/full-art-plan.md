@@ -84,3 +84,5 @@ The user: "Keep the actual background and fight style." Not wanted or on hold, f
 - **The pre-fight screen proposal** and its **3 glyphs** (lantern, gavel): not wanted (`docs/art/prefight-proposal.md`); no generation.
 - **The ink kit** (row 7, wave 1): on hold (`docs/art/inkkit.md`, `art/pixellab-inkkit/`, 18 generations); not handed to UX.
 Open rows now: the rounded card frame (row 6) and the scenes (rows 14, waves 7 and 8) still wait for the user. Balance 992; no spending until a new ask from the Manager.
+
+- **Tower backgrounds, three versions** (26 November): the user picked **B, today's backgrounds**, after the A/B/C fight mock-ups. Versions A (raw cut paper) and C (new, 18 generations) are a record only, not wanted (`docs/art/tower-v3.md`, `art/pixellab-cutpaper/tower-v3/NOT_WANTED.md`). No more generations until a new ask from the Manager; balance 974.
