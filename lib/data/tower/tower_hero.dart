@@ -114,7 +114,7 @@ class TowerData {
 /// rolled (simDieValue, a run saved before).
 SimCharacter towerFreshHero(String raceId, String professionId,
     Iterable<String> unlockIds, TowerData data,
-    {int unlocksOwned = 0, bool bag = false}) {
+    {int unlocksOwned = 0, bool bag = false, int rules = 1}) {
   final hero = SimCharacter.create(
     raceId: raceId,
     race: data.races[raceId] as Map<String, dynamic>? ?? const {},
@@ -141,9 +141,11 @@ SimCharacter towerFreshHero(String raceId, String professionId,
   final people = towerPeoplePoints[raceId] ?? 0;
   if (people > 0) hero.addAbilities({hero.preferredStat: people});
   if (unlocksOwned > 0) {
-    hero.maxHealth =
-        (hero.maxHealth * (1 + towerHealthPerUnlockOf(raceId) * unlocksOwned))
-            .round();
+    hero.maxHealth = (hero.maxHealth *
+            (1 +
+                towerHealthPerUnlockFor(raceId, professionId, rules: rules) *
+                    unlocksOwned))
+        .round();
     hero.currentHealth = hero.maxHealth;
   }
   return hero;
@@ -320,18 +322,20 @@ SimCharacter towerHeroOf(TowerRun run, TowerData data) {
   final keys = <String>[
     '${run.seed}|${run.raceId}|${run.professionId}|'
         '${run.startUnlocks.join(',')}|${run.unlocksOwned}|${run.taken[0]}'
-        '${bag ? '|bag' : ''}',
+        '${bag ? '|bag' : ''}'
+        // Rules 3's hero differs from the start (its unlocks' health).
+        '${run.rules >= towerSurvivalRules ? '|r${run.rules}' : ''}',
   ];
   final picksAt = <List<int>>[const []];
   // Rules 2 (tower_levelup_loot.dart): each floor's level from the Tower XP
   // paid up to it; no stat picks.
   final rules2 = run.rules >= 2;
   final levelAt = <int>[1];
-  var level = 1, pick = 0, xp = towerXpStart;
+  var level = 1, pick = 0, xp = towerXpStartOf(run.rules);
   for (var floor = 1; floor <= run.heightCleared; floor++) {
     if (rules2) {
       xp += run.xp[floor] ?? 0;
-      level = max(level, towerXpLevelOf(xp));
+      level = max(level, towerXpLevelOf(xp, rules: run.rules));
       levelAt.add(level);
       picksAt.add(const []);
       keys.add('${keys.last}#$floor:x${run.xp[floor] ?? 0}:'
@@ -365,7 +369,7 @@ SimCharacter towerHeroOf(TowerRun run, TowerData data) {
     }
   } else {
     hero = towerFreshHero(run.raceId, run.professionId, run.startUnlocks, data,
-        unlocksOwned: run.unlocksOwned, bag: bag);
+        unlocksOwned: run.unlocksOwned, bag: bag, rules: run.rules);
     // A clan sworn at the start: its oath on floor 0 (towerStart).
     if (run.taken[0] case final oath?) {
       towerApplyReward(hero, oath, data, bag: bag);
@@ -389,11 +393,11 @@ SimCharacter towerHeroOf(TowerRun run, TowerData data) {
       for (final card in run.levelUps[floor] ?? const <TowerReward?>[]) {
         if (card == null) continue;
         towerApplyReward(hero, card, data, bag: bag);
-        towerNudgeOn(hero, card, data);
+        towerNudgeOn(hero, card, data, rules: run.rules);
       }
       if (run.stallBoons[floor] case final boon?) {
         towerApplyReward(hero, boon, data, bag: bag);
-        towerNudgeOn(hero, boon, data);
+        towerNudgeOn(hero, boon, data, rules: run.rules);
       }
       _keep(built, keys[floor], hero);
       continue;
