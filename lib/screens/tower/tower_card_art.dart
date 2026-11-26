@@ -28,6 +28,10 @@ const Map<String, String> towerCardArt = {
   'spell:Ward': '$_dir/spell_ward.png',
   'spell:Heal': '$_dir/spell_heal.png',
   'spell:Hex': '$_dir/spell_hex.png',
+  // The floor loot (rules 2): gear, a bundle of supplies, a purse.
+  'gear': '$_dir/loot_equipment.png',
+  'bundle': '$_dir/loot_item.png',
+  'purse': '$_dir/loot_money.png',
 };
 
 /// Art's folder (assets/visuals/tower_cards/).

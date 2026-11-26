@@ -16,6 +16,7 @@ import '../../data/tower/tower_coins.dart';
 import '../../data/tower/tower_dice.dart';
 import '../../data/tower/tower_events.dart';
 import '../../data/tower/tower_hero.dart';
+import '../../data/tower/tower_rewards.dart' show TowerReward;
 import '../../data/tower/tower_run.dart';
 import '../../data/tower/tower_tables.dart';
 import '../../gamedata/db_schema.dart';
@@ -70,6 +71,10 @@ class _TowerFloorScreenState extends ConsumerState<_TowerFloorBody> {
 
   /// The floor whose spoils sheet was taken: its boon or oath comes next.
   int _spoilsTaken = 0;
+
+  /// Rules 2: the loot table's summary after it was answered (the floor, the
+  /// card taken or null for none), until Continue.
+  (int, TowerReward?)? _lootSummary;
 
   /// While the cards show, the rail gives its room to them once the head has
   /// walked to its notch (the cards are three tarot cards wide, v2.3).
@@ -162,7 +167,14 @@ class _TowerFloorScreenState extends ConsumerState<_TowerFloorBody> {
 
   Future<void> _pick(TowerRun run, TowerData data, int? index) async {
     final next = towerPick(run, data, index);
+    final lootTable = run.rules >= 2 && run.table == TowerTableKind.loot;
+    final lootCard = index == null || index < 0 || index >= run.offer.length
+        ? null
+        : run.offer[index];
     await ref.read(towerProvider.notifier).setRun(next);
+    if (lootTable && mounted) {
+      setState(() => _lootSummary = (run.floor, lootCard));
+    }
     // A rival's skip lands two floors up and the skipped floor's level-ups
     // wait there: their pick opens on the landing floor.
     if (!next.isOver &&
@@ -233,7 +245,10 @@ class _TowerFloorScreenState extends ConsumerState<_TowerFloorBody> {
         (event.kind == TowerEventKind.merchant ||
             event.kind == TowerEventKind.bargain ||
             event.kind == TowerEventKind.parley);
-    _railFor((choosing && _spoilsTaken == run.floor && run.offer.isNotEmpty) ||
+    _railFor((choosing &&
+            (run.rules >= 2 || _spoilsTaken == run.floor) &&
+            run.offer.isNotEmpty) ||
+        _lootSummary != null ||
         eventCards);
     // How the last event moved the run, for the rail: an arrow down a fall,
     // up a skip, ending on this floor.
@@ -316,57 +331,68 @@ class _TowerFloorScreenState extends ConsumerState<_TowerFloorBody> {
                   ),
                 ),
                 Expanded(
-                  child: choosing && _spoilsTaken != run.floor
-                      ? TowerSpoilsView(
+                  child: _lootSummary != null
+                      ? TowerLootSummary(
                           run: run,
+                          data: data,
+                          floor: _lootSummary!.$1,
+                          taken: _lootSummary!.$2,
                           coinsGained: towerCoinsFor(towerFloorOf(run, data)),
-                          onTake: () => run.offer.isEmpty &&
-                                  event?.kind != TowerEventKind.test
-                              ? _pick(run, data, null)
-                              : setState(() => _spoilsTaken = run.floor),
+                          onContinue: () => setState(() => _lootSummary = null),
                         )
-                      : choosing
-                          ? TowerOfferView(
-                              // Rules 2 deals tables one after another on a
-                              // floor (loot, Level Ups): each its own view.
-                              key: run.rules >= 2
-                                  ? ValueKey('tower_table_${run.floor}_'
-                                      '${run.table?.name}_'
-                                      '${run.levelUps[run.floor]?.length ?? 0}_'
-                                      '${run.rerolls[run.floor] ?? 0}')
-                                  : null,
+                      : choosing && run.rules < 2 && _spoilsTaken != run.floor
+                          ? TowerSpoilsView(
                               run: run,
-                              data: data,
-                              event: event,
-                              onPick: (i) => _pick(run, data, i),
+                              coinsGained:
+                                  towerCoinsFor(towerFloorOf(run, data)),
+                              onTake: () => run.offer.isEmpty &&
+                                      event?.kind != TowerEventKind.test
+                                  ? _pick(run, data, null)
+                                  : setState(() => _spoilsTaken = run.floor),
                             )
-                          : run.stallOffer.isNotEmpty
+                          : choosing
                               ? TowerOfferView(
-                                  key: const Key('tower_stall_boon_table'),
-                                  run: run.copyWith(offer: run.stallOffer),
-                                  data: data,
-                                  onPick: (i) => i == null
-                                      ? _leaveStore(run)
-                                      : ref
-                                          .read(towerProvider.notifier)
-                                          .takeStallBoon(i),
-                                )
-                              : _FloorIntro(
+                                  // Rules 2 deals tables one after another on a
+                                  // floor (loot, Level Ups): each its own view.
+                                  key: run.rules >= 2
+                                      ? ValueKey('tower_table_${run.floor}_'
+                                          '${run.table?.name}_'
+                                          '${run.levelUps[run.floor]?.length ?? 0}_'
+                                          '${run.rerolls[run.floor] ?? 0}')
+                                      : null,
                                   run: run,
                                   data: data,
                                   event: event,
-                                  busy: _busy,
-                                  onFight: () => _fight(run, data),
-                                  onParley: (talk) => _parley(run, data, talk),
-                                  onBuy: (id) => _buy(run, data, id),
-                                  onLeaveStore: () => _leaveStore(run),
-                                  onBargain: (take) =>
-                                      _bargain(run, data, take),
-                                  onShortcut: (take) => ref
-                                      .read(towerProvider.notifier)
-                                      .setRun(
-                                          towerChooseShortcut(run, data, take)),
-                                ),
+                                  onPick: (i) => _pick(run, data, i),
+                                )
+                              : run.stallOffer.isNotEmpty
+                                  ? TowerOfferView(
+                                      key: const Key('tower_stall_boon_table'),
+                                      run: run.copyWith(offer: run.stallOffer),
+                                      data: data,
+                                      onPick: (i) => i == null
+                                          ? _leaveStore(run)
+                                          : ref
+                                              .read(towerProvider.notifier)
+                                              .takeStallBoon(i),
+                                    )
+                                  : _FloorIntro(
+                                      run: run,
+                                      data: data,
+                                      event: event,
+                                      busy: _busy,
+                                      onFight: () => _fight(run, data),
+                                      onParley: (talk) =>
+                                          _parley(run, data, talk),
+                                      onBuy: (id) => _buy(run, data, id),
+                                      onLeaveStore: () => _leaveStore(run),
+                                      onBargain: (take) =>
+                                          _bargain(run, data, take),
+                                      onShortcut: (take) => ref
+                                          .read(towerProvider.notifier)
+                                          .setRun(towerChooseShortcut(
+                                              run, data, take)),
+                                    ),
                 ),
               ],
             ),
