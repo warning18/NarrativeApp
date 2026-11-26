@@ -478,12 +478,16 @@ class _RivalCard extends ConsumerWidget {
 /// the verdict and the result line show. Reduce motion sets the die down at
 /// once, as the die does everywhere.
 class TowerEventResultLine extends ConsumerStatefulWidget {
-  const TowerEventResultLine(this.result, {super.key, this.onShown});
+  const TowerEventResultLine(this.result,
+      {super.key, this.rolls = true, this.onShown});
 
   final TowerEventResult result;
 
-  /// Called once the roll has been shown (landed, or set down at once), so
-  /// it is saved as seen and a resume never tumbles it again.
+  /// The d20 tumbles (a result just made); false sets it down at once (a
+  /// result read back on Continue climb: rolled once, never seemingly again).
+  final bool rolls;
+
+  /// Called once the die has landed after its tumble.
   final VoidCallback? onShown;
 
   @override
@@ -493,19 +497,9 @@ class TowerEventResultLine extends ConsumerStatefulWidget {
 
 class _TowerEventResultLineState extends ConsumerState<TowerEventResultLine> {
   late bool _landed = widget.result.roll == null ||
-      widget.result.shown ||
+      !widget.rolls ||
       WidgetsBinding
           .instance.platformDispatcher.accessibilityFeatures.disableAnimations;
-
-  @override
-  void initState() {
-    super.initState();
-    // Shown at once (no roll, reduce motion): saved as seen now.
-    if (_landed && !widget.result.shown) {
-      WidgetsBinding.instance
-          .addPostFrameCallback((_) => widget.onShown?.call());
-    }
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -595,8 +589,8 @@ class _TowerEventResultLineState extends ConsumerState<TowerEventResultLine> {
                 roll: check.roll,
                 success: result.passed,
                 size: 110,
-                // Rolled once: a result already shown is set down.
-                rolling: !result.shown,
+                // Rolled once: a result read back is set down.
+                rolling: widget.rolls,
                 onLanded: () {
                   if (mounted) setState(() => _landed = true);
                   widget.onShown?.call();

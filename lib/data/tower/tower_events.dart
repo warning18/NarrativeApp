@@ -100,7 +100,6 @@ class TowerEventResult {
     this.bought = const [],
     this.paid = 0,
     this.healed = 0,
-    this.shown = false,
   });
 
   factory TowerEventResult.fromJson(Map<String, dynamic> json) =>
@@ -119,7 +118,6 @@ class TowerEventResult {
         ],
         paid: (json['paid'] as num?)?.toInt() ?? 0,
         healed: (json['healed'] as num?)?.toInt() ?? 0,
-        shown: json['shown'] == true,
       );
 
   final TowerEventKind kind;
@@ -155,28 +153,6 @@ class TowerEventResult {
   final int paid;
   final int healed;
 
-  /// The result's d20 already shown to the player (towerMarkEventShown,
-  /// JSON 'shown'): a climb resumed shows the roll set down, never tumbling
-  /// again. Display only: not part of [==].
-  final bool shown;
-
-  /// This result with its roll shown.
-  TowerEventResult asShown() => TowerEventResult(
-        kind: kind,
-        roll: roll,
-        total: total,
-        ability: ability,
-        modifier: modifier,
-        dc: dc,
-        passed: passed,
-        from: from,
-        to: to,
-        bought: bought,
-        paid: paid,
-        healed: healed,
-        shown: true,
-      );
-
   Map<String, dynamic> toJson() => {
         'kind': kind.name,
         if (roll != null) 'roll': roll,
@@ -190,7 +166,6 @@ class TowerEventResult {
         if (bought.isNotEmpty) 'bought': bought,
         if (paid != 0) 'paid': paid,
         if (healed != 0) 'healed': healed,
-        if (shown) 'shown': true,
       };
 
   @override
@@ -499,15 +474,6 @@ _Drawn? _storeDrawn(int seed, int floor) {
 /// met again, not a shortcut's landing card), when [next] climbs on the
 /// very next floor (a fall or a skip passes the store by, like the
 /// spoils). [next] as it is otherwise.
-/// [run] with its last event's roll shown (TowerEventResult.shown, saved):
-/// the result is rolled once, when the event resolves, and a resume only
-/// shows it again, set down. [run] itself when there is none or it was.
-TowerRun towerMarkEventShown(TowerRun run) {
-  final last = run.lastEvent;
-  if (last == null || last.shown) return run;
-  return run.copyWith(lastEvent: last.asShown());
-}
-
 TowerRun towerOpenStore(TowerRun chose, TowerRun next) {
   if (chose.events < towerPeacefulEvents ||
       chose.status != TowerStatus.choosing ||

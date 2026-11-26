@@ -1,9 +1,9 @@
 // A floor's check is rolled once (the user's feedback: menu, then Continue
 // climb, showed the "catch yourself" test again, every time). The roll is
 // rolled when the event resolves and saved in TowerRun.lastEvent; a resume
-// (the save read again) never rolls it again nor applies it again, and once
-// its d20 has been shown (towerMarkEventShown, saved) a resume sets the die
-// down instead of tumbling it.
+// (the save read again) never rolls it again nor applies it again, and only
+// a result just made by a move tumbles its d20 (TowerController.eventIsNew):
+// one read back is set down.
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
@@ -98,30 +98,27 @@ void main() {
     }
   });
 
-  test('the roll shown is saved, once, and leaves the result as it was',
-      () async {
+  test('only a result made by a move is new; a resumed one is not', () async {
     final run = runs.first;
-    final shown = towerMarkEventShown(run);
-    expect(shown.lastEvent!.shown, isTrue);
-    expect(shown.lastEvent, run.lastEvent); // Display only.
-    expect(identical(towerMarkEventShown(shown), shown), isTrue);
-    final back = TowerRun.fromJson(
-        jsonDecode(jsonEncode(shown.toJson())) as Map<String, dynamic>);
-    expect(back.lastEvent!.shown, isTrue);
-    expect(back.lastEvent, run.lastEvent);
-    // A save from before reads as not shown yet.
-    expect(TowerEventResult.fromJson(run.lastEvent!.toJson()).shown, isFalse);
-
     SharedPreferences.setMockInitialValues({});
     final prefs = await SharedPreferences.getInstance();
     await TowerSave(prefs).saveRun(run);
-    final controller = await opened();
-    await controller.markEventShown();
-    final again = (await opened()).state.value!.run!;
-    expect(again.lastEvent!.shown, isTrue);
-    expect(again.health, run.health);
-    expect(again.potions, run.potions);
-    expect(again.floor, run.floor);
+    final saved = prefs.getString(towerRunPrefsKey);
+    // Read back (Continue climb): not new, nothing saved.
+    final resumed = await opened();
+    expect(resumed.eventIsNew(run.lastEvent!), isFalse);
+    // A move that leaves the last event as it was: still not new.
+    await resumed.setRun(run.copyWith(potions: run.potions));
+    expect(resumed.eventIsNew(run.lastEvent!), isFalse);
+    expect(prefs.getString(towerRunPrefsKey), saved);
+    // A move that makes the result: new until its die is shown.
+    final fresh = await opened();
+    await fresh.setRun(run.copyWith(clearLastEvent: true));
+    await fresh.setRun(run);
+    expect(fresh.eventIsNew(run.lastEvent!), isTrue);
+    fresh.markEventShown();
+    expect(fresh.eventIsNew(run.lastEvent!), isFalse);
+    expect(prefs.getString(towerRunPrefsKey), saved);
   });
 
   Widget host(Widget child) => ProviderScope(
@@ -130,8 +127,7 @@ void main() {
         ),
       );
 
-  testWidgets('a result not yet shown rolls once and reports it',
-      (tester) async {
+  testWidgets('a result just made rolls once and reports it', (tester) async {
     SharedPreferences.setMockInitialValues({});
     final result = runs.first.lastEvent!;
     var calls = 0;
@@ -143,13 +139,13 @@ void main() {
     expect(calls, 1);
   });
 
-  testWidgets('a result already shown is set down, not rolled again',
+  testWidgets('a result read back is set down, not rolled again',
       (tester) async {
     SharedPreferences.setMockInitialValues({});
-    final result = runs.first.lastEvent!.asShown();
+    final result = runs.first.lastEvent!;
     var calls = 0;
-    await tester
-        .pumpWidget(host(TowerEventResultLine(result, onShown: () => calls++)));
+    await tester.pumpWidget(host(
+        TowerEventResultLine(result, rolls: false, onShown: () => calls++)));
     expect(tester.widget<D20Roll>(find.byType(D20Roll)).rolling, isFalse);
     await tester.pump();
     // The roll line shows at once.
