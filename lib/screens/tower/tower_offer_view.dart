@@ -14,6 +14,7 @@ import '../../data/tower/tower_run.dart';
 import '../../data/tower/tower_tables.dart';
 import '../../gamedata/db_schema.dart';
 import '../../l10n/app_locale.dart';
+import '../../theme/motion.dart';
 import '../../l10n/app_strings.dart';
 import '../../providers/clans_provider.dart';
 import '../../widgets/clan_offer_gifts.dart';
@@ -574,7 +575,7 @@ class _TowerOfferViewState extends ConsumerState<TowerOfferView> {
         ignoring: _done,
         child: AnimatedOpacity(
             opacity: _done ? 0.35 : 1,
-            duration: const Duration(milliseconds: 200),
+            duration: Motion.base,
             child: ListView(
               // The clans' table is tall: its Not now stays built below the fold.
               scrollCacheExtent: const ScrollCacheExtent.pixels(1600),
