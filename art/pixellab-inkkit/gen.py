@@ -11,6 +11,11 @@ P={ # id: (w,h, text)
 'bar':(64,16,CP+"a thin horizontal progress bar frame: a black outline and a dark navy empty inside, rounded ends, no fill"),
 'seal':(32,32,CP+"a round red wax seal button: a deep red disc with a thick black ring around it and a darker inner ring, plain, no emblem"),
 }
+P.update({
+'chip2':(48,24,CP+"a small badge: a short rounded rectangle, solid plain cream colour everywhere, with a thin black outline, nothing inside"),
+'tab2':(48,24,CP+"a folder tab shape like a menu tab handle: a cream paper shape with a rounded top, a black outline, wider at the bottom than the top, one flat solid cream colour"),
+'bar2':(64,16,CP+"a long thin rounded rectangle frame: a thick black outline and a solid dark navy inside, completely empty, no red, no fill, no highlight"),
+})
 only=[x for x in sys.argv[1].split(',') if x] if len(sys.argv)>1 else list(P);only=only or list(P)
 seeds=[int(s) for s in sys.argv[2].split(',')] if len(sys.argv)>2 else [1,2]
 def b64(im):
