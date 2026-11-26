@@ -1,7 +1,9 @@
 // The Tower's rules 2 (Core's rules PR, docs/simulation/
 // tower-levelup-loot.md): Tower XP and the Level Up card table, the stat
 // nudges, the loot table, the oath kept as today, the perks re-mapped, and
-// TowerRun.rules (a save without it plays out on rules 1).
+// TowerRun.rules (a save without it plays out on rules 1). Rules 3 (the
+// survival curve, docs/simulation/tower-difficulty-survival.md) at the end:
+// rules 2's systems with its own numbers; rules 2 keeps today's.
 import 'dart:convert';
 import 'dart:math';
 
@@ -120,16 +122,18 @@ void main() {
       }
       expect(towerXpStart, 2);
       expect(towerXpPerLevel, 4);
-      expect(towerXpLevelOf(towerXpStart), 1);
+      expect(towerXpLevelOf(towerXpStart, rules: 2), 1);
       // Floors 1 to 29 with no Elite: today's 17 Level Ups.
       const plain = towerXpStart + 24 * towerXpFight + 5 * towerXpWarden;
-      expect(towerXpLevelOf(plain) - 1, 17);
+      expect(towerXpLevelOf(plain, rules: 2) - 1, 17);
       // The first floor won is the first level.
       var run = won(start(5));
       expect(run.xp,
           {1: towerXpFor(towerFloorsFor(5, data.enemies, rules: 2).first)});
-      expect(towerHeroOf(run, data).level, towerXpLevelOf(towerXpOf(run)));
-      expect(towerLevelUpsPending(run), towerXpLevelOf(towerXpOf(run)) - 1);
+      expect(towerHeroOf(run, data).level,
+          towerXpLevelOf(towerXpOf(run), rules: 2));
+      expect(towerLevelUpsPending(run),
+          towerXpLevelOf(towerXpOf(run), rules: 2) - 1);
       // A rules-2 climb never owes a stat pick.
       expect(towerPendingPicks(run), 0);
       // The loot first, then the Level Up.
@@ -208,18 +212,22 @@ void main() {
       ];
       final int0 = hero.intelligence;
       for (final id in fire.take(8)) {
-        towerNudgeOn(hero, TowerReward(TowerRewardKind.skill, id: id), data);
+        towerNudgeOn(hero, TowerReward(TowerRewardKind.skill, id: id), data,
+            rules: 2);
       }
       expect(hero.intelligence - int0, towerNudgeStatCap);
       // Neither a die, a spell nor an oath nudges.
       final before = {...hero.pickedPoints};
-      towerNudgeOn(hero, const TowerReward(TowerRewardKind.die, id: 'x'), data);
+      towerNudgeOn(hero, const TowerReward(TowerRewardKind.die, id: 'x'), data,
+          rules: 2);
       towerNudgeOn(
-          hero, const TowerReward(TowerRewardKind.clanOath, id: 'mire'), data);
+          hero, const TowerReward(TowerRewardKind.clanOath, id: 'mire'), data,
+          rules: 2);
       expect(hero.pickedPoints, before);
       // Every skill of the game, twice: the climb's cap.
       for (final id in [...data.skills.keys, ...data.skills.keys]) {
-        towerNudgeOn(hero, TowerReward(TowerRewardKind.rankUp, id: id), data);
+        towerNudgeOn(hero, TowerReward(TowerRewardKind.rankUp, id: id), data,
+            rules: 2);
       }
       expect(hero.pickedPoints.values.fold<int>(0, (n, p) => n + p),
           towerNudgeClimbCap);
@@ -387,7 +395,7 @@ void main() {
           levelUps: {
             1: [
               for (var l = 1;
-                  l < towerXpLevelOf(towerXpStart + 2 * (floor - 1));
+                  l < towerXpLevelOf(towerXpStart + 2 * (floor - 1), rules: 2);
                   l++)
                 null,
             ],
@@ -432,7 +440,10 @@ void main() {
       var run = start(8).copyWith(floor: 16, crest: 15, xp: {
         for (var f = 1; f <= 15; f++) f: 2
       }, levelUps: {
-        1: [for (var l = 1; l < towerXpLevelOf(towerXpStart + 30); l++) null],
+        1: [
+          for (var l = 1; l < towerXpLevelOf(towerXpStart + 30, rules: 2); l++)
+            null
+        ],
       });
       run = towerPick(won(run), data, 0);
       final oaths = run.offer.where((c) => c.kind == TowerRewardKind.clanOath);
@@ -571,7 +582,7 @@ void main() {
     });
 
     test('the app starts new climbs on the live rules', () {
-      expect(towerRulesLive, 2);
+      expect(towerRulesLive, 3);
       expect(start(1, rules: 9).rules, towerRulesLive);
     });
 
@@ -584,6 +595,206 @@ void main() {
             closeTo(towerRulesScaleOf(2, p), 1e-9));
       }
       expect(towerRulesScaleOf(1, 'cleric'), 1.0);
+      // Rules 2 has no curve by floor.
+      for (final f in [0, 1, 5, 10, 20, 30]) {
+        expect(towerRulesScaleOf(2, 'warrior', floor: f),
+            towerRulesScaleOf(2, 'warrior'));
+      }
+    });
+  });
+
+  // Rules 3, the survival curve (docs/simulation/tower-difficulty-survival.md):
+  // rules 2's systems with slower levels, harder foes and more health an
+  // unlock. Rules 2 keeps today's numbers (above).
+  group('rules 3', () {
+    test('Tower XP: none at the start, 5, 6, 6, 7, 7, 8 ... a level', () {
+      expect(towerXpStartOf(2), towerXpStart);
+      expect(towerXpStartOf(3), 0);
+      for (var l = 1; l <= 20; l++) {
+        expect(towerXpCostOf(l, rules: 2), 4);
+      }
+      expect([for (var l = 1; l <= 8; l++) towerXpCostOf(l, rules: 3)],
+          [5, 6, 6, 7, 7, 8, 8, 9]);
+      expect(towerXpLevelOf(4, rules: 3), 1);
+      expect(towerXpLevelOf(5, rules: 3), 2);
+      expect(towerXpLevelOf(10, rules: 3), 2);
+      expect(towerXpLevelOf(11, rules: 3), 3);
+      expect(towerXpLevelOf(-3, rules: 3), 1);
+      // Floors 1 to 29 with no Elite: 9 Level Ups (rules 2: 17).
+      const plain = 24 * towerXpFight + 5 * towerXpWarden;
+      expect(towerXpLevelOf(towerXpStartOf(3) + plain, rules: 3) - 1, 9);
+      expect(towerXpLevelOf(towerXpStartOf(2) + plain, rules: 2) - 1, 17);
+    });
+
+    test('the first Level Up after floor 3 (two plain floors pay none)', () {
+      // A seed whose floors 1 to 3 are plain fights (2 XP each).
+      final seed = [
+        for (var s = 1; s <= 40; s++)
+          if (towerFloorsFor(s, data.enemies, events: towerEventsLive, rules: 3)
+              .take(3)
+              .every((f) => towerXpFor(f) == towerXpFight))
+            s,
+      ].first;
+      var run = towerStart(
+          seed: seed,
+          raceId: 'human',
+          professionId: 'warrior',
+          events: towerEventsLive,
+          rules: towerRulesLive,
+          data: data);
+      expect(run.rules, 3);
+      for (var floor = 1; floor <= 2; floor++) {
+        run = won(run);
+        expect(run.table, TowerTableKind.loot, reason: 'floor $floor');
+        expect(towerLevelUpsPending(run), 0, reason: 'floor $floor');
+        run = towerPick(run, data, 0);
+        expect(run.status, TowerStatus.climbing, reason: 'floor $floor');
+        expect(run.floor, floor + 1);
+      }
+      run = towerPick(won(run), data, 0);
+      expect(run.table, TowerTableKind.levelUp);
+      expect(towerHeroOf(run, data).level, 2);
+      // The bot's climbs: never a Level Up on floor 1, never two by floor 3.
+      for (var s = 1; s <= 30; s++) {
+        final climb = playTowerRun(
+            seed: s,
+            data: data,
+            progress: towerAllUnlocked,
+            events: towerEventsLive,
+            rules: 3);
+        expect(climb.levelUps[1], isNull, reason: 'seed $s');
+        final byThree = [
+          for (var f = 1; f <= 3; f++) ...?climb.levelUps[f],
+        ];
+        expect(byThree.length, lessThanOrEqualTo(1), reason: 'seed $s');
+      }
+    });
+
+    test('a climb to the top gets about 9 Level Ups', () {
+      var wins = 0;
+      for (var seed = 1; seed <= 60; seed++) {
+        final run = playTowerRun(
+            seed: seed,
+            data: data,
+            progress: towerAllUnlocked,
+            events: towerEventsLive,
+            rules: 3);
+        expect(run.rules, 3);
+        if (run.status != TowerStatus.won) continue;
+        wins++;
+        expect(towerLevelUpsTaken(run), inInclusiveRange(8, 11),
+            reason: 'seed $seed');
+      }
+      expect(wins, greaterThan(0));
+    });
+
+    test('the nudges: at most +3 a stat and +6 a climb (rules 2: 4 and 10)',
+        () {
+      expect(towerNudgeStatCapOf(2), 4);
+      expect(towerNudgeClimbCapOf(2), 10);
+      expect(towerNudgeStatCapOf(3), 3);
+      expect(towerNudgeClimbCapOf(3), 6);
+      final hero = towerFreshHero('human', 'mage', const [], data);
+      final int0 = hero.intelligence;
+      final fire = [
+        for (final MapEntry(:key, :value) in data.skills.entries)
+          if (towerNudgeStatOf(value as Map<String, dynamic>, 'mage') ==
+              'intelligence')
+            key,
+      ];
+      for (final id in fire.take(8)) {
+        towerNudgeOn(hero, TowerReward(TowerRewardKind.skill, id: id), data,
+            rules: 3);
+      }
+      expect(hero.intelligence - int0, 3);
+      for (final id in [...data.skills.keys, ...data.skills.keys]) {
+        towerNudgeOn(hero, TowerReward(TowerRewardKind.rankUp, id: id), data,
+            rules: 3);
+      }
+      expect(hero.pickedPoints.values.fold<int>(0, (n, p) => n + p), 6);
+      for (final p in hero.pickedPoints.values) {
+        expect(p, lessThanOrEqualTo(3));
+      }
+    });
+
+    test('the band raises the tier 0 / 0 / +1 (rules 2: 0 / +1 / +2)', () {
+      expect(towerLootTierShiftOf(2), [0, 1, 2]);
+      expect(towerLootTierShiftOf(3), [0, 0, 1]);
+      final two = towerFloorsFor(9, data.enemies, rules: 2);
+      final three = towerFloorsFor(9, data.enemies, rules: 3);
+      for (final i in [4, 14, 24]) {
+        final band = towerLootBandOf(i + 1);
+        expect(towerLootContextOf(two[i]).tierShift, [0, 1, 2][band]);
+        expect(towerLootContextOf(three[i]).tierShift, [0, 0, 1][band]);
+      }
+    });
+
+    test('10% health back after a floor won (rules 2: 15%); Heat 3 5%', () {
+      expect(towerRecoveryShareFor(0, rules: 2), .15);
+      expect(towerRecoveryShareFor(0, rules: 3), .10);
+      expect(towerRecoveryShareFor(2, rules: 3), .10);
+      expect(towerRecoveryShareFor(3, rules: 3), towerHeatRecoveryShare);
+      expect(towerRecoveryShareFor(3, rules: 2), towerHeatRecoveryShare);
+      expect(towerRecoveryShareFor(1, rules: 1), towerRecoveryShareOf(1));
+    });
+
+    test('the foes: the survival curve by floor and the calling pass', () {
+      expect(towerSurvivalScale, hasLength(towerTop));
+      final one = towerFloorsFor(5, data.enemies, rules: 1);
+      final three = towerFloorsFor(5, data.enemies, rules: 3);
+      for (final i in [0, 2, 7, 9, 19, 29]) {
+        expect(three[i].enemyIds, one[i].enemyIds);
+        for (final p in ['warrior', 'mage', 'rogue', 'cleric', 'ranger']) {
+          final upper = i + 1 >= towerSurvivalUpperFloor
+              ? towerSurvivalProfessionUpperScale[p] ?? 1.0
+              : 1.0;
+          final scale = towerLootFoeScale *
+              (towerSurvivalProfessionScale[p] ?? 1.0) *
+              upper *
+              towerSurvivalScale[i];
+          expect(towerRulesScaleOf(3, p, floor: i + 1), closeTo(scale, 1e-12));
+          expect(
+              three[i].extraFor(p) / one[i].extraFor(p), closeTo(scale, 1e-9),
+              reason: 'floor ${i + 1} $p');
+        }
+      }
+      expect(towerSurvivalScale.first, 3.0);
+      expect(towerSurvivalScale.last, 1.75);
+      // No floor: the calling pass only.
+      expect(towerRulesScaleOf(3, 'rogue'), closeTo(.85 * .93, 1e-12));
+    });
+
+    test('an unlock gives 5.33 times the health, by the calling', () {
+      for (final p in ['warrior', 'mage', 'rogue', 'cleric', 'ranger']) {
+        for (final r in ['human', 'dwarf', 'elf']) {
+          expect(towerHealthPerUnlockFor(r, p, rules: 1),
+              towerHealthPerUnlockOf(r));
+          expect(towerHealthPerUnlockFor(r, p, rules: 2),
+              towerHealthPerUnlockOf(r));
+          expect(
+              towerHealthPerUnlockFor(r, p, rules: 3),
+              closeTo(
+                  towerHealthPerUnlockOf(r) *
+                      5.33 *
+                      (towerSurvivalProfessionHealthPerUnlock[p] ?? 1.0),
+                  1e-12));
+        }
+      }
+      final bare = towerFreshHero('human', 'mage', const [], data);
+      final two = towerFreshHero('human', 'mage', const [], data,
+          unlocksOwned: 10, rules: 2);
+      final three = towerFreshHero('human', 'mage', const [], data,
+          unlocksOwned: 10, rules: 3);
+      expect(
+          two.maxHealth,
+          (bare.maxHealth * (1 + towerHealthPerUnlockOf('human') * 10))
+              .round());
+      expect(
+          three.maxHealth,
+          (bare.maxHealth *
+                  (1 + towerHealthPerUnlockFor('human', 'mage', rules: 3) * 10))
+              .round());
+      expect(three.maxHealth, greaterThan(two.maxHealth));
     });
   });
 }
