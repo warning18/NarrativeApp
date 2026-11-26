@@ -1,0 +1,1000 @@
+diff --git a/lib/data/tower/tower_bot.dart b/lib/data/tower/tower_bot.dart
+index 3012503c8..8394823b5 100644
+--- a/lib/data/tower/tower_bot.dart
++++ b/lib/data/tower/tower_bot.dart
+@@ -32,6 +32,7 @@ import 'tower_rewards.dart';
+ import 'tower_run.dart';
+ import 'tower_session.dart' show towerPoliticsOf;
+ import 'tower_tables.dart';
++import 'tower_proto.dart';
+ 
+ /// The Tower's tables read from assets/gamedata/ (for tests and tools; the
+ /// app reads them from its own database).
+@@ -123,7 +124,11 @@ SimFightOutcome towerBotFight({
+     character: hero,
+     enemies: enemies,
+     chapter: floor.chapter,
+-    zoneMultiplier: floor.extraFor(run.professionId),
++    zoneMultiplier: floor.extraFor(run.professionId) *
++        ((run.gambles[run.floor - 1] ?? const [])
++                .any((c) => c.kind == TowerRewardKind.gamble && c.id == 'hex')
++            ? protoHexScale
++            : 1.0),
+     skills: data.skills,
+     items: data.items,
+     random: random,
+@@ -243,9 +248,7 @@ TowerRun playTowerRun({
+       final owned = hero.ownedDice.keys.toSet();
+       final index = choice != null
+           ? choice(run)
+-          : run.table == TowerTableKind.loot
+-              ? towerBotLootChoice(run, hero, data)
+-              : towerBotChoice(run, clans: data.clans);
++          : protoBotIndex(run, hero, data);
+       final card = index != null && index >= 0 && index < run.offer.length
+           ? run.offer[index]
+           : null;
+@@ -286,6 +289,21 @@ enum TowerBotCoins {
+ /// skill card (only a rank-up, a die or a spell: the bot takes a skill
+ /// first) is rerolled once, when the coins pay it.
+ TowerRun _botReroll(TowerRun run, TowerData data) {
++  // PROTO Free hand: a loot table with no gear upgrade, rerolled for free.
++  if ((protoPerks > 0 || protoBotLootReroll) &&
++      run.rules >= 2 &&
++      run.table == TowerTableKind.loot &&
++      towerCanReroll(run) &&
++      (towerRerollPriceOf(run) == 0 ||
++          (protoBotLootReroll && towerRerollPriceOf(run) <= run.coins)) &&
++      (run.rerolls[run.floor] ?? 0) == 0) {
++    final hero = towerHeroOf(run, data);
++    final i = towerBotLootChoice(run, hero, data);
++    if (i == null || run.offer[i].kind != TowerRewardKind.gear) {
++      protoCount('freeReroll');
++      return towerReroll(run, data, hero: hero);
++    }
++  }
+   // Rules 2: a Level Up table with no skill card, once a floor.
+   if (run.rules >= 2) {
+     if (!towerBotRerolls ||
+@@ -321,6 +339,18 @@ const bool towerBotRerolls = true;
+ /// coins left); a bargain always taken. Then it leaves.
+ TowerRun _botStore(TowerRun run, TowerData data, List<TowerFloor> floors,
+     TowerBotCoins coins) {
++  // PROTO Purse: a potion for [protoPedlarPrice] coins on any landing.
++  if (protoPerks > 0 &&
++      protoPedlarPrice > 0 &&
++      run.wears(towerPerkPurse) &&
++      run.status == TowerStatus.climbing) {
++    while (run.coins >= protoPedlarPrice &&
++        run.potions <= towerBotBundlePotions - 1) {
++      protoCount('pedlar');
++      run = run.copyWith(
++          coins: run.coins - protoPedlarPrice, potions: run.potions + 1);
++    }
++  }
+   switch (towerStoreKindOf(run)) {
+     case TowerEventKind.merchant:
+       final hero = towerHeroOf(run, data);
+@@ -567,3 +597,66 @@ List<TowerRun> playTowerBatch(Iterable<int> seeds, TowerData data,
+             coins: coins,
+             rules: rules),
+     ];
++
++
++// PROTO: the bot's choice with a gamble or a stat-pick card on the table.
++int? protoBotIndex(TowerRun run, SimCharacter hero, TowerData data) {
++  int? plain(TowerRun r) => r.table == TowerTableKind.loot
++      ? towerBotLootChoice(r, hero, data)
++      : towerBotChoice(r, clans: data.clans);
++  final special = [
++    for (var i = 0; i < run.offer.length; i++)
++      if (run.offer[i].kind == TowerRewardKind.gamble ||
++          run.offer[i].kind == TowerRewardKind.statPick)
++        i,
++  ];
++  if (special.isEmpty) return plain(run);
++  // The plain choice among the other cards.
++  final rest = [
++    for (var i = 0; i < run.offer.length; i++)
++      if (!special.contains(i)) i,
++  ];
++  int? restChoice;
++  if (rest.isNotEmpty) {
++    final j = plain(run.copyWith(offer: [for (final i in rest) run.offer[i]]));
++    restChoice = j == null ? null : rest[j];
++  }
++  final oath = run.offer.indexWhere((c) => c.kind == TowerRewardKind.clanOath);
++  if (oath >= 0) return oath;
++  // A stat-pick card: taken (its stat the bot's choice).
++  for (final i in special) {
++    final c = run.offer[i];
++    if (c.kind != TowerRewardKind.statPick || protoBotStatPick == 'never') {
++      continue;
++    }
++    protoChosenStat = protoBotStatPick == 'con'
++        ? 'constitution'
++        : hero.preferredStat;
++    return i;
++  }
++  for (final i in special) {
++    final c = run.offer[i];
++    if (c.kind != TowerRewardKind.gamble) continue;
++    final hint = protoHint(hero.perception, c.id);
++    protoCount('hint_$hint');
++    switch (protoBotGamble) {
++      case 'always':
++        return i;
++      case 'never':
++        break;
++      default:
++        final good = hint == 'good' || protoGood.contains(hint);
++        final bad = hint == 'bad' ||
++            (hint != 'none' && hint != 'good' && !protoGood.contains(hint));
++        if (good) return i;
++        if (bad) break;
++        // No hint: a loot table with no gear upgrade among the others.
++        if (run.table == TowerTableKind.loot &&
++            (restChoice == null ||
++                run.offer[restChoice].kind != TowerRewardKind.gear)) {
++          return i;
++        }
++    }
++  }
++  return restChoice ?? special.first;
++}
+diff --git a/lib/data/tower/tower_coins.dart b/lib/data/tower/tower_coins.dart
+index dcb6fc41f..59d282466 100644
+--- a/lib/data/tower/tower_coins.dart
++++ b/lib/data/tower/tower_coins.dart
+@@ -20,6 +20,7 @@ import 'tower_levelup_loot.dart';
+ import 'tower_rewards.dart';
+ import 'tower_run.dart';
+ import 'tower_tables.dart';
++import 'tower_proto.dart';
+ 
+ // ---------------------------------------------------------------------------
+ // Coins earned (brief 6's fixed table).
+@@ -98,6 +99,12 @@ int towerRerollPriceOf(TowerRun run) {
+   final done = run.rerolls[run.floor] ?? 0;
+   final any = run.rerolls.values.fold<int>(0, (n, r) => n + r);
+   if (run.wears(towerPerkFreeHand) && any == 0) return 0;
++  if (protoPerks > 0 &&
++      run.wears(towerPerkFreeHand) &&
++      done == 0 &&
++      (protoFreeBand == 0 || run.floor <= 10 * protoFreeBand)) {
++    return 0;
++  }
+   return towerRerollPrice + towerRerollStep * done;
+ }
+ 
+@@ -341,7 +348,7 @@ const int towerDeepPocketsPotions = 1;
+ 
+ /// Early word: the late oath this many floors sooner (15 to 12; 18 to 15
+ /// at Pyre).
+-const int towerEarlyWordFloors = 3;
++int get towerEarlyWordFloors => protoPerks > 0 ? protoEarlyWord : 3;
+ 
+ /// Second wind: this share of max health back after a warden or a boss
+ /// won, on top of the floor's recovery.
+@@ -364,10 +371,11 @@ int towerBagCapOf(TowerRun run) =>
+ 
+ /// Second wind's share back after [run]'s floor (a warden or a boss), else
+ /// 0.
+-double towerSecondWindShareOf(TowerRun run) => run.wears(towerPerkSecondWind) &&
+-        towerBudgetOf(run.floor).kind != TowerFloorKind.fight
+-    ? towerSecondWindShare
+-    : 0;
++double towerSecondWindShareOf(TowerRun run) => !run.wears(towerPerkSecondWind)
++    ? 0
++    : towerBudgetOf(run.floor).kind != TowerFloorKind.fight
++        ? (protoPerks > 0 ? protoSecondWindPeak : towerSecondWindShare)
++        : (protoPerks > 0 ? protoSecondWindFloor : 0);
+ 
+ // ---------------------------------------------------------------------------
+ // Looks and bonuses.
+diff --git a/lib/data/tower/tower_floors.dart b/lib/data/tower/tower_floors.dart
+index 3a2027c26..d2469140c 100644
+--- a/lib/data/tower/tower_floors.dart
++++ b/lib/data/tower/tower_floors.dart
+@@ -35,6 +35,7 @@ enum TowerStream {
+   /// A reroll of a floor's table and a merchant's boon (v2.10.0,
+   /// tower_coins.dart): towerRandom(seed, floor x 16 + n, reroll).
+   reroll,
++  gamble,
+ }
+ 
+ /// The stream [purpose] of floor [floor] in the run of [seed]. Mixed by
+diff --git a/lib/data/tower/tower_hero.dart b/lib/data/tower/tower_hero.dart
+index 644d477e3..0787a15df 100644
+--- a/lib/data/tower/tower_hero.dart
++++ b/lib/data/tower/tower_hero.dart
+@@ -17,6 +17,8 @@ import 'tower_levelup_loot.dart';
+ import 'tower_rewards.dart';
+ import 'tower_run.dart';
+ import 'tower_tables.dart';
++import 'tower_coins.dart' show towerPerkDeepPockets;
++import 'tower_proto.dart';
+ 
+ /// The game's tables the Tower reads, by their file name in
+ /// assets/gamedata/ (races, professions, game_config, dice, skills, items,
+@@ -240,7 +242,15 @@ void towerApplyReward(SimCharacter hero, TowerReward reward, TowerData data,
+       _wear(hero, reward.id, data);
+     case TowerRewardKind.bundle:
+     case TowerRewardKind.purse:
++    case TowerRewardKind.gamble:
+       break;
++    case TowerRewardKind.statPick:
++      if (reward.id.isNotEmpty) {
++        hero.addAbilities({reward.id: 1});
++        if (protoStatPickClimbCap) {
++          hero.pickedPoints['_card'] = (hero.pickedPoints['_card'] ?? 0) + 1;
++        }
++      }
+   }
+ }
+ 
+@@ -331,7 +341,10 @@ SimCharacter towerHeroOf(TowerRun run, TowerData data) {
+   // paid up to it; no stat picks.
+   final rules2 = run.rules >= 2;
+   final levelAt = <int>[1];
+-  var level = 1, pick = 0, xp = towerXpStartOf(run.rules);
++  var level = 1,
++      pick = 0,
++      xp = towerXpStartOf(run.rules) +
++          (protoPerks > 0 && run.wears('early_word') ? protoEarlyWordXp : 0);
+   for (var floor = 1; floor <= run.heightCleared; floor++) {
+     if (rules2) {
+       xp += run.xp[floor] ?? 0;
+@@ -341,6 +354,7 @@ SimCharacter towerHeroOf(TowerRun run, TowerData data) {
+       keys.add('${keys.last}#$floor:x${run.xp[floor] ?? 0}:'
+           '${run.loot[floor]}:${run.taken[floor]}:'
+           '${(run.levelUps[floor] ?? const []).join(',')}'
++          '${(run.gambles[floor] ?? const []).join(',')}'
+           '${run.stallBoons[floor] == null ? '' : '+${run.stallBoons[floor]}'}');
+       continue;
+     }
+@@ -399,6 +413,10 @@ SimCharacter towerHeroOf(TowerRun run, TowerData data) {
+         towerApplyReward(hero, boon, data, bag: bag);
+         towerNudgeOn(hero, boon, data, rules: run.rules);
+       }
++      for (final card in run.gambles[floor] ?? const <TowerReward>[]) {
++        towerApplyReward(hero, card, data, bag: bag);
++        towerNudgeOn(hero, card, data, rules: run.rules);
++      }
+       _keep(built, keys[floor], hero);
+       continue;
+     }
+@@ -436,7 +454,15 @@ SimCharacter towerHeroOf(TowerRun run, TowerData data) {
+   hero.mana = hero.maxMana;
+   // The flask, filled every floor, and the bag the spoils filled.
+   hero.potions =
+-      towerFlask + run.unlocksOwned ~/ towerUnlocksPerPotion + run.potions;
++      towerFlask +
++      run.unlocksOwned ~/ towerUnlocksPerPotion +
++      run.potions +
++      (protoPerks > 0 && run.wears(towerPerkDeepPockets) ? 1 : 0) +
++      (protoPerks > 0 &&
++              run.wears('early_word') &&
++              towerBudgetOf(run.floor).kind != TowerFloorKind.fight
++          ? protoEarlyWordPotions
++          : 0);
+   return hero;
+ }
+ 
+@@ -478,6 +504,9 @@ TowerHeroView towerHeroView(TowerRun run, SimCharacter hero) => TowerHeroView(
+         for (final cards in run.levelUps.values)
+           for (final r in cards)
+             if (r != null && r.id.isNotEmpty) r.id,
++        for (final cards in run.gambles.values)
++          for (final r in cards)
++            if (r.id.isNotEmpty) r.id,
+         ...run.banishedIds,
+       },
+     );
+diff --git a/lib/data/tower/tower_levelup_loot.dart b/lib/data/tower/tower_levelup_loot.dart
+index 142754d79..153eb329d 100644
+--- a/lib/data/tower/tower_levelup_loot.dart
++++ b/lib/data/tower/tower_levelup_loot.dart
+@@ -34,6 +34,7 @@ import 'tower_hero.dart';
+ import 'tower_rewards.dart';
+ import 'tower_run.dart';
+ import 'tower_tables.dart';
++import 'tower_proto.dart';
+ 
+ // ---------------------------------------------------------------------------
+ // Tower XP and the levels.
+@@ -99,7 +100,9 @@ int towerXpLevelOf(int xp, {required int rules}) {
+ 
+ /// [run]'s Tower XP: the start and every floor's.
+ int towerXpOf(TowerRun run) =>
+-    towerXpStartOf(run.rules) + run.xp.values.fold<int>(0, (n, x) => n + x);
++    towerXpStartOf(run.rules) +
++    (protoPerks > 0 && run.wears(towerPerkEarlyWord) ? protoEarlyWordXp : 0) +
++    run.xp.values.fold<int>(0, (n, x) => n + x);
+ 
+ /// The Level Ups [run] has been dealt (each a card taken, refused, or an
+ /// oath in its place).
+@@ -285,7 +288,8 @@ int towerLootBandOf(int floor) => ((floor - 1) ~/ 10).clamp(0, 2);
+ LootContext towerLootContextOf(TowerFloor floor,
+         {int luck = 0,
+         Iterable<String> ownedItemIds = const [],
+-        String preferredScalingStat = ''}) =>
++        String preferredScalingStat = '',
++        int tierBonus = 0}) =>
+     LootContext(
+       chapter: floor.chapter,
+       playerLuck: luck,
+@@ -295,7 +299,8 @@ LootContext towerLootContextOf(TowerFloor floor,
+       enemyCount: floor.enemyIds.length,
+       affixCount: floor.affixes.length,
+       tierShift:
+-          towerLootTierShiftOf(floor.rules)[towerLootBandOf(floor.floor)],
++          towerLootTierShiftOf(floor.rules)[towerLootBandOf(floor.floor)] +
++              tierBonus,
+       preferredScalingStat: preferredScalingStat,
+       ownedItemIds: ownedItemIds.toList(),
+     );
+@@ -317,12 +322,15 @@ List<TowerReward> towerLootFor({
+   required Map<String, dynamic> items,
+   Random? random,
+   Set<String> avoid = const {},
++  int tierBonus = 0,
++  int cardCount = towerLootCards,
+ }) {
+   final drawn = random ?? towerRandom(seed, floor.floor, TowerStream.spoils);
+   final context = towerLootContextOf(floor,
+       luck: luck,
+       ownedItemIds: ownedItemIds,
+-      preferredScalingStat: preferredScalingStat);
++      preferredScalingStat: preferredScalingStat,
++      tierBonus: tierBonus);
+   final tier = towerLootTierFor(context, drawn);
+   final weights = gearWeightsFor(context, items, tier);
+   final gear = (weights.keys.where((id) => !avoid.contains(id)).isEmpty
+@@ -334,7 +342,7 @@ List<TowerReward> towerLootFor({
+   ];
+   final cards = <TowerReward>[];
+   var purse = false;
+-  while (cards.length < towerLootCards) {
++  while (cards.length < cardCount) {
+     final options = <TowerRewardKind, int>{
+       if (gear.isNotEmpty) TowerRewardKind.gear: towerLootGearWeight,
+       if (bundles.isNotEmpty) TowerRewardKind.bundle: towerLootBundleWeight,
+@@ -393,7 +401,7 @@ String _pickWeighted(
+ /// Elite too). [random] and [avoid] as towerLootFor's.
+ List<TowerReward> towerRunLootFor(
+         TowerRun run, TowerData data, SimCharacter hero,
+-        {Random? random, Set<String> avoid = const {}}) =>
++        {Random? random, Set<String> avoid = const {}, int tierBonus = 0}) =>
+     towerLootFor(
+       seed: run.seed,
+       floor: towerFloorOf(run, data),
+@@ -406,6 +414,18 @@ List<TowerReward> towerRunLootFor(
+       items: data.items,
+       random: random,
+       avoid: avoid,
++      tierBonus: tierBonus +
++          (protoPerks > 0 &&
++                  run.wears(towerPerkKeenEye) &&
++                  (protoKeenBand == 0 || run.floor <= 10 * protoKeenBand)
++              ? 1
++              : 0),
++      cardCount: towerLootCards +
++          (protoPerks > 0 &&
++                  run.wears(towerPerkFourthCard) &&
++                  (protoFourthBand == 0 || run.floor <= 10 * protoFourthBand)
++              ? 1
++              : 0),
+     );
+ 
+ // ---------------------------------------------------------------------------
+@@ -472,14 +492,18 @@ TowerRun towerDealTable(
+   if (from == TowerTableKind.loot && !empty) {
+     final cards = towerRunLootFor(run, data, hero);
+     if (cards.isNotEmpty) {
+-      return run.copyWith(offer: cards, table: TowerTableKind.loot);
++      return run.copyWith(
++          offer: protoDeal(run, cards, TowerTableKind.loot),
++          table: TowerTableKind.loot);
+     }
+   }
+   if (from != TowerTableKind.oath && towerLevelUpsPending(run) > 0) {
+     final cards = towerRunOfferFor(run, data, run.floor, hero,
+         levelUp: true, levelUpOaths: !oathShown);
+     if (cards.isNotEmpty) {
+-      return run.copyWith(offer: cards, table: TowerTableKind.levelUp);
++      return run.copyWith(
++          offer: protoDeal(run, cards, TowerTableKind.levelUp),
++          table: TowerTableKind.levelUp);
+     }
+   }
+   if (!oathShown && !towerOathInLevelUp && !empty) {
+@@ -537,6 +561,8 @@ TowerRun towerTakeLoot(
+       next = next.copyWith(
+           coins: run.coins + card.amount,
+           coinsEarned: run.coinsEarned + card.amount);
++    case TowerRewardKind.statPick:
++      towerApplyReward(hero, card, data);
+     default:
+       break;
+   }
+@@ -553,9 +579,15 @@ TowerRun towerTakeLoot(
+ TowerRun towerPickRules2(TowerRun run, TowerData data, int? index,
+     {SimCharacter? hero}) {
+   final built = hero ?? towerHeroOf(run, data);
+-  final card = index != null && index >= 0 && index < run.offer.length
++  var card = index != null && index >= 0 && index < run.offer.length
+       ? run.offer[index]
+       : null;
++  if (card != null && card.kind == TowerRewardKind.statPick) {
++    card = TowerReward(TowerRewardKind.statPick,
++        id: protoChosenStat ?? built.preferredStat);
++    protoCount('statPickTaken');
++    protoCount('sp_${card.id}');
++  }
+   var next = run;
+   TowerTableKind? from;
+   var oathShown = false;
+@@ -567,8 +599,15 @@ TowerRun towerPickRules2(TowerRun run, TowerData data, int? index,
+ 
+   switch (run.table) {
+     case TowerTableKind.loot:
++      if (protoPer[towerLootBandOf(run.floor)] case final l?) {
++        l.add(built.perception);
++      } else {
++        protoPer[towerLootBandOf(run.floor)] = [built.perception];
++      }
+       if (card == null) {
+         refuse();
++      } else if (card.kind == TowerRewardKind.gamble) {
++        next = protoResolveLoot(run, card, built, data);
+       } else {
+         next = towerTakeLoot(run, card, built, data);
+       }
+@@ -579,6 +618,8 @@ TowerRun towerPickRules2(TowerRun run, TowerData data, int? index,
+         towerApplyReward(built, card, data, bag: run.dieChoice != null);
+         level.add(null);
+         next = run.copyWith(taken: {...run.taken, run.floor: card});
++      } else if (card != null && card.kind == TowerRewardKind.gamble) {
++        next = protoResolveLevel(run, card, built, data, level);
+       } else {
+         level.add(card);
+         if (card != null) {
+@@ -619,3 +660,189 @@ TowerRun towerPickRules2(TowerRun run, TowerData data, int? index,
+           ),
+           data));
+ }
++
++
++// ---------------------------------------------------------------------------
++// PROTO: the gamble card and the stat-pick card.
++
++List<TowerReward> protoDeal(
++    TowerRun run, List<TowerReward> cards, TowerTableKind table) {
++  final level = table == TowerTableKind.levelUp;
++  final r = towerRandom(
++      run.seed,
++      run.floor * 8 + (level ? 1 + towerLevelUpsTaken(run) % 7 : 0),
++      TowerStream.gamble);
++  final out = [...cards];
++  final open = [
++    for (var i = 0; i < out.length; i++)
++      if (out[i].kind != TowerRewardKind.clanOath) i,
++  ];
++  if (open.isEmpty) return out;
++  final gambleRoll = r.nextDouble();
++  final gambleAt = open[r.nextInt(open.length)];
++  final outcomeRoll = r.nextInt(1 << 30);
++  final statRoll = r.nextDouble();
++  final chance = level ? protoGambleLevel : protoGambleLoot;
++  final statChance = level ? protoStatPickLevel : protoStatPickLoot;
++  var gambled = -1;
++  if (gambleRoll < chance) {
++    final outcome = protoDrawOutcome(
++        level ? protoGambleLevelWeights : protoGambleLootWeights, outcomeRoll);
++    out[gambleAt] = TowerReward(TowerRewardKind.gamble, id: outcome);
++    gambled = gambleAt;
++    protoCount('gambleDealt');
++  }
++  if (statRoll < statChance) {
++    // The last card that is not the gamble, not a clan's, not an oath (on a
++    // Level Up table the die or the spell).
++    for (var i = out.length - 1; i >= 0; i--) {
++      if (i == gambled || out[i].kind == TowerRewardKind.clanOath) continue;
++      if (level && out[i].clan.isNotEmpty) continue;
++      out[i] = const TowerReward(TowerRewardKind.statPick);
++      protoCount('statPickDealt');
++      break;
++    }
++  }
++  return out;
++}
++
++Random _gambleRandom(TowerRun run, int salt) =>
++    towerRandom(run.seed, 4000 + run.floor * 8 + salt, TowerStream.gamble);
++
++void _wound(SimCharacter hero, double share) {
++  hero.currentHealth =
++      max(1, hero.currentHealth - (hero.maxHealth * share).round());
++}
++
++TowerRun protoResolveLoot(
++    TowerRun run, TowerReward card, SimCharacter hero, TowerData data) {
++  protoCount('gambleTaken');
++  protoCount('g_${card.id}');
++  final others = [
++    for (final c in run.offer)
++      if (c.kind != TowerRewardKind.gamble &&
++          c.kind != TowerRewardKind.statPick)
++        c,
++  ];
++  final marker = {...run.loot, run.floor: card};
++  switch (card.id) {
++    case 'gilded':
++      final drawn = towerRunLootFor(run, data, hero,
++          random: _gambleRandom(run, 0), tierBonus: 1);
++      TowerReward? best;
++      for (final c in drawn) {
++        if (c.kind != TowerRewardKind.gear) continue;
++        if (best == null ||
++            towerGearScore(c.id, data) > towerGearScore(best.id, data)) {
++          best = c;
++        }
++      }
++      best ??= drawn.firstWhere((c) => c.kind == TowerRewardKind.bundle,
++          orElse: () => drawn.first);
++      return towerTakeLoot(run, best, hero, data);
++    case 'twin':
++      if (others.isEmpty) return run.copyWith(loot: marker);
++      var next = towerTakeLoot(run, others.first, hero, data);
++      if (others.length > 1) {
++        next = towerTakeLoot(next, others[1], hero, data).copyWith(
++            loot: {...run.loot, run.floor: others.first},
++            gambles: {
++              ...run.gambles,
++              run.floor: [...?run.gambles[run.floor], others[1]],
++            });
++      }
++      return next;
++    case 'hoard':
++      final coins = 4 + 2 * towerLootBandOf(run.floor);
++      return run.copyWith(
++          loot: marker,
++          coins: run.coins + coins,
++          coinsEarned: run.coinsEarned + coins);
++    case 'wound':
++      _wound(hero, protoWound);
++      return run.copyWith(loot: marker);
++    case 'spill':
++      if (run.potions > 0) {
++        return run.copyWith(loot: marker, potions: run.potions - 1);
++      }
++      _wound(hero, protoWound / 2);
++      return run.copyWith(loot: marker);
++    default:
++      return run.copyWith(loot: marker);
++  }
++}
++
++TowerRun protoResolveLevel(TowerRun run, TowerReward card, SimCharacter hero,
++    TowerData data, List<TowerReward?> level) {
++  protoCount('gambleTaken');
++  protoCount('g_${card.id}');
++  void give(TowerReward c) {
++    towerApplyReward(hero, c, data, bag: run.dieChoice != null);
++    towerNudgeOn(hero, c, data, rules: run.rules);
++  }
++
++  final others = [
++    for (final c in run.offer)
++      if (c.kind != TowerRewardKind.gamble &&
++          c.kind != TowerRewardKind.clanOath &&
++          c.kind != TowerRewardKind.statPick)
++        c,
++  ];
++  switch (card.id) {
++    case 'bright':
++      final drawn = towerOfferFor(
++        seed: run.seed,
++        floor: run.floor,
++        hero: towerHeroView(run, hero),
++        clanPool: const [],
++        items: data.items,
++        dice: data.dice,
++        skills: data.skills,
++        spells: data.spells,
++        random: _gambleRandom(run, 1 + towerLevelUpsTaken(run) % 7),
++        avoid: {for (final c in run.offer) c.id},
++        levelUp: true,
++        levelUpOaths: false,
++        rarityBonus: 1,
++      );
++      final skill = drawn.where((c) =>
++          c.kind == TowerRewardKind.skill || c.kind == TowerRewardKind.rankUp);
++      final got = skill.isNotEmpty
++          ? skill.first
++          : (drawn.isNotEmpty ? drawn.first : null);
++      level.add(got);
++      if (got != null) give(got);
++      return run;
++    case 'twin':
++      if (others.isEmpty) {
++        level.add(null);
++        return run;
++      }
++      level.add(others.first);
++      give(others.first);
++      if (others.length > 1) {
++        give(others[1]);
++        return run.copyWith(gambles: {
++          ...run.gambles,
++          run.floor: [...?run.gambles[run.floor], others[1]],
++        });
++      }
++      return run;
++    case 'wound':
++      level.add(null);
++      _wound(hero, protoWound);
++      return run;
++    case 'hex':
++      level.add(null);
++      return run.copyWith(gambles: {
++        ...run.gambles,
++        run.floor: [
++          ...?run.gambles[run.floor],
++          const TowerReward(TowerRewardKind.gamble, id: 'hex'),
++        ],
++      });
++    default:
++      level.add(null);
++      return run;
++  }
++}
+diff --git a/lib/data/tower/tower_proto.dart b/lib/data/tower/tower_proto.dart
+new file mode 100644
+index 000000000..9886aafeb
+--- /dev/null
++++ b/lib/data/tower/tower_proto.dart
+@@ -0,0 +1,62 @@
++// PROTOTYPE ONLY (round-2 proposals; not committed).
++var protoGambleLoot = 0.0;
++var protoGambleLevel = 0.0;
++var protoStatPickLevel = 0.0;
++var protoStatPickLoot = 0.0;
++// always | never | hint
++var protoBotGamble = 'hint';
++// damage | con | never
++var protoBotStatPick = 'damage';
++var protoStatPickClimbCap = false;
++var protoPerks = 0;
++var protoPerGood = 99;
++var protoPerKind = 99;
++String? protoChosenStat;
++var protoSecondWindFloor = .06;
++var protoEarlyWord = 9;
++var protoPurse = 15;
++var protoOldFriendSworn = true;
++var protoOldFriendMode = 'sworn';
++var protoOldFriendTier = 2;
++var protoEarlyWordXp = 0;
++var protoKeenBand = 0;
++var protoFreeBand = 0;
++var protoBotLootReroll = false;
++var protoEarlyWordPotions = 0;
++var protoFourthBand = 0;
++var protoPedlarPrice = 0;
++var protoSecondWindPeak = .15;
++var protoHexScale = 1.15;
++var protoWound = .20;
++var protoGambleLootWeights = <String, int>{
++  'gilded': 30, 'twin': 20, 'hoard': 10, 'dud': 15, 'wound': 15, 'spill': 10,
++};
++var protoGambleLevelWeights = <String, int>{
++  'bright': 30, 'twin': 25, 'dud': 20, 'wound': 15, 'hex': 10,
++};
++const protoGood = {'gilded', 'twin', 'hoard', 'bright'};
++final protoCounters = <String, int>{};
++void protoCount(String k, [int n = 1]) =>
++    protoCounters[k] = (protoCounters[k] ?? 0) + n;
++final protoPer = <int, List<int>>{};
++final protoPerProf = <String, List<int>>{};
++
++/// none | good | bad | <outcome>
++String protoHint(int per, String outcome) {
++  if (per >= protoPerKind) return outcome;
++  if (per >= protoPerGood) return protoGood.contains(outcome) ? 'good' : 'bad';
++  return 'none';
++}
++
++String protoDrawOutcome(Map<String, int> w, int roll) {
++  final total = w.values.fold<int>(0, (n, v) => n + v);
++  var r = roll % total;
++  for (final e in w.entries) {
++    if (r < e.value) return e.key;
++    r -= e.value;
++  }
++  return w.keys.last;
++}
++
++var protoTopScale = 1.0;
++var protoTopFrom = 11;
+diff --git a/lib/data/tower/tower_rewards.dart b/lib/data/tower/tower_rewards.dart
+index f027c35b2..2f7c2605c 100644
+--- a/lib/data/tower/tower_rewards.dart
++++ b/lib/data/tower/tower_rewards.dart
+@@ -376,6 +376,8 @@ List<TowerReward> towerOfferFor({
+       case TowerRewardKind.gear:
+       case TowerRewardKind.bundle:
+       case TowerRewardKind.purse:
++      case TowerRewardKind.gamble:
++      case TowerRewardKind.statPick:
+         return null;
+     }
+   }
+diff --git a/lib/data/tower/tower_run.dart b/lib/data/tower/tower_run.dart
+index 6a075bf82..155632dbe 100644
+--- a/lib/data/tower/tower_run.dart
++++ b/lib/data/tower/tower_run.dart
+@@ -17,6 +17,7 @@ import 'tower_hero.dart';
+ import 'tower_levelup_loot.dart';
+ import 'tower_rewards.dart';
+ import 'tower_tables.dart';
++import 'tower_proto.dart';
+ 
+ /// Where a run stands.
+ enum TowerStatus {
+@@ -83,6 +84,7 @@ class TowerRun {
+     this.levelUps = const {},
+     this.loot = const {},
+     this.table,
++    this.gambles = const {},
+   });
+ 
+   /// A saved run. A save from an older version is brought up to date once,
+@@ -436,6 +438,9 @@ class TowerRun {
+   /// Rules 2: the loot card taken on each floor (floor -> card).
+   final Map<int, TowerReward> loot;
+ 
++  /// PROTO: cards and markers a gamble gave on a floor.
++  final Map<int, List<TowerReward>> gambles;
++
+   /// Rules 2: what [offer] is ([TowerStatus.choosing]): the loot table, a
+   /// Level Up table or an oath alone; null otherwise.
+   final TowerTableKind? table;
+@@ -520,6 +525,7 @@ class TowerRun {
+     Map<int, TowerReward>? loot,
+     TowerTableKind? table,
+     bool clearTable = false,
++    Map<int, List<TowerReward>>? gambles,
+   }) =>
+       TowerRun(
+         seed: seed,
+@@ -565,6 +571,7 @@ class TowerRun {
+         levelUps: levelUps ?? this.levelUps,
+         loot: loot ?? this.loot,
+         table: clearTable ? null : table ?? this.table,
++        gambles: gambles ?? this.gambles,
+       );
+ 
+   Map<String, dynamic> toJson() => {
+@@ -718,7 +725,17 @@ TowerRun towerStart({
+     professionId: professionId,
+     taken: {
+       if (clanId.isNotEmpty)
+-        0: TowerReward(TowerRewardKind.clanOath, id: clanId),
++        0: TowerReward(TowerRewardKind.clanOath, id: clanId)
++      else if (protoPerks > 0 &&
++          protoOldFriendMode == 'gear' &&
++          worn.contains(towerPerkOldFriend))
++        0: _protoFriendGear(seed, professionId, hero, data, events, heat, rules)
++      else if (protoPerks > 0 &&
++          protoOldFriendMode == 'sworn' &&
++          worn.contains(towerPerkOldFriend) &&
++          pool.isNotEmpty)
++        0: TowerReward(TowerRewardKind.clanOath,
++            id: pool.contains(friend) ? friend : pool[seed.abs() % pool.length]),
+     },
+     clanPool: pool,
+     startUnlocks: unlocks,
+@@ -729,7 +746,9 @@ TowerRun towerStart({
+     events: events,
+     heat: heat.clamp(0, towerHeatMax),
+     perks: worn,
+-    coins: worn.contains(towerPerkPurse) ? towerPurseCoins : 0,
++    coins: worn.contains(towerPerkPurse)
++        ? (protoPerks > 0 ? protoPurse : towerPurseCoins)
++        : 0,
+     friend: worn.contains(towerPerkOldFriend) && pool.isNotEmpty
+         ? (pool.contains(friend) ? friend : pool[seed.abs() % pool.length])
+         : '',
+@@ -1042,3 +1061,31 @@ String? towerLeadingClan(TowerRun run, TowerData data) {
+ 
+ /// The least run standing a clan needs to lead: two gifts taken.
+ const int towerLeadingClanMinStanding = 4;
++
++
++TowerReward _protoFriendGear(int seed, String professionId, SimCharacter hero,
++    TowerData data, int events, int heat, int rules) {
++  final floor = towerFloorsFor(seed, data.enemies,
++      events: events, heat: heat, rules: rules)[0];
++  final drawn = towerLootFor(
++    seed: seed,
++    floor: floor,
++    ownedItemIds: hero.ownedItemIds,
++    preferredScalingStat:
++        (data.professions[professionId] as Map?)?['preferredScalingStat']
++                ?.toString() ??
++            '',
++    items: data.items,
++    random: towerRandom(seed, 999, TowerStream.gamble),
++    tierBonus: protoOldFriendTier,
++  );
++  TowerReward? best;
++  for (final c in drawn) {
++    if (c.kind != TowerRewardKind.gear) continue;
++    if (best == null ||
++        towerGearScore(c.id, data) > towerGearScore(best.id, data)) {
++      best = c;
++    }
++  }
++  return best ?? const TowerReward(TowerRewardKind.gamble, id: 'none');
++}
+diff --git a/lib/data/tower/tower_tables.dart b/lib/data/tower/tower_tables.dart
+index e0d2698a8..f06ef1b53 100644
+--- a/lib/data/tower/tower_tables.dart
++++ b/lib/data/tower/tower_tables.dart
+@@ -3,6 +3,8 @@
+ // reward weights and rarities, the marks and the unlocks. The main game's
+ // numbers are not read here and none of these is read by it.
+ 
++import 'tower_proto.dart' show protoTopScale, protoTopFrom;
++
+ /// The share of max health the hero gets back after each floor won, on top
+ /// of what its levels add. The Tower curve review (fix #5): .15 (was .30),
+ /// so a hard fight still shows a few floors on (health entering floors 21
+@@ -131,7 +133,8 @@ double towerRulesScaleOf(int rules, String professionId, {int floor = 0}) {
+           : 1.0) *
+       (floor >= 1 && floor <= towerSurvivalScale.length
+           ? towerSurvivalScale[floor - 1]
+-          : 1.0);
++          : 1.0) *
++      (floor >= protoTopFrom ? protoTopScale : 1.0);
+ }
+ 
+ /// The max health an unlock gives on rules 3: [towerHealthPerUnlockOf]
+@@ -617,6 +620,8 @@ enum TowerRewardKind {
+   gear,
+   bundle,
+   purse,
++  gamble,
++  statPick,
+ }
+ 
+ /// The table on a rules-2 run's floor won (TowerRun.table): the loot table,
+diff --git a/test/zz_props_test.dart b/test/zz_props_test.dart
+new file mode 100644
+index 000000000..a00727389
+--- /dev/null
++++ b/test/zz_props_test.dart
+@@ -0,0 +1,121 @@
++// PROTOTYPE harness (not committed).
++import 'dart:convert';
++import 'dart:io';
++
++import 'package:flutter_test/flutter_test.dart';
++import 'package:narrative_data_app/data/tower/tower_bot.dart';
++import 'package:narrative_data_app/data/tower/tower_coins.dart';
++import 'package:narrative_data_app/data/tower/tower_progress.dart';
++import 'package:narrative_data_app/data/tower/tower_proto.dart';
++import 'package:narrative_data_app/data/tower/tower_run.dart';
++import 'package:narrative_data_app/data/tower/tower_tables.dart';
++
++void main() {
++  test('props', () {
++    final env = Platform.environment;
++    double d(String k, double v) => double.tryParse(env[k] ?? '') ?? v;
++    int i(String k, int v) => int.tryParse(env[k] ?? '') ?? v;
++    protoGambleLoot = d('PROTO_GAMBLE_LOOT', 0);
++    protoGambleLevel = d('PROTO_GAMBLE_LEVEL', 0);
++    protoStatPickLevel = d('PROTO_STAT_LEVEL', 0);
++    protoStatPickLoot = d('PROTO_STAT_LOOT', 0);
++    protoBotGamble = env['PROTO_BOT_GAMBLE'] ?? 'hint';
++    protoBotStatPick = env['PROTO_BOT_STAT'] ?? 'damage';
++    protoPerks = i('PROTO_PERKS', 0);
++    protoPerGood = i('PROTO_PER_GOOD', 99);
++    protoPerKind = i('PROTO_PER_KIND', 99);
++    protoStatPickClimbCap = env['PROTO_CLIMBCAP'] == '1';
++    protoSecondWindFloor = d('PROTO_SW', protoSecondWindFloor);
++    protoEarlyWord = i('PROTO_EW', protoEarlyWord);
++    protoPurse = i('PROTO_PURSE', protoPurse);
++    protoOldFriendMode = env['PROTO_OFMODE'] ?? 'sworn';
++    protoOldFriendTier = i('PROTO_OF_TIER', 2);
++    protoEarlyWordXp = i('PROTO_EW_XP', 0);
++    protoKeenBand = i('PROTO_KEEN_BAND', 0);
++    protoFreeBand = i('PROTO_FREE_BAND', 0);
++    protoBotLootReroll = env['PROTO_BOT_LOOTREROLL'] == '1';
++    protoEarlyWordPotions = i('PROTO_EW_POT', 0);
++    protoFourthBand = i('PROTO_FOURTH_BAND', 0);
++    protoPedlarPrice = i('PROTO_PEDLAR', 0);
++    protoSecondWindPeak = d('PROTO_SW_PEAK', .15);
++    if (env['PROTO_GW'] == '2') {
++      protoGambleLootWeights = {
++        'gilded': 35, 'twin': 25, 'hoard': 10, 'dud': 10, 'wound': 12, 'spill': 8,
++      };
++      protoGambleLevelWeights = {
++        'bright': 35, 'twin': 30, 'dud': 15, 'wound': 12, 'hex': 8,
++      };
++    }
++    protoTopFrom = i('PROTO_TOP_FROM', 11);
++    protoWound = d('PROTO_WOUND', protoWound);
++    final scale = d('PROTO_SCALE', 1.0);
++    protoTopScale = scale;
++    final seeds = i('PROPS_SEEDS', 2000);
++    final data = towerDataFromAssets();
++    final out = File(env['PROPS_OUT']!);
++    for (final spec in (env['PROPS_CASES'] ?? 'none|none||0').split(';')) {
++      final p = spec.split('|');
++      final name = p[0];
++      final prog = p[1];
++      final perk = p.length > 2 ? p[2] : '';
++      final heat = p.length > 3 ? int.parse(p[3]) : 0;
++      final progress = prog == 'none'
++          ? const TowerProgress()
++          : prog == 'all'
++              ? towerAllUnlocked
++              : TowerProgress(unlocked: {prog});
++      protoCounters.clear();
++      protoPer.clear();
++      final runs = [
++        for (var s = 1; s <= seeds; s++)
++          playTowerRun(
++              seed: s,
++              data: data,
++              progress: progress,
++              events: i('PROPS_EVENTS', towerEventsLive),
++              heat: heat,
++              perks: towerWornPerks([if (perk.isNotEmpty) perk]),
++              coins: TowerBotCoins.full,
++              rules: towerRulesLive),
++      ];
++      double share(bool Function(TowerRun) t) =>
++          100 * runs.where(t).length / runs.length;
++      final floors = [for (final r in runs) r.floorReached]..sort();
++      Map<String, Object> pct(List<int> l) {
++        final s = [...l]..sort();
++        if (s.isEmpty) return {};
++        return {
++          'p10': s[s.length ~/ 10],
++          'p50': s[s.length ~/ 2],
++          'p90': s[s.length * 9 ~/ 10],
++          'max': s.last,
++          'mean': s.reduce((a, b) => a + b) / s.length,
++          'ge3': s.where((v) => v >= 3).length / s.length,
++          'ge4': s.where((v) => v >= 4).length / s.length,
++          'ge5': s.where((v) => v >= 5).length / s.length,
++          'ge6': s.where((v) => v >= 6).length / s.length,
++        };
++      }
++
++      out.writeAsStringSync(
++          '${jsonEncode({
++                'name': name,
++                'heat': heat,
++                'perk': perk,
++                'prog': prog,
++                'f5': share((r) => r.floorReached >= 5),
++                'f10': share((r) => r.floorReached >= 10),
++                'f20': share((r) => r.floorReached >= 20),
++                'top': share((r) => r.status == TowerStatus.won),
++                'median': floors[floors.length ~/ 2],
++                'counters': {...protoCounters},
++                'per': {
++                  for (final e in protoPer.entries) '${e.key}': pct(e.value)
++                },
++                'coins': runs.fold<int>(0, (n, r) => n + r.coinsEarned) /
++                    runs.length,
++              })}\n',
++          mode: FileMode.append);
++    }
++  }, timeout: Timeout.none);
++}
