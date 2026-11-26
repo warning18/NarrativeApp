@@ -8,6 +8,10 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [2.10.28+1110]
+
+- **Tower: a resumed climb no longer seems to roll its check again.** After a setback or a parley, going back to the menu and pressing Continue climb tumbled the d20 again each time, as if a new test were made. The roll was always the same and never applied twice; now a result read back shows its die already set down, and only a check just made tumbles.
+
 ## [2.10.27+1109]
 - Tower tables, after your feedback. The spoils after the loot table is now a reveal: the card you took, large and centred over the floor, with the floor's coins under it and a red Continue (no cream box). Every clan gift card wears its clan's banner as a small bookmark hanging from the top-right edge. Under the held card's words, the radar (the big one, on the left) now sits beside a column of buttons: Take, Reroll, and on the loot "Not now (+1 mark)" on one line.
 ## [2.10.26+1108]
