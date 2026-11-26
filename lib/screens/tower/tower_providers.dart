@@ -154,6 +154,8 @@ class TowerController extends StateNotifier<AsyncValue<TowerState>> {
   Future<void> setRun(TowerRun run) async {
     final save = await _opened();
     await save.saveRun(run);
+    final last = run.lastEvent;
+    if (last != null && last != _now.run?.lastEvent) _newEvent = last;
     state = AsyncValue.data(TowerState(progress: _now.progress, run: run));
   }
 
@@ -174,6 +176,18 @@ class TowerController extends StateNotifier<AsyncValue<TowerState>> {
     final seen = towerMarkDieSeen(run, dieId);
     if (!identical(seen, run)) await setRun(seen);
   }
+
+  /// The last event's result made by a move of this session (setRun), its
+  /// d20 not yet shown: the only one that tumbles. A result read from the
+  /// save (Continue climb) was rolled and shown already: it is set down.
+  TowerEventResult? _newEvent;
+
+  /// [result] was rolled by a move just made, its d20 still to tumble.
+  bool eventIsNew(TowerEventResult result) => _newEvent == result;
+
+  /// The new result's d20 shown: it is not rolled again (nothing saved: the
+  /// roll itself was saved when it was made).
+  void markEventShown() => _newEvent = null;
 
   /// [run] ended: its marks banked, the run cleared. Returns the record
   /// with them.
