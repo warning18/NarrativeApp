@@ -116,7 +116,7 @@ void main() {
           await frame();
         }
         await tester.tap(find.byKey(const Key('tower_take')));
-        for (var i = 0; i < 10; i++) {
+        for (var i = 0; i < 30; i++) {
           await tester.pump(const Duration(milliseconds: 40));
           await frame();
         }
@@ -130,7 +130,7 @@ void main() {
           await frame();
         }
         await g.up();
-        for (var i = 0; i < 16; i++) {
+        for (var i = 0; i < 40; i++) {
           await tester.pump(const Duration(milliseconds: 40));
           await frame();
         }
