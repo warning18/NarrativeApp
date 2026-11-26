@@ -872,7 +872,7 @@ class _TowerOfferViewState extends ConsumerState<TowerOfferView> {
                         if (radar == null) const Spacer(),
                         const SizedBox(width: 8),
                         SizedBox(
-                          width: 124,
+                          width: 132,
                           child: Column(
                               crossAxisAlignment: CrossAxisAlignment.stretch,
                               children: [
@@ -904,8 +904,12 @@ class _TowerOfferViewState extends ConsumerState<TowerOfferView> {
                                       key: const Key('tower_refuse'),
                                       onPressed:
                                           _done ? null : () => _pick(null),
-                                      child: Text(tr(ref, 'tower_not_now'),
-                                          textAlign: TextAlign.center),
+                                      // One line: the label shrinks to the column.
+                                      child: FittedBox(
+                                        fit: BoxFit.scaleDown,
+                                        child: Text(tr(ref, 'tower_not_now'),
+                                            maxLines: 1),
+                                      ),
                                     ),
                                   ),
                               ]),
