@@ -127,10 +127,8 @@ class TowerEventResult {
   final int? total;
 
   /// The check's ability, the modifier the roll was given and its DC, as
-  /// the rule used them (saved since the check plumbing, JSON 'ability',
-  /// 'mod', 'dc';
-  /// the check plumbing, docs/simulation/tower-check-plumbing.md). Null
-  /// with no roll, and on a result saved before: towerCheckResultOf then
+  /// the rule used them (JSON 'ability', 'mod', 'dc'; the check plumbing,
+  /// docs/simulation/tower-check-plumbing.md). Null with no roll, and on a result saved before: towerCheckResultOf then
   /// rebuilds them (the floor's ability and DC, the modifier
   /// [total] - [roll]).
   final String? ability;
