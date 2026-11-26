@@ -1855,17 +1855,17 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   },
   'tower_parley_fight_keep': {
     AppLanguage.en: 'No roll: the fight as it is, its spoils kept',
-    AppLanguage.fr: 'Pas de jet : le combat tel quel, son butin gardé',
+    AppLanguage.fr: 'Pas de jet\u00a0: le combat tel quel, son butin gardé',
   },
   'tower_event_shortcut_door_text': {
     AppLanguage.en: 'The floor as it is: no risk, no floor skipped',
-    AppLanguage.fr: 'L’étage tel quel : aucun risque, aucun étage sauté',
+    AppLanguage.fr: 'L’étage tel quel\u00a0: aucun risque, aucun étage sauté',
   },
   'tower_event_picks_note': {
     AppLanguage.en:
         'May change with your Level Up: {n} pick(s) still to take before this check.',
     AppLanguage.fr:
-        'Peut changer avec votre montée de niveau : {n} choix à faire avant ce jet.',
+        'Peut changer avec votre montée de niveau\u00a0: {n} choix à faire avant ce jet.',
   },
   'tower_event_roll_line': {
     AppLanguage.en: '{roll} {mod} = {total}  ·  DC {dc}',
