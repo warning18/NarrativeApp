@@ -216,6 +216,10 @@ void main() {
         continue;
       }
       if (has('tower_take') || has('tower_refuse')) {
+        // None is in hand until a card is tapped.
+        if (has('tower_take') && has('tower_card_0')) {
+          await tapKey('tower_card_0');
+        }
         await tapKey(has('tower_take') ? 'tower_take' : 'tower_refuse');
         continue;
       }

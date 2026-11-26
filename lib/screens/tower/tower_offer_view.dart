@@ -31,6 +31,7 @@ import 'tower_clan_cards.dart';
 import 'tower_coin_view.dart';
 import 'tower_providers.dart';
 import 'tower_event_card.dart';
+import 'tower_swipe_card.dart';
 import 'tower_tarot_card.dart';
 
 /// What a card reads: its kind, its name and what it does.
@@ -174,13 +175,33 @@ class TowerOfferView extends ConsumerStatefulWidget {
 }
 
 class _TowerOfferViewState extends ConsumerState<TowerOfferView> {
-  int _held = 0;
+  /// The card in hand: none until one is tapped or lifted (the middle one is in
+  /// front, not chosen).
+  int _held = -1;
   bool _done = false;
+
+  bool get _has => _held >= 0 && _held < widget.run.offer.length;
+
+  /// Card [i] chosen at once (a swipe up): the same as Take on it.
+  void _choose(int i) {
+    if (_done) return;
+    setState(() => _held = i);
+    _pick(i);
+  }
+
+  /// A card wrapped to be swiped up: it comes to the front as it lifts.
+  Widget _swipable(int i, Widget card) => TowerSwipeToChoose(
+        enabled: !_done,
+        onLift: () => setState(() => _held = i),
+        onChosen: () => _choose(i),
+        child: card,
+      );
 
   /// Card [i] of the offer, as a tarot card or, narrow, a row.
   Widget _card(BuildContext context, int i, bool tarot, double room) {
     final reward = widget.run.offer[i];
     final held = i == _held;
+    final dimmed = _has && !held;
     final key = Key('tower_card_$i');
     final tag = widget.cardTag?.call(i);
     final footer = widget.cardFooter?.call(i);
@@ -243,37 +264,41 @@ class _TowerOfferViewState extends ConsumerState<TowerOfferView> {
       // screen-high black tarot (#1145).
       final slots = widget.run.offer.length < 2 ? 3 : widget.run.offer.length;
       final w = (room - 8 * (slots - 1)) / slots;
-      return TowerTarotCard(
-        key: key,
-        width: w,
-        kind: kind,
-        name: name,
-        nameKey: nameKey,
-        text: text,
-        vignette: art,
-        icon: icon,
-        rarity: rarity,
-        held: held,
-        dim: !held,
-        tag: tag,
-        footer: footer,
-        onTap: () => setState(() => _held = i),
-      );
+      return _swipable(
+          i,
+          TowerTarotCard(
+            key: key,
+            width: w,
+            kind: kind,
+            name: name,
+            nameKey: nameKey,
+            text: text,
+            vignette: art,
+            icon: icon,
+            rarity: rarity,
+            held: held,
+            dim: dimmed,
+            tag: tag,
+            footer: footer,
+            onTap: () => setState(() => _held = i),
+          ));
     }
-    return TowerRowCard(
-      key: key,
-      kind: kind,
-      name: name,
-      nameKey: nameKey,
-      text: text,
-      icon: icon,
-      rarity: rarity,
-      held: held,
-      dim: !held,
-      tag: tag,
-      footer: footer,
-      onTap: () => setState(() => _held = i),
-    );
+    return _swipable(
+        i,
+        TowerRowCard(
+          key: key,
+          kind: kind,
+          name: name,
+          nameKey: nameKey,
+          text: text,
+          icon: icon,
+          rarity: rarity,
+          held: held,
+          dim: dimmed,
+          tag: tag,
+          footer: footer,
+          onTap: () => setState(() => _held = i),
+        ));
   }
 
   /// The clans' offer in the story's look (offer_dialog.dart): the gifts as a
@@ -311,32 +336,34 @@ class _TowerOfferViewState extends ConsumerState<TowerOfferView> {
           final faction = factions[reward.id];
           final clan = faction?.shortFor(lang) ?? reward.id;
           final die = towerClanDieOf(reward.id, widget.data.dice);
-          return TowerClanOathRow(
-            key: Key('tower_card_$i'),
-            color: colour,
-            flag: flagOf(reward.id, colour),
-            icon: faction == null
-                ? const SizedBox(width: 32, height: 32)
-                : ClanDisc(faction, size: 32),
-            name: tr(ref, 'tower_oath_title').replaceAll('{clan}', clan),
-            tags: [towerClanTag(tr(ref, 'tower_kind_oath'))],
-            text: [
-              tr(ref, 'tower_oath_line_${reward.id}'),
-              if (die != null)
-                tr(ref, 'tower_oath_die')
-                    .replaceAll('{die}', towerDieName(ref, die)),
-            ].join(' '),
-            // A late oath (the clan below 6/6, v2.8.0) says why in the envoy's
-            // voice; an earned one carries the clan's motto.
-            greeting: _late(reward.id)
-                ? tr(ref, 'tower_oath_late_${reward.id}')
-                : faction?.mottoFor(lang) ?? '',
-            clanName: clan,
-            standing:
-                towerStandingLabel(ref, _standing[reward.id] ?? towerOathStep),
-            selected: _held == i,
-            onTap: () => setState(() => _held = i),
-          );
+          return _swipable(
+              i,
+              TowerClanOathRow(
+                key: Key('tower_card_$i'),
+                color: colour,
+                flag: flagOf(reward.id, colour),
+                icon: faction == null
+                    ? const SizedBox(width: 32, height: 32)
+                    : ClanDisc(faction, size: 32),
+                name: tr(ref, 'tower_oath_title').replaceAll('{clan}', clan),
+                tags: [towerClanTag(tr(ref, 'tower_kind_oath'))],
+                text: [
+                  tr(ref, 'tower_oath_line_${reward.id}'),
+                  if (die != null)
+                    tr(ref, 'tower_oath_die')
+                        .replaceAll('{die}', towerDieName(ref, die)),
+                ].join(' '),
+                // A late oath (the clan below 6/6, v2.8.0) says why in the envoy's
+                // voice; an earned one carries the clan's motto.
+                greeting: _late(reward.id)
+                    ? tr(ref, 'tower_oath_late_${reward.id}')
+                    : faction?.mottoFor(lang) ?? '',
+                clanName: clan,
+                standing: towerStandingLabel(
+                    ref, _standing[reward.id] ?? towerOathStep),
+                selected: _held == i,
+                onTap: () => setState(() => _held = i),
+              ));
         }),
         const SizedBox(height: 8),
       ],
@@ -381,11 +408,25 @@ class _TowerOfferViewState extends ConsumerState<TowerOfferView> {
               }),
           ],
           keys: [for (final i in gifts) Key('tower_card_$i')],
-          lit: gifts.indexOf(_held),
+          lit: _has ? gifts.indexOf(_held) : -1,
+          // The middle card is in front, none chosen.
+          front: gifts.length ~/ 2,
           onTap: (k) => setState(() => _held = gifts[k]),
+          onLift: (k) => setState(() => _held = gifts[k]),
+          onSwipeUp: (k) => _choose(gifts[k]),
         ),
     ]);
   }
+
+  /// The line under the cards while none is in hand.
+  Widget _hint(BuildContext context) => Padding(
+        key: const Key('tower_card_hint'),
+        padding: const EdgeInsets.only(top: 12),
+        child: Text(tr(ref, 'tower_swipe_hint'),
+            style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                color: Theme.of(context).colorScheme.onSurfaceVariant,
+                fontStyle: FontStyle.italic)),
+      );
 
   /// The card in hand, in full under the tarot row: its name and all its words
   /// at a readable size.
@@ -545,23 +586,22 @@ class _TowerOfferViewState extends ConsumerState<TowerOfferView> {
         if (offer.isNotEmpty && clans)
           Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
             _clanTable(context),
-            if (_held < offer.length) _detail(context, _held),
-            if (_held < offer.length)
-              Align(
-                alignment: Alignment.centerRight,
-                child: Padding(
-                  padding: const EdgeInsets.only(top: 12),
-                  child: FilledButton(
-                    key: const Key('tower_take'),
-                    onPressed: _done ? null : () => _pick(_held),
-                    child: Text(tr(
-                        ref,
-                        offer[_held].kind == TowerRewardKind.clanOath
-                            ? 'tower_swear'
-                            : 'tower_take')),
-                  ),
+            _has ? _detail(context, _held) : _hint(context),
+            Align(
+              alignment: Alignment.centerRight,
+              child: Padding(
+                padding: const EdgeInsets.only(top: 12),
+                child: FilledButton(
+                  key: const Key('tower_take'),
+                  onPressed: _done || !_has ? null : () => _pick(_held),
+                  child: Text(tr(
+                      ref,
+                      _has && offer[_held].kind == TowerRewardKind.clanOath
+                          ? 'tower_swear'
+                          : 'tower_take')),
                 ),
               ),
+            ),
             if (widget.controls != null) widget.controls!,
           ])
         else if (offer.isNotEmpty)
@@ -592,18 +632,20 @@ class _TowerOfferViewState extends ConsumerState<TowerOfferView> {
                     for (final c in cards)
                       Padding(
                           padding: const EdgeInsets.only(bottom: 8), child: c),
-                  if (tarot && _held < offer.length) _detail(context, _held),
-                  if (offer.isNotEmpty && _held < offer.length)
+                  if (tarot) _has ? _detail(context, _held) : _hint(context),
+                  if (offer.isNotEmpty)
                     Align(
                       alignment: Alignment.centerRight,
                       child: Padding(
                         padding: const EdgeInsets.only(top: 12),
                         child: FilledButton(
                           key: const Key('tower_take'),
-                          onPressed: _done ? null : () => _pick(_held),
+                          onPressed: _done || !_has ? null : () => _pick(_held),
                           child: Text(tr(
                               ref,
-                              offer[_held].kind == TowerRewardKind.clanOath
+                              _has &&
+                                      offer[_held].kind ==
+                                          TowerRewardKind.clanOath
                                   ? 'tower_swear'
                                   : 'tower_take')),
                         ),
@@ -611,15 +653,15 @@ class _TowerOfferViewState extends ConsumerState<TowerOfferView> {
                     ),
                   TowerTableCoinRow(
                     run: widget.run,
-                    held: _held.clamp(0, offer.length - 1),
+                    held: _held,
                     onReroll: () {
-                      setState(() => _held = 0);
+                      setState(() => _held = -1);
                       ref
                           .read(towerProvider.notifier)
                           .reroll(data: widget.data);
                     },
                     onBanish: (i) {
-                      setState(() => _held = 0);
+                      setState(() => _held = -1);
                       ref.read(towerProvider.notifier).banish(i);
                     },
                   ),
