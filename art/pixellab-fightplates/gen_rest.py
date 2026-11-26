@@ -28,6 +28,10 @@ P={
 'dice2':"cut paper, flat top-down view of wooden floor planks in cream with black gaps and a thin red line, no text, no objects, very simple, tall narrow format",
 'dice3':"cut paper, flat top-down view of a black glass floor with cream cracks and a faint red crack, no text, no objects, very simple, tall narrow format",
 }
+NOBODY=' The room is completely deserted: nobody is in it, no person, no figure, no silhouette, no shadow of a person, no statue, nothing standing on the floor.'
+ONLY_RETRY=os.environ.get('RETRY')=='1'
+if ONLY_RETRY:
+    P={k:v+NOBODY for k,v in P.items()}
 only=[x for x in sys.argv[1].split(',') if x] if len(sys.argv)>1 else list(P);only=only or list(P)
 seed=int(sys.argv[2]) if len(sys.argv)>2 else 31;jf='art/pixellab-fightplates/jobs.json';jobs=json.load(open(jf)) if os.path.exists(jf) else {}
 for k in only:
