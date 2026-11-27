@@ -272,4 +272,20 @@ void main() {
       }
     });
   });
+
+  test('towerAmbushFloor: floors 1-3 of a rules-5 run only', () {
+    for (final rules in [1, 2, 3, 4, 5]) {
+      for (var floor = 1; floor <= 6; floor++) {
+        final run = TowerRun(
+            seed: 1,
+            raceId: 'human',
+            professionId: 'warrior',
+            floor: floor,
+            health: 20,
+            rules: rules);
+        expect(towerAmbushFloor(run), rules >= 5 && floor <= 3,
+            reason: 'rules $rules floor $floor');
+      }
+    }
+  });
 }
