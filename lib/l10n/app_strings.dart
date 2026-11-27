@@ -1873,6 +1873,24 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.fr:
         'Peut changer avec votre montée de niveau\u00a0: {n} choix à faire avant ce jet.',
   },
+  'tower_event_face': {
+    AppLanguage.en: 'Face it',
+    AppLanguage.fr: 'L’affronter',
+  },
+  'tower_event_modal_forced': {
+    AppLanguage.en: 'Forced: this one you cannot refuse.',
+    AppLanguage.fr: 'Forcé : celui-ci ne se refuse pas.',
+  },
+  'tower_event_modal_choose': {
+    AppLanguage.en: 'Choose your way: you cannot go on without.',
+    AppLanguage.fr: 'Choisissez votre voie : on ne passe pas sans.',
+  },
+  'tower_event_recap_test': {
+    AppLanguage.en:
+        '{ability} test after the fight: d20 {mod} against {dc} ({pct}%)',
+    AppLanguage.fr:
+        'Épreuve de {ability} après le combat : d20 {mod} contre {dc} ({pct} %)',
+  },
   'tower_event_roll_line': {
     AppLanguage.en: '{roll} {mod} = {total}  ·  DC {dc}',
     AppLanguage.fr: '{roll} {mod} = {total}  ·  DD {dc}',

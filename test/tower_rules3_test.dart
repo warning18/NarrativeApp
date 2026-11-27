@@ -8,6 +8,7 @@ import 'dart:convert';
 
 import 'package:flutter_test/flutter_test.dart';
 
+import 'package:narrative_data_app/data/tower/tower_events.dart';
 import 'package:narrative_data_app/data/tower/tower_bot.dart';
 import 'package:narrative_data_app/data/tower/tower_floors.dart';
 import 'package:narrative_data_app/data/tower/tower_hero.dart';
@@ -38,6 +39,9 @@ const _rules2Save =
     '"5":{"kind":"purse","amount":2},"6":{"kind":"gear","id":"sword_t3"}}}';
 
 void main() {
+  // These test the rule as it rolls when the run moves on (the event modal off).
+  setUp(() => towerEventModalOverride = false);
+  tearDown(() => towerEventModalOverride = null);
   final data = towerDataFromAssets();
 
   String gift(TowerReward c) =>
