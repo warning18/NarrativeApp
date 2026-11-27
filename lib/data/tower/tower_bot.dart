@@ -65,9 +65,13 @@ final ClanData _assetClans = towerClanDataFromAssets();
 /// - the affixes rolled by rollEncounterAffixes under the foes' doctrine,
 ///   the floor's forced ones in place of the first foe's;
 /// - no goal (a fight whose loss goes on, `lossContinues`, rolls none);
-/// - the hero rerolling a weak face, within the round's three rolls.
+/// - the hero rerolling a weak face, within the round's three rolls;
+/// - on rules 5's early floors, the ambush forced (the foes' turn before
+///   round 1) and the foes' damage times the hero's unlock health factor
+///   (TowerFloor.damageFor, EncounterModifiers.damageMultiplier).
 /// Not played (the headless fight has none): the battlefield conditions
-/// the screen rolls, momentum, Quick Resolve.
+/// the screen rolls (a forced ambush is played), the ambush's hidden
+/// intents (the bot never reads them), momentum, Quick Resolve.
 SimFightOutcome towerBotFight({
   required TowerRun run,
   required TowerFloor floor,
@@ -134,6 +138,9 @@ SimFightOutcome towerBotFight({
     affixes: affixes,
     elite: elite,
     rerollWeakFaces: true,
+    ambush: floor.ambush,
+    damageMultiplier:
+        floor.damageFor(run.raceId, run.professionId, run.unlocksOwned),
   );
   hero.diceFaces = ownFaces;
   hero.unlockedSkillIds.removeAll(lent);

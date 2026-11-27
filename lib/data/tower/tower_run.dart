@@ -1203,3 +1203,8 @@ String? towerLeadingClan(TowerRun run, TowerData data) {
 
 /// The least run standing a clan needs to lead: two gifts taken.
 const int towerLeadingClanMinStanding = 4;
+
+/// [run]'s floor is a rules-5 early floor (towerEarlyFloorOf: floors 1 to
+/// [towerEarlyFloors]): its fight is the forced ambush, the foes striking
+/// first. The floor screen's "Ambush: foes strike first" tag reads it.
+bool towerAmbushFloor(TowerRun run) => towerEarlyFloorOf(run.rules, run.floor);

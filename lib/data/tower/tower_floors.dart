@@ -5,6 +5,7 @@
 
 import 'dart:math';
 
+import '../../combat/battlefield_condition.dart';
 import '../../combat/combat_engine.dart' show isBossEnemy;
 import '../../combat/encounter.dart';
 import '../../combat/enemy_affix.dart';
@@ -139,13 +140,33 @@ class TowerFloor {
         foeScale: foeScale * scale,
       );
 
+  /// Whether the foes strike first here (rules 5's early floors,
+  /// towerEarlyFloorOf): the app's ambush, forced.
+  bool get ambush => towerEarlyFloorOf(rules, floor);
+
+  /// The multiplier on the foes' damage alone for a hero of [raceId] and
+  /// [professionId] owning [unlocksOwned] unlocks (TowerRun.unlocksOwned):
+  /// on rules 5's early floors the hero's unlock health factor
+  /// (towerEarlyDamageFor); 1 elsewhere.
+  double damageFor(String raceId, String professionId, int unlocksOwned) =>
+      towerEarlyDamageFor(rules, floor,
+          raceId: raceId,
+          professionId: professionId,
+          unlocksOwned: unlocksOwned);
+
   /// What the fight screen is handed for this floor, for a hero of
   /// [professionId] (the Tower's context: no scene, no chest, no gold or
   /// XP, wounds carried, a loss handed back to the Tower rather than the
-  /// death screen).
-  EncounterModifiers modifiersFor(String professionId) => EncounterModifiers(
+  /// death screen). On rules 5's early floors the foes strike first (the
+  /// ambush forced) and their damage is [damageFor] the hero of [raceId]
+  /// with [unlocksOwned] unlocks (none given: ×1).
+  EncounterModifiers modifiersFor(String professionId,
+          {String raceId = '', int unlocksOwned = 0}) =>
+      EncounterModifiers(
         chapter: chapter,
         difficultyMultiplier: extraFor(professionId),
+        damageMultiplier: damageFor(raceId, professionId, unlocksOwned),
+        forcedCondition: ambush ? BattlefieldCondition.ambush : null,
         forcedAffixes: affixes,
         forceElite: elite,
         keepWounds: true,

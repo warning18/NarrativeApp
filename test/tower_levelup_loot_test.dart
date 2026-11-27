@@ -645,10 +645,11 @@ void main() {
     });
 
     test('the app starts new climbs on the live rules', () {
-      // Rules 4 is live with UX's screens (tower_providers.dart starts new
-      // climbs on towerRulesLive).
-      expect(towerRulesLive, 4);
-      expect(towerRulesMax, 4);
+      // Rules 5 is live (tower_providers.dart starts new climbs on
+      // towerRulesLive; rules 4's screens serve it, the early floors need
+      // none).
+      expect(towerRulesLive, 5);
+      expect(towerRulesMax, 5);
       expect(start(1, rules: 9).rules, towerRulesMax);
     });
 
