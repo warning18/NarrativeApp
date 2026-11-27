@@ -90,6 +90,7 @@ int _stallDraw(int floor) => floor * 16 + 15;
 /// a reroll redraws the gifts or the boon beside it).
 bool towerCanReroll(TowerRun run) =>
     run.status == TowerStatus.choosing &&
+    run.pendingGear == null &&
     run.offer.any((c) => c.kind != TowerRewardKind.clanOath);
 
 /// What the next reroll of [run]'s table costs: free for the climb's first
@@ -162,6 +163,7 @@ TowerRun towerReroll(TowerRun run, TowerData data, {SimCharacter? hero}) {
 /// fewer than [towerBanishesPerRun] this run, [towerBanishPrice] in hand.
 bool towerCanBanish(TowerRun run, int index) =>
     run.status == TowerStatus.choosing &&
+    run.pendingGear == null &&
     index >= 0 &&
     index < run.offer.length &&
     const {
