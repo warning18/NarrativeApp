@@ -795,43 +795,104 @@ class _FloorIntro extends ConsumerWidget {
           ],
         ));
     if (modalCard == null) return scroll;
-    return Stack(children: [
-      IgnorePointer(child: Opacity(opacity: 0.35, child: scroll)),
-      Positioned.fill(
-        child: Padding(
-          padding: const EdgeInsets.fromLTRB(8, 4, 16, 12),
-          child: Center(
-            child: SingleChildScrollView(
-              child: Container(
-                key: const Key('tower_event_modal'),
-                padding: const EdgeInsets.all(12),
-                decoration: BoxDecoration(
-                    color: inkBlack.withValues(alpha: 0.97),
-                    border: Border.all(color: inkPaper, width: 2),
-                    borderRadius: BorderRadius.circular(10)),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Text(
-                        tr(
-                            ref,
-                            onFace != null
-                                ? 'tower_event_modal_forced'
-                                : 'tower_event_modal_choose'),
-                        style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                            color: onFace != null ? inkRed : inkGrey,
-                            fontWeight: FontWeight.w700)),
-                    const SizedBox(height: 8),
-                    modalCard,
-                  ],
-                ),
+    final note = Theme.of(context).textTheme.bodySmall?.copyWith(
+        color: onFace != null ? inkRed : inkGrey, fontWeight: FontWeight.w700);
+    final noteText = tr(
+        ref,
+        onFace != null
+            ? 'tower_event_modal_forced'
+            : 'tower_event_modal_choose');
+    return _SheetOverSnow(
+      under: IgnorePointer(child: Opacity(opacity: 0.35, child: scroll)),
+      sheet: Padding(
+        padding: const EdgeInsets.fromLTRB(8, 4, 16, 12),
+        child: Center(
+          child: SingleChildScrollView(
+            child: Container(
+              key: const Key('tower_event_modal'),
+              padding: const EdgeInsets.all(12),
+              decoration: BoxDecoration(
+                  color: inkBlack.withValues(alpha: 0.97),
+                  border: Border.all(color: inkPaper, width: 2),
+                  borderRadius: BorderRadius.circular(10)),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Text(noteText, style: note),
+                  const SizedBox(height: 8),
+                  modalCard,
+                ],
               ),
             ),
           ),
         ),
       ),
-    ]);
+    );
+  }
+}
+
+/// A sheet over the floor in the route's overlay, above the snow (which is
+/// drawn over everything under the weather scope): the drifts never lie on
+/// it. The floor sits dimmed under it; the sheet follows the floor's area.
+class _SheetOverSnow extends StatefulWidget {
+  const _SheetOverSnow({required this.under, required this.sheet});
+
+  final Widget under;
+  final Widget sheet;
+
+  @override
+  State<_SheetOverSnow> createState() => _SheetOverSnowState();
+}
+
+class _SheetOverSnowState extends State<_SheetOverSnow> {
+  final _link = LayerLink();
+  final _portal = OverlayPortalController();
+  Size _size = Size.zero;
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (mounted && !_portal.isShowing) _portal.show();
+    });
+  }
+
+  @override
+  void dispose() {
+    if (_portal.isShowing) _portal.hide();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = InheritedTheme.capture(from: context, to: null);
+    return OverlayPortal(
+      controller: _portal,
+      overlayChildBuilder: (overlayContext) => Positioned(
+        left: 0,
+        top: 0,
+        child: CompositedTransformFollower(
+          link: _link,
+          showWhenUnlinked: false,
+          child: SizedBox(
+            width: _size.width,
+            height: _size.height,
+            child: Material(
+              type: MaterialType.transparency,
+              child: theme.wrap(widget.sheet),
+            ),
+          ),
+        ),
+      ),
+      child: CompositedTransformTarget(
+        link: _link,
+        child: LayoutBuilder(builder: (_, c) {
+          _size = c.biggest;
+          return widget.under;
+        }),
+      ),
+    );
   }
 }
 
