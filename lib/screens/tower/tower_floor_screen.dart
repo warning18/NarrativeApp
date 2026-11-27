@@ -747,13 +747,17 @@ class _FloorIntro extends ConsumerWidget {
             if (floor.affixes.isNotEmpty ||
                 floor.elite ||
                 floor.elitePack ||
-                towerHexedOf(run))
+                towerHexedOf(run) ||
+                towerAmbushFloor(run))
               Padding(
                 padding: const EdgeInsets.only(top: 12),
                 child: Wrap(
                   spacing: 6,
                   runSpacing: 4,
                   children: [
+                    // Rules 5's early floors: the forced ambush, foes first.
+                    if (towerAmbushFloor(run))
+                      InkTag(tr(ref, 'tower_ambush_tag'), red: true),
                     // The Hex of a gamble card: this floor's foes 15% stronger.
                     if (towerHexedOf(run))
                       InkTag(tr(ref, 'tower_hex_tag'), red: true),

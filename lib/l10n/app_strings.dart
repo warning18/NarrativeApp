@@ -2536,6 +2536,10 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.en: 'Buy a potion ({n} coins)',
     AppLanguage.fr: 'Acheter une potion ({n} pièces)',
   },
+  'tower_ambush_tag': {
+    AppLanguage.en: 'Ambush: foes strike first',
+    AppLanguage.fr: 'Embuscade\u00a0: les ennemis frappent d’abord',
+  },
   'tower_hex_tag': {
     AppLanguage.en: 'Hex: foes x1.15',
     AppLanguage.fr: 'Maléfice\u00a0: ennemis ×1,15',
