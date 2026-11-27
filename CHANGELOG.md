@@ -11,6 +11,7 @@ isn't reconstructable from git history alone.
 ## [2.10.45+1127]
 
 - **Tower: the first floors threaten (new climbs only).** On floors 1 to 3 the foes strike first (an ambush: they act before your first roll, their intents hidden that round), and they hit harder the more marks unlocks you own, as your health grows with them. Their health is a little lower and you get a quarter of your health back after each of those floors. An early fight now costs about a fifth of your health whatever you've unlocked. Climbs already in progress keep their rules.
+
 ## [2.10.44+1126]
 
 - **Tower: the floor's choices in a sheet, a setback's roll on Climb.** A shortcut, a parley or a bargain opens in a sheet over the dimmed floor as you arrive (it cannot be closed without choosing; the floor rail stays). A setback is announced by a line before its fight ("Wisdom test after the fight: d20 +5 against 10"), and once the fight and its cards are done a sheet with one button, Face it, rolls the d20 and moves the climb on. Switches the event modal on (Core's v2.10.41-42 rules).
