@@ -5,7 +5,7 @@ The five Tower bosses and wardens that shared one masked Inquisition look now ha
 - `hollow_court_zealot` (floor 15): a hunched figure in a dark violet hood with a white half mask, a crystal shard in clasped hands.
 - `hollow_court_inquisitor` (floor 15): a tall figure in a violet coat and a tall pointed black hat, a staff with a seal.
 - `inquisition_penitent` (floor 25): a barefoot bandaged figure in a violet hood and a torn grey skirt, a barbed scourge.
-- `purifier_vell` (floor 15 pool in the code's warden list for 5/15; Purifier Vell): a soot-black apron, goggles and a lit torch in each hand.
+- `purifier_vell` (Purifier Vell, floor 15): a soot-black apron, goggles and a lit torch in each hand.
 
 ## Files
 `art/pixellab-boss-rotations/handoff/<id>_{south,north,east,west}.png` (48 x 48, native frames): **these replace** the stand-ins of the same names from the earlier hand-off (the stand-in files are kept in `art/pixellab-boss-rotations/standins_old/`). Use them for the boss scene: the boss **south** (facing the player), the hero **north**. Sheet `docs/art/boards/bosses5-south-north.png` (the five south frames with the old stand-in beside each, the heroes' north frames, and five mock fights).
