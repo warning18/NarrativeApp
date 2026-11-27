@@ -8,6 +8,10 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [2.10.46+1128]
+
+- **Tower: the first floors threaten (new climbs only).** On floors 1 to 3 the foes strike first (an ambush: they act before your first roll, their intents hidden that round), and they hit harder the more marks unlocks you own, as your health grows with them. Their health is a little lower and you get a quarter of your health back after each of those floors. An early fight now costs about a fifth of your health whatever you've unlocked. Climbs already in progress keep their rules.
+
 ## [2.10.43+1125]
 
 - **Tower fight: health numbers on the bars.** The hero's and the foes' bars are taller and carry "34 / 52" inside them (and "34 → 20 / 52" while a roll is aimed), in the ink font; no need to open the sheet to read them.
