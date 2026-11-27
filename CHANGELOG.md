@@ -8,6 +8,10 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [2.10.43+1125]
+
+- **Tower fight: health numbers on the bars.** The hero's and the foes' bars are taller and carry "34 / 52" inside them (and "34 → 20 / 52" while a roll is aimed), in the ink font; no need to open the sheet to read them.
+
 ## [2.10.42+1124]
 
 - **Tower: floor events for a modal, built but not yet on (no change for players).** Each event now tells the screen whether it is forced and lists its options with their outcomes; behind a switch, a setback's d20 rolls only when the player presses Climb (same result as today, never re-rolled on reload). UX's screen turns it on.

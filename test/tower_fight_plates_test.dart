@@ -22,7 +22,8 @@ void main() {
     InkSprites.reset();
   });
 
-  testWidgets('the plates carry no health numbers; the hero sheet does',
+  testWidgets(
+      'the plate bars carry the health numbers; the hero sheet does too',
       (tester) async {
     TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
         .setMockMethodCallHandler(
@@ -67,8 +68,8 @@ void main() {
     await tester.tap(enter);
     await settle(14);
 
-    // The plates: names and bars, no "29 / 29".
-    expect(find.textContaining(RegExp(r'^\d+ / \d+$')), findsNothing);
+    // The plates: names and bars with "29 / 29" inside them (v2.10.43).
+    expect(find.textContaining(RegExp(r'^\d+ / \d+$')), findsWidgets);
     final plate = find.byWidgetPredicate((w) =>
         w.key is ValueKey<String> &&
         (w.key! as ValueKey<String>).value.startsWith('party_slot_'));
