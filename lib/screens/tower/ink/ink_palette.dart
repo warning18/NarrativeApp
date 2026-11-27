@@ -38,5 +38,10 @@ const Color inkGold = Color(0xFFC9A24B);
 const Color inkViolet = Color(0xFF1B1533);
 const Color inkIron = Color(0xFF454E53);
 
+/// A stat that goes up and one that goes down, on the dark cards (a gear
+/// card's comparison with the piece worn).
+const Color inkMore = Color(0xFF7BD88F);
+const Color inkLess = Color(0xFFFF7A7A);
+
 /// The stat-pick card's stock (rules 4): its own family, verdigris.
 const Color inkVerdigris = Color(0xFF2E6F68);
