@@ -140,9 +140,10 @@ void main() {
     expect(find.text('Dud'), findsOneWidget);
   });
 
-  testWidgets('a hero who reads the card sees its hint', (tester) async {
-    final base0 = base();
-    final run = base0.copyWith(
+  testWidgets('an elf (Perception 5) reads what the card is', (tester) async {
+    final elf = towerStart(
+        seed: 5, raceId: 'elf', professionId: 'warrior', rules: 4, data: data);
+    final run = elf.copyWith(
         status: TowerStatus.choosing,
         table: TowerTableKind.loot,
         gambleOutcome: TowerGambleOutcome.wound,
@@ -150,18 +151,13 @@ void main() {
           TowerReward(TowerRewardKind.purse, amount: 3),
           TowerReward(TowerRewardKind.gamble),
         ]);
-    final hero = towerHeroOf(run, data);
-    final hint = towerGambleHintOf(run, hero);
-    await boot(tester, run);
-    // Perception under 3 reads nothing; a stronger hero would read it.
     expect(
-        hint,
-        hero.perception >= 3
-            ? isNot(TowerGambleHint.none)
-            : TowerGambleHint.none);
-    if (hint == TowerGambleHint.bad) {
-      expect(find.text('You sense trouble.'), findsOneWidget);
-    }
+        towerGambleHintOf(run, towerHeroOf(run, data)), TowerGambleHint.kind);
+    await boot(tester, run);
+    await shot(tester, 'r4-gamble-read');
+    // Its name instead of "? ? ?", the hint under it, a red band (bad).
+    expect(find.text('Wound'), findsWidgets);
+    expect(find.text('? ? ?'), findsNothing);
   });
 
   testWidgets('the stat-pick card: take it, choose a stat, confirm',

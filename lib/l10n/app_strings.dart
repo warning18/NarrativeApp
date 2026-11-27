@@ -2468,31 +2468,19 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.fr: 'Pari',
   },
   'tower_gamble_name': {
-    AppLanguage.en: 'A card face down',
-    AppLanguage.fr: 'Une carte face cachée',
+    AppLanguage.en: 'A card laid face down',
+    AppLanguage.fr: 'Une carte posée face cachée',
   },
   'tower_kind_stat_pick': {
     AppLanguage.en: 'Training',
     AppLanguage.fr: 'Entraînement',
   },
   'tower_stat_pick_name': {
-    AppLanguage.en: '+1 to a stat of your choice',
-    AppLanguage.fr: '+1 à une caractéristique au choix',
+    AppLanguage.en: 'A stat of your choice, a little stronger',
+    AppLanguage.fr: 'Une caractéristique de votre choix, un peu plus forte',
   },
   // Rules 4: the gamble card's hints, its confirm and reveal, the stat
   // choice, the pedlar and the Hex mark (UX words; Narrative may reword).
-  'tower_gamble_hint_good': {
-    AppLanguage.en: 'You sense luck.',
-    AppLanguage.fr: 'Vous sentez la chance.',
-  },
-  'tower_gamble_hint_bad': {
-    AppLanguage.en: 'You sense trouble.',
-    AppLanguage.fr: 'Vous sentez un danger.',
-  },
-  'tower_gamble_hint_kind': {
-    AppLanguage.en: 'You see through it: {outcome}.',
-    AppLanguage.fr: 'Vous voyez à travers\u00a0: {outcome}.',
-  },
   'tower_gamble_confirm_title': {
     AppLanguage.en: 'No turning back',
     AppLanguage.fr: 'Pas de retour possible',
@@ -2513,73 +2501,6 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   'tower_gamble_revealed': {
     AppLanguage.en: 'The card turns over',
     AppLanguage.fr: 'La carte se retourne',
-  },
-  'tower_gamble_gilded': {
-    AppLanguage.en: 'Gilded',
-    AppLanguage.fr: 'Doré',
-  },
-  'tower_gamble_gilded_line': {
-    AppLanguage.en: 'The best piece of a finer chest is yours.',
-    AppLanguage.fr: 'La plus belle pièce d’un coffre plus riche est à vous.',
-  },
-  'tower_gamble_twin': {
-    AppLanguage.en: 'Twin',
-    AppLanguage.fr: 'Jumelle',
-  },
-  'tower_gamble_twin_line': {
-    AppLanguage.en: 'Two cards instead of one: you take the next two.',
-    AppLanguage.fr:
-        'Deux cartes au lieu d’une\u00a0: vous prenez les deux suivantes.',
-  },
-  'tower_gamble_hoard': {
-    AppLanguage.en: 'Hoard',
-    AppLanguage.fr: 'Trésor',
-  },
-  'tower_gamble_hoard_line': {
-    AppLanguage.en: 'A cache of coins.',
-    AppLanguage.fr: 'Une cachette de pièces.',
-  },
-  'tower_gamble_dud': {
-    AppLanguage.en: 'Dud',
-    AppLanguage.fr: 'Raté',
-  },
-  'tower_gamble_dud_line': {
-    AppLanguage.en: 'Nothing happens.',
-    AppLanguage.fr: 'Il ne se passe rien.',
-  },
-  'tower_gamble_wound': {
-    AppLanguage.en: 'Wound',
-    AppLanguage.fr: 'Blessure',
-  },
-  'tower_gamble_wound_line': {
-    AppLanguage.en: 'You lose a fifth of your health.',
-    AppLanguage.fr: 'Vous perdez un cinquième de votre santé.',
-  },
-  'tower_gamble_spill': {
-    AppLanguage.en: 'Spill',
-    AppLanguage.fr: 'Fiole brisée',
-  },
-  'tower_gamble_spill_line': {
-    AppLanguage.en:
-        'A potion is lost, or a tenth of your health if you carry none.',
-    AppLanguage.fr:
-        'Une potion est perdue, ou un dixième de votre santé si vous n’en avez pas.',
-  },
-  'tower_gamble_bright': {
-    AppLanguage.en: 'Bright',
-    AppLanguage.fr: 'Éclat',
-  },
-  'tower_gamble_bright_line': {
-    AppLanguage.en: 'A skill of a higher rarity.',
-    AppLanguage.fr: 'Une compétence d’une rareté supérieure.',
-  },
-  'tower_gamble_hex': {
-    AppLanguage.en: 'Hex',
-    AppLanguage.fr: 'Maléfice',
-  },
-  'tower_gamble_hex_line': {
-    AppLanguage.en: 'The next floor’s foes are 15% stronger.',
-    AppLanguage.fr: 'Les ennemis de l’étage suivant sont 15\u00a0% plus forts.',
   },
   'tower_stat_pick_card': {
     AppLanguage.en: 'Stat point',
@@ -3046,6 +2967,90 @@ const Map<String, Map<AppLanguage, String>> _strings = {
         'Loot tables show a fourth card on the lower and middle floors.',
     AppLanguage.fr:
         'Les tables de butin montrent une quatrième carte dans les étages bas et moyens.',
+  },
+  // Rules 4: what lies under the gamble card (a name for the Perception hint
+  // that reads the kind, a line when it is turned over) and the hints.
+  'tower_gamble_gilded': {
+    AppLanguage.en: 'Gilded',
+    AppLanguage.fr: 'Dorée',
+  },
+  'tower_gamble_gilded_line': {
+    AppLanguage.en:
+        'The best of the spoils comes from a finer chest than it looked.',
+    AppLanguage.fr:
+        'Le meilleur du butin sort d’un coffre plus beau qu’il n’y paraissait.',
+  },
+  'tower_gamble_twin': {
+    AppLanguage.en: 'Twin',
+    AppLanguage.fr: 'Jumelle',
+  },
+  'tower_gamble_twin_line': {
+    AppLanguage.en: 'Beneath it, both the other cards: take them all.',
+    AppLanguage.fr: 'Dessous, les deux autres cartes\u00a0: prenez-les toutes.',
+  },
+  'tower_gamble_hoard': {
+    AppLanguage.en: 'Hoard',
+    AppLanguage.fr: 'Magot',
+  },
+  'tower_gamble_hoard_line': {
+    AppLanguage.en: 'A hoard of coins was tucked in behind it.',
+    AppLanguage.fr: 'Un magot de pièces était glissé derrière.',
+  },
+  'tower_gamble_dud': {
+    AppLanguage.en: 'Dud',
+    AppLanguage.fr: 'Fausse carte',
+  },
+  'tower_gamble_dud_line': {
+    AppLanguage.en: 'Nothing. It was only a card.',
+    AppLanguage.fr: 'Rien. Ce n’était qu’une carte.',
+  },
+  'tower_gamble_wound': {
+    AppLanguage.en: 'Wound',
+    AppLanguage.fr: 'Blessure',
+  },
+  'tower_gamble_wound_line': {
+    AppLanguage.en: 'It bites: you lose a good part of your health.',
+    AppLanguage.fr:
+        'Elle mord\u00a0: vous perdez une bonne part de vos forces.',
+  },
+  'tower_gamble_spill': {
+    AppLanguage.en: 'Spill',
+    AppLanguage.fr: 'Fiole brisée',
+  },
+  'tower_gamble_spill_line': {
+    AppLanguage.en:
+        'A flask spills in your bag; with none to spill, it costs you health.',
+    AppLanguage.fr:
+        'Une fiole se renverse dans votre sac\u00a0; sans fiole, cela vous coûte des forces.',
+  },
+  'tower_gamble_bright': {
+    AppLanguage.en: 'Bright',
+    AppLanguage.fr: 'Éclat',
+  },
+  'tower_gamble_bright_line': {
+    AppLanguage.en: 'The skill shines a rarity higher.',
+    AppLanguage.fr: 'La compétence brille d’une rareté de plus.',
+  },
+  'tower_gamble_hex': {
+    AppLanguage.en: 'Hex',
+    AppLanguage.fr: 'Mauvais sort',
+  },
+  'tower_gamble_hex_line': {
+    AppLanguage.en: 'A hex: the next floor’s foes will be tougher.',
+    AppLanguage.fr:
+        'Un mauvais sort\u00a0: les adversaires du prochain étage seront plus coriaces.',
+  },
+  'tower_gamble_hint_good': {
+    AppLanguage.en: 'It feels lucky.',
+    AppLanguage.fr: 'Elle semble porter chance.',
+  },
+  'tower_gamble_hint_bad': {
+    AppLanguage.en: 'Something about it feels wrong.',
+    AppLanguage.fr: 'Quelque chose en elle sonne faux.',
+  },
+  'tower_gamble_hint_kind': {
+    AppLanguage.en: 'You can tell what it is: {name}.',
+    AppLanguage.fr: 'Vous devinez ce que c’est\u00a0: {name}.',
   },
   'tower_trim_moth': {
     AppLanguage.en: 'Moth trim',

@@ -326,7 +326,7 @@ Widget _gambleBackCard(WidgetRef ref, TowerRun run, TowerData data,
       TowerGambleHint.good => tr(ref, 'tower_gamble_hint_good'),
       TowerGambleHint.bad => tr(ref, 'tower_gamble_hint_bad'),
       TowerGambleHint.kind => tr(ref, 'tower_gamble_hint_kind')
-          .replaceAll('{outcome}', outcomeName ?? ''),
+          .replaceAll('{name}', outcomeName ?? ''),
     },
     hue: switch (hint) {
       TowerGambleHint.none => null,
