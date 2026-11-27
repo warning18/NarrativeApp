@@ -15,6 +15,7 @@ import 'tower_clans.dart' show TowerClanTables;
 import 'tower_floors.dart' show TowerStream, towerRandom;
 import 'tower_levelup_loot.dart';
 import 'tower_rewards.dart';
+import 'tower_rules4.dart' show towerFlaskOf;
 import 'tower_run.dart';
 import 'tower_tables.dart';
 
@@ -241,6 +242,13 @@ void towerApplyReward(SimCharacter hero, TowerReward reward, TowerData data,
     case TowerRewardKind.bundle:
     case TowerRewardKind.purse:
       break;
+    // Rules 4 (tower_rules4.dart): a gamble gives what it turned into (its
+    // own card, or the run's), never itself; the stat pick its point, apart
+    // from SimCharacter.pickedPoints (not counted in the nudges' caps).
+    case TowerRewardKind.gamble:
+      break;
+    case TowerRewardKind.statPick:
+      if (reward.id.isNotEmpty) hero.addAbilities({reward.id: 1});
   }
 }
 
@@ -323,6 +331,7 @@ SimCharacter towerHeroOf(TowerRun run, TowerData data) {
     '${run.seed}|${run.raceId}|${run.professionId}|'
         '${run.startUnlocks.join(',')}|${run.unlocksOwned}|${run.taken[0]}'
         '${bag ? '|bag' : ''}'
+        '${run.startGear == null ? '' : '|${run.startGear}'}'
         // Rules 3's hero differs from the start (its unlocks' health).
         '${run.rules >= towerSurvivalRules ? '|r${run.rules}' : ''}',
   ];
@@ -341,6 +350,7 @@ SimCharacter towerHeroOf(TowerRun run, TowerData data) {
       keys.add('${keys.last}#$floor:x${run.xp[floor] ?? 0}:'
           '${run.loot[floor]}:${run.taken[floor]}:'
           '${(run.levelUps[floor] ?? const []).join(',')}'
+          '${run.gambles[floor] == null ? '' : '~${run.gambles[floor]!.join(',')}'}'
           '${run.stallBoons[floor] == null ? '' : '+${run.stallBoons[floor]}'}');
       continue;
     }
@@ -374,6 +384,10 @@ SimCharacter towerHeroOf(TowerRun run, TowerData data) {
     if (run.taken[0] case final oath?) {
       towerApplyReward(hero, oath, data, bag: bag);
     }
+    // Old friend's gear (rules 4), worn from the start.
+    if (run.startGear case final gear?) {
+      towerApplyReward(hero, gear, data, bag: bag);
+    }
     _keep(built, keys[0], hero);
     floor = 0;
     pick = 0;
@@ -398,6 +412,12 @@ SimCharacter towerHeroOf(TowerRun run, TowerData data) {
       if (run.stallBoons[floor] case final boon?) {
         towerApplyReward(hero, boon, data, bag: bag);
         towerNudgeOn(hero, boon, data, rules: run.rules);
+      }
+      // Rules 4: a gamble's Twin card (with its nudge); Hex's mark gives
+      // nothing.
+      for (final card in run.gambles[floor] ?? const <TowerReward>[]) {
+        towerApplyReward(hero, card, data, bag: bag);
+        towerNudgeOn(hero, card, data, rules: run.rules);
       }
       _keep(built, keys[floor], hero);
       continue;
@@ -434,9 +454,9 @@ SimCharacter towerHeroOf(TowerRun run, TowerData data) {
   }
   hero.currentHealth = run.health.clamp(0, hero.maxHealth);
   hero.mana = hero.maxMana;
-  // The flask, filled every floor, and the bag the spoils filled.
-  hero.potions =
-      towerFlask + run.unlocksOwned ~/ towerUnlocksPerPotion + run.potions;
+  // The flask, filled every floor (towerFlaskOf: rules 4's perks too), and
+  // the bag the spoils filled.
+  hero.potions = towerFlaskOf(run) + run.potions;
   return hero;
 }
 
@@ -478,6 +498,11 @@ TowerHeroView towerHeroView(TowerRun run, SimCharacter hero) => TowerHeroView(
         for (final cards in run.levelUps.values)
           for (final r in cards)
             if (r != null && r.id.isNotEmpty) r.id,
+        // Rules 4: a gamble's cards and Old friend's gear.
+        for (final cards in run.gambles.values)
+          for (final r in cards)
+            if (r.kind != TowerRewardKind.gamble && r.id.isNotEmpty) r.id,
+        if (run.startGear case final gear?) gear.id,
         ...run.banishedIds,
       },
     );

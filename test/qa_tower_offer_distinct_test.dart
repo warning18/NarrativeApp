@@ -30,10 +30,13 @@ void main() {
         TowerRewardKind.die => 'die:${c.id}',
         TowerRewardKind.spell => 'spell:${c.id}',
         TowerRewardKind.clanOath => 'oath:${c.id}',
-        // Rules 2's loot cards (Core's rules PR): never on these tables.
+        // Rules 2's loot cards (Core's rules PR) and rules 4's gamble and
+        // stat pick: never on these tables.
         TowerRewardKind.gear ||
         TowerRewardKind.bundle ||
-        TowerRewardKind.purse =>
+        TowerRewardKind.purse ||
+        TowerRewardKind.gamble ||
+        TowerRewardKind.statPick =>
           '${c.kind.name}:${c.id}:${c.amount}',
       };
 

@@ -35,6 +35,10 @@ enum TowerStream {
   /// A reroll of a floor's table and a merchant's boon (v2.10.0,
   /// tower_coins.dart): towerRandom(seed, floor x 16 + n, reroll).
   reroll,
+
+  /// Rules 4's gamble and stat-pick cards (tower_rules4.dart): whether a
+  /// table holds one, its outcome, what it gives; Old friend's start gear.
+  gamble,
 }
 
 /// The stream [purpose] of floor [floor] in the run of [seed]. Mixed by
@@ -62,6 +66,7 @@ class TowerFloor {
     this.events = 0,
     this.heat = 0,
     this.rules = 1,
+    this.foeScale = 1.0,
   });
 
   /// 1..[towerTop].
@@ -102,16 +107,37 @@ class TowerFloor {
   /// on rules 3 the survival curve by floor too).
   final int rules;
 
+  /// What the run put on this floor's foes for this fight, on top of all
+  /// the rest (rules 4's Hex, towerHexFloor: 1.15); 1 otherwise.
+  final double foeScale;
+
   bool get isPack => enemyIds.length > 1;
 
   /// The multiplier on the curve the fight of a hero of [professionId] runs
   /// at: the floor's extra and the profession's scale (its peak scale on a
-  /// warden's or boss's floor, towerProfessionPeakScale).
+  /// warden's or boss's floor, towerProfessionPeakScale), and [foeScale].
   double extraFor(String professionId) =>
       extra *
       towerProfessionScaleOf(professionId,
           events: events, peak: kind != TowerFloorKind.fight) *
-      towerRulesScaleOf(rules, professionId, floor: floor);
+      towerRulesScaleOf(rules, professionId, floor: floor) *
+      foeScale;
+
+  /// This floor with its foes [scale] times stronger (on top of [foeScale]).
+  TowerFloor scaledBy(double scale) => TowerFloor(
+        floor: floor,
+        kind: kind,
+        chapter: chapter,
+        extra: extra,
+        enemyIds: enemyIds,
+        affixes: affixes,
+        elite: elite,
+        elitePack: elitePack,
+        events: events,
+        heat: heat,
+        rules: rules,
+        foeScale: foeScale * scale,
+      );
 
   /// What the fight screen is handed for this floor, for a hero of
   /// [professionId] (the Tower's context: no scene, no chest, no gold or

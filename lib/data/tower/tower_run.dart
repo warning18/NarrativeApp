@@ -16,6 +16,7 @@ import 'tower_floors.dart';
 import 'tower_hero.dart';
 import 'tower_levelup_loot.dart';
 import 'tower_rewards.dart';
+import 'tower_rules4.dart';
 import 'tower_tables.dart';
 
 /// Where a run stands.
@@ -83,6 +84,10 @@ class TowerRun {
     this.levelUps = const {},
     this.loot = const {},
     this.table,
+    this.gambleOutcome,
+    this.lastGamble,
+    this.gambles = const {},
+    this.startGear,
   });
 
   /// A saved run. A save from an older version is brought up to date once,
@@ -240,10 +245,31 @@ class TowerRun {
       table: json['table'] == null
           ? null
           : TowerTableKind.values.byName(json['table'] as String),
+      // Rules 4 (tower_rules4.dart): absent in a run saved before, none.
+      gambleOutcome: _gambleOutcomeOf(json['gamble']),
+      lastGamble: _gambleOutcomeOf(json['lastGamble']),
+      gambles: {
+        for (final MapEntry(:key, :value)
+            in ((json['gambles'] as Map?) ?? const {}).entries)
+          int.parse(key.toString()): [
+            for (final c in value as List)
+              TowerReward.fromJson(c as Map<String, dynamic>),
+          ],
+      },
+      startGear: json['startGear'] == null
+          ? null
+          : TowerReward.fromJson(json['startGear'] as Map<String, dynamic>),
     );
     if (json.containsKey('picks')) return run;
     final earned = (towerLevelAfter(run.floorsCleared) - 1) * levelStatPicks;
     return run.copyWith(statPicks: List.filled(max(0, earned), 0));
+  }
+
+  static TowerGambleOutcome? _gambleOutcomeOf(Object? name) {
+    for (final o in TowerGambleOutcome.values) {
+      if (o.name == name) return o;
+    }
+    return null;
   }
 
   /// The cards no longer dealt (before v1.860), as a save names them.
@@ -440,6 +466,26 @@ class TowerRun {
   /// Level Up table or an oath alone; null otherwise.
   final TowerTableKind? table;
 
+  /// Rules 4: what lies under the gamble card on [offer] (drawn when the
+  /// table was dealt, on TowerStream.gamble, so a reload deals the same);
+  /// null when the table holds none. Never shown by the card itself
+  /// (TowerReward(gamble) has no id): read it through towerGambleHintOf.
+  final TowerGambleOutcome? gambleOutcome;
+
+  /// Rules 4: the gamble card's outcome when the last pick took it (the
+  /// screen's reveal); null after any other pick.
+  final TowerGambleOutcome? lastGamble;
+
+  /// Rules 4: what a gamble gave on a floor beyond [loot] and [levelUps]
+  /// (floor -> cards): a Twin's second card (replayed by towerHeroOf with
+  /// its nudge) and Hex's mark (TowerReward(gamble, id: 'hex'): the next
+  /// floor's foes, towerHexFloor).
+  final Map<int, List<TowerReward>> gambles;
+
+  /// Rules 4, Old friend: the piece of gear the friend gave at the start
+  /// (towerOldFriendGearFor), worn from floor 1; null otherwise.
+  final TowerReward? startGear;
+
   /// The ids banished ([banished]'s cards).
   Set<String> get banishedIds => banished.values.toSet();
 
@@ -520,6 +566,11 @@ class TowerRun {
     Map<int, TowerReward>? loot,
     TowerTableKind? table,
     bool clearTable = false,
+    TowerGambleOutcome? gambleOutcome,
+    bool clearGamble = false,
+    TowerGambleOutcome? lastGamble,
+    bool clearLastGamble = false,
+    Map<int, List<TowerReward>>? gambles,
   }) =>
       TowerRun(
         seed: seed,
@@ -565,6 +616,10 @@ class TowerRun {
         levelUps: levelUps ?? this.levelUps,
         loot: loot ?? this.loot,
         table: clearTable ? null : table ?? this.table,
+        gambleOutcome: clearGamble ? null : gambleOutcome ?? this.gambleOutcome,
+        lastGamble: clearLastGamble ? null : lastGamble ?? this.lastGamble,
+        gambles: gambles ?? this.gambles,
+        startGear: startGear,
       );
 
   Map<String, dynamic> toJson() => {
@@ -648,6 +703,14 @@ class TowerRun {
               '$key': value.toJson(),
           },
         if (table != null) 'table': table!.name,
+        if (gambleOutcome != null) 'gamble': gambleOutcome!.name,
+        if (lastGamble != null) 'lastGamble': lastGamble!.name,
+        if (gambles.isNotEmpty)
+          'gambles': {
+            for (final MapEntry(:key, :value) in gambles.entries)
+              '$key': [for (final c in value) c.toJson()],
+          },
+        if (startGear != null) 'startGear': startGear!.toJson(),
       };
 }
 
@@ -680,7 +743,10 @@ int towerMarksOf(int floorsCleared, int refusals, {int heat = 0}) {
 /// TowerProgress.heatOpen). [perks] are the perks worn (tower_coins.dart,
 /// the first towerPerkSlots known ones kept): Purse's coins in hand, Old
 /// friend's clan ([friend], one of the pool; else the pool's clan the seed
-/// points to).
+/// points to). On rules 4 (tower_rules4.dart) Purse's coins are
+/// towerRoundTwoPurseCoins and Old friend gives a piece of gear too
+/// (TowerRun.startGear, towerOldFriendGearFor). [rules] is clamped to
+/// 1..towerRulesMax.
 TowerRun towerStart({
   required int seed,
   required String raceId,
@@ -729,24 +795,32 @@ TowerRun towerStart({
     events: events,
     heat: heat.clamp(0, towerHeatMax),
     perks: worn,
-    coins: worn.contains(towerPerkPurse) ? towerPurseCoins : 0,
+    coins: worn.contains(towerPerkPurse) ? towerPurseCoinsFor(rules) : 0,
     friend: worn.contains(towerPerkOldFriend) && pool.isNotEmpty
         ? (pool.contains(friend) ? friend : pool[seed.abs() % pool.length])
         : '',
-    rules: rules.clamp(1, towerRulesLive),
+    rules: rules.clamp(1, towerRulesMax),
+    startGear: towerRoundTwoOf(rules) && worn.contains(towerPerkOldFriend)
+        ? towerOldFriendGearFor(seed, professionId, hero, data,
+            events: events, heat: heat.clamp(0, towerHeatMax), rules: rules)
+        : null,
   );
 }
 
 /// The floor [run] fights next (its foes, its fight settings): with its
 /// shortcut taken (TowerRun.shortcut, floor events PR 2), the tougher
-/// fight of towerShortcutFloor.
+/// fight of towerShortcutFloor; on rules 4, hexed (towerHexFloor: a Hex
+/// taken on the floor below, its foes stronger). The app's fight
+/// (tower_fight_launcher.dart, TowerFloor.modifiersFor) reads this.
 TowerFloor towerFloorOf(TowerRun run, TowerData data) {
   final floor = towerFloorsFor(run.seed, data.enemies,
       events: run.events, heat: run.heat, rules: run.rules)[run.floor - 1];
-  return (run.shortcut ?? false) &&
-          towerEventKindOf(run) == TowerEventKind.shortcut
-      ? towerShortcutFloor(floor)
-      : floor;
+  return towerHexFloor(
+      run,
+      (run.shortcut ?? false) &&
+              towerEventKindOf(run) == TowerEventKind.shortcut
+          ? towerShortcutFloor(floor)
+          : floor);
 }
 
 /// [run] after its fight of [TowerRun.floor]: lost, the run is over; won,
@@ -966,12 +1040,15 @@ TowerRun towerTakeStatPick(TowerRun run, TowerData data, int index,
 /// skip landed (a shortcut's landing card dealt: the run chooses again, on
 /// the floor below the landing); a skip's level-up picks wait on the
 /// landing. Last, a store on the landing opens (floor events PR 4,
-/// towerOpenStore).
+/// towerOpenStore). [stat] is the stat a rules-4 stat-pick card raises
+/// (towerPickRules2).
 TowerRun towerPick(TowerRun run, TowerData data, int? index,
-    {SimCharacter? hero}) {
+    {SimCharacter? hero, String? stat}) {
   if (run.status != TowerStatus.choosing) return run;
   // Rules 2: the loot table, then the Level Ups, then on.
-  if (run.rules >= 2) return towerPickRules2(run, data, index, hero: hero);
+  if (run.rules >= 2) {
+    return towerPickRules2(run, data, index, hero: hero, stat: stat);
+  }
   for (var guard = 0; towerPendingPicks(run) > 0 && guard < 64; guard++) {
     final taken = towerTakeStatPick(run, data, 0);
     if (identical(taken, run)) break;

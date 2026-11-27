@@ -18,6 +18,7 @@ import 'tower_floors.dart';
 import 'tower_hero.dart';
 import 'tower_levelup_loot.dart';
 import 'tower_rewards.dart';
+import 'tower_rules4.dart';
 import 'tower_run.dart';
 import 'tower_tables.dart';
 
@@ -92,12 +93,14 @@ bool towerCanReroll(TowerRun run) =>
     run.offer.any((c) => c.kind != TowerRewardKind.clanOath);
 
 /// What the next reroll of [run]'s table costs: free for the climb's first
-/// with Free hand worn, else [towerRerollPrice] and [towerRerollStep] more
-/// for each reroll already bought on this table.
+/// with Free hand worn (on rules 4, the first of each table on floors 1 to
+/// towerFreeHandFloors too), else [towerRerollPrice] and [towerRerollStep]
+/// more for each reroll already bought on this table.
 int towerRerollPriceOf(TowerRun run) {
   final done = run.rerolls[run.floor] ?? 0;
   final any = run.rerolls.values.fold<int>(0, (n, r) => n + r);
   if (run.wears(towerPerkFreeHand) && any == 0) return 0;
+  if (towerFreeHandTableOf(run)) return 0;
   return towerRerollPrice + towerRerollStep * done;
 }
 
@@ -106,7 +109,9 @@ int towerRerollPriceOf(TowerRun run) {
 /// on TowerStream.reroll (no draw of the climb moves): a boon floor's
 /// boon, a clans' table's gifts (the oaths due stay, first), the cards just
 /// shown kept off it while others are left; the cards taken and banished
-/// never come back. [hero], when given, is [run]'s hero already built.
+/// never come back. [hero], when given, is [run]'s hero already built. A
+/// rules-4 table's gamble and stat-pick cards are the first deal's only:
+/// the redrawn cards are all face up.
 TowerRun towerReroll(TowerRun run, TowerData data, {SimCharacter? hero}) {
   if (!towerCanReroll(run)) return run;
   final price = towerRerollPriceOf(run);
@@ -130,6 +135,7 @@ TowerRun towerReroll(TowerRun run, TowerData data, {SimCharacter? hero}) {
         for (final c in redrawn)
           if (c.kind != TowerRewardKind.clanOath) c,
       ],
+      clearGamble: true,
     );
   }
   final drawn = towerRunOfferFor(
@@ -286,7 +292,18 @@ class TowerPerk {
 
   String get nameKey => 'tower_perk_$id';
   String get lineKey => 'tower_perk_${id}_line';
+
+  /// Its line for a climb on [rules] (towerPerkLineKey).
+  String lineKeyFor(int rules) => towerPerkLineKey(id, rules: rules);
 }
+
+/// The string key of perk [perkId]'s line on [rules]: rules 4 redesigned
+/// the perks (tower_rules4.dart), so its line is `tower_perk_<id>_line_r4`;
+/// rules 1 to 3 keep `tower_perk_<id>_line`.
+String towerPerkLineKey(String perkId, {required int rules}) =>
+    towerRoundTwoOf(rules)
+        ? 'tower_perk_${perkId}_line_r4'
+        : 'tower_perk_${perkId}_line';
 
 const String towerPerkPurse = 'purse';
 const String towerPerkDeepPockets = 'deep_pockets';
@@ -362,12 +379,15 @@ int towerBagCapOf(TowerRun run) =>
     towerBagCap +
     (run.wears(towerPerkDeepPockets) ? towerDeepPocketsPotions : 0);
 
-/// Second wind's share back after [run]'s floor (a warden or a boss), else
-/// 0.
-double towerSecondWindShareOf(TowerRun run) => run.wears(towerPerkSecondWind) &&
-        towerBudgetOf(run.floor).kind != TowerFloorKind.fight
-    ? towerSecondWindShare
-    : 0;
+/// Second wind's share back after [run]'s floor (a warden or a boss; on
+/// rules 4 every other floor too, towerSecondWindFloorShare), else 0.
+double towerSecondWindShareOf(TowerRun run) => !run.wears(towerPerkSecondWind)
+    ? 0
+    : towerBudgetOf(run.floor).kind != TowerFloorKind.fight
+        ? towerSecondWindShare
+        : towerRoundTwoOf(run.rules)
+            ? towerSecondWindFloorShare
+            : 0;
 
 // ---------------------------------------------------------------------------
 // Looks and bonuses.

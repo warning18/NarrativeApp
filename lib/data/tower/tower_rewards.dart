@@ -376,6 +376,9 @@ List<TowerReward> towerOfferFor({
       case TowerRewardKind.gear:
       case TowerRewardKind.bundle:
       case TowerRewardKind.purse:
+      // Rules 4's cards are dealt over a table's (tower_rules4.dart).
+      case TowerRewardKind.gamble:
+      case TowerRewardKind.statPick:
         return null;
     }
   }

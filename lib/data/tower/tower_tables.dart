@@ -50,8 +50,18 @@ const Map<String, double> towerProfessionPeakScale = {
 /// Tower XP and the Level Up card table, the stat nudges, the loot table;
 /// 3, rules 2's systems with the survival curve (docs/simulation/
 /// tower-difficulty-survival.md: slower levels, harder foes from floor 1,
-/// more health an unlock). A climb keeps the rules it began with.
+/// more health an unlock); 4, rules 3 with the round-2 package
+/// (docs/simulation/tower-round2-proposals.md: the gamble card, the perks
+/// redesigned, the stat-pick card, the foes 3% more from floor 11). A climb
+/// keeps the rules it began with.
+///
+/// Set to 4 with UX's rules-4 screens (the gamble card, the stat choice,
+/// the pedlar's button): until then a new climb plays rules 3.
 const int towerRulesLive = 3;
+
+/// The newest rules a climb can play (towerStart clamps to it): rules 4 is
+/// built and played by the bot and the tests before it is live.
+const int towerRulesMax = 4;
 
 /// The first rules of the survival curve (towerRulesLive since it shipped):
 /// rules 2 keeps its numbers for the climbs begun on it.
@@ -131,8 +141,23 @@ double towerRulesScaleOf(int rules, String professionId, {int floor = 0}) {
           : 1.0) *
       (floor >= 1 && floor <= towerSurvivalScale.length
           ? towerSurvivalScale[floor - 1]
+          : 1.0) *
+      (rules >= towerRoundTwoRules && floor >= towerRoundTwoUpperFloor
+          ? towerRoundTwoUpperScale
           : 1.0);
 }
+
+/// The first rules of the round-2 package (docs/simulation/
+/// tower-round2-proposals.md, approved by the user): the gamble card, the
+/// perks redesigned, the stat-pick card (tower_rules4.dart) and the offset
+/// below. Every knob of it is read behind `rules >= towerRoundTwoRules`.
+const int towerRoundTwoRules = 4;
+
+/// Rules 4's offset: every foe from floor [towerRoundTwoUpperFloor] on this
+/// much more (on top of [towerSurvivalScale]), so every unlock with any one
+/// perk wins the top 9 to 11% (12 to 14% without it).
+const double towerRoundTwoUpperScale = 1.03;
+const int towerRoundTwoUpperFloor = 11;
 
 /// The max health an unlock gives on rules 3: [towerHealthPerUnlockOf]
 /// this many times (the marks' unlocks make the top reachable: about 10%
@@ -617,7 +642,48 @@ enum TowerRewardKind {
   gear,
   bundle,
   purse,
+
+  /// Rules 4 (tower_rules4.dart): a card dealt face down on a loot or a
+  /// Level Up table, its outcome kept apart (TowerRun.gambleOutcome); and
+  /// "+1 to a stat of your choice" on a Level Up table ([TowerReward.id] the
+  /// stat once taken).
+  gamble,
+  statPick,
 }
+
+/// What lies under rules 4's gamble card (tower_rules4.dart): on a loot
+/// table [gilded], [twin], [hoard], [dud], [wound] or [spill]; on a Level Up
+/// table [bright], [twin], [dud], [wound] or [hex]. Saved by name: a value
+/// added later goes last.
+enum TowerGambleOutcome {
+  /// The best piece of gear of a loot draw one chest tier up.
+  gilded,
+
+  /// Both other cards of the table (on a Level Up table each with its nudge).
+  twin,
+
+  /// Coins: 4, 6, 8 by band.
+  hoard,
+
+  /// Nothing.
+  dud,
+
+  /// 20% of max health lost (never below 1).
+  wound,
+
+  /// A potion of the bag lost (none in it: 10% of max health).
+  spill,
+
+  /// A skill card one rarity step up, with its nudge.
+  bright,
+
+  /// The next floor's foes 15% stronger.
+  hex,
+}
+
+/// What the back of a gamble card tells a hero (towerGambleHintOf): nothing,
+/// good, bad, or what it is (TowerRun.gambleOutcome).
+enum TowerGambleHint { none, good, bad, kind }
 
 /// The table on a rules-2 run's floor won (TowerRun.table): the loot table,
 /// a Level Up table, or a clan's oath alone (tower_levelup_loot.dart).
