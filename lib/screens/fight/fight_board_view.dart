@@ -754,7 +754,8 @@ extension _FightBoardView on _FightScreenState {
           ),
         ),
         if (TowerPanelStyle.of(context) && acting.isNotEmpty)
-          _buildTowerFaceStrip(acting.first),
+          KeyedSubtree(
+              key: _faceStripKey, child: _buildTowerFaceStrip(acting.first)),
         if (_momentum >= _momentumNeeded && !_rolling)
           _buildSurgePicker(acting),
         if (plan.combos.isNotEmpty || plan.duos.isNotEmpty)

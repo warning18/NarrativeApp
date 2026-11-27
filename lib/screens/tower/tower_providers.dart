@@ -13,6 +13,7 @@ import 'package:flutter_riverpod/legacy.dart';
 import '../../data/tower/tower_coins.dart';
 import '../../data/tower/tower_dice.dart';
 import '../../data/tower/tower_events.dart';
+import '../../data/tower/tower_gear_choice.dart' show towerDiscard, towerEquip;
 import '../../data/tower/tower_hero.dart';
 import '../../data/tower/tower_progress.dart';
 import '../../data/tower/tower_rules4.dart' show towerBuyPotion;
@@ -257,9 +258,25 @@ class TowerController extends StateNotifier<AsyncValue<TowerState>> {
   Future<void> takeStallBoon(int index) =>
       _moveRun((run) => towerTakeStallBoon(run, index));
 
+  /// The setback's check waiting on the floor (TowerRun.checkPending, the
+  /// event modal) rolled and the run moved on (towerResolveCheck), saved;
+  /// its result is new this session (eventIsNew), so its d20 tumbles once.
+  Future<void> resolveCheck({required TowerData data}) =>
+      _moveRun((run) => towerResolveCheck(run, data));
+
   /// Rules 4, Purse's pedlar: a potion bought for its coins on the landing
   /// (towerBuyPotion; the button shows while towerCanBuyPotion).
   Future<void> buyPotion() => _moveRun(towerBuyPotion);
+
+  /// The loot's piece of gear waiting (TowerRun.pendingGear) worn, even when
+  /// worse (towerEquip); the climb goes on.
+  Future<void> equipGear({required TowerData data}) =>
+      _moveRun((run) => towerEquip(run, data));
+
+  /// The loot's piece of gear waiting dropped (towerDiscard); the climb goes
+  /// on.
+  Future<void> discardGear({required TowerData data}) =>
+      _moveRun((run) => towerDiscard(run, data));
 }
 
 final towerProvider =

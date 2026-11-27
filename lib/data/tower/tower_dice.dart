@@ -72,8 +72,11 @@ List<TowerDieView> towerDiceOf(TowerRun run, TowerData data,
 /// not between fights (climbing or choosing). A run saved before the bag
 /// takes it up here: the dice it owned count as seen.
 TowerRun towerChooseDie(TowerRun run, TowerData data, String dieId) {
-  if (run.status != TowerStatus.climbing &&
-      run.status != TowerStatus.choosing) {
+  // A setback's check waiting (TowerRun.checkPending): the hero stands as
+  // the roll reads it until it is rolled.
+  if ((run.status != TowerStatus.climbing &&
+          run.status != TowerStatus.choosing) ||
+      run.checkPending) {
     return run;
   }
   final hero = towerHeroOf(run, data);

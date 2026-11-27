@@ -260,6 +260,28 @@ void towerWearSpoils(
   }
 }
 
+/// The gear choice's piece [itemId] given to [hero] (tower_gear_choice.dart):
+/// [equip], worn in its slot whatever its score (the piece it replaces off);
+/// else not worn. Either way among the gear owned, as a piece the automatic
+/// rule does not wear (the loot never deals it again).
+void towerWearChosen(
+    SimCharacter hero, String itemId, TowerData data, bool equip) {
+  final item = data.items[itemId] as Map<String, dynamic>?;
+  if (item == null) return;
+  final slot = item['equipSlot']?.toString() ?? '';
+  if (slot.isEmpty) return;
+  hero.ownedItemIds.add(itemId);
+  if (equip) hero.equippedBySlot[slot] = itemId;
+}
+
+/// What the gear choice adds to [floor]'s key in towerHeroOf.
+String _gearChoiceKey(TowerRun run, int floor) =>
+    '${switch (run.gearKept[floor]) {
+      true => '=k',
+      false => '=d',
+      null => '',
+    }}${run.pendingGear?.floor == floor ? '=?' : ''}';
+
 void _wear(SimCharacter hero, String itemId, TowerData data) {
   final item = data.items[itemId] as Map<String, dynamic>?;
   if (item == null) return;
@@ -348,7 +370,7 @@ SimCharacter towerHeroOf(TowerRun run, TowerData data) {
       levelAt.add(level);
       picksAt.add(const []);
       keys.add('${keys.last}#$floor:x${run.xp[floor] ?? 0}:'
-          '${run.loot[floor]}:${run.taken[floor]}:'
+          '${run.loot[floor]}${_gearChoiceKey(run, floor)}:${run.taken[floor]}:'
           '${(run.levelUps[floor] ?? const []).join(',')}'
           '${run.gambles[floor] == null ? '' : '~${run.gambles[floor]!.join(',')}'}'
           '${run.stallBoons[floor] == null ? '' : '+${run.stallBoons[floor]}'}');
@@ -398,8 +420,16 @@ SimCharacter towerHeroOf(TowerRun run, TowerData data) {
       // The floor's loot card, its oath, its Level Up cards (each skill or
       // rank-up its stat nudge, towerNudgeOn), the stall's boon (a Level Up
       // table bought).
+      // The gear choice (tower_gear_choice.dart): a piece waiting is not
+      // worn yet; one equipped is worn, one discarded never is.
+      final waits = run.pendingGear?.floor == floor;
       if (run.loot[floor] case final card?) {
-        towerApplyReward(hero, card, data, bag: bag);
+        final kept = run.gearKept[floor];
+        if (card.kind != TowerRewardKind.gear || (!waits && kept == null)) {
+          towerApplyReward(hero, card, data, bag: bag);
+        } else if (!waits) {
+          towerWearChosen(hero, card.id, data, kept!);
+        }
       }
       if (run.taken[floor] case final card?) {
         towerApplyReward(hero, card, data, bag: bag);
@@ -416,6 +446,9 @@ SimCharacter towerHeroOf(TowerRun run, TowerData data) {
       // Rules 4: a gamble's Twin card (with its nudge); Hex's mark gives
       // nothing.
       for (final card in run.gambles[floor] ?? const <TowerReward>[]) {
+        // A Twin's second gear waits behind the loot card's choice, so the
+        // choice compares with what was worn before the floor's loot.
+        if (waits && card.kind == TowerRewardKind.gear) continue;
         towerApplyReward(hero, card, data, bag: bag);
         towerNudgeOn(hero, card, data, rules: run.rules);
       }

@@ -27,6 +27,12 @@ abstract final class Palette {
   /// outline and the light text of the card and block pieces.
   static const Color apolloOutline = Color(0xFF090A14);
   static const Color apolloCream = Color(0xFFEBEDE9);
+
+  /// The night veil, the deep blue of dice pips and the ember of cracks,
+  /// drawn by the fight backdrop, the field effects and the dice.
+  static const Color veilNight = Color(0xFF05060F);
+  static const Color deepBlue = Color(0xFF0B1220);
+  static const Color crackEmber = Color(0xFFE08A3C);
   static const Color healDark = Color(0xFF7DBE6A);
   static const Color seamDark = Color(0xFF3B3743);
   static const Color tideDark = Color(0xFF4FB0B0);

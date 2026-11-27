@@ -8,6 +8,16 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [2.10.42+1124]
+
+- **Tower: floor events for a modal, built but not yet on (no change for players).** Each event now tells the screen whether it is forced and lists its options with their outcomes; behind a switch, a setback's d20 rolls only when the player presses Climb (same result as today, never re-rolled on reload). UX's screen turns it on.
+
+## [2.10.41+1123]
+
+- **Tower: choosing your gear, built but not yet on (no change for players).** After a gear card the climb can wait for Equip or Keep mine, with a stat-by-stat comparison; UX's screen turns it on. The bot keeps today's choice, so nothing else moves.
+
+## [2.10.40+1122]
+- **Field effects fill the screen, with a warning.** A fight's anomaly (storm, ground, cold, heat, water, light) is now an atmosphere over the whole fight, above the panels and the dice board and under the face row and the action buttons, which stay at full brightness: the Eclipse a violet dusk with a dark corona at the top, a storm rain, a flash and a bolt, the cold frost creeping in from the edges, heat an orange haze with embers, water a teal sheen with ripples, the ground dust and glowing cracks up the sides. On the omen (a round ahead) it is faint and a toast says what is coming, with whom it favours; when it breaks the toast names it ("Eclipse!") with what it does and how many rounds. Each toast fades by itself after about two seconds. The Eclipse's solid dark disc is gone from the dice board. Reduced motion shows one still frame.
 ## [2.10.39+1121]
 - **Snow.** The Tower's snow falls thicker (80 to 140 flakes, up from 28 to 70) and in four sizes, so it reads on a phone; the drifts on the panels are as before. In a fight the flakes fall inside each picture panel, behind the foe and behind the hero (they were drawn over the hero in the boss scene). **The Eclipse anomaly** no longer paints a solid black disc behind the die: its dark sun hangs in the board's upper corner, half dark, so it cannot read as the black ball.
 ## [2.10.38+1120]
