@@ -195,7 +195,7 @@ Widget _pips(int n, int cap) => Row(mainAxisSize: MainAxisSize.min, children: [
         ),
     ]);
 
-Map<String, int> _abilitiesOf(SimCharacter h) => {
+Map<String, int> towerAbilitiesOf(SimCharacter h) => {
       'strength': h.strength,
       'dexterity': h.dexterity,
       'constitution': h.constitution,
@@ -263,7 +263,7 @@ class _StatsView extends ConsumerWidget {
         const SizedBox(height: 4),
         Center(
           child: LevelUpStatsArea(
-              before: _abilitiesOf(hero),
+              before: towerAbilitiesOf(hero),
               after: null,
               label: (k) => tr(ref, abilityAbbrevKey(k)),
               dark: true),

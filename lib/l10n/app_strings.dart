@@ -2479,6 +2479,132 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.en: '+1 to a stat of your choice',
     AppLanguage.fr: '+1 à une caractéristique au choix',
   },
+  // Rules 4: the gamble card's hints, its confirm and reveal, the stat
+  // choice, the pedlar and the Hex mark (UX words; Narrative may reword).
+  'tower_gamble_hint_good': {
+    AppLanguage.en: 'You sense luck.',
+    AppLanguage.fr: 'Vous sentez la chance.',
+  },
+  'tower_gamble_hint_bad': {
+    AppLanguage.en: 'You sense trouble.',
+    AppLanguage.fr: 'Vous sentez un danger.',
+  },
+  'tower_gamble_hint_kind': {
+    AppLanguage.en: 'You see through it: {outcome}.',
+    AppLanguage.fr: 'Vous voyez à travers\u00a0: {outcome}.',
+  },
+  'tower_gamble_confirm_title': {
+    AppLanguage.en: 'No turning back',
+    AppLanguage.fr: 'Pas de retour possible',
+  },
+  'tower_gamble_confirm_hint': {
+    AppLanguage.en: 'Take it unseen. You cannot change your mind.',
+    AppLanguage.fr:
+        'Prenez-la sans la voir. Vous ne pourrez pas changer d’avis.',
+  },
+  'tower_gamble_take': {
+    AppLanguage.en: 'Take it',
+    AppLanguage.fr: 'La prendre',
+  },
+  'tower_gamble_look': {
+    AppLanguage.en: 'Look again',
+    AppLanguage.fr: 'Regarder encore',
+  },
+  'tower_gamble_revealed': {
+    AppLanguage.en: 'The card turns over',
+    AppLanguage.fr: 'La carte se retourne',
+  },
+  'tower_gamble_gilded': {
+    AppLanguage.en: 'Gilded',
+    AppLanguage.fr: 'Doré',
+  },
+  'tower_gamble_gilded_line': {
+    AppLanguage.en: 'The best piece of a finer chest is yours.',
+    AppLanguage.fr: 'La plus belle pièce d’un coffre plus riche est à vous.',
+  },
+  'tower_gamble_twin': {
+    AppLanguage.en: 'Twin',
+    AppLanguage.fr: 'Jumelle',
+  },
+  'tower_gamble_twin_line': {
+    AppLanguage.en: 'Two cards instead of one: you take the next two.',
+    AppLanguage.fr:
+        'Deux cartes au lieu d’une\u00a0: vous prenez les deux suivantes.',
+  },
+  'tower_gamble_hoard': {
+    AppLanguage.en: 'Hoard',
+    AppLanguage.fr: 'Trésor',
+  },
+  'tower_gamble_hoard_line': {
+    AppLanguage.en: 'A cache of coins.',
+    AppLanguage.fr: 'Une cachette de pièces.',
+  },
+  'tower_gamble_dud': {
+    AppLanguage.en: 'Dud',
+    AppLanguage.fr: 'Raté',
+  },
+  'tower_gamble_dud_line': {
+    AppLanguage.en: 'Nothing happens.',
+    AppLanguage.fr: 'Il ne se passe rien.',
+  },
+  'tower_gamble_wound': {
+    AppLanguage.en: 'Wound',
+    AppLanguage.fr: 'Blessure',
+  },
+  'tower_gamble_wound_line': {
+    AppLanguage.en: 'You lose a fifth of your health.',
+    AppLanguage.fr: 'Vous perdez un cinquième de votre santé.',
+  },
+  'tower_gamble_spill': {
+    AppLanguage.en: 'Spill',
+    AppLanguage.fr: 'Fiole brisée',
+  },
+  'tower_gamble_spill_line': {
+    AppLanguage.en:
+        'A potion is lost, or a tenth of your health if you carry none.',
+    AppLanguage.fr:
+        'Une potion est perdue, ou un dixième de votre santé si vous n’en avez pas.',
+  },
+  'tower_gamble_bright': {
+    AppLanguage.en: 'Bright',
+    AppLanguage.fr: 'Éclat',
+  },
+  'tower_gamble_bright_line': {
+    AppLanguage.en: 'A skill of a higher rarity.',
+    AppLanguage.fr: 'Une compétence d’une rareté supérieure.',
+  },
+  'tower_gamble_hex': {
+    AppLanguage.en: 'Hex',
+    AppLanguage.fr: 'Maléfice',
+  },
+  'tower_gamble_hex_line': {
+    AppLanguage.en: 'The next floor’s foes are 15% stronger.',
+    AppLanguage.fr: 'Les ennemis de l’étage suivant sont 15\u00a0% plus forts.',
+  },
+  'tower_stat_pick_card': {
+    AppLanguage.en: 'Stat point',
+    AppLanguage.fr: 'Point de stat',
+  },
+  'tower_stat_pick_text': {
+    AppLanguage.en: 'Put +1 in a stat of your choice.',
+    AppLanguage.fr: 'Mettez +1 dans une caractéristique de votre choix.',
+  },
+  'tower_stat_choose': {
+    AppLanguage.en: 'Choose a stat',
+    AppLanguage.fr: 'Choisissez une caractéristique',
+  },
+  'tower_stat_confirm': {
+    AppLanguage.en: 'Confirm +1 {stat}',
+    AppLanguage.fr: 'Confirmer +1 {stat}',
+  },
+  'tower_buy_potion': {
+    AppLanguage.en: 'Buy a potion ({n} coins)',
+    AppLanguage.fr: 'Acheter une potion ({n} pièces)',
+  },
+  'tower_hex_tag': {
+    AppLanguage.en: 'Hex: foes x1.15',
+    AppLanguage.fr: 'Maléfice\u00a0: ennemis ×1,15',
+  },
   // A clan offers its oath on the way up (v1.855).
   'tower_oath_title': {
     AppLanguage.en: '{clan} offer you their oath',
@@ -2810,11 +2936,12 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.en: 'Start the climb with coins in hand.',
     AppLanguage.fr: 'Commencez l’ascension avec des pièces en poche.',
   },
+  // Rules 4 (the redesigned perk); the line above stays for rules-3 climbs.
   'tower_perk_purse_line_r4': {
     AppLanguage.en:
-        '15 coins at the start, and a potion for 4 coins on any landing.',
+        'Start with a purse of coins, and buy a potion on any landing.',
     AppLanguage.fr:
-        '15 pièces au départ, et une potion pour 4 pièces à chaque palier.',
+        'Commencez avec une bourse de pièces, et achetez une potion à chaque palier.',
   },
   'tower_perk_deep_pockets': {
     AppLanguage.en: 'Deep pockets',
@@ -2824,11 +2951,12 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.en: 'Room for one more potion in the bag.',
     AppLanguage.fr: 'De la place pour une potion de plus dans le sac.',
   },
+  // Rules 4 (the redesigned perk); the line above stays for rules-3 climbs.
   'tower_perk_deep_pockets_line_r4': {
     AppLanguage.en:
-        'One more potion in the bag, and one more in the flask every fight.',
+        'The flask holds potions for every fight, and the bag has room for one more.',
     AppLanguage.fr:
-        'Une potion de plus dans le sac, et une de plus dans la fiole à chaque combat.',
+        'La fiole contient des potions pour chaque combat, et le sac a de la place pour une de plus.',
   },
   'tower_perk_early_word': {
     AppLanguage.en: 'Early word',
@@ -2838,11 +2966,12 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.en: 'The late oath comes sooner.',
     AppLanguage.fr: 'Le serment tardif vient plus tôt.',
   },
+  // Rules 4 (the redesigned perk); the line above stays for rules-3 climbs.
   'tower_perk_early_word_line_r4': {
     AppLanguage.en:
-        'The late oath comes sooner, and 2 more potions in the flask against wardens and bosses.',
+        'Warden and boss floors give extra flask potions, and the late oath still comes sooner.',
     AppLanguage.fr:
-        'Le serment tardif vient plus tôt, et 2 potions de plus dans la fiole contre les gardiens et les boss.',
+        'Les étages de gardien et de boss donnent des potions de fiole en plus, et le serment tardif vient toujours plus tôt.',
   },
   'tower_perk_old_friend': {
     AppLanguage.en: 'Old friend',
@@ -2853,11 +2982,11 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.fr:
         'Un clan de l’ascension vous estime déjà davantage au départ.',
   },
+  // Rules 4 (the redesigned perk); the line above stays for rules-3 climbs.
   'tower_perk_old_friend_line_r4': {
-    AppLanguage.en:
-        'One clan starts out thinking better of you, and gives you a fine piece of gear.',
+    AppLanguage.en: 'Start with a piece of gear from a much better chest.',
     AppLanguage.fr:
-        'Un clan vous estime déjà davantage au départ, et vous offre une belle pièce d’équipement.',
+        'Commencez avec une pièce d’équipement tirée d’un coffre bien meilleur.',
   },
   'tower_perk_second_wind': {
     AppLanguage.en: 'Second wind',
@@ -2867,11 +2996,12 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.en: 'After a warden or a boss, you get your breath back.',
     AppLanguage.fr: 'Après un gardien ou un boss, vous reprenez votre souffle.',
   },
+  // Rules 4 (the redesigned perk); the line above stays for rules-3 climbs.
   'tower_perk_second_wind_line_r4': {
     AppLanguage.en:
-        'A little health back after every floor, more after a warden or a boss.',
+        'You recover a little after every floor, and more after a warden or a boss.',
     AppLanguage.fr:
-        'Un peu de santé rendue après chaque étage, davantage après un gardien ou un boss.',
+        'Vous récupérez un peu après chaque étage, et davantage après un gardien ou un boss.',
   },
   'tower_perk_keen_eye': {
     AppLanguage.en: 'Keen eye',
@@ -2881,11 +3011,10 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.en: 'The first boon is a rarity better.',
     AppLanguage.fr: 'La première faveur est d’une rareté supérieure.',
   },
+  // Rules 4 (the redesigned perk); the line above stays for rules-3 climbs.
   'tower_perk_keen_eye_line_r4': {
-    AppLanguage.en:
-        'The first boon is a rarity better, and the loot is richer on floors 1 to 10.',
-    AppLanguage.fr:
-        'La première faveur est d’une rareté supérieure, et le butin est plus riche aux étages 1 à 10.',
+    AppLanguage.en: 'Loot comes from a better chest on the lower floors.',
+    AppLanguage.fr: 'Le butin vient d’un meilleur coffre dans les étages bas.',
   },
   'tower_perk_free_hand': {
     AppLanguage.en: 'Free hand',
@@ -2895,10 +3024,12 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.en: 'Your first reroll of each climb costs nothing.',
     AppLanguage.fr: 'Votre premier retirage de chaque ascension ne coûte rien.',
   },
+  // Rules 4 (the redesigned perk); the line above stays for rules-3 climbs.
   'tower_perk_free_hand_line_r4': {
-    AppLanguage.en: 'The first reroll of each table is free on floors 1 to 10.',
+    AppLanguage.en:
+        'The first reroll of each table is free on the lower floors.',
     AppLanguage.fr:
-        'Le premier retirage de chaque table est gratuit aux étages 1 à 10.',
+        'Le premier retirage de chaque table ne coûte rien dans les étages bas.',
   },
   'tower_perk_fourth_card': {
     AppLanguage.en: 'Fourth card',
@@ -2909,11 +3040,12 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.fr:
         'Les premières tables de faveurs montrent une carte de plus.',
   },
+  // Rules 4 (the redesigned perk); the line above stays for rules-3 climbs.
   'tower_perk_fourth_card_line_r4': {
     AppLanguage.en:
-        'The first boon tables show one card more, and every loot table on floors 1 to 20.',
+        'Loot tables show a fourth card on the lower and middle floors.',
     AppLanguage.fr:
-        'Les premières tables de faveurs montrent une carte de plus, ainsi que chaque table de butin aux étages 1 à 20.',
+        'Les tables de butin montrent une quatrième carte dans les étages bas et moyens.',
   },
   'tower_trim_moth': {
     AppLanguage.en: 'Moth trim',

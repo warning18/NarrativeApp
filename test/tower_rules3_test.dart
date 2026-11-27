@@ -169,14 +169,13 @@ void main() {
       expect(towerPendingPicks(after), greaterThan(0));
     });
 
-    test('a new climb is rules 3, and keeps it saved and loaded', () {
-      expect(towerRulesLive, 3);
+    test('a rules-3 climb keeps its rules saved and loaded', () {
       expect(towerSurvivalRules, 3);
       final run = towerStart(
           seed: 4,
           raceId: 'human',
           professionId: 'rogue',
-          rules: towerRulesLive,
+          rules: 3,
           data: data);
       expect(run.rules, 3);
       final back = TowerRun.fromJson(

@@ -8,6 +8,8 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [2.10.37+1119]
+- **Tower rules 4 is live (new climbs).** The gamble card: now and then one card on a loot or Level Up table is dealt face down, the back of our own card with the watching eye; with Perception 3 or more a gold or red band says it feels lucky or wrong, and with 5 or more it shows what it is. Taking it is final ("No turning back", then the card turns over and says what it was). The stat-pick card: a rare Level Up card in its own colour puts +1 in a stat you choose, on the radar with what it moves. The Purse perk's pedlar sells a potion for 4 coins on any landing. A floor hexed by a gamble wears a Hex mark. The eight perks read their rules-4 lines. Climbs already begun keep their rules.
 ## [2.10.36+1118]
 
 - **Tower rules 4, built but not yet on (no change for players).** New climbs still play rules 3; UX's next release turns rules 4 on with its screens. Rules 4 adds a face-down gamble card on some loot and Level Up tables (good or bad, a hint with a good Perception), a rare Level Up card giving +1 to a stat of your choice, the eight Ash Mark perks redesigned so each is felt early in a climb (Purse adds a pedlar's potion), and foes 3% tougher from floor 11 to keep the top as rare as now.

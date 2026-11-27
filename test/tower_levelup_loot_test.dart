@@ -645,9 +645,9 @@ void main() {
     });
 
     test('the app starts new climbs on the live rules', () {
-      // Rules 4 is built (towerRulesMax) and off for new climbs until UX's
-      // screens land (tower_providers.dart starts on towerRulesLive).
-      expect(towerRulesLive, 3);
+      // Rules 4 is live with UX's screens (tower_providers.dart starts new
+      // climbs on towerRulesLive).
+      expect(towerRulesLive, 4);
       expect(towerRulesMax, 4);
       expect(start(1, rules: 9).rules, towerRulesMax);
     });
@@ -706,7 +706,7 @@ void main() {
           raceId: 'human',
           professionId: 'warrior',
           events: towerEventsLive,
-          rules: towerRulesLive,
+          rules: 3,
           data: data);
       expect(run.rules, 3);
       for (var floor = 1; floor <= 2; floor++) {

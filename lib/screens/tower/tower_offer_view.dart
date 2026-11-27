@@ -12,6 +12,8 @@ import '../../data/tower/tower_hero.dart';
 import '../../data/tower/tower_levelup_loot.dart'
     show towerBundleOf, towerLevelUpsTaken, towerNudgeOn;
 import '../../data/tower/tower_rewards.dart';
+import '../../data/tower/tower_rules4.dart'
+    show towerGambleHintOf, towerGambleIsGood, towerGambleOutcomeShown;
 import '../../data/tower/tower_run.dart';
 import '../../data/tower/tower_tables.dart';
 import '../../gamedata/db_schema.dart';
@@ -30,7 +32,7 @@ import '../../theme/icon_sizes.dart';
 import '../../theme/stitched_ink.dart';
 import '../../data/tower/tower_clans.dart' show towerClanRipple;
 import '../../data/tower/tower_events.dart';
-import 'ink/ink_palette.dart' show inkGrey, inkOnPaper;
+import 'ink/ink_palette.dart' show inkGold, inkGrey, inkOnPaper, inkRed;
 import 'tower_card_art.dart';
 import 'tower_clan_cards.dart';
 import 'tower_coin_view.dart';
@@ -187,6 +189,26 @@ Widget towerStyledCardFor(
               as Map?)
           ?.cast<String, dynamic>() ??
       const {};
+  // Rules 4's cards: the gamble face down, the stat pick in its own colour.
+  if (reward.kind == TowerRewardKind.gamble) {
+    return _gambleBackCard(ref, run, data, key: key);
+  }
+  if (reward.kind == TowerRewardKind.statPick) {
+    final t = towerCardText(ref, reward);
+    return TowerStyledCard(
+      key: key,
+      style: TowerCardStyle.statPick,
+      kind: t.kind,
+      name: reward.id.isEmpty
+          ? tr(ref, 'tower_stat_pick_card')
+          : '+1 ${tr(ref, abilityAbbrevKey(reward.id))}',
+      text: tr(ref, 'tower_stat_pick_text'),
+      // A placeholder picture (Art's tarot-style vignette is to come).
+      vignette: 'assets/visuals/ink/bm_stats.png',
+      badge: const Icon(Icons.add, size: IconSize.s16, color: inkOnPaper),
+      nudge: '+1 ?',
+    );
+  }
   final factions = ref.watch(factionsProvider);
   final tier = reward.kind == TowerRewardKind.rankUp
       ? towerHeroOf(run, data).skillTiers[reward.id] ?? 0
@@ -280,6 +302,39 @@ Widget towerStyledCardFor(
         : null,
     stamp: reward.kind == TowerRewardKind.rankUp ? '+1' : null,
     nudge: nudge == null ? null : '+1 ${tr(ref, abilityAbbrevKey(nudge))}',
+  );
+}
+
+/// The gamble card: the back of our own card (the watching eye on paper),
+/// "? ? ?" for a name. A hero who reads it (Perception 3+) sees a gold band
+/// for a good one and a red one for a bad one, with the words under it; at
+/// 5+ the name itself.
+Widget _gambleBackCard(WidgetRef ref, TowerRun run, TowerData data,
+    {Key? key}) {
+  final hero = towerHeroOf(run, data);
+  final hint = towerGambleHintOf(run, hero);
+  final shown = towerGambleOutcomeShown(run, hero);
+  final outcomeName =
+      shown == null ? null : tr(ref, 'tower_gamble_${shown.name}');
+  return TowerStyledCard(
+    key: key,
+    style: TowerCardStyle.skill,
+    kind: tr(ref, 'tower_kind_gamble'),
+    name: outcomeName ?? '? ? ?',
+    text: switch (hint) {
+      TowerGambleHint.none => tr(ref, 'tower_gamble_name'),
+      TowerGambleHint.good => tr(ref, 'tower_gamble_hint_good'),
+      TowerGambleHint.bad => tr(ref, 'tower_gamble_hint_bad'),
+      TowerGambleHint.kind => tr(ref, 'tower_gamble_hint_kind')
+          .replaceAll('{outcome}', outcomeName ?? ''),
+    },
+    hue: switch (hint) {
+      TowerGambleHint.none => null,
+      _ => towerGambleIsGood(run.gambleOutcome!) ? inkGold : inkRed,
+    },
+    vignette: 'assets/visuals/tower_cards/skill_void.png',
+    badge:
+        const Icon(Icons.help_outline, size: IconSize.s16, color: inkOnPaper),
   );
 }
 

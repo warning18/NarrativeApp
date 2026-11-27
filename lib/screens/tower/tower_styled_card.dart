@@ -15,7 +15,17 @@ import '../../theme/stitched_ink.dart' show InkFonts;
 import 'ink/ink_palette.dart';
 
 /// The styles, one per kind of card on a table.
-enum TowerCardStyle { skill, rankUp, die, spell, gift, gear, bundle, purse }
+enum TowerCardStyle {
+  skill,
+  rankUp,
+  die,
+  spell,
+  gift,
+  gear,
+  bundle,
+  purse,
+  statPick
+}
 
 /// The drawn size of a card (width x height); a fan scales it.
 const double towerStyledCardWidth = 122;
@@ -85,6 +95,12 @@ _Look _lookOf(TowerCardStyle s) => switch (s) {
           edge: inkOnPaper,
           dashed: true,
           band: inkOnPaper,
+          bandInk: inkPaper),
+      TowerCardStyle.statPick => const _Look(
+          stock: inkVerdigris,
+          ink: inkPaper,
+          edge: inkPaper,
+          band: inkBlack,
           bandInk: inkPaper),
       TowerCardStyle.purse => const _Look(
           stock: inkBlack,

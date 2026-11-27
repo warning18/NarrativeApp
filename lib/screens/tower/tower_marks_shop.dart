@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../data/tower/tower_coins.dart';
+import '../../data/tower/tower_tables.dart' show towerRulesLive;
 import '../../l10n/app_strings.dart';
 import '../../theme/icon_sizes.dart';
 import '../../utils/pixel_icons/item_icons.dart' show ItemIcons;
@@ -185,7 +186,7 @@ class TowerPerksTab extends ConsumerWidget {
                       fontFamily: InkFonts.display, color: inkPaper)),
             ),
             name: name,
-            line: tr(ref, perk.lineKey),
+            line: tr(ref, perk.lineKeyFor(towerRulesLive)),
             on: slot >= 0,
             dim: !owned && !progress.canBuyPerk(perk.id),
             onTap: owned
