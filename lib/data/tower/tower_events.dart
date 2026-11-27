@@ -764,6 +764,7 @@ TowerFloor towerShortcutFloor(TowerFloor floor) => TowerFloor(
       events: floor.events,
       heat: floor.heat,
       rules: floor.rules,
+      foeScale: floor.foeScale,
     );
 
 /// [run] with its shortcut taken ([accept]) or declined: only before the

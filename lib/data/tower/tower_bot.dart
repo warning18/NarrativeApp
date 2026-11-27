@@ -29,6 +29,7 @@ import 'tower_hero.dart';
 import 'tower_levelup_loot.dart';
 import 'tower_progress.dart';
 import 'tower_rewards.dart';
+import 'tower_rules4.dart';
 import 'tower_run.dart';
 import 'tower_session.dart' show towerPoliticsOf;
 import 'tower_tables.dart';
@@ -217,9 +218,12 @@ TowerRun playTowerRun({
             hero.currentHealth >= towerBotShortcutHealth * hero.maxHealth);
         hero = towerHeroOf(run, data);
       }
-      final floor = run.shortcut ?? false
-          ? towerShortcutFloor(floors[run.floor - 1])
-          : floors[run.floor - 1];
+      // Hexed (rules 4) as the app's fight is (towerFloorOf).
+      final floor = towerHexFloor(
+          run,
+          run.shortcut ?? false
+              ? towerShortcutFloor(floors[run.floor - 1])
+              : floors[run.floor - 1]);
       final maxHealth = hero.maxHealth;
       final outcome = towerBotFight(
         run: run,
@@ -243,13 +247,19 @@ TowerRun playTowerRun({
       final owned = hero.ownedDice.keys.toSet();
       final index = choice != null
           ? choice(run)
-          : run.table == TowerTableKind.loot
-              ? towerBotLootChoice(run, hero, data)
-              : towerBotChoice(run, clans: data.clans);
+          : towerRoundTwoOf(run.rules)
+              ? towerBotRoundTwoChoice(run, hero, data)
+              : run.table == TowerTableKind.loot
+                  ? towerBotLootChoice(run, hero, data)
+                  : towerBotChoice(run, clans: data.clans);
       final card = index != null && index >= 0 && index < run.offer.length
           ? run.offer[index]
           : null;
-      run = towerPick(run, data, index, hero: hero);
+      run = towerPick(run, data, index,
+          hero: hero,
+          stat: card?.kind == TowerRewardKind.statPick
+              ? towerBotStatChoice(hero)
+              : null);
       // A skip's landing: the skipped floors' picks, taken there (a
       // shortcut's landing card, if any, is the next pass's choice).
       run = _botStatPicks(run, data);
@@ -286,6 +296,19 @@ enum TowerBotCoins {
 /// skill card (only a rank-up, a die or a spell: the bot takes a skill
 /// first) is rerolled once, when the coins pay it.
 TowerRun _botReroll(TowerRun run, TowerData data) {
+  // Rules 4, Free hand: a loot table with no gear upgrade, rerolled when it
+  // is free (its first reroll, floors 1 to towerFreeHandFloors).
+  if (towerRoundTwoOf(run.rules) &&
+      run.table == TowerTableKind.loot &&
+      towerCanReroll(run) &&
+      towerRerollPriceOf(run) == 0 &&
+      (run.rerolls[run.floor] ?? 0) == 0) {
+    final hero = towerHeroOf(run, data);
+    final i = towerBotLootChoice(run, hero, data);
+    if (i == null || run.offer[i].kind != TowerRewardKind.gear) {
+      return towerReroll(run, data, hero: hero);
+    }
+  }
   // Rules 2: a Level Up table with no skill card, once a floor.
   if (run.rules >= 2) {
     if (!towerBotRerolls ||
@@ -321,6 +344,11 @@ const bool towerBotRerolls = true;
 /// coins left); a bargain always taken. Then it leaves.
 TowerRun _botStore(TowerRun run, TowerData data, List<TowerFloor> floors,
     TowerBotCoins coins) {
+  // Rules 4, Purse's pedlar: a potion while the bag holds fewer than
+  // [towerBotBundlePotions] and the coins pay it.
+  while (run.potions < towerBotBundlePotions && towerCanBuyPotion(run)) {
+    run = towerBuyPotion(run);
+  }
   switch (towerStoreKindOf(run)) {
     case TowerEventKind.merchant:
       final hero = towerHeroOf(run, data);
@@ -428,7 +456,7 @@ TowerRun towerBotRollBest(TowerRun run, TowerData data, List<TowerFloor> floors,
     if (hero.ownedDice.containsKey(id) && !tried.contains(id)) tried.add(id);
   }
   if (tried.length < 2) return run;
-  final floor = floors[run.floor - 1];
+  final floor = towerHexFloor(run, floors[run.floor - 1]);
   var best = current, bestWins = -1;
   for (final id in tried) {
     final trial = run.copyWith(dieChoice: id);
@@ -567,3 +595,57 @@ List<TowerRun> playTowerBatch(Iterable<int> seeds, TowerData data,
             coins: coins,
             rules: rules),
     ];
+
+/// The card the bot takes from a rules-4 table (tower_rules4.dart), [hero]
+/// as it stands: an oath first; then a stat-pick card (its point to the
+/// damage stat, towerBotStatChoice); then the gamble card when its back
+/// reads good (a good hint, or a good outcome shown), left when it reads
+/// bad, and with no hint taken on a loot table whose other cards hold no
+/// gear upgrade (it would have taken a bundle or a purse), left on a Level
+/// Up table; else its plain choice among the other cards
+/// ([towerBotLootChoice], [towerBotChoice]).
+int? towerBotRoundTwoChoice(TowerRun run, SimCharacter hero, TowerData data) {
+  int? plain(TowerRun r) => r.table == TowerTableKind.loot
+      ? towerBotLootChoice(r, hero, data)
+      : towerBotChoice(r, clans: data.clans);
+  final special = [
+    for (var i = 0; i < run.offer.length; i++)
+      if (run.offer[i].kind == TowerRewardKind.gamble ||
+          run.offer[i].kind == TowerRewardKind.statPick)
+        i,
+  ];
+  if (special.isEmpty) return plain(run);
+  final rest = [
+    for (var i = 0; i < run.offer.length; i++)
+      if (!special.contains(i)) i,
+  ];
+  int? restChoice;
+  if (rest.isNotEmpty) {
+    final j = plain(run.copyWith(offer: [for (final i in rest) run.offer[i]]));
+    restChoice = j == null ? null : rest[j];
+  }
+  final oath = run.offer.indexWhere((c) => c.kind == TowerRewardKind.clanOath);
+  if (oath >= 0) return oath;
+  for (final i in special) {
+    if (run.offer[i].kind == TowerRewardKind.statPick) return i;
+  }
+  for (final i in special) {
+    if (run.offer[i].kind != TowerRewardKind.gamble) continue;
+    final outcome = run.gambleOutcome;
+    final hint = towerGambleHintOf(run, hero);
+    if (hint != TowerGambleHint.none) {
+      final good = hint == TowerGambleHint.good ||
+          (hint == TowerGambleHint.kind &&
+              outcome != null &&
+              towerGambleIsGood(outcome));
+      if (good) return i;
+      break;
+    }
+    if (run.table == TowerTableKind.loot &&
+        (restChoice == null ||
+            run.offer[restChoice].kind != TowerRewardKind.gear)) {
+      return i;
+    }
+  }
+  return restChoice ?? special.first;
+}

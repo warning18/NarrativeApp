@@ -8,6 +8,10 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [2.10.36+1118]
+
+- **Tower rules 4, built but not yet on (no change for players).** New climbs still play rules 3; UX's next release turns rules 4 on with its screens. Rules 4 adds a face-down gamble card on some loot and Level Up tables (good or bad, a hint with a good Perception), a rare Level Up card giving +1 to a stat of your choice, the eight Ash Mark perks redesigned so each is felt early in a climb (Purse adds a pedlar's potion), and foes 3% tougher from floor 11 to keep the top as rare as now.
+
 ## [2.10.35+1117]
 - Tower bookmarks: the Stats tab shows Armour and Damage beside HP and Level (what the fight uses, gear included); the Dice tab has "Play this die" to choose the die for the next fight, between floors; the three tabs wear Art's new pixel glyphs. The five Inquisition bosses (Clement, Hollow Court Zealot and Inquisitor, Purifier Vell, the Penitent) are redrawn, in the fight and standing in the floor screen's foe band.
 ## [2.10.34+1116]

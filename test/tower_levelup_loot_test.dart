@@ -645,8 +645,11 @@ void main() {
     });
 
     test('the app starts new climbs on the live rules', () {
+      // Rules 4 is built (towerRulesMax) and off for new climbs until UX's
+      // screens land (tower_providers.dart starts on towerRulesLive).
       expect(towerRulesLive, 3);
-      expect(start(1, rules: 9).rules, towerRulesLive);
+      expect(towerRulesMax, 4);
+      expect(start(1, rules: 9).rules, towerRulesMax);
     });
 
     test('rules 2 lowers the foes; rules 1 keeps them', () {

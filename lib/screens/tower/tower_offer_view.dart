@@ -128,6 +128,14 @@ TowerCardText towerCardText(WidgetRef ref, TowerReward reward, {int tier = 0}) {
                       : 'tower_purse_name')
               .replaceAll('{n}', '${reward.amount}'),
           '');
+    // Rules 4's cards (Core's placeholder words; UX draws them): the gamble
+    // face down (never its outcome), the stat pick (its stat once chosen).
+    case TowerRewardKind.gamble:
+      return TowerCardText(
+          tr(ref, 'tower_kind_gamble'), tr(ref, 'tower_gamble_name'), '');
+    case TowerRewardKind.statPick:
+      return TowerCardText(
+          tr(ref, 'tower_kind_stat_pick'), tr(ref, 'tower_stat_pick_name'), '');
   }
 }
 

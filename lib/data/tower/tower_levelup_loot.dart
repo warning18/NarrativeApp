@@ -32,6 +32,7 @@ import 'tower_events.dart' show towerAfterEvent, towerOpenStore;
 import 'tower_floors.dart';
 import 'tower_hero.dart';
 import 'tower_rewards.dart';
+import 'tower_rules4.dart';
 import 'tower_run.dart';
 import 'tower_tables.dart';
 
@@ -281,11 +282,13 @@ int towerLootBandOf(int floor) => ((floor - 1) ~/ 10).clamp(0, 2);
 
 /// The chest context of [floor]'s loot for a hero of [luck] (the story's
 /// chest roll: an Elite or a warden as an Elite, a boss's never below
-/// Gold), its tier raised [towerLootTierShiftOf] its rules for the band.
+/// Gold), its tier raised [towerLootTierShiftOf] its rules for the band
+/// and [tierBonus] more (rules 4: Keen eye, a Gilded gamble, Old friend).
 LootContext towerLootContextOf(TowerFloor floor,
         {int luck = 0,
         Iterable<String> ownedItemIds = const [],
-        String preferredScalingStat = ''}) =>
+        String preferredScalingStat = '',
+        int tierBonus = 0}) =>
     LootContext(
       chapter: floor.chapter,
       playerLuck: luck,
@@ -295,7 +298,8 @@ LootContext towerLootContextOf(TowerFloor floor,
       enemyCount: floor.enemyIds.length,
       affixCount: floor.affixes.length,
       tierShift:
-          towerLootTierShiftOf(floor.rules)[towerLootBandOf(floor.floor)],
+          towerLootTierShiftOf(floor.rules)[towerLootBandOf(floor.floor)] +
+              tierBonus,
       preferredScalingStat: preferredScalingStat,
       ownedItemIds: ownedItemIds.toList(),
     );
@@ -307,7 +311,9 @@ LootContext towerLootContextOf(TowerFloor floor,
 /// (the tier's, [towerLootBundles]) and a purse ([towerLootPurse], one a
 /// table): never the same card twice, always three (the two bundles and
 /// the purse are always there to give). [avoid] (a reroll's last cards)
-/// keeps those gear pieces off while others are left.
+/// keeps those gear pieces off while others are left. [tierBonus] raises
+/// the chest tier (towerLootContextOf); [cardCount] cards in place of
+/// [towerLootCards] (rules 4's Fourth card).
 List<TowerReward> towerLootFor({
   required int seed,
   required TowerFloor floor,
@@ -317,12 +323,15 @@ List<TowerReward> towerLootFor({
   required Map<String, dynamic> items,
   Random? random,
   Set<String> avoid = const {},
+  int tierBonus = 0,
+  int cardCount = towerLootCards,
 }) {
   final drawn = random ?? towerRandom(seed, floor.floor, TowerStream.spoils);
   final context = towerLootContextOf(floor,
       luck: luck,
       ownedItemIds: ownedItemIds,
-      preferredScalingStat: preferredScalingStat);
+      preferredScalingStat: preferredScalingStat,
+      tierBonus: tierBonus);
   final tier = towerLootTierFor(context, drawn);
   final weights = gearWeightsFor(context, items, tier);
   final gear = (weights.keys.where((id) => !avoid.contains(id)).isEmpty
@@ -334,7 +343,7 @@ List<TowerReward> towerLootFor({
   ];
   final cards = <TowerReward>[];
   var purse = false;
-  while (cards.length < towerLootCards) {
+  while (cards.length < cardCount) {
     final options = <TowerRewardKind, int>{
       if (gear.isNotEmpty) TowerRewardKind.gear: towerLootGearWeight,
       if (bundles.isNotEmpty) TowerRewardKind.bundle: towerLootBundleWeight,
@@ -390,10 +399,11 @@ String _pickWeighted(
 
 /// The loot table of [run]'s floor (towerLootFor with its hero: Luck, the
 /// gear owned, the calling's stat), as the floor was fought (a shortcut's
-/// Elite too). [random] and [avoid] as towerLootFor's.
+/// Elite too). [random] and [avoid] as towerLootFor's; [tierBonus] on top
+/// of the perk's (rules 4: towerLootTierBonusOf, towerLootCardsOf).
 List<TowerReward> towerRunLootFor(
         TowerRun run, TowerData data, SimCharacter hero,
-        {Random? random, Set<String> avoid = const {}}) =>
+        {Random? random, Set<String> avoid = const {}, int tierBonus = 0}) =>
     towerLootFor(
       seed: run.seed,
       floor: towerFloorOf(run, data),
@@ -406,6 +416,8 @@ List<TowerReward> towerRunLootFor(
       items: data.items,
       random: random,
       avoid: avoid,
+      tierBonus: tierBonus + towerLootTierBonusOf(run),
+      cardCount: towerLootCardsOf(run),
     );
 
 // ---------------------------------------------------------------------------
@@ -483,7 +495,7 @@ TowerRun towerDealTable(
   if (from == TowerTableKind.loot && !empty) {
     final cards = towerRunLootFor(run, data, hero);
     if (cards.isNotEmpty) {
-      return run.copyWith(offer: cards, table: TowerTableKind.loot);
+      return _dealt(run, cards, TowerTableKind.loot);
     }
   }
   TowerRun? oathAlone() {
@@ -510,13 +522,28 @@ TowerRun towerDealTable(
     final cards = towerRunOfferFor(run, data, run.floor, hero,
         levelUp: true, levelUpOaths: !ownStep && !oathShown);
     if (cards.isNotEmpty) {
-      return run.copyWith(offer: cards, table: TowerTableKind.levelUp);
+      return _dealt(run, cards, TowerTableKind.levelUp);
     }
   }
   if (!ownStep && !towerOathInLevelUp) {
     if (oathAlone() case final alone?) return alone;
   }
   return run.copyWith(offer: const [], clearTable: true);
+}
+
+/// [run] with [cards] on the table as [table]; on rules 4 dealt with its
+/// gamble and stat-pick cards (towerDealRoundTwo), the gamble's outcome
+/// saved apart.
+TowerRun _dealt(TowerRun run, List<TowerReward> cards, TowerTableKind table) {
+  if (!towerRoundTwoOf(run.rules)) {
+    return run.copyWith(offer: cards, table: table);
+  }
+  final dealt = towerDealRoundTwo(run, cards, table);
+  return run.copyWith(
+      offer: dealt.offer,
+      table: table,
+      gambleOutcome: dealt.outcome,
+      clearGamble: dealt.outcome == null);
 }
 
 /// The cards of [run]'s table drawn again with [random] (towerReroll on
@@ -570,11 +597,25 @@ TowerRun towerTakeLoot(
 /// level's card gone); refused, the level is spent. The oath alone sworn,
 /// or refused for a mark. Then the next table ([towerDealTable]); with none
 /// left, on to the next floor, its event and store as on rules 1.
+///
+/// Rules 4 (tower_rules4.dart): the gamble card resolves its outcome
+/// (towerTakeLootGamble, towerTakeLevelUpGamble; TowerRun.lastGamble says
+/// what it was); the stat-pick card raises [stat] (one of
+/// towerStatPickStats; none given, the hero's damage stat; another,
+/// refused: [run] as it is), saved as TowerReward(statPick, id: stat).
 TowerRun towerPickRules2(TowerRun run, TowerData data, int? index,
-    {SimCharacter? hero}) {
+    {SimCharacter? hero, String? stat}) {
   final built = hero ?? towerHeroOf(run, data);
-  final card = index != null && index >= 0 && index < run.offer.length
+  var card = index != null && index >= 0 && index < run.offer.length
       ? run.offer[index]
+      : null;
+  if (card != null && card.kind == TowerRewardKind.statPick) {
+    final chosen = stat ?? towerBotStatChoice(built);
+    if (!towerStatPickStats.contains(chosen)) return run;
+    card = TowerReward(TowerRewardKind.statPick, id: chosen);
+  }
+  final gamble = card != null && card.kind == TowerRewardKind.gamble
+      ? run.gambleOutcome ?? TowerGambleOutcome.dud
       : null;
   var next = run;
   TowerTableKind? from;
@@ -589,6 +630,8 @@ TowerRun towerPickRules2(TowerRun run, TowerData data, int? index,
     case TowerTableKind.loot:
       if (card == null) {
         refuse();
+      } else if (gamble != null) {
+        next = towerTakeLootGamble(run, gamble, built, data);
       } else {
         next = towerTakeLoot(run, card, built, data);
       }
@@ -599,6 +642,8 @@ TowerRun towerPickRules2(TowerRun run, TowerData data, int? index,
         towerApplyReward(built, card, data, bag: run.dieChoice != null);
         level.add(null);
         next = run.copyWith(taken: {...run.taken, run.floor: card});
+      } else if (gamble != null) {
+        next = towerTakeLevelUpGamble(run, gamble, built, data, level);
       } else {
         level.add(card);
         if (card != null) {
@@ -625,6 +670,11 @@ TowerRun towerPickRules2(TowerRun run, TowerData data, int? index,
       break;
   }
   next = next.copyWith(health: built.currentHealth.clamp(1, built.maxHealth));
+  if (towerRoundTwoOf(run.rules)) {
+    // The table closes: its gamble's outcome goes, the reveal stays.
+    next = next.copyWith(
+        clearGamble: true, lastGamble: gamble, clearLastGamble: gamble == null);
+  }
   if (from != null) {
     final dealt = towerDealTable(next, data, built, from, oathShown: oathShown);
     if (dealt.offer.isNotEmpty) return dealt;
