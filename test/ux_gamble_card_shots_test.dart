@@ -1,6 +1,6 @@
 // PICTURES (UX_SHOTS=<folder>): MOCKS of the GAMBLE card: one of the three is
 // dealt face down; a good Perception shows a hint; the pick reveals it with a
-// flip; no Change afterwards. The back and the '?' seal are placeholders drawn
+// flip; no Change afterwards. The back and the '?' seal are the back of our own card
 // here until Art's files arrive. Not wired in.
 import 'dart:io';
 import 'dart:ui' as ui;
@@ -29,23 +29,8 @@ TextStyle _d(double s, Color c) =>
 
 const _teal = Color(0xFF3E8E85);
 
-class _Lattice extends CustomPainter {
-  @override
-  void paint(Canvas canvas, Size size) {
-    final p = Paint()
-      ..color = inkGold.withValues(alpha: 0.28)
-      ..strokeWidth = 1;
-    for (var x = -size.height; x < size.width; x += 14) {
-      canvas.drawLine(Offset(x, 0), Offset(x + size.height, size.height), p);
-      canvas.drawLine(Offset(x + size.height, 0), Offset(x, size.height), p);
-    }
-  }
-
-  @override
-  bool shouldRepaint(_) => false;
-}
-
-/// Placeholder back (Art draws the real 244 x 402 one).
+/// The back of our own Tower card: same frame and corner, the card's own
+/// dark stock and the ink hatching of its band, one paper '?' in the middle.
 class _Back extends StatelessWidget {
   const _Back({this.band, this.peek = false});
   final Color? band;
@@ -56,12 +41,18 @@ class _Back extends StatelessWidget {
         height: 201,
         decoration: BoxDecoration(
             color: inkBlack,
-            border: Border.all(color: inkGold, width: 1.5),
+            border: Border.all(color: inkPaper, width: 1.5),
             borderRadius: BorderRadius.circular(10)),
         child: ClipRRect(
           borderRadius: BorderRadius.circular(8.5),
           child: Stack(fit: StackFit.expand, children: [
-            CustomPaint(painter: _Lattice()),
+            Padding(
+              padding: const EdgeInsets.all(7),
+              child: DecoratedBox(
+                  decoration: BoxDecoration(
+                      color: inkDark,
+                      border: Border.all(color: inkGrey, width: 1))),
+            ),
             if (band != null)
               Positioned(
                   top: 0,
@@ -70,18 +61,7 @@ class _Back extends StatelessWidget {
                   child: Container(height: 9, color: band)),
             if (peek)
               const Positioned(top: 0, left: 0, right: 0, child: _FacePeek()),
-            Center(
-              child: Container(
-                width: 46,
-                height: 46,
-                alignment: Alignment.center,
-                decoration: BoxDecoration(
-                    color: inkRed,
-                    shape: BoxShape.circle,
-                    border: Border.all(color: inkPaper, width: 2)),
-                child: Text('?', style: _d(30, inkPaper)),
-              ),
-            ),
+            Center(child: Text('?', style: _d(44, inkPaper))),
           ]),
         ),
       );
