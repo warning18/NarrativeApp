@@ -30,6 +30,7 @@ import '../sim_combat.dart' show SimCharacter;
 import 'tower_coins.dart';
 import 'tower_events.dart' show towerAfterEvent, towerOpenStore;
 import 'tower_floors.dart';
+import 'tower_gear_choice.dart' show towerGearChoiceOn;
 import 'tower_hero.dart';
 import 'tower_rewards.dart';
 import 'tower_rules4.dart';
@@ -675,18 +676,38 @@ TowerRun towerPickRules2(TowerRun run, TowerData data, int? index,
     next = next.copyWith(
         clearGamble: true, lastGamble: gamble, clearLastGamble: gamble == null);
   }
+  // The gear choice (tower_gear_choice.dart): the loot card's gear waits for
+  // the player (towerEquip, towerDiscard), the table left as it was, before
+  // the floor's next table is dealt.
+  if (run.table == TowerTableKind.loot && towerGearChoiceOn) {
+    final got = next.loot[run.floor];
+    if (card != null && got != null && got.kind == TowerRewardKind.gear) {
+      return next.copyWith(
+          pendingGear: TowerPendingGear(floor: run.floor, itemId: got.id));
+    }
+  }
+  return towerAfterTable(run, next, data, built, from, oathShown: oathShown);
+}
+
+/// [next] ([chose] after its table's card, [hero] its hero now) with the
+/// floor's next table dealt ([towerDealTable] from [from]), or, with none
+/// left, on to the next floor, its event and store as on rules 1.
+/// towerPickRules2's end, and the gear choice's (towerEquip, towerDiscard).
+TowerRun towerAfterTable(TowerRun chose, TowerRun next, TowerData data,
+    SimCharacter hero, TowerTableKind? from,
+    {bool oathShown = false}) {
   if (from != null) {
-    final dealt = towerDealTable(next, data, built, from, oathShown: oathShown);
+    final dealt = towerDealTable(next, data, hero, from, oathShown: oathShown);
     if (dealt.offer.isNotEmpty) return dealt;
     next = dealt;
   }
   return towerOpenStore(
-      run,
+      chose,
       towerAfterEvent(
-          run,
+          chose,
           next.copyWith(
             status: TowerStatus.climbing,
-            floor: run.floor + 1,
+            floor: chose.floor + 1,
             offer: const [],
             clearTable: true,
             clearShortcut: true,
