@@ -531,23 +531,54 @@ extension _FightGround on _FightScreenState {
 
   /// The warning toast: the anomaly's icon, a title and one line, at the top
   /// of the fight; it shows for about two seconds and fades.
-  Widget _buildAnomalyToast() => Positioned(
-        top: 6,
-        left: 12,
-        right: 12,
-        child: IgnorePointer(
-          child: ValueListenableBuilder<_AnomalyToast?>(
-            valueListenable: _anomalyToast,
-            builder: (context, toast, _) => AnimatedOpacity(
-              opacity: toast == null ? 0 : 1,
-              duration: Motion.base,
-              child: toast == null
-                  ? const SizedBox(height: 0)
-                  : _anomalyToastBody(context, toast),
+  Widget _buildAnomalyToast() {
+    if (!_toastPortal.isShowing) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (mounted && !_toastPortal.isShowing) _toastPortal.show();
+      });
+    }
+    // The toast lives in the route's overlay, above the Tower's snow, which
+    // is painted over the whole screen; a follower keeps it at the top of
+    // the fight.
+    return Positioned(
+      top: 6,
+      left: 12,
+      right: 12,
+      child: OverlayPortal(
+        controller: _toastPortal,
+        overlayChildBuilder: (_) => Positioned(
+          left: 0,
+          top: 0,
+          child: CompositedTransformFollower(
+            link: _toastLink,
+            showWhenUnlinked: false,
+            child: IgnorePointer(
+              child: SizedBox(
+                width: _toastWidth,
+                child: ValueListenableBuilder<_AnomalyToast?>(
+                  valueListenable: _anomalyToast,
+                  builder: (context, toast, _) => AnimatedOpacity(
+                    opacity: toast == null ? 0 : 1,
+                    duration: Motion.base,
+                    child: toast == null
+                        ? const SizedBox(height: 0)
+                        : _anomalyToastBody(context, toast),
+                  ),
+                ),
+              ),
             ),
           ),
         ),
-      );
+        child: CompositedTransformTarget(
+          link: _toastLink,
+          child: LayoutBuilder(builder: (_, c) {
+            _toastWidth = c.maxWidth;
+            return const SizedBox(width: double.infinity, height: 0);
+          }),
+        ),
+      ),
+    );
+  }
 
   Widget _anomalyToastBody(BuildContext context, _AnomalyToast toast) {
     final inked = TowerPanelStyle.of(context);
@@ -584,7 +615,7 @@ extension _FightGround on _FightScreenState {
                             fontFamily: inked ? InkFonts.display : null,
                             color: inkPaper)),
                 Text(toast.line,
-                    maxLines: 2,
+                    maxLines: 3,
                     overflow: TextOverflow.ellipsis,
                     style: (theme.textTheme.bodySmall ?? const TextStyle())
                         .copyWith(color: inkGrey)),

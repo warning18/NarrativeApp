@@ -11,6 +11,7 @@ import 'dart:math' as math;
 
 import 'package:flutter/foundation.dart' show ValueListenable;
 import 'package:flutter/material.dart';
+import '../theme/palette.dart';
 
 import '../combat/field_anomaly.dart' show AnomalyFamily;
 
@@ -152,7 +153,7 @@ class _AtmospherePainter extends CustomPainter {
             120,
             Paint()
               ..shader = RadialGradient(colors: [
-                const Color(0xFF05060F).withValues(alpha: 0),
+                Palette.veilNight.withValues(alpha: 0),
                 const Color(0xFFBFB6FF).withValues(alpha: 0.55 * level),
                 const Color(0xFFBFB6FF).withValues(alpha: 0),
               ], stops: const [
@@ -160,14 +161,10 @@ class _AtmospherePainter extends CustomPainter {
                 0.52,
                 1
               ]).createShader(r));
-        canvas.drawCircle(
-            at,
-            52,
-            Paint()
-              ..color =
-                  const Color(0xFF05060F).withValues(alpha: 0.95 * level));
+        canvas.drawCircle(at, 52,
+            Paint()..color = Palette.veilNight.withValues(alpha: 0.95 * level));
       case AnomalyFamily.storm:
-        _veil(canvas, s, const Color(0xFF0B1220), 0.24 * level);
+        _veil(canvas, s, Palette.deepBlue, 0.24 * level);
         _vignette(canvas, s, const Color(0xFF05080F), 0.4 * level, from: .55);
         final rain = Paint()
           ..color = const Color(0xFFCFE0F0).withValues(alpha: 0.32 * level)
@@ -346,8 +343,7 @@ class _AtmospherePainter extends CustomPainter {
               Paint()
                 ..style = PaintingStyle.stroke
                 ..strokeWidth = 6
-                ..color =
-                    const Color(0xFFE08A3C).withValues(alpha: 0.28 * level)
+                ..color = Palette.crackEmber.withValues(alpha: 0.28 * level)
                 ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 4));
           canvas.drawPath(
               p,

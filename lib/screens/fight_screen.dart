@@ -665,6 +665,9 @@ class _FightScreenState extends ConsumerState<FightScreen>
   /// The warning toast of the anomaly (null: none shown): its omen one round
   /// ahead, then its break, each for about two seconds.
   final ValueNotifier<_AnomalyToast?> _anomalyToast = ValueNotifier(null);
+  final LayerLink _toastLink = LayerLink();
+  final OverlayPortalController _toastPortal = OverlayPortalController();
+  double _toastWidth = 0;
   Timer? _anomalyToastTimer;
   String _throwKey = '';
 

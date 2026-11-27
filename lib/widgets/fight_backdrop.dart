@@ -673,7 +673,7 @@ void _rays(Canvas canvas, Size size, double t, Color colour, double level) {
 void _eclipse(Canvas canvas, Size size, double t, double level) {
   // Only the dim here: the corona and the dark sun are the fight's whole-screen
   // atmosphere now (anomaly_atmosphere.dart), so no solid disc sits on the board.
-  _veil(canvas, size, const Color(0xFF05060F), 0.4 * level);
+  _veil(canvas, size, Palette.veilNight, 0.4 * level);
 }
 
 void _tide(Canvas canvas, Size size, double t, Color colour, double level) {
@@ -783,7 +783,7 @@ void _paintAnomaly(Canvas canvas, Size size, String id, FightScenery s,
       _sheen(canvas, size, t, level);
       _anomalyGlint(canvas, size, t, const Color(0xFFDDF1FF), level);
     case 'earth_break':
-      _cracksGlow(canvas, size, t, const Color(0xFFE08A3C), level);
+      _cracksGlow(canvas, size, t, Palette.crackEmber, level);
     case 'rockslide':
     case 'cliff_fall':
     case 'collapse':

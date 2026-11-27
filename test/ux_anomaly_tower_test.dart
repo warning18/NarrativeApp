@@ -57,8 +57,10 @@ void main() {
       TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
           .setMockMethodCallHandler(
               const MethodChannel('flutter_tts'), (call) async => 1);
-      SharedPreferences.setMockInitialValues({'app_language': 'en'});
-      usePhone(tester, const Size(412, 860));
+      SharedPreferences.setMockInitialValues(
+          {'app_language': Platform.environment['UX_LANG'] ?? 'en'});
+      usePhone(tester,
+          Size(double.parse(Platform.environment['UX_W'] ?? '412'), 860));
       final key = GlobalKey();
       await tester.pumpWidget(RepaintBoundary(
           key: key,
@@ -108,7 +110,9 @@ void main() {
                           forcedGoal: FightGoal.slay,
                           forcedAnomaly: plan))))));
       await _settle(tester);
-      await tester.tap(find.text('Enter Battle'));
+      await tester.tap(find.text(Platform.environment['UX_LANG'] == 'fr'
+          ? 'Entrer au combat'
+          : 'Enter Battle'));
       for (var i = 0; i < 12; i++) {
         await tester.runAsync(
             () => Future<void>.delayed(const Duration(milliseconds: 20)));
@@ -123,8 +127,10 @@ void main() {
           .first);
       final cut = layer.top + clip.clipper!.getClip(layer.size).bottom;
       // The veil stops above the face row and the action bar.
-      expect(
-          cut, lessThanOrEqualTo(tester.getTopLeft(find.text('Roll Dice')).dy));
+      if (Platform.environment['UX_LANG'] != 'fr') {
+        expect(cut,
+            lessThanOrEqualTo(tester.getTopLeft(find.text('Roll Dice')).dy));
+      }
       expect(cut, greaterThan(layer.top + layer.height * 0.5));
       expect(tester.takeException(), isNull);
       if (shots != null) {
@@ -133,7 +139,8 @@ void main() {
               key.currentContext!.findRenderObject() as RenderRepaintBoundary;
           final image = await render.toImage(pixelRatio: 1.5);
           final bytes = await image.toByteData(format: ui.ImageByteFormat.png);
-          File('$shots/fx-$id${omen ? '-omen' : ''}.png')
+          File(
+              '$shots/fx-$id${omen ? '-omen' : ''}${Platform.environment['UX_LANG'] == 'fr' ? '-fr' : ''}.png')
             ..createSync(recursive: true)
             ..writeAsBytesSync(bytes!.buffer.asUint8List());
         });
