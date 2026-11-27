@@ -203,3 +203,11 @@ class _FoePainter extends CustomPainter {
   @override
   bool shouldRepaint(_FoePainter old) => old.image != image;
 }
+
+/// Where the health numbers sit on the Tower fight's bars (PROTOTYPE, two
+/// versions for the user to pick between; one is kept, the other and this
+/// switch go): [none] today, [inside] the bar made taller with "34 / 52" in it,
+/// [above] the numbers over the bar's right end.
+enum TowerHpNumbers { none, inside, above }
+
+TowerHpNumbers towerHpNumbers = TowerHpNumbers.none;

@@ -150,7 +150,8 @@ extension _FightCards on _FightScreenState {
       bool foe = false}) {
     // The Tower's ink: a thin bar with no numbers (they are in the sheet).
     final thin = TowerPanelStyle.of(context);
-    if (thin) height = 8;
+    final numbers = thin ? towerHpNumbers : TowerHpNumbers.none;
+    if (thin) height = numbers == TowerHpNumbers.inside ? 15 : 8;
     final rawRatio = maxValue <= 0 ? 0.0 : current / maxValue;
     final ratio = rawRatio.clamp(0.0, 1.0);
     final after = max(0, current - pending);
@@ -167,7 +168,9 @@ extension _FightCards on _FightScreenState {
             : (ratio > 0.5
                 ? Palette.good
                 : (ratio > 0.25 ? Palette.flame : Palette.alert));
-    return ClipRRect(
+    final label =
+        pending > 0 ? '$current → $after / $maxValue' : '$current / $maxValue';
+    final bar = ClipRRect(
       borderRadius: BorderRadius.circular(inked ? 0 : height / 2),
       child: Container(
         height: height,
@@ -228,9 +231,7 @@ extension _FightCards on _FightScreenState {
             ),
             if (!thin)
               Text(
-                pending > 0
-                    ? '$current → $after / $maxValue'
-                    : '$current / $maxValue',
+                label,
                 style: TextStyle(
                   fontWeight: FontWeight.bold,
                   fontSize: height * 0.68,
@@ -239,9 +240,37 @@ extension _FightCards on _FightScreenState {
                   color: Colors.white,
                 ),
               ),
+            if (numbers == TowerHpNumbers.inside)
+              Text(
+                label,
+                style: const TextStyle(
+                  fontFamily: InkFonts.display,
+                  fontSize: 10.5,
+                  height: 1,
+                  shadows: [Shadow(color: inkBlack, blurRadius: 2)],
+                  color: inkPaper,
+                ),
+              ),
           ],
         ),
       ),
+    );
+    if (numbers != TowerHpNumbers.above) return bar;
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      crossAxisAlignment: CrossAxisAlignment.end,
+      children: [
+        Text(
+          label,
+          style: const TextStyle(
+              fontFamily: InkFonts.display,
+              fontSize: 10.5,
+              height: 1,
+              color: inkPaper),
+        ),
+        const SizedBox(height: 2),
+        bar,
+      ],
     );
   }
 

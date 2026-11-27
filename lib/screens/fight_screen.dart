@@ -149,7 +149,8 @@ import 'tower/ink/ink_kit.dart'
 import 'fight/fight_boss_scene.dart';
 import 'fight/fight_panel_fx.dart';
 import 'tower/ink/ink_palette.dart' show inkBlack, inkDeep, inkPaper;
-import 'tower/tower_look.dart' show TowerPanelStyle;
+import 'tower/tower_look.dart'
+    show TowerHpNumbers, TowerPanelStyle, towerHpNumbers;
 
 part 'fight/fight_actions.dart';
 part 'fight/fight_board_view.dart';
