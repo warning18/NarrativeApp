@@ -115,8 +115,10 @@ void main() {
   // The oath its own step on rules 3 (Core's PR, the user's call: "Its own
   // Yes/No screen"; never on a Level Up table, never a level spent): with
   // every unlock 51 / 217 / 8991 before.
-  const none = (top: 0, floor20: 22, floorSum: 3981);
-  const all = (top: 52, floor20: 217, floorSum: 9017);
+  // Rules 4 live (the gamble card, the stat pick, the redesigned perks; the
+  // foes of floors 11 to 30 3% more): Core's #1214 numbers.
+  const none = (top: 1, floor20: 19, floorSum: 3983);
+  const all = (top: 43, floor20: 214, floorSum: 9013);
 
   test('the live Tower, no unlocks, is the pinned curve', () {
     final m = _measure(const TowerProgress());

@@ -37,3 +37,6 @@ const Color inkSand = Color(0xFFB9A27A);
 const Color inkGold = Color(0xFFC9A24B);
 const Color inkViolet = Color(0xFF1B1533);
 const Color inkIron = Color(0xFF454E53);
+
+/// The stat-pick card's stock (rules 4): its own family, verdigris.
+const Color inkVerdigris = Color(0xFF2E6F68);

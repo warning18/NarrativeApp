@@ -56,8 +56,8 @@ const Map<String, double> towerProfessionPeakScale = {
 /// keeps the rules it began with.
 ///
 /// Set to 4 with UX's rules-4 screens (the gamble card, the stat choice,
-/// the pedlar's button): until then a new climb plays rules 3.
-const int towerRulesLive = 3;
+/// the pedlar's button), v2.10.37: a new climb plays rules 4.
+const int towerRulesLive = 4;
 
 /// The newest rules a climb can play (towerStart clamps to it): rules 4 is
 /// built and played by the bot and the tests before it is live.

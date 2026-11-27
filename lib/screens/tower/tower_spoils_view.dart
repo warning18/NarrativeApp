@@ -154,6 +154,8 @@ class TowerPickConfirm extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final theme = Theme.of(context);
     final t = towerCardText(ref, reward);
+    // The gamble card is final once taken: the sheet says so.
+    final gamble = reward.kind == TowerRewardKind.gamble;
     // The stat a skill raises, as on the table's card.
     final String? nudge = styled
         ? towerNudgeOn(towerHeroOf(run, data), reward, data, rules: run.rules)
@@ -176,15 +178,29 @@ class TowerPickConfirm extends ConsumerWidget {
       key: const Key('tower_pick_confirm'),
       padding: const EdgeInsets.fromLTRB(16, 12, 16, 24),
       children: [
-        Text(
-            loot
-                ? tr(ref, 'tower_spoils_loot_title')
-                    .replaceAll('{n}', '${run.floor}')
-                : tr(ref, 'tower_confirm_title'),
-            style: theme.textTheme.headlineSmall),
-        Text(tr(ref, 'tower_confirm_hint'),
-            style: theme.textTheme.bodyMedium
-                ?.copyWith(color: theme.colorScheme.onSurfaceVariant)),
+        // The bookmarks hang over the top right: the words keep clear of them.
+        Padding(
+          padding: const EdgeInsets.only(right: 150),
+          child:
+              Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+            Text(
+                gamble
+                    ? tr(ref, 'tower_gamble_confirm_title')
+                    : loot
+                        ? tr(ref, 'tower_spoils_loot_title')
+                            .replaceAll('{n}', '${run.floor}')
+                        : tr(ref, 'tower_confirm_title'),
+                style: theme.textTheme.headlineSmall),
+            Text(
+                tr(
+                    ref,
+                    gamble
+                        ? 'tower_gamble_confirm_hint'
+                        : 'tower_confirm_hint'),
+                style: theme.textTheme.bodyMedium
+                    ?.copyWith(color: theme.colorScheme.onSurfaceVariant)),
+          ]),
+        ),
         const SizedBox(height: 16),
         if (styled)
           Center(
@@ -246,7 +262,8 @@ class TowerPickConfirm extends ConsumerWidget {
             child: OutlinedButton(
               key: const Key('tower_change'),
               onPressed: onChange,
-              child: Text(tr(ref, 'tower_change')),
+              child:
+                  Text(tr(ref, gamble ? 'tower_gamble_look' : 'tower_change')),
             ),
           ),
           const SizedBox(width: 10),
@@ -254,7 +271,8 @@ class TowerPickConfirm extends ConsumerWidget {
             child: FilledButton(
               key: const Key('tower_confirm'),
               onPressed: onConfirm,
-              child: Text(tr(ref, 'tower_confirm')),
+              child:
+                  Text(tr(ref, gamble ? 'tower_gamble_take' : 'tower_confirm')),
             ),
           ),
         ]),

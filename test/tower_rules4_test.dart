@@ -579,8 +579,8 @@ void main() {
       }
     });
 
-    test('a new climb can start on rules 4 (not yet live)', () {
-      expect(towerRulesLive, 3);
+    test('a new climb starts on rules 4 (live with UX\'s screens)', () {
+      expect(towerRulesLive, 4);
       expect(start().rules, 4);
       expect(start(rules: 9).rules, towerRulesMax);
     });
