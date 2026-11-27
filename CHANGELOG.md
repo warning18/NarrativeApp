@@ -8,6 +8,10 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [2.10.41+1123]
+
+- **Tower: choosing your gear, built but not yet on (no change for players).** After a gear card the climb can wait for Equip or Keep mine, with a stat-by-stat comparison; UX's screen turns it on. The bot keeps today's choice, so nothing else moves.
+
 ## [2.10.39+1121]
 - **Snow.** The Tower's snow falls thicker (80 to 140 flakes, up from 28 to 70) and in four sizes, so it reads on a phone; the drifts on the panels are as before. In a fight the flakes fall inside each picture panel, behind the foe and behind the hero (they were drawn over the hero in the boss scene). **The Eclipse anomaly** no longer paints a solid black disc behind the die: its dark sun hangs in the board's upper corner, half dark, so it cannot read as the black ball.
 ## [2.10.38+1120]
