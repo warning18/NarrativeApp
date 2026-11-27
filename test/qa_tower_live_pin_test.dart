@@ -112,8 +112,11 @@ void main() {
   // after a floor, the foes' survival curve by floor (towerSurvivalScale)
   // and a new calling pass, 5.33 times the health an unlock. On rules 2
   // these were 66 / 253 / 10117 and 109 / 307 / 11127.
+  // The oath its own step on rules 3 (Core's PR, the user's call: "Its own
+  // Yes/No screen"; never on a Level Up table, never a level spent): with
+  // every unlock 51 / 217 / 8991 before.
   const none = (top: 0, floor20: 22, floorSum: 3981);
-  const all = (top: 51, floor20: 217, floorSum: 8991);
+  const all = (top: 52, floor20: 217, floorSum: 9017);
 
   test('the live Tower, no unlocks, is the pinned curve', () {
     final m = _measure(const TowerProgress());

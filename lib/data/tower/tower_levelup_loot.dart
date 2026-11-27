@@ -14,8 +14,8 @@
 //   story's chest roll shifted by the floor's band ([towerLootFor]). Pyre's
 //   floors 13 and 23 deal none.
 // - The clans' tables and the boon floors are gone: one clan's card sits on
-//   every Level Up table. The oath keeps today's rules
-//   ([towerOathInLevelUp]).
+//   every Level Up table. The oath: on rules 3 its own step after the loot
+//   ([towerOathOwnStepOf]); on rules 2 as before ([towerOathInLevelUp]).
 //
 // Only a climb with TowerRun.rules 2 plays these; a climb on rules 1 (every
 // one saved before the field) plays the stat picks, the spoils chest, the
@@ -420,6 +420,13 @@ List<TowerReward> towerRunLootFor(
 /// only in front of a Level Up table, never alone.
 const bool towerOathInLevelUp = false;
 
+/// The oath its own step on [rules] (rules 3, the user's call: "Its own
+/// Yes/No screen"): on the floor it is due, after the loot and before the
+/// Level Ups, Swear or Not now (a mark, as today); never a card of a Level
+/// Up table, and swearing never spends a level. Rules 2 keeps
+/// [towerOathInLevelUp]'s placement.
+bool towerOathOwnStepOf(int rules) => rules >= towerSurvivalRules;
+
 // ---------------------------------------------------------------------------
 // The moves.
 
@@ -459,30 +466,28 @@ TowerRun towerAfterFightRules2(TowerRun run, TowerRun leveled, TowerData data,
 }
 
 /// [run] (choosing) with the next table of its floor on it, from [from]:
-/// the loot table (none on Pyre's empty floors), then a Level Up table
-/// while one is earned and not dealt (the oaths due in front unless
-/// [oathShown], the floor's oath already dealt), then the oath alone
-/// ([towerOathInLevelUp] false, the floor's oath not yet dealt, not on
-/// Pyre's empty floors). The offer empty (TowerRun.table null) when none is
-/// left: towerPick then moves on. [hero] is [run]'s hero as it stands.
+/// the loot table (none on Pyre's empty floors), then, on rules 3
+/// ([towerOathOwnStepOf]), the oath's own step (Swear or Not now, the
+/// floor's oath not yet dealt, not on Pyre's empty floors), then a Level Up
+/// table while one is earned and not dealt. On rules 2 the oaths due sit in
+/// front of the Level Up table unless [oathShown] (the floor's oath already
+/// dealt), and come alone after the Level Ups otherwise
+/// ([towerOathInLevelUp] false). The offer empty (TowerRun.table null) when
+/// none is left: towerPick then moves on. [hero] is [run]'s hero as it
+/// stands.
 TowerRun towerDealTable(
     TowerRun run, TowerData data, SimCharacter hero, TowerTableKind from,
     {bool oathShown = false}) {
   final empty = towerHeatEmptyFloorsOf(run.heat).contains(run.floor);
+  final ownStep = towerOathOwnStepOf(run.rules);
   if (from == TowerTableKind.loot && !empty) {
     final cards = towerRunLootFor(run, data, hero);
     if (cards.isNotEmpty) {
       return run.copyWith(offer: cards, table: TowerTableKind.loot);
     }
   }
-  if (from != TowerTableKind.oath && towerLevelUpsPending(run) > 0) {
-    final cards = towerRunOfferFor(run, data, run.floor, hero,
-        levelUp: true, levelUpOaths: !oathShown);
-    if (cards.isNotEmpty) {
-      return run.copyWith(offer: cards, table: TowerTableKind.levelUp);
-    }
-  }
-  if (!oathShown && !towerOathInLevelUp && !empty) {
+  TowerRun? oathAlone() {
+    if (oathShown || empty) return null;
     final oaths = towerOathCardsFor(
       hero: towerHeroView(run, hero),
       clanPool: run.clanPool,
@@ -492,9 +497,24 @@ TowerRun towerDealTable(
       heat: run.heat,
       oathSooner: run.wears(towerPerkEarlyWord) ? towerEarlyWordFloors : 0,
     );
-    if (oaths.isNotEmpty) {
-      return run.copyWith(offer: oaths, table: TowerTableKind.oath);
+    return oaths.isEmpty
+        ? null
+        : run.copyWith(offer: oaths, table: TowerTableKind.oath);
+  }
+
+  if (ownStep && from != TowerTableKind.oath) {
+    if (oathAlone() case final step?) return step;
+  }
+  if ((ownStep || from != TowerTableKind.oath) &&
+      towerLevelUpsPending(run) > 0) {
+    final cards = towerRunOfferFor(run, data, run.floor, hero,
+        levelUp: true, levelUpOaths: !ownStep && !oathShown);
+    if (cards.isNotEmpty) {
+      return run.copyWith(offer: cards, table: TowerTableKind.levelUp);
     }
+  }
+  if (!ownStep && !towerOathInLevelUp) {
+    if (oathAlone() case final alone?) return alone;
   }
   return run.copyWith(offer: const [], clearTable: true);
 }
@@ -595,6 +615,11 @@ TowerRun towerPickRules2(TowerRun run, TowerData data, int? index,
       } else {
         towerApplyReward(built, card, data, bag: run.dieChoice != null);
         next = run.copyWith(taken: {...run.taken, run.floor: card});
+      }
+      // Its own step (rules 3): the floor's Level Ups come after it.
+      if (towerOathOwnStepOf(run.rules)) {
+        from = TowerTableKind.oath;
+        oathShown = true;
       }
     case null:
       break;
