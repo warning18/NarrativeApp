@@ -8,6 +8,10 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [2.10.42+1124]
+
+- **Tower: floor events for a modal, built but not yet on (no change for players).** Each event now tells the screen whether it is forced and lists its options with their outcomes; behind a switch, a setback's d20 rolls only when the player presses Climb (same result as today, never re-rolled on reload). UX's screen turns it on.
+
 ## [2.10.41+1123]
 
 - **Tower: choosing your gear, built but not yet on (no change for players).** After a gear card the climb can wait for Equip or Keep mine, with a stat-by-stat comparison; UX's screen turns it on. The bot keeps today's choice, so nothing else moves.

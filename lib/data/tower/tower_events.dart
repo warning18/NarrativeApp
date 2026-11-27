@@ -68,6 +68,94 @@ enum TowerEventKind {
   bargain,
 }
 
+/// The event modal (UX's floor-event modal): a setback's floor stops after
+/// its fight, picks and cards with its check waiting for the player
+/// (TowerRun.checkPending), rolled when the player commits
+/// (towerResolveCheck), instead of rolled as the run moves on. Off until
+/// UX's screen is ready (its PR flips it); the rule and the roll are the
+/// same either way, only when the roll is applied moves.
+const bool towerEventModalLive = false;
+
+/// The tests' override of [towerEventModalLive] (null: the live switch).
+@visibleForTesting
+bool? towerEventModalOverride;
+
+/// The event modal is on ([towerEventModalOverride], else
+/// [towerEventModalLive]).
+bool get towerEventModalOn => towerEventModalOverride ?? towerEventModalLive;
+
+/// A button of an event's modal (TowerEventView.options), each paired with
+/// the lines of towerChoiceOutcomesOf it leads to (towerOptionOutcomesOf,
+/// tower_event_outcomes.dart).
+enum TowerEventOption {
+  /// A setback: roll the check (towerResolveCheck). Its lines:
+  /// 'tower_event_pass' and 'tower_event_fail'.
+  check,
+
+  /// A rival: the floor's fight ('tower_event_rival_win',
+  /// 'tower_event_rival_slow'); a parley: the fight chosen
+  /// (towerChooseParley false: 'tower_parley_fight').
+  fight,
+
+  /// A shortcut taken (towerChooseShortcut true:
+  /// 'tower_event_shortcut_win', 'tower_event_shortcut_lose').
+  takeShortcut,
+
+  /// A shortcut declined, the standard climb (towerChooseShortcut false:
+  /// 'tower_shortcut_decline').
+  standardClimb,
+
+  /// A parley: talk (towerChooseParley true: 'tower_parley_pass', then
+  /// 'tower_parley_fail' unless the oath passes it).
+  talk,
+
+  /// A bargain taken (towerChooseBargain true: 'tower_bargain_accept').
+  accept,
+
+  /// A bargain refused (towerChooseBargain false: 'tower_bargain_refuse').
+  refuse,
+
+  /// A merchant: its stall opened (towerBuy per line: every
+  /// `tower_stall_buy_<id>`).
+  shop,
+
+  /// A merchant left (towerLeaveStore): no line.
+  leave,
+}
+
+/// The modal's buttons for [kind], in order (TowerEventView.options): a
+/// setback [check]; a rival [fight]; a shortcut [takeShortcut],
+/// [standardClimb]; a parley [talk], [fight]; a bargain [accept],
+/// [refuse]; a merchant [shop], [leave]. None with no event.
+List<TowerEventOption> towerEventOptionsOf(TowerEventKind? kind) =>
+    switch (kind) {
+      null => const [],
+      TowerEventKind.test => const [TowerEventOption.check],
+      TowerEventKind.rival => const [TowerEventOption.fight],
+      TowerEventKind.shortcut => const [
+          TowerEventOption.takeShortcut,
+          TowerEventOption.standardClimb
+        ],
+      TowerEventKind.parley => const [
+          TowerEventOption.talk,
+          TowerEventOption.fight
+        ],
+      TowerEventKind.bargain => const [
+          TowerEventOption.accept,
+          TowerEventOption.refuse
+        ],
+      TowerEventKind.merchant => const [
+          TowerEventOption.shop,
+          TowerEventOption.leave
+        ],
+    };
+
+/// [kind]'s event is forced (TowerEventView.forced): a setback or a rival
+/// has one button and no way around it; a shortcut, a parley, a bargain
+/// and a merchant are a choice.
+bool towerEventForcedOf(TowerEventKind? kind) =>
+    kind == TowerEventKind.test || kind == TowerEventKind.rival;
+
 /// The background picture of each kind's card (UX-2's, drawn by Art): a
 /// plain key per kind.
 String towerEventBackgroundOf(TowerEventKind kind) => switch (kind) {
@@ -374,6 +462,14 @@ class TowerEventView {
 
   /// The last event's end (TowerRun.lastEvent), until the next fight ends.
   final TowerEventResult? result;
+
+  /// The event's modal has a single button and no way around it (a setback,
+  /// a rival: towerEventForcedOf); false for a choice and for no event.
+  bool get forced => towerEventForcedOf(kind);
+
+  /// The modal's buttons in order (towerEventOptionsOf); each one's lines
+  /// are towerOptionOutcomesOf(this, option).
+  List<TowerEventOption> get options => towerEventOptionsOf(kind);
 }
 
 /// A floor's event as the seed draws it, before the run's state is read.
@@ -1068,6 +1164,11 @@ TowerEventResult? towerRivalResultOf(TowerRun run, int? rounds) {
 /// kept in TowerRun.crest), a rival beaten in time landing two floors up
 /// (the skipped floor's level-ups arrive here, their max health added; its
 /// spoils and card are lost). [next] as it is when there is no event.
+///
+/// With the event modal on (towerEventModalOn), a setback's test is not
+/// rolled here: [next] is held on [won]'s floor, TowerStatus.choosing with
+/// no card on the table and TowerRun.checkPending (so its height, its hero
+/// and its marks are [next]'s), until towerResolveCheck rolls it.
 TowerRun towerAfterEvent(TowerRun won, TowerRun next, TowerData data) {
   if (towerIsShortcutLanding(won)) return next;
   final event = _eventOf(won);
@@ -1114,6 +1215,16 @@ TowerRun towerAfterEvent(TowerRun won, TowerRun next, TowerData data) {
       return landed.copyWith(
           floor: to - 1, status: TowerStatus.choosing, offer: offer);
     case TowerEventKind.test:
+      if (towerEventModalOn &&
+          !won.checkPending &&
+          next.status == TowerStatus.climbing &&
+          next.floor == from + 1) {
+        return next.copyWith(
+            status: TowerStatus.choosing,
+            floor: from,
+            offer: const [],
+            checkPending: true);
+      }
       final hero = towerHeroOf(next, data);
       final ability = towerSetbackAbilityOf(from);
       final dc = towerSetbackDcOf(from);
@@ -1149,4 +1260,18 @@ TowerRun towerAfterEvent(TowerRun won, TowerRun next, TowerData data) {
         lastEvent: result,
       );
   }
+}
+
+/// [run] with the setback's check waiting on its floor rolled (the event
+/// modal, TowerRun.checkPending): exactly what towerAfterEvent rolls with
+/// the modal off, then the store on the landing (towerOpenStore), as the
+/// run moving on from the floor would. The roll is the floor's d20 from
+/// the seed and the modifier is read from the hero as it stands (after the
+/// floor's picks and cards), so the same result however often the run is
+/// saved and loaded. [run] as it is when no check waits.
+TowerRun towerResolveCheck(TowerRun run, TowerData data) {
+  if (!run.checkPending || run.status != TowerStatus.choosing) return run;
+  final next = run.copyWith(
+      status: TowerStatus.climbing, floor: run.floor + 1, checkPending: false);
+  return towerOpenStore(run, towerAfterEvent(run, next, data));
 }

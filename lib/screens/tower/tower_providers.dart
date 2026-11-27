@@ -258,6 +258,12 @@ class TowerController extends StateNotifier<AsyncValue<TowerState>> {
   Future<void> takeStallBoon(int index) =>
       _moveRun((run) => towerTakeStallBoon(run, index));
 
+  /// The setback's check waiting on the floor (TowerRun.checkPending, the
+  /// event modal) rolled and the run moved on (towerResolveCheck), saved;
+  /// its result is new this session (eventIsNew), so its d20 tumbles once.
+  Future<void> resolveCheck({required TowerData data}) =>
+      _moveRun((run) => towerResolveCheck(run, data));
+
   /// Rules 4, Purse's pedlar: a potion bought for its coins on the landing
   /// (towerBuyPotion; the button shows while towerCanBuyPotion).
   Future<void> buyPotion() => _moveRun(towerBuyPotion);
