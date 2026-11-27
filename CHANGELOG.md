@@ -8,8 +8,14 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
-## [2.10.37+1119]
+## [2.10.35+1117]
 - Tower bookmarks: the Stats tab shows Armour and Damage beside HP and Level (what the fight uses, gear included); the Dice tab has "Play this die" to choose the die for the next fight, between floors; the three tabs wear Art's new pixel glyphs. The five Inquisition bosses (Clement, Hollow Court Zealot and Inquisitor, Purifier Vell, the Penitent) are redrawn, in the fight and standing in the floor screen's foe band.
+## [2.10.34+1116]
+- The Tower's oath is its own Yes/No moment after the loot, no longer a card: the clan's colour washes the floor, its banner hangs large, and the screen asks "Swear to the Mire?" with the clan's die and your standing, then Swear or Not now (+1 Ash Mark). The floor rail stays on the left. With two clans due, they come one after the other.
+## [2.10.33+1115]
+
+- **Tower: the oath is its own step.** On the floor a clan's oath is due, it now comes after the loot and before the Level Ups, on its own: Swear, or Not now (an Ash Mark, as before). It is never one of the Level Up cards, and swearing never costs a Level Up. Climbs on the current rules get it at once; older climbs keep their way.
+
 ## [2.10.32+1114]
 - The Tower's loot cards count properly: "2 potions, 1 antidote" and "1 potion" (no more "potion(s)"), and the level-up note under a setback says "1 pick" or "2 picks"; English and French, each with its own singular and plural string.
 ## [2.10.31+1113]

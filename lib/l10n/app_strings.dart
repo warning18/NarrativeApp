@@ -2471,6 +2471,18 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.en: 'Their die: {die}',
     AppLanguage.fr: 'Leur dé : {die}',
   },
+  'tower_oath_ask': {
+    AppLanguage.en: 'Swear to the {clan}?',
+    AppLanguage.fr: 'Jurer à {clan}\u00a0?',
+  },
+  'tower_oath_their_die': {
+    AppLanguage.en: 'Their die',
+    AppLanguage.fr: 'Leur dé',
+  },
+  'tower_oath_standing': {
+    AppLanguage.en: 'Standing',
+    AppLanguage.fr: 'Estime',
+  },
   'tower_swear': {
     AppLanguage.en: 'Swear',
     AppLanguage.fr: 'Jurer',

@@ -52,7 +52,8 @@ void main() {
   List<(TowerTableKind?, List<TowerReward>)> tablesOf(int seed,
       {TowerProgress progress = const TowerProgress(),
       List<String> perks = const [],
-      int heat = 0}) {
+      int heat = 0,
+      int rules = 2}) {
     final seen = <(TowerTableKind?, List<TowerReward>)>[];
     playTowerRun(
       seed: seed,
@@ -61,7 +62,7 @@ void main() {
       perks: perks,
       heat: heat,
       events: towerEventsLive,
-      rules: 2,
+      rules: rules,
       choice: (run) {
         seen.add((run.table, run.offer));
         if (run.table == TowerTableKind.loot) {
@@ -434,6 +435,68 @@ void main() {
       expect(took.clanIds, ['mire']);
       expect(took.levelUps[5], [null]);
       expect(took.status, TowerStatus.climbing);
+    });
+
+    test(
+        'rules 3: the oath is its own step, after the loot, before the '
+        'Level Ups, and never costs a level', () {
+      expect(towerOathOwnStepOf(3), isTrue);
+      expect(towerOathOwnStepOf(2), isFalse);
+      // Floor 4 won on rules 3 with the oath due and a level earned there
+      // (4 XP below, 2 more: the first level costs 5).
+      TowerRun at(int seed) => start(seed, rules: 3).copyWith(
+            floor: 4,
+            crest: 3,
+            xp: {1: 2, 2: 2},
+            taken: {
+              for (var f = 1; f < 4; f++)
+                f: TowerReward(TowerRewardKind.skill,
+                    id: 'gift$f', clan: 'mire'),
+            },
+          );
+      var checked = 0;
+      for (var seed = 1; seed <= 6; seed++) {
+        var run = won(at(seed));
+        if (towerLevelUpsPending(run) < 1) continue;
+        expect(run.table, TowerTableKind.loot, reason: 'seed $seed');
+        run = towerPick(run, data, 0);
+        // The oath alone, its own step.
+        expect(run.table, TowerTableKind.oath, reason: 'seed $seed');
+        expect(run.offer,
+            [const TowerReward(TowerRewardKind.clanOath, id: 'mire')]);
+        for (final swear in [true, false]) {
+          final after = towerPick(run, data, swear ? 0 : null);
+          if (swear) {
+            expect(after.clanIds, ['mire']);
+          } else {
+            // Not now: a mark, as today.
+            expect(after.refused, contains(4));
+          }
+          // Then the Level Up, whole, with no oath on it.
+          expect(after.table, TowerTableKind.levelUp, reason: 'seed $seed');
+          expect(after.offer.where((c) => c.kind == TowerRewardKind.clanOath),
+              isEmpty);
+          expect(after.offer.length, greaterThanOrEqualTo(3));
+          final took = towerPick(after, data, 0);
+          expect(took.levelUps[4], [after.offer[0]]);
+          expect(took.status, TowerStatus.climbing);
+        }
+        checked++;
+      }
+      expect(checked, greaterThan(0));
+    });
+
+    test('rules 3: no Level Up table carries an oath over whole climbs', () {
+      for (var seed = 1; seed <= 40; seed++) {
+        for (final (kind, offer)
+            in tablesOf(seed, rules: 3, progress: towerAllUnlocked)) {
+          if (kind == TowerTableKind.levelUp) {
+            expect(
+                offer.where((c) => c.kind == TowerRewardKind.clanOath), isEmpty,
+                reason: 'seed $seed: $offer');
+          }
+        }
+      }
     });
 
     test('the late oath from floor 15, as today', () {
