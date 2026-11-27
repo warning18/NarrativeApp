@@ -358,12 +358,12 @@ Future<TowerPlay> playTower(
             shotRolled = true;
             if (!platesChecked) {
               platesChecked = true;
-              // The lighter plates (v1.1009): no health numbers on them,
-              // one tap on the hero's shows them.
+              // The plates' bars carry their numbers (v2.10.43); one tap on
+              // the hero's still opens the sheet.
               final numbers =
                   find.textContaining(RegExp(r'^\d+ / \d+$')).evaluate().length;
-              if (numbers > 0) {
-                note('FINDING plates: $numbers health numbers on the plates');
+              if (numbers == 0) {
+                note('FINDING plates: no health numbers on the bars');
               }
               final plate = find.byWidgetPredicate((w) =>
                   w.key is ValueKey<String> &&
