@@ -13,7 +13,7 @@ import '../../l10n/app_strings.dart';
 import '../../theme/icon_sizes.dart';
 import '../../theme/motion.dart';
 import '../../theme/stitched_ink.dart' show InkFonts;
-import 'ink/ink_kit.dart' show InkBar;
+import 'ink/ink_kit.dart' show InkBar, InkButton;
 import 'ink/ink_palette.dart';
 import '../../widgets/ink_chip.dart';
 import '../../widgets/ink_panel.dart';
@@ -32,6 +32,7 @@ class TowerEventCard extends ConsumerWidget {
       this.onBuy,
       this.onLeaveStore,
       this.onBargain,
+      this.onFace,
       this.foeId});
 
   final TowerEventView view;
@@ -52,6 +53,9 @@ class TowerEventCard extends ConsumerWidget {
   final VoidCallback? onLeaveStore;
   final void Function(bool accept)? onBargain;
 
+  /// The setback's check waiting (the event modal): Face it rolls it.
+  final VoidCallback? onFace;
+
   /// The floor's first foe, whose figure the parley card shows for a clan
   /// with no picture of its own.
   final String? foeId;
@@ -60,7 +64,7 @@ class TowerEventCard extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     switch (view.kind) {
       case TowerEventKind.test:
-        return _TestCard(view, bagFull);
+        return _TestCard(view, bagFull, onFace);
       case TowerEventKind.rival:
         return _RivalCard(view);
       case TowerEventKind.shortcut:
@@ -130,6 +134,39 @@ class TowerEventCard extends ConsumerWidget {
       case null:
         return const SizedBox.shrink();
     }
+  }
+}
+
+/// The setback ahead, one line on the floor before its fight: the test, d20
+/// plus the modifier against the difficulty, and the chance. It rolls when the
+/// climb goes on, in the event modal.
+class TowerEventRecap extends ConsumerWidget {
+  const TowerEventRecap(this.view, {super.key});
+
+  final TowerEventView view;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final modifier = view.modifier ?? 0;
+    final text = tr(ref, 'tower_event_recap_test')
+        .replaceAll('{ability}', tr(ref, '${view.ability}_label'))
+        .replaceAll('{mod}', modifier >= 0 ? '+$modifier' : '$modifier')
+        .replaceAll('{dc}', '${view.dc ?? 0}')
+        .replaceAll('{pct}', '${((view.chance ?? 0) * 100).round()}');
+    return Row(
+      key: const Key('tower_event_recap'),
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        const Icon(Icons.casino_outlined, size: IconSize.s16, color: inkPaper),
+        const SizedBox(width: 8),
+        Expanded(
+            child: Text(text,
+                style: Theme.of(context)
+                    .textTheme
+                    .bodySmall
+                    ?.copyWith(color: inkPaper))),
+      ],
+    );
   }
 }
 
@@ -214,10 +251,11 @@ class TowerEventOutcome extends StatelessWidget {
 }
 
 class _TestCard extends ConsumerWidget {
-  const _TestCard(this.view, this.bagFull);
+  const _TestCard(this.view, this.bagFull, this.onFace);
 
   final TowerEventView view;
   final bool bagFull;
+  final VoidCallback? onFace;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -295,6 +333,14 @@ class _TestCard extends ConsumerWidget {
                 {'n': view.setbacksLeft}),
             style: theme.textTheme.bodySmall
                 ?.copyWith(color: theme.colorScheme.onSurfaceVariant)),
+        if (onFace != null) ...[
+          const SizedBox(height: 10),
+          InkButton(
+              buttonKey: const Key('tower_event_face'),
+              label: tr(ref, 'tower_event_face'),
+              onPressed: onFace,
+              primary: true),
+        ],
       ]),
     );
   }
