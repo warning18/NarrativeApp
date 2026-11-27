@@ -8,6 +8,8 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [2.10.37+1119]
+- Tower bookmarks: the Stats tab shows Armour and Damage beside HP and Level (what the fight uses, gear included); the Dice tab has "Play this die" to choose the die for the next fight, between floors; the three tabs wear Art's new pixel glyphs. The five Inquisition bosses (Clement, Hollow Court Zealot and Inquisitor, Purifier Vell, the Penitent) are redrawn, in the fight and standing in the floor screen's foe band.
 ## [2.10.32+1114]
 - The Tower's loot cards count properly: "2 potions, 1 antidote" and "1 potion" (no more "potion(s)"), and the level-up note under a setback says "1 pick" or "2 picks"; English and French, each with its own singular and plural string.
 ## [2.10.31+1113]
