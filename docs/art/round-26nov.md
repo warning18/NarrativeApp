@@ -8,3 +8,8 @@ Face-down Tower card, 112 x 160 (the tarot card size, `frame_tarot`), cut paper 
 kroll_the_branded, hollow_court_zealot, hollow_court_inquisitor, inquisition_penitent, purifier_vell: new full characters, dark recipe, Starter_basic_hero as style reference (pro mode, 48 px, 8 directions with south and north), **10 generations each, 50 in all, no retries counted**. Designs (`art/pixellab-chars5/gen.py`): kroll = a gaunt grey-haired inquisitor in a long black coat with a white collar and a blue sash, a branding iron; zealot = a hunched violet-robed figure with a white half mask and a crystal shard; inquisitor = a tall violet coat with a tall pointed black hat and a seal staff; penitent = a barefoot bandaged figure with a violet hood and a barbed scourge; purifier = a soot-black apron, goggles and a lit torch in each hand.
 **Sample made: kroll_the_branded (10 generations)**, raw in `art/pixellab-chars5/raw/kroll_the_branded/`, sheet `docs/art/boards/sample-boss-kroll.png` (all 8 directions beside the five stand-ins). The stand-in files in the boss hand-off folder are not replaced yet. The other four: 40 generations, on the Manager's confirmation.
 Spent this round: 6 + 3 + 10 = 19. Balance 944.
+
+## The user's answers (27 November)
+- **Gamble card back: no new art; options a, b and c are NOT WANTED** ("the back card style do not match ink it should just be the reverse of an existing card"). UX makes the back from an existing card. The files stay in `art/pixellab-cardback/` as a record and are not handed off.
+- **Stats glyph:** redo it so it reads as a radar or star chart; keep the die and the shield.
+- **Bosses:** yes, the other four (40 generations), then all five (Kroll included) to UX with a brief.
