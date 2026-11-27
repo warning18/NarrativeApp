@@ -103,6 +103,8 @@ class _State extends ConsumerState<TowerOathMoment> {
       Padding(
         padding: const EdgeInsets.fromLTRB(8, 0, 16, 16),
         child: Column(children: [
+          // The bookmarks hang over the top right: the banner starts below them.
+          const SizedBox(height: 56),
           if (banner != null)
             SizedBox(
                 width: 112,
