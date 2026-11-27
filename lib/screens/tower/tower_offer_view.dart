@@ -116,9 +116,8 @@ TowerCardText towerCardText(WidgetRef ref, TowerReward reward, {int tier = 0}) {
       return TowerCardText(
           tr(ref, 'tower_kind_bundle'),
           tr(ref, 'tower_bundle_name'),
-          tr(ref, 'tower_bundle_text')
-              .replaceAll('{potions}', '${bundle.potions}')
-              .replaceAll('{antidotes}', '${bundle.antidotes}'));
+          towerBundleLine(
+              (key) => tr(ref, key), bundle.potions, bundle.antidotes));
     case TowerRewardKind.purse:
       return TowerCardText(
           tr(ref, 'tower_kind_purse'),
@@ -1096,4 +1095,25 @@ class _TowerOfferViewState extends ConsumerState<TowerOfferView> {
               ],
             )));
   }
+}
+
+/// The flasks card's line, "2 potions, 1 antidote": each part counted with
+/// its own singular ("1 potion") and plural, a part at zero left out.
+/// [text] reads a string key in the reader's language.
+String towerBundleLine(
+    String Function(String key) text, int potions, int antidotes) {
+  String part(String name, int n) =>
+      text(n == 1 ? 'tower_bundle_${name}_one' : 'tower_bundle_$name')
+          .replaceAll('{n}', '$n');
+  final parts = [
+    if (potions > 0) part('potions', potions),
+    if (antidotes > 0) part('antidotes', antidotes),
+  ];
+  return switch (parts.length) {
+    0 => '',
+    1 => parts.single,
+    _ => text('tower_bundle_text')
+        .replaceAll('{potions}', parts[0])
+        .replaceAll('{antidotes}', parts[1]),
+  };
 }
