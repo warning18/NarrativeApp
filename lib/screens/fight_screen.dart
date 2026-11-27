@@ -17,6 +17,7 @@ import '../providers/fight_random_provider.dart';
 import '../providers/geography_provider.dart';
 import '../widgets/chapter_goals_card.dart' show ChapterGoalSetupLine, GoalTick;
 import '../widgets/fit_title.dart';
+import '../widgets/anomaly_atmosphere.dart';
 import '../widgets/fight_backdrop.dart';
 import '../widgets/fight_plates.dart'
     show FightPlateImages, FightPlateOverride, fightPlateAsset;
@@ -137,7 +138,7 @@ import '../widgets/ink_loading.dart';
 import '../theme/icon_sizes.dart';
 import '../widgets/hero_sprite.dart' show heroWalkOf;
 import '../widgets/pixel_glyph.dart';
-import 'tower/ink/ink_palette.dart' show inkGrey, inkRed, inkSlate;
+import 'tower/ink/ink_palette.dart' show inkGold, inkGrey, inkRed, inkSlate;
 import '../widgets/dice_throw.dart';
 import '../widgets/dice_ground.dart';
 import 'tower/ink/ink_dice.dart' show inkDieSkin;
@@ -653,6 +654,18 @@ class _FightScreenState extends ConsumerState<FightScreen>
   /// The thrown dice's plan for the roll under way (see dice_throw.dart).
   DiceThrowPlan? _throwPlan;
   final GlobalKey _weatherKey = GlobalKey();
+
+  /// The anomaly's atmosphere is drawn above the panels and the board and
+  /// stops at the top of the face row (the Tower) or of the action bar: these
+  /// keys find that line (fight_ground.dart's _AboveControls).
+  final GlobalKey _atmosphereKey = GlobalKey(debugLabel: 'anomaly_layer');
+  final GlobalKey _faceStripKey = GlobalKey(debugLabel: 'fight_face_strip');
+  final GlobalKey _actionsKey = GlobalKey(debugLabel: 'fight_actions');
+
+  /// The warning toast of the anomaly (null: none shown): its omen one round
+  /// ahead, then its break, each for about two seconds.
+  final ValueNotifier<_AnomalyToast?> _anomalyToast = ValueNotifier(null);
+  Timer? _anomalyToastTimer;
   String _throwKey = '';
 
   /// Reduced motion: the dice are not thrown, they are there.
@@ -717,6 +730,8 @@ class _FightScreenState extends ConsumerState<FightScreen>
   void dispose() {
     if (_heldUpright) releaseFightUpright();
     _luckyDieTourTimer?.cancel();
+    _anomalyToastTimer?.cancel();
+    _anomalyToast.dispose();
     _shakeController.dispose();
     _vfx.removeImpactListener(_onVfxImpact);
     _panelFxStop();

@@ -671,26 +671,9 @@ void _rays(Canvas canvas, Size size, double t, Color colour, double level) {
 }
 
 void _eclipse(Canvas canvas, Size size, double t, double level) {
+  // Only the dim here: the corona and the dark sun are the fight's whole-screen
+  // atmosphere now (anomaly_atmosphere.dart), so no solid disc sits on the board.
   _veil(canvas, size, const Color(0xFF05060F), 0.4 * level);
-  // Up in the corner, away from the dice, and only half dark: a solid black
-  // disc behind a die read as the black ball (v2.10.14, again in v2.10.39).
-  final at = Offset(size.width * 0.84, size.height * 0.15);
-  canvas.drawCircle(
-    at,
-    52,
-    Paint()
-      ..shader = RadialGradient(colors: [
-        Palette.clear,
-        const Color(0xFFBFB6FF).withValues(alpha: 0.55 * level),
-        Palette.clear,
-      ], stops: const [
-        0.55,
-        0.62,
-        1.0
-      ]).createShader(Rect.fromCircle(center: at, radius: 52)),
-  );
-  canvas.drawCircle(
-      at, 30, Paint()..color = const Color(0xFF05060F).withValues(alpha: 0.55));
 }
 
 void _tide(Canvas canvas, Size size, double t, Color colour, double level) {
