@@ -117,8 +117,12 @@ void main() {
   // every unlock 51 / 217 / 8991 before.
   // Rules 4 live (the gamble card, the stat pick, the redesigned perks; the
   // foes of floors 11 to 30 3% more): Core's #1214 numbers.
-  const none = (top: 1, floor20: 19, floorSum: 3983);
-  const all = (top: 43, floor20: 214, floorSum: 9013);
+  // Rules 5 live (docs/simulation/tower-early-floors.md, the user's call:
+  // on floors 1 to 3 the foes strike first, their damage times the unlock
+  // health factor to the power .9, their health ×.85, 25% health back):
+  // on rules 4 these were 1 / 19 / 3983 and 43 / 214 / 9013.
+  const none = (top: 0, floor20: 15, floorSum: 4144);
+  const all = (top: 40, floor20: 210, floorSum: 8889);
 
   test('the live Tower, no unlocks, is the pinned curve', () {
     final m = _measure(const TowerProgress());

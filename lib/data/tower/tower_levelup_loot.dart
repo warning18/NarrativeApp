@@ -463,7 +463,9 @@ TowerRun towerAfterFightRules2(TowerRun run, TowerRun leveled, TowerData data,
   final health = (healthLeft +
           hero.maxHealth -
           maxHealthBefore +
-          (hero.maxHealth * towerRecoveryShareFor(run.heat, rules: run.rules))
+          (hero.maxHealth *
+                  towerRecoveryShareFor(run.heat,
+                      rules: run.rules, floor: run.floor))
               .round() +
           (hero.maxHealth * towerSecondWindShareOf(run)).round())
       .clamp(1, hero.maxHealth);

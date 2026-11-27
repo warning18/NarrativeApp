@@ -1130,7 +1130,12 @@ const int _maxRolls = maxRollsPerTurn;
 /// extra). [affixes] holds each enemy's affixes, in [enemies] order (none by
 /// default); [elite] makes a lone enemy an Elite (the fight screen's
 /// `forceElite`); [rerollWeakFaces] has the hero reroll a weak face, not
-/// only an empty one. Their defaults play the fight as it always was.
+/// only an empty one. [ambush] opens the fight with the enemies' turn
+/// before the party's first roll (the fight screen's
+/// BattlefieldCondition.ambush; its hidden intents are not modelled: the
+/// hero here never reads them); [damageMultiplier] is the fight screen's
+/// `EncounterModifiers.damageMultiplier` (the enemies' damage only, after
+/// the curve). Their defaults play the fight as it always was.
 SimFightOutcome simulateSimFight({
   required SimCharacter character,
   required List<MapEntry<String, Map<String, dynamic>>> enemies,
@@ -1153,6 +1158,8 @@ SimFightOutcome simulateSimFight({
   List<List<EnemyAffix>> affixes = const [],
   bool elite = false,
   bool rerollWeakFaces = false,
+  bool ambush = false,
+  double damageMultiplier = 1.0,
 }) {
   final fight = _SimFight(
     c: character,
@@ -1176,6 +1183,8 @@ SimFightOutcome simulateSimFight({
     affixes: affixes,
     elite: elite,
     rerollWeakFaces: rerollWeakFaces,
+    ambush: ambush,
+    damageMultiplier: damageMultiplier,
   ).._setup();
   return fight.run();
 }

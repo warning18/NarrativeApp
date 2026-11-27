@@ -44,7 +44,8 @@ FightScreen towerFightScreen(
       additionalEnemies: {
         for (final id in floor.enemyIds.skip(1)) id: records[id]!,
       },
-      modifiers: floor.modifiersFor(run.professionId),
+      modifiers: floor.modifiersFor(run.professionId,
+          raceId: run.raceId, unlocksOwned: run.unlocksOwned),
       rival: towerFightIsRival(run),
       onRound: onRound,
     );

@@ -3,6 +3,8 @@
 // reward weights and rarities, the marks and the unlocks. The main game's
 // numbers are not read here and none of these is read by it.
 
+import 'dart:math' show pow;
+
 /// The share of max health the hero gets back after each floor won, on top
 /// of what its levels add. The Tower curve review (fix #5): .15 (was .30),
 /// so a hard fight still shows a few floors on (health entering floors 21
@@ -55,13 +57,19 @@ const Map<String, double> towerProfessionPeakScale = {
 /// redesigned, the stat-pick card, the foes 3% more from floor 11). A climb
 /// keeps the rules it began with.
 ///
+/// 5, rules 4 with early floors that threaten (docs/simulation/
+/// tower-early-floors.md: on floors 1 to 3 the foes strike first, their
+/// damage grows with the unlocks' health, a little less health on them and
+/// more health back after those floors).
+///
 /// Set to 4 with UX's rules-4 screens (the gamble card, the stat choice,
-/// the pedlar's button), v2.10.37: a new climb plays rules 4.
-const int towerRulesLive = 4;
+/// the pedlar's button), v2.10.37: a new climb plays rules 4. Set to 5 with
+/// the early floors (the user's call: "the first fights are too easy"; the
+/// app's ambush and fight already exist, no new screen).
+const int towerRulesLive = 5;
 
-/// The newest rules a climb can play (towerStart clamps to it): rules 4 is
-/// built and played by the bot and the tests before it is live.
-const int towerRulesMax = 4;
+/// The newest rules a climb can play (towerStart clamps to it).
+const int towerRulesMax = 5;
 
 /// The first rules of the survival curve (towerRulesLive since it shipped):
 /// rules 2 keeps its numbers for the climbs begun on it.
@@ -144,7 +152,61 @@ double towerRulesScaleOf(int rules, String professionId, {int floor = 0}) {
           : 1.0) *
       (rules >= towerRoundTwoRules && floor >= towerRoundTwoUpperFloor
           ? towerRoundTwoUpperScale
-          : 1.0);
+          : 1.0) *
+      (towerEarlyFloorOf(rules, floor) ? towerEarlyScale : 1.0);
+}
+
+/// The first rules of the early floors (docs/simulation/
+/// tower-early-floors.md, approved by the user): on floors 1 to
+/// [towerEarlyFloors] the foes strike first (the app's ambush), their
+/// damage grows with the hero's unlock health ([towerEarlyDamageFor]),
+/// their health is [towerEarlyScale] of the curve's, and the hero gets
+/// [towerEarlyRecoveryShare] of max health back after the floor. Floor 4
+/// and up as rules 4.
+const int towerEarlyRules = 5;
+
+/// The last floor of the early floors (floors 1 to 3).
+const int towerEarlyFloors = 3;
+
+/// The early floors' foes' health on top of the curve (rules 5): 3.0 / 4.2
+/// / 4.5 become 2.55 / 3.57 / 3.83, so that with the ambush and the damage
+/// the climb keeps its survival curve.
+const double towerEarlyScale = .85;
+
+/// The power of the hero's unlock health factor on the early floors' foes'
+/// damage (rules 5): the foes' damage times the factor to this power. ×1
+/// with no unlocks; with all ten, a human warrior's 2.36 health gives ×2.17
+/// (×1.35 to ×2.56 over the peoples and callings). The proposal's 1.0, on
+/// the real code, left every unlock a little harder than its prototype
+/// (seeds 1 to 2000: floor 10 79.2%, the top 8.8%, 4.3% of climbs ending
+/// before floor 5; Heat 3 the top 3.65%); at .9, 80.2%, 9.15%, 3.15% and
+/// 3.9% (the proposal's 80.3%, 9.15%, 3.4% and 3.75%), floors 1 to 3 still
+/// 21.7% of max health a fight won (21.9% with no unlocks).
+const double towerEarlyUnlockDamage = .9;
+
+/// The share of max health back after an early floor won (rules 5), at
+/// every Heat (was .10, .05 from Heat 3).
+const double towerEarlyRecoveryShare = .25;
+
+/// Whether [floor] of a climb on rules [rules] is an early floor (rules 5,
+/// floors 1 to [towerEarlyFloors]).
+bool towerEarlyFloorOf(int rules, int floor) =>
+    rules >= towerEarlyRules && floor >= 1 && floor <= towerEarlyFloors;
+
+/// The early floors' foes' damage factor for a hero of [raceId] and
+/// [professionId] owning [unlocksOwned] unlocks, on [floor] of a climb on
+/// rules [rules]: the hero's unlock health factor (towerHero's
+/// `1 + towerHealthPerUnlockFor × unlocksOwned`) to the power
+/// [towerEarlyUnlockDamage]; 1 off the early floors.
+double towerEarlyDamageFor(int rules, int floor,
+    {required String raceId,
+    required String professionId,
+    required int unlocksOwned}) {
+  if (!towerEarlyFloorOf(rules, floor) || unlocksOwned <= 0) return 1.0;
+  final health = 1 +
+      towerHealthPerUnlockFor(raceId, professionId, rules: rules) *
+          unlocksOwned;
+  return pow(health, towerEarlyUnlockDamage).toDouble();
 }
 
 /// The first rules of the round-2 package (docs/simulation/
@@ -186,14 +248,17 @@ double towerHealthPerUnlockFor(String raceId, String professionId,
 /// keep [towerHeatRecoveryShare].
 const double towerSurvivalRecoveryShare = .10;
 
-/// The share of max health back after a floor won at [heat] on rules
-/// [rules] (rules 1 and 2: [towerRecoveryShareOf]).
-double towerRecoveryShareFor(int heat, {required int rules}) =>
+/// The share of max health back after [floor] won at [heat] on rules
+/// [rules] (rules 1 and 2: [towerRecoveryShareOf]; rules 5's early floors:
+/// [towerEarlyRecoveryShare] at every Heat).
+double towerRecoveryShareFor(int heat, {required int rules, int floor = 0}) =>
     rules < towerSurvivalRules
         ? towerRecoveryShareOf(heat)
-        : heat >= towerHeatFlame
-            ? towerHeatRecoveryShare
-            : towerSurvivalRecoveryShare;
+        : towerEarlyFloorOf(rules, floor)
+            ? towerEarlyRecoveryShare
+            : heat >= towerHeatFlame
+                ? towerHeatRecoveryShare
+                : towerSurvivalRecoveryShare;
 
 /// The foes' scale for [professionId] (1 for the others; on a warden's or
 /// boss's floor, [peak], its [towerProfessionPeakScale] if it has one),

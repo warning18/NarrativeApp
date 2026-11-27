@@ -111,6 +111,11 @@ const _topNone = (min: 0.0, max: 0.01);
 // back to 0.18 to 0.32 (it was 0.26 to 0.40 as first built).
 // Rules 3 (above): every unlock's top 10.2% on the guard seeds (8.4% with
 // the floor events off); the band was 0.18 to 0.32.
+// Rules 5 (docs/simulation/tower-early-floors.md: floors 1 to 3 harder,
+// Core's PR, the user's call), no re-band: on the 500 guard seeds median 8,
+// floor 20 3.0%, the top 0.0%, and 8.0% with every unlock (events off: 8,
+// 3.0%, 0.0%, 7.2%); rules 4 had median 8, floor 20 3.8%, the top 0.2%
+// and 8.6%.
 const _topAll = (min: 0.06, max: 0.15);
 
 /// The floor events' version the batch and the guards play (TOWER_EVENTS):
