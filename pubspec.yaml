@@ -140,6 +140,7 @@ flutter:
     - assets/visuals/heroes/
     - assets/visuals/hero_north/
     - assets/visuals/boss_south/
+    - assets/visuals/boss_east/
     - assets/visuals/levelup/
     - assets/visuals/quests/
     - assets/visuals/shops/

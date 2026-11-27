@@ -5,6 +5,7 @@
 // are the sprites in ink.
 import 'package:flutter/material.dart';
 
+import '../../fight/fight_boss_scene.dart' show bossEastSprite;
 import '../../../widgets/fight_sprites.dart';
 import 'ink_figure.dart';
 import 'ink_kit.dart';
@@ -114,7 +115,8 @@ class InkFoeBand extends StatelessWidget {
                 width: cell,
                 child: Center(
                   child: Builder(builder: (context) {
-                    final set = enemyFightSprite(foes[i].id);
+                    final set = bossEastSprite(foes[i].id) ??
+                        enemyFightSprite(foes[i].id);
                     return KeyedSubtree(
                       key: i == 0 ? Key('tower_foe_${foes[i].id}') : null,
                       child: set == null

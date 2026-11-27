@@ -7,6 +7,7 @@ import 'dart:ui' as ui;
 
 import 'package:flutter/material.dart';
 
+import '../../widgets/fight_sprites.dart' show FightSpriteSet;
 import '../tower/ink/ink_sprites.dart';
 
 /// The bosses and wardens with a south frame
@@ -33,6 +34,26 @@ const Set<String> bossSouthIds = {
   'inquisition_penitent',
   'void_sovereign',
 };
+
+/// The bosses with a still east frame for the floor screen's foe band
+/// (`assets/visuals/boss_east/<id>.png`, 48 px): they have no walking sheet, so
+/// the band draws this frame, the same figure as the fight's.
+const Set<String> bossEastIds = {
+  'kroll_the_branded',
+  'hollow_court_zealot',
+  'hollow_court_inquisitor',
+  'purifier_vell',
+  'inquisition_penitent',
+};
+
+/// The still figure of the boss [enemyId] for the foe band, or null.
+FightSpriteSet? bossEastSprite(String enemyId) => bossEastIds.contains(enemyId)
+    ? FightSpriteSet(
+        id: 'boss_east_$enemyId',
+        idleAsset: 'assets/visuals/boss_east/$enemyId.png',
+        frameWidth: 48,
+        frameHeight: 48)
+    : null;
 
 /// The heroes with a north frame (`assets/visuals/hero_north/<name>.png`), by
 /// the name `heroWalkName` gives.
