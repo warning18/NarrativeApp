@@ -96,7 +96,7 @@ Widget _face({String name = 'Court Die', String text = 'd6 · 1 2 2 3 4 5'}) =>
       ),
     );
 
-Widget _skill() => SizedBox(
+Widget _skill() => const SizedBox(
       width: 122,
       height: 201,
       child: TowerStyledCard(
@@ -106,11 +106,11 @@ Widget _skill() => SizedBox(
         text: 'Block the next blow.',
         nudge: '+1 DEX',
         vignette: 'assets/visuals/none.png',
-        badge: const Icon(Icons.shield, size: 16, color: inkBlack),
+        badge: Icon(Icons.shield, size: 16, color: inkBlack),
       ),
     );
 
-Widget _gear() => SizedBox(
+Widget _gear() => const SizedBox(
       width: 122,
       height: 201,
       child: TowerStyledCard(
@@ -119,7 +119,7 @@ Widget _gear() => SizedBox(
         name: 'Ash Cloak',
         text: '+2 armour.',
         vignette: 'assets/visuals/none.png',
-        badge: const Icon(Icons.checkroom, size: 16, color: inkBlack),
+        badge: Icon(Icons.checkroom, size: 16, color: inkBlack),
       ),
     );
 
