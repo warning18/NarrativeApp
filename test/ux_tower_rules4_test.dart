@@ -23,6 +23,7 @@ import 'package:narrative_data_app/data/tower/tower_tables.dart';
 import 'package:narrative_data_app/screens/tower/ink/ink_sprites.dart';
 import 'package:narrative_data_app/screens/tower/tower_floor_screen.dart';
 import 'package:narrative_data_app/screens/tower/tower_providers.dart';
+import 'package:narrative_data_app/screens/tower/tower_styled_card.dart';
 
 import 'support/fonts.dart';
 
@@ -119,12 +120,14 @@ void main() {
           TowerReward(TowerRewardKind.gamble),
         ]);
     await boot(tester, run);
-    // Its face is down: "? ? ?", never what it is.
-    expect(find.text('? ? ?'), findsWidgets);
+    // Its face is down: a real card back, no words, never what it is.
+    expect(find.byType(TowerCardBack), findsOneWidget);
     expect(find.text('Dud'), findsNothing);
     await shot(tester, 'r4-gamble-table');
     await tester.tap(find.byKey(const Key('tower_card_1')));
     await settle(tester, 4);
+    // Held, its words under the fan: a hero who reads nothing gets the plain line.
+    expect(find.text('A card laid face down'), findsWidgets);
     await tester.tap(find.byKey(const Key('tower_take')));
     await settle(tester, 6);
     expect(find.byKey(const Key('tower_pick_confirm')), findsOneWidget);
@@ -133,8 +136,11 @@ void main() {
     expect(find.text('Take it'), findsOneWidget);
     expect(find.text('Look again'), findsOneWidget);
     await tester.tap(find.byKey(const Key('tower_confirm')));
+    // The card turns over: its back, edge-on, then the outcome card.
+    await tester.pump();
+    await tester.pump(const Duration(milliseconds: 120));
+    await shot(tester, 'r4-gamble-flip');
     await settle(tester, 10);
-    // The card turns over.
     await shot(tester, 'r4-gamble-reveal');
     expect(find.byKey(const Key('tower_gamble_reveal')), findsOneWidget);
     expect(find.text('Dud'), findsOneWidget);
@@ -155,9 +161,11 @@ void main() {
         towerGambleHintOf(run, towerHeroOf(run, data)), TowerGambleHint.kind);
     await boot(tester, run);
     await shot(tester, 'r4-gamble-read');
-    // Its name instead of "? ? ?", the hint under it, a red band (bad).
+    // Its name on a plate at the foot, a red band at the top (bad).
+    expect(find.byType(TowerCardBack), findsOneWidget);
+    expect(
+        tester.widget<TowerCardBack>(find.byType(TowerCardBack)).name, 'Wound');
     expect(find.text('Wound'), findsWidgets);
-    expect(find.text('? ? ?'), findsNothing);
   });
 
   testWidgets('the stat-pick card: take it, choose a stat, confirm',

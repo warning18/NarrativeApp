@@ -1,6 +1,8 @@
 // Rules 4's screens: the stat choice after taking the stat-pick card, and the
 // gamble card's reveal. (The cards themselves are drawn by
 // towerStyledCardFor; the "No turning back" confirm is TowerPickConfirm's.)
+import 'dart:math' as math;
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -12,12 +14,14 @@ import '../../data/tower/tower_run.dart';
 import '../../data/tower/tower_session.dart' show towerSessionOf;
 import '../../data/tower/tower_tables.dart' show TowerGambleOutcome;
 import '../../l10n/app_strings.dart';
+import '../../theme/icon_sizes.dart';
 import '../../theme/motion.dart';
 import '../../theme/stitched_ink.dart' show InkFonts;
 import '../../widgets/ability_radar.dart' show abilityAbbrevKey;
 import '../../widgets/level_up_art.dart' show LevelUpStatsArea;
 import 'ink/ink_palette.dart';
 import 'tower_bookmarks.dart' show towerAbilitiesOf;
+import 'tower_styled_card.dart';
 
 TextStyle _p(double s, Color c, {FontWeight? w}) => TextStyle(
     fontFamily: InkFonts.prose,
@@ -147,52 +151,63 @@ class _StatChoiceState extends ConsumerState<TowerStatChoice> {
   }
 }
 
-/// The reveal after a gamble card is taken: the card turns over (reduce
-/// motion: it is simply face up) and says what it was.
+/// A gamble's outcome as a card: the tarot frame, Art's picture, its name and
+/// its line. The good ones are paper with a gold band, the bad ones ink with a
+/// red one.
+Widget towerOutcomeCard(WidgetRef ref, TowerGambleOutcome outcome, {Key? key}) {
+  final good = towerGambleIsGood(outcome);
+  return TowerStyledCard(
+    key: key,
+    style: good ? TowerCardStyle.skill : TowerCardStyle.die,
+    kind: tr(ref, 'tower_kind_gamble'),
+    name: tr(ref, 'tower_gamble_${outcome.name}'),
+    text: tr(ref, 'tower_gamble_${outcome.name}_line'),
+    hue: good ? inkGold : inkRed,
+    darkBadge: !good,
+    vignette: 'assets/visuals/tower_cards/gamble_${outcome.name}.png',
+    badge: Icon(good ? Icons.auto_awesome : Icons.warning_amber,
+        size: IconSize.s16, color: good ? inkOnPaper : inkPaper),
+  );
+}
+
+/// The reveal after a gamble card is taken: the card's back turns over (a flip
+/// of Motion.slow; reduce motion: it is simply face up) and lands on the
+/// outcome card. A tap closes it.
 Future<void> towerShowGambleReveal(
     BuildContext context, WidgetRef ref, TowerGambleOutcome outcome) {
-  final good = towerGambleIsGood(outcome);
   final reduced = MediaQuery.of(context).disableAnimations;
-  Widget face() => Container(
-        key: const Key('tower_gamble_reveal'),
-        width: 240,
-        padding: const EdgeInsets.all(18),
-        decoration: BoxDecoration(
-            color: inkPaper,
-            border: Border.all(color: good ? inkGold : inkRed, width: 3),
-            borderRadius: BorderRadius.circular(12)),
-        child: Column(mainAxisSize: MainAxisSize.min, children: [
-          Text(tr(ref, 'tower_kind_gamble').toUpperCase(),
-              style: _p(10, inkOnPaper, w: FontWeight.w700)),
-          const SizedBox(height: 4),
-          Text(tr(ref, 'tower_gamble_${outcome.name}'),
-              textAlign: TextAlign.center, style: _d(26, inkOnPaper)),
-          const SizedBox(height: 8),
-          Text(tr(ref, 'tower_gamble_${outcome.name}_line'),
-              textAlign: TextAlign.center, style: _p(13, inkOnPaper)),
-        ]),
-      );
+  const width = 216.0;
+  const height = width * towerStyledCardHeight / towerStyledCardWidth;
+  Widget sized(Widget card) =>
+      SizedBox(width: width, height: height, child: FittedBox(child: card));
+  final face = sized(
+      towerOutcomeCard(ref, outcome, key: const Key('tower_gamble_reveal')));
   return showDialog<void>(
     context: context,
-    barrierColor: inkBlack.withValues(alpha: 0.75),
+    barrierColor: inkBlack.withValues(alpha: 0.78),
     builder: (ctx) => GestureDetector(
       onTap: () => Navigator.of(ctx).pop(),
       child: Material(
         type: MaterialType.transparency,
         child: Center(
           child: reduced
-              ? face()
+              ? face
               : TweenAnimationBuilder<double>(
                   tween: Tween(begin: 0, end: 1),
                   duration: Motion.slow,
-                  curve: Curves.easeOut,
-                  builder: (context, v, _) => Transform(
-                    alignment: Alignment.center,
-                    transform: Matrix4.identity()
-                      ..setEntry(3, 2, 0.001)
-                      ..rotateY((1 - v) * 1.5708),
-                    child: Opacity(opacity: v, child: face()),
-                  ),
+                  curve: Curves.easeInOut,
+                  builder: (context, v, _) {
+                    // 0 to .5 the back turns edge-on, .5 to 1 the face opens.
+                    final back = v < .5;
+                    final angle = back ? v * math.pi : (v - 1) * math.pi;
+                    return Transform(
+                      alignment: Alignment.center,
+                      transform: Matrix4.identity()
+                        ..setEntry(3, 2, 0.001)
+                        ..rotateY(angle),
+                      child: back ? sized(const TowerCardBack()) : face,
+                    );
+                  },
                 ),
         ),
       ),

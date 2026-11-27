@@ -2498,10 +2498,6 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.en: 'Look again',
     AppLanguage.fr: 'Regarder encore',
   },
-  'tower_gamble_revealed': {
-    AppLanguage.en: 'The card turns over',
-    AppLanguage.fr: 'La carte se retourne',
-  },
   'tower_stat_pick_card': {
     AppLanguage.en: 'Stat point',
     AppLanguage.fr: 'Point de stat',
