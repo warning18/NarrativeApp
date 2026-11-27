@@ -1863,7 +1863,13 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   },
   'tower_event_picks_note': {
     AppLanguage.en:
-        'May change with your Level Up: {n} pick(s) still to take before this check.',
+        'May change with your Level Up: {n} picks still to take before this check.',
+    AppLanguage.fr:
+        'Peut changer avec votre montée de niveau\u00a0: {n} choix à faire avant ce jet.',
+  },
+  'tower_event_picks_note_one': {
+    AppLanguage.en:
+        'May change with your Level Up: {n} pick still to take before this check.',
     AppLanguage.fr:
         'Peut changer avec votre montée de niveau\u00a0: {n} choix à faire avant ce jet.',
   },
@@ -2414,9 +2420,27 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.en: 'Flasks',
     AppLanguage.fr: 'Fioles',
   },
+  // The flasks card's line: the two counted parts, each with its own singular
+  // and plural, joined here (a part that is zero is left out).
   'tower_bundle_text': {
-    AppLanguage.en: '{potions} potion(s), {antidotes} antidote(s)',
-    AppLanguage.fr: '{potions} potion(s), {antidotes} antidote(s)',
+    AppLanguage.en: '{potions}, {antidotes}',
+    AppLanguage.fr: '{potions}, {antidotes}',
+  },
+  'tower_bundle_potions': {
+    AppLanguage.en: '{n} potions',
+    AppLanguage.fr: '{n} potions',
+  },
+  'tower_bundle_potions_one': {
+    AppLanguage.en: '{n} potion',
+    AppLanguage.fr: '{n} potion',
+  },
+  'tower_bundle_antidotes': {
+    AppLanguage.en: '{n} antidotes',
+    AppLanguage.fr: '{n} antidotes',
+  },
+  'tower_bundle_antidotes_one': {
+    AppLanguage.en: '{n} antidote',
+    AppLanguage.fr: '{n} antidote',
   },
   'tower_kind_purse': {
     AppLanguage.en: 'Purse',
