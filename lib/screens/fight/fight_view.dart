@@ -531,10 +531,13 @@ extension _FightView on _FightScreenState {
               !TowerPanelStyle.of(context))
             _buildLogTicker(),
           const SizedBox(height: 4),
-          TutorialTarget(
-            id: 'fight.actions',
-            child: _buildBottomBar(
-                acting, anyDieAvailable, dice, skills, items, session),
+          KeyedSubtree(
+            key: _actionsKey,
+            child: TutorialTarget(
+              id: 'fight.actions',
+              child: _buildBottomBar(
+                  acting, anyDieAvailable, dice, skills, items, session),
+            ),
           ),
         ],
       ),
@@ -549,6 +552,9 @@ extension _FightView on _FightScreenState {
         children: [
           Positioned.fill(child: IgnorePointer(child: _buildBackdrop())),
           Positioned.fill(child: PanelFxScreenShake(child: battle)),
+          // The anomaly's atmosphere: over the panels and the board, under the
+          // face row and the action bar.
+          Positioned.fill(child: _buildAnomalyAtmosphere()),
           Positioned.fill(child: _buildWeatherOverlay()),
           if (TowerPanelStyle.of(context))
             Positioned.fill(child: PanelFxLayer(targets: _panelFxTargets)),
@@ -560,6 +566,7 @@ extension _FightView on _FightScreenState {
               ),
             ),
           ),
+          _buildAnomalyToast(),
         ],
       ),
     );

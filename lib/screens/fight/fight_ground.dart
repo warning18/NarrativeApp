@@ -239,14 +239,25 @@ extension _FightGround on _FightScreenState {
       case AnomalyPhase.omen:
         final omen = trFor(lang, 'anomaly_omen_${plan.anomaly.family.name}')
             .replaceAll('{name}', name);
-        entries.add(_LogEntry(
-            '$omen ${trFor(lang, _readsTheOmen ? _favourKey(plan) : 'anomaly_for_unknown')}',
-            _LogKind.info));
+        final favour = trFor(
+            lang, _readsTheOmen ? _favourKey(plan) : 'anomaly_for_unknown');
+        entries.add(_LogEntry('$omen $favour', _LogKind.info));
+        _showAnomalyToast(_AnomalyToast(
+            family: plan.anomaly.family,
+            omen: true,
+            title: omen,
+            line: favour));
       case AnomalyPhase.active:
         if (round == plan.onset) {
-          entries.add(_LogEntry(
-              '$name: ${anomalyEffectText(plan, lang).join(' · ')}',
-              _LogKind.phase));
+          final effect = anomalyEffectText(plan, lang).join(' · ');
+          entries.add(_LogEntry('$name: $effect', _LogKind.phase));
+          _showAnomalyToast(_AnomalyToast(
+              family: plan.anomaly.family,
+              omen: false,
+              // French sets a narrow no-break space before "!".
+              title: lang == AppLanguage.fr ? '$name\u202F!' : '$name!',
+              line: effect,
+              rounds: plan.rounds));
         }
         _applyTicks(plan, name, entries, lang);
       case AnomalyPhase.over:
@@ -486,6 +497,143 @@ extension _FightGround on _FightScreenState {
     return holes;
   }
 
+  /// Shows [toast] for about two seconds (the omen, then the break).
+  void _showAnomalyToast(_AnomalyToast toast) {
+    _anomalyToastTimer?.cancel();
+    _anomalyToast.value = toast;
+    _anomalyToastTimer = Timer(const Duration(milliseconds: 2400), () {
+      if (mounted) _anomalyToast.value = null;
+    });
+  }
+
+  /// The anomaly's atmosphere over the whole fight, above the panels and the
+  /// board and under the face row and the action bar (they stay at full
+  /// brightness): 30 % on the omen, full while it is active.
+  Widget _buildAnomalyAtmosphere() {
+    final plan = _anomaly;
+    final phase = _anomalyPhase;
+    if (plan == null ||
+        (phase != AnomalyPhase.omen && phase != AnomalyPhase.active)) {
+      return const SizedBox.shrink();
+    }
+    return IgnorePointer(
+      child: ClipRect(
+        clipper: _AboveControls(_atmosphereKey, _faceStripKey, _actionsKey),
+        child: SizedBox.expand(
+          key: _atmosphereKey,
+          child: AnomalyAtmosphere(
+              family: plan.anomaly.family,
+              level: phase == AnomalyPhase.omen ? 0.3 : 1.0),
+        ),
+      ),
+    );
+  }
+
+  /// The warning toast: the anomaly's icon, a title and one line, at the top
+  /// of the fight; it shows for about two seconds and fades.
+  Widget _buildAnomalyToast() {
+    if (!_toastPortal.isShowing) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (mounted && !_toastPortal.isShowing) _toastPortal.show();
+      });
+    }
+    // The toast lives in the route's overlay, above the Tower's snow, which
+    // is painted over the whole screen; a follower keeps it at the top of
+    // the fight.
+    return Positioned(
+      top: 6,
+      left: 12,
+      right: 12,
+      child: OverlayPortal(
+        controller: _toastPortal,
+        overlayChildBuilder: (_) => Positioned(
+          left: 0,
+          top: 0,
+          child: CompositedTransformFollower(
+            link: _toastLink,
+            showWhenUnlinked: false,
+            child: IgnorePointer(
+              child: SizedBox(
+                width: _toastWidth,
+                child: ValueListenableBuilder<_AnomalyToast?>(
+                  valueListenable: _anomalyToast,
+                  builder: (context, toast, _) => AnimatedOpacity(
+                    opacity: toast == null ? 0 : 1,
+                    duration: Motion.base,
+                    child: toast == null
+                        ? const SizedBox(height: 0)
+                        : _anomalyToastBody(context, toast),
+                  ),
+                ),
+              ),
+            ),
+          ),
+        ),
+        child: CompositedTransformTarget(
+          link: _toastLink,
+          child: LayoutBuilder(builder: (_, c) {
+            _toastWidth = c.maxWidth;
+            return const SizedBox(width: double.infinity, height: 0);
+          }),
+        ),
+      ),
+    );
+  }
+
+  Widget _anomalyToastBody(BuildContext context, _AnomalyToast toast) {
+    final inked = TowerPanelStyle.of(context);
+    final theme = Theme.of(context);
+    return Container(
+      key: Key(toast.omen ? 'anomaly_toast_omen' : 'anomaly_toast_active'),
+      padding: const EdgeInsets.all(10),
+      decoration: BoxDecoration(
+          color: inkBlack.withValues(alpha: 0.92),
+          border: Border.all(color: toast.omen ? inkGold : inkRed, width: 2),
+          borderRadius: BorderRadius.circular(6)),
+      child: Row(children: [
+        Container(
+          width: 38,
+          height: 38,
+          alignment: Alignment.center,
+          decoration: BoxDecoration(
+              border: Border.all(color: inkPaper, width: 1.5),
+              borderRadius: BorderRadius.circular(4)),
+          child: Icon(anomalyIcon(toast.family),
+              size: IconSize.s32 - 8, color: inkPaper),
+        ),
+        const SizedBox(width: 10),
+        Expanded(
+          child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Text(toast.title,
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
+                    style: (theme.textTheme.titleSmall ?? const TextStyle())
+                        .copyWith(
+                            fontFamily: inked ? InkFonts.display : null,
+                            color: inkPaper)),
+                Text(toast.line,
+                    maxLines: 3,
+                    overflow: TextOverflow.ellipsis,
+                    style: (theme.textTheme.bodySmall ?? const TextStyle())
+                        .copyWith(color: inkGrey)),
+              ]),
+        ),
+        Container(
+          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+          color: toast.omen ? inkGold : inkRed,
+          child: Text(toast.omen ? '!' : '${toast.rounds}',
+              style: TextStyle(
+                  fontFamily: inked ? InkFonts.display : null,
+                  fontWeight: FontWeight.w800,
+                  color: toast.omen ? inkBlack : inkPaper)),
+        ),
+      ]),
+    );
+  }
+
   /// The anomaly (an earth break, a storm, a glare) on the dice board alone.
   Widget _buildBoardEvent() {
     final plan = _anomaly;
@@ -652,3 +800,48 @@ IconData anomalyIcon(AnomalyFamily family) => switch (family) {
       AnomalyFamily.water => Icons.water,
       AnomalyFamily.light => Icons.wb_sunny_outlined,
     };
+
+/// What the anomaly's warning toast says.
+class _AnomalyToast {
+  const _AnomalyToast({
+    required this.family,
+    required this.omen,
+    required this.title,
+    required this.line,
+    this.rounds = 0,
+  });
+
+  final AnomalyFamily family;
+  final bool omen;
+  final String title, line;
+
+  /// How many rounds it lasts (the break's badge).
+  final int rounds;
+}
+
+/// Clips the atmosphere at the top of the face row (the Tower) or of the
+/// action bar, so those controls are never under a veil.
+class _AboveControls extends CustomClipper<Rect> {
+  const _AboveControls(this.layer, this.faceStrip, this.actions);
+
+  final GlobalKey layer, faceStrip, actions;
+
+  @override
+  Rect getClip(Size size) {
+    final box = layer.currentContext?.findRenderObject();
+    final target = (faceStrip.currentContext ?? actions.currentContext)
+        ?.findRenderObject();
+    if (box is RenderBox &&
+        box.attached &&
+        target is RenderBox &&
+        target.attached &&
+        target.hasSize) {
+      final y = box.globalToLocal(target.localToGlobal(Offset.zero)).dy;
+      return Rect.fromLTWH(0, 0, size.width, y.clamp(0.0, size.height));
+    }
+    return Rect.fromLTWH(0, 0, size.width, max(0.0, size.height - 150));
+  }
+
+  @override
+  bool shouldReclip(_AboveControls old) => true;
+}
