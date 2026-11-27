@@ -1932,6 +1932,18 @@ const Map<String, Map<AppLanguage, String>> _strings = {
         'Bonus de montée de niveau\u00a0: +{n} sur +{cap} cette ascension',
   },
   'tower_bm_empty': {AppLanguage.en: 'empty', AppLanguage.fr: 'vide'},
+  'tower_bm_play': {
+    AppLanguage.en: 'Play this die',
+    AppLanguage.fr: 'Jouer ce dé',
+  },
+  'tower_bm_armour': {
+    AppLanguage.en: 'Armour {n}',
+    AppLanguage.fr: 'Armure {n}'
+  },
+  'tower_bm_damage': {
+    AppLanguage.en: 'Damage {n}',
+    AppLanguage.fr: 'Dégâts {n}',
+  },
   'tower_bm_in_play': {AppLanguage.en: 'In play', AppLanguage.fr: 'En jeu'},
   'tower_levelup_hint': {
     AppLanguage.en: 'Choose one card. A skill also raises a stat by 1.',

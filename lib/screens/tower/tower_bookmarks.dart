@@ -10,6 +10,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../combat/dice_faces.dart' show skillDisplayName;
 import '../../data/sim_combat.dart';
+import '../../data/tower/tower_session.dart' show towerSessionOf;
+import '../../models/ally_state.dart'
+    show equipmentBonusFor, equipmentScalingBonusFor;
 import '../../data/tower/tower_hero.dart' show TowerData, towerHeroOf;
 import '../../data/tower/tower_levelup_loot.dart'
     show towerNudgeClimbCapOf, towerNudgeStatCapOf;
@@ -31,6 +34,7 @@ import '../../widgets/level_up_art.dart'
 import '../skills/die_slot_ring.dart';
 import 'ink/ink_palette.dart';
 import 'tower_offer_view.dart' show towerDieName;
+import 'tower_providers.dart' show towerProvider;
 
 enum TowerBookmark { stats, gear, dice }
 
@@ -52,7 +56,7 @@ class TowerBookmarkTabs extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    Widget tab(TowerBookmark b, IconData icon, String key) {
+    Widget tab(TowerBookmark b, String glyph, String key) {
       final isOpen = open == b;
       final edge = isOpen ? inkPaper : inkGold;
       return GestureDetector(
@@ -81,7 +85,10 @@ class TowerBookmarkTabs extends ConsumerWidget {
             ],
           ),
           child: Column(children: [
-            Icon(icon, size: IconSize.s32, color: inkPaper),
+            Image.asset(glyph,
+                width: IconSize.s32,
+                height: IconSize.s32,
+                filterQuality: FilterQuality.none),
             const SizedBox(height: 2),
             Text(tr(ref, key).toUpperCase(),
                 maxLines: 1,
@@ -95,9 +102,12 @@ class TowerBookmarkTabs extends ConsumerWidget {
     return Material(
       type: MaterialType.transparency,
       child: Row(mainAxisSize: MainAxisSize.min, children: [
-        tab(TowerBookmark.stats, Icons.radar, 'tower_bm_stats'),
-        tab(TowerBookmark.gear, Icons.shield_outlined, 'tower_bm_gear'),
-        tab(TowerBookmark.dice, Icons.casino_outlined, 'tower_bm_dice'),
+        tab(TowerBookmark.stats, 'assets/visuals/ink/bm_stats.png',
+            'tower_bm_stats'),
+        tab(TowerBookmark.gear, 'assets/visuals/ink/bm_gear.png',
+            'tower_bm_gear'),
+        tab(TowerBookmark.dice, 'assets/visuals/ink/bm_dice.png',
+            'tower_bm_dice'),
       ]),
     );
   }
@@ -147,9 +157,10 @@ class TowerBookmarkPanel extends ConsumerWidget {
           ]),
           Expanded(
             child: switch (which) {
-              TowerBookmark.stats => _StatsView(run: run, hero: hero),
+              TowerBookmark.stats =>
+                _StatsView(run: run, data: data, hero: hero),
               TowerBookmark.gear => _GearView(run: run, data: data, hero: hero),
-              TowerBookmark.dice => _DiceView(hero: hero),
+              TowerBookmark.dice => _DiceView(data: data, hero: hero),
             },
           ),
         ]),
@@ -158,7 +169,9 @@ class TowerBookmarkPanel extends ConsumerWidget {
   }
 }
 
-Widget _chip(String t, {Color color = inkPaper, Widget? lead}) => Container(
+Widget _chip(String t, {Color color = inkPaper, Widget? lead, Key? key}) =>
+    Container(
+      key: key,
       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
       decoration: BoxDecoration(
           border: Border.all(color: color, width: 1.2),
@@ -194,10 +207,30 @@ Map<String, int> _abilitiesOf(SimCharacter h) => {
     };
 
 // ------------------------------------------------------------------ stats
+/// What the hero strikes and blocks with, as the fight works it out: the base
+/// plus the worn gear's, plus what the gear's scaling gives for the stats.
+({int armour, int damage}) _fightStats(TowerRun run, TowerData data) {
+  final s = towerSessionOf(run, data);
+  final scaling = equipmentScalingBonusFor(s.equippedItemIds, data.items,
+      strength: s.strength,
+      dexterity: s.dexterity,
+      constitution: s.constitution,
+      intelligence: s.intelligence);
+  return (
+    armour: s.baseArmor +
+        equipmentBonusFor(s.equippedItemIds, data.items, 'armor') +
+        scaling.armorBonus,
+    damage: s.baseDamage +
+        equipmentBonusFor(s.equippedItemIds, data.items, 'attackDamage') +
+        scaling.damageBonus,
+  );
+}
+
 class _StatsView extends ConsumerWidget {
-  const _StatsView({required this.run, required this.hero});
+  const _StatsView({required this.run, required this.data, required this.hero});
 
   final TowerRun run;
+  final TowerData data;
   final SimCharacter hero;
 
   @override
@@ -205,6 +238,7 @@ class _StatsView extends ConsumerWidget {
     // The nudges only count on rules 2 (rules 1 keeps its stat picks there).
     final nudge = run.rules >= 2 ? hero.pickedPoints : const <String, int>{};
     final total = nudge.values.fold<int>(0, (a, b) => a + b);
+    final stats = _fightStats(run, data);
     return ListView(
       padding: const EdgeInsets.only(right: 8),
       children: [
@@ -217,6 +251,14 @@ class _StatsView extends ConsumerWidget {
               lead: const Icon(Icons.favorite,
                   size: IconSize.s16, color: inkRed)),
           _chip(tr(ref, 'tower_bm_level').replaceAll('{n}', '${hero.level}')),
+          _chip(tr(ref, 'tower_bm_armour').replaceAll('{n}', '${stats.armour}'),
+              key: const Key('tower_bm_armour'),
+              lead: const Icon(Icons.shield_outlined,
+                  size: IconSize.s16, color: inkPaper)),
+          _chip(tr(ref, 'tower_bm_damage').replaceAll('{n}', '${stats.damage}'),
+              key: const Key('tower_bm_damage'),
+              lead:
+                  const Icon(Icons.bolt, size: IconSize.s16, color: inkPaper)),
         ]),
         const SizedBox(height: 4),
         Center(
@@ -360,8 +402,9 @@ class _GearViewState extends ConsumerState<_GearView> {
 
 // ------------------------------------------------------------------- dice
 class _DiceView extends ConsumerStatefulWidget {
-  const _DiceView({required this.hero});
+  const _DiceView({required this.data, required this.hero});
 
+  final TowerData data;
   final SimCharacter hero;
 
   @override
@@ -481,7 +524,20 @@ class _DiceViewState extends ConsumerState<_DiceView> {
                     style: _prose(12, inkGrey)),
             ]),
           ),
-          if (id == inPlay) _chip(tr(ref, 'tower_bm_in_play'), color: inkRed),
+          if (id == inPlay)
+            _chip(tr(ref, 'tower_bm_in_play'), color: inkRed)
+          else
+            FilledButton(
+              key: const Key('tower_die_play'),
+              style: FilledButton.styleFrom(
+                  backgroundColor: inkRed,
+                  foregroundColor: inkPaper,
+                  visualDensity: VisualDensity.compact),
+              onPressed: () => ref
+                  .read(towerProvider.notifier)
+                  .chooseDie(id, data: widget.data),
+              child: Text(tr(ref, 'tower_bm_play')),
+            ),
         ]),
       ),
     ]);
