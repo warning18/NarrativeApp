@@ -15,6 +15,7 @@ import '../../data/tower/tower_dice.dart';
 import '../../data/tower/tower_events.dart';
 import '../../data/tower/tower_hero.dart';
 import '../../data/tower/tower_progress.dart';
+import '../../data/tower/tower_rules4.dart' show towerBuyPotion;
 import '../../data/tower/tower_run.dart';
 import '../../data/tower/tower_save.dart';
 import '../../data/tower/tower_tables.dart'
@@ -255,6 +256,10 @@ class TowerController extends StateNotifier<AsyncValue<TowerState>> {
   /// Card [index] of the stall's boon taken (towerTakeStallBoon).
   Future<void> takeStallBoon(int index) =>
       _moveRun((run) => towerTakeStallBoon(run, index));
+
+  /// Rules 4, Purse's pedlar: a potion bought for its coins on the landing
+  /// (towerBuyPotion; the button shows while towerCanBuyPotion).
+  Future<void> buyPotion() => _moveRun(towerBuyPotion);
 }
 
 final towerProvider =
