@@ -25,6 +25,7 @@ import 'tower_coins.dart';
 import 'tower_dice.dart' show towerChooseDie;
 import 'tower_events.dart';
 import 'tower_floors.dart';
+import 'tower_gear_choice.dart' show towerBotGear;
 import 'tower_hero.dart';
 import 'tower_levelup_loot.dart';
 import 'tower_progress.dart';
@@ -260,6 +261,9 @@ TowerRun playTowerRun({
           stat: card?.kind == TowerRewardKind.statPick
               ? towerBotStatChoice(hero)
               : null);
+      // The gear choice (tower_gear_choice.dart): equipped when it is
+      // better, as the automatic rule wears it.
+      run = towerBotGear(run, data);
       // The setback's check waiting (the event modal on): rolled at once.
       if (run.checkPending) run = towerResolveCheck(run, data);
       // A skip's landing: the skipped floors' picks, taken there (a

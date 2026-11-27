@@ -89,6 +89,8 @@ class TowerRun {
     this.lastGamble,
     this.gambles = const {},
     this.startGear,
+    this.pendingGear,
+    this.gearKept = const {},
   });
 
   /// A saved run. A save from an older version is brought up to date once,
@@ -263,6 +265,14 @@ class TowerRun {
       startGear: json['startGear'] == null
           ? null
           : TowerReward.fromJson(json['startGear'] as Map<String, dynamic>),
+      // The gear choice (tower_gear_choice.dart): absent in a run saved
+      // before, none waiting and every piece worn by the automatic rule.
+      pendingGear: TowerPendingGear.fromJson(json['pendingGear']),
+      gearKept: {
+        for (final MapEntry(:key, :value)
+            in ((json['gearKept'] as Map?) ?? const {}).entries)
+          int.parse(key.toString()): value == true,
+      },
     );
     if (json.containsKey('picks')) return run;
     final earned = (towerLevelAfter(run.floorsCleared) - 1) * levelStatPicks;
@@ -498,6 +508,18 @@ class TowerRun {
   /// (towerOldFriendGearFor), worn from floor 1; null otherwise.
   final TowerReward? startGear;
 
+  /// The gear choice (tower_gear_choice.dart, towerGearChoiceLive): the
+  /// loot card's piece of gear taken and not yet equipped or discarded
+  /// (towerEquip, towerDiscard). While it waits, the floor's next table is
+  /// not dealt and towerPick does nothing; the hero does not wear it.
+  final TowerPendingGear? pendingGear;
+
+  /// The gear choice: each floor's loot gear equipped (true, worn whatever
+  /// its score) or discarded (false, never worn), by floor. A floor absent
+  /// wears its gear by the automatic rule (towerGearScore, as every run
+  /// saved before).
+  final Map<int, bool> gearKept;
+
   /// The ids banished ([banished]'s cards).
   Set<String> get banishedIds => banished.values.toSet();
 
@@ -584,6 +606,9 @@ class TowerRun {
     TowerGambleOutcome? lastGamble,
     bool clearLastGamble = false,
     Map<int, List<TowerReward>>? gambles,
+    TowerPendingGear? pendingGear,
+    bool clearPendingGear = false,
+    Map<int, bool>? gearKept,
   }) =>
       TowerRun(
         seed: seed,
@@ -634,6 +659,8 @@ class TowerRun {
         lastGamble: clearLastGamble ? null : lastGamble ?? this.lastGamble,
         gambles: gambles ?? this.gambles,
         startGear: startGear,
+        pendingGear: clearPendingGear ? null : pendingGear ?? this.pendingGear,
+        gearKept: gearKept ?? this.gearKept,
       );
 
   Map<String, dynamic> toJson() => {
@@ -726,7 +753,42 @@ class TowerRun {
               '$key': [for (final c in value) c.toJson()],
           },
         if (startGear != null) 'startGear': startGear!.toJson(),
+        if (pendingGear != null) 'pendingGear': pendingGear!.toJson(),
+        if (gearKept.isNotEmpty)
+          'gearKept': {
+            for (final MapEntry(:key, :value) in gearKept.entries)
+              '$key': value,
+          },
       };
+}
+
+/// The piece of gear a loot card gave, waiting for the player's choice
+/// (TowerRun.pendingGear): the floor it was taken on and its item id.
+class TowerPendingGear {
+  const TowerPendingGear({required this.floor, required this.itemId});
+
+  /// A saved one; null when [json] holds none.
+  static TowerPendingGear? fromJson(Object? json) {
+    if (json is! Map) return null;
+    final floor = (json['floor'] as num?)?.toInt();
+    final item = json['item']?.toString();
+    if (floor == null || item == null || item.isEmpty) return null;
+    return TowerPendingGear(floor: floor, itemId: item);
+  }
+
+  final int floor;
+  final String itemId;
+
+  Map<String, dynamic> toJson() => {'floor': floor, 'item': itemId};
+
+  @override
+  bool operator ==(Object other) =>
+      other is TowerPendingGear &&
+      other.floor == floor &&
+      other.itemId == itemId;
+
+  @override
+  int get hashCode => Object.hash(floor, itemId);
 }
 
 /// The marks of a run that cleared [floorsCleared] floors and refused
@@ -1062,6 +1124,8 @@ TowerRun towerTakeStatPick(TowerRun run, TowerData data, int index,
 TowerRun towerPick(TowerRun run, TowerData data, int? index,
     {SimCharacter? hero, String? stat}) {
   if (run.status != TowerStatus.choosing) return run;
+  // The gear choice waits (towerEquip, towerDiscard): no other pick.
+  if (run.pendingGear != null) return run;
   // The setback's check waiting (the event modal, TowerRun.checkPending):
   // no card is on the table; moving on rolls it, as towerResolveCheck.
   if (run.checkPending) return towerResolveCheck(run, data);

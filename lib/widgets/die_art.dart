@@ -403,8 +403,7 @@ void paintDieArt(
             ..quadraticBezierTo(0, 0.4, -0.3, 0.1),
           stroke(skin.edge, 1.4));
       canvas.drawCircle(const Offset(0, 0.1), 0.1, fill(skin.edge));
-      canvas.drawCircle(
-          const Offset(0, 0.1), 0.045, fill(const Color(0xFF0B1220)));
+      canvas.drawCircle(const Offset(0, 0.1), 0.045, fill(Palette.deepBlue));
     case 'ossuary_die': // a skull
       canvas.drawCircle(const Offset(0.4, 0.0), 0.2, fill(bone));
       canvas.drawRect(const Rect.fromLTWH(0.3, 0.12, 0.2, 0.14), fill(bone));
