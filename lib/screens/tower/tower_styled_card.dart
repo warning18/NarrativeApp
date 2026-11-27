@@ -12,6 +12,7 @@
 import 'package:flutter/material.dart';
 
 import '../../theme/stitched_ink.dart' show InkFonts;
+import 'tower_card_art.dart' show towerCardSealBlank;
 import 'ink/ink_palette.dart';
 
 /// The styles, one per kind of card on a table.
@@ -355,4 +356,99 @@ class _EdgePainter extends CustomPainter {
 
   @override
   bool shouldRepaint(_EdgePainter old) => false;
+}
+
+/// The back of a card, for the gamble card dealt face down: black stock, the
+/// paper frame of the Die card, a paper hairline inside it, concentric
+/// diamonds in paper and red, and the red wax seal at the heart. It has no
+/// words. [band] is a coloured edge band across the top (the hint of a hero
+/// who reads it: gold for a lucky card, red for a bad one); [name] a small
+/// paper plate at the foot (a hero who reads what it is).
+class TowerCardBack extends StatelessWidget {
+  const TowerCardBack({super.key, this.band, this.name});
+
+  final Color? band;
+  final String? name;
+
+  @override
+  Widget build(BuildContext context) => SizedBox(
+        width: towerStyledCardWidth,
+        height: towerStyledCardHeight,
+        child: DecoratedBox(
+          decoration: BoxDecoration(
+              color: inkBlack,
+              border: Border.all(color: inkPaper, width: 1.5),
+              borderRadius: BorderRadius.circular(10)),
+          child: ClipRRect(
+            borderRadius: BorderRadius.circular(8.5),
+            child: Stack(fit: StackFit.expand, children: [
+              Padding(
+                padding: const EdgeInsets.all(7),
+                child: DecoratedBox(
+                  decoration: BoxDecoration(
+                      border: Border.all(
+                          color: inkPaper.withValues(alpha: 0.9), width: 1)),
+                  child: ClipRect(
+                    child: CustomPaint(
+                        painter: _DiamondsPainter(),
+                        size: const Size(108, 187)),
+                  ),
+                ),
+              ),
+              Center(
+                child: Image.asset(towerCardSealBlank,
+                    width: 56,
+                    height: 56,
+                    fit: BoxFit.fill,
+                    filterQuality: FilterQuality.none),
+              ),
+              if (band != null)
+                Positioned(
+                    top: 0,
+                    left: 0,
+                    right: 0,
+                    child: Container(height: 9, color: band)),
+              if (name != null)
+                Positioned(
+                  left: 7,
+                  right: 7,
+                  bottom: 7,
+                  child: Container(
+                    padding: const EdgeInsets.symmetric(vertical: 4),
+                    color: inkPaper,
+                    alignment: Alignment.center,
+                    child: Text(name!,
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        style: _display(11.5, inkOnPaper)),
+                  ),
+                ),
+            ]),
+          ),
+        ),
+      );
+}
+
+/// Concentric diamonds, paper and red on black, the same top to bottom.
+class _DiamondsPainter extends CustomPainter {
+  @override
+  void paint(Canvas canvas, Size size) {
+    final c = size.center(Offset.zero);
+    final line = Paint()
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = 1.4;
+    for (var i = 1; i <= 6; i++) {
+      final k = i * 0.17;
+      final path = Path()
+        ..moveTo(c.dx, c.dy - size.height * k * 0.62)
+        ..lineTo(c.dx + size.width * k * 0.72, c.dy)
+        ..lineTo(c.dx, c.dy + size.height * k * 0.62)
+        ..lineTo(c.dx - size.width * k * 0.72, c.dy)
+        ..close();
+      canvas.drawPath(path, line..color = i.isEven ? inkRed : inkPaper);
+    }
+  }
+
+  @override
+  bool shouldRepaint(_) => false;
 }

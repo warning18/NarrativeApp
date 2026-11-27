@@ -8,6 +8,8 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [2.10.38+1120]
+- **The gamble card is a real card back.** Face down it is a black card in our frame, with paper and red diamonds and the red wax seal at the heart and no words; a hero who reads it sees a gold or red band along its top, and from Perception 5 the card's name on a plate at its foot. Taking it still says "No turning back", and then the card turns over and lands on its outcome card: Art's pictures for the eight outcomes (Gilded, Twin, Hoard, Bright, Dud, Wound, Spill, Hex) in our tarot frame, replacing the plain box. The Stat point card has its own cut-paper picture.
 ## [2.10.37+1119]
 - **Tower rules 4 is live (new climbs).** The gamble card: now and then one card on a loot or Level Up table is dealt face down, the back of our own card with the watching eye; with Perception 3 or more a gold or red band says it feels lucky or wrong, and with 5 or more it shows what it is. Taking it is final ("No turning back", then the card turns over and says what it was). The stat-pick card: a rare Level Up card in its own colour puts +1 in a stat you choose, on the radar with what it moves. The Purse perk's pedlar sells a potion for 4 coins on any landing. A floor hexed by a gamble wears a Hex mark. The eight perks read their rules-4 lines. Climbs already begun keep their rules.
 ## [2.10.36+1118]

@@ -203,8 +203,7 @@ Widget towerStyledCardFor(
           ? tr(ref, 'tower_stat_pick_card')
           : '+1 ${tr(ref, abilityAbbrevKey(reward.id))}',
       text: tr(ref, 'tower_stat_pick_text'),
-      // A placeholder picture (Art's tarot-style vignette is to come).
-      vignette: 'assets/visuals/ink/bm_stats.png',
+      vignette: 'assets/visuals/tower_cards/stat_point.png',
       badge: const Icon(Icons.add, size: IconSize.s16, color: inkOnPaper),
       nudge: '+1 ?',
     );
@@ -305,37 +304,35 @@ Widget towerStyledCardFor(
   );
 }
 
-/// The gamble card: the back of our own card (the watching eye on paper),
-/// "? ? ?" for a name. A hero who reads it (Perception 3+) sees a gold band
-/// for a good one and a red one for a bad one, with the words under it; at
-/// 5+ the name itself.
+/// The gamble card dealt face down: a real card back (TowerCardBack). A hero
+/// who reads it (Perception 3+) sees a gold band for a lucky card and a red
+/// one for a bad one; at 5+ the card's name on a plate at its foot.
 Widget _gambleBackCard(WidgetRef ref, TowerRun run, TowerData data,
     {Key? key}) {
   final hero = towerHeroOf(run, data);
   final hint = towerGambleHintOf(run, hero);
   final shown = towerGambleOutcomeShown(run, hero);
-  final outcomeName =
-      shown == null ? null : tr(ref, 'tower_gamble_${shown.name}');
-  return TowerStyledCard(
+  return TowerCardBack(
     key: key,
-    style: TowerCardStyle.skill,
-    kind: tr(ref, 'tower_kind_gamble'),
-    name: outcomeName ?? '? ? ?',
-    text: switch (hint) {
-      TowerGambleHint.none => tr(ref, 'tower_gamble_name'),
-      TowerGambleHint.good => tr(ref, 'tower_gamble_hint_good'),
-      TowerGambleHint.bad => tr(ref, 'tower_gamble_hint_bad'),
-      TowerGambleHint.kind => tr(ref, 'tower_gamble_hint_kind')
-          .replaceAll('{name}', outcomeName ?? ''),
-    },
-    hue: switch (hint) {
+    band: switch (hint) {
       TowerGambleHint.none => null,
       _ => towerGambleIsGood(run.gambleOutcome!) ? inkGold : inkRed,
     },
-    vignette: 'assets/visuals/tower_cards/skill_void.png',
-    badge:
-        const Icon(Icons.help_outline, size: IconSize.s16, color: inkOnPaper),
+    name: shown == null ? null : tr(ref, 'tower_gamble_${shown.name}'),
   );
+}
+
+/// The words under the fan for a gamble card held: what a hero reads in it.
+String towerGambleHintLine(WidgetRef ref, TowerRun run, TowerData data) {
+  final hero = towerHeroOf(run, data);
+  final shown = towerGambleOutcomeShown(run, hero);
+  return switch (towerGambleHintOf(run, hero)) {
+    TowerGambleHint.none => tr(ref, 'tower_gamble_name'),
+    TowerGambleHint.good => tr(ref, 'tower_gamble_hint_good'),
+    TowerGambleHint.bad => tr(ref, 'tower_gamble_hint_bad'),
+    TowerGambleHint.kind => tr(ref, 'tower_gamble_hint_kind')
+        .replaceAll('{name}', tr(ref, 'tower_gamble_${shown?.name}')),
+  };
 }
 
 /// A clan's gift taken: the standing it moved, as a toast (shown when the
@@ -818,9 +815,11 @@ class _TowerOfferViewState extends ConsumerState<TowerOfferView> {
     final reward = widget.run.offer[_held];
     final t = towerCardText(ref, reward, tier: _tierOf(reward));
     final nudge = _nudgeOf(reward);
-    final text = reward.kind == TowerRewardKind.die && t.text.isNotEmpty
-        ? 'd${t.text}'
-        : t.text;
+    final text = reward.kind == TowerRewardKind.gamble
+        ? towerGambleHintLine(ref, widget.run, widget.data)
+        : reward.kind == TowerRewardKind.die && t.text.isNotEmpty
+            ? 'd${t.text}'
+            : t.text;
     return [
       Text(t.name,
           key: const Key('tower_card_detail'),
