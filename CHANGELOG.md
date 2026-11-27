@@ -8,6 +8,8 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [2.10.34+1116]
+- The Tower's oath is its own Yes/No moment after the loot, no longer a card: the clan's colour washes the floor, its banner hangs large, and the screen asks "Swear to the Mire?" with the clan's die and your standing, then Swear or Not now (+1 Ash Mark). The floor rail stays on the left. With two clans due, they come one after the other.
 ## [2.10.33+1115]
 
 - **Tower: the oath is its own step.** On the floor a clan's oath is due, it now comes after the loot and before the Level Ups, on its own: Swear, or Not now (an Ash Mark, as before). It is never one of the Level Up cards, and swearing never costs a Level Up. Climbs on the current rules get it at once; older climbs keep their way.
