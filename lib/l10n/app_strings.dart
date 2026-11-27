@@ -2769,6 +2769,13 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.en: 'Start the climb with coins in hand.',
     AppLanguage.fr: 'Commencez l’ascension avec des pièces en poche.',
   },
+  // Rules 4 (the redesigned perk); the line above stays for rules-3 climbs.
+  'tower_perk_purse_line_r4': {
+    AppLanguage.en:
+        'Start with a purse of coins, and buy a potion on any landing.',
+    AppLanguage.fr:
+        'Commencez avec une bourse de pièces, et achetez une potion à chaque palier.',
+  },
   'tower_perk_deep_pockets': {
     AppLanguage.en: 'Deep pockets',
     AppLanguage.fr: 'Poches profondes',
@@ -2777,6 +2784,13 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.en: 'Room for one more potion in the bag.',
     AppLanguage.fr: 'De la place pour une potion de plus dans le sac.',
   },
+  // Rules 4 (the redesigned perk); the line above stays for rules-3 climbs.
+  'tower_perk_deep_pockets_line_r4': {
+    AppLanguage.en:
+        'The flask holds potions for every fight, and the bag has room for one more.',
+    AppLanguage.fr:
+        'La fiole contient des potions pour chaque combat, et le sac a de la place pour une de plus.',
+  },
   'tower_perk_early_word': {
     AppLanguage.en: 'Early word',
     AppLanguage.fr: 'Mot d’avance',
@@ -2784,6 +2798,13 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   'tower_perk_early_word_line': {
     AppLanguage.en: 'The late oath comes sooner.',
     AppLanguage.fr: 'Le serment tardif vient plus tôt.',
+  },
+  // Rules 4 (the redesigned perk); the line above stays for rules-3 climbs.
+  'tower_perk_early_word_line_r4': {
+    AppLanguage.en:
+        'Warden and boss floors give extra flask potions, and the late oath still comes sooner.',
+    AppLanguage.fr:
+        'Les étages de gardien et de boss donnent des potions de fiole en plus, et le serment tardif vient toujours plus tôt.',
   },
   'tower_perk_old_friend': {
     AppLanguage.en: 'Old friend',
@@ -2794,6 +2815,12 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.fr:
         'Un clan de l’ascension vous estime déjà davantage au départ.',
   },
+  // Rules 4 (the redesigned perk); the line above stays for rules-3 climbs.
+  'tower_perk_old_friend_line_r4': {
+    AppLanguage.en: 'Start with a piece of gear from a much better chest.',
+    AppLanguage.fr:
+        'Commencez avec une pièce d’équipement tirée d’un coffre bien meilleur.',
+  },
   'tower_perk_second_wind': {
     AppLanguage.en: 'Second wind',
     AppLanguage.fr: 'Second souffle',
@@ -2801,6 +2828,13 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   'tower_perk_second_wind_line': {
     AppLanguage.en: 'After a warden or a boss, you get your breath back.',
     AppLanguage.fr: 'Après un gardien ou un boss, vous reprenez votre souffle.',
+  },
+  // Rules 4 (the redesigned perk); the line above stays for rules-3 climbs.
+  'tower_perk_second_wind_line_r4': {
+    AppLanguage.en:
+        'You recover a little after every floor, and more after a warden or a boss.',
+    AppLanguage.fr:
+        'Vous récupérez un peu après chaque étage, et davantage après un gardien ou un boss.',
   },
   'tower_perk_keen_eye': {
     AppLanguage.en: 'Keen eye',
@@ -2810,6 +2844,11 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.en: 'The first boon is a rarity better.',
     AppLanguage.fr: 'La première faveur est d’une rareté supérieure.',
   },
+  // Rules 4 (the redesigned perk); the line above stays for rules-3 climbs.
+  'tower_perk_keen_eye_line_r4': {
+    AppLanguage.en: 'Loot comes from a better chest on the lower floors.',
+    AppLanguage.fr: 'Le butin vient d’un meilleur coffre dans les étages bas.',
+  },
   'tower_perk_free_hand': {
     AppLanguage.en: 'Free hand',
     AppLanguage.fr: 'Main libre',
@@ -2817,6 +2856,13 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   'tower_perk_free_hand_line': {
     AppLanguage.en: 'Your first reroll of each climb costs nothing.',
     AppLanguage.fr: 'Votre premier retirage de chaque ascension ne coûte rien.',
+  },
+  // Rules 4 (the redesigned perk); the line above stays for rules-3 climbs.
+  'tower_perk_free_hand_line_r4': {
+    AppLanguage.en:
+        'The first reroll of each table is free on the lower floors.',
+    AppLanguage.fr:
+        'Le premier retirage de chaque table ne coûte rien dans les étages bas.',
   },
   'tower_perk_fourth_card': {
     AppLanguage.en: 'Fourth card',
@@ -2826,6 +2872,13 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.en: 'The first boon tables show one card more.',
     AppLanguage.fr:
         'Les premières tables de faveurs montrent une carte de plus.',
+  },
+  // Rules 4 (the redesigned perk); the line above stays for rules-3 climbs.
+  'tower_perk_fourth_card_line_r4': {
+    AppLanguage.en:
+        'Loot tables show a fourth card on the lower and middle floors.',
+    AppLanguage.fr:
+        'Les tables de butin montrent une quatrième carte dans les étages bas et moyens.',
   },
   'tower_trim_moth': {
     AppLanguage.en: 'Moth trim',
