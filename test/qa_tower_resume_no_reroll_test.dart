@@ -33,6 +33,9 @@ import 'dart:math';
 import 'support/pump.dart';
 
 void main() {
+  // These test the rule as it rolls when the run moves on (the event modal off).
+  setUp(() => towerEventModalOverride = false);
+  tearDown(() => towerEventModalOverride = null);
   TestWidgetsFlutterBinding.ensureInitialized();
   final data = towerDataFromAssets();
 

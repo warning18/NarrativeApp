@@ -307,9 +307,10 @@ void main() {
   });
 
   group('the switch off', () {
-    test('is the default and nothing is ever pending', () {
-      expect(towerEventModalLive, isFalse);
-      expect(towerEventModalOn, isFalse);
+    test('off: nothing is ever pending', () {
+      expect(towerEventModalLive, isTrue);
+      expect(towerEventModalOn, isTrue);
+      towerEventModalOverride = false;
       for (final rules in [1, 2, 3, 4]) {
         for (final run in setbacks(rules)) {
           final next = winAndPick(run, null);

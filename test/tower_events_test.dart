@@ -25,6 +25,9 @@ import 'package:narrative_data_app/data/tower/tower_run.dart';
 import 'package:narrative_data_app/data/tower/tower_tables.dart';
 
 void main() {
+  // These test the rule as it rolls when the run moves on (the event modal off).
+  setUp(() => towerEventModalOverride = false);
+  tearDown(() => towerEventModalOverride = null);
   TestWidgetsFlutterBinding.ensureInitialized();
   final data = towerDataFromAssets();
 
