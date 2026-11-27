@@ -104,7 +104,7 @@ void main() {
     addTearDown(light.dispose);
     addTearDown(heavy.dispose);
     expect(light.flakes, lessThan(heavy.flakes));
-    expect(heavy.flakes, lessThanOrEqualTo(70));
+    expect(heavy.flakes, lessThanOrEqualTo(140));
     expect(light.cap, lessThan(heavy.cap));
     expect(heavy.cap, lessThanOrEqualTo(8));
     expect(light.slow, greaterThan(heavy.slow));
@@ -217,5 +217,38 @@ void main() {
         fall: 1,
         child: InkButton(label: 'Fight', onPressed: () {}))));
     expect(find.byType(SnowfallLayer), findsNothing);
+  });
+
+  testWidgets(
+      'the fight takes the flakes off the overlay and draws them itself',
+      (tester) async {
+    await tester.pumpWidget(_app(_scope(Column(children: [
+      InkButton(label: 'a', onPressed: () {}),
+      const SnowFlakesHandOff(child: SizedBox(width: 10, height: 10)),
+    ]))));
+    await tester.pump();
+    final field = _field(tester);
+    // While the fight's panels are mounted the overlay leaves the flakes out.
+    expect(field.overlayFlakes, isFalse);
+    await tester.pumpWidget(_app(_scope(Column(children: [
+      InkButton(label: 'a', onPressed: () {}),
+    ]))));
+    await tester.pump();
+    expect(_field(tester).overlayFlakes, isTrue);
+  });
+
+  testWidgets('a panel can draw its own flakes (the fight, behind the figures)',
+      (tester) async {
+    await tester.pumpWidget(_app(_scope(Column(children: [
+      InkButton(label: 'a', onPressed: () {}),
+      Builder(builder: (context) {
+        final f = inkSnowFieldOf(context)!;
+        return SizedBox(
+            width: 300, height: 120, child: SnowFlakesLayer(field: f));
+      }),
+    ]))));
+    await tester.pump(const Duration(seconds: 1));
+    expect(find.byType(SnowFlakesLayer), findsOneWidget);
+    expect(tester.takeException(), isNull);
   });
 }

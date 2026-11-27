@@ -59,8 +59,14 @@ class SnowField {
   /// How much slower a light fall builds and sheds: 1.4 (light) to 1.
   double get slow => 1.4 - 0.4 * heaviness;
 
-  /// How many flakes fall: 28 (light) to 70.
-  int get flakes => (28 + 42 * heaviness).round();
+  /// How many flakes fall on a whole screen: 80 (light) to 140 (v2.10.39: a
+  /// light fall had 28, a few specks a phone barely showed).
+  int get flakes => (80 + 60 * heaviness).round();
+
+  /// Whether the screen's overlay draws the flakes. A screen whose fighters
+  /// stand over the snow (the fight) turns it off and draws the flakes itself,
+  /// behind them, with [SnowFlakesLayer]; the drifts stay on the overlay.
+  bool overlayFlakes = true;
 
   void dispose() => time.dispose();
 }
@@ -169,7 +175,9 @@ class _SnowPainter extends CustomPainter {
       }
       _drift(canvas, piece.snowId, a, b, t, piece.snowKnocks);
     }
-    if (!field.reduceMotion) _flakes(canvas, size, t);
+    if (!field.reduceMotion && field.overlayFlakes) {
+      paintSnowFlakes(canvas, size, t, field.flakes, 0);
+    }
   }
 
   void _drift(Canvas canvas, int id, Offset ea, Offset eb, double t,
@@ -270,28 +278,82 @@ class _SnowPainter extends CustomPainter {
     }
   }
 
-  void _flakes(Canvas canvas, Size size, double t) {
-    for (var i = 0; i < field.flakes; i++) {
-      final big = _hash(i, 1);
-      final sz = big < 0.55 ? 1.0 : (big < 0.88 ? 2.0 : 3.0);
-      final speed = 18 + 16 * sz + 14 * _hash(i, 2);
-      final x0 = _hash(i, 3) * size.width;
-      final y0 = _hash(i, 4) * size.height;
-      final period = 3 + 3 * _hash(i, 5);
-      final sway = (5 + 9 * _hash(i, 6)) * (sz == 1 ? 0.7 : 1);
-      final x = x0 + sway * math.sin(t * 2 * math.pi / period + i) + 4 * t;
-      final y = y0 + speed * t;
-      final px = (x % size.width + size.width) % size.width;
-      final py = y % size.height;
-      canvas.drawRect(
-          Rect.fromLTWH(px.roundToDouble(), py.roundToDouble(), sz, sz),
-          _px(sz == 1 ? inkGrey : inkPaper, sz == 1 ? 0.7 : 0.9));
-    }
-  }
-
   @override
   bool shouldRepaint(_SnowPainter old) =>
       old.field != field || old.layerKey != layerKey;
+}
+
+/// [count] flakes over a [size] box [t] seconds in: four sizes (a grey speck,
+/// then 2, 3 and 4 px of paper), each with its own speed and sway. [salt]
+/// shifts the pattern so two boxes do not fall in step.
+void paintSnowFlakes(Canvas canvas, Size size, double t, int count, int salt) {
+  if (size.isEmpty) return;
+  Paint px(Color c, double a) => Paint()
+    ..isAntiAlias = false
+    ..color = c.withValues(alpha: a);
+  for (var n = 0; n < count; n++) {
+    final i = n + salt * 977;
+    final big = _hash(i, 1);
+    final sz = big < 0.3
+        ? 1.0
+        : big < 0.62
+            ? 2.0
+            : big < 0.9
+                ? 3.0
+                : 4.0;
+    final speed = 20 + 14 * sz + 14 * _hash(i, 2);
+    final x0 = _hash(i, 3) * size.width;
+    final y0 = _hash(i, 4) * size.height;
+    final period = 3 + 3 * _hash(i, 5);
+    final sway = (5 + 9 * _hash(i, 6)) * (sz == 1 ? 0.7 : 1);
+    final x = x0 + sway * math.sin(t * 2 * math.pi / period + i) + 4 * t;
+    final y = y0 + speed * t;
+    final fx = (x % size.width + size.width) % size.width;
+    final fy = y % size.height;
+    canvas.drawRect(
+        Rect.fromLTWH(fx.roundToDouble(), fy.roundToDouble(), sz, sz),
+        px(sz == 1 ? inkGrey : inkPaper, sz == 1 ? 0.7 : 0.92));
+  }
+}
+
+/// The flakes alone, over the box this widget fills: the fight draws them
+/// inside each panel, between the picture and the figures, so they fall behind
+/// the fighters. The count follows the box's area, the fall's heaviness the
+/// scope's.
+class SnowFlakesLayer extends StatelessWidget {
+  const SnowFlakesLayer({super.key, required this.field, this.salt = 1});
+
+  final SnowField field;
+  final int salt;
+
+  @override
+  Widget build(BuildContext context) => IgnorePointer(
+        child: RepaintBoundary(
+          child: CustomPaint(
+            size: Size.infinite,
+            painter: _FlakesPainter(field, salt),
+          ),
+        ),
+      );
+}
+
+class _FlakesPainter extends CustomPainter {
+  _FlakesPainter(this.field, this.salt) : super(repaint: field.time);
+
+  final SnowField field;
+  final int salt;
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    if (field.reduceMotion) return;
+    // The overlay's density, by area (a phone screen is about 350 000 px2).
+    final n =
+        (field.flakes * size.width * size.height / 350000).round().clamp(8, 90);
+    paintSnowFlakes(canvas, size, field.time.value, n, salt);
+  }
+
+  @override
+  bool shouldRepaint(_FlakesPainter old) => old.field != field;
 }
 
 /// The live drifts as a list (for tests): each edge's thickness at its middle.

@@ -141,6 +141,8 @@ import 'tower/ink/ink_palette.dart' show inkGrey, inkRed, inkSlate;
 import '../widgets/dice_throw.dart';
 import '../widgets/dice_ground.dart';
 import 'tower/ink/ink_dice.dart' show inkDieSkin;
+import 'tower/ink/ink_snowfall.dart' show SnowFlakesLayer;
+import 'tower/ink/ink_weather.dart' show SnowFlakesHandOff, inkSnowFieldOf;
 import 'tower/tower_backdrop.dart' show towerFightScene;
 import 'tower/ink/ink_kit.dart'
     show InkSlantPanel, InkSplashPainter, TowerPanelLayout, towerPanelLayout;

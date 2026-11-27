@@ -8,6 +8,8 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [2.10.39+1121]
+- **Snow.** The Tower's snow falls thicker (80 to 140 flakes, up from 28 to 70) and in four sizes, so it reads on a phone; the drifts on the panels are as before. In a fight the flakes fall inside each picture panel, behind the foe and behind the hero (they were drawn over the hero in the boss scene). **The Eclipse anomaly** no longer paints a solid black disc behind the die: its dark sun hangs in the board's upper corner, half dark, so it cannot read as the black ball.
 ## [2.10.38+1120]
 - **The gamble card is a real card back.** Face down it is a black card in our frame, with paper and red diamonds and the red wax seal at the heart and no words; a hero who reads it sees a gold or red band along its top, and from Perception 5 the card's name on a plate at its foot. Taking it still says "No turning back", and then the card turns over and lands on its outcome card: Art's pictures for the eight outcomes (Gilded, Twin, Hoard, Bright, Dud, Wound, Spill, Hex) in our tarot frame, replacing the plain box. The Stat point card has its own cut-paper picture.
 ## [2.10.37+1119]
