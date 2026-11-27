@@ -87,70 +87,82 @@ extension _TowerPanels on _FightScreenState {
           if (mirror) {
             figure = Transform.flip(flipX: true, child: figure);
           }
-          return PanelFxShake(
-            foe: foes,
-            child: InkSlantPanel(
-              key: foes ? towerFoePanelKey : towerPartyPanelKey,
-              size: Size(w, height),
-              points: pts,
-              knockOn: panelFx,
-              knockWhen: () => panelFx.hitOn(foes),
-              child: Stack(fit: StackFit.expand, children: [
-                Image.asset(plate,
-                    fit: BoxFit.cover,
-                    alignment: foes
-                        ? const Alignment(0, 0.25)
-                        : Alignment.bottomCenter,
-                    filterQuality: FilterQuality.none,
-                    errorBuilder: (c, e, s) =>
-                        const ColoredBox(color: inkDeep)),
-                if (figures && foes && aimed != null)
-                  Positioned.fill(
-                    child: IgnorePointer(
-                      child: CustomPaint(
-                        key: const Key('tower_aim_splash'),
-                        painter: InkSplashPainter(
-                            (aimed + 0.5) / _enemies.length, height - 40),
+          // The snow falls between the plate and the figures: the scope's
+          // overlay hands its flakes to the panels (SnowFlakesHandOff).
+          final snow = inkSnowFieldOf(context);
+          return SnowFlakesHandOff(
+            child: PanelFxShake(
+              foe: foes,
+              child: InkSlantPanel(
+                key: foes ? towerFoePanelKey : towerPartyPanelKey,
+                size: Size(w, height),
+                points: pts,
+                knockOn: panelFx,
+                knockWhen: () => panelFx.hitOn(foes),
+                child: Stack(fit: StackFit.expand, children: [
+                  Image.asset(plate,
+                      fit: BoxFit.cover,
+                      alignment: foes
+                          ? const Alignment(0, 0.25)
+                          : Alignment.bottomCenter,
+                      filterQuality: FilterQuality.none,
+                      errorBuilder: (c, e, s) =>
+                          const ColoredBox(color: inkDeep)),
+                  if (snow != null)
+                    Positioned.fill(
+                        child:
+                            SnowFlakesLayer(field: snow, salt: foes ? 1 : 2)),
+                  if (figures && foes && aimed != null)
+                    Positioned.fill(
+                      child: IgnorePointer(
+                        child: CustomPaint(
+                          key: const Key('tower_aim_splash'),
+                          painter: InkSplashPainter(
+                              (aimed + 0.5) / _enemies.length, height - 40),
+                        ),
                       ),
                     ),
-                  ),
-                if (overlay != null) overlay,
-                if (showFigure)
+                  if (overlay != null) overlay,
+                  if (showFigure)
+                    Positioned(
+                      // A lone fighter: a box 176 wide holds its half (84) at the
+                      // panel's edge; several share the whole width.
+                      left: stacked || !(cards.length == 1 && foes) ? 8 : null,
+                      right:
+                          stacked || !(cards.length == 1 && !foes) ? 8 : null,
+                      width:
+                          cards.length == 1 && !stacked ? 176 * figScale : null,
+                      bottom: figBottom,
+                      child: IgnorePointer(
+                        child: stacked ? Center(child: figure) : figure,
+                      ),
+                    ),
                   Positioned(
-                    // A lone fighter: a box 176 wide holds its half (84) at the
-                    // panel's edge; several share the whole width.
-                    left: stacked || !(cards.length == 1 && foes) ? 8 : null,
-                    right: stacked || !(cards.length == 1 && !foes) ? 8 : null,
-                    width:
-                        cards.length == 1 && !stacked ? 176 * figScale : null,
-                    bottom: figBottom,
-                    child: IgnorePointer(
-                      child: stacked ? Center(child: figure) : figure,
+                    // One fighter's plate leaves its picture room to stand
+                    // beside it (the hero left, a lone foe right), as in the
+                    // approved A.
+                    left: 12 +
+                        (!foes ? plateInset : 0) +
+                        (wide && !foes && figures && cards.length == 1
+                            ? 96
+                            : 0),
+                    right: 12 +
+                        plateRight +
+                        (foes ? plateInset : 0) +
+                        (wide && foes && figures && cards.length == 1 ? 96 : 0),
+                    top: foes ? 18 : 10,
+                    child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        for (var i = 0; i < cards.length; i++) ...[
+                          if (i > 0) const SizedBox(width: 6),
+                          Expanded(child: cards[i]),
+                        ],
+                      ],
                     ),
                   ),
-                Positioned(
-                  // One fighter's plate leaves its picture room to stand
-                  // beside it (the hero left, a lone foe right), as in the
-                  // approved A.
-                  left: 12 +
-                      (!foes ? plateInset : 0) +
-                      (wide && !foes && figures && cards.length == 1 ? 96 : 0),
-                  right: 12 +
-                      plateRight +
-                      (foes ? plateInset : 0) +
-                      (wide && foes && figures && cards.length == 1 ? 96 : 0),
-                  top: foes ? 18 : 10,
-                  child: Row(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      for (var i = 0; i < cards.length; i++) ...[
-                        if (i > 0) const SizedBox(width: 6),
-                        Expanded(child: cards[i]),
-                      ],
-                    ],
-                  ),
-                ),
-              ]),
+                ]),
+              ),
             ),
           );
         });

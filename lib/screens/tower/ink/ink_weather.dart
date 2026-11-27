@@ -119,6 +119,46 @@ class _InkWeather extends InheritedWidget {
       old.clock.reduceMotion != clock.reduceMotion;
 }
 
+/// The snow field of the weather scope above [context], or null (no scope, or
+/// another weather).
+SnowField? inkSnowFieldOf(BuildContext context) =>
+    _InkWeather.maybeOf(context)?.snow;
+
+/// While mounted, the scope's overlay leaves the flakes out: the fight draws
+/// them itself, behind its figures (SnowFlakesLayer).
+class SnowFlakesHandOff extends StatefulWidget {
+  const SnowFlakesHandOff({super.key, required this.child});
+
+  final Widget child;
+
+  @override
+  State<SnowFlakesHandOff> createState() => _SnowFlakesHandOffState();
+}
+
+class _SnowFlakesHandOffState extends State<SnowFlakesHandOff> {
+  SnowField? _field;
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    final f = inkSnowFieldOf(context);
+    if (f != _field) {
+      _field?.overlayFlakes = true;
+      _field = f;
+      f?.overlayFlakes = false;
+    }
+  }
+
+  @override
+  void dispose() {
+    _field?.overlayFlakes = true;
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) => widget.child;
+}
+
 /// The weather of a screen: put it above the pieces. Without one (the home
 /// menu, the story) the pieces draw no weather.
 class WeatherScope extends StatefulWidget {

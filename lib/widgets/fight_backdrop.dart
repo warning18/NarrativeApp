@@ -672,7 +672,9 @@ void _rays(Canvas canvas, Size size, double t, Color colour, double level) {
 
 void _eclipse(Canvas canvas, Size size, double t, double level) {
   _veil(canvas, size, const Color(0xFF05060F), 0.4 * level);
-  final at = Offset(size.width * 0.5, size.height * 0.2);
+  // Up in the corner, away from the dice, and only half dark: a solid black
+  // disc behind a die read as the black ball (v2.10.14, again in v2.10.39).
+  final at = Offset(size.width * 0.84, size.height * 0.15);
   canvas.drawCircle(
     at,
     52,
@@ -687,7 +689,8 @@ void _eclipse(Canvas canvas, Size size, double t, double level) {
         1.0
       ]).createShader(Rect.fromCircle(center: at, radius: 52)),
   );
-  canvas.drawCircle(at, 30, Paint()..color = const Color(0xFF05060F));
+  canvas.drawCircle(
+      at, 30, Paint()..color = const Color(0xFF05060F).withValues(alpha: 0.55));
 }
 
 void _tide(Canvas canvas, Size size, double t, Color colour, double level) {
