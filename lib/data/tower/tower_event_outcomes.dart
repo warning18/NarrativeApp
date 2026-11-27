@@ -204,3 +204,41 @@ List<TowerChoiceOutcome> towerChoiceOutcomesOf(TowerEventView view) {
       ];
   }
 }
+
+/// The lines of towerChoiceOutcomesOf([view]) that [option] (one of
+/// TowerEventView.options) leads to, in their order, by choice key:
+///
+/// - check (test): 'tower_event_pass', 'tower_event_fail'
+/// - fight: a rival's 'tower_event_rival_win', 'tower_event_rival_slow';
+///   a parley's 'tower_parley_fight'
+/// - takeShortcut: 'tower_event_shortcut_win', 'tower_event_shortcut_lose'
+/// - standardClimb: 'tower_shortcut_decline'
+/// - talk: 'tower_parley_pass', 'tower_parley_fail'
+/// - accept: 'tower_bargain_accept'; refuse: 'tower_bargain_refuse'
+/// - shop: every `tower_stall_buy_<id>`; leave: none
+///
+/// Empty for an option [view] does not offer.
+List<TowerChoiceOutcome> towerOptionOutcomesOf(
+    TowerEventView view, TowerEventOption option) {
+  if (!view.options.contains(option)) return const [];
+  bool leadsTo(String key) => switch (option) {
+        TowerEventOption.check =>
+          key == 'tower_event_pass' || key == 'tower_event_fail',
+        TowerEventOption.fight => view.kind == TowerEventKind.rival
+            ? key == 'tower_event_rival_win' || key == 'tower_event_rival_slow'
+            : key == 'tower_parley_fight',
+        TowerEventOption.takeShortcut => key == 'tower_event_shortcut_win' ||
+            key == 'tower_event_shortcut_lose',
+        TowerEventOption.standardClimb => key == 'tower_shortcut_decline',
+        TowerEventOption.talk =>
+          key == 'tower_parley_pass' || key == 'tower_parley_fail',
+        TowerEventOption.accept => key == 'tower_bargain_accept',
+        TowerEventOption.refuse => key == 'tower_bargain_refuse',
+        TowerEventOption.shop => key.startsWith('tower_stall_buy_'),
+        TowerEventOption.leave => false,
+      };
+  return [
+    for (final line in towerChoiceOutcomesOf(view))
+      if (leadsTo(line.choiceKey)) line,
+  ];
+}

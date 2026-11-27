@@ -70,6 +70,7 @@ class TowerRun {
     this.store,
     this.bargains = const {},
     this.fightBegun = false,
+    this.checkPending = false,
     this.heat = 0,
     this.coins = 0,
     this.coinsEarned = 0,
@@ -188,6 +189,9 @@ class TowerRun {
           int.parse(key.toString()): (value as num).toInt(),
       },
       fightBegun: json['fighting'] == true,
+      // The setback's check left for the player (the event modal): absent
+      // in a run saved before, read as none.
+      checkPending: json['checkPending'] == true,
       heat: ((json['heat'] as num?)?.toInt() ?? 0).clamp(0, towerHeatMax),
       // Coins and perks (v2.10.0, docs/simulation/tower-coins.md): absent in
       // a run saved before, read as none.
@@ -403,6 +407,14 @@ class TowerRun {
   /// towerAfterFight. False on a run saved before.
   final bool fightBegun;
 
+  /// The setback's check of [floor] waits for the player (the event modal,
+  /// towerEventModalOn, tower_events.dart): the floor is won and its picks
+  /// and cards are done, the run stands [TowerStatus.choosing] on it with
+  /// no cards on the table, and nothing of the check is applied yet
+  /// (towerResolveCheck rolls it, from the seed, and moves on). False on a
+  /// run saved before, and always with the modal off.
+  final bool checkPending;
+
   /// The run's Heat (v2.9.0, docs/simulation/tower-heat.md): 0, the plain
   /// climb; 1..[towerHeatMax], the curses of towerHeatLevels up to it, all
   /// in force (tower_tables.dart's towerHeat*). Chosen at the start, fixed
@@ -555,6 +567,7 @@ class TowerRun {
     bool clearStore = false,
     Map<int, int>? bargains,
     bool? fightBegun,
+    bool? checkPending,
     int? coins,
     int? coinsEarned,
     Map<int, int>? rerolls,
@@ -602,6 +615,7 @@ class TowerRun {
         store: clearStore ? null : store ?? this.store,
         bargains: bargains ?? this.bargains,
         fightBegun: fightBegun ?? this.fightBegun,
+        checkPending: checkPending ?? this.checkPending,
         heat: heat,
         coins: coins ?? this.coins,
         coinsEarned: coinsEarned ?? this.coinsEarned,
@@ -666,6 +680,7 @@ class TowerRun {
               '$key': value,
           },
         if (fightBegun) 'fighting': true,
+        if (checkPending) 'checkPending': true,
         if (heat != 0) 'heat': heat,
         if (coins != 0) 'coins': coins,
         if (coinsEarned != 0) 'coinsEarned': coinsEarned,
@@ -1040,11 +1055,16 @@ TowerRun towerTakeStatPick(TowerRun run, TowerData data, int index,
 /// skip landed (a shortcut's landing card dealt: the run chooses again, on
 /// the floor below the landing); a skip's level-up picks wait on the
 /// landing. Last, a store on the landing opens (floor events PR 4,
-/// towerOpenStore). [stat] is the stat a rules-4 stat-pick card raises
+/// towerOpenStore). With the event modal on (towerEventModalOn), a
+/// setback's floor stops before its test: the run stays on the floor,
+/// TowerRun.checkPending, until towerResolveCheck (or a towerPick on it). [stat] is the stat a rules-4 stat-pick card raises
 /// (towerPickRules2).
 TowerRun towerPick(TowerRun run, TowerData data, int? index,
     {SimCharacter? hero, String? stat}) {
   if (run.status != TowerStatus.choosing) return run;
+  // The setback's check waiting (the event modal, TowerRun.checkPending):
+  // no card is on the table; moving on rolls it, as towerResolveCheck.
+  if (run.checkPending) return towerResolveCheck(run, data);
   // Rules 2: the loot table, then the Level Ups, then on.
   if (run.rules >= 2) {
     return towerPickRules2(run, data, index, hero: hero, stat: stat);

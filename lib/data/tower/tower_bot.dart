@@ -260,6 +260,8 @@ TowerRun playTowerRun({
           stat: card?.kind == TowerRewardKind.statPick
               ? towerBotStatChoice(hero)
               : null);
+      // The setback's check waiting (the event modal on): rolled at once.
+      if (run.checkPending) run = towerResolveCheck(run, data);
       // A skip's landing: the skipped floors' picks, taken there (a
       // shortcut's landing card, if any, is the next pass's choice).
       run = _botStatPicks(run, data);
