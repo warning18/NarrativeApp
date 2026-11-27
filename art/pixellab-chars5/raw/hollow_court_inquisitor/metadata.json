@@ -1,0 +1,36 @@
+{
+  "group_id": "41ea22e7-9d10-46ca-9c62-417628a2a7a5",
+  "states": [
+    {
+      "character": {
+        "id": "9976b7e4-10e9-4980-80c7-6aa9190a33d7",
+        "name": "Idle",
+        "prompt": "grim dark fantasy chibi, worn and weathered, ominous, muted desaturated colours, deep shadows, a tall inquisitor in a long violet coat with a high collar and a tall pointed black hat, a pale narrow face, holding a long black staff topped with a round seal, chibi",
+        "size": {
+          "width": 48,
+          "height": 48
+        },
+        "template_id": "mannequin",
+        "directions": 8,
+        "view": "side",
+        "created_at": "2026-11-27T01:06:08.399217+00:00"
+      },
+      "folder": "Idle",
+      "frames": {
+        "rotations": {
+          "south": "Idle/rotations/south.png",
+          "south-east": "Idle/rotations/south-east.png",
+          "east": "Idle/rotations/east.png",
+          "north-east": "Idle/rotations/north-east.png",
+          "north": "Idle/rotations/north.png",
+          "north-west": "Idle/rotations/north-west.png",
+          "west": "Idle/rotations/west.png",
+          "south-west": "Idle/rotations/south-west.png"
+        },
+        "animations": {}
+      }
+    }
+  ],
+  "export_version": "3.1",
+  "export_date": "2026-11-27T01:07:55.783836"
+}

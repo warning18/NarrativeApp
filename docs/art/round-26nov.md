@@ -13,3 +13,9 @@ Spent this round: 6 + 3 + 10 = 19. Balance 944.
 - **Gamble card back: no new art; options a, b and c are NOT WANTED** ("the back card style do not match ink it should just be the reverse of an existing card"). UX makes the back from an existing card. The files stay in `art/pixellab-cardback/` as a record and are not handed off.
 - **Stats glyph:** redo it so it reads as a radar or star chart; keep the die and the shield.
 - **Bosses:** yes, the other four (40 generations), then all five (Kroll included) to UX with a brief.
+
+### Results (27 November)
+- **Bosses:** the other four drawn (40 generations), all five distinct; hand-off `docs/art/handoff-ux-bosses5.md`, sheet `docs/art/boards/bosses5-south-north.png`.
+- **Stats glyph:** two more PixelLab tries (2 generations) gave an 8-spoke star and a round spider web, neither a clear radar chart; the glyph is now **drawn in code** (a pentagon web and a filled teal polygon, the Apollo colours, 32 and 24 px): `art/pixellab-bookmarks/handoff/stats_{24,32}.png`, with `armour_*` and `die_*` unchanged. A radar chart is a diagram, so code draws it better than the model. Sheet `docs/art/boards/bookmark-glyphs.png`.
+- **Gamble card back:** not wanted, no hand-off.
+- Spent today: 40 + 2 = 42. Balance 902.

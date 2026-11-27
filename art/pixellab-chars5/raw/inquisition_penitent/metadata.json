@@ -1,0 +1,36 @@
+{
+  "group_id": "022373a6-a6f9-40a3-ad71-674ea3e9fd25",
+  "states": [
+    {
+      "character": {
+        "id": "7ef9ab66-3da2-4701-be0c-c2d09c621976",
+        "name": "Idle",
+        "prompt": "grim dark fantasy chibi, worn and weathered, ominous, muted desaturated colours, deep shadows, a barefoot penitent with a bandaged bare torso and a torn grey skirt, a violet hood, scourge scars, holding a rope scourge with barbs, chibi",
+        "size": {
+          "width": 48,
+          "height": 48
+        },
+        "template_id": "mannequin",
+        "directions": 8,
+        "view": "side",
+        "created_at": "2026-11-27T01:06:09.409240+00:00"
+      },
+      "folder": "Idle",
+      "frames": {
+        "rotations": {
+          "south": "Idle/rotations/south.png",
+          "south-east": "Idle/rotations/south-east.png",
+          "east": "Idle/rotations/east.png",
+          "north-east": "Idle/rotations/north-east.png",
+          "north": "Idle/rotations/north.png",
+          "north-west": "Idle/rotations/north-west.png",
+          "west": "Idle/rotations/west.png",
+          "south-west": "Idle/rotations/south-west.png"
+        },
+        "animations": {}
+      }
+    }
+  ],
+  "export_version": "3.1",
+  "export_date": "2026-11-27T01:07:56.414770"
+}

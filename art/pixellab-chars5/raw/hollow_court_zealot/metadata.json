@@ -1,0 +1,36 @@
+{
+  "group_id": "83571435-2d3a-4647-b2be-49031a7708af",
+  "states": [
+    {
+      "character": {
+        "id": "15bbd0f6-19ec-44e6-ab32-92da382e4085",
+        "name": "Idle",
+        "prompt": "grim dark fantasy chibi, worn and weathered, ominous, muted desaturated colours, deep shadows, a hunched zealot in a ragged dark violet hooded robe, a white porcelain half mask over the face, hands clasped around a glowing violet crystal shard, chibi",
+        "size": {
+          "width": 48,
+          "height": 48
+        },
+        "template_id": "mannequin",
+        "directions": 8,
+        "view": "side",
+        "created_at": "2026-11-27T01:06:06.950281+00:00"
+      },
+      "folder": "Idle",
+      "frames": {
+        "rotations": {
+          "south": "Idle/rotations/south.png",
+          "south-east": "Idle/rotations/south-east.png",
+          "east": "Idle/rotations/east.png",
+          "north-east": "Idle/rotations/north-east.png",
+          "north": "Idle/rotations/north.png",
+          "north-west": "Idle/rotations/north-west.png",
+          "west": "Idle/rotations/west.png",
+          "south-west": "Idle/rotations/south-west.png"
+        },
+        "animations": {}
+      }
+    }
+  ],
+  "export_version": "3.1",
+  "export_date": "2026-11-27T01:07:55.302181"
+}
