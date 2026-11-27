@@ -1,6 +1,4 @@
-// The Tower's bookmarks (v2.10.31): three tabs at the top right of the floor,
-// each opening a read-only view (stats, gear, dice) over it; the nudges read
-// the rules' caps, never a typed 4 or 10.
+// PICTURES (UX_SHOTS=<folder>): the Stats and Dice bookmarks with their extras.
 import 'dart:convert';
 import 'dart:io';
 import 'dart:ui' as ui;
@@ -12,7 +10,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-    show towerNudgeClimbCapOf;
+import 'package:narrative_data_app/data/tower/tower_bot.dart';
 import 'package:narrative_data_app/data/tower/tower_rewards.dart';
 import 'package:narrative_data_app/data/tower/tower_run.dart';
 import 'package:narrative_data_app/data/tower/tower_tables.dart';
