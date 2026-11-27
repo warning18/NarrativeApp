@@ -8,6 +8,14 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [2.10.44+1126]
+
+- **Tower: the floor's choices in a sheet, a setback's roll on Climb.** A shortcut, a parley or a bargain opens in a sheet over the dimmed floor as you arrive (it cannot be closed without choosing; the floor rail stays). A setback is announced by a line before its fight ("Wisdom test after the fight: d20 +5 against 10"), and once the fight and its cards are done a sheet with one button, Face it, rolls the d20 and moves the climb on. Switches the event modal on (Core's v2.10.41-42 rules).
+
+## [2.10.43+1125]
+
+- **Tower fight: health numbers on the bars.** The hero's and the foes' bars are taller and carry "34 / 52" inside them (and "34 → 20 / 52" while a roll is aimed), in the ink font; no need to open the sheet to read them.
+
 ## [2.10.42+1124]
 
 - **Tower: floor events for a modal, built but not yet on (no change for players).** Each event now tells the screen whether it is forced and lists its options with their outcomes; behind a switch, a setback's d20 rolls only when the player presses Climb (same result as today, never re-rolled on reload). UX's screen turns it on.

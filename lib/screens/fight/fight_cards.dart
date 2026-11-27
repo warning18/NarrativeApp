@@ -139,7 +139,7 @@ extension _FightCards on _FightScreenState {
     );
   }
 
-  /// A thin health bar with its numbers inside -- shared by both columns.
+  /// A health bar with its numbers inside -- shared by both columns.
   /// With [pending] damage on the way (the dice aimed at an enemy, see
   /// [_previewRoll]) the slice about to go is painted [_previewColor] and
   /// the numbers read "now → after / max".
@@ -148,9 +148,9 @@ extension _FightCards on _FightScreenState {
       int pending = 0,
       bool executeLine = false,
       bool foe = false}) {
-    // The Tower's ink: a thin bar with no numbers (they are in the sheet).
+    // The Tower's ink: a taller bar with the numbers inside it (v2.10.43).
     final thin = TowerPanelStyle.of(context);
-    if (thin) height = 8;
+    if (thin) height = 15;
     final rawRatio = maxValue <= 0 ? 0.0 : current / maxValue;
     final ratio = rawRatio.clamp(0.0, 1.0);
     final after = max(0, current - pending);
@@ -226,7 +226,20 @@ extension _FightCards on _FightScreenState {
                 ],
               ),
             ),
-            if (!thin)
+            if (thin)
+              Text(
+                pending > 0
+                    ? '$current → $after / $maxValue'
+                    : '$current / $maxValue',
+                style: const TextStyle(
+                  fontFamily: InkFonts.display,
+                  fontSize: 10.5,
+                  height: 1,
+                  shadows: [Shadow(color: inkBlack, blurRadius: 2)],
+                  color: inkPaper,
+                ),
+              )
+            else
               Text(
                 pending > 0
                     ? '$current → $after / $maxValue'

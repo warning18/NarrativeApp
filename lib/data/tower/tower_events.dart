@@ -72,9 +72,9 @@ enum TowerEventKind {
 /// its fight, picks and cards with its check waiting for the player
 /// (TowerRun.checkPending), rolled when the player commits
 /// (towerResolveCheck), instead of rolled as the run moves on. Off until
-/// UX's screen is ready (its PR flips it); the rule and the roll are the
+/// UX's screen is ready (v2.10.45 flips it); the rule and the roll are the
 /// same either way, only when the roll is applied moves.
-const bool towerEventModalLive = false;
+const bool towerEventModalLive = true;
 
 /// The tests' override of [towerEventModalLive] (null: the live switch).
 @visibleForTesting
