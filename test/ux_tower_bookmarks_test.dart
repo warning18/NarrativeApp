@@ -69,6 +69,10 @@ void main() {
             'Level Up nudges: +1 of +${towerNudgeClimbCapOf(run.rules)} this climb'),
         findsOneWidget);
 
+    // Armour and Damage beside HP and level.
+    expect(find.byKey(const Key('tower_bm_armour')), findsOneWidget);
+    expect(find.byKey(const Key('tower_bm_damage')), findsOneWidget);
+
     // Gear: the weapon worn, and a tile for every slot.
     await tester.tap(find.byKey(const Key('tower_bookmark_gear')));
     await settle();
@@ -88,6 +92,12 @@ void main() {
     await tester.tap(find.byKey(const Key('tower_die_flame_die')));
     await settle(4);
     expect(find.byKey(const Key('tower_die_face_0')), findsOneWidget);
+    // "Play this die": the die in play changes, the button gives way to "In play".
+    expect(find.byKey(const Key('tower_die_play')), findsOneWidget);
+    await tester.tap(find.byKey(const Key('tower_die_play')));
+    await settle(6);
+    expect(find.byKey(const Key('tower_die_play')), findsNothing);
+    expect(find.text('In play'), findsOneWidget);
 
     // Closing: the floor is back.
     await tester.tap(find.byKey(const Key('tower_bookmark_close')));
