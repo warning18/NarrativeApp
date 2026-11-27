@@ -32,6 +32,8 @@ class _SimFight {
     this.affixes = const [],
     this.elite = false,
     this.rerollWeakFaces = false,
+    this.ambush = false,
+    this.damageMultiplier = 1.0,
   });
 
   // simulateSimFight's arguments ([c] the character, [s] its signs).
@@ -62,6 +64,15 @@ class _SimFight {
   final List<List<EnemyAffix>> affixes;
   final bool elite;
   final bool rerollWeakFaces;
+
+  /// The fight opens with the enemies' turn, before the party's first
+  /// roll (the fight screen's BattlefieldCondition.ambush, see
+  /// [simulateSimFight]).
+  final bool ambush;
+
+  /// A damage-only multiplier on every enemy, after the curve (the fight
+  /// screen's EncounterModifiers.damageMultiplier).
+  final double damageMultiplier;
 
   // What the fight keeps from round to round, set in _setup (where each
   // is explained), in the order it sets them.
@@ -319,6 +330,13 @@ class _SimFight {
 /// rounds run out.
 extension _SimFightRun on _SimFight {
   SimFightOutcome run() {
+    // An ambush: the enemies' turn before round 1, as the fight screen
+    // plays it (fight_setup.dart: round 0, the enemies' turn, then the
+    // party's first round). Nothing is played yet: no block, no guard.
+    if (ambush) {
+      final struck = _enemyTurn();
+      if (struck != null) return struck;
+    }
     while (rounds < maxRounds) {
       rounds++;
       final opened = _openRound();

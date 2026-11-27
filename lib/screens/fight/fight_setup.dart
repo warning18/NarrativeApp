@@ -202,6 +202,10 @@ extension _FightSetup on _FightScreenState {
     );
     maxHealth = max(1, (maxHealth * curve.health).round());
     damage = (damage * curve.damage).round();
+    // A damage-only multiplier (the Tower's early floors, rules 5).
+    if (widget.modifiers.damageMultiplier != 1.0) {
+      damage = (damage * widget.modifiers.damageMultiplier).round();
+    }
     if (_threat > 0 && !isBossEnemy(id, raw)) {
       maxHealth = max(1, (maxHealth * (1 + _threat)).round());
       damage = (damage * (1 + _threat)).round();

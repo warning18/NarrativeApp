@@ -52,6 +52,7 @@ class EncounterModifiers {
     this.rewardMultiplier = 1.0,
     this.healthMultiplier = 1.0,
     this.difficultyMultiplier = 1.0,
+    this.damageMultiplier = 1.0,
     this.chapter,
     this.isHunt = false,
     this.isHunterAmbush = false,
@@ -95,6 +96,11 @@ class EncounterModifiers {
   /// Health AND damage multiplier on every enemy of the fight -- a zone's
   /// tier (see [zoneTierMultiplier]); stacks with the chapter curve.
   final double difficultyMultiplier;
+
+  /// A damage-only multiplier on every enemy of the fight, after the curve
+  /// (the Tower's early floors on rules 5: the hero's unlock health factor,
+  /// towerEarlyDamageFor); 1, the damage as the curve gives it.
+  final double damageMultiplier;
 
   /// The story chapter this fight belongs to, for the chapter difficulty
   /// curve and the chest's loot window; null derives it from the current
@@ -178,6 +184,7 @@ class EncounterModifiers {
       rewardMultiplier == 1.0 &&
       healthMultiplier == 1.0 &&
       difficultyMultiplier == 1.0 &&
+      damageMultiplier == 1.0 &&
       chapter == null &&
       !isHunt &&
       !isHunterAmbush &&
@@ -212,6 +219,7 @@ class EncounterModifiers {
         rewardMultiplier: rewardMultiplier,
         healthMultiplier: healthMultiplier,
         difficultyMultiplier: difficultyMultiplier ?? this.difficultyMultiplier,
+        damageMultiplier: damageMultiplier,
         chapter: chapter ?? this.chapter,
         isHunt: isHunt,
         isHunterAmbush: isHunterAmbush,
@@ -348,6 +356,7 @@ class EncounterModifiers {
         rewardMultiplier: rewardMultiplier ?? this.rewardMultiplier,
         healthMultiplier: healthMultiplier ?? this.healthMultiplier,
         difficultyMultiplier: difficultyMultiplier,
+        damageMultiplier: damageMultiplier,
         chapter: chapter,
         isHunt: isHunt ?? this.isHunt,
         isHunterAmbush: isHunterAmbush ?? this.isHunterAmbush,

@@ -147,6 +147,7 @@ extension _SimFightSetup on _SimFight {
                     c.level,
                   ) *
                   curveFor(entry).damage *
+                  damageMultiplier *
                   packMultiplier)
               .round();
           // The Elite's and the pack leader's stats, as the fight screen's
