@@ -1879,17 +1879,17 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   },
   'tower_event_modal_forced': {
     AppLanguage.en: 'Forced: this one you cannot refuse.',
-    AppLanguage.fr: 'Forcé : celui-ci ne se refuse pas.',
+    AppLanguage.fr: 'Forcé\u00a0: celui-ci ne se refuse pas.',
   },
   'tower_event_modal_choose': {
     AppLanguage.en: 'Choose your way: you cannot go on without.',
-    AppLanguage.fr: 'Choisissez votre voie : on ne passe pas sans.',
+    AppLanguage.fr: 'Choisissez votre voie\u00a0: on ne passe pas sans.',
   },
   'tower_event_recap_test': {
     AppLanguage.en:
         '{ability} test after the fight: d20 {mod} against {dc} ({pct}%)',
     AppLanguage.fr:
-        'Épreuve de {ability} après le combat : d20 {mod} contre {dc} ({pct} %)',
+        'Épreuve de {ability} après le combat\u00a0: d20 {mod} contre {dc} ({pct}\u00a0%)',
   },
   'tower_event_roll_line': {
     AppLanguage.en: '{roll} {mod} = {total}  ·  DC {dc}',
