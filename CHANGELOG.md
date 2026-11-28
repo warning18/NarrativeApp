@@ -8,6 +8,10 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [2.10.46+1128]
+
+- **Tower: a gear card asks one question, and rules 5's ambush is said on the floor.** Taking a gear card now opens one step: your worn piece beside the new one with what changes ("Replace your Oakwood Staff?" with Replace, Keep mine, and Change to go back to the cards; an empty slot asks "Equip the …?" with Equip or Leave them). The piece you decline is never worn; the floor rail stays. On floors 1 to 3 of a rules-5 climb, a red tag "Ambush: foes strike first" sits under the foes. Switches Core's gear choice on.
+
 ## [2.10.45+1127]
 
 - **Tower: the first floors threaten (new climbs only).** On floors 1 to 3 the foes strike first (an ambush: they act before your first roll, their intents hidden that round), and they hit harder the more marks unlocks you own, as your health grows with them. Their health is a little lower and you get a quarter of your health back after each of those floors. An early fight now costs about a fifth of your health whatever you've unlocked. Climbs already in progress keep their rules.

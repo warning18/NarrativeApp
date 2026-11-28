@@ -16,6 +16,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:narrative_data_app/data/tower/tower_bot.dart';
 import 'package:narrative_data_app/data/tower/tower_events.dart';
+import 'package:narrative_data_app/data/tower/tower_gear_choice.dart';
 import 'package:narrative_data_app/data/tower/tower_hero.dart';
 import 'package:narrative_data_app/data/tower/tower_run.dart';
 import 'package:narrative_data_app/data/tower/tower_save.dart';
@@ -157,7 +158,10 @@ void main() {
     var next = towerAfterFight(run, data, won: true, healthLeft: run.health);
     for (var i = 0; i < 6 && next.status == TowerStatus.choosing; i++) {
       if (next.checkPending) break;
-      next = towerPick(next, data, next.offer.isEmpty ? null : 0);
+      // A gear card taken waits on the player: left off.
+      next = next.pendingGear != null
+          ? towerDiscard(next, data)
+          : towerPick(next, data, next.offer.isEmpty ? null : 0);
     }
     expect(next.checkPending, isTrue);
     await c.read(towerProvider.notifier).setRun(next);

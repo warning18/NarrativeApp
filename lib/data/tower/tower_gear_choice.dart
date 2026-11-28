@@ -23,9 +23,8 @@ import 'tower_levelup_loot.dart' show towerAfterTable;
 import 'tower_run.dart';
 import 'tower_tables.dart' show TowerTableKind;
 
-/// The gear choice in the app: off until the screen that asks is built
-/// (UX's PR turns it on).
-const bool towerGearChoiceLive = false;
+/// The gear choice in the app: on since the replace step's screen (v2.10.46).
+const bool towerGearChoiceLive = true;
 
 /// Tests and the simulator only: the gear choice on (true) or off (false)
 /// whatever [towerGearChoiceLive] says; null, as it says.
