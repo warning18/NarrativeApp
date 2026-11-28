@@ -131,7 +131,8 @@ class TowerGearReplace extends ConsumerWidget {
               child: tile(tr(ref, 'tower_gear_worn'), compare.wornId, worn)),
           const Padding(
               padding: EdgeInsets.symmetric(horizontal: 6),
-              child: Icon(Icons.arrow_forward, color: inkPaper, size: 24)),
+              child: Icon(Icons.arrow_forward,
+                  color: inkPaper, size: IconSize.s16)),
           Expanded(
               child: tile(tr(ref, 'tower_gear_new'), itemId, fresh,
                   against: worn)),
