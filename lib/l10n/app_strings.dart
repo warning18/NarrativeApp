@@ -2536,6 +2536,42 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.en: 'Buy a potion ({n} coins)',
     AppLanguage.fr: 'Acheter une potion ({n} pièces)',
   },
+  'tower_gear_replace_title': {
+    AppLanguage.en: 'Replace your {worn}?',
+    AppLanguage.fr: 'Remplacer {worn}\u00a0?',
+  },
+  'tower_gear_equip_title': {
+    AppLanguage.en: 'Equip the {new}?',
+    AppLanguage.fr: 'Équiper {new}\u00a0?',
+  },
+  'tower_gear_lost_line': {
+    AppLanguage.en: 'The piece you wear is lost: the Tower has no inventory.',
+    AppLanguage.fr:
+        'La pièce portée est perdue\u00a0: la Tour n’a pas d’inventaire.',
+  },
+  'tower_gear_empty_line': {
+    AppLanguage.en: 'Nothing is worn in this slot: nothing is lost.',
+    AppLanguage.fr: 'Rien n’est porté ici\u00a0: rien n’est perdu.',
+  },
+  'tower_gear_worn': {AppLanguage.en: 'Worn', AppLanguage.fr: 'Portée'},
+  'tower_gear_new': {AppLanguage.en: 'New', AppLanguage.fr: 'Nouvelle'},
+  'tower_gear_empty_slot': {
+    AppLanguage.en: 'Empty slot',
+    AppLanguage.fr: 'Emplacement vide',
+  },
+  'tower_gear_replace': {
+    AppLanguage.en: 'Replace',
+    AppLanguage.fr: 'Remplacer'
+  },
+  'tower_gear_keep': {
+    AppLanguage.en: 'Keep mine',
+    AppLanguage.fr: 'Garder la mienne',
+  },
+  'tower_gear_equip': {AppLanguage.en: 'Equip', AppLanguage.fr: 'Équiper'},
+  'tower_gear_leave': {
+    AppLanguage.en: 'Leave them',
+    AppLanguage.fr: 'La laisser',
+  },
   'tower_ambush_tag': {
     AppLanguage.en: 'Ambush: foes strike first',
     AppLanguage.fr: 'Embuscade\u00a0: les ennemis frappent d’abord',

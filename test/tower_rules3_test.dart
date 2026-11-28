@@ -11,6 +11,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:narrative_data_app/data/tower/tower_events.dart';
 import 'package:narrative_data_app/data/tower/tower_bot.dart';
 import 'package:narrative_data_app/data/tower/tower_floors.dart';
+import 'package:narrative_data_app/data/tower/tower_gear_choice.dart';
 import 'package:narrative_data_app/data/tower/tower_hero.dart';
 import 'package:narrative_data_app/data/tower/tower_levelup_loot.dart';
 import 'package:narrative_data_app/data/tower/tower_progress.dart';
@@ -40,8 +41,15 @@ const _rules2Save =
 
 void main() {
   // These test the rule as it rolls when the run moves on (the event modal off).
-  setUp(() => towerEventModalOverride = false);
-  tearDown(() => towerEventModalOverride = null);
+  // And the automatic gear rule (the gear choice off).
+  setUp(() {
+    towerEventModalOverride = false;
+    towerGearChoiceOverride = false;
+  });
+  tearDown(() {
+    towerEventModalOverride = null;
+    towerGearChoiceOverride = null;
+  });
   final data = towerDataFromAssets();
 
   String gift(TowerReward c) =>

@@ -12,6 +12,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:narrative_data_app/data/tower/tower_bot.dart';
 import 'package:narrative_data_app/data/tower/tower_coins.dart';
 import 'package:narrative_data_app/data/tower/tower_floors.dart';
+import 'package:narrative_data_app/data/tower/tower_gear_choice.dart';
 import 'package:narrative_data_app/data/tower/tower_hero.dart';
 import 'package:narrative_data_app/data/tower/tower_levelup_loot.dart';
 import 'package:narrative_data_app/data/tower/tower_progress.dart';
@@ -21,6 +22,11 @@ import 'package:narrative_data_app/data/tower/tower_tables.dart';
 
 void main() {
   final data = towerDataFromAssets();
+
+  // These test the automatic gear rule (a loot card's gear worn when it
+  // scores at least the worn piece): the gear choice is off here.
+  setUp(() => towerGearChoiceOverride = false);
+  tearDown(() => towerGearChoiceOverride = null);
 
   TowerRun start(int seed,
           {String profession = 'warrior',

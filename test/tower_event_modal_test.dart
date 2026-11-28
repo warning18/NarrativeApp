@@ -16,6 +16,7 @@ import 'package:narrative_data_app/data/tower/tower_bot.dart';
 import 'package:narrative_data_app/data/tower/tower_dice.dart';
 import 'package:narrative_data_app/data/tower/tower_event_outcomes.dart';
 import 'package:narrative_data_app/data/tower/tower_events.dart';
+import 'package:narrative_data_app/data/tower/tower_gear_choice.dart';
 import 'package:narrative_data_app/data/tower/tower_hero.dart';
 import 'package:narrative_data_app/data/tower/tower_progress.dart';
 import 'package:narrative_data_app/data/tower/tower_run.dart';
@@ -27,7 +28,13 @@ void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
   final data = towerDataFromAssets();
 
-  tearDown(() => towerEventModalOverride = null);
+  // These test the event modal, not the gear choice (a gear card taken would
+  // wait on the player's equip): the gear choice is off here.
+  setUp(() => towerGearChoiceOverride = false);
+  tearDown(() {
+    towerEventModalOverride = null;
+    towerGearChoiceOverride = null;
+  });
 
   T withModal<T>(bool on, T Function() body) {
     final before = towerEventModalOverride;

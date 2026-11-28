@@ -134,8 +134,6 @@ class TowerStyledCard extends StatelessWidget {
     this.round = false,
     this.darkBadge = false,
     this.flag,
-    this.art,
-    this.compare,
   });
 
   final TowerCardStyle style;
@@ -171,13 +169,6 @@ class TowerStyledCard extends StatelessWidget {
   /// A clan's own banner, hung from the top edge at the right as a bookmark.
   final Widget? flag;
 
-  /// A picture drawn over the vignette's plate (a gear card's own icon).
-  final Widget? art;
-
-  /// A gear card's comparison with the piece worn in its slot, one line per
-  /// stat; shown in place of [text].
-  final List<TowerCompareLine>? compare;
-
   @override
   Widget build(BuildContext context) {
     final look = _lookOf(style);
@@ -191,7 +182,6 @@ class TowerStyledCard extends StatelessWidget {
               fit: BoxFit.cover,
               filterQuality: FilterQuality.none,
               errorBuilder: (_, __, ___) => const ColoredBox(color: inkDark)),
-          if (art case final a?) Center(child: a),
           Positioned(
             left: 5,
             top: 5,
@@ -243,38 +233,11 @@ class TowerStyledCard extends StatelessWidget {
                     .copyWith(letterSpacing: 0.6, fontWeight: FontWeight.w700)),
             const SizedBox(height: 2),
             Expanded(
-              child: compare != null
-                  ? Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        for (final c in compare!)
-                          Padding(
-                            padding: const EdgeInsets.symmetric(vertical: 1.5),
-                            child: Row(children: [
-                              Text(c.label,
-                                  style: _prose(
-                                          8.5, look.ink.withValues(alpha: 0.8))
-                                      .copyWith(fontWeight: FontWeight.w700)),
-                              const Spacer(),
-                              Text('${c.from}\u2192${c.to}',
-                                  style: _prose(9.5, look.ink)),
-                              const SizedBox(width: 3),
-                              Text(c.delta,
-                                  style: _prose(
-                                          9.5,
-                                          c.better == null
-                                              ? look.ink
-                                              : (c.better! ? inkMore : inkLess))
-                                      .copyWith(fontWeight: FontWeight.w800)),
-                            ]),
-                          ),
-                      ],
-                    )
-                  : Text(text,
-                      textAlign: TextAlign.center,
-                      overflow: TextOverflow.ellipsis,
-                      maxLines: note == null ? 5 : 3,
-                      style: _prose(9.5, look.ink)),
+              child: Text(text,
+                  textAlign: TextAlign.center,
+                  overflow: TextOverflow.ellipsis,
+                  maxLines: note == null ? 5 : 3,
+                  style: _prose(9.5, look.ink)),
             ),
             if (note != null)
               Padding(
@@ -488,28 +451,4 @@ class _DiamondsPainter extends CustomPainter {
 
   @override
   bool shouldRepaint(_) => false;
-}
-
-/// One line of a gear card's comparison: "Damage 6 → 5" and its change, green
-/// when it is better and red when worse (the words never rest on colour alone:
-/// the sign is there).
-class TowerCompareLine {
-  const TowerCompareLine(
-      {required this.label,
-      required this.from,
-      required this.to,
-      required this.delta,
-      required this.better});
-
-  final String label;
-
-  /// What the worn piece gives ("6"), or "–" in an empty slot.
-  final String from;
-  final String to;
-
-  /// The change, signed: "+2", "−1" ("" when it is the same).
-  final String delta;
-
-  /// Whether the new piece is better (true), worse (false) or the same (null).
-  final bool? better;
 }
