@@ -16,7 +16,7 @@ import '../../theme/icon_sizes.dart';
 import '../../theme/stitched_ink.dart' show InkFonts;
 import '../../utils/pixel_icons/game_pixel_icons.dart';
 import '../../widgets/item_stats.dart';
-import 'ink/ink_kit.dart' show InkButton;
+import 'tower_sheet_over_snow.dart';
 import 'ink/ink_palette.dart';
 
 TextStyle _prose(double s, Color c, {FontWeight? w}) => TextStyle(
@@ -113,50 +113,87 @@ class TowerGearReplace extends ConsumerWidget {
       );
     }
 
-    return SingleChildScrollView(
-      key: const Key('tower_gear_replace'),
-      // The bookmark tabs sit over the top right: the title starts under them.
-      padding: const EdgeInsets.fromLTRB(8, 64, 16, 24),
-      child: Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
-        Text(sub(empty ? 'tower_gear_equip_title' : 'tower_gear_replace_title'),
-            style: _display(22, inkPaper)),
-        const SizedBox(height: 6),
-        Text(tr(ref, empty ? 'tower_gear_empty_line' : 'tower_gear_lost_line'),
-            style: _prose(12.5, inkGrey)),
-        const SizedBox(height: 14),
-        IntrinsicHeight(
-            child:
-                Row(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
-          Expanded(
-              child: tile(tr(ref, 'tower_gear_worn'), compare.wornId, worn)),
-          const Padding(
-              padding: EdgeInsets.symmetric(horizontal: 6),
-              child: Icon(Icons.arrow_forward,
-                  color: inkPaper, size: IconSize.s16)),
-          Expanded(
-              child: tile(tr(ref, 'tower_gear_new'), itemId, fresh,
-                  against: worn)),
-        ])),
-        const SizedBox(height: 18),
-        InkButton(
-            buttonKey: const Key('tower_gear_replace_yes'),
-            label: tr(ref, empty ? 'tower_gear_equip' : 'tower_gear_replace'),
-            onPressed: onReplace,
-            primary: true,
-            height: 48),
-        const SizedBox(height: 8),
-        InkButton(
-            buttonKey: const Key('tower_gear_replace_keep'),
-            label: tr(ref, empty ? 'tower_gear_leave' : 'tower_gear_keep'),
-            onPressed: onKeep,
-            height: 44),
-        if (onChange != null)
-          TextButton(
-              key: const Key('tower_gear_replace_change'),
-              onPressed: onChange,
-              child: Text(tr(ref, 'tower_change'),
-                  style: _prose(13, inkGrey, w: FontWeight.w700))),
-      ]),
+    // A dark sheet over the floor, in the overlay above the snow, with the
+    // approved full-width buttons: red Replace, gold Keep mine, grey Change.
+    return TowerSheetOverSnow(
+      under: const SizedBox.expand(),
+      sheet: Padding(
+        padding: const EdgeInsets.fromLTRB(8, 64, 16, 12),
+        child: Align(
+          alignment: Alignment.topCenter,
+          child: SingleChildScrollView(
+            child: Container(
+              key: const Key('tower_gear_replace'),
+              padding: const EdgeInsets.all(14),
+              decoration: BoxDecoration(
+                  color: inkBlack.withValues(alpha: 0.97),
+                  border: Border.all(color: inkPaper, width: 2),
+                  borderRadius: BorderRadius.circular(10)),
+              child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Text(
+                        sub(empty
+                            ? 'tower_gear_equip_title'
+                            : 'tower_gear_replace_title'),
+                        style: _display(22, inkPaper)),
+                    const SizedBox(height: 6),
+                    Text(
+                        tr(
+                            ref,
+                            empty
+                                ? 'tower_gear_empty_line'
+                                : 'tower_gear_lost_line'),
+                        style: _prose(12.5, inkGrey)),
+                    const SizedBox(height: 14),
+                    IntrinsicHeight(
+                        child: Row(
+                            crossAxisAlignment: CrossAxisAlignment.stretch,
+                            children: [
+                          Expanded(
+                              child: tile(tr(ref, 'tower_gear_worn'),
+                                  compare.wornId, worn)),
+                          const Padding(
+                              padding: EdgeInsets.symmetric(horizontal: 6),
+                              child: Icon(Icons.arrow_forward,
+                                  color: inkPaper, size: IconSize.s16)),
+                          Expanded(
+                              child: tile(
+                                  tr(ref, 'tower_gear_new'), itemId, fresh,
+                                  against: worn)),
+                        ])),
+                    const SizedBox(height: 18),
+                    FilledButton(
+                        key: const Key('tower_gear_replace_yes'),
+                        style: FilledButton.styleFrom(
+                            backgroundColor: inkRed,
+                            foregroundColor: inkPaper,
+                            minimumSize: const Size.fromHeight(48)),
+                        onPressed: onReplace,
+                        child: Text(tr(
+                            ref,
+                            empty
+                                ? 'tower_gear_equip'
+                                : 'tower_gear_replace'))),
+                    TextButton(
+                        key: const Key('tower_gear_replace_keep'),
+                        onPressed: onKeep,
+                        child: Text(
+                            tr(ref,
+                                empty ? 'tower_gear_leave' : 'tower_gear_keep'),
+                            style: _prose(14, inkGold, w: FontWeight.w700))),
+                    if (onChange != null)
+                      TextButton(
+                          key: const Key('tower_gear_replace_change'),
+                          onPressed: onChange,
+                          child: Text(tr(ref, 'tower_change'),
+                              style: _prose(13, inkGrey, w: FontWeight.w700))),
+                  ]),
+            ),
+          ),
+        ),
+      ),
     );
   }
 

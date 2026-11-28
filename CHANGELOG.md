@@ -8,6 +8,10 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [2.10.47+1129]
+
+- **Tower: the gear step as approved.** The replace question now sits on a dark sheet over the floor (above the snow, the rail kept) with full-width buttons: a solid red Replace (or Equip), a gold Keep mine (Leave them), and a grey Change; the small slanted ink buttons that floated on the floor, the faded Replace and the strokes between the buttons are gone.
+
 ## [2.10.46+1128]
 
 - **Tower: a gear card asks one question, and rules 5's ambush is said on the floor.** Taking a gear card now opens one step: your worn piece beside the new one with what changes ("Replace your Oakwood Staff?" with Replace, Keep mine, and Change to go back to the cards; an empty slot asks "Equip the …?" with Equip or Leave them). The piece you decline is never worn; the floor rail stays. On floors 1 to 3 of a rules-5 climb, a red tag "Ambush: foes strike first" sits under the foes. Switches Core's gear choice on.

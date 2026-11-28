@@ -33,6 +33,7 @@ import 'tower_end_screen.dart';
 import 'tower_backdrop.dart';
 import 'tower_dice_panel.dart';
 import 'tower_event_card.dart';
+import 'tower_sheet_over_snow.dart';
 import 'tower_gear_replace.dart';
 import 'tower_coin_view.dart';
 import 'tower_heat_view.dart';
@@ -884,7 +885,7 @@ class _FloorIntro extends ConsumerWidget {
         onFace != null
             ? 'tower_event_modal_forced'
             : 'tower_event_modal_choose');
-    return _SheetOverSnow(
+    return TowerSheetOverSnow(
       under: IgnorePointer(child: Opacity(opacity: 0.35, child: scroll)),
       sheet: Padding(
         padding: const EdgeInsets.fromLTRB(8, 4, 16, 12),
@@ -909,70 +910,6 @@ class _FloorIntro extends ConsumerWidget {
             ),
           ),
         ),
-      ),
-    );
-  }
-}
-
-/// A sheet over the floor in the route's overlay, above the snow (which is
-/// drawn over everything under the weather scope): the drifts never lie on
-/// it. The floor sits dimmed under it; the sheet follows the floor's area.
-class _SheetOverSnow extends StatefulWidget {
-  const _SheetOverSnow({required this.under, required this.sheet});
-
-  final Widget under;
-  final Widget sheet;
-
-  @override
-  State<_SheetOverSnow> createState() => _SheetOverSnowState();
-}
-
-class _SheetOverSnowState extends State<_SheetOverSnow> {
-  final _link = LayerLink();
-  final _portal = OverlayPortalController();
-  Size _size = Size.zero;
-
-  @override
-  void initState() {
-    super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (mounted && !_portal.isShowing) _portal.show();
-    });
-  }
-
-  @override
-  void dispose() {
-    if (_portal.isShowing) _portal.hide();
-    super.dispose();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    final theme = InheritedTheme.capture(from: context, to: null);
-    return OverlayPortal(
-      controller: _portal,
-      overlayChildBuilder: (overlayContext) => Positioned(
-        left: 0,
-        top: 0,
-        child: CompositedTransformFollower(
-          link: _link,
-          showWhenUnlinked: false,
-          child: SizedBox(
-            width: _size.width,
-            height: _size.height,
-            child: Material(
-              type: MaterialType.transparency,
-              child: theme.wrap(widget.sheet),
-            ),
-          ),
-        ),
-      ),
-      child: CompositedTransformTarget(
-        link: _link,
-        child: LayoutBuilder(builder: (_, c) {
-          _size = c.biggest;
-          return widget.under;
-        }),
       ),
     );
   }
